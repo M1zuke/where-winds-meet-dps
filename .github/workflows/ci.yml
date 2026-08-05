@@ -17,15 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Prettier
-        run: npm run format:check
+        run: pnpm run format:check
       - name: ESLint
-        run: npm run lint
+        run: pnpm run lint
       - name: English-only guard
         env:
           LC_ALL: C.UTF-8
@@ -38,8 +39,8 @@ jobs:
             exit 1
           fi
       - name: Typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Tests
-        run: npm run test
+        run: pnpm test

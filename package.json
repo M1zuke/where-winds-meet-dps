@@ -6,11 +6,12 @@
   "engines": {
     "node": ">=22"
   },
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && wrangler pages deploy",
+    "deploy": "pnpm run build && wrangler pages deploy",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -b --noEmit",
@@ -31,6 +32,7 @@
     "@rolldown/plugin-babel": "0.2.3",
     "@testing-library/jest-dom": "7.0.0",
     "@testing-library/react": "16.3.2",
+    "@types/node": "24.12.2",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.4",
     "@typescript/native": "npm:typescript@7.0.2",
@@ -49,5 +51,14 @@
     "vitest": "4.1.10",
     "wrangler": "4.118.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd"
+    ],
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher"
+    ]
   }
 }

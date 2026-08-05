@@ -11,13 +11,13 @@ A DPS calculator and rotation simulator for the game **Where Winds Meet**. Model
 
 ## Getting started
 
-Prerequisites: [Node.js](https://nodejs.org/) **≥ 22** and Git.
+Prerequisites: [Node.js](https://nodejs.org/) **≥ 22**, [pnpm](https://pnpm.io/) (Node 22 ships Corepack, so `corepack enable pnpm` picks up the pinned version; a global install with `npm i -g pnpm` also works), and Git.
 
 ```bash
 git clone https://github.com/M1zuke/where-winds-meet-dps.git
 cd where-winds-meet-dps
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 Vite prints the local URL (usually `http://localhost:5173`). The app hot-reloads on save, including edits to the data files under `src/data/`.
@@ -26,12 +26,12 @@ Vite prints the local URL (usually `http://localhost:5173`). The app hot-reloads
 
 | command | what it does |
 | --- | --- |
-| `npm run dev` | dev server with hot reload |
-| `npm test` | run the test suite once (`test:watch` for watch mode) |
-| `npm run typecheck` | TypeScript type-check |
-| `npm run lint` | ESLint, zero warnings allowed |
-| `npm run format` | Prettier (`format:check` for CI's check mode) |
-| `npm run build` | type-check + production build |
+| `pnpm run dev` | dev server with hot reload |
+| `pnpm test` | run the test suite once (`test:watch` for watch mode) |
+| `pnpm run typecheck` | TypeScript type-check |
+| `pnpm run lint` | ESLint, zero warnings allowed |
+| `pnpm run format` | Prettier (`format:check` for CI's check mode) |
+| `pnpm run build` | type-check + production build |
 
 ## Contributing
 

@@ -449,7 +449,7 @@ source-of-truth note this table summarizes.
 
 ## Verification
 
-- `npm test` — **544 tests across 62 files**, all green.
+- `pnpm test` — **544 tests across 62 files**, all green.
 - There is **no locked-DPS fixture**. `defaultInputs` (`engine/defaults.ts`) is
   the default Bamboocut-Wind build, not an anchor; no test asserts an absolute
   DPS number.
