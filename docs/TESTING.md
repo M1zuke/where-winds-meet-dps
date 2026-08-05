@@ -1,6 +1,6 @@
 # TESTING.md — test conventions
 
-`npm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **563 tests
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **563 tests
 across 64 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
@@ -76,10 +76,10 @@ in vitest.** `tests/engine/dpsWorkerOffload.test.ts` is the pattern.
 
 `.github/workflows/ci.yml` runs on every push to `main` and on every pull
 request. It gates, in order: `format:check`, `lint`, the English-only grep
-guard, `typecheck`, `build`, `test`. There is no deploy job — `npm run deploy`
+guard, `typecheck`, `build`, `test`. There is no deploy job — `pnpm run deploy`
 stays manual and local.
 
-`npm run lint` is `eslint . --max-warnings 0` against a flat config
+`pnpm run lint` is `eslint . --max-warnings 0` against a flat config
 (`eslint.config.mjs`): `@eslint/js` recommended, `typescript-eslint`
 recommended (non-type-checked), `eslint-plugin-react-hooks`
 recommended-latest, `eslint-plugin-react-refresh` vite. The config carries **no
