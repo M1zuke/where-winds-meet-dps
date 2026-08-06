@@ -35,6 +35,23 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
     const top = [...rows].sort((a, b) => b.liftPercent - a.liftPercent)[0]
     expect(top.liftPercent).toBeGreaterThan(0)
   })
+
+  it("dpsDelta equals expectedDps minus the baseline for every row", () => {
+    for (const row of rows) {
+      expect(row.dpsDelta).toBeCloseTo(row.expectedDps - base.dps, 6)
+    }
+  })
+
+  it("dpsDelta's sign agrees with liftPercent's sign", () => {
+    const top = [...rows].sort((rowA, rowB) => rowB.liftPercent - rowA.liftPercent)[0]
+    expect(top.liftPercent).toBeGreaterThan(0)
+    expect(top.dpsDelta).toBeGreaterThan(0)
+
+    const negativeLiftRow = rows.find((row) => row.liftPercent < 0)
+    if (negativeLiftRow) {
+      expect(negativeLiftRow.dpsDelta).toBeLessThan(0)
+    }
+  })
 })
 
 describe("computeRanking — top-rank consistency", () => {

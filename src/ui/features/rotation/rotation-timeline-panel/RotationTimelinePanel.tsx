@@ -26,7 +26,7 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const span = Math.max(duration - minTime, 1e-6)
   const pct = (sec: number) => ((sec - minTime) / span) * 100
 
-  const axisTicks = [0, 0.25, 0.5, 0.75, 1].map((fraction) => minTime + fraction * span)
+  const axisTickFractions = [0, 0.25, 0.5, 0.75, 1]
 
   const qiBreak = result.qiBreakWindow
   const qiStart = qiBreak ? Math.max(qiBreak.startSec, minTime) : 0
@@ -75,11 +75,26 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
           ))}
         </div>
         <div className={styles.timelineAxis}>
-          {axisTicks.map((sec, index) => (
-            <span key={index} className={styles.timelineAxisTick} style={{ left: pct(sec) + "%" }}>
-              {Math.max(0, sec).toFixed(1)}s
-            </span>
-          ))}
+          <div className={styles.timelineAxisTrack}>
+            {axisTickFractions.map((fraction, index) => {
+              const sec = minTime + fraction * span
+              const alignment =
+                index === 0
+                  ? ` ${styles.alignStart}`
+                  : index === axisTickFractions.length - 1
+                    ? ` ${styles.alignEnd}`
+                    : ""
+              return (
+                <span
+                  key={fraction}
+                  className={styles.timelineAxisTick + alignment}
+                  style={{ left: pct(sec) + "%" }}
+                >
+                  {Math.max(0, sec).toFixed(1)}s
+                </span>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -1,3 +1,7 @@
+$lane-label-width: 140px;
+$lane-gap: 8px;
+$track-min-width: 720px;
+
 .timelinePanel {
   display: flex;
   flex-direction: column;
@@ -13,7 +17,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 720px;
+  min-width: $track-min-width;
   position: relative;
 }
 
@@ -39,12 +43,15 @@
   background: var(--color-bg);
   border: 1px solid var(--color-surface-raised);
   border-radius: 3px;
+  overflow: hidden;
 }
 
 .timelineBuffSpan {
   position: absolute;
   top: 2px;
   bottom: 2px;
+  display: flex;
+  align-items: center;
   background: rgba(192, 160, 96, 0.28);
   border: 1px solid rgba(192, 160, 96, 0.6);
   border-radius: 2px;
@@ -53,11 +60,10 @@
 }
 
 .timelineBuffLabel {
-  display: inline-block;
   padding: 0 4px;
   font-size: 0.68em;
   color: #e8d8b8;
-  line-height: 16px;
+  line-height: 1;
 }
 
 .timelineQiBreak {
@@ -71,9 +77,9 @@
 
 .timelineLane {
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: $lane-label-width 1fr;
   align-items: center;
-  gap: 8px;
+  gap: $lane-gap;
   min-height: 18px;
 }
 
@@ -91,6 +97,7 @@
   background: var(--color-bg);
   border: 1px solid var(--color-surface);
   border-radius: 2px;
+  overflow: hidden;
 }
 
 .timelineEvent {
@@ -111,9 +118,17 @@
 }
 
 .timelineAxis {
+  display: grid;
+  grid-template-columns: $lane-label-width 1fr;
+  gap: $lane-gap;
+  min-width: $track-min-width;
+  margin-top: 2px;
+}
+
+.timelineAxisTrack {
+  grid-column: 2;
   position: relative;
   height: 16px;
-  margin-top: 2px;
 }
 
 .timelineAxisTick {
@@ -122,4 +137,12 @@
   font-size: 0.7em;
   color: #777;
   font-variant-numeric: tabular-nums;
+}
+
+.alignStart {
+  transform: none;
+}
+
+.alignEnd {
+  transform: translateX(-100%);
 }

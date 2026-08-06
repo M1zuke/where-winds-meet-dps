@@ -365,6 +365,7 @@ export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[
       amount: spec.amount,
       unit: spec.unit,
       expectedDps: r.dps,
+      dpsDelta: r.dps - baseDps,
       liftPercent: lift,
       leadVsMin: 0,
     })

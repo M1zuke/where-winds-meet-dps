@@ -339,6 +339,7 @@ export interface ItemRankingRow {
   amount: number
   unit: "raw" | "percent"
   expectedDps: number
+  dpsDelta: number
   liftPercent: number
   leadVsMin: number | string
 }
