@@ -353,6 +353,24 @@ export const STAT_DEF_BY_KEY: Readonly<Record<string, StatDef>> = Object.fromEnt
 export const PLAYER_STAT_DEFS: readonly StatDef[] = STAT_DEFS.filter((d) => d.scope === "player")
 export const TARGET_STAT_DEFS: readonly StatDef[] = STAT_DEFS.filter((d) => d.scope === "target")
 
+export const WEAPON_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
+  Sword: "swordBoost",
+  Spear: "spearBoost",
+  Fan: "fanBoost",
+  Umbrella: "umbrellaBoost",
+  Modao: "modaoBoost",
+  "Twin Blades": "dualKnivesBoost",
+  "Rope Dart": "ropeDartBoost",
+  Hengdao: "hengDaoBoost",
+}
+
+export const MYSTIC_TYPE_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
+  control: "singleMysticBoost",
+  burst: "singleMysticBoost",
+  "area-debuff": "groupAnomalyBoost",
+  "area-damage": "groupDamageBoost",
+}
+
 const ATTACK_BLOCKS = new Set(["phys", "bellstrike", "stonesplit", "silkbind", "bamboocut"])
 
 const TARGET_DELTA_FIELD: Record<string, keyof TargetOverride> = {

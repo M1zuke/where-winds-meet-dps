@@ -63,7 +63,10 @@ describe("computeRanking — top-rank consistency", () => {
   it("Physical Penetration ranks in the top 10", () =>
     expect(top10.has("Physical Penetration")).toBe(true))
   it("Max Phys ranks in the top 10", () => expect(top10.has("Max Phys")).toBe(true))
-  it("Power ranks in the top 10", () => expect(top10.has("Power")).toBe(true))
+  it("Sword Martial Boost ranks in the top 10", () =>
+    expect(top10.has("Sword Martial Boost")).toBe(true))
+  it("All Martial Boost ranks in the top 10", () =>
+    expect(top10.has("All Martial Boost")).toBe(true))
 })
 
 // `WordSpec.amount` and the `apply` delta must stay in lockstep, since

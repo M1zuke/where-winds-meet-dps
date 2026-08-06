@@ -186,7 +186,7 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **BU + 4 per-attribute blocks** | Bellstrike / Stonesplit / Silkbind / Bamboocut tracks | each: `small = block.min + (BU=attr ∧ weapon ? attributePrimaryBonus : 0)` ; `mult = (BU=attr ∧ ¬dotRules) ? O : N` ; `dmgBoost = (BU=attr ? attributeDmgBoostPanel : 0) + (set=Swallowcall ∧ lowQi ? 0.1 : 0)` ; `setMul = 1 + (lowQi ? setBonus.col8 : 0)` |
 | **DZ / EB / ED / EF** | graze / crit / affinity / normal totals | sum of phys + phys-fixed + attr-fixed + the 4 attribute blocks |
 | **EH** | weighted total | `DZ×AL + EB×AN + ED×AP + EF×AR` |
-| **T** | weapon + mystic-type boost | `(weaponBoosts[art.weaponOrAttribute] + allMartialBoost)` when the weapon resolves, `+ mysticTypeBoosts[art.mysticCategory]`. A DoT tick inherits its category from its debuff's `dot.mysticCategory`, so mystic DoTs are boosted too — the in-game stat text explicitly covers "damage over time". Boss damage lives in `generalDamageBoost`, not here. |
+| **T** | weapon + mystic-type boost | `(weaponBoosts[art.weaponOrAttribute] + allMartialBoost)` when the weapon resolves, `+ mysticTypeBoosts[art.mysticCategory]`. A DoT tick resolves both typings like any skill: from its display stand-in's `weaponOrAttribute` / `mystic:*` tag when one exists, else from the debuff's `dot.weaponOrAttribute` / `dot.mysticCategory` — so Sword-typed DoTs (bleed) take weapon + all-martial, and mystic DoTs take their category stat; the in-game stat text explicitly covers "damage over time". Boss damage lives in `generalDamageBoost`, not here. |
 | **H** | total boost | `generalDamageBoost + allDamageBoost + T + yiShui×0.01 + qiExhausted × fatigueDamageTaken + Σslot.col2 + (usesChargeBoost ? chargeBonus : 0) + art.extraDamageBoost + (sustain ? sustainDmgBoostPanel + dotDamageBoost : 0)` |
 | **I** | correction multiplier | `art.correction || 1` |
 | **F** | final per-hit damage | `(guaranteedNormal ? EF : guaranteedCrit ? EB : EH) × (1 + H) × count × I × (1 + E) × dotMult` — `guaranteedNormal` is the fixed-damage flag (no crit/affinity/abrasion, e.g. Dragon Head) |
@@ -337,11 +337,11 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   stack-doubling depends on the same window. `dragonsBreath` has no confirmed
   teammate-facing value — the extracted `dragonBreath` def is the caster's own
   Combustion mechanic, not a teammate buff — so it is stored but contributes 0.
-- **Bellstrike Umbra bleed vs all-martial** — column `T` unconditionally folds
-  `allMartialBoost` into any weapon match, but all-martial must never reach a
-  bleed *effect*, so `timeline.ts` neutralizes just that portion for Bleed
-  Detonation via an offsetting stat-effect, leaving the sword contribution
-  intact.
+- **Bellstrike Umbra bleed is Sword-typed** — bleed ticks and Bleed Detonation
+  carry `weaponOrAttribute: "Sword"` (on the stand-in skill / detonation skill
+  and as `dot.weaponOrAttribute` fallback on the debuff), so column `T` gives
+  them sword boost *and* all-martial like any Sword skill, per the lvl-110
+  workbook's skill-type column.
 
 ### Gaps
 

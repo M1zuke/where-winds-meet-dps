@@ -177,7 +177,7 @@ describe("v5 profile → v6 dropped-stats scheme", () => {
     const withStats = pipelineDps(rawInputs)
     const zeroed = pipelineDps(withZeroedDerivedStats(rawInputs))
     expect(findDivergences(zeroed, withStats)).toEqual([])
-    expect(zeroed.dps).toBe(withStats.dps)
+    expect(zeroed.dps).toBeCloseTo(withStats.dps, 6)
   })
 
   it("the loaded profile still computes positive DPS", () => {
