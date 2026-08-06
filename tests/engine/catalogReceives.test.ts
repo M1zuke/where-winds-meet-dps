@@ -90,3 +90,31 @@ describe("catalog receives — Mirage Bonus surfaces its cast condition", () => 
     expect(row!.triggeredBy).toMatch(/Mirage/)
   })
 })
+
+describe("catalog receives — gear-stat boost rows follow the skill's typing", () => {
+  const inputs: Inputs = {
+    ...defaultInputs,
+    classId: CLASS,
+    swordBoost: 0.05,
+    allMartialBoost: 0.03,
+  }
+
+  it("Bleed Tick and Bleed Detonation list Sword Martial Boost and All Martial Boost", () => {
+    for (const name of ["Bleed Tick", "Bleed Detonation"]) {
+      const rows = receivesForSkill(findSkill(name), CLASS, inputs)
+      const sword = rows.find((r) => r.id === "stat:swordBoost")
+      const allMartial = rows.find((r) => r.id === "stat:allMartialBoost")
+      expect(sword, `${name} should list swordBoost`).toBeTruthy()
+      expect(sword!.effect).toBe("+5.0% damage")
+      expect(allMartial, `${name} should list allMartialBoost`).toBeTruthy()
+      expect(allMartial!.effect).toBe("+3.0% damage")
+    }
+  })
+
+  it("a burst-mystic cast lists the single-target mystic stat and no weapon stats", () => {
+    const rows = receivesForSkill(findSkill("Dragon's Breath 1 Hit"), CLASS, inputs)
+    expect(rows.some((r) => r.id === "stat:singleMysticBoost")).toBe(true)
+    expect(rows.some((r) => r.id === "stat:allMartialBoost")).toBe(false)
+    expect(rows.some((r) => r.id === "stat:swordBoost")).toBe(false)
+  })
+})

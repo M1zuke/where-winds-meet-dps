@@ -1,5 +1,18 @@
 import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
-import { anyTagStartsWith, castTagOf, hasAnyWeapon, hasProp, skillTagsOf } from "./tags"
+import {
+  anyTagStartsWith,
+  castTagOf,
+  hasAnyWeapon,
+  hasProp,
+  mysticCategoryOf,
+  skillTagsOf,
+} from "./tags"
+import {
+  MYSTIC_TYPE_BOOST_STAT_KEY,
+  STAT_DEF_BY_KEY,
+  WEAPON_BOOST_STAT_KEY,
+  type StatKey,
+} from "../statRegistry"
 import type { BuffDef, BuffBonus, BuffStatMods } from "./buffDef"
 import type { Skill } from "../skill"
 import type { Debuff } from "../debuff"
@@ -148,6 +161,20 @@ export interface ReceivesRow {
   triggeredBy: string | null
 }
 
+function gearStatRow(key: StatKey, affects: string, inputs?: Inputs): ReceivesRow {
+  const label = STAT_DEF_BY_KEY[key]?.label ?? key
+  const value = inputs ? ((inputs as unknown as Record<string, number>)[key] ?? 0) : null
+  return {
+    id: `stat:${key}`,
+    name: `${label} (${affects})`,
+    effect: value !== null ? `+${(value * 100).toFixed(1)}% damage` : "panel stat",
+    requires: null,
+    isSpecMechanic: false,
+    active: true,
+    triggeredBy: null,
+  }
+}
+
 export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs): ReceivesRow[] {
   const tagSet = skillTagsOf(skill)
   const specIds = specMechanicDefIds(classId)
@@ -197,6 +224,17 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
             : true,
       triggeredBy: triggeredByNote(def, defsById),
     })
+  }
+
+  const weaponBoostKey = WEAPON_BOOST_STAT_KEY[skill.weaponOrAttribute ?? ""]
+  if (weaponBoostKey) {
+    rows.push(gearStatRow(weaponBoostKey, `${skill.weaponOrAttribute} skills`, inputs))
+    rows.push(gearStatRow("allMartialBoost", "all weapon-typed skills", inputs))
+  }
+  const mysticCategory = mysticCategoryOf(skill)
+  const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
+  if (mysticBoostKey) {
+    rows.push(gearStatRow(mysticBoostKey, `mystic: ${mysticCategory}`, inputs))
   }
 
   if (classId) {

@@ -895,6 +895,10 @@ function migrateStatusStoresIfNeeded(): void {
               attributeFixed: typeof rawDot.attributeFixed === "number" ? rawDot.attributeFixed : 0,
               attributeAttack: (rawDot.attributeAttack ?? "") as DebuffDotSpec["attributeAttack"],
               skillType: typeof rawDot.skillType === "string" ? rawDot.skillType : "sustain",
+              weaponOrAttribute:
+                typeof rawDot.weaponOrAttribute === "string" ? rawDot.weaponOrAttribute : null,
+              mysticCategory:
+                typeof rawDot.mysticCategory === "string" ? rawDot.mysticCategory : null,
               count: typeof rawDot.count === "number" ? rawDot.count : 1,
               perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),
               perStackMultipliers: sanitizePerStackMultipliers(rawDot.perStackMultipliers),
@@ -1122,6 +1126,8 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
         attributeFixed: typeof rawDot.attributeFixed === "number" ? rawDot.attributeFixed : 0,
         attributeAttack: (rawDot.attributeAttack ?? "") as DebuffDotSpec["attributeAttack"],
         skillType: typeof rawDot.skillType === "string" ? rawDot.skillType : "sustain",
+        weaponOrAttribute:
+          typeof rawDot.weaponOrAttribute === "string" ? rawDot.weaponOrAttribute : null,
         mysticCategory: typeof rawDot.mysticCategory === "string" ? rawDot.mysticCategory : null,
         count: typeof rawDot.count === "number" ? rawDot.count : 1,
         perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),

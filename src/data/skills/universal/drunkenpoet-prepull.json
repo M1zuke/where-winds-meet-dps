@@ -2,8 +2,8 @@
   "id": "universal-drunkenpoet-prepull",
   "classId": "universal",
   "name": "DrunkenPoet Prepull",
-  "tags": [],
-  "skillType": "weapon",
+  "tags": ["mystic:burst"],
+  "skillType": "mystic",
   "weaponOrAttribute": "",
   "attributeAttack": "",
   "hits": [

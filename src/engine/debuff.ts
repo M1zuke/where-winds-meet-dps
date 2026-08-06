@@ -16,6 +16,7 @@ export interface DebuffDotSpec {
   attributeFixed: number
   attributeAttack: AttributeKey | ""
   skillType: string
+  weaponOrAttribute?: string | null
   mysticCategory?: string | null
   count: number
   perStackShapes?: DotStackShape[] | null

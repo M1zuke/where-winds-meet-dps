@@ -53,6 +53,8 @@ describe("Bleed Tick sources its per-tick damage from the skill", () => {
     expect(hit.attributeFixed).toBe(debuff.dot!.attributeFixed)
     expect(skill.attributeAttack).toBe(debuff.dot!.attributeAttack)
     expect(skill.attributeAttack).toBe("Bellstrike")
+    expect(skill.weaponOrAttribute).toBe(debuff.dot!.weaponOrAttribute)
+    expect(skill.weaponOrAttribute).toBe("Sword")
     expect(hit.physMultiplier).toBe(0.06864)
     expect(hit.attributeMultiplier).toBe(0.10296)
   })

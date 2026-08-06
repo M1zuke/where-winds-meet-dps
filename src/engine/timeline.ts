@@ -27,7 +27,7 @@ import { builtinBuffsForClass, ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } f
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { castTagOf, WEAPON_TAG } from "./buffs/tags"
+import { castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
 import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
 import {
@@ -458,10 +458,6 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     if (buffEngine && inputs.classId === "bellstrikeUmbra") {
       if (skill) {
-        if (skill.name === "Bleed Detonation" && inputs.allMartialBoost) {
-          effects.push({ statKey: "allMartialBoost", amount: -inputs.allMartialBoost })
-          sig += "~noMartialOnDetonation"
-        }
         if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
           const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
           if (levelBonus !== 0) {
@@ -862,6 +858,8 @@ export function simulateTimeline(inputs: Inputs): Result {
           attributeFixed: srcHit.attributeFixed,
           attributeAttack: (tickSkill!.attributeAttack ||
             baseDot.attributeAttack) as DebuffDotSpec["attributeAttack"],
+          weaponOrAttribute: tickSkill!.weaponOrAttribute || null,
+          mysticCategory: mysticCategoryOf(tickSkill!) || null,
         }
       : baseDot
     const debuffForTick: Debuff = srcHit ? { ...debuffDef, dot } : debuffDef
@@ -1043,6 +1041,7 @@ function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false, correction =
     elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
     correction,
+    weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
   } as Parameters<typeof computeSkillDamage>[0]
   return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
@@ -1069,6 +1068,7 @@ function dotTickDamageForShape(
     elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
     correction,
+    weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
   } as Parameters<typeof computeSkillDamage>[0]
   return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage

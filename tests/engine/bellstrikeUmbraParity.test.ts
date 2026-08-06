@@ -137,17 +137,20 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(47760)
-    expect(result.dps).toBeLessThan(47930)
-    expect(result.totalDamage).toBeGreaterThan(2898000)
-    expect(result.totalDamage).toBeLessThan(2911000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1560000)
-    expect(detonation?.expectedDamage).toBeLessThan(1572000)
+    expect(result.dps).toBeGreaterThan(48490)
+    expect(result.dps).toBeLessThan(48660)
+    expect(result.totalDamage).toBeGreaterThan(2942000)
+    expect(result.totalDamage).toBeLessThan(2956000)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1592000)
+    expect(detonation?.expectedDamage).toBeLessThan(1606000)
 
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.985)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(1.005)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.985)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.005)
-    expect(detonation?.expectedDamage ?? 0).toBeLessThan(SITE_TARGET_DETONATION)
+    // The engine sits ~0.4 % ABOVE the cached target: bleed ticks and Bleed
+    // Detonation take all-martial (and ticks sword boost) per the lvl-110
+    // workbook's Sword typing, which the cached run predates.
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.999)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(1.009)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.999)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.009)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(1.018)
   })
 })

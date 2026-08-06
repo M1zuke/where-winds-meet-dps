@@ -87,6 +87,7 @@
         "attributeFixed": 0,
         "attributeAttack": "Bellstrike",
         "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
         "count": 1,
         "perStackShapes": null
       },
@@ -209,6 +210,7 @@
         "attributeFixed": 0,
         "attributeAttack": "Bellstrike",
         "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
         "count": 1,
         "perStackShapes": null,
         "perStackMultipliers": [2, 2.5, 3, 4, 5]

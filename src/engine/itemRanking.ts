@@ -2,6 +2,7 @@ import type { Inputs, ItemRankingRow } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
+import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
 import { getAttunement } from "./attunements"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { resolveRotation } from "./rotation"
@@ -124,11 +125,11 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
     },
     {
       word: "All Martial Boost",
-      amount: 0.036,
+      amount: 0.032,
       unit: "percent",
       apply: (i) =>
         clone(i, (x) => {
-          x.allMartialBoost += 0.036
+          x.allMartialBoost += 0.032
         }),
     },
   ]
@@ -303,20 +304,10 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
 
 function applyWeaponBoost(weapon: string, amt: number) {
   return (i: Inputs) => {
-    const map: Record<string, keyof Inputs> = {
-      Sword: "swordBoost",
-      Spear: "spearBoost",
-      Fan: "fanBoost",
-      Umbrella: "umbrellaBoost",
-      Modao: "modaoBoost",
-      "Twin Blades": "dualKnivesBoost",
-      "Rope Dart": "ropeDartBoost",
-      Hengdao: "hengDaoBoost",
-    }
-    const key = map[weapon]
+    const key = WEAPON_BOOST_STAT_KEY[weapon]
     if (!key) return
     const target = i as unknown as Record<string, number>
-    target[key as string] = (target[key as string] ?? 0) + amt
+    target[key] = (target[key] ?? 0) + amt
   }
 }
 
