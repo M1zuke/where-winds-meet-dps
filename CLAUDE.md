@@ -20,6 +20,12 @@ The sections below are the rules that apply *before* you know which topic you're
 in — they stay here on purpose, because a pointer you don't know to follow isn't
 a guardrail.
 
+## Git workflow — never push to `main`
+
+Nothing is committed or pushed directly to `main`. Every change goes onto a
+branch, which is what gets pushed; `main` only moves via merges of those
+branches.
+
 ## Comments and names — write the code, not a narration
 
 > **This has been asked for repeatedly. Treat a violation as a defect, not a
