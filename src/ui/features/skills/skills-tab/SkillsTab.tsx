@@ -159,6 +159,7 @@ const INNER_WAY_DISPLAY_NAMES: Record<string, string> = {
 }
 
 function typeBadge(skill: Skill, t: (text: string) => string): string {
+  if (skill.skillType === "mystic") return t("Mystic Skill")
   if (skill.attributeAttack) return t(skill.attributeAttack)
   if (skill.skillType) return t(skill.skillType)
   return `${skill.hits.length} ${t("hits")}`
@@ -414,7 +415,12 @@ export function SkillsTab({
     const mysticFlag =
       (draft.tags ?? []).find((tag) => tag.startsWith("mystic:"))?.slice("mystic:".length) ?? ""
     if (mysticFlag) livePatch.mysticCategory = mysticFlag
-    return computeSkillPreview(draft.name.trim(), engineInputs, livePatch)
+    const computed = computeSkillPreview(draft.name.trim(), engineInputs, livePatch)
+    if (!computed) return null
+    if (draft.guaranteedNormal)
+      return { ...computed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
+    if (draft.guaranteedPrecision) return { ...computed, abrasion: 0 }
+    return computed
   }, [draft, effectiveHitIndex, effectiveVariantId, engineInputs])
 
   const opts = (vals: string[], labelFn?: (value: string) => string): ComboboxOption[] =>
@@ -782,6 +788,32 @@ export function SkillsTab({
                 <div className={styles.skillsHint}>
                   {t(
                     'A pre-pull skill is cast before the pull — it lands at negative frames and is excluded from the rotation duration. Leave unchecked to auto-detect from a name containing "Prepull".',
+                  )}
+                </div>
+                <label className={styles.skillsCheck}>
+                  <input
+                    type="checkbox"
+                    checked={draft.guaranteedPrecision ?? false}
+                    onChange={(e) => patchDraft({ guaranteedPrecision: e.target.checked })}
+                  />
+                  <span>{t("Guaranteed Precision")}</span>
+                </label>
+                <div className={styles.skillsHint}>
+                  {t(
+                    "Never abrades — precision counts as 100% for this skill (e.g. Dragon Head - Plus)",
+                  )}
+                </div>
+                <label className={styles.skillsCheck}>
+                  <input
+                    type="checkbox"
+                    checked={draft.guaranteedNormal ?? false}
+                    onChange={(e) => patchDraft({ guaranteedNormal: e.target.checked })}
+                  />
+                  <span>{t("Fixed Damage")}</span>
+                </label>
+                <div className={styles.skillsHint}>
+                  {t(
+                    "Always deals the normal row — cannot trigger crit, affinity, or abrasion (e.g. Dragon Head)",
                   )}
                 </div>
               </Section>

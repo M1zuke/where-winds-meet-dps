@@ -780,6 +780,8 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     castFrames: typeof c.castFrames === "number" ? c.castFrames : 0,
     triggerable: typeof c.triggerable === "boolean" ? c.triggerable : true,
     elevatedAttributeMultiplier: c.elevatedAttributeMultiplier === false ? false : undefined,
+    guaranteedPrecision: c.guaranteedPrecision === true ? true : undefined,
+    guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
     createdAt: now,
     updatedAt: now,

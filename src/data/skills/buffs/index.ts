@@ -46,6 +46,7 @@ import mirageFile from "./mirage.json"
 import mirageBonusFile from "./mirageBonus.json"
 import rainwhisperShieldFile from "./rainwhisperShield.json"
 import resistanceResolveFile from "./resistanceResolve.json"
+import surgingWavesFile from "./surgingWaves.json"
 import healerBuffFile from "./healerBuff.json"
 import soulShakenFile from "./soulShaken.json"
 import bellstrikeUmbraBleedPenFile from "./bellstrikeUmbraBleedPen.json"
@@ -158,6 +159,7 @@ export const GLOBAL_BUFF_DEFS: BuffDef[] = [
   soleDef(mirageBonusFile),
   soleDef(rainwhisperShieldFile),
   soleDef(resistanceResolveFile),
+  soleDef(surgingWavesFile),
 ]
 
 export const GROUP_BUFF_DEFS: BuffDef[] = [soleDef(healerBuffFile)]

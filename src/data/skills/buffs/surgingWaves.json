@@ -1,0 +1,21 @@
+{
+  "id": "surgingWaves",
+  "scope": "global",
+  "variants": [
+    {
+      "def": {
+        "id": "surgingWaves",
+        "name": "Surging Waves",
+        "triggers": ["Dragon Head - Plus"],
+        "duration": 6,
+        "maxStacks": 40,
+        "stacksPerCast": 8,
+        "affects": ["Dragon Head"],
+        "bonus": {
+          "type": "buffBonus",
+          "valuePerStack": 0.0125
+        }
+      }
+    }
+  ]
+}

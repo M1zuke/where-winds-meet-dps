@@ -1,0 +1,26 @@
+{
+  "id": "universal-dragon-head",
+  "classId": "universal",
+  "name": "Dragon Head",
+  "tags": ["mystic:burst"],
+  "skillType": "mystic",
+  "weaponOrAttribute": "",
+  "attributeAttack": "",
+  "guaranteedNormal": true,
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 246,
+      "physMultiplier": 36.00058,
+      "attributeMultiplier": 54.00087,
+      "physFixed": 6707.8,
+      "attributeFixed": 0,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 246,
+  "triggerable": true,
+  "createdAt": "2026-08-06T00:00:00.000Z",
+  "updatedAt": "2026-08-06T00:00:00.000Z"
+}

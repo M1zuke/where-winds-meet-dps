@@ -11,6 +11,7 @@ a section here grows past a few lines, it belongs in the topic file instead.
 | a skill, trigger, buff or debuff **data model** | `docs/TIMELINE.md` |
 | whether a mechanic is a stat buff or a skill buff | `docs/BUFFS.md` |
 | a class, skill/buff data file, or anything that mints an entity id | `docs/CLASSES.md` |
+| **changing a specific skill** | its sibling `<slug>.md` next to the skill JSON, **if one exists** — only special-logic skills have one; never bulk-read them (convention: CLASSES.md § "Skill special-logic docs") |
 | `src/ui/**`, `App.tsx`, or `dpsWorker.ts` | `docs/UI.md` |
 | writing a localStorage migration | `docs/MIGRATIONS.md` |
 | adding or changing tests | `docs/TESTING.md` |

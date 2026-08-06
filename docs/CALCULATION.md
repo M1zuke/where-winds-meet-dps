@@ -166,7 +166,7 @@ that — treat them as opaque names, not as a claim about any live data source.
 | var | meaning | derivation |
 | --- | --- | --- |
 | **N / O / P / Q** | phys / attribute multipliers + fixed damage | `art.physMultiplier`, `art.attributeMultiplier`, `art.physFixed`, `art.attributeFixed` |
-| **U** | effective precision | `skillType="Heavenwork" ? 1 : MIN(precisionPanel, 1)` |
+| **U** | effective precision | `(skillType="Heavenwork" ∨ art.guaranteedPrecision) ? 1 : MIN(precisionPanel, 1)` |
 | **V** | effective crit rate | `MIN(critPanel + Σslot.col4/(1+r), 0.8) + directCrit + setBonus.col6 + art.extraCritRate` |
 | **W** | effective affinity rate | `MIN(affPanel + (art.extraAffinityRate + Σslot.col11)/(1+r), 0.4) + directAff + (lowQi ? setBonus.col4 : 0) + Σslot.col13` |
 | **X** | crit-damage add-on | `critDmgPanel + art.extraCritDamage + setBonus.col5 + bengJie×0.05 + Σslot.col5` |
@@ -189,7 +189,7 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **T** | weapon + mystic-type boost | `(weaponBoosts[art.weaponOrAttribute] + allMartialBoost)` when the weapon resolves, `+ mysticTypeBoosts[art.mysticCategory]`. A DoT tick inherits its category from its debuff's `dot.mysticCategory`, so mystic DoTs are boosted too — the in-game stat text explicitly covers "damage over time". Boss damage lives in `generalDamageBoost`, not here. |
 | **H** | total boost | `generalDamageBoost + allDamageBoost + T + yiShui×0.01 + qiExhausted × fatigueDamageTaken + Σslot.col2 + (usesChargeBoost ? chargeBonus : 0) + art.extraDamageBoost + (sustain ? sustainDmgBoostPanel + dotDamageBoost : 0)` |
 | **I** | correction multiplier | `art.correction || 1` |
-| **F** | final per-hit damage | `(guaranteedCrit ? EB : EH) × (1 + H) × count × I × (1 + E) × dotMult` |
+| **F** | final per-hit damage | `(guaranteedNormal ? EF : guaranteedCrit ? EB : EH) × (1 + H) × count × I × (1 + E) × dotMult` — `guaranteedNormal` is the fixed-damage flag (no crit/affinity/abrasion, e.g. Dragon Head) |
 
 ### What the live path does not exercise
 
@@ -303,80 +303,45 @@ effect must never land in two.
 ## Mechanic coverage — implemented vs known gaps
 
 `timeline.ts` + `src/engine/buffs/*` port the reference site's trigger-driven
-buff/debuff simulator. Most of it is implemented and verified. What follows is
-the remainder: either genuinely inert with the current extracted dataset (0
-real defs exercise it) or a deliberate, documented gap. Contributes 0 unless
-noted.
+buff/debuff simulator. The code, data, and tests describe the bulk of it; this
+section carries only what they can't — modeling decisions and deliberate
+divergences (Implemented), and known gaps, which contribute 0 unless noted
+(Gaps).
 
 ### Implemented
 
 - **DoT-tick scheduling** ticks on a single continuous grid per *episode* of
-  continuously-maintained application, matching the site's phase continuity.
-  A debuff's application windows are merged into episodes: a window starting
-  before the current episode's end extends it; one starting at or after it
-  (the previous instance fully expired) starts a fresh episode anchored at its
-  own start. Each episode ticks at `start + interval, start + 2·interval, …`
-  until its end — so a debuff re-applied more often than once per tick interval
-  (bellstrikeUmbra's bleed, re-stacked on nearly every hit) still ticks at a
-  steady cadence instead of restarting the phase at every re-application. Each
-  tick is weighted by the live stack count (`stacksAt`); a stacking DoT's tick
-  is skipped entirely when that count is 0. **Do not reintroduce the per-window
-  phase reset** — guarded by `tests/engine/bleedCadence.test.ts`. Detonation
-  *count* is driven by the stack-history curve, not tick scheduling, so it is
-  unaffected (`bleedDetonation.test.ts`).
-- **`forceCrit`** is consumed: `BuffEngine.calculateDamageEffects` returns it
-  and `timeline.ts` sets `art.guaranteedCrit = 1`, routing `F` through `EB`.
-  (`forceCritIfHighCrit` is still **not** modeled — its site gate is a
-  crit-weight ≥ 0.7 test with no equivalent here; `buffEngine.ts` emits a
-  warning for it.)
+  continuously-maintained application — deliberately matching the reference
+  site's phase continuity, so a debuff re-applied more often than once per
+  tick interval (bellstrikeUmbra's bleed) keeps a steady cadence instead of
+  restarting the phase on every re-application. **Do not reintroduce the
+  per-window phase reset** — guarded by `tests/engine/bleedCadence.test.ts`.
+  Detonation *count* is driven by the stack-history curve, not tick
+  scheduling, so it is unaffected (`bleedDetonation.test.ts`).
 - **Crosswind Spirit** (`buffs/crosswind.ts`) — the 0-5 charge counter is
-  modeled as per-detonation state rather than a windowed buff. Each detonation
-  reads its charge, grants the `crosswindSpirit` +15 % bonus only when charge
-  > 0 (so the charge-0 detonation is correctly *not* credited), and at 5
-  charges forces guaranteed affinity by driving `ctx.affinityPanel = 0` /
-  `ctx.directAffinityPanel = 1` for that one hit. Sword Horizon tier 6 retains
-  1 charge instead of resetting to 0.
-- **Fire Breath → Combustion** (`dragonBreath`) — casting a "Fire Breath"
-  ability opens an 8 s Combustion window ticking every 0.5 s; a cast named
-  "Fire Breath"/"Poet1"-"Poet4"/"Poet Final Hit" **extends** the active window
-  by 1.5 s instead of opening a fresh one. Modeled with the `extendFrames` /
-  `extendOnly` `HitTrigger` fields.
-- **Hawkwing 4-pc** — the real stacking proc, not a flat +10 %: +2 %/stack (max
-  5, 5 s decay), each hit rolling `p = min(effectiveAffinityRate, 0.4)`,
-  time-averaged via a seeded 500-run Monte-Carlo (`buffs/hawkwing.ts`). Reaches
-  the formula as `FormulaContext.hawkwingPhysBonus`, which falls back to the
-  flat +10 % when unset. Applies to any class equipping the set.
-- **Concentration** (Insightful Strike) — `buffs/concentration.ts`, deliberately
-  diverging from the reference site, which treats it as always-active once
-  selected. A 4-affinity-weapon-hit ramp opens a 10 s window, renewed by
-  further affinity weapon hits, deactivating after 10 s with none. Three
-  effects scaled by the resulting activation probability: `affinityDamageBoost
-  +0.10`, `directAffinityRate +0.03`, `allDamageBoost +0.015`; plus, at tier 6
-  only, a multiplicative `dotDamageMultiplier` on Bleed Detonation / Bleed Tick
-  / Combustion. Gated on `classId === "bellstrikeUmbra"`.
-- **Morale Chant** — stack schedule (`buffs/morale.ts`) feeding `allDamageBoost`
-  + `phys.penetration`, plus tier-6 Yi River ticks, which deliberately take no
-  weapon or mystic boost.
-- **Qi phase** — `BuffEngine.qiPhase` drives the per-skill tag effects
-  (`prop:hasLowQiCritBoost` +0.30 crit, `prop:hasLowQiDmgBoost` +0.08 all-damage,
-  `prop:hasQiBreakPhysPen` +5 pen unconditionally / +20 during qi-break or
-  Lingering Bone).
-- **Combat Settings** (`Inputs.combatSettings`) — the Qi Break window (ON by
-  default, +10 % all-damage while exhausted; its `startSec`/`durationSec` feed
-  `qiPhase` regardless of the toggle, since Morale Chant's stack-doubling
-  depends on the same window), Revelry Script (+30 %), and `healerBuff` (+20 %,
-  +25 % during the qi break). `dragonsBreath` has no confirmed teammate-facing
-  value — the extracted `dragonBreath` def is the caster's own mechanic above,
-  not a teammate buff — so it is stored but contributes 0; flagged, not
-  silently invented.
-- **Bellstrike Umbra specifics** — the Umbra spec's bleed penetration (+15 phys
-  and bellstrike pen) and bleeding/affinity damage (+0.18) as data-driven defs
-  in `MECHANIC_BUFF_DEFS`, bleed-scoped and gated on `swordHorizon`; bleed
-  attunement as an `art.correction` multiplier; and a correction — column `T`
-  unconditionally folds `allMartialBoost` into any weapon match, but all-martial
-  must never reach a bleed *effect*, so `timeline.ts` neutralizes just that
-  portion for Bleed Detonation via an offsetting stat-effect, leaving the sword
-  contribution intact.
+  per-detonation state rather than a windowed buff: the def schema has no
+  consume-on-read counter, and a window would wrongly credit the charge-0
+  detonation.
+- **Hawkwing 4-pc** (`buffs/hawkwing.ts`) — the stacking proc is stochastic,
+  so it is computed as a whole-rotation schedule (seeded Monte-Carlo) rather
+  than a buff def, which cannot express a per-hit roll.
+- **Concentration** (Insightful Strike, `buffs/concentration.ts`) —
+  deliberately diverges from the reference site, which treats it as
+  always-active once selected: here an affinity-hit ramp opens a renewable
+  window, and every effect is scaled by the resulting activation probability.
+- **Morale Chant** (`buffs/morale.ts`) — the stack curve is a whole-rotation
+  schedule (not expressible as a static def); its tier-6 Yi River ticks
+  deliberately take no weapon or mystic boost.
+- **Combat Settings** — the Qi Break window's `startSec`/`durationSec` feed
+  `qiPhase` even while the toggle is OFF, because Morale Chant's
+  stack-doubling depends on the same window. `dragonsBreath` has no confirmed
+  teammate-facing value — the extracted `dragonBreath` def is the caster's own
+  Combustion mechanic, not a teammate buff — so it is stored but contributes 0.
+- **Bellstrike Umbra bleed vs all-martial** — column `T` unconditionally folds
+  `allMartialBoost` into any weapon match, but all-martial must never reach a
+  bleed *effect*, so `timeline.ts` neutralizes just that portion for Bleed
+  Detonation via an offsetting stat-effect, leaving the sword contribution
+  intact.
 
 ### Gaps
 
@@ -416,6 +381,8 @@ noted.
   falling-blossom stacks, perfect-catch, phantom-rally injected entries). A
   bespoke stateful per-cast state machine with its own injected-entry
   scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
+- **`forceCritIfHighCrit`** — its site gate is a crit-weight ≥ 0.7 test with
+  no equivalent here; `buffEngine.ts` emits a warning for it.
 - **Known trigger no-op**: on `bamboocutWindTwinblade` and
   `stonesplitBalanceDualCut`, Umbrella Q's `castSkill` trigger targets
   Resonance / First Resonance skills those classes never received, so it
@@ -449,7 +416,7 @@ source-of-truth note this table summarizes.
 
 ## Verification
 
-- `pnpm test` — **544 tests across 62 files**, all green.
+- `pnpm test` — **573 tests across 65 files**, all green.
 - There is **no locked-DPS fixture**. `defaultInputs` (`engine/defaults.ts`) is
   the default Bamboocut-Wind build, not an anchor; no test asserts an absolute
   DPS number.

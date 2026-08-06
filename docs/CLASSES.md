@@ -43,7 +43,8 @@ These are the **source of truth** — edit them directly. They carry hand-tuned
 coefficients and entries that no import produced (`elevatedAttributeMultiplier`,
 the Smolder debuff, the bleed detonation wiring):
 
-- `src/data/skills/<class>/*.json` — one file per skill
+- `src/data/skills/<class>/*.json` — one file per class-owned skill
+- `src/data/skills/universal/*.json` — one file per universal skill (see below)
 - `src/data/skills/buffs/*.json` — one file per buff def
 - `src/data/rotations/defaultRotations.json`
 - `src/data/skills/debuffsLibrary.json`
@@ -51,6 +52,33 @@ the Smolder debuff, the bleed detonation wiring):
 Before authoring a skill, read TIMELINE.md — it documents how a skill carries
 coefficients, fires triggers, receives buffs and gives buffs/debuffs, plus a
 step-by-step "implement a skill correctly" checklist.
+
+## Universal skills — one source, instantiated per class
+
+Skills every class can equip (the mystic arts: Soaring, Fire Breath, Poet,
+Flute, Dragon Head, …) live **once** in `src/data/skills/universal/`, with
+`universal` as the id segment (`universal-soaring`,
+`debuff-universal-combustion`). They are **never duplicated into class
+folders**. `src/data/skills/index.ts` instantiates them per class: the
+`universal` segment in the skill id and every trigger/condition id becomes the
+class id, and `attributeAttack` becomes the class's `primaryAttribute` from
+`schools.json`.
+
+The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved
+rotations and user skill overrides match built-ins by id, so a universal skill
+must never surface with a class-less id. In the Skill Editor each class sees
+its own instance, exactly like a class-owned skill.
+
+## Skill special-logic docs
+
+A skill whose behaviour is **not reconstructable from its JSON** — external
+provenance for its coefficients, an engine flag with a story, a deliberately
+unmodeled part — carries a sibling `<slug>.md` next to its JSON. One file may
+cover a pair of variants (`universal/dragon-head.md` covers Dragon Head and
+Dragon Head - Plus).
+
+Most skills need none — create one only when there is special logic to record,
+check for one before changing a skill, and never bulk-read them.
 
 ## Where data lives
 
@@ -60,7 +88,7 @@ step-by-step "implement a skill correctly" checklist.
 | `classes/` | per-class / per-spec metadata (schools, spec ids, retunement pools) | `engine/panel.ts`, `engine/buffs/data.ts` |
 | `rotations/` | built-in rotation pools | `engine/builtinLibrary.ts` |
 | `sets/` | armour-set tables (panel stats, damage boosts, base-stat boni) | `engine/panel.ts`, `engine/formula.ts` |
-| `skills/` | per-class skill files and the debuff library | `engine/builtinLibrary.ts` |
+| `skills/` | per-class skill files, the class-unbound `universal/` skills, and the debuff library | `engine/builtinLibrary.ts` |
 | `skills/boosts/` | conditional damage-boost lookup tables (boost-zone, arts) | `engine/formula.ts`, `engine/mindMethodOverrides.ts` |
 | `skills/buffs/` | data-driven buff defs (one file per buff) | `engine/buffs/data.ts` |
 

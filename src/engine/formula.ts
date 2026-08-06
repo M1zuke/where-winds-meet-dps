@@ -31,6 +31,8 @@ type ArtRow = {
   elevatedAttributeMultiplier?: boolean
   dingYinTag?: string
   guaranteedCrit?: number
+  guaranteedPrecision?: number
+  guaranteedNormal?: number
   extraStonesplitPenetration?: number
   mysticCategory?: string
 }
@@ -148,6 +150,8 @@ export function computeSkillDamage(
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"
   const guaranteedCrit = art.guaranteedCrit === 1
+  const guaranteedPrecision = art.guaranteedPrecision === 1
+  const guaranteedNormal = art.guaranteedNormal === 1
   const isPersistent = art.specialTag === "sustain"
   const usesChargeBoost = art.usesChargeBoost === 1
   const usesGyrationUmbrella = art.specialTag === "Spinning Umbrella"
@@ -181,7 +185,7 @@ export function computeSkillDamage(
     setValue(ctx.set, "col3") +
     sumSlots(slots, "col12", ctx.boostZoneOverrides)
 
-  const U = isTianGong ? 1 : Math.min(ctx.precisionPanel, 1)
+  const U = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
 
   // Per PDF §11, raw rate sources are divided by (1 + resistance) before the
   // 80 %/40 % cap. Exception: Thundercry Blade's (Modao) charged-attack crit
@@ -369,7 +373,9 @@ export function computeSkillDamage(
 
   const I_corr = num(art.correction) || 1
 
-  const F_base = guaranteedCrit ? EB : EH
+  // Fixed-damage skills (e.g. Dragon Head) can trigger neither crit, affinity
+  // nor abrasion — they always deal the normal row.
+  const F_base = guaranteedNormal ? EF : guaranteedCrit ? EB : EH
   const F = F_base * (1 + H_total) * count * I_corr * (1 + E_dingYin) * dotMult
 
   return {

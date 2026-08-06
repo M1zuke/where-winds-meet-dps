@@ -11,6 +11,7 @@ import {
   ZENITH_BAR_BUFF_ID,
 } from "../../src/engine/builtinBuffs"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
+import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -121,13 +122,26 @@ describe("built-in data — SpearQ's River Flow trigger", () => {
 })
 
 describe("built-in data — one file per skill", () => {
-  it("builtinSkillsForClass has no duplicate ids and each skill deep-equals its per-skill file export", () => {
+  it("builtinSkillsForClass has no duplicate ids and each skill comes from exactly one source file", () => {
     const merged = builtinSkillsForClass(CLASS)
     const ids = merged.map((s) => s.id)
     expect(new Set(ids).size).toBe(ids.length)
     for (const s of merged) {
       const fromModule = bellstrikeUmbra.SKILLS.find((m) => m.id === s.id)
-      expect(fromModule).toEqual(s)
+      if (fromModule) {
+        expect(fromModule).toEqual(s)
+        continue
+      }
+      const universal = UNIVERSAL_SKILLS.find(
+        (u) => u.id === s.id.replace(`${CLASS}-`, "universal-"),
+      )
+      expect(universal, s.id).toBeTruthy()
+      expect(s.classId).toBe(CLASS)
+      expect(s.attributeAttack).toBe("Bellstrike")
+      expect(s.name).toBe(universal!.name)
+      expect(s.hits.map((h) => [h.physMultiplier, h.attributeMultiplier, h.physFixed])).toEqual(
+        universal!.hits.map((h) => [h.physMultiplier, h.attributeMultiplier, h.physFixed]),
+      )
     }
   })
 

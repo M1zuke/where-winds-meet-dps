@@ -75,6 +75,11 @@ Skill-level fields that steer the coefficients:
   `false`; a `false` hit loses its flat damage and uses `N` instead of the elevated `O`
   (the PDF §1 DoT penalty). A burst detonation is `skillType: "sustain"` but keeps the
   default `true` (it is not a DoT). See CLAUDE.md § "Calculation rules".
+- `guaranteedPrecision?` — the skill never abrades: effective precision is forced to 1
+  (e.g. Dragon Head - Plus). Crit and affinity still roll normally.
+- `guaranteedNormal?` — fixed damage: the skill can trigger neither crit, affinity nor
+  abrasion and always deals the normal row (e.g. Dragon Head). Both flags are editable
+  as checkboxes in the Skill Editor.
 
 ## 3. Skills — identity, frames, tags
 
