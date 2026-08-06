@@ -1,0 +1,15 @@
+.rankingTable th:not(:first-child),
+.rankingTable td:not(:first-child) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.dpsDelta:global(.is-positive) {
+  color: var(--color-positive);
+}
+.dpsDelta:global(.is-negative) {
+  color: var(--color-negative);
+}
+.dpsDelta:global(.is-zero) {
+  color: var(--color-text-muted);
+}

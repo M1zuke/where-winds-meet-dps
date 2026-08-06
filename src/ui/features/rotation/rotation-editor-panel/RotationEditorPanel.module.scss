@@ -106,7 +106,7 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 28px 64px minmax(120px, 1fr) 70px 70px minmax(160px, 1.6fr) auto;
+  grid-template-columns: 28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr) auto;
   gap: 10px;
   align-items: center;
   padding: 5px 8px;
