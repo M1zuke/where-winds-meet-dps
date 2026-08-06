@@ -123,7 +123,6 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
           x.affinityRate += 0.044
         }),
     },
-    // All Martial max roll: 3.2 % (in-game, 2026-08-06).
     {
       word: "All Martial Boost",
       amount: 0.032,
