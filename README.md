@@ -52,4 +52,4 @@ React 19 + TypeScript + Vite · SCSS modules · Vitest · deployed on Cloudflare
 
 ## License
 
-[MIT](LICENSE)
+[AGPL-3.0-or-later](LICENSE)
