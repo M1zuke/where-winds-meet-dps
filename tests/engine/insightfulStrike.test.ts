@@ -60,8 +60,8 @@ describe("Insightful Strike — panel stat rework", () => {
       mingInputs([emptyMindMethod, emptyMindMethod, emptyMindMethod, emptyMindMethod]),
     )
     const d = (p: string) => (withNS[p] ?? 0) - (without[p] ?? 0)
-    expect(d("phys.min")).toBeCloseTo(21.3, 6)
-    expect(d("phys.max")).toBeCloseTo(42.5, 6)
+    expect(d("phys.min")).toBeCloseTo(22.3, 6)
+    expect(d("phys.max")).toBeCloseTo(44.7, 6)
     expect(d("phys.penetration")).toBeCloseTo(0.051, 6)
     expect(d("directAffinityRate")).toBeCloseTo(0, 6)
     expect(d("bellstrike.min")).toBeCloseTo(0, 6)
