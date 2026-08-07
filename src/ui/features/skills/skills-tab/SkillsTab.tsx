@@ -158,7 +158,10 @@ const INNER_WAY_DISPLAY_NAMES: Record<string, string> = {
   swordHorizon: "Sword Horizon",
 }
 
+const INNER_WAY_DOT_TAG = "source:innerWayDot"
+
 function typeBadge(skill: Skill, t: (text: string) => string): string {
+  if (skill.tags?.includes(INNER_WAY_DOT_TAG)) return t("Inner Way - DoT")
   if (skill.skillType === "mystic") return t("Mystic Skill")
   if (skill.attributeAttack) return t(skill.attributeAttack)
   if (skill.skillType) return t(skill.skillType)

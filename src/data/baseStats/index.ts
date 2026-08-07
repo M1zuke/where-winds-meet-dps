@@ -1,6 +1,8 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
 import { gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
+import { zhongToTier } from "../../engine/buffs/paramMap"
+import { BITTER_SEASON_INNER_WAY } from "../../engine/buffs/bitterSeason"
 import type {
   AttributeKey,
   GearPiece,
@@ -365,6 +367,16 @@ function primaryAttackKey(classId: string): string {
 
 const MIND_PANEL_STATS = mindMethodPanelStats as Record<string, Readonly<Record<string, number>>>
 
+// Unlike every other inner way's flat, always-on panel-stat entry
+// (CALCULATION.md § "Mind-method layers"), Bitter Season's own tier ladder
+// unlocks precision at tier 2 and physBoost at tier 5 — all six of its tiers
+// are selectable (MindMethodsPanel.tsx), so these two keys need a minimum
+// tier instead of applying unconditionally whenever the name is selected.
+const BITTER_SEASON_PANEL_STAT_MIN_TIER: Readonly<Record<string, number>> = {
+  precision: 2,
+  physBoost: 5,
+}
+
 export function getMindMethodContributions(inputs: Inputs): Record<string, number> {
   const out: Record<string, number> = {}
   const school = getSchool(inputs.classId)
@@ -374,7 +386,10 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
     if (!name) return
     const stats = MIND_PANEL_STATS[name]
     if (!stats) return
+    const isBitterSeason = name === BITTER_SEASON_INNER_WAY
+    const tier = isBitterSeason ? zhongToTier(slot.stacks) : 0
     for (const [rawPath, amount] of Object.entries(stats)) {
+      if (isBitterSeason && tier < (BITTER_SEASON_PANEL_STAT_MIN_TIER[rawPath] ?? 0)) continue
       const path = rawPath.startsWith("primaryAttr.")
         ? `${primaryKey}.${rawPath.slice("primaryAttr.".length)}`
         : rawPath

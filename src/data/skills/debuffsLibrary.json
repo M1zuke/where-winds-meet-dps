@@ -95,6 +95,32 @@
       "stackScaling": "perStack",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeRainbow-bitter-season-tick",
+      "classId": "bellstrikeRainbow",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "bellstrikeUmbra": [
@@ -226,6 +252,32 @@
       },
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-bitter-season-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "silkbindJade": [
@@ -438,6 +490,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-silkbindJade-bitter-season-tick",
+      "classId": "silkbindJade",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Silkbind",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "stonesplitPower": [
@@ -512,6 +590,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-stonesplitPower-bitter-season-tick",
+      "classId": "stonesplitPower",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Stonesplit",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "stonesplitBalancePureTang": [
@@ -586,6 +690,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-stonesplitBalancePureTang-bitter-season-tick",
+      "classId": "stonesplitBalancePureTang",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Stonesplit",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "bamboocutWindTwinblade": [
@@ -660,6 +790,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bamboocutWindTwinblade-bitter-season-tick",
+      "classId": "bamboocutWindTwinblade",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bamboocut",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "bamboocutDust": [
@@ -734,6 +890,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bamboocutDust-bitter-season-tick",
+      "classId": "bamboocutDust",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bamboocut",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
   "stonesplitBalanceDualCut": [
@@ -808,6 +990,32 @@
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
       "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-stonesplitBalanceDualCut-bitter-season-tick",
+      "classId": "stonesplitBalanceDualCut",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bamboocut",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ]
 }

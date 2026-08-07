@@ -215,9 +215,48 @@ describe("Zenith detonation extends Smolder", () => {
         (ev) => ev.kind === "dot" && ev.skillName.includes("Smolder"),
       ).length
     }
+    // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts). No further
+    // Smolder cast follows in this rotation, so once the window closes a
+    // later detonation's extend-only trigger finds nothing active to extend.
     const noZenith = ticksFor(5)
     const oneZenith = ticksFor(6)
-    expect(oneZenith - noZenith).toBe(20)
-    expect(ticksFor(12) - oneZenith).toBe(20)
+    expect(oneZenith - noZenith).toBe(11)
+    expect(ticksFor(12) - oneZenith).toBe(0)
+  })
+
+  it("never shortens an already-longer window — a Zenith detonation can only extend, never truncate", () => {
+    const swordHorizon: Inputs["mindMethods"] = [
+      { name: "Sword Horizon", stacks: "tier 6" },
+      { name: "Wolfchaser's Art", stacks: "tier 6" },
+      { name: "Insightful Strike", stacks: "tier 6" },
+      { name: "Morale Chant", stacks: "tier 6" },
+    ]
+    const detonation = skillNamed("Bleed Detonation")
+    const smolder = skillNamed(TWO_HITS)
+    const filler = skillNamed("Soaring")
+    const ticksFor = (smolderCasts: number, detonations: number) => {
+      const steps: ReturnType<typeof makeStep>[] = []
+      for (let i = 0; i < smolderCasts; i++)
+        steps.push(makeStep({ skillId: smolder.id, hitCount: smolder.hits.length }))
+      for (let i = 0; i < detonations; i++)
+        steps.push(makeStep({ skillId: detonation.id, hitCount: 1 }))
+      for (let i = 0; i < 30; i++)
+        steps.push(makeStep({ skillId: filler.id, hitCount: filler.hits.length }))
+      const inputs: Inputs = {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: swordHorizon,
+        activeCustomRotation: makeRotation(CLASS, {
+          name: `zenith-${smolderCasts}-${detonations}`,
+          steps,
+        }),
+      }
+      return simulateTimeline(inputs).timeline!.filter(
+        (ev) => ev.kind === "dot" && ev.skillName.includes("Smolder"),
+      ).length
+    }
+    for (const smolderCasts of [1, 2, 3, 4]) {
+      expect(ticksFor(smolderCasts, 6)).toBeGreaterThanOrEqual(ticksFor(smolderCasts, 5))
+    }
   })
 })

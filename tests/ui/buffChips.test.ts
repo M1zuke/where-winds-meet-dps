@@ -26,19 +26,23 @@ function cast(index: number, timeSec: number, buffs: CastBuffTag[]): RotationCas
 }
 
 describe("buffChipHue", () => {
-  it("returns the pinned hues for Bleed Tick / Smolder / Zenith Bar", () => {
+  it("returns the pinned hues for Bleed Tick / Smolder / Zenith Bar / Bitter Season Tick / Bitter Season Poison", () => {
     expect(buffChipHue("Bleed Tick")).toBe(0)
     expect(buffChipHue("Smolder")).toBe(30)
     expect(buffChipHue("Zenith Bar")).toBe(200)
+    expect(buffChipHue("Bitter Season Tick")).toBe(100)
+    expect(buffChipHue("Bitter Season Poison")).toBe(130)
   })
 
-  it("the three pinned hues are distinct", () => {
+  it("the five pinned hues are distinct", () => {
     const hues = new Set([
       buffChipHue("Bleed Tick"),
       buffChipHue("Smolder"),
       buffChipHue("Zenith Bar"),
+      buffChipHue("Bitter Season Tick"),
+      buffChipHue("Bitter Season Poison"),
     ])
-    expect(hues.size).toBe(3)
+    expect(hues.size).toBe(5)
   })
 
   it("is stable for an unpinned name across calls and always lands in FALLBACK_BUFF_HUES", () => {
@@ -61,7 +65,7 @@ describe("buffChipHue", () => {
   })
 
   it("never returns a pinned hue for an unpinned name", () => {
-    const pinned = new Set([0, 30, 200])
+    const pinned = new Set([0, 30, 200, 100, 130])
     const names = [
       "River Flow",
       "Soul Shaken",

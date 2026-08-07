@@ -5,12 +5,13 @@ import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
 describe("allowedInnerWaysForClass", () => {
-  it("is exactly the four Bellstrike Umbra inner ways, signature first", () => {
+  it("is exactly the five Bellstrike Umbra inner ways, signature first", () => {
     expect(allowedInnerWaysForClass("bellstrikeUmbra")).toEqual([
       "Sword Horizon",
       "Wolfchaser's Art",
       "Insightful Strike",
       "Morale Chant",
+      "Bitter Season",
     ])
   })
 

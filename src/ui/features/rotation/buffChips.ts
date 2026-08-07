@@ -4,6 +4,8 @@ export const PINNED_BUFF_HUES: Record<string, number> = {
   "Bleed Tick": 0,
   Smolder: 30,
   "Zenith Bar": 200,
+  "Bitter Season Tick": 100,
+  "Bitter Season Poison": 130,
 }
 
 export const FALLBACK_BUFF_HUES: readonly number[] = [

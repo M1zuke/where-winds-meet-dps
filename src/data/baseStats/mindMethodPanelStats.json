@@ -92,5 +92,9 @@
   "Lone Loyalty": {
     "critRate": 0.063,
     "critDamageBoost": 0.04
+  },
+  "Bitter Season": {
+    "precision": 0.069,
+    "physBoost": 0.025
   }
 }

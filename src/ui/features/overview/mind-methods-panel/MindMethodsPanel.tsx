@@ -1,9 +1,23 @@
 import type { Inputs, MindMethodSlot } from "../../../../engine/types"
 import { allowedInnerWaysForClass } from "../../../../engine/panel"
+import { BITTER_SEASON_INNER_WAY } from "../../../../engine/buffs/bitterSeason"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./MindMethodsPanel.module.scss"
 
 const TIER_OPTIONS = ["tier 6", "tier 5"] as const
+// Bitter Season's ladder has a distinct node at every tier (`buffs/bitterSeason.ts`).
+const BITTER_SEASON_TIER_OPTIONS = [
+  "tier 6",
+  "tier 5",
+  "tier 4",
+  "tier 3",
+  "tier 2",
+  "tier 1",
+] as const
+
+function tierOptionsFor(name: string): readonly string[] {
+  return name === BITTER_SEASON_INNER_WAY ? BITTER_SEASON_TIER_OPTIONS : TIER_OPTIONS
+}
 
 interface Props {
   inputs: Inputs
@@ -40,6 +54,8 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
         )
         const isTaken = (name: string) =>
           name !== "" && name !== currentName && takenElsewhere.has(name)
+        const tierOptions = tierOptionsFor(currentName)
+        const fallbackTier = slot.stacks && !tierOptions.includes(slot.stacks) ? [slot.stacks] : []
         return (
           <div key={idx} className={styles.mindSlot}>
             <label>{label}</label>
@@ -48,8 +64,11 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
               onChange={(e) => {
                 const name = e.target.value
                 const patch: Partial<MindMethodSlot> = { name }
-                if (name && !slot.stacks) patch.stacks = "tier 6"
-                if (!name) patch.stacks = ""
+                if (!name) {
+                  patch.stacks = ""
+                } else if (!slot.stacks || !tierOptionsFor(name).includes(slot.stacks)) {
+                  patch.stacks = "tier 6"
+                }
                 updateSlot(idx, patch)
               }}
             >
@@ -73,11 +92,16 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
               disabled={!currentName}
               onChange={(e) => updateSlot(idx, { stacks: e.target.value })}
             >
-              {TIER_OPTIONS.map((tier) => (
+              {tierOptions.map((tier) => (
                 <option key={tier} value={tier}>
                   {t(tier)}
                 </option>
               ))}
+              {fallbackTier.length > 0 && (
+                <option key={fallbackTier[0]} value={fallbackTier[0]} disabled>
+                  {t(fallbackTier[0])}
+                </option>
+              )}
             </select>
           </div>
         )
