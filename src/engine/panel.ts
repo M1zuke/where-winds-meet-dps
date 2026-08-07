@@ -75,6 +75,16 @@ export function resistanceForInputs(inputs: Inputs): number {
   return resistanceForBreakthrough(inputs.breakthrough)
 }
 
+export function henZhiActiveForInputs(inputs: Inputs): boolean {
+  const stackOf = (name: string) =>
+    inputs.mindMethods.find((slot) => slot.name === name)?.stacks ?? ""
+  return (
+    inputs.shareDebuff5HenZhi ||
+    (inputs.mindMethods.some((slot) => slot.name === "Year-Long Lament") &&
+      stackOf("Year-Long Lament") === "tier 6")
+  )
+}
+
 // Pen resistance is zero for every target per the 2026-07 decision; the
 // level parameter is kept as plumbing for a future target that has one.
 export function penResistanceForLevel(_level: number): { physical: number; attribute: number } {
@@ -251,9 +261,7 @@ export function buildContext(
   const has = (name: string) => mindMethodNames.includes(name)
   const stackOf = (name: string) => inputs.mindMethods.find((m) => m.name === name)?.stacks ?? ""
 
-  const henZhiActive =
-    inputs.shareDebuff5HenZhi ||
-    (has("Year-Long Lament") && stackOf("Year-Long Lament") === "tier 6")
+  const henZhiActive = henZhiActiveForInputs(inputs)
   const effectiveDefense = target.defense * (henZhiActive ? 0.94 : 1)
 
   const chargeBonus = has("Mighty Song") ? 0.15 : 0

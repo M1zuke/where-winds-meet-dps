@@ -236,7 +236,11 @@ version:
      `applyBuff`/`applyDebuff` (resolve `statusById`, apply `extendFrames` logic, `recordStack`
      + open window/permanent), or `castSkill` (enqueue the target's hits).
 3. **DoT ticks:** every active `Debuff` with a `dot` emits a tick every `tickIntervalFrames`
-   via `dotTickDamage` / `dotTickDamageForShape` — each a normal `computeSkillDamage` call.
+   via `dotTickDamage` / `dotTickDamageForShape` — each a normal `computeSkillDamage` call. A
+   tick may carry a probability weight (`0..1`, multiplied onto its damage) when its debuff is
+   driven by a stochastic proc schedule (`buffs/bitterSeason.ts`) rather than an `applyDot`
+   trigger — the schedule's per-frame active-probability stands in for the tick actually having
+   fired that pass.
 
 ## 7. Worked example — Bellstrike Umbra (`bellstrikeUmbra`) bleed loop
 

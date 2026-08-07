@@ -1,10 +1,6 @@
 {
-  "Unnamed Mind Method": {
-    "phys.max": 63.8,
-    "directAffinityRate": 0.023
-  },
   "Sword Horizon": {
-    "phys.max": 70.9,
+    "phys.max": 74.4,
     "directAffinityRate": 0.023
   },
   "Moon Above Flowers": {
@@ -37,7 +33,7 @@
     "primaryAttr.penetration": 0.06
   },
   "Wolfchaser's Art": {
-    "affinityRate": 0.037,
+    "affinityRate": 0.039,
     "affinityDamageBoost": 0.052
   },
   "Star-Picker": {
@@ -66,8 +62,8 @@
     "critDamageBoost": 0.035
   },
   "Morale Chant": {
-    "phys.max": 47.2,
-    "phys.min": 23.6,
+    "phys.max": 49.6,
+    "phys.min": 24.8,
     "directCritRate": 0.046
   },
   "Endurance Doctrine": {
@@ -76,8 +72,8 @@
     "primaryAttr.penetration": 0.06
   },
   "Insightful Strike": {
-    "phys.min": 21.3,
-    "phys.max": 42.5,
+    "phys.min": 22.3,
+    "phys.max": 44.7,
     "phys.penetration": 0.051
   },
   "Boat on Wood": {
@@ -96,5 +92,9 @@
   "Lone Loyalty": {
     "critRate": 0.063,
     "critDamageBoost": 0.04
+  },
+  "Bitter Season": {
+    "precision": 0.069,
+    "physBoost": 0.025
   }
 }

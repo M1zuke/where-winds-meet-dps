@@ -7,7 +7,7 @@ import {
 
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 const EXPECTED_COUNTS: Record<string, number> = {
-  bellstrikeUmbra: 49,
+  bellstrikeUmbra: 50,
 }
 
 describe("per-class skill file coverage", () => {

@@ -18,12 +18,23 @@ import {
   selectHitVariant,
 } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import { deriveStats, buildContext, effectiveRates } from "./panel"
+import {
+  deriveStats,
+  buildContext,
+  effectiveRates,
+  getBreakthrough,
+  henZhiActiveForInputs,
+} from "./panel"
 import { computeSkillDamage } from "./formula"
 import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
-import { builtinBuffsForClass, ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./builtinBuffs"
+import {
+  builtinBuffsForClass,
+  ZENITH_BAR_BUFF_ID,
+  ZENITH_DETONATION_BUFF_ID,
+  ZENITH_MAX_EXTENDED_DURATION_FRAMES,
+} from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
@@ -47,6 +58,18 @@ import {
 } from "./buffs/hawkwing"
 import { concentrationActiveProbSchedule } from "./buffs/concentration"
 import { APP_PLAYER_LEVEL, playerLevelAttributeAttackBonus } from "./buffs/levelAttributeBonus"
+import { zhongToTier } from "./buffs/paramMap"
+import {
+  bitterSeasonDebuffId,
+  bitterSeasonEnvelopeWindows,
+  bitterSeasonPoisonSchedule,
+  bitterSeasonStackSchedule,
+  resolveBitterSeasonTuning,
+  BITTER_SEASON_INNER_WAY,
+  BITTER_SEASON_MAX_STACKS,
+  type BitterSeasonPoisonSchedule,
+  type BitterSeasonStackSchedule,
+} from "./buffs/bitterSeason"
 
 export const FPS = 60
 
@@ -84,6 +107,8 @@ function bleedAttunementValue(inputs: Inputs): number {
 const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
 
 const CONCENTRATION_DISPLAY_THRESHOLD = 0.5
+
+const BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD = 0.5
 
 type Ctx = ReturnType<typeof buildContext>
 type Derived = ReturnType<typeof deriveStats>
@@ -259,6 +284,57 @@ export function simulateTimeline(inputs: Inputs): Result {
       : null
   const concentrationTier6 =
     inputs.mindMethods.find((m) => m.name === "Insightful Strike")?.stacks === "tier 6"
+
+  const bitterSeasonId = bitterSeasonDebuffId(inputs.classId)
+  const bitterSeasonSlot =
+    inputs.mindMethods.find((slot) => slot.name === BITTER_SEASON_INNER_WAY) ?? null
+  const bitterSeasonTuning = bitterSeasonSlot
+    ? resolveBitterSeasonTuning(zhongToTier(bitterSeasonSlot.stacks))
+    : null
+  const bitterSeasonHitTimesSec: number[] = []
+  if (bitterSeasonTuning) {
+    for (const ls of laidSteps) {
+      for (const hit of ls.performedHits) {
+        if (!hitDealsDamage(hit)) continue
+        bitterSeasonHitTimesSec.push((ls.startFrame + hit.frame) / FPS)
+      }
+    }
+    bitterSeasonHitTimesSec.sort((a, b) => a - b)
+  }
+  const bitterSeasonStacks: BitterSeasonStackSchedule | null = bitterSeasonTuning
+    ? bitterSeasonStackSchedule(
+        bitterSeasonHitTimesSec,
+        bitterSeasonTuning.procChance,
+        rotationDurationSec,
+      )
+    : null
+  // The party-applied shared debuff (`shareDebuff5HenZhi`/Year-Long Lament T6)
+  // already supplies the fully-stacked reduction.
+  const bitterSeasonSuppressed = henZhiActiveForInputs(inputs)
+  const bitterSeasonBaseTargetDefense = getBreakthrough(inputs.breakthrough).defense
+
+  function bitterSeasonEffectsAt(tSec: number): BuffStatEffect[] {
+    if (!bitterSeasonStacks || !bitterSeasonTuning) return []
+    const out: BuffStatEffect[] = []
+    const stacks = bitterSeasonStacks.expectedStacksAtTime(tSec)
+    if (stacks > 0) {
+      out.push({
+        statKey: "target.defense",
+        amount:
+          -stacks * bitterSeasonTuning.defenseReductionPerStack * bitterSeasonBaseTargetDefense,
+      })
+    }
+    if (bitterSeasonTuning.physPenetrationAtMaxStacks > 0) {
+      const maxStackProb = bitterSeasonStacks.maxStackProbAtTime(tSec)
+      if (maxStackProb > 0) {
+        out.push({
+          statKey: "phys.penetration",
+          amount: bitterSeasonTuning.physPenetrationAtMaxStacks * maxStackProb,
+        })
+      }
+    }
+    return out
+  }
 
   const prePullHitsCount = rotation.prePullHitsCount ?? false
   const inWindow = (frame: number): boolean =>
@@ -487,6 +563,17 @@ export function simulateTimeline(inputs: Inputs): Result {
       hawkwingPhysBonus = stacks * HAWKWING_BONUS_PER_STACK
       sig += `~hawkwing:${stacks}`
     }
+    if (bitterSeasonTuning && !bitterSeasonSuppressed) {
+      const bitterSeasonEffects = bitterSeasonEffectsAt(frame / FPS)
+      if (bitterSeasonEffects.length > 0) {
+        effects.push(...bitterSeasonEffects)
+        sig +=
+          "~bitterSeason:" +
+          bitterSeasonEffects
+            .map((effect) => `${effect.statKey}:${effect.amount.toFixed(6)}`)
+            .join(",")
+      }
+    }
     const combat = inputs.combatSettings
     if (combat?.revelryScript) {
       effects.push({ statKey: "allDamageBoost", amount: 0.3 })
@@ -671,8 +758,15 @@ export function simulateTimeline(inputs: Inputs): Result {
               if (frame >= cand.start && frame < cand.end && (!w || cand.end > w.end)) w = cand
             }
           if (w) {
-            w.end += trigger.extendFrames
-            ;(w.extensions ??= []).push({ frame, amount: trigger.extendFrames })
+            // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
+            const isZenithExtension = trigger.condition?.buffId === ZENITH_DETONATION_BUFF_ID
+            const rawEnd = w.end + trigger.extendFrames
+            const nextEnd = isZenithExtension
+              ? Math.max(w.end, Math.min(rawEnd, frame + ZENITH_MAX_EXTENDED_DURATION_FRAMES))
+              : rawEnd
+            const appliedAmount = nextEnd - w.end
+            w.end = nextEnd
+            if (appliedAmount > 0) (w.extensions ??= []).push({ frame, amount: appliedAmount })
           } else if (!trigger.extendOnly) {
             const next = clamp(
               stacksAt(status.id, frame) + trigger.stacks,
@@ -697,6 +791,46 @@ export function simulateTimeline(inputs: Inputs): Result {
           queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
         }
       }
+    }
+  }
+
+  // Zenith extension events only exist for a Sword Horizon build (the only
+  // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
+  // so this list is empty for every other build without a class check.
+  let bitterSeasonPoison: BitterSeasonPoisonSchedule | null = null
+  if (bitterSeasonTuning && durationFrames > 0 && bitterSeasonHitTimesSec.length > 0) {
+    const bitterSeasonDebuff = statusById.get(bitterSeasonId)
+    if (bitterSeasonDebuff && isDebuffStatus(bitterSeasonDebuff) && bitterSeasonDebuff.dot) {
+      const zenithExtensionTimesSec = (windowsByBuff.get(ZENITH_DETONATION_BUFF_ID) ?? [])
+        .map((zenithWindow) => zenithWindow.start / FPS)
+        .sort((a, b) => a - b)
+      const poisonDurationSec = bitterSeasonDebuff.durationFrames / FPS
+      bitterSeasonPoison = bitterSeasonPoisonSchedule(
+        bitterSeasonHitTimesSec,
+        bitterSeasonTuning.procChance,
+        poisonDurationSec,
+        rotationDurationSec,
+        zenithExtensionTimesSec,
+      )
+      // Bounds tick emission to the guaranteed-proc envelope instead of one
+      // span covering the whole rotation — activeProbAtTime is 0 outside it,
+      // so no expected damage is lost by not ticking there.
+      for (const envelopeWindow of bitterSeasonEnvelopeWindows(
+        bitterSeasonHitTimesSec,
+        poisonDurationSec,
+        zenithExtensionTimesSec,
+      )) {
+        pushWindow(
+          bitterSeasonDebuff.id,
+          Math.round(envelopeWindow.startSec * FPS),
+          Math.round(envelopeWindow.endSec * FPS),
+        )
+      }
+      recordStack(
+        bitterSeasonDebuff.id,
+        Math.max(0, Math.round(bitterSeasonHitTimesSec[0] * FPS)),
+        1,
+      )
     }
   }
 
@@ -737,6 +871,20 @@ export function simulateTimeline(inputs: Inputs): Result {
               end = endHere
           }
         if (end !== undefined) remainingSec = (end - queryFrame) / FPS
+      }
+      // Below the display threshold there's a real chance no poison has
+      // procced yet at all (e.g. right after the very first eligible hits),
+      // so the expected-remaining number alone would understate that and
+      // read as an oddly short "duration" — withhold it until more likely
+      // than not to be up, same convention as Concentration's own gate.
+      if (b.id === bitterSeasonId && bitterSeasonPoison) {
+        const isLikelyActive =
+          bitterSeasonPoison.activeProbAtTime(queryTimeSec) >=
+          BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD
+        const activeSec = isLikelyActive
+          ? bitterSeasonPoison.remainingActiveSecAtTime(queryTimeSec)
+          : 0
+        remainingSec = activeSec > 0 ? activeSec : undefined
       }
       buffs.push({
         id: b.id,
@@ -814,6 +962,42 @@ export function simulateTimeline(inputs: Inputs): Result {
           })
         }
       }
+      if (bitterSeasonTuning && !seenBuffIds.has("bitterSeasonPoison")) {
+        const shown = bitterSeasonSuppressed
+          ? BITTER_SEASON_MAX_STACKS
+          : Math.round(bitterSeasonStacks?.expectedStacksAtTime(queryTimeSec) ?? 0)
+        if (shown >= 1) {
+          seenBuffIds.add("bitterSeasonPoison")
+          const uptimePct = Math.round(
+            (bitterSeasonPoison?.activeProbAtTime(queryTimeSec) ?? 0) * 100,
+          )
+          // The mechanic's own numbers (both worded as a target physical
+          // defense reduction, per the in-game hint, even though the tier-6
+          // node is implemented through `phys.penetration` — see
+          // `bitterSeasonEffectsAt`), stated plainly rather than surfacing
+          // that internal stat-key vehicle, and scaled to the shown stack
+          // count rather than always quoting the 5-stack cap.
+          const currentDefensePct = Math.round(
+            bitterSeasonTuning.defenseReductionPerStack * shown * 100,
+          )
+          const tier6DefenseFlatAmount = bitterSeasonTuning.physPenetrationAtMaxStacks * 100
+          const mechanicText =
+            `at ${shown}/${BITTER_SEASON_MAX_STACKS} stacks: -${currentDefensePct}% target physical defense` +
+            (tier6DefenseFlatAmount > 0
+              ? ` · -${tier6DefenseFlatAmount} target physical defense at ${BITTER_SEASON_MAX_STACKS}/${BITTER_SEASON_MAX_STACKS} stacks (tier 6)`
+              : "")
+          buffs.push({
+            id: "bitterSeasonPoison",
+            name: "Bitter Season Poison",
+            stacks: shown,
+            maxStacks: BITTER_SEASON_MAX_STACKS,
+            effects: [],
+            description: bitterSeasonSuppressed
+              ? "party-applied Bitter Season debuff already caps the reduction — the inner way adds none"
+              : `expected stacks (avg of 500 sims, rounded) · ${mechanicText} · ≈${uptimePct}% poison uptime`,
+          })
+        }
+      }
     }
     return {
       index: 0,
@@ -884,6 +1068,11 @@ export function simulateTimeline(inputs: Inputs): Result {
     for (const ep of episodes) {
       for (let f = ep.start + interval; f < ep.end; f += interval) {
         if (f < 0 || !inWindow(f)) continue
+        const tickWeight =
+          bitterSeasonPoison && buffId === bitterSeasonId
+            ? bitterSeasonPoison.activeProbAtTime(f / FPS)
+            : 1
+        if (tickWeight <= 0) continue
         let dmg: number
         if (table) {
           const liveStacks = Math.max(1, stacksAt(buffId, f))
@@ -902,6 +1091,7 @@ export function simulateTimeline(inputs: Inputs): Result {
           const st = resolveState(f, dotSkill)
           dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * stackCount
         }
+        dmg *= tickWeight
         totalDamage += dmg
         const dotName = `${debuffDef.name} (DoT)`
         const dotType = dot.skillType || "sustain"

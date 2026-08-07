@@ -1,4 +1,5 @@
 import type { Skill } from "../../../engine/skill"
+import bitterSeasonTick from "./bitter-season-tick.json"
 import deflectCancelPrepull from "./deflect-cancel-prepull.json"
 import deflectCancel from "./deflect-cancel.json"
 import delay from "./delay.json"
@@ -26,6 +27,7 @@ import soaring from "./soaring.json"
 import toadCancel from "./toad-cancel.json"
 
 export const UNIVERSAL_SKILLS = [
+  bitterSeasonTick,
   deflectCancelPrepull,
   deflectCancel,
   delay,

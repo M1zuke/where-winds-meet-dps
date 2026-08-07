@@ -138,6 +138,8 @@ The interesting derivations:
   * `+8%` for the `stonesplitBalancePureTang` class
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
   `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
+  (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression
+  check below)
 * **`chargeBonus`** = `0.15` if Mighty Song is selected
 * **`weaponBoosts`** — the per-weapon boost map keyed by weapon name
   (`Sword`/`Spear`/`Fan`/`Umbrella`/`Modao`/`Twin Blades`/`Rope Dart`/`Hengdao`)
@@ -279,7 +281,11 @@ new effect before implementing it, and keep the buckets disjoint — the same
 effect must never land in two.
 
 1. **Flat tier stats** — `mindMethodPanelStats.json`, folded in by
-   `withDerivedStats`. Always-on stat adds; invisible to the Skill Editor.
+   `withDerivedStats`. Always-on stat adds; invisible to the Skill Editor. The
+   one exception is Bitter Season: unlike every other inner way (two
+   selectable tiers), all six of its tiers are selectable, so its two keys are
+   gated to a minimum tier each rather than applying unconditionally
+   (`getMindMethodContributions`).
 2. **`buildContext` scalars** — `panel.ts`. The handful of inner ways that move
    a context-level term rather than a stat: Soldier's Return / Star-Picker /
    Endurance Doctrine (`generalDamageBoost`), Year-Long Lament
@@ -342,6 +348,24 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   and as `dot.weaponOrAttribute` fallback on the debuff), so column `T` gives
   them sword boost *and* all-martial like any Sword skill, per the lvl-110
   workbook's skill-type column.
+- **Bitter Season** (`buffs/bitterSeason.ts`) — a global inner way (every
+  class's `allowedMindMethods`, one universal stand-in skill instantiated per
+  class, one debuff entry per class bucket). Its proc chance and stack decay
+  are stochastic, so its stacking debuff and its poison's uptime are each a
+  seeded whole-rotation Monte-Carlo schedule, joining Hawkwing / Concentration /
+  Morale Chant — the def schema cannot express a per-hit roll. Its tier-6 node
+  (−10 target physical resistance) is modelled as +10 player
+  physical-penetration points, because target pen resistance is zero for every
+  target and there is no target-resistance stat key — the two are numerically
+  identical. The party-applied shared debuff (`shareDebuff5HenZhi` / Year-Long
+  Lament tier 6) already represents this same fully-stacked debuff, so the
+  inner way's own stat contribution is suppressed while it is active — the DoT
+  damage is not. A Sword Horizon Zenith detonation extends the poison the same
+  way it already extended Smolder — one shared, capped rule
+  (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `builtinBuffs.ts`), not specific to
+  either debuff. Only hits laid by the rotation roll
+  the proc — DoT ticks and trigger-enqueued hits do not — the same structural
+  limitation Hawkwing and Concentration have.
 
 ### Gaps
 

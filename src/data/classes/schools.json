@@ -8,7 +8,14 @@
     "attributeMultiplier": 51.5,
     "permanentBuffs": ["Sword Charge Boost"],
     "classMindGroup": "Unnamed Mind Method",
-    "allowedMindMethods": ["Morale Chant", "Mighty Song", "Thousand Mountain Law", "Stone-Cutter", "Soldier's Return"],
+    "allowedMindMethods": [
+      "Morale Chant",
+      "Mighty Song",
+      "Thousand Mountain Law",
+      "Stone-Cutter",
+      "Soldier's Return",
+      "Bitter Season"
+    ],
     "classBuffs": [],
     "weapons": ["Sword", "Spear"],
     "rotations": ["Qi-Surge"]
@@ -22,7 +29,7 @@
     "attributeMultiplier": 51.5,
     "permanentBuffs": ["Bleed Boost"],
     "classMindGroup": "Sword Horizon",
-    "allowedMindMethods": ["Wolfchaser's Art", "Insightful Strike", "Morale Chant"],
+    "allowedMindMethods": ["Wolfchaser's Art", "Insightful Strike", "Morale Chant", "Bitter Season"],
     "classBuffs": [],
     "weapons": ["Sword", "Spear"],
     "rotations": ["6× Blood Burst + Dragon Whirl"]
@@ -43,7 +50,8 @@
       "Stone-Cutter",
       "Soldier's Return",
       "Year-Long Lament",
-      "Bliss Bleeding"
+      "Bliss Bleeding",
+      "Bitter Season"
     ],
     "classBuffs": [],
     "weapons": ["Umbrella", "Fan"],
@@ -64,7 +72,8 @@
       "Sutra Shift",
       "Stone-Cutter",
       "Soldier's Return",
-      "Endurance Doctrine"
+      "Endurance Doctrine",
+      "Bitter Season"
     ],
     "classBuffs": [],
     "weapons": ["Modao", "Spear"],
@@ -87,7 +96,8 @@
       "Year-Long Lament",
       "Stone-Cutter",
       "Sutra Shift",
-      "Bliss Bleeding"
+      "Bliss Bleeding",
+      "Bitter Season"
     ],
     "classBuffs": [],
     "weapons": ["Hengdao", "Modao"],
@@ -108,7 +118,8 @@
       "Bliss Bleeding",
       "Stone-Cutter",
       "Soldier's Return",
-      "Year-Long Lament"
+      "Year-Long Lament",
+      "Bitter Season"
     ],
     "classBuffs": [],
     "weapons": ["Twin Blades", "Rope Dart"],
@@ -129,7 +140,8 @@
       "Tang Anthem",
       "Stone-Cutter",
       "Year-Long Lament",
-      "Soldier's Return"
+      "Soldier's Return",
+      "Bitter Season"
     ],
     "classBuffs": [],
     "weapons": ["Umbrella", "Rope Dart"],
@@ -144,7 +156,7 @@
     "attributeMultiplier": 51.5,
     "permanentBuffs": [],
     "classMindGroup": "Soaring Ascent",
-    "allowedMindMethods": ["Morale Chant", "Heaven-Seizing Stance", "Threefold Insight"],
+    "allowedMindMethods": ["Morale Chant", "Heaven-Seizing Stance", "Threefold Insight", "Bitter Season"],
     "classBuffs": [],
     "weapons": ["Knuckles", "Rope Dart"],
     "rotations": []

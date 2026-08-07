@@ -9,6 +9,15 @@ export const SPEAR_SPECIAL_COOLDOWN_FRAMES = 690
 
 export const ZENITH_SMOLDER_EXTEND_FRAMES = 600
 
+// User-verified 2026-08-07: a Zenith detonation always adds its full extend
+// amount, but the resulting REMAINING duration (from that detonation's own
+// frame, re-evaluated per detonation — not a lifetime cap on the window)
+// never exceeds 16 s. If the window is already longer than that, the
+// detonation must leave it alone — never truncate it down to the cap.
+// Sword Horizon logic, not specific to any one debuff it extends (Smolder,
+// Bitter Season's poison, …).
+export const ZENITH_MAX_EXTENDED_DURATION_FRAMES = 960
+
 export const RIVER_FLOW_BUFF_ID = "buff-bellstrikeUmbra-river-flow"
 export const SPEAR_SPECIAL_COOLDOWN_BUFF_ID = "buff-bellstrikeUmbra-spear-special-cooldown"
 export const ZENITH_BAR_BUFF_ID = "buff-bellstrikeUmbra-zenith-bar"

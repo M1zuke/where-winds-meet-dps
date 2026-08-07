@@ -74,7 +74,7 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
         <div className="section-label">{t("Shared Debuffs")}</div>
         <div className={styles.toggleChips}>
           <ToggleChip
-            label={t("Bitter Season")}
+            label={t("Bitter Season (from a teammate)")}
             on={inputs.shareDebuff5HenZhi}
             onToggle={() => set("shareDebuff5HenZhi", !inputs.shareDebuff5HenZhi)}
           />

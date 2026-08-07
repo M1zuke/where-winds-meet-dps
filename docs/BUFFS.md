@@ -77,6 +77,9 @@ buff-def schema, **extend the schema** rather than working around it.
 A handful of mechanics genuinely don't fit the buff-def vocabulary and are
 realized at the `timeline.ts` boundary on purpose — Crosswind Spirit's charge
 counter, the Hawkwing and Concentration probability schedules, Morale Chant's
-stack curve. Each is documented in CALCULATION.md § "Mechanic coverage" with the
-reason. Adding to that list needs the same justification: not "it was easier
-here", but "the def schema cannot express this".
+stack curve, and the Bitter Season inner way's poison (`buffs/bitterSeason.ts`):
+a stochastic per-hit proc plus a percentage target-defense reduction that
+stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
+documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to
+that list needs the same justification: not "it was easier here", but "the def
+schema cannot express this".
