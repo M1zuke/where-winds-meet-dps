@@ -14,6 +14,10 @@
         "bonus": {
           "type": "buffBonus",
           "valuePerStack": 0.0125
+        },
+        "tierConditionalStacks": {
+          "enabledParam": "allySurgingWaves",
+          "stacksPerCast": 40
         }
       }
     }
