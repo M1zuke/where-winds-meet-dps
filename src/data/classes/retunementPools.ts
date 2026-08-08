@@ -14,9 +14,14 @@ const BAMBOOCUT_POOL: RetunementPool = {
   stats: ["Momentum", "Agility", "Max Bamboocut", "Min Phys", "Max Phys", "Crit"],
 }
 
+const STONESPLIT_POOL: RetunementPool = {
+  stats: ["Max Phys", "Power", "Momentum", "Max Stonesplit", "Min Stonesplit", "Crit"],
+}
+
 export const RETUNEMENT_POOLS: Record<string, RetunementPool> = {
   bellstrikeRainbow: BELLSTRIKE_POOL,
   bellstrikeUmbra: BELLSTRIKE_POOL,
+  stonesplitPower: STONESPLIT_POOL,
   bamboocutWindTwinblade: BAMBOOCUT_POOL,
   bamboocutDust: BAMBOOCUT_POOL,
 }

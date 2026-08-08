@@ -11,20 +11,20 @@
     {
       "id": "hit-0",
       "frame": 0,
-      "physMultiplier": 2.8945,
-      "attributeMultiplier": 4.3417,
-      "physFixed": 668.5,
-      "attributeFixed": 373.5,
+      "physMultiplier": 2.89475,
+      "attributeMultiplier": 4.3421,
+      "physFixed": 800.5,
+      "attributeFixed": 436,
       "extraCritDamage": 0,
       "triggers": []
     },
     {
       "id": "hit-1",
       "frame": 113,
-      "physMultiplier": 2.8945,
-      "attributeMultiplier": 4.3417,
-      "physFixed": 668.5,
-      "attributeFixed": 373.5,
+      "physMultiplier": 2.89475,
+      "attributeMultiplier": 4.3421,
+      "physFixed": 800.5,
+      "attributeFixed": 436,
       "extraCritDamage": 0,
       "triggers": []
     }

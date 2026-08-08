@@ -104,6 +104,11 @@ function bleedAttunementValue(inputs: Inputs): number {
   return inputs.classId === "bellstrikeUmbra" ? (inputs.dingYinByTag["Bleed Boost"] ?? 0) : 0
 }
 
+function taggedSkillAttunementValue(inputs: Inputs, tags: readonly string[] | undefined): number {
+  const attunementTag = tags?.find((tag) => tag.startsWith("attune:"))
+  return attunementTag ? (inputs.dingYinByTag[attunementTag] ?? 0) : 0
+}
+
 const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
 
 const CONCENTRATION_DISPLAY_THRESHOLD = 0.5
@@ -684,6 +689,8 @@ export function simulateTimeline(inputs: Inputs): Result {
       const bleedAttune = bleedAttunementValue(inputs)
       if (bleedAttune) art.correction = (art.correction ?? 1) * (1 + bleedAttune)
     }
+    const skillAttunement = taggedSkillAttunementValue(inputs, tags)
+    if (skillAttunement) art.correction = (art.correction ?? 1) * (1 + skillAttunement)
     if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
       art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)

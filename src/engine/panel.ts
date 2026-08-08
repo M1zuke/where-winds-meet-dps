@@ -278,6 +278,11 @@ export function buildContext(
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
   const effectiveBossBoost = inputs.bossBoost
+  const artOfResistanceBoost = has("Endurance Doctrine")
+    ? stackOf("Endurance Doctrine") === "tier 6"
+      ? 0.15
+      : 0.05
+    : 0
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
@@ -288,7 +293,7 @@ export function buildContext(
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
-    (has("Endurance Doctrine") ? 0.02 : 0) +
+    artOfResistanceBoost +
     (school.id === "stonesplitBalancePureTang" ? 0.08 : 0)
 
   const dingYinByTag: Record<string, number> = {}

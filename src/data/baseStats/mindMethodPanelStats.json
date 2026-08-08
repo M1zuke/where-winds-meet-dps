@@ -8,7 +8,7 @@
     "critDamageBoost": 0.044
   },
   "Echoing Mountains": {
-    "critRate": 0.073,
+    "critRate": 0.086,
     "critDamageBoost": 0.044
   },
   "Forgotten River Echo": {
@@ -24,7 +24,7 @@
     "directCritRate": 0.046
   },
   "Mighty Song": {
-    "affinityRate": 0.033,
+    "affinityRate": 0.039,
     "affinityDamageBoost": 0.052
   },
   "Thousand Mountain Law": {
@@ -67,8 +67,8 @@
     "directCritRate": 0.046
   },
   "Endurance Doctrine": {
-    "primaryAttr.max": 21.7,
-    "primaryAttr.min": 10.9,
+    "primaryAttr.max": 25.3,
+    "primaryAttr.min": 12.7,
     "primaryAttr.penetration": 0.06
   },
   "Insightful Strike": {

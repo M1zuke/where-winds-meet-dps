@@ -59,9 +59,9 @@
   },
   {
     "id": "stonesplitPower",
-    "cn": "Stonesplit Power",
-    "en": "Stonesplit Power",
-    "displayName": "Stonesplit Power",
+    "cn": "Stonesplit Might",
+    "en": "Stonesplit Might",
+    "displayName": "Stonesplit Might",
     "primaryAttribute": "Stonesplit",
     "attributeMultiplier": 51.5,
     "permanentBuffs": ["Modao Charge Boost"],
@@ -76,7 +76,7 @@
       "Bitter Season"
     ],
     "classBuffs": [],
-    "weapons": ["Modao", "Spear"],
+    "weapons": ["Mo Blade", "Stormbreaker Spear"],
     "rotations": ["6× Mountain-River Speed"]
   },
   {

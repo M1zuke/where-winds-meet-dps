@@ -53,6 +53,15 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
     classIds: ["bellstrikeUmbra"],
     enginePath: "dingYinByTag.Bleed Boost",
   },
+  {
+    id: "moBladeCharge",
+    label: "Mo Blade Charged Boost",
+    min: 0.036,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["stonesplitPower"],
+    enginePath: "dingYinByTag.attune:moBladeCharge",
+  },
 ]
 
 export function attunementsFor(slot: GearSlot, classId: string): AttunementOption[] {
