@@ -37,7 +37,7 @@ export function ItemRankingTable({ rows }: Props) {
     <table className={`ranking-table ranking-table-spaced ${styles.rankingTable}`}>
       <thead>
         <tr>
-          <th>{t("Tunements")}</th>
+          <th>{t("Stat Line")}</th>
           <th>{t("Amount")}</th>
           <th>{t("DPS Δ")}</th>
           <th>{t("Lift")}</th>

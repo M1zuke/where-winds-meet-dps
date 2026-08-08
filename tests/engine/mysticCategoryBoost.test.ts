@@ -93,9 +93,10 @@ describe("mystic DoT ticks inherit the boost of the ability that applies them", 
   })
 })
 
-describe("the two area stats hit only their own category", () => {
-  it("Area Debuff Mystic Skill DMG Boost raises a Toad[Cancel] rotation (incl. Toad Poison DoT) but leaves the burst rotation untouched", () => {
-    const burstNames = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
+describe("the merged Area Mystic Skill DMG Boost moves every area category", () => {
+  const burstNames = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
+
+  it("raises a Toad[Cancel] (area-debuff) rotation, incl. its Toad Poison DoT", () => {
     const toadNames = [
       "Toad[Cancel]",
       "Toad[Cancel]",
@@ -104,92 +105,86 @@ describe("the two area stats hit only their own category", () => {
       "Toad[Cancel]",
     ]
 
-    const toadBase = totalOf("bellstrikeUmbra", toadNames, { groupAnomalyBoost: 0 })
-    const toadBoosted = totalOf("bellstrikeUmbra", toadNames, { groupAnomalyBoost: 0.1 })
+    const toadBase = totalOf("bellstrikeUmbra", toadNames, { areaMysticBoost: 0 })
+    const toadBoosted = totalOf("bellstrikeUmbra", toadNames, { areaMysticBoost: 0.1 })
     expect(toadBoosted).toBeGreaterThan(toadBase)
 
     const toadBaseSim = simulateTimeline({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotationOf("bellstrikeUmbra", toadNames),
-      groupAnomalyBoost: 0,
+      areaMysticBoost: 0,
     })
     const toadBoostedSim = simulateTimeline({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotationOf("bellstrikeUmbra", toadNames),
-      groupAnomalyBoost: 0.1,
+      areaMysticBoost: 0.1,
     })
     expect(dotDamage(toadBoostedSim, "Toad Poison")).toBeGreaterThan(
       dotDamage(toadBaseSim, "Toad Poison"),
     )
-
-    const burstBase = totalOf("bellstrikeUmbra", burstNames, { groupAnomalyBoost: 0 })
-    const burstBoosted = totalOf("bellstrikeUmbra", burstNames, { groupAnomalyBoost: 0.1 })
-    expect(burstBoosted).toBe(burstBase)
   })
 
-  it("Area DMG Mystic Skill DMG Boost raises a Flute of the Tides Cancel rotation (incl. Flute Ripple DoT) but leaves the burst rotation untouched", () => {
-    const burstNames = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
+  it("raises a Flute of the Tides Cancel (area-damage) rotation, incl. its Flute Ripple DoT", () => {
     const fluteNames = [
       "Flute of the Tides Cancel",
       "Flute of the Tides Cancel",
       "Flute of the Tides Cancel",
     ]
 
-    const fluteBase = totalOf("bellstrikeUmbra", fluteNames, { groupDamageBoost: 0 })
-    const fluteBoosted = totalOf("bellstrikeUmbra", fluteNames, { groupDamageBoost: 0.1 })
+    const fluteBase = totalOf("bellstrikeUmbra", fluteNames, { areaMysticBoost: 0 })
+    const fluteBoosted = totalOf("bellstrikeUmbra", fluteNames, { areaMysticBoost: 0.1 })
     expect(fluteBoosted).toBeGreaterThan(fluteBase)
 
     const fluteBaseSim = simulateTimeline({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotationOf("bellstrikeUmbra", fluteNames),
-      groupDamageBoost: 0,
+      areaMysticBoost: 0,
     })
     const fluteBoostedSim = simulateTimeline({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotationOf("bellstrikeUmbra", fluteNames),
-      groupDamageBoost: 0.1,
+      areaMysticBoost: 0.1,
     })
     expect(dotDamage(fluteBoostedSim, "Flute Ripple")).toBeGreaterThan(
       dotDamage(fluteBaseSim, "Flute Ripple"),
     )
+  })
 
-    const burstBase = totalOf("bellstrikeUmbra", burstNames, { groupDamageBoost: 0 })
-    const burstBoosted = totalOf("bellstrikeUmbra", burstNames, { groupDamageBoost: 0.1 })
-    expect(burstBoosted).toBe(burstBase)
+  it("raises a Flute of the Tides Full (plain `mystic:area`) rotation", () => {
+    const skillNames = ["Flute of the Tides Full"]
+    const base = totalOf("bellstrikeUmbra", skillNames, { areaMysticBoost: 0 })
+    const boosted = totalOf("bellstrikeUmbra", skillNames, { areaMysticBoost: 0.1 })
+    expect(boosted).toBeGreaterThan(base)
+  })
+
+  it("leaves a burst rotation untouched", () => {
+    const base = totalOf("bellstrikeUmbra", burstNames, { areaMysticBoost: 0 })
+    const boosted = totalOf("bellstrikeUmbra", burstNames, { areaMysticBoost: 0.1 })
+    expect(boosted).toBe(base)
+  })
+
+  it("is not moved by the single-target stat, and vice versa", () => {
+    const toadNames = ["Toad[Cancel]", "Toad[Cancel]"]
+    const toadBase = totalOf("bellstrikeUmbra", toadNames, { singleMysticBoost: 0 })
+    const toadBoosted = totalOf("bellstrikeUmbra", toadNames, { singleMysticBoost: 0.1 })
+    expect(toadBoosted).toBe(toadBase)
   })
 })
 
 describe("negative cases — unaffected skills", () => {
-  it("none of the three stats change a weapon-only rotation", () => {
+  it("neither mystic stat changes a weapon-only rotation", () => {
     const skillNames = ["Sword Martial Q", "SpearQ"]
     const base = totalOf("bellstrikeUmbra", skillNames, {
       singleMysticBoost: 0,
-      groupAnomalyBoost: 0,
-      groupDamageBoost: 0,
+      areaMysticBoost: 0,
     })
     const boosted = totalOf("bellstrikeUmbra", skillNames, {
       singleMysticBoost: 0.1,
-      groupAnomalyBoost: 0.1,
-      groupDamageBoost: 0.1,
-    })
-    expect(boosted).toBe(base)
-  })
-
-  it("none of the three stats change a mystic:area rotation (Flute of the Tides Full)", () => {
-    const skillNames = ["Flute of the Tides Full"]
-    const base = totalOf("bellstrikeUmbra", skillNames, {
-      singleMysticBoost: 0,
-      groupAnomalyBoost: 0,
-      groupDamageBoost: 0,
-    })
-    const boosted = totalOf("bellstrikeUmbra", skillNames, {
-      singleMysticBoost: 0.1,
-      groupAnomalyBoost: 0.1,
-      groupDamageBoost: 0.1,
+      areaMysticBoost: 0.1,
     })
     expect(boosted).toBe(base)
   })

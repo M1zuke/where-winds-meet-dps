@@ -3,7 +3,8 @@ import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
-import { getAttunement } from "./attunements"
+import { attunementsForClass, getAttunement } from "./attunements"
+import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { resolveRotation } from "./rotation"
 
@@ -160,34 +161,22 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
           x.bossBoost += 0.032
         }),
     },
-    // Single-Target Mystic Skill DMG Boost max roll: 11 % (observed in game,
-    // 2026-07-31). The two area words below still carry the older 7 % figure
-    // because their max hasn't been re-observed — don't "harmonise" them to 11 %.
     {
       word: "Single-Target Mystic Skill DMG Boost",
-      amount: 0.11,
+      amount: 0.09797,
       unit: "percent",
       apply: (i) =>
         clone(i, (x) => {
-          x.singleMysticBoost += 0.11
+          x.singleMysticBoost += 0.09797
         }),
     },
     {
-      word: "Area Debuff Mystic Skill DMG Boost",
+      word: "Area Mystic Skill DMG Boost",
       amount: 0.07,
       unit: "percent",
       apply: (i) =>
         clone(i, (x) => {
-          x.groupAnomalyBoost += 0.07
-        }),
-    },
-    {
-      word: "Area DMG Mystic Skill DMG Boost",
-      amount: 0.07,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.groupDamageBoost += 0.07
+          x.areaMysticBoost += 0.07
         }),
     },
     {
@@ -302,6 +291,26 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
   return specs
 }
 
+// The `Physical Penetration` and `Attribute Penetration` word specs above take
+// their max roll straight from these two attunements, so listing the attunements
+// again would produce a duplicate row with identical numbers.
+const ATTUNEMENTS_ALREADY_LISTED_AS_WORDS = new Set(["physPen", "formlessPen"])
+
+function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
+  return attunementsForClass(inputs.classId)
+    .filter((opt) => !ATTUNEMENTS_ALREADY_LISTED_AS_WORDS.has(opt.id))
+    .map((opt) => ({
+      word: opt.label,
+      amount: opt.max,
+      unit: "percent" as const,
+      apply: (i: Inputs) =>
+        clone(i, (x) => {
+          if (!opt.enginePath) return
+          addStatDelta(x, resolveEnginePath(opt.enginePath, x), opt.max)
+        }),
+    }))
+}
+
 function applyWeaponBoost(weapon: string, amt: number) {
   return (i: Inputs) => {
     const key = WEAPON_BOOST_STAT_KEY[weapon]
@@ -345,21 +354,26 @@ function applyAttrAttack(
 }
 
 export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[] {
-  const specs = buildWordSpecs(inputs)
+  const catalogues: { source: ItemRankingRow["source"]; specs: WordSpec[] }[] = [
+    { source: "tunement", specs: buildWordSpecs(inputs) },
+    { source: "attunement", specs: buildAttunementSpecs(inputs) },
+  ]
   const rows: ItemRankingRow[] = []
-  for (const spec of specs) {
-    const next = spec.apply(inputs)
-    const r = runEngine(next)
-    const lift = baseDps > 0 ? r.dps / baseDps - 1 : 0
-    rows.push({
-      word: spec.word,
-      amount: spec.amount,
-      unit: spec.unit,
-      expectedDps: r.dps,
-      dpsDelta: r.dps - baseDps,
-      liftPercent: lift,
-      leadVsMin: 0,
-    })
+  for (const { source, specs } of catalogues) {
+    for (const spec of specs) {
+      const withSpec = runEngine(spec.apply(inputs))
+      const lift = baseDps > 0 ? withSpec.dps / baseDps - 1 : 0
+      rows.push({
+        word: spec.word,
+        source,
+        amount: spec.amount,
+        unit: spec.unit,
+        expectedDps: withSpec.dps,
+        dpsDelta: withSpec.dps - baseDps,
+        liftPercent: lift,
+        leadVsMin: 0,
+      })
+    }
   }
   const positive = rows.filter((r) => r.liftPercent > 0.001).map((r) => r.liftPercent)
   const minPositive = positive.length ? Math.min(...positive) : 0
@@ -378,6 +392,7 @@ function clone(i: Inputs, mut: (x: Inputs) => void): Inputs {
     stonesplit: { ...i.stonesplit },
     silkbind: { ...i.silkbind },
     bamboocut: { ...i.bamboocut },
+    dingYinByTag: { ...i.dingYinByTag },
     mindMethods: i.mindMethods.map((m) => ({ ...m })) as Inputs["mindMethods"],
   }
   mut(next)

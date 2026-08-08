@@ -138,8 +138,10 @@ function migrateRotationIds<T>(rotation: T): T {
 const LEGACY_GEAR_WORD_RENAMES: Record<string, string> = {
   "Single Burst": "Single-Target Mystic Skill DMG Boost",
   "Single Control": "Single-Target Mystic Skill DMG Boost",
-  "AoE Anomaly": "Area Debuff Mystic Skill DMG Boost",
-  "AoE Damage": "Area DMG Mystic Skill DMG Boost",
+  "AoE Anomaly": "Area Mystic Skill DMG Boost",
+  "AoE Damage": "Area Mystic Skill DMG Boost",
+  "Area Debuff Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
+  "Area DMG Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
   "Min Formless": "Min Void Attack",
   "Max Formless": "Max Void Attack",
 }
@@ -176,6 +178,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   delete (next as unknown as Record<string, unknown>).singleBurstBoost
   delete (next as unknown as Record<string, unknown>).singleControlBoost
+  delete (next as unknown as Record<string, unknown>).groupAnomalyBoost
+  delete (next as unknown as Record<string, unknown>).groupDamageBoost
   if ("customSkills" in next) next.customSkills = undefined
   if ("customBuffs" in next) next.customBuffs = undefined
   if ("customDebuffs" in next) next.customDebuffs = undefined
@@ -832,6 +836,17 @@ function isRawStatEffect(e: unknown): e is BuffStatEffect {
 const LEGACY_STAT_KEY_RENAMES: Record<string, string> = {
   singleBurstBoost: "singleMysticBoost",
   singleControlBoost: "singleMysticBoost",
+  groupAnomalyBoost: "areaMysticBoost",
+  groupDamageBoost: "areaMysticBoost",
+}
+
+function withRenamedStatKeys(effects: BuffStatEffect[]): BuffStatEffect[] {
+  if (!Array.isArray(effects)) return effects
+  return effects.map((effect) =>
+    effect && typeof effect.statKey === "string" && LEGACY_STAT_KEY_RENAMES[effect.statKey]
+      ? { ...effect, statKey: LEGACY_STAT_KEY_RENAMES[effect.statKey] as StatKey }
+      : effect,
+  )
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -839,19 +854,12 @@ function hydrateBuff(b: Buff): Buff {
   const { dot: _drop, ...rest0 } = b as Buff & { dot?: unknown }
   void _drop
   const rest = { ...rest0, id: migrateEntityId(b.id), classId: migrateClassId(b.classId) }
-  const effects = Array.isArray(b.effects)
-    ? b.effects.map((e) =>
-        e && typeof e.statKey === "string" && LEGACY_STAT_KEY_RENAMES[e.statKey]
-          ? { ...e, statKey: LEGACY_STAT_KEY_RENAMES[e.statKey] as StatKey }
-          : e,
-      )
-    : b.effects
   return {
     ...(rest as Buff),
     scope: b.scope === "team" ? "team" : "player",
     stackScaling: b.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof b.maxStacks === "number" && b.maxStacks > 0 ? b.maxStacks : 1,
-    effects,
+    effects: withRenamedStatKeys(b.effects),
   }
 }
 
@@ -1053,6 +1061,7 @@ function hydrateDebuff(d: Debuff): Debuff {
     id: migrateEntityId(d.id),
     classId: migrateClassId(d.classId),
     dot,
+    effects: withRenamedStatKeys(d.effects),
     stackScaling: d.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof d.maxStacks === "number" && d.maxStacks > 0 ? d.maxStacks : 1,
     detonation,

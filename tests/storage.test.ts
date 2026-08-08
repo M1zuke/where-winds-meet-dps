@@ -11,6 +11,7 @@ import {
   loadCustomRotations,
   loadProfiles,
   loadCustomBuffs,
+  loadCustomDebuffs,
   saveProfiles,
   exportProfile,
   importProfile,
@@ -271,28 +272,24 @@ describe("migrateSeededSkillIds — repairs pre-fix seeded-copy ids", () => {
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
-describe("singleMysticBoost migration (field/gear-word/buff-stat-key merge, no version bump)", () => {
+describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)", () => {
   const PROFILES_KEY = "wwm.profiles"
   const PROFILES_VERSION = 4
   const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
   const CUSTOM_BUFFS_VERSION = 3
+  const CUSTOM_DEBUFFS_KEY = "wwm.customDebuffs"
+  const CUSTOM_DEBUFFS_VERSION = 2
 
-  beforeEach(() => {
-    try {
-      kvStore.remove(PROFILES_KEY)
-    } catch {}
-    try {
-      kvStore.remove(CUSTOM_BUFFS_KEY)
-    } catch {}
-  })
-  afterEach(() => {
-    try {
-      kvStore.remove(PROFILES_KEY)
-    } catch {}
-    try {
-      kvStore.remove(CUSTOM_BUFFS_KEY)
-    } catch {}
-  })
+  function clearStores(): void {
+    for (const key of [PROFILES_KEY, CUSTOM_BUFFS_KEY, CUSTOM_DEBUFFS_KEY]) {
+      try {
+        kvStore.remove(key)
+      } catch {}
+    }
+  }
+
+  beforeEach(clearStores)
+  afterEach(clearStores)
 
   it("drops the legacy singleBurstBoost/singleControlBoost keys and recomputes singleMysticBoost from gear", () => {
     const legacyInputs = {
@@ -414,6 +411,78 @@ describe("singleMysticBoost migration (field/gear-word/buff-stat-key merge, no v
     expect(contribution.find((c) => c.path === "bellstrike.min")?.amount).toBeCloseTo(22.1, 10)
   })
 
+  it("renames both stored area words onto the merged one and preserves their contribution", () => {
+    const areaPiece = (id: string, word: string): GearPiece => ({
+      id,
+      slot: "helm",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word, value: 0.05, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    })
+    const legacyInputs = {
+      ...defaultInputs,
+      inventory: [
+        areaPiece("test-area-debuff-piece", "Area Debuff Mystic Skill DMG Boost"),
+        areaPiece("test-area-damage-piece", "Area DMG Mystic Skill DMG Boost"),
+        areaPiece("test-aoe-anomaly-piece", "AoE Anomaly"),
+        areaPiece("test-aoe-damage-piece", "AoE Damage"),
+      ],
+    }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Legacy", inputs: legacyInputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    const hydratedInputs = profiles[0].inputs
+    for (const piece of hydratedInputs.inventory) {
+      expect(piece.words[0].word).toBe("Area Mystic Skill DMG Boost")
+      expect(piece.words[0].value).toBe(0.05)
+      const contribution = computeGearContribution(piece, hydratedInputs)
+      const entry = contribution.find((c) => c.path === "areaMysticBoost")
+      expect(entry?.amount).toBeCloseTo(0.05, 10)
+    }
+  })
+
+  it("drops the legacy groupAnomalyBoost/groupDamageBoost keys off a stored profile", () => {
+    const legacyInputs = {
+      ...defaultInputs,
+      groupAnomalyBoost: 0.07,
+      groupDamageBoost: 0.07,
+    } as Inputs & { groupAnomalyBoost?: number; groupDamageBoost?: number }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Legacy", inputs: legacyInputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    const hydratedInputs = profiles[0].inputs as unknown as Record<string, unknown>
+    expect(hydratedInputs.groupAnomalyBoost).toBeUndefined()
+    expect(hydratedInputs.groupDamageBoost).toBeUndefined()
+    expect(profiles[0].inputs.areaMysticBoost).toBe(0)
+  })
+
   it("remaps a stored custom buff's legacy statKey to singleMysticBoost", () => {
     const legacyBuff = {
       id: "bf-legacy-1",
@@ -434,6 +503,59 @@ describe("singleMysticBoost migration (field/gear-word/buff-stat-key merge, no v
     expect(buffs).toHaveLength(1)
     expect(buffs[0].effects[0].statKey).toBe("singleMysticBoost")
     expect(buffs[0].effects[0].amount).toBe(0.05)
+  })
+
+  it("remaps a stored custom debuff's area statKey too — debuff effects go through the same map", () => {
+    const legacyDebuff = {
+      id: "df-legacy-1",
+      classId: "bellstrikeUmbra",
+      name: "Legacy Area Debuff",
+      activation: "triggered",
+      durationFrames: 600,
+      effects: [{ statKey: "groupAnomalyBoost", amount: 0.04 }],
+      dot: null,
+      maxStacks: 1,
+      stackScaling: "flat",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+    kvStore.set(
+      CUSTOM_DEBUFFS_KEY,
+      JSON.stringify({ v: CUSTOM_DEBUFFS_VERSION, debuffs: [legacyDebuff] }),
+    )
+
+    const debuffs = loadCustomDebuffs()
+    expect(debuffs).toHaveLength(1)
+    expect(debuffs[0].effects[0].statKey).toBe("areaMysticBoost")
+    expect(debuffs[0].effects[0].amount).toBe(0.04)
+  })
+
+  it("remaps a stored custom buff's two area statKeys to areaMysticBoost", () => {
+    const legacyBuff = {
+      id: "bf-legacy-2",
+      classId: "bellstrikeUmbra",
+      name: "Legacy Area Buff",
+      scope: "player",
+      activation: "permanent",
+      durationFrames: 600,
+      effects: [
+        { statKey: "groupAnomalyBoost", amount: 0.05 },
+        { statKey: "groupDamageBoost", amount: 0.03 },
+      ],
+      maxStacks: 1,
+      stackScaling: "flat",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [legacyBuff] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs).toHaveLength(1)
+    expect(buffs[0].effects.map((effect) => effect.statKey)).toEqual([
+      "areaMysticBoost",
+      "areaMysticBoost",
+    ])
+    expect(buffs[0].effects.map((effect) => effect.amount)).toEqual([0.05, 0.03])
   })
 })
 

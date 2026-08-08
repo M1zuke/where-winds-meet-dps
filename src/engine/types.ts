@@ -84,8 +84,7 @@ export interface Inputs {
 
   bossBoost: number
   singleMysticBoost: number
-  groupAnomalyBoost: number
-  groupDamageBoost: number
+  areaMysticBoost: number
 
   dingYinByTag: Record<string, number>
 
@@ -336,6 +335,7 @@ export interface BuffWindow {
 
 export interface ItemRankingRow {
   word: string
+  source: "tunement" | "attunement"
   amount: number
   unit: "raw" | "percent"
   expectedDps: number

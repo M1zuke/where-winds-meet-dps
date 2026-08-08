@@ -51,8 +51,8 @@ function withBitterSeasonAtTier3(profile: StoredProfile): StoredProfile {
   }
 }
 
-describe("profile-v6 fixture is already at the latest version", () => {
-  it("is v6, matching LATEST_PROFILES_VERSION", () => {
+describe("profile-v6 fixture", () => {
+  it("is v6 and is the Umbra build these tests assume", () => {
     expect(LEGACY.v).toBe(6)
     expect(LEGACY.profile.inputs.classId).toBe("bellstrikeUmbra")
   })

@@ -38,12 +38,7 @@ const MARTIAL_BOOST_PATHS = [
   "hengDaoBoost",
 ]
 
-const TARGET_BOOST_PATHS = [
-  "bossBoost",
-  "singleMysticBoost",
-  "groupAnomalyBoost",
-  "groupDamageBoost",
-]
+const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost"]
 
 interface RowEntry {
   label: string

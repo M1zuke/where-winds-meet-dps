@@ -55,12 +55,12 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
   },
 ]
 
+export function attunementsForClass(classId: string): AttunementOption[] {
+  return ATTUNEMENT_OPTIONS.filter((opt) => !opt.classIds || opt.classIds.includes(classId))
+}
+
 export function attunementsFor(slot: GearSlot, classId: string): AttunementOption[] {
-  return ATTUNEMENT_OPTIONS.filter((opt) => {
-    if (!opt.slots.includes(slot)) return false
-    if (opt.classIds && !opt.classIds.includes(classId)) return false
-    return true
-  })
+  return attunementsForClass(classId).filter((opt) => opt.slots.includes(slot))
 }
 
 export function getAttunement(id: string): AttunementOption | undefined {
