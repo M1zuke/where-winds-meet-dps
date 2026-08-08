@@ -43,8 +43,7 @@ export const defaultInputs: Inputs = {
 
   bossBoost: 0,
   singleMysticBoost: 0,
-  groupAnomalyBoost: 0,
-  groupDamageBoost: 0,
+  areaMysticBoost: 0,
 
   dingYinByTag: { "Mouse Boost": 0.153 },
 

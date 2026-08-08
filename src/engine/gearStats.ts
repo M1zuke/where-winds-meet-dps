@@ -1,22 +1,8 @@
-import type { AttributeKey, GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "./types"
+import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "./types"
 import { isWeaponSlot } from "./types"
 import { getWordSpecs } from "./itemRanking"
 import { getAttunement } from "./attunements"
-import { getSchool } from "./panel"
-
-const PRIMARY_TO_BLOCK: Readonly<Record<AttributeKey, string>> = {
-  Bellstrike: "bellstrike",
-  Stonesplit: "stonesplit",
-  Silkbind: "silkbind",
-  Bamboocut: "bamboocut",
-}
-
-function resolveEnginePath(enginePath: string, ctx: Inputs): string {
-  if (!enginePath.startsWith("primaryAttr.")) return enginePath
-  const school = getSchool(ctx.classId)
-  const block = PRIMARY_TO_BLOCK[school.primaryAttribute]
-  return `${block}.${enginePath.slice("primaryAttr.".length)}`
-}
+import { addStatDelta, resolveEnginePath } from "./statPaths"
 
 export const RELAYED_FACTOR = 0.94
 
@@ -159,8 +145,7 @@ const NUMERIC_PATHS: readonly string[] = [
   "hengDaoBoost",
   "bossBoost",
   "singleMysticBoost",
-  "groupAnomalyBoost",
-  "groupDamageBoost",
+  "areaMysticBoost",
 ]
 
 function readPath(obj: unknown, path: string): number {
@@ -270,37 +255,12 @@ function clonePieceShape(i: Inputs): Inputs {
   }
 }
 
-function writePath(obj: Inputs, path: string, delta: number): void {
-  const parts = path.split(".")
-  if (parts.length === 1) {
-    const rec = obj as unknown as Record<string, unknown>
-    if (typeof rec[parts[0]] === "number") {
-      rec[parts[0]] = (rec[parts[0]] as number) + delta
-    }
-    return
-  }
-  let cur: unknown = obj
-  for (let i = 0; i < parts.length - 1; i++) {
-    if (!cur || typeof cur !== "object") return
-    cur = (cur as Record<string, unknown>)[parts[i]]
-  }
-  if (!cur || typeof cur !== "object") return
-  const block = cur as Record<string, unknown>
-  const last = parts[parts.length - 1]
-  if (block[last] === undefined && parts[0] === "dingYinByTag") {
-    block[last] = 0
-  }
-  if (typeof block[last] === "number") {
-    block[last] = (block[last] as number) + delta
-  }
-}
-
 export function applyPieceContribution(inputs: Inputs, piece: GearPiece, sign: 1 | -1): Inputs {
   const next = clonePieceShape(inputs)
   const contribution = computeGearContribution(piece, inputs)
   for (const e of contribution) {
     if (e.path === "hp" || e.path === "physDef") continue
-    writePath(next, e.path, sign * e.amount)
+    addStatDelta(next, e.path, sign * e.amount)
   }
   return next
 }

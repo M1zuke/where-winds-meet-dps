@@ -54,7 +54,11 @@ describe("profile-v4 fixture — the stored blob is genuinely pre-rename", () =>
 describe("V5 step — v4 → v5 in isolation", () => {
   it("is registered, and the chain walks a v4 blob to the latest version", () => {
     const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toEqual(["V5__englishIdsWithoutSitePrefix", "V6__dropDerivedStats"])
+    expect(result.applied).toEqual([
+      "V5__englishIdsWithoutSitePrefix",
+      "V6__dropDerivedStats",
+      "V7__clampSingleMysticWordRoll",
+    ])
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })
 

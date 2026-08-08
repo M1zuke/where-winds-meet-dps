@@ -211,8 +211,9 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     Boss: effectiveBossBoost,
     control: inputs.singleMysticBoost,
     burst: inputs.singleMysticBoost,
-    "area-debuff": inputs.groupAnomalyBoost,
-    "area-damage": inputs.groupDamageBoost,
+    area: inputs.areaMysticBoost,
+    "area-debuff": inputs.areaMysticBoost,
+    "area-damage": inputs.areaMysticBoost,
   }
 
   return {
@@ -363,8 +364,9 @@ export function buildContext(
     mysticTypeBoosts: {
       control: inputs.singleMysticBoost,
       burst: inputs.singleMysticBoost,
-      "area-debuff": inputs.groupAnomalyBoost,
-      "area-damage": inputs.groupDamageBoost,
+      area: inputs.areaMysticBoost,
+      "area-debuff": inputs.areaMysticBoost,
+      "area-damage": inputs.areaMysticBoost,
     },
     dotDamageBoost: has("Insightful Strike") ? 0.1 : 0,
     physPenResistance: penResistanceForInputs(inputs).physical,
