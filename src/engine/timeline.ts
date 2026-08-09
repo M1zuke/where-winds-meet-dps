@@ -41,6 +41,7 @@ import { paramsFromInputs } from "./buffs/params"
 import { castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
 import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
+import { skillAttunementDamageMultiplier } from "./attunements"
 import {
   MORALE_MAX_STACKS,
   MORALE_PEN_PER_STACK,
@@ -105,13 +106,10 @@ const QI_BREAK_PEN_BONUS = 15
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
-// A post-(1+H) multiplicative factor (via `art.correction`, not a
-// {statKey,amount} effect) applied only to these two bleed skills.
-// Combustion is deliberately absent — un-attuned on the site.
-const BLEED_ATTUNEMENT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
-function bleedAttunementValue(inputs: Inputs): number {
-  return inputs.classId === "bellstrikeUmbra" ? (inputs.dingYinByTag["Bleed Boost"] ?? 0) : 0
-}
+// These two bleed skills receive the level-based Bellstrike attribute bonus.
+// Their attunement damage is resolved generically from their `attune:bleed`
+// tags; this set is unrelated to attunements.
+const BELLSTRIKE_LEVEL_BONUS_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
 
 const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
 
@@ -545,7 +543,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     if (buffEngine && inputs.classId === "bellstrikeUmbra") {
       if (skill) {
-        if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
+        if (BELLSTRIKE_LEVEL_BONUS_SKILLS.has(skill.name)) {
           const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
           if (levelBonus !== 0) {
             effects.push({ statKey: "bellstrike.min", amount: levelBonus })
@@ -691,10 +689,8 @@ export function simulateTimeline(inputs: Inputs): Result {
       art.attributeFixed = variant.attributeFixed
     }
     if (st.forceCrit) art.guaranteedCrit = 1
-    if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
-      const bleedAttune = bleedAttunementValue(inputs)
-      if (bleedAttune) art.correction = (art.correction ?? 1) * (1 + bleedAttune)
-    }
+    const attunementMultiplier = skillAttunementDamageMultiplier(skill, inputs)
+    if (attunementMultiplier !== 1) art.correction = (art.correction ?? 1) * attunementMultiplier
     if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
       art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)
@@ -1076,9 +1072,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       else episodes.push({ start: w.start, end: w.end })
     }
     const dotSkill = dotTickSkill(debuffDef)
-    const bleedCorrection = BLEED_ATTUNEMENT_SKILLS.has(debuffDef.name)
-      ? 1 + bleedAttunementValue(inputs)
-      : 1
+    const attunementCorrection = skillAttunementDamageMultiplier(tickSkill ?? dotSkill, inputs)
     for (const ep of episodes) {
       for (let f = ep.start + interval; f < ep.end; f += interval) {
         if (f < 0 || !inWindow(f)) continue
@@ -1092,18 +1086,25 @@ export function simulateTimeline(inputs: Inputs): Result {
           const liveStacks = Math.max(1, stacksAt(buffId, f))
           const shape = table[clamp(liveStacks, 1, table.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamageForShape(debuffForTick, shape, st.ctx, st.forceCrit, bleedCorrection)
+          dmg = dotTickDamageForShape(
+            debuffForTick,
+            shape,
+            st.ctx,
+            st.forceCrit,
+            attunementCorrection,
+          )
         } else if (ladder) {
           const liveStacks = Math.max(0, stacksAt(buffId, f))
           if (liveStacks === 0) continue
           const scale = ladder[clamp(liveStacks, 1, ladder.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * scale
+          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * scale
         } else {
           const stackCount = perStack ? Math.max(0, stacksAt(buffId, f)) : 1
           if (perStack && stackCount === 0) continue
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * stackCount
+          dmg =
+            dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * stackCount
         }
         dmg *= tickWeight
         totalDamage += dmg

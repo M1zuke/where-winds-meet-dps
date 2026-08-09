@@ -39,3 +39,12 @@ export function addStatDelta(inputs: Inputs, path: string, delta: number): void 
     block[last] = (block[last] as number) + delta
   }
 }
+
+export function readStatValue(inputs: Inputs, path: string): number {
+  let cursor: unknown = inputs
+  for (const part of path.split(".")) {
+    if (!cursor || typeof cursor !== "object") return 0
+    cursor = (cursor as Record<string, unknown>)[part]
+  }
+  return typeof cursor === "number" && Number.isFinite(cursor) ? cursor : 0
+}
