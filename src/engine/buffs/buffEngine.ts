@@ -10,7 +10,8 @@ import type { StatKey } from "../statRegistry"
 import type { BuffDef, ConsumeOnMatch, BuffStatMods } from "./buffDef"
 import { BONUS_TYPE_TO_STATKEY, statModsToEffects } from "./buffDef"
 import { onApplyHandlers } from "./handlers"
-import { anyTagStartsWith, castTagOf, hasAnyWeapon, hasProp, skillTagsOf } from "./tags"
+import { matchesScope } from "../scope"
+import { anyTagStartsWith, castTagOf, skillTagsOf } from "./tags"
 
 export type BuffParams = Record<string, unknown>
 
@@ -747,9 +748,6 @@ export class BuffEngine {
   }
 
   private bonusAffects(def: BuffDef, tagSet: Set<string>): boolean {
-    if (def.affectsProperty) return hasProp(tagSet, def.affectsProperty)
-    if (def.affectsWeaponTypes) return hasAnyWeapon(tagSet, def.affectsWeaponTypes)
-    if (def.affects === null || def.affects === undefined) return true
-    return def.affects.length > 0 && anyTagStartsWith(tagSet, def.affects)
+    return matchesScope(tagSet, def)
   }
 }

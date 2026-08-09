@@ -18,6 +18,7 @@ export interface DebuffDotSpec {
   skillType: string
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
+  attuneTag?: string | null
   count: number
   perStackShapes?: DotStackShape[] | null
   perStackMultipliers?: number[] | null

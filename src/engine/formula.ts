@@ -29,7 +29,7 @@ type ArtRow = {
   attributeAttack?: string
   specialTag?: string
   elevatedAttributeMultiplier?: boolean
-  dingYinTag?: string
+  attuneTag?: string
   guaranteedCrit?: number
   guaranteedPrecision?: number
   guaranteedNormal?: number
@@ -84,6 +84,9 @@ export interface FormulaContext {
   set: string | null
   tianGong: "fire" | "poison" | null
   dingYinByTag: Record<string, number>
+  // The scoped view of `dingYinByTag`, keyed by the `attune:` tag an entity
+  // declares rather than by the stat's display name.
+  attuneBoostByTag?: Record<string, number>
   shareDebuffs: { henZhi: boolean; easyHurt: boolean }
   boostZoneOverrides?: Record<string, Record<string, number>>
   physPenResistance?: number
@@ -138,7 +141,6 @@ export function computeSkillDamage(
   slots: readonly [string, string, string, string, string],
   ctx: FormulaContext,
   count: number,
-  dingYin?: 1 | 2 | 3,
   counters: RotationCounters = { qiExhausted: 0, yiShuiLayer: 0, bengJieLayer: 0, lowQi: 0 },
 ): SkillResult {
   const num = (v: number | undefined) => v ?? 0
@@ -369,7 +371,10 @@ export function computeSkillDamage(
         (ctx.dotDamageMultiplier === undefined ? (ctx.dotDamageBoost ?? 0) : 0)
       : 0)
 
-  const E_dingYin = dingYin ? (ctx.dingYinByTag["DingYin" + dingYin] ?? 0) : 0
+  // A scoped stat, in the same family as `weaponBoosts` / `mysticTypeBoosts`
+  // (folded into `T` above) — but multiplicative here rather than additive
+  // inside `H_total`. Do not merge the two: they are different numbers.
+  const E_dingYin = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
 
   const I_corr = num(art.correction) || 1
 

@@ -152,7 +152,15 @@ The interesting derivations:
 * **`rateResistance` / `physPenResistance` / `attrPenResistance`** — see
   "Calculation rules"
 * **`dingYinByTag`** — keyed on the class's `permanentBuffs` (from
-  `schools.json`), never on `classBuffs` (which is always `[]`)
+  `schools.json`), never on `classBuffs` (which is always `[]`). Panel display
+  only; the formula does not read it.
+* **`attuneBoostByTag`** — the same rolled stats re-keyed by the `attune:` tag
+  their `AttunementOption.affectsTag` declares, gated by that option's
+  `classIds`. This is the map the formula joins against `art.attuneTag` to
+  produce `E_dingYin`, so an attunement reaches exactly the entities that
+  declare the tag and nothing else (BUFFS.md § "Category 3 — scoped stats").
+  Only `bleedingDamage` → `attune:bleed` is wired; the other classes' tags exist
+  in the skill data but have no `AttunementOption`, so they contribute 0.
 
 `deriveStats(inputs)` is a smaller sibling returning `DerivedStats`; the
 timeline builds one per resolved state alongside the context.

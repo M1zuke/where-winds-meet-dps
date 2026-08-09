@@ -8,6 +8,10 @@ export interface AttunementOption {
   slots: readonly GearSlot[]
   classIds: readonly string[] | null
   enginePath: string | null
+  // Which entities the rolled stat reaches. Only meaningful for the
+  // `dingYinByTag.*` attunements, whose value is scoped to a category of skills
+  // rather than applying to everything the character does.
+  affectsTag?: string
   hint?: string
 }
 
@@ -52,6 +56,7 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
     slots: ARMOR_SLOTS,
     classIds: ["bellstrikeUmbra"],
     enginePath: "dingYinByTag.Bleed Boost",
+    affectsTag: "attune:bleed",
   },
 ]
 

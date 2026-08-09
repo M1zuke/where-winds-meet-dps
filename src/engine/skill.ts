@@ -1,5 +1,5 @@
 import type { computeSkillDamage } from "./formula"
-import { mysticCategoryOf } from "./buffs/tags"
+import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -268,6 +268,7 @@ export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
     guaranteedPrecision: skill.guaranteedPrecision ? 1 : undefined,
     guaranteedNormal: skill.guaranteedNormal ? 1 : undefined,
     mysticCategory: mysticCategoryOf(skill) || undefined,
+    attuneTag: attuneTagOf(skill) || undefined,
   } as ArtRow
 }
 

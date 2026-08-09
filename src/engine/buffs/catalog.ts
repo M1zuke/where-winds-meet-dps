@@ -1,12 +1,7 @@
 import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
-import {
-  anyTagStartsWith,
-  castTagOf,
-  hasAnyWeapon,
-  hasProp,
-  mysticCategoryOf,
-  skillTagsOf,
-} from "./tags"
+import { anyTagStartsWith, attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
+import { matchesScope } from "../scope"
+import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
   MYSTIC_TYPE_BOOST_STAT_KEY,
   STAT_DEF_BY_KEY,
@@ -105,10 +100,7 @@ export function requiresLabel(def: BuffDef): string | null {
 }
 
 function bonusAffectsTags(def: BuffDef, tagSet: Set<string>): boolean {
-  if (def.affectsProperty) return hasProp(tagSet, def.affectsProperty)
-  if (def.affectsWeaponTypes) return hasAnyWeapon(tagSet, def.affectsWeaponTypes)
-  if (def.affects === null || def.affects === undefined) return true
-  return def.affects.length > 0 && anyTagStartsWith(tagSet, def.affects)
+  return matchesScope(tagSet, def)
 }
 
 export function specMechanicDefIds(classId?: string): Set<string> {
@@ -235,6 +227,23 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
   if (mysticBoostKey) {
     rows.push(gearStatRow(mysticBoostKey, `mystic: ${mysticCategory}`, inputs))
+  }
+  const attuneTag = attuneTagOf(skill)
+  const attunement = attuneTag
+    ? ATTUNEMENT_OPTIONS.find((option) => option.affectsTag === attuneTag)
+    : undefined
+  if (attunement?.enginePath) {
+    const rolled = inputs?.dingYinByTag[attunement.enginePath.slice("dingYinByTag.".length)] ?? 0
+    const forThisClass = !attunement.classIds || !classId || attunement.classIds.includes(classId)
+    rows.push({
+      id: `attunement:${attunement.id}`,
+      name: `${attunement.label} (${attuneTag})`,
+      effect: inputs ? `+${(rolled * 100).toFixed(1)}% damage` : "gear attunement",
+      requires: `${attunement.slots.join("/")} attunement`,
+      isSpecMechanic: false,
+      active: forThisClass && rolled > 0,
+      triggeredBy: null,
+    })
   }
 
   if (classId) {

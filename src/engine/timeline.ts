@@ -38,7 +38,7 @@ import {
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
+import { attuneTagOf, castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
 import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
 import {
@@ -105,13 +105,7 @@ const QI_BREAK_PEN_BONUS = 15
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
-// A post-(1+H) multiplicative factor (via `art.correction`, not a
-// {statKey,amount} effect) applied only to these two bleed skills.
-// Combustion is deliberately absent — un-attuned on the site.
-const BLEED_ATTUNEMENT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
-function bleedAttunementValue(inputs: Inputs): number {
-  return inputs.classId === "bellstrikeUmbra" ? (inputs.dingYinByTag["Bleed Boost"] ?? 0) : 0
-}
+const LEVEL_ATTRIBUTE_BONUS_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
 
 const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
 
@@ -545,7 +539,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     if (buffEngine && inputs.classId === "bellstrikeUmbra") {
       if (skill) {
-        if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
+        if (LEVEL_ATTRIBUTE_BONUS_SKILLS.has(skill.name)) {
           const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
           if (levelBonus !== 0) {
             effects.push({ statKey: "bellstrike.min", amount: levelBonus })
@@ -691,10 +685,6 @@ export function simulateTimeline(inputs: Inputs): Result {
       art.attributeFixed = variant.attributeFixed
     }
     if (st.forceCrit) art.guaranteedCrit = 1
-    if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
-      const bleedAttune = bleedAttunementValue(inputs)
-      if (bleedAttune) art.correction = (art.correction ?? 1) * (1 + bleedAttune)
-    }
     if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
       art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)
@@ -1058,6 +1048,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             baseDot.attributeAttack) as DebuffDotSpec["attributeAttack"],
           weaponOrAttribute: tickSkill!.weaponOrAttribute || null,
           mysticCategory: mysticCategoryOf(tickSkill!) || null,
+          attuneTag: attuneTagOf(tickSkill!) || null,
         }
       : baseDot
     const debuffForTick: Debuff = srcHit ? { ...debuffDef, dot } : debuffDef
@@ -1076,9 +1067,6 @@ export function simulateTimeline(inputs: Inputs): Result {
       else episodes.push({ start: w.start, end: w.end })
     }
     const dotSkill = dotTickSkill(debuffDef)
-    const bleedCorrection = BLEED_ATTUNEMENT_SKILLS.has(debuffDef.name)
-      ? 1 + bleedAttunementValue(inputs)
-      : 1
     for (const ep of episodes) {
       for (let f = ep.start + interval; f < ep.end; f += interval) {
         if (f < 0 || !inWindow(f)) continue
@@ -1092,18 +1080,18 @@ export function simulateTimeline(inputs: Inputs): Result {
           const liveStacks = Math.max(1, stacksAt(buffId, f))
           const shape = table[clamp(liveStacks, 1, table.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamageForShape(debuffForTick, shape, st.ctx, st.forceCrit, bleedCorrection)
+          dmg = dotTickDamageForShape(debuffForTick, shape, st.ctx, st.forceCrit)
         } else if (ladder) {
           const liveStacks = Math.max(0, stacksAt(buffId, f))
           if (liveStacks === 0) continue
           const scale = ladder[clamp(liveStacks, 1, ladder.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * scale
+          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit) * scale
         } else {
           const stackCount = perStack ? Math.max(0, stacksAt(buffId, f)) : 1
           if (perStack && stackCount === 0) continue
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * stackCount
+          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit) * stackCount
         }
         dmg *= tickWeight
         totalDamage += dmg
@@ -1230,7 +1218,7 @@ function dotTickSkill(debuff: Debuff): Skill {
   }
 }
 
-function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false, correction = 1): number {
+function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false): number {
   const dot = debuff.dot
   if (!dot) return 0
   const art = {
@@ -1244,9 +1232,9 @@ function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false, correction =
     specialTag: "sustain",
     elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
-    correction,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
+    attuneTag: dot.attuneTag || undefined,
   } as Parameters<typeof computeSkillDamage>[0]
   return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
 }
@@ -1256,7 +1244,6 @@ function dotTickDamageForShape(
   shape: DotStackShape,
   ctx: Ctx,
   forceCrit = false,
-  correction = 1,
 ): number {
   const dot = debuff.dot
   if (!dot) return 0
@@ -1271,9 +1258,9 @@ function dotTickDamageForShape(
     specialTag: "sustain",
     elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
-    correction,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
+    attuneTag: dot.attuneTag || undefined,
   } as Parameters<typeof computeSkillDamage>[0]
   return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
 }

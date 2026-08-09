@@ -1,5 +1,6 @@
 import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
+import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { resolveMindMethodOverrides } from "./mindMethodOverrides"
 import schools from "../data/classes/schools.json"
 import breakthroughs from "../data/baseStats/breakthroughTiers.json"
@@ -33,6 +34,8 @@ const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
 }>
 
 const SETS = (sets as { sets: { name: string; [k: string]: unknown }[] }).sets
+
+const DING_YIN_PATH_PREFIX = "dingYinByTag."
 
 export interface DerivedStats {
   classId: string
@@ -297,6 +300,15 @@ export function buildContext(
     if (tag && tag !== "N/A") dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
   }
 
+  const attuneBoostByTag: Record<string, number> = {}
+  for (const option of ATTUNEMENT_OPTIONS) {
+    if (!option.affectsTag || !option.enginePath?.startsWith(DING_YIN_PATH_PREFIX)) continue
+    if (option.classIds && !option.classIds.includes(inputs.classId)) continue
+    const amount = inputs.dingYinByTag[option.enginePath.slice(DING_YIN_PATH_PREFIX.length)] ?? 0
+    if (amount)
+      attuneBoostByTag[option.affectsTag] = (attuneBoostByTag[option.affectsTag] ?? 0) + amount
+  }
+
   return {
     smallPhys: inputs.phys.min,
     largePhys: inputs.phys.max,
@@ -345,6 +357,7 @@ export function buildContext(
     set: inputs.set,
     tianGong: inputs.tianGongElement,
     dingYinByTag,
+    attuneBoostByTag,
     shareDebuffs: {
       henZhi: inputs.shareDebuff5HenZhi,
       easyHurt: inputs.shareEasyHurt,

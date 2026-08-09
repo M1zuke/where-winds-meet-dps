@@ -3,6 +3,7 @@ import type { Skill } from "../skill"
 export const PROP_TAG = "prop:"
 export const WEAPON_TAG = "weapon:"
 export const MYSTIC_TAG = "mystic:"
+export const ATTUNE_TAG = "attune:"
 
 export function skillTagsOf(skill: Skill): Set<string> {
   const t = new Set<string>(skill.tags ?? [])
@@ -38,4 +39,10 @@ export function hasAnyWeapon(tagSet: Set<string>, weapons: readonly string[]): b
 export function mysticCategoryOf(skill: Pick<Skill, "tags">): string {
   const tag = (skill.tags ?? []).find((t) => t.startsWith(MYSTIC_TAG))
   return tag ? tag.slice(MYSTIC_TAG.length) : ""
+}
+
+// Returns the whole tag, not its suffix — `FormulaContext.attuneBoostByTag` is
+// keyed by the tag as authored so the scope reads the same in data and in code.
+export function attuneTagOf(skill: Pick<Skill, "tags">): string {
+  return (skill.tags ?? []).find((t) => t.startsWith(ATTUNE_TAG)) ?? ""
 }

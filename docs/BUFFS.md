@@ -10,9 +10,14 @@ TIMELINE.md § 5 documents the *schemas* (`Buff`/`Debuff` + `HitTrigger` vs
 
 ## The dividing question
 
-> Does it change the character's **stats** (→ category 1, stat layer,
-> invisible), or does it change the **damage of specific skills only**
-> (→ category 2, buff-def, visible in the Skill Editor)?
+Two questions, not one:
+
+> 1. Is it a **stat the character has**, or an **effect that switches on**?
+> 2. If it's a stat: does it apply to **everything** (→ category 1, stat layer),
+>    or only to a **category of skills** (→ category 3, scoped stat)?
+>
+> An effect that switches on and reaches only certain skills is category 2 — a
+> buff-def, visible in the Skill Editor.
 
 ## Category 1 — base-stat / overall-stat buffs
 
@@ -63,6 +68,34 @@ application path that risks double-counting.
 **One source of truth:** value / scaling / `affects` live in the def; the engine
 reads it, the UI renders from it. If a skill-specific mechanic doesn't fit the
 buff-def schema, **extend the schema** rather than working around it.
+
+## Category 3 — scoped stats
+
+A stat the character **has** (rolled on gear, granted by a set), whose value
+reaches only a category of skills rather than everything. It is *not* a buff:
+nothing switches it on, and it does not belong in the buff-def system.
+
+There are three, and they all work the same way — the entity declares what it
+is, the stat declares what it reaches, and `formula.ts` joins them:
+
+| stat | entity declares | joined |
+| --- | --- | --- |
+| `weaponBoosts` | `weaponOrAttribute` | additively, inside `H_total` (via `T`) |
+| `mysticTypeBoosts` | a `mystic:` tag | additively, inside `H_total` (via `T`) |
+| `dingYinByTag` (attunements) | an `attune:` tag | **multiplicatively**, as `(1 + E_dingYin)` |
+
+⚠️ **The dingYin channel is multiplicative and the other two are additive.**
+They are not interchangeable; never fold one into the other.
+
+Wiring a new one is data, not code: give the entities an `attune:` tag (the
+Skill Editor's Effects card edits it directly) and give the `AttunementOption`
+an `affectsTag`. `panel.ts` derives `FormulaContext.attuneBoostByTag` from the
+option list, so no engine file learns the tag's name.
+
+These are visible in **Panel Stats / Stats Overview**, where stats belong — and
+in the Skill Editor's *Receives* column, which lists them beside the buff-defs
+that reach the same skill. The "no invisible magic" rule below is satisfied that
+way, not by being a def.
 
 ## Which system, once you're in category 2
 
