@@ -55,7 +55,7 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
   },
   {
     id: "phalanxChargeDamage",
-    label: "Phalanxbane Blade-Charged Skill DMG Boost",
+    label: "Phalanx Charge Boost",
     min: 0.03,
     max: 0.06,
     slots: ARMOR_SLOTS,

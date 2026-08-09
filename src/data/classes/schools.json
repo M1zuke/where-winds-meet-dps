@@ -86,7 +86,7 @@
     "displayName": "Stonesplit Strength",
     "primaryAttribute": "Stonesplit",
     "attributeMultiplier": 51.5,
-    "permanentBuffs": ["Hengdao Derivative Boost", "Modao Charge Skill Boost"],
+    "permanentBuffs": ["Hengdao Derivative Boost", "Phalanx Charge Boost"],
     "classMindGroup": "Frostwhite Night",
     "allowedMindMethods": [
       "Morale Chant",
