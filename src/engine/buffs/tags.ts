@@ -43,15 +43,6 @@ export function castTagOf(skill: Pick<Skill, "castTag" | "name">): string {
   return skill.castTag ?? deriveCastTag(skill.name ?? "")
 }
 
-export function tagStartsWith(castTag: string, prefix: string): boolean {
-  return castTag.startsWith(prefix)
-}
-
-export function anyTagStartsWith(tagSet: Set<string>, prefixes: readonly string[]): boolean {
-  for (const p of prefixes) for (const tag of tagSet) if (tag.startsWith(p)) return true
-  return false
-}
-
 export function hasProp(tagSet: Set<string>, prop: string): boolean {
   return tagSet.has(PROP_TAG + prop)
 }
