@@ -1,6 +1,5 @@
 import type {
   BuffWindow,
-  CastBuffTag,
   Inputs,
   Result,
   RotationCast,
@@ -19,6 +18,7 @@ import {
 } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, type StatusWindow } from "./ledger"
+import { collectCastBuffs } from "./castBuffs"
 import {
   deriveStats,
   buildContext,
@@ -799,59 +799,27 @@ export function simulateTimeline(inputs: Inputs): Result {
       ls.startFrame + lastHitFrame,
     )
     const queryTimeSec = queryFrame / FPS
-    const buffs: CastBuffTag[] = []
-    const seenBuffIds = new Set<string>()
-    for (const b of activeBuffsAt(queryFrame)) {
-      if (seenBuffIds.has(b.id)) continue
-      seenBuffIds.add(b.id)
-      const tracked = stacksAt(b.id, queryFrame)
-      const stacks = tracked > 0 ? tracked : ledger.hasStackHistory(b.id) ? tracked : 1
-      const dotIntervalSec =
-        isDebuffStatus(b) && b.dot && b.dot.tickIntervalFrames > 0
-          ? b.dot.tickIntervalFrames / FPS
-          : undefined
-      let remainingSec: number | undefined
-      if (b.activation !== "permanent") {
-        const remainingFrames = ledger.remainingFramesAt(b.id, queryFrame)
-        if (remainingFrames !== undefined) remainingSec = remainingFrames / FPS
-      }
+    const { buffs, seen: seenBuffIds } = collectCastBuffs({
+      frame: queryFrame,
+      timeSec: queryTimeSec,
+      fps: FPS,
+      ledger,
+      statusById,
+      buffEngine,
       // Below the display threshold there's a real chance no poison has
       // procced yet at all (e.g. right after the very first eligible hits),
       // so the expected-remaining number alone would understate that and
       // read as an oddly short "duration" — withhold it until more likely
       // than not to be up, same convention as Concentration's own gate.
-      if (b.id === bitterSeasonId && bitterSeasonPoison) {
+      overrideRemainingSec: (id, timeSec) => {
+        if (id !== bitterSeasonId || !bitterSeasonPoison) return null
         const isLikelyActive =
-          bitterSeasonPoison.activeProbAtTime(queryTimeSec) >=
-          BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD
-        const activeSec = isLikelyActive
-          ? bitterSeasonPoison.remainingActiveSecAtTime(queryTimeSec)
-          : 0
-        remainingSec = activeSec > 0 ? activeSec : undefined
-      }
-      buffs.push({
-        id: b.id,
-        name: b.name,
-        stacks,
-        maxStacks: b.maxStacks ?? 1,
-        effects: b.effects,
-        dotIntervalSec,
-        remainingSec,
-      })
-    }
+          bitterSeasonPoison.activeProbAtTime(timeSec) >= BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD
+        const activeSec = isLikelyActive ? bitterSeasonPoison.remainingActiveSecAtTime(timeSec) : 0
+        return { seconds: activeSec > 0 ? activeSec : undefined }
+      },
+    })
     if (buffEngine) {
-      for (const sb of buffEngine.activeBuffsForDisplay(queryTimeSec)) {
-        if (seenBuffIds.has(sb.id)) continue
-        seenBuffIds.add(sb.id)
-        buffs.push({
-          id: sb.id,
-          name: sb.name,
-          stacks: sb.stacks,
-          maxStacks: sb.maxStacks,
-          effects: sb.effects,
-          requires: sb.requires,
-        })
-      }
       if (buffEngine.paramOn("moraleChant") && !seenBuffIds.has("moraleChant")) {
         const moraleQiBreak = buffEngine.qiPhase(queryTimeSec) === "exhausted"
         const ms = moraleStacksAtTime(queryTimeSec, moraleQiBreak)
