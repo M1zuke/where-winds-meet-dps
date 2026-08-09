@@ -22,8 +22,21 @@
       "specs": ["stonesplit_strength"],
       "def": {
         "id": "shatteredRidgeDeflect",
-        "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggers": ["Deflect"],
+        "name": "Shattered Ridge (Max Stacks)",
+        "triggers": [
+          "Deflect",
+          "SnowpartingQ-Stab",
+          "AnxiSoldierHeng",
+          "AnxiSoldierMoDown",
+          "AnxiSoldierMoJump",
+          "PhalanxCharged-S3",
+          "PhalanxCharged-S3[InnerPassion]",
+          "SnowpartingVC",
+          "SnowpartingVC Prepull",
+          "PhalanxQ",
+          "AnxiSoldierMoSweep"
+        ],
+        "triggerGeneratedSkills": true,
         "exactMatch": true,
         "duration": 8,
         "affects": [

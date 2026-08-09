@@ -72,6 +72,7 @@ export interface BuffDef {
   id: string
   name?: string
   triggers?: string[]
+  triggerGeneratedSkills?: boolean
   exactMatch?: boolean
   refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   onApply?: string[]

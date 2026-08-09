@@ -60,7 +60,7 @@ describe("Stonesplit Strength built-in buffs", () => {
     expect(stonesplitStrength.critDmgBoostPanel - baseline.critDmgBoostPanel).toBeCloseTo(0.21, 10)
   })
 
-  it("applies Shattered Ridge's base and deflect-window damage bonuses", () => {
+  it("applies Shattered Ridge's base and active-window damage bonuses", () => {
     const withoutSet = buildContext({ ...defaultInputs, classId: CLASS, set: null })
     const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
     const withSet = buildContext(withSetInputs)
@@ -85,6 +85,82 @@ describe("Stonesplit Strength built-in buffs", () => {
         amount: 0.08,
       })
     }
+  })
+
+  it("lets every Shattered Ridge attack trigger and refresh its own damage window", () => {
+    const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
+    const triggerNames = [
+      "SnowpartingQ-Stab",
+      "AnxiSoldierHeng",
+      "AnxiSoldierMoDown",
+      "AnxiSoldierMoJump",
+      "PhalanxCharged-S3[InnerPassion]",
+      "SnowpartingVC",
+      "PhalanxQ",
+      "AnxiSoldierMoSweep",
+    ]
+
+    for (const name of triggerNames) {
+      const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
+      const skill = skillNamed(name)
+
+      engine.processSkillCast(name, 0)
+
+      expect(engine.calculateDamageEffects(skill, 0).effects).toContainEqual({
+        statKey: "allDamageBoost",
+        amount: 0.08,
+      })
+    }
+
+    const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
+    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
+    engine.processSkillCast("SnowpartingQ-Stab", 0)
+    engine.processSkillCast("AnxiSoldierHeng", 7)
+
+    expect(engine.calculateDamageEffects(charged, 14.99).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
+    expect(engine.calculateDamageEffects(charged, 15).effects).not.toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
+  })
+
+  it("registers a generated Anxi attack as a Shattered Ridge trigger", () => {
+    const source = skillNamed("SnowpartingVC")
+    const anxi = skillNamed("AnxiSoldierHeng")
+    const parent: Skill = {
+      ...source,
+      id: "test-shattered-ridge-generated-parent",
+      name: "Generated Anxi Parent",
+      hits: source.hits.map((hit) => ({
+        ...hit,
+        physMultiplier: 0,
+        attributeMultiplier: 0,
+        physFixed: 0,
+        attributeFixed: 0,
+      })),
+    }
+    const probe: Skill = {
+      ...anxi,
+      id: "test-shattered-ridge-anxi-probe",
+      name: "Anxi Probe",
+      hits: anxi.hits.map((hit) => ({ ...hit, triggers: [] })),
+    }
+    const result = simulateTimeline({
+      ...defaultInputs,
+      classId: CLASS,
+      set: "Shattered Ridge",
+      customSkills: [parent, probe],
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [parent, probe].map((skill) =>
+          makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
+        ),
+      }),
+    })
+
+    expect(damageOf(result, "AnxiSoldierHeng")).toBeGreaterThan(damageOf(result, "Anxi Probe"))
   })
 
   it("applies Iron Guards' damage and penetration effects", () => {

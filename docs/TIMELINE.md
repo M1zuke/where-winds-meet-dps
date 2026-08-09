@@ -190,7 +190,9 @@ buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.
 tag-matched, not id-referenced:
 
 - **who applies it** — `triggers: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
-  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`.
+  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`. Rotation casts are the
+  default trigger source; `triggerGeneratedSkills` additionally lets a def react to
+  `castSkill`-generated subskills (for example Shattered Ridge refreshing from Anxi attacks).
 - **who it boosts** — `affects: string[] | null` (tag prefixes; `null` = everything),
   `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`, `overriddenBy`. See
   `bonusAffects` in `buffEngine.ts` (`buffEngine.ts:705`).

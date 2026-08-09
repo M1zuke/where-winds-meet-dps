@@ -432,28 +432,74 @@ export function simulateTimeline(inputs: Inputs): Result {
         ...groupBuffDefs(),
         ...mechanicBuffDefsForClass(inputs.classId),
       ])
-      for (const ls of laidSteps) {
-        const skill = ls.resolved.skill
-        const castTag = castTagOf(skill)
+      type BuffCastEvent = {
+        frame: number
+        sequence: number
+        skill: Skill
+        hits: SkillHit[]
+        generated: boolean
+      }
+      let buffCastSequence = 0
+      const pendingBuffCasts: BuffCastEvent[] = laidSteps.map((ls) => ({
+        frame: ls.startFrame,
+        sequence: buffCastSequence++,
+        skill: ls.resolved.skill,
+        hits: ls.performedHits,
+        generated: false,
+      }))
+      let processedBuffCasts = 0
+
+      while (pendingBuffCasts.length > 0 && processedBuffCasts < EVENT_CAP) {
+        pendingBuffCasts.sort(
+          (left, right) => left.frame - right.frame || left.sequence - right.sequence,
+        )
+        const event = pendingBuffCasts.shift()!
+        processedBuffCasts++
+        const castTag = castTagOf(event.skill)
         if (!castTag) continue
         const opts: Record<string, unknown> = {
-          hitCount: ls.performedHits.length,
-          castTime: (skill.castFrames || 1) / FPS,
+          hitCount: event.hits.length,
+          castTime: (event.skill.castFrames || 1) / FPS,
+          generatedSkill: event.generated,
         }
-        for (const tag of skill.tags ?? []) {
+        for (const tag of event.skill.tags ?? []) {
           if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
           else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
         }
-        eng.processSkillCast(castTag, ls.startFrame / FPS, opts)
-        if (opts.isDrone && ls.performedHits.length > 1) {
+        eng.processSkillCast(castTag, event.frame / FPS, opts)
+        if (!event.generated && opts.isDrone && event.hits.length > 1) {
           const useExternalLB = !!eng.params.starReacher
-          for (let i = 1; i < ls.performedHits.length; i++) {
-            const t = (ls.startFrame + ls.performedHits[i].frame) / FPS
+          for (let i = 1; i < event.hits.length; i++) {
+            const t = (event.frame + event.hits[i].frame) / FPS
             if (useExternalLB) eng.processDroneTickWithExternalLB(t)
             else eng.processDroneTick(t)
           }
         }
+
+        for (const hit of event.hits) {
+          const triggerFrame = event.frame + hit.frame
+          for (const trigger of hit.triggers) {
+            if (trigger.kind !== "castSkill") continue
+            if (
+              !triggerConditions(trigger).every((condition) =>
+                conditionHolds(condition, triggerFrame),
+              )
+            )
+              continue
+            const triggeredSkill = skillsById.get(trigger.targetId)
+            if (!triggeredSkill) continue
+            pendingBuffCasts.push({
+              frame: triggerFrame,
+              sequence: buffCastSequence++,
+              skill: triggeredSkill,
+              hits: triggeredSkill.hits,
+              generated: true,
+            })
+          }
+        }
       }
+      if (pendingBuffCasts.length > 0)
+        eng.warnings.add(`Buff trigger prepass exceeded ${EVENT_CAP} generated casts.`)
       return eng
     } catch {
       return null

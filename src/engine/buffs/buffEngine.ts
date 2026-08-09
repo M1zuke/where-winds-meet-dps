@@ -346,9 +346,11 @@ export class BuffEngine {
 
   processSkillCast(castTag: string, time: number, opts: Record<string, unknown> = {}): void {
     if (opts.noBuffTrigger) return
+    const generatedSkill = !!opts.generatedSkill
     for (const [prefix, defs] of this.triggerMap) {
       if (!castTag.startsWith(prefix)) continue
       for (const def of defs) {
+        if (generatedSkill && !def.triggerGeneratedSkills) continue
         if (def.exactMatch && castTag !== prefix) continue
         if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
         if (def.cooldown) {
@@ -428,6 +430,7 @@ export class BuffEngine {
         }
       }
     }
+    if (generatedSkill) return
     for (const def of this.refreshDefs) {
       const ro = def.refreshOn!
       if (ro.skillProperty && opts[ro.skillProperty]) {
