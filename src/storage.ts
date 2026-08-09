@@ -309,6 +309,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
       revelryScript: typeof r.revelryScript === "boolean" ? r.revelryScript : def.revelryScript,
+      dragonHeadFullStacks:
+        typeof r.dragonHeadFullStacks === "boolean"
+          ? r.dragonHeadFullStacks
+          : def.dragonHeadFullStacks,
+      dragonHeadLowHpMaxBonus:
+        typeof r.dragonHeadLowHpMaxBonus === "boolean"
+          ? r.dragonHeadLowHpMaxBonus
+          : def.dragonHeadLowHpMaxBonus,
     }
   }
   return withZeroedDerivedStats(next)
@@ -523,18 +531,73 @@ interface CustomSkillsBlob {
   skills: Skill[]
 }
 
+// A Skill Editor copy saved before the tag existed still scores Dragon Head -
+// Plus without its qi-break doubling, and nothing in the UI would show that.
+const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
+
+function healSkillTags(id: string, tags: string[]): string[] {
+  if (!id.endsWith("-dragon-head-plus") || tags.includes(QI_BREAK_DOUBLE_TAG)) return tags
+  return [...tags, QI_BREAK_DOUBLE_TAG]
+}
+
+// The Dragon Head coefficients were replaced wholesale (2026-08-08), so a
+// stored copy carrying the superseded workbook numbers scores ~69x low. Only
+// an untouched copy is rewritten — a hit the user actually edited is left
+// alone, since we cannot tell a stale value from a deliberate one once it
+// differs.
+const SUPERSEDED_DRAGON_HEAD_HITS: Record<
+  string,
+  { from: [number, number, number]; to: [number, number, number] }
+> = {
+  "-dragon-head-plus": {
+    from: [25.200406, 4695.46, 37.800609],
+    to: [17.3793, 3237, 26.0689],
+  },
+  "-dragon-head": {
+    from: [36.00058, 6707.8, 54.00087],
+    to: [24.827571, 4624.285714, 37.241286],
+  },
+}
+
+function healDragonHeadCoefficients(id: string, hits: SkillHit[]): SkillHit[] {
+  const suffix = id.endsWith("-dragon-head-plus") ? "-dragon-head-plus" : "-dragon-head"
+  if (!id.endsWith(suffix)) return hits
+  const swap = SUPERSEDED_DRAGON_HEAD_HITS[suffix]
+  if (!swap) return hits
+  return hits.map((hit) => {
+    const untouched =
+      hit.physMultiplier === swap.from[0] &&
+      hit.physFixed === swap.from[1] &&
+      hit.attributeMultiplier === swap.from[2]
+    if (!untouched) return hit
+    return {
+      ...hit,
+      physMultiplier: swap.to[0],
+      physFixed: swap.to[1],
+      attributeMultiplier: swap.to[2],
+    }
+  })
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateSkill(s: Skill): Skill {
   if (!s || typeof s !== "object") return s
   const { abilityTag: _legacyAbilityTag, ...rest } = s as Skill & { abilityTag?: string }
   void _legacyAbilityTag
+  const id = migrateEntityId(s.id)
+  const tags = Array.isArray(s.tags) ? s.tags.filter((t): t is string => typeof t === "string") : []
   return {
     ...rest,
-    id: migrateEntityId(s.id),
+    id,
     classId: migrateClassId(s.classId),
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
-    tags: Array.isArray(s.tags) ? s.tags.filter((t): t is string => typeof t === "string") : [],
-    hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
+    tags: healSkillTags(id, tags),
+    hits: Array.isArray(s.hits)
+      ? healDragonHeadCoefficients(
+          id,
+          s.hits.map((h) => hydrateSkillHit(h)),
+        )
+      : s.hits,
   }
 }
 

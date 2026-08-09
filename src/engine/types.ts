@@ -33,6 +33,8 @@ export interface CombatSettings {
   healerBuff: boolean
   breakExtension: boolean
   revelryScript: boolean
+  dragonHeadFullStacks: boolean
+  dragonHeadLowHpMaxBonus: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -42,6 +44,8 @@ export function defaultCombatSettings(): CombatSettings {
     healerBuff: false,
     breakExtension: false,
     revelryScript: false,
+    dragonHeadFullStacks: false,
+    dragonHeadLowHpMaxBonus: false,
   }
 }
 

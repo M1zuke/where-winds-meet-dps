@@ -96,6 +96,15 @@ const QI_LOW_DMG_BOOST = 0.08
 const QI_BREAK_PEN_BASE = 5
 const QI_BREAK_PEN_BONUS = 15
 
+// "If the skill hits a non-player target without Qi or with depleted Qi, the
+// damage dealt is doubled" (Dragon Head - Plus, official text in
+// `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
+// the sim has no "target has no Qi bar at all" state, so only the window
+// triggers it. Multiplicative on top of (1+H), hence `correction` rather than
+// an allDamageBoost effect — a +1.0 boost would be diluted by the additive pool.
+const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
+const QI_BREAK_DAMAGE_MULTIPLIER = 2
+
 // A post-(1+H) multiplicative factor (via `art.correction`, not a
 // {statKey,amount} effect) applied only to these two bleed skills.
 // Combustion is deliberately absent — un-attuned on the site.
@@ -460,6 +469,8 @@ export function simulateTimeline(inputs: Inputs): Result {
       })()
     : null
 
+  const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
+
   const crosswindTracker =
     buffEngine && buffEngine.paramOn("swordHorizon")
       ? new CrosswindTracker(buffEngine.paramTier("swordHorizon") >= 6)
@@ -699,6 +710,9 @@ export function simulateTimeline(inputs: Inputs): Result {
         (art.extraPhysPenetration ?? 0) +
         QI_BREAK_PEN_BASE +
         (inQiBreak || hasLingeringBone ? QI_BREAK_PEN_BONUS : 0)
+    }
+    if (inQiBreak && qiBreakEnabled && tags?.includes(QI_BREAK_DOUBLE_TAG)) {
+      art.correction = (art.correction ?? 1) * QI_BREAK_DAMAGE_MULTIPLIER
     }
     const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
     const hitInWindow = inWindow(frame)

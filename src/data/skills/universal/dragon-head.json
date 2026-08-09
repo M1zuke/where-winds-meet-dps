@@ -11,9 +11,9 @@
     {
       "id": "hit-0",
       "frame": 246,
-      "physMultiplier": 36.00058,
-      "attributeMultiplier": 54.00087,
-      "physFixed": 6707.8,
+      "physMultiplier": 24.827571,
+      "attributeMultiplier": 37.241286,
+      "physFixed": 4624.285714,
       "attributeFixed": 0,
       "extraCritDamage": 0,
       "triggers": []

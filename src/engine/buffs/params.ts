@@ -32,6 +32,9 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     params.bossBreakDuration = qiBreak.durationSec + breakExtensionBonus
   }
 
+  if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
+  if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
+
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 
   return params

@@ -58,6 +58,8 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       healerBuff: true,
       breakExtension: false,
       revelryScript: false,
+      dragonHeadFullStacks: false,
+      dragonHeadLowHpMaxBonus: false,
     }
     writeProfilesBlob({ combatSettings: custom })
     const first = loadProfiles()
