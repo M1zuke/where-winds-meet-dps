@@ -7,8 +7,7 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggeredBy": ["Deflect"],
-        "exactMatch": true,
+        "triggeredBy": ["cast:deflect"],
         "duration": 8,
         "affects": ["role:moBladeVariedCombo"],
         "bonus": {
@@ -23,8 +22,7 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggeredBy": ["Deflect"],
-        "exactMatch": true,
+        "triggeredBy": ["cast:deflect"],
         "duration": 8,
         "affects": [
           "role:snowpartingVC",

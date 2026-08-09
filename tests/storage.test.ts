@@ -18,6 +18,7 @@ import {
 } from "../src/storage"
 import { defaultInputs } from "../src/engine/defaults"
 import { builtinSkillsForClass } from "../src/engine/builtinLibrary"
+import { seedSkillFromBuiltin } from "../src/engine/skill"
 import { makeSkill } from "../src/engine/skill"
 import { makeRotation, makeStep } from "../src/engine/rotation"
 import { computeGearContribution } from "../src/engine/gearStats"
@@ -667,5 +668,39 @@ describe("GearPiece.isNew hydration (additive, no version bump)", () => {
     )
     const second = loadProfiles()
     expect(second.profiles[0].inputs.inventory[0].isNew).toBe(true)
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinDetonation = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === `${CLASS_ID}-bleed-detonation`,
+  )!
+
+  it("restores the built-in's tags on a copy seeded before they existed", () => {
+    const stale = {
+      ...seedSkillFromBuiltin(CLASS_ID, builtinDetonation),
+      tags: ["weapon:Sword", "attune:bleed"],
+    }
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.tags).toEqual(expect.arrayContaining(builtinDetonation.tags!))
+    expect(healed.tags).toContain("role:bleedDetonation")
+  })
+
+  it("round-trips an already-correct copy unchanged, and leaves a genuinely custom skill alone", () => {
+    const current = seedSkillFromBuiltin(CLASS_ID, builtinDetonation)
+    saveCustomSkill(current)
+    const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === current.id)!
+    expect(reloaded.tags).toEqual(current.tags)
+
+    const ownSkill = makeSkill(CLASS_ID, { name: "Bleed Detonation", tags: ["weapon:Sword"] })
+    saveCustomSkill(ownSkill)
+    const ownReloaded = loadCustomSkillsForClass(CLASS_ID).find(
+      (skill) => skill.id === ownSkill.id,
+    )!
+    expect(ownReloaded.tags).toEqual(["weapon:Sword"])
   })
 })

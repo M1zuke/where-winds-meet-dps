@@ -71,7 +71,6 @@ export interface BuffDef {
   id: string
   name?: string
   triggeredBy?: string[]
-  exactMatch?: boolean
   refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   onApply?: string[]
   onApplyFn?: { __handler: string }

@@ -12,13 +12,13 @@ describe("perCastConsume — frostCladSnowbreakIPConsume (stonesplit_strength)",
 
   it("grants +40% boss-boost on the SnowpartingVC cast that consumes an Inner Passion stack, and only that cast", () => {
     const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    e.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
+    e.processSkillCast("cast:snowpartingSpecial", 0, { castTime: 1 })
     expect(e.getHistoricalBuffStacks("innerPassion", 1.01)).toBe(4)
 
     const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
     expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
 
-    e.processSkillCast("SnowpartingVC", 1.05, { consumesInnerPassion: true })
+    e.processSkillCast("cast:snowpartingVC", 1.05, { consumesInnerPassion: true })
     const r = e.calculateDamageEffects(vc, 1.05)
     expect(r.effects).toContainEqual({ statKey: "bossBoost", amount: 0.4 })
     expect(r.breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
@@ -30,16 +30,16 @@ describe("perCastConsume — frostCladSnowbreakIPConsume (stonesplit_strength)",
   it("grants nothing when there is no Inner Passion stack to consume", () => {
     const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
     const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    e.processSkillCast("SnowpartingVC", 0, { consumesInnerPassion: true })
+    e.processSkillCast("cast:snowpartingVC", 0, { consumesInnerPassion: true })
     expect(e.calculateDamageEffects(vc, 0).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
   })
 
   it("is inert without frostCladNight tier 4+ (enabledParam/minTier gate)", () => {
     const e = new BuffEngine({}, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    e.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
+    e.processSkillCast("cast:snowpartingSpecial", 0, { castTime: 1 })
     expect(e.getHistoricalBuffStacks("innerPassion", 1.01)).toBe(1)
     const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    e.processSkillCast("SnowpartingVC", 1.05, { consumesInnerPassion: true })
+    e.processSkillCast("cast:snowpartingVC", 1.05, { consumesInnerPassion: true })
     expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
     expect(e.getHistoricalBuffStacks("innerPassion", 1.06)).toBe(1)
   })
@@ -50,7 +50,7 @@ describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield 
 
   it("is active only in the window after the source buff ends, not before or long after", () => {
     const e = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
-    e.processSkillCast("MoBladeQ", 0, {})
+    e.processSkillCast("cast:moBladeQ", 0, {})
     const skill = tagged("AnySkill")
     expect(e.calculateDamageEffects(skill, 4).breakdown.resistanceResolve).toBeUndefined()
     expect(e.calculateDamageEffects(skill, 8).breakdown.resistanceResolve).toBe(0.1)
@@ -60,8 +60,8 @@ describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield 
 
   it("is cancelled by a reapply of the source buff before the window would have ended", () => {
     const e = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
-    e.processSkillCast("MoBladeQ", 0, {})
-    e.processSkillCast("MoBladeQ", 10, {})
+    e.processSkillCast("cast:moBladeQ", 0, {})
+    e.processSkillCast("cast:moBladeQ", 10, {})
     const skill = tagged("AnySkill")
     expect(e.calculateDamageEffects(skill, 9).breakdown.resistanceResolve).toBe(0.1)
     expect(e.calculateDamageEffects(skill, 11).breakdown.resistanceResolve).toBeUndefined()
@@ -70,8 +70,8 @@ describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield 
 
   it("a routine refresh BEFORE the source buff would have expired doesn't spuriously activate the end-triggered buff", () => {
     const e = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
-    e.processSkillCast("MoBladeQ", 0, {})
-    e.processSkillCast("MoBladeQ", 5, {})
+    e.processSkillCast("cast:moBladeQ", 0, {})
+    e.processSkillCast("cast:moBladeQ", 5, {})
     const skill = tagged("AnySkill")
     expect(e.calculateDamageEffects(skill, 8.5).breakdown.resistanceResolve).toBeUndefined()
     expect(e.calculateDamageEffects(skill, 13).breakdown.resistanceResolve).toBe(0.1)
@@ -79,7 +79,7 @@ describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield 
 
   it("is inert without artOfResistance tier 6", () => {
     const e = new BuffEngine({}, allBuffDefsDeduped(), groupBuffDefs())
-    e.processSkillCast("MoBladeQ", 0, {})
+    e.processSkillCast("cast:moBladeQ", 0, {})
     expect(
       e.calculateDamageEffects(tagged("AnySkill"), 8).breakdown.resistanceResolve,
     ).toBeUndefined()
@@ -112,8 +112,8 @@ describe("consumableStackPool — springThunder (bellstrike_splendor)", () => {
   it("fills on stackOn, and never consumes without a mistwillowCategory opt wired (documented gap)", () => {
     const params = { thunderousBloom: true }
     const e = new BuffEngine(params, buffDefsForSpec("bellstrike_splendor"), groupBuffDefs())
-    e.processSkillCast("AnyMartialQ", 0, { isMartialSkillQ: true })
-    e.processSkillCast("AnyLightHit", 1, {})
+    e.processSkillCast("cast:anyMartialQ", 0, { isMartialSkillQ: true })
+    e.processSkillCast("cast:anyLightHit", 1, {})
     const r = e.calculateDamageEffects(tagged("AnyLightHit"), 1)
     expect(r.breakdown.springThunder).toBeUndefined()
   })
@@ -137,13 +137,13 @@ describe("consumableStackPool — springThunder (bellstrike_splendor)", () => {
       },
     ]
     const e = new BuffEngine({}, defs, [])
-    e.processSkillCast("Fill", 0, { fillsPool: true })
-    e.processSkillCast("Fill", 0.5, { fillsPool: true })
-    e.processSkillCast("Fill", 2, { fillsPool: true })
-    e.processSkillCast("Drain", 3, { drainsPool: true })
+    e.processSkillCast("cast:fill", 0, { fillsPool: true })
+    e.processSkillCast("cast:fill", 0.5, { fillsPool: true })
+    e.processSkillCast("cast:fill", 2, { fillsPool: true })
+    e.processSkillCast("cast:drain", 3, { drainsPool: true })
     const r = e.calculateDamageEffects(tagged("Drain"), 3)
     expect(r.effects).toContainEqual({ statKey: "bossBoost", amount: 0.2 })
-    e.processSkillCast("Drain", 4, { drainsPool: true })
+    e.processSkillCast("cast:drain", 4, { drainsPool: true })
     expect(e.calculateDamageEffects(tagged("Drain"), 4).effects).toHaveLength(0)
   })
 })

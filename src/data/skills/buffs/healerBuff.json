@@ -6,7 +6,7 @@
       "def": {
         "id": "healerBuff",
         "name": "Healer Buff",
-        "triggeredBy": ["Healer Buff"],
+        "triggeredBy": ["cast:healerBuff"],
         "duration": 12,
         "affects": null,
         "bonus": {

@@ -47,7 +47,24 @@ const MISTWILLOW_HEAVY_BUFF = "mistwillowHeavyBuff"
 const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
 const MISTWILLOW_BUFF_DURATION = 15
 const MISTWILLOW_BONUS = 0.1
-const MISTWILLOW_LIGHT_OVERRIDE_PREFIXES = ["UmbQ", "UmbDrone", "UmbLightCharge", "FanLightCharged"]
+// Enumerated from the name prefixes these were written as ("UmbQ", "UmbDrone",
+// "UmbLightCharge", "FanLightCharged" / any name containing "Pursuit"), which
+// no longer match now that a cast presents an authored tag.
+const MISTWILLOW_LIGHT_OVERRIDE_CASTS = new Set([
+  "cast:umbQ",
+  "cast:umbQPrepull",
+  "cast:umbDroneLaunch12hit",
+  "cast:umbDroneLaunch16hit",
+  "cast:umbDroneLaunch20hit",
+  "cast:umbDroneLaunch23hit",
+  "cast:umbDroneLaunch26hit",
+  "cast:umbLightCharge",
+  "cast:fanLightCharged",
+])
+const MISTWILLOW_HEAVY_OVERRIDE_CASTS = new Set([
+  "cast:fanHeavyPursuit3Hit",
+  "cast:fanHeavyPursuit5Hit",
+])
 
 interface StackPoolState {
   stacks: number
@@ -347,10 +364,9 @@ export class BuffEngine {
 
   processSkillCast(castTag: string, time: number, opts: Record<string, unknown> = {}): void {
     if (opts.noBuffTrigger) return
-    for (const [prefix, defs] of this.triggerMap) {
-      if (!castTag.startsWith(prefix)) continue
+    for (const [trigger, defs] of this.triggerMap) {
+      if (trigger !== castTag) continue
       for (const def of defs) {
-        if (def.exactMatch && castTag !== prefix) continue
         if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
         if (def.cooldown) {
           const last = this.activeBuffs.get(def.id)
@@ -406,7 +422,7 @@ export class BuffEngine {
           const upgrade = ct.upgradeFromActive && this.isBuffActive(ct.upgradeFromActive, applyTime)
           if (refresh || upgrade) this.applyBuff(def.id, applyTime, null, 1)
         } else {
-          let dur = def.durationByTrigger?.[prefix] ?? null
+          let dur = def.durationByTrigger?.[trigger] ?? null
           if (def.extendDurationToIfBuffActive) {
             const ext = def.extendDurationToIfBuffActive
             const on = !ext.enabledParam || this.paramOn(ext.enabledParam)
@@ -473,10 +489,10 @@ export class BuffEngine {
   }
 
   private isMistwillowLightOverride(castTag: string): boolean {
-    return MISTWILLOW_LIGHT_OVERRIDE_PREFIXES.some((p) => castTag.startsWith(p))
+    return MISTWILLOW_LIGHT_OVERRIDE_CASTS.has(castTag)
   }
   private isMistwillowHeavyOverride(castTag: string, isExecution: boolean): boolean {
-    return isExecution || castTag.includes("Pursuit")
+    return isExecution || MISTWILLOW_HEAVY_OVERRIDE_CASTS.has(castTag)
   }
   private mistwillowGrantCategory(
     castTag: string,

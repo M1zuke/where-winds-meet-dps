@@ -288,9 +288,7 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
   const rows: AppliesRow[] = []
   for (const def of catalogBuffDefs(classId)) {
     if (!def.triggeredBy || def.triggeredBy.length === 0) continue
-    const triggered = def.triggeredBy.some((pre) =>
-      def.exactMatch ? castTag === pre : castTag.startsWith(pre),
-    )
+    const triggered = def.triggeredBy.includes(castTag)
     if (!triggered) continue
 
     const parts: string[] = []

@@ -7,7 +7,15 @@
       "def": {
         "id": "drumbeat",
         "name": "Drumbeat",
-        "triggeredBy": ["SpearQ", "SpearHeavy"],
+        "triggeredBy": [
+          "cast:spearHeavy",
+          "cast:spearHeavy1Hit",
+          "cast:spearHeavy1HitPrepull",
+          "cast:spearQ",
+          "cast:spearQ0HitCancel",
+          "cast:spearQ5HitCancel",
+          "cast:spearQPrepull"
+        ],
         "duration": 6,
         "affectsProperty": "isCharged",
         "bonus": {

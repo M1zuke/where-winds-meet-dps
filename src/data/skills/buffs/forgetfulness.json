@@ -7,7 +7,17 @@
       "def": {
         "id": "forgetfulness",
         "name": "Forgetfulness",
-        "triggeredBy": ["SnowpartingVC", "SnowpartingCharged", "SnowpartingDual", "Deflect"],
+        "triggeredBy": [
+          "cast:deflect",
+          "cast:deflectCancel",
+          "cast:deflectCancelPrepull",
+          "cast:snowpartingCharged",
+          "cast:snowpartingChargedForgetfulness",
+          "cast:snowpartingDual",
+          "cast:snowpartingDualPrepull",
+          "cast:snowpartingVC",
+          "cast:snowpartingVCPrepull"
+        ],
         "duration": 3,
         "cooldown": 6,
         "affects": null,

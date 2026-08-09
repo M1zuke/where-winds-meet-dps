@@ -105,9 +105,13 @@ const QI_BREAK_PEN_BONUS = 15
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
-const LEVEL_ATTRIBUTE_BONUS_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
+// Crosswind is a per-detonation state machine rather than a time-windowed
+// buff, so it is driven from here; P7 moves it onto the skill itself.
+const BLEED_DETONATION_ROLE = "role:bleedDetonation"
 
-const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
+const LEVEL_ATTRIBUTE_BONUS_ROLES = ["role:bleedDetonation", "role:bleedTick"]
+
+const CONCENTRATION_DOT_MULT_ROLES = ["role:bleedDetonation", "role:bleedTick", "role:combustion"]
 
 const CONCENTRATION_DISPLAY_THRESHOLD = 0.5
 
@@ -539,7 +543,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     if (buffEngine && inputs.classId === "bellstrikeUmbra") {
       if (skill) {
-        if (LEVEL_ATTRIBUTE_BONUS_SKILLS.has(skill.name)) {
+        if (LEVEL_ATTRIBUTE_BONUS_ROLES.some((role) => skill.tags?.includes(role))) {
           const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
           if (levelBonus !== 0) {
             effects.push({ statKey: "bellstrike.min", amount: levelBonus })
@@ -556,7 +560,11 @@ export function simulateTimeline(inputs: Inputs): Result {
           effects.push({ statKey: "allDamageBoost", amount: 0.015 * activeProb })
           sig += `~concentration:${activeProb.toFixed(4)}`
         }
-        if (concentrationTier6 && skill && CONCENTRATION_DOT_MULT_SKILLS.has(skill.name)) {
+        if (
+          concentrationTier6 &&
+          skill &&
+          CONCENTRATION_DOT_MULT_ROLES.some((role) => skill.tags?.includes(role))
+        ) {
           dotDamageMultiplier = 1 + 0.1 * activeProb
           sig += `~dotMult:${dotDamageMultiplier.toFixed(4)}`
         }
@@ -650,7 +658,7 @@ export function simulateTimeline(inputs: Inputs): Result {
 
     const extraEffects: BuffStatEffect[] = []
     let forceGuaranteedAffinity = false
-    if (crosswindTracker && castTagOf(skill) === "Bleed Detonation") {
+    if (crosswindTracker && skill.tags?.includes(BLEED_DETONATION_ROLE)) {
       const outcome = crosswindTracker.onDetonation()
       if (outcome.spiritBonusActive) extraEffects.push({ statKey: "allDamageBoost", amount: 0.15 })
       forceGuaranteedAffinity = outcome.guaranteedAffinity

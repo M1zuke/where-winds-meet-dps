@@ -6,7 +6,7 @@
       "def": {
         "id": "surgingWaves",
         "name": "Surging Waves",
-        "triggeredBy": ["Dragon Head - Plus"],
+        "triggeredBy": ["cast:dragonHeadPlus"],
         "duration": 6,
         "maxStacks": 40,
         "stacksPerCast": 8,

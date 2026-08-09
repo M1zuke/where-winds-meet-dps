@@ -55,7 +55,7 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus, +1.25 %/stack, max 40, gated to Dragon Head", () => {
     const surgingWaves = GLOBAL_BUFF_DEFS.find((d) => d.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
-    expect(surgingWaves!.triggeredBy).toEqual(["Dragon Head - Plus"])
+    expect(surgingWaves!.triggeredBy).toEqual(["cast:dragonHeadPlus"])
     expect(surgingWaves!.stacksPerCast).toBe(8)
     expect(surgingWaves!.maxStacks).toBe(40)
     expect(surgingWaves!.duration).toBe(6)

@@ -7,7 +7,7 @@
       "def": {
         "id": "wineGu",
         "name": "Wine Gu",
-        "triggeredBy": ["SpearQ"],
+        "triggeredBy": ["cast:spearQ", "cast:spearQ0HitCancel", "cast:spearQ5HitCancel", "cast:spearQPrepull"],
         "duration": 15,
         "affects": null,
         "bonus": {

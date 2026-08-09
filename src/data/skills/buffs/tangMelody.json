@@ -8,15 +8,14 @@
         "id": "tangMelody",
         "name": "Tang Melody",
         "triggeredBy": [
-          "Umbrella Q",
-          "Umbrella Q Perfect Catch",
-          "Umbrella Q Empowered Perfect Catch",
-          "Resonance",
-          "First Resonance",
-          "Rope Q",
-          "Rope Q 1 Hit"
+          "cast:firstResonance",
+          "cast:resonance",
+          "cast:ropeQ",
+          "cast:ropeQ1Hit",
+          "cast:umbrellaQ",
+          "cast:umbrellaQEmpoweredPerfectCatch",
+          "cast:umbrellaQPerfectCatch"
         ],
-        "exactMatch": true,
         "duration": 7,
         "maxStacks": 5,
         "stacksPerHit": 1,

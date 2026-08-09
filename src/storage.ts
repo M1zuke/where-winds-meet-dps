@@ -17,6 +17,7 @@ import {
   isTriggerCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
+import schools from "./data/classes/schools.json"
 import { seedSkillFromBuiltin } from "./engine/skill"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -535,9 +536,31 @@ interface CustomSkillsBlob {
 // Plus without its qi-break doubling, and nothing in the UI would show that.
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// A skill seeded from a built-in copies that built-in's tags at the moment it
+// was seeded. `role:` / `cast:` addressing (2026-08-09) added tags to the
+// built-ins that stored copies therefore lack, and without them a seeded copy
+// silently stops receiving the buffs its original receives. Unioning is safe
+// because no editor surface can remove one of these tags.
+const BUILTIN_SKILL_CLASS_IDS = (schools as { id: string }[]).map((school) => school.id)
+
+let builtinTagsById: Map<string, string[]> | null = null
+function builtinTagsFor(id: string): string[] {
+  if (!builtinTagsById) {
+    builtinTagsById = new Map()
+    for (const classId of BUILTIN_SKILL_CLASS_IDS)
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.tags?.length) builtinTagsById.set(skill.id, skill.tags)
+  }
+  return builtinTagsById.get(id) ?? []
+}
+
 function healSkillTags(id: string, tags: string[]): string[] {
-  if (!id.endsWith("-dragon-head-plus") || tags.includes(QI_BREAK_DOUBLE_TAG)) return tags
-  return [...tags, QI_BREAK_DOUBLE_TAG]
+  const healed = new Set(tags)
+  for (const tag of builtinTagsFor(id)) healed.add(tag)
+  if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
+  return healed.size === tags.length ? tags : [...healed]
 }
 
 // The Dragon Head coefficients were replaced wholesale (2026-08-08), so a

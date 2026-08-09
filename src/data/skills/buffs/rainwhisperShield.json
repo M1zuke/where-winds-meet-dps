@@ -6,15 +6,19 @@
       "def": {
         "id": "rainwhisperShield",
         "name": "HP Shield",
-        "triggeredBy": ["MoBladeQ", "Golden Body + Deflect Cancel", "Golden Body Cancel", "Mo Blade Q Shield"],
+        "triggeredBy": [
+          "cast:goldenBodyCancel",
+          "cast:goldenBodyDeflectCancel",
+          "cast:moBladeQ",
+          "cast:moBladeQPrepull"
+        ],
         "duration": 8,
         "durationByTrigger": {
-          "Golden Body + Deflect Cancel": 12,
-          "Golden Body Cancel": 12,
-          "Mo Blade Q Shield": 14
+          "cast:goldenBodyDeflectCancel": 12,
+          "cast:goldenBodyCancel": 12
         },
         "formbendBonus": 2,
-        "formbendBonusTriggers": ["MoBladeQ", "Mo Blade Q Shield"],
+        "formbendBonusTriggers": ["cast:moBladeQ", "cast:moBladeQPrepull"],
         "affects": [],
         "bonus": null
       }

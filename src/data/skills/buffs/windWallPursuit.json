@@ -7,7 +7,7 @@
       "def": {
         "id": "windWallPursuit",
         "name": "Wind Wall (Pursuit)",
-        "triggeredBy": ["FanQ", "FanQCancel", "FanQ Prepull"],
+        "triggeredBy": ["cast:fanQ", "cast:fanQCancel", "cast:fanQPrepull"],
         "duration": 15,
         "affects": ["role:fanHeavyPursuit"],
         "bonus": {

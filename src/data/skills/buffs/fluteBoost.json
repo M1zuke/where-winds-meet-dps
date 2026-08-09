@@ -7,7 +7,7 @@
       "def": {
         "id": "fluteBoost",
         "name": "Flute DMG Boost",
-        "triggeredBy": ["Flute of the Tides"],
+        "triggeredBy": ["cast:fluteOfTheTidesCancel", "cast:fluteOfTheTidesFull", "cast:fluteOfTheTidesPrepull"],
         "duration": 12.5,
         "affects": null,
         "bonus": {

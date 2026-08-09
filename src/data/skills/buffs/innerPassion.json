@@ -7,7 +7,7 @@
       "def": {
         "id": "innerPassion",
         "name": "Inner Passion",
-        "triggeredBy": ["SnowpartingSpecial"],
+        "triggeredBy": ["cast:snowpartingSpecial"],
         "duration": 12,
         "maxStacks": 3,
         "stacksPerHit": false,

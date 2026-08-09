@@ -86,7 +86,7 @@ describe("catalog receives — Mirage Bonus surfaces its cast condition", () => 
     const rows = receivesForSkill(swordQ, CLASS, { ...defaultInputs, classId: CLASS })
     const row = rows.find((r) => r.id === "mirageBonus")
     expect(row).toBeTruthy()
-    expect(row!.triggeredBy).toMatch(/Perfect Dodge/)
+    expect(row!.triggeredBy).toMatch(/cast:perfectDodge/)
     expect(row!.triggeredBy).toMatch(/Mirage/)
   })
 })

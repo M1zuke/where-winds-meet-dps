@@ -7,8 +7,7 @@
       "def": {
         "id": "throatPiercedDeflect",
         "name": "Throat-Pierced (Deflect)",
-        "triggeredBy": ["Deflect"],
-        "exactMatch": true,
+        "triggeredBy": ["cast:deflect"],
         "duration": 12,
         "affects": null,
         "bonus": null,
@@ -25,8 +24,7 @@
       "def": {
         "id": "throatPiercedDeflect",
         "name": "Throat-Pierced (Deflect)",
-        "triggeredBy": ["Deflect"],
-        "exactMatch": true,
+        "triggeredBy": ["cast:deflect"],
         "duration": 15,
         "affects": null,
         "bonus": null,

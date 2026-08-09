@@ -53,6 +53,9 @@ export interface Skill {
   weaponOrAttribute: string
   attributeAttack: string
   tags?: string[]
+  // The identity a cast presents to `BuffDef.triggeredBy`. Authored, so a
+  // rename is only a rename; falls back to `name` for user-authored skills.
+  castTag?: string
   hits: SkillHit[]
   castFrames: number
   triggerable: boolean
@@ -286,6 +289,8 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
     tags: [...(src.tags ?? [])],
+    // Carried so that renaming a seeded copy keeps the buffs it triggers.
+    castTag: src.castTag,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

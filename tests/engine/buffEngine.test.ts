@@ -9,21 +9,21 @@ function taggedSkill(name: string, tags: string[] = []) {
 }
 
 describe("BuffEngine — targeting & triggers", () => {
-  it("a buff affects only skills matching its `affects` prefix", () => {
+  it("a buff reaches only skills declaring the tag its `affects` names", () => {
     const defs: BuffDef[] = [
       {
         id: "fanBuff",
         name: "Fan Buff",
-        triggeredBy: ["FanHeavy"],
+        triggeredBy: ["cast:fanHeavy"],
         duration: 10,
-        affects: ["FanHeavy"],
+        affects: ["role:fanHeavy"],
         bonus: { type: "buffBonus", value: 0.2 },
       },
     ]
     const e = new BuffEngine({}, defs)
-    e.processSkillCast("FanHeavyPursuit", 0, {})
-    const fan = e.calculateDamageEffects(taggedSkill("FanHeavyPursuit"), 1)
-    const sword = e.calculateDamageEffects(taggedSkill("SwordThrust"), 1)
+    e.processSkillCast("cast:fanHeavy", 0, {})
+    const fan = e.calculateDamageEffects(taggedSkill("Fan Heavy", ["role:fanHeavy"]), 1)
+    const sword = e.calculateDamageEffects(taggedSkill("Sword Thrust"), 1)
     expect(fan.effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.2 })
     expect(sword.effects).toHaveLength(0)
   })

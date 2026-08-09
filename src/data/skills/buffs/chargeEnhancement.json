@@ -7,8 +7,7 @@
       "def": {
         "id": "chargeEnhancement",
         "name": "Charge Enhancement",
-        "triggeredBy": ["PhalanxCharged"],
-        "exactMatch": false,
+        "triggeredBy": ["cast:phalanxChargedS3", "cast:phalanxChargedS3InnerPassion"],
         "duration": 3,
         "maxStacks": 3,
         "affects": null,

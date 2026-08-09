@@ -7,7 +7,7 @@
       "def": {
         "id": "ironGuards",
         "name": "Iron Guards",
-        "triggeredBy": ["PhalanxSpecial"],
+        "triggeredBy": ["cast:phalanxSpecial", "cast:phalanxSpecialPrepull"],
         "duration": 40,
         "cooldown": 20,
         "affects": null,

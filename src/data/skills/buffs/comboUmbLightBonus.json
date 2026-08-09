@@ -7,7 +7,7 @@
       "def": {
         "id": "comboUmbLightBonus",
         "name": "Combo (UmbLight)",
-        "triggeredBy": ["UmbQ"],
+        "triggeredBy": ["cast:umbQ", "cast:umbQPrepull"],
         "duration": 15,
         "affects": ["role:umbLightCharge"],
         "bonus": {

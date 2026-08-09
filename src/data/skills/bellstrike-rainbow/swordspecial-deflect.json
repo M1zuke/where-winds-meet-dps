@@ -23,5 +23,6 @@
   "triggerable": true,
   "createdAt": "2026-07-19T00:00:00.000Z",
   "updatedAt": "2026-07-19T00:00:00.000Z",
-  "universal": false
+  "universal": false,
+  "castTag": "cast:swordSpecialDeflect"
 }
