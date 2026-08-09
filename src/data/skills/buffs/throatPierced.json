@@ -67,8 +67,8 @@
         "__statModByPrefix": {
           "prefixes": ["AnxiSoldier", "SnowpartingVC", "SnowpartingCharged"],
           "match": {
-            "physPen": 2,
-            "critDmg": 0.02
+            "physPen": 3,
+            "critDmg": 0.03
           },
           "default": {
             "physPen": 2,
