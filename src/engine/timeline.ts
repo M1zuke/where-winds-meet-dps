@@ -9,16 +9,11 @@ import type {
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
-import {
-  hitToArtRow,
-  isPrePullSkill,
-  hitDealsDamage,
-  triggerConditions,
-  selectHitVariant,
-} from "./skill"
+import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, type StatusWindow } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
+import { behaviorFor, type BuildView, type HitInput } from "./behavior"
 import {
   deriveStats,
   buildContext,
@@ -372,6 +367,25 @@ export function simulateTimeline(inputs: Inputs): Result {
     return c.op === "gte" ? cur >= c.stacks : c.op === "gt" ? cur > c.stacks : cur === c.stacks
   }
 
+  const buildView: BuildView = {
+    classId: inputs.classId,
+    set: inputs.set,
+    innerWayTier: (name) => {
+      const slot = inputs.mindMethods.find((candidate) => candidate.name === name)
+      return slot ? zhongToTier(slot.stacks) : null
+    },
+    dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
+  }
+
+  const hitInputAt = (skill: Skill, hit: SkillHit, frame: number): HitInput => ({
+    skill,
+    hit,
+    frame,
+    statuses: ledger,
+    build: buildView,
+    holds: (condition) => conditionHolds(condition, frame),
+  })
+
   const buffEngine: BuffEngine | null = (() => {
     try {
       const eng = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(inputs.classId), [
@@ -630,14 +644,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
     const st = resolveState(frame, skill, resolveOverride)
-    const art = hitToArtRow(hit, skill)
-    const variant = selectHitVariant(hit, (c) => conditionHolds(c, frame))
-    if (variant) {
-      art.physMultiplier = variant.physMultiplier
-      art.attributeMultiplier = variant.attributeMultiplier
-      art.physFixed = variant.physFixed
-      art.attributeFixed = variant.attributeFixed
-    }
+    const art = behaviorFor(skill).buildArt(hitInputAt(skill, hit, frame))
     if (st.forceCrit) art.guaranteedCrit = 1
     if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
