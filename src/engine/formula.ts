@@ -215,6 +215,7 @@ export function computeSkillDamage(
   const setFalcon = ctx.hawkwingPhysBonus ?? (ctx.set === "Hawking" ? 0.1 : 0)
   const slotAE = sumSlots(slots, "col3", ctx.boostZoneOverrides)
   const slotMitigation = sumSlots(slots, "col8", ctx.boostZoneOverrides)
+  const effectiveLargePhys = Math.max(ctx.largePhys, ctx.smallPhys)
   const AE =
     (ctx.smallPhys + num(art.minPhysFlatBonus) + (ctx.food ? FOOD_MIN_PHYS_BONUS : 0)) *
       (1 + num(art.minPhysPctBonus)) *
@@ -222,7 +223,7 @@ export function computeSkillDamage(
     ctx.effectiveDefense * (1 - slotMitigation)
 
   const AG_raw =
-    (ctx.largePhys + num(art.maxPhysFlatBonus) + (ctx.food ? FOOD_MAX_PHYS_BONUS : 0)) *
+    (effectiveLargePhys + num(art.maxPhysFlatBonus) + (ctx.food ? FOOD_MAX_PHYS_BONUS : 0)) *
       (1 + num(art.maxPhysPctBonus)) *
       (1 + setFalcon + slotAE) -
     ctx.effectiveDefense * (1 - slotMitigation)

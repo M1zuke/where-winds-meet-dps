@@ -174,7 +174,7 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **X** | crit-damage add-on | `critDmgPanel + art.extraCritDamage + setBonus.col5 + bengJie×0.05 + Σslot.col5` |
 | **Y** | affinity-damage add-on | `affDmgPanel + art.extraAffinityDamage + setBonus.col3 + Σslot.col12` |
 | **AE** | raw min phys | `(smallPhys + art.minPhysFlatBonus + food×120) × (1 + art.minPhysPctBonus) × (1 + hawkwing + Σslot.col3) − effectiveDef × (1 − Σslot.col8)` |
-| **AG** | raw max phys | same shape with `largePhys`, `maxPhys*Bonus`, `food×240`; clamped `MAX(…, AE)` |
+| **AG** | raw max phys | same shape with `MAX(largePhys, smallPhys)`, `maxPhys*Bonus`, `food×240`; clamped `MAX(…, AE)` after modifiers |
 | **AF** | `(AE + AG) / 2` | |
 | **AH** | phys penetration multiplier | `penFrac(outerPen + art.extraPhysPenetration + bengJie×5 + yiShui×2 + (henZhi ? 10 : 0) + Σslot.col6)` |
 | **AI** | phys damage boost | `physBoostPanel + Σslot.col9 + (specialTag="Spinning Umbrella" ? 0.15 : 0)` |
