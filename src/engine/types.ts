@@ -33,6 +33,8 @@ export interface CombatSettings {
   healerBuff: boolean
   breakExtension: boolean
   revelryScript: boolean
+  dragonHeadFullStacks: boolean
+  dragonHeadLowHpMaxBonus: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -42,6 +44,8 @@ export function defaultCombatSettings(): CombatSettings {
     healerBuff: false,
     breakExtension: false,
     revelryScript: false,
+    dragonHeadFullStacks: false,
+    dragonHeadLowHpMaxBonus: false,
   }
 }
 
@@ -84,8 +88,7 @@ export interface Inputs {
 
   bossBoost: number
   singleMysticBoost: number
-  groupAnomalyBoost: number
-  groupDamageBoost: number
+  areaMysticBoost: number
 
   dingYinByTag: Record<string, number>
 
@@ -336,6 +339,7 @@ export interface BuffWindow {
 
 export interface ItemRankingRow {
   word: string
+  source: "tunement" | "attunement"
   amount: number
   unit: "raw" | "percent"
   expectedDps: number

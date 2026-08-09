@@ -35,8 +35,7 @@ export const PATH_LABELS: Record<string, string> = {
   hengDaoBoost: "Hengdao Martial Boost",
   bossBoost: "Damage VS Boss %",
   singleMysticBoost: "Single-Target Mystic Skill DMG Boost",
-  groupAnomalyBoost: "Area Debuff Mystic Skill DMG Boost",
-  groupDamageBoost: "Area DMG Mystic Skill DMG Boost",
+  areaMysticBoost: "Area Mystic Skill DMG Boost",
   hp: "HP",
   physDef: "Phys Defense",
 }
@@ -63,8 +62,7 @@ export const PERCENT_PATHS = new Set<string>([
   "hengDaoBoost",
   "bossBoost",
   "singleMysticBoost",
-  "groupAnomalyBoost",
-  "groupDamageBoost",
+  "areaMysticBoost",
 ])
 
 export const PENETRATION_PATHS = new Set<string>([

@@ -32,8 +32,7 @@ export type StatKey =
   | "hengDaoBoost"
   | "bossBoost"
   | "singleMysticBoost"
-  | "groupAnomalyBoost"
-  | "groupDamageBoost"
+  | "areaMysticBoost"
   | "phys.min"
   | "phys.max"
   | "phys.penetration"
@@ -217,15 +216,8 @@ export const STAT_DEFS: readonly StatDef[] = [
     category: "Target-Type Boosts",
   },
   {
-    key: "groupAnomalyBoost",
-    label: "Area Debuff Mystic Skill DMG Boost",
-    scope: "player",
-    unit: "fraction",
-    category: "Target-Type Boosts",
-  },
-  {
-    key: "groupDamageBoost",
-    label: "Area DMG Mystic Skill DMG Boost",
+    key: "areaMysticBoost",
+    label: "Area Mystic Skill DMG Boost",
     scope: "player",
     unit: "fraction",
     category: "Target-Type Boosts",
@@ -367,8 +359,9 @@ export const WEAPON_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
 export const MYSTIC_TYPE_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
   control: "singleMysticBoost",
   burst: "singleMysticBoost",
-  "area-debuff": "groupAnomalyBoost",
-  "area-damage": "groupDamageBoost",
+  area: "areaMysticBoost",
+  "area-debuff": "areaMysticBoost",
+  "area-damage": "areaMysticBoost",
 }
 
 const ATTACK_BLOCKS = new Set(["phys", "bellstrike", "stonesplit", "silkbind", "bamboocut"])

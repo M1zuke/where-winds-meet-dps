@@ -9,18 +9,18 @@
     "name": "Jadeware",
     "setKey": "Jadeware",
     "stat": "maxPhys",
-    "value": 64
+    "value": 78
   },
   {
     "name": "Ivorybloom",
     "setKey": "Ivorybloom",
     "stat": "critRate",
-    "value": 0.074
+    "value": 0.09
   },
   {
     "name": "Rainwhisper",
     "setKey": "Rainwhisper",
     "stat": "precisionRate",
-    "value": 0.066
+    "value": 0.08
   }
 ]

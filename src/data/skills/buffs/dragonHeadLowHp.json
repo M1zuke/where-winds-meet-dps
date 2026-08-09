@@ -1,0 +1,21 @@
+{
+  "id": "dragonHeadLowHp",
+  "scope": "global",
+  "variants": [
+    {
+      "def": {
+        "id": "dragonHeadLowHp",
+        "name": "Low HP Bonus (Dragon Head)",
+        "triggers": [],
+        "duration": 9999,
+        "alwaysActive": true,
+        "affects": ["Dragon Head - Plus"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.45
+        },
+        "enabledParam": "dragonHeadLowHpMaxBonus"
+      }
+    }
+  ]
+}

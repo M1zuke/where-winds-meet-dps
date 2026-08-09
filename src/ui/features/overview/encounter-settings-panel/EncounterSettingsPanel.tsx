@@ -46,6 +46,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             on={settings.revelryScript}
             onToggle={() => setCombat("revelryScript", !settings.revelryScript)}
           />
+          <ToggleChip
+            label={t("Max Low-HP Bonus (Dragon Head)")}
+            on={settings.dragonHeadLowHpMaxBonus}
+            onToggle={() => setCombat("dragonHeadLowHpMaxBonus", !settings.dragonHeadLowHpMaxBonus)}
+          />
         </div>
       </div>
 
@@ -103,6 +108,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             label={t("Break Extension")}
             on={settings.breakExtension}
             onToggle={() => setCombat("breakExtension", !settings.breakExtension)}
+          />
+          <ToggleChip
+            label={t("40 Stacks (Dragon Head)")}
+            on={settings.dragonHeadFullStacks}
+            onToggle={() => setCombat("dragonHeadFullStacks", !settings.dragonHeadFullStacks)}
           />
         </div>
       </div>

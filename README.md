@@ -41,6 +41,7 @@ Vite prints the local URL (usually `http://localhost:5173`). The app hot-reloads
 - [How to Add a Skill](https://github.com/M1zuke/where-winds-meet-dps/wiki/How-to-Add-a-Skill)
 - [How to Add a Rotation](https://github.com/M1zuke/where-winds-meet-dps/wiki/How-to-Add-a-Rotation)
 - [How to Add a Buff or Debuff](https://github.com/M1zuke/where-winds-meet-dps/wiki/How-to-Add-a-Buff-or-Debuff)
+- [How to Add an Inner Way](https://github.com/M1zuke/where-winds-meet-dps/wiki/How-to-Add-an-Inner-Way)
 
 Before opening a PR, read [Project Conventions](https://github.com/M1zuke/where-winds-meet-dps/wiki/Project-Conventions) — the repo has a few strict rules (English-only sources, the white/yellow rate convention, mandatory saved-profile migration checks) that CI and review enforce. CI runs `format:check`, `lint`, a no-Chinese grep guard, `typecheck`, `build`, and `test` on every PR; running those locally first will save you a round-trip.
 

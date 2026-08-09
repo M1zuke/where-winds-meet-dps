@@ -143,9 +143,10 @@ The interesting derivations:
 * **`chargeBonus`** = `0.15` if Mighty Song is selected
 * **`weaponBoosts`** — the per-weapon boost map keyed by weapon name
   (`Sword`/`Spear`/`Fan`/`Umbrella`/`Modao`/`Twin Blades`/`Rope Dart`/`Hengdao`)
-* **`mysticTypeBoosts`** — the merged **Single-Target Mystic Skill DMG Boost**
-  stat feeds both `control` and `burst`; **Area Debuff** / **Area DMG** feed
-  `area-debuff` / `area-damage`. The plain `area` category gets nothing.
+* **`mysticTypeBoosts`** — two stats cover five categories, mirroring the
+  in-game affixes: **Single-Target Mystic Skill DMG Boost** feeds `control` and
+  `burst`, **Area Mystic Skill DMG Boost** feeds `area`, `area-debuff` and
+  `area-damage`.
 * **`dotDamageBoost`** = `0.1` if Insightful Strike is selected — the always-on
   fallback, superseded by `dotDamageMultiplier` when the timeline passes one
 * **`rateResistance` / `physPenResistance` / `attrPenResistance`** — see

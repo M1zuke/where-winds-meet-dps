@@ -13,17 +13,6 @@ source of truth for all numbers — this file carries only what they can't.
 - Cast timing (246-frame cast, hit on the final frame): user-verified
   2026-08-06.
 
-## Coefficient provenance
-
-The lvl-110 workbook tabulates a single Dragon Head row, named
-"(32 stacks +50%HP)" and with its "Guaranteed Precision" column set — that is
-the **Plus** (25.200406 phys / 4695.46 flat / 37.800609 attr). Dividing by 0.7
-(the Plus "reduces base damage by 30 %") recovers the clean base row
-(36.00058 / 6707.8 / 54.00087); the ratio is asserted in
-`tests/engine/dragonHead.test.ts`. The row's 0.57 universal damage boost is
-that scenario's stack/HP state and is deliberately **not** baked into the
-skill — the stack mechanic is modeled live instead (below).
-
 ## How the mechanics map
 
 - Base uses `guaranteedNormal` (fixed damage), Plus uses `guaranteedPrecision`
@@ -32,10 +21,19 @@ skill — the stack mechanic is modeled live instead (below).
   engine applies it at cast start, so the granting cast's own hit — landing at
   the end of the channel — is boosted; that is what matches the in-game
   "increases the damage of the **current** Dragon Head".
-
-## Not modeled
-
-- The Plus's doubled damage against a non-player target without Qi / with
-  depleted Qi — the simulation has no target-Qi state on the hit path.
-- Ally-contributed Surging Waves stacks (up to 10 per ally on top of the
-  self-granted 8) — the simulation is solo.
+- The Plus's doubled damage vs a target with depleted Qi is the
+  `prop:hasQiBreakDoubleDamage` tag, gated on the qi-break window (the sim's
+  only "no Qi" state) and on the Qi Break Window toggle. It multiplies
+  `art.correction`, not `allDamageBoost` — the official wording is a doubling,
+  and the boost lane is additive, so a +1.0 effect there would land well under
+  ×2. Sibling qi-phase tags: `prop:hasLowQiDmgBoost`, `prop:hasQiBreakPhysPen`.
+- The HP-lost damage bonus is the "Max Low-HP Bonus (Dragon Head)" toggle
+  (`CombatSettings.dragonHeadLowHpMaxBonus` → the `dragonHeadLowHpMaxBonus`
+  param → `buffs/dragonHeadLowHp.json`). **It applies the 45 % cap only** —
+  see "Open questions" for why there is no HP-percentage input. Its `affects`
+  names the Plus in full, so the prefix match excludes the base version;
+  Surging Waves deliberately does the opposite with the bare "Dragon Head".
+- Ally-contributed stacks are the "40 Stacks (Dragon Head)" teammate toggle
+  (`CombatSettings.dragonHeadFullStacks` → the `allySurgingWaves` buff param).
+  It raises stacks-per-cast to the 40 cap via `tierConditionalStacks`, so every
+  cast lands at full stacks (+50 %) rather than climbing 8 at a time.
