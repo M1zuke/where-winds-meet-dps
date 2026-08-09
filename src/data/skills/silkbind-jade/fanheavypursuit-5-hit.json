@@ -9,7 +9,8 @@
     "prop:hasLowQiDmgBoost",
     "weapon:Fan",
     "attack:heavy",
-    "attune:fanSpecial"
+    "attune:fanSpecial",
+    "role:fanHeavyPursuit"
   ],
   "skillType": "weapon",
   "weaponOrAttribute": "Fan",

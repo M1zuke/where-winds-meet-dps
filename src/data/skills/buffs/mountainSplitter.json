@@ -10,7 +10,7 @@
         "triggeredBy": ["AnxiSoldierMoDown", "AnxiSoldierMoJump"],
         "duration": 5,
         "cooldown": 15,
-        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump"],
+        "affects": ["role:phalanxCharged", "role:anxiSoldierMoDown", "role:anxiSoldierMoJump"],
         "bonus": null,
         "statModifiers": {
           "directCrit": 1,

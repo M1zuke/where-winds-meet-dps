@@ -677,8 +677,11 @@ export class BuffEngine {
 
       let mods: BuffStatMods | null | undefined = def.statModifiers
       if (def.__statModByPrefix) {
+        // Scope, so it goes through the same predicate as `affects` — the cast
+        // tag alone cannot see a role tag, and the Receives card has always
+        // resolved this against the tag set.
         const p = def.__statModByPrefix
-        mods = p.prefixes.some((pre) => castTag.startsWith(pre)) ? p.match : p.default
+        mods = matchesScope(tagSet, { affects: p.prefixes }) ? p.match : p.default
       }
       pushMods(mods, stacks, id)
       if (def.bossStatModifiers && !isDummy) pushMods(def.bossStatModifiers, stacks, id)

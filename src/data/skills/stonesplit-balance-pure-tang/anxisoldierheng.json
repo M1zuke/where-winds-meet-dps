@@ -3,7 +3,7 @@
   "classId": "stonesplitBalancePureTang",
   "name": "AnxiSoldierHeng",
   "abilityTag": "AnxiSoldierHeng",
-  "tags": ["weapon:Heng Blade"],
+  "tags": ["weapon:Heng Blade", "role:anxiSoldier"],
   "skillType": "weapon",
   "weaponOrAttribute": "Hengdao",
   "attributeAttack": "Stonesplit",

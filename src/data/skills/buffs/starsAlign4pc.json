@@ -9,7 +9,7 @@
         "name": "Stars Align",
         "triggeredBy": [],
         "duration": 9999,
-        "affects": ["Umbrella Q", "Resonance", "First Resonance"],
+        "affects": ["role:umbrellaQ", "role:resonance", "role:firstResonance"],
         "bonus": {
           "type": "buffBonus",
           "valueFromParam": "starsAlignBonus"

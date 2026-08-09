@@ -10,7 +10,7 @@
         "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
-        "affects": ["Rope Special"],
+        "affects": ["role:ropeSpecial"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.15

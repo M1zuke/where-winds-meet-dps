@@ -46,7 +46,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-bellstrikeRainbow-flute-ripple",
@@ -94,7 +95,8 @@
       "maxStacks": 5,
       "stackScaling": "perStack",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:bleedTick"]
     },
     {
       "id": "debuff-bellstrikeRainbow-bitter-season-tick",
@@ -170,7 +172,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-bellstrikeUmbra-dark-fire",
@@ -251,7 +254,8 @@
         "retainParamStacks": 2
       },
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:bleedTick"]
     },
     {
       "id": "debuff-bellstrikeUmbra-bitter-season-tick",
@@ -327,7 +331,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-silkbindJade-flute-ripple",
@@ -374,7 +379,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbDrone"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-20hit",
@@ -397,7 +403,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbDrone"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-12hit",
@@ -420,7 +427,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbDrone"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-16hit",
@@ -443,7 +451,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbDrone"]
     },
     {
       "id": "debuff-silkbindJade-umbdrone-23hit",
@@ -466,7 +475,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbDrone"]
     },
     {
       "id": "debuff-silkbindJade-umblightcharge",
@@ -489,7 +499,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:umbLightCharge"]
     },
     {
       "id": "debuff-silkbindJade-bitter-season-tick",
@@ -565,7 +576,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-stonesplitPower-flute-ripple",
@@ -665,7 +677,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-stonesplitBalancePureTang-flute-ripple",
@@ -765,7 +778,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-bamboocutWindTwinblade-flute-ripple",
@@ -865,7 +879,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-bamboocutDust-flute-ripple",
@@ -965,7 +980,8 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
+      "updatedAt": "2026-07-19T00:00:00.000Z",
+      "tags": ["role:combustion"]
     },
     {
       "id": "debuff-stonesplitBalanceDualCut-flute-ripple",

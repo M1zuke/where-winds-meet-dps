@@ -16,12 +16,11 @@ describe("DoT ticks are addressable by tag, not only by name", () => {
   })
 
   it("merges the debuff's own tags on top, deduped", () => {
-    const tagged = { ...bleedTickDebuff, tags: ["role:bleed", "weapon:Sword"] }
-    expect(dotTickSkill(tagged, bleedTickSkill).tags).toEqual([
-      "weapon:Sword",
-      "attune:bleed",
-      "role:bleed",
-    ])
+    const tagged = { ...bleedTickDebuff, tags: ["role:probe", "weapon:Sword"] }
+    const merged = dotTickSkill(tagged, bleedTickSkill).tags!
+    expect(merged).toContain("role:probe")
+    expect(merged.filter((tag) => tag === "weapon:Sword")).toHaveLength(1)
+    expect(new Set(merged)).toEqual(new Set([...bleedTickSkill.tags!, "role:probe"]))
   })
 
   it("still yields a tag-less tick when neither side declares any", () => {

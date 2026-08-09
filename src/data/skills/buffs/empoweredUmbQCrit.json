@@ -9,7 +9,7 @@
         "name": "Fragrant Song",
         "triggeredBy": ["Umbrella Q Empowered Perfect Catch"],
         "duration": 30,
-        "affects": ["Umbrella Q Empowered Perfect Catch"],
+        "affects": ["role:umbrellaQEmpoweredPerfectCatch"],
         "bonus": null,
         "forceCrit": true
       }

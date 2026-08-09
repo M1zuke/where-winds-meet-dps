@@ -3,7 +3,7 @@
   "classId": "bamboocutDust",
   "name": "Rope Special",
   "abilityTag": "Rope Special",
-  "tags": ["weapon:RopeDart", "attune:ropeDartSpecial"],
+  "tags": ["weapon:RopeDart", "attune:ropeDartSpecial", "role:ropeSpecial"],
   "skillType": "weapon",
   "weaponOrAttribute": "Rope Dart",
   "attributeAttack": "Bamboocut",

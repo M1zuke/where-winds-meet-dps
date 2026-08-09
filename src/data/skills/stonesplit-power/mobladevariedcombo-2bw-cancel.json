@@ -3,7 +3,14 @@
   "classId": "stonesplitPower",
   "name": "MoBladeVariedCombo-2BW[Cancel]",
   "abilityTag": "MoBladeVariedCombo-2BW[Cancel]",
-  "tags": ["prop:isCharged", "prop:abrasionImmune", "weapon:Mo Blade", "attack:charge", "attune:moBladeCharge"],
+  "tags": [
+    "prop:isCharged",
+    "prop:abrasionImmune",
+    "weapon:Mo Blade",
+    "attack:charge",
+    "attune:moBladeCharge",
+    "role:moBladeVariedCombo"
+  ],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

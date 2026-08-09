@@ -3,7 +3,7 @@
   "classId": "stonesplitBalancePureTang",
   "name": "SnowpartingQ-Stab",
   "abilityTag": "SnowpartingQ-Stab",
-  "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+  "tags": ["weapon:Heng Blade", "attune:snowpartingQ", "role:snowpartingQStab"],
   "skillType": "weapon",
   "weaponOrAttribute": "Hengdao",
   "attributeAttack": "Stonesplit",

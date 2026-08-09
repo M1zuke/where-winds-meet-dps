@@ -9,7 +9,7 @@
         "name": "Combo (UmbLight)",
         "triggeredBy": ["UmbQ"],
         "duration": 15,
-        "affects": ["UmbLightCharge"],
+        "affects": ["role:umbLightCharge"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.1

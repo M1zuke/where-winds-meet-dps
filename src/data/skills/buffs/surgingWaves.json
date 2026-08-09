@@ -10,7 +10,7 @@
         "duration": 6,
         "maxStacks": 40,
         "stacksPerCast": 8,
-        "affects": ["Dragon Head"],
+        "affects": ["role:dragonHead"],
         "bonus": {
           "type": "buffBonus",
           "valuePerStack": 0.0125

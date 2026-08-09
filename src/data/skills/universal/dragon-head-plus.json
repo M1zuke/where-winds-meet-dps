@@ -2,7 +2,7 @@
   "id": "universal-dragon-head-plus",
   "classId": "universal",
   "name": "Dragon Head - Plus",
-  "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage"],
+  "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
   "skillType": "mystic",
   "weaponOrAttribute": "",
   "attributeAttack": "",

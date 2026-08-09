@@ -10,7 +10,7 @@
         "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
-        "affects": ["SnowpartingVC"],
+        "affects": ["role:snowpartingVC"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.36

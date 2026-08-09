@@ -8,13 +8,15 @@ import type { StatKey } from "../../src/engine/statRegistry"
 
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
-function skill(name: string) {
-  return makeSkill("test", { name, tags: [] })
+// Built from tags, never from the display name — a def reaches an entity
+// because the entity declares what it is (GENERALIZATION.md § P2).
+function skill(tags: string[]) {
+  return makeSkill("test", { name: "probe", tags })
 }
 
-function sumsFor(params: Record<string, unknown>, name: string) {
+function sumsFor(params: Record<string, unknown>, tags: string[]) {
   const e = new BuffEngine(params, [], mechanicBuffDefs())
-  const r = e.calculateDamageEffects(skill(name), 0)
+  const r = e.calculateDamageEffects(skill(tags), 0)
   return Object.fromEntries(
     TRACKED.map((k) => [
       k,
@@ -27,7 +29,7 @@ const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6 }
 
 describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   it("Bleed Detonation gets both the affinity-damage and bleed-penetration terms", () => {
-    expect(sumsFor(SWORD_HORIZON, "Bleed Detonation")).toEqual({
+    expect(sumsFor(SWORD_HORIZON, ["role:bleedDetonation"])).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0.15,
       "bellstrike.penetration": 0.15,
@@ -35,7 +37,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("Combustion gets only the affinity-damage term, never the bleed penetration", () => {
-    expect(sumsFor(SWORD_HORIZON, "Combustion")).toEqual({
+    expect(sumsFor(SWORD_HORIZON, ["role:combustion"])).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
@@ -43,7 +45,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("a non-bleed skill (Sword Martial Q) gets neither term", () => {
-    expect(sumsFor(SWORD_HORIZON, "Sword Martial Q")).toEqual({
+    expect(sumsFor(SWORD_HORIZON, [])).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
@@ -51,7 +53,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("with no swordHorizon param, neither Umbra buff is seeded (alwaysActive gated off)", () => {
-    expect(sumsFor({}, "Bleed Detonation")).toEqual({
+    expect(sumsFor({}, ["role:bleedDetonation"])).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,

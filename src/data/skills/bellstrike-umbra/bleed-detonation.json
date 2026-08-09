@@ -3,7 +3,7 @@
   "classId": "bellstrikeUmbra",
   "name": "Bleed Detonation",
   "abilityTag": "Bleed Detonation",
-  "tags": ["weapon:Sword", "attune:bleed"],
+  "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation"],
   "skillType": "sustain",
   "weaponOrAttribute": "Sword",
   "attributeAttack": "Bellstrike",

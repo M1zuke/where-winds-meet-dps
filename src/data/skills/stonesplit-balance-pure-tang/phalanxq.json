@@ -3,7 +3,7 @@
   "classId": "stonesplitBalancePureTang",
   "name": "PhalanxQ",
   "abilityTag": "PhalanxQ",
-  "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ"],
+  "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "role:phalanxQ"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

@@ -95,7 +95,7 @@ describe("phaseGate — frostCladSnowbreakT6Exhausted (stonesplit_strength)", ()
       bossBreakDuration: 10,
     }
     const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    const snowpartingVC = tagged("SnowpartingVC")
+    const snowpartingVC = tagged("probe", ["role:snowpartingVC"])
     expect(
       e.calculateDamageEffects(snowpartingVC, 10).breakdown.frostCladSnowbreakT6Exhausted,
     ).toBeUndefined()

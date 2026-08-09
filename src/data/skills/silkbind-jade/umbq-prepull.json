@@ -3,7 +3,7 @@
   "classId": "silkbindJade",
   "name": "UmbQ Prepull",
   "abilityTag": "UmbQ Prepull",
-  "tags": ["prop:isMartialSkillQ", "prop:hasQiBreakPhysPen", "weapon:Umbrella", "attune:umbQ"],
+  "tags": ["prop:isMartialSkillQ", "prop:hasQiBreakPhysPen", "weapon:Umbrella", "attune:umbQ", "role:umbQ"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Silkbind",

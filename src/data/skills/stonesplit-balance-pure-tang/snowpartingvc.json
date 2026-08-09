@@ -3,7 +3,13 @@
   "classId": "stonesplitBalancePureTang",
   "name": "SnowpartingVC",
   "abilityTag": "SnowpartingVC",
-  "tags": ["prop:consumesInnerPassion", "weapon:Heng Blade", "attack:heavy", "attune:snowpartingVariedCombo"],
+  "tags": [
+    "prop:consumesInnerPassion",
+    "weapon:Heng Blade",
+    "attack:heavy",
+    "attune:snowpartingVariedCombo",
+    "role:snowpartingVC"
+  ],
   "skillType": "weapon",
   "weaponOrAttribute": "Hengdao",
   "attributeAttack": "Stonesplit",

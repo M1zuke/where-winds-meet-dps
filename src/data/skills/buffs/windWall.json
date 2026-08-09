@@ -9,7 +9,7 @@
         "name": "Wind Wall",
         "triggeredBy": ["FanQ", "FanQCancel", "FanQ Prepull"],
         "duration": 15,
-        "affects": ["UmbQ", "UmbDrone", "UmbLightCharge", "FanLightCharged"],
+        "affects": ["role:umbQ", "role:umbDrone", "role:umbLightCharge", "role:fanLightCharged"],
         "excludes": ["UmbDroneLaunch"],
         "bonus": {
           "type": "buffBonus",

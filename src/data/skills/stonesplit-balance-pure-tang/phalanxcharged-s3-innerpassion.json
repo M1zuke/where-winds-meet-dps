@@ -8,7 +8,8 @@
     "prop:consumesInnerPassionBurningHeart",
     "weapon:Mo Blade",
     "attack:charge",
-    "attune:phalanxbaneCharged"
+    "attune:phalanxbaneCharged",
+    "role:phalanxCharged"
   ],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",

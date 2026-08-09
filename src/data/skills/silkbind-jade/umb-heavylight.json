@@ -3,7 +3,7 @@
   "classId": "silkbindJade",
   "name": "Umb HeavyLight",
   "abilityTag": "Umb HeavyLight",
-  "tags": ["weapon:Umbrella", "attack:mixed"],
+  "tags": ["weapon:Umbrella", "attack:mixed", "role:umbHeavyLight"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Silkbind",

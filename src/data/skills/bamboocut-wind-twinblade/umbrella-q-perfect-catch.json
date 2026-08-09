@@ -3,7 +3,7 @@
   "classId": "bamboocutWindTwinblade",
   "name": "Umbrella Q Perfect Catch",
   "abilityTag": "Umbrella Q Perfect Catch",
-  "tags": ["weapon:Umbrella", "attune:umbrellaQ"],
+  "tags": ["weapon:Umbrella", "attune:umbrellaQ", "role:umbrellaQ"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Bamboocut",

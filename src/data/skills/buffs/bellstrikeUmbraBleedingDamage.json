@@ -11,10 +11,16 @@
         "alwaysActive": true,
         "duration": 9999,
         "enabledParam": "swordHorizon",
-        "affects": ["Bleed Tick", "Bleed Detonation", "Combustion", "Fire Oil", "Fivefold Bleed"],
+        "affects": ["role:bleedTick", "role:bleedDetonation", "role:combustion", "role:fireOil", "role:fivefoldBleed"],
         "bonus": null,
         "__statModByPrefix": {
-          "prefixes": ["Bleed Tick", "Bleed Detonation", "Combustion", "Fire Oil", "Fivefold Bleed"],
+          "prefixes": [
+            "role:bleedTick",
+            "role:bleedDetonation",
+            "role:combustion",
+            "role:fireOil",
+            "role:fivefoldBleed"
+          ],
           "match": {
             "affinityDmg": 0.18
           },

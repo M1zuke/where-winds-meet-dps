@@ -9,7 +9,7 @@
         "name": "Crosswind Blade Spirit",
         "triggeredBy": [],
         "duration": 999,
-        "affects": ["Bleed Detonation"],
+        "affects": ["role:bleedDetonation"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.15

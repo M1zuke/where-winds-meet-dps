@@ -3,7 +3,7 @@
   "classId": "bamboocutDust",
   "name": "Resonance",
   "abilityTag": "Resonance",
-  "tags": ["weapon:Umbrella", "attune:umbrellaQ"],
+  "tags": ["weapon:Umbrella", "attune:umbrellaQ", "role:resonance"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Bamboocut",

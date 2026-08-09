@@ -3,7 +3,13 @@
   "classId": "stonesplitBalancePureTang",
   "name": "SnowpartingCharged",
   "abilityTag": "SnowpartingCharged",
-  "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],
+  "tags": [
+    "prop:isCharged",
+    "weapon:Heng Blade",
+    "attack:charge",
+    "attune:snowpartingCharged",
+    "role:snowpartingCharged"
+  ],
   "skillType": "weapon",
   "weaponOrAttribute": "Hengdao",
   "attributeAttack": "Stonesplit",

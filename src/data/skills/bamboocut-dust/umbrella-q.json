@@ -3,7 +3,7 @@
   "classId": "bamboocutDust",
   "name": "Umbrella Q",
   "abilityTag": "Umbrella Q",
-  "tags": ["weapon:Umbrella", "attune:umbrellaQ"],
+  "tags": ["weapon:Umbrella", "attune:umbrellaQ", "role:umbrellaQ"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Bamboocut",

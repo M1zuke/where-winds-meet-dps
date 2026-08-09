@@ -3,7 +3,14 @@
   "classId": "silkbindJade",
   "name": "UmbLightCharge",
   "abilityTag": "UmbLightCharge",
-  "tags": ["prop:isCharged", "prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:light", "attune:umbCharged"],
+  "tags": [
+    "prop:isCharged",
+    "prop:hasQiBreakPhysPen",
+    "weapon:Umbrella",
+    "attack:light",
+    "attune:umbCharged",
+    "role:umbLightCharge"
+  ],
   "skillType": "sustain",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Silkbind",

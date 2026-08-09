@@ -10,7 +10,7 @@
         "triggeredBy": ["Deflect"],
         "exactMatch": true,
         "duration": 8,
-        "affects": ["MoBladeVariedCombo"],
+        "affects": ["role:moBladeVariedCombo"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.06
@@ -26,7 +26,13 @@
         "triggeredBy": ["Deflect"],
         "exactMatch": true,
         "duration": 8,
-        "affects": ["SnowpartingVC", "PhalanxQ", "PhalanxCharged", "SnowpartingQ-Stab", "AnxiSoldier"],
+        "affects": [
+          "role:snowpartingVC",
+          "role:phalanxQ",
+          "role:phalanxCharged",
+          "role:snowpartingQStab",
+          "role:anxiSoldier"
+        ],
         "bonus": {
           "type": "buffBonus",
           "value": 0.06

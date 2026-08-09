@@ -13,7 +13,7 @@
         "duration": 15,
         "maxStacks": 5,
         "stacksPerHit": 1,
-        "affects": ["sustain"],
+        "affects": ["type:sustain"],
         "bonus": {
           "type": "buffBonus",
           "valuePerStack": 0.1
@@ -29,7 +29,7 @@
         "duration": 15,
         "maxStacks": 5,
         "stacksPerHit": 1,
-        "affects": ["sustain"],
+        "affects": ["type:sustain"],
         "bonus": {
           "type": "buffBonus",
           "valuePerStack": 0.1

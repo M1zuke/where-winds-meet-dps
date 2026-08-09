@@ -11,10 +11,10 @@
         "alwaysActive": true,
         "duration": 9999,
         "enabledParam": "swordHorizon",
-        "affects": ["Bleed Tick", "Bleed Detonation"],
+        "affects": ["role:bleedTick", "role:bleedDetonation"],
         "bonus": null,
         "__statModByPrefix": {
-          "prefixes": ["Bleed Tick", "Bleed Detonation"],
+          "prefixes": ["role:bleedTick", "role:bleedDetonation"],
           "match": {
             "physPen": 15,
             "bellstrikePen": 15

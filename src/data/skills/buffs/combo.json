@@ -9,7 +9,7 @@
         "name": "Combo",
         "triggeredBy": ["UmbQ"],
         "duration": 15,
-        "affects": ["UmbQ", "UmbDrone", "UmbLightCharge"],
+        "affects": ["role:umbQ", "role:umbDrone", "role:umbLightCharge"],
         "excludes": ["UmbDroneLaunch"],
         "bonus": {
           "type": "buffBonus",

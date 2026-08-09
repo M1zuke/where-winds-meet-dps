@@ -9,14 +9,19 @@
         "name": "Mountain Splitter (Adept Crit Guarantee)",
         "triggeredBy": ["SnowpartingSpecial"],
         "duration": 12,
-        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
+        "affects": [
+          "role:phalanxCharged",
+          "role:anxiSoldierMoDown",
+          "role:anxiSoldierMoJump",
+          "role:anxiSoldierMoSweep"
+        ],
         "bonus": null,
         "buffAppliesOnCastEnd": true,
         "forceCritIfHighCrit": true,
         "enabledParam": "steadfastDevotion",
         "minTier": 5,
         "__statModByPrefix": {
-          "prefixes": ["PhalanxCharged", "AnxiSoldierMo"],
+          "prefixes": ["role:phalanxCharged", "role:anxiSoldierMo"],
           "match": {
             "crit": 0.15
           },

@@ -4,9 +4,12 @@ export const PROP_TAG = "prop:"
 export const WEAPON_TAG = "weapon:"
 export const MYSTIC_TAG = "mystic:"
 export const ATTUNE_TAG = "attune:"
+export const TYPE_TAG = "type:"
+export const ROLE_TAG = "role:"
 
 export function skillTagsOf(skill: Skill): Set<string> {
   const t = new Set<string>(skill.tags ?? [])
+  if (skill.skillType) t.add(TYPE_TAG + skill.skillType)
   if (skill.skillType) t.add(skill.skillType)
   if (skill.weaponOrAttribute) t.add(skill.weaponOrAttribute)
   if (skill.attributeAttack) t.add(skill.attributeAttack)

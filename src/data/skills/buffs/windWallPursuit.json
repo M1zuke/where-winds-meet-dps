@@ -9,7 +9,7 @@
         "name": "Wind Wall (Pursuit)",
         "triggeredBy": ["FanQ", "FanQCancel", "FanQ Prepull"],
         "duration": 15,
-        "affects": ["FanHeavyPursuit"],
+        "affects": ["role:fanHeavyPursuit"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.1

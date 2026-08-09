@@ -15,7 +15,7 @@
         "stacksPerHit": 1,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["Umb HeavyLight", "FanHeavyPursuit"],
+          "prefixes": ["role:umbHeavyLight", "role:fanHeavyPursuit"],
           "match": {
             "physPen": 3,
             "critDmg": 0.03
@@ -40,7 +40,7 @@
         "stacksPerCast": 2,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["MoBladeVariedCombo"],
+          "prefixes": ["role:moBladeVariedCombo"],
           "match": {
             "physPen": 3,
             "critDmg": 0.03
@@ -65,7 +65,7 @@
         "stacksPerHit": true,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["AnxiSoldier", "SnowpartingVC", "SnowpartingCharged"],
+          "prefixes": ["role:anxiSoldier", "role:snowpartingVC", "role:snowpartingCharged"],
           "match": {
             "physPen": 2,
             "critDmg": 0.02

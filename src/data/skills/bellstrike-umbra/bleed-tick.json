@@ -3,7 +3,7 @@
   "classId": "bellstrikeUmbra",
   "name": "Bleed Tick",
   "abilityTag": "Bleed Tick",
-  "tags": ["weapon:Sword", "attune:bleed"],
+  "tags": ["weapon:Sword", "attune:bleed", "role:bleedTick"],
   "skillType": "sustain",
   "elevatedAttributeMultiplier": false,
   "weaponOrAttribute": "Sword",

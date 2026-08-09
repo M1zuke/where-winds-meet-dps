@@ -2,7 +2,7 @@
   "id": "universal-dragon-head",
   "classId": "universal",
   "name": "Dragon Head",
-  "tags": ["mystic:burst"],
+  "tags": ["mystic:burst", "role:dragonHead"],
   "skillType": "mystic",
   "weaponOrAttribute": "",
   "attributeAttack": "",

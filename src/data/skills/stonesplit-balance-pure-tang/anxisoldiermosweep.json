@@ -3,7 +3,7 @@
   "classId": "stonesplitBalancePureTang",
   "name": "AnxiSoldierMoSweep",
   "abilityTag": "AnxiSoldierMoSweep",
-  "tags": ["weapon:Mo Blade"],
+  "tags": ["weapon:Mo Blade", "role:anxiSoldierMoSweep", "role:anxiSoldierMo", "role:anxiSoldier"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

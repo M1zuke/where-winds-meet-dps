@@ -3,7 +3,7 @@
   "classId": "bamboocutDust",
   "name": "Umbrella Q Empowered Perfect Catch",
   "abilityTag": "Umbrella Q Empowered Perfect Catch",
-  "tags": ["weapon:Umbrella", "attune:umbrellaQ"],
+  "tags": ["weapon:Umbrella", "attune:umbrellaQ", "role:umbrellaQEmpoweredPerfectCatch", "role:umbrellaQ"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Bamboocut",

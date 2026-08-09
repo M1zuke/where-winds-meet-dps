@@ -3,7 +3,7 @@
   "classId": "stonesplitBalancePureTang",
   "name": "AnxiSoldierMoJump",
   "abilityTag": "AnxiSoldierMoJump",
-  "tags": ["weapon:Mo Blade"],
+  "tags": ["weapon:Mo Blade", "role:anxiSoldierMoJump", "role:anxiSoldierMo", "role:anxiSoldier"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

@@ -9,7 +9,7 @@
         "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
-        "affects": ["Dragon Head - Plus"],
+        "affects": ["role:dragonHeadPlus"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.45

@@ -3,7 +3,7 @@
   "classId": "silkbindJade",
   "name": "FanLightCharged",
   "abilityTag": "FanLightCharged",
-  "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged"],
+  "tags": ["prop:isCharged", "weapon:Fan", "attack:light", "attune:fanCharged", "role:fanLightCharged"],
   "skillType": "weapon",
   "weaponOrAttribute": "Fan",
   "attributeAttack": "Silkbind",
