@@ -26,7 +26,16 @@
         "triggers": ["Deflect"],
         "exactMatch": true,
         "duration": 8,
-        "affects": ["SnowpartingVC", "PhalanxQ", "PhalanxCharged", "SnowpartingQ-Stab", "AnxiSoldier"],
+        "affects": [
+          "SnowpartingQ-Stab",
+          "AnxiSoldierHeng",
+          "AnxiSoldierMoDown",
+          "AnxiSoldierMoJump",
+          "PhalanxCharged",
+          "SnowpartingVC",
+          "PhalanxQ",
+          "AnxiSoldierMoSweep"
+        ],
         "bonus": {
           "type": "buffBonus",
           "value": 0.08

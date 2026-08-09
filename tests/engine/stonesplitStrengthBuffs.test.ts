@@ -65,13 +65,26 @@ describe("Stonesplit Strength built-in buffs", () => {
     const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
     const withSet = buildContext(withSetInputs)
     const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
-    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
+    const affectedSkills = [
+      "SnowpartingQ-Stab",
+      "AnxiSoldierHeng",
+      "AnxiSoldierMoDown",
+      "AnxiSoldierMoJump",
+      "PhalanxCharged-S3[InnerPassion]",
+      "SnowpartingVC",
+      "PhalanxQ",
+      "AnxiSoldierMoSweep",
+    ].map(skillNamed)
 
     engine.processSkillCast("Deflect", 0)
-    const effects = engine.calculateDamageEffects(charged, 1).effects
 
     expect(withSet.generalDamageBoost - withoutSet.generalDamageBoost).toBeCloseTo(0.05, 10)
-    expect(effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.08 })
+    for (const skill of affectedSkills) {
+      expect(engine.calculateDamageEffects(skill, 1).effects).toContainEqual({
+        statKey: "allDamageBoost",
+        amount: 0.08,
+      })
+    }
   })
 
   it("applies Iron Guards' damage and penetration effects", () => {
