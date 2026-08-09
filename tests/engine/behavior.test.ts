@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { DEFAULT_BEHAVIOR, behaviorFor, registerSkillBehavior } from "../../src/engine/behavior"
+import { DEFAULT_BEHAVIOR, buildBehaviors, registerSkillBehavior } from "../../src/engine/behavior"
 import type { HitInput } from "../../src/engine/behavior"
 import { StatusLedger } from "../../src/engine/ledger"
 import { makeHit, makeSkill, newVariantId } from "../../src/engine/skill"
@@ -59,10 +59,11 @@ describe("DEFAULT_BEHAVIOR — data-driven, what every skill gets", () => {
 describe("behaviorFor — opt-in per skill", () => {
   it("returns the default until a skill registers its own", () => {
     const skill = makeSkill("bellstrikeUmbra", { name: "Probe" })
-    expect(behaviorFor(skill)).toBe(DEFAULT_BEHAVIOR)
+    expect(buildBehaviors(build)(skill)).toBe(DEFAULT_BEHAVIOR)
 
     const own = { ...DEFAULT_BEHAVIOR, buildArt: () => ({ name: "override" }) }
-    registerSkillBehavior(skill.id, own)
+    registerSkillBehavior(skill.id, () => own)
+    const behaviorFor = buildBehaviors(build)
     expect(behaviorFor(skill)).toBe(own)
 
     const other = makeSkill("bellstrikeUmbra", { name: "Other" })

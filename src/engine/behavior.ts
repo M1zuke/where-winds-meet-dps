@@ -55,11 +55,31 @@ export interface HitContext {
 // implementation detail: a stat effect has to be known BEFORE the formula
 // context is built, since it changes that context; an art patch is applied
 // after, and may read it.
+// A status the skill wants written. Returned rather than written directly, so
+// ordering stays the timeline's to decide and a behaviour cannot corrupt the
+// ledger it was handed a read-only view of.
+export interface StatusWrite {
+  id: string
+  stacks?: number
+  permanent?: boolean
+  durationFrames?: number
+}
+
+export interface HitOutcome {
+  statuses?: StatusWrite[]
+  statEffects?: BuffStatEffect[]
+  forceGuaranteedAffinity?: boolean
+}
+
 export interface SkillBehavior {
   buildArt(input: HitInput): ArtRow
   chooseVariant(input: HitInput): HitVariant | null
   claimStatEffects(input: HitInput, phase: QiPhase): BuffStatEffect[]
   patchArt(input: HitInput, context: HitContext): Partial<ArtRow> | null
+  // Runs BEFORE the formula context is built, because what it returns can
+  // change that context. Anything stateful lives on the instance, which is why
+  // behaviours are built per simulation rather than shared.
+  onHit?(input: HitInput): HitOutcome | null
 }
 
 // Per-ability qi flags (`.tmp/site/deobfuscated.js` ~L42150-42174). Tag-driven
@@ -156,12 +176,25 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
   },
 }
 
-const BEHAVIOR_BY_SKILL_ID = new Map<string, SkillBehavior>()
+// Factories, not instances: a behaviour with state — a charge counter, a
+// cooldown — must not carry it between simulations, and the engine runs many
+// per input change (gear ranking, full-potential, the worker).
+export type SkillBehaviorFactory = (build: BuildView) => SkillBehavior | null
 
-export function registerSkillBehavior(skillId: string, behavior: SkillBehavior): void {
-  BEHAVIOR_BY_SKILL_ID.set(skillId, behavior)
+const FACTORY_BY_SKILL_ID = new Map<string, SkillBehaviorFactory>()
+
+export function registerSkillBehavior(skillId: string, factory: SkillBehaviorFactory): void {
+  FACTORY_BY_SKILL_ID.set(skillId, factory)
 }
 
-export function behaviorFor(skill: Skill): SkillBehavior {
-  return BEHAVIOR_BY_SKILL_ID.get(skill.id) ?? DEFAULT_BEHAVIOR
+// Built once per simulation. A factory returning null means the skill takes the
+// default this run — how a mechanic gates itself on the build without the
+// timeline knowing why.
+export function buildBehaviors(build: BuildView): (skill: Skill) => SkillBehavior {
+  const bySkillId = new Map<string, SkillBehavior>()
+  for (const [skillId, factory] of FACTORY_BY_SKILL_ID) {
+    const behavior = factory(build)
+    if (behavior) bySkillId.set(skillId, behavior)
+  }
+  return (skill) => bySkillId.get(skill.id) ?? DEFAULT_BEHAVIOR
 }

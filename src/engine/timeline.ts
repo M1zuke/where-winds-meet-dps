@@ -14,7 +14,8 @@ import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
-import { behaviorFor, type BuildView, type HitInput } from "./behavior"
+import { buildBehaviors, type BuildView, type HitInput } from "./behavior"
+import "../data/classes/bellstrikeUmbraCrosswind"
 import {
   deriveStats,
   buildContext,
@@ -28,7 +29,6 @@ import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import {
   builtinBuffsForClass,
-  ZENITH_BAR_BUFF_ID,
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "./builtinBuffs"
@@ -36,7 +36,6 @@ import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
-import { CrosswindTracker } from "./buffs/crosswind"
 import {
   MORALE_MAX_STACKS,
   MORALE_PEN_PER_STACK,
@@ -71,10 +70,6 @@ export const FPS = 60
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
-
-// Crosswind is a per-detonation state machine rather than a time-windowed
-// buff, so it is driven from here; P7 moves it onto the skill itself.
-const BLEED_DETONATION_ROLE = "role:bleedDetonation"
 
 const LEVEL_ATTRIBUTE_BONUS_ROLES = ["role:bleedDetonation", "role:bleedTick"]
 
@@ -348,6 +343,8 @@ export function simulateTimeline(inputs: Inputs): Result {
     dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
   }
 
+  const behaviorFor = buildBehaviors(buildView)
+
   const hitInputAt = (skill: Skill, hit: SkillHit, frame: number): HitInput => ({
     skill,
     hit,
@@ -399,11 +396,6 @@ export function simulateTimeline(inputs: Inputs): Result {
     : null
 
   const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
-
-  const crosswindTracker =
-    buffEngine && buffEngine.paramOn("swordHorizon")
-      ? new CrosswindTracker(buffEngine.paramTier("swordHorizon") >= 6)
-      : null
 
   interface Resolved {
     inputs: Inputs
@@ -587,24 +579,27 @@ export function simulateTimeline(inputs: Inputs): Result {
     processed++
     const { frame, skill, hit } = ev
 
-    const extraEffects: BuffStatEffect[] = []
-    let forceGuaranteedAffinity = false
-    if (crosswindTracker && skill.tags?.includes(BLEED_DETONATION_ROLE)) {
-      const outcome = crosswindTracker.onDetonation()
-      if (outcome.spiritBonusActive) extraEffects.push({ statKey: "allDamageBoost", amount: 0.15 })
-      forceGuaranteedAffinity = outcome.guaranteedAffinity
-      if (statusById.has(ZENITH_BAR_BUFF_ID)) {
-        openPermanent(ZENITH_BAR_BUFF_ID)
-        recordStack(ZENITH_BAR_BUFF_ID, frame, crosswindTracker.charge)
-      }
-      if (forceGuaranteedAffinity && statusById.has(ZENITH_DETONATION_BUFF_ID)) {
-        const marker = statusById.get(ZENITH_DETONATION_BUFF_ID)!
-        recordStack(marker.id, frame, 1)
-        pushWindow(marker.id, frame, frame + Math.max(1, marker.durationFrames))
-      }
-    }
     const behavior = behaviorFor(skill)
     const hitInput = hitInputAt(skill, hit, frame)
+    const extraEffects: BuffStatEffect[] = []
+    let forceGuaranteedAffinity = false
+    const outcome = behavior.onHit?.(hitInput)
+    if (outcome) {
+      extraEffects.push(...(outcome.statEffects ?? []))
+      forceGuaranteedAffinity = !!outcome.forceGuaranteedAffinity
+      for (const write of outcome.statuses ?? []) {
+        const status = statusById.get(write.id)
+        if (!status) continue
+        if (write.permanent) openPermanent(status.id)
+        else
+          pushWindow(
+            status.id,
+            frame,
+            frame + Math.max(1, write.durationFrames ?? status.durationFrames),
+          )
+        if (write.stacks !== undefined) recordStack(status.id, frame, write.stacks)
+      }
+    }
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
     extraEffects.push(...behavior.claimStatEffects(hitInput, qiPhase))
     const resolveOverride: ResolveOverride | undefined =
