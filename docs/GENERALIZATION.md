@@ -9,6 +9,44 @@ Bellstrike Umbra must stay bit-identical throughout. This document is temporary
 — as each phase lands, its rules fold into `BUFFS.md`, `TIMELINE.md` and
 `CLASSES.md`, and this file is deleted.
 
+## Status (2026-08-10)
+
+Every phase below was verified against `tests/engine/engineBaseline.test.ts`:
+24 builds, bit-identical, and the `profile-v7` anchor still reporting
+dps 74381.62.
+
+| phase | state |
+| --- | --- |
+| P0 golden snapshot | **done** |
+| P1 scoped-stat attunement | **done** |
+| P2 identity / no name matching | **done** — 5 commits |
+| P3 SkillBehavior contract | **done** |
+| P4 status ledger | **done, scope changed** — see below |
+| P5 art-modifier channel | **done**, as behaviour hooks rather than def fields |
+| P6 DoT module | **done** |
+| P7 mechanic plugins | **partial** — Crosswind ported; four stochastic mechanics remain inline |
+| P8 class descriptor | **partial** — `classDefinition()` unifies lookup; inner-way defs not started |
+| P9 acceptance | **1 of 3** — no skill/debuff name matching remains in `src/engine` |
+| P10 wiki rewrite | **not started** |
+
+Two deviations worth reading before continuing:
+
+1. **P3 and P4 swapped.** `HitInput.statuses` needs a `StatusView`, so the
+   ledger had to exist first.
+2. **The two status stores were NOT merged, and should not be naively.** They
+   disagree on what "active" means — the ledger unions any covering window, the
+   buff engine takes the latest apply at or before the time, so a shorter
+   re-apply shortens the buff (`rainwhisperShield`: `duration: 8` with a 12 s
+   `durationByTrigger`). Merging storage would silently extend every buff shaped
+   like that. `castBuffs.ts` unifies the read surface instead and documents the
+   divergence at the seam. Doing it properly needs a per-status policy on the
+   ledger — a real design decision, not a refactor step.
+
+**What still reaches for a class by name:** three `classId === "bellstrikeUmbra"`
+branches and five inner-way `name === "…"` comparisons, all inside the four
+mechanics P7 has yet to move and the inner-way defs P8 has yet to build. No
+engine code addresses a *skill or debuff* by name any more.
+
 ---
 
 ## 0. Thesis

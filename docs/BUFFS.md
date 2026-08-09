@@ -60,6 +60,14 @@ This is the **"no invisible magic"** rule.
   `bellstrikeUmbraMaxPhysEffects` was once layered into `resolveState`. A
   class-specific `if (classId === …)` per-skill damage branch belongs in a
   class-gated buff-def instead.
+
+  When the def schema genuinely cannot express it, the escape hatch is a
+  `SkillBehavior` factory registered against the skill id
+  (`engine/behavior.ts`; `data/classes/bellstrikeUmbraCrosswind.ts` is the
+  worked example). It returns what it wants written and the timeline decides
+  ordering, so a mechanic can hold state without the loop knowing about it.
+  Built-ins only — a user-authored skill is JSON and can never carry code,
+  which is exactly why the data path has to stay fully capable.
 - **Do NOT add read-only display wrappers that duplicate an engine constant.**
 
 Both hide the buff from where the user edits skills, and both create a second
@@ -107,10 +115,11 @@ way, not by being a def.
 
 ## Known exceptions
 
-A handful of mechanics genuinely don't fit the buff-def vocabulary and are
-realized at the `timeline.ts` boundary on purpose — Crosswind Spirit's charge
-counter, the Hawkwing and Concentration probability schedules, Morale Chant's
-stack curve, and the Bitter Season inner way's poison (`buffs/bitterSeason.ts`):
+A handful of mechanics genuinely don't fit the buff-def vocabulary. Crosswind
+Spirit's charge counter is now a `SkillBehavior` on the detonation skill; the
+rest are still realized at the `timeline.ts` boundary — the Hawkwing and
+Concentration probability schedules, Morale Chant's stack curve, and the Bitter
+Season inner way's poison (`buffs/bitterSeason.ts`):
 a stochastic per-hit proc plus a percentage target-defense reduction that
 stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
 documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to

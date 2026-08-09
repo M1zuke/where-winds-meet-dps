@@ -80,6 +80,14 @@ Dragon Head - Plus).
 Most skills need none — create one only when there is special logic to record,
 check for one before changing a skill, and never bulk-read them.
 
+## One definition per class
+
+`classDefinition(classId)` (`src/data/classes/registry.ts`) answers what a class
+is made of — spec, primary attribute, inner ways, dingYin tags, skills,
+debuffs, buffs, rotations and default, attunements, retunement pool — and
+`CLASS_IDS` is the one list of the eight. Reach for it rather than opening the
+individual registries below; `builtinLibrary.ts` is a thin read over it.
+
 ## Where data lives
 
 | folder | holds | main consumer |
@@ -106,8 +114,9 @@ Both were renamed on 2026-08-02; neither may come back.
   (`bellstrike_umbra`), which is a different namespace.
 - **Entity ids carry no `site-` namespace**: skills are `<classId>-<slug>`,
   buffs `buff-<classId>-<slug>`, debuffs `debuff-<classId>-<slug>`. The
-  `debuff-` / `buff-` markers are **load-bearing** — `timeline.ts` derives a
-  DoT's tick-skill id by stripping `debuff-`.
+  `debuff-` / `buff-` markers are **load-bearing** — `dot.ts tickSourceSkillId`
+  derives a DoT's tick-skill id by stripping `debuff-` when the debuff does not
+  name one. Authoring `dot.sourceSkillId` overrides the convention.
 - The ported buff engine lives in `src/engine/buffs/` (was `engine/site/`);
   `builtinLibrary.ts` (was `siteLibrary.ts`) exposes the built-in pools.
 - Comments may still cite "the reference site" as the *source* of a ported

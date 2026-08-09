@@ -229,6 +229,23 @@ version:
 
 ## 6. How the timeline runs (`simulateTimeline`, `timeline.ts`)
 
+`timeline.ts` is scheduling and the event loop. Four modules do the rest, and a
+change usually belongs in one of them rather than in the loop:
+
+| module | owns |
+| --- | --- |
+| `engine/ledger.ts` | which statuses are up, at how many stacks — `StatusLedger` writes, `StatusView` reads |
+| `engine/behavior.ts` | what a skill does per hit: art row, hit variant, claimed stat effects, art patches, `onHit` |
+| `engine/dot.ts` | tick source, episode merging, stack shapes/ladders, tick emission |
+| `engine/castBuffs.ts` | the one ordered list of statuses a cast displays |
+| `engine/scope.ts` | `matchesScope` — the single predicate for "does this modifier reach this entity" |
+
+A skill with genuinely procedural behaviour registers a factory
+(`registerSkillBehavior`) rather than being special-cased in the loop;
+`data/classes/bellstrikeUmbraCrosswind.ts` is the worked example. Factories, not
+instances — a charge counter must not carry between simulations.
+
+
 1. **Lay the rotation** into performed hits; seed an `EventQueue` with one event per hit at
    `startFrame + hit.frame`; the queue pops in `(frame, seq)` order.
 2. **Per hit event:**
