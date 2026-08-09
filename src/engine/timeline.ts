@@ -18,6 +18,7 @@ import {
   selectHitVariant,
 } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
+import { StatusLedger, type StatusWindow } from "./ledger"
 import {
   deriveStats,
   buildContext,
@@ -175,19 +176,6 @@ class EventQueue {
   private less(a: HitEvent, b: HitEvent): boolean {
     return a.frame !== b.frame ? a.frame < b.frame : a.seq < b.seq
   }
-}
-
-interface Window {
-  start: number
-  end: number
-  extensions?: Array<{ frame: number; amount: number }>
-}
-
-function windowEndAt(w: Window, frame: number): number {
-  if (!w.extensions) return w.end
-  let end = w.end
-  for (const ext of w.extensions) if (ext.frame > frame) end -= ext.amount
-  return end
 }
 
 export function simulateTimeline(inputs: Inputs): Result {
@@ -359,49 +347,12 @@ export function simulateTimeline(inputs: Inputs): Result {
     } else castMetrics.set(name, { castCount: 1, castFrames: castLens[i] })
   }
 
-  const stackHistory = new Map<string, Array<{ frame: number; value: number }>>()
-  function recordStack(buffId: string, frame: number, value: number): void {
-    const arr = stackHistory.get(buffId)
-    if (arr) arr.push({ frame, value })
-    else stackHistory.set(buffId, [{ frame, value }])
-  }
-  function hasStackHistory(buffId: string): boolean {
-    const arr = stackHistory.get(buffId)
-    return !!arr && arr.length > 0
-  }
-  function stacksAt(buffId: string, frame: number): number {
-    const arr = stackHistory.get(buffId)
-    if (!arr || arr.length === 0) return 0
-    let lo = 0
-    let hi = arr.length - 1
-    let ans = 0
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1
-      if (arr[mid].frame <= frame) {
-        ans = arr[mid].value
-        lo = mid + 1
-      } else hi = mid - 1
-    }
-    return ans
-  }
-  function conditionStacksAt(statusId: string, frame: number): number {
-    const arr = windowsByBuff.get(statusId)
-    if (!arr || !arr.some((w) => frame >= w.start && frame < w.end)) return 0
-    return stacksAt(statusId, frame)
-  }
-
-  const windowsByBuff = new Map<string, Window[]>()
-  function pushWindow(buffId: string, start: number, end: number): void {
-    const arr = windowsByBuff.get(buffId)
-    if (arr) arr.push({ start, end })
-    else windowsByBuff.set(buffId, [{ start, end }])
-  }
-  const permanentOpened = new Set<string>()
-  function openPermanent(buffId: string): void {
-    if (permanentOpened.has(buffId)) return
-    permanentOpened.add(buffId)
-    pushWindow(buffId, spanStart, durationFrames)
-  }
+  const ledger = new StatusLedger(spanStart, durationFrames)
+  const recordStack = (id: string, frame: number, value: number) =>
+    ledger.recordStack(id, frame, value)
+  const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
+  const pushWindow = (id: string, start: number, end: number) => ledger.pushWindow(id, start, end)
+  const openPermanent = (id: string) => ledger.openPermanent(id)
 
   for (const id of rotation.permanentBuffIds) {
     if (statusById.has(id)) openPermanent(id)
@@ -409,20 +360,15 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   function activeBuffsAt(frame: number): (Buff | Debuff)[] {
     const out: (Buff | Debuff)[] = []
-    for (const [buffId, arr] of windowsByBuff) {
-      for (const w of arr) {
-        if (frame >= w.start && frame < w.end) {
-          const b = statusById.get(buffId)
-          if (b) out.push(b)
-          break
-        }
-      }
+    for (const id of ledger.activeIdsAt(frame)) {
+      const status = statusById.get(id)
+      if (status) out.push(status)
     }
     return out
   }
 
   const conditionHolds = (c: TriggerCondition, frame: number): boolean => {
-    const cur = conditionStacksAt(c.buffId, frame)
+    const cur = ledger.conditionStacksAt(c.buffId, frame)
     return c.op === "gte" ? cur >= c.stacks : c.op === "gt" ? cur > c.stacks : cur === c.stacks
   }
 
@@ -763,12 +709,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         const status = statusById.get(trigger.targetId)
         if (!status) continue
         if (trigger.extendFrames != null) {
-          const arr = windowsByBuff.get(status.id)
-          let w: Window | undefined
-          if (arr)
-            for (const cand of arr) {
-              if (frame >= cand.start && frame < cand.end && (!w || cand.end > w.end)) w = cand
-            }
+          const w = ledger.longestActiveWindow(status.id, frame)
           if (w) {
             // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
             const isZenithExtension = trigger.condition?.buffId === ZENITH_DETONATION_BUFF_ID
@@ -813,7 +754,8 @@ export function simulateTimeline(inputs: Inputs): Result {
   if (bitterSeasonTuning && durationFrames > 0 && bitterSeasonHitTimesSec.length > 0) {
     const bitterSeasonDebuff = statusById.get(bitterSeasonId)
     if (bitterSeasonDebuff && isDebuffStatus(bitterSeasonDebuff) && bitterSeasonDebuff.dot) {
-      const zenithExtensionTimesSec = (windowsByBuff.get(ZENITH_DETONATION_BUFF_ID) ?? [])
+      const zenithExtensionTimesSec = ledger
+        .windowsOf(ZENITH_DETONATION_BUFF_ID)
         .map((zenithWindow) => zenithWindow.start / FPS)
         .sort((a, b) => a - b)
       const poisonDurationSec = bitterSeasonDebuff.durationFrames / FPS
@@ -846,7 +788,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  for (const arr of windowsByBuff.values()) arr.sort((a, b) => a.start - b.start)
+  ledger.sortWindows()
 
   const castsUnsorted: RotationCast[] = laidSteps.map((ls, i) => {
     const lastHitFrame =
@@ -863,26 +805,15 @@ export function simulateTimeline(inputs: Inputs): Result {
       if (seenBuffIds.has(b.id)) continue
       seenBuffIds.add(b.id)
       const tracked = stacksAt(b.id, queryFrame)
-      const stacks = tracked > 0 ? tracked : hasStackHistory(b.id) ? tracked : 1
+      const stacks = tracked > 0 ? tracked : ledger.hasStackHistory(b.id) ? tracked : 1
       const dotIntervalSec =
         isDebuffStatus(b) && b.dot && b.dot.tickIntervalFrames > 0
           ? b.dot.tickIntervalFrames / FPS
           : undefined
       let remainingSec: number | undefined
       if (b.activation !== "permanent") {
-        const arr = windowsByBuff.get(b.id)
-        let end: number | undefined
-        if (arr)
-          for (const w of arr) {
-            const endHere = windowEndAt(w, queryFrame)
-            if (
-              queryFrame >= w.start &&
-              queryFrame < endHere &&
-              (end === undefined || endHere > end)
-            )
-              end = endHere
-          }
-        if (end !== undefined) remainingSec = (end - queryFrame) / FPS
+        const remainingFrames = ledger.remainingFramesAt(b.id, queryFrame)
+        if (remainingFrames !== undefined) remainingSec = remainingFrames / FPS
       }
       // Below the display threshold there's a real chance no poison has
       // procced yet at all (e.g. right after the very first eligible hits),
@@ -1026,7 +957,7 @@ export function simulateTimeline(inputs: Inputs): Result {
   const casts: RotationCast[] = castsUnsorted.map((c, i) => ({ ...c, index: i + 1 }))
 
   const buffWindows: BuffWindow[] = []
-  for (const [id, arr] of windowsByBuff) {
+  for (const [id, arr] of ledger.entries()) {
     const status = statusById.get(id)
     if (!status) continue
     for (const w of arr) {
@@ -1034,7 +965,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  for (const [buffId, arr] of windowsByBuff) {
+  for (const [buffId, arr] of ledger.entries()) {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
       continue
@@ -1068,7 +999,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       !table && dot.perStackMultipliers && dot.perStackMultipliers.length > 0
         ? dot.perStackMultipliers
         : null
-    const episodes: Window[] = []
+    const episodes: StatusWindow[] = []
     for (const w of arr) {
       const last = episodes[episodes.length - 1]
       if (last && w.start < last.end) last.end = Math.max(last.end, w.end)
