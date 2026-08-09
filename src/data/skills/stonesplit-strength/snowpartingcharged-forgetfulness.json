@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingcharged-forgetfulness",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-snowpartingcharged-forgetfulness",
+  "classId": "stonesplitStrength",
   "name": "SnowpartingCharged[Forgetfulness]",
   "abilityTag": "SnowpartingCharged[Forgetfulness]",
   "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],

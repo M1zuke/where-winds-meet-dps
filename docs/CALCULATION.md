@@ -135,7 +135,7 @@ The interesting derivations:
   * `+8%` if `shareEasyHurt` (the tank-spear Vulnerability debuff)
   * `+1.5%` Divinecraft fire · `+1%` Divinecraft poison
   * `+ bossBoost`
-  * `+8%` for the `stonesplitBalancePureTang` class
+  * `+8%` for the `stonesplitStrength` class
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
   `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
   (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression
@@ -408,8 +408,8 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
 - **`forceCritIfHighCrit`** — its site gate is a crit-weight ≥ 0.7 test with
   no equivalent here; `buffEngine.ts` emits a warning for it.
-- **Known trigger no-op**: on `bamboocutWindTwinblade` and
-  `stonesplitBalanceDualCut`, Umbrella Q's `castSkill` trigger targets
+- **Known trigger no-op**: on `bamboocutWindTwinblade`, Umbrella Q's
+  `castSkill` trigger targets
   Resonance / First Resonance skills those classes never received, so it
   silently does nothing.
 
@@ -424,7 +424,7 @@ source-of-truth note this table summarizes.
 | --- | --- | --- |
 | Sword Horizon / `swordHorizon` (bellstrikeUmbra signature) | Panel tier stats + buff engine + `crosswind.ts` | Tier stats, T6 detonation retain, the charge counter and guaranteed-affinity are all modeled. The crosswindBlade/bloodBurst mode toggle is unimplemented — but bloodBurst is the site's own default and the app never applies the crosswindBlade conversion, so the omission is **correctly inert**. |
 | Moon Above Flowers / `combo` (silkbindJade signature) | Panel + buff engine (combo-count buffs) | Disjoint channels. |
-| Frostwhite Night / `frostCladNight` (stonesplitBalancePureTang signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
+| Frostwhite Night / `frostCladNight` (stonesplitStrength signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
 | Wolfchaser's Art / `wolfchasersArt` | Panel + buff engine | Disjoint channels. The extra-detonation FSM is an unmodeled gap. |
 | Thousand Mountain Law / `mountainsMight` | Panel + buff engine | Disjoint. |
 | Throat-Pierce / `throatPierced` | Panel + buff engine | Disjoint. |

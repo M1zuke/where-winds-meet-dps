@@ -1,11 +1,11 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingslide-prepull",
-  "classId": "stonesplitBalancePureTang",
-  "name": "SnowpartingSlide Prepull",
-  "abilityTag": "SnowpartingSlide Prepull",
-  "tags": ["weapon:Heng Blade"],
+  "id": "stonesplitStrength-blockperception",
+  "classId": "stonesplitStrength",
+  "name": "BlockPerception",
+  "abilityTag": "BlockPerception",
+  "tags": [],
   "skillType": "weapon",
-  "weaponOrAttribute": "Hengdao",
+  "weaponOrAttribute": "",
   "attributeAttack": "Stonesplit",
   "hits": [
     {
@@ -19,9 +19,9 @@
       "triggers": []
     }
   ],
-  "castFrames": 0,
+  "castFrames": 15,
   "triggerable": true,
   "createdAt": "2026-07-19T00:00:00.000Z",
   "updatedAt": "2026-07-19T00:00:00.000Z",
-  "universal": false
+  "universal": true
 }

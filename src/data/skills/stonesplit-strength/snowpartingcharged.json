@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingcharged",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-snowpartingcharged",
+  "classId": "stonesplitStrength",
   "name": "SnowpartingCharged",
   "abilityTag": "SnowpartingCharged",
   "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],

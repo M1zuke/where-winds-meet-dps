@@ -80,24 +80,18 @@
     "rotations": ["6× Mountain-River Speed"]
   },
   {
-    "id": "stonesplitBalancePureTang",
-    "cn": "Stonesplit Balance — Pure Tang",
-    "en": "Stonesplit Balance — Pure Tang",
-    "displayName": "Stonesplit Balance — Pure Tang",
+    "id": "stonesplitStrength",
+    "cn": "Stonesplit Strength",
+    "en": "Stonesplit Strength",
+    "displayName": "Stonesplit Strength",
     "primaryAttribute": "Stonesplit",
     "attributeMultiplier": 51.5,
     "permanentBuffs": ["Hengdao Derivative Boost", "Modao Charge Skill Boost"],
-    "classMindGroup": "Frostwhite Night",
+    "classMindGroup": "Frost-Clad Night",
     "allowedMindMethods": [
       "Morale Chant",
       "Throat-Pierce",
-      "Lone Loyalty",
-      "Soldier's Return",
-      "Year-Long Lament",
-      "Stone-Cutter",
-      "Sutra Shift",
-      "Bliss Bleeding",
-      "Bitter Season"
+      "Lone Loyalty"
     ],
     "classBuffs": [],
     "weapons": ["Hengdao", "Modao"],
@@ -146,19 +140,5 @@
     "classBuffs": [],
     "weapons": ["Umbrella", "Rope Dart"],
     "rotations": ["Twin Flute", "Umbrella Stall"]
-  },
-  {
-    "id": "stonesplitBalanceDualCut",
-    "cn": "Stonesplit Balance — Dual-cut",
-    "en": "Stonesplit Balance — Dual-cut",
-    "displayName": "Stonesplit Balance — Dual-cut",
-    "primaryAttribute": "Bamboocut",
-    "attributeMultiplier": 51.5,
-    "permanentBuffs": [],
-    "classMindGroup": "Soaring Ascent",
-    "allowedMindMethods": ["Morale Chant", "Heaven-Seizing Stance", "Threefold Insight", "Bitter Season"],
-    "classBuffs": [],
-    "weapons": ["Knuckles", "Rope Dart"],
-    "rotations": []
   }
 ]

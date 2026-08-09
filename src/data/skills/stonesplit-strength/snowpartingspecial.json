@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingspecial",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-snowpartingspecial",
+  "classId": "stonesplitStrength",
   "name": "SnowpartingSpecial",
   "abilityTag": "SnowpartingSpecial",
   "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],

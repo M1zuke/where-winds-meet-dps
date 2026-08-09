@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingq-stab",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-snowpartingq-stab",
+  "classId": "stonesplitStrength",
   "name": "SnowpartingQ-Stab",
   "abilityTag": "SnowpartingQ-Stab",
   "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
@@ -30,7 +30,7 @@
         {
           "id": "tg-snowpartingq-stab-cast",
           "kind": "castSkill",
-          "targetId": "stonesplitBalancePureTang-anxisoldierheng",
+          "targetId": "stonesplitStrength-anxisoldierheng",
           "stacks": 0,
           "condition": null
         }

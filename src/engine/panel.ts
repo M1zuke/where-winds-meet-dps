@@ -290,7 +290,7 @@ export function buildContext(
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
     (has("Endurance Doctrine") ? 0.02 : 0) +
-    (school.id === "stonesplitBalancePureTang" ? 0.08 : 0)
+    (school.id === "stonesplitStrength" ? 0.08 : 0)
 
   const dingYinByTag: Record<string, number> = {}
   for (const tag of school.permanentBuffs) {

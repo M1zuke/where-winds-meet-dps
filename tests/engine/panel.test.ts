@@ -23,7 +23,7 @@ describe("panel.deriveStats", () => {
 })
 
 describe("getSchool / getBreakthrough", () => {
-  it("knows all 8 classes", () => {
+  it("knows all 7 classes", () => {
     for (const id of [
       "silkbindJade",
       "stonesplitPower",
@@ -31,8 +31,7 @@ describe("getSchool / getBreakthrough", () => {
       "bellstrikeUmbra",
       "bellstrikeRainbow",
       "bamboocutDust",
-      "stonesplitBalancePureTang",
-      "stonesplitBalanceDualCut",
+      "stonesplitStrength",
     ]) {
       expect(getSchool(id).id).toBe(id)
     }

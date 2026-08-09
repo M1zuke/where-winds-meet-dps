@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-snowpartingvc",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-snowpartingvc",
+  "classId": "stonesplitStrength",
   "name": "SnowpartingVC",
   "abilityTag": "SnowpartingVC",
   "tags": ["prop:consumesInnerPassion", "weapon:Heng Blade", "attack:heavy", "attune:snowpartingVariedCombo"],
@@ -20,7 +20,7 @@
         {
           "id": "tg-snowpartingvc-cast",
           "kind": "castSkill",
-          "targetId": "stonesplitBalancePureTang-anxisoldierheng",
+          "targetId": "stonesplitStrength-anxisoldierheng",
           "stacks": 0,
           "condition": null
         }

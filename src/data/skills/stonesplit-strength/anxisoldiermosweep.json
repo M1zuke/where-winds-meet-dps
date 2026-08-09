@@ -1,8 +1,8 @@
 {
-  "id": "stonesplitBalancePureTang-anxisoldiermodown",
-  "classId": "stonesplitBalancePureTang",
-  "name": "AnxiSoldierMoDown",
-  "abilityTag": "AnxiSoldierMoDown",
+  "id": "stonesplitStrength-anxisoldiermosweep",
+  "classId": "stonesplitStrength",
+  "name": "AnxiSoldierMoSweep",
+  "abilityTag": "AnxiSoldierMoSweep",
   "tags": ["weapon:Mo Blade"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
@@ -16,15 +16,7 @@
       "physFixed": 0,
       "attributeFixed": 0,
       "extraCritDamage": 0,
-      "triggers": [
-        {
-          "id": "tg-anxisoldiermodown-cast",
-          "kind": "castSkill",
-          "targetId": "stonesplitBalancePureTang-anxisoldiermojump",
-          "stacks": 0,
-          "condition": null
-        }
-      ]
+      "triggers": []
     }
   ],
   "castFrames": 0,

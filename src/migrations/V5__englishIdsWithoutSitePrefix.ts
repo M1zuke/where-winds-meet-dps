@@ -9,10 +9,10 @@ export const LEGACY_CLASS_IDS: Record<string, string> = {
   mingJinYing: "bellstrikeUmbra",
   qianSiYu: "silkbindJade",
   lieShiWei: "stonesplitPower",
-  lieShiJunChunTang: "stonesplitBalancePureTang",
+  lieShiJunChunTang: "stonesplitStrength",
   poZhuFeng: "bamboocutWindTwinblade",
   poZhuChen: "bamboocutDust",
-  lieShiJunShuangQie: "stonesplitBalanceDualCut",
+  lieShiJunShuangQie: "stonesplitStrength",
 }
 
 /**

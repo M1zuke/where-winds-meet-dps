@@ -22,7 +22,7 @@ import anxisoldiermodown from "./anxisoldiermodown.json"
 import anxisoldiermosweep from "./anxisoldiermosweep.json"
 import anxisoldiermojump from "./anxisoldiermojump.json"
 
-export const CLASS_ID = "stonesplitBalancePureTang"
+export const CLASS_ID = "stonesplitStrength"
 
 export const SKILLS = [
   phalanxspecialPrepull,

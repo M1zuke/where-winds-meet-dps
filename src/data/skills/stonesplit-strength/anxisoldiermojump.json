@@ -1,8 +1,8 @@
 {
-  "id": "stonesplitBalancePureTang-phalanxspecial",
-  "classId": "stonesplitBalancePureTang",
-  "name": "PhalanxSpecial",
-  "abilityTag": "PhalanxSpecial",
+  "id": "stonesplitStrength-anxisoldiermojump",
+  "classId": "stonesplitStrength",
+  "name": "AnxiSoldierMoJump",
+  "abilityTag": "AnxiSoldierMoJump",
   "tags": ["weapon:Mo Blade"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
@@ -11,15 +11,15 @@
     {
       "id": "hit-0",
       "frame": 0,
-      "physMultiplier": 0,
-      "attributeMultiplier": 0,
+      "physMultiplier": 0.9,
+      "attributeMultiplier": 1.35,
       "physFixed": 0,
       "attributeFixed": 0,
       "extraCritDamage": 0,
       "triggers": []
     }
   ],
-  "castFrames": 71,
+  "castFrames": 0,
   "triggerable": true,
   "createdAt": "2026-07-19T00:00:00.000Z",
   "updatedAt": "2026-07-19T00:00:00.000Z",

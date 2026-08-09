@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-phalanxcharged-s3",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-phalanxcharged-s3",
+  "classId": "stonesplitStrength",
   "name": "PhalanxCharged-S3",
   "abilityTag": "PhalanxCharged-S3",
   "tags": ["prop:isCharged", "weapon:Mo Blade", "attack:charge", "attune:phalanxbaneCharged"],
@@ -30,7 +30,7 @@
         {
           "id": "tg-phalanxcharged-s3-cast",
           "kind": "castSkill",
-          "targetId": "stonesplitBalancePureTang-anxisoldiermodown",
+          "targetId": "stonesplitStrength-anxisoldiermodown",
           "stacks": 0,
           "condition": null
         }

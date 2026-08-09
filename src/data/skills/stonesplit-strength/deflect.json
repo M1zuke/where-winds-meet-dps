@@ -1,8 +1,8 @@
 {
-  "id": "stonesplitBalancePureTang-blockperception",
-  "classId": "stonesplitBalancePureTang",
-  "name": "BlockPerception",
-  "abilityTag": "BlockPerception",
+  "id": "stonesplitStrength-deflect",
+  "classId": "stonesplitStrength",
+  "name": "Deflect",
+  "abilityTag": "Deflect",
   "tags": [],
   "skillType": "weapon",
   "weaponOrAttribute": "",
@@ -19,7 +19,7 @@
       "triggers": []
     }
   ],
-  "castFrames": 15,
+  "castFrames": 25,
   "triggerable": true,
   "createdAt": "2026-07-19T00:00:00.000Z",
   "updatedAt": "2026-07-19T00:00:00.000Z",

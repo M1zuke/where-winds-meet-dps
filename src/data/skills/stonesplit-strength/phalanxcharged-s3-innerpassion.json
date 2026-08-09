@@ -1,6 +1,6 @@
 {
-  "id": "stonesplitBalancePureTang-phalanxcharged-s3-innerpassion",
-  "classId": "stonesplitBalancePureTang",
+  "id": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+  "classId": "stonesplitStrength",
   "name": "PhalanxCharged-S3[InnerPassion]",
   "abilityTag": "PhalanxCharged-S3[InnerPassion]",
   "tags": [
@@ -36,7 +36,7 @@
         {
           "id": "tg-phalanxcharged-s3-innerpassion-cast",
           "kind": "castSkill",
-          "targetId": "stonesplitBalancePureTang-anxisoldiermodown",
+          "targetId": "stonesplitStrength-anxisoldiermodown",
           "stacks": 0,
           "condition": null
         }
