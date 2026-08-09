@@ -17,20 +17,20 @@
     {
       "id": "hit-0",
       "frame": 0,
-      "physMultiplier": 2.63615,
-      "attributeMultiplier": 3.9543,
-      "physFixed": 608.5,
-      "attributeFixed": 340.5,
+      "physMultiplier": 2.2702,
+      "attributeMultiplier": 3.4054,
+      "physFixed": 628,
+      "attributeFixed": 342,
       "extraCritDamage": 0,
       "triggers": []
     },
     {
       "id": "hit-1",
       "frame": 69,
-      "physMultiplier": 2.63615,
-      "attributeMultiplier": 3.9543,
-      "physFixed": 608.5,
-      "attributeFixed": 340.5,
+      "physMultiplier": 5.2972,
+      "attributeMultiplier": 7.9458,
+      "physFixed": 1465,
+      "attributeFixed": 798,
       "extraCritDamage": 0,
       "triggers": [
         {
