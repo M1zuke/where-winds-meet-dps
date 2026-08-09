@@ -7,7 +7,7 @@
       "def": {
         "id": "mountainSplitterAdeptCrit",
         "name": "Mountain Splitter (Adept Crit Guarantee)",
-        "triggers": ["SnowpartingSpecial"],
+        "triggeredBy": ["SnowpartingSpecial"],
         "duration": 12,
         "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
         "bonus": null,

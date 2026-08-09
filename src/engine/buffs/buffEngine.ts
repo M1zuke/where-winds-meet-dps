@@ -80,8 +80,8 @@ export class BuffEngine {
     const register = (def: BuffDef) => {
       if (def.requiresSet && def.requiresSet !== this.params.armorSet) return
       this.definitions.set(def.id, def)
-      if (def.triggers)
-        for (const tr of def.triggers) {
+      if (def.triggeredBy)
+        for (const tr of def.triggeredBy) {
           if (!this.triggerMap.has(tr)) this.triggerMap.set(tr, [])
           this.triggerMap.get(tr)!.push(def)
         }
@@ -406,7 +406,7 @@ export class BuffEngine {
           const upgrade = ct.upgradeFromActive && this.isBuffActive(ct.upgradeFromActive, applyTime)
           if (refresh || upgrade) this.applyBuff(def.id, applyTime, null, 1)
         } else {
-          let dur = def.triggerDurations?.[prefix] ?? null
+          let dur = def.durationByTrigger?.[prefix] ?? null
           if (def.extendDurationToIfBuffActive) {
             const ext = def.extendDurationToIfBuffActive
             const on = !ext.enabledParam || this.paramOn(ext.enabledParam)

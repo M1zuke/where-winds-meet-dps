@@ -7,7 +7,7 @@
       "def": {
         "id": "burningHeartIPConsume",
         "name": "Burning Heart (IP Consume)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 0,
         "affects": null,
         "bonus": null,

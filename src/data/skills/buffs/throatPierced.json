@@ -7,7 +7,7 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggers": ["Umb HeavyLight", "FanHeavyPursuit"],
+        "triggeredBy": ["Umb HeavyLight", "FanHeavyPursuit"],
         "duration": 12,
         "affects": null,
         "bonus": null,
@@ -32,7 +32,7 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggers": ["MoBladeVariedCombo"],
+        "triggeredBy": ["MoBladeVariedCombo"],
         "duration": 12,
         "affects": null,
         "bonus": null,
@@ -57,7 +57,7 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggers": ["SnowpartingVC", "SnowpartingCharged", "AnxiSoldierHeng"],
+        "triggeredBy": ["SnowpartingVC", "SnowpartingCharged", "AnxiSoldierHeng"],
         "duration": 15,
         "affects": null,
         "bonus": null,

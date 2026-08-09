@@ -7,7 +7,7 @@
       "def": {
         "id": "windWall",
         "name": "Wind Wall",
-        "triggers": ["FanQ", "FanQCancel", "FanQ Prepull"],
+        "triggeredBy": ["FanQ", "FanQCancel", "FanQ Prepull"],
         "duration": 15,
         "affects": ["UmbQ", "UmbDrone", "UmbLightCharge", "FanLightCharged"],
         "excludes": ["UmbDroneLaunch"],

@@ -70,7 +70,7 @@ export interface ConsumableStackPool {
 export interface BuffDef {
   id: string
   name?: string
-  triggers?: string[]
+  triggeredBy?: string[]
   exactMatch?: boolean
   refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   onApply?: string[]
@@ -100,7 +100,7 @@ export interface BuffDef {
   stacksPerHit?: number | boolean
   stacksPerCast?: number
   tierConditionalStacks?: unknown
-  triggerDurations?: Record<string, number>
+  durationByTrigger?: Record<string, number>
   extendDurationToIfBuffActive?: {
     buffId: string
     enabledParam?: string

@@ -7,7 +7,7 @@
       "def": {
         "id": "throatPiercedAnxiT6",
         "name": "Throat-Pierced (Anxi T6 trigger)",
-        "triggers": ["AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
+        "triggeredBy": ["AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
         "duration": 0,
         "affects": [],
         "bonus": null,

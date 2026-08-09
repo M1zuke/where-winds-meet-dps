@@ -7,7 +7,7 @@
       "def": {
         "id": "breakthrough",
         "name": "Breakthrough",
-        "triggers": ["MoBladeQ", "Mo Blade Q Shield"],
+        "triggeredBy": ["MoBladeQ", "Mo Blade Q Shield"],
         "conditionalTrigger": {
           "refreshIfActive": "breakthrough",
           "upgradeFromActive": "drumbeat"

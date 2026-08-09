@@ -6,7 +6,7 @@
       "def": {
         "id": "dragonHeadLowHp",
         "name": "Low HP Bonus (Dragon Head)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
         "affects": ["Dragon Head - Plus"],

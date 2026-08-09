@@ -7,7 +7,7 @@
       "def": {
         "id": "pursuitChargedBoost",
         "name": "Spring Shock",
-        "triggers": ["FanHeavyPursuit"],
+        "triggeredBy": ["FanHeavyPursuit"],
         "duration": 15,
         "maxStacks": 5,
         "stacksPerHit": true,

@@ -6,9 +6,9 @@
       "def": {
         "id": "rainwhisperShield",
         "name": "HP Shield",
-        "triggers": ["MoBladeQ", "Golden Body + Deflect Cancel", "Golden Body Cancel", "Mo Blade Q Shield"],
+        "triggeredBy": ["MoBladeQ", "Golden Body + Deflect Cancel", "Golden Body Cancel", "Mo Blade Q Shield"],
         "duration": 8,
-        "triggerDurations": {
+        "durationByTrigger": {
           "Golden Body + Deflect Cancel": 12,
           "Golden Body Cancel": 12,
           "Mo Blade Q Shield": 14

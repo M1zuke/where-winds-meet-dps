@@ -6,7 +6,7 @@
       "def": {
         "id": "resistanceResolve",
         "name": "Resistance Resolve",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 12,
         "affects": null,
         "bonus": {

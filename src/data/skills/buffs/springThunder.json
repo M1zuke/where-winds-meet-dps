@@ -7,7 +7,7 @@
       "def": {
         "id": "springThunder",
         "name": "Spring Thunder",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 2,
         "affects": null,
         "bonus": null,

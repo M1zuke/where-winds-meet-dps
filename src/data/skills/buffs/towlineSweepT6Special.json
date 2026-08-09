@@ -7,7 +7,7 @@
       "def": {
         "id": "towlineSweepT6Special",
         "name": "Towline Sweep T6",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
         "affects": ["Rope Special"],

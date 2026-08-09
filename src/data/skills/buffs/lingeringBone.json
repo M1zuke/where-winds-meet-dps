@@ -7,7 +7,7 @@
       "def": {
         "id": "lingeringBone",
         "name": "Lingering Bone",
-        "triggers": ["FanSpecial", "FanLightCharged"],
+        "triggeredBy": ["FanSpecial", "FanLightCharged"],
         "duration": 2,
         "affects": [],
         "bonus": null,

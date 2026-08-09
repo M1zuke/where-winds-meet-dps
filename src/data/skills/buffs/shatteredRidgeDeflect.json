@@ -7,7 +7,7 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggers": ["Deflect"],
+        "triggeredBy": ["Deflect"],
         "exactMatch": true,
         "duration": 8,
         "affects": ["MoBladeVariedCombo"],
@@ -23,7 +23,7 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggers": ["Deflect"],
+        "triggeredBy": ["Deflect"],
         "exactMatch": true,
         "duration": 8,
         "affects": ["SnowpartingVC", "PhalanxQ", "PhalanxCharged", "SnowpartingQ-Stab", "AnxiSoldier"],

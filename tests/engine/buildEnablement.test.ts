@@ -195,7 +195,7 @@ describe("time-windowed application", () => {
     const defs: BuffDef[] = [
       {
         id: "windowed",
-        triggers: ["X"],
+        triggeredBy: ["X"],
         duration: 10,
         affects: null,
         bonus: { type: "buffBonus", value: 0.2 },

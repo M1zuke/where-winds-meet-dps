@@ -7,7 +7,7 @@
       "def": {
         "id": "mountainSplitter",
         "name": "Mountain Splitter",
-        "triggers": ["AnxiSoldierMoDown", "AnxiSoldierMoJump"],
+        "triggeredBy": ["AnxiSoldierMoDown", "AnxiSoldierMoJump"],
         "duration": 5,
         "cooldown": 15,
         "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump"],

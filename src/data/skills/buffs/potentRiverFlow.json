@@ -7,7 +7,7 @@
       "def": {
         "id": "potentRiverFlow",
         "name": "Potent River Flow",
-        "triggers": ["SpearQ"],
+        "triggeredBy": ["SpearQ"],
         "duration": 15,
         "affects": null,
         "bonus": {

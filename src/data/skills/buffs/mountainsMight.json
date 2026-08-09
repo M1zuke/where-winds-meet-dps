@@ -7,7 +7,7 @@
       "def": {
         "id": "mountainsMight",
         "name": "Mountain's Might",
-        "triggers": ["SpearQ"],
+        "triggeredBy": ["SpearQ"],
         "duration": 8,
         "affects": null,
         "bonus": null,

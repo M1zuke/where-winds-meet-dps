@@ -7,7 +7,7 @@
       "def": {
         "id": "comboUmbLightBonus",
         "name": "Combo (UmbLight)",
-        "triggers": ["UmbQ"],
+        "triggeredBy": ["UmbQ"],
         "duration": 15,
         "affects": ["UmbLightCharge"],
         "bonus": {

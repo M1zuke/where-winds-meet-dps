@@ -7,7 +7,7 @@
       "def": {
         "id": "drumbeat",
         "name": "Drumbeat",
-        "triggers": ["SpearQ", "SpearHeavy"],
+        "triggeredBy": ["SpearQ", "SpearHeavy"],
         "duration": 6,
         "affectsProperty": "isCharged",
         "bonus": {

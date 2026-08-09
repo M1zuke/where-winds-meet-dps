@@ -6,7 +6,7 @@
       "def": {
         "id": "mirage",
         "name": "Mirage",
-        "triggers": ["Ghostly Steps"],
+        "triggeredBy": ["Ghostly Steps"],
         "duration": 30,
         "affects": [],
         "bonus": null

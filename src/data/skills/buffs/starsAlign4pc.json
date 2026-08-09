@@ -7,7 +7,7 @@
       "def": {
         "id": "starsAlign4pc",
         "name": "Stars Align",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 9999,
         "affects": ["Umbrella Q", "Resonance", "First Resonance"],
         "bonus": {

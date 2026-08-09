@@ -7,7 +7,7 @@
       "def": {
         "id": "tangMelody",
         "name": "Tang Melody",
-        "triggers": [
+        "triggeredBy": [
           "Umbrella Q",
           "Umbrella Q Perfect Catch",
           "Umbrella Q Empowered Perfect Catch",

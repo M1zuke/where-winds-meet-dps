@@ -7,7 +7,7 @@
         "id": "bellstrikeUmbraBleedPen",
         "name": "Bleed penetration Enhancement",
         "spec": "bellstrike_umbra",
-        "triggers": [],
+        "triggeredBy": [],
         "alwaysActive": true,
         "duration": 9999,
         "enabledParam": "swordHorizon",

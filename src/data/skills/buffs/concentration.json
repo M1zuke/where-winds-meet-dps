@@ -7,7 +7,7 @@
       "def": {
         "id": "concentration",
         "name": "Concentration",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 10,
         "affects": null,
         "bonus": null,
@@ -32,7 +32,7 @@
       "def": {
         "id": "concentration",
         "name": "Concentration",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 10,
         "affects": null,
         "bonus": null,

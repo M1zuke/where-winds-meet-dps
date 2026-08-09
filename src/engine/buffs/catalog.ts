@@ -22,7 +22,7 @@ export interface BuffSummary {
   name: string
   enabledParam?: string
   minTier?: number
-  triggers: string[]
+  triggeredBy: string[]
   affects: string
   bonus: string
 }
@@ -56,7 +56,7 @@ function toSummary(d: BuffDef): BuffSummary {
     name: d.name ?? d.id,
     enabledParam: d.enabledParam,
     minTier: d.minTier,
-    triggers: d.triggers ?? [],
+    triggeredBy: d.triggeredBy ?? [],
     affects: affectsSummary(d),
     bonus: bonusSummary(d.bonus),
   }
@@ -133,8 +133,8 @@ const DISPLAY_REQUIRES: Record<string, string> = {
 
 function triggeredByNote(def: BuffDef, defsById: Map<string, BuffDef>): string | null {
   if (def.alwaysActive) return null
-  if (!def.triggers || def.triggers.length === 0) return null
-  let note = `on cast: ${def.triggers.join("/")}`
+  if (!def.triggeredBy || def.triggeredBy.length === 0) return null
+  let note = `on cast: ${def.triggeredBy.join("/")}`
   const upgradeFrom = def.conditionalTrigger?.upgradeFromActive
   if (upgradeFrom) {
     const src = defsById.get(upgradeFrom)
@@ -287,8 +287,8 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
   if (!castTag) return []
   const rows: AppliesRow[] = []
   for (const def of catalogBuffDefs(classId)) {
-    if (!def.triggers || def.triggers.length === 0) continue
-    const triggered = def.triggers.some((pre) =>
+    if (!def.triggeredBy || def.triggeredBy.length === 0) continue
+    const triggered = def.triggeredBy.some((pre) =>
       def.exactMatch ? castTag === pre : castTag.startsWith(pre),
     )
     if (!triggered) continue

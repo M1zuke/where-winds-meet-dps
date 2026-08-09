@@ -7,7 +7,7 @@
       "def": {
         "id": "starReacherNormal",
         "name": "Star Reacher",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 12,
         "affects": null,
         "bonus": {

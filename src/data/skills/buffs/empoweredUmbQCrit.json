@@ -7,7 +7,7 @@
       "def": {
         "id": "empoweredUmbQCrit",
         "name": "Fragrant Song",
-        "triggers": ["Umbrella Q Empowered Perfect Catch"],
+        "triggeredBy": ["Umbrella Q Empowered Perfect Catch"],
         "duration": 30,
         "affects": ["Umbrella Q Empowered Perfect Catch"],
         "bonus": null,

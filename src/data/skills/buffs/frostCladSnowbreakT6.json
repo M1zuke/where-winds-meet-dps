@@ -7,7 +7,7 @@
       "def": {
         "id": "frostCladSnowbreakT6",
         "name": "Frost-Clad Night T6 (Snowbreak)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 9999,
         "alwaysActive": true,
         "affects": ["SnowpartingVC"],

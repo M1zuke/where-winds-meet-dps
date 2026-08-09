@@ -77,8 +77,8 @@ export function dedupedMechanicBuffDefsForClass(classId: string): BuffDef[] {
       byId.set(d.id, { ...d })
       continue
     }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
+    if (d.triggeredBy?.length)
+      existing.triggeredBy = [...new Set([...(existing.triggeredBy ?? []), ...d.triggeredBy])]
   }
   return [...byId.values()]
 }
@@ -91,9 +91,9 @@ export function allBuffDefsDeduped(): BuffDef[] {
       byId.set(d.id, { ...d })
       return
     }
-    if (d.triggers?.length) {
-      const merged = new Set([...(existing.triggers ?? []), ...d.triggers])
-      existing.triggers = [...merged]
+    if (d.triggeredBy?.length) {
+      const merged = new Set([...(existing.triggeredBy ?? []), ...d.triggeredBy])
+      existing.triggeredBy = [...merged]
     }
   }
   for (const spec of SPEC_IDS) for (const d of BUFFS.specs[spec] ?? []) consider(d)
@@ -113,8 +113,8 @@ export function dedupedMechanicBuffDefs(): BuffDef[] {
       byId.set(d.id, { ...d })
       continue
     }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
+    if (d.triggeredBy?.length)
+      existing.triggeredBy = [...new Set([...(existing.triggeredBy ?? []), ...d.triggeredBy])]
   }
   return [...byId.values()]
 }
@@ -130,8 +130,8 @@ export function catalogBuffDefs(classId?: string): BuffDef[] {
       byId.set(d.id, d)
       continue
     }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
+    if (d.triggeredBy?.length)
+      existing.triggeredBy = [...new Set([...(existing.triggeredBy ?? []), ...d.triggeredBy])]
   }
   return [...byId.values()]
 }

@@ -7,7 +7,7 @@
       "def": {
         "id": "combo",
         "name": "Combo",
-        "triggers": ["UmbQ"],
+        "triggeredBy": ["UmbQ"],
         "duration": 15,
         "affects": ["UmbQ", "UmbDrone", "UmbLightCharge"],
         "excludes": ["UmbDroneLaunch"],

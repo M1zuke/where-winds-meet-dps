@@ -7,7 +7,7 @@
         "id": "bellstrikeUmbraBleedingDamage",
         "name": "Damage Over Time",
         "spec": "bellstrike_umbra",
-        "triggers": [],
+        "triggeredBy": [],
         "alwaysActive": true,
         "duration": 9999,
         "enabledParam": "swordHorizon",

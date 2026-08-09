@@ -7,7 +7,7 @@
       "def": {
         "id": "crosswindSpirit",
         "name": "Crosswind Blade Spirit",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 999,
         "affects": ["Bleed Detonation"],
         "bonus": {

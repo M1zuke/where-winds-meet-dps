@@ -14,7 +14,7 @@ describe("BuffEngine — targeting & triggers", () => {
       {
         id: "fanBuff",
         name: "Fan Buff",
-        triggers: ["FanHeavy"],
+        triggeredBy: ["FanHeavy"],
         duration: 10,
         affects: ["FanHeavy"],
         bonus: { type: "buffBonus", value: 0.2 },
@@ -32,7 +32,7 @@ describe("BuffEngine — targeting & triggers", () => {
     const defs: BuffDef[] = [
       {
         id: "ramp",
-        triggers: ["Multi"],
+        triggeredBy: ["Multi"],
         duration: 100,
         maxStacks: 3,
         stacksPerHit: true,
@@ -53,7 +53,7 @@ describe("BuffEngine — targeting & triggers", () => {
     const defs: BuffDef[] = [
       {
         id: "capped",
-        triggers: ["Hit"],
+        triggeredBy: ["Hit"],
         duration: 100,
         rateLimit: { count: 2, window: 10 },
         affects: null,
@@ -73,7 +73,7 @@ describe("BuffEngine — targeting & triggers", () => {
     const defs: BuffDef[] = [
       {
         id: "gated",
-        triggers: ["Cast"],
+        triggeredBy: ["Cast"],
         duration: 10,
         enabledParam: "myToggle",
         affects: null,
@@ -96,7 +96,7 @@ describe("BuffEngine — targeting & triggers", () => {
     const defs: BuffDef[] = [
       {
         id: "chargeOnly",
-        triggers: ["X"],
+        triggeredBy: ["X"],
         duration: 10,
         affectsProperty: "isCharged",
         bonus: { type: "buffBonus", value: 0.25 },

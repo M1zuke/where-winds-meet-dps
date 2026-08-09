@@ -94,7 +94,13 @@ frame), `triggerable` (may be a `castSkill` target), `prePull`, and one tag fiel
 - `skillTagsOf(skill)` = explicit `tags` ∪ `skillType` ∪ `weaponOrAttribute`
   ∪ `attributeAttack` ∪ `name`. This is the set a buff's `affects` is tested against.
 - `castTagOf(skill)` = `name` — the single tag a *cast* presents when it
-  *fires* a buff's `triggers`.
+  *fires* a buff's `triggeredBy`.
+
+> ⚠️ **Two fields are named for triggering, in opposite directions.**
+> `SkillHit.triggers` is **outgoing** — the things this hit sets off — and is
+> persisted user data. `BuffDef.triggeredBy` is **incoming** — the casts that
+> set this buff off. The def's field was called `triggers` until 2026-08-09;
+> it is not, and the rename is why.
 - Matching is **prefix** `startsWith`: a buff that triggers on `"Fan"` matches
   `"FanHeavy"` matches `"FanHeavyPursuit"`. So implicit tags let a hand-authored buff target
   a user skill that has no site tags.
@@ -189,11 +195,12 @@ mechanic defs (`soulShaken.json`, `bellstrikeUmbraBleedPen.json`,
 buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.ts`) is
 tag-matched, not id-referenced:
 
-- **who applies it** — `triggers: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
+- **who applies it** — `triggeredBy: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
   `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`.
 - **who it boosts** — `affects: string[] | null` (tag prefixes; `null` = everything),
   `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`, `overriddenBy`. See
-  `bonusAffects` in `buffEngine.ts` (`buffEngine.ts:705`).
+  `matchesScope` in `scope.ts`, called from both `buffEngine.bonusAffects` and the Skill
+Editor's Receives card.
 - **magnitude** — `bonus: SiteBonus` (buckets `buffBonus`/`groupDamage` → `allDamageBoost`,
   `phyBoostMod` → `physBoost`, `bossOnlyBuffBonus` → `bossBoost`; see `BONUS_TYPE_TO_STATKEY`)
   and/or `statModifiers` / `bossStatModifiers` / `tier6StatModifiers` (rate/pen/crit-dmg mods
@@ -291,7 +298,7 @@ editable directly in the Skill Editor's Cast Time field).
    `Debuff.dot` get this automatically).
 5. **DoTs go on a `Debuff.dot`** — never fake a DoT with a `sustain` skill hit.
 6. **Giving a buff/debuff:** add an `applyBuff`/`applyDebuff` `HitTrigger` (custom system) or
-   a spec-gated `BuffDef` with `triggers` (site system). Negative `stacks` to consume. Linking
+   a spec-gated `BuffDef` with `triggeredBy` (site system). Negative `stacks` to consume. Linking
    to a stacking DoT instead (adding a stack / detonating it) uses the logic-free
    `applyDot`/`detonateDot` kinds — the max stacks, duration, and detonation rule live on the
    target `Debuff`, never re-authored on the trigger.

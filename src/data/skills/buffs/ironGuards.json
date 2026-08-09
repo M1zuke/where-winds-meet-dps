@@ -7,7 +7,7 @@
       "def": {
         "id": "ironGuards",
         "name": "Iron Guards",
-        "triggers": ["PhalanxSpecial"],
+        "triggeredBy": ["PhalanxSpecial"],
         "duration": 40,
         "cooldown": 20,
         "affects": null,

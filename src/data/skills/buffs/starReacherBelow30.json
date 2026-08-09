@@ -7,7 +7,7 @@
       "def": {
         "id": "starReacherBelow30",
         "name": "Star Reacher (<30%)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 12,
         "affects": null,
         "bonus": {

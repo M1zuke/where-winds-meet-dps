@@ -7,7 +7,7 @@
       "def": {
         "id": "forgetfulness",
         "name": "Forgetfulness",
-        "triggers": ["SnowpartingVC", "SnowpartingCharged", "SnowpartingDual", "Deflect"],
+        "triggeredBy": ["SnowpartingVC", "SnowpartingCharged", "SnowpartingDual", "Deflect"],
         "duration": 3,
         "cooldown": 6,
         "affects": null,

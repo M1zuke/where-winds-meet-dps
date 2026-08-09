@@ -6,7 +6,7 @@
       "def": {
         "id": "mirageBonus",
         "name": "Mirage Bonus",
-        "triggers": ["Perfect Dodge"],
+        "triggeredBy": ["Perfect Dodge"],
         "duration": 8,
         "affects": null,
         "bonus": {

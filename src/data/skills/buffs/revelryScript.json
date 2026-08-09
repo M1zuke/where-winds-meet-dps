@@ -14,7 +14,7 @@
       "def": {
         "id": "revelryScript",
         "name": "Revelry Script",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 9999,
         "affects": null,
         "bonus": {

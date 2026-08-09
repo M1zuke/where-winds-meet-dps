@@ -7,7 +7,7 @@
       "def": {
         "id": "frostCladSnowbreakIPConsume",
         "name": "Frost-Clad Night T4 (IP Consume)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 0,
         "affects": null,
         "bonus": null,

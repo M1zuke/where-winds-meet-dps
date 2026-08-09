@@ -7,7 +7,7 @@
       "def": {
         "id": "starReacherExhausted",
         "name": "Star Reacher (Exhausted)",
-        "triggers": [],
+        "triggeredBy": [],
         "duration": 12,
         "affects": null,
         "bonus": {
