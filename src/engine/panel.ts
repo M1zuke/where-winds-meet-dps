@@ -116,7 +116,7 @@ export const BOW_SET_BONUS = {
 export interface ArmorSetOption {
   name: string
   setKey: string
-  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys"
+  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
   value: number
 }
 export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = armorSetBoniJson as ArmorSetOption[]
@@ -134,6 +134,8 @@ export function applyArmorSet(inputs: Inputs): Inputs {
       return { ...inputs, precision: inputs.precision + opt.value }
     case "maxPhys":
       return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + opt.value } }
+    case "minPhys":
+      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + opt.value } }
   }
 }
 
