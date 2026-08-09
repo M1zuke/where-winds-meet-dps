@@ -29,7 +29,7 @@
         "affects": ["SnowpartingVC", "PhalanxQ", "PhalanxCharged", "SnowpartingQ-Stab", "AnxiSoldier"],
         "bonus": {
           "type": "buffBonus",
-          "value": 0.06
+          "value": 0.08
         },
         "requiresSet": "shatteredridge"
       }

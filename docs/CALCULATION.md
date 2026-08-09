@@ -131,10 +131,13 @@ The interesting derivations:
   * the target's `generalDamageTaken` (0 in `dummyMode`)
   * `+8%` Soldier's Return · `+3%` Star-Picker at tier 6 · `+2%` Endurance
     Doctrine
-  * `+3.75%` if set = Swaying Heights
+  * the equipped set's `General Damage Boost` value (`+3.75%` for Swaying
+    Heights, `+5%` for Shattered Ridge)
   * `+8%` if `shareEasyHurt` (the tank-spear Vulnerability debuff)
   * `+1.5%` Divinecraft fire · `+1%` Divinecraft poison
   * `+ bossBoost`
+* **`critDmgBoostPanel`** includes the class's per-skill critical-damage value
+  when one is declared in `schools.json` (`+21%` for Stonesplit Strength).
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
   `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
   (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression

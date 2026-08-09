@@ -21,6 +21,7 @@ export type BuffStatMods = Partial<
     | "directAffinity"
     | "physPen"
     | "bellstrikePen"
+    | "stonesplitPen"
     | "dotDamage"
     | "enhancedDotDamage",
     number
@@ -147,6 +148,7 @@ export const STATMOD_TO_STATKEY: Record<keyof BuffStatMods, { key: StatKey; scal
   directAffinity: { key: "directAffinityRate", scale: 1 },
   physPen: { key: "phys.penetration", scale: 0.01 },
   bellstrikePen: { key: "bellstrike.penetration", scale: 0.01 },
+  stonesplitPen: { key: "stonesplit.penetration", scale: 0.01 },
   dotDamage: { key: "sustainDamageBoost", scale: 1 },
   enhancedDotDamage: { key: "sustainDamageBoost", scale: 1 },
 }

@@ -13,6 +13,7 @@ const SCHOOLS = schools as ReadonlyArray<{
   displayName: string
   primaryAttribute: AttributeKey
   attributeMultiplier: number
+  perSkillCritDamageBoost?: number
   permanentBuffs: string[]
   classMindGroup: string
   allowedMindMethods: string[]
@@ -286,12 +287,12 @@ export function buildContext(
     targetGeneralDamageTaken +
     (has("Soldier's Return") ? 0.08 : 0) +
     (has("Star-Picker") && stackOf("Star-Picker") === "tier 6" ? 0.03 : 0) +
-    (inputs.set === "Swaying Heights" ? 0.0375 : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
-    (has("Endurance Doctrine") ? 0.02 : 0)
+    (has("Endurance Doctrine") ? 0.02 : 0) +
+    (setBonus["General Damage Boost"] ?? 0)
 
   const dingYinByTag: Record<string, number> = {}
   for (const tag of school.permanentBuffs) {
@@ -331,7 +332,7 @@ export function buildContext(
     directCritPanel: inputs.directCritRate,
     directAffinityPanel: inputs.directAffinityRate,
     physDmgBoostPanel: inputs.physBoost,
-    critDmgBoostPanel: inputs.critDamageBoost,
+    critDmgBoostPanel: inputs.critDamageBoost + (school.perSkillCritDamageBoost ?? 0),
     affinityDmgBoostPanel: inputs.affinityDamageBoost,
     attributeDmgBoostPanel: inputs.attributeDamageBoost,
     sustainDmgBoostPanel: inputs.sustainDamageBoost,

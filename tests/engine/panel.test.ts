@@ -23,6 +23,13 @@ describe("panel.deriveStats", () => {
 })
 
 describe("panel.buildContext", () => {
+  it("applies a set's general damage boost exactly once", () => {
+    const baseline = buildContext({ ...defaultInputs, set: null })
+    const swayingHeights = buildContext({ ...defaultInputs, set: "Swaying Heights" })
+
+    expect(swayingHeights.generalDamageBoost - baseline.generalDamageBoost).toBeCloseTo(0.0375, 10)
+  })
+
   it("does not grant an unconditional damage boost to Stonesplit Strength", () => {
     const baseline = buildContext(defaultInputs)
     const stonesplitStrength = buildContext({ ...defaultInputs, classId: "stonesplitStrength" })

@@ -1,4 +1,7 @@
 import { describe, expect, it } from "vitest"
+import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffDefsForClass } from "../../src/engine/buffs/data"
+import { paramsFromInputs } from "../../src/engine/buffs/params"
 import {
   DREAD_BUFF_ID,
   DREAD_DURATION_FRAMES,
@@ -50,6 +53,44 @@ function withoutTrigger(skill: Skill, targetId: string): Skill {
 }
 
 describe("Stonesplit Strength built-in buffs", () => {
+  it("adds the workbook's class-wide skill critical damage", () => {
+    const baseline = buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" })
+    const stonesplitStrength = buildContext({ ...defaultInputs, classId: CLASS })
+
+    expect(stonesplitStrength.critDmgBoostPanel - baseline.critDmgBoostPanel).toBeCloseTo(0.21, 10)
+  })
+
+  it("applies Shattered Ridge's base and deflect-window damage bonuses", () => {
+    const withoutSet = buildContext({ ...defaultInputs, classId: CLASS, set: null })
+    const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
+    const withSet = buildContext(withSetInputs)
+    const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
+    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
+
+    engine.processSkillCast("Deflect", 0)
+    const effects = engine.calculateDamageEffects(charged, 1).effects
+
+    expect(withSet.generalDamageBoost - withoutSet.generalDamageBoost).toBeCloseTo(0.05, 10)
+    expect(effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.08 })
+  })
+
+  it("applies Iron Guards' damage and penetration effects", () => {
+    const inputs = { ...defaultInputs, classId: CLASS }
+    const engine = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(CLASS))
+    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
+
+    engine.processSkillCast("PhalanxSpecial", 0)
+    const effects = engine.calculateDamageEffects(charged, 1).effects
+
+    expect(effects).toEqual(
+      expect.arrayContaining([
+        { statKey: "allDamageBoost", amount: 0.08 },
+        { statKey: "phys.penetration", amount: 0.12 },
+        { statKey: "stonesplit.penetration", amount: 0.12 },
+      ]),
+    )
+  })
+
   it("defines Dread and Fearful Blade with their workbook stat effects", () => {
     const buffs = builtinBuffsForClass(CLASS)
     const dread = buffs.find((buff) => buff.id === DREAD_BUFF_ID)
