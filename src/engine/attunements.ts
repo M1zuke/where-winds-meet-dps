@@ -53,6 +53,15 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
     classIds: ["bellstrikeUmbra"],
     enginePath: "dingYinByTag.Bleed Boost",
   },
+  {
+    id: "phalanxChargeDamage",
+    label: "Phalanxbane Blade-Charged Skill DMG Boost",
+    min: 0.03,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["stonesplitStrength"],
+    enginePath: "dingYinByTag.Phalanx Charge Boost",
+  }
 ]
 
 export function attunementsForClass(classId: string): AttunementOption[] {
