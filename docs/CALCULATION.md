@@ -135,7 +135,6 @@ The interesting derivations:
   * `+8%` if `shareEasyHurt` (the tank-spear Vulnerability debuff)
   * `+1.5%` Divinecraft fire · `+1%` Divinecraft poison
   * `+ bossBoost`
-  * `+8%` for the `stonesplitStrength` class
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
   `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
   (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression

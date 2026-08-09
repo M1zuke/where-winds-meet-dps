@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { deriveStats, getSchool, getBreakthrough } from "../../src/engine/panel"
+import { buildContext, deriveStats, getSchool, getBreakthrough } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 
 describe("panel.deriveStats", () => {
@@ -19,6 +19,15 @@ describe("panel.deriveStats", () => {
     const d = deriveStats({ ...defaultInputs, dualKnivesBoost: 0.05 })
     expect(d.weaponBoosts["Twin Blades"]).toBe(0.05)
     expect(d.weaponBoosts["Sword"]).toBe(0)
+  })
+})
+
+describe("panel.buildContext", () => {
+  it("does not grant an unconditional damage boost to Stonesplit Strength", () => {
+    const baseline = buildContext(defaultInputs)
+    const stonesplitStrength = buildContext({ ...defaultInputs, classId: "stonesplitStrength" })
+
+    expect(stonesplitStrength.generalDamageBoost).toBe(baseline.generalDamageBoost)
   })
 })
 
