@@ -96,7 +96,15 @@
       "physFixed": 96.77777777777777,
       "attributeFixed": 54,
       "extraCritDamage": 0,
-      "triggers": []
+      "triggers": [
+        {
+          "id": "tg-snowpartingspecial-dread",
+          "kind": "applyBuff",
+          "targetId": "buff-stonesplitStrength-dread",
+          "stacks": 1,
+          "condition": null
+        }
+      ]
     }
   ],
   "castFrames": 125,

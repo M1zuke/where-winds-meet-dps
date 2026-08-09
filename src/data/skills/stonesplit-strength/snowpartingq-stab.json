@@ -33,6 +33,22 @@
           "targetId": "stonesplitStrength-anxisoldierheng",
           "stacks": 0,
           "condition": null
+        },
+        {
+          "id": "tg-snowpartingq-stab-dread-extension",
+          "kind": "applyBuff",
+          "targetId": "buff-stonesplitStrength-dread",
+          "stacks": 0,
+          "condition": null,
+          "extendFrames": 360,
+          "extendOnly": true
+        },
+        {
+          "id": "tg-snowpartingq-stab-fearful-blade",
+          "kind": "applyBuff",
+          "targetId": "buff-stonesplitStrength-fearful-blade",
+          "stacks": 1,
+          "condition": null
         }
       ]
     }
