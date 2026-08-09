@@ -16,6 +16,8 @@ import { hitToArtRow, selectHitVariant } from "./skill"
 import type { StatusView } from "./ledger"
 import type { BuffStatEffect } from "./buff"
 import type { computeSkillDamage } from "./formula"
+import { WEAPON_TAG } from "./buffs/tags"
+import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
 
 export type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -37,22 +39,109 @@ export interface HitInput {
   holds(condition: TriggerCondition): boolean
 }
 
-export interface HitModifiers {
-  statEffects?: BuffStatEffect[]
-  art?: Partial<ArtRow>
-  forceCrit?: boolean
-  forceGuaranteedAffinity?: boolean
+export type QiPhase = "normal" | "below30" | "exhausted"
+
+// What is true of the fight at this hit, as opposed to of the build.
+export interface HitContext {
+  phase: QiPhase
+  qiBreakEnabled: boolean
+  // The food-free base min phys, read off the RESOLVED context — which is why
+  // art patches run after it is built and stat claims run before.
+  smallPhys: number
+  isEngineBuffActive(id: string): boolean
 }
 
+// Two hooks rather than one, because the ordering is a domain rule and not an
+// implementation detail: a stat effect has to be known BEFORE the formula
+// context is built, since it changes that context; an art patch is applied
+// after, and may read it.
 export interface SkillBehavior {
   buildArt(input: HitInput): ArtRow
   chooseVariant(input: HitInput): HitVariant | null
-  modify?(input: HitInput): HitModifiers | null
+  claimStatEffects(input: HitInput, phase: QiPhase): BuffStatEffect[]
+  patchArt(input: HitInput, context: HitContext): Partial<ArtRow> | null
 }
+
+// Per-ability qi flags (`.tmp/site/deobfuscated.js` ~L42150-42174). Tag-driven
+// and class-agnostic, so they belong to the default behaviour rather than to
+// any one skill: QI_LOW_CRIT / QI_LOW_DMG add crit rate / all-damage while in
+// low qi (below-30 or qi-break); QI_BREAK_PEN adds phys pen UNCONDITIONALLY,
+// plus more during qi-break or Lingering Bone.
+const QI_LOW_CRIT_TAG = "prop:hasLowQiCritBoost"
+const QI_LOW_DMG_TAG = "prop:hasLowQiDmgBoost"
+const QI_BREAK_PEN_TAG = "prop:hasQiBreakPhysPen"
+const QI_LOW_CRIT_BOOST = 0.3
+const QI_LOW_DMG_BOOST = 0.08
+const QI_BREAK_PEN_BASE = 5
+const QI_BREAK_PEN_BONUS = 15
+const LINGERING_BONE_BUFF = "lingeringBone"
+
+// "If the skill hits a non-player target without Qi or with depleted Qi, the
+// damage dealt is doubled" (Dragon Head - Plus, official text in
+// `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
+// the sim has no "target has no Qi bar at all" state, so only the window
+// triggers it. Multiplicative on top of (1+H), hence `correction` rather than
+// an allDamageBoost effect — a +1.0 boost would be diluted by the additive pool.
+const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
+const QI_BREAK_DAMAGE_MULTIPLIER = 2
+
+// A built-in skill's `extraCritDamage === 1` is a boolean GATE, not a damage
+// amount — it carries the source catalog's `critBoost` straight through, and
+// that is always 0/1/absent. When the gate passes (weapon-type match, see
+// `buffs/critBoostWeapons.ts`) the real term is
+// `floor(min(minPhys, 750) / 50) * 0.024`, capped at +0.36.
+const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
+const MIN_PHYS_CRIT_CAP = 750
+const MIN_PHYS_CRIT_STEP = 50
+const MIN_PHYS_CRIT_PER_STEP = 0.024
 
 export const DEFAULT_BEHAVIOR: SkillBehavior = {
   chooseVariant(input) {
     return selectHitVariant(input.hit, input.holds)
+  },
+
+  claimStatEffects(input, phase) {
+    const tags = input.skill.tags
+    if (phase !== "normal" && tags?.includes(QI_LOW_DMG_TAG))
+      return [{ statKey: "allDamageBoost", amount: QI_LOW_DMG_BOOST }]
+    return []
+  },
+
+  patchArt(input, context) {
+    const tags = input.skill.tags
+    if (!tags || tags.length === 0) return null
+    const patch: Partial<ArtRow> = {}
+    let patched = false
+
+    if (input.hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
+      const weaponType = tags.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
+      patch.extraCritDamage = classGrantsMinPhysCritBoost(input.build.classId, weaponType)
+        ? Math.floor(
+            Math.min(Math.max(0, context.smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP,
+          ) * MIN_PHYS_CRIT_PER_STEP
+        : 0
+      patched = true
+    }
+    if (context.phase !== "normal" && tags.includes(QI_LOW_CRIT_TAG)) {
+      patch.extraCritRate = (patch.extraCritRate ?? 0) + QI_LOW_CRIT_BOOST
+      patched = true
+    }
+    if (tags.includes(QI_BREAK_PEN_TAG)) {
+      const boosted =
+        context.phase === "exhausted" || context.isEngineBuffActive(LINGERING_BONE_BUFF)
+      patch.extraPhysPenetration =
+        QI_BREAK_PEN_BASE + (boosted ? QI_BREAK_PEN_BONUS : 0) + (patch.extraPhysPenetration ?? 0)
+      patched = true
+    }
+    if (
+      context.phase === "exhausted" &&
+      context.qiBreakEnabled &&
+      tags.includes(QI_BREAK_DOUBLE_TAG)
+    ) {
+      patch.correction = QI_BREAK_DAMAGE_MULTIPLIER
+      patched = true
+    }
+    return patched ? patch : null
   },
   buildArt(input) {
     const art = hitToArtRow(input.hit, input.skill)

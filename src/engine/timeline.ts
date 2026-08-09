@@ -34,9 +34,8 @@ import {
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { attuneTagOf, castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
+import { attuneTagOf, castTagOf, mysticCategoryOf } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
-import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
 import {
   MORALE_MAX_STACKS,
   MORALE_PEN_PER_STACK,
@@ -71,35 +70,6 @@ export const FPS = 60
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
-
-// A built-in site skill's `extraCritDamage === 1` is a boolean GATE, not a
-// damage amount (it carries the source catalog's `critBoost` straight through,
-// and that is always 0/1/absent). When the gate passes (weapon-type match — see
-// `site/critBoostWeapons.ts`, `.tmp/site/deobfuscated.js` ~L42153-42161), the
-// real term is `floor(min(minPhys, 750) / 50) * 0.024` (capped at +0.36),
-// where `minPhys` is `ctx.smallPhys` — the food-free base.
-const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
-
-// Qi-phase per-ability flags (`.tmp/site/deobfuscated.js` ~L42150-42174):
-// QI_LOW_CRIT_TAG / QI_LOW_DMG_TAG add +0.30 crit rate / +0.08 all-damage
-// while in low qi (below-30 or qi-break); QI_BREAK_PEN_TAG adds +5 phys pen
-// UNCONDITIONALLY, plus +15 more during qi-break or Lingering Bone.
-const QI_LOW_CRIT_TAG = "prop:hasLowQiCritBoost"
-const QI_LOW_DMG_TAG = "prop:hasLowQiDmgBoost"
-const QI_BREAK_PEN_TAG = "prop:hasQiBreakPhysPen"
-const QI_LOW_CRIT_BOOST = 0.3
-const QI_LOW_DMG_BOOST = 0.08
-const QI_BREAK_PEN_BASE = 5
-const QI_BREAK_PEN_BONUS = 15
-
-// "If the skill hits a non-player target without Qi or with depleted Qi, the
-// damage dealt is doubled" (Dragon Head - Plus, official text in
-// `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
-// the sim has no "target has no Qi bar at all" state, so only the window
-// triggers it. Multiplicative on top of (1+H), hence `correction` rather than
-// an allDamageBoost effect — a +1.0 boost would be diluted by the additive pool.
-const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
-const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
 // Crosswind is a per-detonation state machine rather than a time-windowed
 // buff, so it is driven from here; P7 moves it onto the skill itself.
@@ -632,39 +602,24 @@ export function simulateTimeline(inputs: Inputs): Result {
         pushWindow(marker.id, frame, frame + Math.max(1, marker.durationFrames))
       }
     }
-    const tags = skill.tags
+    const behavior = behaviorFor(skill)
+    const hitInput = hitInputAt(skill, hit, frame)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
-    const inLowQi = qiPhase !== "normal"
-    const inQiBreak = qiPhase === "exhausted"
-    if (inLowQi && tags?.includes(QI_LOW_DMG_TAG)) {
-      extraEffects.push({ statKey: "allDamageBoost", amount: QI_LOW_DMG_BOOST })
-    }
+    extraEffects.push(...behavior.claimStatEffects(hitInput, qiPhase))
     const resolveOverride: ResolveOverride | undefined =
       extraEffects.length > 0 || forceGuaranteedAffinity
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
     const st = resolveState(frame, skill, resolveOverride)
-    const art = behaviorFor(skill).buildArt(hitInputAt(skill, hit, frame))
+    const art = behavior.buildArt(hitInput)
     if (st.forceCrit) art.guaranteedCrit = 1
-    if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
-      const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
-      art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)
-        ? Math.floor(Math.min(Math.max(0, st.ctx.smallPhys), 750) / 50) * 0.024
-        : 0
-    }
-    if (inLowQi && tags?.includes(QI_LOW_CRIT_TAG)) {
-      art.extraCritRate = (art.extraCritRate ?? 0) + QI_LOW_CRIT_BOOST
-    }
-    if (tags?.includes(QI_BREAK_PEN_TAG)) {
-      const hasLingeringBone = buffEngine?.isBuffActiveAtTime("lingeringBone", frame / FPS) ?? false
-      art.extraPhysPenetration =
-        (art.extraPhysPenetration ?? 0) +
-        QI_BREAK_PEN_BASE +
-        (inQiBreak || hasLingeringBone ? QI_BREAK_PEN_BONUS : 0)
-    }
-    if (inQiBreak && qiBreakEnabled && tags?.includes(QI_BREAK_DOUBLE_TAG)) {
-      art.correction = (art.correction ?? 1) * QI_BREAK_DAMAGE_MULTIPLIER
-    }
+    const artPatch = behavior.patchArt(hitInput, {
+      phase: qiPhase,
+      qiBreakEnabled,
+      smallPhys: st.ctx.smallPhys,
+      isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+    })
+    if (artPatch) Object.assign(art, artPatch)
     const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
