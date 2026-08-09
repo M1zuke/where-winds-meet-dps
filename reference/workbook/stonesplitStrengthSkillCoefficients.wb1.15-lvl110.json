@@ -1,0 +1,998 @@
+{
+  "_source": {
+    "site": "https://h9dh.cn/",
+    "file": "裂石钧110阶竞速轴属性毕业率进阶计算器1.15.xlsx",
+    "url": "https://h9dh.cn/excel/%E8%A3%82%E7%9F%B3%E9%92%A7110%E9%98%B6%E7%AB%9E%E9%80%9F%E8%BD%B4%E5%B1%9E%E6%80%A7%E6%AF%95%E4%B8%9A%E7%8E%87%E8%BF%9B%E9%98%B6%E8%AE%A1%E7%AE%97%E5%99%A81.15.xlsx",
+    "sheet": "武学奇术 (Martial & Mystic Arts)",
+    "classZh": "裂石钧",
+    "classEn": "Stonesplit Strength",
+    "classId": "stonesplitStrength",
+    "workbookVersion": "1.15",
+    "level": "110阶 (lvl-110 speed rotation)",
+    "note": "Coefficients/flat values are verbatim cached cell values at full stored precision; formulas are retained in the complete workbook extraction."
+  },
+  "_translation": {
+    "method": "Labels joined against the game client's official ZH<->EN localization in reference/locale/zhToEnOfficial.json. 'official' = exact client key; 'composed' = official component terms plus spreadsheet shorthand.",
+    "columns": [
+      {
+        "col": "A",
+        "zh": "name",
+        "en": "(row label)",
+        "source": "composed"
+      },
+      {
+        "col": "B",
+        "zh": "通用增伤",
+        "en": "Universal DMG Boost",
+        "source": "composed"
+      },
+      {
+        "col": "C",
+        "zh": "最小外功",
+        "en": "Min Physical",
+        "source": "composed"
+      },
+      {
+        "col": "D",
+        "zh": "最大外功",
+        "en": "Max Physical",
+        "source": "official"
+      },
+      {
+        "col": "E",
+        "zh": "外功加成",
+        "en": "Physical Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "F",
+        "zh": "外功穿透",
+        "en": "Physical Penetration",
+        "source": "official"
+      },
+      {
+        "col": "G",
+        "zh": "外攻伤害加成",
+        "en": "Physical DMG Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "H",
+        "zh": "属性攻击加成",
+        "en": "Attribute Attack Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "I",
+        "zh": "鸣金穿透",
+        "en": "Bellstrike Penetration",
+        "source": "official"
+      },
+      {
+        "col": "J",
+        "zh": "鸣金加成",
+        "en": "Bellstrike Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "K",
+        "zh": "裂石穿透",
+        "en": "Stonesplit Penetration",
+        "source": "official"
+      },
+      {
+        "col": "L",
+        "zh": "裂石加成",
+        "en": "Stonesplit Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "M",
+        "zh": "牵丝穿透",
+        "en": "Silkbind Penetration",
+        "source": "official"
+      },
+      {
+        "col": "N",
+        "zh": "牵丝加成",
+        "en": "Silkbind Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "O",
+        "zh": "破竹穿透",
+        "en": "Bamboocut Penetration",
+        "source": "official"
+      },
+      {
+        "col": "P",
+        "zh": "破竹加成",
+        "en": "Bamboocut Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "Q",
+        "zh": "会心率",
+        "en": "Critical Rate",
+        "source": "official"
+      },
+      {
+        "col": "R",
+        "zh": "会心伤害",
+        "en": "Critical DMG",
+        "source": "official"
+      },
+      {
+        "col": "S",
+        "zh": "会意率",
+        "en": "Affinity Rate",
+        "source": "official"
+      },
+      {
+        "col": "T",
+        "zh": "会意伤害",
+        "en": "Affinity Damage",
+        "source": "official"
+      },
+      {
+        "col": "U",
+        "zh": "蓄力",
+        "en": "Charged Attack",
+        "source": "official"
+      },
+      {
+        "col": "V",
+        "zh": "强制精准",
+        "en": "Guaranteed Precision",
+        "source": "composed"
+      },
+      {
+        "col": "W",
+        "zh": "强制会心",
+        "en": "Guaranteed Critical",
+        "source": "composed"
+      },
+      {
+        "col": "X",
+        "zh": "强制会意",
+        "en": "Guaranteed Affinity",
+        "source": "composed"
+      },
+      {
+        "col": "Y",
+        "zh": "类型",
+        "en": "Type",
+        "source": "official"
+      },
+      {
+        "col": "Z",
+        "zh": "外功倍率",
+        "en": "Physical Multiplier",
+        "source": "composed"
+      },
+      {
+        "col": "AA",
+        "zh": "外攻固伤",
+        "en": "Physical Fixed DMG",
+        "source": "composed"
+      },
+      {
+        "col": "AB",
+        "zh": "属性倍率",
+        "en": "Attribute Multiplier",
+        "source": "composed"
+      },
+      {
+        "col": "AC",
+        "zh": "属性固伤",
+        "en": "Attribute Fixed DMG",
+        "source": "composed"
+      },
+      {
+        "col": "AD",
+        "zh": "定音加成",
+        "en": "Attunement Bonus",
+        "source": "composed"
+      },
+      {
+        "col": "AE",
+        "zh": "真气比例",
+        "en": "Qi Ratio",
+        "source": "composed"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "row": 2,
+      "nameZh": "横刀安西军",
+      "nameEn": "Heng Blade Anxi Soldier",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 1.4,
+        "Attribute Multiplier": 2.1
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierHeng",
+        "basis": "total",
+        "ourPhys": 1.4,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null
+      }
+    },
+    {
+      "row": 3,
+      "nameZh": "横刀重击派生",
+      "nameEn": "Heng Blade Heavy Attack Follow-Up",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 2.8245,
+        "Physical Fixed DMG": 782,
+        "Attribute Multiplier": 4.236808,
+        "Attribute Fixed DMG": 425
+      },
+      "ourSkill": {
+        "name": "SnowpartingVC",
+        "basis": "boostedTotal",
+        "ourPhys": 2.0764,
+        "coeffDeltaPct": 0.021,
+        "ourFlatPhys": 480,
+        "workbookFlatPhys": 782,
+        "flatRatioWbOverOurs": 1.1979,
+        "workbookAdjustment": 1.36,
+        "adjustedOurPhys": 2.823904,
+        "adjustedOurFlatPhys": 652.8
+      }
+    },
+    {
+      "row": 4,
+      "nameZh": "横刀重击派生(热血)",
+      "nameEn": "Heng Blade Heavy Attack Follow-Up (Passion)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 3.6553,
+        "Physical Fixed DMG": 1012,
+        "Attribute Multiplier": 5.4829,
+        "Attribute Fixed DMG": 550
+      },
+      "ourSkill": {
+        "name": "SnowpartingVC",
+        "basis": "boostedTotal",
+        "ourPhys": 2.0764,
+        "coeffDeltaPct": 0.023,
+        "ourFlatPhys": 480,
+        "workbookFlatPhys": 1012,
+        "flatRatioWbOverOurs": 1.1979,
+        "workbookAdjustment": 1.76,
+        "adjustedOurPhys": 3.654464,
+        "adjustedOurFlatPhys": 844.8
+      }
+    },
+    {
+      "row": 5,
+      "nameZh": "横刀左蓄",
+      "nameEn": "Heng Blade Left Charge",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 2.4495,
+        "Physical Fixed DMG": 677,
+        "Attribute Multiplier": 3.6743,
+        "Attribute Fixed DMG": 368
+      },
+      "ourSkill": {
+        "name": "SnowpartingCharged",
+        "basis": "total",
+        "ourPhys": 2.449,
+        "coeffDeltaPct": 0.02,
+        "ourFlatPhys": 565,
+        "workbookFlatPhys": 677,
+        "flatRatioWbOverOurs": 1.1982
+      }
+    },
+    {
+      "row": 6,
+      "nameZh": "横刀～",
+      "nameEn": "Heng Blade Basic Attack",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 3.7797,
+        "Physical Fixed DMG": 1045,
+        "Attribute Multiplier": 5.6696,
+        "Attribute Fixed DMG": 570
+      },
+      "ourSkill": {
+        "name": "SnowpartingSpecial",
+        "basis": "total",
+        "ourPhys": 3.7792,
+        "coeffDeltaPct": 0.013,
+        "ourFlatPhys": 871,
+        "workbookFlatPhys": 1045,
+        "flatRatioWbOverOurs": 1.1998
+      }
+    },
+    {
+      "row": 7,
+      "nameZh": "横刀Q1",
+      "nameEn": "Heng Blade Q1",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 1.2338,
+        "Physical Fixed DMG": 342,
+        "Attribute Multiplier": 1.8507,
+        "Attribute Fixed DMG": 186
+      },
+      "ourSkill": {
+        "name": "SnowpartingSlide",
+        "basis": "total",
+        "ourPhys": 1.2333,
+        "coeffDeltaPct": 0.041,
+        "ourFlatPhys": 286,
+        "workbookFlatPhys": 342,
+        "flatRatioWbOverOurs": 1.1958
+      }
+    },
+    {
+      "row": 8,
+      "nameZh": "白刃杀将刺",
+      "nameEn": "General's Bane: Stab",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 2.1324,
+        "Physical Fixed DMG": 590,
+        "Attribute Multiplier": 3.1986,
+        "Attribute Fixed DMG": 322
+      },
+      "ourSkill": {
+        "name": "SnowpartingQ-Stab",
+        "basis": "total",
+        "ourPhys": 3.3652,
+        "coeffDeltaPct": 36.634,
+        "ourFlatPhys": 779,
+        "workbookFlatPhys": 590,
+        "flatRatioWbOverOurs": 0.7574
+      }
+    },
+    {
+      "row": 9,
+      "nameZh": "横刀易武",
+      "nameEn": "Heng Blade Dual-Weapon Skill",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "横刀",
+          "en": "Heng Blade"
+        },
+        "Physical Multiplier": 0.6486,
+        "Physical Fixed DMG": 180,
+        "Attribute Multiplier": 0.9729,
+        "Attribute Fixed DMG": 98
+      },
+      "ourSkill": {
+        "name": "SnowpartingDual",
+        "basis": "total",
+        "ourPhys": 0.6481,
+        "coeffDeltaPct": 0.077,
+        "ourFlatPhys": 151,
+        "workbookFlatPhys": 180,
+        "flatRatioWbOverOurs": 1.1921
+      }
+    },
+    {
+      "row": 10,
+      "nameZh": "加速陌刀三蓄",
+      "nameEn": "Accelerated Mo Blade 3-Charge",
+      "fields": {
+        "Critical Rate": 0,
+        "Critical DMG": 0.21,
+        "Guaranteed Critical": 1,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 7.5674,
+        "Physical Fixed DMG": 2093,
+        "Attribute Multiplier": 11.3512,
+        "Attribute Fixed DMG": 1140,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "PhalanxCharged-S3[InnerPassion]",
+        "basis": "total",
+        "ourPhys": 7.5674,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 2093,
+        "workbookFlatPhys": 2093,
+        "flatRatioWbOverOurs": 1
+      }
+    },
+    {
+      "row": 11,
+      "nameZh": "加速陌刀三蓄无开山",
+      "nameEn": "Accelerated Mo Blade 3-Charge (without Adept)",
+      "fields": {
+        "Critical Rate": 0,
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 7.5674,
+        "Physical Fixed DMG": 2093,
+        "Attribute Multiplier": 11.3512,
+        "Attribute Fixed DMG": 1140,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "PhalanxCharged-S3[InnerPassion]",
+        "basis": "total",
+        "ourPhys": 7.5674,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 2093,
+        "workbookFlatPhys": 2093,
+        "flatRatioWbOverOurs": 1
+      }
+    },
+    {
+      "row": 12,
+      "nameZh": "陌刀安西军下劈",
+      "nameEn": "Mo Blade Anxi Soldier Downward Slash",
+      "fields": {
+        "Critical Rate": 0,
+        "Critical DMG": 0.21,
+        "Guaranteed Critical": 1,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 0.5,
+        "Attribute Multiplier": 0.75,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierMoDown",
+        "basis": "total",
+        "ourPhys": 0.5,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null
+      }
+    },
+    {
+      "row": 13,
+      "nameZh": "陌刀安西军跳劈",
+      "nameEn": "Mo Blade Anxi Soldier Jump Slash",
+      "fields": {
+        "Critical Rate": 0,
+        "Critical DMG": 0.21,
+        "Guaranteed Critical": 1,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 0.9,
+        "Attribute Multiplier": 1.35,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierMoJump",
+        "basis": "total",
+        "ourPhys": 0.9,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null
+      }
+    },
+    {
+      "row": 14,
+      "nameZh": "陌刀三蓄",
+      "nameEn": "Mo Blade 3-Charge",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 5.733,
+        "Physical Fixed DMG": 1585,
+        "Attribute Multiplier": 8.5994,
+        "Attribute Fixed DMG": 863,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "PhalanxCharged-S3",
+        "basis": "total",
+        "ourPhys": 5.733,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 1585,
+        "workbookFlatPhys": 1585,
+        "flatRatioWbOverOurs": 1
+      }
+    },
+    {
+      "row": 15,
+      "nameZh": "陌刀安西军下劈无开山",
+      "nameEn": "Mo Blade Anxi Soldier Downward Slash (without Adept)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 0.5,
+        "Attribute Multiplier": 0.75,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierMoDown",
+        "basis": "total",
+        "ourPhys": 0.5,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null
+      }
+    },
+    {
+      "row": 16,
+      "nameZh": "陌刀安西军跳劈无开山",
+      "nameEn": "Mo Blade Anxi Soldier Jump Slash (without Adept)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 0.9,
+        "Attribute Multiplier": 1.35,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierMoJump",
+        "basis": "total",
+        "ourPhys": 0.9,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null
+      }
+    },
+    {
+      "row": 17,
+      "nameZh": "陌刀一蓄(气竭)",
+      "nameEn": "Mo Blade 1-Charge (Exhausted)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Guaranteed Critical": 1,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 1.3241,
+        "Physical Fixed DMG": 366,
+        "Attribute Multiplier": 1.9861,
+        "Attribute Fixed DMG": 200,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        }
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 18,
+      "nameZh": "燃此魂秒放",
+      "nameEn": "Soul Burning (Instant Cast)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 1.8948,
+        "Physical Fixed DMG": 525,
+        "Attribute Multiplier": 2.8422,
+        "Attribute Fixed DMG": 286
+      },
+      "ourSkill": {
+        "name": "PhalanxQ",
+        "basis": "total",
+        "ourPhys": 1.8943,
+        "coeffDeltaPct": 0.026,
+        "ourFlatPhys": 438,
+        "workbookFlatPhys": 525,
+        "flatRatioWbOverOurs": 1.1986
+      }
+    },
+    {
+      "row": 19,
+      "nameZh": "陌刀安西军荡八荒",
+      "nameEn": "Mo Blade Anxi Soldier Total Annihilation",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "陌刀",
+          "en": "Mo Blade"
+        },
+        "Physical Multiplier": 1,
+        "Attribute Multiplier": 1.5
+      },
+      "ourSkill": {
+        "name": "AnxiSoldierMoSweep",
+        "basis": "2-hit total",
+        "ourPhys": 0.5,
+        "coeffDeltaPct": 0,
+        "ourFlatPhys": 0,
+        "workbookFlatPhys": 0,
+        "flatRatioWbOverOurs": null,
+        "workbookAdjustment": 2,
+        "adjustedOurPhys": 1,
+        "adjustedOurFlatPhys": 0
+      }
+    },
+    {
+      "row": 20,
+      "nameZh": "萧呤千浪AOE",
+      "nameEn": "Flute of the Tides (AoE)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 3.9744,
+        "Physical Fixed DMG": 982,
+        "Attribute Multiplier": 5.9613,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 21,
+      "nameZh": "萧呤千浪流星",
+      "nameEn": "Flute of the Tides (Meteor)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 1.4904,
+        "Physical Fixed DMG": 368,
+        "Attribute Multiplier": 2.2353,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 22,
+      "nameZh": "衍九矢7hit",
+      "nameEn": "Bursting Nine (7 hits)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 8.277425,
+        "Physical Fixed DMG": 1631.85,
+        "Attribute Multiplier": 12.4161375,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 23,
+      "nameZh": "骑龙回马",
+      "nameEn": "Soaring Spin",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 7.1074,
+        "Physical Fixed DMG": 1320,
+        "Attribute Multiplier": 10.6596,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 24,
+      "nameZh": "叶龙骧首(32层+50%HP)",
+      "nameEn": "Dragon Head (32 stacks +50%HP)",
+      "fields": {
+        "Universal DMG Boost": 0.57,
+        "Critical DMG": 0.21,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 25.200406,
+        "Physical Fixed DMG": 4695.46,
+        "Attribute Multiplier": 37.800609,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 25,
+      "nameZh": "墨洗翰华(打盾)",
+      "nameEn": "Inkwash Splendor (vs Shield)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 23.7712,
+        "Physical Fixed DMG": 4418,
+        "Attribute Multiplier": 35.6568,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 26,
+      "nameZh": "神龙吐火暗灼1hit",
+      "nameEn": "Dragon's Breath (Smolder 1 hit)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.2848,
+        "Physical Fixed DMG": 241.5,
+        "Attribute Multiplier": 1.9272,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 27,
+      "nameZh": "神龙吐火暗灼2hit",
+      "nameEn": "Dragon's Breath (Smolder 2 hits)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 3.9855,
+        "Physical Fixed DMG": 749,
+        "Attribute Multiplier": 5.97825,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 28,
+      "nameZh": "神龙吐火暗灼dot",
+      "nameEn": "Dragon's Breath (Smolder DoT)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.236,
+        "Physical Fixed DMG": 44,
+        "Attribute Multiplier": 0.354,
+        "Qi Ratio": 0.6
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 29,
+      "nameZh": "神龙吐火1hit",
+      "nameEn": "Dragon's Breath (1 hit)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.36185,
+        "Physical Fixed DMG": 254,
+        "Attribute Multiplier": 2.042775,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 30,
+      "nameZh": "神龙吐火2hit",
+      "nameEn": "Dragon's Breath (2 hits)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 4.2245,
+        "Physical Fixed DMG": 788,
+        "Attribute Multiplier": 6.33675,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 31,
+      "nameZh": "神龙吐火dot",
+      "nameEn": "Dragon's Breath (DoT)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.2957,
+        "Physical Fixed DMG": 55,
+        "Attribute Multiplier": 0.44355,
+        "Qi Ratio": 0.6
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 32,
+      "nameZh": "太白醉月1-4",
+      "nameEn": "Drunken Poet (1-4)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.0238,
+        "Physical Fixed DMG": 189,
+        "Attribute Multiplier": 1.5357,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 33,
+      "nameZh": "太白醉月5",
+      "nameEn": "Drunken Poet (5)",
+      "fields": {
+        "Universal DMG Boost": 0.8,
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.7063,
+        "Physical Fixed DMG": 315,
+        "Attribute Multiplier": 2.55945,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 34,
+      "nameZh": "太白醉月爆燃",
+      "nameEn": "Drunken Poet (Combustion)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.702,
+        "Physical Fixed DMG": 129,
+        "Attribute Multiplier": 1.053,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 35,
+      "nameZh": "太白醉月暗灼",
+      "nameEn": "Drunken Poet (Smolder)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.6088,
+        "Physical Fixed DMG": 297,
+        "Attribute Multiplier": 2.4132,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 36,
+      "nameZh": "易水歌6重",
+      "nameEn": "Morale Chant (6 Tier)",
+      "fields": {
+        "Critical DMG": 0.21,
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 1,
+        "Attribute Multiplier": 1,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    },
+    {
+      "row": 37,
+      "nameZh": "N/a",
+      "nameEn": "N/A",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 0,
+        "Attribute Multiplier": 0,
+        "Qi Ratio": 1
+      },
+      "ourSkill": null
+    }
+  ],
+  "_comparison": {
+    "ourSource": "src/data/skills/stonesplit-strength/*.json",
+    "rule": "ourSkill is populated for explicit semantic matches. Physical multipliers are compared as hit totals; workbookAdjustment records a visible workbook-side coefficient multiplier when present. Flat ratios expose level/version differences instead of normalizing them away.",
+    "matched": 17,
+    "totalDamageRows": 35
+  }
+}
