@@ -16,6 +16,33 @@ a section here grows past a few lines, it belongs in the topic file instead.
 | writing a localStorage migration | `docs/MIGRATIONS.md` |
 | adding or changing tests | `docs/TESTING.md` |
 
+## Adding something new — start from the wiki how-to
+
+**Adding** a thing has a step-by-step page; the `docs/` files above explain the
+system it plugs into. Read the how-to **first** — it is the ordered file list,
+the wiring, the tests to update and the migration question, in one place.
+
+| adding | read |
+| --- | --- |
+| a class or spec | `How to Add a Class` |
+| a skill | `How to Add a Skill` |
+| a rotation | `How to Add a Rotation` |
+| a buff, debuff or DoT | `How to Add a Buff or Debuff` |
+| an inner way (mind method) | `How to Add an Inner Way` |
+
+The wiki is the [project wiki](https://github.com/M1zuke/where-winds-meet-dps/wiki),
+cloned beside this repo at `../where-winds-meet-dps.wiki` — read the `.md` files
+there directly. It also carries `Development Setup`, `Architecture Overview`,
+`Project Conventions`, `Damage Calculation`, `Testing Guide`,
+`Saved Profile Migrations` and `Glossary`.
+
+Two rules keep it trustworthy:
+
+1. **`docs/` wins** where the two disagree — it ships next to the code.
+2. A change that invalidates a how-to updates that page **in the same piece of
+   work**, as its own commit in the wiki clone. A stale how-to is worse than a
+   missing one.
+
 The sections below are the rules that apply *before* you know which topic you're
 in — they stay here on purpose, because a pointer you don't know to follow isn't
 a guardrail.
