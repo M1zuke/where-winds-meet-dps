@@ -434,11 +434,29 @@ The largest data change in the plan, and the one everything else rests on.
 1. `Debuff` gains an optional `tags` field; `dotTickSkill` propagates tags from
    the tick-source skill and the debuff, so DoT ticks stop being addressable
    only by name. **This lands first** — see § 1f.
-2. `Skill` gains an explicit `castTag` field, authored rather than derived.
-3. For each distinct `affects` / `triggers` value, mint a `role:` or `cast:` tag
-   and apply it to the entities it matches today. `sustain` → `type:sustain`;
-   `affectsProperty` and `affectsWeaponTypes` already address structurally and
-   are left alone.
+2. **Rename `BuffDef.triggers` → `triggeredBy`** (and `triggerDurations` →
+   `durationByTrigger`, keyed by the same strings), as its own commit with the
+   values untouched.
+
+   The field is named for the wrong direction: `"triggers": ["SpearQ"]` reads as
+   *this buff triggers SpearQ*, when SpearQ triggers the buff. Worse, it
+   collides — `SkillHit.triggers` means the **outgoing** direction ("this hit
+   triggers these things") and is persisted user data, while `BuffDef.triggers`
+   means the **incoming** one and is repo data. The display layer had already
+   corrected it: `catalog.ts` renders the def's field through `triggeredByNote`
+   into a `ReceivesRow.triggeredBy`. Only the schema hadn't caught up.
+
+   53 def files, plus `buffEngine.ts` / `catalog.ts` / `data.ts` / `buffDef.ts`.
+   `triggerOnBuffEnd` and `triggerPhaseGate` are left alone — they name the
+   triggering *event*, not a direction.
+3. For each distinct `affects` / `triggeredBy` value, mint a `role:` or `cast:`
+   tag and apply it to the entities it matches today. `sustain` →
+   `type:sustain`; `affectsProperty` and `affectsWeaponTypes` already address
+   structurally and are left alone.
+
+   Kept as two passes over the same files on purpose — one commit where both the
+   field name and every value changed at once is far harder to review, and to
+   bisect if the equivalence harness disagrees.
 4. `matchesScope` and the trigger map switch to exact tag/id matching;
    `anyTagStartsWith` over bare values, `exactMatch`, and the bare entries in
    `skillTagsOf` are deleted.

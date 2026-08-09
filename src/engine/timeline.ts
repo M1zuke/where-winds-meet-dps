@@ -1066,7 +1066,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       if (last && w.start < last.end) last.end = Math.max(last.end, w.end)
       else episodes.push({ start: w.start, end: w.end })
     }
-    const dotSkill = dotTickSkill(debuffDef)
+    const dotSkill = dotTickSkill(debuffDef, tickSkill)
     for (const ep of episodes) {
       for (let f = ep.start + interval; f < ep.end; f += interval) {
         if (f < 0 || !inWindow(f)) continue
@@ -1202,11 +1202,15 @@ export function simulateTimeline(inputs: Inputs): Result {
   }
 }
 
-function dotTickSkill(debuff: Debuff): Skill {
+// A tick is evaluated as a synthetic one-off skill. Without the source skill's
+// and the debuff's tags it would carry nothing but its own display name, which
+// is what forced every DoT-targeted modifier to address it by name.
+export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
   return {
     id: `dot-${debuff.id}`,
     classId: debuff.classId,
     name: debuff.name,
+    tags: [...new Set([...(tickSkill?.tags ?? []), ...(debuff.tags ?? [])])],
     skillType: debuff.dot?.skillType || "sustain",
     weaponOrAttribute: "",
     attributeAttack: "",
