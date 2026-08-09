@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **573 tests
-across 65 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **705 tests
+across 72 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
@@ -20,11 +20,37 @@ not had.
 - Scoped test files carry a header comment saying so; follow the existing
   wording (`// Scoped to Bellstrike Umbra — see CLASSES.md`).
 
-## There is no locked-DPS fixture
+## The engine baseline — a refactor guard, not a correctness anchor
 
-No test asserts an absolute DPS number. `defaultInputs` (`engine/defaults.ts`)
-is the default Bamboocut-Wind build, not an anchor. Don't introduce a new
-strict-equality DPS assertion without a verified external source behind it.
+`tests/engine/engineBaseline.test.ts` + `engineBaseline.fixture.json` pin the
+**entire `Result`** — dps, total, duration, every per-skill row, and a SHA-256
+digest over the whole object including `timeline`, `buffWindows` and `casts` —
+for 24 Bellstrike Umbra builds. It exists for `docs/GENERALIZATION.md`: a
+refactor that claims to preserve behaviour has to be able to prove it.
+
+Read the distinction carefully, because it is the whole reason this file is
+allowed to exist alongside the rule below:
+
+- It does **not** assert the engine is *right*. Those numbers have no external
+  authority whatsoever.
+- It asserts the engine is *unchanged*. Any diff means the change under review
+  moved output, and that has to be intended and explained.
+
+Regenerate with `UPDATE_ENGINE_BASELINE=1 pnpm test`, and **only** when a change
+to the output is deliberate — the re-baseline and its justification belong in
+the same commit as the change that caused it. A silent re-baseline defeats the
+entire point.
+
+The `profile-v7 anchor` block at the bottom of that file is spelled out
+separately from the fixture on purpose: those are the figures a user verified
+against the running app, so a re-baseline cannot quietly carry them along.
+
+## Otherwise, there is no locked-DPS fixture
+
+Beyond the baseline above, no test asserts an absolute DPS number.
+`defaultInputs` (`engine/defaults.ts`) is the default Bamboocut-Wind build, not
+an anchor. Don't introduce a new strict-equality DPS assertion without a
+verified external source behind it.
 
 `tests/engine/bellstrikeUmbraParity.test.ts` compares against one verified
 live-site build. Its DPS bands are an intentionally **loose, re-centered fit
