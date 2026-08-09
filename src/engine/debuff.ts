@@ -19,6 +19,9 @@ export interface DebuffDotSpec {
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
   attuneTag?: string | null
+  // The skill whose first hit supplies this tick's coefficients. Absent, the
+  // `debuff-<classId>-<slug>` id convention is used instead.
+  sourceSkillId?: string | null
   count: number
   perStackShapes?: DotStackShape[] | null
   perStackMultipliers?: number[] | null

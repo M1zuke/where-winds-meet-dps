@@ -7,12 +7,13 @@ import type {
   TimelineEvent,
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
-import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
+import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
 import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import { StatusLedger, type StatusWindow } from "./ledger"
+import { StatusLedger } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
+import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { behaviorFor, type BuildView, type HitInput } from "./behavior"
 import {
   deriveStats,
@@ -34,7 +35,7 @@ import {
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { attuneTagOf, castTagOf, mysticCategoryOf } from "./buffs/tags"
+import { castTagOf } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
 import {
   MORALE_MAX_STACKS,
@@ -899,84 +900,43 @@ export function simulateTimeline(inputs: Inputs): Result {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
       continue
-    const debuffDef = status
-    const baseDot = debuffDef.dot!
-    const tickSkillId = debuffDef.id.startsWith("debuff-")
-      ? "" + debuffDef.id.slice("debuff-".length)
-      : null
-    const tickSkill = tickSkillId ? skillsById.get(tickSkillId) : undefined
-    const srcHit = tickSkill?.hits[0]
-    const dot: DebuffDotSpec = srcHit
-      ? {
-          ...baseDot,
-          physMultiplier: srcHit.physMultiplier,
-          physFixed: srcHit.physFixed,
-          attributeMultiplier: srcHit.attributeMultiplier,
-          attributeFixed: srcHit.attributeFixed,
-          attributeAttack: (tickSkill!.attributeAttack ||
-            baseDot.attributeAttack) as DebuffDotSpec["attributeAttack"],
-          weaponOrAttribute: tickSkill!.weaponOrAttribute || null,
-          mysticCategory: mysticCategoryOf(tickSkill!) || null,
-          attuneTag: attuneTagOf(tickSkill!) || null,
-        }
-      : baseDot
-    const debuffForTick: Debuff = srcHit ? { ...debuffDef, dot } : debuffDef
-    const interval = dot.tickIntervalFrames
-    const perStack = (debuffDef.stackScaling ?? "flat") === "perStack"
-    const table: DotStackShape[] | null =
-      dot.perStackShapes && dot.perStackShapes.length > 0 ? dot.perStackShapes : null
-    const ladder: number[] | null =
-      !table && dot.perStackMultipliers && dot.perStackMultipliers.length > 0
-        ? dot.perStackMultipliers
-        : null
-    const episodes: StatusWindow[] = []
-    for (const w of arr) {
-      const last = episodes[episodes.length - 1]
-      if (last && w.start < last.end) last.end = Math.max(last.end, w.end)
-      else episodes.push({ start: w.start, end: w.end })
-    }
-    const dotSkill = dotTickSkill(debuffDef, tickSkill)
-    for (const ep of episodes) {
-      for (let f = ep.start + interval; f < ep.end; f += interval) {
-        if (f < 0 || !inWindow(f)) continue
-        const tickWeight =
-          bitterSeasonPoison && buffId === bitterSeasonId
-            ? bitterSeasonPoison.activeProbAtTime(f / FPS)
-            : 1
-        if (tickWeight <= 0) continue
-        let dmg: number
-        if (table) {
-          const liveStacks = Math.max(1, stacksAt(buffId, f))
-          const shape = table[clamp(liveStacks, 1, table.length) - 1]
-          const st = resolveState(f, dotSkill)
-          dmg = dotTickDamageForShape(debuffForTick, shape, st.ctx, st.forceCrit)
-        } else if (ladder) {
-          const liveStacks = Math.max(0, stacksAt(buffId, f))
-          if (liveStacks === 0) continue
-          const scale = ladder[clamp(liveStacks, 1, ladder.length) - 1]
-          const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit) * scale
-        } else {
-          const stackCount = perStack ? Math.max(0, stacksAt(buffId, f)) : 1
-          if (perStack && stackCount === 0) continue
-          const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit) * stackCount
-        }
-        dmg *= tickWeight
-        totalDamage += dmg
-        const dotName = `${debuffDef.name} (DoT)`
-        const dotType = dot.skillType || "sustain"
-        add(dotName, dotType, 1, dmg)
-        timeline.push({
-          frame: f,
-          timeSec: f / FPS,
-          skillName: dotName,
-          type: dotType,
-          kind: "dot",
-          damage: dmg,
-          inWindow: true,
-        })
-      }
+    const tickSkill = skillsById.get(tickSourceSkillId(status) ?? "")
+    const dot = resolveTickDot(status, tickSkill)
+    if (!dot) continue
+    const debuffForTick: Debuff = { ...status, dot }
+    const dotSkill = dotTickSkill(status, tickSkill)
+    const dotName = `${status.name} (DoT)`
+    const dotType = dot.skillType || "sustain"
+
+    for (const tick of emitDotTicks({
+      debuff: status,
+      dot,
+      windows: arr,
+      stacksAt: (frame) => stacksAt(buffId, frame),
+      inWindow,
+      weightAt: (frame) =>
+        bitterSeasonPoison && buffId === bitterSeasonId
+          ? bitterSeasonPoison.activeProbAtTime(frame / FPS)
+          : 1,
+      damageAt: (frame, shape, scale) => {
+        const st = resolveState(frame, dotSkill)
+        return (
+          dotTickDamage(debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, shape) *
+          (scale ?? 1)
+        )
+      },
+    })) {
+      totalDamage += tick.damage
+      add(dotName, dotType, 1, tick.damage)
+      timeline.push({
+        frame: tick.frame,
+        timeSec: tick.frame / FPS,
+        skillName: dotName,
+        type: dotType,
+        kind: "dot",
+        damage: tick.damage,
+        inWindow: true,
+      })
     }
   }
 
@@ -1069,73 +1029,6 @@ export function simulateTimeline(inputs: Inputs): Result {
     qiBreakWindow,
     casts,
   }
-}
-
-// A tick is evaluated as a synthetic one-off skill. Without the source skill's
-// and the debuff's tags it would carry nothing but its own display name, which
-// is what forced every DoT-targeted modifier to address it by name.
-export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
-  return {
-    id: `dot-${debuff.id}`,
-    classId: debuff.classId,
-    name: debuff.name,
-    tags: [...new Set([...(tickSkill?.tags ?? []), ...(debuff.tags ?? [])])],
-    skillType: debuff.dot?.skillType || "sustain",
-    weaponOrAttribute: "",
-    attributeAttack: "",
-    hits: [],
-    castFrames: 0,
-    triggerable: false,
-    createdAt: debuff.createdAt,
-    updatedAt: debuff.updatedAt,
-  }
-}
-
-function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false): number {
-  const dot = debuff.dot
-  if (!dot) return 0
-  const art = {
-    name: debuff.name,
-    physMultiplier: dot.physMultiplier,
-    physFixed: dot.physFixed,
-    attributeMultiplier: dot.attributeMultiplier,
-    attributeFixed: dot.attributeFixed,
-    attributeAttack: dot.attributeAttack || undefined,
-    skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
-    guaranteedCrit: forceCrit ? 1 : undefined,
-    weaponOrAttribute: dot.weaponOrAttribute || undefined,
-    mysticCategory: dot.mysticCategory || undefined,
-    attuneTag: dot.attuneTag || undefined,
-  } as Parameters<typeof computeSkillDamage>[0]
-  return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
-}
-
-function dotTickDamageForShape(
-  debuff: Debuff,
-  shape: DotStackShape,
-  ctx: Ctx,
-  forceCrit = false,
-): number {
-  const dot = debuff.dot
-  if (!dot) return 0
-  const art = {
-    name: debuff.name,
-    physMultiplier: shape.physMultiplier,
-    physFixed: shape.physFixed,
-    attributeMultiplier: shape.attributeMultiplier,
-    attributeFixed: shape.attributeFixed,
-    attributeAttack: dot.attributeAttack || undefined,
-    skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
-    guaranteedCrit: forceCrit ? 1 : undefined,
-    weaponOrAttribute: dot.weaponOrAttribute || undefined,
-    mysticCategory: dot.mysticCategory || undefined,
-    attuneTag: dot.attuneTag || undefined,
-  } as Parameters<typeof computeSkillDamage>[0]
-  return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
 }
 
 function emptyResult(warnings: string[]): Result {

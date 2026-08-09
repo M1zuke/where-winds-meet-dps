@@ -1,6 +1,6 @@
 // Scoped to Bellstrike Umbra — see CLASSES.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
-import { dotTickSkill } from "../../src/engine/timeline"
+import { dotTickSkill } from "../../src/engine/dot"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
 const CLASS_ID = "bellstrikeUmbra"

@@ -1,0 +1,170 @@
+// Damage over time: turning a debuff's recorded windows into the ticks it
+// deals. Everything here used to be inline in the timeline, which is why a DoT
+// looked like a special case of the event loop rather than what it is — a
+// debuff whose spec says when it fires.
+import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
+import type { Skill } from "./skill"
+import type { StatusWindow } from "./ledger"
+import type { computeSkillDamage, FormulaContext } from "./formula"
+import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+
+type ArtRow = Parameters<typeof computeSkillDamage>[0]
+
+const DEBUFF_ID_PREFIX = "debuff-"
+
+// A debuff names the skill its per-tick coefficients come from. `sourceSkillId`
+// is authored; absent, the id convention is used — `debuff-<classId>-<slug>`
+// ticks from `<classId>-<slug>` (CLASSES.md § "Naming").
+export function tickSourceSkillId(debuff: Debuff): string | null {
+  if (debuff.dot?.sourceSkillId) return debuff.dot.sourceSkillId
+  return debuff.id.startsWith(DEBUFF_ID_PREFIX) ? debuff.id.slice(DEBUFF_ID_PREFIX.length) : null
+}
+
+// The tick's coefficients are the source skill's first hit when there is one,
+// so editing that skill in the Skill Editor moves its DoT (docs/CLASSES.md
+// § "Hand-maintained data files").
+export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): DebuffDotSpec | null {
+  const base = debuff.dot
+  if (!base) return null
+  const sourceHit = tickSkill?.hits[0]
+  if (!sourceHit || !tickSkill) return base
+  return {
+    ...base,
+    physMultiplier: sourceHit.physMultiplier,
+    physFixed: sourceHit.physFixed,
+    attributeMultiplier: sourceHit.attributeMultiplier,
+    attributeFixed: sourceHit.attributeFixed,
+    attributeAttack: (tickSkill.attributeAttack ||
+      base.attributeAttack) as DebuffDotSpec["attributeAttack"],
+    weaponOrAttribute: tickSkill.weaponOrAttribute || null,
+    mysticCategory: mysticCategoryOf(tickSkill) || null,
+    attuneTag: attuneTagOf(tickSkill) || null,
+  }
+}
+
+// A tick is evaluated as a synthetic one-off skill. Without the source skill's
+// and the debuff's tags it would carry nothing but its own display name, which
+// is what forced every DoT-targeted modifier to address it by name.
+export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
+  return {
+    id: `dot-${debuff.id}`,
+    classId: debuff.classId,
+    name: debuff.name,
+    tags: [...new Set([...(tickSkill?.tags ?? []), ...(debuff.tags ?? [])])],
+    skillType: debuff.dot?.skillType || "sustain",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+    hits: [],
+    castFrames: 0,
+    triggerable: false,
+    createdAt: debuff.createdAt,
+    updatedAt: debuff.updatedAt,
+  }
+}
+
+function tickArt(
+  dot: DebuffDotSpec,
+  name: string,
+  shape: DotStackShape,
+  forceCrit: boolean,
+): ArtRow {
+  return {
+    name,
+    physMultiplier: shape.physMultiplier,
+    physFixed: shape.physFixed,
+    attributeMultiplier: shape.attributeMultiplier,
+    attributeFixed: shape.attributeFixed,
+    attributeAttack: dot.attributeAttack || undefined,
+    skillType: dot.skillType || "sustain",
+    specialTag: "sustain",
+    elevatedAttributeMultiplier: false,
+    guaranteedCrit: forceCrit ? 1 : undefined,
+    weaponOrAttribute: dot.weaponOrAttribute || undefined,
+    mysticCategory: dot.mysticCategory || undefined,
+    attuneTag: dot.attuneTag || undefined,
+  } as ArtRow
+}
+
+export function dotTickDamage(
+  debuff: Debuff,
+  ctx: FormulaContext,
+  compute: typeof computeSkillDamage,
+  forceCrit = false,
+  shape?: DotStackShape,
+): number {
+  const dot = debuff.dot
+  if (!dot) return 0
+  const resolved = shape ?? {
+    physMultiplier: dot.physMultiplier,
+    physFixed: dot.physFixed,
+    attributeMultiplier: dot.attributeMultiplier,
+    attributeFixed: dot.attributeFixed,
+  }
+  const art = tickArt(dot, debuff.name, resolved, forceCrit)
+  return compute(art, ["N/A", "N/A", "N/A", "N/A", "N/A"], ctx, Math.max(1, dot.count))
+    .expectedDamage
+}
+
+// Overlapping windows are one continuous episode: a DoT refreshed mid-window
+// keeps ticking on the original grid rather than restarting it.
+export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] {
+  const episodes: StatusWindow[] = []
+  for (const window of windows) {
+    const last = episodes[episodes.length - 1]
+    if (last && window.start < last.end) last.end = Math.max(last.end, window.end)
+    else episodes.push({ start: window.start, end: window.end })
+  }
+  return episodes
+}
+
+export interface DotTick {
+  frame: number
+  damage: number
+}
+
+export interface DotEmitQuery {
+  debuff: Debuff
+  dot: DebuffDotSpec
+  windows: readonly StatusWindow[]
+  stacksAt(frame: number): number
+  inWindow(frame: number): boolean
+  // Expected uptime for a stochastic DoT: a tick is worth the probability the
+  // debuff is actually up at that moment. 1 for a deterministic one.
+  weightAt(frame: number): number
+  damageAt(frame: number, shape?: DotStackShape, scale?: number): number
+}
+
+export function emitDotTicks(query: DotEmitQuery): DotTick[] {
+  const { debuff, dot } = query
+  const interval = dot.tickIntervalFrames
+  if (interval <= 0) return []
+
+  const perStack = (debuff.stackScaling ?? "flat") === "perStack"
+  const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null
+  const ladder = !shapes && dot.perStackMultipliers?.length ? dot.perStackMultipliers : null
+
+  const ticks: DotTick[] = []
+  for (const episode of mergeEpisodes(query.windows)) {
+    for (let frame = episode.start + interval; frame < episode.end; frame += interval) {
+      if (frame < 0 || !query.inWindow(frame)) continue
+      const weight = query.weightAt(frame)
+      if (weight <= 0) continue
+
+      let damage: number
+      if (shapes) {
+        const live = Math.max(1, query.stacksAt(frame))
+        damage = query.damageAt(frame, shapes[Math.min(live, shapes.length) - 1])
+      } else if (ladder) {
+        const live = Math.max(0, query.stacksAt(frame))
+        if (live === 0) continue
+        damage = query.damageAt(frame, undefined, ladder[Math.min(live, ladder.length) - 1])
+      } else {
+        const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
+        if (perStack && count === 0) continue
+        damage = query.damageAt(frame, undefined, count)
+      }
+      ticks.push({ frame, damage: damage * weight })
+    }
+  }
+  return ticks
+}
