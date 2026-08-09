@@ -91,19 +91,24 @@ frame), `triggerable` (may be a `castSkill` target), `prePull`, and one tag fiel
   `"attune:bleed"`, `"prop:isCharged"`).
 
 **How a skill exposes itself to buff matching** (`buffs/tags.ts`):
-- `skillTagsOf(skill)` = explicit `tags` ∪ `skillType` ∪ `weaponOrAttribute`
-  ∪ `attributeAttack` ∪ `name`. This is the set a buff's `affects` is tested against.
-- `castTagOf(skill)` = `name` — the single tag a *cast* presents when it
-  *fires* a buff's `triggeredBy`.
+- `skillTagsOf(skill)` = explicit `tags` ∪ `type:<skillType>`. **Namespaced
+  only** — the display name and the bare `skillType` / `weaponOrAttribute` /
+  `attributeAttack` values used to land here too, which is what let a modifier
+  reach a skill by what it was called.
+- `castTagOf(skill)` = the authored `castTag`, falling back to one derived from
+  the name — the single tag a *cast* presents when it *fires* a buff's
+  `triggeredBy`.
 
 > ⚠️ **Two fields are named for triggering, in opposite directions.**
 > `SkillHit.triggers` is **outgoing** — the things this hit sets off — and is
 > persisted user data. `BuffDef.triggeredBy` is **incoming** — the casts that
 > set this buff off. The def's field was called `triggers` until 2026-08-09;
 > it is not, and the rename is why.
-- Matching is **prefix** `startsWith`: a buff that triggers on `"Fan"` matches
-  `"FanHeavy"` matches `"FanHeavyPursuit"`. So implicit tags let a hand-authored buff target
-  a user skill that has no site tags.
+- Matching is **exact membership**, for both `affects` and `triggeredBy`. A
+  family is expressed by every member carrying the family tag *as well as* its
+  own — `role:anxiSoldierMo` on each of the four `AnxiSoldierMo*` skills — never
+  by one name being a stem of another. A skill can therefore belong to several
+  families, which a prefix could not express.
 
 ## 4. Triggers — how a skill *does* something beyond its own damage
 

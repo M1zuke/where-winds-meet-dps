@@ -1,5 +1,5 @@
 import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
-import { anyTagStartsWith, attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
+import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { matchesScope } from "../scope"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
@@ -185,7 +185,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     let statModApplies = hasStatMods
     if (def.__statModByPrefix) {
       const p = def.__statModByPrefix
-      resolvedMods = p.prefixes.some((pre) => anyTagStartsWith(tagSet, [pre])) ? p.match : p.default
+      resolvedMods = matchesScope(tagSet, { affects: p.prefixes }) ? p.match : p.default
       statModApplies = resolvedMods != null
     }
     const bonusApplies = !!def.bonus && bonusAffectsTags(def, tagSet)

@@ -10,8 +10,8 @@ import type { StatKey } from "../statRegistry"
 import type { BuffDef, ConsumeOnMatch, BuffStatMods } from "./buffDef"
 import { BONUS_TYPE_TO_STATKEY, statModsToEffects } from "./buffDef"
 import { onApplyHandlers } from "./handlers"
-import { matchesScope } from "../scope"
-import { anyTagStartsWith, castTagOf, skillTagsOf } from "./tags"
+import { matchesAnyTag, matchesScope } from "../scope"
+import { castTagOf, skillTagsOf } from "./tags"
 
 export type BuffParams = Record<string, unknown>
 
@@ -687,7 +687,7 @@ export class BuffEngine {
       if (!active) continue
       if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
         continue
-      if (def.excludes && anyTagStartsWith(tagSet, def.excludes)) continue
+      if (def.excludes && matchesAnyTag(tagSet, def.excludes)) continue
 
       const stacks = def.maxStacks ? this.getHistoricalBuffStacks(id, time) : 1
 

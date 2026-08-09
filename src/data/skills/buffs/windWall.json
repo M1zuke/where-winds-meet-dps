@@ -10,7 +10,7 @@
         "triggeredBy": ["cast:fanQ", "cast:fanQCancel", "cast:fanQPrepull"],
         "duration": 15,
         "affects": ["role:umbQ", "role:umbDrone", "role:umbLightCharge", "role:fanLightCharged"],
-        "excludes": ["UmbDroneLaunch"],
+        "excludes": ["role:umbDroneLaunch"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.4

@@ -3,7 +3,7 @@
   "classId": "silkbindJade",
   "name": "UmbDroneLaunch[16hit]",
   "abilityTag": "UmbDroneLaunch[16hit]",
-  "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone"],
+  "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
   "skillType": "weapon",
   "weaponOrAttribute": "Umbrella",
   "attributeAttack": "Silkbind",
