@@ -33,7 +33,6 @@ import frostCladSnowbreakT6ExhaustedFile from "./frostCladSnowbreakT6Exhausted.j
 import forgetfulnessFile from "./forgetfulness.json"
 import mountainSplitterFile from "./mountainSplitter.json"
 import chargeEnhancementFile from "./chargeEnhancement.json"
-import throatPiercedAnxiT6File from "./throatPiercedAnxiT6.json"
 import heartFocusFile from "./heartFocus.json"
 import empoweredUmbQCritFile from "./empoweredUmbQCrit.json"
 import starsAlign4pcFile from "./starsAlign4pc.json"
@@ -135,8 +134,6 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(mountainSplitterFile, "stonesplit_strength"),
     defForSpec(chargeEnhancementFile, "stonesplit_strength"),
     defForSpec(throatPiercedFile, "stonesplit_strength"),
-    defForSpec(throatPiercedAnxiT6File, "stonesplit_strength"),
-    defForSpec(throatPiercedDeflectFile, "stonesplit_strength"),
     defForSpec(shatteredRidgeDeflectFile, "stonesplit_strength"),
     defForSpec(revelryScriptFile, "stonesplit_strength"),
   ],

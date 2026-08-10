@@ -57,15 +57,16 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggers": ["SnowpartingVC", "SnowpartingCharged", "AnxiSoldierHeng"],
+        "triggers": ["AnxiSoldier", "SnowpartingQ-Stab", "SnowpartingVC", "PhalanxCharged", "PhalanxQ"],
         "duration": 15,
         "affects": null,
         "bonus": null,
         "maxStacks": 5,
         "stacksPerHit": true,
+        "triggersFromGeneratedSkills": true,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["AnxiSoldier", "SnowpartingVC", "SnowpartingCharged"],
+          "prefixes": ["AnxiSoldier", "SnowpartingQ-Stab", "SnowpartingVC", "PhalanxCharged", "PhalanxQ"],
           "match": {
             "physPen": 3,
             "critDmg": 0.03

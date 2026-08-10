@@ -53,6 +53,72 @@ function withoutTrigger(skill: Skill, targetId: string): Skill {
 }
 
 describe("Stonesplit Strength built-in buffs", () => {
+  it("builds Throat-Pierced stacks per hit from every configured skill family", () => {
+    const defs = buffDefsForClass(CLASS)
+    const cases = [
+      { name: "AnxiSoldierMoDown", generated: true, hitCount: 1, stacks: 1 },
+      { name: "AnxiSoldierMoJump", generated: true, hitCount: 1, stacks: 1 },
+      { name: "AnxiSoldierMoSweep", generated: true, hitCount: 1, stacks: 1 },
+      { name: "AnxiSoldierHeng", generated: true, hitCount: 4, stacks: 4 },
+      { name: "SnowpartingQ-Stab", generated: false, hitCount: 1, stacks: 1 },
+      { name: "SnowpartingVC", generated: false, hitCount: 1, stacks: 1 },
+      { name: "PhalanxCharged-S3", generated: false, hitCount: 2, stacks: 2 },
+      { name: "PhalanxCharged-S3[InnerPassion]", generated: false, hitCount: 2, stacks: 2 },
+      { name: "PhalanxQ", generated: false, hitCount: 1, stacks: 1 },
+    ]
+
+    for (const testCase of cases) {
+      const engine = new BuffEngine({ throatPierced: true }, defs)
+      engine.processSkillCast(testCase.name, 0, {
+        generated: testCase.generated,
+        hitCount: testCase.hitCount,
+      })
+
+      expect(engine.getHistoricalBuffStacks("throatPierced", 0), testCase.name).toBe(
+        testCase.stacks,
+      )
+    }
+  })
+
+  it("gives Throat-Pierced's trigger skills 3% penetration and crit damage per stack", () => {
+    const engine = new BuffEngine({ throatPierced: true }, buffDefsForClass(CLASS))
+    engine.processSkillCast("AnxiSoldierHeng", 0, { generated: true, hitCount: 4 })
+    engine.processSkillCast("SnowpartingVC", 0, { hitCount: 1 })
+
+    const enhancedSkills = [
+      "AnxiSoldierMoJump",
+      "SnowpartingQ-Stab",
+      "SnowpartingVC",
+      "PhalanxCharged-S3[InnerPassion]",
+      "PhalanxQ",
+    ]
+    for (const name of enhancedSkills) {
+      expect(engine.calculateDamageEffects(skillNamed(name), 0).effects, name).toEqual(
+        expect.arrayContaining([
+          { statKey: "phys.penetration", amount: 0.15 },
+          { statKey: "critDamageBoost", amount: 0.15 },
+        ]),
+      )
+    }
+
+    expect(engine.calculateDamageEffects(skillNamed("SnowpartingSpecial"), 0).effects).toEqual(
+      expect.arrayContaining([
+        { statKey: "phys.penetration", amount: 0.1 },
+        { statKey: "critDamageBoost", amount: 0.1 },
+      ]),
+    )
+  })
+
+  it("does not grant Stonesplit Strength Throat-Pierced from Deflect or a charged attack", () => {
+    const defs = buffDefsForClass(CLASS)
+    const engine = new BuffEngine({ throatPierced: true }, defs)
+
+    expect(defs.some((def) => def.id === "throatPiercedDeflect")).toBe(false)
+    engine.processSkillCast("Deflect", 0, { hitCount: 1 })
+    engine.processSkillCast("SnowpartingCharged", 1, { hitCount: 1 })
+    expect(engine.getHistoricalBuffStacks("throatPierced", 1)).toBe(0)
+  })
+
   it("models the workbook's skill critical damage as a class mechanic", () => {
     const baseline = buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" })
     const stonesplitStrength = buildContext({ ...defaultInputs, classId: CLASS })
@@ -68,12 +134,12 @@ describe("Stonesplit Strength built-in buffs", () => {
         (def) => def.id === "stonesplitStrengthSkillCritDamage",
       ),
     ).toBe(false)
-    expect(engine.calculateDamageEffects(skillNamed("SnowpartingCharged"), 0).effects).toContainEqual(
-      {
-        statKey: "critDamageBoost",
-        amount: 0.21,
-      },
-    )
+    expect(
+      engine.calculateDamageEffects(skillNamed("SnowpartingCharged"), 0).effects,
+    ).toContainEqual({
+      statKey: "critDamageBoost",
+      amount: 0.21,
+    })
   })
 
   it("applies Shattered Ridge's base and active-window damage bonuses", () => {
