@@ -358,10 +358,10 @@ describe("Stonesplit Strength built-in buffs", () => {
     const dreadStartFrame = special.hits.at(-1)!.frame
     const stabFinalFrame = special.castFrames + stab.hits.at(-1)!.frame
 
-    expect(dread.startSec * 60).toBe(dreadStartFrame)
-    expect(dread.endSec * 60).toBe(dreadStartFrame + DREAD_DURATION_FRAMES + 360)
-    expect(fearfulBlade.startSec * 60).toBe(stabFinalFrame)
-    expect(fearfulBlade.endSec * 60).toBe(stabFinalFrame + FEARFUL_BLADE_DURATION_FRAMES)
+    expect(dread.startSec * 60).toBeCloseTo(dreadStartFrame, 10)
+    expect(dread.endSec * 60).toBeCloseTo(dreadStartFrame + DREAD_DURATION_FRAMES + 360, 10)
+    expect(fearfulBlade.startSec * 60).toBeCloseTo(stabFinalFrame, 10)
+    expect(fearfulBlade.endSec * 60).toBeCloseTo(stabFinalFrame + FEARFUL_BLADE_DURATION_FRAMES, 10)
 
     const stabOnly = run([stab])
     expect(stabOnly.buffWindows!.some((window) => window.id === DREAD_BUFF_ID)).toBe(false)
