@@ -56,6 +56,14 @@ function affectsSummary(d: BuffDef): string {
   return d.affects.join("/")
 }
 
+function conditionalFinalCritSummary(def: BuffDef): string {
+  const rule = def.conditionalFinalCrit
+  if (!rule) return ""
+  return `guaranteed crit at ${(rule.threshold * 100).toFixed(0)}% final crit; otherwise +${(
+    rule.bonusBelowThreshold * 100
+  ).toFixed(0)}% final crit`
+}
+
 function toSummary(d: BuffDef): BuffSummary {
   return {
     id: d.id,
@@ -96,13 +104,17 @@ function humanize(param: string): string {
     .join(" ")
 }
 
+function paramRequiresLabel(param: string, minTier?: number): string {
+  const innerWay = INNER_WAY_BY_PARAM[param]
+  if (innerWay) return innerWay + (minTier ? ` tier ${minTier}+` : "")
+  if (param === "starsAlignActive") return "Stars Align"
+  return humanize(param) + (minTier ? ` T${minTier}+` : "")
+}
+
 export function requiresLabel(def: BuffDef): string | null {
   if (def.requiresSet) return SITE_SET_TO_APP_SET[def.requiresSet] ?? def.requiresSet
   if (!def.enabledParam) return null
-  const innerWay = INNER_WAY_BY_PARAM[def.enabledParam]
-  if (innerWay) return innerWay + (def.minTier ? ` tier ${def.minTier}+` : "")
-  if (def.enabledParam === "starsAlignActive") return "Stars Align"
-  return humanize(def.enabledParam) + (def.minTier ? ` T${def.minTier}+` : "")
+  return paramRequiresLabel(def.enabledParam, def.minTier)
 }
 
 function bonusAffectsTags(def: BuffDef, tagSet: Set<string>): boolean {
@@ -184,12 +196,19 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   const defsById = new Map(defs.map((d) => [d.id, d] as const))
   const rows: ReceivesRow[] = []
   for (const def of defs) {
+    const perCast = def.perCastConsume
+    const perCastApplies = !!(
+      perCast &&
+      hasProp(tagSet, perCast.triggerSkillProperty) &&
+      (perCast.bonus || perCast.damageMultiplier !== undefined)
+    )
     const hasStatMods = !!(
       def.statModifiers ||
       def.tier6StatModifiers ||
       def.bossStatModifiers ||
       def.__statModByPrefix
     )
+    const hasConditionalFinalCrit = !!def.conditionalFinalCrit && bonusAffectsTags(def, tagSet)
     let resolvedMods = def.statModifiers ?? null
     let statModApplies = hasStatMods
     if (def.__statModByPrefix) {
@@ -198,7 +217,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       statModApplies = resolvedMods != null
     }
     const bonusApplies = !!def.bonus && bonusAffectsTags(def, tagSet)
-    if (!statModApplies && !bonusApplies) continue
+    if (!statModApplies && !bonusApplies && !hasConditionalFinalCrit && !perCastApplies) continue
 
     const parts: string[] = []
     const statPart = statModsSummary(resolvedMods)
@@ -207,6 +226,11 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       const bonusPart = bonusSummary(def.bonus)
       if (bonusPart) parts.push(bonusPart)
     }
+    const conditionalCritPart = conditionalFinalCritSummary(def)
+    if (conditionalCritPart) parts.push(conditionalCritPart)
+    if (perCastApplies && perCast?.bonus) parts.push(bonusSummary(perCast.bonus))
+    if (perCastApplies && perCast?.damageMultiplier !== undefined)
+      parts.push(`×${perCast.damageMultiplier.toFixed(2)} damage after resource consumption`)
 
     const displayGate = inputs ? DISPLAY_ACTIVE_GATES[def.id] : undefined
     const displayActive = displayGate ? displayGate(inputs!) : undefined
@@ -215,13 +239,23 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       id: def.id,
       name: `${def.name ?? def.id} (${affectsSummary(def)})`,
       effect: parts.join(", "),
-      requires: DISPLAY_REQUIRES[def.id] ?? requiresLabel(def),
+      requires:
+        DISPLAY_REQUIRES[def.id] ??
+        (perCastApplies && perCast?.effectEnabledParam
+          ? paramRequiresLabel(perCast.effectEnabledParam, perCast.effectMinTier)
+          : requiresLabel(def)),
       isSpecMechanic: specIds.has(def.id),
       active:
         displayActive !== undefined
           ? displayActive
           : params
-            ? buffGateSatisfied(def, params)
+            ? buffGateSatisfied(def, params) &&
+              (!perCastApplies ||
+                !perCast?.effectEnabledParam ||
+                (!!params[perCast.effectEnabledParam] &&
+                  (!perCast.effectMinTier ||
+                    ((params[perCast.effectEnabledParam + "Tier"] as number) ?? 0) >=
+                      perCast.effectMinTier)))
             : true,
       triggeredBy: triggeredByNote(def, defsById),
     })
@@ -292,6 +326,8 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
       const bonusPart = bonusSummary(def.bonus)
       if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
     }
+    const conditionalCritPart = conditionalFinalCritSummary(def)
+    if (conditionalCritPart) parts.push(conditionalCritPart)
 
     rows.push({
       id: def.id,

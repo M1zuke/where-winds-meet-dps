@@ -7,7 +7,7 @@
 // `calculateDamageEffects` per damage event, time-indexed against that history.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
-import type { BuffDef, ConsumeOnMatch, BuffStatMods } from "./buffDef"
+import type { BuffDef, ConditionalFinalCrit, ConsumeOnMatch, BuffStatMods } from "./buffDef"
 import { BONUS_TYPE_TO_STATKEY, statModsToEffects } from "./buffDef"
 import { onApplyHandlers } from "./handlers"
 import { anyTagStartsWith, castTagOf, hasAnyWeapon, hasProp, skillTagsOf } from "./tags"
@@ -31,8 +31,15 @@ export type QiPhase = "normal" | "below30" | "exhausted"
 
 export interface DamageEffectsResult {
   effects: { statKey: StatKey; amount: number }[]
+  damageMultiplier: number
   forceCrit: boolean
+  conditionalFinalCrit: ConditionalFinalCrit | null
   breakdown: Record<string, number>
+}
+
+export interface CastBuffResult {
+  buffIds: string[]
+  propagatedBuffIds: string[]
 }
 
 const DEFAULT_DURATION = 15
@@ -348,13 +355,26 @@ export class BuffEngine {
     return false
   }
 
-  processSkillCast(castTag: string, time: number, opts: Record<string, unknown> = {}): void {
-    if (opts.noBuffTrigger) return
+  processSkillCast(
+    castTag: string,
+    time: number,
+    opts: Record<string, unknown> = {},
+  ): CastBuffResult {
+    const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
+    if (opts.noBuffTrigger) return result
+    const generated = !!opts.generated
+    if (!generated) this.processPerCastConsume(castTag, time, opts, result)
     for (const [prefix, defs] of this.triggerMap) {
       if (!castTag.startsWith(prefix)) continue
       for (const def of defs) {
+        if (generated && !def.triggersFromGeneratedSkills) continue
         if (def.exactMatch && castTag !== prefix) continue
         if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
+        if (
+          def.requiresActiveBuffOnTrigger &&
+          !this.isBuffActiveAtTime(def.requiresActiveBuffOnTrigger, time)
+        )
+          continue
         if (def.cooldown) {
           const last = this.activeBuffs.get(def.id)
           if (last && time - last.appliedAt < def.cooldown) continue
@@ -432,6 +452,7 @@ export class BuffEngine {
         }
       }
     }
+    if (generated) return result
     for (const def of this.refreshDefs) {
       const ro = def.refreshOn!
       if (ro.skillProperty && opts[ro.skillProperty]) {
@@ -454,8 +475,8 @@ export class BuffEngine {
       }
     }
     if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, opts)
-    this.processPerCastConsume(castTag, time, opts)
     this.processConsumableStackPools(castTag, time, opts)
+    return result
   }
 
   processDamageHit(time: number): void {
@@ -563,6 +584,7 @@ export class BuffEngine {
     castTag: string,
     time: number,
     opts: Record<string, unknown>,
+    result: CastBuffResult,
   ): void {
     for (const def of this.perCastConsumeDefs) {
       const pc = def.perCastConsume!
@@ -585,6 +607,24 @@ export class BuffEngine {
       if (!source) continue
       if (!this.consumeStack(source, time, 1)) continue
       this.consumeEvents.add(`${time}|${castTag}|${def.id}`)
+      const effectEnabled =
+        !pc.effectEnabledParam ||
+        (this.paramOn(pc.effectEnabledParam) &&
+          (!pc.effectMinTier || this.paramTier(pc.effectEnabledParam) >= pc.effectMinTier))
+      if (
+        (pc.bonus || pc.damageMultiplier !== undefined) &&
+        effectEnabled &&
+        !result.buffIds.includes(def.id)
+      )
+        result.buffIds.push(def.id)
+      for (const sourceBuff of pc.sourceBuffs ?? []) {
+        if (sourceBuff.consumedBuffStack !== source) continue
+        for (const buffId of sourceBuff.buffIds) {
+          if (!result.buffIds.includes(buffId)) result.buffIds.push(buffId)
+          if (sourceBuff.propagateToTriggeredSkills && !result.propagatedBuffIds.includes(buffId))
+            result.propagatedBuffIds.push(buffId)
+        }
+      }
     }
   }
 
@@ -659,14 +699,21 @@ export class BuffEngine {
     }
   }
 
-  calculateDamageEffects(skill: Skill, time: number): DamageEffectsResult {
+  calculateDamageEffects(
+    skill: Skill,
+    time: number,
+    castScopedBuffIds: readonly string[] = [],
+  ): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
     const phase = this.qiPhase(time)
     const isDummy = !!this.params.isTrainingDummy
     const effects: { statKey: StatKey; amount: number }[] = []
     const breakdown: Record<string, number> = {}
+    const scopedBuffIds = new Set(castScopedBuffIds)
+    let damageMultiplier = 1
     let forceCrit = false
+    let conditionalFinalCrit: ConditionalFinalCrit | null = null
 
     const pushMods = (mods: BuffStatMods | null | undefined, stacks: number, id: string) => {
       for (const e of statModsToEffects(mods)) {
@@ -677,9 +724,11 @@ export class BuffEngine {
 
     for (const [id, def] of this.definitions) {
       if (id === "crosswindSpirit") continue
-      const active = def.triggerOnBuffEnd
-        ? this.isTriggerOnBuffEndActive(def, time)
-        : this.isBuffActiveAtTime(id, time)
+      const active =
+        scopedBuffIds.has(id) ||
+        (def.triggerOnBuffEnd
+          ? this.isTriggerOnBuffEndActive(def, time)
+          : this.isBuffActiveAtTime(id, time))
       if (!active) continue
       if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
         continue
@@ -698,8 +747,8 @@ export class BuffEngine {
         pushMods(def.tier6StatModifiers, 1, id)
 
       if (def.forceCrit && this.bonusAffects(def, tagSet)) forceCrit = true
-      if (def.forceCritIfHighCrit)
-        this.warnings.add(`${id}: forceCritIfHighCrit not modeled (needs post-crit gate)`)
+      if (def.conditionalFinalCrit && this.bonusAffects(def, tagSet))
+        conditionalFinalCrit = def.conditionalFinalCrit
 
       if (!def.bonus) continue
       if (!this.bonusAffects(def, tagSet)) continue
@@ -735,12 +784,27 @@ export class BuffEngine {
 
     for (const def of this.perCastConsumeDefs) {
       const pc = def.perCastConsume!
-      if (!pc.bonus || !this.consumeEvents.has(`${time}|${castTag}|${def.id}`)) continue
-      const value = pc.bonus.value ?? 0
-      if (value === 0) continue
-      const statKey = BONUS_TYPE_TO_STATKEY[pc.bonus.type]
-      effects.push({ statKey, amount: value })
-      breakdown[def.id] = (breakdown[def.id] ?? 0) + value
+      if (!scopedBuffIds.has(def.id) && !this.consumeEvents.has(`${time}|${castTag}|${def.id}`))
+        continue
+      if (pc.effectEnabledParam && !this.paramOn(pc.effectEnabledParam)) continue
+      if (
+        pc.effectMinTier &&
+        pc.effectEnabledParam &&
+        this.paramTier(pc.effectEnabledParam) < pc.effectMinTier
+      )
+        continue
+      if (pc.bonus) {
+        const value = pc.bonus.value ?? 0
+        if (value !== 0) {
+          const statKey = BONUS_TYPE_TO_STATKEY[pc.bonus.type]
+          effects.push({ statKey, amount: value })
+          breakdown[def.id] = (breakdown[def.id] ?? 0) + value
+        }
+      }
+      if (pc.damageMultiplier !== undefined && pc.damageMultiplier !== 1) {
+        damageMultiplier *= pc.damageMultiplier
+        breakdown[def.id] = (breakdown[def.id] ?? 0) + (pc.damageMultiplier - 1)
+      }
     }
     for (const def of this.stackPoolDefs) {
       const pool = def.consumableStackPool!
@@ -757,7 +821,7 @@ export class BuffEngine {
       effects.push({ statKey: "allDamageBoost", amount: mistwillow })
       breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow
     }
-    return { effects, forceCrit, breakdown }
+    return { effects, damageMultiplier, forceCrit, conditionalFinalCrit, breakdown }
   }
 
   private bonusAffects(def: BuffDef, tagSet: Set<string>): boolean {

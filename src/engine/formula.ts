@@ -1,5 +1,6 @@
 import boostZone from "../data/skills/boosts/boostZone.json"
 import setBonus from "../data/sets/setBonusFull.json"
+import type { ConditionalFinalCrit } from "./buffs/buffDef"
 
 // 120/240 are the breakthrough-16 / level-96+ tier (level 91-95 was 90/180).
 // This is the ONLY place the food bonus is applied.
@@ -33,6 +34,7 @@ type ArtRow = {
   guaranteedCrit?: number
   guaranteedPrecision?: number
   guaranteedNormal?: number
+  conditionalFinalCrit?: ConditionalFinalCrit
   extraStonesplitPenetration?: number
   mysticCategory?: string
 }
@@ -149,7 +151,7 @@ export function computeSkillDamage(
   const skillType = art.skillType ?? ""
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"
-  const guaranteedCrit = art.guaranteedCrit === 1
+  let guaranteedCrit = art.guaranteedCrit === 1
   const guaranteedPrecision = art.guaranteedPrecision === 1
   const guaranteedNormal = art.guaranteedNormal === 1
   const isPersistent = art.specialTag === "sustain"
@@ -250,10 +252,14 @@ export function computeSkillDamage(
   const AK = AE * N * AJ * (1 + AI) * (1 + AH)
   const AL = (1 - U) * (1 - W)
   const AM = AF * N * (1 + AI) * (1 + AH) * AJ * (1 + X)
-  const AN = V + W <= 1 ? U * V : U * (1 - W)
+  let AN = V + W <= 1 ? U * V : U * (1 - W)
   const AO = AG * N * AJ * (1 + Y) * (1 + AH) * (1 + AI)
   const AP = W
   const AQ = AF * N * (1 + AH) * (1 + AI) * AJ
+  if (!guaranteedCrit && art.conditionalFinalCrit) {
+    if (AN >= art.conditionalFinalCrit.threshold) guaranteedCrit = true
+    else AN = Math.min(AN + art.conditionalFinalCrit.bonusBelowThreshold, Math.max(1 - AL - AP, 0))
+  }
   const AR = Math.max(1 - AL - AN - AP, 0)
 
   const P_eff = dotRules ? 0 : P

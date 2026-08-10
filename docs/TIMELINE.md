@@ -190,7 +190,10 @@ buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.
 tag-matched, not id-referenced:
 
 - **who applies it** — `triggers: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
-  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`. `stackOnDamage` instead
+  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`, and optional
+  `requiresActiveBuffOnTrigger`. Generated `castSkill` attacks trigger only defs that opt in
+  with `triggersFromGeneratedSkills`; other generated-proc behavior stays unchanged.
+  `stackOnDamage` instead
   adds and refreshes one stack for every damaging hit, including `castSkill`-generated hits
   and deterministic DoT/mind-method ticks.
 - **who it boosts** — `affects: string[] | null` (tag prefixes; `null` = everything),
@@ -199,9 +202,15 @@ tag-matched, not id-referenced:
 - **magnitude** — `bonus: SiteBonus` (buckets `buffBonus`/`groupDamage` → `allDamageBoost`,
   `phyBoostMod` → `physBoost`, `bossOnlyBuffBonus` → `bossBoost`; see `BONUS_TYPE_TO_STATKEY`)
   and/or `statModifiers` / `bossStatModifiers` / `tier6StatModifiers` (rate/pen/crit-dmg mods
-  → app stat keys via `STATMOD_TO_STATKEY`). `forceCrit`, stack/time (`duration`,
+  → app stat keys via `STATMOD_TO_STATKEY`). `forceCrit`, `conditionalFinalCrit` (a
+  post-precision threshold plus below-threshold final-rate bonus), stack/time (`duration`,
   `maxStacks`, `stacksPerHit`/`stacksPerCast`, `bonus.minStacks`), and limiting (`cooldown`,
   `rateLimit`, `stackIcd`, `phaseGate`).
+- **per-cast consumption** — `perCastConsume` selects the first live
+  `preferredSources` entry before its fallback source. A successful consume can enable a
+  tier-gated stat bonus or damage multiplier for that cast and attach source-specific buff
+  ids. Only ids explicitly marked `propagateToTriggeredSkills` flow into that cast's
+  generated skill descendants; they are event state, not global timed windows.
 
 ### 5c. Which system for what
 

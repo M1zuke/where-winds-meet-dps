@@ -7,23 +7,19 @@
       "def": {
         "id": "mountainSplitter",
         "name": "Mountain Splitter",
-        "triggers": ["AnxiSoldierMoDown", "AnxiSoldierMoJump"],
-        "duration": 5,
+        "triggers": ["AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
+        "duration": 10,
         "cooldown": 15,
-        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump"],
+        "requiresActiveBuffOnTrigger": "innerPassion",
+        "triggersFromGeneratedSkills": true,
+        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
         "bonus": null,
-        "statModifiers": {
-          "directCrit": 1,
-          "critDmg": 0.1
+        "conditionalFinalCrit": {
+          "threshold": 0.75,
+          "bonusBelowThreshold": 0.15
         },
         "enabledParam": "steadfastDevotion",
-        "minTier": 3,
-        "extendDurationToIfBuffActive": {
-          "buffId": "innerPassion",
-          "enabledParam": "steadfastDevotion",
-          "minTier": 5,
-          "targetDuration": 10
-        }
+        "minTier": 3
       }
     }
   ]

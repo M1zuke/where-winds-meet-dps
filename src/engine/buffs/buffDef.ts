@@ -39,7 +39,20 @@ export interface PerCastConsumeSpec {
   triggerSkillProperty: string
   consumesFromBuffStack: string
   bonus?: BuffBonus | null
+  damageMultiplier?: number
+  effectEnabledParam?: string
+  effectMinTier?: number
   preferredSources?: PerCastConsumeSource[]
+  sourceBuffs?: Array<{
+    consumedBuffStack: string
+    buffIds: string[]
+    propagateToTriggeredSkills?: boolean
+  }>
+}
+
+export interface ConditionalFinalCrit {
+  threshold: number
+  bonusBelowThreshold: number
 }
 
 // `mistwillowCategory` depends on the timeline flattening a per-hit
@@ -97,7 +110,7 @@ export interface BuffDef {
     default: BuffStatMods | null
   }
   forceCrit?: boolean
-  forceCritIfHighCrit?: boolean
+  conditionalFinalCrit?: ConditionalFinalCrit
   duration?: number
   maxStacks?: number
   stacksPerHit?: number | boolean
@@ -111,6 +124,8 @@ export interface BuffDef {
     targetDuration: number
   }
   cooldown?: number
+  requiresActiveBuffOnTrigger?: string
+  triggersFromGeneratedSkills?: boolean
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stackIcd?: number

@@ -369,6 +369,18 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   either debuff. Only hits laid by the rotation roll
   the proc — DoT ticks and trigger-enqueued hits do not — the same structural
   limitation Hawkwing and Concentration have.
+- **Lone Loyalty / Mountain Splitter** — tier 3 opens a 10-second Mountain
+  Splitter window when Inner Passion is active and a generated Modao Anxi
+  Soldier attack lands, with a 15-second ICD on that activation route. Its
+  final-crit rule is evaluated after precision: at 75% or higher the affected
+  Phalanx Charge and Anxi attacks are guaranteed crits; below 75%, 15
+  percentage points are added to their final crit probability. Tier 4 makes
+  Phalanx Charged S3 deal 32% more damage only on a cast that successfully
+  consumes Inner Passion or Enhanced Charge. Tier 6 grants three Enhanced
+  Charge stacks for 18 seconds when Phalanx Charged completes during Qi Break;
+  later charges consume Inner Passion first, then Enhanced Charge. Consuming
+  Enhanced Charge applies Mountain Splitter only to that charge and its
+  generated Anxi chain, without opening or resetting the tier-3 window or ICD.
 
 ### Gaps
 
@@ -408,8 +420,6 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   falling-blossom stacks, perfect-catch, phantom-rally injected entries). A
   bespoke stateful per-cast state machine with its own injected-entry
   scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
-- **`forceCritIfHighCrit`** — its site gate is a crit-weight ≥ 0.7 test with
-  no equivalent here; `buffEngine.ts` emits a warning for it.
 - **Known trigger no-op**: on `bamboocutWindTwinblade`, Umbrella Q's
   `castSkill` trigger targets
   Resonance / First Resonance skills those classes never received, so it
@@ -431,7 +441,7 @@ source-of-truth note this table summarizes.
 | Thousand Mountain Law / `mountainsMight` | Panel + buff engine | Disjoint. |
 | Throat-Pierce / `throatPierced` | Panel + buff engine | Disjoint. |
 | Star-Picker / `starReacher` | Panel + buff engine | Disjoint. |
-| Lone Loyalty / `steadfastDevotion` | Panel + buff engine | Disjoint. |
+| Lone Loyalty / `steadfastDevotion` | Panel + buff engine | Disjoint. Tier 3 Mountain Splitter, tier 4 consumption-gated Phalanx damage, and tier 6 Enhanced Charge are statefully modeled; see the implemented entry above. |
 | Boat on Wood / `towlineSweep` (bamboocutDust) | Panel + buff engine (`towlineSweepT6Special` forceCrit bonus) | Disjoint; `forceCrit` is now consumed, so this def is live. |
 | Morale Chant / `moraleChant` | Panel + `timeline.ts` stack schedule (`buffs/morale.ts`) | Stacks drive `allDamageBoost` + `phys.penetration`; tier 6 adds Yi River ticks. |
 | Tang Anthem / `songOfTang` | Panel (`precision 0.059`, `critDamageBoost 0.04`) + buff engine (`tangMelody`: triggered, stacking `critDmg 0.03`×≤5, rate-limited) | **Verified NOT a double-count** — a flat always-on tier stat vs a distinct triggered mechanic that ramps and decays independently. |
