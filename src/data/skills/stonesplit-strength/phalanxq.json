@@ -11,10 +11,10 @@
     {
       "id": "hit-0",
       "frame": 0,
-      "physMultiplier": 1.8943,
-      "attributeMultiplier": 2.8414,
-      "physFixed": 438,
-      "attributeFixed": 245,
+      "physMultiplier": 1.8948,
+      "attributeMultiplier": 2.8422,
+      "physFixed": 525,
+      "attributeFixed": 286,
       "extraCritDamage": 0,
       "triggers": [
         {
