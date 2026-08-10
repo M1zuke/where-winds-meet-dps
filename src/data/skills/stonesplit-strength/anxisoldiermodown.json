@@ -3,7 +3,7 @@
   "classId": "stonesplitStrength",
   "name": "AnxiSoldierMoDown",
   "abilityTag": "AnxiSoldierMoDown",
-  "tags": ["weapon:Mo Blade", "prop:shatteredRidgeBoost"],
+  "tags": ["weapon:Mo Blade", "prop:shatteredRidgeBoost", "attune:phalanxbaneCharged"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",
