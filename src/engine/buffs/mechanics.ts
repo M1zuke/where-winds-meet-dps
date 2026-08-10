@@ -5,8 +5,8 @@
 // triggers on the per-class skill data (see docs/CALCULATION.md § "Mechanic
 // coverage").
 //
-// The def bodies live in src/data/skills/buffs/soulShaken.json,
-// bellstrikeUmbraBleedPen.json and bellstrikeUmbraBleedingDamage.json — the
+// The def bodies live in src/data/skills/buffs/soulShaken.ts,
+// bellstrikeUmbraBleedPen.ts and bellstrikeUmbraBleedingDamage.ts — the
 // two swordHorizon-gated ones port the site's `Nm` mechanic
 // (`.tmp/site/deobfuscated.js` ~L5544-59, read via `gr()` ~L21817-58).
 // `physPen`/`bellstrikePen: 15` and `affinityDmg: 0.18` are the site's

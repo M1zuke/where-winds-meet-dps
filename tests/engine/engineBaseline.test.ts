@@ -14,6 +14,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
+import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
+import { SET_ID } from "../../src/data/sets"
 import type { Inputs, Result } from "../../src/engine/types"
 import anchorProfileFile from "../migrations/testProfiles/profile-v7.json"
 
@@ -67,15 +69,40 @@ function withCombat(raw: Inputs, patch: Partial<NonNullable<Inputs["combatSettin
   return { ...raw, combatSettings: { ...raw.combatSettings!, ...patch } }
 }
 
-const ARMOUR_SETS = [
-  "Jadeware",
-  "Rainwhisper",
-  "Ivorybloom",
-  "Mistwillow",
-  "Stars Align",
-  "Shattered Ridge",
-  "Swallowcall",
-  "Swaying Heights",
+// Inserts one extra cast into whatever rotation the build already resolves to
+// (its own `activeCustomRotation`, or the class default) — for exercising a
+// skill the anchor rotation never casts on its own. Placed after the pre-pull
+// steps rather than appended, so a buff the cast grants still has most of the
+// rotation left to affect; appended at the end it would barely register.
+//
+// The step id is a literal because `makeStep` derives one from `Date.now()` and
+// `Math.random()`, and a cast's `stepId` reaches the result `digestOf` hashes —
+// a generated id makes the recorded digest unreproducible.
+function withStepAfterPrePull(raw: Inputs, skillId: string): Inputs {
+  const rotation = raw.activeCustomRotation ?? defaultRotationForClass(raw.classId)!
+  const steps = [...rotation.steps]
+  const firstNonPrePull = steps.findIndex((step) => !step.prePull)
+  steps.splice(firstNonPrePull < 0 ? steps.length : firstNonPrePull, 0, {
+    id: `st-baseline-${skillId}`,
+    skillId,
+    hitCount: 1,
+    prePull: false,
+  })
+  return { ...raw, activeCustomRotation: { ...rotation, steps } }
+}
+
+// The case-name suffix is the pre-migration display name, kept exactly as the
+// recorded fixture keys it — only the `set` value building each case's
+// `Inputs` moved from the name to the id.
+const ARMOUR_SETS: readonly [label: string, id: string][] = [
+  ["Jadeware", SET_ID.jadeware],
+  ["Rainwhisper", SET_ID.rainwhisper],
+  ["Ivorybloom", SET_ID.ivorybloom],
+  ["Mistwillow", SET_ID.mistwillow],
+  ["StarsAlign", SET_ID.starsAlign],
+  ["ShatteredRidge", SET_ID.shatteredRidge],
+  ["Swallowcall", SET_ID.swallowcall],
+  ["SwayingHeights", SET_ID.swayingHeights],
 ]
 
 const CASES: { name: string; build: () => Inputs }[] = [
@@ -127,6 +154,21 @@ const CASES: { name: string; build: () => Inputs }[] = [
     name: "anchor:noMoraleChant",
     build: () => toEngineInputs(withoutInnerWay(anchorInputs(), "Morale Chant")),
   },
+  // The anchor rotation never casts SpearHeavy on its own, so without this the
+  // baseline is silent on Soul Shaken's Spear Heavy trigger set — the one path
+  // its BuffDef → BuffModule conversion changes numerically, since the
+  // converted module gates Spear Heavy behind the same Wolfchaser's Art
+  // tier-6 requirement as Spear Q instead of leaving it ungated.
+  {
+    name: "anchor:spearHeavyNoWolfchasersArt",
+    build: () =>
+      toEngineInputs(
+        withStepAfterPrePull(
+          withoutInnerWay(anchorInputs(), "Wolfchaser's Art"),
+          "bellstrikeUmbra-spearheavy",
+        ),
+      ),
+  },
   {
     name: "anchor:bitterSeasonT6",
     build: () =>
@@ -158,9 +200,9 @@ const CASES: { name: string; build: () => Inputs }[] = [
       ),
   },
   { name: "anchor:noSet", build: () => toEngineInputs({ ...anchorInputs(), set: null }) },
-  ...ARMOUR_SETS.map((set) => ({
-    name: `anchor:set-${set.replace(/\s+/g, "")}`,
-    build: () => toEngineInputs({ ...anchorInputs(), set }),
+  ...ARMOUR_SETS.map(([label, id]) => ({
+    name: `anchor:set-${label}`,
+    build: () => toEngineInputs({ ...anchorInputs(), set: id }),
   })),
   // A second rotation, so the guard is not tied to one cast list.
   { name: "defaults:umbra", build: () => ({ ...defaultInputs, classId: "bellstrikeUmbra" }) },

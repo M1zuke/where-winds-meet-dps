@@ -4,26 +4,22 @@
 import type { Buff } from "../../engine/buff"
 import { registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import { registerPoisonExtension } from "../../engine/mechanics/bitterSeason"
-import { CROSSWIND_MAX_CHARGES } from "../../engine/buffs/crosswind"
+import { CROSSWIND_MAX_CHARGES } from "../skills/buffs/crosswindSpirit"
+import {
+  STATUS,
+  ZENITH_MAX_EXTENDED_DURATION_FRAMES,
+  ZENITH_SMOLDER_EXTEND_FRAMES,
+} from "../skills/bellstrike-umbra/ids"
+
+export { ZENITH_SMOLDER_EXTEND_FRAMES, ZENITH_MAX_EXTENDED_DURATION_FRAMES }
 
 export const RIVER_FLOW_DURATION_FRAMES = 900
 export const SPEAR_SPECIAL_COOLDOWN_FRAMES = 690
 
-export const ZENITH_SMOLDER_EXTEND_FRAMES = 600
-
-// User-verified 2026-08-07: a Zenith detonation always adds its full extend
-// amount, but the resulting REMAINING duration (from that detonation's own
-// frame, re-evaluated per detonation — not a lifetime cap on the window)
-// never exceeds 16 s. If the window is already longer than that, the
-// detonation must leave it alone — never truncate it down to the cap.
-// Sword Horizon logic, not specific to any one debuff it extends (Smolder,
-// Bitter Season's poison, …).
-export const ZENITH_MAX_EXTENDED_DURATION_FRAMES = 960
-
-export const RIVER_FLOW_BUFF_ID = "buff-bellstrikeUmbra-river-flow"
-export const SPEAR_SPECIAL_COOLDOWN_BUFF_ID = "buff-bellstrikeUmbra-spear-special-cooldown"
-export const ZENITH_BAR_BUFF_ID = "buff-bellstrikeUmbra-zenith-bar"
-export const ZENITH_DETONATION_BUFF_ID = "buff-bellstrikeUmbra-zenith-detonation"
+export const RIVER_FLOW_BUFF_ID = STATUS.riverFlow
+export const SPEAR_SPECIAL_COOLDOWN_BUFF_ID = STATUS.spearSpecialCooldown
+export const ZENITH_BAR_BUFF_ID = STATUS.zenithBar
+export const ZENITH_DETONATION_BUFF_ID = STATUS.zenithDetonation
 export const ZENITH_DETONATION_FRAMES = 1
 
 export const BELLSTRIKE_UMBRA_GATES: Buff[] = [

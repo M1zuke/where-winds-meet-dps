@@ -10,6 +10,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeSkill } from "../../src/engine/skill"
+import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { Inputs } from "../../src/engine/types"
 
@@ -52,21 +54,33 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
     }
   })
 
-  it("Surging Waves is a global buff def: 8 stacks/cast of the Plus, +1.25 %/stack, max 40, gated to Dragon Head", () => {
-    const surgingWaves = GLOBAL_BUFF_DEFS.find((d) => d.id === "surgingWaves")
+  it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
+    const surgingWaves = GLOBAL_BUFF_DEFS.find((module) => module.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
     expect(surgingWaves!.triggeredBy).toEqual(["cast:dragonHeadPlus"])
-    expect(surgingWaves!.stacksPerCast).toBe(8)
     expect(surgingWaves!.maxStacks).toBe(40)
     expect(surgingWaves!.duration).toBe(6)
     expect(surgingWaves!.affects).toEqual(["role:dragonHead"])
-    expect(surgingWaves!.bonus).toEqual({ type: "buffBonus", valuePerStack: 0.0125 })
+
+    const dragonHeadHit = makeSkill("test", { name: "probe", tags: ["role:dragonHead"] })
+    const engine = new BuffEngine({}, GLOBAL_BUFF_DEFS)
+    engine.processSkillCast("cast:dragonHeadPlus", 0)
+    expect(engine.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.0125 * 8,
+    })
+
+    const engineWithAllies = new BuffEngine({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
+    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0)
+    expect(engineWithAllies.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.0125 * 40,
+    })
   })
 })
 
 type Art = Parameters<typeof computeSkillDamage>[0]
 const art_ = (a: Record<string, unknown>) => a as unknown as Art
-const slots = ["N/A", "N/A", "N/A", "N/A", "N/A"] as const
 
 const DRAGON_HEAD_ROW = {
   physMultiplier: 24.827571,
@@ -115,18 +129,17 @@ describe("guaranteedNormal — fixed damage, immune to every rate", () => {
   const normal = art_({ name: "Dragon Head (unflagged)", ...DRAGON_HEAD_ROW })
 
   it("expected damage equals the normal row (EF), not the rate-weighted mix", () => {
-    const result = computeSkillDamage(fixed, slots, ctx, 1)
+    const result = computeSkillDamage(fixed, ctx, 1)
     expect(result.expectedDamage).toBeCloseTo(result.cells.EF, 6)
-    const unflagged = computeSkillDamage(normal, slots, ctx, 1)
+    const unflagged = computeSkillDamage(normal, ctx, 1)
     expect(unflagged.expectedDamage).toBeCloseTo(unflagged.cells.EH, 6)
     expect(result.expectedDamage).not.toBeCloseTo(unflagged.expectedDamage, 0)
   })
 
   it("crit, affinity and precision rates do not move it", () => {
-    const base = computeSkillDamage(fixed, slots, ctx, 1).expectedDamage
+    const base = computeSkillDamage(fixed, ctx, 1).expectedDamage
     const ratesUp = computeSkillDamage(
       fixed,
-      slots,
       { ...ctx, critPanel: 0.8, affinityPanel: 0.4, precisionPanel: 0.5 },
       1,
     ).expectedDamage
@@ -145,25 +158,25 @@ describe("guaranteedPrecision — never abrades, crit/affinity still roll", () =
   })
 
   it("U is 1 and the abrasion weight AL is 0 even at low panel precision", () => {
-    const c = computeSkillDamage(plus, slots, { ...ctx, precisionPanel: 0.5 }, 1).cells
-    expect(c.U).toBe(1)
-    expect(c.AL).toBe(0)
+    const cells = computeSkillDamage(plus, { ...ctx, precisionPanel: 0.5 }, 1).cells
+    expect(cells.U).toBe(1)
+    expect(cells.AL).toBe(0)
   })
 
   it("lowering precision does not lower it, but does lower the unflagged variant", () => {
     const lowPrecision = { ...ctx, precisionPanel: 0.5 }
-    const flagged = computeSkillDamage(plus, slots, lowPrecision, 1).expectedDamage
-    expect(flagged).toBeCloseTo(computeSkillDamage(plus, slots, ctx, 1).expectedDamage, 6)
+    const flagged = computeSkillDamage(plus, lowPrecision, 1).expectedDamage
+    expect(flagged).toBeCloseTo(computeSkillDamage(plus, ctx, 1).expectedDamage, 6)
 
     const unflagged = art_({ ...plus, guaranteedPrecision: undefined })
-    const unflaggedLow = computeSkillDamage(unflagged, slots, lowPrecision, 1).expectedDamage
-    const unflaggedBase = computeSkillDamage(unflagged, slots, ctx, 1).expectedDamage
+    const unflaggedLow = computeSkillDamage(unflagged, lowPrecision, 1).expectedDamage
+    const unflaggedBase = computeSkillDamage(unflagged, ctx, 1).expectedDamage
     expect(unflaggedLow).toBeLessThan(unflaggedBase)
   })
 
   it("raising crit rate still raises it", () => {
-    const base = computeSkillDamage(plus, slots, ctx, 1).expectedDamage
-    const highCrit = computeSkillDamage(plus, slots, { ...ctx, critPanel: 0.8 }, 1).expectedDamage
+    const base = computeSkillDamage(plus, ctx, 1).expectedDamage
+    const highCrit = computeSkillDamage(plus, { ...ctx, critPanel: 0.8 }, 1).expectedDamage
     expect(highCrit).toBeGreaterThan(base)
   })
 })
@@ -274,12 +287,14 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
   })
 
   it("is a global buff def applying the sourced 45 % cap, gated to the Plus", () => {
-    const def = GLOBAL_BUFF_DEFS.find((d) => d.id === "dragonHeadLowHp")
-    expect(def).toBeTruthy()
-    expect(def!.bonus).toEqual({ type: "buffBonus", value: 0.45 })
-    expect(def!.affects).toEqual(["role:dragonHeadPlus"])
-    expect(def!.enabledParam).toBe("dragonHeadLowHpMaxBonus")
-    expect(def!.alwaysActive).toBe(true)
+    const dragonHeadLowHp = GLOBAL_BUFF_DEFS.find((module) => module.id === "dragonHeadLowHp")
+    expect(dragonHeadLowHp).toBeTruthy()
+    expect(dragonHeadLowHp!.effects).toEqual([
+      { kind: "stat", statKey: "allDamageBoost", amount: 0.45 },
+    ])
+    expect(dragonHeadLowHp!.affects).toEqual(["role:dragonHeadPlus"])
+    expect(dragonHeadLowHp!.requires?.param).toBe("dragonHeadLowHpMaxBonus")
+    expect(dragonHeadLowHp!.alwaysActive).toBe(true)
   })
 
   it("does nothing until the toggle is on", () => {

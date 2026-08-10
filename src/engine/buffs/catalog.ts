@@ -9,24 +9,18 @@ import {
   WEAPON_BOOST_STAT_KEY,
   type StatKey,
 } from "../statRegistry"
-import type { BuffDef, BuffBonus, BuffStatMods } from "./buffDef"
+import type { BuffBonus, BuffStatMods } from "./buffDef"
+import type { BuffModule } from "./buffModule"
+import { legacyDefOf } from "./legacyBuffModule"
+import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
 import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
 import { paramsFromInputs } from "./params"
 import type { BuffParams } from "./buffEngine"
-import { INNER_WAY_BY_PARAM, SITE_SET_TO_APP_SET } from "./paramMap"
+import { INNER_WAY_BY_PARAM } from "./paramMap"
+import { setDisplayNameForSiteKey } from "../../data/sets"
 import { builtinDebuffsForClass } from "../builtinLibrary"
-
-export interface BuffSummary {
-  id: string
-  name: string
-  enabledParam?: string
-  minTier?: number
-  triggeredBy: string[]
-  affects: string
-  bonus: string
-}
 
 function bonusSummary(b?: BuffBonus | null): string {
   if (!b) return "—"
@@ -44,29 +38,11 @@ function bonusSummary(b?: BuffBonus | null): string {
   return `+${pct(b.value ?? 0)} ${label}`
 }
 
-function affectsSummary(d: BuffDef): string {
-  if (d.affectsProperty) return d.affectsProperty
-  if (d.affectsWeaponTypes) return d.affectsWeaponTypes.join("/")
-  if (d.affects === null || d.affects === undefined) return "all"
-  return d.affects.join("/")
-}
-
-function toSummary(d: BuffDef): BuffSummary {
-  return {
-    id: d.id,
-    name: d.name ?? d.id,
-    enabledParam: d.enabledParam,
-    minTier: d.minTier,
-    triggeredBy: d.triggeredBy ?? [],
-    affects: affectsSummary(d),
-    bonus: bonusSummary(d.bonus),
-  }
-}
-
-export function buffSummaries(classId?: string): BuffSummary[] {
-  return catalogBuffDefs(classId)
-    .map(toSummary)
-    .sort((a, b) => a.name.localeCompare(b.name))
+function affectsSummary(module: BuffModule): string {
+  if (module.affectsProperty) return module.affectsProperty
+  if (module.affectsWeaponTypes) return module.affectsWeaponTypes.join("/")
+  if (module.affects === null || module.affects === undefined) return "all"
+  return module.affects.join("/")
 }
 
 const POINT_VALUED_MODS = new Set<keyof BuffStatMods>(["physPen", "bellstrikePen"])
@@ -83,6 +59,80 @@ export function statModsSummary(mods: BuffStatMods | null | undefined): string {
   return parts.join(", ")
 }
 
+// A native module's `effects` static array carries no bonus "type" (team vs
+// solo, phys vs all) beyond its `StatKey`, so it is read back off that key —
+// every buff converted so far picks a key `BONUS_TYPE_TO_STATKEY` only ever
+// produces from one bonus type, so this is lossless for all of them.
+const STATKEY_BONUS_LABEL: Partial<Record<StatKey, string>> = {
+  allDamageBoost: "all",
+  physBoost: "phys",
+  bossBoost: "boss",
+}
+const STATKEY_POINT_VALUED = new Set<StatKey>(["phys.penetration", "bellstrike.penetration"])
+
+function summaryFromStaticEffects(effects: Effect[]): string {
+  const parts: string[] = []
+  for (const effect of effects) {
+    if (effect.kind !== "stat") continue
+    const bonusLabel = STATKEY_BONUS_LABEL[effect.statKey]
+    if (bonusLabel) {
+      parts.push(`+${(effect.amount * 100).toFixed(1)}% ${bonusLabel}`)
+      continue
+    }
+    const formatted = STATKEY_POINT_VALUED.has(effect.statKey)
+      ? `${effect.amount / 0.01}`
+      : `${(effect.amount * 100).toFixed(0)}%`
+    parts.push(`${effect.statKey} ${effect.amount >= 0 ? "+" : ""}${formatted}`)
+  }
+  return parts.join(", ")
+}
+
+// `receivesForSkill` asks "does this module contribute to this tag set, and
+// what does it read as" — a legacy-adapted module answers with the exact old
+// `BuffDef` field reading (so its text is byte-identical to before
+// conversion); a native module prefers its author-written `summary` when one
+// is given, and otherwise derives text from its static `effects` array.
+// `appliesForSkill` and `alwaysActiveClassBuffs` do NOT share this: each reads
+// a different, narrower field set today (no `__statModByPrefix` resolution in
+// the former, `__statModByPrefix?.match` only — no tag-scope resolution — in
+// the latter), and folding them in here would change their emitted strings.
+function moduleContribution(
+  module: BuffModule,
+  tagSet: Set<string>,
+): { applies: boolean; text: string } {
+  const legacy = legacyDefOf(module)
+  if (legacy) {
+    const hasStatMods = !!(
+      legacy.statModifiers ||
+      legacy.bossStatModifiers ||
+      legacy.__statModByPrefix
+    )
+    let resolvedMods = legacy.statModifiers ?? null
+    let statModApplies = hasStatMods
+    if (legacy.__statModByPrefix) {
+      const prefixRule = legacy.__statModByPrefix
+      resolvedMods = matchesScope(tagSet, { affects: prefixRule.prefixes })
+        ? prefixRule.match
+        : prefixRule.default
+      statModApplies = resolvedMods != null
+    }
+    const bonusApplies = !!legacy.bonus && matchesScope(tagSet, legacy)
+    const parts: string[] = []
+    const statPart = statModsSummary(resolvedMods)
+    if (statPart) parts.push(statPart)
+    if (legacy.bonus) {
+      const bonusPart = bonusSummary(legacy.bonus)
+      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    }
+    return { applies: statModApplies || bonusApplies, text: parts.join(", ") }
+  }
+  const applies = matchesScope(tagSet, module)
+  const text =
+    module.summary ??
+    (Array.isArray(module.effects) ? summaryFromStaticEffects(module.effects) : "")
+  return { applies, text }
+}
+
 function humanize(param: string): string {
   const spaced = param.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
   return spaced
@@ -91,17 +141,14 @@ function humanize(param: string): string {
     .join(" ")
 }
 
-export function requiresLabel(def: BuffDef): string | null {
-  if (def.requiresSet) return SITE_SET_TO_APP_SET[def.requiresSet] ?? def.requiresSet
-  if (!def.enabledParam) return null
-  const innerWay = INNER_WAY_BY_PARAM[def.enabledParam]
-  if (innerWay) return innerWay + (def.minTier ? ` tier ${def.minTier}+` : "")
-  if (def.enabledParam === "starsAlignActive") return "Stars Align"
-  return humanize(def.enabledParam) + (def.minTier ? ` T${def.minTier}+` : "")
-}
-
-function bonusAffectsTags(def: BuffDef, tagSet: Set<string>): boolean {
-  return matchesScope(tagSet, def)
+export function requiresLabel(module: BuffModule): string | null {
+  const requires = module.requires
+  if (requires?.set) return setDisplayNameForSiteKey(requires.set) ?? requires.set
+  if (!requires?.param) return null
+  const innerWay = INNER_WAY_BY_PARAM[requires.param]
+  if (innerWay) return innerWay + (requires.minTier ? ` tier ${requires.minTier}+` : "")
+  if (requires.param === "starsAlignActive") return "Stars Align"
+  return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
 
 export function specMechanicDefIds(classId?: string): Set<string> {
@@ -109,13 +156,14 @@ export function specMechanicDefIds(classId?: string): Set<string> {
   return new Set(defs.filter((d) => d.alwaysActive).map((d) => d.id))
 }
 
-export function buffGateSatisfied(def: BuffDef, params: BuffParams): boolean {
-  if (def.requiresSet && def.requiresSet !== params.armorSet) return false
-  if (def.enabledParam && !params[def.enabledParam]) return false
+export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
+  const requires = module.requires
+  if (requires?.set && requires.set !== params.armorSet) return false
+  if (requires?.param && !params[requires.param]) return false
   if (
-    def.minTier &&
-    def.enabledParam &&
-    ((params[def.enabledParam + "Tier"] as number) ?? 0) < def.minTier
+    requires?.minTier &&
+    requires.param &&
+    ((params[requires.param + "Tier"] as number) ?? 0) < requires.minTier
   )
     return false
   return true
@@ -125,11 +173,11 @@ const DISPLAY_REQUIRES: Record<string, string> = {
   vulnerabilityTeammate: "Encounter Settings: Tank Spear Debuff",
 }
 
-function triggeredByNote(def: BuffDef, defsById: Map<string, BuffDef>): string | null {
-  if (def.alwaysActive) return null
-  if (!def.triggeredBy || def.triggeredBy.length === 0) return null
-  let note = `on cast: ${def.triggeredBy.join("/")}`
-  const upgradeFrom = def.conditionalTrigger?.upgradeFromActive
+function triggeredByNote(module: BuffModule, defsById: Map<string, BuffModule>): string | null {
+  if (module.alwaysActive) return null
+  if (!module.triggeredBy || module.triggeredBy.length === 0) return null
+  let note = `on cast: ${module.triggeredBy.join("/")}`
+  const upgradeFrom = module.requiresBuffActive
   if (upgradeFrom) {
     const src = defsById.get(upgradeFrom)
     note += ` · requires ${src?.name ?? upgradeFrom} active`
@@ -168,47 +216,26 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   const defs = catalogBuffDefs(classId)
   const defsById = new Map(defs.map((d) => [d.id, d] as const))
   const rows: ReceivesRow[] = []
-  for (const def of defs) {
-    const hasStatMods = !!(
-      def.statModifiers ||
-      def.tier6StatModifiers ||
-      def.bossStatModifiers ||
-      def.__statModByPrefix
-    )
-    let resolvedMods = def.statModifiers ?? null
-    let statModApplies = hasStatMods
-    if (def.__statModByPrefix) {
-      const p = def.__statModByPrefix
-      resolvedMods = matchesScope(tagSet, { affects: p.prefixes }) ? p.match : p.default
-      statModApplies = resolvedMods != null
-    }
-    const bonusApplies = !!def.bonus && bonusAffectsTags(def, tagSet)
-    if (!statModApplies && !bonusApplies) continue
+  for (const module of defs) {
+    const { applies, text } = moduleContribution(module, tagSet)
+    if (!applies) continue
 
-    const parts: string[] = []
-    const statPart = statModsSummary(resolvedMods)
-    if (statPart) parts.push(statPart)
-    if (def.bonus) {
-      const bonusPart = bonusSummary(def.bonus)
-      if (bonusPart) parts.push(bonusPart)
-    }
-
-    const displayGate = inputs ? displayGateFor(def.id) : undefined
+    const displayGate = inputs ? displayGateFor(module.id) : undefined
     const displayActive = displayGate ? displayGate(inputs!) : undefined
 
     rows.push({
-      id: def.id,
-      name: `${def.name ?? def.id} (${affectsSummary(def)})`,
-      effect: parts.join(", "),
-      requires: DISPLAY_REQUIRES[def.id] ?? requiresLabel(def),
-      isSpecMechanic: specIds.has(def.id),
+      id: module.id,
+      name: `${module.name} (${affectsSummary(module)})`,
+      effect: text,
+      requires: DISPLAY_REQUIRES[module.id] ?? requiresLabel(module),
+      isSpecMechanic: specIds.has(module.id),
       active:
         displayActive !== undefined
           ? displayActive
           : params
-            ? buffGateSatisfied(def, params)
+            ? buffGateSatisfied(module, params)
             : true,
-      triggeredBy: triggeredByNote(def, defsById),
+      triggeredBy: triggeredByNote(module, defsById),
     })
   }
 
@@ -280,24 +307,32 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
   const castTag = castTagOf(skill)
   if (!castTag) return []
   const rows: AppliesRow[] = []
-  for (const def of catalogBuffDefs(classId)) {
-    if (!def.triggeredBy || def.triggeredBy.length === 0) continue
-    const triggered = def.triggeredBy.includes(castTag)
+  for (const module of catalogBuffDefs(classId)) {
+    if (!module.triggeredBy || module.triggeredBy.length === 0) continue
+    const triggered = module.triggeredBy.includes(castTag)
     if (!triggered) continue
 
+    const legacy = legacyDefOf(module)
     const parts: string[] = []
-    const statPart = statModsSummary(def.statModifiers)
-    if (statPart) parts.push(statPart)
-    if (def.bonus) {
-      const bonusPart = bonusSummary(def.bonus)
-      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    if (legacy) {
+      const statPart = statModsSummary(legacy.statModifiers)
+      if (statPart) parts.push(statPart)
+      if (legacy.bonus) {
+        const bonusPart = bonusSummary(legacy.bonus)
+        if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+      }
+    } else if (module.summary) {
+      parts.push(module.summary)
+    } else if (Array.isArray(module.effects)) {
+      const text = summaryFromStaticEffects(module.effects)
+      if (text) parts.push(text)
     }
 
     rows.push({
-      id: def.id,
-      name: `${def.name ?? def.id} (${affectsSummary(def)})`,
+      id: module.id,
+      name: `${module.name} (${affectsSummary(module)})`,
       effect: parts.join(", "),
-      requires: requiresLabel(def),
+      requires: requiresLabel(module),
     })
   }
   return rows.sort((a, b) => a.name.localeCompare(b.name))
@@ -314,27 +349,35 @@ export interface ClassBuffRow {
 export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const params = paramsFromInputs(inputs)
   const rows: ClassBuffRow[] = []
-  for (const def of dedupedMechanicBuffDefsForClass(inputs.classId)) {
-    if (!def.alwaysActive) continue
-    if (def.enabledParam && !params[def.enabledParam]) continue
+  for (const module of dedupedMechanicBuffDefsForClass(inputs.classId)) {
+    if (!module.alwaysActive) continue
+    if (module.requires?.param && !params[module.requires.param]) continue
     if (
-      def.minTier &&
-      def.enabledParam &&
-      ((params[def.enabledParam + "Tier"] as number) ?? 0) < def.minTier
+      module.requires?.minTier &&
+      module.requires.param &&
+      ((params[module.requires.param + "Tier"] as number) ?? 0) < module.requires.minTier
     )
       continue
-    const mods = def.__statModByPrefix?.match ?? def.statModifiers ?? null
+    const legacy = legacyDefOf(module)
     const parts: string[] = []
-    const statPart = statModsSummary(mods)
-    if (statPart) parts.push(statPart)
-    const bonusPart = bonusSummary(def.bonus)
-    if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    if (legacy) {
+      const mods = legacy.__statModByPrefix?.match ?? legacy.statModifiers ?? null
+      const statPart = statModsSummary(mods)
+      if (statPart) parts.push(statPart)
+      const bonusPart = bonusSummary(legacy.bonus)
+      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    } else if (module.summary) {
+      parts.push(module.summary)
+    } else if (Array.isArray(module.effects)) {
+      const text = summaryFromStaticEffects(module.effects)
+      if (text) parts.push(text)
+    }
     rows.push({
-      id: def.id,
-      name: def.name ?? def.id,
+      id: module.id,
+      name: module.name,
       effect: parts.join(", "),
-      affects: affectsSummary(def),
-      requires: requiresLabel(def),
+      affects: affectsSummary(module),
+      requires: requiresLabel(module),
     })
   }
   return rows

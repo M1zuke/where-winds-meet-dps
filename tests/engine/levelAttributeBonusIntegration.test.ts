@@ -69,15 +69,9 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
       attributeAttack: "Bellstrike",
       specialTag: "sustain",
     }
-    const withoutBonus = computeSkillDamage(
-      art as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
-      buildContext(inputs),
-      1,
-    ).expectedDamage
+    const withoutBonus = computeSkillDamage(art as never, buildContext(inputs), 1).expectedDamage
     const withBonus = computeSkillDamage(
       art as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
       buildContext({
         ...inputs,
         bellstrike: {
@@ -123,12 +117,7 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
       attributeAttack: "Bellstrike",
       specialTag: "sustain",
     }
-    const withoutBonus = computeSkillDamage(
-      art as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
-      buildContext(inputs),
-      1,
-    ).expectedDamage
+    const withoutBonus = computeSkillDamage(art as never, buildContext(inputs), 1).expectedDamage
     expect(row.expectedDamage).toBeCloseTo(withoutBonus, 6)
   })
 
@@ -163,12 +152,7 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
       attributeAttack: "Bamboocut",
       specialTag: "sustain",
     }
-    const withoutBonus = computeSkillDamage(
-      art as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
-      buildContext(inputs),
-      1,
-    ).expectedDamage
+    const withoutBonus = computeSkillDamage(art as never, buildContext(inputs), 1).expectedDamage
     expect(row.expectedDamage).toBeCloseTo(withoutBonus, 6)
   })
 })

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { DEFAULT_BEHAVIOR, buildBehaviors, registerSkillBehavior } from "../../src/engine/behavior"
-import type { HitInput } from "../../src/engine/behavior"
+import type { HitContext, HitInput } from "../../src/engine/behavior"
 import { StatusLedger } from "../../src/engine/ledger"
 import { makeHit, makeSkill, newVariantId } from "../../src/engine/skill"
 import type { Skill, SkillHit } from "../../src/engine/skill"
@@ -10,6 +10,13 @@ const build = {
   set: null,
   innerWayTier: () => null,
   dingYin: () => 0,
+}
+
+const context: HitContext = {
+  phase: "normal",
+  qiBreakEnabled: true,
+  smallPhys: 0,
+  isEngineBuffActive: () => false,
 }
 
 function inputFor(skill: Skill, hit: SkillHit, holds = () => false): HitInput {
@@ -32,7 +39,7 @@ describe("DEFAULT_BEHAVIOR — data-driven, what every skill gets", () => {
       weaponOrAttribute: "Sword",
       tags: ["attune:bleed"],
     })
-    const art = DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit))
+    const art = DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit), context)
     expect(art.physMultiplier).toBe(2)
     expect(art.weaponOrAttribute).toBe("Sword")
     expect(art.attuneTag).toBe("attune:bleed")
@@ -51,8 +58,61 @@ describe("DEFAULT_BEHAVIOR — data-driven, what every skill gets", () => {
     const hit = makeHit({ physMultiplier: 2, attributeMultiplier: 3, variants: [variant] })
     const skill = makeSkill("bellstrikeUmbra", { name: "Probe", hits: [hit] })
 
-    expect(DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit, () => false)).physMultiplier).toBe(2)
-    expect(DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit, () => true)).physMultiplier).toBe(9)
+    expect(
+      DEFAULT_BEHAVIOR.buildArt(
+        inputFor(skill, hit, () => false),
+        context,
+      ).physMultiplier,
+    ).toBe(2)
+    expect(
+      DEFAULT_BEHAVIOR.buildArt(
+        inputFor(skill, hit, () => true),
+        context,
+      ).physMultiplier,
+    ).toBe(9)
+  })
+
+  describe("the min-phys crit-boost sentinel (extraCritDamage === 1)", () => {
+    it("stays unresolved on a tagless skill — matches the pre-fold behaviour of never reaching the branch", () => {
+      const hit = makeHit({ extraCritDamage: 1 })
+      const skill = makeSkill("bellstrikeUmbra", { name: "Probe", hits: [hit] })
+      const art = DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit), {
+        ...context,
+        smallPhys: 900,
+      })
+      expect(art.extraCritDamage).toBe(1)
+    })
+
+    it("resolves to the min-phys-scaled bonus, capped at 0.36, when the class's weapon grants the boost", () => {
+      const hit = makeHit({ extraCritDamage: 1 })
+      const skill = makeSkill("silkbindJade", {
+        name: "Probe",
+        hits: [hit],
+        tags: ["weapon:Fan"],
+      })
+      const build = {
+        classId: "silkbindJade",
+        set: null,
+        innerWayTier: () => null,
+        dingYin: () => 0,
+      }
+      const art = DEFAULT_BEHAVIOR.buildArt(
+        { ...inputFor(skill, hit), build },
+        { ...context, smallPhys: 900 },
+      )
+      expect(art.extraCritDamage).toBe(0.36)
+    })
+
+    it("resolves to 0 when the class's weapon does not grant the boost", () => {
+      const hit = makeHit({ extraCritDamage: 1 })
+      const skill = makeSkill("bellstrikeUmbra", {
+        name: "Probe",
+        hits: [hit],
+        tags: ["weapon:Fan"],
+      })
+      const art = DEFAULT_BEHAVIOR.buildArt(inputFor(skill, hit), { ...context, smallPhys: 900 })
+      expect(art.extraCritDamage).toBe(0)
+    })
   })
 })
 

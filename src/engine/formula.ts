@@ -1,5 +1,4 @@
-import boostZone from "../data/skills/boosts/boostZone.json"
-import setBonus from "../data/sets/setBonusFull.json"
+import { SET_BY_ID, type SetFormulaBonus } from "../data/sets"
 
 // 120/240 are the breakthrough-16 / level-96+ tier (level 91-95 was 90/180).
 // This is the ONLY place the food bonus is applied.
@@ -36,9 +35,6 @@ type ArtRow = {
   extraStonesplitPenetration?: number
   mysticCategory?: string
 }
-
-const BOOST_ZONE = boostZone as unknown as Record<string, Record<string, number | string>>
-const SET_BONUS = setBonus as unknown as Record<string, Record<string, number | string>>
 
 type Attribute = "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut"
 
@@ -88,40 +84,16 @@ export interface FormulaContext {
   // declares rather than by the stat's display name.
   attuneBoostByTag?: Record<string, number>
   shareDebuffs: { henZhi: boolean; easyHurt: boolean }
-  boostZoneOverrides?: Record<string, Record<string, number>>
   physPenResistance?: number
   attrPenResistance?: number
   rateResistance?: number
   hawkwingPhysBonus?: number
 }
 
-function slotValue(
-  slot: string | undefined,
-  col: string,
-  overrides?: Record<string, Record<string, number>>,
-): number {
-  if (!slot || slot === "N/A") return 0
-  const entry = BOOST_ZONE[slot]
-  const baseV = entry?.[col]
-  const base = typeof baseV === "number" ? baseV : 0
-  const delta = overrides?.[slot]?.[col] ?? 0
-  return base + delta
-}
-
-function setValue(setName: string | null, col: string): number {
-  if (!setName) return 0
-  const v = SET_BONUS[setName]?.[col]
-  return typeof v === "number" ? v : 0
-}
-
-function sumSlots(
-  slots: readonly string[],
-  col: string,
-  overrides?: Record<string, Record<string, number>>,
-): number {
-  let s = 0
-  for (const slot of slots) s += slotValue(slot, col, overrides)
-  return s
+function setFormulaBonus(setId: string | null, field: keyof SetFormulaBonus): number {
+  if (!setId) return 0
+  const value = SET_BY_ID[setId]?.formulaBonus?.[field]
+  return typeof value === "number" ? value : 0
 }
 
 interface SkillResult {
@@ -138,7 +110,6 @@ export interface RotationCounters {
 
 export function computeSkillDamage(
   art: ArtRow,
-  slots: readonly [string, string, string, string, string],
   ctx: FormulaContext,
   count: number,
   counters: RotationCounters = { qiExhausted: 0, yiShuiLayer: 0, bengJieLayer: 0, lowQi: 0 },
@@ -176,58 +147,48 @@ export function computeSkillDamage(
   const X =
     ctx.critDmgBoostPanel +
     skillCritDamage +
-    setValue(ctx.set, "col5") +
-    counters.bengJieLayer * 0.05 +
-    sumSlots(slots, "col5", ctx.boostZoneOverrides)
+    setFormulaBonus(ctx.set, "critDamage") +
+    counters.bengJieLayer * 0.05
 
   const skillAffinityDamage = num(art.extraAffinityDamage)
   const Y =
-    ctx.affinityDmgBoostPanel +
-    skillAffinityDamage +
-    setValue(ctx.set, "col3") +
-    sumSlots(slots, "col12", ctx.boostZoneOverrides)
+    ctx.affinityDmgBoostPanel + skillAffinityDamage + setFormulaBonus(ctx.set, "affinityDamage")
 
   const U = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
 
-  // Per PDF §11, raw rate sources are divided by (1 + resistance) before the
-  // 80 %/40 % cap. Exception: Thundercry Blade's (Modao) charged-attack crit
+  // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
+  // `panel.ts`'s white→yellow conversion, so they are never divided here.
+  // `art.extraAffinityRate` is the one raw (unconverted) rate source the
+  // formula still receives, per PDF §11 divided by (1 + resistance) before
+  // the 40 % cap. Exception: Thundercry Blade's (Modao) charged-attack crit
   // rate (`art.extraCritRate`) is a flat, unresisted addition after the cap.
   const rateRes = ctx.rateResistance ?? 0
-  const slotCritRate = sumSlots(slots, "col4", ctx.boostZoneOverrides)
   const V = isTianGong
     ? 0
-    : Math.min(ctx.critPanel + slotCritRate / (1 + rateRes), 0.8) +
+    : Math.min(ctx.critPanel, 0.8) +
       ctx.directCritPanel +
-      setValue(ctx.set, "col6") +
+      setFormulaBonus(ctx.set, "directCrit") +
       num(art.extraCritRate)
 
   const isLowQi = counters.lowQi === 1
   const W = isTianGong
     ? 0
-    : Math.min(
-        ctx.affinityPanel +
-          (num(art.extraAffinityRate) + sumSlots(slots, "col11", ctx.boostZoneOverrides)) /
-            (1 + rateRes),
-        0.4,
-      ) +
+    : Math.min(ctx.affinityPanel + num(art.extraAffinityRate) / (1 + rateRes), 0.4) +
       ctx.directAffinityPanel +
-      (isLowQi ? setValue(ctx.set, "col4") : 0) +
-      sumSlots(slots, "col13", ctx.boostZoneOverrides)
+      (isLowQi ? setFormulaBonus(ctx.set, "lowQiDirectAffinityRate") : 0)
 
-  const setFalcon = ctx.hawkwingPhysBonus ?? (ctx.set === "Hawking" ? 0.1 : 0)
-  const slotAE = sumSlots(slots, "col3", ctx.boostZoneOverrides)
-  const slotMitigation = sumSlots(slots, "col8", ctx.boostZoneOverrides)
+  const setFalcon = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const AE =
     (ctx.smallPhys + num(art.minPhysFlatBonus) + (ctx.food ? FOOD_MIN_PHYS_BONUS : 0)) *
       (1 + num(art.minPhysPctBonus)) *
-      (1 + setFalcon + slotAE) -
-    ctx.effectiveDefense * (1 - slotMitigation)
+      (1 + setFalcon) -
+    ctx.effectiveDefense
 
   const AG_raw =
     (ctx.largePhys + num(art.maxPhysFlatBonus) + (ctx.food ? FOOD_MAX_PHYS_BONUS : 0)) *
       (1 + num(art.maxPhysPctBonus)) *
-      (1 + setFalcon + slotAE) -
-    ctx.effectiveDefense * (1 - slotMitigation)
+      (1 + setFalcon) -
+    ctx.effectiveDefense
   const AG = Math.max(AG_raw, AE)
 
   const AF = (AE + AG) / 2
@@ -237,14 +198,10 @@ export function computeSkillDamage(
     num(art.extraPhysPenetration) +
     counters.bengJieLayer * 5 +
     counters.yiShuiLayer * 2 +
-    (ctx.hasSixHenZhi ? 10 : 0) +
-    sumSlots(slots, "col6", ctx.boostZoneOverrides)
+    (ctx.hasSixHenZhi ? 10 : 0)
   const AH = penFrac(physPenTotal, physPenRes)
 
-  const AI =
-    ctx.physDmgBoostPanel +
-    sumSlots(slots, "col9", ctx.boostZoneOverrides) +
-    (usesGyrationUmbrella ? 0.15 : 0)
+  const AI = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
 
   const AJ = 1
 
@@ -294,23 +251,18 @@ export function computeSkillDamage(
     ? ((art.attributeAttack as Attribute | undefined) ?? "")
     : ctx.primaryAttribute
 
-  function attrBlock(
-    attribute: Attribute,
-    block: AttackBlock,
-    pen: number,
-    penSlotCol: string,
-    extraSkillPen: number,
-  ) {
+  function attrBlock(attribute: Attribute, block: AttackBlock, pen: number, extraSkillPen: number) {
     const matches = BU === attribute && isWeapon
     const small = block.min + (matches ? ctx.attributePrimaryBonus : 0)
     const large = Math.max(block.max + (matches ? ctx.attributePrimaryBonus : 0), small)
     const avg = (small + large) / 2
-    const penBoost = pen + sumSlots(slots, penSlotCol, ctx.boostZoneOverrides) + extraSkillPen
+    const penBoost = pen + extraSkillPen
+    // The Swallowcall low-qi bonus is read twice — see `data/sets/swallowcall.ts`.
     const dmgBoost =
       (BU === attribute ? ctx.attributeDmgBoostPanel : 0) +
-      (ctx.set === "Swallowcall" && isLowQi ? 0.1 : 0)
+      (isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0)
     const mult = BU === attribute && !dotRules ? O : N
-    const setLowQiBonus = isLowQi ? setValue(ctx.set, "col8") : 0
+    const setLowQiBonus = isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0
     const setMul = 1 + setLowQiBonus
     const penMul = 1 + penFrac(penBoost, attrPenRes)
     const graze = small * mult * penMul * (1 + dmgBoost) * setMul
@@ -323,16 +275,15 @@ export function computeSkillDamage(
     return { graze, crit, aff, norm, critMin, critMax, normMax }
   }
 
-  const bell = attrBlock("Bellstrike", ctx.bellstrike, ctx.bellstrike.pen, "col10", 0)
+  const bell = attrBlock("Bellstrike", ctx.bellstrike, ctx.bellstrike.pen, 0)
   const stone = attrBlock(
     "Stonesplit",
     ctx.stonesplit,
     ctx.stonesplit.pen,
-    "col15",
     num(art.extraStonesplitPenetration),
   )
-  const silk = attrBlock("Silkbind", ctx.silkbind, ctx.silkbind.pen, "col14", 0)
-  const bamboo = attrBlock("Bamboocut", ctx.bamboocut, ctx.bamboocut.pen, "col7", 0)
+  const silk = attrBlock("Silkbind", ctx.silkbind, ctx.silkbind.pen, 0)
+  const bamboo = attrBlock("Bamboocut", ctx.bamboocut, ctx.bamboocut.pen, 0)
 
   const DZ = AK + AY + BM + bell.graze + stone.graze + silk.graze + bamboo.graze
   const EB = AM + BA + BO + bell.crit + stone.crit + silk.crit + bamboo.crit
@@ -348,7 +299,6 @@ export function computeSkillDamage(
   const critMin = AM_min + BA + BO + bell.critMin + stone.critMin + silk.critMin + bamboo.critMin
   const critMax = AM_max + BA + BO + bell.critMax + stone.critMax + silk.critMax + bamboo.critMax
 
-  const slotH = sumSlots(slots, "col2", ctx.boostZoneOverrides)
   const sCol = art.weaponOrAttribute ?? ""
   const weaponBoostMap = ctx.weaponBoosts ?? {}
   const weaponVal = weaponBoostMap[sCol]
@@ -363,7 +313,6 @@ export function computeSkillDamage(
     T +
     counters.yiShuiLayer * 0.01 +
     counters.qiExhausted * ctx.fatigueDamageTaken +
-    slotH +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
     num(art.extraDamageBoost) +
     (isPersistent

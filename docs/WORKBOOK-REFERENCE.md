@@ -34,5 +34,5 @@ may ever be imported from `src/` or `tests/`.
 | `panelDefaults.json` | panel sheet cells with their Excel formulas |
 | `weaponArts.json` | weapon-art coefficient sheet with a `headers` array |
 | `rotations.json` | per-rotation raw tick rows keyed by column letter |
-| `damageBoosts.json` | flat name → boost map, superseded by `src/data/skills/boosts/boostZone.json` |
+| `damageBoosts.json` | flat name → boost map; its in-app successor, `boostZone.json`, was itself deleted 2026-08-10 as dead data (docs/CALCULATION.md § "Mind-method layers") |
 | `mindMethods.json` | malformed inner-way extraction (literal `"undefined"` keys), superseded by `src/data/baseStats/mindMethodPanelStats.json` |

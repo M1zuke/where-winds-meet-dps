@@ -35,8 +35,12 @@ Much wider than adding a field. Any of these needs a migration:
   invariant.
 - **A default changed** in a way that stored blobs should follow.
 - **An id scheme changed** — see `migrateSeededSkillIds`,
-  `migrateDotStandinOverrides`, `migrateEntityId` / `migrateClassId` for
-  value-level repair precedents.
+  `migrateDotStandinOverrides`, `migrateEntityId` / `migrateClassId`, and
+  `migrateSetId` (`Inputs.set` display name → id, V8) for value-level repair
+  precedents. `migrateSetId` is also the precedent for a value repaired in
+  **both** places at once: a versioned step for `wwm.profiles`, and the same
+  pure function called unconditionally inside `hydrateInputs` for the legacy
+  `wwm.inputs` blob, which has no version chain of its own.
 - **A field became derived** — it must stop being persisted, and any stored
   blob still carrying it needs the stale copy stripped. Precedent:
   `V6__dropDerivedStats` / `withoutDerivedStats` dropping the resolved stat

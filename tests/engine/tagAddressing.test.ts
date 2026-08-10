@@ -3,37 +3,40 @@
 // display name. Spans all eight classes on purpose — most of the name-based
 // entries this replaced belong to the seven with no other test coverage.
 import { describe, expect, it } from "vitest"
-import { readFileSync, readdirSync } from "node:fs"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import schools from "../../src/data/classes/schools.json"
-import { join } from "node:path"
+import {
+  SITE_BUFF_DEFS_BY_SPEC,
+  GLOBAL_BUFF_DEFS,
+  GROUP_BUFF_DEFS,
+  MECHANIC_BUFF_DEFS,
+} from "../../src/data/skills/buffs"
+import { legacyDefOf } from "../../src/engine/buffs/legacyBuffModule"
+import type { BuffModule } from "../../src/engine/buffs/buffModule"
 
-const BUFFS_DIR = join(process.cwd(), "src/data/skills/buffs")
 const CLASS_IDS = (schools as { id: string }[]).map((school) => school.id)
 const NAMESPACES = ["role:", "type:", "weapon:", "mystic:", "attune:", "prop:", "attack:", "cast:"]
 
-interface DefFile {
-  variants: { def: Record<string, unknown> }[]
+// Every spec's own copy of a site-scoped module, plus global/group/mechanic —
+// the same per-spec granularity the old per-JSON-variant scan had, so a
+// spec-specific `affects`/`__statModByPrefix` divergence (e.g. throatPierced)
+// stays checked once per spec rather than collapsing to one shared entry.
+const entries: { label: string; module: BuffModule }[] = [
+  ...Object.entries(SITE_BUFF_DEFS_BY_SPEC).flatMap(([spec, modules]) =>
+    modules.map((module) => ({ label: `${spec}/${module.id}`, module })),
+  ),
+  ...GLOBAL_BUFF_DEFS.map((module) => ({ label: `global/${module.id}`, module })),
+  ...GROUP_BUFF_DEFS.map((module) => ({ label: `group/${module.id}`, module })),
+  ...MECHANIC_BUFF_DEFS.map((module) => ({ label: `mechanic/${module.id}`, module })),
+]
+
+function scopeEntries(module: BuffModule): string[] {
+  const prefixes = legacyDefOf(module)?.__statModByPrefix?.prefixes ?? []
+  return [...(module.affects ?? []), ...(module.excludes ?? []), ...prefixes]
 }
 
-const defs = readdirSync(BUFFS_DIR)
-  .filter((name) => name.endsWith(".json"))
-  .flatMap((name) => {
-    const file = JSON.parse(readFileSync(join(BUFFS_DIR, name), "utf8")) as DefFile
-    return file.variants.map((variant) => ({ name, def: variant.def }))
-  })
-
-function scopeEntries(def: Record<string, unknown>): string[] {
-  const affects = Array.isArray(def.affects) ? (def.affects as string[]) : []
-  const excludes = Array.isArray(def.excludes) ? (def.excludes as string[]) : []
-  const byPrefix = def.__statModByPrefix as { prefixes?: string[] } | undefined
-  return [...affects, ...excludes, ...(byPrefix?.prefixes ?? [])]
-}
-
-function triggerEntries(def: Record<string, unknown>): string[] {
-  const triggeredBy = Array.isArray(def.triggeredBy) ? (def.triggeredBy as string[]) : []
-  const durations = (def.durationByTrigger ?? {}) as Record<string, number>
-  return [...triggeredBy, ...Object.keys(durations)]
+function triggerEntries(module: BuffModule): string[] {
+  return module.triggeredBy ?? []
 }
 
 // Scope entries that no entity carries, and deliberately so: both were already
@@ -45,24 +48,24 @@ const KNOWN_UNCARRIED = new Set(["role:fireOil", "role:fivefoldBleed"])
 describe("scope is addressed by tag, never by display name", () => {
   it("every affects / __statModByPrefix entry is namespaced", () => {
     const bare: string[] = []
-    for (const { name, def } of defs)
-      for (const entry of scopeEntries(def))
-        if (!NAMESPACES.some((ns) => entry.startsWith(ns))) bare.push(`${name}: ${entry}`)
+    for (const { label, module } of entries)
+      for (const entry of scopeEntries(module))
+        if (!NAMESPACES.some((ns) => entry.startsWith(ns))) bare.push(`${label}: ${entry}`)
     expect(bare).toEqual([])
   })
 
   it("covers a non-trivial number of defs, so the check cannot pass vacuously", () => {
-    const withScope = defs.filter(({ def }) => scopeEntries(def).length > 0)
+    const withScope = entries.filter(({ module }) => scopeEntries(module).length > 0)
     expect(withScope.length).toBeGreaterThan(20)
   })
 })
 
 describe("triggers are addressed by cast tag, never by display name", () => {
-  it("every triggeredBy / durationByTrigger key is namespaced", () => {
+  it("every triggeredBy key is namespaced", () => {
     const bare: string[] = []
-    for (const { name, def } of defs)
-      for (const entry of triggerEntries(def))
-        if (!entry.startsWith("cast:")) bare.push(`${name}: ${entry}`)
+    for (const { label, module } of entries)
+      for (const entry of triggerEntries(module))
+        if (!entry.startsWith("cast:")) bare.push(`${label}: ${entry}`)
     expect(bare).toEqual([])
   })
 })
@@ -82,8 +85,8 @@ describe("every declared tag is actually carried by something", () => {
 
   it("every scope entry reaches at least one skill or debuff", () => {
     const orphans = new Set<string>()
-    for (const { def } of defs)
-      for (const entry of scopeEntries(def))
+    for (const { module } of entries)
+      for (const entry of scopeEntries(module))
         if (entry.startsWith("role:") && !carried.has(entry) && !KNOWN_UNCARRIED.has(entry))
           orphans.add(entry)
     expect([...orphans]).toEqual([])
@@ -91,8 +94,8 @@ describe("every declared tag is actually carried by something", () => {
 
   it("every trigger entry reaches at least one skill", () => {
     const orphans = new Set<string>()
-    for (const { def } of defs)
-      for (const entry of triggerEntries(def)) if (!carried.has(entry)) orphans.add(entry)
+    for (const { module } of entries)
+      for (const entry of triggerEntries(module)) if (!carried.has(entry)) orphans.add(entry)
     expect([...orphans]).toEqual([])
   })
 })

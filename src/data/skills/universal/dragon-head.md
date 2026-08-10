@@ -1,8 +1,9 @@
 # Dragon Head / Dragon Head - Plus
 
 Special-logic notes for the universal single-target burst mystic art. Both
-versions ship as built-ins in every class folder; the skill JSONs are the
-source of truth for all numbers — this file carries only what they can't.
+versions ship as built-ins in every class folder; the skill modules (`dragon-head.ts`,
+`dragon-head-plus.ts`) are the source of truth for all numbers — this file
+carries only what they can't.
 
 ## Sources
 
@@ -17,7 +18,7 @@ source of truth for all numbers — this file carries only what they can't.
 
 - Base uses `guaranteedNormal` (fixed damage), Plus uses `guaranteedPrecision`
   (never abrades) — both generic `Skill` flags, documented in TIMELINE.md § 2.
-- Surging Waves is a global buff def (`buffs/surgingWaves.json`). The buff
+- Surging Waves is a global buff def (`buffs/surgingWaves.ts`). The buff
   engine applies it at cast start, so the granting cast's own hit — landing at
   the end of the channel — is boosted; that is what matches the in-game
   "increases the damage of the **current** Dragon Head".
@@ -29,11 +30,11 @@ source of truth for all numbers — this file carries only what they can't.
   ×2. Sibling qi-phase tags: `prop:hasLowQiDmgBoost`, `prop:hasQiBreakPhysPen`.
 - The HP-lost damage bonus is the "Max Low-HP Bonus (Dragon Head)" toggle
   (`CombatSettings.dragonHeadLowHpMaxBonus` → the `dragonHeadLowHpMaxBonus`
-  param → `buffs/dragonHeadLowHp.json`). **It applies the 45 % cap only** —
+  param → `buffs/dragonHeadLowHp.ts`). **It applies the 45 % cap only** —
   see "Open questions" for why there is no HP-percentage input. Its `affects`
   names the Plus in full, so the prefix match excludes the base version;
   Surging Waves deliberately does the opposite with the bare "Dragon Head".
 - Ally-contributed stacks are the "40 Stacks (Dragon Head)" teammate toggle
   (`CombatSettings.dragonHeadFullStacks` → the `allySurgingWaves` buff param).
-  It raises stacks-per-cast to the 40 cap via `tierConditionalStacks`, so every
-  cast lands at full stacks (+50 %) rather than climbing 8 at a time.
+  Surging Waves' `stacks` callback returns 40 when the param is set (else 8),
+  so every cast lands at full stacks (+50 %) rather than climbing 8 at a time.

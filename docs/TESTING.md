@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **734 tests
-across 80 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **795 tests
+across 84 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
@@ -25,7 +25,7 @@ not had.
 `tests/engine/engineBaseline.test.ts` + `engineBaseline.fixture.json` pin the
 **entire `Result`** — dps, total, duration, every per-skill row, and a SHA-256
 digest over the whole object including `timeline`, `buffWindows` and `casts` —
-for 24 Bellstrike Umbra builds. It exists because a refactor that claims to
+for 25 Bellstrike Umbra builds. It exists because a refactor that claims to
 preserve behaviour has to be able to prove it.
 
 Read the distinction carefully, because it is the whole reason this file is
@@ -44,6 +44,34 @@ entire point.
 The `profile-v7 anchor` block at the bottom of that file is spelled out
 separately from the fixture on purpose: those are the figures a user verified
 against the running app, so a re-baseline cannot quietly carry them along.
+
+## The buff-engine equivalence guard — the same pattern, for the registry underneath
+
+`tests/engine/buffEngineEquivalence.test.ts` + `buffEngineEquivalence.fixture.json`
+pin `BuffEngine`'s behaviour and the buff/skill/debuff registry it runs on, for
+**all eight classes** — declarative fields on every `BuffModule`, built-in
+skill and debuff ids and content digests, and `calculateDamageEffects` /
+`activeBuffsForDisplay` output sampled with every `enabledParam` forced on at
+tier 6, every triggering cast replayed, and a fixed grid of tag combinations
+and time steps.
+
+It exists because it was needed: converting `BuffDef` to `BuffModule`
+introduced four regressions (a dropped `counterMechanic` seed, a missing
+`tier6StatModifiers` read, a missing `durationByTrigger` read, a display/damage
+`maxStacks` divergence) that the rest of the suite — 737 tests at the time —
+did not catch. Only a broad, all-class, all-param simulation did.
+
+Same distinction as the engine baseline, same reason it is allowed to span all
+eight classes despite the class-scoping rule above: **it does not assert any
+class's damage is right** — most of these seven are unverified data per
+CLASSES.md — **it asserts the registry and the engine reading it are
+unchanged**. Read the header comment in the test file before touching it;
+it says so explicitly so the distinction survives being read out of context.
+
+Regenerate with `UPDATE_BUFF_EQUIVALENCE=1 pnpm test`, and — exactly like the
+engine baseline — only when a change to buff-engine output is deliberate, with
+the re-baseline and its justification in the same commit as the change that
+caused it.
 
 ## The architecture guards
 

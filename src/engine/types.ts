@@ -96,6 +96,9 @@ export interface Inputs {
 
   food: boolean
   tianGongElement: "fire" | "poison" | null
+  // An armor-set id from `src/data/sets/` — the SET_ID values, not the
+  // display name. A profile saved before this migrates via V8; see
+  // src/migrations/.
   set: string | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean

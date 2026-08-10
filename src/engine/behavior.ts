@@ -14,10 +14,10 @@
 import type { Skill, SkillHit, HitVariant, TriggerCondition } from "./skill"
 import { hitToArtRow, selectHitVariant } from "./skill"
 import type { StatusView } from "./ledger"
-import type { BuffStatEffect } from "./buff"
 import type { computeSkillDamage } from "./formula"
 import { WEAPON_TAG } from "./buffs/tags"
 import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
+import { stat, artBonus, damageMultiplier, type ArtEffect, type HitEffect } from "./effects/effect"
 
 export type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -25,7 +25,6 @@ export type ArtRow = Parameters<typeof computeSkillDamage>[0]
 // mutable `Inputs`.
 export interface BuildView {
   classId: string
-  set: string | null
   innerWayTier(name: string): number | null
   dingYin(tag: string): number
 }
@@ -46,40 +45,26 @@ export interface HitContext {
   phase: QiPhase
   qiBreakEnabled: boolean
   // The food-free base min phys, read off the RESOLVED context — which is why
-  // art patches run after it is built and stat claims run before.
+  // `buildArt`/`patchArt` run after it is built and stat claims run before.
   smallPhys: number
   isEngineBuffActive(id: string): boolean
 }
 
-// Two hooks rather than one, because the ordering is a domain rule and not an
-// implementation detail: a stat effect has to be known BEFORE the formula
-// context is built, since it changes that context; an art patch is applied
-// after, and may read it.
-// A status the skill wants written. Returned rather than written directly, so
-// ordering stays the timeline's to decide and a behaviour cannot corrupt the
-// ledger it was handed a read-only view of.
-export interface StatusWrite {
-  id: string
-  stacks?: number
-  permanent?: boolean
-  durationFrames?: number
-}
-
-export interface HitOutcome {
-  statuses?: StatusWrite[]
-  statEffects?: BuffStatEffect[]
-  forceGuaranteedAffinity?: boolean
-}
-
 export interface SkillBehavior {
-  buildArt(input: HitInput): ArtRow
+  // Runs AFTER the formula context is built, since the crit-damage sentinel
+  // resolution below reads `context.smallPhys` off it.
+  buildArt(input: HitInput, context: HitContext): ArtRow
   chooseVariant(input: HitInput): HitVariant | null
-  claimStatEffects(input: HitInput, phase: QiPhase): BuffStatEffect[]
-  patchArt(input: HitInput, context: HitContext): Partial<ArtRow> | null
   // Runs BEFORE the formula context is built, because what it returns can
-  // change that context. Anything stateful lives on the instance, which is why
+  // change that context.
+  claimStatEffects(input: HitInput, phase: QiPhase): HitEffect[]
+  // Applied onto the row `buildArt` returned — additively for `artBonus`,
+  // multiplicatively into `correction` for `damageMultiplier`.
+  patchArt(input: HitInput, context: HitContext): ArtEffect[]
+  // Runs BEFORE the formula context is built, same reason as
+  // `claimStatEffects`. Anything stateful lives on the instance, which is why
   // behaviours are built per simulation rather than shared.
-  onHit?(input: HitInput): HitOutcome | null
+  onHit?(input: HitInput): HitEffect[]
 }
 
 // Per-ability qi flags (`.tmp/site/deobfuscated.js` ~L42150-42174). Tag-driven
@@ -100,16 +85,19 @@ const LINGERING_BONE_BUFF = "lingeringBone"
 // damage dealt is doubled" (Dragon Head - Plus, official text in
 // `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
 // the sim has no "target has no Qi bar at all" state, so only the window
-// triggers it. Multiplicative on top of (1+H), hence `correction` rather than
-// an allDamageBoost effect — a +1.0 boost would be diluted by the additive pool.
+// triggers it. Multiplicative on top of (1+H), hence `damageMultiplier` into
+// `correction` rather than an allDamageBoost effect — a +1.0 boost would be
+// diluted by the additive pool.
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
-// A built-in skill's `extraCritDamage === 1` is a boolean GATE, not a damage
+// A built-in hit's `extraCritDamage === 1` is a boolean GATE, not a damage
 // amount — it carries the source catalog's `critBoost` straight through, and
 // that is always 0/1/absent. When the gate passes (weapon-type match, see
 // `buffs/critBoostWeapons.ts`) the real term is
-// `floor(min(minPhys, 750) / 50) * 0.024`, capped at +0.36.
+// `floor(min(minPhys, 750) / 50) * 0.024`, capped at +0.36. Resolved here,
+// not as a `patchArt` effect: it REPLACES the hit's own coefficient, it does
+// not add to it.
 const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
 const MIN_PHYS_CRIT_CAP = 750
 const MIN_PHYS_CRIT_STEP = 50
@@ -123,47 +111,35 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
   claimStatEffects(input, phase) {
     const tags = input.skill.tags
     if (phase !== "normal" && tags?.includes(QI_LOW_DMG_TAG))
-      return [{ statKey: "allDamageBoost", amount: QI_LOW_DMG_BOOST }]
+      return [stat("allDamageBoost", QI_LOW_DMG_BOOST)]
     return []
   },
 
   patchArt(input, context) {
     const tags = input.skill.tags
-    if (!tags || tags.length === 0) return null
-    const patch: Partial<ArtRow> = {}
-    let patched = false
+    if (!tags || tags.length === 0) return []
+    const effects: ArtEffect[] = []
 
-    if (input.hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
-      const weaponType = tags.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
-      patch.extraCritDamage = classGrantsMinPhysCritBoost(input.build.classId, weaponType)
-        ? Math.floor(
-            Math.min(Math.max(0, context.smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP,
-          ) * MIN_PHYS_CRIT_PER_STEP
-        : 0
-      patched = true
-    }
     if (context.phase !== "normal" && tags.includes(QI_LOW_CRIT_TAG)) {
-      patch.extraCritRate = (patch.extraCritRate ?? 0) + QI_LOW_CRIT_BOOST
-      patched = true
+      effects.push(artBonus("extraCritRate", QI_LOW_CRIT_BOOST))
     }
     if (tags.includes(QI_BREAK_PEN_TAG)) {
       const boosted =
         context.phase === "exhausted" || context.isEngineBuffActive(LINGERING_BONE_BUFF)
-      patch.extraPhysPenetration =
-        QI_BREAK_PEN_BASE + (boosted ? QI_BREAK_PEN_BONUS : 0) + (patch.extraPhysPenetration ?? 0)
-      patched = true
+      effects.push(
+        artBonus("extraPhysPenetration", QI_BREAK_PEN_BASE + (boosted ? QI_BREAK_PEN_BONUS : 0)),
+      )
     }
     if (
       context.phase === "exhausted" &&
       context.qiBreakEnabled &&
       tags.includes(QI_BREAK_DOUBLE_TAG)
     ) {
-      patch.correction = QI_BREAK_DAMAGE_MULTIPLIER
-      patched = true
+      effects.push(damageMultiplier(QI_BREAK_DAMAGE_MULTIPLIER))
     }
-    return patched ? patch : null
+    return effects
   },
-  buildArt(input) {
+  buildArt(input, context) {
     const art = hitToArtRow(input.hit, input.skill)
     const variant = this.chooseVariant(input)
     if (variant) {
@@ -171,6 +147,18 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
       art.attributeMultiplier = variant.attributeMultiplier
       art.physFixed = variant.physFixed
       art.attributeFixed = variant.attributeFixed
+    }
+    // A tagless skill never resolves the sentinel — matches the pre-fold
+    // behaviour, where `patchArt` returned early on `!tags.length` before
+    // ever reaching this branch, leaving the raw `1` in the art row.
+    const tags = input.skill.tags
+    if (tags && tags.length > 0 && input.hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
+      const weaponType = tags.find((tag) => tag.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
+      art.extraCritDamage = classGrantsMinPhysCritBoost(input.build.classId, weaponType)
+        ? Math.floor(
+            Math.min(Math.max(0, context.smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP,
+          ) * MIN_PHYS_CRIT_PER_STEP
+        : 0
     }
     return art
   },

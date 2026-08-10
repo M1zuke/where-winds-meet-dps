@@ -10,9 +10,10 @@
 //                                   the buff
 //
 // Apply for 12 s at t=0 and again for 8 s at t=10: the engine calls it expired
-// at t=13, the ledger calls it live until t=12. `rainwhisperShield` really does
-// this (`duration: 8` with a 12 s `durationByTrigger`). Writing the engine's
-// applies into the ledger as windows would silently extend buffs like it.
+// at t=13, the ledger calls it live until t=12. `rainwhisperShield` really
+// does this (8 s base duration, extended to 12 s for a Golden Body cancel).
+// Writing the engine's applies into the ledger as windows would silently
+// extend buffs like it.
 //
 // So the read surface is unified here and the storage is not. Both keep their
 // own rule; this file fixes the ORDER they are presented in — ledger first,

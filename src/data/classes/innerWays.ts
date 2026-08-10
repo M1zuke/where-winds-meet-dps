@@ -1,10 +1,10 @@
 // One def per inner way that moves a context-level term.
 //
-// CALCULATION.md § "Mind-method layers" lists four disjoint channels an inner
+// CALCULATION.md § "Mind-method layers" lists three disjoint channels an inner
 // way can act through. This file is channel 2 (context scalars) and the
-// all-damage part of channel 4; channel 1 stays in
-// `mindMethodPanelStats.json`, channel 3 in `mindMethodOverrides.ts`, and the
-// triggered part of channel 4 in the buff defs.
+// all-damage part of channel 3; channel 1 stays in
+// `mindMethodPanelStats.json`, and the triggered part of channel 3 in the
+// buff defs.
 //
 // Keyed by `innerWayId`, never by display name — a rename is a one-line change
 // in `innerWayRegistry.ts` and nothing here moves.

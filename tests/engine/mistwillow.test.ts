@@ -5,6 +5,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets"
 
 function tagged(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -70,7 +71,7 @@ describe("mistwillow — end to end through simulateTimeline", () => {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
-      set: "Mistwillow",
+      set: SET_ID.mistwillow,
     }
     const before = simulateTimeline(without)
     const after = simulateTimeline(withMistwillow)

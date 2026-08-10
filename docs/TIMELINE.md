@@ -193,10 +193,14 @@ locked fixtures stay byte-exact).
 ### 5b. Site class-buff system — `BuffDef` + `BuffEngine`
 
 The reference-site (`wherewindsmath`) trigger-driven buff tracker, ported. Data lives in
-`src/data/skills/buffs/*.json`, one file per buff id — including the hand-authored
-mechanic defs (`soulShaken.json`, `bellstrikeUmbraBleedPen.json`,
-`bellstrikeUmbraBleedingDamage.json`) that `buffs/mechanics.ts` re-exports as
-`MECHANIC_BUFF_DEFS`. Loaded **per class spec** (`mechanicBuffDefsForClass` / spec bucket) so a
+`src/data/skills/buffs/*.json`, one file per buff id, for the 35 defs not yet converted;
+the 18 behind Bellstrike Umbra's own buffs — including the hand-authored mechanic defs
+(`soulShaken.ts`, `bellstrikeUmbraBleedPen.ts`, `bellstrikeUmbraBleedingDamage.ts`) that
+`buffs/mechanics.ts` re-exports as `MECHANIC_BUFF_DEFS` — are `defineBuff` TypeScript
+modules instead. Every buff, JSON or TypeScript, compiles to one `BuffModule`
+(`engine/buffs/buffModule.ts`) before `BuffEngine` ever sees it — a JSON-authored one
+through `legacyBuffModule()` (`engine/buffs/legacyBuffModule.ts`), a converted one
+directly. Loaded **per class spec** (`mechanicBuffDefsForClass` / spec bucket) so a
 buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.ts`) is
 tag-matched, not id-referenced:
 
@@ -208,7 +212,7 @@ tag-matched, not id-referenced:
 Editor's Receives card.
 - **magnitude** — `bonus: SiteBonus` (buckets `buffBonus`/`groupDamage` → `allDamageBoost`,
   `phyBoostMod` → `physBoost`, `bossOnlyBuffBonus` → `bossBoost`; see `BONUS_TYPE_TO_STATKEY`)
-  and/or `statModifiers` / `bossStatModifiers` / `tier6StatModifiers` (rate/pen/crit-dmg mods
+  and/or `statModifiers` / `bossStatModifiers` (rate/pen/crit-dmg mods
   → app stat keys via `STATMOD_TO_STATKEY`). `forceCrit`, stack/time (`duration`,
   `maxStacks`, `stacksPerHit`/`stacksPerCast`), and limiting (`cooldown`, `rateLimit`,
   `stackIcd`, `phaseGate`).
@@ -262,9 +266,9 @@ refactor.
      + site engine + inner-way + combat-settings toggles) into a single memoized `ctx`.
      Buff windows are tracked as `{start, end}` per status with `stacksAt(frame)`; permanent
      buffs open a full-timeline window.
-   - `behavior.buildArt` builds the coefficient row (`hitToArtRow` underneath), then
-     `behavior.patchArt` layers whatever that skill claims for this frame — the min-phys crit
-     bonus, the qi-phase crit/pen. An art patch is the *only* sanctioned art-level adjustment,
+   - `behavior.buildArt` builds the coefficient row (`hitToArtRow` underneath) and resolves the
+     min-phys crit bonus, then `behavior.patchArt` layers whatever that skill claims for this
+     frame — the qi-phase crit/pen. An art patch is the *only* sanctioned art-level adjustment,
      and it comes from a behaviour or a mechanic, never from an `if` in the loop.
    - `computeSkillDamage(art, ctx)` → expected damage; added to totals only if the frame is
      `inWindow` (pre-pull / out-of-window casts still appear on the cast timeline).

@@ -13,13 +13,13 @@ export interface Scope {
 // Membership, not prefix: a scope entry names a tag the entity either declares
 // or does not. Family coverage is expressed by the members carrying the family
 // tag as well as their own, never by one name being a stem of another.
-export function matchesScope(tagSet: Set<string>, scope: Scope): boolean {
+export function matchesScope(tagSet: ReadonlySet<string>, scope: Scope): boolean {
   if (scope.affectsProperty) return hasProp(tagSet, scope.affectsProperty)
   if (scope.affectsWeaponTypes) return hasAnyWeapon(tagSet, scope.affectsWeaponTypes)
   if (scope.affects === null || scope.affects === undefined) return true
   return scope.affects.some((tag) => tagSet.has(tag))
 }
 
-export function matchesAnyTag(tagSet: Set<string>, tags: readonly string[]): boolean {
+export function matchesAnyTag(tagSet: ReadonlySet<string>, tags: readonly string[]): boolean {
   return tags.some((tag) => tagSet.has(tag))
 }

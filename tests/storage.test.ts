@@ -28,6 +28,7 @@ import {
   withZeroedDerivedStats,
 } from "../src/engine/derivedInputs"
 import { LATEST_PROFILES_VERSION } from "../src/migrations"
+import { SET_ID } from "../src/data/sets"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
@@ -74,9 +75,9 @@ describe("storage", () => {
   })
 
   it("initialInputs returns the saved blob when present", () => {
-    const next: Inputs = { ...defaultInputs, set: "Swallowcall" }
+    const next: Inputs = { ...defaultInputs, set: SET_ID.swallowcall }
     saveInputs(next)
-    expect(initialInputs().set).toBe("Swallowcall")
+    expect(initialInputs().set).toBe(SET_ID.swallowcall)
   })
 
   it("loadInputs is null when the saved blob is malformed", () => {
@@ -702,5 +703,43 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
       (skill) => skill.id === ownSkill.id,
     )!
     expect(ownReloaded.tags).toEqual(["weapon:Sword"])
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations". The
+// legacy `wwm.inputs` blob has no version chain of its own (V8 in
+// `src/migrations/` covers `wwm.profiles`), so `set` is healed here instead —
+// `loadProfiles()` rolls it into a profile via `hydrateInputs` on first load.
+describe("armor-set display name heal (wwm.inputs blob, no version bump)", () => {
+  beforeEach(() => {
+    try {
+      kvStore.remove("wwm.inputs")
+      kvStore.remove("wwm.profiles")
+    } catch {}
+  })
+  afterEach(() => {
+    try {
+      kvStore.remove("wwm.inputs")
+      kvStore.remove("wwm.profiles")
+    } catch {}
+  })
+
+  it("a legacy wwm.inputs blob naming its set by display name rolls into a profile with the id", () => {
+    saveInputs({ ...defaultInputs, set: "Hawking" })
+    const { profiles } = loadProfiles()
+    expect(profiles).toHaveLength(1)
+    expect(profiles[0].inputs.set).toBe("hawking")
+  })
+
+  it("degrades an unrecognised legacy set to no set instead of leaving it dangling", () => {
+    saveInputs({ ...defaultInputs, set: "A Removed Set" })
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.set).toBeNull()
+  })
+
+  it("round-trips an already-migrated id unchanged", () => {
+    saveInputs({ ...defaultInputs, set: "jadeware" })
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.set).toBe("jadeware")
   })
 })

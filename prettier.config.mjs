@@ -15,7 +15,13 @@ export default {
   overrides: [
     {
       // Data tables read as rows; one record per line beats width-based wrapping.
-      files: ["src/data/**/*.json", "tests/**/*.json"],
+      files: [
+        "src/data/**/*.json",
+        "tests/**/*.json",
+        "src/data/skills/bellstrike-umbra/*.ts",
+        "src/data/skills/universal/*.ts",
+        "src/data/skills/buffs/*.ts",
+      ],
       options: { printWidth: 120 },
     },
   ],

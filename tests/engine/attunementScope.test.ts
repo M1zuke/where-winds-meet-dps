@@ -2,7 +2,6 @@
 import { describe, expect, it } from "vitest"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
-import { padSlots } from "../../src/engine/perSkillDamage"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
@@ -24,7 +23,7 @@ const ART = {
 
 function damageWith(attuneTag: string | undefined, inputs: Inputs): number {
   const ctx = buildContext(inputs)
-  return computeSkillDamage({ ...ART, attuneTag }, padSlots([]), ctx, 1).expectedDamage
+  return computeSkillDamage({ ...ART, attuneTag }, ctx, 1).expectedDamage
 }
 
 describe("attunement scope — the stat reaches only what declares the tag", () => {

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForSpec, allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
+import { legacyBuffModule } from "../../src/engine/buffs/legacyBuffModule"
 import { makeSkill } from "../../src/engine/skill"
+import type { SkillProperties } from "../../src/engine/effects/context"
 
 function tagged(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -45,7 +47,7 @@ describe("perCastConsume — frostCladSnowbreakIPConsume (stonesplit_strength)",
   })
 })
 
-describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield (global)", () => {
+describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShield (global)", () => {
   const params = { artOfResistance: true, artOfResistanceTier: 6 }
 
   it("is active only in the window after the source buff ends, not before or long after", () => {
@@ -136,14 +138,17 @@ describe("consumableStackPool — springThunder (bellstrike_splendor)", () => {
         },
       },
     ]
-    const e = new BuffEngine({}, defs, [])
-    e.processSkillCast("cast:fill", 0, { fillsPool: true })
-    e.processSkillCast("cast:fill", 0.5, { fillsPool: true })
-    e.processSkillCast("cast:fill", 2, { fillsPool: true })
-    e.processSkillCast("cast:drain", 3, { drainsPool: true })
-    const r = e.calculateDamageEffects(tagged("Drain"), 3)
-    expect(r.effects).toContainEqual({ statKey: "bossBoost", amount: 0.2 })
-    e.processSkillCast("cast:drain", 4, { drainsPool: true })
-    expect(e.calculateDamageEffects(tagged("Drain"), 4).effects).toHaveLength(0)
+    const engine = new BuffEngine({}, defs.map(legacyBuffModule), [])
+    // `fillsPool` / `drainsPool` are this test's own made-up `skillProperty`
+    // names — `consumableStackPool` reads whatever string the def names, so
+    // `SkillProperties` can't close over it statically; cast past the check.
+    engine.processSkillCast("cast:fill", 0, { fillsPool: true } as SkillProperties)
+    engine.processSkillCast("cast:fill", 0.5, { fillsPool: true } as SkillProperties)
+    engine.processSkillCast("cast:fill", 2, { fillsPool: true } as SkillProperties)
+    engine.processSkillCast("cast:drain", 3, { drainsPool: true } as SkillProperties)
+    const result = engine.calculateDamageEffects(tagged("Drain"), 3)
+    expect(result.effects).toContainEqual({ statKey: "bossBoost", amount: 0.2 })
+    engine.processSkillCast("cast:drain", 4, { drainsPool: true } as SkillProperties)
+    expect(engine.calculateDamageEffects(tagged("Drain"), 4).effects).toHaveLength(0)
   })
 })

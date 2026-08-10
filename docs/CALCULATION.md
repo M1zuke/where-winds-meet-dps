@@ -174,7 +174,7 @@ timeline builds one per resolved state alongside the context.
 
 ## The per-hit formula chain
 
-`formula.computeSkillDamage(art, slots, ctx, count, counters?)`.
+`formula.computeSkillDamage(art, ctx, count, counters?)`.
 
 The single-letter variable names (`AE`, `AG`, `AH`, `EH`, `H`, `F`, …) are the
 actual identifiers in `formula.ts`. They are inherited from the spreadsheet the
@@ -185,15 +185,15 @@ that — treat them as opaque names, not as a claim about any live data source.
 | --- | --- | --- |
 | **N / O / P / Q** | phys / attribute multipliers + fixed damage | `art.physMultiplier`, `art.attributeMultiplier`, `art.physFixed`, `art.attributeFixed` |
 | **U** | effective precision | `(skillType="Heavenwork" ∨ art.guaranteedPrecision) ? 1 : MIN(precisionPanel, 1)` |
-| **V** | effective crit rate | `MIN(critPanel + Σslot.col4/(1+r), 0.8) + directCrit + setBonus.col6 + art.extraCritRate` |
-| **W** | effective affinity rate | `MIN(affPanel + (art.extraAffinityRate + Σslot.col11)/(1+r), 0.4) + directAff + (lowQi ? setBonus.col4 : 0) + Σslot.col13` |
-| **X** | crit-damage add-on | `critDmgPanel + art.extraCritDamage + setBonus.col5 + bengJie×0.05 + Σslot.col5` |
-| **Y** | affinity-damage add-on | `affDmgPanel + art.extraAffinityDamage + setBonus.col3 + Σslot.col12` |
-| **AE** | raw min phys | `(smallPhys + art.minPhysFlatBonus + food×120) × (1 + art.minPhysPctBonus) × (1 + hawkwing + Σslot.col3) − effectiveDef × (1 − Σslot.col8)` |
+| **V** | effective crit rate | `MIN(critPanel, 0.8) + directCrit + set.directCrit + art.extraCritRate` |
+| **W** | effective affinity rate | `MIN(affPanel + art.extraAffinityRate/(1+r), 0.4) + directAff + (lowQi ? set.lowQiDirectAffinityRate : 0)` |
+| **X** | crit-damage add-on | `critDmgPanel + art.extraCritDamage + set.critDamage + bengJie×0.05` |
+| **Y** | affinity-damage add-on | `affDmgPanel + art.extraAffinityDamage + set.affinityDamage` |
+| **AE** | raw min phys | `(smallPhys + art.minPhysFlatBonus + food×120) × (1 + art.minPhysPctBonus) × (1 + hawkwing) − effectiveDef` |
 | **AG** | raw max phys | same shape with `largePhys`, `maxPhys*Bonus`, `food×240`; clamped `MAX(…, AE)` |
 | **AF** | `(AE + AG) / 2` | |
-| **AH** | phys penetration multiplier | `penFrac(outerPen + art.extraPhysPenetration + bengJie×5 + yiShui×2 + (henZhi ? 10 : 0) + Σslot.col6)` |
-| **AI** | phys damage boost | `physBoostPanel + Σslot.col9 + (specialTag="Spinning Umbrella" ? 0.15 : 0)` |
+| **AH** | phys penetration multiplier | `penFrac(outerPen + art.extraPhysPenetration + bengJie×5 + yiShui×2 + (henZhi ? 10 : 0))` |
+| **AI** | phys damage boost | `physBoostPanel + (specialTag="Spinning Umbrella" ? 0.15 : 0)` |
 | **AJ** | overall multiplier | `1` |
 | **AK / AL** | graze damage / rate | `AE × N × AJ × (1+AI) × (1+AH)` ; `(1 − U) × (1 − W)` |
 | **AM / AN** | crit damage / rate | `AF × N × (1+AI) × (1+AH) × AJ × (1+X)` ; `(V+W ≤ 1) ? U×V : U×(1−W)` |
@@ -201,25 +201,29 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **AQ / AR** | normal damage / rate | `AF × N × (1+AH) × (1+AI) × AJ` ; `MAX(1 − AL − AN − AP, 0)` |
 | **AS-BE** | phys-fixed track | uses `P`, the same rate weights |
 | **BG-BS** | attribute-fixed track | uses `Q`, the primary attribute's penetration, `attributeDmgBoostPanel` |
-| **BU + 4 per-attribute blocks** | Bellstrike / Stonesplit / Silkbind / Bamboocut tracks | each: `small = block.min + (BU=attr ∧ weapon ? attributePrimaryBonus : 0)` ; `mult = (BU=attr ∧ ¬dotRules) ? O : N` ; `dmgBoost = (BU=attr ? attributeDmgBoostPanel : 0) + (set=Swallowcall ∧ lowQi ? 0.1 : 0)` ; `setMul = 1 + (lowQi ? setBonus.col8 : 0)` |
+| **BU + 4 per-attribute blocks** | Bellstrike / Stonesplit / Silkbind / Bamboocut tracks | each: `small = block.min + (BU=attr ∧ weapon ? attributePrimaryBonus : 0)` ; `mult = (BU=attr ∧ ¬dotRules) ? O : N` ; `dmgBoost = (BU=attr ? attributeDmgBoostPanel : 0) + (lowQi ? set.lowQiBambooDamage : 0)` ; `setMul = 1 + (lowQi ? set.lowQiBambooDamage : 0)` — the same value read twice, once per attribute block; see `data/sets/swallowcall.ts` |
 | **DZ / EB / ED / EF** | graze / crit / affinity / normal totals | sum of phys + phys-fixed + attr-fixed + the 4 attribute blocks |
 | **EH** | weighted total | `DZ×AL + EB×AN + ED×AP + EF×AR` |
 | **T** | weapon + mystic-type boost | `(weaponBoosts[art.weaponOrAttribute] + allMartialBoost)` when the weapon resolves, `+ mysticTypeBoosts[art.mysticCategory]`. A DoT tick resolves both typings like any skill: from its display stand-in's `weaponOrAttribute` / `mystic:*` tag when one exists, else from the debuff's `dot.weaponOrAttribute` / `dot.mysticCategory` — so Sword-typed DoTs (bleed) take weapon + all-martial, and mystic DoTs take their category stat; the in-game stat text explicitly covers "damage over time". Boss damage lives in `generalDamageBoost`, not here. |
-| **H** | total boost | `generalDamageBoost + allDamageBoost + T + yiShui×0.01 + qiExhausted × fatigueDamageTaken + Σslot.col2 + (usesChargeBoost ? chargeBonus : 0) + art.extraDamageBoost + (sustain ? sustainDmgBoostPanel + dotDamageBoost : 0)` |
+| **H** | total boost | `generalDamageBoost + allDamageBoost + T + yiShui×0.01 + qiExhausted × fatigueDamageTaken + (usesChargeBoost ? chargeBonus : 0) + art.extraDamageBoost + (sustain ? sustainDmgBoostPanel + dotDamageBoost : 0)` |
 | **I** | correction multiplier | `art.correction || 1` |
 | **E** | attunement (dingYin) factor | `ctx.attuneBoostByTag[art.attuneTag] ?? 0` — 0 when the entity declares no `attune:` tag |
 | **F** | final per-hit damage | `(guaranteedNormal ? EF : guaranteedCrit ? EB : EH) × (1 + H) × count × I × (1 + E) × dotMult` — `guaranteedNormal` is the fixed-damage flag (no crit/affinity/abrasion, e.g. Dragon Head) |
 
 ### What the live path does not exercise
 
-Three `computeSkillDamage` parameters are vestigial on the timeline path. They
+Two `computeSkillDamage` parameters are vestigial on the timeline path. They
 are still wired and still tested, but nothing in a real run sets them:
 
 | parameter | live value | consequence |
 | --- | --- | --- |
-| `slots` | always `padSlots([])` → five `"N/A"` | every `Σslot.colN` term is 0, so **`boostZone.json` and `boostZoneOverrides` contribute nothing** |
 | `count` | always `1` (DoT ticks: `max(1, dot.count)`) | per-hit damage is per-hit |
 | `counters` | always the default zeros | `qiExhausted` / `yiShuiLayer` / `bengJieLayer` / `lowQi` terms are 0 — the qi phase reaches the formula through buff stat-effects and the per-hit art patches a `SkillBehavior` claims instead |
+
+A third parameter, `slots` (five boost-zone accessory-slot names, always
+`padSlots([])` → `"N/A"` on every real path), was never merely vestigial —
+`boostZone.json` had no in-app selector at all — and was removed with the data
+2026-08-10; see § "Mind-method layers".
 
 `E` is live: an entity's own `attune:` tag reaches the formula on `art.attuneTag`
 (`skill.ts hitToArtRow`, `dot.ts` for ticks), and only a tag some
@@ -248,13 +252,16 @@ decision 2026-07-18 are authoritative. Four corrections apply unconditionally:
    ticks set it `false`). A burst detonation (Bleed Detonation) is
    `sustain`-tagged for buff routing but keeps the default `true`, so it
    retains its flat damage and the elevated `O ≈ 1.5 × N` — it is not demoted.
-4. **Buff/skill raw rate bonuses are resistance-divided** (PDF §11): boost-slot
-   crit (col4) / affinity (col11) and `art.extraAffinityRate` divide by
-   `(1 + r)` before the 80 %/40 % cap. The PDF's one named exception —
-   Thundercry Blade's (Modao) charged-attack bonus crit, today the only
-   occupant of `art.extraCritRate` — is a flat addition to the FINAL crit rate:
-   unresisted, added after the cap (so charged Modao hits can reach 94 % crit
-   where the plain cap would stop at 80 %). Direct rates stay flat.
+4. **Buff/skill raw rate bonuses are resistance-divided** (PDF §11):
+   `art.extraAffinityRate` divides by `(1 + r)` before the 40 % cap — the one
+   raw rate channel the formula still receives; the boost-zone accessory-slot
+   columns that used to carry a second one into `V`/`W` were dead in
+   production and were removed 2026-08-10 (§ "Mind-method layers"). The PDF's
+   one named exception — Thundercry Blade's (Modao) charged-attack bonus
+   crit, today the only occupant of `art.extraCritRate` — is a flat addition
+   to the FINAL crit rate: unresisted, added after the cap (so charged Modao
+   hits can reach 94 % crit where the plain cap would stop at 80 %). Direct
+   rates stay flat.
 
 Penetration resistance is **zero for every target** (`penResistanceForLevel`
 returns 0/0): PvE bosses carry ~no pen resistance (in-game inspection shows
@@ -301,7 +308,7 @@ source citations, not domain naming. See CLAUDE.md § "Language".)
 > rules, the defs, `paramMap`, `MindMethodSlot.id`) refers to the id.
 
 
-An inner way can reshape the calculation in four distinct places. Classify a
+An inner way can reshape the calculation in three distinct places. Classify a
 new effect before implementing it, and keep the buckets disjoint — the same
 effect must never land in two.
 
@@ -317,20 +324,20 @@ effect must never land in two.
    Year-Long Lament `effectiveDefense`, Mighty Song `chargeBonus`, Insightful
    Strike `dotDamageBoost` and the flat all-damage bonus. `minTier` gates the
    ones that need a tier; `panel.ts` no longer names any of them.
-3. **Per-art deltas** — `mindMethodOverrides.ts`, driven by
-   `src/data/skills/boosts/artsConditionals.json`. Each entry is a
-   `checkxinf(innerWayId, then, else)` or `Checkxinfa(innerWayId, tier, then, else)`
-   rule resolved against `inputs.mindMethods` **by inner-way id**.
-   - `artsOverrides` is consumed **only** by
-     `perSkillDamage.computeSkillPreview` (the Skill Editor's live preview) —
-     the timeline never applies it.
-   - The boost-zone half is **gone** (2026-08-10): every rule in it referenced
-     an inner way that was removed as unimplemented. The channel was already
-     inert, so `boostZoneOverrides` is now always `{}`.
-4. **The ported buff engine** — `src/data/skills/buffs/*.json` defs gated by
-   `enabledParam`, enabled from the build via `buffs/paramMap.ts`. This is where
-   a *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md §
+3. **The ported buff engine** — `src/data/skills/buffs/*.json`/`*.ts` defs
+   gated by a `requires.param` (`enabledParam` on the not-yet-converted JSON
+   ones), enabled from the build via `buffs/paramMap.ts`. This is where a
+   *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md §
    "Buffs".
+
+A fourth channel — per-art deltas keyed by exact skill name
+(`mindMethodOverrides.ts`, driven by `artsConditionals.json`) — was removed
+2026-08-10: of its 17 entries, 16 named a skill string that matched nothing in
+the imported dataset, and the one that did (`SpearHeavy 1-Hit`) only reached
+the Skill Editor's live preview, never the timeline. `boostZone.json`
+(a per-accessory-slot table `computeSkillDamage` read through a `slots`
+parameter no production caller ever populated with a real slot name) went with
+it, and `computeSkillDamage` lost the parameter.
 
 ## Mechanic coverage — implemented vs known gaps
 
@@ -409,8 +416,8 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **`formbendBonus` / `formbendBonusTriggers`** (rainwhisperShield's +2 s
   duration bonus). Confirmed real on the site, but gated on a stand-alone
   `formbendArmorSet` checkbox with no equivalent gear-set, inner-way, or toggle
-  in this app's data model. The fields survive in `buffDef.ts`'s schema and are
-  read by nothing.
+  in this app's data model. The fields were dead — deleted from `buffDef.ts`'s
+  schema — and the mechanic itself remains unmodeled.
 - **`ConsumeOnMatch.mistwillowCategory`** — `buffEngine.ts` gates on
   `opts.mistwillowCategory`, but `timeline.ts` only populates `opts` from a
   skill's `prop:` / `attack:` tags, so the flag is never set. It would need the
@@ -420,35 +427,58 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **`starsAlignBonus`** (Stars Align 4-pc, `= distance × 5`) is stochastic —
   computed from live distance on the site. Equipping the set enables the buff
   but it contributes 0. See `buffs/paramMap.ts`.
-- **`revelryScript` as an inner-way param** — `revelryScript.json` is registered
-  across 6 specs and is never turned on by anything selectable in this app, so
-  every one of those registrations always contributes 0. (The Combat Settings
-  toggle of the same name is a separate, implemented +30 % — don't conflate
-  them.)
+- **`revelryScript` as an inner-way param** — the `revelryScript` buff def is
+  registered across 6 specs and is never turned on by anything selectable in
+  this app, so every one of those registrations always contributes 0. (The
+  Combat Settings toggle of the same name is a separate, implemented +30 % —
+  don't conflate them.)
 - **`insightfulStrike` is deliberately absent from
-  `paramMap.ts`'s `SITE_PARAM_TO_INNER_WAY`.** Mapping the param would
-  re-trigger `concentration`'s `statModifiers` through the generic buff engine,
-  which knows nothing about the activation counter and would apply them
-  always-on — double-counting against the model above. This is a documented
-  gap, not a missed mapping. The class-signature params
-  (`swordHorizon`/`combo`/`frostCladNight`) were audited the same way and found
-  safe: the defs they gate are situational tag-targeted procs, a different
-  mechanic from the flat baseline stats `mindMethodPanelStats.json` bakes.
+  `paramMap.ts`'s `SITE_PARAM_TO_INNER_WAY`.** Mapping the param would make
+  `BuffEngine` seed `concentration` at `t=0` and re-arm it on every cast
+  (its `seedAtStart`/`refreshOnAnyCast`), applying its `affinityDmg`/
+  `directAffinity` (and tier-6 sustain) stat mods **always-on** for the whole
+  rotation — double-counting against `bellstrikeUmbraConcentration.ts`'s
+  probability-weighted 4-hit-ramp model of the same inner way, which knows
+  nothing about the generic buff engine's activation window. This is a
+  documented gap, not a missed mapping, and it is why `concentration`'s
+  `seedAtStart`/`refreshOnAnyCast` reproduce the mechanism exactly rather than
+  fixing it: the class-signature params (`swordHorizon`/`combo`/
+  `frostCladNight`) were audited the same way and found safe — the defs they
+  gate are situational tag-targeted procs, a different mechanic from the flat
+  baseline stats `mindMethodPanelStats.json` bakes.
+- **The Concentration mechanic's own display chip never renders.**
+  `castBuffs.ts`'s `collectCastBuffs` runs the buff engine's chips before the
+  mechanics' chips and dedupes by id — so even if `insightfulStrike` were
+  mapped, the buff engine's `concentration` chip would always win and
+  `bellstrikeUmbraConcentration.ts`'s own "≈NN% active" chip would never
+  render. A second, independent reason the two models can't safely run
+  side by side.
 - **bamboocut_dust's second `calculationHooks`** (soulbreak pool,
   falling-blossom stacks, perfect-catch, phantom-rally injected entries). A
   bespoke stateful per-cast state machine with its own injected-entry
   scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
-- **`forceCritIfHighCrit`** — its site gate is a crit-weight ≥ 0.7 test with
-  no equivalent here; `buffEngine.ts` emits a warning for it.
+- **`forceCritIfHighCrit`** (still carried by `mountainSplitterAdeptCrit.json`)
+  — its site gate is a crit-weight ≥ 0.7 test with no equivalent here, and the
+  engine does not model it at all: nothing reads the field, and nothing
+  signals that it's unmodelled.
 - **Known trigger no-op**: on `bamboocutWindTwinblade` and
   `stonesplitBalanceDualCut`, Umbrella Q's `castSkill` trigger targets
   Resonance / First Resonance skills those classes never received, so it
   silently does nothing.
+- **Swift Gale's "Airborne Heavy-Hit Damage"**, **Shattered Ridge's "General
+  Damage Boost"**, and **Swallowcall's "Light-Hit Boost"** (the retired
+  `setBonusFull.json`'s columns 9, 10, and 7 — Swallowcall's value was 0.12)
+  were confirmed dead during the 2026-08-10 set-module consolidation — no
+  formula term, buff, or `requiresSet` gate ever read any of the three — and
+  none is carried into `data/sets/swiftGale.ts`, `shatteredRidge.ts`, or
+  `data/sets/swallowcall.ts`. Shattered Ridge's real bonus is the deflect buff
+  (`data/skills/buffs/shatteredRidgeDeflect.json`), gated by `siteKey`
+  through `requiresSet`, unrelated to the dead column.
 
 ### Inner-way audit
 
-Every inner way's effects live in one of the four layers above. A single inner
-way commonly spans more than one — fine, as long as no single effect is
+Every inner way's effects live in one of the three layers above. A single
+inner way commonly spans more than one — fine, as long as no single effect is
 counted twice. `paramMap.ts`'s header comment is the authoritative
 source-of-truth note this table summarizes.
 
@@ -473,9 +503,9 @@ source-of-truth note this table summarizes.
 
 ## Verification
 
-- `pnpm test` — **734 tests across 80 files**, all green.
+- `pnpm test` — **795 tests across 84 files**, all green.
 - The one locked fixture is `tests/engine/engineBaseline.test.ts`, which pins
-  the whole `Result` for 24 Umbra builds as a refactor guard — it asserts the
+  the whole `Result` for 25 Umbra builds as a refactor guard — it asserts the
   engine is *unchanged*, never that it is *right* (TESTING.md § "The engine
   baseline"). Beyond it no test asserts an absolute DPS number, and
   `defaultInputs` (`engine/defaults.ts`) is the default Bamboocut-Wind build,

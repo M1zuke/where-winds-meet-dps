@@ -171,7 +171,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "16f0c346651062665b68e7f1e0a2a5b0427d1bd928682ed92c09aeeb8de61b07"
+    "digest": "2be4ef9978659b6399756d0dd3adad2e43873b500d42bc23bbcd72e271b310a7"
   },
   "anchor:noAttunement": {
     "dps": 66810.402809,
@@ -345,7 +345,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "854567f14d848367ac094956b55bc96940990f21dbd496bf97ae0c9d6436a677"
+    "digest": "6f1a36186ecba1fe775d8c6f1c514434863daf90320c7aa4637264d1eb2d7b90"
   },
   "anchor:dummyOff": {
     "dps": 79524.993653,
@@ -519,7 +519,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "b28ad8299c741f0a65711d8884533b5124600812a636f6efda292623372ce192"
+    "digest": "58700b61a5faa2ab47594efad57f57fd26dd2a69acbd6b45d5856d2582774354"
   },
   "anchor:noQiBreak": {
     "dps": 67520.871368,
@@ -693,7 +693,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "75ccecadabc026792ce1e8367a7a784a62cf3dc9baf1398a878ed53076783205"
+    "digest": "19096e7802e0b6a7a059bc7857350b844cbdf47de654d70a3ea383970524888a"
   },
   "anchor:healerBuff": {
     "dps": 81636.609347,
@@ -867,7 +867,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "c1941ef4500f871b74deacfbbeace8bdf551800fa3df0dee749dd9e717f743ee"
+    "digest": "82712dbf4f2fc21cc2a18858a39d3ac4a9b008c8656fe921e09601b75da82679"
   },
   "anchor:revelryScript": {
     "dps": 84668.363721,
@@ -1041,7 +1041,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "23713893063287a87c465330fd53eec72fc6a6f24e0f6edfc5cd0a5645b11f20"
+    "digest": "30b7002df081579905302e84f13428477556cc594f14fa6bcaf3aa7e5d7324f7"
   },
   "anchor:breakExtension": {
     "dps": 75486.57462,
@@ -1215,7 +1215,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "7eba1d55a1c7f22084e0650e20ae7a2acc39e83efcf27096be81ba2515765a2b"
+    "digest": "2b613349e629575317f1fb95626ef249a1c4ae93748092732ce1c813985eb262"
   },
   "anchor:swordHorizonT1": {
     "dps": 52367.956002,
@@ -1389,7 +1389,7 @@
       "buffWindows": 122,
       "casts": 69
     },
-    "digest": "4a2204e6bd609ece9f95aa58b4fae97e5cbf7f0d34b60f5e72b4cb8ab285f256"
+    "digest": "fe83344ad9426331deed038c7bd45fdc637657fec40b383ae3fa809fe9b2ed98"
   },
   "anchor:noSwordHorizon": {
     "dps": 45587.912664,
@@ -1563,7 +1563,7 @@
       "buffWindows": 118,
       "casts": 69
     },
-    "digest": "ca52bfb49fb2a9bef8a5af51f0c76c3d8d09725749f0bd65f9579ddfbfcde07b"
+    "digest": "0645271799ed32b8483e8f3ba7831c111cdd15844f47dcc5e070442c6350bc3c"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63589.275013,
@@ -1737,7 +1737,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "9ed032b849007d4c398b0fb08776072f8a0e99389b9a6aa3034ecf294cb5b5c3"
+    "digest": "e3fafec6d1b27aab56f41115fba2bf70b142fa99de9966ad45fc79b8f9841141"
   },
   "anchor:noMoraleChant": {
     "dps": 68114.100368,
@@ -1903,7 +1903,189 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "8371d7bcb5a2264992162654d9f10deb2ba15fa4127c4e662ed53577c9a6afcc"
+    "digest": "46f0dd9a752fcba41fcd63be1f4b573f2361c601601f0f3a192d4ff3a4df3c73"
+  },
+  "anchor:spearHeavyNoWolfchasersArt": {
+    "dps": 43140.113258,
+    "totalDamage": 2620761.880411,
+    "rotationDuration": 60.75,
+    "warnings": [],
+    "perSkill": [
+      {
+        "name": "SpearHeavy",
+        "type": "weapon",
+        "count": 1,
+        "expectedDamage": 2307.187546,
+        "castCount": 1,
+        "castTimeSec": 1.5
+      },
+      {
+        "name": "Sword Charge Stage 1, 4-Hit",
+        "type": "weapon",
+        "count": 8,
+        "expectedDamage": 22023.385602,
+        "castCount": 2,
+        "castTimeSec": 2.933333
+      },
+      {
+        "name": "Dragon's Breath: Smolder 2 Hits",
+        "type": "mystic",
+        "count": 3,
+        "expectedDamage": 33897.213606,
+        "castCount": 1,
+        "castTimeSec": 1.666667
+      },
+      {
+        "name": "SpearQ 5-Hit Cancel",
+        "type": "weapon",
+        "count": 20,
+        "expectedDamage": 60204.003464,
+        "castCount": 4,
+        "castTimeSec": 5.666667
+      },
+      {
+        "name": "Deflect Cancel",
+        "type": "weapon",
+        "count": 20,
+        "expectedDamage": 0,
+        "castCount": 20,
+        "castTimeSec": 8.333333
+      },
+      {
+        "name": "SwordSpecial 3-Hit",
+        "type": "weapon",
+        "count": 30,
+        "expectedDamage": 64285.541488,
+        "castCount": 10,
+        "castTimeSec": 10
+      },
+      {
+        "name": "Bleed Detonation",
+        "type": "sustain",
+        "count": 36,
+        "expectedDamage": 1488497.551211,
+        "castCount": 0,
+        "castTimeSec": 0
+      },
+      {
+        "name": "Crosswind Blade",
+        "type": "weapon",
+        "count": 10,
+        "expectedDamage": 54121.758479,
+        "castCount": 10,
+        "castTimeSec": 5
+      },
+      {
+        "name": "Spear Special (1 Hit Cancel)",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 49720.272542,
+        "castCount": 5,
+        "castTimeSec": 4.916667
+      },
+      {
+        "name": "SwordSpecial 4-Hit",
+        "type": "weapon",
+        "count": 16,
+        "expectedDamage": 39338.130728,
+        "castCount": 4,
+        "castTimeSec": 4
+      },
+      {
+        "name": "Sword Martial Q",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 27544.181479,
+        "castCount": 5,
+        "castTimeSec": 2.5
+      },
+      {
+        "name": "Sword Martial QQ",
+        "type": "weapon",
+        "count": 16,
+        "expectedDamage": 88635.991487,
+        "castCount": 4,
+        "castTimeSec": 4.4
+      },
+      {
+        "name": "Sword Martial QQQ",
+        "type": "weapon",
+        "count": 8,
+        "expectedDamage": 44319.201431,
+        "castCount": 4,
+        "castTimeSec": 3.666667
+      },
+      {
+        "name": "Ghostly Steps",
+        "type": "weapon",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1,
+        "castTimeSec": 0.016667
+      },
+      {
+        "name": "Sword Charge Stage 1, 3-Hit",
+        "type": "weapon",
+        "count": 9,
+        "expectedDamage": 28989.27955,
+        "castCount": 3,
+        "castTimeSec": 3.3
+      },
+      {
+        "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
+        "type": "weapon",
+        "count": 3,
+        "expectedDamage": 11323.644456,
+        "castCount": 3,
+        "castTimeSec": 1.5
+      },
+      {
+        "name": "Flute of the Tides Cancel",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1,
+        "castTimeSec": 1.35
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "type": "sustain",
+        "count": 10,
+        "expectedDamage": 119988.99138,
+        "castCount": 0,
+        "castTimeSec": 0
+      },
+      {
+        "name": "Bleed Tick (DoT)",
+        "type": "sustain",
+        "count": 59,
+        "expectedDamage": 188686.128816,
+        "castCount": 0,
+        "castTimeSec": 0
+      },
+      {
+        "name": "Smolder (DoT)",
+        "type": "sustain",
+        "count": 114,
+        "expectedDamage": 251217.320061,
+        "castCount": 0,
+        "castTimeSec": 0
+      },
+      {
+        "name": "Yi River",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 45662.097085,
+        "castCount": 0,
+        "castTimeSec": 0
+      }
+    ],
+    "counts": {
+      "timeline": 383,
+      "buffWindows": 140,
+      "casts": 80
+    },
+    "digest": "3e79c6bb67da18632605e477234bf88d3fa25b68f0ddfc05cef0f2966a66c128"
   },
   "anchor:bitterSeasonT6": {
     "dps": 54082.23041,
@@ -2623,7 +2805,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "349248f7aea3197a3133946f18523a8bdab52e17b79d7a55cf8692f843a604e0"
+    "digest": "8c8efc5506150d24eb65ccf114c3984c91e4e3a8863195482a35ac7b46018ec3"
   },
   "anchor:set-Jadeware": {
     "dps": 74219.190657,
@@ -2797,7 +2979,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "7102d147b1423af0bb5980678143e426798f1ee8372dc95e4f46c92f4569bb54"
+    "digest": "208b3e4c8160359d870134b9718d20fba1fa4e9962904d4abd51a32803402c25"
   },
   "anchor:set-Rainwhisper": {
     "dps": 70990.613015,
@@ -2971,7 +3153,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "2b90a808761e5f341ec28189f5e260ab97d541349789631186c13a42d919ac53"
+    "digest": "30d68ff5ed32afb6e2343968c530bbc38b4c2c6ae8c339c6f87b1ae86bb5a138"
   },
   "anchor:set-Ivorybloom": {
     "dps": 71434.412574,
@@ -3145,7 +3327,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "59e4c59d4dffee430e6cdd0bfd4f2f37aff4a32d730348f5d0b11879cc773e67"
+    "digest": "38cf2e4911fc57bb7cb4d1217409785c9807f2c2c1eccbe48ae36483a0e86ebb"
   },
   "anchor:set-Mistwillow": {
     "dps": 67945.115374,
@@ -3319,7 +3501,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "fc4615be4acb07914021647973a41a64f2455919debba1f91fa5c0ea4b0f7fc2"
+    "digest": "6c3c9eac156d49dfd8a636de53a641778ea054798b0f93656a82af43b9a08e38"
   },
   "anchor:set-StarsAlign": {
     "dps": 67945.115374,
@@ -3493,7 +3675,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "349248f7aea3197a3133946f18523a8bdab52e17b79d7a55cf8692f843a604e0"
+    "digest": "8c8efc5506150d24eb65ccf114c3984c91e4e3a8863195482a35ac7b46018ec3"
   },
   "anchor:set-ShatteredRidge": {
     "dps": 67945.115374,
@@ -3667,7 +3849,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "349248f7aea3197a3133946f18523a8bdab52e17b79d7a55cf8692f843a604e0"
+    "digest": "8c8efc5506150d24eb65ccf114c3984c91e4e3a8863195482a35ac7b46018ec3"
   },
   "anchor:set-Swallowcall": {
     "dps": 67945.115374,
@@ -3841,7 +4023,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "349248f7aea3197a3133946f18523a8bdab52e17b79d7a55cf8692f843a604e0"
+    "digest": "8c8efc5506150d24eb65ccf114c3984c91e4e3a8863195482a35ac7b46018ec3"
   },
   "anchor:set-SwayingHeights": {
     "dps": 69119.858999,
@@ -4015,7 +4197,7 @@
       "buffWindows": 125,
       "casts": 69
     },
-    "digest": "2782cff83791674b8f797cb5b222260bb63a249f95317ab29d774071412b7151"
+    "digest": "da96dd2aa0fbfe9c87b93fb9a535e9f23a4a4be94140dff75eab5acf9b18e9c5"
   },
   "defaults:umbra": {
     "dps": 11066.747036,

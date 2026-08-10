@@ -15,20 +15,22 @@ import { StatusLedger } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
-import { buildBehaviors, type BuildView, type HitInput } from "./behavior"
+import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
+import { applyEffect, type EffectSink } from "./effects/apply"
 import "../data/classes"
 import { buildContext } from "./panel"
 import { computeSkillDamage } from "./formula"
-import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
+import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../data/classes/innerWays"
+import { PROP } from "../data/skills/ids"
 
 export const FPS = 60
 
@@ -216,7 +218,6 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   const buildView: BuildView = {
     classId: inputs.classId,
-    set: inputs.set,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
   }
@@ -242,16 +243,18 @@ export function simulateTimeline(inputs: Inputs): Result {
         const skill = ls.resolved.skill
         const castTag = castTagOf(skill)
         if (!castTag) continue
-        const opts: Record<string, unknown> = {
+        const props: SkillProperties = {
           hitCount: ls.performedHits.length,
           castTime: (skill.castFrames || 1) / FPS,
         }
         for (const tag of skill.tags ?? []) {
-          if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
-          else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
+          const propertyKey = PROP_TO_PROPERTY[tag as (typeof PROP)[keyof typeof PROP]]
+          if (propertyKey) props[propertyKey] = true
+          else if (tag.startsWith("attack:"))
+            props.attackType = tag.slice(7) as SkillProperties["attackType"]
         }
-        eng.processSkillCast(castTag, ls.startFrame / FPS, opts)
-        if (opts.isDrone && ls.performedHits.length > 1) {
+        eng.processSkillCast(castTag, ls.startFrame / FPS, props)
+        if (props.isDrone && ls.performedHits.length > 1) {
           const useExternalLB = !!eng.params.starReacher
           for (let i = 1; i < ls.performedHits.length; i++) {
             const t = (ls.startFrame + ls.performedHits[i].frame) / FPS
@@ -436,40 +439,58 @@ export function simulateTimeline(inputs: Inputs): Result {
     const hitInput = hitInputAt(skill, hit, frame)
     const extraEffects: BuffStatEffect[] = []
     let forceGuaranteedAffinity = false
-    const outcome = behavior.onHit?.(hitInput)
-    if (outcome) {
-      extraEffects.push(...(outcome.statEffects ?? []))
-      forceGuaranteedAffinity = !!outcome.forceGuaranteedAffinity
-      for (const write of outcome.statuses ?? []) {
-        const status = statusById.get(write.id)
-        if (!status) continue
-        if (write.permanent) openPermanent(status.id)
+    // `onHit`/`claimStatEffects` run BEFORE the formula context is built, so
+    // only the effect kinds that can change that context are live here.
+    const hitSink: EffectSink = {
+      stat: (statKey, amount) => extraEffects.push({ statKey, amount }),
+      forceOutcome: (outcome) => {
+        if (outcome === "affinity") forceGuaranteedAffinity = true
+      },
+      setStatus: (id, stacks, permanent, durationFrames) => {
+        const status = statusById.get(id)
+        if (!status) return
+        if (permanent) openPermanent(status.id)
         else
-          pushWindow(
-            status.id,
-            frame,
-            frame + Math.max(1, write.durationFrames ?? status.durationFrames),
-          )
-        if (write.stacks !== undefined) recordStack(status.id, frame, write.stacks)
-      }
+          pushWindow(status.id, frame, frame + Math.max(1, durationFrames ?? status.durationFrames))
+        if (stacks !== undefined) recordStack(status.id, frame, stacks)
+      },
+      applyBuff: () => {},
+      consumeStacks: () => {},
+      artBonus: () => {},
+      damageMultiplier: () => {},
     }
+    for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
-    extraEffects.push(...behavior.claimStatEffects(hitInput, qiPhase))
+    for (const effect of behavior.claimStatEffects(hitInput, qiPhase)) applyEffect(hitSink, effect)
     const resolveOverride: ResolveOverride | undefined =
       extraEffects.length > 0 || forceGuaranteedAffinity
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
     const st = resolveState(frame, skill, resolveOverride)
-    const art = behavior.buildArt(hitInput)
-    if (st.forceCrit) art.guaranteedCrit = 1
-    const artPatch = behavior.patchArt(hitInput, {
+    const hitContext: HitContext = {
       phase: qiPhase,
       qiBreakEnabled,
       smallPhys: st.ctx.smallPhys,
       isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
-    })
-    if (artPatch) Object.assign(art, artPatch)
-    const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
+    }
+    const art = behavior.buildArt(hitInput, hitContext)
+    if (st.forceCrit) art.guaranteedCrit = 1
+    // `patchArt` runs AFTER the formula context is built and may read it.
+    const artSink: EffectSink = {
+      stat: () => {},
+      forceOutcome: () => {},
+      applyBuff: () => {},
+      consumeStacks: () => {},
+      setStatus: () => {},
+      artBonus: (field, amount) => {
+        art[field] = (art[field] ?? 0) + amount
+      },
+      damageMultiplier: (factor) => {
+        art.correction = (art.correction ?? 1) * factor
+      },
+    }
+    for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
+    const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
       totalDamage += expectedDamage
@@ -684,7 +705,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       const st = resolveState(event.frame, event.skill)
       const art = { ...event.art } as Parameters<typeof computeSkillDamage>[0]
       if (st.forceCrit) art.guaranteedCrit = 1
-      const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
+      const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
       totalDamage += expectedDamage
       add(event.name, event.type, 1, expectedDamage)
       timeline.push({

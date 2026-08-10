@@ -123,15 +123,12 @@ describe("cap convention — critRate clamps at 0.8, directCritRate bypasses", (
   const art = { name: "t", physMultiplier: 1, skillType: "weapon" } as Parameters<
     typeof computeSkillDamage
   >[0]
-  const slots = ["N/A", "N/A", "N/A", "N/A", "N/A"] as [string, string, string, string, string]
 
   it("critRate buff is clamped; directCritRate is not", () => {
     const cap = applyBuffEffects(defaultInputs, [{ statKey: "critRate", amount: 2.0 }])
     const dir = applyBuffEffects(defaultInputs, [{ statKey: "directCritRate", amount: 2.0 }])
-    const vCap = computeSkillDamage(art, slots, buildContext(cap.inputs, cap.targetOverride), 1)
-      .cells.V
-    const vDir = computeSkillDamage(art, slots, buildContext(dir.inputs, dir.targetOverride), 1)
-      .cells.V
+    const vCap = computeSkillDamage(art, buildContext(cap.inputs, cap.targetOverride), 1).cells.V
+    const vDir = computeSkillDamage(art, buildContext(dir.inputs, dir.targetOverride), 1).cells.V
     expect(vCap).toBeLessThanOrEqual(0.8 + defaultInputs.directCritRate + 1e-9)
     expect(vDir).toBeGreaterThan(vCap + 1.5)
   })

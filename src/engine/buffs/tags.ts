@@ -43,11 +43,11 @@ export function castTagOf(skill: Pick<Skill, "castTag" | "name">): string {
   return skill.castTag ?? deriveCastTag(skill.name ?? "")
 }
 
-export function hasProp(tagSet: Set<string>, prop: string): boolean {
+export function hasProp(tagSet: ReadonlySet<string>, prop: string): boolean {
   return tagSet.has(PROP_TAG + prop)
 }
 
-export function hasAnyWeapon(tagSet: Set<string>, weapons: readonly string[]): boolean {
+export function hasAnyWeapon(tagSet: ReadonlySet<string>, weapons: readonly string[]): boolean {
   for (const w of weapons) if (tagSet.has(WEAPON_TAG + w)) return true
   return false
 }

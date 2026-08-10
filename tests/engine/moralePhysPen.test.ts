@@ -75,7 +75,6 @@ describe("Morale Chant phys-penetration term", () => {
       const qiBreakBonus = inQiBreak && inputs.combatSettings?.qiBreak.enabled ? 0.1 : 0
       const expected = computeSkillDamage(
         art("Test Weapon Hit") as never,
-        ["N/A", "N/A", "N/A", "N/A", "N/A"],
         buildContext({
           ...inputs,
           phys: {
@@ -135,7 +134,6 @@ describe("Morale Chant phys-penetration term", () => {
         attributeAttack: "Bellstrike",
         specialTag: "sustain",
       } as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
       buildContext({ ...inputs, allDamageBoost: (inputs.allDamageBoost ?? 0) + 5 * 0.01 }),
       1,
     ).expectedDamage
@@ -172,7 +170,6 @@ describe("Morale Chant phys-penetration term", () => {
     const row = result.perSkill.find((p) => p.name === "Test Weapon Hit")!
     const withoutBonus = computeSkillDamage(
       art("Test Weapon Hit") as never,
-      ["N/A", "N/A", "N/A", "N/A", "N/A"],
       buildContext(inputs),
       1,
     ).expectedDamage

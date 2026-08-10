@@ -7,10 +7,11 @@ import {
   type HawkwingStacksSchedule,
 } from "../buffs/hawkwing"
 import { effectiveRates } from "../panel"
+import { hawking } from "../../data/sets/hawking"
 import { MECHANIC_ORDER, registerMechanic } from "./index"
 import type { TimelineMechanic } from "./types"
 
-const SET = "Hawking"
+const SET = hawking.id
 const AFFINITY_PROC_CAP = 0.4
 
 type State = { schedule: HawkwingStacksSchedule }
@@ -42,7 +43,7 @@ export const hawkwingMechanic: TimelineMechanic<State> = {
         stacks,
         maxStacks: HAWKWING_MAX_STACKS,
         effects: [],
-        requires: SET,
+        requires: hawking.name,
         description: "expected stacks (avg of 500 sims, rounded) · +2% phys attack/stack, 5s decay",
       },
     ]

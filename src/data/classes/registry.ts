@@ -18,6 +18,7 @@ import { attunementsForClass } from "../../engine/attunements"
 import { specForClass } from "../../engine/buffs/data"
 import { BUILTIN_SKILLS_BY_CLASS } from "../skills"
 import debuffsLibrary from "../skills/debuffsLibrary.json"
+import { DEBUFFS as BELLSTRIKE_UMBRA_DEBUFFS } from "../skills/bellstrike-umbra/debuffs"
 import defaultRotationsData from "../rotations/defaultRotations.json"
 import handRotationsData from "../rotations/handRotations.json"
 import { builtinBuffsForClass } from "../../engine/builtinBuffs"
@@ -42,7 +43,10 @@ interface RotationPool {
 }
 
 const SCHOOLS = schools as unknown as SchoolRow[]
-const DEBUFFS = debuffsLibrary as unknown as Record<string, Debuff[]>
+const DEBUFFS: Record<string, readonly Debuff[]> = {
+  ...(debuffsLibrary as unknown as Record<string, Debuff[]>),
+  bellstrikeUmbra: BELLSTRIKE_UMBRA_DEBUFFS,
+}
 const DEFAULT_ROTATIONS = defaultRotationsData as unknown as Record<string, RotationPool>
 const HAND_ROTATIONS = handRotationsData as unknown as Record<string, RotationPool>
 

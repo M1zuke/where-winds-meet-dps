@@ -10,11 +10,12 @@ implemented and validated.**
 
 The other seven classes in `schools.json` — Bellstrike Rainbow, Silkbind Jade,
 the Stonesplit and Bamboocut specs — are **not implemented yet**. The skill
-import may have pulled in data for them (`src/data/skills/<class>/*.json`,
-`buffs/data.ts`'s class → spec map), but that data is unverified and their
-engine output should not be relied on. Treat anything they surface (stray or
-spurious imported skills, for instance) as provisional until the class is
-actually built out.
+import may have pulled in data for them (`src/data/skills/<class>/*.json`, all
+seven still JSON — see below for `bellstrikeUmbra`'s own conversion to
+TypeScript modules; `buffs/data.ts`'s class → spec map), but that data is
+unverified and their engine output should not be relied on. Treat anything
+they surface (stray or spurious imported skills, for instance) as provisional
+until the class is actually built out.
 
 The eight class ids and their buff specs (`CLASS_SPEC` in
 `src/engine/buffs/data.ts`):
@@ -43,11 +44,20 @@ These are the **source of truth** — edit them directly. They carry hand-tuned
 coefficients and entries that no import produced (`elevatedAttributeMultiplier`,
 the Smolder debuff, the bleed detonation wiring):
 
-- `src/data/skills/<class>/*.json` — one file per class-owned skill
-- `src/data/skills/universal/*.json` — one file per universal skill (see below)
-- `src/data/skills/buffs/*.json` — one file per buff def
+- `src/data/skills/<class>/*.json` — one file per class-owned skill, for the
+  seven classes not yet converted; `bellstrikeUmbra`'s own are TypeScript
+  modules instead, `src/data/skills/bellstrike-umbra/*.ts` (`defineSkill`, one
+  module per skill)
+- `src/data/skills/universal/*.ts` — one module per universal skill (see
+  below), `instantiateUniversal`-retargeted onto every class the same way the
+  JSON files used to be
+- `src/data/skills/buffs/*.json` — one file per buff def, for the 35 not yet
+  converted; the 18 defs behind Bellstrike Umbra's own buffs are `defineBuff`
+  TypeScript modules instead, `src/data/skills/buffs/*.ts`
 - `src/data/rotations/defaultRotations.json`
-- `src/data/skills/debuffsLibrary.json`
+- `src/data/skills/debuffsLibrary.json` — one key per class, for the seven not
+  yet converted; `bellstrikeUmbra`'s six rows are `src/data/skills/bellstrike-umbra/debuffs.ts`
+  (`defineDebuff`) instead, merged in by `data/classes/registry.ts`
 
 Before authoring a skill, read TIMELINE.md — it documents how a skill carries
 coefficients, fires triggers, receives buffs and gives buffs/debuffs, plus a
@@ -118,14 +128,15 @@ verifying its numbers.
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
 | `classes/` | per-class / per-spec metadata (schools, spec ids, retunement pools), the inner-way registry and defs, and every class-owned mechanic, behaviour and gate module | `classes/registry.ts` |
 | `rotations/` | built-in rotation pools | `engine/builtinLibrary.ts` |
-| `sets/` | armour-set tables (panel stats, damage boosts, base-stat boni) | `engine/panel.ts`, `engine/formula.ts` |
+| `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus) | `engine/panel.ts`, `engine/formula.ts` |
 | `skills/` | per-class skill files, the class-unbound `universal/` skills, and the debuff library | `engine/builtinLibrary.ts` |
-| `skills/boosts/` | conditional damage-boost lookup tables (boost-zone, arts) | `engine/formula.ts`, `engine/mindMethodOverrides.ts` |
 | `skills/buffs/` | data-driven buff defs (one file per buff) | `engine/buffs/data.ts` |
 
 Naming: data tables and modules in `src/data` are camelCase; the per-class
-folders under `skills/` and the skill JSON inside them stay kebab-case, and so
-do the two lowercase grouping folders `skills/boosts/` and `skills/buffs/`.
+folders under `skills/` stay kebab-case, and so does the lowercase grouping
+folder `skills/buffs/`. The skill files inside those per-class folders stay
+kebab-case too, whether they're the seven classes'
+JSON or `bellstrikeUmbra`/`universal`'s converted `.ts` modules.
 
 ## Naming: no `site`, no pinyin ids
 

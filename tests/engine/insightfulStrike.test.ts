@@ -8,7 +8,6 @@ import { getMindMethodContributions } from "../../src/data/baseStats"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
-import { resolveMindMethodOverrides } from "../../src/engine/mindMethodOverrides"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
@@ -70,16 +69,6 @@ describe("Insightful Strike — panel stat rework", () => {
   })
 })
 
-describe("Insightful Strike — affinity rate removed, affinity damage kept", () => {
-  it("a Nine Sword skill loses the +3% affinity-rate delta but keeps +10% affinity damage", () => {
-    const ov = resolveMindMethodOverrides(
-      mingInputs([emptyMindMethod, NS, emptyMindMethod, emptyMindMethod]),
-    ).artsOverrides["Nine Sword Q"]
-    expect(ov?.extraAffinityRate ?? 0).toBe(0)
-    expect(ov?.extraAffinityDamage).toBeCloseTo(0.1, 9)
-  })
-})
-
 describe("Insightful Strike — DoT +10%", () => {
   it("buildContext exposes dotDamageBoost only when Insightful Strike is selected", () => {
     const on = buildContext(mingInputs([emptyMindMethod, NS, emptyMindMethod, emptyMindMethod]))
@@ -124,8 +113,7 @@ describe("Insightful Strike — DoT +10%", () => {
     }
     const dotArt = BLEED_DOT
     const nonDotArt = DRAGONS_BREATH
-    const H = (ctx: FormulaContext, art: Art) =>
-      computeSkillDamage(art, ["N/A", "N/A", "N/A", "N/A", "N/A"], ctx, 1).cells.H
+    const H = (ctx: FormulaContext, art: Art) => computeSkillDamage(art, ctx, 1).cells.H
 
     expect(H({ ...baseCtx, dotDamageBoost: 0.1 }, dotArt) - H(baseCtx, dotArt)).toBeCloseTo(0.1, 9)
     expect(H({ ...baseCtx, dotDamageBoost: 0.1 }, nonDotArt) - H(baseCtx, nonDotArt)).toBeCloseTo(

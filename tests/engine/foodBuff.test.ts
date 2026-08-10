@@ -12,7 +12,6 @@ import {
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
-const SLOTS: [string, string, string, string, string] = ["N/A", "N/A", "N/A", "N/A", "N/A"]
 const ART = { name: "Test Weapon Hit", physMultiplier: 1, physFixed: 0, skillType: "weapon" }
 
 function base(food: boolean, physOverride?: { min: number; max: number }): Inputs {
@@ -26,7 +25,7 @@ function base(food: boolean, physOverride?: { min: number; max: number }): Input
 }
 
 function damage(inputs: Inputs): number {
-  return computeSkillDamage(ART as never, SLOTS, buildContext(inputs), 1).expectedDamage
+  return computeSkillDamage(ART as never, buildContext(inputs), 1).expectedDamage
 }
 
 describe("food buff (Simmering Fish Slices)", () => {

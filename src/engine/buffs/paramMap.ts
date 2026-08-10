@@ -2,7 +2,8 @@
 // `{ name, key, path, combatToggle, enabledBuffs, tiers }` entries and the set
 // registry `Ps` (`{ name, key, twoPiece, fourPiece }`), cross-checked against
 // this app's own data (`src/data/classes/schools.json` `allowedMindMethods` /
-// `classMindGroup`, `src/data/sets/sets.json`).
+// `classMindGroup`, `src/data/sets/`). Set id ↔ site key lives on each
+// `SetDef.siteKey` in `src/data/sets/`, not here.
 //
 // Only the five implemented inner ways can be mapped (2026-08-10) — the other
 // 23 were deleted as unimplemented, so every site param naming one is
@@ -20,13 +21,12 @@
 //     `affinityDmg` / `directAffinity` / `dotDamage` + `enhancedDotDamage`
 //     stat modifiers — every one of those channels (`affinityDamageBoost`,
 //     `directAffinityRate`, `sustainDamageBoost`) is ALREADY baked into the
-//     panel's own Insightful Strike model (`src/data/baseStats/mindMethodPanelStats.json`'s
-//     `directAffinityRate` baseline, `mindMethodOverrides.ts`'s per-art
-//     `extraAffinityDamage`, and `buildContext`'s `dotDamageBoost` — see
-//     `insightfulStrike.test.ts`). Mapping it would double-count those bonuses
-//     on top of the panel model with zero new content from the site buff. If
-//     `concentration` is ever extended with a genuinely new (non-overlapping)
-//     effect, re-derive this decision before mapping it.
+//     panel's own Insightful Strike model (`bellstrikeUmbraConcentration.ts`'s
+//     `EFFECTS`, fed through `buildContext`'s `dotDamageBoost` — see
+//     `insightfulStrike.test.ts`). Mapping it would double-count those
+//     bonuses on top of the panel model with zero new content from the site
+//     buff. If `concentration` is ever extended with a genuinely new
+//     (non-overlapping) effect, re-derive this decision before mapping it.
 //   - `starsAlignBonus` (the `starsAlign4pc` buff's per-stack value) — the
 //     site computes this stochastically from distance/stacks at runtime; we
 //     have no deterministic value, so equipping `Stars Align` enables the
@@ -56,21 +56,6 @@ export const SITE_PARAM_TO_INNER_WAY: Record<string, InnerWayMapping> = {
 
 export const INNER_WAY_BY_PARAM: Record<string, string> = Object.fromEntries(
   Object.entries(SITE_PARAM_TO_INNER_WAY).map(([param, m]) => [param, m.innerWayId]),
-)
-
-export const APP_SET_TO_SITE_SET: Record<string, string> = {
-  Hawking: "hawkwing",
-  Jadeware: "jadeware",
-  Rainwhisper: "rainwhisper",
-  "Rainwhisper (no shield)": "rainwhisper",
-  Ivorybloom: "ivorybloom",
-  Mistwillow: "mistwillow",
-  "Stars Align": "starsAlign",
-  "Shattered Ridge": "shatteredridge",
-}
-
-export const SITE_SET_TO_APP_SET: Record<string, string> = Object.fromEntries(
-  Object.entries(APP_SET_TO_SITE_SET).map(([app, site]) => [site, app]),
 )
 
 export function zhongToTier(stacks: string): number {

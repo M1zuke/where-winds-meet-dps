@@ -3,11 +3,9 @@ import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { innerWayScalar, innerWayTargetDefenseMultiplier } from "../data/classes/innerWays"
-import { resolveMindMethodOverrides } from "./mindMethodOverrides"
 import schools from "../data/classes/schools.json"
 import breakthroughs from "../data/baseStats/breakthroughTiers.json"
-import sets from "../data/sets/sets.json"
-import armorSetBoniJson from "../data/sets/armorSetBoni.json"
+import { SET_BY_ID, SET_DEFS } from "../data/sets"
 
 const SCHOOLS = schools as ReadonlyArray<{
   id: string
@@ -36,8 +34,6 @@ const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
   fatigueDamageTaken: number
   multiplier: number
 }>
-
-const SETS = (sets as { sets: { name: string; [k: string]: unknown }[] }).sets
 
 const DING_YIN_PATH_PREFIX = "dingYinByTag."
 
@@ -75,7 +71,6 @@ export interface DerivedStats {
   generalDamageBoost: number
   weaponBoosts: Record<string, number>
   typeBoosts: Record<string, number>
-  setBonus: Record<string, number>
 }
 
 export function getSchool(classId: string) {
@@ -136,14 +131,17 @@ export const BOW_SET_BONUS = {
   precision: 0.04,
 } as const
 
-// Source: `data/sets/armorSetBoni.json`.
+// `setKey` is the set's id (`Inputs.set` value), not its display name; render
+// `name` for the label.
 export interface ArmorSetOption {
   name: string
   setKey: string
   stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys"
   value: number
 }
-export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = armorSetBoniJson as ArmorSetOption[]
+export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.filter(
+  (set) => set.panelBonus,
+).map((set) => ({ name: set.name, setKey: set.id, ...set.panelBonus! }))
 
 export function applyArmorSet(inputs: Inputs): Inputs {
   if (!inputs.set) return inputs
@@ -198,15 +196,7 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const effectiveDefense = target.defense * (1 - inputs.phys.penetration)
 
-  const setBonus: Record<string, number> = {}
-  if (inputs.set) {
-    const s = SETS.find((x) => x.name === inputs.set)
-    if (s) {
-      for (const [k, v] of Object.entries(s)) {
-        if (typeof v === "number") setBonus[k] = v
-      }
-    }
-  }
+  const setFormula = (inputs.set ? SET_BY_ID[inputs.set]?.formulaBonus : undefined) ?? {}
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
@@ -215,9 +205,9 @@ export function deriveStats(inputs: Inputs): DerivedStats {
   const henZhi = inputs.shareDebuff5HenZhi ? 0.05 : 0
   const easyHurt = inputs.shareEasyHurt ? 0.05 : 0
   const tianGongFire =
-    inputs.tianGongElement === "fire" ? (setBonus["Low-Qi Direct Affinity Rate"] ?? 0) : 0
+    inputs.tianGongElement === "fire" ? (setFormula.lowQiDirectAffinityRate ?? 0) : 0
   const generalDamageBoost =
-    henZhi + easyHurt + tianGongFire + (setBonus["Phys Boost"] ?? 0) + targetGeneralDamageTaken
+    henZhi + easyHurt + tianGongFire + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
 
   const weaponBoosts: Record<string, number> = {
     Sword: inputs.swordBoost,
@@ -252,7 +242,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     generalDamageBoost,
     weaponBoosts,
     typeBoosts,
-    setBonus,
   }
 }
 
@@ -287,15 +276,6 @@ export function buildContext(
 
   const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
-  const setBonus: Record<string, number> = {}
-  if (inputs.set) {
-    const s = SETS.find((x) => x.name === inputs.set)
-    if (s)
-      for (const [k, v] of Object.entries(s)) {
-        if (typeof v === "number") setBonus[k] = v
-      }
-  }
-
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
   const effectiveBossBoost = inputs.bossBoost
@@ -303,7 +283,7 @@ export function buildContext(
   const generalDamageBoost =
     targetGeneralDamageTaken +
     innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
-    (inputs.set === "Swaying Heights" ? 0.0375 : 0) +
+    (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
@@ -377,7 +357,6 @@ export function buildContext(
       henZhi: inputs.shareDebuff5HenZhi,
       easyHurt: inputs.shareEasyHurt,
     },
-    boostZoneOverrides: resolveMindMethodOverrides(inputs).boostZoneOverrides,
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),

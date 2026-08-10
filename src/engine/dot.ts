@@ -101,8 +101,7 @@ export function dotTickDamage(
     attributeFixed: dot.attributeFixed,
   }
   const art = tickArt(dot, debuff.name, resolved, forceCrit)
-  return compute(art, ["N/A", "N/A", "N/A", "N/A", "N/A"], ctx, Math.max(1, dot.count))
-    .expectedDamage
+  return compute(art, ctx, Math.max(1, dot.count)).expectedDamage
 }
 
 // Overlapping windows are one continuous episode: a DoT refreshed mid-window

@@ -75,7 +75,6 @@ export interface BuffDef {
   onApply?: string[]
   onApplyFn?: { __handler: string }
   alwaysActive?: boolean
-  counterMechanic?: { refreshable?: boolean } | boolean
   requiresSet?: string
   spec?: string
   affects?: string[] | null
@@ -86,20 +85,21 @@ export interface BuffDef {
   bonus?: BuffBonus | null
   statModifiers?: BuffStatMods
   bossStatModifiers?: BuffStatMods
-  tier6StatModifiers?: BuffStatMods
   __statModByPrefix?: {
     prefixes: string[]
     match: BuffStatMods | null
     default: BuffStatMods | null
   }
   forceCrit?: boolean
+  // Not modelled: the site gates this on a crit-weight ≥ 0.7 test, but this
+  // engine resolves crit weight after the point a buff would need to decide —
+  // modelling it needs a genuine post-crit gate this engine doesn't have yet.
   forceCritIfHighCrit?: boolean
   duration?: number
   maxStacks?: number
   stacksPerHit?: number | boolean
   stacksPerCast?: number
   tierConditionalStacks?: unknown
-  durationByTrigger?: Record<string, number>
   extendDurationToIfBuffActive?: {
     buffId: string
     enabledParam?: string
@@ -119,11 +119,7 @@ export interface BuffDef {
   conditionalTrigger?: { refreshIfActive?: string; upgradeFromActive?: string }
   consumableStackPool?: ConsumableStackPool
   perCastConsume?: PerCastConsumeSpec
-  triggerOnBuffEnd?: { sourceBuff: string; cancelledByReapply?: boolean }
   buffAppliesOnCastEnd?: boolean
-  affectsParty?: boolean
-  formbendBonus?: number
-  formbendBonusTriggers?: string[]
 }
 
 export const BONUS_TYPE_TO_STATKEY: Record<BuffBonusType, StatKey> = {

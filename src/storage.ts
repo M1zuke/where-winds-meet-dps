@@ -31,6 +31,7 @@ import {
   runProfileMigrations,
   migrateClassId,
   migrateEntityId,
+  migrateSetId,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -158,6 +159,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // that reads `classId` (arsenal / inner-way allowlist / talent defaults).
   next.classId = migrateClassId(next.classId)
   next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
+  // Value-level repair for the legacy `wwm.inputs` blob, which has no version
+  // chain of its own (V8 covers `wwm.profiles`) — idempotent, so re-running it
+  // on an already-migrated id is a no-op.
+  next.set = migrateSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)
   }

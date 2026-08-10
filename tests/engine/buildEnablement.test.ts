@@ -5,6 +5,7 @@
 import { describe, it, expect } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import type { BuffDef } from "../../src/engine/buffs/buffDef"
+import { legacyBuffModule } from "../../src/engine/buffs/legacyBuffModule"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { zhongToTier } from "../../src/engine/buffs/paramMap"
@@ -13,6 +14,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets"
 
 function taggedSkill(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -39,7 +41,7 @@ describe("paramsFromInputs — build derivation", () => {
         { ...emptyMindMethod },
         { ...emptyMindMethod },
       ],
-      set: "Shattered Ridge",
+      set: SET_ID.shatteredRidge,
     }
     const params = paramsFromInputs(inputs)
     expect(params.wolfchasersArt).toBe(true)
@@ -64,7 +66,7 @@ describe("paramsFromInputs — build derivation", () => {
   })
 
   it("Stars Align enables starsAlignActive", () => {
-    const inputs: Inputs = { ...base, set: "Stars Align" }
+    const inputs: Inputs = { ...base, set: SET_ID.starsAlign }
     const params = paramsFromInputs(inputs)
     expect(params.starsAlignActive).toBe(true)
     expect(params.armorSet).toBe("starsAlign")
@@ -108,7 +110,13 @@ describe("paramsFromInputs — build derivation", () => {
   it("the default build enables no gated buff param", () => {
     const params = paramsFromInputs({ ...defaultInputs, classId: "bellstrikeUmbra" })
     for (const [param, def] of Object.entries(params)) {
-      if (param === "isTrainingDummy" || param === "armorSet") continue
+      if (
+        param === "isTrainingDummy" ||
+        param === "armorSet" ||
+        param === "classId" ||
+        param === "spec"
+      )
+        continue
       expect(def).toBeFalsy()
     }
   })
@@ -175,14 +183,14 @@ describe("build-driven enablement moves timeline DPS", () => {
 describe("set enablement registers a requiresSet buff", () => {
   it("Jadeware registers jadeware; Hawking does not", () => {
     const withSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: "Jadeware" }),
+      paramsFromInputs({ ...defaultInputs, set: SET_ID.jadeware }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
     expect(withSet.definitions.has("jadeware")).toBe(true)
 
     const withoutSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: "Hawking" }),
+      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawking }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
@@ -201,12 +209,12 @@ describe("time-windowed application", () => {
         bonus: { type: "buffBonus", value: 0.2 },
       },
     ]
-    const e = new BuffEngine({}, defs)
-    e.processSkillCast("X", 0, {})
-    expect(e.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
+    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    engine.processSkillCast("X", 0, {})
+    expect(engine.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.2,
     })
-    expect(e.calculateDamageEffects(taggedSkill("Y"), 11).effects).toHaveLength(0)
+    expect(engine.calculateDamageEffects(taggedSkill("Y"), 11).effects).toHaveLength(0)
   })
 })

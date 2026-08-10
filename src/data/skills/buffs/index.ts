@@ -1,4 +1,6 @@
 import type { BuffDef } from "../../../engine/buffs/buffDef"
+import type { BuffModule } from "../../../engine/buffs/buffModule"
+import { legacyBuffModule } from "../../../engine/buffs/legacyBuffModule"
 import comboFile from "./combo.json"
 import comboUmbLightBonusFile from "./comboUmbLightBonus.json"
 import windWallFile from "./windWall.json"
@@ -8,15 +10,9 @@ import lingeringBoneFile from "./lingeringBone.json"
 import starReacherNormalFile from "./starReacherNormal.json"
 import starReacherBelow30File from "./starReacherBelow30.json"
 import starReacherExhaustedFile from "./starReacherExhausted.json"
-import revelryScriptFile from "./revelryScript.json"
-import fluteBoostFile from "./fluteBoost.json"
 import springThunderFile from "./springThunder.json"
 import throatPiercedFile from "./throatPierced.json"
 import throatPiercedDeflectFile from "./throatPiercedDeflect.json"
-import concentrationFile from "./concentration.json"
-import potentRiverFlowFile from "./potentRiverFlow.json"
-import wineGuFile from "./wineGu.json"
-import crosswindSpiritFile from "./crosswindSpirit.json"
 import mountainsMightFile from "./mountainsMight.json"
 import drumbeatFile from "./drumbeat.json"
 import breakthroughFile from "./breakthrough.json"
@@ -40,18 +36,25 @@ import empoweredUmbQCritFile from "./empoweredUmbQCrit.json"
 import starsAlign4pcFile from "./starsAlign4pc.json"
 import tangMelodyFile from "./tangMelody.json"
 import towlineSweepT6SpecialFile from "./towlineSweepT6Special.json"
-import vulnerabilityTeammateFile from "./vulnerabilityTeammate.json"
-import jadewareFile from "./jadeware.json"
-import mirageFile from "./mirage.json"
-import mirageBonusFile from "./mirageBonus.json"
-import rainwhisperShieldFile from "./rainwhisperShield.json"
-import resistanceResolveFile from "./resistanceResolve.json"
-import surgingWavesFile from "./surgingWaves.json"
-import dragonHeadLowHpFile from "./dragonHeadLowHp.json"
-import healerBuffFile from "./healerBuff.json"
-import soulShakenFile from "./soulShaken.json"
-import bellstrikeUmbraBleedPenFile from "./bellstrikeUmbraBleedPen.json"
-import bellstrikeUmbraBleedingDamageFile from "./bellstrikeUmbraBleedingDamage.json"
+
+import { concentration } from "./concentration"
+import { potentRiverFlow } from "./potentRiverFlow"
+import { wineGu } from "./wineGu"
+import { crosswindSpirit } from "./crosswindSpirit"
+import { revelryScript } from "./revelryScript"
+import { fluteBoost } from "./fluteBoost"
+import { healerBuff } from "./healerBuff"
+import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
+import { jadeware } from "./jadeware"
+import { mirage } from "./mirage"
+import { mirageBonus } from "./mirageBonus"
+import { rainwhisperShield } from "./rainwhisperShield"
+import { resistanceResolve } from "./resistanceResolve"
+import { surgingWaves } from "./surgingWaves"
+import { dragonHeadLowHp } from "./dragonHeadLowHp"
+import { soulShaken } from "./soulShaken"
+import { bellstrikeUmbraBleedPen } from "./bellstrikeUmbraBleedPen"
+import { bellstrikeUmbraBleedingDamage } from "./bellstrikeUmbraBleedingDamage"
 
 interface BuffVariant {
   specs?: string[]
@@ -68,22 +71,14 @@ interface BuffFile {
 // single def; spec/global/group/mechanic files just have one variant.
 // JSON imports widen `scope` to `string`, hence the single cast per helper
 // (mirrors the `as unknown as Skill[]` cast in src/data/skills/<class>/index.ts).
-function defForSpec(rawFile: unknown, spec: string): BuffDef {
+function defForSpec(rawFile: unknown, spec: string): BuffModule {
   const file = rawFile as BuffFile
-  const variant = file.variants.find((v) => v.specs?.includes(spec))
-  if (!variant) throw new Error(`No variant for spec "${spec}" in buff file "${file.id}"`)
-  return variant.def
+  const matched = file.variants.find((variant) => variant.specs?.includes(spec))
+  if (!matched) throw new Error(`No variant for spec "${spec}" in buff file "${file.id}"`)
+  return legacyBuffModule(matched.def)
 }
 
-function soleDef(rawFile: unknown): BuffDef {
-  return (rawFile as BuffFile).variants[0].def
-}
-
-function allDefs(rawFile: unknown): BuffDef[] {
-  return (rawFile as BuffFile).variants.map((v) => v.def)
-}
-
-export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
+export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffModule[]> = {
   silkbind_jade: [
     defForSpec(comboFile, "silkbind_jade"),
     defForSpec(comboUmbLightBonusFile, "silkbind_jade"),
@@ -94,24 +89,18 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(starReacherNormalFile, "silkbind_jade"),
     defForSpec(starReacherBelow30File, "silkbind_jade"),
     defForSpec(starReacherExhaustedFile, "silkbind_jade"),
-    defForSpec(revelryScriptFile, "silkbind_jade"),
-    defForSpec(fluteBoostFile, "silkbind_jade"),
+    revelryScript,
+    fluteBoost,
     defForSpec(springThunderFile, "silkbind_jade"),
     defForSpec(throatPiercedFile, "silkbind_jade"),
     defForSpec(throatPiercedDeflectFile, "silkbind_jade"),
   ],
-  bellstrike_umbra: [
-    defForSpec(concentrationFile, "bellstrike_umbra"),
-    defForSpec(potentRiverFlowFile, "bellstrike_umbra"),
-    defForSpec(wineGuFile, "bellstrike_umbra"),
-    defForSpec(crosswindSpiritFile, "bellstrike_umbra"),
-    defForSpec(revelryScriptFile, "bellstrike_umbra"),
-  ],
+  bellstrike_umbra: [concentration, potentRiverFlow, wineGu, crosswindSpirit, revelryScript],
   bellstrike_splendor: [
     defForSpec(mountainsMightFile, "bellstrike_splendor"),
-    defForSpec(concentrationFile, "bellstrike_splendor"),
-    defForSpec(revelryScriptFile, "bellstrike_splendor"),
-    defForSpec(fluteBoostFile, "bellstrike_splendor"),
+    concentration,
+    revelryScript,
+    fluteBoost,
   ],
   stonesplit_might: [
     defForSpec(drumbeatFile, "stonesplit_might"),
@@ -121,7 +110,7 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(throatPiercedFile, "stonesplit_might"),
     defForSpec(throatPiercedDeflectFile, "stonesplit_might"),
     defForSpec(shatteredRidgeDeflectFile, "stonesplit_might"),
-    defForSpec(revelryScriptFile, "stonesplit_might"),
+    revelryScript,
   ],
   stonesplit_strength: [
     defForSpec(innerPassionFile, "stonesplit_strength"),
@@ -139,35 +128,31 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(throatPiercedAnxiT6File, "stonesplit_strength"),
     defForSpec(throatPiercedDeflectFile, "stonesplit_strength"),
     defForSpec(shatteredRidgeDeflectFile, "stonesplit_strength"),
-    defForSpec(revelryScriptFile, "stonesplit_strength"),
+    revelryScript,
   ],
   silkbind_deluge: [defForSpec(heartFocusFile, "silkbind_deluge")],
   silkbind_deluge_dps: [],
   bamboocut_dust: [
     defForSpec(empoweredUmbQCritFile, "bamboocut_dust"),
-    defForSpec(revelryScriptFile, "bamboocut_dust"),
-    defForSpec(fluteBoostFile, "bamboocut_dust"),
+    revelryScript,
+    fluteBoost,
     defForSpec(starsAlign4pcFile, "bamboocut_dust"),
     defForSpec(tangMelodyFile, "bamboocut_dust"),
     defForSpec(towlineSweepT6SpecialFile, "bamboocut_dust"),
   ],
 }
 
-export const GLOBAL_BUFF_DEFS: BuffDef[] = [
-  soleDef(vulnerabilityTeammateFile),
-  soleDef(jadewareFile),
-  soleDef(mirageFile),
-  soleDef(mirageBonusFile),
-  soleDef(rainwhisperShieldFile),
-  soleDef(resistanceResolveFile),
-  soleDef(surgingWavesFile),
-  soleDef(dragonHeadLowHpFile),
+export const GLOBAL_BUFF_DEFS: BuffModule[] = [
+  vulnerabilityTeammate,
+  jadeware,
+  mirage,
+  mirageBonus,
+  rainwhisperShield,
+  resistanceResolve,
+  surgingWaves,
+  dragonHeadLowHp,
 ]
 
-export const GROUP_BUFF_DEFS: BuffDef[] = [soleDef(healerBuffFile)]
+export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]
 
-export const MECHANIC_BUFF_DEFS: BuffDef[] = [
-  ...allDefs(soulShakenFile),
-  soleDef(bellstrikeUmbraBleedPenFile),
-  soleDef(bellstrikeUmbraBleedingDamageFile),
-]
+export const MECHANIC_BUFF_DEFS: BuffModule[] = [soulShaken, bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage]

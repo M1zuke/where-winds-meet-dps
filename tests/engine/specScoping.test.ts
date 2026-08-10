@@ -42,7 +42,7 @@ describe("spec-scoping — mechanicBuffDefsForClass", () => {
 
     // The gate itself: an untagged def is universal, so these must carry the spec.
     for (const id of ["soulShaken", "bellstrikeUmbraBleedPen"]) {
-      expect(umbra.find((d) => d.id === id)!.spec).toBe("bellstrike_umbra")
+      expect(umbra.find((buffModule) => buffModule.id === id)!.specs).toContain("bellstrike_umbra")
     }
   })
 })

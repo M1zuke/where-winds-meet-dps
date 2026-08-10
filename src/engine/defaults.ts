@@ -1,6 +1,7 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
 import { DEFAULT_ODDITIES } from "../data/baseStats"
+import { SET_ID } from "../data/sets"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
@@ -59,7 +60,7 @@ export const defaultInputs: Inputs = {
 
   food: true,
   tianGongElement: "fire",
-  set: "Hawking",
+  set: SET_ID.hawking,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
   bowSet: null,

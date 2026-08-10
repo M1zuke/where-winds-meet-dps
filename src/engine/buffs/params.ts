@@ -1,12 +1,18 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import { APP_SET_TO_SITE_SET, SITE_PARAM_TO_INNER_WAY, zhongToTier } from "./paramMap"
+import { SITE_PARAM_TO_INNER_WAY, zhongToTier } from "./paramMap"
+import { SET_BY_ID } from "../../data/sets"
 import { slotInnerWayId } from "../../data/classes/innerWays"
+import { specForClass } from "./data"
 
 export function paramsFromInputs(inputs: Inputs): BuffParams {
-  const params: BuffParams = { isTrainingDummy: !!inputs.dummyMode }
+  const params: BuffParams = {
+    isTrainingDummy: !!inputs.dummyMode,
+    classId: inputs.classId,
+    spec: specForClass(inputs.classId),
+  }
 
-  const armorSetKey = inputs.set ? APP_SET_TO_SITE_SET[inputs.set] : undefined
+  const armorSetKey = inputs.set ? SET_BY_ID[inputs.set]?.siteKey : undefined
   if (armorSetKey) {
     params.armorSet = armorSetKey
     if (armorSetKey === "starsAlign") params.starsAlignActive = true

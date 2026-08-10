@@ -76,7 +76,7 @@ export function BowSetPanel({ inputs, onChange, armorDpsByKey, bowDpsByChoice, i
           return (
             <SetTile
               key={opt.setKey}
-              label={t(opt.setKey)}
+              label={t(opt.name)}
               bonusLabel={bonusWithStatLabel(t, statKey, opt.value, isFlat)}
               dps={armorDpsByKey?.[opt.setKey] ?? Number.NaN}
               currentDps={currentArmorDps}
