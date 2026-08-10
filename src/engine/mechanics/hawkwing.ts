@@ -7,6 +7,7 @@ import {
   type HawkwingStacksSchedule,
 } from "../buffs/hawkwing"
 import { effectiveRates } from "../panel"
+import { MECHANIC_ORDER, registerMechanic } from "./index"
 import type { TimelineMechanic } from "./types"
 
 const SET = "Hawking"
@@ -47,3 +48,5 @@ export const hawkwingMechanic: TimelineMechanic<State> = {
     ]
   },
 }
+
+registerMechanic(hawkwingMechanic, MECHANIC_ORDER.hawkwing)

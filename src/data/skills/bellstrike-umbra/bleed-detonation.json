@@ -28,7 +28,8 @@
             "stacks": 1
           },
           "extendFrames": 600,
-          "extendOnly": true
+          "extendOnly": true,
+          "maxExtendedDurationFrames": 960
         }
       ]
     }

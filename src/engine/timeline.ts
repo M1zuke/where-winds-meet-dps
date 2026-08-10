@@ -16,17 +16,13 @@ import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { buildBehaviors, type BuildView, type HitInput } from "./behavior"
-import "../data/classes/bellstrikeUmbraCrosswind"
+import "../data/classes"
 import { deriveStats, buildContext } from "./panel"
 import { computeSkillDamage } from "./formula"
 import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
-import {
-  builtinBuffsForClass,
-  ZENITH_DETONATION_BUFF_ID,
-  ZENITH_MAX_EXTENDED_DURATION_FRAMES,
-} from "./builtinBuffs"
+import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
@@ -532,12 +528,9 @@ export function simulateTimeline(inputs: Inputs): Result {
         if (trigger.extendFrames != null) {
           const w = ledger.longestActiveWindow(status.id, frame)
           if (w) {
-            // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
-            const isZenithExtension = trigger.condition?.buffId === ZENITH_DETONATION_BUFF_ID
+            const cap = trigger.maxExtendedDurationFrames
             const rawEnd = w.end + trigger.extendFrames
-            const nextEnd = isZenithExtension
-              ? Math.max(w.end, Math.min(rawEnd, frame + ZENITH_MAX_EXTENDED_DURATION_FRAMES))
-              : rawEnd
+            const nextEnd = cap ? Math.max(w.end, Math.min(rawEnd, frame + cap)) : rawEnd
             const appliedAmount = nextEnd - w.end
             w.end = nextEnd
             if (appliedAmount > 0) (w.extensions ??= []).push({ frame, amount: appliedAmount })

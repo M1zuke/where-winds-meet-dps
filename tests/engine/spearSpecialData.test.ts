@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import {
-  builtinBuffsForClass,
   RIVER_FLOW_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   RIVER_FLOW_DURATION_FRAMES,
@@ -9,7 +8,8 @@ import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_DETONATION_FRAMES,
   ZENITH_BAR_BUFF_ID,
-} from "../../src/engine/builtinBuffs"
+} from "../../src/data/classes/bellstrikeUmbraGates"
+import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
 

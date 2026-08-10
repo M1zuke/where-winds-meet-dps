@@ -1,11 +1,9 @@
 import { mulberry32 } from "./hawkwing"
-import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../builtinBuffs"
 
 const STEP_SEC = 0.05
 const SIM_RUNS = 500
 const STACK_SEED_OFFSET = 40217
 const POISON_SEED_OFFSET = 58601
-const ZENITH_MAX_EXTENDED_DURATION_SEC = ZENITH_MAX_EXTENDED_DURATION_FRAMES / 60
 
 export const BITTER_SEASON_INNER_WAY = "Bitter Season"
 export const BITTER_SEASON_TICK_SLUG = "bitter-season-tick"
@@ -117,6 +115,9 @@ export function bitterSeasonPoisonSchedule(
   poisonDurationSec: number,
   rotationDurationSec: number,
   extensionTimesSec: readonly number[],
+  // The ceiling an extension may leave on the REMAINING duration, from the
+  // extending moment. `Infinity` when the build has no extension source.
+  maxRemainingSec: number,
 ): BitterSeasonPoisonSchedule {
   if (
     hitTimesSec.length === 0 ||
@@ -157,7 +158,7 @@ export function bitterSeasonPoisonSchedule(
               poisonEnd,
               Math.min(
                 poisonEnd + BITTER_SEASON_ZENITH_EXTENSION_SEC,
-                nextExtTime + ZENITH_MAX_EXTENDED_DURATION_SEC,
+                nextExtTime + maxRemainingSec,
               ),
             )
           }
@@ -202,6 +203,7 @@ export function bitterSeasonEnvelopeWindows(
   hitTimesSec: readonly number[],
   poisonDurationSec: number,
   extensionTimesSec: readonly number[],
+  maxRemainingSec: number,
 ): BitterSeasonEnvelopeWindow[] {
   if (hitTimesSec.length === 0 || poisonDurationSec <= 0) return []
 
@@ -227,10 +229,7 @@ export function bitterSeasonEnvelopeWindows(
       if (currentStart !== null && currentEnd > nextExtTime) {
         currentEnd = Math.max(
           currentEnd,
-          Math.min(
-            currentEnd + BITTER_SEASON_ZENITH_EXTENSION_SEC,
-            nextExtTime + ZENITH_MAX_EXTENDED_DURATION_SEC,
-          ),
+          Math.min(currentEnd + BITTER_SEASON_ZENITH_EXTENSION_SEC, nextExtTime + maxRemainingSec),
         )
       }
       extIdx++

@@ -3,6 +3,8 @@
 // DoT damage while it is up.
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
 import { effectiveRates } from "../../engine/panel"
+import { registerDisplayGate } from "../../engine/buffs/displayGates"
+import { MECHANIC_ORDER, registerMechanic } from "../../engine/mechanics"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
@@ -87,3 +89,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
     ]
   },
 }
+
+registerMechanic(concentrationMechanic, MECHANIC_ORDER.concentration)
+
+registerDisplayGate("concentration", concentrationAvailable)

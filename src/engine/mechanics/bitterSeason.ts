@@ -13,13 +13,21 @@ import {
   type BitterSeasonStackSchedule,
   type BitterSeasonTuning,
 } from "../buffs/bitterSeason"
-import { ZENITH_DETONATION_BUFF_ID } from "../builtinBuffs"
 import { getBreakthrough, henZhiActiveForInputs } from "../panel"
 import { zhongToTier } from "../buffs/paramMap"
 import type { BuffStatEffect } from "../buff"
+import { MECHANIC_ORDER, registerMechanic } from "./index"
 import type { TimelineMechanic } from "./types"
 
 const REMAINING_DISPLAY_THRESHOLD = 0.5
+
+// A class inner way can extend an active poison — Sword Horizon's Zenith does.
+// Registered rather than imported, so this file names no class.
+let extension: { statusId: string; maxRemainingSec: number } | null = null
+
+export function registerPoisonExtension(statusId: string, maxRemainingSec: number): void {
+  extension = { statusId, maxRemainingSec }
+}
 
 interface State {
   debuffId: string
@@ -64,10 +72,13 @@ export const bitterSeasonMechanic: TimelineMechanic<State> = {
     const durationFrames = target.statusDurationFrames(state.debuffId) ?? 0
     if (durationFrames <= 0) return
 
-    const zenithTimesSec = target.ledger
-      .windowsOf(ZENITH_DETONATION_BUFF_ID)
-      .map((window) => window.start / setup.fps)
-      .sort((a, b) => a - b)
+    const extensionTimesSec = extension
+      ? target.ledger
+          .windowsOf(extension.statusId)
+          .map((window) => window.start / setup.fps)
+          .sort((a, b) => a - b)
+      : []
+    const maxRemainingSec = extension?.maxRemainingSec ?? Infinity
     const poisonDurationSec = durationFrames / setup.fps
 
     state.poison = bitterSeasonPoisonSchedule(
@@ -75,12 +86,14 @@ export const bitterSeasonMechanic: TimelineMechanic<State> = {
       state.tuning.procChance,
       poisonDurationSec,
       setup.rotationDurationSec,
-      zenithTimesSec,
+      extensionTimesSec,
+      maxRemainingSec,
     )
     for (const envelope of bitterSeasonEnvelopeWindows(
       setup.hitTimesSec,
       poisonDurationSec,
-      zenithTimesSec,
+      extensionTimesSec,
+      maxRemainingSec,
     )) {
       target.ledger.pushWindow(
         state.debuffId,
@@ -163,3 +176,5 @@ export const bitterSeasonMechanic: TimelineMechanic<State> = {
     ]
   },
 }
+
+registerMechanic(bitterSeasonMechanic, MECHANIC_ORDER.bitterSeason)

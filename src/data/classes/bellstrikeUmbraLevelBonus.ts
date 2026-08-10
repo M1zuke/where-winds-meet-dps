@@ -4,6 +4,7 @@ import {
   APP_PLAYER_LEVEL,
   playerLevelAttributeAttackBonus,
 } from "../../engine/buffs/levelAttributeBonus"
+import { MECHANIC_ORDER, registerMechanic } from "../../engine/mechanics"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
@@ -30,3 +31,5 @@ export const levelAttributeBonusMechanic: TimelineMechanic<State> = {
     }
   },
 }
+
+registerMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus)

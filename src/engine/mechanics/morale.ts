@@ -10,6 +10,7 @@ import {
   moraleDmgPerStack,
   moraleStacksAtTime,
 } from "../buffs/morale"
+import { MECHANIC_ORDER, registerMechanic } from "./index"
 import type { MechanicEvent, MechanicSetup, TimelineMechanic } from "./types"
 
 const PARAM = "moraleChant"
@@ -95,3 +96,5 @@ export const moraleMechanic: TimelineMechanic<State> = {
     ]
   },
 }
+
+registerMechanic(moraleMechanic, MECHANIC_ORDER.morale)

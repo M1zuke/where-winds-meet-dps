@@ -21,6 +21,9 @@ import debuffsLibrary from "../skills/debuffsLibrary.json"
 import defaultRotationsData from "../rotations/defaultRotations.json"
 import handRotationsData from "../rotations/handRotations.json"
 import { builtinBuffsForClass } from "../../engine/builtinBuffs"
+// Side-effect load: each class registers its gate buffs, behaviours and
+// mechanics before the first definition is assembled.
+import "./index"
 import { poolForClass, type RetunementPool } from "./retunementPools"
 import schools from "./schools.json"
 

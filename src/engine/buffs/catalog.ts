@@ -1,7 +1,7 @@
 import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
 import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { matchesScope } from "../scope"
-import { concentrationAvailable } from "../../data/classes/bellstrikeUmbraConcentration"
+import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
   MYSTIC_TYPE_BOOST_STAT_KEY,
@@ -121,11 +121,6 @@ export function buffGateSatisfied(def: BuffDef, params: BuffParams): boolean {
   return true
 }
 
-const DISPLAY_ACTIVE_GATES: Record<string, (inputs: Inputs) => boolean> = {
-  concentration: concentrationAvailable,
-  vulnerabilityTeammate: (inputs) => !!inputs.shareEasyHurt,
-}
-
 const DISPLAY_REQUIRES: Record<string, string> = {
   vulnerabilityTeammate: "Encounter Settings: Tank Spear Debuff",
 }
@@ -198,7 +193,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       if (bonusPart) parts.push(bonusPart)
     }
 
-    const displayGate = inputs ? DISPLAY_ACTIVE_GATES[def.id] : undefined
+    const displayGate = inputs ? displayGateFor(def.id) : undefined
     const displayActive = displayGate ? displayGate(inputs!) : undefined
 
     rows.push({

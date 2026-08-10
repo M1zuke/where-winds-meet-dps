@@ -31,6 +31,11 @@ export interface HitTrigger {
   conditions?: TriggerCondition[]
   extendFrames?: number
   extendOnly?: boolean
+  // A ceiling on the REMAINING duration this extension may leave, measured from
+  // the extending frame and re-evaluated per extension — not a lifetime cap on
+  // the window. An extension always adds its full amount; if the window is
+  // already longer than the ceiling it is left alone, never truncated down.
+  maxExtendedDurationFrames?: number
 }
 
 export interface SkillHit {
