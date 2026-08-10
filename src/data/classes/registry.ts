@@ -29,6 +29,7 @@ import schools from "./schools.json"
 
 interface SchoolRow {
   id: string
+  validated?: boolean
   primaryAttribute: AttributeKey
   permanentBuffs: string[]
   classMindGroup: string
@@ -49,6 +50,10 @@ export const CLASS_IDS: readonly string[] = SCHOOLS.map((school) => school.id)
 
 export interface ClassDefinition {
   id: string
+  // Whether this class's data has been checked against the game. The other
+  // seven carry unverified imported numbers — CLASSES.md § "Implemented
+  // classes" — and the UI marks them so.
+  validated: boolean
   spec: string | undefined
   primaryAttribute: AttributeKey
   // The class's own inner way, plus the ones it may slot alongside it.
@@ -78,6 +83,7 @@ export function classDefinition(classId: string): ClassDefinition | null {
 
   const definition: ClassDefinition = {
     id: classId,
+    validated: school.validated === true,
     spec: specForClass(classId),
     primaryAttribute: school.primaryAttribute,
     innerWays: [

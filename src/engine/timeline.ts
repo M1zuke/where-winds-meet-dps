@@ -17,7 +17,7 @@ import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mecha
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { buildBehaviors, type BuildView, type HitInput } from "./behavior"
 import "../data/classes"
-import { deriveStats, buildContext } from "./panel"
+import { buildContext } from "./panel"
 import { computeSkillDamage } from "./formula"
 import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
@@ -36,7 +36,6 @@ export const FPS = 60
 const EVENT_CAP = 100_000
 
 type Ctx = ReturnType<typeof buildContext>
-type Derived = ReturnType<typeof deriveStats>
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
@@ -296,7 +295,6 @@ export function simulateTimeline(inputs: Inputs): Result {
   interface Resolved {
     inputs: Inputs
     ctx: Ctx
-    derived: Derived
   }
   interface ResolveOverride {
     extraEffects?: BuffStatEffect[]
@@ -399,8 +397,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         ctx.affinityPanel = 0
         ctx.directAffinityPanel = 1
       }
-      const derived = deriveStats(effInputs)
-      r = { inputs: effInputs, ctx, derived }
+      r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
     return { ...r, forceCrit: forceCritFromBuff }

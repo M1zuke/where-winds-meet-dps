@@ -1,6 +1,7 @@
 import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
+import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { innerWayScalar, innerWayTargetDefenseMultiplier } from "../data/classes/innerWays"
 import { resolveMindMethodOverrides } from "./mindMethodOverrides"
 import schools from "../data/classes/schools.json"
@@ -39,6 +40,21 @@ const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
 const SETS = (sets as { sets: { name: string; [k: string]: unknown }[] }).sets
 
 const DING_YIN_PATH_PREFIX = "dingYinByTag."
+
+// The scoped stats (BUFFS.md § "Category 3") are keyed by what the entity
+// declares — a weapon name, a mystic category — and `statRegistry` already owns
+// that vocabulary. Reading it here keeps one list instead of a copy per
+// consumer.
+function scopedStatMap(
+  inputs: Inputs,
+  keyByCategory: Readonly<Record<string, StatKey>>,
+): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const [category, statKey] of Object.entries(keyByCategory)) {
+    out[category] = (inputs as unknown as Record<string, number>)[statKey] ?? 0
+  }
+  return out
+}
 
 // The shared HenZhi debuff and Year-Long Lament tier 6 are the same 6 %
 // reduction; whichever is present, it applies once.
@@ -359,23 +375,8 @@ export function buildContext(
     },
     boostZoneOverrides: resolveMindMethodOverrides(inputs).boostZoneOverrides,
     allMartialBoost: inputs.allMartialBoost,
-    weaponBoosts: {
-      Sword: inputs.swordBoost,
-      Spear: inputs.spearBoost,
-      Fan: inputs.fanBoost,
-      Umbrella: inputs.umbrellaBoost,
-      Modao: inputs.modaoBoost,
-      "Twin Blades": inputs.dualKnivesBoost,
-      "Rope Dart": inputs.ropeDartBoost,
-      Hengdao: inputs.hengDaoBoost,
-    },
-    mysticTypeBoosts: {
-      control: inputs.singleMysticBoost,
-      burst: inputs.singleMysticBoost,
-      area: inputs.areaMysticBoost,
-      "area-debuff": inputs.areaMysticBoost,
-      "area-damage": inputs.areaMysticBoost,
-    },
+    weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
+    mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
     dotDamageBoost: innerWayScalar(inputs.mindMethods, "dotDamageBoost"),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,

@@ -1,9 +1,8 @@
 import schools from "../../../../data/classes/schools.json"
+import { classDefinition } from "../../../../data/classes/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
 
 const SCHOOLS = schools as { id: string; cn: string; en: string }[]
-
-const SUPPORTED_CLASS_IDS: ReadonlySet<string> = new Set(["bellstrikeUmbra"])
 
 interface Props {
   value: string
@@ -12,10 +11,11 @@ interface Props {
 
 export function ClassSelect({ value, onChange }: Props) {
   const { t } = useI18n()
-  const visible = SCHOOLS.filter((school) => SUPPORTED_CLASS_IDS.has(school.id))
-  const legacy = SUPPORTED_CLASS_IDS.has(value)
-    ? undefined
-    : SCHOOLS.find((school) => school.id === value)
+  const visible = SCHOOLS.filter((school) => classDefinition(school.id)?.validated ?? false)
+  const legacy =
+    (classDefinition(value)?.validated ?? false)
+      ? undefined
+      : SCHOOLS.find((school) => school.id === value)
   return (
     <div className="row">
       <label>{t("Class")}</label>
