@@ -14,7 +14,7 @@ import {
   type BitterSeasonTuning,
 } from "../buffs/bitterSeason"
 import { getBreakthrough, henZhiActiveForInputs } from "../panel"
-import { zhongToTier } from "../buffs/paramMap"
+import { innerWayTier } from "../../data/classes/innerWays"
 import type { BuffStatEffect } from "../buff"
 import { MECHANIC_ORDER, registerMechanic } from "./index"
 import type { TimelineMechanic } from "./types"
@@ -44,11 +44,9 @@ export const bitterSeasonMechanic: TimelineMechanic<State> = {
   id: "bitterSeasonPoison",
 
   prepare(setup) {
-    const slot = setup.inputs.mindMethods.find(
-      (candidate) => candidate.name === BITTER_SEASON_INNER_WAY,
-    )
-    if (!slot) return null
-    const tuning = resolveBitterSeasonTuning(zhongToTier(slot.stacks))
+    const tier = innerWayTier(setup.inputs.mindMethods, BITTER_SEASON_INNER_WAY)
+    if (tier === null) return null
+    const tuning = resolveBitterSeasonTuning(tier)
     return {
       debuffId: bitterSeasonDebuffId(setup.classId),
       tuning,

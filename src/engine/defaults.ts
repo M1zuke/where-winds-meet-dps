@@ -47,11 +47,14 @@ export const defaultInputs: Inputs = {
 
   dingYinByTag: { "Mouse Boost": 0.153 },
 
+  // Unslotted: the four inner ways this used to carry were removed as
+  // unimplemented (2026-08-10), and no validated class allows a replacement for
+  // all four.
   mindMethods: [
-    { name: "Forgotten River Echo", stacks: "tier 6" },
-    { name: "Mud-Fish Heart", stacks: "tier 6" },
-    { name: "Bliss Bleeding", stacks: "tier 6" },
-    { name: "Stone-Cutter", stacks: "tier 5" },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
   ],
 
   food: true,

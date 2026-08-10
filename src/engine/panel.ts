@@ -56,8 +56,11 @@ function scopedStatMap(
   return out
 }
 
-// The shared HenZhi debuff and Year-Long Lament tier 6 are the same 6 %
-// reduction; whichever is present, it applies once.
+// The 6 % target-defense reduction. Only the party-applied HenZhi debuff
+// supplies it now — the self-applied route (an inner way at tier 6) went with
+// the 23 unimplemented inner ways removed on 2026-08-10, so no
+// `targetDefenseMultiplier` def remains. The channel stays because the def
+// schema still carries it and a validated inner way could use it again.
 const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 
 export interface DerivedStats {
@@ -81,6 +84,7 @@ export function getSchool(classId: string) {
   return s
 }
 
+// Returns inner-way IDS; the UI renders them through `innerWayName`.
 export function allowedInnerWaysForClass(classId: string): string[] {
   const s = SCHOOLS.find((x) => x.id === classId)
   if (!s) return []

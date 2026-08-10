@@ -49,8 +49,8 @@ describe("storage", () => {
       ...defaultInputs,
       precision: 0.42,
       mindMethods: [
-        { name: "Forgotten River Echo", stacks: "tier 6" },
-        { name: "Mud-Fish Heart", stacks: "tier 5" },
+        { name: "insightfulStrike", stacks: "tier 6" },
+        { name: "moraleChant", stacks: "tier 5" },
         { name: "", stacks: "" },
         { name: "", stacks: "" },
       ],
@@ -59,7 +59,7 @@ describe("storage", () => {
     const loaded = loadInputs()
     expect(loaded).not.toBeNull()
     expect(loaded?.precision).toBe(0.42)
-    expect(loaded?.mindMethods[1]).toEqual({ name: "Mud-Fish Heart", stacks: "tier 5" })
+    expect(loaded?.mindMethods[1]).toEqual({ name: "moraleChant", stacks: "tier 5" })
   })
 
   it("clearSavedInputs removes the entry", () => {

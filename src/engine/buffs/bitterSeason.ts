@@ -5,7 +5,7 @@ const SIM_RUNS = 500
 const STACK_SEED_OFFSET = 40217
 const POISON_SEED_OFFSET = 58601
 
-export const BITTER_SEASON_INNER_WAY = "Bitter Season"
+export const BITTER_SEASON_INNER_WAY = "bitterSeason"
 export const BITTER_SEASON_TICK_SLUG = "bitter-season-tick"
 export const BITTER_SEASON_MAX_STACKS = 5
 export const BITTER_SEASON_STACK_DURATION_SEC = 10

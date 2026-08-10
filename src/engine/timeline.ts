@@ -28,7 +28,7 @@ import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buf
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
-import { zhongToTier } from "./buffs/paramMap"
+import { innerWayTier } from "../data/classes/innerWays"
 
 export const FPS = 60
 
@@ -217,10 +217,7 @@ export function simulateTimeline(inputs: Inputs): Result {
   const buildView: BuildView = {
     classId: inputs.classId,
     set: inputs.set,
-    innerWayTier: (name) => {
-      const slot = inputs.mindMethods.find((candidate) => candidate.name === name)
-      return slot ? zhongToTier(slot.stacks) : null
-    },
+    innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
   }
 

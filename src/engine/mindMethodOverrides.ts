@@ -1,16 +1,16 @@
 import type { Inputs } from "./types"
 import artsConditionals from "../data/skills/boosts/artsConditionals.json"
-import boostZoneConditionals from "../data/skills/boosts/boostZoneConditionals.json"
+import { slotInnerWayId } from "../data/classes/innerWays"
 
 interface CheckxinfRule {
   fn: "checkxinf"
-  name: string
+  innerWayId: string
   then: number | string
   else: number | string
 }
 interface CheckxinfaRule {
   fn: "Checkxinfa"
-  name: string
+  innerWayId: string
   tier: string
   then: number | string
   else: number | string
@@ -18,7 +18,6 @@ interface CheckxinfaRule {
 type Rule = CheckxinfRule | CheckxinfaRule
 
 const ARTS_COND = artsConditionals as Record<string, Record<string, Rule[]>>
-const BOOST_COND = boostZoneConditionals as Record<string, Record<string, Rule[]>>
 
 export interface MindMethodOverrides {
   artsOverrides: Record<string, Record<string, number>>
@@ -26,7 +25,7 @@ export interface MindMethodOverrides {
 }
 
 function resolveRule(rule: Rule, inputs: Inputs): number {
-  const slot = inputs.mindMethods.find((m) => m.name === rule.name)
+  const slot = inputs.mindMethods.find((candidate) => slotInnerWayId(candidate) === rule.innerWayId)
   let result: number | string
   if (rule.fn === "Checkxinfa") {
     result = slot?.stacks === rule.tier ? rule.then : rule.else
@@ -52,14 +51,12 @@ export function resolveMindMethodOverrides(inputs: Inputs): MindMethodOverrides 
     }
   }
 
+  // Every boost-zone rule referenced an inner way removed as unimplemented
+  // (2026-08-10), so the table is gone. The `boostZoneOverrides` channel itself
+  // was already inert — CALCULATION.md § "What the live path does not exercise"
+  // records that slots are always "N/A" — so the plumbing stays and carries
+  // nothing.
   const boostZoneOverrides: Record<string, Record<string, number>> = {}
-  for (const [name, cols] of Object.entries(BOOST_COND)) {
-    for (const [colKey, rules] of Object.entries(cols)) {
-      const delta = resolveRules(rules, inputs)
-      boostZoneOverrides[name] ??= {}
-      boostZoneOverrides[name][colKey] = delta
-    }
-  }
 
   return { artsOverrides, boostZoneOverrides }
 }

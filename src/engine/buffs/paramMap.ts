@@ -36,26 +36,17 @@
 //     deterministic buff catalog. Out of scope here.
 
 export interface InnerWayMapping {
-  mindMethod: string
+  innerWayId: string
   classSignature?: boolean
 }
 
 const SELECTABLE_INNER_WAYS: Record<string, InnerWayMapping> = {
-  wolfchasersArt: { mindMethod: "Wolfchaser's Art" },
-  throatPierced: { mindMethod: "Throat-Pierce" },
-  mountainsMight: { mindMethod: "Thousand Mountain Law" },
-  songOfTang: { mindMethod: "Tang Anthem" },
-  starReacher: { mindMethod: "Star-Picker" },
-  artOfResistance: { mindMethod: "Endurance Doctrine" },
-  steadfastDevotion: { mindMethod: "Lone Loyalty" },
-  towlineSweep: { mindMethod: "Boat on Wood" },
-  moraleChant: { mindMethod: "Morale Chant" },
+  wolfchasersArt: { innerWayId: "wolfchasersArt" },
+  moraleChant: { innerWayId: "moraleChant" },
 }
 
 const CLASS_SIGNATURE_INNER_WAYS: Record<string, InnerWayMapping> = {
-  swordHorizon: { mindMethod: "Sword Horizon", classSignature: true },
-  combo: { mindMethod: "Moon Above Flowers", classSignature: true },
-  frostCladNight: { mindMethod: "Frostwhite Night", classSignature: true },
+  swordHorizon: { innerWayId: "swordHorizon", classSignature: true },
 }
 
 export const SITE_PARAM_TO_INNER_WAY: Record<string, InnerWayMapping> = {
@@ -64,7 +55,7 @@ export const SITE_PARAM_TO_INNER_WAY: Record<string, InnerWayMapping> = {
 }
 
 export const INNER_WAY_BY_PARAM: Record<string, string> = Object.fromEntries(
-  Object.entries(SITE_PARAM_TO_INNER_WAY).map(([param, m]) => [param, m.mindMethod]),
+  Object.entries(SITE_PARAM_TO_INNER_WAY).map(([param, m]) => [param, m.innerWayId]),
 )
 
 export const APP_SET_TO_SITE_SET: Record<string, string> = {

@@ -1,6 +1,7 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
 import { APP_SET_TO_SITE_SET, SITE_PARAM_TO_INNER_WAY, zhongToTier } from "./paramMap"
+import { slotInnerWayId } from "../../data/classes/innerWays"
 
 export function paramsFromInputs(inputs: Inputs): BuffParams {
   const params: BuffParams = { isTrainingDummy: !!inputs.dummyMode }
@@ -11,14 +12,15 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     if (armorSetKey === "starsAlign") params.starsAlignActive = true
   }
 
-  const tierBySlotName = new Map<string, number>()
+  const tierByInnerWayId = new Map<string, number>()
   for (const slot of inputs.mindMethods) {
-    if (slot.name) tierBySlotName.set(slot.name, zhongToTier(slot.stacks))
+    const innerWayId = slotInnerWayId(slot)
+    if (innerWayId) tierByInnerWayId.set(innerWayId, zhongToTier(slot.stacks))
   }
   for (const [param, mapping] of Object.entries(SITE_PARAM_TO_INNER_WAY)) {
-    if (tierBySlotName.has(mapping.mindMethod)) {
+    if (tierByInnerWayId.has(mapping.innerWayId)) {
       params[param] = true
-      params[param + "Tier"] = tierBySlotName.get(mapping.mindMethod)!
+      params[param + "Tier"] = tierByInnerWayId.get(mapping.innerWayId)!
     }
   }
 

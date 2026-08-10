@@ -1,6 +1,4 @@
-// One def per inner way that moves a context-level term, replacing the
-// hardcoded `has("Soldier's Return")` style checks that were spread across
-// `panel.ts` and `buffs/innerWayBonus.ts`.
+// One def per inner way that moves a context-level term.
 //
 // CALCULATION.md § "Mind-method layers" lists four disjoint channels an inner
 // way can act through. This file is channel 2 (context scalars) and the
@@ -8,10 +6,12 @@
 // `mindMethodPanelStats.json`, channel 3 in `mindMethodOverrides.ts`, and the
 // triggered part of channel 4 in the buff defs.
 //
-// A def without `minTier` applies whenever the inner way is slotted at all.
+// Keyed by `innerWayId`, never by display name — a rename is a one-line change
+// in `innerWayRegistry.ts` and nothing here moves.
+import { resolveInnerWayId } from "./innerWayRegistry"
 
 export interface InnerWayDef {
-  name: string
+  innerWayId: string
   minTier?: number
   // Additive into `FormulaContext.generalDamageBoost`.
   generalDamageBoost?: number
@@ -22,22 +22,17 @@ export interface InnerWayDef {
   // Flat all-damage the inner way grants merely by being selected (the site's
   // `Ss[key].allDamageBonus`, `zo()` ~L7743-65).
   allDamageBonus?: number
-  // Multiplies the target's physical defense. Year-Long Lament at tier 6 is the
-  // self-applied equivalent of the party's shared HenZhi debuff.
+  // Multiplies the target's physical defense.
   targetDefenseMultiplier?: number
 }
 
 export const INNER_WAY_DEFS: readonly InnerWayDef[] = [
-  { name: "Soldier's Return", generalDamageBoost: 0.08 },
-  { name: "Star-Picker", minTier: 6, generalDamageBoost: 0.03 },
-  { name: "Endurance Doctrine", generalDamageBoost: 0.02 },
-  { name: "Mighty Song", chargeBonus: 0.15 },
-  { name: "Insightful Strike", dotDamageBoost: 0.1, allDamageBonus: 0.015 },
-  { name: "Year-Long Lament", minTier: 6, targetDefenseMultiplier: 0.94 },
+  { innerWayId: "insightfulStrike", dotDamageBoost: 0.1, allDamageBonus: 0.015 },
 ]
 
 export interface SlottedInnerWay {
   name: string
+  id?: string
   stacks: string
 }
 
@@ -46,11 +41,15 @@ function tierOf(stacks: string): number {
   return match ? Number(match[1]) : 0
 }
 
-// The defs whose tier requirement the build satisfies.
+// A saved slot may still carry only a display name, so resolve either form.
+export function slotInnerWayId(slot: SlottedInnerWay): string {
+  return slot.id ?? resolveInnerWayId(slot.name)
+}
+
 export function activeInnerWayDefs(slots: readonly SlottedInnerWay[]): InnerWayDef[] {
   const out: InnerWayDef[] = []
   for (const def of INNER_WAY_DEFS) {
-    const slot = slots.find((candidate) => candidate.name === def.name)
+    const slot = slots.find((candidate) => slotInnerWayId(candidate) === def.innerWayId)
     if (!slot) continue
     if (def.minTier && tierOf(slot.stacks) < def.minTier) continue
     out.push(def)
@@ -71,4 +70,13 @@ export function innerWayTargetDefenseMultiplier(slots: readonly SlottedInnerWay[
   for (const def of activeInnerWayDefs(slots))
     if (def.targetDefenseMultiplier !== undefined) return def.targetDefenseMultiplier
   return null
+}
+
+export function hasInnerWay(slots: readonly SlottedInnerWay[], innerWayId: string): boolean {
+  return slots.some((slot) => slotInnerWayId(slot) === innerWayId)
+}
+
+export function innerWayTier(slots: readonly SlottedInnerWay[], innerWayId: string): number | null {
+  const slot = slots.find((candidate) => slotInnerWayId(candidate) === innerWayId)
+  return slot ? tierOf(slot.stacks) : null
 }

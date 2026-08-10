@@ -262,6 +262,9 @@ export function emptyGearWords(): GearPiece["words"] {
 }
 
 export interface MindMethodSlot {
+  // The stable identity. `name` is the display string and is kept only so an
+  // older saved profile still resolves; `hydrateInputs` fills `id` from it.
+  id?: string
   name: string
   stacks: string
 }

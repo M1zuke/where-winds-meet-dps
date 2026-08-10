@@ -12,7 +12,7 @@ describe("class registry — one call answers what a class is made of", () => {
     const umbra = classDefinition("bellstrikeUmbra")!
     expect(umbra.spec).toBe("bellstrike_umbra")
     expect(umbra.primaryAttribute).toBe("Bellstrike")
-    expect(umbra.innerWays).toContain("Sword Horizon")
+    expect(umbra.innerWays).toContain("swordHorizon")
     expect(umbra.dingYinTags).toEqual(["Bleed Boost"])
     expect(umbra.skills.length).toBeGreaterThan(20)
     expect(umbra.debuffs.map((d) => d.name)).toContain("Bleed Tick")

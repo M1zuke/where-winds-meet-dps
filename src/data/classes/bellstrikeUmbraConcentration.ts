@@ -4,12 +4,13 @@
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
 import { effectiveRates } from "../../engine/panel"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
+import { hasInnerWay, innerWayTier, type SlottedInnerWay } from "./innerWays"
 import { MECHANIC_ORDER, registerMechanic } from "../../engine/mechanics"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
-const INNER_WAY = "Insightful Strike"
-const TIER_6 = "tier 6"
+const INNER_WAY = "insightfulStrike"
+const TIER_6 = 6
 const AFFINITY_PROC_CAP = 0.4
 const DOT_MULTIPLIER_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
@@ -25,12 +26,9 @@ const EFFECTS = [
 // runs for, so the gate is exported rather than mirrored there.
 export function concentrationAvailable(inputs: {
   classId: string
-  mindMethods: readonly { name: string }[]
+  mindMethods: readonly SlottedInnerWay[]
 }): boolean {
-  return (
-    inputs.classId === CLASS_ID &&
-    inputs.mindMethods.some((candidate) => candidate.name === INNER_WAY)
-  )
+  return inputs.classId === CLASS_ID && hasInnerWay(inputs.mindMethods, INNER_WAY)
 }
 
 interface State {
@@ -43,7 +41,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
 
   prepare(setup) {
     if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
-    const slot = setup.inputs.mindMethods.find((candidate) => candidate.name === INNER_WAY)!
+    const tier = innerWayTier(setup.inputs.mindMethods, INNER_WAY) ?? 0
     const proc =
       Math.min(effectiveRates(setup.inputs).affinityRate, AFFINITY_PROC_CAP) +
       setup.inputs.directAffinityRate
@@ -53,7 +51,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
         proc,
         setup.rotationDurationSec,
       ),
-      tier6: slot.stacks === TIER_6,
+      tier6: tier >= TIER_6,
     }
   },
 

@@ -1,4 +1,5 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
+import { slotInnerWayId } from "../classes/innerWays"
 import { gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { zhongToTier } from "../../engine/buffs/paramMap"
@@ -382,11 +383,11 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
   const school = getSchool(inputs.classId)
   const primaryKey = PRIMARY_ATTACK_KEY[school.primaryAttribute as AttributeKey]
   inputs.mindMethods.forEach((slot) => {
-    const name = slot.name
-    if (!name) return
-    const stats = MIND_PANEL_STATS[name]
+    const innerWayId = slotInnerWayId(slot)
+    if (!innerWayId) return
+    const stats = MIND_PANEL_STATS[innerWayId]
     if (!stats) return
-    const isBitterSeason = name === BITTER_SEASON_INNER_WAY
+    const isBitterSeason = innerWayId === BITTER_SEASON_INNER_WAY
     const tier = isBitterSeason ? zhongToTier(slot.stacks) : 0
     for (const [rawPath, amount] of Object.entries(stats)) {
       if (isBitterSeason && tier < (BITTER_SEASON_PANEL_STAT_MIN_TIER[rawPath] ?? 0)) continue

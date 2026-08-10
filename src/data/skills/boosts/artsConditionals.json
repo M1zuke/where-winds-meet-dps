@@ -1,82 +1,11 @@
 {
-  "Modao R-Charge 2": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Modao R-Charge 3 (2 Resolve)": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Modao R-Charge 3 (1 Resolve)": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Modao R-Charge 3 (no Resolve)": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Modao Derivative (2 Resolve)": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Modao Derivative (1 Resolve)": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Mouse Mud-Fish": {
-    "extraDamageBoost": [
-      {
-        "fn": "Checkxinfa",
-        "name": "Mud-Fish Heart",
-        "tier": "tier 6",
-        "then": 0.3,
-        "else": 0
-      }
-    ]
-  },
   "Nine Sword Q": {
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -84,9 +13,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -94,9 +23,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -104,9 +33,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -114,9 +43,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -124,9 +53,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -134,9 +63,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -144,9 +73,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -154,9 +83,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -164,9 +93,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -174,9 +103,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -184,9 +113,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -194,9 +123,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -204,9 +133,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -214,9 +143,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -224,9 +153,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   },
@@ -234,110 +163,9 @@
     "extraAffinityDamage": [
       {
         "fn": "checkxinf",
-        "name": "Insightful Strike",
         "then": 0.1,
-        "else": 0
-      }
-    ]
-  },
-  "Dust Rope Dart R1-2-3": {
-    "extraDamageBoost": [
-      {
-        "fn": "checkxinf",
-        "name": "Boat on Wood",
-        "then": 0.05,
-        "else": 0
-      }
-    ]
-  },
-  "Dust Rope Dart R4-5": {
-    "extraDamageBoost": [
-      {
-        "fn": "checkxinf",
-        "name": "Boat on Wood",
-        "then": 0.1,
-        "else": 0
-      }
-    ]
-  },
-  "Dust Rope Dart R6-7": {
-    "extraDamageBoost": [
-      {
-        "fn": "checkxinf",
-        "name": "Boat on Wood",
-        "then": 0.15,
-        "else": 0
-      }
-    ]
-  },
-  "Dust Rope Dart Special": {
-    "extraDamageBoost": [
-      {
-        "fn": "Checkxinfa",
-        "name": "Boat on Wood",
-        "tier": "tier 6",
-        "then": 0.15,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao 2-Charge Cleave": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao 2-Charge Slam": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao 3-Charge Cleave": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao 3-Charge Slam": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao Fast-3-Charge Cleave": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
-      }
-    ]
-  },
-  "Balanced Modao Fast-3-Charge Slam": {
-    "extraCritDamage": [
-      {
-        "fn": "checkxinf",
-        "name": "Sutra Shift",
-        "then": 0.2,
-        "else": 0
+        "else": 0,
+        "innerWayId": "insightfulStrike"
       }
     ]
   }

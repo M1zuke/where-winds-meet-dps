@@ -196,7 +196,7 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       mindMethods: [
-        { name: "Bitter Season", stacks },
+        { name: "bitterSeason", stacks },
         emptyMindMethod,
         emptyMindMethod,
         emptyMindMethod,
@@ -222,27 +222,13 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
       expect(contributions.physBoost).toBeCloseTo(0.025, 10)
     }
   })
-
-  it("does not gate any other inner way's flat entry (Stone-Cutter's precision stays unconditional)", () => {
-    const contributions = getMindMethodContributions({
-      ...defaultInputs,
-      classId: "bellstrikeUmbra",
-      mindMethods: [
-        { name: "Stone-Cutter", stacks: "tier 1" },
-        emptyMindMethod,
-        emptyMindMethod,
-        emptyMindMethod,
-      ] as Inputs["mindMethods"],
-    })
-    expect(contributions.precision).toBeCloseTo(0.059, 10)
-  })
 })
 
 describe("registry coverage — all eight classes (metadata only, no DPS)", () => {
   it("every class's allowedInnerWaysForClass contains Bitter Season exactly once", () => {
     for (const classId of ALL_CLASSES) {
       const list = allowedInnerWaysForClass(classId)
-      expect(list.filter((name) => name === "Bitter Season")).toHaveLength(1)
+      expect(list.filter((name) => name === "bitterSeason")).toHaveLength(1)
     }
   })
 
@@ -272,9 +258,9 @@ describe("registry coverage — all eight classes (metadata only, no DPS)", () =
 })
 
 const UMBRA_BASE_MIND_METHODS: Inputs["mindMethods"] = [
-  { name: "Sword Horizon", stacks: "tier 6" },
-  { name: "Wolfchaser's Art", stacks: "tier 6" },
-  { name: "Insightful Strike", stacks: "tier 6" },
+  { name: "swordHorizon", stacks: "tier 6" },
+  { name: "wolfchasersArt", stacks: "tier 6" },
+  { name: "insightfulStrike", stacks: "tier 6" },
   { name: "", stacks: "" },
 ]
 
@@ -283,7 +269,7 @@ function withBitterSeasonAt(tier: "tier 5" | "tier 6"): Inputs["mindMethods"] {
     UMBRA_BASE_MIND_METHODS[0],
     UMBRA_BASE_MIND_METHODS[1],
     UMBRA_BASE_MIND_METHODS[2],
-    { name: "Bitter Season", stacks: tier },
+    { name: "bitterSeason", stacks: tier },
   ]
 }
 

@@ -7,11 +7,11 @@ import type { Inputs } from "../../src/engine/types"
 describe("allowedInnerWaysForClass", () => {
   it("is exactly the five Bellstrike Umbra inner ways, signature first", () => {
     expect(allowedInnerWaysForClass("bellstrikeUmbra")).toEqual([
-      "Sword Horizon",
-      "Wolfchaser's Art",
-      "Insightful Strike",
-      "Morale Chant",
-      "Bitter Season",
+      "swordHorizon",
+      "wolfchasersArt",
+      "insightfulStrike",
+      "moraleChant",
+      "bitterSeason",
     ])
   })
 
@@ -40,33 +40,35 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
 
   it("seeds slot 0 with the new class's signature", () => {
     const next = syncClassPermanent(defaultInputs, "bellstrikeUmbra")
-    expect(next.mindMethods[0]).toEqual({ name: "Sword Horizon", stacks: "tier 6" })
+    expect(next.mindMethods[0]).toEqual({ name: "swordHorizon", stacks: "tier 6" })
   })
 
-  it("clears slots 1-3 holding an inner way the new class doesn't allow", () => {
+  // Wolfchaser's Art and Insightful Strike are Bellstrike Umbra's alone; every
+  // other class allows only Morale Chant and Bitter Season.
+  it("clears slots holding an inner way the new class doesn't allow", () => {
     const before = withSlots(defaultInputs, [
-      "Forgotten River Echo",
-      "Mud-Fish Heart",
-      "Morale Chant",
-      "Stone-Cutter",
+      "",
+      "wolfchasersArt",
+      "moraleChant",
+      "insightfulStrike",
     ])
-    const next = syncClassPermanent(before, "bellstrikeUmbra")
+    const next = syncClassPermanent(before, "silkbindJade")
     expect(next.mindMethods[1]).toEqual({ name: "", stacks: "" })
-    expect(next.mindMethods[2]).toEqual({ name: "Morale Chant", stacks: "tier 6" })
+    expect(next.mindMethods[2]).toEqual({ name: "moraleChant", stacks: "tier 6" })
     expect(next.mindMethods[3]).toEqual({ name: "", stacks: "" })
   })
 
   it("keeps an inner way the new class does allow", () => {
-    const before = withSlots(defaultInputs, ["", "Wolfchaser's Art", "Insightful Strike", ""])
+    const before = withSlots(defaultInputs, ["", "wolfchasersArt", "insightfulStrike", ""])
     const next = syncClassPermanent(before, "bellstrikeUmbra")
-    expect(next.mindMethods[1].name).toBe("Wolfchaser's Art")
-    expect(next.mindMethods[2].name).toBe("Insightful Strike")
+    expect(next.mindMethods[1].name).toBe("wolfchasersArt")
+    expect(next.mindMethods[2].name).toBe("insightfulStrike")
   })
 
   it("clears a slot that duplicates the signature seeded into slot 0", () => {
-    const before = withSlots(defaultInputs, ["", "Sword Horizon", "", ""])
+    const before = withSlots(defaultInputs, ["", "swordHorizon", "", ""])
     const next = syncClassPermanent(before, "bellstrikeUmbra")
-    expect(next.mindMethods[0].name).toBe("Sword Horizon")
+    expect(next.mindMethods[0].name).toBe("swordHorizon")
     expect(next.mindMethods[1]).toEqual({ name: "", stacks: "" })
   })
 

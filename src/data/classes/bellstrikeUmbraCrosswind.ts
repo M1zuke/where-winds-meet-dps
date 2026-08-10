@@ -14,7 +14,7 @@ import { CrosswindTracker } from "../../engine/buffs/crosswind"
 import { ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./bellstrikeUmbraGates"
 
 const SKILL_ID = "bellstrikeUmbra-bleed-detonation"
-const INNER_WAY = "Sword Horizon"
+const INNER_WAY = "swordHorizon"
 const RETAIN_TIER = 6
 const SPIRIT_BONUS = 0.15
 

@@ -2,6 +2,7 @@ import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
+import { innerWayIdForName, innerWayName, resolveInnerWayId } from "./data/classes/innerWayRegistry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./data/baseStats"
 import type { Rotation, RotationStep } from "./engine/rotation"
@@ -235,16 +236,31 @@ function hydrateInputs(inputs: Inputs): Inputs {
   } else {
     next.equipped = { ...EMPTY_EQUIPPED, ...next.equipped }
   }
+  // additive value-level repair — see CLAUDE.md → "localStorage migrations"
+  //
+  // A slot used to be identified by its display name. It now carries a stable
+  // `id`, healed here from whatever the profile stored. A slot naming an inner
+  // way that no longer exists — 23 unimplemented ones were removed on
+  // 2026-08-10 — resolves to nothing the class allows and is cleared, which is
+  // the same path an already-disallowed slot took.
   if (Array.isArray(next.mindMethods)) {
     const allowed = new Set(allowedInnerWaysForClass(next.classId))
     const seen = new Set<string>()
     next.mindMethods = next.mindMethods.map((slot) => {
       if (!slot) return slot
-      const disallowed = !!slot.name && allowed.size > 0 && !allowed.has(slot.name)
-      const duplicate = !!slot.name && seen.has(slot.name)
-      if (disallowed || duplicate) return { ...slot, name: "", stacks: "" }
-      if (slot.name) seen.add(slot.name)
-      return slot.name && !slot.stacks ? { ...slot, stacks: "tier 6" } : slot
+      const innerWayId = slot.name || slot.id ? resolveInnerWayId(slot.id ?? slot.name) : ""
+      const known = !!innerWayId && !!innerWayIdForName(innerWayName(innerWayId))
+      const disallowed = !!innerWayId && allowed.size > 0 && !allowed.has(innerWayId)
+      const duplicate = !!innerWayId && seen.has(innerWayId)
+      if (!innerWayId) return { ...slot, id: undefined, name: "", stacks: "" }
+      if (!known || disallowed || duplicate) return { id: undefined, name: "", stacks: "" }
+      seen.add(innerWayId)
+      return {
+        ...slot,
+        id: innerWayId,
+        name: innerWayName(innerWayId),
+        stacks: slot.stacks || "tier 6",
+      }
     }) as Inputs["mindMethods"]
   }
   {
