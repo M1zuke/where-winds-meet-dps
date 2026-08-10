@@ -199,6 +199,7 @@ export class BuffEngine {
         continue
       if (!this.isBuffActiveAtTime(id, time)) continue
       const stacks = def?.maxStacks ? this.getHistoricalBuffStacks(id, time) : 1
+      if (def?.maxStacks && stacks <= 0) continue
       push(id, def, stacks)
     }
     for (const [id, def] of this.definitions) {

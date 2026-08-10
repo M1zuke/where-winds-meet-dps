@@ -123,6 +123,8 @@ describe("Lone Loyalty Mountain Splitter", () => {
       expect(result.buffIds).not.toContain("mountainSplitter")
       expect(buffs.getHistoricalBuffStacks("chargeEnhancement", time)).toBe(3)
     }
+    expect(buffs.getHistoricalBuffStacks("innerPassion", 4)).toBe(0)
+    expect(buffs.activeBuffsForDisplay(4).some((buff) => buff.id === "innerPassion")).toBe(false)
 
     const enhanced = buffs.processSkillCast("PhalanxCharged-S3[InnerPassion]", 5, {
       consumesInnerPassionBurningHeart: true,
