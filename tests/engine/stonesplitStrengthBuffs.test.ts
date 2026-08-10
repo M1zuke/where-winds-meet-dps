@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { buffDefsForClass } from "../../src/engine/buffs/data"
+import { buffDefsForClass, mechanicBuffDefsForClass } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import {
   DREAD_BUFF_ID,
@@ -53,11 +53,27 @@ function withoutTrigger(skill: Skill, targetId: string): Skill {
 }
 
 describe("Stonesplit Strength built-in buffs", () => {
-  it("adds the workbook's class-wide skill critical damage", () => {
+  it("models the workbook's skill critical damage as a class mechanic", () => {
     const baseline = buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" })
     const stonesplitStrength = buildContext({ ...defaultInputs, classId: CLASS })
+    const engine = new BuffEngine(
+      paramsFromInputs({ ...defaultInputs, classId: CLASS }),
+      [],
+      mechanicBuffDefsForClass(CLASS),
+    )
 
-    expect(stonesplitStrength.critDmgBoostPanel - baseline.critDmgBoostPanel).toBeCloseTo(0.21, 10)
+    expect(stonesplitStrength.critDmgBoostPanel).toBeCloseTo(baseline.critDmgBoostPanel, 10)
+    expect(
+      mechanicBuffDefsForClass("bellstrikeUmbra").some(
+        (def) => def.id === "stonesplitStrengthSkillCritDamage",
+      ),
+    ).toBe(false)
+    expect(engine.calculateDamageEffects(skillNamed("SnowpartingCharged"), 0).effects).toContainEqual(
+      {
+        statKey: "critDamageBoost",
+        amount: 0.21,
+      },
+    )
   })
 
   it("applies Shattered Ridge's base and active-window damage bonuses", () => {

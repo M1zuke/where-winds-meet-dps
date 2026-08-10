@@ -86,7 +86,6 @@
     "displayName": "Stonesplit Strength",
     "primaryAttribute": "Stonesplit",
     "attributeMultiplier": 51.5,
-    "perSkillCritDamageBoost": 0.21,
     "permanentBuffs": ["Hengdao Derivative Boost", "Phalanx Charge Boost"],
     "classMindGroup": "Frostwhite Night",
     "allowedMindMethods": ["Morale Chant", "Throat-Pierce", "Lone Loyalty"],

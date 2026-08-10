@@ -1,0 +1,21 @@
+{
+  "id": "stonesplitStrengthSkillCritDamage",
+  "scope": "mechanic",
+  "variants": [
+    {
+      "def": {
+        "id": "stonesplitStrengthSkillCritDamage",
+        "name": "Stonesplit Strength Skill Critical Damage",
+        "spec": "stonesplit_strength",
+        "triggers": [],
+        "alwaysActive": true,
+        "duration": 9999,
+        "affects": null,
+        "bonus": null,
+        "statModifiers": {
+          "critDmg": 0.21
+        }
+      }
+    }
+  ]
+}

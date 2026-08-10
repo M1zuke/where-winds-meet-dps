@@ -52,6 +52,7 @@ import healerBuffFile from "./healerBuff.json"
 import soulShakenFile from "./soulShaken.json"
 import bellstrikeUmbraBleedPenFile from "./bellstrikeUmbraBleedPen.json"
 import bellstrikeUmbraBleedingDamageFile from "./bellstrikeUmbraBleedingDamage.json"
+import stonesplitStrengthSkillCritDamageFile from "./stonesplitStrengthSkillCritDamage.json"
 
 interface BuffVariant {
   specs?: string[]
@@ -170,4 +171,5 @@ export const MECHANIC_BUFF_DEFS: BuffDef[] = [
   ...allDefs(soulShakenFile),
   soleDef(bellstrikeUmbraBleedPenFile),
   soleDef(bellstrikeUmbraBleedingDamageFile),
+  soleDef(stonesplitStrengthSkillCritDamageFile),
 ]

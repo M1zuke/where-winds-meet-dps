@@ -13,7 +13,6 @@ const SCHOOLS = schools as ReadonlyArray<{
   displayName: string
   primaryAttribute: AttributeKey
   attributeMultiplier: number
-  perSkillCritDamageBoost?: number
   permanentBuffs: string[]
   classMindGroup: string
   allowedMindMethods: string[]
@@ -332,7 +331,7 @@ export function buildContext(
     directCritPanel: inputs.directCritRate,
     directAffinityPanel: inputs.directAffinityRate,
     physDmgBoostPanel: inputs.physBoost,
-    critDmgBoostPanel: inputs.critDamageBoost + (school.perSkillCritDamageBoost ?? 0),
+    critDmgBoostPanel: inputs.critDamageBoost,
     affinityDmgBoostPanel: inputs.affinityDamageBoost,
     attributeDmgBoostPanel: inputs.attributeDamageBoost,
     sustainDmgBoostPanel: inputs.sustainDamageBoost,
