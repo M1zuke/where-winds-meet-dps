@@ -17,6 +17,16 @@
       "attributeFixed": 0,
       "extraCritDamage": 0,
       "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 0,
+      "physMultiplier": 0.5,
+      "attributeMultiplier": 0.75,
+      "physFixed": 0,
+      "attributeFixed": 0,
+      "extraCritDamage": 0,
+      "triggers": []
     }
   ],
   "castFrames": 0,
