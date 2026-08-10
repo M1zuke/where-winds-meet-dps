@@ -42,6 +42,11 @@ export interface PerCastConsumeSpec {
   damageMultiplier?: number
   effectEnabledParam?: string
   effectMinTier?: number
+  effectPhaseAlternative?: {
+    phase: string | string[]
+    enabledParam?: string
+    minTier?: number
+  }
   preferredSources?: PerCastConsumeSource[]
   sourceBuffs?: Array<{
     consumedBuffStack: string

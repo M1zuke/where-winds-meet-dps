@@ -29,7 +29,6 @@ import frostCladSnowbreakFile from "./frostCladSnowbreak.json"
 import frostCladSnowbreakIPConsumeFile from "./frostCladSnowbreakIPConsume.json"
 import burningHeartIPConsumeFile from "./burningHeartIPConsume.json"
 import frostCladSnowbreakT6File from "./frostCladSnowbreakT6.json"
-import frostCladSnowbreakT6ExhaustedFile from "./frostCladSnowbreakT6Exhausted.json"
 import forgetfulnessFile from "./forgetfulness.json"
 import mountainSplitterFile from "./mountainSplitter.json"
 import chargeEnhancementFile from "./chargeEnhancement.json"
@@ -129,7 +128,6 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(frostCladSnowbreakIPConsumeFile, "stonesplit_strength"),
     defForSpec(burningHeartIPConsumeFile, "stonesplit_strength"),
     defForSpec(frostCladSnowbreakT6File, "stonesplit_strength"),
-    defForSpec(frostCladSnowbreakT6ExhaustedFile, "stonesplit_strength"),
     defForSpec(forgetfulnessFile, "stonesplit_strength"),
     defForSpec(mountainSplitterFile, "stonesplit_strength"),
     defForSpec(chargeEnhancementFile, "stonesplit_strength"),

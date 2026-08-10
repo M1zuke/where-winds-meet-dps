@@ -9,7 +9,7 @@
         "name": "Frost-Clad Night T4 (IP Consume)",
         "triggers": [],
         "duration": 0,
-        "affects": null,
+        "affects": ["SnowpartingVC"],
         "bonus": null,
         "enabledParam": "frostCladNight",
         "minTier": 4,
@@ -19,6 +19,11 @@
           "bonus": {
             "type": "bossOnlyBuffBonus",
             "value": 0.4
+          },
+          "effectPhaseAlternative": {
+            "phase": "exhausted",
+            "enabledParam": "frostCladNight",
+            "minTier": 6
           }
         }
       }

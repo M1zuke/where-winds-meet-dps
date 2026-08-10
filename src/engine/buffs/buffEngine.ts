@@ -785,8 +785,22 @@ export class BuffEngine {
 
     for (const def of this.perCastConsumeDefs) {
       const pc = def.perCastConsume!
-      if (!scopedBuffIds.has(def.id) && !this.consumeEvents.has(`${time}|${castTag}|${def.id}`))
-        continue
+      const consumed =
+        scopedBuffIds.has(def.id) || this.consumeEvents.has(`${time}|${castTag}|${def.id}`)
+      const alternative = pc.effectPhaseAlternative
+      const alternativeEnabled =
+        alternative != null &&
+        (!alternative.enabledParam || this.paramOn(alternative.enabledParam)) &&
+        (!alternative.minTier ||
+          !alternative.enabledParam ||
+          this.paramTier(alternative.enabledParam) >= alternative.minTier)
+      const phaseAlternative =
+        alternativeEnabled &&
+        (Array.isArray(alternative.phase)
+          ? alternative.phase.includes(phase)
+          : alternative.phase === phase) &&
+        this.bonusAffects(def, tagSet)
+      if (!consumed && !phaseAlternative) continue
       if (pc.effectEnabledParam && !this.paramOn(pc.effectEnabledParam)) continue
       if (
         pc.effectMinTier &&
