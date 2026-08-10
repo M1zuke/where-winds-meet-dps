@@ -12,11 +12,22 @@
         "cooldown": 15,
         "requiresActiveBuffOnTrigger": "innerPassion",
         "triggersFromGeneratedSkills": true,
-        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump", "AnxiSoldierMoSweep"],
+        "affects": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump"],
         "bonus": null,
         "conditionalFinalCrit": {
           "threshold": 0.75,
           "bonusBelowThreshold": 0.15
+        },
+        "__statModByPrefix": {
+          "prefixes": [
+            "PhalanxCharged",
+            "AnxiSoldierMoDown",
+            "AnxiSoldierMoJump"
+          ],
+          "match": {
+            "critDmg": 0.1
+          },
+          "default": null
         },
         "enabledParam": "steadfastDevotion",
         "minTier": 3

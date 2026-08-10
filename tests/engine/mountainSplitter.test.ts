@@ -44,9 +44,13 @@ describe("Lone Loyalty Mountain Splitter", () => {
     expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 1.1)).toBe(true)
     expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 11.099)).toBe(true)
     expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 11.1)).toBe(false)
-    expect(
-      withInnerPassion.calculateDamageEffects(affectedSkill(), 2).conditionalFinalCrit,
-    ).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
+    const effects = withInnerPassion.calculateDamageEffects(affectedSkill(), 2)
+    expect(effects.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
+    expect(effects.effects).toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
+
+    const unaffected = withInnerPassion.calculateDamageEffects(affectedSkill("AnxiSoldierMoSweep"), 2)
+    expect(unaffected.conditionalFinalCrit).toBeNull()
+    expect(unaffected.effects).not.toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
   })
 
   it("enforces the 15-second ICD only on the Inner Passion activation route", () => {
