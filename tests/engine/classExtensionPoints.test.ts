@@ -1,5 +1,5 @@
-// The acceptance proof for docs/GENERALIZATION.md § P9: everything a class needs
-// is reachable from OUTSIDE the engine.
+// The acceptance proof for docs/CLASSES.md § "One definition per class":
+// everything a class needs is reachable from OUTSIDE the engine.
 //
 // Registered here rather than shipped as a probe class, because a real class
 // would need verified coefficients and this proves the wiring, not the data.

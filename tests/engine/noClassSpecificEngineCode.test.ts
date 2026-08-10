@@ -1,5 +1,5 @@
-// The acceptance condition for docs/GENERALIZATION.md § P9: adding a class must
-// not require editing the engine. This is the mechanical half of that — the
+// The acceptance condition from docs/CLASSES.md § "One definition per class":
+// adding a class must not require editing the engine. This is the mechanical half of that — the
 // engine may not name a class, an inner way, or a skill.
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"

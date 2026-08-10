@@ -9,7 +9,7 @@ import type { StatKey } from "../../src/engine/statRegistry"
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
 // Built from tags, never from the display name — a def reaches an entity
-// because the entity declares what it is (GENERALIZATION.md § P2).
+// because the entity declares what it is (CLASSES.md § "Naming").
 function skill(tags: string[]) {
   return makeSkill("test", { name: "probe", tags })
 }

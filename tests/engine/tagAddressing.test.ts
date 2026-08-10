@@ -1,4 +1,4 @@
-// The guard for GENERALIZATION.md § P2: a modifier addresses an entity by a
+// The guard for CLASSES.md § "Naming": a modifier addresses an entity by a
 // namespaced tag it declares, never by a string that happens to match its
 // display name. Spans all eight classes on purpose — most of the name-based
 // entries this replaced belong to the seven with no other test coverage.

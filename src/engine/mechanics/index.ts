@@ -1,7 +1,7 @@
 // Mechanics SELF-REGISTER, so a class can add one without this file changing.
 // That is the point: adding a class means adding files under
 // `src/data/classes/` and one line in that folder's barrel — never editing the
-// engine (docs/GENERALIZATION.md § P9).
+// engine (docs/CLASSES.md § "One definition per class").
 //
 // `order` is load-bearing, not cosmetic. Contributions are applied in it and
 // float addition is not associative, so changing it can move the last bits of
