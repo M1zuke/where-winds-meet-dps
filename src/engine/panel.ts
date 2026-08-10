@@ -1,6 +1,7 @@
 import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
+import { innerWayScalar, innerWayTargetDefenseMultiplier } from "../data/classes/innerWays"
 import { resolveMindMethodOverrides } from "./mindMethodOverrides"
 import schools from "../data/classes/schools.json"
 import breakthroughs from "../data/baseStats/breakthroughTiers.json"
@@ -18,6 +19,8 @@ const SCHOOLS = schools as ReadonlyArray<{
   classMindGroup: string
   allowedMindMethods: string[]
   classBuffs: { label: string; slot: number }[]
+  // A flat all-damage term the class itself carries.
+  generalDamageBoost?: number
   weapons: string[]
   rotations: string[]
 }>
@@ -36,6 +39,10 @@ const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
 const SETS = (sets as { sets: { name: string; [k: string]: unknown }[] }).sets
 
 const DING_YIN_PATH_PREFIX = "dingYinByTag."
+
+// The shared HenZhi debuff and Year-Long Lament tier 6 are the same 6 %
+// reduction; whichever is present, it applies once.
+const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 
 export interface DerivedStats {
   classId: string
@@ -79,13 +86,7 @@ export function resistanceForInputs(inputs: Inputs): number {
 }
 
 export function henZhiActiveForInputs(inputs: Inputs): boolean {
-  const stackOf = (name: string) =>
-    inputs.mindMethods.find((slot) => slot.name === name)?.stacks ?? ""
-  return (
-    inputs.shareDebuff5HenZhi ||
-    (inputs.mindMethods.some((slot) => slot.name === "Year-Long Lament") &&
-      stackOf("Year-Long Lament") === "tier 6")
-  )
+  return inputs.shareDebuff5HenZhi || innerWayTargetDefenseMultiplier(inputs.mindMethods) !== null
 }
 
 // Pen resistance is zero for every target per the 2026-07 decision; the
@@ -261,14 +262,10 @@ export function buildContext(
 
   const pct = (n: number) => n * 100
 
-  const mindMethodNames = inputs.mindMethods.filter((m) => m.name).map((m) => m.name)
-  const has = (name: string) => mindMethodNames.includes(name)
-  const stackOf = (name: string) => inputs.mindMethods.find((m) => m.name === name)?.stacks ?? ""
-
   const henZhiActive = henZhiActiveForInputs(inputs)
-  const effectiveDefense = target.defense * (henZhiActive ? 0.94 : 1)
+  const effectiveDefense = target.defense * (henZhiActive ? HEN_ZHI_DEFENSE_MULTIPLIER : 1)
 
-  const chargeBonus = has("Mighty Song") ? 0.15 : 0
+  const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
   const setBonus: Record<string, number> = {}
   if (inputs.set) {
@@ -285,15 +282,13 @@ export function buildContext(
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
-    (has("Soldier's Return") ? 0.08 : 0) +
-    (has("Star-Picker") && stackOf("Star-Picker") === "tier 6" ? 0.03 : 0) +
+    innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
     (inputs.set === "Swaying Heights" ? 0.0375 : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
-    (has("Endurance Doctrine") ? 0.02 : 0) +
-    (school.id === "stonesplitBalancePureTang" ? 0.08 : 0)
+    (school.generalDamageBoost ?? 0)
 
   const dingYinByTag: Record<string, number> = {}
   for (const tag of school.permanentBuffs) {
@@ -381,7 +376,7 @@ export function buildContext(
       "area-debuff": inputs.areaMysticBoost,
       "area-damage": inputs.areaMysticBoost,
     },
-    dotDamageBoost: has("Insightful Strike") ? 0.1 : 0,
+    dotDamageBoost: innerWayScalar(inputs.mindMethods, "dotDamageBoost"),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     rateResistance: eff.resistance,

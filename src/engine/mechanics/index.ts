@@ -1,9 +1,13 @@
+// Class-specific mechanics live under `src/data/classes/`; only the ones that
+// belong to a set or a shared inner way live here. Adding a class means adding
+// a file there and a line below — never editing the engine.
+//
 // Registry order is load-bearing: contributions are applied in this order and
 // float addition is not associative, so reordering can move the last bits of a
 // result. This is the order the timeline applied them in when each was inline.
 import { moraleMechanic } from "./morale"
-import { levelAttributeBonusMechanic } from "./levelAttributeBonus"
-import { concentrationMechanic } from "./concentration"
+import { levelAttributeBonusMechanic } from "../../data/classes/bellstrikeUmbraLevelBonus"
+import { concentrationMechanic } from "../../data/classes/bellstrikeUmbraConcentration"
 import { hawkwingMechanic } from "./hawkwing"
 import { bitterSeasonMechanic } from "./bitterSeason"
 import type { MechanicSetup, TimelineMechanic } from "./types"

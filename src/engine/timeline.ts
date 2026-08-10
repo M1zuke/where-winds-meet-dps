@@ -384,7 +384,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         effects.push({ statKey: "allDamageBoost", amount: healerAmount })
         sig += `~healerBuff:${healerAmount}`
       }
-      const innerWayBonus = innerWayAllDamageBoost(buffEngine, inputs.mindMethods)
+      const innerWayBonus = innerWayAllDamageBoost(inputs.mindMethods)
       if (innerWayBonus !== 0) {
         effects.push({ statKey: "allDamageBoost", amount: innerWayBonus })
         sig += `~innerWay:${innerWayBonus}`

@@ -1,6 +1,7 @@
 import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
 import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { matchesScope } from "../scope"
+import { concentrationAvailable } from "../../data/classes/bellstrikeUmbraConcentration"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
   MYSTIC_TYPE_BOOST_STAT_KEY,
@@ -121,9 +122,7 @@ export function buffGateSatisfied(def: BuffDef, params: BuffParams): boolean {
 }
 
 const DISPLAY_ACTIVE_GATES: Record<string, (inputs: Inputs) => boolean> = {
-  concentration: (inputs) =>
-    inputs.classId === "bellstrikeUmbra" &&
-    inputs.mindMethods.some((m) => m.name === "Insightful Strike"),
+  concentration: concentrationAvailable,
   vulnerabilityTeammate: (inputs) => !!inputs.shareEasyHurt,
 }
 

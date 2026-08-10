@@ -1,7 +1,10 @@
 // A flat attribute-attack add the player's level grants to the bleed skills.
 // Class-gated in the data it reads, not by an `if` here.
-import { APP_PLAYER_LEVEL, playerLevelAttributeAttackBonus } from "../buffs/levelAttributeBonus"
-import type { TimelineMechanic } from "./types"
+import {
+  APP_PLAYER_LEVEL,
+  playerLevelAttributeAttackBonus,
+} from "../../engine/buffs/levelAttributeBonus"
+import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
 const ROLES = ["role:bleedDetonation", "role:bleedTick"]

@@ -1,9 +1,9 @@
 // Insightful Strike's Concentration: a weapon hit can proc it, so its uptime is
 // a probability schedule rather than a window. Tier 6 additionally multiplies
 // DoT damage while it is up.
-import { concentrationActiveProbSchedule } from "../buffs/concentration"
-import { effectiveRates } from "../panel"
-import type { TimelineMechanic } from "./types"
+import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
+import { effectiveRates } from "../../engine/panel"
+import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
 const INNER_WAY = "Insightful Strike"
@@ -19,6 +19,18 @@ const EFFECTS = [
   { statKey: "allDamageBoost" as const, amount: 0.015 },
 ]
 
+// The Skill Editor shows this def as active for exactly the builds the mechanic
+// runs for, so the gate is exported rather than mirrored there.
+export function concentrationAvailable(inputs: {
+  classId: string
+  mindMethods: readonly { name: string }[]
+}): boolean {
+  return (
+    inputs.classId === CLASS_ID &&
+    inputs.mindMethods.some((candidate) => candidate.name === INNER_WAY)
+  )
+}
+
 interface State {
   schedule: ReturnType<typeof concentrationActiveProbSchedule>
   tier6: boolean
@@ -28,9 +40,8 @@ export const concentrationMechanic: TimelineMechanic<State> = {
   id: "concentration",
 
   prepare(setup) {
-    if (!setup.hasBuffEngine || setup.classId !== CLASS_ID) return null
-    const slot = setup.inputs.mindMethods.find((candidate) => candidate.name === INNER_WAY)
-    if (!slot) return null
+    if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
+    const slot = setup.inputs.mindMethods.find((candidate) => candidate.name === INNER_WAY)!
     const proc =
       Math.min(effectiveRates(setup.inputs).affinityRate, AFFINITY_PROC_CAP) +
       setup.inputs.directAffinityRate

@@ -101,7 +101,8 @@
     ],
     "classBuffs": [],
     "weapons": ["Hengdao", "Modao"],
-    "rotations": ["Dual-Cut"]
+    "rotations": ["Dual-Cut"],
+    "generalDamageBoost": 0.08
   },
   {
     "id": "bamboocutWindTwinblade",
