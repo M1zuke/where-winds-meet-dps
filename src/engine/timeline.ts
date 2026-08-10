@@ -13,16 +13,11 @@ import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
+import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { buildBehaviors, type BuildView, type HitInput } from "./behavior"
 import "../data/classes/bellstrikeUmbraCrosswind"
-import {
-  deriveStats,
-  buildContext,
-  effectiveRates,
-  getBreakthrough,
-  henZhiActiveForInputs,
-} from "./panel"
+import { deriveStats, buildContext } from "./panel"
 import { computeSkillDamage } from "./formula"
 import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
@@ -36,48 +31,13 @@ import { BuffEngine } from "./buffs/buffEngine"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
-import {
-  MORALE_MAX_STACKS,
-  MORALE_PEN_PER_STACK,
-  MORALE_STACK_THRESHOLD,
-  YI_RIVER_INTERVAL_SEC,
-  moraleDmgPerStack,
-  moraleStacksAtTime,
-} from "./buffs/morale"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
-import {
-  hawkwingStacksSchedule,
-  HAWKWING_MAX_STACKS,
-  HAWKWING_BONUS_PER_STACK,
-  type HawkwingStacksSchedule,
-} from "./buffs/hawkwing"
-import { concentrationActiveProbSchedule } from "./buffs/concentration"
-import { APP_PLAYER_LEVEL, playerLevelAttributeAttackBonus } from "./buffs/levelAttributeBonus"
 import { zhongToTier } from "./buffs/paramMap"
-import {
-  bitterSeasonDebuffId,
-  bitterSeasonEnvelopeWindows,
-  bitterSeasonPoisonSchedule,
-  bitterSeasonStackSchedule,
-  resolveBitterSeasonTuning,
-  BITTER_SEASON_INNER_WAY,
-  BITTER_SEASON_MAX_STACKS,
-  type BitterSeasonPoisonSchedule,
-  type BitterSeasonStackSchedule,
-} from "./buffs/bitterSeason"
 
 export const FPS = 60
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
-
-const LEVEL_ATTRIBUTE_BONUS_ROLES = ["role:bleedDetonation", "role:bleedTick"]
-
-const CONCENTRATION_DOT_MULT_ROLES = ["role:bleedDetonation", "role:bleedTick", "role:combustion"]
-
-const CONCENTRATION_DISPLAY_THRESHOLD = 0.5
-
-const BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD = 0.5
 
 type Ctx = ReturnType<typeof buildContext>
 type Derived = ReturnType<typeof deriveStats>
@@ -205,92 +165,18 @@ export function simulateTimeline(inputs: Inputs): Result {
   const spanStart = Math.min(0, -prePullTotal)
   const rotationDurationSec = durationFrames / FPS
 
-  const hawkwingStacks: HawkwingStacksSchedule | null =
-    inputs.set === "Hawking"
-      ? (() => {
-          const hitTimesSec: number[] = []
-          for (const ls of laidSteps) {
-            for (const hit of ls.performedHits) {
-              if (!hitDealsDamage(hit)) continue
-              hitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-            }
-          }
-          hitTimesSec.sort((a, b) => a - b)
-          const p = Math.min(effectiveRates(inputs).affinityRate, 0.4)
-          return hawkwingStacksSchedule(hitTimesSec, p, rotationDurationSec)
-        })()
-      : null
-
-  const concentrationSchedule =
-    inputs.classId === "bellstrikeUmbra" &&
-    inputs.mindMethods.some((m) => m.name === "Insightful Strike")
-      ? (() => {
-          const weaponHitTimesSec: number[] = []
-          for (const ls of laidSteps) {
-            if (ls.resolved.skill.skillType !== "weapon") continue
-            for (const hit of ls.performedHits) {
-              if (!hitDealsDamage(hit)) continue
-              weaponHitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-            }
-          }
-          weaponHitTimesSec.sort((a, b) => a - b)
-          const p = Math.min(effectiveRates(inputs).affinityRate, 0.4) + inputs.directAffinityRate
-          return concentrationActiveProbSchedule(weaponHitTimesSec, p, rotationDurationSec)
-        })()
-      : null
-  const concentrationTier6 =
-    inputs.mindMethods.find((m) => m.name === "Insightful Strike")?.stacks === "tier 6"
-
-  const bitterSeasonId = bitterSeasonDebuffId(inputs.classId)
-  const bitterSeasonSlot =
-    inputs.mindMethods.find((slot) => slot.name === BITTER_SEASON_INNER_WAY) ?? null
-  const bitterSeasonTuning = bitterSeasonSlot
-    ? resolveBitterSeasonTuning(zhongToTier(bitterSeasonSlot.stacks))
-    : null
-  const bitterSeasonHitTimesSec: number[] = []
-  if (bitterSeasonTuning) {
-    for (const ls of laidSteps) {
-      for (const hit of ls.performedHits) {
-        if (!hitDealsDamage(hit)) continue
-        bitterSeasonHitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-      }
+  const damagingHitTimesSec: number[] = []
+  const weaponHitTimesSec: number[] = []
+  for (const ls of laidSteps) {
+    for (const hit of ls.performedHits) {
+      if (!hitDealsDamage(hit)) continue
+      const timeSec = (ls.startFrame + hit.frame) / FPS
+      damagingHitTimesSec.push(timeSec)
+      if (ls.resolved.skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
     }
-    bitterSeasonHitTimesSec.sort((a, b) => a - b)
   }
-  const bitterSeasonStacks: BitterSeasonStackSchedule | null = bitterSeasonTuning
-    ? bitterSeasonStackSchedule(
-        bitterSeasonHitTimesSec,
-        bitterSeasonTuning.procChance,
-        rotationDurationSec,
-      )
-    : null
-  // The party-applied shared debuff (`shareDebuff5HenZhi`/Year-Long Lament T6)
-  // already supplies the fully-stacked reduction.
-  const bitterSeasonSuppressed = henZhiActiveForInputs(inputs)
-  const bitterSeasonBaseTargetDefense = getBreakthrough(inputs.breakthrough).defense
-
-  function bitterSeasonEffectsAt(tSec: number): BuffStatEffect[] {
-    if (!bitterSeasonStacks || !bitterSeasonTuning) return []
-    const out: BuffStatEffect[] = []
-    const stacks = bitterSeasonStacks.expectedStacksAtTime(tSec)
-    if (stacks > 0) {
-      out.push({
-        statKey: "target.defense",
-        amount:
-          -stacks * bitterSeasonTuning.defenseReductionPerStack * bitterSeasonBaseTargetDefense,
-      })
-    }
-    if (bitterSeasonTuning.physPenetrationAtMaxStacks > 0) {
-      const maxStackProb = bitterSeasonStacks.maxStackProbAtTime(tSec)
-      if (maxStackProb > 0) {
-        out.push({
-          statKey: "phys.penetration",
-          amount: bitterSeasonTuning.physPenetrationAtMaxStacks * maxStackProb,
-        })
-      }
-    }
-    return out
-  }
+  damagingHitTimesSec.sort((a, b) => a - b)
+  weaponHitTimesSec.sort((a, b) => a - b)
 
   const prePullHitsCount = rotation.prePullHitsCount ?? false
   const inWindow = (frame: number): boolean =>
@@ -395,6 +281,20 @@ export function simulateTimeline(inputs: Inputs): Result {
       })()
     : null
 
+  const mechanicSetup: MechanicSetup = {
+    inputs,
+    classId: inputs.classId,
+    fps: FPS,
+    rotationDurationSec,
+    hitTimesSec: damagingHitTimesSec,
+    weaponHitTimesSec,
+    qiPhaseAt: (timeSec) => buffEngine?.qiPhase(timeSec) ?? "normal",
+    paramOn: (name) => buffEngine?.paramOn(name) ?? false,
+    paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
+    hasBuffEngine: !!buffEngine,
+  }
+  const mechanics = prepareMechanics(mechanicSetup)
+
   const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
 
   interface Resolved {
@@ -415,7 +315,6 @@ export function simulateTimeline(inputs: Inputs): Result {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
     const effects: BuffStatEffect[] = []
-    let dotDamageMultiplier: number | undefined
     for (const b of active) {
       const perStack = (b.stackScaling ?? "flat") === "perStack"
       const count = perStack ? Math.max(0, stacksAt(b.id, frame)) : 1
@@ -451,64 +350,23 @@ export function simulateTimeline(inputs: Inputs): Result {
           .join(",")
     }
     if (override?.forceGuaranteedAffinity) sig += "~forcedAffinity"
-    if (buffEngine && buffEngine.paramOn("moraleChant")) {
-      const tSec = frame / FPS
-      const moraleQiBreak = buffEngine.qiPhase(tSec) === "exhausted"
-      const stacks = moraleStacksAtTime(tSec, moraleQiBreak)
-      if (stacks > 0) {
-        effects.push({
-          statKey: "allDamageBoost",
-          amount: stacks * moraleDmgPerStack(moraleQiBreak),
-        })
-        effects.push({ statKey: "phys.penetration", amount: stacks * MORALE_PEN_PER_STACK })
-        sig += `~morale:${stacks}${moraleQiBreak ? "q" : ""}`
-      }
-    }
-    if (buffEngine && inputs.classId === "bellstrikeUmbra") {
-      if (skill) {
-        if (LEVEL_ATTRIBUTE_BONUS_ROLES.some((role) => skill.tags?.includes(role))) {
-          const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
-          if (levelBonus !== 0) {
-            effects.push({ statKey: "bellstrike.min", amount: levelBonus })
-            effects.push({ statKey: "bellstrike.max", amount: levelBonus })
-            sig += `~juLevelBonus:${levelBonus}`
-          }
-        }
-      }
-      if (concentrationSchedule) {
-        const activeProb = concentrationSchedule.getActiveProbAtTime(frame / FPS)
-        if (activeProb > 0) {
-          effects.push({ statKey: "affinityDamageBoost", amount: 0.1 * activeProb })
-          effects.push({ statKey: "directAffinityRate", amount: 0.03 * activeProb })
-          effects.push({ statKey: "allDamageBoost", amount: 0.015 * activeProb })
-          sig += `~concentration:${activeProb.toFixed(4)}`
-        }
-        if (
-          concentrationTier6 &&
-          skill &&
-          CONCENTRATION_DOT_MULT_ROLES.some((role) => skill.tags?.includes(role))
-        ) {
-          dotDamageMultiplier = 1 + 0.1 * activeProb
-          sig += `~dotMult:${dotDamageMultiplier.toFixed(4)}`
-        }
-      }
-    }
-    let hawkwingPhysBonus: number | undefined
-    if (hawkwingStacks) {
-      const stacks = Math.round(hawkwingStacks.getExpectedStacksAtTime(frame / FPS))
-      hawkwingPhysBonus = stacks * HAWKWING_BONUS_PER_STACK
-      sig += `~hawkwing:${stacks}`
-    }
-    if (bitterSeasonTuning && !bitterSeasonSuppressed) {
-      const bitterSeasonEffects = bitterSeasonEffectsAt(frame / FPS)
-      if (bitterSeasonEffects.length > 0) {
-        effects.push(...bitterSeasonEffects)
-        sig +=
-          "~bitterSeason:" +
-          bitterSeasonEffects
-            .map((effect) => `${effect.statKey}:${effect.amount.toFixed(6)}`)
-            .join(",")
-      }
+    let contextPatch: ContextPatch = {}
+    for (const { mechanic, state } of mechanics) {
+      const contribution = mechanic.contributeAt?.(state, frame, skill, mechanicSetup)
+      if (!contribution) continue
+      for (const effect of contribution.effects ?? []) effects.push(effect)
+      if (contribution.context) contextPatch = { ...contextPatch, ...contribution.context }
+      sig +=
+        "~" +
+        mechanic.id +
+        ":" +
+        (contribution.effects ?? []).map((e) => e.statKey + "=" + e.amount).join(",") +
+        (contribution.context
+          ? "|" +
+            Object.entries(contribution.context)
+              .map(([k, v]) => k + "=" + v)
+              .join(",")
+          : "")
     }
     const combat = inputs.combatSettings
     if (combat?.revelryScript) {
@@ -535,7 +393,12 @@ export function simulateTimeline(inputs: Inputs): Result {
     let r = stateMemo.get(sig)
     if (!r) {
       const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
-      const ctx = buildContext(effInputs, targetOverride, hawkwingPhysBonus, dotDamageMultiplier)
+      const ctx = buildContext(
+        effInputs,
+        targetOverride,
+        contextPatch.hawkwingPhysBonus,
+        contextPatch.dotDamageMultiplier,
+      )
       if (override?.forceGuaranteedAffinity) {
         ctx.affinityPanel = 0
         ctx.directAffinityPanel = 1
@@ -708,42 +571,16 @@ export function simulateTimeline(inputs: Inputs): Result {
   // Zenith extension events only exist for a Sword Horizon build (the only
   // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
   // so this list is empty for every other build without a class check.
-  let bitterSeasonPoison: BitterSeasonPoisonSchedule | null = null
-  if (bitterSeasonTuning && durationFrames > 0 && bitterSeasonHitTimesSec.length > 0) {
-    const bitterSeasonDebuff = statusById.get(bitterSeasonId)
-    if (bitterSeasonDebuff && isDebuffStatus(bitterSeasonDebuff) && bitterSeasonDebuff.dot) {
-      const zenithExtensionTimesSec = ledger
-        .windowsOf(ZENITH_DETONATION_BUFF_ID)
-        .map((zenithWindow) => zenithWindow.start / FPS)
-        .sort((a, b) => a - b)
-      const poisonDurationSec = bitterSeasonDebuff.durationFrames / FPS
-      bitterSeasonPoison = bitterSeasonPoisonSchedule(
-        bitterSeasonHitTimesSec,
-        bitterSeasonTuning.procChance,
-        poisonDurationSec,
-        rotationDurationSec,
-        zenithExtensionTimesSec,
-      )
-      // Bounds tick emission to the guaranteed-proc envelope instead of one
-      // span covering the whole rotation — activeProbAtTime is 0 outside it,
-      // so no expected damage is lost by not ticking there.
-      for (const envelopeWindow of bitterSeasonEnvelopeWindows(
-        bitterSeasonHitTimesSec,
-        poisonDurationSec,
-        zenithExtensionTimesSec,
-      )) {
-        pushWindow(
-          bitterSeasonDebuff.id,
-          Math.round(envelopeWindow.startSec * FPS),
-          Math.round(envelopeWindow.endSec * FPS),
-        )
-      }
-      recordStack(
-        bitterSeasonDebuff.id,
-        Math.max(0, Math.round(bitterSeasonHitTimesSec[0] * FPS)),
-        1,
-      )
-    }
+  for (const { mechanic, state } of mechanics) {
+    mechanic.seedStatuses?.(
+      state,
+      {
+        ledger,
+        hasStatus: (id) => statusById.has(id),
+        statusDurationFrames: (id) => statusById.get(id)?.durationFrames ?? null,
+      },
+      mechanicSetup,
+    )
   }
 
   ledger.sortWindows()
@@ -770,104 +607,21 @@ export function simulateTimeline(inputs: Inputs): Result {
       // read as an oddly short "duration" — withhold it until more likely
       // than not to be up, same convention as Concentration's own gate.
       overrideRemainingSec: (id, timeSec) => {
-        if (id !== bitterSeasonId || !bitterSeasonPoison) return null
-        const isLikelyActive =
-          bitterSeasonPoison.activeProbAtTime(timeSec) >= BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD
-        const activeSec = isLikelyActive ? bitterSeasonPoison.remainingActiveSecAtTime(timeSec) : 0
-        return { seconds: activeSec > 0 ? activeSec : undefined }
+        for (const { mechanic, state } of mechanics) {
+          const override = mechanic.remainingSecAt?.(state, id, timeSec)
+          if (override) return override
+        }
+        return null
       },
     })
-    if (buffEngine) {
-      if (buffEngine.paramOn("moraleChant") && !seenBuffIds.has("moraleChant")) {
-        const moraleQiBreak = buffEngine.qiPhase(queryTimeSec) === "exhausted"
-        const ms = moraleStacksAtTime(queryTimeSec, moraleQiBreak)
-        if (ms > 0) {
-          seenBuffIds.add("moraleChant")
-          buffs.push({
-            id: "moraleChant",
-            name: "Morale Chant",
-            stacks: ms,
-            maxStacks: MORALE_MAX_STACKS,
-            effects: [
-              { statKey: "allDamageBoost", amount: ms * moraleDmgPerStack(moraleQiBreak) },
-              { statKey: "phys.penetration", amount: ms * MORALE_PEN_PER_STACK },
-            ],
-          })
-        }
+    for (const { mechanic, state } of mechanics) {
+      for (const chip of mechanic.display?.(state, queryTimeSec, ls.prePull, mechanicSetup) ?? []) {
+        if (seenBuffIds.has(chip.id)) continue
+        seenBuffIds.add(chip.id)
+        buffs.push(chip)
       }
     }
-    if (!ls.prePull) {
-      if (concentrationSchedule && !seenBuffIds.has("concentration")) {
-        const prob = concentrationSchedule.getActiveProbAtTime(queryTimeSec)
-        if (prob >= CONCENTRATION_DISPLAY_THRESHOLD) {
-          seenBuffIds.add("concentration")
-          buffs.push({
-            id: "concentration",
-            name: "Concentration",
-            stacks: 1,
-            maxStacks: 1,
-            effects: [
-              { statKey: "affinityDamageBoost", amount: 0.1 },
-              { statKey: "directAffinityRate", amount: 0.03 },
-              { statKey: "allDamageBoost", amount: 0.015 },
-            ],
-            description: `≈${Math.round(prob * 100)}% active`,
-          })
-        }
-      }
-      if (hawkwingStacks && !seenBuffIds.has("hawkwing")) {
-        const shown = Math.round(hawkwingStacks.getExpectedStacksAtTime(queryTimeSec))
-        if (shown >= 1) {
-          seenBuffIds.add("hawkwing")
-          buffs.push({
-            id: "hawkwing",
-            name: "Hawkwing (4-pc)",
-            stacks: shown,
-            maxStacks: HAWKWING_MAX_STACKS,
-            effects: [],
-            requires: "Hawking",
-            description:
-              "expected stacks (avg of 500 sims, rounded) · +2% phys attack/stack, 5s decay",
-          })
-        }
-      }
-      if (bitterSeasonTuning && !seenBuffIds.has("bitterSeasonPoison")) {
-        const shown = bitterSeasonSuppressed
-          ? BITTER_SEASON_MAX_STACKS
-          : Math.round(bitterSeasonStacks?.expectedStacksAtTime(queryTimeSec) ?? 0)
-        if (shown >= 1) {
-          seenBuffIds.add("bitterSeasonPoison")
-          const uptimePct = Math.round(
-            (bitterSeasonPoison?.activeProbAtTime(queryTimeSec) ?? 0) * 100,
-          )
-          // The mechanic's own numbers (both worded as a target physical
-          // defense reduction, per the in-game hint, even though the tier-6
-          // node is implemented through `phys.penetration` — see
-          // `bitterSeasonEffectsAt`), stated plainly rather than surfacing
-          // that internal stat-key vehicle, and scaled to the shown stack
-          // count rather than always quoting the 5-stack cap.
-          const currentDefensePct = Math.round(
-            bitterSeasonTuning.defenseReductionPerStack * shown * 100,
-          )
-          const tier6DefenseFlatAmount = bitterSeasonTuning.physPenetrationAtMaxStacks * 100
-          const mechanicText =
-            `at ${shown}/${BITTER_SEASON_MAX_STACKS} stacks: -${currentDefensePct}% target physical defense` +
-            (tier6DefenseFlatAmount > 0
-              ? ` · -${tier6DefenseFlatAmount} target physical defense at ${BITTER_SEASON_MAX_STACKS}/${BITTER_SEASON_MAX_STACKS} stacks (tier 6)`
-              : "")
-          buffs.push({
-            id: "bitterSeasonPoison",
-            name: "Bitter Season Poison",
-            stacks: shown,
-            maxStacks: BITTER_SEASON_MAX_STACKS,
-            effects: [],
-            description: bitterSeasonSuppressed
-              ? "party-applied Bitter Season debuff already caps the reduction — the inner way adds none"
-              : `expected stacks (avg of 500 sims, rounded) · ${mechanicText} · ≈${uptimePct}% poison uptime`,
-          })
-        }
-      }
-    }
+
     return {
       index: 0,
       stepId: ls.resolved.step.id,
@@ -909,10 +663,13 @@ export function simulateTimeline(inputs: Inputs): Result {
       windows: arr,
       stacksAt: (frame) => stacksAt(buffId, frame),
       inWindow,
-      weightAt: (frame) =>
-        bitterSeasonPoison && buffId === bitterSeasonId
-          ? bitterSeasonPoison.activeProbAtTime(frame / FPS)
-          : 1,
+      weightAt: (frame) => {
+        for (const { mechanic, state } of mechanics) {
+          const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
+          if (weight !== null && weight !== undefined) return weight
+        }
+        return 1
+      },
       damageAt: (frame, shape, scale) => {
         const st = resolveState(frame, dotSkill)
         return (
@@ -935,55 +692,23 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  // Morale Chant's Yi River (`.tmp/site/deobfuscated.js` `yiRiver.calculate`
-  // ~L21287-21409): no weapon/mystic boosts apply.
-  if (buffEngine && buffEngine.paramOn("moraleChant") && buffEngine.paramTier("moraleChant") >= 6) {
-    const durationSec = durationFrames / FPS
-    let tFirst = 0
-    while (
-      tFirst < durationSec &&
-      moraleStacksAtTime(tFirst, buffEngine.qiPhase(tFirst) === "exhausted") <
-        MORALE_STACK_THRESHOLD
-    ) {
-      tFirst += 0.5
-    }
-    if (tFirst <= durationSec) {
-      const yiRiverSkill: Skill = {
-        id: "yi-river",
-        classId: inputs.classId,
-        name: "Yi River",
-        skillType: "mindMethod",
-        weaponOrAttribute: "",
-        attributeAttack: "",
-        hits: [],
-        castFrames: 0,
-        triggerable: false,
-        createdAt: "1970-01-01T00:00:00.000Z",
-        updatedAt: "1970-01-01T00:00:00.000Z",
-      }
-      for (let t = tFirst; t <= durationSec; t += YI_RIVER_INTERVAL_SEC) {
-        const f = Math.round(t * FPS)
-        const st = resolveState(f, yiRiverSkill)
-        const art = {
-          name: "Yi River",
-          physMultiplier: 1,
-          attributeMultiplier: 1,
-          skillType: "mindMethod",
-        } as Parameters<typeof computeSkillDamage>[0]
-        if (st.forceCrit) art.guaranteedCrit = 1
-        const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
-        totalDamage += expectedDamage
-        add("Yi River", "mindMethod", 1, expectedDamage)
-        timeline.push({
-          frame: f,
-          timeSec: t,
-          skillName: "Yi River",
-          type: "mindMethod",
-          kind: "hit",
-          damage: expectedDamage,
-          inWindow: true,
-        })
-      }
+  for (const { mechanic, state } of mechanics) {
+    for (const event of mechanic.extraEvents?.(state, mechanicSetup) ?? []) {
+      const st = resolveState(event.frame, event.skill)
+      const art = { ...event.art } as Parameters<typeof computeSkillDamage>[0]
+      if (st.forceCrit) art.guaranteedCrit = 1
+      const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
+      totalDamage += expectedDamage
+      add(event.name, event.type, 1, expectedDamage)
+      timeline.push({
+        frame: event.frame,
+        timeSec: event.frame / FPS,
+        skillName: event.name,
+        type: event.type,
+        kind: "hit",
+        damage: expectedDamage,
+        inWindow: true,
+      })
     }
   }
 
