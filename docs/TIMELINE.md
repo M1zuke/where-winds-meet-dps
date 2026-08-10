@@ -181,7 +181,7 @@ locked fixtures stay byte-exact).
     `attributeAttack`, `skillType` (usually `"sustain"`), `count` (hits/tick), and optional
     `perStackShapes[]` (a per-stack damage table indexed by live stack count, overriding
     scaling). Each tick runs through `computeSkillDamage` exactly like a normal hit, with
-    `elevatedAttributeMultiplier: false` set for it (see `dotTickDamage` in `timeline.ts`).
+    `elevatedAttributeMultiplier: false` set for it (see `dotTickDamage` in `dot.ts`).
   - `detonation?: DotDetonationSpec | null` — optional, alongside `dot`, on a stacking DoT
     (e.g. Bleed): `{ skillId, retainStacks?, retainParam?, retainMinTier?, retainParamStacks? }`.
     Fires when a `detonateDot`-flagged hit's `applyDot` brings the stack count to the debuff's
@@ -200,9 +200,9 @@ mechanic defs (`soulShaken.json`, `bellstrikeUmbraBleedPen.json`,
 buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.ts`) is
 tag-matched, not id-referenced:
 
-- **who applies it** — `triggeredBy: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
+- **who applies it** — `triggeredBy: string[]` (cast tags, matched exactly), `refreshOn`,
   `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`.
-- **who it boosts** — `affects: string[] | null` (tag prefixes; `null` = everything),
+- **who it boosts** — `affects: string[] | null` (tags, matched exactly; `null` = everything),
   `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`, `overriddenBy`. See
   `matchesScope` in `scope.ts`, called from both `buffEngine.bonusAffects` and the Skill
 Editor's Receives card.
@@ -229,7 +229,7 @@ version:
 
 ## 6. How the timeline runs (`simulateTimeline`, `timeline.ts`)
 
-`timeline.ts` is scheduling and the event loop. Four modules do the rest, and a
+`timeline.ts` is scheduling and the event loop. Five modules do the rest, and a
 change usually belongs in one of them rather than in the loop:
 
 | module | owns |
@@ -245,6 +245,15 @@ A skill with genuinely procedural behaviour registers a factory
 `data/classes/bellstrikeUmbraCrosswind.ts` is the worked example. Factories, not
 instances — a charge counter must not carry between simulations.
 
+The ledger and `BuffEngine` remain **two stores on purpose**: the ledger calls a
+status active if any recorded window covers the frame, the engine goes by the
+latest apply at or before it, so a shorter re-apply *shortens* the buff
+(`rainwhisperShield`). Writing the engine's applies into the ledger would
+silently extend every buff shaped like that. `castBuffs.ts` unifies the read
+surface and documents the divergence at the seam; merging the storage needs a
+per-status policy on the ledger, which is a design decision rather than a
+refactor.
+
 
 1. **Lay the rotation** into performed hits; seed an `EventQueue` with one event per hit at
    `startFrame + hit.frame`; the queue pops in `(frame, seq)` order.
@@ -253,12 +262,13 @@ instances — a charge counter must not carry between simulations.
      + site engine + inner-way + combat-settings toggles) into a single memoized `ctx`.
      Buff windows are tracked as `{start, end}` per status with `stacksAt(frame)`; permanent
      buffs open a full-timeline window.
-   - `hitToArtRow(hit, skill)` builds the coefficient row; per-event/art overrides may be
-     layered (bleed-attunement `correction`, min-phys crit bonus, qi-phase crit/pen) — these
-     are the *few* sanctioned art-level adjustments.
+   - `behavior.buildArt` builds the coefficient row (`hitToArtRow` underneath), then
+     `behavior.patchArt` layers whatever that skill claims for this frame — the min-phys crit
+     bonus, the qi-phase crit/pen. An art patch is the *only* sanctioned art-level adjustment,
+     and it comes from a behaviour or a mechanic, never from an `if` in the loop.
    - `computeSkillDamage(art, ctx)` → expected damage; added to totals only if the frame is
      `inWindow` (pre-pull / out-of-window casts still appear on the cast timeline).
-   - **Fire `hit.triggers`** (`timeline.ts:825`): check `condition`; then `applyDot` (add one
+   - **Fire `hit.triggers`**: check `condition`; then `applyDot` (add one
      stack to the target DoT, clamped at its `maxStacks`, refresh its window, and — if the
      same hit is also `detonateDot`-flagged and the post-application count reached
      `maxStacks` — consume the stacks and enqueue the debuff's `detonation.skillId`),
@@ -324,8 +334,8 @@ editable directly in the Skill Editor's Cast Time field).
    to a stacking DoT instead (adding a stack / detonating it) uses the logic-free
    `applyDot`/`detonateDot` kinds — the max stacks, duration, and detonation rule live on the
    target `Debuff`, never re-authored on the trigger.
-7. **Receiving a buff:** make sure the skill's tags (explicit or implicit) match the buff's
-   `affects`/`affectsProperty`/`affectsWeaponTypes` prefixes.
+7. **Receiving a buff:** make sure the skill declares the exact tags the buff's
+   `affects`/`affectsProperty`/`affectsWeaponTypes` name.
 8. **No invisible magic:** the effect must be a data-driven def visible in the Skill Editor —
    do **not** add a per-skill `if` branch in `timeline.ts`. Extend the schema if it doesn't
    fit.

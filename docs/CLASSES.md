@@ -88,12 +88,35 @@ debuffs, buffs, rotations and default, attunements, retunement pool — and
 `CLASS_IDS` is the one list of the eight. Reach for it rather than opening the
 individual registries below; `builtinLibrary.ts` is a thin read over it.
 
+**Nothing in `src/engine` names a class, an inner way or a skill**
+(`tests/engine/noClassSpecificEngineCode.test.ts`, with `defaults.ts`
+allowlisted because the starting build is content rather than logic). Whatever a
+class does beyond data reaches the engine through one of four registrations,
+each callable from a module under `src/data/classes/` that the folder barrel
+imports:
+
+| the class needs | it calls |
+| --- | --- |
+| gate buffs — state markers the timeline reads | `registerBuiltinBuffs(classId, buffs)` |
+| a stochastic or stateful mechanic | `registerMechanic(mechanic, MECHANIC_ORDER.…)` |
+| procedural behaviour on one skill | `registerSkillBehavior(skillId, factory)` |
+| a Skill Editor "is this active" gate | `registerDisplayGate(defId, predicate)` |
+
+`tests/engine/classExtensionPoints.test.ts` exercises all four for a fictional
+class and is the worked example. That was rehearsed for real first: wiring
+`bellstrikeRainbow` with a mechanic, a gate buff, a behaviour and a display gate
+touched exactly two files — its own module and the `src/data/classes` barrel —
+and nothing under `src/engine`. The rehearsal was reverted rather than shipped,
+because the wiring was the point and a real class needs verified coefficients.
+**Building out one of the seven is data work**, not engine work: sourcing and
+verifying its numbers.
+
 ## Where data lives
 
 | folder | holds | main consumer |
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
-| `classes/` | per-class / per-spec metadata (schools, spec ids, retunement pools) | `engine/panel.ts`, `engine/buffs/data.ts` |
+| `classes/` | per-class / per-spec metadata (schools, spec ids, retunement pools), the inner-way registry and defs, and every class-owned mechanic, behaviour and gate module | `classes/registry.ts` |
 | `rotations/` | built-in rotation pools | `engine/builtinLibrary.ts` |
 | `sets/` | armour-set tables (panel stats, damage boosts, base-stat boni) | `engine/panel.ts`, `engine/formula.ts` |
 | `skills/` | per-class skill files, the class-unbound `universal/` skills, and the debuff library | `engine/builtinLibrary.ts` |

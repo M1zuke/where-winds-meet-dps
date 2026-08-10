@@ -41,22 +41,29 @@ them fresh on every load)
   └─► simulateTimeline(inputs)                     → timeline.ts
         1. Lay out casts on a 60 fps frame grid (pre-pull casts get negative
            frames); build the hit event queue.
-        2. Pre-compute the whole-rotation stochastic schedules — Hawkwing
-           stacks, Concentration activation probability.
+        2. prepareMechanics(setup) — every registered TimelineMechanic that
+           applies to this build precomputes its state (the stochastic
+           schedules: Hawkwing stacks, Concentration and Bitter Season
+           probability, the Morale stack curve).
         3. Feed every cast to BuffEngine.processSkillCast (buffs/buffEngine.ts).
-        4. Drain the queue. For each hit:
-             resolveState(frame, skill)  → collects active buff stat-effects,
-                                           applies them to Inputs, rebuilds
-                                           the FormulaContext (memoized on a
-                                           signature string)
-             hitToArtRow(hit, skill)     → the per-hit coefficient row
+        4. Drain the queue. For each hit, through the skill's SkillBehavior:
+             behavior.onHit(input)       → statuses to write, stat effects
+                                           claimed for this hit
+             resolveState(frame, skill)  → collects active stat-effects (ledger
+                                           + buff engine + mechanics + the
+                                           claimed ones), applies them to
+                                           Inputs, rebuilds the FormulaContext
+                                           (memoized on a derived signature)
+             behavior.buildArt/patchArt  → the per-hit coefficient row, plus
+                                           any art patch it claims
              computeSkillDamage(art, …)  → expected damage for this hit
            …then fire the hit's triggers (apply buffs/debuffs/DoTs, queue
            sub-skills, detonate).
-        5. Second pass: walk each debuff's merged application episodes and
-           emit DoT ticks on a continuous per-episode grid.
-        6. Yi River ticks (Morale Chant T6), then aggregate:
-             dps = totalDamage / (durationFrames / 60)
+        5. Second pass (dot.ts): walk each debuff's merged application episodes
+           and emit DoT ticks on a continuous per-episode grid, each weighted
+           by any mechanic's tickWeightAt.
+        6. Every mechanic's extraEvents (Yi River, from Morale Chant T6), then
+           aggregate: dps = totalDamage / (durationFrames / 60)
 ```
 
 `computeRanking` (`itemRanking.ts`) and the gear/retunement sweeps re-run
@@ -167,7 +174,7 @@ timeline builds one per resolved state alongside the context.
 
 ## The per-hit formula chain
 
-`formula.computeSkillDamage(art, slots, ctx, count, dingYin?, counters?)`.
+`formula.computeSkillDamage(art, slots, ctx, count, counters?)`.
 
 The single-letter variable names (`AE`, `AG`, `AH`, `EH`, `H`, `F`, …) are the
 actual identifiers in `formula.ts`. They are inherited from the spreadsheet the
@@ -200,24 +207,25 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **T** | weapon + mystic-type boost | `(weaponBoosts[art.weaponOrAttribute] + allMartialBoost)` when the weapon resolves, `+ mysticTypeBoosts[art.mysticCategory]`. A DoT tick resolves both typings like any skill: from its display stand-in's `weaponOrAttribute` / `mystic:*` tag when one exists, else from the debuff's `dot.weaponOrAttribute` / `dot.mysticCategory` — so Sword-typed DoTs (bleed) take weapon + all-martial, and mystic DoTs take their category stat; the in-game stat text explicitly covers "damage over time". Boss damage lives in `generalDamageBoost`, not here. |
 | **H** | total boost | `generalDamageBoost + allDamageBoost + T + yiShui×0.01 + qiExhausted × fatigueDamageTaken + Σslot.col2 + (usesChargeBoost ? chargeBonus : 0) + art.extraDamageBoost + (sustain ? sustainDmgBoostPanel + dotDamageBoost : 0)` |
 | **I** | correction multiplier | `art.correction || 1` |
+| **E** | attunement (dingYin) factor | `ctx.attuneBoostByTag[art.attuneTag] ?? 0` — 0 when the entity declares no `attune:` tag |
 | **F** | final per-hit damage | `(guaranteedNormal ? EF : guaranteedCrit ? EB : EH) × (1 + H) × count × I × (1 + E) × dotMult` — `guaranteedNormal` is the fixed-damage flag (no crit/affinity/abrasion, e.g. Dragon Head) |
 
 ### What the live path does not exercise
 
-Four `computeSkillDamage` parameters are vestigial on the timeline path. They
+Three `computeSkillDamage` parameters are vestigial on the timeline path. They
 are still wired and still tested, but nothing in a real run sets them:
 
 | parameter | live value | consequence |
 | --- | --- | --- |
 | `slots` | always `padSlots([])` → five `"N/A"` | every `Σslot.colN` term is 0, so **`boostZone.json` and `boostZoneOverrides` contribute nothing** |
 | `count` | always `1` (DoT ticks: `max(1, dot.count)`) | per-hit damage is per-hit |
-| `counters` | always the default zeros | `qiExhausted` / `yiShuiLayer` / `bengJieLayer` / `lowQi` terms are 0 — the qi phase reaches the formula through buff stat-effects and per-hit tag handling in `timeline.ts` instead |
-| `dingYin` | **never passed** | `E` is always 0. Note the lookup is `ctx.dingYinByTag["DingYin" + dingYin]` while `buildContext` keys the map by tag *name* (`"Mouse Boost"`), so the two would not match even if an argument were passed. |
+| `counters` | always the default zeros | `qiExhausted` / `yiShuiLayer` / `bengJieLayer` / `lowQi` terms are 0 — the qi phase reaches the formula through buff stat-effects and the per-hit art patches a `SkillBehavior` claims instead |
 
-Attunement (dingYin) does still reach damage, but by a different route:
-`timeline.ts` multiplies `art.correction` by `1 + dingYinByTag["Bleed Boost"]`
-for `bellstrikeUmbra`'s Bleed Detonation and Bleed Tick. That is currently the
-only path from a gear-derived attunement tag to a damage number.
+`E` is live: an entity's own `attune:` tag reaches the formula on `art.attuneTag`
+(`skill.ts hitToArtRow`, `dot.ts` for ticks), and only a tag some
+`AttunementOption` claims via `affectsTag` carries a value. Today that is
+`bleedingDamage` → `attune:bleed`, so Bellstrike Umbra's bleed tick and its
+detonation take the rolled Bleed Boost and nothing else does.
 
 ## Calculation rules
 
@@ -465,10 +473,13 @@ source-of-truth note this table summarizes.
 
 ## Verification
 
-- `pnpm test` — **573 tests across 65 files**, all green.
-- There is **no locked-DPS fixture**. `defaultInputs` (`engine/defaults.ts`) is
-  the default Bamboocut-Wind build, not an anchor; no test asserts an absolute
-  DPS number.
+- `pnpm test` — **734 tests across 80 files**, all green.
+- The one locked fixture is `tests/engine/engineBaseline.test.ts`, which pins
+  the whole `Result` for 24 Umbra builds as a refactor guard — it asserts the
+  engine is *unchanged*, never that it is *right* (TESTING.md § "The engine
+  baseline"). Beyond it no test asserts an absolute DPS number, and
+  `defaultInputs` (`engine/defaults.ts`) is the default Bamboocut-Wind build,
+  not an anchor.
 - `tests/engine/damageRules.test.ts` is the only guard on the four calculation
   rules, and it is directional (asserts the sign/shape of a change, not a
   value).

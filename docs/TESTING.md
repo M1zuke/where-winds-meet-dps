@@ -1,6 +1,6 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **744 tests
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **734 tests
 across 80 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
@@ -25,8 +25,8 @@ not had.
 `tests/engine/engineBaseline.test.ts` + `engineBaseline.fixture.json` pin the
 **entire `Result`** — dps, total, duration, every per-skill row, and a SHA-256
 digest over the whole object including `timeline`, `buffWindows` and `casts` —
-for 24 Bellstrike Umbra builds. It exists for `docs/GENERALIZATION.md`: a
-refactor that claims to preserve behaviour has to be able to prove it.
+for 24 Bellstrike Umbra builds. It exists because a refactor that claims to
+preserve behaviour has to be able to prove it.
 
 Read the distinction carefully, because it is the whole reason this file is
 allowed to exist alongside the rule below:
