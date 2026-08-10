@@ -86,18 +86,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const physMax = readPath(withSets, "phys.max")
   const effectivePhys = effectivePhysRange(physMin, physMax, withSets.food)
   const attackRows: RowEntry[] = [
-    row(
-      t(PATH_LABELS["phys.min"]),
-      physMin,
-      false,
-      withSets.food ? effectivePhys.min : undefined,
-    ),
-    row(
-      t(PATH_LABELS["phys.max"]),
-      physMax,
-      false,
-      withSets.food ? effectivePhys.max : undefined,
-    ),
+    row(t(PATH_LABELS["phys.min"]), physMin, false, withSets.food ? effectivePhys.min : undefined),
+    row(t(PATH_LABELS["phys.max"]), physMax, false, withSets.food ? effectivePhys.max : undefined),
   ]
   const penetrationRows: RowEntry[] = [
     row(

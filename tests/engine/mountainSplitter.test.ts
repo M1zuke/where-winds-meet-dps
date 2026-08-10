@@ -48,7 +48,10 @@ describe("Lone Loyalty Mountain Splitter", () => {
     expect(effects.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
     expect(effects.effects).toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
 
-    const unaffected = withInnerPassion.calculateDamageEffects(affectedSkill("AnxiSoldierMoSweep"), 2)
+    const unaffected = withInnerPassion.calculateDamageEffects(
+      affectedSkill("AnxiSoldierMoSweep"),
+      2,
+    )
     expect(unaffected.conditionalFinalCrit).toBeNull()
     expect(unaffected.effects).not.toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
   })

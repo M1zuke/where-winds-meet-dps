@@ -19,11 +19,7 @@
           "bonusBelowThreshold": 0.15
         },
         "__statModByPrefix": {
-          "prefixes": [
-            "PhalanxCharged",
-            "AnxiSoldierMoDown",
-            "AnxiSoldierMoJump"
-          ],
+          "prefixes": ["PhalanxCharged", "AnxiSoldierMoDown", "AnxiSoldierMoJump"],
           "match": {
             "critDmg": 0.1
           },
