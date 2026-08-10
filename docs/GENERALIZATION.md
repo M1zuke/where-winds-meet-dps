@@ -26,7 +26,7 @@ dps 74381.62.
 | P6 DoT module | **done** |
 | P7 mechanic plugins | **done** — all five behind `TimelineMechanic`; Crosswind on the skill |
 | P8 class descriptor | **done** — `classDefinition()` plus `innerWays.ts` defs |
-| P9 acceptance | **2 of 3** — the engine names no class, inner way or skill (guarded by a test); wiring a real new class is untried |
+| P9 acceptance | **done** — all three conditions, each guarded by a test |
 | P10 wiki rewrite | **not started** |
 
 Two deviations worth reading before continuing:
@@ -49,10 +49,21 @@ logic. Class-owned code lives under `src/data/classes/`:
 `bellstrikeUmbraCrosswind`, `…Concentration`, `…LevelBonus`, `…Gates`, plus
 `innerWays.ts`, `attunementOptions.ts` and `registry.ts`.
 
-What P9 still lacks is the positive proof: actually wiring one of the seven
-unimplemented classes and confirming no engine file changes. That needs
-verified coefficients for that class, which is data work rather than
-engineering.
+P9's three conditions and what proves each:
+
+| condition | proof |
+| --- | --- |
+| zero numeric change | `engineBaseline.test.ts` — 24 builds bit-identical, anchor at dps 74381.62 |
+| zero engine edits for a new class | `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a mechanic, a per-skill behaviour and a display gate from outside `src/engine`, and each is picked up |
+| no name matching | `noClassSpecificEngineCode.test.ts` — no class id, display-name comparison or cast-tag prefix anywhere in `src/engine` |
+
+The second was rehearsed for real before being written as a test: wiring
+`bellstrikeRainbow` with a mechanic, a gate buff, a behaviour and a display gate
+changed exactly two files — its own module and the `src/data/classes` barrel —
+and nothing under `src/engine`. The rehearsal was then reverted rather than
+shipped, because a real class needs verified coefficients and the point was to
+prove the wiring, not to invent data. Building out one of the seven for real is
+data work: sourcing and verifying its numbers.
 
 ---
 

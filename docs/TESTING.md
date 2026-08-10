@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **739 tests
-across 79 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **744 tests
+across 80 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
@@ -44,6 +44,21 @@ entire point.
 The `profile-v7 anchor` block at the bottom of that file is spelled out
 separately from the fixture on purpose: those are the figures a user verified
 against the running app, so a re-baseline cannot quietly carry them along.
+
+## The architecture guards
+
+Two tests assert properties of the code rather than of a build, and both exist
+to stop the generalization work rotting:
+
+- `noClassSpecificEngineCode.test.ts` — nothing under `src/engine` may name a
+  class, compare a display name against a literal, or match a cast tag by
+  prefix. `defaults.ts` is allowlisted: the starting build is content.
+- `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
+  mechanic, a per-skill behaviour and a display gate from outside the engine and
+  each is picked up. Every id in it is fictional, so no shipped class can see it.
+
+These legitimately span all eight classes, which the class-scoping rule above
+explicitly permits for registry and metadata tests.
 
 ## Otherwise, there is no locked-DPS fixture
 
