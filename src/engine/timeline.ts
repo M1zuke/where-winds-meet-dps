@@ -448,6 +448,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         generated: false,
       }))
       let processedBuffCasts = 0
+      const damageHitFrames: number[] = []
 
       while (pendingBuffCasts.length > 0 && processedBuffCasts < EVENT_CAP) {
         pendingBuffCasts.sort(
@@ -455,29 +456,32 @@ export function simulateTimeline(inputs: Inputs): Result {
         )
         const event = pendingBuffCasts.shift()!
         processedBuffCasts++
-        const castTag = castTagOf(event.skill)
-        if (!castTag) continue
-        const opts: Record<string, unknown> = {
-          hitCount: event.hits.length,
-          castTime: (event.skill.castFrames || 1) / FPS,
-          generatedSkill: event.generated,
-        }
-        for (const tag of event.skill.tags ?? []) {
-          if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
-          else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
-        }
-        eng.processSkillCast(castTag, event.frame / FPS, opts)
-        if (!event.generated && opts.isDrone && event.hits.length > 1) {
-          const useExternalLB = !!eng.params.starReacher
-          for (let i = 1; i < event.hits.length; i++) {
-            const t = (event.frame + event.hits[i].frame) / FPS
-            if (useExternalLB) eng.processDroneTickWithExternalLB(t)
-            else eng.processDroneTick(t)
+        if (!event.generated) {
+          const castTag = castTagOf(event.skill)
+          if (castTag) {
+            const opts: Record<string, unknown> = {
+              hitCount: event.hits.length,
+              castTime: (event.skill.castFrames || 1) / FPS,
+            }
+            for (const tag of event.skill.tags ?? []) {
+              if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
+              else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
+            }
+            eng.processSkillCast(castTag, event.frame / FPS, opts)
+            if (opts.isDrone && event.hits.length > 1) {
+              const useExternalLB = !!eng.params.starReacher
+              for (let i = 1; i < event.hits.length; i++) {
+                const t = (event.frame + event.hits[i].frame) / FPS
+                if (useExternalLB) eng.processDroneTickWithExternalLB(t)
+                else eng.processDroneTick(t)
+              }
+            }
           }
         }
 
         for (const hit of event.hits) {
           const triggerFrame = event.frame + hit.frame
+          if (hitDealsDamage(hit)) damageHitFrames.push(triggerFrame)
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
             if (
@@ -500,6 +504,41 @@ export function simulateTimeline(inputs: Inputs): Result {
       }
       if (pendingBuffCasts.length > 0)
         eng.warnings.add(`Buff trigger prepass exceeded ${EVENT_CAP} generated casts.`)
+
+      for (const [buffId, windows] of windowsByBuff) {
+        const status = statusById.get(buffId)
+        if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
+          continue
+        const episodes: Window[] = []
+        for (const window of windows) {
+          const last = episodes[episodes.length - 1]
+          if (last && window.start < last.end) last.end = Math.max(last.end, window.end)
+          else episodes.push({ start: window.start, end: window.end })
+        }
+        for (const episode of episodes)
+          for (
+            let frame = episode.start + status.dot.tickIntervalFrames;
+            frame < episode.end;
+            frame += status.dot.tickIntervalFrames
+          )
+            if (frame >= 0 && inWindow(frame)) damageHitFrames.push(frame)
+      }
+
+      if (eng.paramOn("moraleChant") && eng.paramTier("moraleChant") >= 6) {
+        const durationSec = durationFrames / FPS
+        let firstTick = 0
+        while (
+          firstTick < durationSec &&
+          moraleStacksAtTime(firstTick, eng.qiPhase(firstTick) === "exhausted") <
+            MORALE_STACK_THRESHOLD
+        )
+          firstTick += 0.5
+        for (let time = firstTick; time <= durationSec; time += YI_RIVER_INTERVAL_SEC)
+          damageHitFrames.push(Math.round(time * FPS))
+      }
+
+      damageHitFrames.sort((left, right) => left - right)
+      for (const frame of damageHitFrames) eng.processDamageHit(frame / FPS)
       return eng
     } catch {
       return null

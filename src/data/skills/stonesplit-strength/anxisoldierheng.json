@@ -3,7 +3,7 @@
   "classId": "stonesplitStrength",
   "name": "AnxiSoldierHeng",
   "abilityTag": "AnxiSoldierHeng",
-  "tags": ["weapon:Heng Blade"],
+  "tags": ["weapon:Heng Blade", "prop:shatteredRidgeBoost"],
   "skillType": "weapon",
   "weaponOrAttribute": "Hengdao",
   "attributeAttack": "Stonesplit",

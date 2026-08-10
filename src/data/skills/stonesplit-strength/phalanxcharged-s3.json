@@ -3,7 +3,13 @@
   "classId": "stonesplitStrength",
   "name": "PhalanxCharged-S3",
   "abilityTag": "PhalanxCharged-S3",
-  "tags": ["prop:isCharged", "weapon:Mo Blade", "attack:charge", "attune:phalanxbaneCharged"],
+  "tags": [
+    "prop:isCharged",
+    "prop:shatteredRidgeBoost",
+    "weapon:Mo Blade",
+    "attack:charge",
+    "attune:phalanxbaneCharged"
+  ],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

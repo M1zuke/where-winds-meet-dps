@@ -3,7 +3,7 @@
   "classId": "stonesplitStrength",
   "name": "AnxiSoldierMoJump",
   "abilityTag": "AnxiSoldierMoJump",
-  "tags": ["weapon:Mo Blade"],
+  "tags": ["weapon:Mo Blade", "prop:shatteredRidgeBoost"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

@@ -8,6 +8,7 @@ export interface BuffBonus {
   value?: number
   valuePerStack?: number
   valueFromParam?: string
+  minStacks?: number
   phaseBonus?: Record<string, number>
 }
 
@@ -72,7 +73,7 @@ export interface BuffDef {
   id: string
   name?: string
   triggers?: string[]
-  triggerGeneratedSkills?: boolean
+  stackOnDamage?: boolean
   exactMatch?: boolean
   refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   onApply?: string[]

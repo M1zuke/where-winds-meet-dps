@@ -190,9 +190,9 @@ buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.
 tag-matched, not id-referenced:
 
 - **who applies it** — `triggers: string[]` (cast-tag prefixes), `exactMatch`, `refreshOn`,
-  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`. Rotation casts are the
-  default trigger source; `triggerGeneratedSkills` additionally lets a def react to
-  `castSkill`-generated subskills (for example Shattered Ridge refreshing from Anxi attacks).
+  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`. `stackOnDamage` instead
+  adds and refreshes one stack for every damaging hit, including `castSkill`-generated hits
+  and deterministic DoT/mind-method ticks.
 - **who it boosts** — `affects: string[] | null` (tag prefixes; `null` = everything),
   `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`, `overriddenBy`. See
   `bonusAffects` in `buffEngine.ts` (`buffEngine.ts:705`).
@@ -200,8 +200,8 @@ tag-matched, not id-referenced:
   `phyBoostMod` → `physBoost`, `bossOnlyBuffBonus` → `bossBoost`; see `BONUS_TYPE_TO_STATKEY`)
   and/or `statModifiers` / `bossStatModifiers` / `tier6StatModifiers` (rate/pen/crit-dmg mods
   → app stat keys via `STATMOD_TO_STATKEY`). `forceCrit`, stack/time (`duration`,
-  `maxStacks`, `stacksPerHit`/`stacksPerCast`), and limiting (`cooldown`, `rateLimit`,
-  `stackIcd`, `phaseGate`).
+  `maxStacks`, `stacksPerHit`/`stacksPerCast`, `bonus.minStacks`), and limiting (`cooldown`,
+  `rateLimit`, `stackIcd`, `phaseGate`).
 
 ### 5c. Which system for what
 

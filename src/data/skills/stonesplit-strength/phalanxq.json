@@ -3,7 +3,7 @@
   "classId": "stonesplitStrength",
   "name": "PhalanxQ",
   "abilityTag": "PhalanxQ",
-  "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ"],
+  "tags": ["weapon:Mo Blade", "attune:phalanxbaneQ", "prop:shatteredRidgeBoost"],
   "skillType": "weapon",
   "weaponOrAttribute": "Modao",
   "attributeAttack": "Stonesplit",

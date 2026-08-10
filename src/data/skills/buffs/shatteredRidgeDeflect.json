@@ -23,35 +23,14 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Max Stacks)",
-        "triggers": [
-          "Deflect",
-          "SnowpartingQ-Stab",
-          "AnxiSoldierHeng",
-          "AnxiSoldierMoDown",
-          "AnxiSoldierMoJump",
-          "PhalanxCharged-S3",
-          "PhalanxCharged-S3[InnerPassion]",
-          "SnowpartingVC",
-          "SnowpartingVC Prepull",
-          "PhalanxQ",
-          "AnxiSoldierMoSweep"
-        ],
-        "triggerGeneratedSkills": true,
-        "exactMatch": true,
-        "duration": 8,
-        "affects": [
-          "SnowpartingQ-Stab",
-          "AnxiSoldierHeng",
-          "AnxiSoldierMoDown",
-          "AnxiSoldierMoJump",
-          "PhalanxCharged",
-          "SnowpartingVC",
-          "PhalanxQ",
-          "AnxiSoldierMoSweep"
-        ],
+        "stackOnDamage": true,
+        "duration": 5,
+        "maxStacks": 5,
+        "affectsProperty": "shatteredRidgeBoost",
         "bonus": {
           "type": "buffBonus",
-          "value": 0.08
+          "value": 0.08,
+          "minStacks": 5
         },
         "requiresSet": "shatteredridge"
       }

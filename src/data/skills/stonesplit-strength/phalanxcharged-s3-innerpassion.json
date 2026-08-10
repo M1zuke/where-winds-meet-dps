@@ -5,6 +5,7 @@
   "abilityTag": "PhalanxCharged-S3[InnerPassion]",
   "tags": [
     "prop:isCharged",
+    "prop:shatteredRidgeBoost",
     "prop:consumesInnerPassionBurningHeart",
     "weapon:Mo Blade",
     "attack:charge",

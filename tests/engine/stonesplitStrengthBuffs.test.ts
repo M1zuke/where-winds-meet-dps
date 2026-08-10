@@ -70,82 +70,85 @@ describe("Stonesplit Strength built-in buffs", () => {
       "AnxiSoldierHeng",
       "AnxiSoldierMoDown",
       "AnxiSoldierMoJump",
+      "PhalanxCharged-S3",
       "PhalanxCharged-S3[InnerPassion]",
       "SnowpartingVC",
+      "SnowpartingVC Prepull",
       "PhalanxQ",
       "AnxiSoldierMoSweep",
     ].map(skillNamed)
 
-    engine.processSkillCast("Deflect", 0)
+    for (let time = 0; time < 5; time++) engine.processDamageHit(time)
 
     expect(withSet.generalDamageBoost - withoutSet.generalDamageBoost).toBeCloseTo(0.05, 10)
     for (const skill of affectedSkills) {
-      expect(engine.calculateDamageEffects(skill, 1).effects).toContainEqual({
+      expect(skill.tags).toContain("prop:shatteredRidgeBoost")
+      expect(engine.calculateDamageEffects(skill, 4).effects).toContainEqual({
         statKey: "allDamageBoost",
         amount: 0.08,
       })
     }
+    const unaffected = skillNamed("SnowpartingSpecial")
+    expect(unaffected.tags).not.toContain("prop:shatteredRidgeBoost")
+    expect(engine.calculateDamageEffects(unaffected, 4).effects).not.toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
   })
 
-  it("lets every Shattered Ridge attack trigger and refresh its own damage window", () => {
+  it("activates at five damage stacks and refreshes their five-second lifetime", () => {
     const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
-    const triggerNames = [
-      "SnowpartingQ-Stab",
-      "AnxiSoldierHeng",
-      "AnxiSoldierMoDown",
-      "AnxiSoldierMoJump",
-      "PhalanxCharged-S3[InnerPassion]",
-      "SnowpartingVC",
-      "PhalanxQ",
-      "AnxiSoldierMoSweep",
-    ]
-
-    for (const name of triggerNames) {
-      const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
-      const skill = skillNamed(name)
-
-      engine.processSkillCast(name, 0)
-
-      expect(engine.calculateDamageEffects(skill, 0).effects).toContainEqual({
-        statKey: "allDamageBoost",
-        amount: 0.08,
-      })
-    }
-
     const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
     const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
-    engine.processSkillCast("SnowpartingQ-Stab", 0)
-    engine.processSkillCast("AnxiSoldierHeng", 7)
+    for (let time = 0; time < 4; time++) engine.processDamageHit(time)
 
-    expect(engine.calculateDamageEffects(charged, 14.99).effects).toContainEqual({
+    expect(engine.calculateDamageEffects(charged, 3).effects).not.toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.08,
     })
-    expect(engine.calculateDamageEffects(charged, 15).effects).not.toContainEqual({
+    expect(engine.activeBuffsForDisplay(3)).toContainEqual(
+      expect.objectContaining({ id: "shatteredRidgeDeflect", stacks: 4, effects: [] }),
+    )
+
+    engine.processDamageHit(4)
+    expect(engine.calculateDamageEffects(charged, 4).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
+    expect(engine.activeBuffsForDisplay(4)).toContainEqual(
+      expect.objectContaining({
+        id: "shatteredRidgeDeflect",
+        stacks: 5,
+        effects: [{ statKey: "allDamageBoost", amount: 0.08 }],
+      }),
+    )
+
+    engine.processDamageHit(8.5)
+
+    expect(engine.calculateDamageEffects(charged, 13.49).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.08,
+    })
+    expect(engine.calculateDamageEffects(charged, 13.5).effects).not.toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.08,
     })
   })
 
-  it("registers a generated Anxi attack as a Shattered Ridge trigger", () => {
+  it("counts generated Anxi damage toward Shattered Ridge's stacks", () => {
     const source = skillNamed("SnowpartingVC")
     const anxi = skillNamed("AnxiSoldierHeng")
     const parent: Skill = {
       ...source,
       id: "test-shattered-ridge-generated-parent",
       name: "Generated Anxi Parent",
-      hits: source.hits.map((hit) => ({
-        ...hit,
-        physMultiplier: 0,
-        attributeMultiplier: 0,
-        physFixed: 0,
-        attributeFixed: 0,
-      })),
+      tags: (source.tags ?? []).filter((tag) => tag !== "prop:shatteredRidgeBoost"),
     }
     const probe: Skill = {
       ...anxi,
       id: "test-shattered-ridge-anxi-probe",
       name: "Anxi Probe",
+      tags: (anxi.tags ?? []).filter((tag) => tag !== "prop:shatteredRidgeBoost"),
       hits: anxi.hits.map((hit) => ({ ...hit, triggers: [] })),
     }
     const result = simulateTimeline({

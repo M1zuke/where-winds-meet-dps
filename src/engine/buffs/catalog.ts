@@ -35,6 +35,7 @@ export interface BuffSummary {
 function bonusSummary(b?: BuffBonus | null): string {
   if (!b) return "—"
   const pct = (n: number) => `${(n * 100).toFixed(1)}%`
+  const stackGate = b.minStacks === undefined ? "" : ` at ${b.minStacks} stacks`
   const label =
     b.type === "phyBoostMod"
       ? "phys"
@@ -43,9 +44,9 @@ function bonusSummary(b?: BuffBonus | null): string {
         : b.type === "groupDamage"
           ? "all (team)"
           : "all"
-  if (b.valuePerStack !== undefined) return `+${pct(b.valuePerStack)} ${label}/stack`
+  if (b.valuePerStack !== undefined) return `+${pct(b.valuePerStack)} ${label}/stack${stackGate}`
   if (b.valueFromParam) return `+${label} (from ${b.valueFromParam})`
-  return `+${pct(b.value ?? 0)} ${label}`
+  return `+${pct(b.value ?? 0)} ${label}${stackGate}`
 }
 
 function affectsSummary(d: BuffDef): string {

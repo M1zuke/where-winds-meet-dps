@@ -59,6 +59,7 @@ export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffDef>()
   private triggerMap = new Map<string, BuffDef[]>()
+  private damageTriggerDefs: BuffDef[] = []
   private refreshDefs: BuffDef[] = []
   private perCastConsumeDefs: BuffDef[] = []
   private stackPoolDefs: BuffDef[] = []
@@ -84,6 +85,7 @@ export class BuffEngine {
           if (!this.triggerMap.has(tr)) this.triggerMap.set(tr, [])
           this.triggerMap.get(tr)!.push(def)
         }
+      if (def.stackOnDamage) this.damageTriggerDefs.push(def)
       if (def.refreshOn) this.refreshDefs.push(def)
       if (def.consumableStackPool) this.stackPoolDefs.push(def)
       if (def.perCastConsume) this.perCastConsumeDefs.push(def)
@@ -162,12 +164,14 @@ export class BuffEngine {
       const bonus = def?.bonus
       if (bonus) {
         const value =
-          bonus.value ??
-          (bonus.valuePerStack != null
-            ? bonus.valuePerStack * stacks
-            : bonus.valueFromParam
-              ? this.paramNum(bonus.valueFromParam)
-              : 0)
+          bonus.minStacks !== undefined && stacks < bonus.minStacks
+            ? 0
+            : (bonus.value ??
+              (bonus.valuePerStack != null
+                ? bonus.valuePerStack * stacks
+                : bonus.valueFromParam
+                  ? this.paramNum(bonus.valueFromParam)
+                  : 0))
         if (value !== 0) effects.push({ statKey: BONUS_TYPE_TO_STATKEY[bonus.type], amount: value })
       }
       out.push({
@@ -346,11 +350,9 @@ export class BuffEngine {
 
   processSkillCast(castTag: string, time: number, opts: Record<string, unknown> = {}): void {
     if (opts.noBuffTrigger) return
-    const generatedSkill = !!opts.generatedSkill
     for (const [prefix, defs] of this.triggerMap) {
       if (!castTag.startsWith(prefix)) continue
       for (const def of defs) {
-        if (generatedSkill && !def.triggerGeneratedSkills) continue
         if (def.exactMatch && castTag !== prefix) continue
         if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
         if (def.cooldown) {
@@ -430,7 +432,6 @@ export class BuffEngine {
         }
       }
     }
-    if (generatedSkill) return
     for (const def of this.refreshDefs) {
       const ro = def.refreshOn!
       if (ro.skillProperty && opts[ro.skillProperty]) {
@@ -455,6 +456,15 @@ export class BuffEngine {
     if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, opts)
     this.processPerCastConsume(castTag, time, opts)
     this.processConsumableStackPools(castTag, time, opts)
+  }
+
+  processDamageHit(time: number): void {
+    for (const def of this.damageTriggerDefs) {
+      if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
+      if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
+        continue
+      this.applyBuff(def.id, time)
+    }
   }
 
   processDroneTick(time: number): void {
@@ -704,7 +714,8 @@ export class BuffEngine {
       const b = def.bonus
       const tier6 = def.enabledParam ? this.paramTier(def.enabledParam) >= 6 : false
       let value: number
-      if (b.valuePerStack !== undefined) value = b.valuePerStack * stacks
+      if (b.minStacks !== undefined && stacks < b.minStacks) value = 0
+      else if (b.valuePerStack !== undefined) value = b.valuePerStack * stacks
       else if (b.valueFromParam) value = this.paramNum(b.valueFromParam)
       else
         value =
