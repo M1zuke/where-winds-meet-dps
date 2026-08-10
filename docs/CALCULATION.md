@@ -295,11 +295,12 @@ effect must never land in two.
    selectable tiers), all six of its tiers are selectable, so its two keys are
    gated to a minimum tier each rather than applying unconditionally
    (`getMindMethodContributions`).
-2. **`buildContext` scalars** — `panel.ts`. The handful of inner ways that move
-   a context-level term rather than a stat: Soldier's Return / Star-Picker /
-   Endurance Doctrine (`generalDamageBoost`), Year-Long Lament
-   (`effectiveDefense`), Mighty Song (`chargeBonus`), Insightful Strike
-   (`dotDamageBoost`).
+2. **`buildContext` scalars** — declared per inner way in
+   `src/data/classes/innerWays.ts` and summed by `innerWayScalar`. Soldier's
+   Return / Star-Picker / Endurance Doctrine feed `generalDamageBoost`,
+   Year-Long Lament `effectiveDefense`, Mighty Song `chargeBonus`, Insightful
+   Strike `dotDamageBoost` and the flat all-damage bonus. `minTier` gates the
+   ones that need a tier; `panel.ts` no longer names any of them.
 3. **Per-art / per-boost-zone deltas** — `mindMethodOverrides.ts`, driven
    generically by `src/data/skills/boosts/artsConditionals.json` and
    `skills/boosts/boostZoneConditionals.json`. Each entry is a `checkxinf(name, then, else)`
@@ -324,6 +325,13 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 (Gaps).
 
 ### Implemented
+
+- **Mechanics are plugins.** Hawkwing, Concentration, Bitter Season, Morale
+  Chant (with Yi River) and the level attribute bonus each implement
+  `TimelineMechanic` (`src/engine/mechanics/`, class-specific ones under
+  `src/data/classes/`). Registry ORDER is load-bearing — contributions are
+  applied in it and float addition is not associative — and the memo signature
+  is derived from what a mechanic returns rather than hand-appended.
 
 - **DoT-tick scheduling** ticks on a single continuous grid per *episode* of
   continuously-maintained application — deliberately matching the reference

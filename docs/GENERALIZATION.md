@@ -24,9 +24,9 @@ dps 74381.62.
 | P4 status ledger | **done, scope changed** — see below |
 | P5 art-modifier channel | **done**, as behaviour hooks rather than def fields |
 | P6 DoT module | **done** |
-| P7 mechanic plugins | **partial** — Crosswind ported; four stochastic mechanics remain inline |
-| P8 class descriptor | **partial** — `classDefinition()` unifies lookup; inner-way defs not started |
-| P9 acceptance | **1 of 3** — no skill/debuff name matching remains in `src/engine` |
+| P7 mechanic plugins | **done** — all five behind `TimelineMechanic`; Crosswind on the skill |
+| P8 class descriptor | **done** — `classDefinition()` plus `innerWays.ts` defs |
+| P9 acceptance | **2 of 3** — the engine names no class, inner way or skill (guarded by a test); wiring a real new class is untried |
 | P10 wiki rewrite | **not started** |
 
 Two deviations worth reading before continuing:
@@ -42,10 +42,17 @@ Two deviations worth reading before continuing:
    divergence at the seam. Doing it properly needs a per-status policy on the
    ledger — a real design decision, not a refactor step.
 
-**What still reaches for a class by name:** three `classId === "bellstrikeUmbra"`
-branches and five inner-way `name === "…"` comparisons, all inside the four
-mechanics P7 has yet to move and the inner-way defs P8 has yet to build. No
-engine code addresses a *skill or debuff* by name any more.
+**Nothing in `src/engine` names a class, an inner way or a skill.**
+`tests/engine/noClassSpecificEngineCode.test.ts` enforces it, with
+`defaults.ts` allowlisted because the starting build is content rather than
+logic. Class-owned code lives under `src/data/classes/`:
+`bellstrikeUmbraCrosswind`, `…Concentration`, `…LevelBonus`, `…Gates`, plus
+`innerWays.ts`, `attunementOptions.ts` and `registry.ts`.
+
+What P9 still lacks is the positive proof: actually wiring one of the seven
+unimplemented classes and confirming no engine file changes. That needs
+verified coefficients for that class, which is data work rather than
+engineering.
 
 ---
 
