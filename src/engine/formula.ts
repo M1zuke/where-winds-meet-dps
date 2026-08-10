@@ -7,6 +7,16 @@ import type { ConditionalFinalCrit } from "./buffs/buffDef"
 export const FOOD_MIN_PHYS_BONUS = 120
 export const FOOD_MAX_PHYS_BONUS = 240
 
+export function effectivePhysRange(
+  minPhys: number,
+  maxPhys: number,
+  food: boolean,
+): { min: number; max: number } {
+  const min = minPhys + (food ? FOOD_MIN_PHYS_BONUS : 0)
+  const maxWithFood = maxPhys + (food ? FOOD_MAX_PHYS_BONUS : 0)
+  return { min, max: Math.max(maxWithFood, min) }
+}
+
 type ArtRow = {
   name: string
   physMultiplier?: number
@@ -217,15 +227,15 @@ export function computeSkillDamage(
   const setFalcon = ctx.hawkwingPhysBonus ?? (ctx.set === "Hawking" ? 0.1 : 0)
   const slotAE = sumSlots(slots, "col3", ctx.boostZoneOverrides)
   const slotMitigation = sumSlots(slots, "col8", ctx.boostZoneOverrides)
-  const effectiveLargePhys = Math.max(ctx.largePhys, ctx.smallPhys)
+  const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
   const AE =
-    (ctx.smallPhys + num(art.minPhysFlatBonus) + (ctx.food ? FOOD_MIN_PHYS_BONUS : 0)) *
+    (effectivePhys.min + num(art.minPhysFlatBonus)) *
       (1 + num(art.minPhysPctBonus)) *
       (1 + setFalcon + slotAE) -
     ctx.effectiveDefense * (1 - slotMitigation)
 
   const AG_raw =
-    (effectiveLargePhys + num(art.maxPhysFlatBonus) + (ctx.food ? FOOD_MAX_PHYS_BONUS : 0)) *
+    (effectivePhys.max + num(art.maxPhysFlatBonus)) *
       (1 + num(art.maxPhysPctBonus)) *
       (1 + setFalcon + slotAE) -
     ctx.effectiveDefense * (1 - slotMitigation)
