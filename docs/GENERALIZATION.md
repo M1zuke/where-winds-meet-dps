@@ -27,7 +27,8 @@ dps 74381.62.
 | P7 mechanic plugins | **done** — all five behind `TimelineMechanic`; Crosswind on the skill |
 | P8 class descriptor | **done** — `classDefinition()` plus `innerWays.ts` defs |
 | P9 acceptance | **done** — all three conditions, each guarded by a test |
-| P10 wiki rewrite | **not started** |
+| P10 wiki rewrite | **done** for the pages the work invalidated |
+| follow-up: inner-way ids | **done** — ids replace display names; 23 unimplemented inner ways deleted |
 
 Two deviations worth reading before continuing:
 

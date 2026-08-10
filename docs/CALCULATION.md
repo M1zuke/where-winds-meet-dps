@@ -285,6 +285,14 @@ source citations, not domain naming. See CLAUDE.md § "Language".)
 
 ## Mind-method layers
 
+> **Five inner ways exist**: Sword Horizon, Wolfchaser's Art, Insightful
+> Strike, Morale Chant, Bitter Season. The other 23 were removed on 2026-08-10
+> as unimplemented. An inner way is identified by a stable `id`, never by its
+> display name — `src/data/classes/innerWayRegistry.ts` is the one place a name
+> lives, and everything else (schools.json, the panel-stat table, the arts
+> rules, the defs, `paramMap`, `MindMethodSlot.id`) refers to the id.
+
+
 An inner way can reshape the calculation in four distinct places. Classify a
 new effect before implementing it, and keep the buckets disjoint — the same
 effect must never land in two.
@@ -301,16 +309,16 @@ effect must never land in two.
    Year-Long Lament `effectiveDefense`, Mighty Song `chargeBonus`, Insightful
    Strike `dotDamageBoost` and the flat all-damage bonus. `minTier` gates the
    ones that need a tier; `panel.ts` no longer names any of them.
-3. **Per-art / per-boost-zone deltas** — `mindMethodOverrides.ts`, driven
-   generically by `src/data/skills/boosts/artsConditionals.json` and
-   `skills/boosts/boostZoneConditionals.json`. Each entry is a `checkxinf(name, then, else)`
-   or `Checkxinfa(name, tier, then, else)` rule resolved against
-   `inputs.mindMethods`.
+3. **Per-art deltas** — `mindMethodOverrides.ts`, driven by
+   `src/data/skills/boosts/artsConditionals.json`. Each entry is a
+   `checkxinf(innerWayId, then, else)` or `Checkxinfa(innerWayId, tier, then, else)`
+   rule resolved against `inputs.mindMethods` **by inner-way id**.
    - `artsOverrides` is consumed **only** by
      `perSkillDamage.computeSkillPreview` (the Skill Editor's live preview) —
      the timeline never applies it.
-   - `boostZoneOverrides` reaches `FormulaContext` but is inert, because slots
-     are always `"N/A"` (see "What the live path does not exercise").
+   - The boost-zone half is **gone** (2026-08-10): every rule in it referenced
+     an inner way that was removed as unimplemented. The channel was already
+     inert, so `boostZoneOverrides` is now always `{}`.
 4. **The ported buff engine** — `src/data/skills/buffs/*.json` defs gated by
    `enabledParam`, enabled from the build via `buffs/paramMap.ts`. This is where
    a *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md §
