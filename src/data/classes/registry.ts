@@ -13,25 +13,14 @@ import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass } from "../../engine/builtinBuffs"
 import type { ClassDef } from "./define"
 import type { RetunementPool } from "./retunementPools"
-import { classDefs } from "./classDefStore"
-// Side-effect load, deliberately not a value import: `index.ts` assembles
-// every class module and pushes the result into `classDefStore.ts`, rather
-// than this file pulling it out of `index.ts` directly. This dates from when
-// three engine-owned mechanics (Hawkwing, Bitter Season, Morale Chant)
-// self-registered from `src/engine/mechanics/` and imported `panel.ts`, which
-// reads class metadata through this file — a real cycle back to here. Those
-// mechanics are now declared by their owning set/inner-way instead, and
-// nothing left in `index.ts`'s dependency chain reaches `panel.ts`, so the
-// cycle this store exists to break is gone (verified: no file under
-// `src/data/classes` or its dependencies imports `engine/panel.ts`). Kept as
-// a leaf for now rather than folded into a direct import — see
-// `.plans/define-inner-way-followups.md`.
-import "./index"
+import { CLASSES } from "./index"
 
-export { classDefs as CLASS_DEFS }
+export function CLASS_DEFS(): readonly ClassDef[] {
+  return CLASSES
+}
 
 export function CLASS_IDS(): readonly string[] {
-  return classDefs().map((classDef) => classDef.id)
+  return CLASSES.map((classDef) => classDef.id)
 }
 
 export interface ClassDefinition extends ClassDef {
@@ -47,7 +36,7 @@ export function classDefinition(classId: string): ClassDefinition | null {
   const cached = cache.get(classId)
   if (cached !== undefined) return cached
 
-  const classDef = classDefs().find((candidate) => candidate.id === classId)
+  const classDef = CLASSES.find((candidate) => candidate.id === classId)
   if (!classDef) {
     cache.set(classId, null)
     return null
@@ -66,7 +55,7 @@ export function classDefinition(classId: string): ClassDefinition | null {
 }
 
 export function poolForClass(classId: string): RetunementPool | null {
-  return classDefs().find((classDef) => classDef.id === classId)?.retunementPool ?? null
+  return CLASSES.find((classDef) => classDef.id === classId)?.retunementPool ?? null
 }
 
 // The one place `BuildView.grantsMinPhysCritBoost` gets built from a class's

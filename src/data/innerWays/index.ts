@@ -22,8 +22,4 @@ for (const def of INNER_WAYS) {
   for (const { mechanic, order } of def.mechanics ?? []) registerMechanic(mechanic, order)
 }
 
-// After the loop, not before: `registry.ts` reads through this store, and a
-// call between registration and visibility would see an empty list for the
-// process lifetime — the same ordering constraint `src/data/classes/index.ts`
-// documents.
 setInnerWayDefs(INNER_WAYS)

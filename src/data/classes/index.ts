@@ -11,11 +11,10 @@ import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
 import { registerPoisonExtension } from "../innerWays/poisonExtension"
-import { setClassDefs } from "./classDefStore"
 
-const classDefs: readonly ClassDef[] = [bellstrikeUmbra]
+export const CLASSES: readonly ClassDef[] = [bellstrikeUmbra]
 
-for (const classDef of classDefs) {
+for (const classDef of CLASSES) {
   registerBuiltinBuffs(classDef.id, classDef.gateBuffs)
   for (const { mechanic, order } of classDef.mechanics) registerMechanic(mechanic, order)
   for (const { skillId, factory } of classDef.skillBehaviors)
@@ -24,8 +23,3 @@ for (const classDef of classDefs) {
   for (const { statusId, maxRemainingSec } of classDef.poisonExtensions)
     registerPoisonExtension(classDef.id, statusId, maxRemainingSec)
 }
-
-// After the loop, not before: `classDefinition()` memoises its `buffs` read
-// off `builtinBuffsForClass`, so a call between registration and visibility
-// would cache an empty gate-buffs list for the process lifetime.
-setClassDefs(classDefs)

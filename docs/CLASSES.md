@@ -158,8 +158,8 @@ scope.
 | folder | holds | main consumer |
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
-| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`classDefStore.ts`), and retunement pools | `classes/registry.ts` |
-| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`innerWayDefStore.ts`) | `innerWays/registry.ts` |
+| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`) and the registry (`registry.ts`), and retunement pools | `classes/registry.ts` |
+| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), the composition root (`index.ts`), the registry (`registry.ts`) and the def-list leaf store (`innerWayDefStore.ts`) that `bitterSeasonMechanic.ts` reads without going through the barrel it is part of | `innerWays/registry.ts` |
 | `rotations/` | Bellstrike Umbra's built-in rotation pool, and `rotationPoolFor(classId)` | `engine/builtinLibrary.ts` |
 | `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic) | `engine/panel.ts`, `engine/formula.ts` |
 | `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `engine/builtinLibrary.ts` |

@@ -1,18 +1,9 @@
 import type { Inputs } from "../../engine/types"
 import { tierFromStacks, type InnerWayDef } from "./define"
-import { innerWayDefs } from "./innerWayDefStore"
-// Side-effect load, deliberately not a value import: `index.ts` assembles
-// every inner-way module and pushes the result into `innerWayDefStore.ts`,
-// rather than this file pulling it out of `index.ts` directly. Nothing in
-// `index.ts`'s own dependency chain currently imports this file back — Bitter
-// Season's mechanic reads `innerWayDefStore.ts` directly instead, precisely
-// to avoid that — so this isn't breaking a live cycle today. Kept as the
-// lazy, store-backed pattern anyway, mirroring `src/data/classes/registry.ts`,
-// since every export below already reads the store lazily at no extra cost.
-import "./index"
+import { INNER_WAYS } from "./index"
 
 export function innerWayDefinition(id: string): InnerWayDef | undefined {
-  return innerWayDefs().find((def) => def.id === id)
+  return INNER_WAYS.find((def) => def.id === id)
 }
 
 // Ids are stable identifiers, NOT translation keys: the UI renders
@@ -23,7 +14,7 @@ export function innerWayName(id: string): string {
 }
 
 export function innerWayIdForName(name: string): string | null {
-  return innerWayDefs().find((def) => def.name === name)?.id ?? null
+  return INNER_WAYS.find((def) => def.name === name)?.id ?? null
 }
 
 // Accepts either, so a saved slot healed to an id and one still carrying a name
@@ -35,7 +26,7 @@ export function resolveInnerWayId(nameOrId: string): string {
 }
 
 export function innerWayForBuffParam(param: string): InnerWayDef | undefined {
-  return innerWayDefs().find((def) => def.buffParam === param)
+  return INNER_WAYS.find((def) => def.buffParam === param)
 }
 
 export interface SlottedInnerWay {
@@ -52,7 +43,7 @@ export function slotInnerWayId(slot: SlottedInnerWay): string {
 // why that order is load-bearing here.
 export function activeInnerWayDefs(slots: readonly SlottedInnerWay[]): InnerWayDef[] {
   const out: InnerWayDef[] = []
-  for (const def of innerWayDefs()) {
+  for (const def of INNER_WAYS) {
     if (!def.scalars) continue
     const slot = slots.find((candidate) => slotInnerWayId(candidate) === def.id)
     if (!slot) continue
