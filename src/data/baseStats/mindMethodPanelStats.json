@@ -19,7 +19,7 @@
     "critRate": 0.073,
     "physBoost": 0.028
   },
-  "Frostwhite Night": {
+  "Frost-Clad Night": {
     "phys.min": 74.4,
     "directCritRate": 0.046
   },
@@ -89,7 +89,7 @@
     "primaryAttr.min": 12.7,
     "primaryAttr.penetration": 0.06
   },
-  "Lone Loyalty": {
+  "Steadfast Devotion": {
     "critRate": 0.077,
     "critDamageBoost": 0.04
   },

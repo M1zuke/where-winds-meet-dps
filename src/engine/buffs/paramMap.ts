@@ -51,7 +51,7 @@ const SELECTABLE_INNER_WAYS: Record<string, InnerWayMapping> = {
   songOfTang: { mindMethod: "Tang Anthem" },
   starReacher: { mindMethod: "Star-Picker" },
   artOfResistance: { mindMethod: "Endurance Doctrine" },
-  steadfastDevotion: { mindMethod: "Lone Loyalty" },
+  steadfastDevotion: { mindMethod: "Steadfast Devotion" },
   towlineSweep: { mindMethod: "Boat on Wood" },
   moraleChant: { mindMethod: "Morale Chant" },
 }
@@ -59,7 +59,7 @@ const SELECTABLE_INNER_WAYS: Record<string, InnerWayMapping> = {
 const CLASS_SIGNATURE_INNER_WAYS: Record<string, InnerWayMapping> = {
   swordHorizon: { mindMethod: "Sword Horizon", classSignature: true },
   combo: { mindMethod: "Moon Above Flowers", classSignature: true },
-  frostCladNight: { mindMethod: "Frostwhite Night", classSignature: true },
+  frostCladNight: { mindMethod: "Frost-Clad Night", classSignature: true },
 }
 
 export const SITE_PARAM_TO_INNER_WAY: Record<string, InnerWayMapping> = {
