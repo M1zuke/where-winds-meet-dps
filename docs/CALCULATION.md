@@ -137,18 +137,23 @@ The interesting derivations:
 
 * **`generalDamageBoost`** sums:
   * the target's `generalDamageTaken` (0 in `dummyMode`)
-  * `+8%` Soldier's Return · `+3%` Star-Picker at tier 6 · `+2%` Endurance
-    Doctrine
-  * `+3.75%` if set = Swaying Heights
+  * `innerWayScalar(mindMethods, "generalDamageBoost")` — the sum over every
+    slotted inner way's `scalars.generalDamageBoost`; no surviving inner way
+    declares one, so this term is 0 today
+  * `+3.75%` if the equipped set is Swaying Heights, via that set's own
+    `formulaBonus.generalDamageBoost` (`src/data/sets/swayingHeights.ts`)
   * `+8%` if `shareEasyHurt` (the tank-spear Vulnerability debuff)
   * `+1.5%` Divinecraft fire · `+1%` Divinecraft poison
   * `+ bossBoost`
-  * `+8%` for the `stonesplitBalancePureTang` class
+  * the equipping class's own optional `ClassDef.generalDamageBoost`; no
+    registered class declares one, so this term is 0 today
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
-  `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
-  (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression
-  check below)
-* **`chargeBonus`** = `0.15` if Mighty Song is selected
+  `henZhiActive = shareDebuff5HenZhi || innerWayTargetDefenseMultiplier(...)
+  !== null` — any slotted inner way declaring `scalars.targetDefenseMultiplier`
+  (none does today, so the party-applied share debuff is the only live
+  trigger) (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season
+  suppression check below)
+* **`chargeBonus`** = `innerWayScalar(mindMethods, "chargeBonus")`, 0 today
 * **`weaponBoosts`** — the per-weapon boost map keyed by weapon name
   (`Sword`/`Spear`/`Fan`/`Umbrella`/`Modao`/`Twin Blades`/`Rope Dart`/`Hengdao`)
 * **`mysticTypeBoosts`** — two stats cover five categories, mirroring the
@@ -410,11 +415,11 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   (−10 target physical resistance) is modelled as +10 player
   physical-penetration points, because target pen resistance is zero for every
   target and there is no target-resistance stat key — the two are numerically
-  identical. The party-applied shared debuff (`shareDebuff5HenZhi` / Year-Long
-  Lament tier 6) already represents this same fully-stacked debuff, so the
-  inner way's own stat contribution is suppressed while it is active — the DoT
-  damage is not. A Sword Horizon Zenith detonation extends the poison the same
-  way it already extended Smolder — one shared, capped rule
+  identical. The party-applied shared debuff (`shareDebuff5HenZhi`) already
+  represents this same fully-stacked debuff, so the inner way's own stat
+  contribution is suppressed while it is active — the DoT damage is not. A
+  Sword Horizon Zenith detonation extends the poison the same way it already
+  extended Smolder — one shared, capped rule
   (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `data/classes/bellstrikeUmbraGates.ts`),
   not specific to either debuff. Only hits laid by the rotation roll
   the proc — DoT ticks and trigger-enqueued hits do not — the same structural
@@ -501,21 +506,10 @@ summarizes.
 | Inner way (site param) | Status | Notes |
 | --- | --- | --- |
 | Sword Horizon / `swordHorizon` (bellstrikeUmbra signature) | Panel tier stats + buff engine + `crosswind.ts` | Tier stats, T6 detonation retain, the charge counter and guaranteed-affinity are all modeled. The crosswindBlade/bloodBurst mode toggle is unimplemented — but bloodBurst is the site's own default and the app never applies the crosswindBlade conversion, so the omission is **correctly inert**. |
-| Moon Above Flowers / `combo` (silkbindJade signature) | Panel + buff engine (combo-count buffs) | Disjoint channels. |
-| Frostwhite Night / `frostCladNight` (stonesplitBalancePureTang signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
 | Wolfchaser's Art / `wolfchasersArt` | Panel + buff engine | Disjoint channels. The extra-detonation FSM is an unmodeled gap. |
-| Thousand Mountain Law / `mountainsMight` | Panel + buff engine | Disjoint. |
-| Throat-Pierce / `throatPierced` | Panel + buff engine | Disjoint. |
-| Star-Picker / `starReacher` | Panel + buff engine | Disjoint. |
-| Lone Loyalty / `steadfastDevotion` | Panel + buff engine | Disjoint. |
-| Boat on Wood / `towlineSweep` (bamboocutDust) | Panel + buff engine (`towlineSweepT6Special` forceCrit bonus) | Disjoint; `forceCrit` is now consumed, so this def is live. |
-| Morale Chant / `moraleChant` | Panel + `timeline.ts` stack schedule (`buffs/morale.ts`) | Stacks drive `allDamageBoost` + `phys.penetration`; tier 6 adds Yi River ticks. |
-| Tang Anthem / `songOfTang` | Panel (`precision 0.059`, `critDamageBoost 0.04`) + buff engine (`tangMelody`: triggered, stacking `critDmg 0.03`×≤5, rate-limited) | **Verified NOT a double-count** — a flat always-on tier stat vs a distinct triggered mechanic that ramps and decays independently. |
-| Endurance Doctrine / `artOfResistance` | Panel + `buildContext`'s `generalDamageBoost += 0.02` + buff engine (`resistanceResolve`: T6-only +10 % for 12 s on a rainwhisper-shield buff ending) | **Verified NOT a double-count** — different magnitude, trigger, and duration. |
+| Morale Chant / `moraleChant` | Panel + the mechanic declared at `src/data/innerWays/moraleChantMechanic.ts`; the pure math is `buffs/morale.ts` | Stacks drive `allDamageBoost` + `phys.penetration`; tier 6 adds Yi River ticks. |
 | Insightful Strike / `insightfulStrike` | Panel (phys.min/max/pen tier stats only) + the `concentration` activation model | **Param deliberately unmapped** — see the gap entry above. `buildContext`'s flat `dotDamageBoost` fallback still serves every caller that doesn't set the activation-scaled override (`perSkillDamage.ts`, direct `buildContext` calls in tests). Do not map the param without re-deriving this; `insightfulStrike.test.ts` guards it. |
-| Bliss Bleeding / candidate for `thunderousBloom` | Unmapped (unverified candidate) | `thunderousBloom` is a Silkbind-Jade inner way in the site registry with no confirmed app equivalent. |
-| (no app equivalent) / `restoringBlossom` | Unmapped | Site registry path `silkbind_deluge` has no matching app class/spec. |
-| Stars Align (set) / `starsAlignActive` | Enabled via set mapping; value uncomputed | Stochastic — see the gap entry above. |
+| Bitter Season / (no site param) | Panel tier stats (T2 `precision 0.069`, T5 `physBoost 0.025`, not always-on like the other four) + the seeded Monte-Carlo mechanic (id `bitterSeasonPoison`, `src/data/innerWays/bitterSeasonMechanic.ts`: stacking target-defense reduction, T6 penetration, poison uptime) + the universal DoT stand-in skill | **No `buffParam`** — it maps no buff-engine def, so there is no buff-engine channel to double-count against. The stat contribution is suppressed while the party-applied share debuff is active; the DoT damage is not. |
 
 ## Verification
 

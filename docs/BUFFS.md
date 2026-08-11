@@ -118,12 +118,14 @@ way, not by being a def.
 
 A handful of mechanics genuinely don't fit the buff-def vocabulary. Crosswind
 Spirit's charge counter is now a `SkillBehavior` on the detonation skill; the
-rest are each a `TimelineMechanic` (`src/engine/mechanics/types.ts`) instead —
-the Hawkwing and Morale Chant probability/stack schedules and the Bitter
-Season inner way's poison are engine-owned (`src/engine/mechanics/{hawkwing,
-morale,bitterSeason}.ts`), while Concentration's is Bellstrike Umbra's own
-(`src/data/classes/bellstrikeUmbraConcentration.ts`):
-a stochastic per-hit proc plus a percentage target-defense reduction that
+rest are each a `TimelineMechanic` (`src/engine/mechanics/types.ts`), declared
+by the thing they are a mechanic of — `src/data/sets/hawkwingMechanic.ts`
+(Hawkwing, its set), `src/data/innerWays/moraleChantMechanic.ts` and
+`bitterSeasonMechanic.ts` (their inner ways), and
+`src/data/classes/bellstrikeUmbraConcentration.ts` /
+`bellstrikeUmbraLevelBonus.ts` (their class). `src/engine/mechanics/` holds
+only the contract (`types.ts`) and the registry (`index.ts`) — no instances.
+A stochastic per-hit proc plus a percentage target-defense reduction that
 stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
 documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to
 that list needs the same justification: not "it was easier here", but "the def
