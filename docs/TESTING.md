@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **573 tests
-across 65 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **816 tests
+across 82 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
