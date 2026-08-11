@@ -1,9 +1,8 @@
 // Sword Horizon's crosswind charge is per-detonation STATE, not a time-windowed
 // buff — every Bleed Detonation advances a counter, and the fifth one converts
 // to a guaranteed affinity hit and resets. That is why it belongs to the skill
-// rather than to the buff engine (see
-// src/data/skills/bellstrike-umbra/buffs/crosswindSpirit.ts, which is never
-// seeded or activated).
+// rather than to the buff engine (see `swordHorizonZenith.ts`'s `zenithBar`,
+// which is never seeded or activated).
 import {
   DEFAULT_BEHAVIOR,
   type SkillBehavior,
@@ -11,18 +10,23 @@ import {
 } from "../../engine/behavior"
 import { stat, forceOutcome, setStatus, type HitEffect } from "../../engine/effects/effect"
 import { CrosswindTracker } from "../../engine/buffs/crosswind"
-import { CROSSWIND_SPIRIT_BONUS } from "../skills/bellstrike-umbra/buffs/crosswindSpirit"
-import { ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./bellstrikeUmbraGates"
+import {
+  ZENITH_BAR_BUFF_ID,
+  ZENITH_BAR_DAMAGE_BONUS,
+  ZENITH_BAR_MAX_CHARGES,
+  ZENITH_DETONATION_BUFF_ID,
+} from "./swordHorizonZenith"
 import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_NODE } from "../innerWays/ids"
-import { swordHorizon } from "../innerWays/swordHorizon"
+import { INNER_WAY_NODE } from "./ids"
+import { swordHorizon } from "./swordHorizon"
 
 export const crosswindBehavior: SkillBehaviorFactory = (build): SkillBehavior | null => {
   const tier = build.innerWayTier(swordHorizon.id)
   if (tier === null) return null
-  const tracker = new CrosswindTracker(
-    innerWayHasNode(swordHorizon, tier, INNER_WAY_NODE.crosswindChargeRetention),
-  )
+  const tracker = new CrosswindTracker({
+    maxCharges: ZENITH_BAR_MAX_CHARGES,
+    retainOnMax: innerWayHasNode(swordHorizon, tier, INNER_WAY_NODE.crosswindChargeRetention),
+  })
 
   return {
     ...DEFAULT_BEHAVIOR,
@@ -35,7 +39,7 @@ export const crosswindBehavior: SkillBehaviorFactory = (build): SkillBehavior | 
         effects.push(setStatus(ZENITH_DETONATION_BUFF_ID, { stacks: 1 }))
         effects.push(forceOutcome("affinity"))
       }
-      if (outcome.spiritBonusActive) effects.push(stat("allDamageBoost", CROSSWIND_SPIRIT_BONUS))
+      if (outcome.damageBonusActive) effects.push(stat("allDamageBoost", ZENITH_BAR_DAMAGE_BONUS))
       return effects
     },
   }

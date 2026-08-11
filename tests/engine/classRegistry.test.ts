@@ -9,9 +9,7 @@ import { prepareMechanics } from "../../src/engine/mechanics"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import { poisonExtensionForClass } from "../../src/definitions/classes/poisonExtensions"
 import { buildBehaviors, DEFAULT_BEHAVIOR, type BuildView } from "../../src/engine/behavior"
-import { displayGateFor } from "../../src/engine/buffs/displayGates"
-import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import type { Inputs } from "../../src/engine/types"
+import { defaultInputs } from "../../src/engine/defaults"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
@@ -76,7 +74,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "concentration",
       "potentRiverFlow",
       "wineGu",
-      "crosswindSpirit",
+      "buff-bellstrikeUmbra-zenith-bar",
       "revelryScript",
       "fluteBoost",
     ])
@@ -99,19 +97,17 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("mechanics are registered and prepare for this class", () => {
-    const insightfulStrikeInputs: Inputs = {
-      ...defaultInputs,
-      classId: "bellstrikeUmbra",
-      mindMethods: [
-        { name: "Insightful Strike", stacks: "tier 6" },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-      ],
-    }
+  it("Umbra's own declared gateBuffs holds only its two class gates", () => {
+    expect(umbra.gateBuffs.map((buff) => buff.name)).toEqual([
+      "River Flow",
+      "Spear Special Cooldown",
+    ])
+  })
+
+  it("mechanics are registered for this class", () => {
+    expect(umbra.mechanics.map(({ mechanic }) => mechanic.id)).toEqual(["levelAttributeBonus"])
     const setup: MechanicSetup = {
-      inputs: insightfulStrikeInputs,
+      inputs: defaultInputs,
       classId: "bellstrikeUmbra",
       fps: 60,
       rotationDurationSec: 10,
@@ -125,7 +121,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     }
     const preparedIds = prepareMechanics(setup).map((prepared) => prepared.mechanic.id)
     expect(preparedIds).toContain("levelAttributeBonus")
-    expect(preparedIds).toContain("concentration")
   })
 
   it("the skill behaviour is registered for Bleed Detonation", () => {
@@ -141,21 +136,8 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(buildBehaviors(noSwordHorizon)(bleedDetonation)).toBe(DEFAULT_BEHAVIOR)
   })
 
-  it("the display gate is registered for concentration", () => {
-    const gate = displayGateFor("concentration")!
-    expect(
-      gate({
-        ...defaultInputs,
-        classId: "bellstrikeUmbra",
-        mindMethods: [
-          { name: "Insightful Strike", stacks: "tier 6" },
-          { ...emptyMindMethod },
-          { ...emptyMindMethod },
-          { ...emptyMindMethod },
-        ],
-      }),
-    ).toBe(true)
-    expect(gate({ ...defaultInputs, classId: "bellstrikeUmbra" })).toBe(false)
+  it("declares no display gates of its own — Concentration's is Insightful Strike's", () => {
+    expect(umbra.displayGates).toEqual([])
   })
 
   it("the poison extension is registered for this class", () => {

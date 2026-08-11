@@ -2,6 +2,8 @@ import { PARAM } from "../../data/skills/buffs/ids"
 import type { InnerWayNode } from "../../data/innerWays/ids"
 import type { PanelStatPath } from "../../engine/gearStats"
 import type { MechanicRegistration } from "../../engine/mechanics"
+import type { Buff } from "../../engine/buff"
+import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
 type PanelStats = Readonly<Partial<Record<PanelStatPath, number>>>
 
@@ -28,6 +30,11 @@ export interface InnerWayScalars {
   targetDefenseMultiplier?: number
 }
 
+// An inner way is not owned by a class and must not name one — the class
+// registry stamps `classId` onto each record when it composes a class's
+// `builtinBuffsForClass` set from the inner ways that class can slot.
+export type InnerWayGateBuff = Omit<Buff, "classId">
+
 export interface InnerWayDef {
   id: string
   name: string
@@ -45,6 +52,13 @@ export interface InnerWayDef {
   tiers?: Readonly<Record<number, InnerWayTier>>
   scalars?: InnerWayScalars
   mechanics?: readonly MechanicRegistration[]
+  // Timeline gates every class that can slot this inner way inherits — folded
+  // into that class's own built-in buff pool by `definitions/classes/registry.ts`.
+  gateBuffs?: readonly InnerWayGateBuff[]
+  // Registered directly by the inner-way registry, since the Skill Editor's
+  // display-gate map is global and def-id-keyed with no owner concept, so no
+  // class composition step is needed here.
+  displayGates?: readonly DisplayGateRegistration[]
 }
 
 // Thin on purpose, like `defineClass`/`defineSet`: it exists so TypeScript
@@ -59,6 +73,22 @@ export function defineInnerWay<const T extends InnerWayDef>(def: T): T {
 export function tierFromStacks(stacks: string): number {
   const match = /(\d+)/.exec(stacks ?? "")
   return match ? Number(match[1]) : 0
+}
+
+// Resolves against `def` directly, without going through
+// `definitions/innerWays/registry.ts` — a mechanic module declared under
+// `src/data/innerWays/` is loaded AS PART OF that registry's own barrel
+// import, so importing the registry back from the mechanic reopens the very
+// cycle the hoisted-factory module shape exists to avoid. Matches on both
+// `id` and `name` because a saved slot may carry only the display name.
+export function slottedInnerWayTier(
+  slots: readonly { id?: string; name: string; stacks: string }[],
+  def: InnerWayDef,
+): number | null {
+  const slot = slots.find(
+    (candidate) => (candidate.id ?? candidate.name) === def.id || candidate.name === def.name,
+  )
+  return slot ? tierFromStacks(slot.stacks) : null
 }
 
 // Undefined for a node no tier of this def declares — the "every

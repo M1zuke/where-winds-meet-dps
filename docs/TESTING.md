@@ -87,8 +87,9 @@ to stop the generalization work rotting:
   content.
 - `classModuleBoundaries.test.ts` — no class module reaches the panel/registry
   layer, and `defineClassBuff` is not a second buff system: its marker is
-  inert everywhere `src/engine` looks, and every module carrying it is owned
-  by a class.
+  inert everywhere `src/engine` looks, and every module carrying it — under
+  `src/data/classes/`'s and `src/data/innerWays/`'s buff folders alike — is
+  listed by at least one class.
 - `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
@@ -99,7 +100,9 @@ to stop the generalization work rotting:
   self-registers from anywhere else. The same file pins the call sites of the
   other four registration entry points (`registerBuiltinBuffs`,
   `registerSkillBehavior`, `registerDisplayGate`, `registerPoisonExtension`) to
-  the class registry plus each entry point's own definition site.
+  each entry point's owner registry (or registries — `registerDisplayGate` has
+  two, the class registry and the inner-way registry) plus its own definition
+  site.
 - `mechanicModuleShape.test.ts` — an inner-way or set mechanic module exports
   a hoisted factory rather than a mechanic object, and imports no
   barrel-loading registry; both rules are otherwise only discoverable as a

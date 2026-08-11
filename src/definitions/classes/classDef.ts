@@ -1,4 +1,4 @@
-import type { AttributeKey, Inputs } from "../../engine/types"
+import type { AttributeKey } from "../../engine/types"
 import type { Skill } from "../../engine/skill"
 import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
@@ -7,6 +7,7 @@ import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { SkillBehaviorFactory } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
+import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
 // Stat ids must match `WordSpec.word` strings in `engine/itemRanking.ts`.
 export interface RetunementPool {
@@ -16,11 +17,6 @@ export interface RetunementPool {
 export interface SkillBehaviorRegistration {
   skillId: string
   factory: SkillBehaviorFactory
-}
-
-export interface DisplayGateRegistration {
-  defId: string
-  predicate: (inputs: Inputs) => boolean
 }
 
 export interface PoisonExtensionRegistration {

@@ -1,7 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
-import { SKILL, DEBUFF, STATUS, ZENITH_MAX_EXTENDED_DURATION_FRAMES, ZENITH_SMOLDER_EXTEND_FRAMES } from "./ids"
+import { SKILL, DEBUFF } from "./ids"
+import {
+  ZENITH_DETONATION_BUFF_ID,
+  ZENITH_MAX_EXTENDED_DURATION_FRAMES,
+  ZENITH_SMOLDER_EXTEND_FRAMES,
+} from "../../innerWays/swordHorizonZenith"
 
 export const bleedDetonation = defineSkill({
   id: SKILL.bleedDetonation,
@@ -26,7 +31,7 @@ export const bleedDetonation = defineSkill({
           id: "tg-bleed-detonation-zenith-dark-fire-h0",
           target: DEBUFF.darkFire,
           stacks: 0,
-          condition: { buffId: STATUS.zenithDetonation, op: "gte", stacks: 1 },
+          condition: { buffId: ZENITH_DETONATION_BUFF_ID, op: "gte", stacks: 1 },
           extendFrames: ZENITH_SMOLDER_EXTEND_FRAMES,
           extendOnly: true,
           maxExtendedDurationFrames: ZENITH_MAX_EXTENDED_DURATION_FRAMES,

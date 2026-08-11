@@ -241,7 +241,7 @@ change usually belongs in one of them rather than in the loop:
 
 A skill with genuinely procedural behaviour registers a factory
 (`registerSkillBehavior`) rather than being special-cased in the loop;
-`data/classes/bellstrikeUmbraCrosswind.ts` is the worked example. Factories, not
+`data/innerWays/swordHorizonCrosswind.ts` is the worked example. Factories, not
 instances — a charge counter must not carry between simulations.
 
 The ledger and `BuffEngine` remain **two stores on purpose**: the ledger calls a

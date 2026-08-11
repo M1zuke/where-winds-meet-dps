@@ -133,6 +133,27 @@ its own registry (`src/definitions/innerWays/registry.ts`,
 `declareMechanic`/`MechanicRegistration`/`MECHANIC_ORDER` are the one shared
 contract all three owners use.
 
+An inner way may also declare two of the five above, for the mechanics it —
+not any one class — owns:
+
+- `gateBuffs` (`InnerWayGateBuff[]`, `Buff` minus `classId`) — not registered
+  directly. `src/definitions/classes/registry.ts` folds the gates of every
+  inner way a class can slot into that class's `registerBuiltinBuffs` call,
+  stamping the class's own id onto each record, because every consumer
+  (`timeline.ts`, `SkillsTab.tsx`, `classDefinition()`) asks for a class's
+  gates by class id, never by inner-way id.
+- `displayGates` — registered directly by
+  `src/definitions/innerWays/registry.ts`, since `registerDisplayGate` is
+  already a global, def-id-keyed map with no owner concept and the predicate
+  receives the whole `Inputs`; no class composition step is needed.
+
+`skillBehaviors` is **not** on an inner way's list: a registration is
+`{ skillId, factory }`, and `skillId` is a class-owned id
+(`bellstrikeUmbra-bleed-detonation`) an inner way cannot name without naming a
+class. The inner way exports the factory instead (Sword Horizon's
+`swordHorizonCrosswind.ts` is the worked example) and the class supplies the
+one-line `{ skillId, factory }` binding.
+
 ## Buff category
 
 `ClassDef` splits a class's buffs into two lists:
@@ -166,7 +187,7 @@ plus the one-line entry in `src/data/classes/index.ts`) — never
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) — JSON only | `src/definitions/baseStats/index.ts` |
 | `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the `CLASSES` list (`index.ts`), and retunement pool values | `classes/index.ts` |
-| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), and the `INNER_WAYS` list (`index.ts`) | `innerWays/index.ts` |
+| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic, gate buffs, display gates, skill-behaviour factories), and the `INNER_WAYS` list (`index.ts`) | `innerWays/index.ts` |
 | `rotations/` | Bellstrike Umbra's built-in rotation pool — JSON only | `src/definitions/rotations/registry.ts` |
 | `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic), and the `SET_DEFS` list (`index.ts`) | `sets/index.ts` |
 | `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `src/definitions/skills/universalSkills.ts` |
@@ -180,8 +201,8 @@ the same domains.
 | folder | holds | main export |
 | --- | --- | --- |
 | `baseStats/` | the base-stat aggregation (`GLOBAL_BASE`, `DEFAULT_ODDITIES`, `getConfiguredBase`, `getMindMethodContributions`) and `breakthroughs.ts` (`getBreakthrough`) | `baseStats/index.ts` |
-| `classes/` | the `ClassDef`/`RetunementPool` contract (`classDef.ts`), the registry and class-registration loop (`registry.ts`), and the poison-extension registry (`poisonExtensions.ts`) | `classes/registry.ts` |
-| `innerWays/` | the `InnerWayDef` contract and tier helpers (`innerWayDef.ts`), the inner-way registry and mechanic-registration loop (`registry.ts`), and the def-list leaf store (`defStore.ts`) that `bitterSeasonMechanic.ts` reads without going through the barrel it is part of | `innerWays/registry.ts` |
+| `classes/` | the `ClassDef`/`RetunementPool` contract (`classDef.ts`), the registry and class-registration loop — including folding every slottable inner way's `gateBuffs` into that class's built-in buff pool (`registry.ts`) — and the poison-extension registry (`poisonExtensions.ts`) | `classes/registry.ts` |
+| `innerWays/` | the `InnerWayDef` contract, its `InnerWayGateBuff` type, and tier helpers including `slottedInnerWayTier` (`innerWayDef.ts`), the inner-way registry and its mechanic- and display-gate-registration loop (`registry.ts`), and the def-list leaf store (`defStore.ts`) that `bitterSeasonMechanic.ts` reads without going through the barrel it is part of | `innerWays/registry.ts` |
 | `rotations/` | `rotationPoolFor(classId)` | `rotations/registry.ts` |
 | `sets/` | the `SetDef`/`SetFormulaBonus`/`SetPanelBonus` contract (`setDef.ts`) and the set registry and mechanic-registration loop (`registry.ts`) | `sets/registry.ts` |
 | `skills/` | `defineSkill`/`defineDebuff`/`hit`/`dotTicks` (`skillDef.ts`), the trigger authoring helpers (`triggers.ts`), `defineBuff`/`defineClassBuff` (`buffDef.ts`), and `withUniversalSkills` (`universalSkills.ts`) | `skills/skillDef.ts`, `skills/buffDef.ts` |

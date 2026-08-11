@@ -62,9 +62,10 @@ describe("registerSkillBehavior call sites", () => {
 })
 
 describe("registerDisplayGate call sites", () => {
-  it("are exactly the class registry plus the definition site", () => {
+  it("are exactly the class registry, the inner-way registry, plus the definition site", () => {
     expect(callSitesOf("registerDisplayGate")).toEqual([
       "src/definitions/classes/registry.ts",
+      "src/definitions/innerWays/registry.ts",
       "src/engine/buffs/displayGates.ts",
     ])
   })

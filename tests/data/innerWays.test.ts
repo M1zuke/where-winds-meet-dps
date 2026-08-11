@@ -6,15 +6,23 @@ import { INNER_WAY_ID, INNER_WAY_NODE } from "../../src/data/innerWays/ids"
 import { innerWayHasNode, innerWayNodeTier } from "../../src/definitions/innerWays/innerWayDef"
 import {
   INNER_WAYS,
+  innerWayDefinition,
   innerWayForBuffParam,
   innerWayIdForName,
   resolveInnerWayId,
 } from "../../src/definitions/innerWays/registry"
-import { PARAM } from "../../src/data/skills/buffs/ids"
+import { CLASS_DEFS } from "../../src/definitions/classes/registry"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
 import { soulShaken } from "../../src/data/skills/bellstrike-umbra/buffs/soulShaken"
+import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
+import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
+import { displayGateFor } from "../../src/engine/buffs/displayGates"
+import { specMechanicDefIds } from "../../src/engine/buffs/catalog"
+import { prepareMechanics } from "../../src/engine/mechanics"
+import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import type { Inputs } from "../../src/engine/types"
 
 describe("INNER_WAYS — ids and display names are pinned", () => {
@@ -155,5 +163,91 @@ describe("resolveInnerWayId", () => {
   it("returns the input unchanged for an unknown name, and '' for empty", () => {
     expect(resolveInnerWayId("notAnInnerWay")).toBe("notAnInnerWay")
     expect(resolveInnerWayId("")).toBe("")
+  })
+})
+
+describe("inner-way ownership — gate buffs, display gates, and the merged Zenith Bar", () => {
+  it("Sword Horizon declares exactly Zenith Bar and Zenith Detonation, by their frozen ids", () => {
+    const swordHorizon = innerWayDefinition(INNER_WAY_ID.swordHorizon)!
+    expect(swordHorizon.gateBuffs?.map((gate) => gate.id)).toEqual([
+      "buff-bellstrikeUmbra-zenith-bar",
+      "buff-bellstrikeUmbra-zenith-detonation",
+    ])
+    expect(swordHorizon.gateBuffs?.map((gate) => gate.name)).toEqual([
+      "Zenith Bar",
+      "Zenith Detonation",
+    ])
+  })
+
+  it("every gate an inner way declares reaches builtinBuffsForClass for each class that may slot it", () => {
+    for (const classDef of CLASS_DEFS()) {
+      const innerWayIds = [classDef.classMindGroup, ...classDef.allowedMindMethods].filter(Boolean)
+      const classBuffs = builtinBuffsForClass(classDef.id)
+      for (const innerWayId of innerWayIds) {
+        for (const gate of innerWayDefinition(innerWayId)?.gateBuffs ?? []) {
+          const registered = classBuffs.find((buff) => buff.id === gate.id)
+          expect(registered, `${classDef.id}/${gate.id}`).toBeTruthy()
+          expect(registered!.classId).toBe(classDef.id)
+        }
+      }
+    }
+  })
+
+  it("builtinBuffsForClass('bellstrikeUmbra') returns the four gates in pinned order, each carrying its class id", () => {
+    const buffs = builtinBuffsForClass("bellstrikeUmbra")
+    expect(buffs.map((buff) => buff.name)).toEqual([
+      "River Flow",
+      "Spear Special Cooldown",
+      "Zenith Bar",
+      "Zenith Detonation",
+    ])
+    for (const buff of buffs) expect(buff.classId).toBe("bellstrikeUmbra")
+  })
+
+  it("Insightful Strike's display gate answers on the slotted inner ways alone, no class check", () => {
+    const gate = displayGateFor(BUFF.concentration)!
+    const insightfulStrikeSlotted: Inputs = {
+      ...defaultInputs,
+      classId: "notARealClass",
+      mindMethods: [
+        { name: "Insightful Strike", stacks: "tier 6" },
+        { ...emptyMindMethod },
+        { ...emptyMindMethod },
+        { ...emptyMindMethod },
+      ],
+    }
+    expect(gate(insightfulStrikeSlotted)).toBe(true)
+    expect(gate({ ...defaultInputs, classId: "bellstrikeUmbra" })).toBe(false)
+  })
+
+  it("the Concentration mechanic prepares for a build with Insightful Strike slotted", () => {
+    const setup: MechanicSetup = {
+      inputs: {
+        ...defaultInputs,
+        classId: "bellstrikeUmbra",
+        mindMethods: [
+          { name: "Insightful Strike", stacks: "tier 6" },
+          { ...emptyMindMethod },
+          { ...emptyMindMethod },
+          { ...emptyMindMethod },
+        ],
+      },
+      classId: "bellstrikeUmbra",
+      fps: 60,
+      rotationDurationSec: 10,
+      hitTimesSec: [0],
+      weaponHitTimesSec: [0],
+      qiPhaseAt: () => "normal",
+      paramOn: () => false,
+      paramTier: () => 0,
+      hasBuffEngine: true,
+      effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
+    }
+    const preparedIds = prepareMechanics(setup).map((prepared) => prepared.mechanic.id)
+    expect(preparedIds).toContain("concentration")
+  })
+
+  it("the merged Zenith Bar id is not a spec-mechanic def id, so it never hides the timeline chip", () => {
+    expect(specMechanicDefIds("bellstrikeUmbra").has(ZENITH_BAR_BUFF_ID)).toBe(false)
   })
 })

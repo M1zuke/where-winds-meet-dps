@@ -6,7 +6,6 @@ export const BUFF = {
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
   concentration: "concentration",
-  crosswindSpirit: "crosswindSpirit",
   dragonHeadLowHp: "dragonHeadLowHp",
   fluteBoost: "fluteBoost",
   healerBuff: "healerBuff",

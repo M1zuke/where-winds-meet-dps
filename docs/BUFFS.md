@@ -64,7 +64,7 @@ This is the **"no invisible magic"** rule.
 
   When the def schema genuinely cannot express it, the escape hatch is a
   `SkillBehavior` factory registered against the skill id
-  (`engine/behavior.ts`; `data/classes/bellstrikeUmbraCrosswind.ts` is the
+  (`engine/behavior.ts`; `data/innerWays/swordHorizonCrosswind.ts` is the
   worked example). It returns what it wants written and the timeline decides
   ordering, so a mechanic can hold state without the loop knowing about it.
   Built-ins only — a user-authored skill is JSON and can never carry code,
@@ -77,6 +77,17 @@ application path that risks double-counting.
 **One source of truth:** value / scaling / `affects` live in the def; the engine
 reads it, the UI renders from it. If a skill-specific mechanic doesn't fit the
 buff-def schema, **extend the schema** rather than working around it.
+
+The sanctioned shape for a mechanic that genuinely needs both a timeline gate
+and a catalog row is **one declaration, one id, two projections** —
+`data/innerWays/swordHorizonZenith.ts`'s `zenithBar` is the worked example: the
+same id names both the `Buff` gate the ledger tracks and shows as a chip, and
+the `BuffModule` the Skill Editor's Receives/Class-Buffs columns read, and the
+effect is still applied in exactly one place (the `SkillBehavior`, never
+`BuffEngine`). That is what distinguishes it from the read-only wrapper the
+rule above forbids: a wrapper duplicates a value the engine already applies
+elsewhere, where these two projections are the entity's only representations,
+neither reachable without the other.
 
 ## Category 3 — scoped stats
 
@@ -116,15 +127,15 @@ way, not by being a def.
 
 ## Known exceptions
 
-A handful of mechanics genuinely don't fit the buff-def vocabulary. Crosswind
-Spirit's charge counter is now a `SkillBehavior` on the detonation skill; the
-rest are each a `TimelineMechanic` (`src/engine/mechanics/types.ts`), declared
-by the thing they are a mechanic of — `src/data/sets/hawkwingMechanic.ts`
-(Hawkwing, its set), `src/data/innerWays/moraleChantMechanic.ts` and
-`bitterSeasonMechanic.ts` (their inner ways), and
-`src/data/classes/bellstrikeUmbraConcentration.ts` /
-`bellstrikeUmbraLevelBonus.ts` (their class). `src/engine/mechanics/` holds
-only the contract (`types.ts`) and the registry (`index.ts`) — no instances.
+A handful of mechanics genuinely don't fit the buff-def vocabulary. Sword
+Horizon's Zenith Bar charge counter is now a `SkillBehavior` on the detonation
+skill; the rest are each a `TimelineMechanic` (`src/engine/mechanics/types.ts`),
+declared by the thing they are a mechanic of — `src/data/sets/hawkwingMechanic.ts`
+(Hawkwing, its set), `src/data/innerWays/moraleChantMechanic.ts`,
+`bitterSeasonMechanic.ts` and `insightfulStrikeMechanic.ts` (their inner ways),
+and `src/data/classes/bellstrikeUmbraLevelBonus.ts` (its class).
+`src/engine/mechanics/` holds only the contract (`types.ts`) and the registry
+(`index.ts`) — no instances.
 A stochastic per-hit proc plus a percentage target-defense reduction that
 stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
 documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to

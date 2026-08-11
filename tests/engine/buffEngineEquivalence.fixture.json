@@ -168,8 +168,8 @@
           "summary": null
         },
         {
-          "id": "crosswindSpirit",
-          "name": "Crosswind Blade Spirit",
+          "id": "buff-bellstrikeUmbra-zenith-bar",
+          "name": "Zenith Bar",
           "classBuff": true,
           "requires": {
             "param": "swordHorizon"

@@ -22,7 +22,7 @@ const TIER6_EFFECTS: Record<string, Effect[]> = {
 // Pre-existing bug, reproduced exactly rather than fixed — see
 // docs/CALCULATION.md § "Mechanic coverage": `seedAtStart` + `refreshOnAnyCast`
 // make this permanently active for the whole rotation whenever its param is
-// on, double-counting against `bellstrikeUmbraConcentration.ts`'s
+// on, double-counting against `insightfulStrikeMechanic.ts`'s
 // probability-weighted ramp model of the same inner way.
 export const concentration = defineClassBuff({
   id: BUFF.concentration,

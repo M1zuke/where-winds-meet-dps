@@ -43,7 +43,7 @@ function resolvedTarget(fromFile: string, specifier: string): string | null {
 
 function buffFolders(): string[] {
   const skillsDir = join(ROOT, "src/data/skills")
-  return [join(skillsDir, "buffs")].concat(
+  return [join(skillsDir, "buffs"), join(ROOT, "src/data/innerWays")].concat(
     readdirSync(skillsDir)
       .map((entry) => join(skillsDir, entry, "buffs"))
       .filter((path) => {

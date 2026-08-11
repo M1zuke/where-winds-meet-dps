@@ -362,9 +362,9 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **Mechanics are plugins, declared by the thing they are a mechanic of.**
   Hawkwing, Concentration, Bitter Season, Morale Chant (with Yi River) and the
   level attribute bonus each implement `TimelineMechanic` — Hawkwing under
-  `src/data/sets/` (declared by its set), Bitter Season and Morale Chant under
-  `src/data/innerWays/` (declared by their inner way), Concentration and the
-  level attribute bonus under `src/data/classes/` (declared by their class).
+  `src/data/sets/` (declared by its set), Concentration, Bitter Season and
+  Morale Chant under `src/data/innerWays/` (declared by their inner way), and
+  the level attribute bonus under `src/data/classes/` (declared by its class).
   `src/engine/mechanics/` holds only the contract (`TimelineMechanic`,
   `MechanicSetup`) and the registry (`registerMechanic`/`declareMechanic`/
   `MECHANIC_ORDER`) — no instances. Registry ORDER is load-bearing —
@@ -380,7 +380,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   per-window phase reset** — guarded by `tests/engine/bleedCadence.test.ts`.
   Detonation *count* is driven by the stack-history curve, not tick
   scheduling, so it is unaffected (`bleedDetonation.test.ts`).
-- **Crosswind Spirit** (`buffs/crosswind.ts`) — the 0-5 charge counter is
+- **Zenith Bar** (`buffs/crosswind.ts`) — the 0-5 charge counter is
   per-detonation state rather than a windowed buff: the def schema has no
   consume-on-read counter, and a window would wrongly credit the charge-0
   detonation.
@@ -420,7 +420,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   contribution is suppressed while it is active — the DoT damage is not. A
   Sword Horizon Zenith detonation extends the poison the same way it already
   extended Smolder — one shared, capped rule
-  (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `data/classes/bellstrikeUmbraGates.ts`),
+  (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `data/innerWays/swordHorizonZenith.ts`),
   not specific to either debuff. Only hits laid by the rotation roll
   the proc — DoT ticks and trigger-enqueued hits do not — the same structural
   limitation Hawkwing and Concentration have.
@@ -456,7 +456,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   `BuffEngine` seed `concentration` at `t=0` and re-arm it on every cast
   (its `seedAtStart`/`refreshOnAnyCast`), applying its `affinityDmg`/
   `directAffinity` (and tier-6 sustain) stat mods **always-on** for the whole
-  rotation — double-counting against `bellstrikeUmbraConcentration.ts`'s
+  rotation — double-counting against `insightfulStrikeMechanic.ts`'s
   probability-weighted 4-hit-ramp model of the same inner way, which knows
   nothing about the generic buff engine's activation window. This is a
   documented gap, not a missed mapping, and it is why `concentration`'s
@@ -469,7 +469,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   `castBuffs.ts`'s `collectCastBuffs` runs the buff engine's chips before the
   mechanics' chips and dedupes by id — so even if `insightfulStrike` were
   mapped, the buff engine's `concentration` chip would always win and
-  `bellstrikeUmbraConcentration.ts`'s own "≈NN% active" chip would never
+  `insightfulStrikeMechanic.ts`'s own "≈NN% active" chip would never
   render. A second, independent reason the two models can't safely run
   side by side.
 - **bamboocut_dust's second `calculationHooks`** (soulbreak pool,

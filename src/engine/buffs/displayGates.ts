@@ -4,6 +4,11 @@
 // checks — mirroring is how the card and the engine drifted apart before.
 import type { Inputs } from "../types"
 
+export interface DisplayGateRegistration {
+  defId: string
+  predicate: (inputs: Inputs) => boolean
+}
+
 const gates: Record<string, (inputs: Inputs) => boolean> = {
   vulnerabilityTeammate: (inputs) => !!inputs.shareEasyHurt,
 }

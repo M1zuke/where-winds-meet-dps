@@ -8,7 +8,7 @@ import {
   BITTER_SEASON_MAX_STACKS,
 } from "../../src/engine/buffs/bitterSeason"
 import { bitterSeasonTuningAtTier } from "../../src/data/innerWays/bitterSeason"
-import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/classes/bellstrikeUmbraGates"
+import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/innerWays/swordHorizonZenith"
 import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
 
 // Sword Horizon's ceiling on the remaining duration an extension may leave.

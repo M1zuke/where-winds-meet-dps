@@ -36,23 +36,11 @@ export const DEBUFF = {
   bitterSeasonTick: "debuff-bellstrikeUmbra-bitter-season-tick",
 } as const
 
-// The four gate buffs `bellstrikeUmbraGates.ts` registers — consumed by the
+// The two gate buffs `bellstrikeUmbraGates.ts` registers — consumed by the
 // timeline (`HitVariant` swaps, trigger conditions), never carrying stat
-// effects of their own.
+// effects of their own. Sword Horizon's two Zenith gates are declared by
+// `data/innerWays/swordHorizonZenith.ts` instead.
 export const STATUS = {
   riverFlow: "buff-bellstrikeUmbra-river-flow",
   spearSpecialCooldown: "buff-bellstrikeUmbra-spear-special-cooldown",
-  zenithBar: "buff-bellstrikeUmbra-zenith-bar",
-  zenithDetonation: "buff-bellstrikeUmbra-zenith-detonation",
 } as const
-
-export const ZENITH_SMOLDER_EXTEND_FRAMES = 600
-
-// User-verified 2026-08-07: a Zenith detonation always adds its full extend
-// amount, but the resulting REMAINING duration (from that detonation's own
-// frame, re-evaluated per detonation — not a lifetime cap on the window)
-// never exceeds 16 s. If the window is already longer than that, the
-// detonation must leave it alone — never truncate it down to the cap.
-// Sword Horizon logic, not specific to any one debuff it extends (Smolder,
-// Bitter Season's poison, …).
-export const ZENITH_MAX_EXTENDED_DURATION_FRAMES = 960

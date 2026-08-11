@@ -2,7 +2,7 @@
 // Skill Editor text for the eight buffs (of the 18 Umbra-scoped modules) whose
 // rendering carries an author-written `summary` rather than one the catalog's
 // generic label table can derive from the effect list, so a future edit can't
-// move it silently. The other ten (crosswindSpirit, potentRiverFlow, wineGu,
+// move it silently. The other ten (zenithBar, potentRiverFlow, wineGu,
 // revelryScript, vulnerabilityTeammate, mirage, mirageBonus,
 // rainwhisperShield, resistanceResolve, dragonHeadLowHp) all express their
 // bonus as a plain `allDamageBoost` `StatKey`, which that generic table
@@ -41,7 +41,7 @@ function inputsWithSwordHorizon(tier: string): Inputs {
 }
 
 // Sword Horizon gates bellstrikeUmbraBleedPen/bellstrikeUmbraBleedingDamage/
-// crosswindSpirit; Wolfchaser's Art tier 6 gates soulShaken — the two
+// zenithBar; Wolfchaser's Art tier 6 gates soulShaken — the two
 // `requires` every scoped Class Buffs row actually reads. Insightful Strike's
 // and Revelry Script's own params gate other, unscoped modules and stay
 // closed here on purpose.
@@ -146,7 +146,7 @@ describe("Class Buffs column — scope, not alwaysActive, decides membership", (
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
         "soulShaken: +10.0% all/stack",
-        "crosswindSpirit: +15.0% all",
+        "buff-bellstrikeUmbra-zenith-bar: +15.0% all",
       ].sort(),
     )
   })

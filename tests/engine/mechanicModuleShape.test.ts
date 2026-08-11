@@ -50,9 +50,10 @@ const discovered = SCAN_DIRS.flatMap((dir) => tsFilesDirectlyUnder(join(ROOT, di
   .sort()
 
 describe("mechanic modules under src/data/innerWays and src/data/sets", () => {
-  it("are exactly the three known mechanic modules", () => {
+  it("are exactly the four known mechanic modules", () => {
     expect(discovered).toEqual([
       "src/data/innerWays/bitterSeasonMechanic.ts",
+      "src/data/innerWays/insightfulStrikeMechanic.ts",
       "src/data/innerWays/moraleChantMechanic.ts",
       "src/data/sets/hawkwingMechanic.ts",
     ])
