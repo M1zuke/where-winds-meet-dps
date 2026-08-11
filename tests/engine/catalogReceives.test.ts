@@ -123,10 +123,9 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
   })
 })
 
-// Regression guard for the one functional consequence of folding
-// classBuffDefs / mechanicBuffDefs into one list: both derivations stay
-// scoped to the class's OWN list, never the composed one, so a global like
-// dragonHeadLowHp (also alwaysActive) never gets newly caught by either.
+// Both derivations stay scoped to a class's own `classBuffDefs`, never the
+// composed `buffModules`: `dragonHeadLowHp` is a global and `alwaysActive`,
+// and must not be caught by either.
 describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
   it("the Spec Mechanics column is exactly the two bleed passives", () => {
     const ids = specMechanicIds(CLASS)

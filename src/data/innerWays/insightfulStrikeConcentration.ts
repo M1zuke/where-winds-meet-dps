@@ -18,9 +18,10 @@ const TIER6_EFFECTS: Record<string, Effect[]> = {
 // Memoized rather than a module-top-level const: `insightfulStrike.ts`
 // imports this module for its `buffDefs` entry, and this module imports
 // `insightfulStrike` back for the sustain-pair tier. Reading it eagerly at
-// module scope would hit `insightfulStrike`'s own TDZ whichever side of the
-// cycle loads first — deferring the read into `effects`, which only runs
-// once both modules have finished loading, avoids that.
+// module scope would run while `insightfulStrike.ts` is still initializing
+// whenever that module is the entry point — deferring the read into
+// `effects`, which only runs once both modules have finished loading,
+// avoids that.
 let sustainPairTier: number | undefined
 
 function sustainPairTierOf(): number {

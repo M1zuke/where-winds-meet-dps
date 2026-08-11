@@ -61,10 +61,11 @@ export interface InnerWayDef {
   // display-gate map is global and def-id-keyed with no owner concept, so no
   // class composition step is needed here.
   displayGates?: readonly DisplayGateRegistration[]
-  // Folded into every slotting class's own `classBuffDefs` by
-  // `definitions/classes/registry.ts`'s `buffModules` — unlike `displayGates`,
-  // this needs a per-class composition step because `BuffEngine` is
-  // constructed per class, not globally.
+  // Folded into every slotting class's composed `ClassDefinition.buffModules`
+  // by `definitions/classes/registry.ts` — the class's own `classBuffDefs`
+  // stays untouched. Unlike `displayGates`, this needs a per-class
+  // composition step because `BuffEngine` is constructed per class, not
+  // globally.
   buffDefs?: readonly BuffModule[]
   // Registered directly by the inner-way registry — a `{ skillId, factory }`
   // binding is registered once regardless of which classes can slot this
