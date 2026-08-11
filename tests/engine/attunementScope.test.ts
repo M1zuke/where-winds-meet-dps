@@ -45,11 +45,9 @@ describe("attunement scope — the stat reaches only what declares the tag", () 
     expect(damageWith("attune:bleed", inputs)).toBeCloseTo(damageWith(undefined, inputs), 6)
   })
 
-  // The option's `classIds` is what gates this now — it replaced a
-  // `classId === "bellstrikeUmbra"` branch in the timeline. `buildContext`
-  // itself can no longer be driven by a foreign classId (only Bellstrike
-  // Umbra is registered, and `getSchool` throws on anything else), so this
-  // drives the same `classIds` gate `attuneBoostByTag` reads, directly.
+  // The option's `classIds` is the gate. `buildContext` cannot be driven by a
+  // foreign classId (only Bellstrike Umbra is registered, and `getSchool`
+  // throws on anything else), so this drives that same gate directly.
   it("stays inert for a class the attunement cannot roll on", () => {
     const optionsForOtherClass = attunementsForClass("someOtherClass")
     expect(optionsForOtherClass.some((option) => option.affectsTag === "attune:bleed")).toBe(false)

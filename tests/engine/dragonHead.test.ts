@@ -1,6 +1,3 @@
-// Mechanics, sources, and coefficient provenance:
-// src/data/skills/universal/dragon-head.md.
-//
 // Damage assertions scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
 import { computeSkillDamage } from "../../src/engine/formula"

@@ -2,6 +2,9 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, MYSTIC, ROLE } from "../ids"
 import { SKILL } from "./ids"
 
+// Fixed damage — triggers neither crit, affinity nor abrasion (CN mystic-arts
+// guide, gc.com.cn, checked 2026-08). Cast timing is user-verified 2026-08-06:
+// a 246-frame cast landing its hit on the final frame.
 export const dragonHead = defineSkill({
   id: SKILL.dragonHead,
   classId: "universal",

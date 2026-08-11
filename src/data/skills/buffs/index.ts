@@ -11,11 +11,9 @@ import { resistanceResolve } from "./resistanceResolve"
 import { surgingWaves } from "./surgingWaves"
 import { dragonHeadLowHp } from "./dragonHeadLowHp"
 
-// Order is load-bearing (float addition is not associative): `revelryScript`
-// and `fluteBoost` are prepended because they used to sit ahead of every
-// other global via Bellstrike Umbra's own `classBuffDefs`; appending them
-// would move `fluteBoost`'s `allDamageBoost` behind the other five globals
-// that emit the same stat key for no reason.
+// Order is load-bearing (float addition is not associative): `fluteBoost` must
+// stay ahead of the other five globals that emit `allDamageBoost`, so append
+// nothing before it.
 export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   revelryScript,
   fluteBoost,

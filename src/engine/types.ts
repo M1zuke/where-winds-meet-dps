@@ -21,12 +21,10 @@ export interface QiBreakSettings {
   durationSec: number
 }
 
-// NOT here (deliberately, they had duplicate homes and were double-counted):
-//  - Fire Oil — it is the Divinecraft fire choice (`Inputs.tianGongElement ===
-//    "fire"`, +1.5 % via `panel.ts`'s calc!D1), not a separate consumable.
-//  - Vulnerability — it IS the tank spear debuff (`Inputs.shareEasyHurt`, Q15,
-//    +8 % via calc!D1); one toggle, one application path.
-//  - Formbend Set — a stored-but-inert toggle with no modeled effect.
+// Deliberately NOT settings here, because each already has exactly one home and
+// a second would double-count it: Fire Oil is the Divinecraft fire choice
+// (`Inputs.tianGongElement`), Vulnerability is the tank spear debuff
+// (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
   qiBreak: QiBreakSettings
   dragonsBreath: boolean
@@ -73,7 +71,7 @@ export interface Inputs {
   affinityDamageBoost: number
   attributeDamageBoost: number
   sustainDamageBoost: number
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
+  // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
 
   allMartialBoost: number
@@ -96,9 +94,7 @@ export interface Inputs {
 
   food: boolean
   tianGongElement: "fire" | "poison" | null
-  // An armor-set id from `src/data/sets/` — the SET_ID values, not the
-  // display name. A profile saved before this migrates via V8; see
-  // src/migrations/.
+  // A `SET_ID` value, never the display name.
   set: string | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean
@@ -109,18 +105,13 @@ export interface Inputs {
 
   rotation: string | null
 
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
-  activeCustomRotation?: Rotation | null
-
   selectedBuiltinRotationId?: string | null
 
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
+  // Injected at the engine boundary, not persisted on the profile blob — the
+  // engine never reads storage, so locked fixtures stay byte-exact.
+  activeCustomRotation?: Rotation | null
   customSkills?: Skill[] | null
-
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
   customBuffs?: Buff[] | null
-
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
   customDebuffs?: Debuff[] | null
 
   buffParams?: Record<string, unknown> | null

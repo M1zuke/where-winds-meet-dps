@@ -183,12 +183,9 @@ describe("DoT rules — elevatedAttributeMultiplier-gated (PDF §1)", () => {
   })
 })
 
-// PDF §11. `art.extraAffinityRate` is the vehicle: the boost-zone accessory
-// slots that used to carry a raw crit-rate source into `V` were dead in
-// production (no `Inputs` field ever supplied a real slot name) and were
-// removed with `boostZone.json`; `extraAffinityRate` is the one raw rate
-// source the formula still receives, so it now proves the shared
-// divide-before-cap rule that `V` and `W` both implement.
+// PDF §11. `art.extraAffinityRate` is the one raw rate source the formula
+// receives, so it is the vehicle for the shared divide-before-cap rule that
+// both rate cells implement.
 describe("rate resistance on a raw rate source (PDF §11)", () => {
   it("a raw affinity-rate source is divided by (1 + r) before the 40 % cap", () => {
     const rawRate = { ...art, extraAffinityRate: 0.1 }

@@ -40,8 +40,8 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
     const hit = makeHit({ frame: 0, physMultiplier: 2.4, attributeMultiplier: 3.6 })
     const skill = makeSkill("bellstrikeUmbra", {
       name: "Bleed Detonation",
-      // The bonus follows the declared role, not the name — a skill merely
-      // called "Bleed Detonation" no longer inherits the mechanic.
+      // The bonus follows the declared role, not the name: the name alone must
+      // not make a skill inherit the mechanic.
       tags: ["role:bleedDetonation"],
       skillType: "sustain",
       weaponOrAttribute: "Sword",

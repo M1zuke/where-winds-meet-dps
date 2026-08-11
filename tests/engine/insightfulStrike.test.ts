@@ -1,8 +1,8 @@
-// Concentration's own effects are modeled separately on the timeline path
-// (see `concentration.test.ts` / `site/concentration.ts`) with a
-// game-accurate activation counter; the panel no longer bakes a flat, always-
-// on directAffinityRate for Insightful Strike, to avoid double-counting the
-// SAME site effect through two channels.
+// Concentration's own effects are modeled on the timeline path
+// (`concentration.test.ts` / `engine/buffs/concentration.ts`) with a
+// game-accurate activation counter, so the panel must NOT bake a flat,
+// always-on directAffinityRate for this inner way — that would count the same
+// effect through two channels.
 import { describe, expect, it } from "vitest"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { buildContext } from "../../src/engine/panel"

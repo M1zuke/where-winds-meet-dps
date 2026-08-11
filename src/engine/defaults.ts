@@ -48,9 +48,7 @@ export const defaultInputs: Inputs = {
 
   dingYinByTag: { "Mouse Boost": 0.153 },
 
-  // Unslotted: the four inner ways this used to carry were removed as
-  // unimplemented (2026-08-10), and no validated class allows a replacement for
-  // all four.
+  // Unslotted: no validated class allows four slottable inner ways.
   mindMethods: [
     { ...emptyMindMethod },
     { ...emptyMindMethod },

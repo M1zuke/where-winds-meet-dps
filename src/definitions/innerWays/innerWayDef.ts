@@ -19,16 +19,12 @@ export interface InnerWayTier {
 // not an individual field.
 export interface InnerWayScalars {
   minTier?: number
-  // Additive into `FormulaContext.generalDamageBoost`.
   generalDamageBoost?: number
-  // Additive into `FormulaContext.chargeBonus`, which only charged skills read.
   chargeBonus?: number
-  // The always-on DoT boost, superseded by a mechanic's `dotDamageMultiplier`.
+  // Superseded by a mechanic's `dotDamageMultiplier` when one is passed.
   dotDamageBoost?: number
-  // Flat all-damage the inner way grants merely by being selected (the site's
-  // `Ss[key].allDamageBonus`, `zo()` ~L7743-65).
+  // The site's `Ss[key].allDamageBonus`, `zo()` ~L7743-65.
   allDamageBonus?: number
-  // Multiplies the target's physical defense.
   targetDefenseMultiplier?: number
 }
 
@@ -45,37 +41,21 @@ export interface InnerWayDef {
   // undefined for one that is deliberately never mapped (see
   // `insightfulStrike.ts`).
   buffParam?: (typeof PARAM)[keyof typeof PARAM]
-  // Channel 1 (CALCULATION.md § "Inner-way layers"): granted merely by
-  // being slotted, no tier check.
+  // Channel 1 (CALCULATION.md § "Inner-way layers"): granted merely by being
+  // slotted, no tier check. `tiers` is its per-tier extension, applying once
+  // the slotted stack count reaches that tier.
   panelStats?: PanelStats
-  // Channel 1's per-tier extension — a tier entry's `panelStats` applies once
-  // the slotted stack count reaches that tier. Most inner ways have none; only
-  // Bitter Season's source data carries a tier dimension here.
   tiers?: Readonly<Record<number, InnerWayTier>>
   scalars?: InnerWayScalars
   mechanics?: readonly MechanicRegistration[]
-  // Timeline gates every class that can slot this inner way inherits — folded
-  // into that class's own built-in buff pool by `definitions/classes/registry.ts`.
+  // Folded into every slotting class by the class registry; the two below
+  // register directly instead — CLASSES.md § "One definition per class".
   gateBuffs?: readonly InnerWayGateBuff[]
-  // Registered directly by the inner-way registry, since the Skill Editor's
-  // display-gate map is global and def-id-keyed with no owner concept, so no
-  // class composition step is needed here.
-  displayGates?: readonly DisplayGateRegistration[]
-  // Folded into every slotting class's composed `ClassDefinition.buffModules`
-  // by `definitions/classes/registry.ts` — the class's own `classBuffDefs`
-  // stays untouched. Unlike `displayGates`, this needs a per-class
-  // composition step because `BuffEngine` is constructed per class, not
-  // globally.
   buffDefs?: readonly BuffModule[]
-  // Registered directly by the inner-way registry — a `{ skillId, factory }`
-  // binding is registered once regardless of which classes can slot this
-  // inner way, so it needs no class composition step either.
+  displayGates?: readonly DisplayGateRegistration[]
   skillBehaviors?: readonly SkillBehaviorRegistration[]
 }
 
-// Thin on purpose, like `defineClass`/`defineSet`: it exists so TypeScript
-// checks each literal at its definition site, and the `const` type parameter
-// keeps the literal `id`/`buffParam` narrow.
 export function defineInnerWay<const T extends InnerWayDef>(def: T): T {
   return def
 }
@@ -122,18 +102,13 @@ export function innerWayHasNode(def: InnerWayDef, tier: number, node: InnerWayNo
   return unlockTier !== undefined && tier >= unlockTier
 }
 
-// For a call site that feeds a persisted/serialized field (a `requires.minTier`,
-// a debuff's `retainMinTier`) rather than a live tier comparison: `undefined`
-// there doesn't crash, it silently ungates the def or lets it apply at every
-// tier. Throwing catches a dropped node instead — at load time for an eager
-// caller (`debuffs.ts`'s `retainMinTier`), but only on first use for a caller
-// deferred behind a getter or an `effects` closure (`wolfchasersArtBuffs.ts`'s
-// `minTier`, `insightfulStrikeConcentration.ts`'s tier read) — where the throw
-// surfaces inside `BuffEngine.processSkillCast`, which `timeline.ts` wraps in
-// a `try/catch` that returns `null`, so it silently disables the whole buff
-// engine rather than crashing loudly. What actually keeps a node from being
-// dropped either way is `tests/data/innerWays.test.ts`'s "every
-// `INNER_WAY_NODE` value is declared by exactly one def" pin, not this throw.
+// For a call site feeding a serialized gate field rather than a live tier
+// comparison, where `undefined` would silently ungate the def instead of
+// crashing. The throw only fires eagerly for an eager caller: deferred behind a
+// getter or an `effects` closure it surfaces inside the buff engine, which the
+// timeline catches — silently disabling the engine rather than crashing loudly.
+// The real guard against a dropped node is the one-owner pin in
+// `tests/data/innerWays.test.ts`, not this throw.
 export function requireInnerWayNodeTier(def: InnerWayDef, node: InnerWayNode): number {
   const tier = innerWayNodeTier(def, node)
   if (tier === undefined) throw new Error(`${def.id} declares no tier for node "${node}"`)

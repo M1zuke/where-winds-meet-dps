@@ -42,8 +42,8 @@ export type SkillProperties = Partial<Record<SkillPropertyKey, boolean>> & {
 // The build side of the same correspondence: every `PROP` tag maps to the
 // `SkillProperties` key `timeline.ts` sets when a skill carries that tag. A
 // `PROP` entry added without a line here is a build error (a `Record` over a
-// union type requires every member), which is what closes the hole a
-// mistyped or newly-added `prop:` tag used to fall through silently.
+// union type requires every member), so a mistyped tag cannot fall through
+// silently.
 export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPropertyKey> = {
   [PROP.abrasionImmune]: "abrasionImmune",
   [PROP.consumesInnerPassion]: "consumesInnerPassion",

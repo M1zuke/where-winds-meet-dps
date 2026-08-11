@@ -1,6 +1,3 @@
-// Every id is new with this conversion — `Inputs.set` used to store the
-// display name directly; see the V8 migration in `src/migrations/` for the
-// value-level repair of a profile saved before this.
 export const SET_ID = {
   hawking: "hawking",
   jadeware: "jadeware",

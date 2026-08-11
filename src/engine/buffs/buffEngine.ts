@@ -63,9 +63,8 @@ const MISTWILLOW_HEAVY_BUFF = "mistwillowHeavyBuff"
 const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
 const MISTWILLOW_BUFF_DURATION = 15
 const MISTWILLOW_BONUS = 0.1
-// Enumerated from the name prefixes these were written as ("UmbQ", "UmbDrone",
-// "UmbLightCharge", "FanLightCharged" / any name containing "Pursuit"), which
-// no longer match now that a cast presents an authored tag.
+// Enumerated rather than prefix-matched: a modifier never reaches a cast by
+// what it is called (CLASSES.md § "Id schemes").
 const MISTWILLOW_LIGHT_OVERRIDE_CASTS = new Set([
   "cast:umbQ",
   "cast:umbQPrepull",

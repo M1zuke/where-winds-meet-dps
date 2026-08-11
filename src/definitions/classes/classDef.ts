@@ -32,13 +32,10 @@ export interface ClassDef {
   primaryAttribute: AttributeKey
   attributeMultiplier: number
   generalDamageBoost?: number
-  // The class's own signature inner way, or "" if it has none.
   classMindGroup: InnerWayId | ""
-  // The inner ways it may slot alongside its signature.
   allowedMindMethods: readonly InnerWayId[]
-  // Visible dingYin attunement tags.
   dingYinTags: readonly string[]
-  // Fallback weapon pair `itemRanking.ts` reads when the active rotation casts
+  // The fallback pair `itemRanking.ts` reads when the active rotation casts
   // neither of the class's weapons yet.
   weapons: readonly string[]
   critBoostWeaponTypes: readonly string[]
@@ -47,11 +44,9 @@ export interface ClassDef {
   rotations: readonly Rotation[]
   defaultRotationId: string | null
   retunementPool: RetunementPool | null
-  // Every buff-def the class itself owns, reachable because you are this
-  // class — docs/CLASSES.md § "Buff ownership". An inner-way-gated def belongs
-  // on that `InnerWayDef.buffDefs` instead, and a global toggle or
-  // universal-skill trigger on `GLOBAL_BUFF_DEFS`. Membership here is also
-  // what puts a row in the Skill Editor's Spec Mechanics column.
+  // Only defs the class itself owns — docs/CLASSES.md § "Buff ownership".
+  // Membership here is also what puts a row in the Skill Editor's Spec
+  // Mechanics column.
   classBuffDefs: readonly BuffModule[]
   // Timeline statuses (HitVariant swaps, trigger conditions) — never carry
   // stat effects of their own, so they stay the `Buff` type rather than

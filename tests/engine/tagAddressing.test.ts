@@ -36,8 +36,8 @@ function triggerEntries(module: BuffModule): string[] {
 // nothing" is otherwise indistinguishable from a typo.
 const KNOWN_UNCARRIED = new Set(["role:fireOil", "role:fivefoldBleed"])
 
-// Trigger entries for the seven classes now under `reference/classes/`
-// (2026-08-11): `jadeware` and `rainwhisperShield` are set/global buffs
+// Trigger entries for the seven classes under `reference/classes/`:
+// `jadeware` and `rainwhisperShield` are set/global buffs
 // whose trigger list spans every class's own "Q" cast so the buff still
 // fires however a future class equips the set; `soulShaken` /
 // `potentRiverFlow` / `wineGu` carry Bellstrike Rainbow's Spear Q variants
@@ -73,8 +73,7 @@ describe("scope is addressed by tag, never by display name", () => {
     expect(bare).toEqual([])
   })
 
-  // Bellstrike Umbra's own native set — six defs carry a scope entry
-  // (2026-08-11, after the other seven classes' data moved to `reference/`).
+  // Bellstrike Umbra's own native set — six defs carry a scope entry.
   it("covers a non-trivial number of defs, so the check cannot pass vacuously", () => {
     const withScope = entries.filter(({ module }) => scopeEntries(module).length > 0)
     expect(withScope.length).toBeGreaterThanOrEqual(6)

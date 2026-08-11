@@ -253,9 +253,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
   //
   // A slot used to be identified by its display name. It now carries a stable
   // `id`, healed here from whatever the profile stored. A slot naming an inner
-  // way that no longer exists — 23 unimplemented ones were removed on
-  // 2026-08-10 — resolves to nothing the class allows and is cleared, which is
-  // the same path an already-disallowed slot took.
+  // way that no longer exists resolves to nothing the class allows and is
+  // cleared, which is the same path an already-disallowed slot takes.
   if (Array.isArray(next.mindMethods)) {
     const allowed = new Set(allowedInnerWaysForClass(next.classId))
     const seen = new Set<string>()
@@ -568,10 +567,10 @@ const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
 //
 // A skill seeded from a built-in copies that built-in's tags at the moment it
-// was seeded. `role:` / `cast:` addressing (2026-08-09) added tags to the
-// built-ins that stored copies therefore lack, and without them a seeded copy
-// silently stops receiving the buffs its original receives. Unioning is safe
-// because no editor surface can remove one of these tags.
+// was seeded, so `role:` / `cast:` tags added to a built-in afterwards are
+// missing from stored copies — and without them a seeded copy silently stops
+// receiving the buffs its original receives. Unioning is safe because no editor
+// surface can remove one of these tags.
 let builtinTagsById: Map<string, string[]> | null = null
 function builtinTagsFor(id: string): string[] {
   if (!builtinTagsById) {
@@ -590,8 +589,8 @@ function healSkillTags(id: string, tags: string[]): string[] {
   return healed.size === tags.length ? tags : [...healed]
 }
 
-// The Dragon Head coefficients were replaced wholesale (2026-08-08), so a
-// stored copy carrying the superseded workbook numbers scores ~69x low. Only
+// These coefficients were replaced wholesale, so a stored copy carrying the
+// superseded workbook numbers scores ~69x low. Only
 // an untouched copy is rewritten — a hit the user actually edited is left
 // alone, since we cannot tell a stale value from a deliberate one once it
 // differs.

@@ -23,8 +23,7 @@ export interface SetFormulaBonus {
   generalDamageBoost?: number
 }
 
-// The 2-piece bonus, formerly `armorSetBoni.json` — a single scalar into one
-// named panel stat, applied by `panel.ts applyArmorSet`.
+// The 2-piece bonus: one scalar into one named panel stat.
 export interface SetPanelBonus {
   stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys"
   value: number

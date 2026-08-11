@@ -8,9 +8,9 @@ export const TYPE_TAG = "type:"
 export const ROLE_TAG = "role:"
 export const CAST_TAG = "cast:"
 
-// Namespaced tags only. The display name, and the bare `skillType` /
-// `weaponOrAttribute` / `attributeAttack` values, used to land here too, which
-// is what let a modifier reach a skill by what it was called.
+// Namespaced tags only — never the display name or a bare `skillType` /
+// `weaponOrAttribute` / `attributeAttack` value, so a modifier cannot reach a
+// skill by what it is called (CLASSES.md § "Id schemes").
 export function skillTagsOf(skill: Skill): Set<string> {
   const t = new Set<string>(skill.tags ?? [])
   if (skill.skillType) t.add(TYPE_TAG + skill.skillType)

@@ -26,11 +26,9 @@ function scopedStatMap(
   return out
 }
 
-// The 6 % target-defense reduction. Only the party-applied HenZhi debuff
-// supplies it now — the self-applied route (an inner way at tier 6) went with
-// the 23 unimplemented inner ways removed on 2026-08-10, so no
-// `targetDefenseMultiplier` def remains. The channel stays because the def
-// schema still carries it and a validated inner way could use it again.
+// The 6 % target-defense reduction. The party-applied debuff is its only live
+// supplier; the channel stays open because an inner way may declare
+// `targetDefenseMultiplier` instead.
 const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 
 export interface DerivedStats {

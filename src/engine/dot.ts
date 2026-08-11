@@ -1,7 +1,3 @@
-// Damage over time: turning a debuff's recorded windows into the ticks it
-// deals. Everything here used to be inline in the timeline, which is why a DoT
-// looked like a special case of the event loop rather than what it is — a
-// debuff whose spec says when it fires.
 import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
 import type { Skill } from "./skill"
 import type { StatusWindow } from "./ledger"
