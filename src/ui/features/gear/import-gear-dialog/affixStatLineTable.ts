@@ -1,15 +1,3 @@
-/**
- * Affix id → the stat line it is: `word:<name>` naming a `getWordSpecs` entry, or
- * `attunement:<id>` naming an `AttunementOption`.
- *
- * The ceiling the payload reports alongside each roll cannot identify a stat on its
- * own — 44.2 is Max Bellstrike and Max Bamboocut alike — so it only narrows the
- * candidates offered in the import dialog, and this table is what decides. An id
- * missing here imports nothing until someone maps it, in the dialog or here.
- *
- * A stat carries a different id per equip slot, so it needs one entry per slot it
- * can roll on. Ids confirmed against live captures; kept sorted by id.
- */
 export const AFFIX_ID_TO_STAT_LINE: Readonly<Record<string, string>> = {
   "270103": "attunement:bleedingDamage",
   "280101": "attunement:bleedingDamage",
