@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { allowedInnerWaysForClass } from "../../src/engine/panel"
 import { syncClassPermanent } from "../../src/ui/utils/classSetup"
-import { defaultInputs } from "../../src/engine/defaults"
+import { blankInputs, defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
 describe("allowedInnerWaysForClass", () => {
@@ -75,5 +75,31 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     const twice = syncClassPermanent(once, "bamboocutWindTwinblade")
     expect(twice.mindMethods).toEqual(once.mindMethods)
     expect(once.mindMethods).toEqual(defaultInputs.mindMethods)
+  })
+
+  it("replaces fresh-profile Bellstrike talents when Stonesplit Strength is selected", () => {
+    const initialized = syncClassPermanent(blankInputs, blankInputs.classId)
+    const next = syncClassPermanent(initialized, "stonesplitStrength")
+
+    expect(initialized.martialArtsTalents[0].stat).toBe("affinityRate")
+    expect(next.martialArtsTalents).toHaveLength(8)
+    expect(next.martialArtsTalents[0].stat).toBe("critRate")
+    expect(
+      next.martialArtsTalents.every((talent) => talent.id.includes("stonesplitStrength")),
+    ).toBe(true)
+  })
+
+  it("keeps edited talents when re-synced to the same class", () => {
+    const initialized = syncClassPermanent(blankInputs, blankInputs.classId)
+    const edited = {
+      ...initialized,
+      martialArtsTalents: initialized.martialArtsTalents.map((talent, index) =>
+        index === 0 ? { ...talent, enabled: false } : talent,
+      ),
+    }
+
+    const next = syncClassPermanent(edited, edited.classId)
+
+    expect(next.martialArtsTalents).toEqual(edited.martialArtsTalents)
   })
 })
