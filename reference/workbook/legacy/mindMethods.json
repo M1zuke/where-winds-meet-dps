@@ -95,7 +95,7 @@
       "undefined": 6
     },
     {
-      "name": "Lone Loyalty",
+      "name": "Steadfast Devotion",
       "undefined": 0.04
     }
   ],
@@ -280,7 +280,7 @@
     },
     {
       "row": 26,
-      "A": "Lone Loyalty",
+      "A": "Steadfast Devotion",
       "B": "tier 6",
       "C": "tier 6"
     },
@@ -462,7 +462,7 @@
     },
     {
       "row": 64,
-      "A": "Lone Loyalty",
+      "A": "Steadfast Devotion",
       "E": 0.054,
       "I": 0.04
     }

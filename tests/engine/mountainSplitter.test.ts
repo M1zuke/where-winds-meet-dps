@@ -31,7 +31,7 @@ function affectedSkill(name = "PhalanxCharged-S3") {
   })
 }
 
-describe("Lone Loyalty Mountain Splitter", () => {
+describe("Steadfast Devotion Mountain Splitter", () => {
   it("requires Inner Passion and accepts generated Modao Anxi Soldier triggers at tier 3", () => {
     const withoutInnerPassion = engine(3)
     withoutInnerPassion.processSkillCast("AnxiSoldierMoDown", 1, { generated: true })
@@ -101,7 +101,7 @@ describe("Lone Loyalty Mountain Splitter", () => {
       ...defaultInputs,
       classId: CLASS,
       mindMethods: [
-        { name: "Lone Loyalty", stacks: "tier 4" },
+        { name: "Steadfast Devotion", stacks: "tier 4" },
         { ...emptyMindMethod },
         { ...emptyMindMethod },
         { ...emptyMindMethod },
@@ -110,7 +110,7 @@ describe("Lone Loyalty Mountain Splitter", () => {
 
     expect(row).toMatchObject({
       effect: "×1.32 damage after resource consumption",
-      requires: "Lone Loyalty tier 4+",
+      requires: "Steadfast Devotion tier 4+",
       active: true,
     })
   })
@@ -229,7 +229,7 @@ describe("Lone Loyalty Mountain Splitter", () => {
       affinityRate: 0,
       directAffinityRate: 0,
       mindMethods: [
-        { name: "Lone Loyalty", stacks: "tier 6" },
+        { name: "Steadfast Devotion", stacks: "tier 6" },
         { ...emptyMindMethod },
         { ...emptyMindMethod },
         { ...emptyMindMethod },

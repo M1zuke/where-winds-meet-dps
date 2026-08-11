@@ -59,6 +59,7 @@ describe("V5 step — v4 → v5 in isolation", () => {
       "V6__dropDerivedStats",
       "V7__clampSingleMysticWordRoll",
       "V8__dropRemovedArmorSets",
+      "V9__renameSteadfastDevotion",
     ])
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })

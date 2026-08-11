@@ -55,7 +55,7 @@ function loadOne(): StoredProfile {
 describe("profile-v7 fixture", () => {
   it("is v7 and still carries the pre-v8 shape", () => {
     expect(LEGACY.v).toBe(7)
-    expect(LEGACY.v).toBe(LATEST_PROFILES_VERSION - 1)
+    expect(LEGACY.v).toBe(V8__dropRemovedArmorSets.to - 1)
     expect(LEGACY.profile.inputs.classId).toBe("bellstrikeUmbra")
     expect(LEGACY.profile.inputs.set).toBe("Hawking")
     expect(LEGACY.profile.inputs.inventory.length).toBeGreaterThan(0)

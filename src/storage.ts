@@ -146,6 +146,10 @@ const LEGACY_GEAR_WORD_RENAMES: Record<string, string> = {
   "Max Formless": "Max Void Attack",
 }
 
+const LEGACY_MIND_METHOD_RENAMES: Record<string, string> = {
+  "Lone Loyalty": "Steadfast Devotion",
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
@@ -245,11 +249,15 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const seen = new Set<string>()
     next.mindMethods = next.mindMethods.map((slot) => {
       if (!slot) return slot
-      const disallowed = !!slot.name && allowed.size > 0 && !allowed.has(slot.name)
-      const duplicate = !!slot.name && seen.has(slot.name)
+      const name = LEGACY_MIND_METHOD_RENAMES[slot.name] ?? slot.name
+      const disallowed = !!name && allowed.size > 0 && !allowed.has(name)
+      const duplicate = !!name && seen.has(name)
       if (disallowed || duplicate) return { ...slot, name: "", stacks: "" }
-      if (slot.name) seen.add(slot.name)
-      return slot.name && !slot.stacks ? { ...slot, stacks: "tier 6" } : slot
+      if (name) seen.add(name)
+      if (name !== slot.name || (name && !slot.stacks)) {
+        return { ...slot, name, stacks: slot.stacks || "tier 6" }
+      }
+      return slot
     }) as Inputs["mindMethods"]
   }
   {
