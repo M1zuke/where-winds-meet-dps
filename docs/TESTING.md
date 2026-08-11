@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **790 tests
-across 85 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **831 tests
+across 88 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
@@ -78,13 +78,17 @@ caused it.
 
 ## The architecture guards
 
-Three tests assert properties of the code rather than of a build, and all
-exist to stop the generalization work rotting:
+Six tests assert properties of the code rather than of a build, and all exist
+to stop the generalization work rotting:
 
 - `noClassSpecificEngineCode.test.ts` — nothing under `src/engine` may name a
   class or an inner way, compare a display name against a literal, or match a
   cast tag by prefix. `defaults.ts` is allowlisted: the starting build is
   content.
+- `classModuleBoundaries.test.ts` — no class module reaches the panel/registry
+  layer, and `defineClassBuff` is not a second buff system: its marker is
+  inert everywhere `src/engine` looks, and every module carrying it is owned
+  by a class.
 - `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
@@ -93,6 +97,13 @@ exist to stop the generalization work rotting:
   `data/innerWays/index.ts`, `data/sets/index.ts`) and the contract's own
   definition site (`engine/mechanics/index.ts`); nothing self-registers from
   anywhere else.
+- `mechanicModuleShape.test.ts` — an inner-way or set mechanic module exports
+  a hoisted factory rather than a mechanic object, and imports no
+  barrel-loading registry; both rules are otherwise only discoverable as a
+  confusing runtime crash.
+- `tagAddressing.test.ts` — every scope and trigger entry in the shipped data
+  is namespaced and names a tag some built-in actually carries, so a typo
+  fails the suite instead of silently reaching nothing.
 
 These legitimately span every registered class, which the class-scoping rule
 above explicitly permits for registry and metadata tests.

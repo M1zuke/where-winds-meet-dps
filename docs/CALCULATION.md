@@ -513,7 +513,7 @@ summarizes.
 
 ## Verification
 
-- `pnpm test` — **790 tests across 85 files**, all green.
+- `pnpm test` — **831 tests across 88 files**, all green.
 - The one locked fixture is `tests/engine/engineBaseline.test.ts`, which pins
   the whole `Result` for 25 Umbra builds as a refactor guard — it asserts the
   engine is *unchanged*, never that it is *right* (TESTING.md § "The engine
