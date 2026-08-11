@@ -5,7 +5,7 @@ import { gearBaseStatsFor } from "../../../../engine/gearStats"
 import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
-import styles from "./NewGearPieceDialog.module.scss"
+import dialogChrome from "../shared/gearDialog.module.scss"
 
 interface Props {
   initialSlot: GearSlot
@@ -53,7 +53,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
 
   return (
     <div
-      className={styles.gearDialogOverlay}
+      className={dialogChrome.overlay}
       role="dialog"
       aria-modal="true"
       aria-labelledby="gear-dialog-title"
@@ -61,11 +61,11 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
         if (e.target === e.currentTarget) onCancel()
       }}
     >
-      <div className={styles.gearDialogModal}>
-        <div className={styles.gearDialogHeader}>
+      <div className={dialogChrome.modal}>
+        <div className={dialogChrome.header}>
           <h2 id="gear-dialog-title">{t("New gear piece")}</h2>
         </div>
-        <div className={styles.gearDialogBody}>
+        <div className={dialogChrome.body}>
           <GearPieceForm
             piece={draft}
             inputs={inputs}
@@ -76,7 +76,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
             showWordMax={false}
           />
         </div>
-        <div className={styles.gearDialogFooter}>
+        <div className={dialogChrome.footer}>
           <button type="button" className="btn" onClick={onCancel}>
             {t("Cancel")}
           </button>

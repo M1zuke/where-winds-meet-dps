@@ -50,7 +50,11 @@ function NumberLikeInput({
   )
 }
 
-const numFormat = (v: number) => String(v)
+// Display only — the stored value keeps its full precision until the user edits
+// the field. Imported gear rolls carry many decimals (45.568999…), and the
+// sub-0.01 branch is what stops a small coefficient from rendering as plain 0.
+const numFormat = (v: number) =>
+  String(v !== 0 && Math.abs(v) < 0.01 ? +v.toFixed(4) : +v.toFixed(2))
 const numParse = (s: string) => Number(s)
 const pctFormat = (v: number) => String(+(v * 100).toFixed(2))
 const pctParse = (s: string) => Number(s) / 100

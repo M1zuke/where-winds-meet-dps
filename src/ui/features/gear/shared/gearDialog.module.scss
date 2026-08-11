@@ -1,4 +1,4 @@
-.gearDialogOverlay {
+.overlay {
   position: fixed;
   inset: 0;
   z-index: 1200;
@@ -12,7 +12,7 @@
   overflow-y: auto;
 }
 
-.gearDialogModal {
+.modal {
   background: var(--color-surface-alt);
   border: 1px solid #3a3a3a;
   border-radius: 8px;
@@ -24,12 +24,12 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-.gearDialogHeader {
+.header {
   padding: 16px 20px 10px;
   border-bottom: 1px solid #2c2c2c;
 }
 
-.gearDialogHeader h2 {
+.header h2 {
   margin: 0;
   font-size: 1.05em;
   color: var(--color-accent);
@@ -38,16 +38,18 @@
   font-weight: 600;
 }
 
-.gearDialogBody {
+.body {
   padding: 12px 20px;
   overflow-y: auto;
 }
 
-.gearDialogFooter {
+.footer {
   padding: 12px 20px;
   border-top: 1px solid #2c2c2c;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 8px;
   background: var(--color-bg);
 }
