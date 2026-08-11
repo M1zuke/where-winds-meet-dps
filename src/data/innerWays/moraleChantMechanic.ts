@@ -13,8 +13,12 @@ import {
 import type { MechanicEvent, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
 import { innerWayHasNode } from "./define"
 import { INNER_WAY_NODE } from "./ids"
-import { moraleChant } from "./moraleChant"
 import { PARAM } from "../skills/buffs/ids"
+// This import must stay above `./moraleChant`: that module eagerly calls
+// `moraleChantMechanic()` while cyclically re-entering this file, and the
+// returned object dereferences `PARAM` immediately — an import after
+// `./moraleChant` in source order would still be in TDZ at that point.
+import { moraleChant } from "./moraleChant"
 
 type State = { tier: number }
 
