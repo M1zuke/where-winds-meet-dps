@@ -10,5 +10,11 @@
     "setKey": "Jadeware",
     "stat": "maxPhys",
     "value": 78
+  },
+  {
+    "name": "Shattered Ridge",
+    "setKey": "Shattered Ridge",
+    "stat": "minPhys",
+    "value": 78
   }
 ]

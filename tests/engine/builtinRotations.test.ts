@@ -1,4 +1,4 @@
-// Scoped to Bellstrike Umbra — the only implemented class. The other seven
+// Scoped to Bellstrike Umbra — the only implemented class. The other six
 // schools in `schools.json` carry unverified imported data (see CLAUDE.md
 // § "Implemented classes"), so sweeping them here only asserted that their
 // rotations parse, which read as validation they have not had.

@@ -131,11 +131,11 @@ The interesting derivations:
   * the target's `generalDamageTaken` (0 in `dummyMode`)
   * `+8%` Soldier's Return · `+3%` Star-Picker at tier 6 · `+2%` Endurance
     Doctrine
-  * `+3.75%` if set = Swaying Heights
+  * the equipped set's `General Damage Boost` value (`+3.75%` for Swaying
+    Heights, `+5%` for Shattered Ridge)
   * `+8%` if `shareEasyHurt` (the tank-spear Vulnerability debuff)
   * `+1.5%` Divinecraft fire · `+1%` Divinecraft poison
   * `+ bossBoost`
-  * `+8%` for the `stonesplitBalancePureTang` class
 * **`effectiveDefense`** = `target.defense × (henZhiActive ? 0.94 : 1)`, where
   `henZhiActive = shareDebuff5HenZhi || (Year-Long Lament at tier 6)`
   (`panel.ts henZhiActiveForInputs` — shared with the Bitter Season suppression
@@ -175,7 +175,7 @@ that — treat them as opaque names, not as a claim about any live data source.
 | **X** | crit-damage add-on | `critDmgPanel + art.extraCritDamage + setBonus.col5 + bengJie×0.05 + Σslot.col5` |
 | **Y** | affinity-damage add-on | `affDmgPanel + art.extraAffinityDamage + setBonus.col3 + Σslot.col12` |
 | **AE** | raw min phys | `(smallPhys + art.minPhysFlatBonus + food×120) × (1 + art.minPhysPctBonus) × (1 + hawkwing + Σslot.col3) − effectiveDef × (1 − Σslot.col8)` |
-| **AG** | raw max phys | same shape with `largePhys`, `maxPhys*Bonus`, `food×240`; clamped `MAX(…, AE)` |
+| **AG** | raw max phys | food is applied first: `MAX(largePhys + food×240, smallPhys + food×120)`, then `maxPhys*Bonus`; clamped `MAX(…, AE)` after modifiers |
 | **AF** | `(AE + AG) / 2` | |
 | **AH** | phys penetration multiplier | `penFrac(outerPen + art.extraPhysPenetration + bengJie×5 + yiShui×2 + (henZhi ? 10 : 0) + Σslot.col6)` |
 | **AI** | phys damage boost | `physBoostPanel + Σslot.col9 + (specialTag="Spinning Umbrella" ? 0.15 : 0)` |
@@ -367,6 +367,18 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   either debuff. Only hits laid by the rotation roll
   the proc — DoT ticks and trigger-enqueued hits do not — the same structural
   limitation Hawkwing and Concentration have.
+- **Lone Loyalty / Mountain Splitter** — tier 3 opens a 10-second Mountain
+  Splitter window when Inner Passion is active and a generated Modao Anxi
+  Soldier attack lands, with a 15-second ICD on that activation route. Its
+  final-crit rule is evaluated after precision: at 75% or higher the affected
+  Phalanx Charge and Anxi attacks are guaranteed crits; below 75%, 15
+  percentage points are added to their final crit probability. Tier 4 makes
+  Phalanx Charged S3 deal 32% more damage only on a cast that successfully
+  consumes Inner Passion or Enhanced Charge. Tier 6 grants three Enhanced
+  Charge stacks for 18 seconds when Phalanx Charged completes during Qi Break;
+  later charges consume Inner Passion first, then Enhanced Charge. Consuming
+  Enhanced Charge applies Mountain Splitter only to that charge and its
+  generated Anxi chain, without opening or resetting the tier-3 window or ICD.
 
 ### Gaps
 
@@ -406,10 +418,8 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   falling-blossom stacks, perfect-catch, phantom-rally injected entries). A
   bespoke stateful per-cast state machine with its own injected-entry
   scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
-- **`forceCritIfHighCrit`** — its site gate is a crit-weight ≥ 0.7 test with
-  no equivalent here; `buffEngine.ts` emits a warning for it.
-- **Known trigger no-op**: on `bamboocutWindTwinblade` and
-  `stonesplitBalanceDualCut`, Umbrella Q's `castSkill` trigger targets
+- **Known trigger no-op**: on `bamboocutWindTwinblade`, Umbrella Q's
+  `castSkill` trigger targets
   Resonance / First Resonance skills those classes never received, so it
   silently does nothing.
 
@@ -424,12 +434,12 @@ source-of-truth note this table summarizes.
 | --- | --- | --- |
 | Sword Horizon / `swordHorizon` (bellstrikeUmbra signature) | Panel tier stats + buff engine + `crosswind.ts` | Tier stats, T6 detonation retain, the charge counter and guaranteed-affinity are all modeled. The crosswindBlade/bloodBurst mode toggle is unimplemented — but bloodBurst is the site's own default and the app never applies the crosswindBlade conversion, so the omission is **correctly inert**. |
 | Moon Above Flowers / `combo` (silkbindJade signature) | Panel + buff engine (combo-count buffs) | Disjoint channels. |
-| Frostwhite Night / `frostCladNight` (stonesplitBalancePureTang signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
+| Frostwhite Night / `frostCladNight` (stonesplitStrength signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
 | Wolfchaser's Art / `wolfchasersArt` | Panel + buff engine | Disjoint channels. The extra-detonation FSM is an unmodeled gap. |
 | Thousand Mountain Law / `mountainsMight` | Panel + buff engine | Disjoint. |
 | Throat-Pierce / `throatPierced` | Panel + buff engine | Disjoint. |
 | Star-Picker / `starReacher` | Panel + buff engine | Disjoint. |
-| Lone Loyalty / `steadfastDevotion` | Panel + buff engine | Disjoint. |
+| Lone Loyalty / `steadfastDevotion` | Panel + buff engine | Disjoint. Tier 3 Mountain Splitter, tier 4 consumption-gated Phalanx damage, and tier 6 Enhanced Charge are statefully modeled; see the implemented entry above. |
 | Boat on Wood / `towlineSweep` (bamboocutDust) | Panel + buff engine (`towlineSweepT6Special` forceCrit bonus) | Disjoint; `forceCrit` is now consumed, so this def is live. |
 | Morale Chant / `moraleChant` | Panel + `timeline.ts` stack schedule (`buffs/morale.ts`) | Stacks drive `allDamageBoost` + `phys.penetration`; tier 6 adds Yi River ticks. |
 | Tang Anthem / `songOfTang` | Panel (`precision 0.059`, `critDamageBoost 0.04`) + buff engine (`tangMelody`: triggered, stacking `critDmg 0.03`×≤5, rate-limited) | **Verified NOT a double-count** — a flat always-on tier stat vs a distinct triggered mechanic that ramps and decays independently. |

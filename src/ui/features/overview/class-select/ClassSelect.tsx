@@ -3,7 +3,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 
 const SCHOOLS = schools as { id: string; cn: string; en: string }[]
 
-const SUPPORTED_CLASS_IDS: ReadonlySet<string> = new Set(["bellstrikeUmbra"])
+const SUPPORTED_CLASS_IDS: ReadonlySet<string> = new Set(["bellstrikeUmbra", "stonesplitStrength"])
 
 interface Props {
   value: string

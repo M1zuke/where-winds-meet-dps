@@ -29,12 +29,9 @@ import frostCladSnowbreakFile from "./frostCladSnowbreak.json"
 import frostCladSnowbreakIPConsumeFile from "./frostCladSnowbreakIPConsume.json"
 import burningHeartIPConsumeFile from "./burningHeartIPConsume.json"
 import frostCladSnowbreakT6File from "./frostCladSnowbreakT6.json"
-import frostCladSnowbreakT6ExhaustedFile from "./frostCladSnowbreakT6Exhausted.json"
 import forgetfulnessFile from "./forgetfulness.json"
 import mountainSplitterFile from "./mountainSplitter.json"
-import mountainSplitterAdeptCritFile from "./mountainSplitterAdeptCrit.json"
 import chargeEnhancementFile from "./chargeEnhancement.json"
-import throatPiercedAnxiT6File from "./throatPiercedAnxiT6.json"
 import heartFocusFile from "./heartFocus.json"
 import empoweredUmbQCritFile from "./empoweredUmbQCrit.json"
 import starsAlign4pcFile from "./starsAlign4pc.json"
@@ -52,6 +49,7 @@ import healerBuffFile from "./healerBuff.json"
 import soulShakenFile from "./soulShaken.json"
 import bellstrikeUmbraBleedPenFile from "./bellstrikeUmbraBleedPen.json"
 import bellstrikeUmbraBleedingDamageFile from "./bellstrikeUmbraBleedingDamage.json"
+import stonesplitStrengthSkillCritDamageFile from "./stonesplitStrengthSkillCritDamage.json"
 
 interface BuffVariant {
   specs?: string[]
@@ -130,14 +128,10 @@ export const SITE_BUFF_DEFS_BY_SPEC: Record<string, BuffDef[]> = {
     defForSpec(frostCladSnowbreakIPConsumeFile, "stonesplit_strength"),
     defForSpec(burningHeartIPConsumeFile, "stonesplit_strength"),
     defForSpec(frostCladSnowbreakT6File, "stonesplit_strength"),
-    defForSpec(frostCladSnowbreakT6ExhaustedFile, "stonesplit_strength"),
     defForSpec(forgetfulnessFile, "stonesplit_strength"),
     defForSpec(mountainSplitterFile, "stonesplit_strength"),
-    defForSpec(mountainSplitterAdeptCritFile, "stonesplit_strength"),
     defForSpec(chargeEnhancementFile, "stonesplit_strength"),
     defForSpec(throatPiercedFile, "stonesplit_strength"),
-    defForSpec(throatPiercedAnxiT6File, "stonesplit_strength"),
-    defForSpec(throatPiercedDeflectFile, "stonesplit_strength"),
     defForSpec(shatteredRidgeDeflectFile, "stonesplit_strength"),
     defForSpec(revelryScriptFile, "stonesplit_strength"),
   ],
@@ -170,4 +164,5 @@ export const MECHANIC_BUFF_DEFS: BuffDef[] = [
   ...allDefs(soulShakenFile),
   soleDef(bellstrikeUmbraBleedPenFile),
   soleDef(bellstrikeUmbraBleedingDamageFile),
+  soleDef(stonesplitStrengthSkillCritDamageFile),
 ]

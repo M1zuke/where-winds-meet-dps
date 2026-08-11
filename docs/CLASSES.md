@@ -8,7 +8,7 @@ anything that mints an entity id.
 **Only Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) is
 implemented and validated.**
 
-The other seven classes in `schools.json` — Bellstrike Rainbow, Silkbind Jade,
+The other six classes in `schools.json` — Bellstrike Rainbow, Silkbind Jade,
 the Stonesplit and Bamboocut specs — are **not implemented yet**. The skill
 import may have pulled in data for them (`src/data/skills/<class>/*.json`,
 `buffs/data.ts`'s class → spec map), but that data is unverified and their
@@ -16,7 +16,7 @@ engine output should not be relied on. Treat anything they surface (stray or
 spurious imported skills, for instance) as provisional until the class is
 actually built out.
 
-The eight class ids and their buff specs (`CLASS_SPEC` in
+The seven class ids and their buff specs (`CLASS_SPEC` in
 `src/engine/buffs/data.ts`):
 
 | class id | spec id | status |
@@ -25,14 +25,9 @@ The eight class ids and their buff specs (`CLASS_SPEC` in
 | `bellstrikeRainbow` | `bellstrike_splendor` | provisional |
 | `silkbindJade` | `silkbind_jade` | provisional |
 | `stonesplitPower` | `stonesplit_might` | provisional |
-| `stonesplitBalancePureTang` | `stonesplit_strength` | provisional |
+| `stonesplitStrength` | `stonesplit_strength` | provisional |
 | `bamboocutDust` | `bamboocut_dust` | provisional |
 | `bamboocutWindTwinblade` | `bamboocut_dust` | provisional |
-| `stonesplitBalanceDualCut` | `bamboocut_dust` | provisional |
-
-Note the last three **share one spec**. That is a stand-in, not a claim they
-play alike — it's why `bamboocutWindTwinblade` and `stonesplitBalanceDualCut`
-inherit Umbrella Q's dangling `castSkill` trigger (see "Known gaps").
 
 Test-suite consequences are in TESTING.md § "Class scoping" — in short, the
 suite is Umbra-only and must stay that way until a class is genuinely built out.
@@ -126,7 +121,7 @@ is in CLAUDE.md § "Language".
 
 ## Known gaps
 
-- On `bamboocutWindTwinblade` and `stonesplitBalanceDualCut`, Umbrella Q's
+- On `bamboocutWindTwinblade`, Umbrella Q's
   `castSkill` trigger targets Resonance / First Resonance skills those classes
   never received, so it silently no-ops. Not asserted — the trigger-resolution
   sweep is Umbra-scoped.

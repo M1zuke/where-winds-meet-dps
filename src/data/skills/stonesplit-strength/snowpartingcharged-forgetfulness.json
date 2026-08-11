@@ -1,0 +1,57 @@
+{
+  "id": "stonesplitStrength-snowpartingcharged-forgetfulness",
+  "classId": "stonesplitStrength",
+  "name": "SnowpartingCharged[Forgetfulness]",
+  "abilityTag": "SnowpartingCharged[Forgetfulness]",
+  "tags": ["prop:isCharged", "weapon:Heng Blade", "attack:charge", "attune:snowpartingCharged"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Hengdao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.4899,
+      "attributeMultiplier": 0.734867,
+      "physFixed": 135.3333,
+      "attributeFixed": 73.6667,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 14,
+      "physMultiplier": 0.4899,
+      "attributeMultiplier": 0.734867,
+      "physFixed": 135.3333,
+      "attributeFixed": 73.6667,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-2",
+      "frame": 28,
+      "physMultiplier": 0.4899,
+      "attributeMultiplier": 0.734867,
+      "physFixed": 135.3333,
+      "attributeFixed": 73.6667,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-3",
+      "frame": 42,
+      "physMultiplier": 0.9798,
+      "attributeMultiplier": 1.4697,
+      "physFixed": 271,
+      "attributeFixed": 147,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 57,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false
+}

@@ -18,10 +18,9 @@ const ALL_CLASS_IDS = [
   "bellstrikeRainbow",
   "silkbindJade",
   "stonesplitPower",
-  "stonesplitBalancePureTang",
+  "stonesplitStrength",
   "bamboocutDust",
   "bamboocutWindTwinblade",
-  "stonesplitBalanceDualCut",
 ]
 
 describe("Dragon Head registry — universal mystic, both versions", () => {

@@ -36,11 +36,13 @@ import {
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
+import type { ConditionalFinalCrit } from "./buffs/buffDef"
 import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
 import { CrosswindTracker } from "./buffs/crosswind"
 import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
+import { skillAttunementDamageMultiplier } from "./attunements"
 import {
   MORALE_MAX_STACKS,
   MORALE_PEN_PER_STACK,
@@ -105,13 +107,10 @@ const QI_BREAK_PEN_BONUS = 15
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
-// A post-(1+H) multiplicative factor (via `art.correction`, not a
-// {statKey,amount} effect) applied only to these two bleed skills.
-// Combustion is deliberately absent — un-attuned on the site.
-const BLEED_ATTUNEMENT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
-function bleedAttunementValue(inputs: Inputs): number {
-  return inputs.classId === "bellstrikeUmbra" ? (inputs.dingYinByTag["Bleed Boost"] ?? 0) : 0
-}
+// These two bleed skills receive the level-based Bellstrike attribute bonus.
+// Their attunement damage is resolved generically from their `attune:bleed`
+// tags; this set is unrelated to attunements.
+const BELLSTRIKE_LEVEL_BONUS_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
 
 const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
 
@@ -131,6 +130,8 @@ interface HitEvent {
   seq: number
   skill: Skill
   hit: SkillHit
+  scopedBuffIds: string[]
+  propagatedBuffIds: string[]
 }
 
 class EventQueue {
@@ -428,34 +429,136 @@ export function simulateTimeline(inputs: Inputs): Result {
     return c.op === "gte" ? cur >= c.stacks : c.op === "gt" ? cur > c.stacks : cur === c.stacks
   }
 
+  const castScopedBuffs = new Map<string, { buffIds: string[]; propagatedBuffIds: string[] }>()
+  const castScopedBuffKey = (frame: number, skill: Skill) => `${frame}|${skill.id}`
+
   const buffEngine: BuffEngine | null = (() => {
     try {
       const eng = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(inputs.classId), [
         ...groupBuffDefs(),
         ...mechanicBuffDefsForClass(inputs.classId),
       ])
-      for (const ls of laidSteps) {
-        const skill = ls.resolved.skill
-        const castTag = castTagOf(skill)
-        if (!castTag) continue
-        const opts: Record<string, unknown> = {
-          hitCount: ls.performedHits.length,
-          castTime: (skill.castFrames || 1) / FPS,
+      type BuffCastEvent = {
+        frame: number
+        sequence: number
+        skill: Skill
+        hits: SkillHit[]
+        generated: boolean
+        inheritedBuffIds: string[]
+      }
+      let buffCastSequence = 0
+      const pendingBuffCasts: BuffCastEvent[] = laidSteps.map((ls) => ({
+        frame: ls.startFrame,
+        sequence: buffCastSequence++,
+        skill: ls.resolved.skill,
+        hits: ls.performedHits,
+        generated: false,
+        inheritedBuffIds: [],
+      }))
+      let processedBuffCasts = 0
+      const damageHitFrames: number[] = []
+
+      while (pendingBuffCasts.length > 0 && processedBuffCasts < EVENT_CAP) {
+        pendingBuffCasts.sort(
+          (left, right) => left.frame - right.frame || left.sequence - right.sequence,
+        )
+        const event = pendingBuffCasts.shift()!
+        processedBuffCasts++
+        const castTag = castTagOf(event.skill)
+        let eventBuffIds = [...event.inheritedBuffIds]
+        let propagatedBuffIds = [...event.inheritedBuffIds]
+        if (castTag) {
+          const opts: Record<string, unknown> = {
+            hitCount: event.hits.length,
+            castTime: (event.skill.castFrames || 1) / FPS,
+            generated: event.generated,
+          }
+          for (const tag of event.skill.tags ?? []) {
+            if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
+            else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
+          }
+          const castResult = eng.processSkillCast(castTag, event.frame / FPS, opts)
+          eventBuffIds = [...new Set([...eventBuffIds, ...castResult.buffIds])]
+          propagatedBuffIds = [...new Set([...propagatedBuffIds, ...castResult.propagatedBuffIds])]
+          const key = castScopedBuffKey(event.frame, event.skill)
+          const existing = castScopedBuffs.get(key)
+          castScopedBuffs.set(key, {
+            buffIds: [...new Set([...(existing?.buffIds ?? []), ...eventBuffIds])],
+            propagatedBuffIds: [
+              ...new Set([...(existing?.propagatedBuffIds ?? []), ...propagatedBuffIds]),
+            ],
+          })
+          if (!event.generated && opts.isDrone && event.hits.length > 1) {
+            const useExternalLB = !!eng.params.starReacher
+            for (let i = 1; i < event.hits.length; i++) {
+              const t = (event.frame + event.hits[i].frame) / FPS
+              if (useExternalLB) eng.processDroneTickWithExternalLB(t)
+              else eng.processDroneTick(t)
+            }
+          }
         }
-        for (const tag of skill.tags ?? []) {
-          if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
-          else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
-        }
-        eng.processSkillCast(castTag, ls.startFrame / FPS, opts)
-        if (opts.isDrone && ls.performedHits.length > 1) {
-          const useExternalLB = !!eng.params.starReacher
-          for (let i = 1; i < ls.performedHits.length; i++) {
-            const t = (ls.startFrame + ls.performedHits[i].frame) / FPS
-            if (useExternalLB) eng.processDroneTickWithExternalLB(t)
-            else eng.processDroneTick(t)
+
+        for (const hit of event.hits) {
+          const triggerFrame = event.frame + hit.frame
+          if (hitDealsDamage(hit)) damageHitFrames.push(triggerFrame)
+          for (const trigger of hit.triggers) {
+            if (trigger.kind !== "castSkill") continue
+            if (
+              !triggerConditions(trigger).every((condition) =>
+                conditionHolds(condition, triggerFrame),
+              )
+            )
+              continue
+            const triggeredSkill = skillsById.get(trigger.targetId)
+            if (!triggeredSkill) continue
+            pendingBuffCasts.push({
+              frame: triggerFrame,
+              sequence: buffCastSequence++,
+              skill: triggeredSkill,
+              hits: triggeredSkill.hits,
+              generated: true,
+              inheritedBuffIds: propagatedBuffIds,
+            })
           }
         }
       }
+      if (pendingBuffCasts.length > 0)
+        eng.warnings.add(`Buff trigger prepass exceeded ${EVENT_CAP} generated casts.`)
+
+      for (const [buffId, windows] of windowsByBuff) {
+        const status = statusById.get(buffId)
+        if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
+          continue
+        const episodes: Window[] = []
+        for (const window of windows) {
+          const last = episodes[episodes.length - 1]
+          if (last && window.start < last.end) last.end = Math.max(last.end, window.end)
+          else episodes.push({ start: window.start, end: window.end })
+        }
+        for (const episode of episodes)
+          for (
+            let frame = episode.start + status.dot.tickIntervalFrames;
+            frame < episode.end;
+            frame += status.dot.tickIntervalFrames
+          )
+            if (frame >= 0 && inWindow(frame)) damageHitFrames.push(frame)
+      }
+
+      if (eng.paramOn("moraleChant") && eng.paramTier("moraleChant") >= 6) {
+        const durationSec = durationFrames / FPS
+        let firstTick = 0
+        while (
+          firstTick < durationSec &&
+          moraleStacksAtTime(firstTick, eng.qiPhase(firstTick) === "exhausted") <
+            MORALE_STACK_THRESHOLD
+        )
+          firstTick += 0.5
+        for (let time = firstTick; time <= durationSec; time += YI_RIVER_INTERVAL_SEC)
+          damageHitFrames.push(Math.round(time * FPS))
+      }
+
+      damageHitFrames.sort((left, right) => left - right)
+      for (const frame of damageHitFrames) eng.processDamageHit(frame / FPS)
       return eng
     } catch {
       return null
@@ -490,7 +593,12 @@ export function simulateTimeline(inputs: Inputs): Result {
     frame: number,
     skill?: Skill,
     override?: ResolveOverride,
-  ): Resolved & { forceCrit: boolean } {
+    castScopedBuffIds: readonly string[] = [],
+  ): Resolved & {
+    damageMultiplier: number
+    forceCrit: boolean
+    conditionalFinalCrit: ConditionalFinalCrit | null
+  } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
     const effects: BuffStatEffect[] = []
@@ -507,8 +615,10 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     let sig = sigParts.sort().join("|")
     let forceCritFromBuff = false
+    let damageMultiplier = 1
+    let conditionalFinalCrit: ConditionalFinalCrit | null = null
     if (buffEngine && skill) {
-      const site = buffEngine.calculateDamageEffects(skill, frame / FPS)
+      const site = buffEngine.calculateDamageEffects(skill, frame / FPS, castScopedBuffIds)
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
         sig +=
@@ -519,6 +629,8 @@ export function simulateTimeline(inputs: Inputs): Result {
             .join(",")
       }
       if (site.forceCrit) forceCritFromBuff = true
+      damageMultiplier = site.damageMultiplier
+      conditionalFinalCrit = site.conditionalFinalCrit
     }
     if (override?.extraEffects && override.extraEffects.length > 0) {
       for (const e of override.extraEffects) effects.push(e)
@@ -545,7 +657,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     if (buffEngine && inputs.classId === "bellstrikeUmbra") {
       if (skill) {
-        if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
+        if (BELLSTRIKE_LEVEL_BONUS_SKILLS.has(skill.name)) {
           const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
           if (levelBonus !== 0) {
             effects.push({ statKey: "bellstrike.min", amount: levelBonus })
@@ -619,14 +731,22 @@ export function simulateTimeline(inputs: Inputs): Result {
       r = { inputs: effInputs, ctx, derived }
       stateMemo.set(sig, r)
     }
-    return { ...r, forceCrit: forceCritFromBuff }
+    return { ...r, damageMultiplier, forceCrit: forceCritFromBuff, conditionalFinalCrit }
   }
 
   const queue = new EventQueue()
   let seq = 0
   for (const ls of laidSteps) {
+    const scoped = castScopedBuffs.get(castScopedBuffKey(ls.startFrame, ls.resolved.skill))
     for (const hit of ls.performedHits) {
-      queue.push({ frame: ls.startFrame + hit.frame, seq: seq++, skill: ls.resolved.skill, hit })
+      queue.push({
+        frame: ls.startFrame + hit.frame,
+        seq: seq++,
+        skill: ls.resolved.skill,
+        hit,
+        scopedBuffIds: scoped?.buffIds ?? [],
+        propagatedBuffIds: scoped?.propagatedBuffIds ?? [],
+      })
     }
   }
 
@@ -681,7 +801,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       extraEffects.length > 0 || forceGuaranteedAffinity
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
-    const st = resolveState(frame, skill, resolveOverride)
+    const st = resolveState(frame, skill, resolveOverride, ev.scopedBuffIds)
     const art = hitToArtRow(hit, skill)
     const variant = selectHitVariant(hit, (c) => conditionHolds(c, frame))
     if (variant) {
@@ -691,10 +811,10 @@ export function simulateTimeline(inputs: Inputs): Result {
       art.attributeFixed = variant.attributeFixed
     }
     if (st.forceCrit) art.guaranteedCrit = 1
-    if (BLEED_ATTUNEMENT_SKILLS.has(skill.name)) {
-      const bleedAttune = bleedAttunementValue(inputs)
-      if (bleedAttune) art.correction = (art.correction ?? 1) * (1 + bleedAttune)
-    }
+    if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
+    if (st.damageMultiplier !== 1) art.correction = (art.correction ?? 1) * st.damageMultiplier
+    const attunementMultiplier = skillAttunementDamageMultiplier(skill, inputs)
+    if (attunementMultiplier !== 1) art.correction = (art.correction ?? 1) * attunementMultiplier
     if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
       art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)
@@ -756,7 +876,14 @@ export function simulateTimeline(inputs: Inputs): Result {
           const sub = skillsById.get(det.skillId)
           if (sub)
             for (const subHit of sub.hits) {
-              queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
+              queue.push({
+                frame: frame + subHit.frame,
+                seq: seq++,
+                skill: sub,
+                hit: subHit,
+                scopedBuffIds: ev.propagatedBuffIds,
+                propagatedBuffIds: ev.propagatedBuffIds,
+              })
             }
         }
         continue
@@ -802,7 +929,14 @@ export function simulateTimeline(inputs: Inputs): Result {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
         for (const subHit of sub.hits) {
-          queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
+          queue.push({
+            frame: frame + subHit.frame,
+            seq: seq++,
+            skill: sub,
+            hit: subHit,
+            scopedBuffIds: ev.propagatedBuffIds,
+            propagatedBuffIds: ev.propagatedBuffIds,
+          })
         }
       }
     }
@@ -1076,9 +1210,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       else episodes.push({ start: w.start, end: w.end })
     }
     const dotSkill = dotTickSkill(debuffDef)
-    const bleedCorrection = BLEED_ATTUNEMENT_SKILLS.has(debuffDef.name)
-      ? 1 + bleedAttunementValue(inputs)
-      : 1
+    const attunementCorrection = skillAttunementDamageMultiplier(tickSkill ?? dotSkill, inputs)
     for (const ep of episodes) {
       for (let f = ep.start + interval; f < ep.end; f += interval) {
         if (f < 0 || !inWindow(f)) continue
@@ -1092,18 +1224,25 @@ export function simulateTimeline(inputs: Inputs): Result {
           const liveStacks = Math.max(1, stacksAt(buffId, f))
           const shape = table[clamp(liveStacks, 1, table.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamageForShape(debuffForTick, shape, st.ctx, st.forceCrit, bleedCorrection)
+          dmg = dotTickDamageForShape(
+            debuffForTick,
+            shape,
+            st.ctx,
+            st.forceCrit,
+            attunementCorrection,
+          )
         } else if (ladder) {
           const liveStacks = Math.max(0, stacksAt(buffId, f))
           if (liveStacks === 0) continue
           const scale = ladder[clamp(liveStacks, 1, ladder.length) - 1]
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * scale
+          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * scale
         } else {
           const stackCount = perStack ? Math.max(0, stacksAt(buffId, f)) : 1
           if (perStack && stackCount === 0) continue
           const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, bleedCorrection) * stackCount
+          dmg =
+            dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * stackCount
         }
         dmg *= tickWeight
         totalDamage += dmg

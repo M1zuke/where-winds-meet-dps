@@ -24,10 +24,9 @@ export const CLASS_SPEC: Record<string, string> = {
   bellstrikeRainbow: "bellstrike_splendor",
   silkbindJade: "silkbind_jade",
   stonesplitPower: "stonesplit_might",
-  stonesplitBalancePureTang: "stonesplit_strength",
+  stonesplitStrength: "stonesplit_strength",
   bamboocutWindTwinblade: "bamboocut_dust",
   bamboocutDust: "bamboocut_dust",
-  stonesplitBalanceDualCut: "bamboocut_dust",
 }
 
 export function specForClass(classId: string): string | undefined {

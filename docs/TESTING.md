@@ -13,7 +13,7 @@ not had.
 
 - **Do not add a `for (const classId of ALL_CLASSES)` `dps > 0` sweep.** It
   proves nothing and it manufactures false confidence.
-- Registry / metadata tests that legitimately span all eight stay — `getSchool`,
+- Registry / metadata tests that legitimately span all seven stay — `getSchool`,
   inner-way slot rules, the i18n pass-through.
 - When a class is genuinely built out, add its tests back **with real anchors**
   (a verified rotation, a known damage figure), not a smoke sweep.
