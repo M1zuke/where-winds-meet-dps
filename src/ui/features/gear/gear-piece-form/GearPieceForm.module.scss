@@ -80,16 +80,24 @@
   margin-bottom: 6px;
 }
 
+/* One grid for every word row, with the rows themselves transparent — a grid per
+   row would size its `auto` max column to its own text, so a wider figure in one
+   row would leave that row's border-left out of line with the others. */
 .gearWordsGrid {
-  display: flex;
-  flex-direction: column;
-}
-
-.wordRow {
   display: grid;
   grid-template-columns: 1fr 90px 32px auto;
   column-gap: 6px;
   align-items: center;
+}
+
+/* Without the max figures a row contributes three cells, and a fourth track would
+   pull the next row's first cell into it. */
+.gearWordsGridNoMax {
+  grid-template-columns: 1fr 90px 32px;
+}
+
+.wordRow {
+  display: contents;
 }
 
 .wordRow > input,
@@ -116,6 +124,7 @@
 .gearWordMax {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 6px;
   margin-left: 6px;
   padding: 0 2px 0 10px;
@@ -129,11 +138,11 @@
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
-  min-width: 2.4em;
+  min-width: 3.6em;
   color: var(--color-text-dim);
 }
 .maxDelta {
-  min-width: 2.8em;
+  min-width: 3em;
 }
 .maxDelta:global(.is-positive) {
   color: var(--color-positive);

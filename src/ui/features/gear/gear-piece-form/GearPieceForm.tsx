@@ -106,9 +106,10 @@ export function GearPieceForm({
     if (!spec) return null
     return relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
   }
-  function round1(value: number, isPercent: boolean): number {
+  // Two decimals as displayed, so a percent word keeps four on its fraction.
+  function roundToShownPrecision(value: number, isPercent: boolean): number {
     if (!Number.isFinite(value)) return value
-    return isPercent ? Math.round(value * 1000) / 1000 : Math.round(value * 10) / 10
+    return isPercent ? Math.round(value * 10000) / 10000 : Math.round(value * 100) / 100
   }
 
   function patch(fields: Partial<GearPiece>): void {
@@ -129,7 +130,7 @@ export function GearPieceForm({
     const spec = wordSpecs.find((candidate) => candidate.word === word)
     if (!spec || !Number.isFinite(value)) return value
     const cap = relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
-    return round1(Math.min(Math.max(value, 0), cap), spec.unit === "percent")
+    return roundToShownPrecision(Math.min(Math.max(value, 0), cap), spec.unit === "percent")
   }
   function patchWord(idx: number, patchedFields: Partial<GearWordEntry>): void {
     const next = [...piece.words] as GearPiece["words"]
@@ -204,7 +205,9 @@ export function GearPieceForm({
             {t("Relayed")}
           </label>
         </div>
-        <div className={styles.gearWordsGrid}>
+        <div
+          className={styles.gearWordsGrid + (showWordMax ? "" : ` ${styles.gearWordsGridNoMax}`)}
+        >
           {piece.words.map((word, idx) => {
             const spec = wordSpecs.find((candidate) => candidate.word === word.word)
             const isPercent = spec?.unit === "percent"
@@ -220,8 +223,8 @@ export function GearPieceForm({
             if (wm && wm.evaluated) {
               maxValueText =
                 wm.unit === "percent"
-                  ? `${(wm.capValue * 100).toFixed(1)}%`
-                  : wm.capValue.toFixed(1)
+                  ? `${(wm.capValue * 100).toFixed(2)}%`
+                  : wm.capValue.toFixed(2)
               deltaText = fmtDpsDelta(wm.deltaDps)
               deltaSign = deltaSignClass(wm.deltaDps)
               deltaTitle = `${t("Full-cast 94%")}: ${maxValueText} → ${deltaText} DPS`
