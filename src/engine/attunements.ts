@@ -1,4 +1,12 @@
-import type { GearSlot } from "./types"
+import type { Skill } from "./skill"
+import { readStatValue, resolveEnginePath } from "./statPaths"
+import type { GearSlot, Inputs } from "./types"
+
+export interface AttunementSkillEffect {
+  /** Matches a skill carrying `attune:<tag>`. */
+  tag: string
+  kind: "damageMultiplier"
+}
 
 export interface AttunementOption {
   id: string
@@ -8,6 +16,7 @@ export interface AttunementOption {
   slots: readonly GearSlot[]
   classIds: readonly string[] | null
   enginePath: string | null
+  skillEffect?: AttunementSkillEffect
   hint?: string
 }
 
@@ -52,6 +61,17 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
     slots: ARMOR_SLOTS,
     classIds: ["bellstrikeUmbra"],
     enginePath: "dingYinByTag.Bleed Boost",
+    skillEffect: { tag: "bleed", kind: "damageMultiplier" },
+  },
+  {
+    id: "phalanxChargeDamage",
+    label: "Phalanx Charge Boost",
+    min: 0.03,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["stonesplitStrength"],
+    enginePath: "dingYinByTag.Phalanx Charge Boost",
+    skillEffect: { tag: "phalanxbaneCharged", kind: "damageMultiplier" },
   },
 ]
 
@@ -65,4 +85,26 @@ export function attunementsFor(slot: GearSlot, classId: string): AttunementOptio
 
 export function getAttunement(id: string): AttunementOption | undefined {
   return ATTUNEMENT_OPTIONS.find((o) => o.id === id)
+}
+
+/**
+ * Returns the post-formula multiplier contributed by every class-legal,
+ * skill-scoped attunement whose `attune:*` selector matches this skill.
+ * Values for the same skill add before becoming one multiplier.
+ */
+export function skillAttunementDamageMultiplier(
+  skill: Pick<Skill, "tags">,
+  inputs: Inputs,
+): number {
+  const tags = new Set(skill.tags ?? [])
+  let bonus = 0
+
+  for (const option of attunementsForClass(inputs.classId)) {
+    const effect = option.skillEffect
+    if (!effect || effect.kind !== "damageMultiplier" || !option.enginePath) continue
+    if (!tags.has(`attune:${effect.tag}`)) continue
+    bonus += readStatValue(inputs, resolveEnginePath(option.enginePath, inputs))
+  }
+
+  return 1 + bonus
 }

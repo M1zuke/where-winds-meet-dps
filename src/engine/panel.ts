@@ -116,7 +116,7 @@ export const BOW_SET_BONUS = {
 export interface ArmorSetOption {
   name: string
   setKey: string
-  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys"
+  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
   value: number
 }
 export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = armorSetBoniJson as ArmorSetOption[]
@@ -134,6 +134,8 @@ export function applyArmorSet(inputs: Inputs): Inputs {
       return { ...inputs, precision: inputs.precision + opt.value }
     case "maxPhys":
       return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + opt.value } }
+    case "minPhys":
+      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + opt.value } }
   }
 }
 
@@ -284,13 +286,12 @@ export function buildContext(
     targetGeneralDamageTaken +
     (has("Soldier's Return") ? 0.08 : 0) +
     (has("Star-Picker") && stackOf("Star-Picker") === "tier 6" ? 0.03 : 0) +
-    (inputs.set === "Swaying Heights" ? 0.0375 : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
     (has("Endurance Doctrine") ? 0.02 : 0) +
-    (school.id === "stonesplitBalancePureTang" ? 0.08 : 0)
+    (setBonus["General Damage Boost"] ?? 0)
 
   const dingYinByTag: Record<string, number> = {}
   for (const tag of school.permanentBuffs) {

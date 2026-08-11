@@ -10,28 +10,82 @@ function tagged(name: string, tags: string[] = []) {
 describe("perCastConsume — frostCladSnowbreakIPConsume (stonesplit_strength)", () => {
   const params = { frostCladNight: true, frostCladNightTier: 6 }
 
-  it("grants +40% boss-boost on the SnowpartingVC cast that consumes an Inner Passion stack, and only that cast", () => {
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
+  it("grants exactly +40%, not +80%, when consumption and qi break are both true", () => {
+    const e = new BuffEngine(
+      { ...params, qiBreakTime: 1, bossBreakDuration: 10 },
+      buffDefsForSpec("stonesplit_strength"),
+      groupBuffDefs(),
+    )
     e.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
     expect(e.getHistoricalBuffStacks("innerPassion", 1.01)).toBe(4)
 
     const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
+    expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
 
     e.processSkillCast("SnowpartingVC", 1.05, { consumesInnerPassion: true })
     const r = e.calculateDamageEffects(vc, 1.05)
     expect(r.effects).toContainEqual({ statKey: "bossBoost", amount: 0.4 })
     expect(r.breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
+    expect(
+      r.effects
+        .filter((effect) => effect.statKey === "bossBoost")
+        .reduce((total, effect) => total + effect.amount, 0),
+    ).toBe(0.4)
 
     expect(e.getHistoricalBuffStacks("innerPassion", 1.06)).toBe(3)
+    expect(e.calculateDamageEffects(vc, 1.06).breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
+  })
+
+  it("grants +40% when SnowpartingVC consumes Inner Passion outside qi break", () => {
+    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
+    e.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
+    const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
+    e.processSkillCast("SnowpartingVC", 1.05, { consumesInnerPassion: true })
+
+    expect(e.getHistoricalBuffStacks("innerPassion", 1.06)).toBe(3)
+    expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
     expect(e.calculateDamageEffects(vc, 1.06).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
   })
 
-  it("grants nothing when there is no Inner Passion stack to consume", () => {
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
+  it("uses qi break as the alternative condition when Inner Passion is absent", () => {
+    for (const qiBreakTime of [0, 25]) {
+      const e = new BuffEngine(
+        { ...params, qiBreakTime, bossBreakDuration: 10 },
+        buffDefsForSpec("stonesplit_strength"),
+        groupBuffDefs(),
+      )
+      const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
+      e.processSkillCast("SnowpartingVC", 0.05, { consumesInnerPassion: true })
+      const effect = e.calculateDamageEffects(vc, 0.05).breakdown.frostCladSnowbreakIPConsume
+      if (qiBreakTime === 0) expect(effect).toBe(0.4)
+      else expect(effect).toBeUndefined()
+    }
+  })
+
+  it("does not apply the qi-break fallback to skills other than SnowpartingVC", () => {
+    const e = new BuffEngine(
+      { ...params, qiBreakTime: 0, bossBreakDuration: 10 },
+      buffDefsForSpec("stonesplit_strength"),
+      groupBuffDefs(),
+    )
+    expect(
+      e.calculateDamageEffects(tagged("SnowpartingSpecial"), 0.05).breakdown
+        .frostCladSnowbreakIPConsume,
+    ).toBeUndefined()
+  })
+
+  it("keeps the qi-break alternative at tier 6 while tier 4 consumption still grants 40%", () => {
+    const e = new BuffEngine(
+      { frostCladNight: true, frostCladNightTier: 4, qiBreakTime: 0, bossBreakDuration: 10 },
+      buffDefsForSpec("stonesplit_strength"),
+      groupBuffDefs(),
+    )
     const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    e.processSkillCast("SnowpartingVC", 0, { consumesInnerPassion: true })
-    expect(e.calculateDamageEffects(vc, 0).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
+    expect(e.calculateDamageEffects(vc, 0.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
+
+    e.processSkillCast("SnowpartingSpecial", 0.1, { castTime: 1 })
+    e.processSkillCast("SnowpartingVC", 1.15, { consumesInnerPassion: true })
+    expect(e.calculateDamageEffects(vc, 1.15).breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
   })
 
   it("is inert without frostCladNight tier 4+ (enabledParam/minTier gate)", () => {
@@ -86,25 +140,13 @@ describe("triggerOnBuffEnd — resistanceResolve (global) off rainwhisperShield 
   })
 })
 
-describe("phaseGate — frostCladSnowbreakT6Exhausted (stonesplit_strength)", () => {
-  it("only contributes its boss-boost while the qi phase is 'exhausted'", () => {
-    const params = {
-      frostCladNight: true,
-      frostCladNightTier: 6,
-      qiBreakTime: 25,
-      bossBreakDuration: 10,
-    }
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    const snowpartingVC = tagged("SnowpartingVC")
+describe("SnowpartingVC exhausted bonus registration (stonesplit_strength)", () => {
+  it("does not register a standalone exhausted SnowpartingVC bonus", () => {
     expect(
-      e.calculateDamageEffects(snowpartingVC, 10).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBeUndefined()
-    expect(
-      e.calculateDamageEffects(snowpartingVC, 30).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBe(0.4)
-    expect(
-      e.calculateDamageEffects(snowpartingVC, 40).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBeUndefined()
+      buffDefsForSpec("stonesplit_strength").some(
+        (def) => def.id === "frostCladSnowbreakT6Exhausted",
+      ),
+    ).toBe(false)
   })
 })
 

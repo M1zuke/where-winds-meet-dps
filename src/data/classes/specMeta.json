@@ -10,7 +10,7 @@
     "bamboocut_dust"
   ],
   "defaultSpec": "silkbind_jade",
-  "onApplyHandlers": ["lingeringBone", "throatPiercedDeflect", "throatPiercedAnxiT6"],
+  "onApplyHandlers": ["lingeringBone", "throatPiercedDeflect"],
   "innerWays": {
     "vernal_umbrella": {
       "id": "vernal_umbrella",

@@ -209,7 +209,7 @@ visible tags via `permanentBuffs` in `schools.json`. The `classBuffs` field is
 ## Implemented classes
 
 **Only Bellstrike Umbra (`bellstrikeUmbra`) is implemented and validated.** The
-other seven carry unverified imported data; their engine output should not be
+other six carry unverified imported data; their engine output should not be
 relied on. The test suite is Umbra-only and must stay that way.
 
 → The full class/spec table and what that means for tests: **docs/CLASSES.md**,

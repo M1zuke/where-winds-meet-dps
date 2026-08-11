@@ -1,0 +1,41 @@
+{
+  "id": "stonesplitStrength-snowpartingvc-prepull",
+  "classId": "stonesplitStrength",
+  "name": "SnowpartingVC Prepull",
+  "abilityTag": "SnowpartingVC Prepull",
+  "tags": [
+    "prop:consumesInnerPassion",
+    "prop:shatteredRidgeBoost",
+    "weapon:Heng Blade",
+    "attack:heavy",
+    "attune:snowpartingVariedCombo"
+  ],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Hengdao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 2.0764,
+      "attributeMultiplier": 3.1145,
+      "physFixed": 480,
+      "attributeFixed": 268,
+      "extraCritDamage": 0,
+      "triggers": [
+        {
+          "id": "tg-snowpartingvc-prepull-cast",
+          "kind": "castSkill",
+          "targetId": "stonesplitStrength-anxisoldierheng",
+          "stacks": 0,
+          "condition": null
+        }
+      ]
+    }
+  ],
+  "castFrames": 6,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false
+}

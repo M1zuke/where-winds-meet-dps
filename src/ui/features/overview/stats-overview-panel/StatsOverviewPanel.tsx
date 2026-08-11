@@ -1,7 +1,7 @@
 import type { Inputs } from "../../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
 import { totalPlayerAttributes } from "../../../../data/baseStats"
-import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../../engine/formula"
+import { effectivePhysRange } from "../../../../engine/formula"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../../utils/statFormatting"
@@ -84,19 +84,10 @@ export function StatsOverviewPanel({ inputs }: Props) {
 
   const physMin = readPath(withSets, "phys.min")
   const physMax = readPath(withSets, "phys.max")
+  const effectivePhys = effectivePhysRange(physMin, physMax, withSets.food)
   const attackRows: RowEntry[] = [
-    row(
-      t(PATH_LABELS["phys.min"]),
-      physMin,
-      false,
-      withSets.food ? physMin + FOOD_MIN_PHYS_BONUS : undefined,
-    ),
-    row(
-      t(PATH_LABELS["phys.max"]),
-      physMax,
-      false,
-      withSets.food ? physMax + FOOD_MAX_PHYS_BONUS : undefined,
-    ),
+    row(t(PATH_LABELS["phys.min"]), physMin, false, withSets.food ? effectivePhys.min : undefined),
+    row(t(PATH_LABELS["phys.max"]), physMax, false, withSets.food ? effectivePhys.max : undefined),
   ]
   const penetrationRows: RowEntry[] = [
     row(
