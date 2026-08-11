@@ -191,9 +191,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (next.bowSet !== "affinity" && next.bowSet !== "crit" && next.bowSet !== "precision") {
     next.bowSet = null
   }
-  // A set dropped from the allowlist (Ivorybloom/Rainwhisper) misses in every
-  // lookup rather than erroring, so a profile saved with one keeps round-tripping
-  // an unselectable value through save/export instead of reading as unset.
+  // `V8__dropRemovedArmorSets` heals stored profiles; this is the standing
+  // invariant for the paths that never walk the chain — the legacy `wwm.inputs`
+  // blob rolled in below, and a bare (unwrapped) imported profile.
   if (next.set !== null && !ARMOR_SET_OPTIONS.some((option) => option.setKey === next.set)) {
     next.set = null
   }
