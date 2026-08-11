@@ -5,6 +5,7 @@ import { V6__dropDerivedStats } from "./V6__dropDerivedStats"
 import { V7__clampSingleMysticWordRoll } from "./V7__clampSingleMysticWordRoll"
 import { V8__dropRemovedArmorSets } from "./V8__dropRemovedArmorSets"
 import { V9__renameSteadfastDevotion } from "./V9__renameSteadfastDevotion"
+import { V10__renameFrostCladNight } from "./V10__renameFrostCladNight"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -19,6 +20,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V7__clampSingleMysticWordRoll,
   V8__dropRemovedArmorSets,
   V9__renameSteadfastDevotion,
+  V10__renameFrostCladNight,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

@@ -434,7 +434,7 @@ source-of-truth note this table summarizes.
 | --- | --- | --- |
 | Sword Horizon / `swordHorizon` (bellstrikeUmbra signature) | Panel tier stats + buff engine + `crosswind.ts` | Tier stats, T6 detonation retain, the charge counter and guaranteed-affinity are all modeled. The crosswindBlade/bloodBurst mode toggle is unimplemented — but bloodBurst is the site's own default and the app never applies the crosswindBlade conversion, so the omission is **correctly inert**. |
 | Moon Above Flowers / `combo` (silkbindJade signature) | Panel + buff engine (combo-count buffs) | Disjoint channels. |
-| Frostwhite Night / `frostCladNight` (stonesplitStrength signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
+| Frost-Clad Night / `frostCladNight` (stonesplitStrength signature) | Panel + buff engine (Frost-Clad Snowbreak procs, Forgetfulness) | Disjoint channels. |
 | Wolfchaser's Art / `wolfchasersArt` | Panel + buff engine | Disjoint channels. The extra-detonation FSM is an unmodeled gap. |
 | Thousand Mountain Law / `mountainsMight` | Panel + buff engine | Disjoint. |
 | Throat-Pierce / `throatPierced` | Panel + buff engine | Disjoint. |

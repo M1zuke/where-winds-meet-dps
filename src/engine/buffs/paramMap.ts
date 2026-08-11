@@ -59,7 +59,7 @@ const SELECTABLE_INNER_WAYS: Record<string, InnerWayMapping> = {
 const CLASS_SIGNATURE_INNER_WAYS: Record<string, InnerWayMapping> = {
   swordHorizon: { mindMethod: "Sword Horizon", classSignature: true },
   combo: { mindMethod: "Moon Above Flowers", classSignature: true },
-  frostCladNight: { mindMethod: "Frostwhite Night", classSignature: true },
+  frostCladNight: { mindMethod: "Frost-Clad Night", classSignature: true },
 }
 
 export const SITE_PARAM_TO_INNER_WAY: Record<string, InnerWayMapping> = {

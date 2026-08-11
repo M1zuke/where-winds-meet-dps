@@ -148,6 +148,7 @@ const LEGACY_GEAR_WORD_RENAMES: Record<string, string> = {
 
 const LEGACY_MIND_METHOD_RENAMES: Record<string, string> = {
   "Lone Loyalty": "Steadfast Devotion",
+  "Frostwhite Night": "Frost-Clad Night",
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"

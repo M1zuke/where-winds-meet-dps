@@ -87,7 +87,7 @@
     "primaryAttribute": "Stonesplit",
     "attributeMultiplier": 51.5,
     "permanentBuffs": ["Hengdao Derivative Boost", "Phalanx Charge Boost"],
-    "classMindGroup": "Frostwhite Night",
+    "classMindGroup": "Frost-Clad Night",
     "allowedMindMethods": ["Morale Chant", "Throat-Pierce", "Steadfast Devotion", "Bitter Season"],
     "classBuffs": [],
     "weapons": ["Hengdao", "Modao"],
