@@ -75,11 +75,12 @@ const GEAR_BASE_STATS: Partial<
       epic: { minPhys: 0, maxPhys: 116, hp: 0, physDef: 0 },
       legendary: { minPhys: 0, maxPhys: 129, hp: 0, physDef: 0 },
     },
-    // lv96 armor, from a live lvl-96 build (2026-08-11): helm legendary 22/5774,
-    // armor legendary 22/11547, greaves epic 39/5196, bracer epic 20/5196. Helm and
-    // bracer share one row and armor is twice helm, which fixes the other three
-    // cells; only greaves legendary defense is extrapolated (39 × the observed
-    // 22/20 rarity step) and is the one number here still to be confirmed in game.
+    // lv96 armor, reported from a live lvl-96 build (2026-08-11): helm legendary
+    // 22/5774, armor legendary 22/11547, greaves 39 epic and 44 legendary defense
+    // over 5196 hp, bracer epic 20/5196. Helm and bracer share one row and armor is
+    // twice helm, which fills the cells not observed directly. Note greaves defense
+    // is twice helm's at legendary but not at epic (39, not 40), so the two rarities
+    // do not scale from one another here.
     helm: {
       epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 20 },
       legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 22 },
@@ -90,7 +91,7 @@ const GEAR_BASE_STATS: Partial<
     },
     greaves: {
       epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 39 },
-      legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 43 },
+      legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 44 },
     },
     bracer: {
       epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 20 },
