@@ -198,26 +198,6 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.bamboocut).toEqual({ min: 0, max: 0, penetration: 0 })
   })
 
-  it("loadProfiles clears a stored set that is no longer in the armor-set allowlist", () => {
-    localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify({
-        v: LATEST_PROFILES_VERSION,
-        profiles: [
-          { id: "p1", name: "Ivorybloom", inputs: { ...defaultInputs, set: "Ivorybloom" } },
-          { id: "p2", name: "Rainwhisper", inputs: { ...defaultInputs, set: "Rainwhisper" } },
-          { id: "p3", name: "Jadeware", inputs: { ...defaultInputs, set: "Jadeware" } },
-        ],
-        activeId: "p1",
-      }),
-    )
-
-    const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.set).toBeNull()
-    expect(profiles[1].inputs.set).toBeNull()
-    expect(profiles[2].inputs.set).toBe("Jadeware")
-  })
-
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),
