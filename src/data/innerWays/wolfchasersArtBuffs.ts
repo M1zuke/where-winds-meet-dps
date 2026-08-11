@@ -7,20 +7,16 @@ import type { BuffModule } from "../../engine/buffs/buffModule"
 import { INNER_WAY_NODE } from "./ids"
 import { wolfchasersArt } from "./wolfchasersArt"
 
-// A hoisted function, not a module-level const: `wolfchasersArt.ts` calls
-// `potentRiverFlowBuffDef()`/`wineGuBuffDef()` while still constructing its
-// own `defineInnerWay` object, so if that call happened before THIS module's
-// own top-level statements had run (the module that loads second in the
-// cycle), a shared top-level const here would be just as uninitialized as a
-// cross-module one — hence a function, read fresh on every call, instead.
+// This module and `wolfchasersArt.ts` import each other — it for these
+// factories' `buffDefs` entry, this module for `soulShakenBuffDef`'s tier
+// lookup — and `wolfchasersArt.ts` calls the factories while its own `const`
+// is still in TDZ. So every export below is a hoisted function, never a
+// `const`, and nothing at this module's top level may read `wolfchasersArt`
+// (only a call made once loading has finished, e.g. inside a getter, may).
 function spearQTriggers(): string[] {
   return [CAST.spearQ, CAST.spearQ0HitCancel, CAST.spearQ5HitCancel, CAST.spearQPrepull]
 }
 
-// Hoisted functions, not `const`s: `wolfchasersArt.ts` imports this module
-// for its `buffDefs` entry, and this module imports `wolfchasersArt` back for
-// Soul Shaken's tier — a `const` here would leave `wolfchasersArt.ts` reading
-// an uninitialized binding whichever side of the cycle loads first.
 export function potentRiverFlowBuffDef() {
   return defineClassBuff({
     id: BUFF.potentRiverFlow,
@@ -45,6 +41,13 @@ export function wineGuBuffDef() {
   })
 }
 
+// Memoized rather than read fresh: `requires.minTier` is read per active
+// module per damage event (`buffEngine.ts`, `catalog.ts`), inside the 60 fps
+// timeline simulation `runEngine` runs repeatedly — the getter, not a plain
+// field, only buys the deferral the file header explains; it shouldn't also
+// re-run `requireInnerWayNodeTier`'s tier-table scan on every read.
+let soulShakenMinTier: number | undefined
+
 // Hand-authored port of the reference site's "mechanic list" Soul Shaken def
 // (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
 // Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way —
@@ -55,14 +58,11 @@ export function soulShakenBuffDef(): BuffModule {
     name: "Soul Shaken",
     requires: {
       param: PARAM.wolfchasersArt,
-      // A getter, not a plain field: `soulShakenBuffDef()` is called while
-      // `wolfchasersArt.ts` is still constructing its own `defineInnerWay`
-      // object, so `wolfchasersArt` (this module's own cyclic import) is not
-      // yet assigned. Deferring the read until something actually asks for
-      // `.minTier` — well after both modules have finished loading — avoids
-      // that, while keeping the tier ladder's single source of truth.
       get minTier(): number {
-        return requireInnerWayNodeTier(wolfchasersArt, INNER_WAY_NODE.soulShaken)
+        return (soulShakenMinTier ??= requireInnerWayNodeTier(
+          wolfchasersArt,
+          INNER_WAY_NODE.soulShaken,
+        ))
       },
     },
     triggeredBy: [

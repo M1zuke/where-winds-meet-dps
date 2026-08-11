@@ -236,7 +236,7 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   const buffEngine: BuffEngine | null = (() => {
     try {
-      const eng = new BuffEngine(
+      const engine = new BuffEngine(
         paramsFromInputs(inputs),
         buffDefsForClass(inputs.classId),
         groupBuffDefs(),
@@ -255,9 +255,9 @@ export function simulateTimeline(inputs: Inputs): Result {
           else if (tag.startsWith("attack:"))
             props.attackType = tag.slice(7) as SkillProperties["attackType"]
         }
-        eng.processSkillCast(castTag, ls.startFrame / FPS, props)
+        engine.processSkillCast(castTag, ls.startFrame / FPS, props)
       }
-      return eng
+      return engine
     } catch {
       return null
     }

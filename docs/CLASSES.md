@@ -135,8 +135,9 @@ its own registry (`src/definitions/innerWays/registry.ts`,
 `declareMechanic`/`MechanicRegistration`/`MECHANIC_ORDER` are the one shared
 contract all three owners use.
 
-An inner way may also declare all four of the above, for the mechanics it —
-not any one class — owns:
+An inner way may also declare four registrations of its own — `gateBuffs`,
+`displayGates`, `buffDefs` and `skillBehaviors` — for the mechanics it, not
+any one class, owns:
 
 - `gateBuffs` (`InnerWayGateBuff[]`, `Buff` minus `classId`) — not registered
   directly. `src/definitions/classes/registry.ts` folds the gates of every

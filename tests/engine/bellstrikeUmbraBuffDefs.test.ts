@@ -17,12 +17,14 @@ function skill(tags: string[]) {
 }
 
 function sumsFor(params: Record<string, unknown>, tags: string[]) {
-  const e = new BuffEngine(params, [], umbraOwnBuffDefs())
-  const r = e.calculateDamageEffects(skill(tags), 0)
+  const engine = new BuffEngine(params, [], umbraOwnBuffDefs())
+  const result = engine.calculateDamageEffects(skill(tags), 0)
   return Object.fromEntries(
-    TRACKED.map((k) => [
-      k,
-      r.effects.filter((x) => x.statKey === k).reduce((a, b) => a + b.amount, 0),
+    TRACKED.map((statKey) => [
+      statKey,
+      result.effects
+        .filter((effect) => effect.statKey === statKey)
+        .reduce((sum, effect) => sum + effect.amount, 0),
     ]),
   )
 }
