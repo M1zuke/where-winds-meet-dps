@@ -124,7 +124,15 @@ export function innerWayHasNode(def: InnerWayDef, tier: number, node: InnerWayNo
 // For a call site that feeds a persisted/serialized field (a `requires.minTier`,
 // a debuff's `retainMinTier`) rather than a live tier comparison: `undefined`
 // there doesn't crash, it silently ungates the def or lets it apply at every
-// tier. Throwing turns a dropped node into a load-time failure instead.
+// tier. Throwing catches a dropped node instead — at load time for an eager
+// caller (`debuffs.ts`'s `retainMinTier`), but only on first use for a caller
+// deferred behind a getter or an `effects` closure (`wolfchasersArtBuffs.ts`'s
+// `minTier`, `insightfulStrikeConcentration.ts`'s tier read) — where the throw
+// surfaces inside `BuffEngine.processSkillCast`, which `timeline.ts` wraps in
+// a `try/catch` that returns `null`, so it silently disables the whole buff
+// engine rather than crashing loudly. What actually keeps a node from being
+// dropped either way is `tests/data/innerWays.test.ts`'s "every
+// `INNER_WAY_NODE` value is declared by exactly one def" pin, not this throw.
 export function requireInnerWayNodeTier(def: InnerWayDef, node: InnerWayNode): number {
   const tier = innerWayNodeTier(def, node)
   if (tier === undefined) throw new Error(`${def.id} declares no tier for node "${node}"`)
