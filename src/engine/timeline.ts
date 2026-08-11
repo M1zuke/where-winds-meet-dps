@@ -29,7 +29,7 @@ import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buf
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
-import { innerWayTier } from "../data/classes/innerWays"
+import { innerWayTier } from "../data/innerWays/registry"
 import { PROP } from "../data/skills/ids"
 
 export const FPS = 60

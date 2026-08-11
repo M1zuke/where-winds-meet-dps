@@ -21,6 +21,7 @@ import type {
 } from "../effects/context"
 import type { Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
+import { paramOnOf, paramTierOf } from "./params"
 
 export type BuffParams = Record<string, unknown>
 
@@ -119,11 +120,10 @@ export class BuffEngine {
   }
 
   paramOn(name: string): boolean {
-    return !!this.params[name]
+    return paramOnOf(this.params, name)
   }
   paramTier(name: string): number {
-    const tier = this.params[name + "Tier"]
-    return typeof tier === "number" ? tier : 0
+    return paramTierOf(this.params, name)
   }
   paramNum(name: string): number {
     const value = this.params[name]

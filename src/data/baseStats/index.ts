@@ -1,9 +1,8 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
-import { slotInnerWayId } from "../classes/innerWays"
 import { gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
-import { zhongToTier } from "../../engine/buffs/paramMap"
-import { BITTER_SEASON_INNER_WAY } from "../../engine/buffs/bitterSeason"
+import { tierFromStacks } from "../innerWays/define"
+import { innerWayDefinition, slotInnerWayId } from "../innerWays/registry"
 import type {
   AttributeKey,
   GearPiece,
@@ -14,7 +13,6 @@ import type {
   ScalingSource,
   TalentStat,
 } from "../../engine/types"
-import mindMethodPanelStats from "./mindMethodPanelStats.json"
 import baseStatsJson from "./baseStats.json"
 import talentPointsJson from "./talentPoints.json"
 import odditiesJson from "./oddities.json"
@@ -366,16 +364,19 @@ function primaryAttackKey(classId: string): string {
   return PRIMARY_ATTACK_KEY[school.primaryAttribute as AttributeKey]
 }
 
-const MIND_PANEL_STATS = mindMethodPanelStats as Record<string, Readonly<Record<string, number>>>
-
-// Unlike every other inner way's flat, always-on panel-stat entry
-// (CALCULATION.md § "Mind-method layers"), Bitter Season's own tier ladder
-// unlocks precision at tier 2 and physBoost at tier 5 — all six of its tiers
-// are selectable (MindMethodsPanel.tsx), so these two keys need a minimum
-// tier instead of applying unconditionally whenever the name is selected.
-const BITTER_SEASON_PANEL_STAT_MIN_TIER: Readonly<Record<string, number>> = {
-  precision: 2,
-  physBoost: 5,
+function applyPanelStats(
+  out: Record<string, number>,
+  primaryKey: string,
+  stats: Readonly<Partial<Record<string, number>>> | undefined,
+): void {
+  if (!stats) return
+  for (const [rawPath, amount] of Object.entries(stats)) {
+    if (amount === undefined) continue
+    const path = rawPath.startsWith("primaryAttr.")
+      ? `${primaryKey}.${rawPath.slice("primaryAttr.".length)}`
+      : rawPath
+    out[path] = (out[path] ?? 0) + amount
+  }
 }
 
 export function getMindMethodContributions(inputs: Inputs): Record<string, number> {
@@ -385,16 +386,17 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
   inputs.mindMethods.forEach((slot) => {
     const innerWayId = slotInnerWayId(slot)
     if (!innerWayId) return
-    const stats = MIND_PANEL_STATS[innerWayId]
-    if (!stats) return
-    const isBitterSeason = innerWayId === BITTER_SEASON_INNER_WAY
-    const tier = isBitterSeason ? zhongToTier(slot.stacks) : 0
-    for (const [rawPath, amount] of Object.entries(stats)) {
-      if (isBitterSeason && tier < (BITTER_SEASON_PANEL_STAT_MIN_TIER[rawPath] ?? 0)) continue
-      const path = rawPath.startsWith("primaryAttr.")
-        ? `${primaryKey}.${rawPath.slice("primaryAttr.".length)}`
-        : rawPath
-      out[path] = (out[path] ?? 0) + amount
+    const def = innerWayDefinition(innerWayId)
+    if (!def) return
+    applyPanelStats(out, primaryKey, def.panelStats)
+    if (!def.tiers) return
+    const tier = tierFromStacks(slot.stacks)
+    const unlockedTiers = Object.keys(def.tiers)
+      .map(Number)
+      .filter((tierNumber) => tierNumber <= tier)
+      .sort((a, b) => a - b)
+    for (const tierNumber of unlockedTiers) {
+      applyPanelStats(out, primaryKey, def.tiers[tierNumber]?.panelStats)
     }
   })
   return out

@@ -1,24 +1,18 @@
 import type { Inputs, MindMethodSlot } from "../../../../engine/types"
-import { innerWayName } from "../../../../data/classes/innerWayRegistry"
-import { slotInnerWayId } from "../../../../data/classes/innerWays"
+import {
+  innerWayDefinition,
+  innerWayName,
+  slotInnerWayId,
+} from "../../../../data/innerWays/registry"
 import { allowedInnerWaysForClass } from "../../../../engine/panel"
-import { BITTER_SEASON_INNER_WAY } from "../../../../engine/buffs/bitterSeason"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./MindMethodsPanel.module.scss"
 
-const TIER_OPTIONS = ["tier 6", "tier 5"] as const
-// Bitter Season's ladder has a distinct node at every tier (`buffs/bitterSeason.ts`).
-const BITTER_SEASON_TIER_OPTIONS = [
-  "tier 6",
-  "tier 5",
-  "tier 4",
-  "tier 3",
-  "tier 2",
-  "tier 1",
-] as const
+const DEFAULT_TIER_OPTIONS = ["tier 6", "tier 5"] as const
 
 function tierOptionsFor(innerWayId: string): readonly string[] {
-  return innerWayId === BITTER_SEASON_INNER_WAY ? BITTER_SEASON_TIER_OPTIONS : TIER_OPTIONS
+  const selectableTiers = innerWayDefinition(innerWayId)?.selectableTiers
+  return selectableTiers ? selectableTiers.map((tier) => `tier ${tier}`) : DEFAULT_TIER_OPTIONS
 }
 
 interface Props {

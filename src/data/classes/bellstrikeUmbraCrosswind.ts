@@ -13,14 +13,16 @@ import { stat, forceOutcome, setStatus, type HitEffect } from "../../engine/effe
 import { CrosswindTracker } from "../../engine/buffs/crosswind"
 import { CROSSWIND_SPIRIT_BONUS } from "../skills/bellstrike-umbra/buffs/crosswindSpirit"
 import { ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./bellstrikeUmbraGates"
-
-const INNER_WAY = "swordHorizon"
-const RETAIN_TIER = 6
+import { innerWayHasNode } from "../innerWays/define"
+import { INNER_WAY_NODE } from "../innerWays/ids"
+import { swordHorizon } from "../innerWays/swordHorizon"
 
 export const crosswindBehavior: SkillBehaviorFactory = (build): SkillBehavior | null => {
-  const tier = build.innerWayTier(INNER_WAY)
+  const tier = build.innerWayTier(swordHorizon.id)
   if (tier === null) return null
-  const tracker = new CrosswindTracker(tier >= RETAIN_TIER)
+  const tracker = new CrosswindTracker(
+    innerWayHasNode(swordHorizon, tier, INNER_WAY_NODE.crosswindChargeRetention),
+  )
 
   return {
     ...DEFAULT_BEHAVIOR,

@@ -2,20 +2,15 @@
 // procedural behaviour — a skill behaviour, a mechanic — adds its file here and
 // nowhere else; nothing in `src/engine` imports a class module.
 //
-// Set- and shared-inner-way mechanics are not class-owned, so they live in the
-// engine — but they self-register the same way, and are loaded here so there is
-// one place that decides what is active.
-import "../../engine/mechanics/morale"
-import "../../engine/mechanics/hawkwing"
-import "../../engine/mechanics/bitterSeason"
-
+// Inner-way and set mechanics are not class-owned, so they self-register from
+// their own barrels (`src/data/innerWays/`, `src/data/sets/`) instead of here.
 import type { ClassDef } from "./define"
 import { bellstrikeUmbra } from "./bellstrikeUmbra"
 import { registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
-import { registerPoisonExtension } from "../../engine/mechanics/bitterSeason"
+import { registerPoisonExtension } from "../innerWays/poisonExtension"
 import { setClassDefs } from "./classDefStore"
 
 const classDefs: readonly ClassDef[] = [bellstrikeUmbra]

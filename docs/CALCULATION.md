@@ -27,7 +27,7 @@ them fresh on every load)
   ├─► withDerivedStats(inputs)                     → derivedInputs.ts
   │     Two passes over every known stat path:
   │       base (baseStats/index.ts getConfiguredBase)
-  │     + inner-way flat stats (mindMethodPanelStats.json)
+  │     + inner-way flat stats (`src/data/innerWays/` modules)
   │     + equipped gear (gearStats.ts sumContributions)
   │     Pass 2 re-derives attack-path-scaled talents against pass 1's totals.
   │
@@ -97,9 +97,10 @@ category-1 "base-stat" buffs belong.
 - **Gear** — `gearStats.ts` turns each equipped `GearPiece` into a list of
   `{path, amount}` contributions; `derivedInputs.ts` sums them onto the base.
   `RELAYED_FACTOR = 0.94` caps relayed words.
-- **Inner ways** — `mindMethodPanelStats.json` carries each inner way's flat
-  tier stats. These are plain stat adds; the *conditional* inner-way effects
-  live in three other layers (see "Mind-method layers" below).
+- **Inner ways** — each `src/data/innerWays/` module carries its own flat and
+  per-tier stats (`panelStats` / `tiers[n].panelStats`). These are plain stat
+  adds; the *conditional* inner-way effects live in three other layers (see
+  "Mind-method layers" below).
 - **Arsenal** — a stored *selection* (`Inputs.arsenal`); `swapArsenal` only
   changes which arsenal is selected. `getConfiguredBase` adds
   `ARSENAL_BONUS = {min: 131, max: 263}` to the selected block during the
@@ -303,9 +304,9 @@ source citations, not domain naming. See CLAUDE.md § "Language".)
 > **Five inner ways exist**: Sword Horizon, Wolfchaser's Art, Insightful
 > Strike, Morale Chant, Bitter Season. The other 23 were removed on 2026-08-10
 > as unimplemented. An inner way is identified by a stable `id`, never by its
-> display name — `src/data/classes/innerWayRegistry.ts` is the one place a name
-> lives, and everything else (`ClassDef.classMindGroup`/`allowedMindMethods`,
-> the panel-stat table, the arts rules, the defs, `paramMap`,
+> display name — each `src/data/innerWays/` module states its own `id` and
+> `name`, and everything else (`ClassDef.classMindGroup`/`allowedMindMethods`,
+> a module's own `panelStats`/`tiers`/`scalars`, `InnerWayDef.buffParam`,
 > `MindMethodSlot.id`) refers to the id.
 
 
@@ -313,24 +314,26 @@ An inner way can reshape the calculation in three distinct places. Classify a
 new effect before implementing it, and keep the buckets disjoint — the same
 effect must never land in two.
 
-1. **Flat tier stats** — `mindMethodPanelStats.json`, folded in by
-   `withDerivedStats`. Always-on stat adds; invisible to the Skill Editor. The
-   one exception is Bitter Season: unlike every other inner way (two
-   selectable tiers), all six of its tiers are selectable, so its two keys are
-   gated to a minimum tier each rather than applying unconditionally
-   (`getMindMethodContributions`).
-2. **`buildContext` scalars** — declared per inner way in
-   `src/data/classes/innerWays.ts` and summed by `innerWayScalar`. Soldier's
-   Return / Star-Picker / Endurance Doctrine feed `generalDamageBoost`,
-   Year-Long Lament `effectiveDefense`, Mighty Song `chargeBonus`, Insightful
-   Strike `dotDamageBoost` and the flat all-damage bonus. `minTier` gates the
-   ones that need a tier; `panel.ts` no longer names any of them.
+1. **Flat tier stats** — each inner-way module's own `panelStats` (always-on)
+   and `tiers[n].panelStats` (per-tier), folded in by `withDerivedStats` via
+   `getMindMethodContributions`. Always-on stat adds; invisible to the Skill
+   Editor. The one exception is Bitter Season: unlike every other inner way
+   (two selectable tiers), all six of its tiers are selectable, so its two
+   panel-stat keys live at `tiers[2]`/`tiers[5]` rather than applying
+   unconditionally.
+2. **`buildContext` scalars** — declared per inner way as its module's
+   `scalars` block and summed by `innerWayScalar`. Today only Insightful
+   Strike declares one (`dotDamageBoost` and the flat all-damage bonus); the
+   other fields (`generalDamageBoost`, `chargeBonus`, `targetDefenseMultiplier`)
+   exist on the schema for an inner way that needs them. `minTier` gates the
+   whole block when set; `panel.ts` no longer names any inner way.
 3. **The ported buff engine** — `BuffModule` defs (`src/data/skills/buffs/*.ts`,
    `src/data/skills/bellstrike-umbra/buffs/*.ts`; `reference/classes/buffs/*.json`
    for the seven not-yet-converted classes, unimported) gated by a
-   `requires.param`, enabled from the build via `buffs/paramMap.ts`. This is
-   where a *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md
-   § "Buffs".
+   `requires.param`, enabled from the build via each inner-way module's own
+   `buffParam` field (folded into `BuffParams` by `paramsFromInputs`,
+   `engine/buffs/params.ts`). This is where a *conditional, triggered*
+   inner-way mechanic belongs, per CLAUDE.md § "Buffs".
 
 A fourth channel — per-art deltas keyed by exact skill name
 (`mindMethodOverrides.ts`, driven by `artsConditionals.json`) — was removed
@@ -351,12 +354,18 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 
 ### Implemented
 
-- **Mechanics are plugins.** Hawkwing, Concentration, Bitter Season, Morale
-  Chant (with Yi River) and the level attribute bonus each implement
-  `TimelineMechanic` (`src/engine/mechanics/`, class-specific ones under
-  `src/data/classes/`). Registry ORDER is load-bearing — contributions are
-  applied in it and float addition is not associative — and the memo signature
-  is derived from what a mechanic returns rather than hand-appended.
+- **Mechanics are plugins, declared by the thing they are a mechanic of.**
+  Hawkwing, Concentration, Bitter Season, Morale Chant (with Yi River) and the
+  level attribute bonus each implement `TimelineMechanic` — Hawkwing under
+  `src/data/sets/` (declared by its set), Bitter Season and Morale Chant under
+  `src/data/innerWays/` (declared by their inner way), Concentration and the
+  level attribute bonus under `src/data/classes/` (declared by their class).
+  `src/engine/mechanics/` holds only the contract (`TimelineMechanic`,
+  `MechanicSetup`) and the registry (`registerMechanic`/`declareMechanic`/
+  `MECHANIC_ORDER`) — no instances. Registry ORDER is load-bearing —
+  contributions are applied in it and float addition is not associative — and
+  the memo signature is derived from what a mechanic returns rather than
+  hand-appended.
 
 - **DoT-tick scheduling** ticks on a single continuous grid per *episode* of
   continuously-maintained application — deliberately matching the reference
@@ -429,14 +438,14 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   a def gated on it alone never consumes.
 - **`starsAlignBonus`** (Stars Align 4-pc, `= distance × 5`) is stochastic —
   computed from live distance on the site. Equipping the set enables the buff
-  but it contributes 0. See `buffs/paramMap.ts`.
+  but it contributes 0. See `src/data/sets/starsAlign.ts`.
 - **`revelryScript` as an inner-way param** — the `revelryScript` buff def
   (currently registered under Bellstrike Umbra's `classBuffDefs`) is never
   turned on by anything selectable in this app, so it always contributes 0.
   (The Combat Settings toggle of the same name is a separate, implemented
-  +30 % — don't conflate them.)
-- **`insightfulStrike` is deliberately absent from
-  `paramMap.ts`'s `SITE_PARAM_TO_INNER_WAY`.** Mapping the param would make
+  +30 % — don't conflate them.) See `src/data/skills/buffs/revelryScript.ts`.
+- **`insightfulStrike` deliberately declares no `buffParam`**
+  (`src/data/innerWays/insightfulStrike.ts`). Mapping the param would make
   `BuffEngine` seed `concentration` at `t=0` and re-arm it on every cast
   (its `seedAtStart`/`refreshOnAnyCast`), applying its `affinityDmg`/
   `directAffinity` (and tier-6 sustain) stat mods **always-on** for the whole
@@ -448,7 +457,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   fixing it: the class-signature params (`swordHorizon`/`combo`/
   `frostCladNight`) were audited the same way and found safe — the defs they
   gate are situational tag-targeted procs, a different mechanic from the flat
-  baseline stats `mindMethodPanelStats.json` bakes.
+  baseline stats each inner-way module's own `panelStats` bakes.
 - **The Concentration mechanic's own display chip never renders.**
   `castBuffs.ts`'s `collectCastBuffs` runs the buff engine's chips before the
   mechanics' chips and dedupes by id — so even if `insightfulStrike` were
@@ -483,8 +492,9 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 
 Every inner way's effects live in one of the three layers above. A single
 inner way commonly spans more than one — fine, as long as no single effect is
-counted twice. `paramMap.ts`'s header comment is the authoritative
-source-of-truth note this table summarizes.
+counted twice. For the five that still exist, each `src/data/innerWays/`
+module's own comments are the authoritative source-of-truth notes this table
+summarizes.
 
 | Inner way (site param) | Status | Notes |
 | --- | --- | --- |

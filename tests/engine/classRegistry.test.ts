@@ -7,7 +7,7 @@ import {
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { prepareMechanics } from "../../src/engine/mechanics"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
-import { poisonExtensionForClass } from "../../src/engine/mechanics/bitterSeason"
+import { poisonExtensionForClass } from "../../src/data/innerWays/poisonExtension"
 import { buildBehaviors, DEFAULT_BEHAVIOR, type BuildView } from "../../src/engine/behavior"
 import { displayGateFor } from "../../src/engine/buffs/displayGates"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"

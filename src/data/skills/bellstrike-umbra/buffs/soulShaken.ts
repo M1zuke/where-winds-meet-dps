@@ -2,6 +2,9 @@ import { defineClassBuff } from "../../buffs/define"
 import { BUFF, PARAM } from "../../buffs/ids"
 import { CAST } from "../../ids"
 import { stat } from "../../../../engine/effects/effect"
+import { requireInnerWayNodeTier } from "../../../innerWays/define"
+import { INNER_WAY_NODE } from "../../../innerWays/ids"
+import { wolfchasersArt } from "../../../innerWays/wolfchasersArt"
 
 // Hand-authored port of the reference site's "mechanic list" Soul Shaken def
 // (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
@@ -10,7 +13,10 @@ import { stat } from "../../../../engine/effects/effect"
 export const soulShaken = defineClassBuff({
   id: BUFF.soulShaken,
   name: "Soul Shaken",
-  requires: { param: PARAM.wolfchasersArt, minTier: 6 },
+  requires: {
+    param: PARAM.wolfchasersArt,
+    minTier: requireInnerWayNodeTier(wolfchasersArt, INNER_WAY_NODE.soulShaken),
+  },
   triggeredBy: [
     CAST.spearQ,
     CAST.spearQ0HitCancel,

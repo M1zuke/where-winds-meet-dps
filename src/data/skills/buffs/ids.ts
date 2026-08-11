@@ -25,14 +25,15 @@ export const BUFF = {
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across
-// `src/data/skills/buffs/*.json` — see `paramMap.ts`'s
-// `SITE_PARAM_TO_INNER_WAY` for which of these name an inner way.
+// `src/data/skills/buffs/*.json` — see `src/data/innerWays/` for which of
+// these an inner way declares as its `buffParam`.
 export const PARAM = {
   allySurgingWaves: "allySurgingWaves",
   artOfResistance: "artOfResistance",
   dragonHeadLowHpMaxBonus: "dragonHeadLowHpMaxBonus",
   fluteBoostValue: "fluteBoostValue",
   insightfulStrike: "insightfulStrike",
+  moraleChant: "moraleChant",
   revelryScript: "revelryScript",
   starsAlignActive: "starsAlignActive",
   swordHorizon: "swordHorizon",

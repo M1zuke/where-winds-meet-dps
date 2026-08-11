@@ -78,15 +78,21 @@ caused it.
 
 ## The architecture guards
 
-Two tests assert properties of the code rather than of a build, and both exist
-to stop the generalization work rotting:
+Three tests assert properties of the code rather than of a build, and all
+exist to stop the generalization work rotting:
 
 - `noClassSpecificEngineCode.test.ts` — nothing under `src/engine` may name a
-  class, compare a display name against a literal, or match a cast tag by
-  prefix. `defaults.ts` is allowlisted: the starting build is content.
+  class or an inner way, compare a display name against a literal, or match a
+  cast tag by prefix. `defaults.ts` is allowlisted: the starting build is
+  content.
 - `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
+- `mechanicRegistrationSites.test.ts` — the only files under `src/` that call
+  `registerMechanic` are the three owner barrels (`data/classes/index.ts`,
+  `data/innerWays/index.ts`, `data/sets/index.ts`) and the contract's own
+  definition site (`engine/mechanics/index.ts`); nothing self-registers from
+  anywhere else.
 
 These legitimately span every registered class, which the class-scoping rule
 above explicitly permits for registry and metadata tests.

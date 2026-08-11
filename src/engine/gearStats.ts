@@ -108,7 +108,7 @@ export interface GearContribEntry {
 
 export type GearContribution = GearContribEntry[]
 
-const NUMERIC_PATHS: readonly string[] = [
+const NUMERIC_PATHS = [
   "phys.min",
   "phys.max",
   "phys.penetration",
@@ -146,7 +146,10 @@ const NUMERIC_PATHS: readonly string[] = [
   "bossBoost",
   "singleMysticBoost",
   "areaMysticBoost",
-]
+] as const
+
+export type PanelStatPath =
+  (typeof NUMERIC_PATHS)[number] | `primaryAttr.${"min" | "max" | "penetration"}`
 
 function readPath(obj: unknown, path: string): number {
   const parts = path.split(".")

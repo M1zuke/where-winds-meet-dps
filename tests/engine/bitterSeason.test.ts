@@ -5,9 +5,9 @@ import {
   bitterSeasonEnvelopeWindows,
   bitterSeasonPoisonSchedule,
   bitterSeasonStackSchedule,
-  resolveBitterSeasonTuning,
   BITTER_SEASON_MAX_STACKS,
 } from "../../src/engine/buffs/bitterSeason"
+import { bitterSeasonTuningAtTier } from "../../src/data/innerWays/bitterSeason"
 import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/classes/bellstrikeUmbraGates"
 import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
 
@@ -162,29 +162,29 @@ describe("bitterSeasonStackSchedule", () => {
   })
 })
 
-describe("resolveBitterSeasonTuning", () => {
+describe("bitterSeasonTuningAtTier", () => {
   it("is total for tier 0 (base values everywhere)", () => {
-    const tuning = resolveBitterSeasonTuning(0)
+    const tuning = bitterSeasonTuningAtTier(0)
     expect(tuning.procChance).toBe(0.1)
     expect(tuning.defenseReductionPerStack).toBe(0.006)
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
   it("upgrades defenseReductionPerStack at tier 1, before proc chance or penetration upgrade", () => {
-    const tuning = resolveBitterSeasonTuning(1)
+    const tuning = bitterSeasonTuningAtTier(1)
     expect(tuning.procChance).toBe(0.1)
     expect(tuning.defenseReductionPerStack).toBe(0.012)
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
   it("upgrades procChance at tier 4", () => {
-    expect(resolveBitterSeasonTuning(3).procChance).toBe(0.1)
-    expect(resolveBitterSeasonTuning(4).procChance).toBe(0.15)
+    expect(bitterSeasonTuningAtTier(3).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.15)
   })
 
   it("upgrades physPenetrationAtMaxStacks only at tier 6", () => {
-    expect(resolveBitterSeasonTuning(5).physPenetrationAtMaxStacks).toBe(0)
-    expect(resolveBitterSeasonTuning(6).physPenetrationAtMaxStacks).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(5).physPenetrationAtMaxStacks).toBe(0)
+    expect(bitterSeasonTuningAtTier(6).physPenetrationAtMaxStacks).toBe(0.1)
   })
 })
 

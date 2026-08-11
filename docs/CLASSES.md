@@ -126,6 +126,11 @@ because the wiring was the point and a real class needs verified coefficients.
 **Building out one of the seven is data work**, not engine work: sourcing and
 verifying its numbers.
 
+An inner-way or set def declares a `mechanics` field the same way, read by
+its own barrel (`src/data/innerWays/index.ts`, `src/data/sets/index.ts`) —
+`declareMechanic`/`MechanicRegistration`/`MECHANIC_ORDER` are the one shared
+contract all three owners use.
+
 ## Buff category
 
 `ClassDef` splits a class's buffs into two lists:
@@ -153,9 +158,10 @@ scope.
 | folder | holds | main consumer |
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
-| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`classDefStore.ts`), retunement pools, and the inner-way registry and defs | `classes/registry.ts` |
+| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`classDefStore.ts`), and retunement pools | `classes/registry.ts` |
+| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`innerWayDefStore.ts`) | `innerWays/registry.ts` |
 | `rotations/` | Bellstrike Umbra's built-in rotation pool, and `rotationPoolFor(classId)` | `engine/builtinLibrary.ts` |
-| `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus) | `engine/panel.ts`, `engine/formula.ts` |
+| `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic) | `engine/panel.ts`, `engine/formula.ts` |
 | `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `engine/builtinLibrary.ts` |
 | `skills/buffs/` | data-driven global/group `BuffModule`s (`defineBuff`); Bellstrike Umbra's own class buffs are `skills/bellstrike-umbra/buffs/` (`defineClassBuff`) instead | `engine/buffs/data.ts` |
 | `reference/classes/` | the seven not-yet-converted classes' schools, spec metadata, skills, buffs and debuffs, and their default rotations — unimported JSON, kept for when one is built out | — |

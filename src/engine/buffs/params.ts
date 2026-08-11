@@ -1,9 +1,26 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import { SITE_PARAM_TO_INNER_WAY, zhongToTier } from "./paramMap"
+import { INNER_WAYS } from "../../data/innerWays"
+import { tierFromStacks } from "../../data/innerWays/define"
 import { SET_BY_ID } from "../../data/sets"
-import { slotInnerWayId } from "../../data/classes/innerWays"
+import { slotInnerWayId } from "../../data/innerWays/registry"
 import { specForClass } from "./data"
+
+// The one place `Inputs.buffParams`' `<param>Tier` wire-key convention is
+// written — every reader goes through `paramOnOf`/`paramTierOf` instead of
+// rebuilding the key itself.
+function tierKey(param: string): string {
+  return param + "Tier"
+}
+
+export function paramOnOf(params: BuffParams, param: string): boolean {
+  return !!params[param]
+}
+
+export function paramTierOf(params: BuffParams, param: string): number {
+  const tier = params[tierKey(param)]
+  return typeof tier === "number" ? tier : 0
+}
 
 export function paramsFromInputs(inputs: Inputs): BuffParams {
   const params: BuffParams = {
@@ -21,13 +38,14 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
   const tierByInnerWayId = new Map<string, number>()
   for (const slot of inputs.mindMethods) {
     const innerWayId = slotInnerWayId(slot)
-    if (innerWayId) tierByInnerWayId.set(innerWayId, zhongToTier(slot.stacks))
+    if (innerWayId) tierByInnerWayId.set(innerWayId, tierFromStacks(slot.stacks))
   }
-  for (const [param, mapping] of Object.entries(SITE_PARAM_TO_INNER_WAY)) {
-    if (tierByInnerWayId.has(mapping.innerWayId)) {
-      params[param] = true
-      params[param + "Tier"] = tierByInnerWayId.get(mapping.innerWayId)!
-    }
+  for (const def of INNER_WAYS) {
+    if (!def.buffParam) continue
+    const tier = tierByInnerWayId.get(def.id)
+    if (tier === undefined) continue
+    params[def.buffParam] = true
+    params[tierKey(def.buffParam)] = tier
   }
 
   const qiBreak = inputs.combatSettings?.qiBreak

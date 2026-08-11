@@ -1,4 +1,4 @@
-import { classMechanic, defineClass } from "./define"
+import { defineClass } from "./define"
 import { CLASS_ID, SKILLS } from "../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../skills"
 import { DEBUFFS } from "../skills/bellstrike-umbra/debuffs"
@@ -6,7 +6,7 @@ import { SKILL } from "../skills/bellstrike-umbra/ids"
 import { BUFF } from "../skills/buffs/ids"
 import { rotationPoolFor } from "../rotations"
 import { BELLSTRIKE_POOL } from "./retunementPools"
-import { MECHANIC_ORDER } from "../../engine/mechanics"
+import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
 import { concentration } from "../skills/buffs/concentration"
 import { revelryScript } from "../skills/buffs/revelryScript"
 import { fluteBoost } from "../skills/buffs/fluteBoost"
@@ -55,8 +55,8 @@ export const bellstrikeUmbra = defineClass({
   mechanicBuffDefs: [soulShaken, bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: BELLSTRIKE_UMBRA_GATES,
   mechanics: [
-    classMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus),
-    classMechanic(concentrationMechanic, MECHANIC_ORDER.concentration),
+    declareMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus),
+    declareMechanic(concentrationMechanic, MECHANIC_ORDER.concentration),
   ],
   skillBehaviors: [{ skillId: SKILL.bleedDetonation, factory: crosswindBehavior }],
   displayGates: [{ defId: BUFF.concentration, predicate: concentrationAvailable }],

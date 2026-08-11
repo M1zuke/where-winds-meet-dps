@@ -2,21 +2,12 @@ import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
-import { innerWayScalar, innerWayTargetDefenseMultiplier } from "../data/classes/innerWays"
+import { henZhiActiveForInputs, innerWayScalar } from "../data/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../data/classes/registry"
-import breakthroughs from "../data/baseStats/breakthroughTiers.json"
+import { getBreakthrough } from "../data/baseStats/breakthroughs"
 import { SET_BY_ID, SET_DEFS } from "../data/sets"
 
-const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
-  breakthrough: number
-  name: string
-  levelRange: string
-  resistance: number
-  defense: number
-  generalDamageTaken: number
-  fatigueDamageTaken: number
-  multiplier: number
-}>
+export { getBreakthrough, henZhiActiveForInputs }
 
 const DING_YIN_PATH_PREFIX = "dingYinByTag."
 
@@ -67,22 +58,12 @@ export function allowedInnerWaysForClass(classId: string): string[] {
   return [...(classDefinition(classId)?.innerWays ?? [])]
 }
 
-export function getBreakthrough(bt: number) {
-  const t = BREAKTHROUGHS.find((x) => x.breakthrough === bt)
-  if (!t) throw new Error(`Unknown breakthrough: ${bt}`)
-  return t
-}
-
 export function resistanceForBreakthrough(bt: number): number {
   return getBreakthrough(bt).resistance
 }
 
 export function resistanceForInputs(inputs: Inputs): number {
   return resistanceForBreakthrough(inputs.breakthrough)
-}
-
-export function henZhiActiveForInputs(inputs: Inputs): boolean {
-  return inputs.shareDebuff5HenZhi || innerWayTargetDefenseMultiplier(inputs.mindMethods) !== null
 }
 
 // Pen resistance is zero for every target per the 2026-07 decision; the

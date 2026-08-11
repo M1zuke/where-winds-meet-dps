@@ -1,14 +1,14 @@
 // Build-driven buff enablement: a gated site buff turns on because the
 // character's build selects the matching inner way or equips the matching
 // gear set — never from a manual toggle. See `src/engine/buffs/params.ts` /
-// `paramMap.ts`.
+// `src/data/innerWays/`.
 import { describe, it, expect } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
-import { zhongToTier } from "../../src/engine/buffs/paramMap"
+import { tierFromStacks } from "../../src/data/innerWays/define"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
@@ -122,14 +122,14 @@ describe("paramsFromInputs — build derivation", () => {
   })
 })
 
-describe("zhongToTier", () => {
+describe("tierFromStacks", () => {
   it.each([
     ["tier 6", 6],
     ["tier 5", 5],
     ["tier 0", 0],
     ["", 0],
   ])("%s -> %d", (stacks, expected) => {
-    expect(zhongToTier(stacks)).toBe(expected)
+    expect(tierFromStacks(stacks)).toBe(expected)
   })
 })
 

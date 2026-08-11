@@ -16,6 +16,7 @@ import {
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
+import { innerWayName } from "../../../../data/innerWays/registry"
 import {
   appliesForSkill,
   receivesForSkill,
@@ -152,10 +153,6 @@ function kindClass(kind: TriggerKind): string {
 
 function dotDisplayName(debuff: Debuff): string {
   return debuff.name.replace(/\s*Tick$/, "")
-}
-
-const INNER_WAY_DISPLAY_NAMES: Record<string, string> = {
-  swordHorizon: "Sword Horizon",
 }
 
 const INNER_WAY_DOT_TAG = "source:innerWayDot"
@@ -485,7 +482,7 @@ export function SkillsTab({
       const label = `${t("Causes")} ${detonateSkill?.name ?? name}`
       let effect = `${t("on reaching")} ${status.maxStacks} ${t("stacks: consumes them and auto-casts")} ${detonateSkill?.name ?? det.skillId}`
       if (det.retainParam) {
-        const paramName = INNER_WAY_DISPLAY_NAMES[det.retainParam] ?? det.retainParam
+        const paramName = innerWayName(det.retainParam)
         const retained = det.retainParamStacks ?? det.retainStacks ?? 0
         effect += ` · ${t("retains")} ${retained} ${t("at")} ${paramName} ${t("tier")} ${det.retainMinTier ?? 6}`
       }

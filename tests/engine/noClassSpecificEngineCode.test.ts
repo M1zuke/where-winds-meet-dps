@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
 import { CLASS_IDS } from "../../src/data/classes/registry"
+import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 
 const ENGINE_DIR = join(process.cwd(), "src/engine")
 
@@ -33,6 +34,15 @@ describe("the engine names no class", () => {
     const offenders = sources
       .filter(({ path }) => !SEED_CONTENT.has(path))
       .filter(({ text }) => CLASS_IDS().some((classId) => text.includes(`"${classId}"`)))
+      .map(({ path }) => path)
+    expect(offenders).toEqual([])
+  })
+
+  it("mentions no inner-way id", () => {
+    const innerWayIds = Object.values(INNER_WAY_ID)
+    const offenders = sources
+      .filter(({ path }) => !SEED_CONTENT.has(path))
+      .filter(({ text }) => innerWayIds.some((id) => text.includes(`"${id}"`)))
       .map(({ path }) => path)
     expect(offenders).toEqual([])
   })

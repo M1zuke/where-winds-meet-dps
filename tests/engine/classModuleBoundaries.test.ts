@@ -5,7 +5,7 @@
 // looks, and every module carrying it is actually owned by a class.
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
-import { join } from "node:path"
+import { dirname, join, resolve } from "node:path"
 import { CLASS_DEFS } from "../../src/data/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
 
@@ -30,6 +30,17 @@ function importSpecifiers(text: string): string[] {
   return [...text.matchAll(/from\s+["']([^"']+)["']/g)].map((match) => match[1])
 }
 
+// What a relative specifier actually points at, not what it's spelled like —
+// `../classes/registry` and `./registry` (from within `src/data/classes/`)
+// resolve to the same file; `../innerWays/registry` resolves to a different
+// one despite the shared file name. Every import in this repo is relative
+// (no `paths`/`baseUrl` in tsconfig), so this covers every real specifier.
+function resolvedTarget(fromFile: string, specifier: string): string | null {
+  if (!specifier.startsWith(".")) return null
+  const resolved = resolve(dirname(fromFile), specifier)
+  return (resolved.endsWith(".ts") ? resolved : `${resolved}.ts`).split("\\").join("/")
+}
+
 function buffFolders(): string[] {
   const skillsDir = join(ROOT, "src/data/skills")
   return [join(skillsDir, "buffs")].concat(
@@ -46,13 +57,15 @@ function buffFolders(): string[] {
 }
 
 describe("no class module imports the panel/registry layer", () => {
-  const FORBIDDEN = [
-    /(^|\/)panel$/,
-    /(^|\/)registry$/,
-    /(^|\/)builtinLibrary$/,
-    /buffs\/data$/,
-    /buffs\/catalog$/,
-  ]
+  const FORBIDDEN_TARGETS = new Set(
+    [
+      "src/engine/panel.ts",
+      "src/data/classes/registry.ts",
+      "src/engine/builtinLibrary.ts",
+      "src/engine/buffs/data.ts",
+      "src/engine/buffs/catalog.ts",
+    ].map((path) => join(ROOT, path).split("\\").join("/")),
+  )
   // index.ts (the composition root) and registry.ts (the layer itself) are
   // exempt: index.ts pushes the assembled ClassDefs into registry.ts, which
   // is the one legitimate registry reference this directory contains.
@@ -61,14 +74,14 @@ describe("no class module imports the panel/registry layer", () => {
     .filter((path) => !EXEMPT.has(repoRelative(path).split("/").pop()!))
     .map((path) => ({
       path: repoRelative(path),
-      specifiers: importSpecifiers(readFileSync(path, "utf8")),
+      targets: importSpecifiers(readFileSync(path, "utf8"))
+        .map((specifier) => resolvedTarget(path, specifier))
+        .filter((target): target is string => target !== null),
     }))
 
   it("imports none of panel, registry, builtinLibrary, buffs/data or buffs/catalog", () => {
     const offenders = sources
-      .filter(({ specifiers }) =>
-        specifiers.some((specifier) => FORBIDDEN.some((pattern) => pattern.test(specifier))),
-      )
+      .filter(({ targets }) => targets.some((target) => FORBIDDEN_TARGETS.has(target)))
       .map(({ path }) => path)
     expect(offenders).toEqual([])
   })

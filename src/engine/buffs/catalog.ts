@@ -14,9 +14,9 @@ import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
 import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
-import { paramsFromInputs } from "./params"
+import { paramOnOf, paramsFromInputs, paramTierOf } from "./params"
 import type { BuffParams } from "./buffEngine"
-import { INNER_WAY_BY_PARAM } from "./paramMap"
+import { innerWayForBuffParam } from "../../data/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../data/sets"
 import { builtinDebuffsForClass } from "../builtinLibrary"
 import { classDefinition } from "../../data/classes/registry"
@@ -79,8 +79,8 @@ export function requiresLabel(module: BuffModule): string | null {
   const requires = module.requires
   if (requires?.set) return setDisplayNameForSiteKey(requires.set) ?? requires.set
   if (!requires?.param) return null
-  const innerWay = INNER_WAY_BY_PARAM[requires.param]
-  if (innerWay) return innerWay + (requires.minTier ? ` tier ${requires.minTier}+` : "")
+  const innerWayName = innerWayForBuffParam(requires.param)?.name
+  if (innerWayName) return innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
   if (requires.param === "starsAlignActive") return "Stars Align"
   return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
@@ -93,12 +93,8 @@ export function specMechanicDefIds(classId?: string): Set<string> {
 export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
   const requires = module.requires
   if (requires?.set && requires.set !== params.armorSet) return false
-  if (requires?.param && !params[requires.param]) return false
-  if (
-    requires?.minTier &&
-    requires.param &&
-    ((params[requires.param + "Tier"] as number) ?? 0) < requires.minTier
-  )
+  if (requires?.param && !paramOnOf(params, requires.param)) return false
+  if (requires?.minTier && requires.param && paramTierOf(params, requires.param) < requires.minTier)
     return false
   return true
 }
@@ -208,19 +204,18 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     for (const d of debuffsById.values()) {
       const det = d.detonation
       if (!det?.retainParam || d.name !== skill.name) continue
-      const innerWay = INNER_WAY_BY_PARAM[det.retainParam] ?? humanize(det.retainParam)
+      const innerWayLabel = innerWayForBuffParam(det.retainParam)?.name ?? humanize(det.retainParam)
       const minTier = det.retainMinTier ?? 6
       const retained = det.retainParamStacks ?? det.retainStacks ?? 0
       const baseline = det.retainStacks ?? 0
       rows.push({
         id: `dotRetention:${d.id}`,
-        name: `${innerWay} (${d.name})`,
+        name: `${innerWayLabel} (${d.name})`,
         effect: `retains ${retained} ${d.name} stacks after detonation (${baseline} without it)`,
-        requires: `${innerWay} tier ${minTier}+`,
+        requires: `${innerWayLabel} tier ${minTier}+`,
         isSpecMechanic: false,
         active: params
-          ? !!params[det.retainParam] &&
-            ((params[det.retainParam + "Tier"] as number) ?? 0) >= minTier
+          ? paramOnOf(params, det.retainParam) && paramTierOf(params, det.retainParam) >= minTier
           : true,
         triggeredBy: null,
       })
@@ -294,11 +289,11 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const rows: ClassBuffRow[] = []
   for (const module of byId.values()) {
     if (!hasScope(module)) continue
-    if (module.requires?.param && !params[module.requires.param]) continue
+    if (module.requires?.param && !paramOnOf(params, module.requires.param)) continue
     if (
       module.requires?.minTier &&
       module.requires.param &&
-      ((params[module.requires.param + "Tier"] as number) ?? 0) < module.requires.minTier
+      paramTierOf(params, module.requires.param) < module.requires.minTier
     )
       continue
     const parts: string[] = []

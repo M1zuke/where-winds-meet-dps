@@ -3,6 +3,9 @@ import { PARAM } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
+import { requireInnerWayNodeTier } from "../../innerWays/define"
+import { INNER_WAY_NODE } from "../../innerWays/ids"
+import { swordHorizon } from "../../innerWays/swordHorizon"
 
 const CLASS_ID = "bellstrikeUmbra"
 
@@ -134,7 +137,7 @@ export const bleedTick = defineDebuff({
     skillId: SKILL.bleedDetonation,
     retainStacks: 0,
     retainParam: PARAM.swordHorizon,
-    retainMinTier: 6,
+    retainMinTier: requireInnerWayNodeTier(swordHorizon, INNER_WAY_NODE.dotDetonationRetention),
     retainParamStacks: 2,
   },
   createdAt: "2026-07-19T00:00:00.000Z",

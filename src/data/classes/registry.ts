@@ -16,14 +16,16 @@ import type { RetunementPool } from "./retunementPools"
 import { classDefs } from "./classDefStore"
 // Side-effect load, deliberately not a value import: `index.ts` assembles
 // every class module and pushes the result into `classDefStore.ts`, rather
-// than this file pulling it out of `index.ts` directly. `panel.ts` reads
-// class metadata through this file, and the engine's own self-registering
-// mechanics `index.ts` also loads (hawkwing.ts, bitterSeason.ts) import
-// panel.ts — so this import closes a real cycle back to this file. That is
-// harmless here: `classDefs` above comes from the dependency-free leaf store,
-// not from `index.ts`, so whichever side of the cycle runs first still reads
-// a correctly-typed (if possibly still-empty) array rather than a value that
-// doesn't exist yet.
+// than this file pulling it out of `index.ts` directly. This dates from when
+// three engine-owned mechanics (Hawkwing, Bitter Season, Morale Chant)
+// self-registered from `src/engine/mechanics/` and imported `panel.ts`, which
+// reads class metadata through this file — a real cycle back to here. Those
+// mechanics are now declared by their owning set/inner-way instead, and
+// nothing left in `index.ts`'s dependency chain reaches `panel.ts`, so the
+// cycle this store exists to break is gone (verified: no file under
+// `src/data/classes` or its dependencies imports `engine/panel.ts`). Kept as
+// a leaf for now rather than folded into a direct import — see
+// `.plans/define-inner-way-followups.md`.
 import "./index"
 
 export { classDefs as CLASS_DEFS }

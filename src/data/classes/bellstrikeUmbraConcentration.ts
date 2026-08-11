@@ -2,12 +2,13 @@
 // a probability schedule rather than a window. Tier 6 additionally multiplies
 // DoT damage while it is up.
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
-import { hasInnerWay, innerWayTier, type SlottedInnerWay } from "./innerWays"
+import { hasInnerWay, innerWayTier, type SlottedInnerWay } from "../innerWays/registry"
+import { innerWayHasNode } from "../innerWays/define"
+import { INNER_WAY_NODE } from "../innerWays/ids"
+import { insightfulStrike } from "../innerWays/insightfulStrike"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
-const INNER_WAY = "insightfulStrike"
-const TIER_6 = 6
 const AFFINITY_PROC_CAP = 0.4
 const DOT_MULTIPLIER_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
@@ -25,7 +26,7 @@ export function concentrationAvailable(inputs: {
   classId: string
   mindMethods: readonly SlottedInnerWay[]
 }): boolean {
-  return inputs.classId === CLASS_ID && hasInnerWay(inputs.mindMethods, INNER_WAY)
+  return inputs.classId === CLASS_ID && hasInnerWay(inputs.mindMethods, insightfulStrike.id)
 }
 
 interface State {
@@ -38,7 +39,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
 
   prepare(setup) {
     if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
-    const tier = innerWayTier(setup.inputs.mindMethods, INNER_WAY) ?? 0
+    const tier = innerWayTier(setup.inputs.mindMethods, insightfulStrike.id) ?? 0
     const proc =
       Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
       setup.inputs.directAffinityRate
@@ -48,7 +49,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
         proc,
         setup.rotationDurationSec,
       ),
-      tier6: tier >= TIER_6,
+      tier6: innerWayHasNode(insightfulStrike, tier, INNER_WAY_NODE.concentrationDotMultiplier),
     }
   },
 

@@ -1,7 +1,8 @@
-// Mechanics SELF-REGISTER, so a class can add one without this file changing.
-// That is the point: adding a class means adding files under
-// `src/data/classes/` and one line in that folder's barrel — never editing the
-// engine (docs/CLASSES.md § "One definition per class").
+// A mechanic is declared by the thing it is a mechanic of — a class, an inner
+// way, or a set — and registered by that owner's own barrel
+// (`src/data/classes/`, `src/data/innerWays/`, `src/data/sets/`), never here.
+// This file holds only the contract and the registry (docs/CLASSES.md
+// § "One definition per class").
 //
 // `order` is load-bearing, not cosmetic. Contributions are applied in it and
 // float addition is not associative, so changing it can move the last bits of
@@ -20,6 +21,22 @@ export const MECHANIC_ORDER = {
 } as const
 
 export type AnyMechanic = TimelineMechanic<unknown>
+
+export interface MechanicRegistration {
+  mechanic: AnyMechanic
+  order: number
+}
+
+// Keeps a mechanic's `State` type checked all the way to `TimelineMechanic<State>`
+// so a class/inner-way/set def writes one `MechanicRegistration` per mechanic
+// without an `as unknown as AnyMechanic` cast of its own — the erasure to
+// `AnyMechanic` happens once, here, instead of once per owner per mechanic.
+export function declareMechanic<State>(
+  mechanic: TimelineMechanic<State>,
+  order: number,
+): MechanicRegistration {
+  return { mechanic: mechanic as unknown as AnyMechanic, order }
+}
 
 const registered: { mechanic: AnyMechanic; order: number }[] = []
 

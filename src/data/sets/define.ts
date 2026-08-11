@@ -1,3 +1,5 @@
+import type { MechanicRegistration } from "../../engine/mechanics"
+
 // The per-hit formula fields a 4-piece set bonus can populate — the surviving
 // columns of the retired `setBonusFull.json`; see `formula.ts` for where each
 // is read. A field a set doesn't carry is omitted, never zero-filled, so a
@@ -36,6 +38,7 @@ export interface SetDef {
   siteKey?: string
   formulaBonus?: SetFormulaBonus
   panelBonus?: SetPanelBonus
+  mechanics?: readonly MechanicRegistration[]
 }
 
 // Thin on purpose, like `defineSkill`/`defineBuff`/`defineDebuff`: it exists so

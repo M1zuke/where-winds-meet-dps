@@ -4,15 +4,10 @@ import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
 import type { Rotation } from "../../engine/rotation"
 import type { BuffModule } from "../../engine/buffs/buffModule"
-import type { AnyMechanic, TimelineMechanic } from "../../engine/mechanics"
+import type { MechanicRegistration } from "../../engine/mechanics"
 import type { SkillBehaviorFactory } from "../../engine/behavior"
 import type { RetunementPool } from "./retunementPools"
-import type { InnerWayId } from "./innerWayRegistry"
-
-export interface MechanicRegistration {
-  mechanic: AnyMechanic
-  order: number
-}
+import type { InnerWayId } from "../innerWays/ids"
 
 export interface SkillBehaviorRegistration {
   skillId: string
@@ -74,16 +69,4 @@ export interface ClassDef {
 
 export function defineClass<const T extends ClassDef>(def: T): T {
   return def
-}
-
-// `registerMechanic`'s generic keeps a mechanic's `State` type checked all
-// the way to `TimelineMechanic<State>`; this mirrors it for `ClassDef.mechanics`
-// so a class writes one `MechanicRegistration` per mechanic without an
-// `as unknown as AnyMechanic` cast of its own — the erasure to `AnyMechanic`
-// happens once, here, instead of once per class per mechanic.
-export function classMechanic<State>(
-  mechanic: TimelineMechanic<State>,
-  order: number,
-): MechanicRegistration {
-  return { mechanic: mechanic as unknown as AnyMechanic, order }
 }

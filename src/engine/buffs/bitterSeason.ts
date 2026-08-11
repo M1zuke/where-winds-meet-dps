@@ -5,7 +5,6 @@ const SIM_RUNS = 500
 const STACK_SEED_OFFSET = 40217
 const POISON_SEED_OFFSET = 58601
 
-export const BITTER_SEASON_INNER_WAY = "bitterSeason"
 export const BITTER_SEASON_TICK_SLUG = "bitter-season-tick"
 export const BITTER_SEASON_MAX_STACKS = 5
 export const BITTER_SEASON_STACK_DURATION_SEC = 10
@@ -15,22 +14,11 @@ export function bitterSeasonDebuffId(classId: string): string {
   return `debuff-${classId}-${BITTER_SEASON_TICK_SLUG}`
 }
 
+// Resolved per tier by `bitterSeasonTuningAtTier` (`src/data/innerWays/bitterSeason.ts`).
 export interface BitterSeasonTuning {
   procChance: number
   defenseReductionPerStack: number
   physPenetrationAtMaxStacks: number
-}
-
-export function resolveBitterSeasonTuning(tier: number): BitterSeasonTuning {
-  return {
-    procChance: tier >= 4 ? 0.15 : 0.1,
-    defenseReductionPerStack: tier >= 1 ? 0.012 : 0.006,
-    // Tier 6: −10 target physical resistance, modelled as +10 player physical
-    // penetration points (0.1 in the panel's fraction-of-100 unit) — target pen
-    // resistance is zero for every target, so the two are numerically
-    // equivalent (CLAUDE.md § "Calculation rules").
-    physPenetrationAtMaxStacks: tier >= 6 ? 0.1 : 0,
-  }
 }
 
 export interface BitterSeasonStackSchedule {
