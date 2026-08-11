@@ -1,7 +1,7 @@
 import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { defaultInputs } from "./engine/defaults"
-import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
+import { allowedInnerWaysForClass, defaultArsenalForClass, ARMOR_SET_OPTIONS } from "./engine/panel"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./data/baseStats"
 import type { Rotation, RotationStep } from "./engine/rotation"
@@ -190,6 +190,12 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).calcMode
   if (next.bowSet !== "affinity" && next.bowSet !== "crit" && next.bowSet !== "precision") {
     next.bowSet = null
+  }
+  // `V8__dropRemovedArmorSets` heals stored profiles; this is the standing
+  // invariant for the paths that never walk the chain — the legacy `wwm.inputs`
+  // blob rolled in below, and a bare (unwrapped) imported profile.
+  if (next.set !== null && !ARMOR_SET_OPTIONS.some((option) => option.setKey === next.set)) {
+    next.set = null
   }
   if (
     next.arsenal !== "general" &&

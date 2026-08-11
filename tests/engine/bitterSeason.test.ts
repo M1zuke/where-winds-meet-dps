@@ -228,7 +228,7 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
   })
 })
 
-describe("registry coverage — all eight classes (metadata only, no DPS)", () => {
+describe("registry coverage — all seven classes (metadata only, no DPS)", () => {
   it("every class's allowedInnerWaysForClass contains Bitter Season exactly once", () => {
     for (const classId of ALL_CLASSES) {
       const list = allowedInnerWaysForClass(classId)

@@ -11,7 +11,4 @@ export const onApplyHandlers: Record<string, (engine: BuffEngine, time: number) 
   throatPiercedDeflect(engine, time) {
     engine.applyBuff("throatPierced", time, null, 5)
   },
-  throatPiercedAnxiT6(engine, time) {
-    engine.applyBuff("throatPierced", time, null, 1)
-  },
 }

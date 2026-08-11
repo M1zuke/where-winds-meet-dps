@@ -13,9 +13,11 @@ function bleedTick(tags: string[] = []) {
   return makeSkill("test", { name: "Bleed Tick", skillType: "sustain", tags })
 }
 
+const soulShakenDefs = mechanicBuffDefs().filter((def) => def.id === "soulShaken")
+
 describe("Soul Shaken — BuffEngine unit", () => {
   it("SpearHeavy (5-hit cast) ramps to 5 stacks ⇒ +50% all-damage on Bleed Tick", () => {
-    const e = new BuffEngine({}, [], mechanicBuffDefs())
+    const e = new BuffEngine({}, [], soulShakenDefs)
     e.processSkillCast("SpearHeavy", 0, { hitCount: 5, castTime: 1.5 })
     const r = e.calculateDamageEffects(bleedTick(), 1.6)
     const total = r.effects
@@ -25,14 +27,14 @@ describe("Soul Shaken — BuffEngine unit", () => {
   })
 
   it("does not affect an unrelated skill", () => {
-    const e = new BuffEngine({}, [], mechanicBuffDefs())
+    const e = new BuffEngine({}, [], soulShakenDefs)
     e.processSkillCast("SpearHeavy", 0, { hitCount: 5, castTime: 1.5 })
     const r = e.calculateDamageEffects(makeSkill("test", { name: "Other" }), 1.6)
     expect(r.effects).toHaveLength(0)
   })
 
   it("SpearQ grants no stack without wolfchasersArt tier 6, even while Soul Shaken is active", () => {
-    const e = new BuffEngine({}, [], mechanicBuffDefs())
+    const e = new BuffEngine({}, [], soulShakenDefs)
     e.processSkillCast("SpearHeavy 1-Hit", 0, {})
     e.processSkillCast("SpearQ", 1, {})
     const r = e.calculateDamageEffects(bleedTick(), 1.1)
@@ -44,7 +46,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
 
   it("SpearQ grants a stack at wolfchasersArt tier 6 even when Soul Shaken isn't already active", () => {
     const params = { wolfchasersArt: true, wolfchasersArtTier: 6 }
-    const e = new BuffEngine(params, [], mechanicBuffDefs())
+    const e = new BuffEngine(params, [], soulShakenDefs)
     e.processSkillCast("SpearQ", 0, {})
     const r = e.calculateDamageEffects(bleedTick(), 0.1)
     const total = r.effects
@@ -55,7 +57,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
 
   it("a single 5-hit SpearQ cast at wolfchasersArt tier 6 stacks Soul Shaken to 5 (+50%)", () => {
     const params = { wolfchasersArt: true, wolfchasersArtTier: 6 }
-    const e = new BuffEngine(params, [], mechanicBuffDefs())
+    const e = new BuffEngine(params, [], soulShakenDefs)
     e.processSkillCast("SpearQ", 0, { hitCount: 5, castTime: 1.417 })
     const r = e.calculateDamageEffects(bleedTick(), 1.5)
     const total = r.effects
@@ -66,7 +68,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
 
   it("a later SpearQ cast renews Soul Shaken instead of letting the window lapse", () => {
     const params = { wolfchasersArt: true, wolfchasersArtTier: 6 }
-    const e = new BuffEngine(params, [], mechanicBuffDefs())
+    const e = new BuffEngine(params, [], soulShakenDefs)
     e.processSkillCast("SpearQ", 0, { hitCount: 5, castTime: 1.417 })
     e.processSkillCast("SpearQ", 20, { hitCount: 5, castTime: 1.417 })
     const r = e.calculateDamageEffects(bleedTick(), 30)

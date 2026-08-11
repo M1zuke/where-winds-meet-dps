@@ -20,7 +20,7 @@
     "physBoost": 0.028
   },
   "Frostwhite Night": {
-    "phys.min": 63.8,
+    "phys.min": 74.4,
     "directCritRate": 0.046
   },
   "Mighty Song": {
@@ -85,12 +85,12 @@
     "critDamageBoost": 0.04
   },
   "Throat-Pierce": {
-    "primaryAttr.max": 21.7,
-    "primaryAttr.min": 10.9,
+    "primaryAttr.max": 25.3,
+    "primaryAttr.min": 12.7,
     "primaryAttr.penetration": 0.06
   },
   "Lone Loyalty": {
-    "critRate": 0.063,
+    "critRate": 0.077,
     "critDamageBoost": 0.04
   },
   "Bitter Season": {

@@ -5,10 +5,9 @@ import * as bellstrikeRainbow from "./bellstrike-rainbow"
 import * as bellstrikeUmbra from "./bellstrike-umbra"
 import * as silkbindJade from "./silkbind-jade"
 import * as stonesplitPower from "./stonesplit-power"
-import * as stonesplitBalancePureTang from "./stonesplit-balance-pure-tang"
+import * as stonesplitStrength from "./stonesplit-strength"
 import * as bamboocutWindTwinblade from "./bamboocut-wind-twinblade"
 import * as bamboocutDust from "./bamboocut-dust"
-import * as stonesplitBalanceDualCut from "./stonesplit-balance-dual-cut"
 
 const PRIMARY_ATTRIBUTE: Record<string, string> = Object.fromEntries(
   (schools as { id: string; primaryAttribute: string }[]).map((school) => [
@@ -65,17 +64,13 @@ export const BUILTIN_SKILLS_BY_CLASS: Record<string, readonly Skill[]> = {
   [bellstrikeUmbra.CLASS_ID]: withUniversal(bellstrikeUmbra.CLASS_ID, bellstrikeUmbra.SKILLS),
   [silkbindJade.CLASS_ID]: withUniversal(silkbindJade.CLASS_ID, silkbindJade.SKILLS),
   [stonesplitPower.CLASS_ID]: withUniversal(stonesplitPower.CLASS_ID, stonesplitPower.SKILLS),
-  [stonesplitBalancePureTang.CLASS_ID]: withUniversal(
-    stonesplitBalancePureTang.CLASS_ID,
-    stonesplitBalancePureTang.SKILLS,
+  [stonesplitStrength.CLASS_ID]: withUniversal(
+    stonesplitStrength.CLASS_ID,
+    stonesplitStrength.SKILLS,
   ),
   [bamboocutWindTwinblade.CLASS_ID]: withUniversal(
     bamboocutWindTwinblade.CLASS_ID,
     bamboocutWindTwinblade.SKILLS,
   ),
   [bamboocutDust.CLASS_ID]: withUniversal(bamboocutDust.CLASS_ID, bamboocutDust.SKILLS),
-  [stonesplitBalanceDualCut.CLASS_ID]: withUniversal(
-    stonesplitBalanceDualCut.CLASS_ID,
-    stonesplitBalanceDualCut.SKILLS,
-  ),
 }

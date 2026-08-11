@@ -31,6 +31,10 @@
 //     site computes this stochastically from distance/stacks at runtime; we
 //     have no deterministic value, so equipping `Stars Align` enables the
 //     buff but it contributes 0.
+//   - `ivorybloom` / `rainwhisper` — both exist in the site registry, but this
+//     app no longer carries either set: they were removed once their flat
+//     always-on 2-pc/4-pc rows were judged wrong (GitHub #22, #23). Re-add the
+//     mapping only as part of modelling them properly.
 //   - Hawking (`Hawking`) 4-piece ramping — handled side by a
 //     time-averaged scheduler (`getBonusAtTime`/`avgBonus`), not the
 //     deterministic buff catalog. Out of scope here.
@@ -70,9 +74,6 @@ export const INNER_WAY_BY_PARAM: Record<string, string> = Object.fromEntries(
 export const APP_SET_TO_SITE_SET: Record<string, string> = {
   Hawking: "hawkwing",
   Jadeware: "jadeware",
-  Rainwhisper: "rainwhisper",
-  "Rainwhisper (no shield)": "rainwhisper",
-  Ivorybloom: "ivorybloom",
   Mistwillow: "mistwillow",
   "Stars Align": "starsAlign",
   "Shattered Ridge": "shatteredridge",

@@ -19,24 +19,6 @@
           "__handler": "throatPiercedDeflect"
         }
       }
-    },
-    {
-      "specs": ["stonesplit_strength"],
-      "def": {
-        "id": "throatPiercedDeflect",
-        "name": "Throat-Pierced (Deflect)",
-        "triggers": ["Deflect"],
-        "exactMatch": true,
-        "duration": 15,
-        "affects": null,
-        "bonus": null,
-        "enabledParam": "throatPierced",
-        "minTier": 6,
-        "cooldown": 20,
-        "onApplyFn": {
-          "__handler": "throatPiercedDeflect"
-        }
-      }
     }
   ]
 }

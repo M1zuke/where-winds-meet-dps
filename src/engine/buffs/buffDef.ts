@@ -8,6 +8,7 @@ export interface BuffBonus {
   value?: number
   valuePerStack?: number
   valueFromParam?: string
+  minStacks?: number
   phaseBonus?: Record<string, number>
 }
 
@@ -21,6 +22,7 @@ export type BuffStatMods = Partial<
     | "directAffinity"
     | "physPen"
     | "bellstrikePen"
+    | "stonesplitPen"
     | "dotDamage"
     | "enhancedDotDamage",
     number
@@ -37,7 +39,25 @@ export interface PerCastConsumeSpec {
   triggerSkillProperty: string
   consumesFromBuffStack: string
   bonus?: BuffBonus | null
+  damageMultiplier?: number
+  effectEnabledParam?: string
+  effectMinTier?: number
+  effectPhaseAlternative?: {
+    phase: string | string[]
+    enabledParam?: string
+    minTier?: number
+  }
   preferredSources?: PerCastConsumeSource[]
+  sourceBuffs?: Array<{
+    consumedBuffStack: string
+    buffIds: string[]
+    propagateToTriggeredSkills?: boolean
+  }>
+}
+
+export interface ConditionalFinalCrit {
+  threshold: number
+  bonusBelowThreshold: number
 }
 
 // `mistwillowCategory` depends on the timeline flattening a per-hit
@@ -71,6 +91,7 @@ export interface BuffDef {
   id: string
   name?: string
   triggers?: string[]
+  stackOnDamage?: boolean
   exactMatch?: boolean
   refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   onApply?: string[]
@@ -94,7 +115,7 @@ export interface BuffDef {
     default: BuffStatMods | null
   }
   forceCrit?: boolean
-  forceCritIfHighCrit?: boolean
+  conditionalFinalCrit?: ConditionalFinalCrit
   duration?: number
   maxStacks?: number
   stacksPerHit?: number | boolean
@@ -108,6 +129,8 @@ export interface BuffDef {
     targetDuration: number
   }
   cooldown?: number
+  requiresActiveBuffOnTrigger?: string
+  triggersFromGeneratedSkills?: boolean
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stackIcd?: number
@@ -147,6 +170,7 @@ export const STATMOD_TO_STATKEY: Record<keyof BuffStatMods, { key: StatKey; scal
   directAffinity: { key: "directAffinityRate", scale: 1 },
   physPen: { key: "phys.penetration", scale: 0.01 },
   bellstrikePen: { key: "bellstrike.penetration", scale: 0.01 },
+  stonesplitPen: { key: "stonesplit.penetration", scale: 0.01 },
   dotDamage: { key: "sustainDamageBoost", scale: 1 },
   enhancedDotDamage: { key: "sustainDamageBoost", scale: 1 },
 }

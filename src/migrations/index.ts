@@ -3,6 +3,7 @@ import type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 import { V5__englishIdsWithoutSitePrefix } from "./V5__englishIdsWithoutSitePrefix"
 import { V6__dropDerivedStats } from "./V6__dropDerivedStats"
 import { V7__clampSingleMysticWordRoll } from "./V7__clampSingleMysticWordRoll"
+import { V8__dropRemovedArmorSets } from "./V8__dropRemovedArmorSets"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -15,6 +16,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
   V6__dropDerivedStats,
   V7__clampSingleMysticWordRoll,
+  V8__dropRemovedArmorSets,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

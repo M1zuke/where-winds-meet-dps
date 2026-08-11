@@ -22,19 +22,6 @@
       "Low-Qi Direct Affinity Rate": 0
     },
     {
-      "name": "Rainwhisper",
-      "Crit Damage": 0.25
-    },
-    {
-      "name": "Rainwhisper (no shield)",
-      "Crit Damage": 0.1
-    },
-    {
-      "name": "Ivorybloom",
-      "Crit Damage": 0.15,
-      "Direct Crit": 0.05
-    },
-    {
       "name": "Swallowcall",
       "Light-Hit Boost": 0.12,
       "Low-Qi Bamboocut Damage": 0.1

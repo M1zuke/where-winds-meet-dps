@@ -22,14 +22,15 @@
       "specs": ["stonesplit_strength"],
       "def": {
         "id": "shatteredRidgeDeflect",
-        "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggers": ["Deflect"],
-        "exactMatch": true,
-        "duration": 8,
-        "affects": ["SnowpartingVC", "PhalanxQ", "PhalanxCharged", "SnowpartingQ-Stab", "AnxiSoldier"],
+        "name": "Shattered Ridge (Max Stacks)",
+        "stackOnDamage": true,
+        "duration": 5,
+        "maxStacks": 5,
+        "affectsProperty": "shatteredRidgeBoost",
         "bonus": {
           "type": "buffBonus",
-          "value": 0.06
+          "value": 0.08,
+          "minStacks": 5
         },
         "requiresSet": "shatteredridge"
       }
