@@ -3,7 +3,7 @@
 // block inline in `simulateTimeline`, which is why the timeline had to know
 // every one of them by name.
 //
-// BUFFS.md § "Known exceptions" is the bar for adding one: not "it was easier
+// BUFFS.md § "Mechanics — the last resort" is the bar: not "it was easier
 // here", but "the def schema cannot express this".
 import type { Inputs } from "../types"
 import type { Skill } from "../skill"

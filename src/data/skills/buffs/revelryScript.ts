@@ -6,7 +6,7 @@ import { stat } from "../../../engine/effects/effect"
 // the catalog only. The actual +30% is a Combat Settings toggle applied
 // directly in `timeline.ts`, unrelated to this `enabledParam` — no inner way
 // ever maps to it, since it names a rotation/team-support toggle, not a
-// build attribute (see docs/CALCULATION.md § "Mechanic coverage").
+// build attribute.
 export const revelryScript = defineBuff({
   id: BUFF.revelryScript,
   name: "Revelry Script",

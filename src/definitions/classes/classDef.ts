@@ -48,7 +48,7 @@ export interface ClassDef {
   defaultRotationId: string | null
   retunementPool: RetunementPool | null
   // Every buff-def the class itself owns, reachable because you are this
-  // class — docs/CLASSES.md § "Buff category". An inner-way-gated def belongs
+  // class — docs/CLASSES.md § "Buff ownership". An inner-way-gated def belongs
   // on that `InnerWayDef.buffDefs` instead, and a global toggle or
   // universal-skill trigger on `GLOBAL_BUFF_DEFS`. Membership here is also
   // what puts a row in the Skill Editor's Spec Mechanics column.

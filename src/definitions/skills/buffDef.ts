@@ -12,7 +12,7 @@ export function defineBuff<const T extends BuffModule>(module: T): T {
 // into every slotting class's set. `classBuff` is inert at runtime —
 // `BuffEngine`, `applyEffect`, `catalog.ts` and `scope.ts` never read it;
 // whichever owner lists the result is the only statement of scope. See
-// docs/CLASSES.md § "Buff category" for the reachability question this marks.
+// docs/CLASSES.md § "Buff ownership" for the reachability question this marks.
 export function defineClassBuff<const T extends BuffModule>(
   buff: T,
 ): T & { readonly classBuff: true } {

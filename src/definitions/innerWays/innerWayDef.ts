@@ -15,7 +15,7 @@ export interface InnerWayTier {
 }
 
 // Channel 2 (context scalars) and the all-damage part of channel 3
-// (CALCULATION.md § "Mind-method layers"). `minTier` gates the whole block,
+// (CALCULATION.md § "Inner-way layers"). `minTier` gates the whole block,
 // not an individual field.
 export interface InnerWayScalars {
   minTier?: number
@@ -45,7 +45,7 @@ export interface InnerWayDef {
   // undefined for one that is deliberately never mapped (see
   // `insightfulStrike.ts`).
   buffParam?: (typeof PARAM)[keyof typeof PARAM]
-  // Channel 1 (CALCULATION.md § "Mind-method layers"): granted merely by
+  // Channel 1 (CALCULATION.md § "Inner-way layers"): granted merely by
   // being slotted, no tier check.
   panelStats?: PanelStats
   // Channel 1's per-tier extension — a tier entry's `panelStats` applies once

@@ -1,5 +1,5 @@
-// A refactor guard, not class validation — see docs/TESTING.md § "The engine
-// baseline" (this follows the same pattern) and § "Class scoping". It spans
+// A refactor guard, not class validation — see docs/TESTING.md § "Locked
+// fixtures assert unchanged, never right" and § "Class scoping". It spans
 // every registered class the way `noClassSpecificEngineCode.test.ts` and
 // `classExtensionPoints.test.ts` do — only Bellstrike Umbra's numbers are
 // defended (CLASSES.md § "Implemented classes") and a diff there is a

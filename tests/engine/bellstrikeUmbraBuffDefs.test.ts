@@ -11,7 +11,7 @@ const umbraOwnBuffDefs = () => classDefinition("bellstrikeUmbra")!.classBuffDefs
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
 // Built from tags, never from the display name — a def reaches an entity
-// because the entity declares what it is (CLASSES.md § "Naming").
+// because the entity declares what it is (CLASSES.md § "Id schemes").
 function skill(tags: string[]) {
   return makeSkill("test", { name: "probe", tags })
 }

@@ -1,5 +1,3 @@
-// See docs/PROFILE-MIGRATIONS.md.
-
 export interface RawProfilesBlob {
   v: number
   profiles: unknown[]

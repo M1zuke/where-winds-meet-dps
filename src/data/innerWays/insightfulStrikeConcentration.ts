@@ -35,11 +35,11 @@ function sustainPairTierOf(): number {
 // file's own export must be callable before `insightfulStrike.ts`'s import
 // back into this module has finished.
 //
-// Pre-existing bug, reproduced exactly rather than fixed — see
-// docs/CALCULATION.md § "Mechanic coverage": `seedAtStart` + `refreshOnAnyCast`
-// make this permanently active for the whole rotation whenever its param is
-// on, double-counting against the sibling `insightfulStrikeMechanic.ts`'s
-// probability-weighted ramp model of the same inner way.
+// Pre-existing bug, reproduced exactly rather than fixed: `seedAtStart` +
+// `refreshOnAnyCast` make this permanently active for the whole rotation
+// whenever its param is on, double-counting against the sibling
+// `insightfulStrikeMechanic.ts`'s probability-weighted ramp model of the same
+// inner way. This is why the inner way deliberately declares no `buffParam`.
 export function concentrationBuffDef() {
   return defineClassBuff({
     id: BUFF.concentration,

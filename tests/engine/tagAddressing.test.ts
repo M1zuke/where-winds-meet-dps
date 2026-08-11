@@ -1,4 +1,4 @@
-// The guard for CLASSES.md § "Naming": a modifier addresses an entity by a
+// The guard for CLASSES.md § "Id schemes": a modifier addresses an entity by a
 // namespaced tag it declares, never by a string that happens to match its
 // display name. Spans every registered class on purpose.
 import { describe, expect, it } from "vitest"

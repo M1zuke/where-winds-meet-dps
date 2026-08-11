@@ -1,206 +1,156 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **831 tests
-across 88 files**, all green. Keep it that way — a red suite on `main` is not a
-state this repo tolerates.
+`pnpm test` runs vitest (jsdom, globals on, a shared setup file). **A red suite on
+`main` is not a state this repo tolerates.**
 
 ## Class scoping — the suite is Umbra-only
 
-Only `bellstrikeUmbra` is implemented and validated (CLASSES.md). Tests that
-asserted another class's damage, skills, rotations or DoT behaviour were removed
-on 2026-08-02, because a passing sweep reads as validation those classes have
-not had.
+Only `bellstrikeUmbra` is implemented and validated (CLASSES.md). A passing sweep
+over the unimplemented classes reads as validation they have not had.
 
-- **Do not add a `for (const classId of ALL_CLASSES)` `dps > 0` sweep.** It
-  proves nothing and it manufactures false confidence.
-- Registry / metadata tests that legitimately span every registered class stay
-  — `getSchool`, inner-way slot rules, the i18n pass-through. `CLASS_IDS()`
-  currently returns just `bellstrikeUmbra`; the other seven are unregistered
-  reference data (CLASSES.md § "Implemented classes"), not additional class
-  ids these sweeps iterate.
-- When a class is genuinely built out, add its tests back **with real anchors**
-  (a verified rotation, a known damage figure), not a smoke sweep.
-- Scoped test files carry a header comment saying so; follow the existing
-  wording (`// Scoped to Bellstrike Umbra — see CLASSES.md`).
+- **Do not add an all-classes `dps > 0` sweep.** It proves nothing and
+  manufactures false confidence.
+- Registry and metadata tests that legitimately span every **registered** class
+  stay. The unregistered reference classes are not additional ids for these to
+  iterate.
+- When a class is genuinely built out, add its tests back **with real anchors** — a
+  verified rotation, a known damage figure — not a smoke sweep.
+- A scoped test file says so in a header comment.
 
-## The engine baseline — a refactor guard, not a correctness anchor
+## Locked fixtures assert _unchanged_, never _right_
 
-`tests/engine/engineBaseline.test.ts` + `engineBaseline.fixture.json` pin the
-**entire `Result`** — dps, total, duration, every per-skill row, and a SHA-256
-digest over the whole object including `timeline`, `buffWindows` and `casts` —
-for 25 Bellstrike Umbra builds. It exists because a refactor that claims to
-preserve behaviour has to be able to prove it.
+Two fixtures pin behaviour wholesale: one over the engine's whole result for a set
+of builds, one over the buff engine and the registry underneath it, across every
+registered class with every gated param forced on.
 
-Read the distinction carefully, because it is the whole reason this file is
-allowed to exist alongside the rule below:
+Read the distinction carefully, because it is what allows them to exist alongside
+the rule below:
 
-- It does **not** assert the engine is *right*. Those numbers have no external
-  authority whatsoever.
-- It asserts the engine is *unchanged*. Any diff means the change under review
-  moved output, and that has to be intended and explained.
+- They do **not** assert the engine is _right_. Those numbers have no external
+  authority.
+- They assert it is _unchanged_. Any diff means the change under review moved
+  output, and that has to be intended and explained.
 
-Regenerate with `UPDATE_ENGINE_BASELINE=1 pnpm test`, and **only** when a change
-to the output is deliberate — the re-baseline and its justification belong in
-the same commit as the change that caused it. A silent re-baseline defeats the
-entire point.
+**Regenerate only when a change to output is deliberate**, with the re-baseline and
+its justification in the same commit as the change that caused it. A silent
+re-baseline defeats the entire point. Figures a user verified against the running
+app are spelled out separately from the generated fixture, so a re-baseline cannot
+quietly carry them along — keep any such block outside the regenerated data.
 
-The `profile-v7 anchor` block at the bottom of that file is spelled out
-separately from the fixture on purpose: those are the figures a user verified
-against the running app, so a re-baseline cannot quietly carry them along.
+The all-class fixture is allowed to span every registered class for the same
+reason: it asserts the registry is unchanged, not that any class's damage is right.
 
-## The buff-engine equivalence guard — the same pattern, for the registry underneath
+## Otherwise, no locked-DPS assertion
 
-`tests/engine/buffEngineEquivalence.test.ts` + `buffEngineEquivalence.fixture.json`
-pin `BuffEngine`'s behaviour and the buff/skill/debuff registry it runs on, for
-**every registered class** (`CLASS_IDS()`, currently just `bellstrikeUmbra`) —
-declarative fields on every `BuffModule`, built-in skill and debuff ids and
-content digests, and `calculateDamageEffects` / `activeBuffsForDisplay` output
-sampled with every gated `requires.param` forced on at tier 6, every
-triggering cast replayed, and a fixed grid of tag combinations and time steps.
-
-It exists because it was needed: converting `BuffDef` to `BuffModule`
-introduced four regressions (a dropped `counterMechanic` seed, a missing
-`tier6StatModifiers` read, a missing `durationByTrigger` read, a display/damage
-`maxStacks` divergence) that the rest of the suite — 737 tests at the time —
-did not catch. Only a broad, all-class, all-param simulation did.
-
-Same distinction as the engine baseline, same reason it is allowed to span
-every registered class despite the class-scoping rule above: **it does not
-assert any class's damage is right** — **it asserts the registry and the
-engine reading it are unchanged**. Read the header comment in the test file
-before touching it; it says so explicitly so the distinction survives being
-read out of context.
-
-Regenerate with `UPDATE_BUFF_EQUIVALENCE=1 pnpm test`, and — exactly like the
-engine baseline — only when a change to buff-engine output is deliberate, with
-the re-baseline and its justification in the same commit as the change that
-caused it.
-
-## The architecture guards
-
-Seven tests assert properties of the code rather than of a build, and all exist
-to stop the generalization work rotting:
-
-- `noClassSpecificEngineCode.test.ts` — nothing under `src/engine` may name a
-  class or an inner way, compare a display name against a literal, or match a
-  cast tag by prefix. `defaults.ts` is allowlisted: the starting build is
-  content.
-- `classModuleBoundaries.test.ts` — no class module reaches the panel/registry
-  layer, and `defineClassBuff` is not a second buff system: its marker is
-  inert everywhere `src/engine` looks, and every module carrying it — under
-  `src/data/classes/`'s and `src/data/innerWays/`'s buff folders alike — is
-  listed by at least one class or inner way.
-- `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
-  mechanic, a per-skill behaviour and a display gate from outside the engine and
-  each is picked up. Every id in it is fictional, so no shipped class can see it.
-- `mechanicRegistrationSites.test.ts` — the only files under `src/` that call
-  `registerMechanic` are the three owner registries (`definitions/classes/registry.ts`,
-  `definitions/innerWays/registry.ts`, `definitions/sets/registry.ts`) and the
-  contract's own definition site (`engine/mechanics/index.ts`); nothing
-  self-registers from anywhere else. The same file pins the call sites of the
-  other four registration entry points (`registerBuiltinBuffs`,
-  `registerSkillBehavior`, `registerDisplayGate`, `registerPoisonExtension`) to
-  each entry point's owner registry (or registries — `registerDisplayGate` and
-  `registerSkillBehavior` each have two, the class registry and the
-  inner-way registry) plus its own definition site.
-- `mechanicModuleShape.test.ts` — every top-level module under
-  `src/data/innerWays`/`src/data/sets` imports no barrel-loading registry, and
-  every `TimelineMechanic`/`SkillBehaviorFactory` factory it exports is a
-  hoisted function rather than a `const`-bound object — both rules are
-  otherwise only discoverable as a confusing runtime crash, whichever side of
-  the cycle happens to load first.
-- `tagAddressing.test.ts` — every scope and trigger entry in the shipped data
-  is namespaced and names a tag some built-in actually carries, so a typo
-  fails the suite instead of silently reaching nothing.
-- `dataDefinitionsBoundary.test.ts` — nothing under `src/data/` declares a
-  `define*` factory or calls a `register*` entry point, and nothing under
-  `src/definitions/` reaches past a `src/data/` folder barrel, `ids.ts` or JSON
-  table into an individual content module — the mechanical half of "adding a
-  class touches only `src/data/`".
-
-These legitimately span every registered class, which the class-scoping rule
-above explicitly permits for registry and metadata tests.
-
-## Otherwise, there is no locked-DPS fixture
-
-Beyond the baseline above, no test asserts an absolute DPS number.
-`defaultInputs` (`engine/defaults.ts`) is the default Bellstrike Umbra build,
-not an anchor. Don't introduce a new strict-equality DPS assertion without a
+Beyond those fixtures, **no test asserts an absolute DPS number**, and the default
+build is not an anchor. Do not introduce a strict-equality DPS assertion without a
 verified external source behind it.
 
-`tests/engine/bellstrikeUmbraParity.test.ts` compares against one verified
-live-site build. Its DPS bands are an intentionally **loose, re-centered fit
-around what the engine actually produces** — the engine still lands short of the
-site. **Do not tighten the bands to the site's numbers** until a term-by-term
-reconstruction closes the gap. The white→yellow rate-conversion assertion in
-that file *is* exact and must stay green.
+The parity comparison against a verified live build uses intentionally **loose,
+re-centered bands around what the engine actually produces** — the engine still
+lands short. **Do not tighten the bands** until a term-by-term reconstruction
+closes the gap. The rate-conversion assertion in that file _is_ exact and must stay
+green.
 
 ## Calculation rules
 
-The four unconditional rules (CALCULATION.md § "Calculation rules") have **no
-cached anchor**. Their only guard is `tests/engine/damageRules.test.ts`, which
-is **directional** — it asserts the sign and shape of a change, not a value. If
-you touch `penFrac`, `dotRules` or `rateRes`, that file is the one that has to
-be convinced.
+The four unconditional rules (CALCULATION.md) have **no cached anchor**. Their only
+guard is directional — it asserts the sign and shape of a change, not a value. If
+you touch the penetration, DoT or rate-resistance branches, that is the file that
+has to be convinced.
+
+## The architecture guards
+
+A guard test exists for each invariant the generalization work depends on, and they
+assert properties of the code rather than of a build:
+
+- no class, inner way or skill named under `src/engine`, no display-name literal
+  comparison, no cast-tag prefix matching
+- no class module reaching the panel or registry layer, and every module marked as
+  class-owned listed by an actual owner
+- a **fictional** class registering each extension point from outside the engine
+  and being picked up — every id in it fictional, so no shipped class can see it
+- each registration entry point called only from its owner registry and its own
+  definition site; nothing self-registers
+- content modules importing no barrel-loading registry, and every exported factory
+  hoisted rather than `const`-bound — otherwise the failure is a load-order crash
+- every scope and trigger entry namespaced and naming a tag some built-in carries,
+  so a typo fails the suite instead of silently reaching nothing
+- the `src/data` ↔ `src/definitions` boundary in both directions (CLASSES.md)
+- `docs/**` naming no content and carrying no dates (CLAUDE.md § "Docs are
+  implementation rules")
+
+These legitimately span every registered class, which the scoping rule above
+permits for registry and metadata tests. **Adding an invariant means adding its
+guard** — an invariant only prose enforces is one that rots.
+
+## Writing a new engine test
+
+- Prefer a behavioural assertion — this buff raises that skill's damage, this
+  cadence emits N ticks — over a magic number.
+- When a magic number is unavoidable, cite where it came from.
+- **Name the file after the mechanic, not the fix.** No dates, no bug numbers.
+- Prefer encoding a constraint in the **test name** over a comment.
+- No Chinese anywhere in `tests/` (CLAUDE.md § "Language").
 
 ## Migration tests
 
-Every migration needs two cases (MIGRATIONS.md lists the other requirements):
+Every step in `src/migrations/` ships with a test in `tests/migrations/`.
+Migrations are the one kind of code neither the type checker nor the rest of the
+suite can protect: a broken step corrupts real saved builds silently.
 
-1. A **pre-change blob** fed through `hydrateInputs` (or the relevant loader),
-   asserting the healed result.
-2. An **already-correct blob**, asserting it round-trips unchanged — this is
-   what proves idempotence.
+1. **Test against a real captured profile**, named for the version it was captured
+   at, one test file per fixture. A hand-written literal contains only the fields
+   you remembered, so it cannot catch a step that drops the one you forgot.
+2. **Assert the fixture is genuinely pre-change**, in its own test, before
+   anything else. Fixtures drift; a repo-wide replace rewrites one without
+   noticing and every other test keeps passing while covering nothing. The fixture
+   is data under test, not scaffolding.
+3. **Prove the step did the work.** The hydrator repairs values on every load, so a
+   test that writes a blob, loads, and checks the result may be measuring the
+   hydrator. Call the step **directly**, then separately pin that it is registered
+   and that the chain reaches it. Verify by deleting the step from the registry and
+   re-running: **if the test still passes, it is not testing the migration.**
+4. **Then test the full path end to end** — direct calls prove the transform, not
+   that it is wired in. Assert the upgraded blob was persisted at the latest
+   version, so the chain runs once rather than on every load.
+5. **Assert the user's build survived**, comparing against the fixture rather than
+   hardcoded constants: identity, gear inventory and equipped set, panel stats,
+   every selected inner way, and that the build still produces damage with no
+   missing-rotation warning. **A field your step does not claim to touch must come
+   out identical.**
+6. **Assert by kind of change**: a renamed field arrived at its new home _and_ the
+   old key is gone; a renamed id **exists** among the built-ins (an unknown id is
+   skipped silently and only shows up as quietly lower damage); a narrowed
+   allowlist cleared the illegal value and left a legal neighbour alone; a changed
+   unit converted the number rather than merely being present.
+7. **Never delete an old fixture.** Each exercises every hop from its own version
+   up, which is the only coverage proving a multi-step walk composes. Expectations
+   grow cumulatively — when a later step changes a field an older fixture asserts,
+   update the expectation, never the stored data.
+8. **Assert idempotency both directions** — load/save/load is identical, an
+   already-migrated blob passes through unchanged, and the step does not mutate its
+   input.
+9. **Chain behaviour is tested once, not per step** — old, missing, garbage and
+   future versions, a throwing step, a non-array store. Do not re-test them per
+   migration.
 
-Live in `tests/storage.test.ts` and `tests/migrations/`. Follow the header
-convention: `// Additive, no version bump — see MIGRATIONS.md`.
-
-⚠️ **Tests that construct `Inputs` literals bypass the hydrator** and will not
+⚠️ **A test that constructs `Inputs` literals bypasses the hydrator** and will not
 catch a too-aggressive migration silently changing the default build.
 
 ## Worker tests
 
 Worker compute functions get **direct-call parity tests** — call the compute
-function and the direct path, assert they agree. **Never spin up a real `Worker`
-in vitest.** `tests/engine/dpsWorkerOffload.test.ts` is the pattern.
-
-## Writing a new engine test
-
-- Prefer a behavioural assertion (this buff raises that skill's damage; this
-  cadence emits N ticks) over a magic number.
-- When a magic number is unavoidable, say in a comment where it came from.
-- Name the file after the mechanic, not the fix (`bleedCadence`, not
-  `bugfix-2026-08`).
-- No Chinese anywhere in `tests/` — CLAUDE.md § "Language" applies here exactly
-  as it does to `src/`.
+function and the direct path, assert they agree. **Never spin up a real worker in
+vitest.**
 
 ## CI and lint
 
-`.github/workflows/ci.yml` runs on every push to `main` and on every pull
-request. It gates, in order: `format:check`, `lint`, the English-only grep
-guard, `typecheck`, `build`, `test`. There is no deploy job — `pnpm run deploy`
-stays manual and local.
+CI gates, in order: format check, lint, the English-only grep guard, typecheck,
+build, test. There is no deploy job.
 
-`pnpm run lint` is `eslint . --max-warnings 0` against a flat config
-(`eslint.config.mjs`): `@eslint/js` recommended, `typescript-eslint`
-recommended (non-type-checked), `eslint-plugin-react-hooks`
-recommended-latest, `eslint-plugin-react-refresh` vite. The config carries **no
-severity overrides** for the react-hooks / react-refresh rules, so
-`react-hooks/set-state-in-effect`, `react-hooks/preserve-manual-memoization`
-and `react-refresh/only-export-components` run at the plugins' preset
-`error`, and `react-hooks/exhaustive-deps` at the plugin's preset `warn`.
-
-**Zero warnings** is the gate — that includes unused `eslint-disable`
-directives, which ESLint reports as warnings under this flat config. The
-patterns that used to warn (state resets inside worker-offload effects,
-provider modules that also export a hook, React Compiler bailouts from
-out-of-order `useMemo` declarations) were removed structurally: derived render
-values instead of state resets in effects, context/hook modules split out of
-provider modules, memo declarations ordered before their readers. Reintroducing
-one of these must be fixed the same way — not with a disable directive and not
-with a suppressions baseline.
-
-`typecheck` and `build` still type-check with TypeScript **7** via the `tsc`
-binary. `typescript` in `node_modules` resolves to the TS 6 API package
-because `typescript-eslint` cannot load against TS 7 yet; `tsc` itself comes
-from the `@typescript/native` alias.
+**Zero warnings is the gate** — including unused disable directives. The patterns
+that used to warn were removed **structurally**: derived render values instead of
+state resets in effects, context and hook modules split out of provider modules,
+memo declarations ordered before their readers. Reintroducing one is fixed the same
+way — **not** with a disable directive and **not** with a suppressions baseline.

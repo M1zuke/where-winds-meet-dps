@@ -1,4 +1,3 @@
-// See docs/PROFILE-MIGRATIONS.md.
 import type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 import { V5__englishIdsWithoutSitePrefix } from "./V5__englishIdsWithoutSitePrefix"
 import { V6__dropDerivedStats } from "./V6__dropDerivedStats"

@@ -1,6 +1,5 @@
-// `Inputs.set` stopped storing the set's display name and stores a stable id
-// from `src/data/sets/` instead — see docs/CALCULATION.md § "Mind-method
-// layers" and MIGRATIONS.md. A profile saved before this holds the old name.
+// `Inputs.set` stores a stable id from `src/data/sets/`, not the set's display
+// name. A profile saved before that holds the old name — docs/MIGRATIONS.md.
 import { beforeEach, describe, expect, it } from "vitest"
 import { loadProfiles } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"

@@ -3,18 +3,58 @@
 Always-on guardrails, plus a router to the detail. Keep this file **short**: if
 a section here grows past a few lines, it belongs in the topic file instead.
 
+## Docs are implementation rules — the gate on editing them
+
+> **Read this before opening any file in `docs/`. A docs edit that fails this
+> gate is a defect, not a contribution.**
+
+`docs/*.md` say **how a thing must be implemented**. They do not describe how the
+code works — the code does that, and a prose copy of it rots. Every statement is
+a rule an implementer must satisfy, or an external constraint the code cannot
+carry.
+
+**The gate: which rule changed?** A commit may touch `docs/` only if the same
+commit changes a system contract — a type, a schema field, an engine rule, an
+invariant, a convention. If you cannot name the rule that changed, do not touch
+`docs/`.
+
+None of these earn a docs edit:
+
+- adding or changing a skill, buff, debuff, mechanic, class, rotation, inner way
+- implementing something the docs already state as a rule
+- recording that work happened, what it used to be, or who decided it
+- an example, a worked walkthrough, or a status / coverage note
+
+1. **Nothing content-specific — `docs/` or the wiki.** No skill, buff, debuff,
+   inner way or gear set name or id; no coefficient; no frame count. Examples use
+   placeholders. Class names appear only in `docs/CLASSES.md`'s implemented
+   table, `docs/TESTING.md`'s scoping rule and `docs/REFERENCE-DATA.md`.
+   Mechanically enforced by `tests/data/docsStayGeneral.test.ts`.
+2. **Every sentence must hold for every class and skill.** If it is only true of
+   one it is not a rule, and it belongs in no docs file at all. Genuinely complex
+   per-skill logic gets a short comment in the `.ts` that defines the skill —
+   nothing else, nowhere else.
+3. **No descriptions of how code works.** No module tours, no folder trees, no
+   call-order walkthroughs, no "X then calls Y". If a reader gets it by opening
+   the file, it is noise.
+4. **No history.** No dates, no decision provenance, no changelog sections.
+5. **Adding does not add prose.** If your change made a docs file longer without
+   changing a rule, delete what you added.
+
+Every section should read like a checklist: imperative, checkable, no story.
+
 ## Read this first, by topic
 
-| working on | read |
-| --- | --- |
-| damage math — the formula chain, stat layer, calculation rules | `docs/CALCULATION.md` |
-| a skill, trigger, buff or debuff **data model** | `docs/TIMELINE.md` |
-| whether a mechanic is a stat buff or a skill buff | `docs/BUFFS.md` |
-| a class, skill/buff data file, or anything that mints an entity id | `docs/CLASSES.md` |
-| **changing a specific skill** | its sibling `<slug>.md` next to the skill JSON, **if one exists** — only special-logic skills have one; never bulk-read them (convention: CLASSES.md § "Skill special-logic docs") |
-| `src/ui/**`, `App.tsx`, or `dpsWorker.ts` | `docs/UI.md` |
-| writing a localStorage migration | `docs/MIGRATIONS.md` |
-| adding or changing tests | `docs/TESTING.md` |
+| working on                                                         | read                     |
+| ------------------------------------------------------------------ | ------------------------ |
+| damage math — the formula chain, stat layer, calculation rules     | `docs/CALCULATION.md`    |
+| a skill, trigger, buff or debuff **data model**                    | `docs/TIMELINE.md`       |
+| whether a mechanic is a stat buff or a skill buff                  | `docs/BUFFS.md`          |
+| a class, skill/buff data file, or anything that mints an entity id | `docs/CLASSES.md`        |
+| `src/ui/**`, `App.tsx`, or `dpsWorker.ts`                          | `docs/UI.md`             |
+| writing a localStorage migration                                   | `docs/MIGRATIONS.md`     |
+| adding or changing tests                                           | `docs/TESTING.md`        |
+| dev-only reference material outside `src/`                         | `docs/REFERENCE-DATA.md` |
 
 ## Adding something new — start from the wiki how-to
 
@@ -22,13 +62,13 @@ a section here grows past a few lines, it belongs in the topic file instead.
 system it plugs into. Read the how-to **first** — it is the ordered file list,
 the wiring, the tests to update and the migration question, in one place.
 
-| adding | read |
-| --- | --- |
-| a class or spec | `How to Add a Class` |
-| a skill | `How to Add a Skill` |
-| a rotation | `How to Add a Rotation` |
-| a buff, debuff or DoT | `How to Add a Buff or Debuff` |
-| an inner way (mind method) | `How to Add an Inner Way` |
+| adding                     | read                          |
+| -------------------------- | ----------------------------- |
+| a class or spec            | `How to Add a Class`          |
+| a skill                    | `How to Add a Skill`          |
+| a rotation                 | `How to Add a Rotation`       |
+| a buff, debuff or DoT      | `How to Add a Buff or Debuff` |
+| an inner way (mind method) | `How to Add an Inner Way`     |
 
 The wiki is the [project wiki](https://github.com/M1zuke/where-winds-meet-dps/wiki),
 cloned beside this repo at `../where-winds-meet-dps.wiki` — read the `.md` files
@@ -38,12 +78,16 @@ there directly. It also carries `Development Setup`, `Architecture Overview`,
 
 Two rules keep it trustworthy:
 
-1. **`docs/` wins** where the two disagree — it ships next to the code.
+1. **One source per fact.** A rule, a number, a formula and a field name live in
+   `docs/` and nowhere else. The wiki carries the ordered procedure and the _why_,
+   and links to the `docs/` rule instead of restating it — so the two can never
+   disagree. The gate above binds the wiki too: no content names, no examples
+   built on a real skill.
 2. A change that invalidates a how-to updates that page **in the same piece of
    work**, as its own commit in the wiki clone. A stale how-to is worse than a
    missing one.
 
-The sections below are the rules that apply *before* you know which topic you're
+The sections below are the rules that apply _before_ you know which topic you're
 in — they stay here on purpose, because a pointer you don't know to follow isn't
 a guardrail.
 
@@ -53,35 +97,58 @@ Nothing is committed or pushed directly to `main`. Every change goes onto a
 branch, which is what gets pushed; `main` only moves via merges of those
 branches.
 
-## Comments and names — write the code, not a narration
+## Comments: as close to zero as possible
 
-> **This has been asked for repeatedly. Treat a violation as a defect, not a
-> style nit.**
+> **This has been asked for repeatedly, and the bar has moved: the target is not
+> "few comments", it is none. Treat a violation as a defect, not a style nit.**
 
-1. **A comment must carry what the code cannot** — a rejected alternative, an
-   ordering constraint that would otherwise get re-broken, a constraint from
-   outside the file, an external-source citation, a unit on a bare number. The
-   test is: *could the next reader reconstruct this from the code and the topic
-   docs?* If yes, it is noise:
+Code describes itself. A comment is a failure to make the code say it, and is
+allowed only where the code genuinely cannot:
 
-   ```
-   // Sort the entries by name.     ← delete, the call already says it
-   // Bump the retry counter.       ← delete
-   // Holds the parsed profiles.    ← delete, the name says it
-   ```
+- **genuinely complex logic** whose _why_ cannot be read off the implementation
+- **an external-source citation** — an in-game value, a PDF or CN source, a unit
+  on a bare number. Its as-of date is part of the citation, not history.
+- **an ordering constraint** that would otherwise get re-broken
+- **the previous data shape**, in `src/migrations/**` and storage repair only —
+  there the old shape _is_ the specification
 
-   This applies to **every file that ships** — source, stylesheets, config,
-   tests, data — not only the ones where you think of yourself as "writing
-   code". Whole files ending up with no comments at all is the normal outcome,
-   not a warning sign. Moving code does not move its comments with it: re-judge
-   each one against this bar and drop it if it fails, even when you were told to
-   preserve it. No tombstones either — when you delete something, delete the
-   lines that referenced it rather than noting it is gone.
-2. **Names say what they hold at their point of use.** No `a`, `b`, `x`, `tmp`,
-   no one-letter stand-in for a longer word — locals, parameters, or imports.
-   `const a = loadProfiles()` is `const profiles = loadProfiles()`. A name that
-   needs its surrounding line to be understood is a name to replace, and this
-   outranks any external convention that prefers brevity.
+Everything else is deleted:
+
+```
+// Sort the entries by name.     ← delete, the call already says it
+// Bump the retry counter.       ← delete
+// Holds the parsed profiles.    ← delete, the name says it
+```
+
+And **never** write history:
+
+```
+// Removed in <commit> / no longer used since <date>.
+// Since 2026-xx-xx the user decided ...
+// This used to be inline in the timeline.
+// Formerly `armorSetBoni.json`.
+```
+
+Git carries the history; it does not belong in the source. When you delete
+something, delete every line that referenced it — no tombstones, and no
+`@deprecated` marker parked on a field that should simply be gone. Prefer
+encoding a constraint in a **test name** over a comment: a test called
+`keeps a steady tick cadence across re-application` cannot rot the way a warning
+comment can.
+
+This applies to **every file that ships** — source, stylesheets, config, tests,
+data, docs — not only the ones where you think of yourself as "writing code".
+Whole files with no comments at all are the normal outcome, not a warning sign.
+Moving code does not move its comments with it: re-judge each one against this
+bar and drop it if it fails, even when you were told to preserve it.
+
+## Names say what they hold at their point of use
+
+No `a`, `b`, `x`, `tmp`, no one-letter stand-in for a longer word — locals,
+parameters, or imports. `const a = loadProfiles()` is
+`const profiles = loadProfiles()`. A name that needs its surrounding line to be
+understood is a name to replace, and this outranks any external convention that
+prefers brevity.
 
 If you find yourself writing a comment to explain an identifier, fix the
 identifier instead. Before calling any task done, re-read your own diff and
@@ -122,15 +189,15 @@ there is **no `zh` locale and no language toggle**.
 
 Two different conventions for the three rates:
 
-| | precision | critRate | affinityRate | who uses |
-| --- | --- | --- | --- | --- |
-| **White** (raw character) | from gear/build | from gear/build | from gear/build | the **UI**: stored on `Inputs`, what the user types |
+|                                         | precision                                    | critRate          | affinityRate      | who uses                                                      |
+| --------------------------------------- | -------------------------------------------- | ----------------- | ----------------- | ------------------------------------------------------------- |
+| **White** (raw character)               | from gear/build                              | from gear/build   | from gear/build   | the **UI**: stored on `Inputs`, what the user types           |
 | **Yellow** (effective, post-resistance) | `(white − 0.65) / (1 + r) + 0.65` (soft-cap) | `white / (1 + r)` | `white / (1 + r)` | the **formula**: `computeSkillDamage` consumes these directly |
 
 1. `Inputs.precision`, `Inputs.critRate`, `Inputs.affinityRate` are **WHITE**.
    The user types white into the UI. Do not change this.
 2. The engine converts to yellow in exactly one place — `panel.ts
-   effectiveRates` — and feeds yellow into `formula.computeSkillDamage`.
+effectiveRates` — and feeds yellow into `formula.computeSkillDamage`.
 3. **`directCritRate` / `directAffinityRate` are NOT affected by resistance** —
    same value white or yellow.
 4. **Building a fixture from yellow reference values** (e.g. a reference site's
@@ -151,15 +218,15 @@ others.
 ## localStorage migrations
 
 > **MANDATORY — check this on EVERY change, no exceptions.** Before you call any
-> task done, ask: *can a profile already saved in a user's browser be wrong,
-> stale, or illegal under this change?* If yes, the change is **not complete**
+> task done, ask: _can a profile already saved in a user's browser be wrong,
+> stale, or illegal under this change?_ If yes, the change is **not complete**
 > without a migration in the same commit. This is not optional polish and it is
 > not a follow-up — a shipped change without its migration silently corrupts
 > real user builds, and nothing in the test suite or the type checker will tell
 > you. Saved profiles are the one part of this app that can't be regenerated.
 >
-> Say explicitly in your summary which it was: *"migration added: <what it
-> heals>"* or *"no migration needed: <why saved profiles are unaffected>"*.
+> Say explicitly in your summary which it was: _"migration added: <what it
+> heals>"_ or _"no migration needed: <why saved profiles are unaffected>"_.
 > Never leave it unstated.
 
 The check lives here because it fires on changes that **don't look**
@@ -175,9 +242,9 @@ out loud, every time.
 Classify FIRST — the two categories live in different places, and mixing them up
 is how this engine grows a double-count.
 
-> **The dividing question:** does it change the character's *stats*
-> (→ stat layer, invisible), or does it change the *damage of specific skills
-> only* (→ a data-driven buff-def, visible in the Skill Editor)?
+> **The dividing question:** does it change the character's _stats_
+> (→ stat layer, invisible), or does it change the _damage of specific skills
+> only_ (→ a data-driven buff-def, visible in the Skill Editor)?
 
 Never hardcode a per-skill mechanic in `timeline.ts`, and never add a read-only
 display wrapper that duplicates an engine constant. One source of truth.
@@ -187,12 +254,12 @@ display wrapper that duplicates an engine constant. One source of truth.
 ## Calculation rules
 
 Four rules apply unconditionally, from the external sources (Midasione PDF + CN
-community sources) per user decision 2026-07-18: graze rate
-`(1−precision)(1−affinity)`; net-pen `÷100` deficit / `÷200` overflow
-(deliberately inverts PDF §7 — **do not "fix" it back**); DoT (`sustain`) rows
-lose flat damage and elevated matching-path scaling; raw rate bonuses are
-`÷(1+r)` before the cap (except Thundercry (Modao) charged crit = flat,
-post-cap). Penetration resistance is **zero for every target**.
+community sources): graze rate `(1−precision)(1−affinity)`; net-pen `÷100`
+deficit / `÷200` overflow (deliberately inverts PDF §7 — **do not "fix" it
+back**); DoT (`sustain`) rows lose flat damage and elevated matching-path
+scaling; a skill's raw affinity-rate bonus is `÷(1+r)` and falls inside the cap,
+while its raw crit-rate bonus is flat and added after the cap. Penetration
+resistance is **zero for every target**.
 
 These have no cached anchor — only the directional `damageRules.test.ts`.
 

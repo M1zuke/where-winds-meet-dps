@@ -1,6 +1,6 @@
 // A class's own `classBuffDefs` is reachable purely by being that class;
 // `buffDefsForClass` additionally folds in every slottable inner way's
-// buffDefs and the globals — see docs/CLASSES.md § "Buff category".
+// buffDefs and the globals — see docs/CLASSES.md § "Buff ownership".
 import { describe, expect, it } from "vitest"
 import { buffDefsForClass, specForClass } from "../../src/engine/buffs/data"
 import { classDefinition } from "../../src/definitions/classes/registry"

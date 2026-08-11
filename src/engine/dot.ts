@@ -14,15 +14,14 @@ const DEBUFF_ID_PREFIX = "debuff-"
 
 // A debuff names the skill its per-tick coefficients come from. `sourceSkillId`
 // is authored; absent, the id convention is used — `debuff-<classId>-<slug>`
-// ticks from `<classId>-<slug>` (CLASSES.md § "Naming").
+// ticks from `<classId>-<slug>` (CLASSES.md § "Id schemes").
 export function tickSourceSkillId(debuff: Debuff): string | null {
   if (debuff.dot?.sourceSkillId) return debuff.dot.sourceSkillId
   return debuff.id.startsWith(DEBUFF_ID_PREFIX) ? debuff.id.slice(DEBUFF_ID_PREFIX.length) : null
 }
 
 // The tick's coefficients are the source skill's first hit when there is one,
-// so editing that skill in the Skill Editor moves its DoT (docs/CLASSES.md
-// § "Hand-maintained data files").
+// so editing that skill in the Skill Editor moves its DoT.
 export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): DebuffDotSpec | null {
   const base = debuff.dot
   if (!base) return null

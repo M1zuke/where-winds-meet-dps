@@ -1,5 +1,5 @@
-// Refactor guard, NOT a correctness anchor — see docs/TESTING.md § "The engine
-// baseline". These numbers carry no external
+// Refactor guard, NOT a correctness anchor — see docs/TESTING.md § "Locked
+// fixtures assert unchanged, never right". These numbers carry no external
 // authority: they exist so a behaviour-preserving refactor can prove it
 // preserved behaviour. Re-baseline (UPDATE_ENGINE_BASELINE=1) only when a
 // change to the engine's output is intended and justified in the same commit.

@@ -1,4 +1,3 @@
-// Guards the chain itself — see docs/PROFILE-MIGRATIONS.md.
 import { beforeEach, describe, expect, it } from "vitest"
 import {
   LATEST_PROFILES_VERSION,
