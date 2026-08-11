@@ -79,10 +79,15 @@ describe("profile-v6 fixture — the stored blob predates the corrected max roll
 })
 
 describe("the corrected cap is what the gear form and the engine both use", () => {
-  it("getWordSpecs reports 9.797 %, and relayed gear 9.2 %", () => {
+  it("getWordSpecs reports 9.797 %, and relayed gear 9.21 %", () => {
     const spec = getWordSpecs(LEGACY.profile.inputs).find((candidate) => candidate.word === WORD)!
     expect(spec.amount).toBeCloseTo(MAX_ROLL, 10)
-    expect(relayedCapValue(spec.amount, spec.unit)).toBeCloseTo(0.092, 10)
+    expect(relayedCapValue(spec.amount, spec.unit)).toBeCloseTo(0.0921, 10)
+  })
+
+  it("only ever raises the cap a stored roll was clamped to, so v7 profiles stay legal", () => {
+    const spec = getWordSpecs(LEGACY.profile.inputs).find((candidate) => candidate.word === WORD)!
+    expect(relayedCapValue(spec.amount, spec.unit)).toBeGreaterThanOrEqual(0.092)
   })
 })
 

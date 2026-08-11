@@ -6,7 +6,7 @@ import type {
   Inputs,
   StoredProfile,
 } from "../../../../engine/types"
-import { GEAR_SLOTS } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, GEAR_SLOTS } from "../../../../engine/types"
 import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
@@ -16,6 +16,7 @@ import { GearInventoryPanel } from "../gear-inventory-panel/GearInventoryPanel"
 import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
 import { GearSwapPreviewPanel } from "../gear-swap-preview-panel/GearSwapPreviewPanel"
 import { NewGearPieceDialog } from "../new-gear-piece-dialog/NewGearPieceDialog"
+import { ImportGearDialog } from "../import-gear-dialog/ImportGearDialog"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
 import { ReattunementAnalyzerPanel } from "../reattunement-analyzer-panel/ReattunementAnalyzerPanel"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
@@ -53,6 +54,7 @@ export function GearTab({
   const [selectedSlot, setSelectedSlot] = useState<GearSlot | null>(null)
   const [showGlobal, setShowGlobal] = useState(false)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
 
   const inventory = inputs.inventory
   const equipped = inputs.equipped
@@ -163,6 +165,38 @@ export function GearTab({
     }
   }
 
+  async function importGear(imported: GearPiece[], keepDisplaced: boolean): Promise<void> {
+    const displaced = GEAR_SLOTS.map((slot) => equipped[slot]).filter(
+      (pieceId): pieceId is string => !!pieceId,
+    )
+    const filledSlots = new Set(imported.map((piece) => piece.slot))
+    const emptiedCount = GEAR_SLOTS.filter(
+      (slot) => equipped[slot] && !filledSlots.has(slot),
+    ).length
+    if (
+      emptiedCount > 0 &&
+      !(await confirm(
+        `${t("This import has nothing for")} ${emptiedCount} ${t("of your equipped slots. Empty them?")}`,
+      ))
+    ) {
+      return
+    }
+
+    const kept = keepDisplaced
+      ? inventory
+      : inventory.filter((piece) => !displaced.includes(piece.id))
+    const nextEquipped: EquippedSlots = { ...EMPTY_EQUIPPED }
+    for (const piece of imported) nextEquipped[piece.slot] = piece.id
+
+    setImportOpen(false)
+    commitGearChange([...kept, ...imported], nextEquipped)
+    const first = imported[0]
+    if (first) {
+      setSelectedSlot(first.slot)
+      setSelectedPieceId(first.id)
+    }
+  }
+
   function selectSlot(slot: GearSlot, pieceId: string | null): void {
     setSelectedSlot(slot)
     setSelectedPieceId(pieceId)
@@ -171,7 +205,12 @@ export function GearTab({
   return (
     <>
       <div className="panel">
-        <h2>{t("Equipped")}</h2>
+        <div className="panel-head">
+          <h2>{t("Equipped")}</h2>
+          <button type="button" className="btn primary" onClick={() => setImportOpen(true)}>
+            {t("Import gear")}
+          </button>
+        </div>
         <GearSlotTiles
           inventory={inventory}
           equipped={equipped}
@@ -252,6 +291,14 @@ export function GearTab({
           inputs={inputs}
           onCancel={() => setNewPieceOpen(false)}
           onSave={handleCreateSave}
+        />
+      )}
+
+      {importOpen && (
+        <ImportGearDialog
+          inputs={inputs}
+          onCancel={() => setImportOpen(false)}
+          onImport={importGear}
         />
       )}
     </>
