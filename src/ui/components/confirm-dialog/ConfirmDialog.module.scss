@@ -1,7 +1,9 @@
 .confirmOverlay {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  // Above every dialog (1200) and the combobox dropdown portal (1300): a confirm
+  // blocks the thing that raised it.
+  z-index: 1400;
   background: var(--color-overlay);
   backdrop-filter: blur(2px);
   display: flex;
