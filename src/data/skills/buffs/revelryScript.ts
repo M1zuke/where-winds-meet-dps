@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 
@@ -7,7 +7,7 @@ import { stat } from "../../../engine/effects/effect"
 // directly in `timeline.ts`, unrelated to this `enabledParam` — no inner way
 // ever maps to it, since it names a rotation/team-support toggle, not a
 // build attribute (see docs/CALCULATION.md § "Mechanic coverage").
-export const revelryScript = defineClassBuff({
+export const revelryScript = defineBuff({
   id: BUFF.revelryScript,
   name: "Revelry Script",
   requires: { param: PARAM.revelryScript },

@@ -3,6 +3,7 @@ import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { BUFF } from "../skills/buffs/ids"
 import { concentrationAvailable, insightfulStrikeMechanic } from "./insightfulStrikeMechanic"
+import { concentrationBuffDef } from "./insightfulStrikeConcentration"
 
 // VERIFIED as the right inner way for `concentration`, but deliberately left
 // without a `buffParam` after an overlap audit: the only def gated by it
@@ -35,4 +36,5 @@ export const insightfulStrike = defineInnerWay({
   },
   mechanics: [declareMechanic(insightfulStrikeMechanic(), MECHANIC_ORDER.concentration)],
   displayGates: [{ defId: BUFF.concentration, predicate: concentrationAvailable }],
+  buffDefs: [concentrationBuffDef()],
 })

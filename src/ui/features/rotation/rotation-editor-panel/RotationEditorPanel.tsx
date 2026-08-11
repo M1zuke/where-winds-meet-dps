@@ -19,7 +19,7 @@ import {
   builtinRotationsForClass,
   defaultRotationForClass,
 } from "../../../../engine/builtinLibrary"
-import { specMechanicDefIds } from "../../../../engine/buffs/catalog"
+import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import { buffChipHue, castBuffDisplayOrder, visibleCastBuffs } from "../buffChips"
 import {
@@ -207,7 +207,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     return map
   }, [result.casts])
 
-  const hiddenBuffIds = useMemo(() => specMechanicDefIds(inputs.classId), [inputs.classId])
+  const hiddenBuffIds = useMemo(() => hiddenTimelineBuffIds(inputs.classId), [inputs.classId])
   const buffOrder = useMemo(
     () => castBuffDisplayOrder(result.casts, hiddenBuffIds),
     [result.casts, hiddenBuffIds],

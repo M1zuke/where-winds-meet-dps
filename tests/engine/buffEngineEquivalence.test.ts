@@ -33,11 +33,7 @@ import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/regist
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
-import {
-  buffDefsForClass,
-  groupBuffDefs,
-  mechanicBuffDefsForClass,
-} from "../../src/engine/buffs/data"
+import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 
 const FIXTURE_PATH = join(process.cwd(), "tests/engine/buffEngineEquivalence.fixture.json")
@@ -130,7 +126,6 @@ function staticDumpFor(classId: string) {
     },
     buffs: buffDefsForClass(classId).map(describeModule),
     group: groupBuffDefs().map(describeModule),
-    mechanics: mechanicBuffDefsForClass(classId).map(describeModule),
   }
 }
 
@@ -165,8 +160,7 @@ const SPELLED_OUT_CLASS_ID = "bellstrikeUmbra"
 function dynamicDumpFor(classId: string) {
   const buffs = buffDefsForClass(classId)
   const group = groupBuffDefs()
-  const mechanics = mechanicBuffDefsForClass(classId)
-  const allModules = [...buffs, ...group, ...mechanics]
+  const allModules = [...buffs, ...group]
 
   // Forces every gate open so the simulation exercises every branch a build
   // could reach, not just whatever the default build happens to enable.
@@ -178,7 +172,7 @@ function dynamicDumpFor(classId: string) {
     }
   }
 
-  const engine = new BuffEngine(params, buffs, [...group, ...mechanics])
+  const engine = new BuffEngine(params, buffs, group)
   const castTags = [...new Set(allModules.flatMap((module) => module.triggeredBy ?? []))].sort()
   let time = 0
   for (const castTag of castTags) {
@@ -254,11 +248,10 @@ describe("buff engine equivalence — every registered class", () => {
       expect(current.debuffs).toEqual(recorded![classId].static.debuffs)
     })
 
-    it(`${classId} — buff/group/mechanic declarative fields are unchanged`, () => {
+    it(`${classId} — buff/group declarative fields are unchanged`, () => {
       const current = staticDumpFor(classId)
       expect(current.buffs).toEqual(recorded![classId].static.buffs)
       expect(current.group).toEqual(recorded![classId].static.group)
-      expect(current.mechanics).toEqual(recorded![classId].static.mechanics)
     })
 
     it(`${classId} — BuffEngine damage and display output are unchanged across every gate, cast, tag and time step probed`, () => {

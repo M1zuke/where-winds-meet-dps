@@ -3,6 +3,7 @@ import { tierFromStacks, type InnerWayDef } from "./innerWayDef"
 import { INNER_WAYS } from "../../data/innerWays"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
+import { registerSkillBehavior } from "../../engine/behavior"
 import { setInnerWayDefs } from "./defStore"
 
 export { INNER_WAYS }
@@ -10,6 +11,8 @@ export { INNER_WAYS }
 for (const def of INNER_WAYS) {
   for (const { mechanic, order } of def.mechanics ?? []) registerMechanic(mechanic, order)
   for (const { defId, predicate } of def.displayGates ?? []) registerDisplayGate(defId, predicate)
+  for (const { skillId, factory } of def.skillBehaviors ?? [])
+    registerSkillBehavior(skillId, factory)
 }
 
 setInnerWayDefs(INNER_WAYS)

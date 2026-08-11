@@ -16,14 +16,17 @@ import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
-import { soulShaken } from "../../src/data/skills/bellstrike-umbra/buffs/soulShaken"
+import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { displayGateFor } from "../../src/engine/buffs/displayGates"
-import { specMechanicDefIds } from "../../src/engine/buffs/catalog"
+import { hiddenTimelineBuffIds } from "../../src/engine/buffs/catalog"
+import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { prepareMechanics } from "../../src/engine/mechanics"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import type { Inputs } from "../../src/engine/types"
+
+const soulShaken = soulShakenBuffDef()
 
 describe("INNER_WAYS — ids and display names are pinned", () => {
   it.each([
@@ -247,7 +250,36 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
     expect(preparedIds).toContain("concentration")
   })
 
-  it("the merged Zenith Bar id is not a spec-mechanic def id, so it never hides the timeline chip", () => {
-    expect(specMechanicDefIds("bellstrikeUmbra").has(ZENITH_BAR_BUFF_ID)).toBe(false)
+  it("the merged Zenith Bar id never hides the timeline chip", () => {
+    expect(hiddenTimelineBuffIds("bellstrikeUmbra").has(ZENITH_BAR_BUFF_ID)).toBe(false)
+  })
+})
+
+describe("inner-way ownership — buffDefs and skillBehaviors", () => {
+  it.each([
+    [INNER_WAY_ID.insightfulStrike, ["concentration"]],
+    [INNER_WAY_ID.wolfchasersArt, ["potentRiverFlow", "wineGu", "soulShaken"]],
+    [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
+    [INNER_WAY_ID.moraleChant, []],
+    [INNER_WAY_ID.bitterSeason, []],
+  ])("%s declares buffDefs %j", (id, ids) => {
+    const def = innerWayDefinition(id)!
+    expect((def.buffDefs ?? []).map((module) => module.id)).toEqual(ids)
+  })
+
+  it("Sword Horizon names Bleed Detonation literally, not by a role tag", () => {
+    const def = innerWayDefinition(INNER_WAY_ID.swordHorizon)!
+    expect(def.skillBehaviors?.map((registration) => registration.skillId)).toEqual([
+      "bellstrikeUmbra-bleed-detonation",
+    ])
+  })
+
+  it("every inner-way buffDefs entry reaches buffDefsForClass('bellstrikeUmbra')", () => {
+    const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((module) => module.id))
+    for (const def of INNER_WAYS) {
+      for (const module of def.buffDefs ?? []) {
+        expect(ids.has(module.id), `${def.id}/${module.id}`).toBe(true)
+      }
+    }
   })
 })

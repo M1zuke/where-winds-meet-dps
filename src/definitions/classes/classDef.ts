@@ -5,18 +5,13 @@ import type { Debuff } from "../../engine/debuff"
 import type { Rotation } from "../../engine/rotation"
 import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { MechanicRegistration } from "../../engine/mechanics"
-import type { SkillBehaviorFactory } from "../../engine/behavior"
+import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
 // Stat ids must match `WordSpec.word` strings in `engine/itemRanking.ts`.
 export interface RetunementPool {
   stats: readonly string[]
-}
-
-export interface SkillBehaviorRegistration {
-  skillId: string
-  factory: SkillBehaviorFactory
 }
 
 export interface PoisonExtensionRegistration {
@@ -52,11 +47,12 @@ export interface ClassDef {
   rotations: readonly Rotation[]
   defaultRotationId: string | null
   retunementPool: RetunementPool | null
-  // docs/CLASSES.md § "Buff category" — reachable because being this class is
-  // sufficient, and mechanicBuffDefs vs classBuffDefs only changes how the
-  // Skill Editor groups the row, not how the engine applies it.
+  // Every buff-def the class itself owns, reachable because you are this
+  // class — docs/CLASSES.md § "Buff category". An inner-way-gated def belongs
+  // on that `InnerWayDef.buffDefs` instead, and a global toggle or
+  // universal-skill trigger on `GLOBAL_BUFF_DEFS`. Membership here is also
+  // what puts a row in the Skill Editor's Spec Mechanics column.
   classBuffDefs: readonly BuffModule[]
-  mechanicBuffDefs: readonly BuffModule[]
   // Timeline statuses (HitVariant swaps, trigger conditions) — never carry
   // stat effects of their own, so they stay the `Buff` type rather than
   // folding into `classBuffDefs`.

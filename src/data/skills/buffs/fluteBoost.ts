@@ -1,9 +1,9 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
 import { CAST } from "../ids"
 import { stat } from "../../../engine/effects/effect"
 
-export const fluteBoost = defineClassBuff({
+export const fluteBoost = defineBuff({
   id: BUFF.fluteBoost,
   name: "Flute DMG Boost",
   triggeredBy: [CAST.fluteOfTheTidesCancel, CAST.fluteOfTheTidesFull, CAST.fluteOfTheTidesPrepull],

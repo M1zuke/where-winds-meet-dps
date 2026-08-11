@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { mechanicBuffDefs } from "../../src/engine/buffs/data"
+import { classDefinition } from "../../src/definitions/classes/registry"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { StatKey } from "../../src/engine/statRegistry"
+
+const umbraOwnBuffDefs = () => classDefinition("bellstrikeUmbra")!.classBuffDefs
 
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
@@ -15,7 +17,7 @@ function skill(tags: string[]) {
 }
 
 function sumsFor(params: Record<string, unknown>, tags: string[]) {
-  const e = new BuffEngine(params, [], mechanicBuffDefs())
+  const e = new BuffEngine(params, [], umbraOwnBuffDefs())
   const r = e.calculateDamageEffects(skill(tags), 0)
   return Object.fromEntries(
     TRACKED.map((k) => [

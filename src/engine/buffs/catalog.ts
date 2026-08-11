@@ -1,4 +1,4 @@
-import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
+import { catalogBuffDefs } from "./data"
 import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { matchesScope } from "../scope"
 import { displayGateFor } from "./displayGates"
@@ -19,7 +19,7 @@ import type { BuffParams } from "./buffEngine"
 import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass } from "../builtinLibrary"
-import { classDefinition } from "../../definitions/classes/registry"
+import { CLASS_DEFS, classDefinition } from "../../definitions/classes/registry"
 
 function affectsSummary(module: BuffModule): string {
   if (module.affectsProperty) return module.affectsProperty
@@ -85,9 +85,29 @@ export function requiresLabel(module: BuffModule): string | null {
   return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
 
-export function specMechanicDefIds(classId?: string): Set<string> {
-  const defs = classId ? dedupedMechanicBuffDefsForClass(classId) : dedupedMechanicBuffDefs()
-  return new Set(defs.filter((d) => d.alwaysActive).map((d) => d.id))
+// Both scoped to the class's OWN `classBuffDefs` — never the composed
+// `buffModules` list. Widening to the composed list would pull in a global
+// like `dragonHeadLowHp` (also `alwaysActive`), newly hiding a timeline chip
+// that shows today.
+function ownBuffDefsFor(classId?: string): readonly BuffModule[] {
+  if (!classId) return CLASS_DEFS().flatMap((classDef) => classDef.classBuffDefs)
+  return classDefinition(classId)?.classBuffDefs ?? []
+}
+
+// The Skill Editor's "Spec Mechanics" column: a row belongs there because
+// the class itself declares the def, not because of any property on it.
+export function specMechanicIds(classId?: string): Set<string> {
+  return new Set(ownBuffDefsFor(classId).map((module) => module.id))
+}
+
+// The rotation editor's per-cast chip suppression: narrower than the column
+// above, the `alwaysActive` subset only.
+export function hiddenTimelineBuffIds(classId?: string): Set<string> {
+  return new Set(
+    ownBuffDefsFor(classId)
+      .filter((module) => module.alwaysActive)
+      .map((module) => module.id),
+  )
 }
 
 export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
@@ -141,7 +161,7 @@ function gearStatRow(key: StatKey, affects: string, inputs?: Inputs): ReceivesRo
 
 export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs): ReceivesRow[] {
   const tagSet = skillTagsOf(skill)
-  const specIds = specMechanicDefIds(classId)
+  const specIds = specMechanicIds(classId)
   const params = inputs ? paramsFromInputs(inputs) : null
   const defs = catalogBuffDefs(classId)
   const defsById = new Map(defs.map((d) => [d.id, d] as const))
@@ -284,8 +304,7 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const params = paramsFromInputs(inputs)
   const classDef = classDefinition(inputs.classId)
   const byId = new Map<string, BuffModule>()
-  for (const module of classDef ? [...classDef.classBuffDefs, ...classDef.mechanicBuffDefs] : [])
-    byId.set(module.id, module)
+  for (const module of classDef?.buffModules ?? []) byId.set(module.id, module)
   const rows: ClassBuffRow[] = []
   for (const module of byId.values()) {
     if (!hasScope(module)) continue

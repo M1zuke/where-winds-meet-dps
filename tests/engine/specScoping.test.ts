@@ -1,12 +1,9 @@
-// A class only loads buff-defs from its own site-spec bucket; the
-// mechanic-scoped defs (soulShaken, the two bleed defs) live in a separate
-// list (`ClassDef.mechanicBuffDefs`) and never leak into `buffDefsForClass`.
+// A class's own `classBuffDefs` is reachable purely by being that class;
+// `buffDefsForClass` additionally folds in every slottable inner way's
+// buffDefs and the globals — see docs/CLASSES.md § "Buff category".
 import { describe, expect, it } from "vitest"
-import {
-  buffDefsForClass,
-  mechanicBuffDefsForClass,
-  specForClass,
-} from "../../src/engine/buffs/data"
+import { buffDefsForClass, specForClass } from "../../src/engine/buffs/data"
+import { classDefinition } from "../../src/definitions/classes/registry"
 
 describe("spec-scoping — buffDefsForClass", () => {
   it("maps the class to its spec", () => {
@@ -14,11 +11,15 @@ describe("spec-scoping — buffDefsForClass", () => {
     expect(specForClass("unknownClass")).toBeUndefined()
   })
 
-  it("bellstrikeUmbra's class-buff bucket does NOT pull in the mechanic-scoped defs", () => {
+  it("bellstrikeUmbra's composed bucket DOES contain the once-mechanic-scoped defs, each still carrying the class-buff marker", () => {
     const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((d) => d.id))
-    expect(ids.has("soulShaken")).toBe(false)
-    expect(ids.has("bellstrikeUmbraBleedPen")).toBe(false)
-    expect(ids.has("bellstrikeUmbraBleedingDamage")).toBe(false)
+    expect(ids.has("soulShaken")).toBe(true)
+    expect(ids.has("bellstrikeUmbraBleedPen")).toBe(true)
+    expect(ids.has("bellstrikeUmbraBleedingDamage")).toBe(true)
+    for (const id of ["soulShaken", "bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]) {
+      const module = buffDefsForClass("bellstrikeUmbra").find((candidate) => candidate.id === id)!
+      expect("classBuff" in module).toBe(true)
+    }
   })
 
   it("keeps the universal fluteBoost for a class whose spec bucket omits it", () => {
@@ -32,15 +33,12 @@ describe("spec-scoping — buffDefsForClass", () => {
   })
 })
 
-describe("spec-scoping — mechanicBuffDefsForClass", () => {
-  it("returns exactly soulShaken + the two umbra bleed buffs for the umbra class, each carrying the class-buff marker", () => {
-    const umbra = mechanicBuffDefsForClass("bellstrikeUmbra")
-    const ids = umbra.map((module) => module.id).sort()
-    expect(ids).toEqual(
-      ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage", "soulShaken"].sort(),
+describe("spec-scoping — classDef.classBuffDefs, the class's own", () => {
+  it("bellstrikeUmbra's own list is exactly the two bleed passives, each carrying the class-buff marker", () => {
+    const umbra = classDefinition("bellstrikeUmbra")!.classBuffDefs
+    expect(umbra.map((module) => module.id).sort()).toEqual(
+      ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"].sort(),
     )
-    // Ownership, not a tag: mechanicBuffDefsForClass returning a def IS the
-    // scope statement, and every returned module is a declared class buff.
     for (const module of umbra) expect("classBuff" in module).toBe(true)
   })
 })

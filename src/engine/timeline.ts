@@ -25,7 +25,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
-import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
+import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
@@ -236,10 +236,11 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   const buffEngine: BuffEngine | null = (() => {
     try {
-      const eng = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(inputs.classId), [
-        ...groupBuffDefs(),
-        ...mechanicBuffDefsForClass(inputs.classId),
-      ])
+      const eng = new BuffEngine(
+        paramsFromInputs(inputs),
+        buffDefsForClass(inputs.classId),
+        groupBuffDefs(),
+      )
       for (const ls of laidSteps) {
         const skill = ls.resolved.skill
         const castTag = castTagOf(skill)

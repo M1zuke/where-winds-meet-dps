@@ -196,9 +196,11 @@ The reference-site (`wherewindsmath`) trigger-driven buff tracker, ported. Every
 buff compiles to one `BuffModule` (`engine/buffs/buffModule.ts`) — a `defineBuff` /
 `defineClassBuff` TypeScript module (`definitions/skills/buffDef.ts`); the 35 defs behind the
 seven not-yet-converted classes are frozen, unimported JSON under `reference/classes/buffs/`
-instead. A class declares its own via `ClassDef.classBuffDefs` / `mechanicBuffDefs`
-(CLASSES.md § "Buff category" — Soul Shaken, Bellstrike Umbra's bleed penetration and
-bleeding-damage mechanics are the `mechanicBuffDefs` precedent); `GLOBAL_BUFF_DEFS` /
+instead. A class declares its own reachable-purely-by-being-this-class defs via
+`ClassDef.classBuffDefs` (CLASSES.md § "Buff category" — Bellstrike Umbra's bleed penetration
+and bleeding-damage mechanics are the precedent); an inner way declares the defs it gates via
+its own `buffDefs` (Soul Shaken, gated on Wolfchaser's Art, is that precedent), folded into
+every slotting class's set by `definitions/classes/registry.ts`; `GLOBAL_BUFF_DEFS` /
 `GROUP_BUFF_DEFS` (`data/skills/buffs/index.ts`) apply across every class instead of one.
 `BuffModule` is tag-matched, not id-referenced:
 
@@ -296,9 +298,9 @@ The one currently-implemented class (CLAUDE.md § "Implemented classes"). Roughl
    of resetting to 0 at `swordHorizon` tier 6) and auto-casts **Bleed Detonation**
    (`skillType: "sustain"`, `elevatedAttributeMultiplier` **defaults true** — it is a burst,
    not a tick, so it keeps flat + the elevated `O`).
-4. Class buff-defs matched by tag boost the bleed family: **Soul Shaken**
-   (`data/skills/bellstrike-umbra/buffs/soulShaken.ts`, one of `bellstrikeUmbra.ts`'s
-   `mechanicBuffDefs`) `affects` the bleed/DoT skills; **Insightful Strike / Concentration**
+4. Buff-defs matched by tag boost the bleed family: **Soul Shaken**
+   (`data/innerWays/wolfchasersArtBuffs.ts`, one of Wolfchaser's Art's `buffDefs`)
+   `affects` the bleed/DoT skills; **Insightful Strike / Concentration**
    adds affinity-dmg + a T6 dot multiplier (scaled by an activation-probability schedule).
 5. Bleed-attunement gear applies a post-`(1+H)` `correction` multiplier, gated to the two
    bleed skills (`BLEED_ATTUNEMENT_SKILLS`).

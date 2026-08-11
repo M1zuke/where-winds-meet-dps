@@ -10,11 +10,12 @@
 // apply it, because the crosswind behaviour (`swordHorizonCrosswind.ts`)
 // applies the +15% itself, on exactly the detonations it fires on.
 //
-// Hazard: `specMechanicDefIds()` (built from `alwaysActive` mechanicBuffDefs)
-// is used as `hiddenBuffIds` in the rotation editor. If `zenithBar` were ever
-// moved to a class's `mechanicBuffDefs` and marked `alwaysActive`, the shared
-// id would hide the Zenith Bar timeline chip — it must stay in `classBuffDefs`
-// and not `alwaysActive`.
+// Hazard: `hiddenTimelineBuffIds()` (built from the `alwaysActive` subset of
+// a class's OWN `classBuffDefs`) is used as `hiddenBuffIds` in the rotation
+// editor. `zenithBar` lives on Sword Horizon's `buffDefs`, which never feeds
+// that helper — but if it were ever marked `alwaysActive`, or moved onto a
+// class's own `classBuffDefs` and marked `alwaysActive` there, the shared id
+// would hide the Zenith Bar timeline chip. It must stay off both.
 import type { InnerWayGateBuff } from "../../definitions/innerWays/innerWayDef"
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { PARAM } from "../skills/buffs/ids"

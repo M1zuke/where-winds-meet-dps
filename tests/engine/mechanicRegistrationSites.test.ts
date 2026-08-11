@@ -53,9 +53,10 @@ describe("registerBuiltinBuffs call sites", () => {
 })
 
 describe("registerSkillBehavior call sites", () => {
-  it("are exactly the class registry plus the definition site", () => {
+  it("are exactly the class registry, the inner-way registry, plus the definition site", () => {
     expect(callSitesOf("registerSkillBehavior")).toEqual([
       "src/definitions/classes/registry.ts",
+      "src/definitions/innerWays/registry.ts",
       "src/engine/behavior.ts",
     ])
   })

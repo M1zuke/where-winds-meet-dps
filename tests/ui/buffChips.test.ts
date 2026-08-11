@@ -5,7 +5,7 @@ import {
   visibleCastBuffs,
   FALLBACK_BUFF_HUES,
 } from "../../src/ui/features/rotation/buffChips"
-import { specMechanicDefIds } from "../../src/engine/buffs/catalog"
+import { specMechanicIds } from "../../src/engine/buffs/catalog"
 import type { CastBuffTag, RotationCast } from "../../src/engine/types"
 
 function tag(id: string, name: string): CastBuffTag {
@@ -160,9 +160,9 @@ describe("visibleCastBuffs", () => {
   })
 })
 
-describe("specMechanicDefIds ties into real Bellstrike Umbra data", () => {
+describe("specMechanicIds ties into real Bellstrike Umbra data", () => {
   it("contains the two always-on passives and excludes Soul Shaken", () => {
-    const ids = specMechanicDefIds("bellstrikeUmbra")
+    const ids = specMechanicIds("bellstrikeUmbra")
     expect(ids.has("bellstrikeUmbraBleedPen")).toBe(true)
     expect(ids.has("bellstrikeUmbraBleedingDamage")).toBe(true)
     expect(ids.has("soulShaken")).toBe(false)

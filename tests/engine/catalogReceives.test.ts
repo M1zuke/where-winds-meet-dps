@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { receivesForSkill } from "../../src/engine/buffs/catalog"
+import {
+  hiddenTimelineBuffIds,
+  receivesForSkill,
+  specMechanicIds,
+} from "../../src/engine/buffs/catalog"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
@@ -116,5 +120,24 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
     expect(rows.some((r) => r.id === "stat:singleMysticBoost")).toBe(true)
     expect(rows.some((r) => r.id === "stat:allMartialBoost")).toBe(false)
     expect(rows.some((r) => r.id === "stat:swordBoost")).toBe(false)
+  })
+})
+
+// Regression guard for the one functional consequence of folding
+// classBuffDefs / mechanicBuffDefs into one list: both derivations stay
+// scoped to the class's OWN list, never the composed one, so a global like
+// dragonHeadLowHp (also alwaysActive) never gets newly caught by either.
+describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
+  it("the Spec Mechanics column is exactly the two bleed passives", () => {
+    const ids = specMechanicIds(CLASS)
+    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids.has("soulShaken")).toBe(false)
+    expect(ids.has("dragonHeadLowHp")).toBe(false)
+  })
+
+  it("the timeline chip-hiding set is the same two", () => {
+    const ids = hiddenTimelineBuffIds(CLASS)
+    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids.has("dragonHeadLowHp")).toBe(false)
   })
 })

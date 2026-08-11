@@ -5,11 +5,14 @@
 // (registered through `engine/builtinBuffs.ts` so a class can be looked up by
 // id without importing its module directly — composed here from the class's
 // own `gateBuffs` plus the gates every inner way it can slot declares, each
-// stamped with this class's id) and the attunement option list (global,
+// stamped with this class's id), the attunement option list (global,
 // because a saved gear piece must resolve its attunement id regardless of
-// which class equipped it). `classDefinition()` composes both onto the
-// declared `ClassDef` so callers read one shape either way.
+// which class equipped it), and the composed `buffModules` list (every
+// slottable inner way's `buffDefs` plus the class's own `classBuffDefs`).
+// `classDefinition()` composes all three onto the declared `ClassDef` so
+// callers read one shape either way.
 import type { Buff } from "../../engine/buff"
+import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { AttunementOption } from "../../engine/attunements"
 import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
@@ -19,10 +22,20 @@ import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
 import { registerPoisonExtension } from "./poisonExtensions"
-import { innerWayDefinition } from "../innerWays/registry"
+import { INNER_WAYS, innerWayDefinition } from "../innerWays/registry"
+import type { InnerWayDef } from "../innerWays/innerWayDef"
 
 function innerWayIdsOf(classDef: ClassDef): readonly string[] {
   return [...new Set([classDef.classMindGroup, ...classDef.allowedMindMethods].filter(Boolean))]
+}
+
+// `INNER_WAYS` barrel order, not the class's own `[classMindGroup,
+// ...allowedMindMethods]` order — the barrel's own comment already pins that
+// order as load-bearing for float summation, and reusing it means a class
+// reordering `allowedMindMethods` can never reshuffle a buff-def sum.
+export function innerWayDefsOf(classDef: ClassDef): readonly InnerWayDef[] {
+  const ids = new Set(innerWayIdsOf(classDef))
+  return INNER_WAYS.filter((def) => ids.has(def.id))
 }
 
 for (const classDef of CLASSES) {
@@ -52,6 +65,10 @@ export interface ClassDefinition extends ClassDef {
   // The class's own signature inner way, plus the ones it may slot alongside it.
   innerWays: readonly string[]
   buffs: readonly Buff[]
+  // Every slottable inner way's `buffDefs` plus the class's own
+  // `classBuffDefs` — not `GLOBAL_BUFF_DEFS`, which `buffDefsForClass`
+  // (`engine/buffs/data.ts`) folds in separately, between these two blocks.
+  buffModules: readonly BuffModule[]
   attunements: readonly AttunementOption[]
 }
 
@@ -71,6 +88,10 @@ export function classDefinition(classId: string): ClassDefinition | null {
     ...classDef,
     innerWays: innerWayIdsOf(classDef),
     buffs: builtinBuffsForClass(classId),
+    buffModules: [
+      ...innerWayDefsOf(classDef).flatMap((def) => def.buffDefs ?? []),
+      ...classDef.classBuffDefs,
+    ],
     attunements: attunementsForClass(classId),
   }
   cache.set(classId, definition)

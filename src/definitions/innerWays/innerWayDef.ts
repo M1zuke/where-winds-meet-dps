@@ -3,7 +3,9 @@ import type { InnerWayNode } from "../../data/innerWays/ids"
 import type { PanelStatPath } from "../../engine/gearStats"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { Buff } from "../../engine/buff"
+import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
+import type { SkillBehaviorRegistration } from "../../engine/behavior"
 
 type PanelStats = Readonly<Partial<Record<PanelStatPath, number>>>
 
@@ -59,6 +61,15 @@ export interface InnerWayDef {
   // display-gate map is global and def-id-keyed with no owner concept, so no
   // class composition step is needed here.
   displayGates?: readonly DisplayGateRegistration[]
+  // Folded into every slotting class's own `classBuffDefs` by
+  // `definitions/classes/registry.ts`'s `buffModules` — unlike `displayGates`,
+  // this needs a per-class composition step because `BuffEngine` is
+  // constructed per class, not globally.
+  buffDefs?: readonly BuffModule[]
+  // Registered directly by the inner-way registry — a `{ skillId, factory }`
+  // binding is registered once regardless of which classes can slot this
+  // inner way, so it needs no class composition step either.
+  skillBehaviors?: readonly SkillBehaviorRegistration[]
 }
 
 // Thin on purpose, like `defineClass`/`defineSet`: it exists so TypeScript

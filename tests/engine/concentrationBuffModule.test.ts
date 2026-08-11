@@ -3,8 +3,10 @@
 // read-only. Damage assertions scoped to Bellstrike Umbra/Splendor, the two
 // specs Concentration is available on — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
-import { concentration } from "../../src/data/skills/buffs/concentration"
+import { concentrationBuffDef } from "../../src/data/innerWays/insightfulStrikeConcentration"
 import type { EffectContext } from "../../src/engine/effects/context"
+
+const concentration = concentrationBuffDef()
 
 function contextFor(overrides: {
   event: EffectContext["event"]

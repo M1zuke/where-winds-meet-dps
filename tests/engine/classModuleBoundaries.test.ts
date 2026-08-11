@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
-import { CLASS_DEFS } from "../../src/definitions/classes/registry"
+import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
 
 const ROOT = process.cwd()
@@ -82,10 +82,10 @@ describe("no class module imports the panel/registry layer", () => {
 })
 
 describe("defineClassBuff is not a second buff system", () => {
-  it("every classBuffDefs / mechanicBuffDefs entry carries the marker", () => {
+  it("every buffModules entry (a class's own + every slottable inner way's) carries the marker", () => {
     const unmarked: string[] = []
     for (const classDef of CLASS_DEFS()) {
-      for (const module of [...classDef.classBuffDefs, ...classDef.mechanicBuffDefs]) {
+      for (const module of classDefinition(classDef.id)?.buffModules ?? []) {
         if (!("classBuff" in module)) unmarked.push(`${classDef.id}/${module.id}`)
       }
     }
@@ -99,11 +99,11 @@ describe("defineClassBuff is not a second buff system", () => {
     expect(marked).toEqual([])
   })
 
-  it("every declared class buff is listed by at least one class", async () => {
+  it("every declared class or inner-way buff is listed by at least one class", async () => {
     const listedIds = new Set(
-      CLASS_DEFS()
-        .flatMap((classDef) => [...classDef.classBuffDefs, ...classDef.mechanicBuffDefs])
-        .map((module) => module.id),
+      CLASS_DEFS().flatMap(
+        (classDef) => classDefinition(classDef.id)?.buffModules.map((module) => module.id) ?? [],
+      ),
     )
     const orphaned: string[] = []
     for (const dir of buffFolders()) {
@@ -112,8 +112,15 @@ describe("defineClassBuff is not a second buff system", () => {
         const specifier = "../../" + repoRelative(path).replace(/\.ts$/, "")
         const module: Record<string, unknown> = await import(/* @vite-ignore */ specifier)
         for (const exported of Object.values(module)) {
-          if (!exported || typeof exported !== "object" || !("classBuff" in exported)) continue
-          const { id } = exported as { id: string; classBuff: true }
+          // A hoisted-factory buff-def (the cyclic-import shape
+          // `insightfulStrikeConcentration.ts` and `wolfchasersArtBuffs.ts`
+          // use) exports the FACTORY, not the built `BuffModule` — call a
+          // zero-arg export to reach the marker the same way a plain-object
+          // export already carries it.
+          const candidate =
+            typeof exported === "function" && exported.length === 0 ? exported() : exported
+          if (!candidate || typeof candidate !== "object" || !("classBuff" in candidate)) continue
+          const { id } = candidate as { id: string; classBuff: true }
           if (!listedIds.has(id)) orphaned.push(`${repoRelative(path)}: ${id}`)
         }
       }

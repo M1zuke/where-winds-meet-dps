@@ -51,9 +51,11 @@ unimported JSON under `reference/classes/` instead:
 - `src/data/skills/universal/*.ts` — one module per universal skill (see
   below), `instantiateUniversal`-retargeted onto every class the same way the
   JSON files used to be
-- `src/data/skills/buffs/*.ts` and `src/data/skills/bellstrike-umbra/buffs/*.ts`
-  — the 18 `defineBuff` / `defineClassBuff` modules behind Bellstrike Umbra's
-  own buffs; `reference/classes/buffs/*.json` for the 35 not yet converted
+- `src/data/skills/buffs/*.ts`, `src/data/skills/bellstrike-umbra/buffs/*.ts`
+  and the buff-owning modules under `src/data/innerWays/*.ts` — the 18
+  `defineBuff` / `defineClassBuff` modules behind Bellstrike Umbra's own
+  buffs, each declared by whichever of the class or an inner way owns it;
+  `reference/classes/buffs/*.json` for the 35 not yet converted
 - `src/data/rotations/defaultRotations.json` — Bellstrike Umbra's pool only;
   `reference/classes/defaultRotations.json` for the other seven
 - `src/data/skills/bellstrike-umbra/debuffs.ts` (`defineDebuff`) — Bellstrike
@@ -133,7 +135,7 @@ its own registry (`src/definitions/innerWays/registry.ts`,
 `declareMechanic`/`MechanicRegistration`/`MECHANIC_ORDER` are the one shared
 contract all three owners use.
 
-An inner way may also declare two of the five above, for the mechanics it —
+An inner way may also declare all four of the above, for the mechanics it —
 not any one class — owns:
 
 - `gateBuffs` (`InnerWayGateBuff[]`, `Buff` minus `classId`) — not registered
@@ -146,35 +148,58 @@ not any one class — owns:
   `src/definitions/innerWays/registry.ts`, since `registerDisplayGate` is
   already a global, def-id-keyed map with no owner concept and the predicate
   receives the whole `Inputs`; no class composition step is needed.
-
-`skillBehaviors` is **not** on an inner way's list: a registration is
-`{ skillId, factory }`, and `skillId` is a class-owned id
-(`bellstrikeUmbra-bleed-detonation`) an inner way cannot name without naming a
-class. The inner way exports the factory instead (Sword Horizon's
-`swordHorizonCrosswind.ts` is the worked example) and the class supplies the
-one-line `{ skillId, factory }` binding.
+- `buffDefs` (`readonly BuffModule[]`) — folded, like `gateBuffs`, into every
+  slotting class's set: `definitions/classes/registry.ts` composes
+  `ClassDefinition.buffModules` from every inner way the class can slot plus
+  the class's own `classBuffDefs`. This one DOES need a per-class composition
+  step where `displayGates` does not, because the buff engine is constructed
+  per class (`buffDefsForClass`), not globally.
+- `skillBehaviors` (`readonly SkillBehaviorRegistration[]`) — registered
+  directly by `src/definitions/innerWays/registry.ts`, the same way
+  `displayGates` is: a `{ skillId, factory }` binding is registered once
+  regardless of which classes can slot the inner way, so no class composition
+  step is needed either. Sword Horizon's `swordHorizonCrosswind.ts` /
+  `swordHorizon.ts` is the worked example — it names Bleed Detonation's id
+  literally, even though that id is class-owned. This reverses an earlier
+  version of this doc, which argued an inner way "cannot name a class" this
+  way; that objection turned out weaker than it looked, since the entity's
+  own frozen persisted ids already contain `bellstrikeUmbra`
+  (`ZENITH_BAR_BUFF_ID`), and inner-way-owned buff-defs already enumerate
+  several classes' skill-owned cast tags in `triggeredBy`. Once a mechanic —
+  Sword Horizon's Zenith Bar, for example — is a full inner-way entity
+  (constants, gate buffs, buff-def, damage bonus, charge tracker), leaving the
+  one line that says what advances it on the class would split a single
+  entity across two owners.
 
 ## Buff category
 
-`ClassDef` splits a class's buffs into two lists:
+`ClassDef` has one buff-def list, `classBuffDefs`: every buff-def the class
+itself owns, reachable purely because you are this class, even when
+activation is still gated by an inner-way tier, a talent or a qi phase. An
+inner-way-gated def belongs on that inner way's own `buffDefs` instead — see
+above — and a def triggered by a universal skill or gated on a global toggle
+belongs on `GLOBAL_BUFF_DEFS` / `GROUP_BUFF_DEFS`
+(`src/data/skills/buffs/index.ts`) instead. `classBuffDefs` is not merely a
+naming convenience: it is what puts a row in the Skill Editor's "Spec
+Mechanics" section instead of the general buff list
+(`ReceivesRow.isSpecMechanic`, scoped to a class's own list, never the
+composed `buffModules`), and what the rotation editor's per-cast chip
+suppression narrows further to the `alwaysActive` subset of.
 
-- `classBuffDefs` — reachable because being the class is sufficient, even when
-  activation is still gated by an inner-way tier, a talent or a qi phase.
-  Surfaces as an ordinary Receives-card row.
-- `mechanicBuffDefs` — the class's own spec mechanics. Same `BuffModule` shape
-  and the same `BuffEngine` registration as `classBuffDefs`, but the Skill
-  Editor's Receives card breaks them out into their own "Spec Mechanic"
-  section instead of the general buff list (`ReceivesRow.isSpecMechanic`).
+`ClassDefinition.buffModules` (`src/definitions/classes/registry.ts`) is the
+composed read: every slottable inner way's `buffDefs`, in `INNER_WAYS` barrel
+order, plus the class's own `classBuffDefs`. `buffDefsForClass`
+(`src/engine/buffs/data.ts`) — what `BuffEngine` actually registers — inserts
+`GLOBAL_BUFF_DEFS` between those two blocks, filtered against the owned-id set
+so an owned def always beats a global of the same id. `buffModules` is also
+the source for the Class Buffs column (`alwaysActiveClassBuffs` in
+`src/engine/buffs/catalog.ts`), scoped down to the entries that target
+specific skills — see that function's own comments for the scope rule.
 
-Both lists are also the source for the Class Buffs column
-(`alwaysActiveClassBuffs` in `src/engine/buffs/catalog.ts`), scoped down to
-the entries that target specific skills — see that function's own comments
-for the scope rule.
-
-`defineClassBuff` (`src/definitions/skills/buffDef.ts`) marks a `BuffModule` as
-reachable through one of these two lists; the marker itself is inert
-everywhere else — the class that lists the module is the only statement of
-scope.
+`defineClassBuff` (`src/definitions/skills/buffDef.ts`) marks a `BuffModule`
+as reachable through `classBuffDefs` (a class's own) or an inner way's
+`buffDefs`; the marker itself is inert everywhere else — the class or inner
+way that lists the module is the only statement of scope.
 
 ## Where data lives
 
@@ -187,11 +212,11 @@ plus the one-line entry in `src/data/classes/index.ts`) — never
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) — JSON only | `src/definitions/baseStats/index.ts` |
 | `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the `CLASSES` list (`index.ts`), and retunement pool values | `classes/index.ts` |
-| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic, gate buffs, display gates, skill-behaviour factories), and the `INNER_WAYS` list (`index.ts`) | `innerWays/index.ts` |
+| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic, gate buffs, display gates, owned `BuffModule`s, skill-behaviour factories), and the `INNER_WAYS` list (`index.ts`) | `innerWays/index.ts` |
 | `rotations/` | Bellstrike Umbra's built-in rotation pool — JSON only | `src/definitions/rotations/registry.ts` |
 | `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic), and the `SET_DEFS` list (`index.ts`) | `sets/index.ts` |
 | `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `src/definitions/skills/universalSkills.ts` |
-| `skills/buffs/` | data-driven global/group `BuffModule`s (`defineBuff`); Bellstrike Umbra's own class buffs are `skills/bellstrike-umbra/buffs/` (`defineClassBuff`) instead | `engine/buffs/data.ts` |
+| `skills/buffs/` | data-driven global/group `BuffModule`s, `defineBuff` only; Bellstrike Umbra's own class buffs are `skills/bellstrike-umbra/buffs/` (`defineClassBuff`) instead | `engine/buffs/data.ts` |
 | `reference/classes/` | the seven not-yet-converted classes' schools, spec metadata, skills, buffs and debuffs, and their default rotations — unimported JSON, kept for when one is built out | — |
 
 `src/definitions/` holds the contracts, the registries and the composition

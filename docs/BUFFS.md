@@ -45,12 +45,12 @@ skills, so they are skill-specific **even though the quantity they change is a
 stat**. That last point is the one people get wrong.
 
 These MUST be **first-class, data-driven buff-defs** in the trigger-driven buff
-system (`src/engine/buffs/buffEngine.ts`; Soul Shaken, in a class's
-`ClassDef.mechanicBuffDefs`, is the precedent — CLASSES.md § "Buff category").
-The skill that *causes* the buff declares it (triggers); the skills that
-*receive* it are matched by `affects` / tags. Both must be **visible and
-referenced in the Skill Editor** (`SkillsTab.tsx`), and class-tied ones scoped
-to specific skills are surfaced in the Class Buffs section too
+system (`src/engine/buffs/buffEngine.ts`; Soul Shaken, gated on and declared by
+Wolfchaser's Art's own `buffDefs`, is the precedent — CLASSES.md § "Buff
+category"). The skill that *causes* the buff declares it (triggers); the
+skills that *receive* it are matched by `affects` / tags. Both must be
+**visible and referenced in the Skill Editor** (`SkillsTab.tsx`), and ones
+scoped to specific skills are surfaced in the Class Buffs section too
 (`alwaysActiveClassBuffs` in `engine/buffs/catalog.ts`).
 
 This is the **"no invisible magic"** rule.

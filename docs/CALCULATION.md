@@ -446,11 +446,12 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **`starsAlignBonus`** (Stars Align 4-pc, `= distance × 5`) is stochastic —
   computed from live distance on the site. Equipping the set enables the buff
   but it contributes 0. See `src/data/sets/starsAlign.ts`.
-- **`revelryScript` as an inner-way param** — the `revelryScript` buff def
-  (currently registered under Bellstrike Umbra's `classBuffDefs`) is never
-  turned on by anything selectable in this app, so it always contributes 0.
-  (The Combat Settings toggle of the same name is a separate, implemented
-  +30 % — don't conflate them.) See `src/data/skills/buffs/revelryScript.ts`.
+- **`revelryScript` as an inner-way param** — the `revelryScript` buff def (a
+  `GLOBAL_BUFF_DEFS` entry, since it is gated on a Combat Settings toggle with
+  no class or inner-way connection) is never turned on by anything selectable
+  in this app, so it always contributes 0. (The Combat Settings toggle of the
+  same name is a separate, implemented +30 % — don't conflate them.) See
+  `src/data/skills/buffs/revelryScript.ts`.
 - **`insightfulStrike` deliberately declares no `buffParam`**
   (`src/data/innerWays/insightfulStrike.ts`). Mapping the param would make
   `BuffEngine` seed `concentration` at `t=0` and re-arm it on every cast
@@ -464,7 +465,11 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   fixing it: the class-signature params (`swordHorizon`/`combo`/
   `frostCladNight`) were audited the same way and found safe — the defs they
   gate are situational tag-targeted procs, a different mechanic from the flat
-  baseline stats each inner-way module's own `panelStats` bakes.
+  baseline stats each inner-way module's own `panelStats` bakes. The buff-def
+  now lives at `src/data/innerWays/insightfulStrikeConcentration.ts`, a
+  sibling of `insightfulStrikeMechanic.ts` in the same folder — which puts the
+  duplication this gap describes in one place, though resolving it stays open
+  precisely because doing so would move Umbra's numbers.
 - **The Concentration mechanic's own display chip never renders.**
   `castBuffs.ts`'s `collectCastBuffs` runs the buff engine's chips before the
   mechanics' chips and dedupes by id — so even if `insightfulStrike` were

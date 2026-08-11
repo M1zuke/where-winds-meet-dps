@@ -89,7 +89,7 @@ to stop the generalization work rotting:
   layer, and `defineClassBuff` is not a second buff system: its marker is
   inert everywhere `src/engine` looks, and every module carrying it — under
   `src/data/classes/`'s and `src/data/innerWays/`'s buff folders alike — is
-  listed by at least one class.
+  listed by at least one class or inner way.
 - `classExtensionPoints.test.ts` — a fictional class registers a gate buff, a
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
@@ -100,13 +100,15 @@ to stop the generalization work rotting:
   self-registers from anywhere else. The same file pins the call sites of the
   other four registration entry points (`registerBuiltinBuffs`,
   `registerSkillBehavior`, `registerDisplayGate`, `registerPoisonExtension`) to
-  each entry point's owner registry (or registries — `registerDisplayGate` has
-  two, the class registry and the inner-way registry) plus its own definition
-  site.
-- `mechanicModuleShape.test.ts` — an inner-way or set mechanic module exports
-  a hoisted factory rather than a mechanic object, and imports no
-  barrel-loading registry; both rules are otherwise only discoverable as a
-  confusing runtime crash.
+  each entry point's owner registry (or registries — `registerDisplayGate` and
+  `registerSkillBehavior` each have two, the class registry and the
+  inner-way registry) plus its own definition site.
+- `mechanicModuleShape.test.ts` — every top-level module under
+  `src/data/innerWays`/`src/data/sets` imports no barrel-loading registry, and
+  every `TimelineMechanic`/`SkillBehaviorFactory` factory it exports is a
+  hoisted function rather than a `const`-bound object — both rules are
+  otherwise only discoverable as a confusing runtime crash, whichever side of
+  the cycle happens to load first.
 - `tagAddressing.test.ts` — every scope and trigger entry in the shipped data
   is namespaced and names a tag some built-in actually carries, so a typo
   fails the suite instead of silently reaching nothing.

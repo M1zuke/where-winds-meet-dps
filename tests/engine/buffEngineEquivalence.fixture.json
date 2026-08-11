@@ -99,6 +99,42 @@
           "summary": "affinityDmg +10%, directAffinity +3%"
         },
         {
+          "id": "buff-bellstrikeUmbra-zenith-bar",
+          "name": "Zenith Bar",
+          "classBuff": true,
+          "requires": {
+            "param": "swordHorizon"
+          },
+          "affects": [
+            "role:bleedDetonation"
+          ],
+          "affectsProperty": null,
+          "affectsWeaponTypes": null,
+          "excludes": null,
+          "triggeredBy": [],
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.15
+            }
+          ],
+          "summary": null
+        },
+        {
           "id": "potentRiverFlow",
           "name": "Potent River Flow",
           "classBuff": true,
@@ -109,7 +145,12 @@
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:spearQ", "cast:spearQ0HitCancel", "cast:spearQ5HitCancel", "cast:spearQPrepull"],
+          "triggeredBy": [
+            "cast:spearQ",
+            "cast:spearQ0HitCancel",
+            "cast:spearQ5HitCancel",
+            "cast:spearQPrepull"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": true,
           "cooldown": null,
@@ -144,7 +185,12 @@
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:spearQ", "cast:spearQ0HitCancel", "cast:spearQ5HitCancel", "cast:spearQPrepull"],
+          "triggeredBy": [
+            "cast:spearQ",
+            "cast:spearQ0HitCancel",
+            "cast:spearQ5HitCancel",
+            "cast:spearQPrepull"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": true,
           "cooldown": null,
@@ -168,43 +214,48 @@
           "summary": null
         },
         {
-          "id": "buff-bellstrikeUmbra-zenith-bar",
-          "name": "Zenith Bar",
+          "id": "soulShaken",
+          "name": "Soul Shaken",
           "classBuff": true,
           "requires": {
-            "param": "swordHorizon"
+            "param": "wolfchasersArt",
+            "minTier": 6
           },
-          "affects": ["role:bleedDetonation"],
+          "affects": [
+            "type:sustain"
+          ],
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": [],
+          "triggeredBy": [
+            "cast:spearQ",
+            "cast:spearQ0HitCancel",
+            "cast:spearQ5HitCancel",
+            "cast:spearQPrepull",
+            "cast:spearHeavy",
+            "cast:spearHeavy1Hit",
+            "cast:spearHeavy1HitPrepull"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
-          "stacksPerHit": false,
+          "stacksPerHit": true,
           "seedAtStart": false,
           "refreshOnAnyCast": false,
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 999,
-          "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "summary": null
+          "duration": 15,
+          "maxStacks": 5,
+          "effects": "[fn]",
+          "summary": "+10.0% all/stack"
         },
         {
           "id": "revelryScript",
           "name": "Revelry Script",
-          "classBuff": true,
+          "classBuff": false,
           "requires": {
             "param": "revelryScript"
           },
@@ -238,13 +289,17 @@
         {
           "id": "fluteBoost",
           "name": "Flute DMG Boost",
-          "classBuff": true,
+          "classBuff": false,
           "requires": null,
           "affects": null,
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:fluteOfTheTidesCancel", "cast:fluteOfTheTidesFull", "cast:fluteOfTheTidesPrepull"],
+          "triggeredBy": [
+            "cast:fluteOfTheTidesCancel",
+            "cast:fluteOfTheTidesFull",
+            "cast:fluteOfTheTidesPrepull"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -366,7 +421,9 @@
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:ghostlySteps"],
+          "triggeredBy": [
+            "cast:ghostlySteps"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -392,7 +449,10 @@
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:perfectDodge", "cast:perfectDodgeFull"],
+          "triggeredBy": [
+            "cast:perfectDodge",
+            "cast:perfectDodgeFull"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -489,11 +549,15 @@
           "name": "Surging Waves",
           "classBuff": false,
           "requires": null,
-          "affects": ["role:dragonHead"],
+          "affects": [
+            "role:dragonHead"
+          ],
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
-          "triggeredBy": ["cast:dragonHeadPlus"],
+          "triggeredBy": [
+            "cast:dragonHeadPlus"
+          ],
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -517,7 +581,9 @@
           "requires": {
             "param": "dragonHeadLowHpMaxBonus"
           },
-          "affects": ["role:dragonHeadPlus"],
+          "affects": [
+            "role:dragonHeadPlus"
+          ],
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
@@ -543,73 +609,6 @@
             }
           ],
           "summary": null
-        }
-      ],
-      "group": [
-        {
-          "id": "healerBuff",
-          "name": "Healer Buff",
-          "classBuff": false,
-          "requires": null,
-          "affects": null,
-          "affectsProperty": null,
-          "affectsWeaponTypes": null,
-          "excludes": null,
-          "triggeredBy": ["cast:healerBuff"],
-          "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 12,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "+20.0% all (team)"
-        }
-      ],
-      "mechanics": [
-        {
-          "id": "soulShaken",
-          "name": "Soul Shaken",
-          "classBuff": true,
-          "requires": {
-            "param": "wolfchasersArt",
-            "minTier": 6
-          },
-          "affects": ["type:sustain"],
-          "affectsProperty": null,
-          "affectsWeaponTypes": null,
-          "excludes": null,
-          "triggeredBy": [
-            "cast:spearQ",
-            "cast:spearQ0HitCancel",
-            "cast:spearQ5HitCancel",
-            "cast:spearQPrepull",
-            "cast:spearHeavy",
-            "cast:spearHeavy1Hit",
-            "cast:spearHeavy1HitPrepull"
-          ],
-          "alwaysActive": false,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": true,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 15,
-          "maxStacks": 5,
-          "effects": "[fn]",
-          "summary": "+10.0% all/stack"
         },
         {
           "id": "bellstrikeUmbraBleedPen",
@@ -618,7 +617,10 @@
           "requires": {
             "param": "swordHorizon"
           },
-          "affects": ["role:bleedTick", "role:bleedDetonation"],
+          "affects": [
+            "role:bleedTick",
+            "role:bleedDetonation"
+          ],
           "affectsProperty": null,
           "affectsWeaponTypes": null,
           "excludes": null,
@@ -672,6 +674,36 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "affinityDmg +18%"
+        }
+      ],
+      "group": [
+        {
+          "id": "healerBuff",
+          "name": "Healer Buff",
+          "classBuff": false,
+          "requires": null,
+          "affects": null,
+          "affectsProperty": null,
+          "affectsWeaponTypes": null,
+          "excludes": null,
+          "triggeredBy": [
+            "cast:healerBuff"
+          ],
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 12,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "+20.0% all (team)"
         }
       ]
     },
@@ -9846,11 +9878,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.3
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.3
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -10120,11 +10152,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.4
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.4
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -10394,11 +10426,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.5
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.5
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -10668,11 +10700,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.5
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.5
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -10942,11 +10974,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.5
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.5
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -11216,11 +11248,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.5
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.5
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",
@@ -11578,11 +11610,11 @@
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.1
+              "amount": 0.5
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.5
+              "amount": 0.1
             },
             {
               "statKey": "directAffinityRate",

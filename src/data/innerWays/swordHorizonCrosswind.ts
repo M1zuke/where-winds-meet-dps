@@ -3,11 +3,7 @@
 // to a guaranteed affinity hit and resets. That is why it belongs to the skill
 // rather than to the buff engine (see `swordHorizonZenith.ts`'s `zenithBar`,
 // which is never seeded or activated).
-import {
-  DEFAULT_BEHAVIOR,
-  type SkillBehavior,
-  type SkillBehaviorFactory,
-} from "../../engine/behavior"
+import { DEFAULT_BEHAVIOR, type SkillBehavior, type BuildView } from "../../engine/behavior"
 import { stat, forceOutcome, setStatus, type HitEffect } from "../../engine/effects/effect"
 import { CrosswindTracker } from "../../engine/buffs/crosswind"
 import {
@@ -20,7 +16,11 @@ import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { swordHorizon } from "./swordHorizon"
 
-export const crosswindBehavior: SkillBehaviorFactory = (build): SkillBehavior | null => {
+// A hoisted function, not a `const`: `swordHorizon.ts` imports this module for
+// its `skillBehaviors` entry, and this module imports `swordHorizon` back for
+// its id/tier — a `const` here would leave whichever module loads second
+// reading an uninitialized binding.
+export function crosswindBehavior(build: BuildView): SkillBehavior | null {
   const tier = build.innerWayTier(swordHorizon.id)
   if (tier === null) return null
   const tracker = new CrosswindTracker({

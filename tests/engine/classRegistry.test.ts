@@ -10,6 +10,7 @@ import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import { poisonExtensionForClass } from "../../src/definitions/classes/poisonExtensions"
 import { buildBehaviors, DEFAULT_BEHAVIOR, type BuildView } from "../../src/engine/behavior"
 import { defaultInputs } from "../../src/engine/defaults"
+import { buffDefsForClass } from "../../src/engine/buffs/data"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
@@ -69,20 +70,42 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("classBuffDefs keeps its declared order", () => {
+  it("classBuffDefs — the class's own — keeps its declared order", () => {
     expect(umbra.classBuffDefs.map((module) => module.id)).toEqual([
-      "concentration",
-      "potentRiverFlow",
-      "wineGu",
-      "buff-bellstrikeUmbra-zenith-bar",
-      "revelryScript",
-      "fluteBoost",
+      "bellstrikeUmbraBleedPen",
+      "bellstrikeUmbraBleedingDamage",
     ])
   })
 
-  it("mechanicBuffDefs keeps its declared order", () => {
-    expect(umbra.mechanicBuffDefs.map((module) => module.id)).toEqual([
+  it("buffModules composes every slottable inner way's buffDefs (barrel order) ahead of the class's own", () => {
+    expect(umbra.buffModules.map((module) => module.id)).toEqual([
+      "concentration",
+      "buff-bellstrikeUmbra-zenith-bar",
+      "potentRiverFlow",
+      "wineGu",
       "soulShaken",
+      "bellstrikeUmbraBleedPen",
+      "bellstrikeUmbraBleedingDamage",
+    ])
+  })
+
+  it("buffDefsForClass('bellstrikeUmbra') is the full 17-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+    expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
+      "concentration",
+      "buff-bellstrikeUmbra-zenith-bar",
+      "potentRiverFlow",
+      "wineGu",
+      "soulShaken",
+      "revelryScript",
+      "fluteBoost",
+      "vulnerabilityTeammate",
+      "jadeware",
+      "mirage",
+      "mirageBonus",
+      "rainwhisperShield",
+      "resistanceResolve",
+      "surgingWaves",
+      "dragonHeadLowHp",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
     ])
@@ -134,6 +157,10 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(buildBehaviors(build)(bleedDetonation)).not.toBe(DEFAULT_BEHAVIOR)
     const noSwordHorizon: BuildView = { ...build, innerWayTier: () => null }
     expect(buildBehaviors(noSwordHorizon)(bleedDetonation)).toBe(DEFAULT_BEHAVIOR)
+  })
+
+  it("declares no skill behaviours of its own — the Bleed Detonation binding is Sword Horizon's", () => {
+    expect(umbra.skillBehaviors).toEqual([])
   })
 
   it("declares no display gates of its own — Concentration's is Insightful Strike's", () => {

@@ -170,6 +170,11 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
 // per input change (gear ranking, full-potential, the worker).
 export type SkillBehaviorFactory = (build: BuildView) => SkillBehavior | null
 
+export interface SkillBehaviorRegistration {
+  skillId: string
+  factory: SkillBehaviorFactory
+}
+
 const FACTORY_BY_SKILL_ID = new Map<string, SkillBehaviorFactory>()
 
 export function registerSkillBehavior(skillId: string, factory: SkillBehaviorFactory): void {

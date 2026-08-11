@@ -2,26 +2,17 @@ import { defineClass } from "../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../skills/bellstrike-umbra/debuffs"
-import { SKILL } from "../skills/bellstrike-umbra/ids"
 import { rotationPoolFor } from "../../definitions/rotations/registry"
 import { BELLSTRIKE_POOL } from "./retunementPools"
 import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
-import { concentration } from "../skills/buffs/concentration"
-import { revelryScript } from "../skills/buffs/revelryScript"
-import { fluteBoost } from "../skills/buffs/fluteBoost"
-import { potentRiverFlow } from "../skills/bellstrike-umbra/buffs/potentRiverFlow"
-import { wineGu } from "../skills/bellstrike-umbra/buffs/wineGu"
-import { soulShaken } from "../skills/bellstrike-umbra/buffs/soulShaken"
 import { bellstrikeUmbraBleedPen } from "../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../skills/bellstrike-umbra/buffs/bleedingDamage"
 import { BELLSTRIKE_UMBRA_GATES } from "./bellstrikeUmbraGates"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
-  zenithBar,
 } from "../innerWays/swordHorizonZenith"
 import { levelAttributeBonusMechanic } from "./bellstrikeUmbraLevelBonus"
-import { crosswindBehavior } from "../innerWays/swordHorizonCrosswind"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -42,11 +33,10 @@ export const bellstrikeUmbra = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   retunementPool: BELLSTRIKE_POOL,
-  classBuffDefs: [concentration, potentRiverFlow, wineGu, zenithBar, revelryScript, fluteBoost],
-  mechanicBuffDefs: [soulShaken, bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
+  classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: BELLSTRIKE_UMBRA_GATES,
   mechanics: [declareMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus)],
-  skillBehaviors: [{ skillId: SKILL.bleedDetonation, factory: crosswindBehavior }],
+  skillBehaviors: [],
   displayGates: [],
   // Sword Horizon's Zenith detonation extends an active Bitter Season poison.
   poisonExtensions: [
