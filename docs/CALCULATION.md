@@ -381,7 +381,9 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   detonation.
 - **Hawkwing 4-pc** (`buffs/hawkwing.ts`) — the stacking proc is stochastic,
   so it is computed as a whole-rotation schedule (seeded Monte-Carlo) rather
-  than a buff def, which cannot express a per-hit roll.
+  than a buff def, which cannot express a per-hit roll. The schedule is
+  sampled per frame, deliberately diverging from the reference site, which
+  collapses the same simulation to one fight-wide average phys multiplier.
 - **Concentration** (Insightful Strike, `buffs/concentration.ts`) —
   deliberately diverges from the reference site, which treats it as
   always-active once selected: here an affinity-hit ramp opens a renewable
