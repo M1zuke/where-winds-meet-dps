@@ -620,7 +620,7 @@ export function SkillsTab({
         <div className={styles.skillsListPanel}>
           <div className={styles.skillsListHead}>
             <h3>
-              {t("Skill")} ({t(getSchool(classId).cn ?? classId)})
+              {t("Skill")} ({t(getSchool(classId).displayName)})
             </h3>
             <button type="button" className="save-btn" onClick={createNew}>
               {t("New Skill")}

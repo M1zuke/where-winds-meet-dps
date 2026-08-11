@@ -5,6 +5,8 @@ import { computeSkillDamage } from "../../src/engine/formula"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { defaultInputs } from "../../src/engine/defaults"
+import { levelAttributeBonusMechanic } from "../../src/data/classes/bellstrikeUmbraLevelBonus"
+import type { MechanicSetup } from "../../src/engine/mechanics/types"
 
 import type { Inputs } from "../../src/engine/types"
 
@@ -121,38 +123,26 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
     expect(row.expectedDamage).toBeCloseTo(withoutBonus, 6)
   })
 
-  // The bonus is gated on the class, not the skill name: the same
-  // "Bleed Detonation" skill must NOT pick it up under any other classId.
-  it("does not apply to a Bleed Detonation-named skill on a non-bellstrikeUmbra class", () => {
-    const OTHER = "bamboocutWindTwinblade"
-    const hit = makeHit({ frame: 0, physMultiplier: 2.4, attributeMultiplier: 3.6 })
-    const skill = makeSkill(OTHER, {
-      name: "Bleed Detonation",
-      skillType: "sustain",
-      weaponOrAttribute: "Sword",
-      attributeAttack: "Bamboocut",
-      castFrames: 60,
-      hits: [hit],
-    })
-    const rotation = makeRotation(OTHER, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] })
-    const inputs: Inputs = {
-      ...baseInputs(OTHER),
-      customSkills: [skill],
-      activeCustomRotation: rotation,
+  // The bonus is gated on the class, not the skill name: the mechanic's own
+  // `prepare` refuses to arm itself for any other classId. A full
+  // `simulateTimeline` run can't exercise this directly any more — with only
+  // Bellstrike Umbra shipped, every other classId is unknown and
+  // `buildContext`'s `getSchool` throws on it — so this drives the gate
+  // itself, the same unit `bellstrikeUmbraLevelBonus.ts` declares it against.
+  it("does not arm for a Bleed Detonation-named skill on a non-bellstrikeUmbra class", () => {
+    const setup: MechanicSetup = {
+      inputs: defaultInputs,
+      classId: "someOtherClass",
+      fps: 60,
+      rotationDurationSec: 10,
+      hitTimesSec: [0],
+      weaponHitTimesSec: [0],
+      qiPhaseAt: () => "normal",
+      paramOn: () => false,
+      paramTier: () => 0,
+      hasBuffEngine: true,
+      effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
     }
-
-    const result = simulateTimeline(inputs)
-    const row = result.perSkill.find((p) => p.name === "Bleed Detonation")!
-    const art = {
-      name: "Bleed Detonation",
-      physMultiplier: 2.4,
-      attributeMultiplier: 3.6,
-      skillType: "sustain",
-      weaponOrAttribute: "Sword",
-      attributeAttack: "Bamboocut",
-      specialTag: "sustain",
-    }
-    const withoutBonus = computeSkillDamage(art as never, buildContext(inputs), 1).expectedDamage
-    expect(row.expectedDamage).toBeCloseTo(withoutBonus, 6)
+    expect(levelAttributeBonusMechanic.prepare(setup)).toBeNull()
   })
 })

@@ -19,7 +19,6 @@ export interface ActiveAfterBuffEnds {
 export interface BuffMeta {
   id: string
   name: string
-  specs?: string[]
   requires?: BuffRequirements
   affects?: string[] | null
   affectsProperty?: string
@@ -28,27 +27,17 @@ export interface BuffMeta {
   triggeredBy?: string[]
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean
-  // A function only for the one legacy mechanic whose cap depends on a build
-  // param tier (`tierConditionalStacks`) — every native module uses a plain
-  // number.
-  maxStacks?: number | ((ctx: EffectContext) => number)
+  maxStacks?: number
   cooldown?: number
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
   seedAtStart?: boolean
   refreshOnAnyCast?: boolean
-  refreshOn?: { skillProperty?: string; onlyIfActive?: boolean }
   requiresBuffActive?: string
   activeAfterBuffEnds?: ActiveAfterBuffEnds
-  when?: (ctx: EffectContext) => boolean
   stacks?: (ctx: EffectContext) => number
   duration: number | ((ctx: EffectContext) => number)
-  // Adapter-lifetime only. The legacy engine applies `statModifiers` ungated
-  // while gating only `bonus`, so `legacyBuffModule` must opt its whole effect
-  // list out of the module contract's central `matchesScope` gate — a native
-  // module has no such asymmetry and never sets this. Deleted with the adapter.
-  scopesItsOwnEffects?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

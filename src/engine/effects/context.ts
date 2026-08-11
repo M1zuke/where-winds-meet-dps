@@ -26,7 +26,7 @@ type PropKey<Tag> = Tag extends `prop:${infer Suffix}` ? Suffix : never
 type SkillPropertyKey = PropKey<(typeof PROP)[keyof typeof PROP]>
 
 // `timeline.ts` builds the `prop:`-derived members from a skill's tags via
-// `PROP_TO_PROPERTY`, plus `hitCount` and `castTime`. The rest — `isDrone`,
+// `PROP_TO_PROPERTY`, plus `hitCount` and `castTime`. The rest —
 // `noBuffTrigger`, `duration`, `buffAppliesOnCastEnd` — have no production
 // producer; only `tests/engine/buffEngine*.test.ts` sets them directly, kept
 // optional so that direct-construction path still typechecks.
@@ -34,7 +34,6 @@ export type SkillProperties = Partial<Record<SkillPropertyKey, boolean>> & {
   attackType?: "heavy" | "light" | "mixed" | "charge"
   hitCount?: number
   castTime?: number
-  isDrone?: boolean
   noBuffTrigger?: boolean
   duration?: number
   buffAppliesOnCastEnd?: boolean
@@ -56,15 +55,6 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
   [PROP.isCharged]: "isCharged",
   [PROP.isExecution]: "isExecution",
   [PROP.isMartialSkillQ]: "isMartialSkillQ",
-}
-
-// `refreshOn.skillProperty` / `ConsumeOnMatch.skillProperty` / `excludeProperty` /
-// `perCastConsume.triggerSkillProperty` are `BuffDef` fields that name a
-// `SkillProperties` key by string, so the read has to stay dynamic — but it
-// reads through `SkillProperties` itself rather than an unrelated generic
-// bag, the one narrowing available without changing `BuffDef`'s schema.
-export function readSkillProperty(props: SkillProperties, key: string): unknown {
-  return (props as Record<keyof SkillProperties, unknown>)[key as keyof SkillProperties]
 }
 
 export type EffectEvent =

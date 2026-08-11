@@ -20,10 +20,8 @@ import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { seedSkillFromBuiltin, makeSkill, makeHit } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { getMindMethodContributions } from "../../src/data/baseStats"
-import schools from "../../src/data/classes/schools.json"
+import { CLASS_IDS } from "../../src/data/classes/registry"
 import type { Inputs } from "../../src/engine/types"
-
-const ALL_CLASSES = (schools as { id: string }[]).map((school) => school.id)
 
 describe("bitterSeasonPoisonSchedule", () => {
   it("stays active for the poison duration after a single guaranteed proc", () => {
@@ -224,16 +222,16 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
   })
 })
 
-describe("registry coverage — all eight classes (metadata only, no DPS)", () => {
+describe("registry coverage — every registered class (metadata only, no DPS)", () => {
   it("every class's allowedInnerWaysForClass contains Bitter Season exactly once", () => {
-    for (const classId of ALL_CLASSES) {
+    for (const classId of CLASS_IDS()) {
       const list = allowedInnerWaysForClass(classId)
       expect(list.filter((name) => name === "bitterSeason")).toHaveLength(1)
     }
   })
 
   it("every class resolves the debuff/skill id pair, matching dot shape and primary attribute", () => {
-    for (const classId of ALL_CLASSES) {
+    for (const classId of CLASS_IDS()) {
       const debuff = builtinDebuffsForClass(classId).find(
         (debuff) => debuff.id === bitterSeasonDebuffId(classId),
       )

@@ -203,8 +203,7 @@ These have no cached anchor — only the directional `damageRules.test.ts`.
 
 `Inputs.dingYinByTag: Record<string, number>` keyed by the English tag names
 (`Mouse Boost`, `Bleed Boost`, `Sword Charge Boost`, …). Each class declares its
-visible tags via `permanentBuffs` in `schools.json`. The `classBuffs` field is
-**always `[]`** — those source rows are class metadata, not panel input cells.
+visible tags via `ClassDef.dingYinTags` (`src/data/classes/<class>.ts`).
 
 ## Implemented classes
 

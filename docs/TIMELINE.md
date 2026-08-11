@@ -101,9 +101,9 @@ frame), `triggerable` (may be a `castSkill` target), `prePull`, and one tag fiel
 
 > ⚠️ **Two fields are named for triggering, in opposite directions.**
 > `SkillHit.triggers` is **outgoing** — the things this hit sets off — and is
-> persisted user data. `BuffDef.triggeredBy` is **incoming** — the casts that
-> set this buff off. The def's field was called `triggers` until 2026-08-09;
-> it is not, and the rename is why.
+> persisted user data. `BuffModule.triggeredBy` is **incoming** — the casts
+> that set this buff off. The def's field was called `triggers` until
+> 2026-08-09; it is not, and the rename is why.
 - Matching is **exact membership**, for both `affects` and `triggeredBy`. A
   family is expressed by every member carrying the family tag *as well as* its
   own — `role:anxiSoldierMo` on each of the four `AnxiSoldierMo*` skills — never
@@ -190,32 +190,28 @@ locked fixtures stay byte-exact).
     `retainParamStacks` remain instead (e.g. Bleed retains 2 at `swordHorizon` tier 6). One
     source of truth: the trigger is just a flag, all of this data lives on the debuff.
 
-### 5b. Site class-buff system — `BuffDef` + `BuffEngine`
+### 5b. Class-buff system — `BuffModule` + `BuffEngine`
 
-The reference-site (`wherewindsmath`) trigger-driven buff tracker, ported. Data lives in
-`src/data/skills/buffs/*.json`, one file per buff id, for the 35 defs not yet converted;
-the 18 behind Bellstrike Umbra's own buffs — including the hand-authored mechanic defs
-(`soulShaken.ts`, `bellstrikeUmbraBleedPen.ts`, `bellstrikeUmbraBleedingDamage.ts`) that
-`buffs/mechanics.ts` re-exports as `MECHANIC_BUFF_DEFS` — are `defineBuff` TypeScript
-modules instead. Every buff, JSON or TypeScript, compiles to one `BuffModule`
-(`engine/buffs/buffModule.ts`) before `BuffEngine` ever sees it — a JSON-authored one
-through `legacyBuffModule()` (`engine/buffs/legacyBuffModule.ts`), a converted one
-directly. Loaded **per class spec** (`mechanicBuffDefsForClass` / spec bucket) so a
-buff only attaches to the class whose spec matches. A `BuffDef` (`buffs/buffDef.ts`) is
-tag-matched, not id-referenced:
+The reference-site (`wherewindsmath`) trigger-driven buff tracker, ported. Every reachable
+buff compiles to one `BuffModule` (`engine/buffs/buffModule.ts`) — a `defineBuff` /
+`defineClassBuff` TypeScript module (`data/skills/buffs/define.ts`); the 35 defs behind the
+seven not-yet-converted classes are frozen, unimported JSON under `reference/classes/buffs/`
+instead. A class declares its own via `ClassDef.classBuffDefs` / `mechanicBuffDefs`
+(CLASSES.md § "Buff category" — Soul Shaken, Bellstrike Umbra's bleed penetration and
+bleeding-damage mechanics are the `mechanicBuffDefs` precedent); `GLOBAL_BUFF_DEFS` /
+`GROUP_BUFF_DEFS` (`data/skills/buffs/index.ts`) apply across every class instead of one.
+`BuffModule` is tag-matched, not id-referenced:
 
-- **who applies it** — `triggeredBy: string[]` (cast tags, matched exactly), `refreshOn`,
-  `onApply`, `alwaysActive`, gating via `enabledParam` + `minTier`.
+- **who applies it** — `triggeredBy: string[]` (cast tags, matched exactly), `alwaysActive`,
+  gating via `requires: { param, minTier, set }` (`buffGateSatisfied` in `catalog.ts`).
 - **who it boosts** — `affects: string[] | null` (tags, matched exactly; `null` = everything),
-  `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`, `overriddenBy`. See
-  `matchesScope` in `scope.ts`, called from both `buffEngine.bonusAffects` and the Skill
-Editor's Receives card.
-- **magnitude** — `bonus: SiteBonus` (buckets `buffBonus`/`groupDamage` → `allDamageBoost`,
-  `phyBoostMod` → `physBoost`, `bossOnlyBuffBonus` → `bossBoost`; see `BONUS_TYPE_TO_STATKEY`)
-  and/or `statModifiers` / `bossStatModifiers` (rate/pen/crit-dmg mods
-  → app stat keys via `STATMOD_TO_STATKEY`). `forceCrit`, stack/time (`duration`,
-  `maxStacks`, `stacksPerHit`/`stacksPerCast`), and limiting (`cooldown`, `rateLimit`,
-  `stackIcd`, `phaseGate`).
+  `affectsProperty` (a `prop:*`), `affectsWeaponTypes`, `excludes`. See `matchesScope` in
+  `scope.ts`, called from both `buffEngine.calculateDamageEffects` and the Skill Editor's
+  Receives card.
+- **magnitude** — `effects: Effect[] | ((ctx: EffectContext) => Effect[])`, the same
+  `{statKey, amount}` shape `applyEffect` reads everywhere else in the engine. `forceCrit`,
+  stack/time (`duration`, `maxStacks`, `stacksPerHit`), and limiting (`cooldown`, `rateLimit`,
+  `stackRateLimit`) round it out.
 
 ### 5c. Which system for what
 
@@ -225,9 +221,8 @@ version:
 - Permanent modifier to the character's OWN stats that applies to **every** skill → the
   stat/base layer, invisible; not a buff-def at all.
 - Skill-specific effect (reaches only some skills) → a **first-class, data-driven** def,
-  visible/referenced in the Skill Editor. Class-tied site mechanics → a `BuffDef` gated by
-  `spec`/`enabledParam` (§ 5b). User/custom effects → a `Buff`/`Debuff` with `HitTrigger`s
-  (§ 5a).
+  visible/referenced in the Skill Editor. Class-tied mechanics → a `BuffModule` gated by
+  `requires` (§ 5b). User/custom effects → a `Buff`/`Debuff` with `HitTrigger`s (§ 5a).
 - **Never** hardcode a per-skill mechanic in `timeline.ts` (no `if (classId === …)` damage
   branches). Value/scaling/affects live in the def; the engine reads it, the UI renders it.
 
@@ -302,7 +297,8 @@ The one currently-implemented class (CLAUDE.md § "Implemented classes"). Roughl
    (`skillType: "sustain"`, `elevatedAttributeMultiplier` **defaults true** — it is a burst,
    not a tick, so it keeps flat + the elevated `O`).
 4. Class buff-defs matched by tag boost the bleed family: **Soul Shaken**
-   (`buffs/mechanics.ts`) `affects` the bleed/DoT skills; **Insightful Strike / Concentration**
+   (`data/skills/bellstrike-umbra/buffs/soulShaken.ts`, one of `bellstrikeUmbra.ts`'s
+   `mechanicBuffDefs`) `affects` the bleed/DoT skills; **Insightful Strike / Concentration**
    adds affinity-dmg + a T6 dot multiplier (scaled by an activation-probability schedule).
 5. Bleed-attunement gear applies a post-`(1+H)` `correction` multiplier, gated to the two
    bleed skills (`BLEED_ATTUNEMENT_SKILLS`).
@@ -334,7 +330,8 @@ editable directly in the Skill Editor's Cast Time field).
    `Debuff.dot` get this automatically).
 5. **DoTs go on a `Debuff.dot`** — never fake a DoT with a `sustain` skill hit.
 6. **Giving a buff/debuff:** add an `applyBuff`/`applyDebuff` `HitTrigger` (custom system) or
-   a spec-gated `BuffDef` with `triggeredBy` (site system). Negative `stacks` to consume. Linking
+   a `requires`-gated `BuffModule` with `triggeredBy` (class-buff system). Negative `stacks` to
+   consume. Linking
    to a stacking DoT instead (adding a stack / detonating it) uses the logic-free
    `applyDot`/`detonateDot` kinds — the max stacks, duration, and detonation rule live on the
    target `Debuff`, never re-authored on the trigger.

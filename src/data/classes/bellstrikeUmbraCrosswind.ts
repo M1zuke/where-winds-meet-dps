@@ -1,26 +1,23 @@
 // Sword Horizon's crosswind charge is per-detonation STATE, not a time-windowed
 // buff — every Bleed Detonation advances a counter, and the fifth one converts
 // to a guaranteed affinity hit and resets. That is why it belongs to the skill
-// rather than to the buff engine (see src/data/skills/buffs/crosswindSpirit.ts,
-// which is never seeded or activated).
-import { DEFAULT_BEHAVIOR, registerSkillBehavior, type SkillBehavior } from "../../engine/behavior"
+// rather than to the buff engine (see
+// src/data/skills/bellstrike-umbra/buffs/crosswindSpirit.ts, which is never
+// seeded or activated).
+import {
+  DEFAULT_BEHAVIOR,
+  type SkillBehavior,
+  type SkillBehaviorFactory,
+} from "../../engine/behavior"
 import { stat, forceOutcome, setStatus, type HitEffect } from "../../engine/effects/effect"
 import { CrosswindTracker } from "../../engine/buffs/crosswind"
-import { SKILL } from "../skills/bellstrike-umbra/ids"
-import { CROSSWIND_SPIRIT_BONUS } from "../skills/buffs/crosswindSpirit"
-// This module is the one the class barrel (`data/classes/index.ts`) actually
-// imports, so it is also what transitively pulls `bellstrikeUmbraGates.ts`'s
-// own registration side effect (`registerBuiltinBuffs`, `registerPoisonExtension`)
-// into the app — importing the gate ids from `ids.ts` directly instead would
-// silently drop that registration. Keep this import even though only the two
-// named values are used.
+import { CROSSWIND_SPIRIT_BONUS } from "../skills/bellstrike-umbra/buffs/crosswindSpirit"
 import { ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./bellstrikeUmbraGates"
 
-const SKILL_ID = SKILL.bleedDetonation
 const INNER_WAY = "swordHorizon"
 const RETAIN_TIER = 6
 
-registerSkillBehavior(SKILL_ID, (build): SkillBehavior | null => {
+export const crosswindBehavior: SkillBehaviorFactory = (build): SkillBehavior | null => {
   const tier = build.innerWayTier(INNER_WAY)
   if (tier === null) return null
   const tracker = new CrosswindTracker(tier >= RETAIN_TIER)
@@ -40,4 +37,4 @@ registerSkillBehavior(SKILL_ID, (build): SkillBehavior | null => {
       return effects
     },
   }
-})
+}

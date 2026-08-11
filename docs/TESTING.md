@@ -1,7 +1,7 @@
 # TESTING.md — test conventions
 
-`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **795 tests
-across 84 files**, all green. Keep it that way — a red suite on `main` is not a
+`pnpm test` runs vitest (jsdom, globals on, `tests/setup.ts`). Today: **790 tests
+across 85 files**, all green. Keep it that way — a red suite on `main` is not a
 state this repo tolerates.
 
 ## Class scoping — the suite is Umbra-only
@@ -13,8 +13,11 @@ not had.
 
 - **Do not add a `for (const classId of ALL_CLASSES)` `dps > 0` sweep.** It
   proves nothing and it manufactures false confidence.
-- Registry / metadata tests that legitimately span all eight stay — `getSchool`,
-  inner-way slot rules, the i18n pass-through.
+- Registry / metadata tests that legitimately span every registered class stay
+  — `getSchool`, inner-way slot rules, the i18n pass-through. `CLASS_IDS()`
+  currently returns just `bellstrikeUmbra`; the other seven are unregistered
+  reference data (CLASSES.md § "Implemented classes"), not additional class
+  ids these sweeps iterate.
 - When a class is genuinely built out, add its tests back **with real anchors**
   (a verified rotation, a known damage figure), not a smoke sweep.
 - Scoped test files carry a header comment saying so; follow the existing
@@ -49,11 +52,11 @@ against the running app, so a re-baseline cannot quietly carry them along.
 
 `tests/engine/buffEngineEquivalence.test.ts` + `buffEngineEquivalence.fixture.json`
 pin `BuffEngine`'s behaviour and the buff/skill/debuff registry it runs on, for
-**all eight classes** — declarative fields on every `BuffModule`, built-in
-skill and debuff ids and content digests, and `calculateDamageEffects` /
-`activeBuffsForDisplay` output sampled with every `enabledParam` forced on at
-tier 6, every triggering cast replayed, and a fixed grid of tag combinations
-and time steps.
+**every registered class** (`CLASS_IDS()`, currently just `bellstrikeUmbra`) —
+declarative fields on every `BuffModule`, built-in skill and debuff ids and
+content digests, and `calculateDamageEffects` / `activeBuffsForDisplay` output
+sampled with every gated `requires.param` forced on at tier 6, every
+triggering cast replayed, and a fixed grid of tag combinations and time steps.
 
 It exists because it was needed: converting `BuffDef` to `BuffModule`
 introduced four regressions (a dropped `counterMechanic` seed, a missing
@@ -61,12 +64,12 @@ introduced four regressions (a dropped `counterMechanic` seed, a missing
 `maxStacks` divergence) that the rest of the suite — 737 tests at the time —
 did not catch. Only a broad, all-class, all-param simulation did.
 
-Same distinction as the engine baseline, same reason it is allowed to span all
-eight classes despite the class-scoping rule above: **it does not assert any
-class's damage is right** — most of these seven are unverified data per
-CLASSES.md — **it asserts the registry and the engine reading it are
-unchanged**. Read the header comment in the test file before touching it;
-it says so explicitly so the distinction survives being read out of context.
+Same distinction as the engine baseline, same reason it is allowed to span
+every registered class despite the class-scoping rule above: **it does not
+assert any class's damage is right** — **it asserts the registry and the
+engine reading it are unchanged**. Read the header comment in the test file
+before touching it; it says so explicitly so the distinction survives being
+read out of context.
 
 Regenerate with `UPDATE_BUFF_EQUIVALENCE=1 pnpm test`, and — exactly like the
 engine baseline — only when a change to buff-engine output is deliberate, with
@@ -85,14 +88,14 @@ to stop the generalization work rotting:
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
 
-These legitimately span all eight classes, which the class-scoping rule above
-explicitly permits for registry and metadata tests.
+These legitimately span every registered class, which the class-scoping rule
+above explicitly permits for registry and metadata tests.
 
 ## Otherwise, there is no locked-DPS fixture
 
 Beyond the baseline above, no test asserts an absolute DPS number.
-`defaultInputs` (`engine/defaults.ts`) is the default Bamboocut-Wind build, not
-an anchor. Don't introduce a new strict-equality DPS assertion without a
+`defaultInputs` (`engine/defaults.ts`) is the default Bellstrike Umbra build,
+not an anchor. Don't introduce a new strict-equality DPS assertion without a
 verified external source behind it.
 
 `tests/engine/bellstrikeUmbraParity.test.ts` compares against one verified

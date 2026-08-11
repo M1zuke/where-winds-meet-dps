@@ -1,8 +1,5 @@
-import schools from "../../../../data/classes/schools.json"
-import { classDefinition } from "../../../../data/classes/registry"
+import { CLASS_IDS, classDefinition } from "../../../../data/classes/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
-
-const SCHOOLS = schools as { id: string; cn: string; en: string }[]
 
 interface Props {
   value: string
@@ -11,25 +8,18 @@ interface Props {
 
 export function ClassSelect({ value, onChange }: Props) {
   const { t } = useI18n()
-  const visible = SCHOOLS.filter((school) => classDefinition(school.id)?.validated ?? false)
-  const legacy =
-    (classDefinition(value)?.validated ?? false)
-      ? undefined
-      : SCHOOLS.find((school) => school.id === value)
+  const visible = CLASS_IDS()
+    .map((id) => classDefinition(id)!)
+    .filter((def) => def.validated)
   return (
     <div className="row">
       <label>{t("Class")}</label>
       <select value={value} onChange={(e) => onChange(e.target.value)}>
-        {visible.map((school) => (
-          <option key={school.id} value={school.id}>
-            {t(school.cn)}
+        {visible.map((def) => (
+          <option key={def.id} value={def.id}>
+            {t(def.displayName)}
           </option>
         ))}
-        {legacy && (
-          <option value={legacy.id} disabled>
-            {t(legacy.cn)}
-          </option>
-        )}
       </select>
     </div>
   )

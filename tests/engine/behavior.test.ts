@@ -10,6 +10,7 @@ const build = {
   set: null,
   innerWayTier: () => null,
   dingYin: () => 0,
+  grantsMinPhysCritBoost: () => false,
 }
 
 const context: HitContext = {
@@ -83,21 +84,16 @@ describe("DEFAULT_BEHAVIOR — data-driven, what every skill gets", () => {
       expect(art.extraCritDamage).toBe(1)
     })
 
-    it("resolves to the min-phys-scaled bonus, capped at 0.36, when the class's weapon grants the boost", () => {
+    it("resolves to the min-phys-scaled bonus, capped at 0.36, when the build says the weapon grants the boost", () => {
       const hit = makeHit({ extraCritDamage: 1 })
-      const skill = makeSkill("silkbindJade", {
+      const skill = makeSkill("bellstrikeUmbra", {
         name: "Probe",
         hits: [hit],
         tags: ["weapon:Fan"],
       })
-      const build = {
-        classId: "silkbindJade",
-        set: null,
-        innerWayTier: () => null,
-        dingYin: () => 0,
-      }
+      const grantingBuild = { ...build, grantsMinPhysCritBoost: () => true }
       const art = DEFAULT_BEHAVIOR.buildArt(
-        { ...inputFor(skill, hit), build },
+        { ...inputFor(skill, hit), build: grantingBuild },
         { ...context, smallPhys: 900 },
       )
       expect(art.extraCritDamage).toBe(0.36)

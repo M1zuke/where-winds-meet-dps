@@ -1,15 +1,12 @@
 // A refactor guard, not class validation — see docs/TESTING.md § "The engine
-// baseline" (this follows the same pattern) and § "Class scoping". It
-// deliberately spans all eight classes the way `noClassSpecificEngineCode.test.ts`
-// and `classExtensionPoints.test.ts` do, but the two groups mean different
-// things: Bellstrike Umbra's numbers are defended (CLASSES.md § "Implemented
-// classes") — a diff there is a defect. The other seven's are not; a diff
-// there is informational only, a signal that non-Umbra output moved, not
-// proof that anything is wrong. `BUILTIN_SKILLS_BY_CLASS`/`BuffModule`
-// declarative fields staying loadable and renderable for all eight IS
-// asserted, since the generalized `Effect`/`EffectContext`/`BuffModule`
-// contract has to keep working for every class as data, whether or not that
-// class's numbers are defended yet.
+// baseline" (this follows the same pattern) and § "Class scoping". It spans
+// every registered class the way `noClassSpecificEngineCode.test.ts` and
+// `classExtensionPoints.test.ts` do — only Bellstrike Umbra's numbers are
+// defended (CLASSES.md § "Implemented classes") and a diff there is a
+// defect, but a class's declarative `Skill`/`BuffModule` data staying
+// loadable and renderable IS asserted for every class, since the generalized
+// `Effect`/`EffectContext`/`BuffModule` contract has to keep working as data
+// whether or not that class's numbers are defended yet.
 //
 // Exists because the ordinary suite missed four real regressions during the
 // `BuffDef → BuffModule` conversion (dropped `counterMechanic` seeding, a
@@ -19,11 +16,9 @@
 // file is that simulation, kept as standing infrastructure instead of
 // scratch tooling rebuilt by hand for the next data conversion.
 //
-// Regenerate with UPDATE_BUFF_EQUIVALENCE=1. For Bellstrike Umbra, only when a
-// change to its output is deliberate and justified in the same commit, same
-// discipline as `UPDATE_ENGINE_BASELINE`. For the other seven, a moved digest
-// is expected background noise as their data changes and is not itself a
-// reason to withhold a re-baseline.
+// Regenerate with UPDATE_BUFF_EQUIVALENCE=1, only when a change to a class's
+// output is deliberate and justified in the same commit, same discipline as
+// `UPDATE_ENGINE_BASELINE`.
 //
 // This fixture is captured FROM the converted engine, so a green run here
 // proves the tree hasn't moved SINCE the capture — it cannot itself prove the
@@ -34,8 +29,7 @@ import { createHash } from "node:crypto"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
-import { CLASS_IDS } from "../../src/data/classes/registry"
-import { BUILTIN_SKILLS_BY_CLASS } from "../../src/data/skills"
+import { CLASS_IDS, classDefinition } from "../../src/data/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
@@ -70,7 +64,7 @@ function describeModule(module: BuffModule): Record<string, unknown> {
   return {
     id: module.id,
     name: module.name,
-    specs: module.specs ?? null,
+    classBuff: "classBuff" in module,
     requires: module.requires ?? null,
     affects: module.affects ?? null,
     affectsProperty: module.affectsProperty ?? null,
@@ -85,26 +79,19 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     stacksPerHit: !!module.stacksPerHit,
     seedAtStart: !!module.seedAtStart,
     refreshOnAnyCast: !!module.refreshOnAnyCast,
-    refreshOn: module.refreshOn ?? null,
     requiresBuffActive: module.requiresBuffActive ?? null,
     activeAfterBuffEnds: module.activeAfterBuffEnds ?? null,
-    scopesItsOwnEffects: !!module.scopesItsOwnEffects,
     hasStacksFn: typeof module.stacks === "function",
     duration: typeof module.duration === "number" ? module.duration : "[fn]",
-    maxStacks:
-      module.maxStacks === undefined
-        ? null
-        : typeof module.maxStacks === "number"
-          ? module.maxStacks
-          : "[fn]",
+    maxStacks: module.maxStacks ?? null,
     effects: Array.isArray(module.effects) ? module.effects : "[fn]",
     summary: module.summary ?? null,
   }
 }
 
 // Skills and debuffs are digested rather than stored raw — full skill objects
-// (hits, triggers, variants) across all eight classes would make the
-// committed fixture enormous for no gain over a hash: a digest still fails
+// (hits, triggers, variants) across every class would make the committed
+// fixture enormous for no gain over a hash: a digest still fails
 // the instant a single field changes, exactly like `engineBaseline.fixture.json`'s
 // own `digestOf`. Object keys are sorted before hashing so re-ordering a
 // field — which a JSON-to-TypeScript conversion does routinely and
@@ -128,7 +115,7 @@ function digest(value: unknown): string {
 }
 
 function staticDumpFor(classId: string) {
-  const skills = BUILTIN_SKILLS_BY_CLASS[classId] ?? []
+  const skills = classDefinition(classId)?.skills ?? []
   const debuffs = builtinDebuffsForClass(classId)
   return {
     skills: {
@@ -169,10 +156,10 @@ function summarizeDamage(result: DamageEffectsResult) {
 
 // Only Bellstrike Umbra's numbers are defended (CLASSES.md § "Implemented
 // classes") — its `dynamic` entry stays fully spelled out so a diff shows
-// exactly what moved. The other seven classes' entries collapse to a single
-// digest: their role here is "tell me this moved", not "prove it didn't", so
-// there is no reason to carry ~11 tag combinations × every probed time step
-// for all seven in the committed fixture.
+// exactly what moved. Any other class's entry collapses to a single digest:
+// its role here is "tell me this moved", not "prove it didn't", so there is
+// no reason to carry ~11 tag combinations × every probed time step for it in
+// the committed fixture.
 const SPELLED_OUT_CLASS_ID = "bellstrikeUmbra"
 
 function dynamicDumpFor(classId: string) {
@@ -234,7 +221,7 @@ type Snapshot = Record<string, { static: ReturnType<typeof staticDumpFor>; dynam
 
 function currentSnapshot(): Snapshot {
   const out: Snapshot = {}
-  for (const classId of CLASS_IDS) {
+  for (const classId of CLASS_IDS()) {
     out[classId] = { static: staticDumpFor(classId), dynamic: dynamicEntryFor(classId) }
   }
   return out
@@ -244,7 +231,7 @@ if (REGENERATE) {
   writeFileSync(FIXTURE_PATH, JSON.stringify(currentSnapshot(), null, 2) + "\n")
 }
 
-describe("buff engine equivalence — all eight classes", () => {
+describe("buff engine equivalence — every registered class", () => {
   const recorded = existsSync(FIXTURE_PATH)
     ? (JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) as Snapshot)
     : null
@@ -257,10 +244,10 @@ describe("buff engine equivalence — all eight classes", () => {
   })
 
   it("covers every class, with no stale entries", () => {
-    expect(Object.keys(recorded!).sort()).toEqual([...CLASS_IDS].sort())
+    expect(Object.keys(recorded!).sort()).toEqual([...CLASS_IDS()].sort())
   })
 
-  for (const classId of CLASS_IDS) {
+  for (const classId of CLASS_IDS()) {
     it(`${classId} — built-in skills and debuffs are unchanged`, () => {
       const current = staticDumpFor(classId)
       expect(current.skills).toEqual(recorded![classId].static.skills)

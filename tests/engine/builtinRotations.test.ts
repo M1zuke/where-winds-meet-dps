@@ -1,7 +1,7 @@
 // Scoped to Bellstrike Umbra — the only implemented class. The other seven
-// schools in `schools.json` carry unverified imported data (see CLAUDE.md
-// § "Implemented classes"), so sweeping them here only asserted that their
-// rotations parse, which read as validation they have not had.
+// classes' unverified imported data now lives under `reference/classes/` (see
+// CLAUDE.md § "Implemented classes"), so sweeping them here only asserted
+// that their rotations parse, which read as validation they have not had.
 import { describe, expect, it } from "vitest"
 import {
   builtinRotationsForClass,

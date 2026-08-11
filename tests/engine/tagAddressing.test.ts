@@ -1,38 +1,34 @@
 // The guard for CLASSES.md § "Naming": a modifier addresses an entity by a
 // namespaced tag it declares, never by a string that happens to match its
-// display name. Spans all eight classes on purpose — most of the name-based
-// entries this replaced belong to the seven with no other test coverage.
+// display name. Spans every registered class on purpose.
 import { describe, expect, it } from "vitest"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import schools from "../../src/data/classes/schools.json"
-import {
-  SITE_BUFF_DEFS_BY_SPEC,
-  GLOBAL_BUFF_DEFS,
-  GROUP_BUFF_DEFS,
-  MECHANIC_BUFF_DEFS,
-} from "../../src/data/skills/buffs"
-import { legacyDefOf } from "../../src/engine/buffs/legacyBuffModule"
+import { CLASS_IDS, CLASS_DEFS } from "../../src/data/classes/registry"
+import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 
-const CLASS_IDS = (schools as { id: string }[]).map((school) => school.id)
 const NAMESPACES = ["role:", "type:", "weapon:", "mystic:", "attune:", "prop:", "attack:", "cast:"]
 
-// Every spec's own copy of a site-scoped module, plus global/group/mechanic —
-// the same per-spec granularity the old per-JSON-variant scan had, so a
-// spec-specific `affects`/`__statModByPrefix` divergence (e.g. throatPierced)
-// stays checked once per spec rather than collapsing to one shared entry.
+// Every class's own class-buff and mechanic-buff modules, plus global/group.
 const entries: { label: string; module: BuffModule }[] = [
-  ...Object.entries(SITE_BUFF_DEFS_BY_SPEC).flatMap(([spec, modules]) =>
-    modules.map((module) => ({ label: `${spec}/${module.id}`, module })),
+  ...CLASS_DEFS().flatMap((classDef) =>
+    classDef.classBuffDefs.map((module) => ({
+      label: `${classDef.id}/classBuff/${module.id}`,
+      module,
+    })),
+  ),
+  ...CLASS_DEFS().flatMap((classDef) =>
+    classDef.mechanicBuffDefs.map((module) => ({
+      label: `${classDef.id}/mechanic/${module.id}`,
+      module,
+    })),
   ),
   ...GLOBAL_BUFF_DEFS.map((module) => ({ label: `global/${module.id}`, module })),
   ...GROUP_BUFF_DEFS.map((module) => ({ label: `group/${module.id}`, module })),
-  ...MECHANIC_BUFF_DEFS.map((module) => ({ label: `mechanic/${module.id}`, module })),
 ]
 
 function scopeEntries(module: BuffModule): string[] {
-  const prefixes = legacyDefOf(module)?.__statModByPrefix?.prefixes ?? []
-  return [...(module.affects ?? []), ...(module.excludes ?? []), ...prefixes]
+  return [...(module.affects ?? []), ...(module.excludes ?? [])]
 }
 
 function triggerEntries(module: BuffModule): string[] {
@@ -45,8 +41,36 @@ function triggerEntries(module: BuffModule): string[] {
 // nothing" is otherwise indistinguishable from a typo.
 const KNOWN_UNCARRIED = new Set(["role:fireOil", "role:fivefoldBleed"])
 
+// Trigger entries for the seven classes now under `reference/classes/`
+// (2026-08-11): `jadeware` and `rainwhisperShield` are set/global buffs
+// whose trigger list spans every class's own "Q" cast so the buff still
+// fires however a future class equips the set; `soulShaken` /
+// `potentRiverFlow` / `wineGu` carry Bellstrike Rainbow's Spear Q variants
+// alongside Umbra's; `healerBuff`'s own cast belonged to Silkbind Jade.
+// Listed rather than hidden, same reasoning as `KNOWN_UNCARRIED` above.
+const KNOWN_UNCARRIED_TRIGGERS = new Set([
+  "cast:spearQ0HitCancel",
+  "cast:spearQPrepull",
+  "cast:fanQ",
+  "cast:fanQCancel",
+  "cast:fanQPrepull",
+  "cast:moBladeQ",
+  "cast:moBladeQPrepull",
+  "cast:ropeQ",
+  "cast:ropeQ1Hit",
+  "cast:snowpartingSpecial",
+  "cast:swordQ",
+  "cast:swordQ2nd",
+  "cast:umbQ",
+  "cast:umbQPrepull",
+  "cast:umbrellaQ",
+  "cast:umbrellaQEmpoweredPerfectCatch",
+  "cast:umbrellaQPerfectCatch",
+  "cast:healerBuff",
+])
+
 describe("scope is addressed by tag, never by display name", () => {
-  it("every affects / __statModByPrefix entry is namespaced", () => {
+  it("every affects entry is namespaced", () => {
     const bare: string[] = []
     for (const { label, module } of entries)
       for (const entry of scopeEntries(module))
@@ -54,9 +78,11 @@ describe("scope is addressed by tag, never by display name", () => {
     expect(bare).toEqual([])
   })
 
+  // Bellstrike Umbra's own native set — six defs carry a scope entry
+  // (2026-08-11, after the other seven classes' data moved to `reference/`).
   it("covers a non-trivial number of defs, so the check cannot pass vacuously", () => {
     const withScope = entries.filter(({ module }) => scopeEntries(module).length > 0)
-    expect(withScope.length).toBeGreaterThan(20)
+    expect(withScope.length).toBeGreaterThanOrEqual(6)
   })
 })
 
@@ -74,7 +100,7 @@ describe("triggers are addressed by cast tag, never by display name", () => {
 // matching would at least still fire on a stem. This is the guard for that.
 describe("every declared tag is actually carried by something", () => {
   const carried = new Set<string>()
-  for (const classId of CLASS_IDS) {
+  for (const classId of CLASS_IDS()) {
     for (const skill of builtinSkillsForClass(classId)) {
       for (const tag of skill.tags ?? []) carried.add(tag)
       if (skill.castTag) carried.add(skill.castTag)
@@ -95,7 +121,8 @@ describe("every declared tag is actually carried by something", () => {
   it("every trigger entry reaches at least one skill", () => {
     const orphans = new Set<string>()
     for (const { module } of entries)
-      for (const entry of triggerEntries(module)) if (!carried.has(entry)) orphans.add(entry)
+      for (const entry of triggerEntries(module))
+        if (!carried.has(entry) && !KNOWN_UNCARRIED_TRIGGERS.has(entry)) orphans.add(entry)
     expect([...orphans]).toEqual([])
   })
 })

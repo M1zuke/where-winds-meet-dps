@@ -27,6 +27,10 @@ export interface MechanicSetup {
   paramOn(name: string): boolean
   paramTier(name: string): number
   hasBuffEngine: boolean
+  // `panel.ts effectiveRates`'s result (yellow, post-resistance), computed
+  // once in `timeline.ts` — see CLAUDE.md § "White vs Yellow rates". A
+  // mechanic reads this rather than re-deriving it from `inputs`.
+  effectiveRates: { precision: number; critRate: number; affinityRate: number }
 }
 
 // Two of the formula's inputs are not `{statKey, amount}` deltas and so cannot

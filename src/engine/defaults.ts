@@ -6,7 +6,7 @@ import { SET_ID } from "../data/sets"
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
 export const defaultInputs: Inputs = {
-  classId: "bamboocutWindTwinblade",
+  classId: "bellstrikeUmbra",
   breakthrough: 13,
 
   phys: { min: 1043.0, max: 2006.0, penetration: 0.292 },

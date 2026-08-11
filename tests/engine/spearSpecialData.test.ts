@@ -185,6 +185,6 @@ describe("builtinBuffsForClass", () => {
   })
 
   it("a class with no built-in buffs returns an empty array", () => {
-    expect(builtinBuffsForClass("bamboocutWindTwinblade")).toEqual([])
+    expect(builtinBuffsForClass("notAClass")).toEqual([])
   })
 })

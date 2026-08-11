@@ -1,14 +1,14 @@
 // Source of truth: `.tmp/site/deobfuscated.js` — the inner-way registry's
 // `{ name, key, path, combatToggle, enabledBuffs, tiers }` entries and the set
 // registry `Ps` (`{ name, key, twoPiece, fourPiece }`), cross-checked against
-// this app's own data (`src/data/classes/schools.json` `allowedMindMethods` /
+// this app's own data (each class module's `allowedMindMethods` /
 // `classMindGroup`, `src/data/sets/`). Set id ↔ site key lives on each
 // `SetDef.siteKey` in `src/data/sets/`, not here.
 //
 // Only the five implemented inner ways can be mapped (2026-08-10) — the other
 // 23 were deleted as unimplemented, so every site param naming one is
 // unmappable by construction rather than by decision. Any def gated on such a
-// param can never activate; those defs are kept as ported reference data.
+// param can never activate; those defs live under `reference/classes/buffs/`.
 //
 // Intentional gaps among what remains (left unmapped — do not "complete" these
 // without new verification):

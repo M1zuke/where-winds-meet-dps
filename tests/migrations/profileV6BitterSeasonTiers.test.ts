@@ -106,8 +106,8 @@ describe("profile-v6 with a slot at a tier only reachable via the widened Bitter
 })
 
 // Additive, no version bump — see MIGRATIONS.md. Widening the inner-way NAME
-// allowlist (`allowedMindMethods` in schools.json) to include Bitter Season on
-// every class can only make previously-illegal slot values legal, never the
+// allowlist (`ClassDef.allowedMindMethods`) to include Bitter Season on every
+// class can only make previously-illegal slot values legal, never the
 // reverse.
 describe("Bitter Season inner way — widened allowlist round-trips (no version bump)", () => {
   beforeEach(() => {
@@ -153,7 +153,11 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     })
   })
 
-  it("survives hydration with its id healed on a non-Umbra class too (inner ways are global)", () => {
+  // A profile naming a class that no longer exists degrades that classId to
+  // Bellstrike Umbra (CLAUDE.md § "localStorage migrations") before the
+  // inner-way heal below runs — Bitter Season being global-allowed continues
+  // to hold on the degraded class too.
+  it("survives hydration with its id healed on a profile whose classId gets degraded", () => {
     const inputs = withBitterSeasonSlot("silkbindJade")
     kvStore.set(
       PROFILES_KEY,
@@ -165,6 +169,7 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     )
 
     const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.classId).toBe("bellstrikeUmbra")
     expect(profiles[0].inputs.mindMethods[0]).toEqual({
       id: "bitterSeason",
       name: "Bitter Season",

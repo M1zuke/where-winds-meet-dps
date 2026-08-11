@@ -17,8 +17,8 @@ import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mecha
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
-import "../data/classes"
-import { buildContext } from "./panel"
+import { grantsMinPhysCritBoostFor } from "../data/classes/registry"
+import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage } from "./formula"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
@@ -220,6 +220,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     classId: inputs.classId,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
+    grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
   }
 
   const behaviorFor = buildBehaviors(buildView)
@@ -254,14 +255,6 @@ export function simulateTimeline(inputs: Inputs): Result {
             props.attackType = tag.slice(7) as SkillProperties["attackType"]
         }
         eng.processSkillCast(castTag, ls.startFrame / FPS, props)
-        if (props.isDrone && ls.performedHits.length > 1) {
-          const useExternalLB = !!eng.params.starReacher
-          for (let i = 1; i < ls.performedHits.length; i++) {
-            const t = (ls.startFrame + ls.performedHits[i].frame) / FPS
-            if (useExternalLB) eng.processDroneTickWithExternalLB(t)
-            else eng.processDroneTick(t)
-          }
-        }
       }
       return eng
     } catch {
@@ -276,6 +269,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       })()
     : null
 
+  const { precision, critRate, affinityRate } = effectiveRates(inputs)
   const mechanicSetup: MechanicSetup = {
     inputs,
     classId: inputs.classId,
@@ -287,6 +281,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     paramOn: (name) => buffEngine?.paramOn(name) ?? false,
     paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
     hasBuffEngine: !!buffEngine,
+    effectiveRates: { precision, critRate, affinityRate },
   }
   const mechanics = prepareMechanics(mechanicSetup)
 

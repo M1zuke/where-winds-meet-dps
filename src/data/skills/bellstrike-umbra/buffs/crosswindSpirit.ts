@@ -1,7 +1,7 @@
-import { defineBuff } from "./define"
-import { BUFF, PARAM } from "./ids"
-import { ROLE } from "../ids"
-import { stat } from "../../../engine/effects/effect"
+import { defineClassBuff } from "../../buffs/define"
+import { BUFF, PARAM } from "../../buffs/ids"
+import { ROLE } from "../../ids"
+import { stat } from "../../../../engine/effects/effect"
 
 export const CROSSWIND_SPIRIT_BONUS = 0.15
 export const CROSSWIND_MAX_CHARGES = 5
@@ -10,11 +10,11 @@ export const CROSSWIND_MAX_CHARGES = 5
 // active is per-detonation state, modeled in `bellstrikeUmbraCrosswind.ts`'s
 // `CrosswindTracker`, not here. This module is never seeded and never
 // alwaysActive, so `BuffEngine` never applies it; it exists so the catalog's
-// Bleed Detonation "Receives" row has a real `affects`/`effects` pair to read.
-export const crosswindSpirit = defineBuff({
+// Bleed Detonation "Receives" row (and the Class Buffs column) has a real
+// `affects`/`effects` pair to read.
+export const crosswindSpirit = defineClassBuff({
   id: BUFF.crosswindSpirit,
   name: "Crosswind Blade Spirit",
-  specs: ["bellstrike_umbra"],
   requires: { param: PARAM.swordHorizon },
   affects: [ROLE.bleedDetonation],
   triggeredBy: [],

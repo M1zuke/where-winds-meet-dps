@@ -9,9 +9,7 @@ import {
   WEAPON_BOOST_STAT_KEY,
   type StatKey,
 } from "../statRegistry"
-import type { BuffBonus, BuffStatMods } from "./buffDef"
 import type { BuffModule } from "./buffModule"
-import { legacyDefOf } from "./legacyBuffModule"
 import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
 import type { Debuff } from "../debuff"
@@ -21,42 +19,13 @@ import type { BuffParams } from "./buffEngine"
 import { INNER_WAY_BY_PARAM } from "./paramMap"
 import { setDisplayNameForSiteKey } from "../../data/sets"
 import { builtinDebuffsForClass } from "../builtinLibrary"
-
-function bonusSummary(b?: BuffBonus | null): string {
-  if (!b) return "—"
-  const pct = (n: number) => `${(n * 100).toFixed(1)}%`
-  const label =
-    b.type === "phyBoostMod"
-      ? "phys"
-      : b.type === "bossOnlyBuffBonus"
-        ? "boss"
-        : b.type === "groupDamage"
-          ? "all (team)"
-          : "all"
-  if (b.valuePerStack !== undefined) return `+${pct(b.valuePerStack)} ${label}/stack`
-  if (b.valueFromParam) return `+${label} (from ${b.valueFromParam})`
-  return `+${pct(b.value ?? 0)} ${label}`
-}
+import { classDefinition } from "../../data/classes/registry"
 
 function affectsSummary(module: BuffModule): string {
   if (module.affectsProperty) return module.affectsProperty
   if (module.affectsWeaponTypes) return module.affectsWeaponTypes.join("/")
   if (module.affects === null || module.affects === undefined) return "all"
   return module.affects.join("/")
-}
-
-const POINT_VALUED_MODS = new Set<keyof BuffStatMods>(["physPen", "bellstrikePen"])
-
-export function statModsSummary(mods: BuffStatMods | null | undefined): string {
-  if (!mods) return ""
-  const parts: string[] = []
-  for (const k of Object.keys(mods) as (keyof BuffStatMods)[]) {
-    const v = mods[k]
-    if (typeof v !== "number" || v === 0) continue
-    const formatted = POINT_VALUED_MODS.has(k) ? `${v}` : `${(v * 100).toFixed(0)}%`
-    parts.push(`${k} ${v >= 0 ? "+" : ""}${formatted}`)
-  }
-  return parts.join(", ")
 }
 
 // A native module's `effects` static array carries no bonus "type" (team vs
@@ -87,45 +56,10 @@ function summaryFromStaticEffects(effects: Effect[]): string {
   return parts.join(", ")
 }
 
-// `receivesForSkill` asks "does this module contribute to this tag set, and
-// what does it read as" — a legacy-adapted module answers with the exact old
-// `BuffDef` field reading (so its text is byte-identical to before
-// conversion); a native module prefers its author-written `summary` when one
-// is given, and otherwise derives text from its static `effects` array.
-// `appliesForSkill` and `alwaysActiveClassBuffs` do NOT share this: each reads
-// a different, narrower field set today (no `__statModByPrefix` resolution in
-// the former, `__statModByPrefix?.match` only — no tag-scope resolution — in
-// the latter), and folding them in here would change their emitted strings.
 function moduleContribution(
   module: BuffModule,
   tagSet: Set<string>,
 ): { applies: boolean; text: string } {
-  const legacy = legacyDefOf(module)
-  if (legacy) {
-    const hasStatMods = !!(
-      legacy.statModifiers ||
-      legacy.bossStatModifiers ||
-      legacy.__statModByPrefix
-    )
-    let resolvedMods = legacy.statModifiers ?? null
-    let statModApplies = hasStatMods
-    if (legacy.__statModByPrefix) {
-      const prefixRule = legacy.__statModByPrefix
-      resolvedMods = matchesScope(tagSet, { affects: prefixRule.prefixes })
-        ? prefixRule.match
-        : prefixRule.default
-      statModApplies = resolvedMods != null
-    }
-    const bonusApplies = !!legacy.bonus && matchesScope(tagSet, legacy)
-    const parts: string[] = []
-    const statPart = statModsSummary(resolvedMods)
-    if (statPart) parts.push(statPart)
-    if (legacy.bonus) {
-      const bonusPart = bonusSummary(legacy.bonus)
-      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
-    }
-    return { applies: statModApplies || bonusApplies, text: parts.join(", ") }
-  }
   const applies = matchesScope(tagSet, module)
   const text =
     module.summary ??
@@ -312,16 +246,8 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
     const triggered = module.triggeredBy.includes(castTag)
     if (!triggered) continue
 
-    const legacy = legacyDefOf(module)
     const parts: string[] = []
-    if (legacy) {
-      const statPart = statModsSummary(legacy.statModifiers)
-      if (statPart) parts.push(statPart)
-      if (legacy.bonus) {
-        const bonusPart = bonusSummary(legacy.bonus)
-        if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
-      }
-    } else if (module.summary) {
+    if (module.summary) {
       parts.push(module.summary)
     } else if (Array.isArray(module.effects)) {
       const text = summaryFromStaticEffects(module.effects)
@@ -346,11 +272,28 @@ export interface ClassBuffRow {
   requires: string | null
 }
 
+// The column lists defs that scope themselves to specific skills; an unscoped
+// def applies to the whole build and is shown on the skills it triggers from
+// instead (an Applies row — see `appliesForSkill`). An empty `affects` array
+// matches `matchesScope` (`../scope.ts`): it means "matches nothing", not
+// "matches everything", so it does not count as scoped either.
+function hasScope(module: BuffModule): boolean {
+  return (
+    (module.affects?.length ?? 0) > 0 ||
+    module.affectsProperty != null ||
+    module.affectsWeaponTypes != null
+  )
+}
+
 export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const params = paramsFromInputs(inputs)
+  const classDef = classDefinition(inputs.classId)
+  const byId = new Map<string, BuffModule>()
+  for (const module of classDef ? [...classDef.classBuffDefs, ...classDef.mechanicBuffDefs] : [])
+    byId.set(module.id, module)
   const rows: ClassBuffRow[] = []
-  for (const module of dedupedMechanicBuffDefsForClass(inputs.classId)) {
-    if (!module.alwaysActive) continue
+  for (const module of byId.values()) {
+    if (!hasScope(module)) continue
     if (module.requires?.param && !params[module.requires.param]) continue
     if (
       module.requires?.minTier &&
@@ -358,15 +301,8 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
       ((params[module.requires.param + "Tier"] as number) ?? 0) < module.requires.minTier
     )
       continue
-    const legacy = legacyDefOf(module)
     const parts: string[] = []
-    if (legacy) {
-      const mods = legacy.__statModByPrefix?.match ?? legacy.statModifiers ?? null
-      const statPart = statModsSummary(mods)
-      if (statPart) parts.push(statPart)
-      const bonusPart = bonusSummary(legacy.bonus)
-      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
-    } else if (module.summary) {
+    if (module.summary) {
       parts.push(module.summary)
     } else if (Array.isArray(module.effects)) {
       const text = summaryFromStaticEffects(module.effects)

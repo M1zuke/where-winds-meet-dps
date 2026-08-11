@@ -158,9 +158,9 @@ The interesting derivations:
   fallback, superseded by `dotDamageMultiplier` when the timeline passes one
 * **`rateResistance` / `physPenResistance` / `attrPenResistance`** — see
   "Calculation rules"
-* **`dingYinByTag`** — keyed on the class's `permanentBuffs` (from
-  `schools.json`), never on `classBuffs` (which is always `[]`). Panel display
-  only; the formula does not read it.
+* **`dingYinByTag`** — keyed on the class's `dingYinTags` (`ClassDef`, e.g.
+  `src/data/classes/bellstrikeUmbra.ts`). Panel display only; the formula does
+  not read it.
 * **`attuneBoostByTag`** — the same rolled stats re-keyed by the `attune:` tag
   their `AttunementOption.affectsTag` declares, gated by that option's
   `classIds`. This is the map the formula joins against `art.attuneTag` to
@@ -304,8 +304,9 @@ source citations, not domain naming. See CLAUDE.md § "Language".)
 > Strike, Morale Chant, Bitter Season. The other 23 were removed on 2026-08-10
 > as unimplemented. An inner way is identified by a stable `id`, never by its
 > display name — `src/data/classes/innerWayRegistry.ts` is the one place a name
-> lives, and everything else (schools.json, the panel-stat table, the arts
-> rules, the defs, `paramMap`, `MindMethodSlot.id`) refers to the id.
+> lives, and everything else (`ClassDef.classMindGroup`/`allowedMindMethods`,
+> the panel-stat table, the arts rules, the defs, `paramMap`,
+> `MindMethodSlot.id`) refers to the id.
 
 
 An inner way can reshape the calculation in three distinct places. Classify a
@@ -324,11 +325,12 @@ effect must never land in two.
    Year-Long Lament `effectiveDefense`, Mighty Song `chargeBonus`, Insightful
    Strike `dotDamageBoost` and the flat all-damage bonus. `minTier` gates the
    ones that need a tier; `panel.ts` no longer names any of them.
-3. **The ported buff engine** — `src/data/skills/buffs/*.json`/`*.ts` defs
-   gated by a `requires.param` (`enabledParam` on the not-yet-converted JSON
-   ones), enabled from the build via `buffs/paramMap.ts`. This is where a
-   *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md §
-   "Buffs".
+3. **The ported buff engine** — `BuffModule` defs (`src/data/skills/buffs/*.ts`,
+   `src/data/skills/bellstrike-umbra/buffs/*.ts`; `reference/classes/buffs/*.json`
+   for the seven not-yet-converted classes, unimported) gated by a
+   `requires.param`, enabled from the build via `buffs/paramMap.ts`. This is
+   where a *conditional, triggered* inner-way mechanic belongs, per CLAUDE.md
+   § "Buffs".
 
 A fourth channel — per-art deltas keyed by exact skill name
 (`mindMethodOverrides.ts`, driven by `artsConditionals.json`) — was removed
@@ -402,8 +404,8 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   inner way's own stat contribution is suppressed while it is active — the DoT
   damage is not. A Sword Horizon Zenith detonation extends the poison the same
   way it already extended Smolder — one shared, capped rule
-  (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `builtinBuffs.ts`), not specific to
-  either debuff. Only hits laid by the rotation roll
+  (`ZENITH_MAX_EXTENDED_DURATION_FRAMES`, `data/classes/bellstrikeUmbraGates.ts`),
+  not specific to either debuff. Only hits laid by the rotation roll
   the proc — DoT ticks and trigger-enqueued hits do not — the same structural
   limitation Hawkwing and Concentration have.
 
@@ -416,22 +418,23 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **`formbendBonus` / `formbendBonusTriggers`** (rainwhisperShield's +2 s
   duration bonus). Confirmed real on the site, but gated on a stand-alone
   `formbendArmorSet` checkbox with no equivalent gear-set, inner-way, or toggle
-  in this app's data model. The fields were dead — deleted from `buffDef.ts`'s
-  schema — and the mechanic itself remains unmodeled.
+  in this app's data model. The fields were dead — deleted from the
+  now-retired `BuffDef` schema (`buffModule.ts` has no equivalent) — and the
+  mechanic itself remains unmodeled.
 - **`ConsumeOnMatch.mistwillowCategory`** — `buffEngine.ts` gates on
   `opts.mistwillowCategory`, but `timeline.ts` only populates `opts` from a
   skill's `prop:` / `attack:` tags, so the flag is never set. It would need the
   timeline to flatten a per-hit light/heavy mistwillow categorization into
-  `opts`. One def uses it (`springThunder.json`), and a def gated on it alone
-  never consumes.
+  `opts`. One def uses it (`reference/classes/buffs/springThunder.json`), and
+  a def gated on it alone never consumes.
 - **`starsAlignBonus`** (Stars Align 4-pc, `= distance × 5`) is stochastic —
   computed from live distance on the site. Equipping the set enables the buff
   but it contributes 0. See `buffs/paramMap.ts`.
-- **`revelryScript` as an inner-way param** — the `revelryScript` buff def is
-  registered across 6 specs and is never turned on by anything selectable in
-  this app, so every one of those registrations always contributes 0. (The
-  Combat Settings toggle of the same name is a separate, implemented +30 % —
-  don't conflate them.)
+- **`revelryScript` as an inner-way param** — the `revelryScript` buff def
+  (currently registered under Bellstrike Umbra's `classBuffDefs`) is never
+  turned on by anything selectable in this app, so it always contributes 0.
+  (The Combat Settings toggle of the same name is a separate, implemented
+  +30 % — don't conflate them.)
 - **`insightfulStrike` is deliberately absent from
   `paramMap.ts`'s `SITE_PARAM_TO_INNER_WAY`.** Mapping the param would make
   `BuffEngine` seed `concentration` at `t=0` and re-arm it on every cast
@@ -456,9 +459,10 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
 - **bamboocut_dust's second `calculationHooks`** (soulbreak pool,
   falling-blossom stacks, perfect-catch, phantom-rally injected entries). A
   bespoke stateful per-cast state machine with its own injected-entry
-  scheduling, not expressible as static `BuffDef`s / `HitTrigger`s.
-- **`forceCritIfHighCrit`** (still carried by `mountainSplitterAdeptCrit.json`)
-  — its site gate is a crit-weight ≥ 0.7 test with no equivalent here, and the
+  scheduling, not expressible as static `BuffModule`s / `HitTrigger`s.
+- **`forceCritIfHighCrit`** (still carried by
+  `reference/classes/buffs/mountainSplitterAdeptCrit.json`) — its site gate is
+  a crit-weight ≥ 0.7 test with no equivalent here, and the
   engine does not model it at all: nothing reads the field, and nothing
   signals that it's unmodelled.
 - **Known trigger no-op**: on `bamboocutWindTwinblade` and
@@ -472,7 +476,7 @@ divergences (Implemented), and known gaps, which contribute 0 unless noted
   formula term, buff, or `requiresSet` gate ever read any of the three — and
   none is carried into `data/sets/swiftGale.ts`, `shatteredRidge.ts`, or
   `data/sets/swallowcall.ts`. Shattered Ridge's real bonus is the deflect buff
-  (`data/skills/buffs/shatteredRidgeDeflect.json`), gated by `siteKey`
+  (`reference/classes/buffs/shatteredRidgeDeflect.json`), gated by `siteKey`
   through `requiresSet`, unrelated to the dead column.
 
 ### Inner-way audit
@@ -503,12 +507,12 @@ source-of-truth note this table summarizes.
 
 ## Verification
 
-- `pnpm test` — **795 tests across 84 files**, all green.
+- `pnpm test` — **790 tests across 85 files**, all green.
 - The one locked fixture is `tests/engine/engineBaseline.test.ts`, which pins
   the whole `Result` for 25 Umbra builds as a refactor guard — it asserts the
   engine is *unchanged*, never that it is *right* (TESTING.md § "The engine
   baseline"). Beyond it no test asserts an absolute DPS number, and
-  `defaultInputs` (`engine/defaults.ts`) is the default Bamboocut-Wind build,
+  `defaultInputs` (`engine/defaults.ts`) is the default Bellstrike Umbra build,
   not an anchor.
 - `tests/engine/damageRules.test.ts` is the only guard on the four calculation
   rules, and it is directional (asserts the sign/shape of a change, not a

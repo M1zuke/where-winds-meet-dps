@@ -1,12 +1,12 @@
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes". Pins the
-// Skill Editor text for the eight buffs (of the 18 Umbra-scoped conversions)
-// whose `BuffDef → BuffModule` rendering moved off the exact pre-conversion
-// string, so a future edit can't move it silently again. The other ten
-// (crosswindSpirit, potentRiverFlow, wineGu, revelryScript,
-// vulnerabilityTeammate, mirage, mirageBonus, rainwhisperShield,
-// resistanceResolve, dragonHeadLowHp) render identically before and after —
-// all express their bonus as a plain `allDamageBoost` `StatKey`, which the
-// catalog's generic label table already renders as the old "+N% all" text.
+// Skill Editor text for the eight buffs (of the 18 Umbra-scoped modules) whose
+// rendering carries an author-written `summary` rather than one the catalog's
+// generic label table can derive from the effect list, so a future edit can't
+// move it silently. The other ten (crosswindSpirit, potentRiverFlow, wineGu,
+// revelryScript, vulnerabilityTeammate, mirage, mirageBonus,
+// rainwhisperShield, resistanceResolve, dragonHeadLowHp) all express their
+// bonus as a plain `allDamageBoost` `StatKey`, which that generic table
+// already renders as "+N% all".
 import { describe, expect, it } from "vitest"
 import {
   appliesForSkill,
@@ -34,6 +34,24 @@ function inputsWithSwordHorizon(tier: string): Inputs {
     mindMethods: [
       { name: "Sword Horizon", stacks: tier },
       { name: "", stacks: "" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+    ],
+  }
+}
+
+// Sword Horizon gates bellstrikeUmbraBleedPen/bellstrikeUmbraBleedingDamage/
+// crosswindSpirit; Wolfchaser's Art tier 6 gates soulShaken — the two
+// `requires` every scoped Class Buffs row actually reads. Insightful Strike's
+// and Revelry Script's own params gate other, unscoped modules and stay
+// closed here on purpose.
+function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
+  return {
+    ...defaultInputs,
+    classId: CLASS,
+    mindMethods: [
+      { name: "Sword Horizon", stacks: "tier 6" },
+      { name: "Wolfchaser's Art", stacks: "tier 6" },
       { name: "", stacks: "" },
       { name: "", stacks: "" },
     ],
@@ -116,6 +134,20 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
       "affinityDmg +18%",
+    )
+  })
+})
+
+describe("Class Buffs column — scope, not alwaysActive, decides membership", () => {
+  it("is exactly the four scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
+    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
+    expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
+      [
+        "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
+        "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
+        "soulShaken: +10.0% all/stack",
+        "crosswindSpirit: +15.0% all",
+      ].sort(),
     )
   })
 })

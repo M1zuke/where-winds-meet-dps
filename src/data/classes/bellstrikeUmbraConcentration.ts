@@ -2,10 +2,7 @@
 // a probability schedule rather than a window. Tier 6 additionally multiplies
 // DoT damage while it is up.
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
-import { effectiveRates } from "../../engine/panel"
-import { registerDisplayGate } from "../../engine/buffs/displayGates"
 import { hasInnerWay, innerWayTier, type SlottedInnerWay } from "./innerWays"
-import { MECHANIC_ORDER, registerMechanic } from "../../engine/mechanics"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
@@ -43,7 +40,7 @@ export const concentrationMechanic: TimelineMechanic<State> = {
     if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
     const tier = innerWayTier(setup.inputs.mindMethods, INNER_WAY) ?? 0
     const proc =
-      Math.min(effectiveRates(setup.inputs).affinityRate, AFFINITY_PROC_CAP) +
+      Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
       setup.inputs.directAffinityRate
     return {
       schedule: concentrationActiveProbSchedule(
@@ -87,7 +84,3 @@ export const concentrationMechanic: TimelineMechanic<State> = {
     ]
   },
 }
-
-registerMechanic(concentrationMechanic, MECHANIC_ORDER.concentration)
-
-registerDisplayGate("concentration", concentrationAvailable)

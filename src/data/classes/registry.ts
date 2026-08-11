@@ -1,76 +1,42 @@
 // One place that answers "what is this class made of".
 //
-// Everything a class owns was previously reachable only by knowing which of ten
-// registries to open — schools.json, specMeta, CLASS_SPEC, the skill map, the
-// debuff library, the built-in buffs, two rotation files, the attunement list
-// and the retunement pools. Adding a class meant finding all ten.
-//
-// This does not move the underlying data files; it makes the lookup one call,
-// and gives `CLASS_IDS` a single definition so nothing has to hardcode the list
-// of eight.
-import type { Skill } from "../../engine/skill"
+// A class module declares almost everything about itself (see `define.ts`'s
+// `ClassDef`); the two things that stay outside it are the built-in `Buff`
+// gates (registered through `engine/builtinBuffs.ts` so a class can be looked
+// up by id without importing its module directly) and the attunement option
+// list (global, because a saved gear piece must resolve its attunement id
+// regardless of which class equipped it). `classDefinition()` composes both
+// onto the declared `ClassDef` so callers read one shape either way.
 import type { Buff } from "../../engine/buff"
-import type { Debuff } from "../../engine/debuff"
-import type { Rotation } from "../../engine/rotation"
-import type { AttributeKey } from "../../engine/types"
 import type { AttunementOption } from "../../engine/attunements"
 import { attunementsForClass } from "../../engine/attunements"
-import { specForClass } from "../../engine/buffs/data"
-import { BUILTIN_SKILLS_BY_CLASS } from "../skills"
-import debuffsLibrary from "../skills/debuffsLibrary.json"
-import { DEBUFFS as BELLSTRIKE_UMBRA_DEBUFFS } from "../skills/bellstrike-umbra/debuffs"
-import defaultRotationsData from "../rotations/defaultRotations.json"
-import handRotationsData from "../rotations/handRotations.json"
 import { builtinBuffsForClass } from "../../engine/builtinBuffs"
-// Side-effect load: each class registers its gate buffs, behaviours and
-// mechanics before the first definition is assembled.
+import type { ClassDef } from "./define"
+import type { RetunementPool } from "./retunementPools"
+import { classDefs } from "./classDefStore"
+// Side-effect load, deliberately not a value import: `index.ts` assembles
+// every class module and pushes the result into `classDefStore.ts`, rather
+// than this file pulling it out of `index.ts` directly. `panel.ts` reads
+// class metadata through this file, and the engine's own self-registering
+// mechanics `index.ts` also loads (hawkwing.ts, bitterSeason.ts) import
+// panel.ts — so this import closes a real cycle back to this file. That is
+// harmless here: `classDefs` above comes from the dependency-free leaf store,
+// not from `index.ts`, so whichever side of the cycle runs first still reads
+// a correctly-typed (if possibly still-empty) array rather than a value that
+// doesn't exist yet.
 import "./index"
-import { poolForClass, type RetunementPool } from "./retunementPools"
-import schools from "./schools.json"
 
-interface SchoolRow {
-  id: string
-  validated?: boolean
-  primaryAttribute: AttributeKey
-  permanentBuffs: string[]
-  classMindGroup: string
-  allowedMindMethods: string[]
+export { classDefs as CLASS_DEFS }
+
+export function CLASS_IDS(): readonly string[] {
+  return classDefs().map((classDef) => classDef.id)
 }
 
-interface RotationPool {
-  rotations: Rotation[]
-  defaultRotationId?: string
-}
-
-const SCHOOLS = schools as unknown as SchoolRow[]
-const DEBUFFS: Record<string, readonly Debuff[]> = {
-  ...(debuffsLibrary as unknown as Record<string, Debuff[]>),
-  bellstrikeUmbra: BELLSTRIKE_UMBRA_DEBUFFS,
-}
-const DEFAULT_ROTATIONS = defaultRotationsData as unknown as Record<string, RotationPool>
-const HAND_ROTATIONS = handRotationsData as unknown as Record<string, RotationPool>
-
-export const CLASS_IDS: readonly string[] = SCHOOLS.map((school) => school.id)
-
-export interface ClassDefinition {
-  id: string
-  // Whether this class's data has been checked against the game. The other
-  // seven carry unverified imported numbers — CLASSES.md § "Implemented
-  // classes" — and the UI marks them so.
-  validated: boolean
-  spec: string | undefined
-  primaryAttribute: AttributeKey
-  // The class's own inner way, plus the ones it may slot alongside it.
+export interface ClassDefinition extends ClassDef {
+  // The class's own signature inner way, plus the ones it may slot alongside it.
   innerWays: readonly string[]
-  // Visible dingYin attunement tags, from `schools.json permanentBuffs`.
-  dingYinTags: readonly string[]
-  skills: readonly Skill[]
-  debuffs: readonly Debuff[]
   buffs: readonly Buff[]
-  rotations: readonly Rotation[]
-  defaultRotationId: string | null
   attunements: readonly AttunementOption[]
-  retunementPool: RetunementPool | null
 }
 
 const cache = new Map<string, ClassDefinition | null>()
@@ -79,35 +45,34 @@ export function classDefinition(classId: string): ClassDefinition | null {
   const cached = cache.get(classId)
   if (cached !== undefined) return cached
 
-  const school = SCHOOLS.find((candidate) => candidate.id === classId)
-  if (!school) {
+  const classDef = classDefs().find((candidate) => candidate.id === classId)
+  if (!classDef) {
     cache.set(classId, null)
     return null
   }
 
   const definition: ClassDefinition = {
-    id: classId,
-    validated: school.validated === true,
-    spec: specForClass(classId),
-    primaryAttribute: school.primaryAttribute,
+    ...classDef,
     innerWays: [
-      ...new Set([school.classMindGroup ?? "", ...school.allowedMindMethods].filter(Boolean)),
+      ...new Set([classDef.classMindGroup, ...classDef.allowedMindMethods].filter(Boolean)),
     ],
-    dingYinTags: school.permanentBuffs.filter((tag) => tag && tag !== "N/A"),
-    skills: BUILTIN_SKILLS_BY_CLASS[classId] ?? [],
-    debuffs: DEBUFFS[classId] ?? [],
     buffs: builtinBuffsForClass(classId),
-    rotations: [
-      ...(DEFAULT_ROTATIONS[classId]?.rotations ?? []),
-      ...(HAND_ROTATIONS[classId]?.rotations ?? []),
-    ],
-    defaultRotationId:
-      HAND_ROTATIONS[classId]?.defaultRotationId ??
-      DEFAULT_ROTATIONS[classId]?.defaultRotationId ??
-      null,
     attunements: attunementsForClass(classId),
-    retunementPool: poolForClass(classId),
   }
   cache.set(classId, definition)
   return definition
+}
+
+export function poolForClass(classId: string): RetunementPool | null {
+  return classDefs().find((classDef) => classDef.id === classId)?.retunementPool ?? null
+}
+
+// The one place `BuildView.grantsMinPhysCritBoost` gets built from a class's
+// `critBoostWeaponTypes` — `timeline.ts` and tests both read through this
+// rather than re-deriving the Set-membership check themselves.
+export function grantsMinPhysCritBoostFor(
+  classId: string,
+): (weaponType: string | undefined) => boolean {
+  const types = new Set(classDefinition(classId)?.critBoostWeaponTypes ?? [])
+  return (weaponType) => !!weaponType && types.has(weaponType)
 }

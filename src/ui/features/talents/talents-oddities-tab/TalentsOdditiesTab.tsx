@@ -15,7 +15,7 @@ export function TalentsOdditiesTab({
 }) {
   const { t } = useI18n()
   const [sub, setSub] = useState<"talents" | "oddities">("talents")
-  const className = t(getSchool(inputs.classId).cn ?? inputs.classId)
+  const className = t(getSchool(inputs.classId).displayName)
   return (
     <>
       <SubTabs

@@ -19,7 +19,7 @@ export const MECHANIC_ORDER = {
   bitterSeason: 50,
 } as const
 
-type AnyMechanic = TimelineMechanic<unknown>
+export type AnyMechanic = TimelineMechanic<unknown>
 
 const registered: { mechanic: AnyMechanic; order: number }[] = []
 

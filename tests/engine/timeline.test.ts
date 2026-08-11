@@ -21,7 +21,7 @@ import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine
 import type { Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 const CLASS = umbraInputs.classId

@@ -78,19 +78,6 @@ describe("concentration buff module", () => {
     ])
   })
 
-  it("damage at tier 6 for bellstrike_splendor appends sustainDamageBoost once, at double value", () => {
-    const ctx = contextFor({
-      event: { kind: "damage", castTag: "x", tags: new Set() },
-      paramTier: 6,
-      spec: "bellstrike_splendor",
-    })
-    expect(concentration.effects(ctx)).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "directAffinityRate", amount: 0.03 },
-      { kind: "stat", statKey: "sustainDamageBoost", amount: 0.2 },
-    ])
-  })
-
   it("damage at tier 6 with no spec set drops the tier-6 pair silently", () => {
     const ctx = contextFor({
       event: { kind: "damage", castTag: "x", tags: new Set() },

@@ -6,26 +6,18 @@
 // `processSkillCast` (records into `buffHistory`); pass 2 queries
 // `calculateDamageEffects` per damage event, time-indexed against that history.
 //
-// Runs on `BuffModule` only — every def not yet converted to a native module
-// reaches here through `legacyBuffModule()`. `consumableStackPool` is the one
-// mechanism the `Effect` union deliberately does not model, so it stays a
-// bespoke method here that reads the original `BuffDef` back off the module
-// via `legacyDefOf`.
+// Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
-import type { ConsumeOnMatch } from "./buffDef"
-import { BONUS_TYPE_TO_STATKEY } from "./buffDef"
 import type { BuffModule } from "./buffModule"
-import { legacyDefOf } from "./legacyBuffModule"
 import { matchesAnyTag, matchesScope } from "../scope"
 import { castTagOf, skillTagsOf } from "./tags"
-import {
-  readSkillProperty,
-  type BuildView,
-  type EffectContext,
-  type EffectEvent,
-  type QiPhase,
-  type SkillProperties,
+import type {
+  BuildView,
+  EffectContext,
+  EffectEvent,
+  QiPhase,
+  SkillProperties,
 } from "../effects/context"
 import type { Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
@@ -89,13 +81,6 @@ const MISTWILLOW_HEAVY_OVERRIDE_CASTS = new Set([
   "cast:fanHeavyPursuit5Hit",
 ])
 
-interface StackPoolState {
-  stacks: number
-  expiresAt: number
-  lastStackTime?: number
-  lastRestoreTime?: number
-}
-
 function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
 }
@@ -104,14 +89,9 @@ export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffModule>()
   private triggerMap = new Map<string, BuffModule[]>()
-  private refreshDefs: BuffModule[] = []
-  private perCastConsumeDefs: BuffModule[] = []
-  private stackPoolDefs: BuffModule[] = []
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
-  private stackPools = new Map<string, StackPoolState>()
-  private consumeEvents = new Set<string>()
 
   constructor(
     params: BuffParams,
@@ -127,9 +107,6 @@ export class BuffEngine {
           if (!this.triggerMap.has(castTag)) this.triggerMap.set(castTag, [])
           this.triggerMap.get(castTag)!.push(module)
         }
-      if (module.refreshOn) this.refreshDefs.push(module)
-      if (legacyDefOf(module)?.consumableStackPool) this.stackPoolDefs.push(module)
-      if (legacyDefOf(module)?.perCastConsume) this.perCastConsumeDefs.push(module)
     }
     for (const module of modules) register(module)
     for (const module of groupModules) register(module)
@@ -215,12 +192,6 @@ export class BuffEngine {
     return module.duration(this.buildContext(time, event, 0))
   }
 
-  private resolveMaxStacksAt(module: BuffModule, time: number): number {
-    if (module.maxStacks === undefined) return 1
-    if (typeof module.maxStacks === "number") return module.maxStacks
-    return module.maxStacks(this.buildContext(time, { kind: "display" }, 0))
-  }
-
   activeBuffsForDisplay(time: number): {
     id: string
     name: string
@@ -251,13 +222,7 @@ export class BuffEngine {
         id,
         name: module?.name ?? DISPLAY_NAME_FALLBACK[id] ?? id,
         stacks: Math.max(1, stacks),
-        // The pre-conversion engine showed the def's plain `maxStacks` here,
-        // never the `tierConditionalStacks`-resolved cap it actually applies
-        // when granting a stack — a real display/damage divergence, not a bug
-        // this rewrite gets to close.
-        maxStacks: module
-          ? (legacyDefOf(module)?.maxStacks ?? this.resolveMaxStacksAt(module, time))
-          : 1,
+        maxStacks: module?.maxStacks ?? 1,
         effects,
         requires: module?.requires?.set ?? module?.requires?.param,
       })
@@ -326,7 +291,7 @@ export class BuffEngine {
       durationOverride ?? (module ? this.resolveDuration(module, time) : DEFAULT_DURATION)
     let stacks: number | undefined
     if (module?.maxStacks !== undefined) {
-      const max = this.resolveMaxStacksAt(module, time)
+      const max = module.maxStacks
       const cur = this.activeBuffs.get(id)
       if (cur && time >= cur.appliedAt && time < cur.expiresAt)
         stacks = Math.min((cur.stacks || 1) + stacksToAdd, max)
@@ -348,10 +313,6 @@ export class BuffEngine {
     if (module) this.runCastEffects(module, time, stacks ?? 1)
   }
 
-  // A perCastConsume-carrying module's `effects()` can also return
-  // `consumeStacks` here (the same function serves both events), which this
-  // sink no-ops — the actual consumption happens once, in
-  // `processPerCastConsume`'s own pass, never here.
   private runCastEffects(module: BuffModule, time: number, selfStacks: number): void {
     const ctx = this.buildContext(
       time,
@@ -420,23 +381,6 @@ export class BuffEngine {
     }
     return 0
   }
-  private consumeStack(id: string, time: number, amount = 1): boolean {
-    const cur = this.activeBuffs.get(id)
-    if (!cur || time < cur.appliedAt || time >= cur.expiresAt) return false
-    const before = cur.stacks ?? 1
-    if (before <= 0) return false
-    const next = Math.max(0, before - amount)
-    const entry: ActiveBuff = { ...cur, stacks: next }
-    this.activeBuffs.set(id, entry)
-    this.buffHistory.push({
-      time,
-      buffType: id,
-      action: "apply",
-      expiresAt: cur.expiresAt,
-      stacks: next,
-    })
-    return true
-  }
   private isActiveAfterBuffEndsActive(module: BuffModule, time: number): boolean {
     const rule = module.activeAfterBuffEnds
     if (!rule) return false
@@ -458,29 +402,7 @@ export class BuffEngine {
       (historyEntry) => time >= historyEntry.expiresAt && time < historyEntry.expiresAt + duration,
     )
   }
-  private matchesConsumeOn(match: ConsumeOnMatch | undefined, props: SkillProperties): boolean {
-    if (!match) return false
-    if (match.excludeProperty && readSkillProperty(props, match.excludeProperty)) return false
-    if (match.skillProperty) return !!readSkillProperty(props, match.skillProperty)
-    if (match.mistwillowCategory) return !!readSkillProperty(props, "mistwillowCategory")
-    return false
-  }
-
-  // `conditionalTrigger`'s two fields can gate on two DIFFERENT buff ids at
-  // once (`breakthrough`'s `refreshIfActive: "breakthrough"` +
-  // `upgradeFromActive: "drumbeat"`), which a single `requiresBuffActive`
-  // cannot express — so a legacy def with the raw field takes priority over
-  // the module's declarative one, which only mirrors it for catalog display.
   private requiresBuffActiveGate(module: BuffModule, applyTime: number): boolean | null {
-    const legacy = legacyDefOf(module)
-    const conditional = legacy?.conditionalTrigger
-    if (conditional) {
-      const refresh =
-        conditional.refreshIfActive && this.isBuffActive(conditional.refreshIfActive, applyTime)
-      const upgrade =
-        conditional.upgradeFromActive && this.isBuffActive(conditional.upgradeFromActive, applyTime)
-      return !!(refresh || upgrade)
-    }
     if (module.requiresBuffActive) return this.isBuffActive(module.requiresBuffActive, applyTime)
     return null
   }
@@ -500,11 +422,6 @@ export class BuffEngine {
             ? time + (props.castTime ?? 1)
             : time
 
-        if (
-          module.when &&
-          !module.when(this.buildContext(applyTime, { kind: "cast", castTag, props }, 0))
-        )
-          continue
         if (!this.canGrantTrigger(module, applyTime)) continue
 
         if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
@@ -546,39 +463,12 @@ export class BuffEngine {
         }
       }
     }
-    for (const module of this.refreshDefs) {
-      const refreshRule = module.refreshOn!
-      if (refreshRule.skillProperty && readSkillProperty(props, refreshRule.skillProperty)) {
-        if (refreshRule.onlyIfActive) {
-          if (this.isBuffActive(module.id, time)) this.refreshBuff(module.id, time)
-        } else this.refreshBuff(module.id, time)
-      }
-    }
     for (const [id, module] of this.definitions) {
       if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
         this.refreshBuff(id, time)
       }
     }
     if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, props)
-    this.processPerCastConsume(castTag, time, props)
-    this.processConsumableStackPools(castTag, time, props)
-  }
-
-  processDroneTick(time: number): void {
-    for (const module of this.refreshDefs) {
-      if (
-        module.refreshOn?.skillProperty === "isDrone" &&
-        module.refreshOn?.onlyIfActive &&
-        this.isBuffActive(module.id, time)
-      ) {
-        this.refreshBuff(module.id, time)
-      }
-    }
-  }
-
-  processDroneTickWithExternalLB(time: number): void {
-    this.applyBuff("lingeringBone", time)
-    this.processDroneTick(time)
   }
 
   private isMistwillowLightOverride(castTag: string): boolean {
@@ -652,101 +542,6 @@ export class BuffEngine {
     return 0
   }
 
-  // The one place `consumeStacks` is produced (`legacyBuffModule`'s
-  // `perCastConsumeEffects`) and consumed — routed through `applyEffect` like
-  // every other effect list, with `applyBuff`/`stat`/`forceOutcome` no-oped
-  // since this pass only ever cares about the consumption.
-  private processPerCastConsume(castTag: string, time: number, props: SkillProperties): void {
-    let currentModuleId = ""
-    const sink: EffectSink = {
-      stat: () => {},
-      forceOutcome: () => {},
-      applyBuff: () => {},
-      artBonus: () => {},
-      damageMultiplier: () => {},
-      setStatus: () => {},
-      consumeStacks: (id, count) => {
-        if (!this.consumeStack(id, time, count)) return
-        this.consumeEvents.add(`${time}|${castTag}|${currentModuleId}`)
-      },
-    }
-    const castEvent: EffectEvent = { kind: "cast", castTag, props }
-    for (const module of this.perCastConsumeDefs) {
-      if (!this.gateOk(module)) continue
-      currentModuleId = module.id
-      const ctx = this.buildContext(time, castEvent, 0)
-      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
-    }
-  }
-
-  private processConsumableStackPools(castTag: string, time: number, props: SkillProperties): void {
-    for (const module of this.stackPoolDefs) {
-      const legacyDef = legacyDefOf(module)!
-      const pool = legacyDef.consumableStackPool!
-      if (!this.gateOk(module)) continue
-      const state = this.stackPools.get(module.id) ?? { stacks: 0, expiresAt: -Infinity }
-      const alive = time < state.expiresAt
-
-      if (readSkillProperty(props, pool.stackOn.skillProperty)) {
-        const icdOk =
-          pool.stackOn.icd == null ||
-          state.lastStackTime == null ||
-          time - state.lastStackTime >= pool.stackOn.icd
-        if (icdOk) {
-          const cur = alive ? state.stacks : 0
-          const next = Math.min(pool.stackCap, cur + (pool.stackOn.stacksPerTrigger ?? 1))
-          this.stackPools.set(module.id, {
-            ...state,
-            stacks: next,
-            expiresAt: time + pool.stackLifetime,
-            lastStackTime: time,
-          })
-        }
-      }
-
-      const restore = pool.tierStackRestore
-      if (
-        restore &&
-        legacyDef.enabledParam &&
-        this.paramTier(legacyDef.enabledParam) >= restore.minTier &&
-        this.matchesConsumeOn(restore.restoreOn, props)
-      ) {
-        const gate =
-          restore.phaseGate == null ||
-          (Array.isArray(restore.phaseGate)
-            ? restore.phaseGate.includes(this.qiPhase(time))
-            : restore.phaseGate === this.qiPhase(time))
-        const cur = this.stackPools.get(module.id) ?? { stacks: 0, expiresAt: -Infinity }
-        const stillAlive = time < cur.expiresAt
-        const activeOk = !restore.requireBuffActive || stillAlive
-        const icdOk =
-          restore.icd == null ||
-          cur.lastRestoreTime == null ||
-          time - cur.lastRestoreTime >= restore.icd
-        if (gate && activeOk && icdOk) {
-          const next = Math.min(
-            pool.stackCap,
-            (stillAlive ? cur.stacks : 0) + (restore.stacksPerTrigger ?? 1),
-          )
-          this.stackPools.set(module.id, {
-            ...cur,
-            stacks: next,
-            expiresAt: time + pool.stackLifetime,
-            lastRestoreTime: time,
-          })
-        }
-      }
-
-      if (this.matchesConsumeOn(pool.consumeOn, props)) {
-        const cur = this.stackPools.get(module.id)
-        if (cur && time < cur.expiresAt && cur.stacks > 0) {
-          this.stackPools.set(module.id, { ...cur, stacks: 0 })
-          this.consumeEvents.add(`${time}|${castTag}|${module.id}`)
-        }
-      }
-    }
-  }
-
   calculateDamageEffects(skill: Skill, time: number): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
@@ -782,29 +577,12 @@ export class BuffEngine {
       )
         continue
       if (module.excludes && matchesAnyTag(tagSet, module.excludes)) continue
-      if (!module.scopesItsOwnEffects && !matchesScope(tagSet, module)) continue
+      if (!matchesScope(tagSet, module)) continue
 
       const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
       const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks)
       currentId = id
       for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
-    }
-
-    for (const module of this.perCastConsumeDefs) {
-      const consumeRule = legacyDefOf(module)!.perCastConsume!
-      if (!consumeRule.bonus || !this.consumeEvents.has(`${time}|${castTag}|${module.id}`)) continue
-      const value = consumeRule.bonus.value ?? 0
-      if (value === 0) continue
-      effects.push({ statKey: BONUS_TYPE_TO_STATKEY[consumeRule.bonus.type], amount: value })
-      breakdown[module.id] = (breakdown[module.id] ?? 0) + value
-    }
-    for (const module of this.stackPoolDefs) {
-      const pool = legacyDefOf(module)!.consumableStackPool!
-      if (!this.consumeEvents.has(`${time}|${castTag}|${module.id}`)) continue
-      const value = pool.bonus.value ?? 0
-      if (value === 0) continue
-      effects.push({ statKey: BONUS_TYPE_TO_STATKEY[pool.bonus.type], amount: value })
-      breakdown[module.id] = (breakdown[module.id] ?? 0) + value
     }
 
     const mistwillow = this.mistwillowBonusValue(castTag, time, tagSet)

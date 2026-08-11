@@ -6,7 +6,7 @@ places, and putting one in the other's home is the most common way this engine
 grows a double-count.
 
 TIMELINE.md § 5 documents the *schemas* (`Buff`/`Debuff` + `HitTrigger` vs
-`BuffDef`/`BuffEngine`). This file decides *which* you want.
+`BuffModule`/`BuffEngine`). This file decides *which* you want.
 
 ## The dividing question
 
@@ -45,12 +45,13 @@ skills, so they are skill-specific **even though the quantity they change is a
 stat**. That last point is the one people get wrong.
 
 These MUST be **first-class, data-driven buff-defs** in the trigger-driven buff
-system (`src/engine/buffs/buffEngine.ts`; Soul Shaken in
-`src/engine/buffs/mechanics.ts` `MECHANIC_BUFF_DEFS` is the precedent). The
-skill that *causes* the buff declares it (triggers); the skills that *receive*
-it are matched by `affects` / tags. Both must be **visible and referenced in the
-Skill Editor** (`SkillsTab.tsx`), and class-tied ones are surfaced in the Class
-Buffs tab.
+system (`src/engine/buffs/buffEngine.ts`; Soul Shaken, in a class's
+`ClassDef.mechanicBuffDefs`, is the precedent — CLASSES.md § "Buff category").
+The skill that *causes* the buff declares it (triggers); the skills that
+*receive* it are matched by `affects` / tags. Both must be **visible and
+referenced in the Skill Editor** (`SkillsTab.tsx`), and class-tied ones scoped
+to specific skills are surfaced in the Class Buffs section too
+(`alwaysActiveClassBuffs` in `engine/buffs/catalog.ts`).
 
 This is the **"no invisible magic"** rule.
 
@@ -109,7 +110,7 @@ way, not by being a def.
 
 | effect | system |
 | --- | --- |
-| class-tied site mechanic | a `BuffDef` gated by `spec` / `enabledParam` (TIMELINE.md § 5b) |
+| class-tied mechanic | a `BuffModule` gated by `requires` (TIMELINE.md § 5b) |
 | user- or class-authored effect | a `Buff` / `Debuff` with `HitTrigger`s (TIMELINE.md § 5a) |
 | a damage-over-time | **always** a `Debuff` with a `dot` — a `sustain` *skill type* is just a scaling tag on one hit, not a DoT |
 
@@ -117,9 +118,11 @@ way, not by being a def.
 
 A handful of mechanics genuinely don't fit the buff-def vocabulary. Crosswind
 Spirit's charge counter is now a `SkillBehavior` on the detonation skill; the
-rest are still realized at the `timeline.ts` boundary — the Hawkwing and
-Concentration probability schedules, Morale Chant's stack curve, and the Bitter
-Season inner way's poison (`buffs/bitterSeason.ts`):
+rest are each a `TimelineMechanic` (`src/engine/mechanics/types.ts`) instead —
+the Hawkwing and Morale Chant probability/stack schedules and the Bitter
+Season inner way's poison are engine-owned (`src/engine/mechanics/{hawkwing,
+morale,bitterSeason}.ts`), while Concentration's is Bellstrike Umbra's own
+(`src/data/classes/bellstrikeUmbraConcentration.ts`):
 a stochastic per-hit proc plus a percentage target-defense reduction that
 stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
 documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to

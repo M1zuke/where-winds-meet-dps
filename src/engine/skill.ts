@@ -58,7 +58,7 @@ export interface Skill {
   weaponOrAttribute: string
   attributeAttack: string
   tags?: string[]
-  // The identity a cast presents to `BuffDef.triggeredBy`. Authored, so a
+  // The identity a cast presents to `BuffModule.triggeredBy`. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
   castTag?: string
   hits: SkillHit[]

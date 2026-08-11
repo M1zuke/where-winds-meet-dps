@@ -19,9 +19,9 @@ export type Effect =
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
 // before the context exists needs to force a crit, that is a buff-side effect
-// (`legacyBuffModule.ts`'s `forceCrit`) applied through `BuffEngine`'s own
-// damage-time sink. Narrower than `Effect` so returning the wrong kind from a
-// behaviour is a compile error, not a silently dropped effect.
+// applied through `BuffEngine`'s own damage-time sink. Narrower than `Effect`
+// so returning the wrong kind from a behaviour is a compile error, not a
+// silently dropped effect.
 export type HitEffect =
   Extract<Effect, { kind: "stat" | "setStatus" }> | { kind: "forceOutcome"; outcome: "affinity" }
 

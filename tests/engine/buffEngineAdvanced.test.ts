@@ -1,51 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { buffDefsForSpec, allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
-import { legacyBuffModule } from "../../src/engine/buffs/legacyBuffModule"
+import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
-import type { SkillProperties } from "../../src/engine/effects/context"
 
 function tagged(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
 }
-
-describe("perCastConsume — frostCladSnowbreakIPConsume (stonesplit_strength)", () => {
-  const params = { frostCladNight: true, frostCladNightTier: 6 }
-
-  it("grants +40% boss-boost on the SnowpartingVC cast that consumes an Inner Passion stack, and only that cast", () => {
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    e.processSkillCast("cast:snowpartingSpecial", 0, { castTime: 1 })
-    expect(e.getHistoricalBuffStacks("innerPassion", 1.01)).toBe(4)
-
-    const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
-
-    e.processSkillCast("cast:snowpartingVC", 1.05, { consumesInnerPassion: true })
-    const r = e.calculateDamageEffects(vc, 1.05)
-    expect(r.effects).toContainEqual({ statKey: "bossBoost", amount: 0.4 })
-    expect(r.breakdown.frostCladSnowbreakIPConsume).toBe(0.4)
-
-    expect(e.getHistoricalBuffStacks("innerPassion", 1.06)).toBe(3)
-    expect(e.calculateDamageEffects(vc, 1.06).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
-  })
-
-  it("grants nothing when there is no Inner Passion stack to consume", () => {
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    e.processSkillCast("cast:snowpartingVC", 0, { consumesInnerPassion: true })
-    expect(e.calculateDamageEffects(vc, 0).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
-  })
-
-  it("is inert without frostCladNight tier 4+ (enabledParam/minTier gate)", () => {
-    const e = new BuffEngine({}, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    e.processSkillCast("cast:snowpartingSpecial", 0, { castTime: 1 })
-    expect(e.getHistoricalBuffStacks("innerPassion", 1.01)).toBe(1)
-    const vc = tagged("SnowpartingVC", ["prop:consumesInnerPassion"])
-    e.processSkillCast("cast:snowpartingVC", 1.05, { consumesInnerPassion: true })
-    expect(e.calculateDamageEffects(vc, 1.05).breakdown.frostCladSnowbreakIPConsume).toBeUndefined()
-    expect(e.getHistoricalBuffStacks("innerPassion", 1.06)).toBe(1)
-  })
-})
 
 describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShield (global)", () => {
   const params = { artOfResistance: true, artOfResistanceTier: 6 }
@@ -85,70 +45,5 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
     expect(
       e.calculateDamageEffects(tagged("AnySkill"), 8).breakdown.resistanceResolve,
     ).toBeUndefined()
-  })
-})
-
-describe("phaseGate — frostCladSnowbreakT6Exhausted (stonesplit_strength)", () => {
-  it("only contributes its boss-boost while the qi phase is 'exhausted'", () => {
-    const params = {
-      frostCladNight: true,
-      frostCladNightTier: 6,
-      qiBreakTime: 25,
-      bossBreakDuration: 10,
-    }
-    const e = new BuffEngine(params, buffDefsForSpec("stonesplit_strength"), groupBuffDefs())
-    const snowpartingVC = tagged("probe", ["role:snowpartingVC"])
-    expect(
-      e.calculateDamageEffects(snowpartingVC, 10).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBeUndefined()
-    expect(
-      e.calculateDamageEffects(snowpartingVC, 30).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBe(0.4)
-    expect(
-      e.calculateDamageEffects(snowpartingVC, 40).breakdown.frostCladSnowbreakT6Exhausted,
-    ).toBeUndefined()
-  })
-})
-
-describe("consumableStackPool — springThunder (bellstrike_splendor)", () => {
-  it("fills on stackOn, and never consumes without a mistwillowCategory opt wired (documented gap)", () => {
-    const params = { thunderousBloom: true }
-    const e = new BuffEngine(params, buffDefsForSpec("bellstrike_splendor"), groupBuffDefs())
-    e.processSkillCast("cast:anyMartialQ", 0, { isMartialSkillQ: true })
-    e.processSkillCast("cast:anyLightHit", 1, {})
-    const r = e.calculateDamageEffects(tagged("AnyLightHit"), 1)
-    expect(r.breakdown.springThunder).toBeUndefined()
-  })
-
-  it("generic mechanism: fills (rate/icd-limited, capped) and drains + grants its bonus on a resolvable consumeOn", () => {
-    const defs = [
-      {
-        id: "testPool",
-        name: "Test Pool",
-        triggers: [],
-        duration: 0,
-        affects: null,
-        bonus: null,
-        consumableStackPool: {
-          stackOn: { skillProperty: "fillsPool", stacksPerTrigger: 2, icd: 1 },
-          stackCap: 5,
-          stackLifetime: 10,
-          consumeOn: { skillProperty: "drainsPool" },
-          bonus: { type: "bossOnlyBuffBonus" as const, value: 0.2 },
-        },
-      },
-    ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule), [])
-    // `fillsPool` / `drainsPool` are this test's own made-up `skillProperty`
-    // names — `consumableStackPool` reads whatever string the def names, so
-    // `SkillProperties` can't close over it statically; cast past the check.
-    engine.processSkillCast("cast:fill", 0, { fillsPool: true } as SkillProperties)
-    engine.processSkillCast("cast:fill", 0.5, { fillsPool: true } as SkillProperties)
-    engine.processSkillCast("cast:fill", 2, { fillsPool: true } as SkillProperties)
-    engine.processSkillCast("cast:drain", 3, { drainsPool: true } as SkillProperties)
-    const result = engine.calculateDamageEffects(tagged("Drain"), 3)
-    expect(result.effects).toContainEqual({ statKey: "bossBoost", amount: 0.2 })
-    engine.processSkillCast("cast:drain", 4, { drainsPool: true } as SkillProperties)
-    expect(engine.calculateDamageEffects(tagged("Drain"), 4).effects).toHaveLength(0)
   })
 })

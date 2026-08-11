@@ -5,8 +5,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 describe("panel.deriveStats", () => {
   it("resolves the class & target metadata", () => {
     const d = deriveStats(defaultInputs)
-    expect(d.classId).toBe("bamboocutWindTwinblade")
-    expect(d.primaryAttribute).toBe("Bamboocut")
+    expect(d.classId).toBe("bellstrikeUmbra")
+    expect(d.primaryAttribute).toBe("Bellstrike")
     expect(d.defense).toBe(308)
   })
 
@@ -23,19 +23,8 @@ describe("panel.deriveStats", () => {
 })
 
 describe("getSchool / getBreakthrough", () => {
-  it("knows all 8 classes", () => {
-    for (const id of [
-      "silkbindJade",
-      "stonesplitPower",
-      "bamboocutWindTwinblade",
-      "bellstrikeUmbra",
-      "bellstrikeRainbow",
-      "bamboocutDust",
-      "stonesplitBalancePureTang",
-      "stonesplitBalanceDualCut",
-    ]) {
-      expect(getSchool(id).id).toBe(id)
-    }
+  it("knows the one implemented class", () => {
+    expect(getSchool("bellstrikeUmbra").id).toBe("bellstrikeUmbra")
   })
 
   it("knows the locked-fixture breakthrough", () => {

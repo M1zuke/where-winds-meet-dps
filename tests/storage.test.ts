@@ -32,6 +32,10 @@ import { SET_ID } from "../src/data/sets"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
+import { CLASS_IDS } from "../src/data/classes/registry"
+import { getDefaultTalentsForClass } from "../src/data/baseStats"
+import { runEngine } from "../src/engine/dps"
+import { applyArmorSet, applyBowSet } from "../src/engine/panel"
 
 describe("storage", () => {
   beforeEach(() => {
@@ -240,14 +244,16 @@ describe("migrateSeededSkillIds — repairs pre-fix seeded-copy ids", () => {
     expect(skills[0].hits[0].physMultiplier).toBe(builtin.hits[0].physMultiplier + 5)
 
     const rotations = loadCustomRotations()
-    const savedRotation = rotations.find((r) => r.id === rotation.id)!
+    const savedRotation = rotations.find((candidate) => candidate.id === rotation.id)!
     expect(savedRotation.steps[0].skillId).toBe(builtin.id)
 
     migrateSeededSkillIds()
     const skillsAgain = loadCustomSkillsForClass(CLASS)
     expect(skillsAgain[0].id).toBe(builtin.id)
     const rotationsAgain = loadCustomRotations()
-    expect(rotationsAgain.find((r) => r.id === rotation.id)!.steps[0].skillId).toBe(builtin.id)
+    expect(rotationsAgain.find((candidate) => candidate.id === rotation.id)!.steps[0].skillId).toBe(
+      builtin.id,
+    )
   })
 
   it("leaves an ambiguous or genuinely custom skill untouched", () => {
@@ -268,8 +274,8 @@ describe("migrateSeededSkillIds — repairs pre-fix seeded-copy ids", () => {
     migrateSeededSkillIds()
 
     const skills = loadCustomSkillsForClass(CLASS)
-    expect(skills.find((s) => s.id === stale.id)).toBeTruthy()
-    expect(skills.filter((s) => s.id === builtin.id)).toHaveLength(1)
+    expect(skills.find((skill) => skill.id === stale.id)).toBeTruthy()
+    expect(skills.filter((skill) => skill.id === builtin.id)).toHaveLength(1)
   })
 })
 
@@ -367,7 +373,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
       expect(piece.words[0].word).toBe("Single-Target Mystic Skill DMG Boost")
       expect(piece.words[0].value).toBe(0.07)
       const contribution = computeGearContribution(piece, hydratedInputs)
-      const entry = contribution.find((c) => c.path === "singleMysticBoost")
+      const entry = contribution.find((row) => row.path === "singleMysticBoost")
       expect(entry?.amount).toBeCloseTo(0.07, 10)
     }
   })
@@ -409,8 +415,8 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     expect(piece.words[0].word).toBe("Max Void Attack")
     expect(piece.words[1].word).toBe("Min Void Attack")
     const contribution = computeGearContribution(piece, hydratedInputs)
-    expect(contribution.find((c) => c.path === "bellstrike.max")?.amount).toBeCloseTo(44.2, 10)
-    expect(contribution.find((c) => c.path === "bellstrike.min")?.amount).toBeCloseTo(22.1, 10)
+    expect(contribution.find((row) => row.path === "bellstrike.max")?.amount).toBeCloseTo(44.2, 10)
+    expect(contribution.find((row) => row.path === "bellstrike.min")?.amount).toBeCloseTo(22.1, 10)
   })
 
   it("renames both stored area words onto the merged one and preserves their contribution", () => {
@@ -458,7 +464,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
       expect(piece.words[0].word).toBe("Area Mystic Skill DMG Boost")
       expect(piece.words[0].value).toBe(0.05)
       const contribution = computeGearContribution(piece, hydratedInputs)
-      const entry = contribution.find((c) => c.path === "areaMysticBoost")
+      const entry = contribution.find((row) => row.path === "areaMysticBoost")
       expect(entry?.amount).toBeCloseTo(0.05, 10)
     }
   })
@@ -741,5 +747,118 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
     saveInputs({ ...defaultInputs, set: "jadeware" })
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.set).toBe("jadeware")
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+// `getSchool()` throws on a `classId` outside `CLASS_IDS`, and `deriveStats` /
+// `withDerivedStats` call it unconditionally on every render.
+describe("class id degrade (an unrecognised classId falls back to the default build's class)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+      kvStore.remove("wwm.inputs")
+    } catch {}
+  })
+  afterEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+      kvStore.remove("wwm.inputs")
+    } catch {}
+  })
+
+  function writeProfileWithClassId(classId: unknown): void {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Legacy", inputs: { ...defaultInputs, classId } }],
+        activeId: "p1",
+      }),
+    )
+  }
+
+  it("degrades a classId naming a class that no longer exists, and the result doesn't throw when deriving stats", () => {
+    writeProfileWithClassId("silkbindJade")
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.classId).toBe(defaultInputs.classId)
+    expect(() => withDerivedStats(profiles[0].inputs)).not.toThrow()
+  })
+
+  it("degrades an empty string and a wrong-typed classId without throwing", () => {
+    writeProfileWithClassId("")
+    expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
+
+    kvStore.remove(PROFILES_KEY)
+    writeProfileWithClassId(123)
+    expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
+  })
+
+  it("leaves a valid classId alone, and is a fixpoint across repeated hydration", () => {
+    writeProfileWithClassId("bellstrikeUmbra")
+    const first = loadProfiles()
+    expect(first.profiles[0].inputs.classId).toBe("bellstrikeUmbra")
+
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: first.profiles,
+        activeId: first.activeId,
+      }),
+    )
+    const second = loadProfiles()
+    expect(second.profiles[0].inputs).toEqual(first.profiles[0].inputs)
+  })
+
+  it("composes with the pinyin migration: a legacy id resolving to a live class survives, one resolving to a removed class degrades", () => {
+    writeProfileWithClassId("mingJinYing")
+    expect(loadProfiles().profiles[0].inputs.classId).toBe("bellstrikeUmbra")
+
+    kvStore.remove(PROFILES_KEY)
+    writeProfileWithClassId("qianSiYu")
+    expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
+  })
+
+  it("the default build's own class id is a member of CLASS_IDS, so the degrade is a no-op on it", () => {
+    expect(CLASS_IDS().includes(defaultInputs.classId)).toBe(true)
+    localStorage.clear()
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.classId).toBe(defaultInputs.classId)
+    expect(profiles[0].inputs.arsenal).toBe(defaultInputs.arsenal)
+    expect(profiles[0].inputs.mindMethods).toEqual(defaultInputs.mindMethods)
+    expect(profiles[0].inputs.martialArtsTalents).toEqual(
+      getDefaultTalentsForClass(defaultInputs.classId),
+    )
+  })
+
+  it("a removed class's selected rotation falls through to the degraded class's default rotation, with no error/exception warning", () => {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Legacy",
+            inputs: {
+              ...defaultInputs,
+              classId: "silkbindJade",
+              selectedBuiltinRotationId: "builtin-silkbindJade-t5",
+            },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+    const { profiles } = loadProfiles()
+    const inputs = profiles[0].inputs
+    expect(inputs.classId).toBe(defaultInputs.classId)
+
+    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
+    expect(result.dps).toBeGreaterThan(0)
+    expect(result.warnings.some((warning) => /error|exception/i.test(warning))).toBe(false)
   })
 })

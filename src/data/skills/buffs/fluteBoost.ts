@@ -1,12 +1,11 @@
-import { defineBuff } from "./define"
+import { defineClassBuff } from "./define"
 import { BUFF, PARAM } from "./ids"
 import { CAST } from "../ids"
 import { stat } from "../../../engine/effects/effect"
 
-export const fluteBoost = defineBuff({
+export const fluteBoost = defineClassBuff({
   id: BUFF.fluteBoost,
   name: "Flute DMG Boost",
-  specs: ["silkbind_jade", "bellstrike_splendor", "bamboocut_dust"],
   triggeredBy: [CAST.fluteOfTheTidesCancel, CAST.fluteOfTheTidesFull, CAST.fluteOfTheTidesPrepull],
   duration: 12.5,
   summary: "+all (from fluteBoostValue)",

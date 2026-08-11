@@ -1,14 +1,15 @@
-import { defineBuff } from "./define"
-import { BUFF, PARAM } from "./ids"
-import { CAST } from "../ids"
-import { stat } from "../../../engine/effects/effect"
+import { defineClassBuff } from "../../buffs/define"
+import { BUFF, PARAM } from "../../buffs/ids"
+import { CAST } from "../../ids"
+import { stat } from "../../../../engine/effects/effect"
 
-// Both Spear Q's and Spear Heavy's stacks are the same Wolfchaser's Art
-// mechanic, gated the same way — one module, one trigger set.
-export const soulShaken = defineBuff({
+// Hand-authored port of the reference site's "mechanic list" Soul Shaken def
+// (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
+// Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way —
+// one module, one trigger set.
+export const soulShaken = defineClassBuff({
   id: BUFF.soulShaken,
   name: "Soul Shaken",
-  specs: ["bellstrike_umbra"],
   requires: { param: PARAM.wolfchasersArt, minTier: 6 },
   triggeredBy: [
     CAST.spearQ,

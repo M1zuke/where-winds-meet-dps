@@ -133,9 +133,9 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
   ).filter((entry) => entry.value !== 0)
 
-  const classBuffRows: RowEntry[] = school.permanentBuffs
-    .filter((tag) => tag && tag !== "N/A")
-    .map((tag) => row(t(tag), withSets.dingYinByTag[tag] ?? 0, true))
+  const classBuffRows: RowEntry[] = school.dingYinTags.map((tag) =>
+    row(t(tag), withSets.dingYinByTag[tag] ?? 0, true),
+  )
 
   return (
     <div className={styles.statsOverview}>

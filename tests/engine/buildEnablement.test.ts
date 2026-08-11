@@ -4,8 +4,8 @@
 // `paramMap.ts`.
 import { describe, it, expect } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import type { BuffDef } from "../../src/engine/buffs/buffDef"
-import { legacyBuffModule } from "../../src/engine/buffs/legacyBuffModule"
+import type { BuffModule } from "../../src/engine/buffs/buffModule"
+import { stat } from "../../src/engine/effects/effect"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { zhongToTier } from "../../src/engine/buffs/paramMap"
@@ -200,16 +200,17 @@ describe("set enablement registers a requiresSet buff", () => {
 
 describe("time-windowed application", () => {
   it("a buff only affects hits cast inside its duration window", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "windowed",
+        name: "Windowed",
         triggeredBy: ["X"],
         duration: 10,
         affects: null,
-        bonus: { type: "buffBonus", value: 0.2 },
+        effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    const engine = new BuffEngine({}, modules)
     engine.processSkillCast("X", 0, {})
     expect(engine.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
       statKey: "allDamageBoost",

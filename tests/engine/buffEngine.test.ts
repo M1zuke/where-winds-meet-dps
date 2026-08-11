@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import type { BuffDef } from "../../src/engine/buffs/buffDef"
-import { legacyBuffModule } from "../../src/engine/buffs/legacyBuffModule"
-import { buffDefsForSpec, groupBuffDefs } from "../../src/engine/buffs/data"
+import type { BuffModule } from "../../src/engine/buffs/buffModule"
+import { stat } from "../../src/engine/effects/effect"
+import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 
 function taggedSkill(name: string, tags: string[] = []) {
@@ -11,17 +11,17 @@ function taggedSkill(name: string, tags: string[] = []) {
 
 describe("BuffEngine — targeting & triggers", () => {
   it("a buff reaches only skills declaring the tag its `affects` names", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "fanBuff",
         name: "Fan Buff",
         triggeredBy: ["cast:fanHeavy"],
         duration: 10,
         affects: ["role:fanHeavy"],
-        bonus: { type: "buffBonus", value: 0.2 },
+        effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    const engine = new BuffEngine({}, modules)
     engine.processSkillCast("cast:fanHeavy", 0, {})
     const fan = engine.calculateDamageEffects(taggedSkill("Fan Heavy", ["role:fanHeavy"]), 1)
     const sword = engine.calculateDamageEffects(taggedSkill("Sword Thrust"), 1)
@@ -29,19 +29,21 @@ describe("BuffEngine — targeting & triggers", () => {
     expect(sword.effects).toHaveLength(0)
   })
 
-  it("stacksPerHit ramps up to maxStacks (valuePerStack scales)", () => {
-    const defs: BuffDef[] = [
+  it("stacksPerHit ramps up to maxStacks (per-stack scaling)", () => {
+    const modules: BuffModule[] = [
       {
         id: "ramp",
+        name: "Ramp",
         triggeredBy: ["Multi"],
         duration: 100,
         maxStacks: 3,
         stacksPerHit: true,
         affects: null,
-        bonus: { type: "buffBonus", valuePerStack: 0.05 },
+        summary: "test",
+        effects: (ctx) => [stat("allDamageBoost", 0.05 * ctx.self.stacks)],
       },
     ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    const engine = new BuffEngine({}, modules)
     engine.processSkillCast("Multi", 0, { hitCount: 5, duration: 1 })
     const result = engine.calculateDamageEffects(taggedSkill("AnySkill"), 1.1)
     const total = result.effects
@@ -51,17 +53,18 @@ describe("BuffEngine — targeting & triggers", () => {
   })
 
   it("rateLimit caps how many times a buff procs in a window", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "capped",
+        name: "Capped",
         triggeredBy: ["Hit"],
         duration: 100,
         rateLimit: { count: 2, window: 10 },
         affects: null,
-        bonus: { type: "buffBonus", value: 0.1 },
+        effects: [stat("allDamageBoost", 0.1)],
       },
     ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    const engine = new BuffEngine({}, modules)
     for (const time of [0, 1, 2, 3]) engine.processSkillCast("Hit", time, {})
     expect(engine.isBuffActiveAtTime("capped", 1)).toBe(true)
     expect(engine.calculateDamageEffects(taggedSkill("x"), 1).effects).toContainEqual({
@@ -71,17 +74,17 @@ describe("BuffEngine — targeting & triggers", () => {
   })
 
   it("enabledParam gating: buff is inert when its param is off, active when on", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "gated",
+        name: "Gated",
         triggeredBy: ["Cast"],
         duration: 10,
-        enabledParam: "myToggle",
+        requires: { param: "myToggle" },
         affects: null,
-        bonus: { type: "buffBonus", value: 0.3 },
+        effects: [stat("allDamageBoost", 0.3)],
       },
     ]
-    const modules = defs.map(legacyBuffModule)
     const off = new BuffEngine({ myToggle: false }, modules)
     off.processSkillCast("Cast", 0, {})
     expect(off.calculateDamageEffects(taggedSkill("z"), 1).effects).toHaveLength(0)
@@ -95,16 +98,17 @@ describe("BuffEngine — targeting & triggers", () => {
   })
 
   it("affectsProperty targets skills carrying the property tag", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "chargeOnly",
+        name: "Charge Only",
         triggeredBy: ["X"],
         duration: 10,
         affectsProperty: "isCharged",
-        bonus: { type: "buffBonus", value: 0.25 },
+        effects: [stat("allDamageBoost", 0.25)],
       },
     ]
-    const engine = new BuffEngine({}, defs.map(legacyBuffModule))
+    const engine = new BuffEngine({}, modules)
     engine.processSkillCast("X", 0, {})
     const charged = engine.calculateDamageEffects(taggedSkill("X", ["prop:isCharged"]), 1)
     const plain = engine.calculateDamageEffects(taggedSkill("X"), 1)
@@ -113,9 +117,9 @@ describe("BuffEngine — targeting & triggers", () => {
   })
 })
 
-describe("spec buff data loads", () => {
-  it("the umbra spec's buff defs construct an engine without throwing", () => {
-    const engine = new BuffEngine({}, buffDefsForSpec("bellstrike_umbra"), groupBuffDefs())
+describe("class buff data loads", () => {
+  it("bellstrikeUmbra's buff defs construct an engine without throwing", () => {
+    const engine = new BuffEngine({}, buffDefsForClass("bellstrikeUmbra"), groupBuffDefs())
     expect(engine.definitions.size).toBeGreaterThan(0)
   })
 })

@@ -1,4 +1,4 @@
-import { defineBuff } from "./define"
+import { defineClassBuff } from "./define"
 import { BUFF, PARAM } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 import type { Effect } from "../../../engine/effects/effect"
@@ -7,11 +7,9 @@ const BASE_EFFECTS: Effect[] = [stat("affinityDamageBoost", 0.1), stat("directAf
 
 // Bellstrike Umbra's tier-6 pair really does emit `sustainDamageBoost` TWICE
 // (`dotDamage` and `enhancedDotDamage` both map to it) — preserve the sum,
-// this is not a duplicate to collapse. Splendor's tier-6 emits it once, at
-// double the per-source value.
+// this is not a duplicate to collapse.
 const TIER6_EFFECTS: Record<string, Effect[]> = {
   bellstrike_umbra: [stat("sustainDamageBoost", 0.1), stat("sustainDamageBoost", 0.1)],
-  bellstrike_splendor: [stat("sustainDamageBoost", 0.2)],
 }
 
 // Pre-existing bug, reproduced exactly rather than fixed — see
@@ -19,10 +17,9 @@ const TIER6_EFFECTS: Record<string, Effect[]> = {
 // make this permanently active for the whole rotation whenever its param is
 // on, double-counting against `bellstrikeUmbraConcentration.ts`'s
 // probability-weighted ramp model of the same inner way.
-export const concentration = defineBuff({
+export const concentration = defineClassBuff({
   id: BUFF.concentration,
   name: "Concentration",
-  specs: ["bellstrike_umbra", "bellstrike_splendor"],
   requires: { param: PARAM.insightfulStrike },
   triggeredBy: [],
   duration: 10,

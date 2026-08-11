@@ -22,11 +22,22 @@ import type { TimelineMechanic } from "./types"
 const REMAINING_DISPLAY_THRESHOLD = 0.5
 
 // A class inner way can extend an active poison — Sword Horizon's Zenith does.
-// Registered rather than imported, so this file names no class.
-let extension: { statusId: string; maxRemainingSec: number } | null = null
+// Registered rather than imported, so this file names no class. Keyed by
+// class id since more than one class could declare an extension.
+const extensionsByClassId = new Map<string, { statusId: string; maxRemainingSec: number }>()
 
-export function registerPoisonExtension(statusId: string, maxRemainingSec: number): void {
-  extension = { statusId, maxRemainingSec }
+export function registerPoisonExtension(
+  classId: string,
+  statusId: string,
+  maxRemainingSec: number,
+): void {
+  extensionsByClassId.set(classId, { statusId, maxRemainingSec })
+}
+
+export function poisonExtensionForClass(
+  classId: string,
+): { statusId: string; maxRemainingSec: number } | undefined {
+  return extensionsByClassId.get(classId)
 }
 
 interface State {
@@ -70,6 +81,7 @@ export const bitterSeasonMechanic: TimelineMechanic<State> = {
     const durationFrames = target.statusDurationFrames(state.debuffId) ?? 0
     if (durationFrames <= 0) return
 
+    const extension = extensionsByClassId.get(setup.classId)
     const extensionTimesSec = extension
       ? target.ledger
           .windowsOf(extension.statusId)

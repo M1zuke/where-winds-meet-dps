@@ -1,4 +1,4 @@
-import { defineBuff } from "./define"
+import { defineClassBuff } from "./define"
 import { BUFF, PARAM } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 
@@ -7,17 +7,9 @@ import { stat } from "../../../engine/effects/effect"
 // directly in `timeline.ts`, unrelated to this `enabledParam`
 // (`paramMap.ts`'s `SITE_PARAM_TO_INNER_WAY` deliberately leaves it
 // unmapped — see docs/CALCULATION.md § "Mechanic coverage").
-export const revelryScript = defineBuff({
+export const revelryScript = defineClassBuff({
   id: BUFF.revelryScript,
   name: "Revelry Script",
-  specs: [
-    "silkbind_jade",
-    "bellstrike_umbra",
-    "bellstrike_splendor",
-    "stonesplit_might",
-    "stonesplit_strength",
-    "bamboocut_dust",
-  ],
   requires: { param: PARAM.revelryScript },
   triggeredBy: [],
   duration: 9999,

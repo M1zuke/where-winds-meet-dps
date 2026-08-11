@@ -2,9 +2,7 @@
 // they are gates consumed by the timeline (HitVariant swaps, trigger
 // conditions), not `{statKey, amount}` effects.
 import type { Buff } from "../../engine/buff"
-import { registerBuiltinBuffs } from "../../engine/builtinBuffs"
-import { registerPoisonExtension } from "../../engine/mechanics/bitterSeason"
-import { CROSSWIND_MAX_CHARGES } from "../skills/buffs/crosswindSpirit"
+import { CROSSWIND_MAX_CHARGES } from "../skills/bellstrike-umbra/buffs/crosswindSpirit"
 import {
   STATUS,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
@@ -76,8 +74,3 @@ export const BELLSTRIKE_UMBRA_GATES: Buff[] = [
     updatedAt: "2026-07-30T00:00:00.000Z",
   },
 ]
-
-registerBuiltinBuffs("bellstrikeUmbra", BELLSTRIKE_UMBRA_GATES)
-
-// Sword Horizon's Zenith detonation extends an active Bitter Season poison.
-registerPoisonExtension(ZENITH_DETONATION_BUFF_ID, ZENITH_MAX_EXTENDED_DURATION_FRAMES / 60)

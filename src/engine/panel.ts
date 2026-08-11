@@ -3,26 +3,9 @@ import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { innerWayScalar, innerWayTargetDefenseMultiplier } from "../data/classes/innerWays"
-import schools from "../data/classes/schools.json"
+import { classDefinition, type ClassDefinition } from "../data/classes/registry"
 import breakthroughs from "../data/baseStats/breakthroughTiers.json"
 import { SET_BY_ID, SET_DEFS } from "../data/sets"
-
-const SCHOOLS = schools as ReadonlyArray<{
-  id: string
-  cn: string
-  en: string
-  displayName: string
-  primaryAttribute: AttributeKey
-  attributeMultiplier: number
-  permanentBuffs: string[]
-  classMindGroup: string
-  allowedMindMethods: string[]
-  classBuffs: { label: string; slot: number }[]
-  // A flat all-damage term the class itself carries.
-  generalDamageBoost?: number
-  weapons: string[]
-  rotations: string[]
-}>
 
 const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
   breakthrough: number
@@ -73,17 +56,15 @@ export interface DerivedStats {
   typeBoosts: Record<string, number>
 }
 
-export function getSchool(classId: string) {
-  const s = SCHOOLS.find((x) => x.id === classId)
-  if (!s) throw new Error(`Unknown classId: ${classId}`)
-  return s
+export function getSchool(classId: string): ClassDefinition {
+  const definition = classDefinition(classId)
+  if (!definition) throw new Error(`Unknown classId: ${classId}`)
+  return definition
 }
 
 // Returns inner-way IDS; the UI renders them through `innerWayName`.
 export function allowedInnerWaysForClass(classId: string): string[] {
-  const s = SCHOOLS.find((x) => x.id === classId)
-  if (!s) return []
-  return [...new Set([s.classMindGroup ?? "", ...s.allowedMindMethods].filter(Boolean))]
+  return [...(classDefinition(classId)?.innerWays ?? [])]
 }
 
 export function getBreakthrough(bt: number) {
@@ -291,9 +272,7 @@ export function buildContext(
     (school.generalDamageBoost ?? 0)
 
   const dingYinByTag: Record<string, number> = {}
-  for (const tag of school.permanentBuffs) {
-    if (tag && tag !== "N/A") dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
-  }
+  for (const tag of school.dingYinTags) dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
 
   const attuneBoostByTag: Record<string, number> = {}
   for (const option of ATTUNEMENT_OPTIONS) {

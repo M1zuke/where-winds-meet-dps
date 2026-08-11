@@ -4,14 +4,14 @@ import { computeDpsDeltas } from "../../src/engine/dpsWorker"
 import { runEngine } from "../../src/engine/dps"
 import { applyPieceContribution, relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
-import { poolForClass } from "../../src/data/classes/retunementPools"
+import { poolForClass } from "../../src/data/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
 import { defaultInputs } from "../../src/engine/defaults"
 
 import type { GearPiece, Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 function piece(words: GearPiece["words"], overrides: Partial<GearPiece> = {}): GearPiece {

@@ -2,6 +2,7 @@ import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
+import { CLASS_IDS } from "./data/classes/registry"
 import { innerWayIdForName, innerWayName, resolveInnerWayId } from "./data/classes/innerWayRegistry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./data/baseStats"
@@ -18,7 +19,6 @@ import {
   isTriggerCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
-import schools from "./data/classes/schools.json"
 import { seedSkillFromBuiltin } from "./engine/skill"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -158,6 +158,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // profiles, neither of which is version-walked. Must run before anything
   // that reads `classId` (arsenal / inner-way allowlist / talent defaults).
   next.classId = migrateClassId(next.classId)
+  // A class id naming a class that no longer exists degrades to the default
+  // build's class rather than reaching `getSchool()`, which throws on an
+  // unknown id — see CLAUDE.md → "localStorage migrations".
+  if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
   next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
   // Value-level repair for the legacy `wwm.inputs` blob, which has no version
   // chain of its own (V8 covers `wwm.profiles`) — idempotent, so re-running it
@@ -564,13 +568,11 @@ const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 // built-ins that stored copies therefore lack, and without them a seeded copy
 // silently stops receiving the buffs its original receives. Unioning is safe
 // because no editor surface can remove one of these tags.
-const BUILTIN_SKILL_CLASS_IDS = (schools as { id: string }[]).map((school) => school.id)
-
 let builtinTagsById: Map<string, string[]> | null = null
 function builtinTagsFor(id: string): string[] {
   if (!builtinTagsById) {
     builtinTagsById = new Map()
-    for (const classId of BUILTIN_SKILL_CLASS_IDS)
+    for (const classId of CLASS_IDS())
       for (const skill of builtinSkillsForClass(classId))
         if (skill.tags?.length) builtinTagsById.set(skill.id, skill.tags)
   }

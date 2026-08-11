@@ -59,6 +59,7 @@ function setupFor(classId: string): MechanicSetup {
     paramOn: () => false,
     paramTier: () => 0,
     hasBuffEngine: true,
+    effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
   }
 }
 
@@ -67,6 +68,7 @@ const buildFor = (classId: string) => ({
   set: null,
   innerWayTier: () => null,
   dingYin: () => 0,
+  grantsMinPhysCritBoost: () => false,
 })
 
 describe("a class can be wired from outside the engine", () => {
@@ -96,6 +98,6 @@ describe("a class can be wired from outside the engine", () => {
 
   it("leaves the shipped classes untouched", () => {
     expect(builtinBuffsForClass("bellstrikeUmbra").length).toBeGreaterThan(0)
-    expect(builtinBuffsForClass("bellstrikeRainbow")).toEqual([])
+    expect(builtinBuffsForClass("notAClass")).toEqual([])
   })
 })

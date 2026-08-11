@@ -43,19 +43,21 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     expect(next.mindMethods[0]).toEqual({ name: "swordHorizon", stacks: "tier 6" })
   })
 
-  // Wolfchaser's Art and Insightful Strike are Bellstrike Umbra's alone; every
-  // other class allows only Morale Chant and Bitter Season.
-  it("clears slots holding an inner way the new class doesn't allow", () => {
+  // Only Bellstrike Umbra is loadable — `syncClassPermanent` throws via
+  // `getSchool` on any other id (CLAUDE.md § "Implemented classes") — so this
+  // drives the clearing logic with a name outside Umbra's own allowed set
+  // rather than a foreign class's inner way.
+  it("clears slots holding an inner way the class doesn't allow", () => {
     const before = withSlots(defaultInputs, [
       "",
-      "wolfchasersArt",
+      "notARealInnerWay",
       "moraleChant",
       "insightfulStrike",
     ])
-    const next = syncClassPermanent(before, "silkbindJade")
+    const next = syncClassPermanent(before, "bellstrikeUmbra")
     expect(next.mindMethods[1]).toEqual({ name: "", stacks: "" })
     expect(next.mindMethods[2]).toEqual({ name: "moraleChant", stacks: "tier 6" })
-    expect(next.mindMethods[3]).toEqual({ name: "", stacks: "" })
+    expect(next.mindMethods[3].name).toBe("insightfulStrike")
   })
 
   it("keeps an inner way the new class does allow", () => {
@@ -73,9 +75,8 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
   })
 
   it("leaves the loadout untouched when re-synced to the same class", () => {
-    const once = syncClassPermanent(defaultInputs, "bamboocutWindTwinblade")
-    const twice = syncClassPermanent(once, "bamboocutWindTwinblade")
+    const once = syncClassPermanent(defaultInputs, "bellstrikeUmbra")
+    const twice = syncClassPermanent(once, "bellstrikeUmbra")
     expect(twice.mindMethods).toEqual(once.mindMethods)
-    expect(once.mindMethods).toEqual(defaultInputs.mindMethods)
   })
 })

@@ -26,8 +26,8 @@ const inputs: Inputs = {
   // build's older food tier (pre Simmering Fish Slices), folded into `phys`
   // instead of `food: true` so this fixture measures engine parity rather
   // than the food-table change. Equivalent to `food: true` only because
-  // `classGrantsMinPhysCritBoost` is false for every bellstrikeUmbra weapon type
-  // — do NOT copy this trick to a class where that gate can pass.
+  // `BuildView.grantsMinPhysCritBoost` is false for every bellstrikeUmbra
+  // weapon type — do NOT copy this trick to a class where that gate can pass.
   phys: { min: 977.23 + 90, max: 2983.92 + 180, penetration: 0.411 },
   bellstrike: { min: 274, max: 687.63, penetration: 0.18 },
   stonesplit: { min: 0, max: 0, penetration: 0 },

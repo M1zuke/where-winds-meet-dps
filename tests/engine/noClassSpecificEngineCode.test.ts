@@ -32,7 +32,7 @@ describe("the engine names no class", () => {
   it("mentions no class id", () => {
     const offenders = sources
       .filter(({ path }) => !SEED_CONTENT.has(path))
-      .filter(({ text }) => CLASS_IDS.some((classId) => text.includes(`"${classId}"`)))
+      .filter(({ text }) => CLASS_IDS().some((classId) => text.includes(`"${classId}"`)))
       .map(({ path }) => path)
     expect(offenders).toEqual([])
   })

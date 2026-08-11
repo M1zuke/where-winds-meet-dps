@@ -8,17 +8,16 @@ anything that mints an entity id.
 **Only Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) is
 implemented and validated.**
 
-The other seven classes in `schools.json` — Bellstrike Rainbow, Silkbind Jade,
-the Stonesplit and Bamboocut specs — are **not implemented yet**. The skill
-import may have pulled in data for them (`src/data/skills/<class>/*.json`, all
-seven still JSON — see below for `bellstrikeUmbra`'s own conversion to
-TypeScript modules; `buffs/data.ts`'s class → spec map), but that data is
-unverified and their engine output should not be relied on. Treat anything
-they surface (stray or spurious imported skills, for instance) as provisional
-until the class is actually built out.
+The other seven classes — Bellstrike Rainbow, Silkbind Jade, the Stonesplit
+and Bamboocut specs — are **not implemented yet**, and are not registered
+`ClassDef`s: `CLASS_IDS()` (`src/data/classes/registry.ts`) returns only
+`bellstrikeUmbra`. Their imported data (schools, skills, buffs, debuffs,
+rotations, spec metadata) lives under `reference/classes/` instead, unimported
+by the app or the tests — kept for when one of them is actually built out.
+Treat anything under that folder as provisional.
 
-The eight class ids and their buff specs (`CLASS_SPEC` in
-`src/engine/buffs/data.ts`):
+The eight class ids and their buff specs, preserved in
+`reference/classes/schools.json` and `reference/classes/specMeta.json`:
 
 | class id | spec id | status |
 | --- | --- | --- |
@@ -40,24 +39,27 @@ suite is Umbra-only and must stay that way until a class is genuinely built out.
 
 ## Hand-maintained data files
 
-These are the **source of truth** — edit them directly. They carry hand-tuned
-coefficients and entries that no import produced (`elevatedAttributeMultiplier`,
-the Smolder debuff, the bleed detonation wiring):
+These are the **source of truth** for Bellstrike Umbra — edit them directly.
+They carry hand-tuned coefficients and entries that no import produced
+(`elevatedAttributeMultiplier`, the Smolder debuff, the bleed detonation
+wiring). The seven not-yet-converted classes' equivalents are frozen,
+unimported JSON under `reference/classes/` instead:
 
-- `src/data/skills/<class>/*.json` — one file per class-owned skill, for the
-  seven classes not yet converted; `bellstrikeUmbra`'s own are TypeScript
-  modules instead, `src/data/skills/bellstrike-umbra/*.ts` (`defineSkill`, one
-  module per skill)
+- `src/data/skills/bellstrike-umbra/*.ts` (`defineSkill`, one module per
+  skill); `reference/classes/skills/<class>/*.json` for the seven not yet
+  converted, one file per class-owned skill
 - `src/data/skills/universal/*.ts` — one module per universal skill (see
   below), `instantiateUniversal`-retargeted onto every class the same way the
   JSON files used to be
-- `src/data/skills/buffs/*.json` — one file per buff def, for the 35 not yet
-  converted; the 18 defs behind Bellstrike Umbra's own buffs are `defineBuff`
-  TypeScript modules instead, `src/data/skills/buffs/*.ts`
-- `src/data/rotations/defaultRotations.json`
-- `src/data/skills/debuffsLibrary.json` — one key per class, for the seven not
-  yet converted; `bellstrikeUmbra`'s six rows are `src/data/skills/bellstrike-umbra/debuffs.ts`
-  (`defineDebuff`) instead, merged in by `data/classes/registry.ts`
+- `src/data/skills/buffs/*.ts` and `src/data/skills/bellstrike-umbra/buffs/*.ts`
+  — the 18 `defineBuff` / `defineClassBuff` modules behind Bellstrike Umbra's
+  own buffs; `reference/classes/buffs/*.json` for the 35 not yet converted
+- `src/data/rotations/defaultRotations.json` — Bellstrike Umbra's pool only;
+  `reference/classes/defaultRotations.json` for the other seven
+- `src/data/skills/bellstrike-umbra/debuffs.ts` (`defineDebuff`) — Bellstrike
+  Umbra's six rows, read through `classDefinition(classId).debuffs`;
+  `reference/classes/debuffsLibrary.json` (one key per class) for the seven
+  not yet converted
 
 Before authoring a skill, read TIMELINE.md — it documents how a skill carries
 coefficients, fires triggers, receives buffs and gives buffs/debuffs, plus a
@@ -69,10 +71,11 @@ Skills every class can equip (the mystic arts: Soaring, Fire Breath, Poet,
 Flute, Dragon Head, …) live **once** in `src/data/skills/universal/`, with
 `universal` as the id segment (`universal-soaring`,
 `debuff-universal-combustion`). They are **never duplicated into class
-folders**. `src/data/skills/index.ts` instantiates them per class: the
-`universal` segment in the skill id and every trigger/condition id becomes the
-class id, and `attributeAttack` becomes the class's `primaryAttribute` from
-`schools.json`.
+folders**. `src/data/skills/index.ts`'s `withUniversalSkills(classId,
+primaryAttribute, classSkills)` instantiates them per class: the `universal`
+segment in the skill id and every trigger/condition id becomes the class id,
+and `attributeAttack` becomes the `primaryAttribute` the caller (each class's
+own `defineClass` module) passes in.
 
 The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved
 rotations and user skill overrides match built-ins by id, so a universal skill
@@ -95,25 +98,27 @@ check for one before changing a skill, and never bulk-read them.
 `classDefinition(classId)` (`src/data/classes/registry.ts`) answers what a class
 is made of — spec, primary attribute, inner ways, dingYin tags, skills,
 debuffs, buffs, rotations and default, attunements, retunement pool — and
-`CLASS_IDS` is the one list of the eight. Reach for it rather than opening the
-individual registries below; `builtinLibrary.ts` is a thin read over it.
+`CLASS_IDS()` is the one list, currently just `bellstrikeUmbra`. Reach for it
+rather than opening the individual registries below; `builtinLibrary.ts` is a
+thin read over it.
 
 **Nothing in `src/engine` names a class, an inner way or a skill**
 (`tests/engine/noClassSpecificEngineCode.test.ts`, with `defaults.ts`
 allowlisted because the starting build is content rather than logic). Whatever a
-class does beyond data reaches the engine through one of four registrations,
-each callable from a module under `src/data/classes/` that the folder barrel
-imports:
+class does beyond data reaches the engine through one of five registrations,
+each a field on the class's `defineClass` call (`src/data/classes/define.ts`'s
+`ClassDef`) that the folder barrel (`index.ts`) reads in one loop:
 
-| the class needs | it calls |
+| the class needs | it declares |
 | --- | --- |
-| gate buffs — state markers the timeline reads | `registerBuiltinBuffs(classId, buffs)` |
-| a stochastic or stateful mechanic | `registerMechanic(mechanic, MECHANIC_ORDER.…)` |
-| procedural behaviour on one skill | `registerSkillBehavior(skillId, factory)` |
-| a Skill Editor "is this active" gate | `registerDisplayGate(defId, predicate)` |
+| gate buffs — state markers the timeline reads | `gateBuffs` → `registerBuiltinBuffs(classId, buffs)` |
+| a stochastic or stateful mechanic | `mechanics` → `registerMechanic(mechanic, MECHANIC_ORDER.…)` |
+| procedural behaviour on one skill | `skillBehaviors` → `registerSkillBehavior(skillId, factory)` |
+| a Skill Editor "is this active" gate | `displayGates` → `registerDisplayGate(defId, predicate)` |
+| a poison/DoT extension window | `poisonExtensions` → `registerPoisonExtension(classId, statusId, maxRemainingSec)` |
 
-`tests/engine/classExtensionPoints.test.ts` exercises all four for a fictional
-class and is the worked example. That was rehearsed for real first: wiring
+`tests/engine/classExtensionPoints.test.ts` exercises the first four for a
+fictional class and is the worked example. That was rehearsed for real first: wiring
 `bellstrikeRainbow` with a mechanic, a gate buff, a behaviour and a display gate
 touched exactly two files — its own module and the `src/data/classes` barrel —
 and nothing under `src/engine`. The rehearsal was reverted rather than shipped,
@@ -121,22 +126,45 @@ because the wiring was the point and a real class needs verified coefficients.
 **Building out one of the seven is data work**, not engine work: sourcing and
 verifying its numbers.
 
+## Buff category
+
+`ClassDef` splits a class's buffs into two lists:
+
+- `classBuffDefs` — reachable because being the class is sufficient, even when
+  activation is still gated by an inner-way tier, a talent or a qi phase.
+  Surfaces as an ordinary Receives-card row.
+- `mechanicBuffDefs` — the class's own spec mechanics. Same `BuffModule` shape
+  and the same `BuffEngine` registration as `classBuffDefs`, but the Skill
+  Editor's Receives card breaks them out into their own "Spec Mechanic"
+  section instead of the general buff list (`ReceivesRow.isSpecMechanic`).
+
+Both lists are also the source for the Class Buffs column
+(`alwaysActiveClassBuffs` in `src/engine/buffs/catalog.ts`), scoped down to
+the entries that target specific skills — see that function's own comments
+for the scope rule.
+
+`defineClassBuff` (`src/data/skills/buffs/define.ts`) marks a `BuffModule` as
+reachable through one of these two lists; the marker itself is inert
+everywhere else — the class that lists the module is the only statement of
+scope.
+
 ## Where data lives
 
 | folder | holds | main consumer |
 | --- | --- | --- |
 | `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
-| `classes/` | per-class / per-spec metadata (schools, spec ids, retunement pools), the inner-way registry and defs, and every class-owned mechanic, behaviour and gate module | `classes/registry.ts` |
-| `rotations/` | built-in rotation pools | `engine/builtinLibrary.ts` |
+| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`), the registry (`registry.ts`) and its leaf state store (`classDefStore.ts`), retunement pools, and the inner-way registry and defs | `classes/registry.ts` |
+| `rotations/` | Bellstrike Umbra's built-in rotation pool, and `rotationPoolFor(classId)` | `engine/builtinLibrary.ts` |
 | `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus) | `engine/panel.ts`, `engine/formula.ts` |
-| `skills/` | per-class skill files, the class-unbound `universal/` skills, and the debuff library | `engine/builtinLibrary.ts` |
-| `skills/buffs/` | data-driven buff defs (one file per buff) | `engine/buffs/data.ts` |
+| `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `engine/builtinLibrary.ts` |
+| `skills/buffs/` | data-driven global/group `BuffModule`s (`defineBuff`); Bellstrike Umbra's own class buffs are `skills/bellstrike-umbra/buffs/` (`defineClassBuff`) instead | `engine/buffs/data.ts` |
+| `reference/classes/` | the seven not-yet-converted classes' schools, spec metadata, skills, buffs and debuffs, and their default rotations — unimported JSON, kept for when one is built out | — |
 
 Naming: data tables and modules in `src/data` are camelCase; the per-class
 folders under `skills/` stay kebab-case, and so does the lowercase grouping
-folder `skills/buffs/`. The skill files inside those per-class folders stay
-kebab-case too, whether they're the seven classes'
-JSON or `bellstrikeUmbra`/`universal`'s converted `.ts` modules.
+folder `skills/buffs/`. Skill files inside those per-class folders stay
+kebab-case too, whether under `src/data/skills/bellstrike-umbra/` (converted
+`.ts` modules) or `reference/classes/skills/<class>/` (the seven classes' JSON).
 
 ## Naming: no `site`, no pinyin ids
 

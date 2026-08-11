@@ -5,12 +5,12 @@
 // carriers, which is why their `effects` are empty.
 import type { Buff } from "./buff"
 
-const byClassId = new Map<string, Buff[]>()
+const byClassId = new Map<string, readonly Buff[]>()
 
-export function registerBuiltinBuffs(classId: string, buffs: Buff[]): void {
+export function registerBuiltinBuffs(classId: string, buffs: readonly Buff[]): void {
   byClassId.set(classId, buffs)
 }
 
-export function builtinBuffsForClass(classId: string): Buff[] {
+export function builtinBuffsForClass(classId: string): readonly Buff[] {
   return byClassId.get(classId) ?? []
 }

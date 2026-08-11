@@ -6,7 +6,7 @@ import { penResistanceForLevel } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 type Art = Parameters<typeof computeSkillDamage>[0]

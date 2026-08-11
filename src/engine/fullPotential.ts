@@ -7,7 +7,7 @@ import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone } from "./gearStats"
 import { getWordSpecs } from "./itemRanking"
 import { attunementsFor } from "./attunements"
-import { poolForClass } from "../data/classes/retunementPools"
+import { poolForClass } from "../data/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
 
 function applyBestRetune(piece: GearPiece, inputs: Inputs): GearPiece {

@@ -16,7 +16,6 @@ import { hitToArtRow, selectHitVariant } from "./skill"
 import type { StatusView } from "./ledger"
 import type { computeSkillDamage } from "./formula"
 import { WEAPON_TAG } from "./buffs/tags"
-import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
 import { stat, artBonus, damageMultiplier, type ArtEffect, type HitEffect } from "./effects/effect"
 
 export type ArtRow = Parameters<typeof computeSkillDamage>[0]
@@ -27,6 +26,7 @@ export interface BuildView {
   classId: string
   innerWayTier(name: string): number | null
   dingYin(tag: string): number
+  grantsMinPhysCritBoost(weaponType: string | undefined): boolean
 }
 
 export interface HitInput {
@@ -93,8 +93,9 @@ const QI_BREAK_DAMAGE_MULTIPLIER = 2
 
 // A built-in hit's `extraCritDamage === 1` is a boolean GATE, not a damage
 // amount — it carries the source catalog's `critBoost` straight through, and
-// that is always 0/1/absent. When the gate passes (weapon-type match, see
-// `buffs/critBoostWeapons.ts`) the real term is
+// that is always 0/1/absent. When the gate passes (a weapon-type match
+// against the class's declared `critBoostWeaponTypes`, read through
+// `BuildView.grantsMinPhysCritBoost`) the real term is
 // `floor(min(minPhys, 750) / 50) * 0.024`, capped at +0.36. Resolved here,
 // not as a `patchArt` effect: it REPLACES the hit's own coefficient, it does
 // not add to it.
@@ -154,7 +155,7 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
     const tags = input.skill.tags
     if (tags && tags.length > 0 && input.hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags.find((tag) => tag.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
-      art.extraCritDamage = classGrantsMinPhysCritBoost(input.build.classId, weaponType)
+      art.extraCritDamage = input.build.grantsMinPhysCritBoost(weaponType)
         ? Math.floor(
             Math.min(Math.max(0, context.smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP,
           ) * MIN_PHYS_CRIT_PER_STEP

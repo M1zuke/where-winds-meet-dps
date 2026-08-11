@@ -5,6 +5,7 @@ import { computeSkillDamage } from "../../src/engine/formula"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { receivesForSkill } from "../../src/engine/buffs/catalog"
+import { attunementsForClass } from "../../src/engine/attunements"
 import { hitToArtRow } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
 
@@ -45,14 +46,13 @@ describe("attunement scope — the stat reaches only what declares the tag", () 
   })
 
   // The option's `classIds` is what gates this now — it replaced a
-  // `classId === "bellstrikeUmbra"` branch in the timeline.
+  // `classId === "bellstrikeUmbra"` branch in the timeline. `buildContext`
+  // itself can no longer be driven by a foreign classId (only Bellstrike
+  // Umbra is registered, and `getSchool` throws on anything else), so this
+  // drives the same `classIds` gate `attuneBoostByTag` reads, directly.
   it("stays inert for a class the attunement cannot roll on", () => {
-    const ctx = buildContext({
-      ...defaultInputs,
-      classId: "bamboocutWindTwinblade",
-      dingYinByTag: { "Bleed Boost": BLEED_BOOST },
-    })
-    expect(ctx.attuneBoostByTag).toEqual({})
+    const optionsForOtherClass = attunementsForClass("someOtherClass")
+    expect(optionsForOtherClass.some((option) => option.affectsTag === "attune:bleed")).toBe(false)
   })
 })
 
