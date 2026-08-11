@@ -10,7 +10,7 @@ implemented and validated.**
 
 The other seven classes — Bellstrike Rainbow, Silkbind Jade, the Stonesplit
 and Bamboocut specs — are **not implemented yet**, and are not registered
-`ClassDef`s: `CLASS_IDS()` (`src/data/classes/registry.ts`) returns only
+`ClassDef`s: `CLASS_IDS()` (`src/definitions/classes/registry.ts`) returns only
 `bellstrikeUmbra`. Their imported data (schools, skills, buffs, debuffs,
 rotations, spec metadata) lives under `reference/classes/` instead, unimported
 by the app or the tests — kept for when one of them is actually built out.
@@ -71,11 +71,12 @@ Skills every class can equip (the mystic arts: Soaring, Fire Breath, Poet,
 Flute, Dragon Head, …) live **once** in `src/data/skills/universal/`, with
 `universal` as the id segment (`universal-soaring`,
 `debuff-universal-combustion`). They are **never duplicated into class
-folders**. `src/data/skills/index.ts`'s `withUniversalSkills(classId,
-primaryAttribute, classSkills)` instantiates them per class: the `universal`
-segment in the skill id and every trigger/condition id becomes the class id,
-and `attributeAttack` becomes the `primaryAttribute` the caller (each class's
-own `defineClass` module) passes in.
+folders**. `src/definitions/skills/universalSkills.ts`'s
+`withUniversalSkills(classId, primaryAttribute, classSkills)` instantiates
+them per class: the `universal` segment in the skill id and every
+trigger/condition id becomes the class id, and `attributeAttack` becomes the
+`primaryAttribute` the caller (each class's own `defineClass` module) passes
+in.
 
 The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved
 rotations and user skill overrides match built-ins by id, so a universal skill
@@ -95,19 +96,19 @@ check for one before changing a skill, and never bulk-read them.
 
 ## One definition per class
 
-`classDefinition(classId)` (`src/data/classes/registry.ts`) answers what a class
-is made of — spec, primary attribute, inner ways, dingYin tags, skills,
-debuffs, buffs, rotations and default, attunements, retunement pool — and
-`CLASS_IDS()` is the one list, currently just `bellstrikeUmbra`. Reach for it
-rather than opening the individual registries below; `builtinLibrary.ts` is a
-thin read over it.
+`classDefinition(classId)` (`src/definitions/classes/registry.ts`) answers
+what a class is made of — spec, primary attribute, inner ways, dingYin tags,
+skills, debuffs, buffs, rotations and default, attunements, retunement pool —
+and `CLASS_IDS()` is the one list, currently just `bellstrikeUmbra`. Reach for
+it rather than opening the individual registries below; `builtinLibrary.ts` is
+a thin read over it.
 
 **Nothing in `src/engine` names a class, an inner way or a skill**
 (`tests/engine/noClassSpecificEngineCode.test.ts`, with `defaults.ts`
 allowlisted because the starting build is content rather than logic). Whatever a
 class does beyond data reaches the engine through one of five registrations,
-each a field on the class's `defineClass` call (`src/data/classes/define.ts`'s
-`ClassDef`) that the folder barrel (`index.ts`) reads in one loop:
+each a field on the class's `defineClass` call (`src/definitions/classes/classDef.ts`'s
+`ClassDef`) that `src/definitions/classes/registry.ts` reads in one loop:
 
 | the class needs | it declares |
 | --- | --- |
@@ -127,7 +128,8 @@ because the wiring was the point and a real class needs verified coefficients.
 verifying its numbers.
 
 An inner-way or set def declares a `mechanics` field the same way, read by
-its own barrel (`src/data/innerWays/index.ts`, `src/data/sets/index.ts`) —
+its own registry (`src/definitions/innerWays/registry.ts`,
+`src/definitions/sets/registry.ts`) —
 `declareMechanic`/`MechanicRegistration`/`MECHANIC_ORDER` are the one shared
 contract all three owners use.
 
@@ -148,23 +150,41 @@ Both lists are also the source for the Class Buffs column
 the entries that target specific skills — see that function's own comments
 for the scope rule.
 
-`defineClassBuff` (`src/data/skills/buffs/define.ts`) marks a `BuffModule` as
+`defineClassBuff` (`src/definitions/skills/buffDef.ts`) marks a `BuffModule` as
 reachable through one of these two lists; the marker itself is inert
 everywhere else — the class that lists the module is the only statement of
 scope.
 
 ## Where data lives
 
+`src/data/` holds only content — value declarations, id tables and JSON
+tables. Adding a class touches only files under `src/data/` (its own modules
+plus the one-line entry in `src/data/classes/index.ts`) — never
+`src/definitions/`.
+
 | folder | holds | main consumer |
 | --- | --- | --- |
-| `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) and the module that folds them into a base | `src/data/baseStats/index.ts` |
-| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the composition root (`index.ts`) and the registry (`registry.ts`), and retunement pools | `classes/registry.ts` |
-| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), the composition root (`index.ts`), the registry (`registry.ts`) and the def-list leaf store (`innerWayDefStore.ts`) that `bitterSeasonMechanic.ts` reads without going through the barrel it is part of | `innerWays/registry.ts` |
-| `rotations/` | Bellstrike Umbra's built-in rotation pool, and `rotationPoolFor(classId)` | `engine/builtinLibrary.ts` |
-| `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic) | `engine/panel.ts`, `engine/formula.ts` |
-| `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `engine/builtinLibrary.ts` |
+| `baseStats/` | character stat/progression tables (talents, oddities, enhancements, breakthroughs) — JSON only | `src/definitions/baseStats/index.ts` |
+| `classes/` | one `defineClass` module per implemented class (`bellstrikeUmbra.ts`), the `CLASSES` list (`index.ts`), and retunement pool values | `classes/index.ts` |
+| `innerWays/` | one `defineInnerWay` module per inner way (id, name, selectable tiers, panel stats, context scalars, tier ladder, optional mechanic), and the `INNER_WAYS` list (`index.ts`) | `innerWays/index.ts` |
+| `rotations/` | Bellstrike Umbra's built-in rotation pool — JSON only | `src/definitions/rotations/registry.ts` |
+| `sets/` | one `defineSet` module per armour set (id, 2-piece panel bonus, 4-piece formula bonus, optional mechanic), and the `SET_DEFS` list (`index.ts`) | `sets/index.ts` |
+| `skills/` | Bellstrike Umbra's per-class skill files (`bellstrike-umbra/`), the class-unbound `universal/` skills, and `skills/buffs/`'s global buff defs | `src/definitions/skills/universalSkills.ts` |
 | `skills/buffs/` | data-driven global/group `BuffModule`s (`defineBuff`); Bellstrike Umbra's own class buffs are `skills/bellstrike-umbra/buffs/` (`defineClassBuff`) instead | `engine/buffs/data.ts` |
 | `reference/classes/` | the seven not-yet-converted classes' schools, spec metadata, skills, buffs and debuffs, and their default rotations — unimported JSON, kept for when one is built out | — |
+
+`src/definitions/` holds the contracts, the registries and the composition
+side effects that give the content above its shape and load it — grouped by
+the same domains.
+
+| folder | holds | main export |
+| --- | --- | --- |
+| `baseStats/` | the base-stat aggregation (`GLOBAL_BASE`, `DEFAULT_ODDITIES`, `getConfiguredBase`, `getMindMethodContributions`) and `breakthroughs.ts` (`getBreakthrough`) | `baseStats/index.ts` |
+| `classes/` | the `ClassDef`/`RetunementPool` contract (`classDef.ts`), the registry and class-registration loop (`registry.ts`), and the poison-extension registry (`poisonExtensions.ts`) | `classes/registry.ts` |
+| `innerWays/` | the `InnerWayDef` contract and tier helpers (`innerWayDef.ts`), the inner-way registry and mechanic-registration loop (`registry.ts`), and the def-list leaf store (`defStore.ts`) that `bitterSeasonMechanic.ts` reads without going through the barrel it is part of | `innerWays/registry.ts` |
+| `rotations/` | `rotationPoolFor(classId)` | `rotations/registry.ts` |
+| `sets/` | the `SetDef`/`SetFormulaBonus`/`SetPanelBonus` contract (`setDef.ts`) and the set registry and mechanic-registration loop (`registry.ts`) | `sets/registry.ts` |
+| `skills/` | `defineSkill`/`defineDebuff`/`hit`/`dotTicks` (`skillDef.ts`), the trigger authoring helpers (`triggers.ts`), `defineBuff`/`defineClassBuff` (`buffDef.ts`), and `withUniversalSkills` (`universalSkills.ts`) | `skills/skillDef.ts`, `skills/buffDef.ts` |
 
 Naming: data tables and modules in `src/data` are camelCase; the per-class
 folders under `skills/` stay kebab-case, and so does the lowercase grouping

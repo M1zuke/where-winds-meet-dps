@@ -16,10 +16,10 @@ import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
 import { paramOnOf, paramsFromInputs, paramTierOf } from "./params"
 import type { BuffParams } from "./buffEngine"
-import { innerWayForBuffParam } from "../../data/innerWays/registry"
-import { setDisplayNameForSiteKey } from "../../data/sets"
+import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
+import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass } from "../builtinLibrary"
-import { classDefinition } from "../../data/classes/registry"
+import { classDefinition } from "../../definitions/classes/registry"
 
 function affectsSummary(module: BuffModule): string {
   if (module.affectsProperty) return module.affectsProperty

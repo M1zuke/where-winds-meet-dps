@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Inputs, OddityNode, OddityRegions, TalentStat } from "../../../../engine/types"
-import { DEFAULT_ODDITIES } from "../../../../data/baseStats"
+import { DEFAULT_ODDITIES } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import styles from "./OdditiesTab.module.scss"

@@ -13,7 +13,7 @@ import { stat, forceOutcome, setStatus, type HitEffect } from "../../engine/effe
 import { CrosswindTracker } from "../../engine/buffs/crosswind"
 import { CROSSWIND_SPIRIT_BONUS } from "../skills/bellstrike-umbra/buffs/crosswindSpirit"
 import { ZENITH_BAR_BUFF_ID, ZENITH_DETONATION_BUFF_ID } from "./bellstrikeUmbraGates"
-import { innerWayHasNode } from "../innerWays/define"
+import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "../innerWays/ids"
 import { swordHorizon } from "../innerWays/swordHorizon"
 

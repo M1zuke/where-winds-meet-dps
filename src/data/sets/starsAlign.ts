@@ -1,4 +1,4 @@
-import { defineSet } from "./define"
+import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 
 // The 4-piece bonus is stochastic (site computes it live from distance) —

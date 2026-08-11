@@ -1,5 +1,5 @@
-import { defineSkill, hit } from "../define"
-import { applyBuff } from "../triggers"
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
 

@@ -1,4 +1,5 @@
-import { SET_BY_ID, type SetFormulaBonus } from "../data/sets"
+import { SET_BY_ID } from "../definitions/sets/registry"
+import type { SetFormulaBonus } from "../definitions/sets/setDef"
 
 // 120/240 are the breakthrough-16 / level-96+ tier (level 91-95 was 90/180).
 // This is the ONLY place the food bonus is applied.

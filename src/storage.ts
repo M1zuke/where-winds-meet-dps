@@ -2,10 +2,14 @@ import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
-import { CLASS_IDS } from "./data/classes/registry"
-import { innerWayIdForName, innerWayName, resolveInnerWayId } from "./data/innerWays/registry"
+import { CLASS_IDS } from "./definitions/classes/registry"
+import {
+  innerWayIdForName,
+  innerWayName,
+  resolveInnerWayId,
+} from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
-import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./data/baseStats"
+import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
 import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation } from "./engine/rotation"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"

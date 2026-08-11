@@ -5,7 +5,7 @@ import {
   getSchool,
   swapArsenal,
 } from "../../engine/panel"
-import { getDefaultTalentsForClass } from "../../data/baseStats"
+import { getDefaultTalentsForClass } from "../../definitions/baseStats"
 
 export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
   const school = getSchool(classId)

@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import type { StoredProfile } from "../../../../engine/types"
 import { exportProfile, importProfile } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { classDefinition } from "../../../../data/classes/registry"
+import { classDefinition } from "../../../../definitions/classes/registry"
 import styles from "./ProfilePanel.module.scss"
 
 interface Props {

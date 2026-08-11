@@ -1,5 +1,5 @@
-import { PARAM } from "../skills/buffs/ids"
-import type { InnerWayNode } from "./ids"
+import { PARAM } from "../../data/skills/buffs/ids"
+import type { InnerWayNode } from "../../data/innerWays/ids"
 import type { PanelStatPath } from "../../engine/gearStats"
 import type { MechanicRegistration } from "../../engine/mechanics"
 

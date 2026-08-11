@@ -1,8 +1,8 @@
-import { defineClassBuff } from "../../buffs/define"
+import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../buffs/ids"
 import { CAST } from "../../ids"
 import { stat } from "../../../../engine/effects/effect"
-import { requireInnerWayNodeTier } from "../../../innerWays/define"
+import { requireInnerWayNodeTier } from "../../../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "../../../innerWays/ids"
 import { wolfchasersArt } from "../../../innerWays/wolfchasersArt"
 

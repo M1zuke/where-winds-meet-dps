@@ -4,7 +4,7 @@
 // on directAffinityRate for Insightful Strike, to avoid double-counting the
 // SAME site effect through two channels.
 import { describe, expect, it } from "vitest"
-import { getMindMethodContributions } from "../../src/data/baseStats"
+import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"

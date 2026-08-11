@@ -4,7 +4,7 @@ import { computeDpsDeltas } from "../../src/engine/dpsWorker"
 import { runEngine } from "../../src/engine/dps"
 import { applyPieceContribution, relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
-import { poolForClass } from "../../src/data/classes/registry"
+import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
 import { defaultInputs } from "../../src/engine/defaults"
 

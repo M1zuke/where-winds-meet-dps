@@ -1,5 +1,5 @@
-import { defineSkill, hit } from "../define"
-import { applyDebuff } from "../triggers"
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { SKILL, DEBUFF, STATUS, ZENITH_MAX_EXTENDED_DURATION_FRAMES, ZENITH_SMOLDER_EXTEND_FRAMES } from "./ids"
 

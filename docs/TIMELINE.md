@@ -194,7 +194,7 @@ locked fixtures stay byte-exact).
 
 The reference-site (`wherewindsmath`) trigger-driven buff tracker, ported. Every reachable
 buff compiles to one `BuffModule` (`engine/buffs/buffModule.ts`) — a `defineBuff` /
-`defineClassBuff` TypeScript module (`data/skills/buffs/define.ts`); the 35 defs behind the
+`defineClassBuff` TypeScript module (`definitions/skills/buffDef.ts`); the 35 defs behind the
 seven not-yet-converted classes are frozen, unimported JSON under `reference/classes/buffs/`
 instead. A class declares its own via `ClassDef.classBuffDefs` / `mechanicBuffDefs`
 (CLASSES.md § "Buff category" — Soul Shaken, Bellstrike Umbra's bleed penetration and

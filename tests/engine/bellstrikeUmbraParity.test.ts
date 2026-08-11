@@ -11,7 +11,7 @@ import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
-import { SET_ID } from "../../src/data/sets"
+import { SET_ID } from "../../src/data/sets/ids"
 
 const SITE_TARGET_DPS = 48365
 const SITE_TARGET_TOTAL = 2936621

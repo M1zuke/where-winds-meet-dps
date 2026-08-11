@@ -78,7 +78,7 @@ caused it.
 
 ## The architecture guards
 
-Six tests assert properties of the code rather than of a build, and all exist
+Seven tests assert properties of the code rather than of a build, and all exist
 to stop the generalization work rotting:
 
 - `noClassSpecificEngineCode.test.ts` — nothing under `src/engine` may name a
@@ -93,10 +93,13 @@ to stop the generalization work rotting:
   mechanic, a per-skill behaviour and a display gate from outside the engine and
   each is picked up. Every id in it is fictional, so no shipped class can see it.
 - `mechanicRegistrationSites.test.ts` — the only files under `src/` that call
-  `registerMechanic` are the three owner barrels (`data/classes/index.ts`,
-  `data/innerWays/index.ts`, `data/sets/index.ts`) and the contract's own
-  definition site (`engine/mechanics/index.ts`); nothing self-registers from
-  anywhere else.
+  `registerMechanic` are the three owner registries (`definitions/classes/registry.ts`,
+  `definitions/innerWays/registry.ts`, `definitions/sets/registry.ts`) and the
+  contract's own definition site (`engine/mechanics/index.ts`); nothing
+  self-registers from anywhere else. The same file pins the call sites of the
+  other four registration entry points (`registerBuiltinBuffs`,
+  `registerSkillBehavior`, `registerDisplayGate`, `registerPoisonExtension`) to
+  the class registry plus each entry point's own definition site.
 - `mechanicModuleShape.test.ts` — an inner-way or set mechanic module exports
   a hoisted factory rather than a mechanic object, and imports no
   barrel-loading registry; both rules are otherwise only discoverable as a
@@ -104,6 +107,11 @@ to stop the generalization work rotting:
 - `tagAddressing.test.ts` — every scope and trigger entry in the shipped data
   is namespaced and names a tag some built-in actually carries, so a typo
   fails the suite instead of silently reaching nothing.
+- `dataDefinitionsBoundary.test.ts` — nothing under `src/data/` declares a
+  `define*` factory or calls a `register*` entry point, and nothing under
+  `src/definitions/` reaches past a `src/data/` folder barrel, `ids.ts` or JSON
+  table into an individual content module — the mechanical half of "adding a
+  class touches only `src/data/`".
 
 These legitimately span every registered class, which the class-scoping rule
 above explicitly permits for registry and metadata tests.

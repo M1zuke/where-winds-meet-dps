@@ -1,6 +1,7 @@
-// Nothing self-registers a mechanic outside the three owner barrels and the
-// contract's own definition site — see docs/CLASSES.md § "One definition per
-// class". `tests/engine/classExtensionPoints.test.ts` legitimately calls
+// Nothing self-registers a mechanic, buff, skill behaviour, display gate or
+// poison extension outside its owner registry and the contract's own
+// definition site — see docs/CLASSES.md § "One definition per class".
+// `tests/engine/classExtensionPoints.test.ts` legitimately calls
 // `registerMechanic(` too, for a fictional probe class; that file lives under
 // `tests/`, outside the `src/` scope this guard checks.
 import { describe, expect, it } from "vitest"
@@ -24,17 +25,56 @@ function repoRelative(path: string): string {
     .join("/")
 }
 
+function callSitesOf(name: string): string[] {
+  return tsFiles(SRC_DIR)
+    .filter((path) => new RegExp(`\\b${name}\\b`).test(readFileSync(path, "utf8")))
+    .map(repoRelative)
+    .sort()
+}
+
 describe("registerMechanic call sites", () => {
-  it("are exactly the three owner barrels plus the definition site", () => {
-    const callSites = tsFiles(SRC_DIR)
-      .filter((path) => /\bregisterMechanic\b/.test(readFileSync(path, "utf8")))
-      .map(repoRelative)
-      .sort()
-    expect(callSites).toEqual([
-      "src/data/classes/index.ts",
-      "src/data/innerWays/index.ts",
-      "src/data/sets/index.ts",
+  it("are exactly the three owner registries plus the definition site", () => {
+    expect(callSitesOf("registerMechanic")).toEqual([
+      "src/definitions/classes/registry.ts",
+      "src/definitions/innerWays/registry.ts",
+      "src/definitions/sets/registry.ts",
       "src/engine/mechanics/index.ts",
+    ])
+  })
+})
+
+describe("registerBuiltinBuffs call sites", () => {
+  it("are exactly the class registry plus the definition site", () => {
+    expect(callSitesOf("registerBuiltinBuffs")).toEqual([
+      "src/definitions/classes/registry.ts",
+      "src/engine/builtinBuffs.ts",
+    ])
+  })
+})
+
+describe("registerSkillBehavior call sites", () => {
+  it("are exactly the class registry plus the definition site", () => {
+    expect(callSitesOf("registerSkillBehavior")).toEqual([
+      "src/definitions/classes/registry.ts",
+      "src/engine/behavior.ts",
+    ])
+  })
+})
+
+describe("registerDisplayGate call sites", () => {
+  it("are exactly the class registry plus the definition site", () => {
+    expect(callSitesOf("registerDisplayGate")).toEqual([
+      "src/definitions/classes/registry.ts",
+      "src/engine/buffs/displayGates.ts",
+    ])
+  })
+})
+
+describe("registerPoisonExtension call sites", () => {
+  it("are exactly the class registry plus the definition site", () => {
+    expect(callSitesOf("registerPoisonExtension")).toEqual([
+      "src/definitions/classes/poisonExtensions.ts",
+      "src/definitions/classes/registry.ts",
     ])
   })
 })

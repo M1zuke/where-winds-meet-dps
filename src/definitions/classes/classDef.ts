@@ -6,8 +6,12 @@ import type { Rotation } from "../../engine/rotation"
 import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { SkillBehaviorFactory } from "../../engine/behavior"
-import type { RetunementPool } from "./retunementPools"
-import type { InnerWayId } from "../innerWays/ids"
+import type { InnerWayId } from "../../data/innerWays/ids"
+
+// Stat ids must match `WordSpec.word` strings in `engine/itemRanking.ts`.
+export interface RetunementPool {
+  stats: readonly string[]
+}
 
 export interface SkillBehaviorRegistration {
   skillId: string

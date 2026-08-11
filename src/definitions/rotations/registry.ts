@@ -1,6 +1,6 @@
 import type { Rotation } from "../../engine/rotation"
-import defaultRotationsData from "./defaultRotations.json"
-import handRotationsData from "./handRotations.json"
+import defaultRotationsData from "../../data/rotations/defaultRotations.json"
+import handRotationsData from "../../data/rotations/handRotations.json"
 
 interface RotationPoolFile {
   rotations: Rotation[]

@@ -10,7 +10,7 @@ import { ATTUNEMENT_OPTIONS, getAttunement } from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
 import { applyPieceContribution } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
-import { poolForClass } from "../../src/data/classes/registry"
+import { poolForClass } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { GearPiece, Inputs } from "../../src/engine/types"
 

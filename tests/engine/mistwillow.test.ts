@@ -5,7 +5,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
-import { SET_ID } from "../../src/data/sets"
+import { SET_ID } from "../../src/data/sets/ids"
 
 function tagged(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })

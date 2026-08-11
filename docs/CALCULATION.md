@@ -76,7 +76,7 @@ Everything here happens **before** any damage math, and produces the `Inputs`
 the engine actually consumes. Per CLAUDE.md's buff taxonomy this is where
 category-1 "base-stat" buffs belong.
 
-- **`src/data/baseStats/index.ts`** derives the modeled character's base stats
+- **`src/definitions/baseStats/index.ts`** derives the modeled character's base stats
   from the JSON tables under `src/data/baseStats/` at module load. To bump a
   configuration:
   - *new talent tier* — add a key to `talentPoints.json`, then add it to

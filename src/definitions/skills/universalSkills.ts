@@ -1,8 +1,9 @@
 import type { Skill } from "../../engine/skill"
-import { UNIVERSAL_SKILLS } from "./universal"
+import { UNIVERSAL_SKILLS } from "../../data/skills/universal"
 
-// Universal skills live once in ./universal, carrying a "universal" id
-// segment. Each class receives its own instance with `<classId>-<slug>` ids —
+// Universal skills live once in src/data/skills/universal, carrying a
+// "universal" id segment. Each class receives its own instance with
+// `<classId>-<slug>` ids —
 // that id shape is load-bearing: saved rotations and user skill overrides
 // match built-ins by id, so universal skills must never surface with a
 // class-less id.

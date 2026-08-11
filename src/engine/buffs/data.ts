@@ -1,4 +1,4 @@
-import { classDefinition, CLASS_DEFS } from "../../data/classes/registry"
+import { classDefinition, CLASS_DEFS } from "../../definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../data/skills/buffs"
 import type { BuffModule } from "./buffModule"
 

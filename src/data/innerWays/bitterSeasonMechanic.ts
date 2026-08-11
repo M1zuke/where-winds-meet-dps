@@ -12,11 +12,11 @@ import {
   type BitterSeasonTuning,
 } from "../../engine/buffs/bitterSeason"
 import { bitterSeasonTuningAtTier } from "./bitterSeason"
-import { getBreakthrough } from "../baseStats/breakthroughs"
-import { tierFromStacks, type InnerWayDef } from "./define"
+import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
+import { tierFromStacks, type InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID } from "./ids"
-import { innerWayDefs } from "./innerWayDefStore"
-import { poisonExtensionForClass } from "./poisonExtension"
+import { innerWayDefs } from "../../definitions/innerWays/defStore"
+import { poisonExtensionForClass } from "../../definitions/classes/poisonExtensions"
 import type { BuffStatEffect } from "../../engine/buff"
 import type { Inputs } from "../../engine/types"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
@@ -24,16 +24,16 @@ import type { TimelineMechanic } from "../../engine/mechanics/types"
 const REMAINING_DISPLAY_THRESHOLD = 0.5
 
 // Mirrors `slotInnerWayId`/`innerWayTier`/`henZhiActiveForInputs`
-// (`registry.ts`) against the raw store instead of through `registry.ts`
-// itself. `registry.ts` unconditionally does `import "./index"` to guarantee
-// the barrel has loaded — but this mechanic is loaded AS PART OF the barrel
-// building `bitterSeason.ts`, so importing `registry.ts` here reopens
-// exactly the cycle the factory shape exists to avoid: confirmed by running
-// the suite, `tests/engine/bitterSeason.test.ts` imports this inner way
-// directly (before anything else touches the barrel), and `INNER_WAYS` ends
-// up with an `undefined` slot. `innerWayDefStore.ts` is the same data with
-// none of that side effect, since every read here is deferred into
-// `prepare()`, long after the whole module graph has settled.
+// (`definitions/innerWays/registry.ts`) against the raw store instead of
+// through that registry itself. The registry unconditionally imports the
+// `src/data/innerWays` barrel to guarantee it has loaded — but this mechanic
+// is loaded AS PART OF the barrel building `bitterSeason.ts`, so importing
+// the registry here reopens exactly the cycle the factory shape exists to
+// avoid: confirmed by running the suite, `tests/engine/bitterSeason.test.ts`
+// imports this inner way directly (before anything else touches the
+// barrel), and `INNER_WAYS` ends up with an `undefined` slot. `defStore.ts`
+// is the same data with none of that side effect, since every read here is
+// deferred into `prepare()`, long after the whole module graph has settled.
 function slotIdViaStore(slot: { id?: string; name: string }): string {
   if (slot.id !== undefined) return slot.id
   if (!slot.name) return ""

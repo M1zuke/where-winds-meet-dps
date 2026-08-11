@@ -2,7 +2,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { kvStore } from "../../src/kvStore"
 import { loadProfiles, saveProfiles } from "../../src/storage"
-import { DEFAULT_ODDITIES } from "../../src/data/baseStats"
+import { DEFAULT_ODDITIES } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 

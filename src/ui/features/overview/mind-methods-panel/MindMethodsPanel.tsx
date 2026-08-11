@@ -3,7 +3,7 @@ import {
   innerWayDefinition,
   innerWayName,
   slotInnerWayId,
-} from "../../../../data/innerWays/registry"
+} from "../../../../definitions/innerWays/registry"
 import { allowedInnerWaysForClass } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./MindMethodsPanel.module.scss"

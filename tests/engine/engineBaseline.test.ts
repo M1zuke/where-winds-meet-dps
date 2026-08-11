@@ -15,7 +15,7 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
-import { SET_ID } from "../../src/data/sets"
+import { SET_ID } from "../../src/data/sets/ids"
 import type { Inputs, Result } from "../../src/engine/types"
 import anchorProfileFile from "../migrations/testProfiles/profile-v7.json"
 

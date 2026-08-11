@@ -16,7 +16,7 @@ import {
   builtinBuffsForClass,
 } from "../../../../engine/builtinLibrary"
 import { getSchool } from "../../../../engine/panel"
-import { innerWayName } from "../../../../data/innerWays/registry"
+import { innerWayName } from "../../../../definitions/innerWays/registry"
 import {
   appliesForSkill,
   receivesForSkill,

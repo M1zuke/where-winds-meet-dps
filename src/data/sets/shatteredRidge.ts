@@ -1,4 +1,4 @@
-import { defineSet } from "./define"
+import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 
 // The real bonus is the deflect buff, gated on `siteKey` through

@@ -2,10 +2,10 @@ import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
-import { henZhiActiveForInputs, innerWayScalar } from "../data/innerWays/registry"
-import { classDefinition, type ClassDefinition } from "../data/classes/registry"
-import { getBreakthrough } from "../data/baseStats/breakthroughs"
-import { SET_BY_ID, SET_DEFS } from "../data/sets"
+import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
+import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
+import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
 
 export { getBreakthrough, henZhiActiveForInputs }
 

@@ -1,7 +1,7 @@
 // Slot 0 is always locked and never enters retunement analysis.
 
 import type { GearPiece } from "./types"
-import type { RetunementPool } from "../data/classes/retunementPools"
+import type { RetunementPool } from "../definitions/classes/classDef"
 
 export const FIRST_LOCKED_SLOT = 0
 export const ALL_REROLLABLE_SLOTS: readonly number[] = [1, 2, 3, 4]

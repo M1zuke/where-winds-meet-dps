@@ -8,13 +8,13 @@ import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
-import { tierFromStacks } from "../../src/data/innerWays/define"
+import { tierFromStacks } from "../../src/definitions/innerWays/innerWayDef"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
-import { SET_ID } from "../../src/data/sets"
+import { SET_ID } from "../../src/data/sets/ids"
 
 function taggedSkill(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })

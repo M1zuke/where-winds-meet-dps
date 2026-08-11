@@ -1,6 +1,16 @@
 import type { Inputs } from "../../engine/types"
-import { tierFromStacks, type InnerWayDef } from "./define"
-import { INNER_WAYS } from "./index"
+import { tierFromStacks, type InnerWayDef } from "./innerWayDef"
+import { INNER_WAYS } from "../../data/innerWays"
+import { registerMechanic } from "../../engine/mechanics"
+import { setInnerWayDefs } from "./defStore"
+
+export { INNER_WAYS }
+
+for (const def of INNER_WAYS) {
+  for (const { mechanic, order } of def.mechanics ?? []) registerMechanic(mechanic, order)
+}
+
+setInnerWayDefs(INNER_WAYS)
 
 export function innerWayDefinition(id: string): InnerWayDef | undefined {
   return INNER_WAYS.find((def) => def.id === id)
@@ -39,8 +49,8 @@ export function slotInnerWayId(slot: SlottedInnerWay): string {
   return slot.id ?? resolveInnerWayId(slot.name)
 }
 
-// Iterates in barrel order — see `INNER_WAYS`'s own comment (`index.ts`) for
-// why that order is load-bearing here.
+// Iterates in barrel order — see `INNER_WAYS`'s own comment
+// (`src/data/innerWays/index.ts`) for why that order is load-bearing here.
 export function activeInnerWayDefs(slots: readonly SlottedInnerWay[]): InnerWayDef[] {
   const out: InnerWayDef[] = []
   for (const def of INNER_WAYS) {

@@ -3,7 +3,7 @@
 // display name. Spans every registered class on purpose.
 import { describe, expect, it } from "vitest"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { CLASS_IDS, CLASS_DEFS } from "../../src/data/classes/registry"
+import { CLASS_IDS, CLASS_DEFS } from "../../src/definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 

@@ -3,15 +3,15 @@
 // store a slot by name alone, so both columns are pinned literally here.
 import { describe, expect, it } from "vitest"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "../../src/data/innerWays/ids"
-import { INNER_WAYS } from "../../src/data/innerWays"
-import { innerWayHasNode, innerWayNodeTier } from "../../src/data/innerWays/define"
+import { innerWayHasNode, innerWayNodeTier } from "../../src/definitions/innerWays/innerWayDef"
 import {
+  INNER_WAYS,
   innerWayForBuffParam,
   innerWayIdForName,
   resolveInnerWayId,
-} from "../../src/data/innerWays/registry"
+} from "../../src/definitions/innerWays/registry"
 import { PARAM } from "../../src/data/skills/buffs/ids"
-import { getMindMethodContributions } from "../../src/data/baseStats"
+import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
 import { soulShaken } from "../../src/data/skills/bellstrike-umbra/buffs/soulShaken"

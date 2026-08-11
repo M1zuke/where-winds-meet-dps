@@ -17,7 +17,7 @@ import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mecha
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
-import { grantsMinPhysCritBoostFor } from "../data/classes/registry"
+import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage } from "./formula"
 import { applyBuffEffects } from "./statRegistry"
@@ -29,7 +29,7 @@ import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buf
 import { paramsFromInputs } from "./buffs/params"
 import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
-import { innerWayTier } from "../data/innerWays/registry"
+import { innerWayTier } from "../definitions/innerWays/registry"
 import { PROP } from "../data/skills/ids"
 
 export const FPS = 60

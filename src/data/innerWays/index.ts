@@ -1,11 +1,9 @@
-import type { InnerWayDef } from "./define"
+import type { InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { bitterSeason } from "./bitterSeason"
 import { insightfulStrike } from "./insightfulStrike"
 import { moraleChant } from "./moraleChant"
 import { swordHorizon } from "./swordHorizon"
 import { wolfchasersArt } from "./wolfchasersArt"
-import { registerMechanic } from "../../engine/mechanics"
-import { setInnerWayDefs } from "./innerWayDefStore"
 
 // Order is load-bearing: the context-scalar sum and
 // `innerWayTargetDefenseMultiplier`'s first-match both iterate this array,
@@ -17,9 +15,3 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   swordHorizon,
   wolfchasersArt,
 ]
-
-for (const def of INNER_WAYS) {
-  for (const { mechanic, order } of def.mechanics ?? []) registerMechanic(mechanic, order)
-}
-
-setInnerWayDefs(INNER_WAYS)

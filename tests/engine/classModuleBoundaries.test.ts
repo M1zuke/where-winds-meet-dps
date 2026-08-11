@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
-import { CLASS_DEFS } from "../../src/data/classes/registry"
+import { CLASS_DEFS } from "../../src/definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
 
 const ROOT = process.cwd()
@@ -60,24 +60,18 @@ describe("no class module imports the panel/registry layer", () => {
   const FORBIDDEN_TARGETS = new Set(
     [
       "src/engine/panel.ts",
-      "src/data/classes/registry.ts",
+      "src/definitions/classes/registry.ts",
       "src/engine/builtinLibrary.ts",
       "src/engine/buffs/data.ts",
       "src/engine/buffs/catalog.ts",
     ].map((path) => join(ROOT, path).split("\\").join("/")),
   )
-  // index.ts (the composition root) and registry.ts (the layer itself) are
-  // exempt: index.ts pushes the assembled ClassDefs into registry.ts, which
-  // is the one legitimate registry reference this directory contains.
-  const EXEMPT = new Set(["index.ts", "registry.ts"])
-  const sources = tsFiles(join(ROOT, "src/data/classes"))
-    .filter((path) => !EXEMPT.has(repoRelative(path).split("/").pop()!))
-    .map((path) => ({
-      path: repoRelative(path),
-      targets: importSpecifiers(readFileSync(path, "utf8"))
-        .map((specifier) => resolvedTarget(path, specifier))
-        .filter((target): target is string => target !== null),
-    }))
+  const sources = tsFiles(join(ROOT, "src/data/classes")).map((path) => ({
+    path: repoRelative(path),
+    targets: importSpecifiers(readFileSync(path, "utf8"))
+      .map((specifier) => resolvedTarget(path, specifier))
+      .filter((target): target is string => target !== null),
+  }))
 
   it("imports none of panel, registry, builtinLibrary, buffs/data or buffs/catalog", () => {
     const offenders = sources

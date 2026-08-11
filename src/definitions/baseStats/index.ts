@@ -1,7 +1,7 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
 import { gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
-import { tierFromStacks } from "../innerWays/define"
+import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, slotInnerWayId } from "../innerWays/registry"
 import type {
   AttributeKey,
@@ -13,12 +13,12 @@ import type {
   ScalingSource,
   TalentStat,
 } from "../../engine/types"
-import baseStatsJson from "./baseStats.json"
-import talentPointsJson from "./talentPoints.json"
-import odditiesJson from "./oddities.json"
-import enhancementsJson from "./enhancements.json"
-import breakthroughJson from "./breakthroughAttributes.json"
-import classSkillBoostsJson from "./classSkillBoosts.json"
+import baseStatsJson from "../../data/baseStats/baseStats.json"
+import talentPointsJson from "../../data/baseStats/talentPoints.json"
+import odditiesJson from "../../data/baseStats/oddities.json"
+import enhancementsJson from "../../data/baseStats/enhancements.json"
+import breakthroughJson from "../../data/baseStats/breakthroughAttributes.json"
+import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
 const TALENT_TIERS = ["95.1", "95.2", "100.1"] as const

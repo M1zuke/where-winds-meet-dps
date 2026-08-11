@@ -1,5 +1,5 @@
 import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
-import { defineInnerWay, innerWayHasNode } from "./define"
+import { defineInnerWay, innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE, type InnerWayNode } from "./ids"
 import type { BitterSeasonTuning } from "../../engine/buffs/bitterSeason"
 import { bitterSeasonMechanic } from "./bitterSeasonMechanic"

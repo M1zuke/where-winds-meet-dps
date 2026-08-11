@@ -1,6 +1,6 @@
 // One place that answers "what is this class made of".
 //
-// A class module declares almost everything about itself (see `define.ts`'s
+// A class module declares almost everything about itself (see `classDef.ts`'s
 // `ClassDef`); the two things that stay outside it are the built-in `Buff`
 // gates (registered through `engine/builtinBuffs.ts` so a class can be looked
 // up by id without importing its module directly) and the attunement option
@@ -10,10 +10,23 @@
 import type { Buff } from "../../engine/buff"
 import type { AttunementOption } from "../../engine/attunements"
 import { attunementsForClass } from "../../engine/attunements"
-import { builtinBuffsForClass } from "../../engine/builtinBuffs"
-import type { ClassDef } from "./define"
-import type { RetunementPool } from "./retunementPools"
-import { CLASSES } from "./index"
+import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
+import type { ClassDef, RetunementPool } from "./classDef"
+import { CLASSES } from "../../data/classes"
+import { registerMechanic } from "../../engine/mechanics"
+import { registerSkillBehavior } from "../../engine/behavior"
+import { registerDisplayGate } from "../../engine/buffs/displayGates"
+import { registerPoisonExtension } from "./poisonExtensions"
+
+for (const classDef of CLASSES) {
+  registerBuiltinBuffs(classDef.id, classDef.gateBuffs)
+  for (const { mechanic, order } of classDef.mechanics) registerMechanic(mechanic, order)
+  for (const { skillId, factory } of classDef.skillBehaviors)
+    registerSkillBehavior(skillId, factory)
+  for (const { defId, predicate } of classDef.displayGates) registerDisplayGate(defId, predicate)
+  for (const { statusId, maxRemainingSec } of classDef.poisonExtensions)
+    registerPoisonExtension(classDef.id, statusId, maxRemainingSec)
+}
 
 export function CLASS_DEFS(): readonly ClassDef[] {
   return CLASSES

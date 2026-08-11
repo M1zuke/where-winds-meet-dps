@@ -1,4 +1,4 @@
-import { defineSet } from "./define"
+import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
 import { hawkwingMechanic } from "./hawkwingMechanic"

@@ -2,8 +2,12 @@
 // a probability schedule rather than a window. Tier 6 additionally multiplies
 // DoT damage while it is up.
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
-import { hasInnerWay, innerWayTier, type SlottedInnerWay } from "../innerWays/registry"
-import { innerWayHasNode } from "../innerWays/define"
+import {
+  hasInnerWay,
+  innerWayTier,
+  type SlottedInnerWay,
+} from "../../definitions/innerWays/registry"
+import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "../innerWays/ids"
 import { insightfulStrike } from "../innerWays/insightfulStrike"
 import type { TimelineMechanic } from "../../engine/mechanics/types"

@@ -1,11 +1,7 @@
 import type { Skill } from "./skill"
 import type { Rotation } from "./rotation"
 import type { Debuff } from "./debuff"
-import { classDefinition } from "../data/classes/registry"
-// Side-effect load: each class registers its gate buffs, behaviours and
-// mechanics. Imported here so every consumer of the built-in pools gets them,
-// not just the timeline.
-import "../data/classes"
+import { classDefinition } from "../definitions/classes/registry"
 
 export { builtinBuffsForClass } from "./builtinBuffs"
 

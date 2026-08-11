@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../buffs/define"
+import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../buffs/ids"
 import { CAST } from "../../ids"
 import { stat } from "../../../../engine/effects/effect"

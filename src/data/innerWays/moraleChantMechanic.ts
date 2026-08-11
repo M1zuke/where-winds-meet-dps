@@ -11,7 +11,7 @@ import {
   moraleStacksAtTime,
 } from "../../engine/buffs/morale"
 import type { MechanicEvent, MechanicSetup, TimelineMechanic } from "../../engine/mechanics/types"
-import { innerWayHasNode } from "./define"
+import { innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 // This import must stay above `./moraleChant`: that module eagerly calls

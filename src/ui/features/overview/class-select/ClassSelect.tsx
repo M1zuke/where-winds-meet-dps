@@ -1,4 +1,4 @@
-import { CLASS_IDS, classDefinition } from "../../../../data/classes/registry"
+import { CLASS_IDS, classDefinition } from "../../../../definitions/classes/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
 
 interface Props {

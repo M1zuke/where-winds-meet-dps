@@ -1,9 +1,8 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import { INNER_WAYS } from "../../data/innerWays"
-import { tierFromStacks } from "../../data/innerWays/define"
-import { SET_BY_ID } from "../../data/sets"
-import { slotInnerWayId } from "../../data/innerWays/registry"
+import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
+import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
+import { SET_BY_ID } from "../../definitions/sets/registry"
 import { specForClass } from "./data"
 
 // The one place `Inputs.buffParams`' `<param>Tier` wire-key convention is

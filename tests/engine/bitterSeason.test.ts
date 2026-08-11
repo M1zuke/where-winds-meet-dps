@@ -19,8 +19,8 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { seedSkillFromBuiltin, makeSkill, makeHit } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { getMindMethodContributions } from "../../src/data/baseStats"
-import { CLASS_IDS } from "../../src/data/classes/registry"
+import { getMindMethodContributions } from "../../src/definitions/baseStats"
+import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import type { Inputs } from "../../src/engine/types"
 
 describe("bitterSeasonPoisonSchedule", () => {

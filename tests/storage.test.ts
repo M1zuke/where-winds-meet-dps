@@ -28,12 +28,12 @@ import {
   withZeroedDerivedStats,
 } from "../src/engine/derivedInputs"
 import { LATEST_PROFILES_VERSION } from "../src/migrations"
-import { SET_ID } from "../src/data/sets"
+import { SET_ID } from "../src/data/sets/ids"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
-import { CLASS_IDS } from "../src/data/classes/registry"
-import { getDefaultTalentsForClass } from "../src/data/baseStats"
+import { CLASS_IDS } from "../src/definitions/classes/registry"
+import { getDefaultTalentsForClass } from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
 import { applyArmorSet, applyBowSet } from "../src/engine/panel"
 

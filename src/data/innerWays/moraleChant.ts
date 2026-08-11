@@ -1,5 +1,5 @@
 import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
-import { defineInnerWay } from "./define"
+import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { moraleChantMechanic } from "./moraleChantMechanic"

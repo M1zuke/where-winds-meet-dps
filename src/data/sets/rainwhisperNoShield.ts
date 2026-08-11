@@ -1,4 +1,4 @@
-import { defineSet } from "./define"
+import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 
 // The same `requiresSet` identity as full Rainwhisper (`data/sets/rainwhisper.ts`)

@@ -1,4 +1,4 @@
-import breakthroughTiers from "./breakthroughTiers.json"
+import breakthroughTiers from "../../data/baseStats/breakthroughTiers.json"
 
 const BREAKTHROUGHS = breakthroughTiers as ReadonlyArray<{
   breakthrough: number

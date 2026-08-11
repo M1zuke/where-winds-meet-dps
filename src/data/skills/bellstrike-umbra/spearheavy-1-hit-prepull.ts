@@ -1,4 +1,4 @@
-import { defineSkill, hit } from "../define"
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 

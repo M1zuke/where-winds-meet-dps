@@ -1,8 +1,8 @@
 // No imports of its own. Ids here are in their PRE-RETARGET form — `SKILL.*`
 // carries the bare `universal-*` id and `DEBUFF.*` the bare `debuff-universal-*`
-// id, exactly as authored; `src/data/skills/index.ts`'s `instantiateUniversal`
-// / `retargetId` rewrite them onto each class at load time, unchanged by this
-// conversion.
+// id, exactly as authored; `src/definitions/skills/universalSkills.ts`'s
+// `instantiateUniversal` / `retargetId` rewrite them onto each class at load
+// time, unchanged by this conversion.
 export const SKILL = {
   bitterSeasonTick: "universal-bitter-season-tick",
   deflectCancelPrepull: "universal-deflect-cancel-prepull",

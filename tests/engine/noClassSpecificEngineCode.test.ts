@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { join } from "node:path"
-import { CLASS_IDS } from "../../src/data/classes/registry"
+import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 
 const ENGINE_DIR = join(process.cwd(), "src/engine")

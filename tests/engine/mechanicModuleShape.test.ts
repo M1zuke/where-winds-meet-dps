@@ -64,8 +64,8 @@ describe("mechanic modules under src/data/innerWays and src/data/sets", () => {
 
   it("import no barrel-loading registry", () => {
     const forbidden = new Set([
-      join(ROOT, "src/data/innerWays/registry.ts").split("\\").join("/"),
-      join(ROOT, "src/data/classes/registry.ts").split("\\").join("/"),
+      join(ROOT, "src/definitions/innerWays/registry.ts").split("\\").join("/"),
+      join(ROOT, "src/definitions/classes/registry.ts").split("\\").join("/"),
     ])
     const offenders = discovered.filter((path) => {
       const targets = importSpecifiers(readFileSync(join(ROOT, path), "utf8"))

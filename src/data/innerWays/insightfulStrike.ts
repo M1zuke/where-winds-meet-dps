@@ -1,4 +1,4 @@
-import { defineInnerWay } from "./define"
+import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 
 // VERIFIED as the right inner way for `concentration`, but deliberately left

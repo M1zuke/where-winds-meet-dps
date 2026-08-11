@@ -4,7 +4,7 @@
 // Both are asserted on the data the app actually loads, since `timeline.ts` reads
 // `extendFrames` / `extendOnly` at runtime.
 import { describe, expect, it } from "vitest"
-import { CLASS_IDS, classDefinition } from "../../src/data/classes/registry"
+import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
 const FPS = 60

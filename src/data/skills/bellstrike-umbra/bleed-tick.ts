@@ -1,4 +1,4 @@
-import { defineSkill, dotTicks } from "../define"
+import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 

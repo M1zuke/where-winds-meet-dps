@@ -1,9 +1,9 @@
-import { defineDebuff } from "../define"
+import { defineDebuff } from "../../../definitions/skills/skillDef"
 import { PARAM } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
-import { requireInnerWayNodeTier } from "../../innerWays/define"
+import { requireInnerWayNodeTier } from "../../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "../../innerWays/ids"
 import { swordHorizon } from "../../innerWays/swordHorizon"
 

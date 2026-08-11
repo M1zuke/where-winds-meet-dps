@@ -1,7 +1,7 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ODDITIES } from "../data/baseStats"
-import { SET_ID } from "../data/sets"
+import { DEFAULT_ODDITIES } from "../definitions/baseStats"
+import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 

@@ -1,7 +1,7 @@
 import type { GearPiece, Inputs } from "./types"
 import { GEAR_SLOTS } from "./types"
 import { listKnownPaths, sumContributions } from "./gearStats"
-import { getConfiguredBase, getMindMethodContributions } from "../data/baseStats"
+import { getConfiguredBase, getMindMethodContributions } from "../definitions/baseStats"
 
 export const DERIVED_STAT_FIELDS: readonly string[] = [
   ...new Set(listKnownPaths().map((path) => path.split(".")[0])),

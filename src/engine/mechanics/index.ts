@@ -1,8 +1,8 @@
 // A mechanic is declared by the thing it is a mechanic of — a class, an inner
-// way, or a set — and registered by that owner's own barrel
-// (`src/data/classes/`, `src/data/innerWays/`, `src/data/sets/`), never here.
-// This file holds only the contract and the registry (docs/CLASSES.md
-// § "One definition per class").
+// way, or a set — and registered by that owner's own registry
+// (`src/definitions/classes/`, `src/definitions/innerWays/`,
+// `src/definitions/sets/`), never here. This file holds only the contract and
+// the registry (docs/CLASSES.md § "One definition per class").
 //
 // `order` is load-bearing, not cosmetic. Contributions are applied in it and
 // float addition is not associative, so changing it can move the last bits of

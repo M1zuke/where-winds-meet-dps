@@ -1,8 +1,8 @@
-import { defineClassBuff } from "./define"
+import { defineClassBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 import type { Effect } from "../../../engine/effects/effect"
-import { requireInnerWayNodeTier } from "../../innerWays/define"
+import { requireInnerWayNodeTier } from "../../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "../../innerWays/ids"
 import { insightfulStrike } from "../../innerWays/insightfulStrike"
 
