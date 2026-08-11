@@ -6,9 +6,11 @@ import { addStatDelta, resolveEnginePath } from "./statPaths"
 
 export const RELAYED_FACTOR = 0.94
 
+// Kept to the precision the UI shows — two decimals, which for a percent word
+// means four on the stored fraction.
 export function relayedCapValue(amount: number, unit: "raw" | "percent"): number {
   const raw = amount * RELAYED_FACTOR
-  return unit === "percent" ? Math.round(raw * 1000) / 1000 : Math.round(raw * 10) / 10
+  return unit === "percent" ? Math.round(raw * 10000) / 10000 : Math.round(raw * 100) / 100
 }
 
 export interface GearBaseStats {
@@ -73,21 +75,26 @@ const GEAR_BASE_STATS: Partial<
       epic: { minPhys: 0, maxPhys: 116, hp: 0, physDef: 0 },
       legendary: { minPhys: 0, maxPhys: 129, hp: 0, physDef: 0 },
     },
+    // lv96 armor, from a live lvl-96 build (2026-08-11): helm legendary 22/5774,
+    // armor legendary 22/11547, greaves epic 39/5196, bracer epic 20/5196. Helm and
+    // bracer share one row and armor is twice helm, which fixes the other three
+    // cells; only greaves legendary defense is extrapolated (39 × the observed
+    // 22/20 rarity step) and is the one number here still to be confirmed in game.
     helm: {
-      epic: { minPhys: 0, maxPhys: 0, hp: 4153, physDef: 16 },
-      legendary: { minPhys: 0, maxPhys: 0, hp: 4614, physDef: 18 },
+      epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 20 },
+      legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 22 },
     },
     armor: {
-      epic: { minPhys: 0, maxPhys: 0, hp: 8305, physDef: 16 },
-      legendary: { minPhys: 0, maxPhys: 0, hp: 9227, physDef: 18 },
+      epic: { minPhys: 0, maxPhys: 0, hp: 10392, physDef: 20 },
+      legendary: { minPhys: 0, maxPhys: 0, hp: 11547, physDef: 22 },
     },
     greaves: {
-      epic: { minPhys: 0, maxPhys: 0, hp: 4153, physDef: 32 },
-      legendary: { minPhys: 0, maxPhys: 0, hp: 4614, physDef: 36 },
+      epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 39 },
+      legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 43 },
     },
     bracer: {
-      epic: { minPhys: 0, maxPhys: 0, hp: 4153, physDef: 16 },
-      legendary: { minPhys: 0, maxPhys: 0, hp: 4614, physDef: 18 },
+      epic: { minPhys: 0, maxPhys: 0, hp: 5196, physDef: 20 },
+      legendary: { minPhys: 0, maxPhys: 0, hp: 5774, physDef: 22 },
     },
   },
 }
@@ -99,6 +106,55 @@ export function gearBaseStatsFor(
 ): GearBaseStats {
   const byLevel = GEAR_BASE_STATS[piece.level] ?? GEAR_BASE_STATS[91]!
   return byLevel[piece.slot]?.[piece.rarity] ?? ZERO_BASE
+}
+
+export interface GearIdentity {
+  level: GearLevel
+  rarity: GearRarity
+}
+
+export interface InferredGearIdentity {
+  level: GearLevel | null
+  rarity: GearRarity | null
+  candidates: readonly GearIdentity[]
+}
+
+const TABLED_LEVELS: readonly GearLevel[] = [91, 96]
+const RARITIES: readonly GearRarity[] = ["legendary", "epic"]
+
+function comparedFields(slot: GearSlot): readonly (keyof GearBaseStats)[] {
+  return isWeaponSlot(slot) ? ["minPhys", "maxPhys"] : ["hp", "physDef"]
+}
+
+/**
+ * Recovers a piece's level and rarity from the base stats the game reports for
+ * it. An axis that the observed stats cannot pin comes back null with every
+ * candidate listed; lv86 has no table row and is never inferred.
+ */
+export function inferGearIdentity(
+  slot: GearSlot,
+  observed: Partial<GearBaseStats>,
+): InferredGearIdentity {
+  const fields = comparedFields(slot).filter((field) => typeof observed[field] === "number")
+  if (!fields.length) return { level: null, rarity: null, candidates: [] }
+
+  const candidates: GearIdentity[] = []
+  for (const level of TABLED_LEVELS) {
+    for (const rarity of RARITIES) {
+      const tabled = gearBaseStatsFor({ slot, level, rarity })
+      if (fields.every((field) => tabled[field] === observed[field])) {
+        candidates.push({ level, rarity })
+      }
+    }
+  }
+
+  const levels = new Set(candidates.map((candidate) => candidate.level))
+  const rarities = new Set(candidates.map((candidate) => candidate.rarity))
+  return {
+    level: levels.size === 1 ? [...levels][0]! : null,
+    rarity: rarities.size === 1 ? [...rarities][0]! : null,
+    candidates,
+  }
 }
 
 export interface GearContribEntry {
