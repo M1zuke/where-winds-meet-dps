@@ -12,18 +12,6 @@
     "value": 78
   },
   {
-    "name": "Ivorybloom",
-    "setKey": "Ivorybloom",
-    "stat": "critRate",
-    "value": 0.09
-  },
-  {
-    "name": "Rainwhisper",
-    "setKey": "Rainwhisper",
-    "stat": "precisionRate",
-    "value": 0.08
-  },
-  {
     "name": "Shattered Ridge",
     "setKey": "Shattered Ridge",
     "stat": "minPhys",

@@ -8,19 +8,6 @@
     "col3": 0,
     "col4": 0
   },
-  "Rainwhisper": {
-    "name": "Rainwhisper",
-    "col5": 0.25
-  },
-  "Rainwhisper (no shield)": {
-    "name": "Rainwhisper (no shield)",
-    "col5": 0.1
-  },
-  "Ivorybloom": {
-    "name": "Ivorybloom",
-    "col5": 0.15,
-    "col6": 0.05
-  },
   "Swallowcall": {
     "name": "Swallowcall",
     "col7": 0.12,
