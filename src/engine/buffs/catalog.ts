@@ -85,10 +85,10 @@ export function requiresLabel(module: BuffModule): string | null {
   return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
 
-// Both scoped to the class's OWN `classBuffDefs` — never the composed
-// `buffModules` list. Widening to the composed list would pull in a global
-// like `dragonHeadLowHp` (also `alwaysActive`), newly hiding a timeline chip
-// that shows today.
+// Both scoped to the class's OWN `classBuffDefs` — never `buffDefsForClass`'s
+// composed set, which folds in `GLOBAL_BUFF_DEFS`. `dragonHeadLowHp` is a
+// global and `alwaysActive`, so widening there would newly hide a timeline
+// chip that shows today.
 function ownBuffDefsFor(classId?: string): readonly BuffModule[] {
   if (!classId) return CLASS_DEFS().flatMap((classDef) => classDef.classBuffDefs)
   return classDefinition(classId)?.classBuffDefs ?? []

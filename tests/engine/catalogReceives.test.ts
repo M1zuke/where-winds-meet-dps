@@ -123,9 +123,10 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
   })
 })
 
-// Both derivations stay scoped to a class's own `classBuffDefs`, never the
-// composed `buffModules`: `dragonHeadLowHp` is a global and `alwaysActive`,
-// and must not be caught by either.
+// Both derivations stay scoped to a class's own `classBuffDefs`, never
+// `buffDefsForClass`'s composed set (which folds in `GLOBAL_BUFF_DEFS`):
+// `dragonHeadLowHp` is a global and `alwaysActive`, and must not be caught
+// by either.
 describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
   it("the Spec Mechanics column is exactly the two bleed passives", () => {
     const ids = specMechanicIds(CLASS)
