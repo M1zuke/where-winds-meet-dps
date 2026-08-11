@@ -7,11 +7,11 @@ export function defineBuff<const T extends BuffModule>(module: T): T {
   return module
 }
 
-// A class buff: being the class is sufficient for it to be available, even
-// when activation is still gated by an inner-way tier, a talent or a qi
-// phase. `classBuff` is inert at runtime — `BuffEngine`, `applyEffect`,
-// `catalog.ts` and `scope.ts` never read it; the class that lists the result
-// in `classBuffDefs` / `mechanicBuffDefs` is the only statement of scope. See
+// A class buff: reachable through one of two owners, never both — a class's
+// own `classBuffDefs`, or the `buffDefs` of an inner way it can slot, folded
+// into every slotting class's set. `classBuff` is inert at runtime —
+// `BuffEngine`, `applyEffect`, `catalog.ts` and `scope.ts` never read it;
+// whichever owner lists the result is the only statement of scope. See
 // docs/CLASSES.md § "Buff category" for the reachability question this marks.
 export function defineClassBuff<const T extends BuffModule>(
   buff: T,
