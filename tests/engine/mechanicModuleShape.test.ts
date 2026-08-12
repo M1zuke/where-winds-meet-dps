@@ -1,8 +1,8 @@
 // Every inner-way/set mechanic module and its owning def import each other:
 // the def needs the mechanic's value to build its `mechanics` field, and the
 // mechanic needs the def's value inside its own deferred closures. The same
-// hazard now also covers owner-declared `BuffModule` factories (Concentration,
-// Wolfchaser's Art's three buffs) and `SkillBehaviorFactory` factories
+// hazard now also covers owner-declared `BuffModule` factories (Wolfchaser's
+// Art's three buffs) and `SkillBehaviorFactory` factories
 // (Sword Horizon's crosswind). Two rules keep any of these cycles safe,
 // neither enforceable by the type checker: (1) the factory module must export
 // a hoisted function, never a `const` bound to an object literal — entering

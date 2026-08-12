@@ -1,94 +1,51 @@
-// Pins the tier-5/tier-6 x display/damage x spec branching directly, with a
-// plain context literal — no engine mock needed since EffectContext is
-// read-only. Damage assertions scoped to Bellstrike Umbra/Splendor, the two
-// specs Concentration is available on — see CLAUDE.md § "Implemented classes".
+// Guards the one thing this def must never do: contribute through
+// `BuffEngine`. Concentration's uptime is `insightfulStrikeMechanic.ts`'s
+// probability ramp, so anything that makes the engine apply the def as well
+// double-counts every bonus it names.
 import { describe, expect, it } from "vitest"
 import { concentrationBuffDef } from "../../src/data/innerWays/insightfulStrikeConcentration"
-import type { EffectContext } from "../../src/engine/effects/context"
+import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { makeSkill } from "../../src/engine/skill"
 
-const concentration = concentrationBuffDef()
+const PARAMS_WITH_THE_GATE_FORCED_OPEN = {
+  classId: "bellstrikeUmbra",
+  spec: "bellstrike_umbra",
+  insightfulStrike: true,
+  insightfulStrikeTier: 6,
+}
 
-function contextFor(overrides: {
-  event: EffectContext["event"]
-  paramTier: number
-  spec: string | undefined
-}): EffectContext {
-  return {
-    timeSec: 0,
-    phase: "normal",
-    build: {
-      classId: "bellstrikeUmbra",
-      spec: overrides.spec,
-      armorSet: undefined,
-      param: () => true,
-      paramTier: () => overrides.paramTier,
-      paramValue: () => 0,
-    },
-    target: { isTrainingDummy: false },
-    status: {
-      isActive: () => false,
-      stacks: () => 0,
-      appliedAt: () => null,
-      expiresAt: () => null,
-    },
-    self: { stacks: 0 },
-    event: overrides.event,
-  }
+function engineWithConcentration(): BuffEngine {
+  return new BuffEngine(PARAMS_WITH_THE_GATE_FORCED_OPEN, [concentrationBuffDef])
 }
 
 describe("concentration buff module", () => {
-  it("emits nothing on cast", () => {
-    const ctx = contextFor({
-      event: { kind: "cast", castTag: "x", props: {} },
-      paramTier: 6,
-      spec: "bellstrike_umbra",
-    })
-    expect(concentration.effects(ctx)).toEqual([])
-  })
-
-  it("display ignores the tier-6 pair, even at tier 6", () => {
-    const ctx = contextFor({ event: { kind: "display" }, paramTier: 6, spec: "bellstrike_umbra" })
-    expect(concentration.effects(ctx)).toEqual([
+  it("carries the Skill Editor's display pair and nothing else", () => {
+    expect(concentrationBuffDef.effects).toEqual([
       { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
       { kind: "stat", statKey: "directAffinityRate", amount: 0.03 },
     ])
+    expect(concentrationBuffDef.summary).toBe("affinityDmg +10%, directAffinity +3%")
   })
 
-  it("damage at tier 5 is the base pair only", () => {
-    const ctx = contextFor({
-      event: { kind: "damage", castTag: "x", tags: new Set() },
-      paramTier: 5,
-      spec: "bellstrike_umbra",
-    })
-    expect(concentration.effects(ctx)).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "directAffinityRate", amount: 0.03 },
-    ])
+  it("is inactive at t=0 even with its param on", () => {
+    expect(engineWithConcentration().isBuffActiveAtTime(concentrationBuffDef.id, 0)).toBe(false)
   })
 
-  it("damage at tier 6 for bellstrike_umbra appends sustainDamageBoost twice", () => {
-    const ctx = contextFor({
-      event: { kind: "damage", castTag: "x", tags: new Set() },
-      paramTier: 6,
-      spec: "bellstrike_umbra",
-    })
-    expect(concentration.effects(ctx)).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "directAffinityRate", amount: 0.03 },
-      { kind: "stat", statKey: "sustainDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "sustainDamageBoost", amount: 0.1 },
-    ])
+  it("stays inactive after a cast", () => {
+    const engine = engineWithConcentration()
+    engine.processSkillCast("cast:anything", 1, { castTime: 1 })
+    expect(engine.isBuffActiveAtTime(concentrationBuffDef.id, 2)).toBe(false)
+    expect(engine.activeBuffsForDisplay(2)).toEqual([])
   })
 
-  it("damage at tier 6 with no spec set drops the tier-6 pair silently", () => {
-    const ctx = contextFor({
-      event: { kind: "damage", castTag: "x", tags: new Set() },
-      paramTier: 6,
-      spec: undefined,
-    })
-    expect(concentration.effects(ctx)).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "directAffinityRate", amount: 0.03 },
-    ])
+  it("adds nothing to a damage event", () => {
+    const engine = engineWithConcentration()
+    engine.processSkillCast("cast:anything", 1, { castTime: 1 })
+    const result = engine.calculateDamageEffects(
+      makeSkill("probe", { name: "probe", tags: ["type:sustain"] }),
+      2,
+    )
+    expect(result.effects).toEqual([])
+    expect(result.breakdown).toEqual({})
   })
 })

@@ -113,10 +113,9 @@ describe("defineClassBuff is not a second buff system", () => {
         const module: Record<string, unknown> = await import(/* @vite-ignore */ specifier)
         for (const exported of Object.values(module)) {
           // A hoisted-factory buff-def (the cyclic-import shape
-          // `insightfulStrikeConcentration.ts` and `wolfchasersArtBuffs.ts`
-          // use) exports the FACTORY, not the built `BuffModule` — call a
-          // zero-arg export to reach the marker the same way a plain-object
-          // export already carries it.
+          // `wolfchasersArtBuffs.ts` uses) exports the FACTORY, not the built
+          // `BuffModule` — call a zero-arg export to reach the marker the same
+          // way a plain-object export already carries it.
           const candidate =
             typeof exported === "function" && exported.length === 0 ? exported() : exported
           if (!candidate || typeof candidate !== "object" || !("classBuff" in candidate)) continue
