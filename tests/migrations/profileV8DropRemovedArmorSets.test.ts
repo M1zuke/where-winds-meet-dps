@@ -18,7 +18,7 @@ import {
 } from "../../src/migrations"
 import { V8__dropRemovedArmorSets } from "../../src/migrations/V8__dropRemovedArmorSets"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v7.json"
+import legacyProfileFile from "./testProfiles/v7/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const REMOVED_SETS = ["Ivorybloom", "Rainwhisper", "Rainwhisper (no shield)"]

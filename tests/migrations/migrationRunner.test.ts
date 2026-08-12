@@ -7,7 +7,7 @@ import {
   type RawProfilesBlob,
 } from "../../src/migrations"
 import { loadProfiles } from "../../src/storage"
-import legacyProfileFile from "./testProfiles/profile-v4.json"
+import legacyProfileFile from "./testProfiles/v4/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 type LegacyFile = {

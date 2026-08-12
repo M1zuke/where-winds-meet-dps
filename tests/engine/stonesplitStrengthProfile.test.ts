@@ -7,7 +7,7 @@ import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import profileFile from "./testProfiles/stonesplitStrengthProfile.json"
+import profileFile from "../migrations/testProfiles/v10/stonesplitStrength.json"
 
 describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {

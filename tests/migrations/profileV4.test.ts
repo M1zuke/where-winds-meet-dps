@@ -13,7 +13,7 @@ import {
 } from "../../src/migrations"
 import { V5__englishIdsWithoutSitePrefix } from "../../src/migrations/V5__englishIdsWithoutSitePrefix"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v4.json"
+import legacyProfileFile from "./testProfiles/v4/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const CUSTOM_ROTATIONS_KEY = "wwm.customRotations"

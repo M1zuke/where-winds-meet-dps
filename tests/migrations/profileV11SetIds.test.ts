@@ -15,7 +15,7 @@ import {
   migrateSetId,
 } from "../../src/migrations/V11__setIdsWithoutDisplayName"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v7.json"
+import legacyProfileFile from "./testProfiles/v10/stonesplitStrength.json"
 
 const PROFILES_KEY = "wwm.profiles"
 
@@ -51,10 +51,10 @@ function pipelineDps(inputs: Inputs): ReturnType<typeof runEngine> {
   return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
 }
 
-describe("profile-v7 fixture — the stored blob predates the set id rename", () => {
-  it("is version 7 and carries the set by its old display name", () => {
-    expect(LEGACY.v).toBe(7)
-    expect(LEGACY.profile.inputs.set).toBe("Hawking")
+describe("profile-v10 fixture — the stored blob predates the set id rename", () => {
+  it("is version 10 and carries the set by its old display name", () => {
+    expect(LEGACY.v).toBe(10)
+    expect(LEGACY.profile.inputs.set).toBe("Shattered Ridge")
   })
 })
 
@@ -84,11 +84,11 @@ describe("migrateSetId — the frozen name table", () => {
   })
 })
 
-describe("V8 step — v7 → v8 in isolation", () => {
+describe("V11 step — v10 → v11 in isolation", () => {
   it("rewrites the legacy display name to its id", () => {
     const migrated = V11__setIdsWithoutDisplayName.migrate(blobOf(clone(LEGACY.profile)))
     expect(migrated.v).toBe(V11__setIdsWithoutDisplayName.to)
-    expect(inputsOf(migrated).set).toBe("hawking")
+    expect(inputsOf(migrated).set).toBe("shatteredRidge")
   })
 
   it("degrades an unrecognised set to null instead of leaving it dangling", () => {
@@ -114,7 +114,7 @@ describe("V8 step — v7 → v8 in isolation", () => {
     expect(after.breakthrough).toBe(before.breakthrough)
   })
 
-  it("is registered, and the chain reports it for a v7 blob", () => {
+  it("is registered, and the chain reports it for a v10 blob", () => {
     const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
     expect(result.applied).toContain("V11__setIdsWithoutDisplayName")
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
@@ -130,13 +130,13 @@ describe("V8 step — v7 → v8 in isolation", () => {
   })
 })
 
-describe("v7 profile with the legacy set name → loaded build", () => {
+describe("v10 profile with the legacy set name → loaded build", () => {
   beforeEach(() => localStorage.clear())
 
   it("arrives with the id, so the set's bonus still resolves", () => {
     writeProfilesBlob(clone(LEGACY.profile))
     const after = loadOne()
-    expect(after.inputs.set).toBe("hawking")
+    expect(after.inputs.set).toBe("shatteredRidge")
 
     const result = pipelineDps(after.inputs)
     expect(result.dps).toBeGreaterThan(0)
@@ -147,7 +147,7 @@ describe("v7 profile with the legacy set name → loaded build", () => {
     loadProfiles()
     const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
     expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-    expect(persisted.profiles[0].inputs.set).toBe("hawking")
+    expect(persisted.profiles[0].inputs.set).toBe("shatteredRidge")
   })
 
   it("is idempotent — loading twice in a row yields an equal profile", () => {

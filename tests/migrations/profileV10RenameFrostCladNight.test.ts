@@ -7,7 +7,7 @@ import {
 } from "../../src/migrations"
 import { V10__renameFrostCladNight } from "../../src/migrations/V10__renameFrostCladNight"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v9.json"
+import legacyProfileFile from "./testProfiles/v9/stonesplitStrength.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const LEGACY_INPUTS_KEY = "wwm.inputs"

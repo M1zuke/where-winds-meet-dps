@@ -17,7 +17,7 @@ import { loadProfiles } from "../../src/storage"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { SET_ID } from "../../src/data/sets/ids"
 import type { Inputs, Result } from "../../src/engine/types"
-import anchorProfileFile from "../migrations/testProfiles/profile-v7.json"
+import anchorProfileFile from "../migrations/testProfiles/v7/bellstrikeUmbra.json"
 
 // `import.meta.url` is an http URL under the jsdom environment, so the fixture
 // is resolved from the vitest root instead.

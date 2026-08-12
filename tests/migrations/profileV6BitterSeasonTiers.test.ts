@@ -12,7 +12,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { LATEST_PROFILES_VERSION } from "../../src/migrations"
 import { kvStore } from "../../src/kvStore"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v6.json"
+import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 

@@ -103,6 +103,18 @@ deleting and re-defaulting.
 
 TESTING.md § "Migration tests" is the required shape.
 
+### Rule 5 — captured profiles are filed by version, one per class
+
+`tests/migrations/testProfiles/v<version>/<classId>.json`. The filename is the
+class the profile **resolves to**, which is not always the id it stores — an id a
+later step renames still files under its migrated name.
+
+Adding a step means adding the folder it reads from: every registered class needs
+a profile at the newest stored version, and a class present at one version must be
+present at every later one. Where no real capture exists, walk the nearest earlier
+profile forward through the chain. Mechanically enforced by
+`tests/migrations/testProfileFolders.test.ts`.
+
 ### Scope
 
 The chain covers saved profiles only. The other stores carry their own version

@@ -7,7 +7,7 @@ import {
 } from "../../src/migrations"
 import { V9__renameSteadfastDevotion } from "../../src/migrations/V9__renameSteadfastDevotion"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v8.json"
+import legacyProfileFile from "./testProfiles/v8/stonesplitStrength.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const LEGACY_INPUTS_KEY = "wwm.inputs"

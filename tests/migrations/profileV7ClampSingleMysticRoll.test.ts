@@ -17,7 +17,7 @@ import {
 } from "../../src/migrations"
 import { V7__clampSingleMysticWordRoll } from "../../src/migrations/V7__clampSingleMysticWordRoll"
 import type { GearPiece, Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v6.json"
+import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const WORD = "Single-Target Mystic Skill DMG Boost"
