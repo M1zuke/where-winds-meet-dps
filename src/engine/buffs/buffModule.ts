@@ -1,5 +1,5 @@
 import type { Effect } from "../effects/effect"
-import type { EffectContext } from "../effects/context"
+import type { EffectContext, QiPhase } from "../effects/context"
 
 export interface BuffRequirements {
   param?: string
@@ -10,6 +10,26 @@ export interface BuffRequirements {
 export interface ActiveAfterBuffEnds {
   buffId: string
   cancelledByReapply?: boolean
+}
+
+// The one crit rule that reads the rolled rate rather than a panel stat, so it
+// travels to `computeSkillDamage` as an art field instead of a `stat` effect.
+export interface ConditionalFinalCrit {
+  threshold: number
+  bonusBelowThreshold: number
+}
+
+// A cast that spends a stack of another buff. `from` is the fallback pool;
+// `preferredFrom` is drained first where both are live. `grants` names buffs
+// the successful consume attaches to that cast — `propagate` extends them to
+// the skills that cast generates, which is event state for that cast, not a
+// timed window.
+export interface PerCastConsume {
+  /** A `PROP.*` tag; the engine reads the matching `SkillProperties` key. */
+  property: string
+  from: string
+  preferredFrom?: readonly string[]
+  grants?: readonly { whenConsumedFrom: string; buffIds: readonly string[]; propagate?: boolean }[]
 }
 
 // The declarative core: the Skill Editor catalog derives `affects`, `bonus`,
@@ -32,10 +52,23 @@ export interface BuffMeta {
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
+  // Grants and refreshes one stack per damaging hit rather than per cast —
+  // including hits a `castSkill` trigger generated and deterministic DoT ticks.
+  stackOnDamage?: boolean
+  // A generated (`castSkill`-triggered) attack reaches only the defs that opt
+  // in; every other def still sees rotation casts alone.
+  triggersFromGeneratedSkills?: boolean
+  // Restricts the trigger to one Qi phase; a cast in any other phase is not a
+  // trigger for this def at all, so no stack and no refresh.
+  triggerPhase?: QiPhase
   seedAtStart?: boolean
   refreshOnAnyCast?: boolean
   requiresBuffActive?: string
+  // Read at trigger time against the live window, not at damage time.
+  requiresActiveBuffOnTrigger?: string
   activeAfterBuffEnds?: ActiveAfterBuffEnds
+  conditionalFinalCrit?: ConditionalFinalCrit
+  perCastConsume?: PerCastConsume
   stacks?: (ctx: EffectContext) => number
   duration: number | ((ctx: EffectContext) => number)
 }

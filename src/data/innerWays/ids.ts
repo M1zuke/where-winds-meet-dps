@@ -4,9 +4,12 @@
 // resolves to (see `docs/MIGRATIONS.md`).
 export const INNER_WAY_ID = {
   bitterSeason: "bitterSeason",
+  frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
   moraleChant: "moraleChant",
+  steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
+  throatPierce: "throatPierce",
   wolfchasersArt: "wolfchasersArt",
 } as const
 

@@ -3,5 +3,6 @@
 // nowhere else; nothing in `src/engine` imports a class module.
 import type { ClassDef } from "../../definitions/classes/classDef"
 import { bellstrikeUmbra } from "./bellstrikeUmbra"
+import { stonesplitStrength } from "./stonesplitStrength"
 
-export const CLASSES: readonly ClassDef[] = [bellstrikeUmbra]
+export const CLASSES: readonly ClassDef[] = [bellstrikeUmbra, stonesplitStrength]

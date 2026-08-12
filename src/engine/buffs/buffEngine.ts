@@ -9,9 +9,9 @@
 // Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
-import type { BuffModule } from "./buffModule"
+import type { BuffModule, ConditionalFinalCrit } from "./buffModule"
 import { matchesAnyTag, matchesScope } from "../scope"
-import { castTagOf, skillTagsOf } from "./tags"
+import { castTagOf, skillTagsOf, PROP_TAG } from "./tags"
 import type {
   BuildView,
   EffectContext,
@@ -43,6 +43,10 @@ export type { QiPhase }
 export interface DamageEffectsResult {
   effects: { statKey: StatKey; amount: number }[]
   forceCrit: boolean
+  // Post-formula, so it multiplies the finished number rather than joining the
+  // stat sum — 1 when no active def contributes one.
+  damageFactor: number
+  conditionalFinalCrit: ConditionalFinalCrit | null
   // Per-source attribution, keyed by def id — read directly by
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
@@ -406,12 +410,24 @@ export class BuffEngine {
     return null
   }
 
-  processSkillCast(castTag: string, time: number, props: SkillProperties = {}): void {
+  processSkillCast(
+    castTag: string,
+    time: number,
+    props: SkillProperties = {},
+    fromGeneratedSkill = false,
+  ): void {
     if (props.noBuffTrigger) return
     for (const [trigger, modules] of this.triggerMap) {
       if (trigger !== castTag) continue
       for (const module of modules) {
         if (!this.gateOk(module)) continue
+        if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) continue
+        if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) continue
+        if (
+          module.requiresActiveBuffOnTrigger &&
+          !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
+        )
+          continue
         if (module.cooldown) {
           const last = this.activeBuffs.get(module.id)
           if (last && time - last.appliedAt < module.cooldown) continue
@@ -468,6 +484,73 @@ export class BuffEngine {
       }
     }
     if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, props)
+  }
+
+  // Pass 1's damage-side counterpart: a def that stacks on being hit sees every
+  // damaging hit, wherever it came from, which is why it is driven from the
+  // timeline's hit loop rather than from `processSkillCast`.
+  processDamageHit(skill: Skill, time: number): void {
+    const tagSet = skillTagsOf(skill)
+    for (const [id, module] of this.definitions) {
+      if (!module.stackOnDamage || !this.gateOk(module)) continue
+      if (!matchesScope(tagSet, module)) continue
+      if (!this.canGrantStack(module, time)) continue
+      this.applyBuff(id, time, null, 1)
+    }
+  }
+
+  // Resolves one cast's consumption against the live pools and spends them.
+  // Returns the def ids whose consume succeeded, plus the buff ids that success
+  // attaches to this cast and, separately, to the skills it generates.
+  consumeForCast(
+    time: number,
+    props: SkillProperties,
+  ): { satisfied: Set<string>; buffIds: Set<string>; propagatedBuffIds: Set<string> } {
+    const satisfied = new Set<string>()
+    const buffIds = new Set<string>()
+    const propagatedBuffIds = new Set<string>()
+
+    for (const [id, module] of this.definitions) {
+      const consume = module.perCastConsume
+      if (!consume || !this.gateOk(module)) continue
+      const property = consume.property.startsWith(PROP_TAG)
+        ? consume.property.slice(PROP_TAG.length)
+        : consume.property
+      if (!props[property as keyof SkillProperties]) continue
+
+      const pools = [...(consume.preferredFrom ?? []), consume.from]
+      const drained = pools.find((pool) => this.getHistoricalBuffStacks(pool, time) > 0)
+      if (!drained) continue
+
+      this.spendStack(drained, time)
+      satisfied.add(id)
+      for (const grant of consume.grants ?? []) {
+        if (grant.whenConsumedFrom !== drained) continue
+        for (const buffId of grant.buffIds) {
+          buffIds.add(buffId)
+          if (grant.propagate) propagatedBuffIds.add(buffId)
+        }
+      }
+    }
+    return { satisfied, buffIds, propagatedBuffIds }
+  }
+
+  private spendStack(id: string, time: number): void {
+    const active = this.activeBuffs.get(id)
+    if (!active) return
+    const next = Math.max((active.stacks ?? 1) - 1, 0)
+    if (next === 0) {
+      this.activeBuffs.delete(id)
+    } else {
+      this.activeBuffs.set(id, { ...active, stacks: next })
+    }
+    this.buffHistory.push({
+      time,
+      buffType: id,
+      action: "refresh",
+      expiresAt: next === 0 ? time : active.expiresAt,
+      stacks: next,
+    })
   }
 
   private isMistwillowLightOverride(castTag: string): boolean {
@@ -547,6 +630,8 @@ export class BuffEngine {
     const effects: { statKey: StatKey; amount: number }[] = []
     const breakdown: Record<string, number> = {}
     let forceCrit = false
+    let damageFactor = 1
+    let conditionalFinalCrit: ConditionalFinalCrit | null = null
     let currentId = ""
 
     const sink: EffectSink = {
@@ -560,7 +645,9 @@ export class BuffEngine {
       applyBuff: () => {},
       consumeStacks: () => {},
       artBonus: () => {},
-      damageMultiplier: () => {},
+      damageMultiplier(factor) {
+        damageFactor *= factor
+      },
       setStatus: () => {},
     }
 
@@ -582,6 +669,7 @@ export class BuffEngine {
       const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks)
       currentId = id
       for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+      if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
     const mistwillow = this.mistwillowBonusValue(castTag, time, tagSet)
@@ -590,6 +678,6 @@ export class BuffEngine {
       breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow
     }
 
-    return { effects, forceCrit, breakdown }
+    return { effects, forceCrit, damageFactor, conditionalFinalCrit, breakdown }
   }
 }
