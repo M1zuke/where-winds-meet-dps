@@ -39,13 +39,50 @@ const fmt = (n: number, digits = 2) =>
     ? n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })
     : "—"
 
-export function MetricsCard({ result, className }: { result: Result; className?: string }) {
+interface MetricsCardProps {
+  result: Result
+  className?: string
+  graduationPending?: boolean
+  theoreticalDps?: number | null
+  onGraduationClick?: () => void
+}
+
+export function MetricsCard({
+  result,
+  className,
+  graduationPending = false,
+  theoreticalDps = null,
+  onGraduationClick,
+}: MetricsCardProps) {
   const { t } = useI18n()
+  const graduationText =
+    result.graduationRate === null
+      ? graduationPending
+        ? "…"
+        : "—"
+      : fmt(result.graduationRate * 100, 1) + "%"
+  const graduationTitle =
+    theoreticalDps === null
+      ? t("Current DPS divided by the theoretical class maximum")
+      : `${t("Current DPS divided by the theoretical class maximum")}: ${fmt(theoreticalDps, 2)} DPS`
   return (
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
         <span className={styles.label}>{t("DPS")}</span>
-        <span className={styles.value}>{fmt(result.dps, 2)}</span>
+        <div className={styles.dpsValueRow}>
+          <span className={styles.value}>{fmt(result.dps, 2)}</span>
+          <button
+            type="button"
+            className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
+            title={graduationTitle}
+            aria-label={`${t("Graduation")}: ${graduationText}`}
+            aria-live="polite"
+            onClick={onGraduationClick}
+          >
+            <span className={styles.graduationValue}>{graduationText}</span>
+            <span className={styles.graduationLabel}>{t("Graduation")}</span>
+          </button>
+        </div>
       </div>
       <div className={styles.stat}>
         <span className={styles.label}>{t("Total Damage")}</span>

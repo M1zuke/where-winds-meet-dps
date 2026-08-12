@@ -1,4 +1,4 @@
-import type { AttributeKey } from "../../engine/types"
+import type { Arsenal, AttributeKey, BowSet, GearPiece } from "../../engine/types"
 import type { Skill } from "../../engine/skill"
 import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
@@ -17,6 +17,13 @@ export interface RetunementPool {
 export interface PoisonExtensionRegistration {
   statusId: string
   maxRemainingSec: number
+}
+
+export interface GraduationBuild {
+  gear: readonly GearPiece[]
+  set: string | null
+  bowSet: BowSet
+  arsenal: Arsenal
 }
 
 // Everything a class *is*. A field it does not use is an empty array — see
@@ -43,6 +50,7 @@ export interface ClassDef {
   debuffs: readonly Debuff[]
   rotations: readonly Rotation[]
   defaultRotationId: string | null
+  graduationBuild: GraduationBuild
   retunementPool: RetunementPool | null
   // Only defs the class itself owns — docs/CLASSES.md § "Buff ownership".
   // Membership here is also what puts a row in the Skill Editor's Spec

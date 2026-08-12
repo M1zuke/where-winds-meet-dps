@@ -6,6 +6,8 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import dialogChrome from "../shared/gearDialog.module.scss"
+import previewStyles from "../shared/gearPreview.module.scss"
+import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
 import bookmarkletSource from "./gearImportBookmarklet.js?raw"
 import { bookmarkletHref } from "./bookmarkletHref"
 import {
@@ -39,17 +41,6 @@ import {
 import styles from "./ImportGearDialog.module.scss"
 
 export const DASHBOARD_URL = "https://www.wherewindsmeetgame.com/m/2025h5sjgj/en/"
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
-}
 
 const LEVEL_OPTIONS: ComboboxOption[] = [
   { value: "86", label: "lv86" },
@@ -309,7 +300,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
                 </div>
               )}
 
-              <div className={styles.pieceList}>
+              <div className={previewStyles.pieceList}>
                 {shown.map((piece) => (
                   <PiecePreview
                     key={piece.gameSlotId}
@@ -328,7 +319,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
                   {t(
                     "These pieces report base stats this app has no tier for, so their level and rarity are a guess — set them yourself",
                   )}
-                  : {assumedIdentitySlots.map((slot) => t(SLOT_LABEL_KEYS[slot])).join(", ")}.{" "}
+                  : {assumedIdentitySlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}.{" "}
                   {t("On armor this only changes the HP and defense shown, never the DPS.")}
                 </div>
               )}
@@ -336,7 +327,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
               {emptiedSlots.length > 0 && (
                 <div className="warnings">
                   ⚠ {emptiedSlots.length} {t("slots aren't in this payload and will be emptied")}:{" "}
-                  {emptiedSlots.map((slot) => t(SLOT_LABEL_KEYS[slot])).join(", ")}
+                  {emptiedSlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}
                 </div>
               )}
             </>
@@ -417,9 +408,9 @@ function PiecePreview({
 
   if (piece.slot.kind !== "mapped") {
     return (
-      <div className={`${styles.piece} ${styles.skipped}`}>
-        <div className={styles.pieceHead}>
-          <span className={styles.pieceSlot}>
+      <div className={`${previewStyles.piece} ${previewStyles.skipped}`}>
+        <div className={previewStyles.pieceHead}>
+          <span className={previewStyles.pieceSlot}>
             {t("Game slot")} {piece.gameSlotId}
           </span>
           <span className="hint">{t("unknown slot — skipped")}</span>
@@ -433,9 +424,9 @@ function PiecePreview({
   const base = gearBaseStatsFor({ slot, ...identity })
 
   return (
-    <div className={styles.piece}>
-      <div className={styles.pieceHead}>
-        <span className={styles.pieceSlot}>{t(SLOT_LABEL_KEYS[slot])}</span>
+    <div className={previewStyles.piece}>
+      <div className={previewStyles.pieceHead}>
+        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
         <span className="hint">
           {isWeaponSlot(slot)
             ? `${t("Min Phys")} ${base.minPhys} · ${t("Max Phys")} ${base.maxPhys}`
@@ -443,15 +434,15 @@ function PiecePreview({
         </span>
       </div>
 
-      <div className={styles.identityRow}>
+      <div className={previewStyles.identityRow}>
         <Combobox
-          className={styles.identityPicker}
+          className={previewStyles.identityPicker}
           value={String(identity.level)}
           options={LEVEL_OPTIONS}
           onChange={(value) => onOverride(piece.gameSlotId, { level: Number(value) as GearLevel })}
         />
         <Combobox
-          className={styles.identityPicker}
+          className={previewStyles.identityPicker}
           value={identity.rarity}
           options={rarityOptions}
           onChange={(value) => onOverride(piece.gameSlotId, { rarity: value as GearRarity })}
@@ -459,7 +450,7 @@ function PiecePreview({
         <span className="hint">{t(identityHint(piece))}</span>
       </div>
 
-      <div className={styles.affixList}>
+      <div className={previewStyles.affixList}>
         {piece.affixes.map((affix, index) => (
           <AffixRow key={index} affix={affix} onChooseTarget={onChooseTarget} />
         ))}
@@ -469,7 +460,7 @@ function PiecePreview({
       </div>
 
       {piece.overflowAffixes.length > 0 && (
-        <div className={styles.overflow}>
+        <div className={previewStyles.overflow}>
           <span className="hint">{t("Beyond the 5 tunement rows — not imported")}</span>
           {piece.overflowAffixes.map((affix, index) => (
             <AffixRow key={index} affix={affix} onChooseTarget={onChooseTarget} />
@@ -510,15 +501,15 @@ function AffixRow({
 
   if (resolution.kind !== "resolved") {
     return (
-      <div className={`${styles.affix} ${styles.unresolved}`}>
+      <div className={`${previewStyles.affix} ${previewStyles.unresolved}`}>
         <Combobox
-          className={styles.affixPicker}
+          className={previewStyles.affixPicker}
           value=""
           options={options}
           placeholder={`#${affix.affixId}${affix.derivedMax !== null ? ` · ${t("max")} ${fmtUnmapped(affix.derivedMax)}` : ""}`}
           onChange={(value) => onChooseTarget(affix.affixId, value)}
         />
-        <span className={styles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
+        <span className={previewStyles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
         <span className="hint">{isAttunement ? t("attunement — pick one") : t("pick one")}</span>
       </div>
     )
@@ -528,16 +519,16 @@ function AffixRow({
   const isPercent = target.kind === "attunement" || target.unit === "percent"
 
   return (
-    <div className={styles.affix}>
+    <div className={previewStyles.affix}>
       <Combobox
-        className={styles.affixPicker}
+        className={previewStyles.affixPicker}
         value={targetKey(target)}
         options={options}
         onChange={(value) => onChooseTarget(affix.affixId, value)}
       />
-      <span className={styles.affixValue}>{fmt(resolution.value, isPercent)}</span>
+      <span className={previewStyles.affixValue}>{fmt(resolution.value, isPercent)}</span>
       {resolution.clampedFrom !== null ? (
-        <span className={`${styles.affixNote} is-negative`}>
+        <span className={`${previewStyles.affixNote} is-negative`}>
           {`${fmt(resolution.clampedFrom, isPercent)} → ${t("in range")}`}
         </span>
       ) : (

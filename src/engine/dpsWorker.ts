@@ -7,6 +7,7 @@ import { attunementsFor } from "./attunements"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withDerivedStats } from "./derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "./panel"
+import { graduationInputs } from "./graduation"
 import type { Arsenal, BowSet, GearPiece, GearSlot, Inputs, ItemRankingRow } from "./types"
 
 export interface DpsDelta {
@@ -351,6 +352,18 @@ export interface SetTilesWorkerResponse {
   arsenalDpsByChoice: Record<string, number>
 }
 
+export interface GraduationWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  currentDps: number
+}
+
+export interface GraduationWorkerResponse {
+  reqId: number
+  theoreticalDps: number | null
+  graduationRate: number | null
+}
+
 function dpsFor(inputs: Inputs): number {
   const derived = withDerivedStats(inputs)
   return runEngine(applyBowSet(applyArmorSet(derived))).dps
@@ -382,6 +395,19 @@ function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
   return { reqId: req.reqId, armorDpsByKey, bowDpsByChoice, arsenalDpsByChoice }
 }
 
+function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerResponse {
+  const benchmarkInputs = graduationInputs(req.inputs)
+  if (!benchmarkInputs) {
+    return { reqId: req.reqId, theoreticalDps: null, graduationRate: null }
+  }
+  const theoreticalDps = dpsFor(benchmarkInputs)
+  return {
+    reqId: req.reqId,
+    theoreticalDps,
+    graduationRate: theoreticalDps > 0 ? req.currentDps / theoreticalDps : null,
+  }
+}
+
 export type WorkerRequest =
   | ({ kind: "dpsDeltas" } & DpsWorkerRequest)
   | ({ kind: "retunement" } & RetunementWorkerRequest)
@@ -389,6 +415,7 @@ export type WorkerRequest =
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
   | ({ kind: "setTiles" } & SetTilesWorkerRequest)
+  | ({ kind: "graduation" } & GraduationWorkerRequest)
 
 export type WorkerResponse =
   | ({ kind: "dpsDeltas" } & DpsWorkerResponse)
@@ -397,6 +424,7 @@ export type WorkerResponse =
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
   | ({ kind: "setTiles" } & SetTilesWorkerResponse)
+  | ({ kind: "graduation" } & GraduationWorkerResponse)
 
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   const req = e.data
@@ -415,9 +443,12 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "ranking") {
     const res = computeRankingRequest(req)
     ;(self as unknown as Worker).postMessage({ kind: "ranking", ...res })
-  } else {
+  } else if (req.kind === "setTiles") {
     const res = computeSetTiles(req)
     ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
+  } else {
+    const res = computeGraduation(req)
+    ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
   }
 }
 
@@ -428,4 +459,5 @@ export {
   computeWordMax,
   computeRankingRequest,
   computeSetTiles,
+  computeGraduation,
 }

@@ -35,6 +35,55 @@
   line-height: 1.1;
 }
 
+.dpsValueRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.graduation {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: max-content;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  transition: opacity 120ms ease;
+  font: inherit;
+  cursor: pointer;
+}
+
+.graduation:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 17%, transparent);
+}
+
+.graduation:focus-visible {
+  outline: 2px solid var(--color-accent-bright);
+  outline-offset: 2px;
+}
+
+.graduationValue {
+  color: var(--color-accent-bright);
+  font-size: 0.9em;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.graduationLabel {
+  color: var(--color-text-muted);
+  font-size: 0.62em;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.pending {
+  opacity: 0.55;
+}
+
 .stat {
   flex: 0 0 auto;
   display: flex;
@@ -62,5 +111,9 @@
   }
   .dps {
     border-right: none;
+  }
+
+  .dpsValueRow {
+    flex-wrap: wrap;
   }
 }
