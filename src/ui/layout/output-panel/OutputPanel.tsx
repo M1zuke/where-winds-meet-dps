@@ -47,6 +47,28 @@ interface MetricsCardProps {
   onGraduationClick?: () => void
 }
 
+function OpenIcon() {
+  return (
+    <svg className={styles.graduationIcon} viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path
+        d="M6.5 3.25H4.25A1.75 1.75 0 0 0 2.5 5v6.75a1.75 1.75 0 0 0 1.75 1.75H11a1.75 1.75 0 0 0 1.75-1.75V9.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.75 2.5h3.75v3.75M13.5 2.5 8.25 7.75"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export function MetricsCard({
   result,
   className,
@@ -69,20 +91,7 @@ export function MetricsCard({
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
         <span className={styles.label}>{t("DPS")}</span>
-        <div className={styles.dpsValueRow}>
-          <span className={styles.value}>{fmt(result.dps, 2)}</span>
-          <button
-            type="button"
-            className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
-            title={graduationTitle}
-            aria-label={`${t("Graduation")}: ${graduationText}`}
-            aria-live="polite"
-            onClick={onGraduationClick}
-          >
-            <span className={styles.graduationValue}>{graduationText}</span>
-            <span className={styles.graduationLabel}>{t("Graduation")}</span>
-          </button>
-        </div>
+        <span className={styles.value}>{fmt(result.dps, 2)}</span>
       </div>
       <div className={styles.stat}>
         <span className={styles.label}>{t("Total Damage")}</span>
@@ -92,6 +101,20 @@ export function MetricsCard({
         <span className={styles.label}>{t("Duration")}</span>
         <span className={styles.value}>{fmt(result.rotationDuration, 0)}s</span>
       </div>
+      <button
+        type="button"
+        className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
+        title={graduationTitle}
+        aria-label={`${t("Graduation")}: ${graduationText}`}
+        aria-live="polite"
+        onClick={onGraduationClick}
+      >
+        <span className={styles.stat}>
+          <span className={styles.label}>{t("Graduation")}</span>
+          <span className={styles.value}>{graduationText}</span>
+        </span>
+        <OpenIcon />
+      </button>
     </div>
   )
 }

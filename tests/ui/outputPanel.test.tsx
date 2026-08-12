@@ -15,7 +15,7 @@ const result: Result = {
 }
 
 describe("MetricsCard", () => {
-  it("shows the graduation rate beside DPS with its theoretical benchmark", () => {
+  it("shows the graduation rate with its theoretical benchmark", () => {
     const onGraduationClick = vi.fn()
     render(
       <I18nProvider>
@@ -32,6 +32,25 @@ describe("MetricsCard", () => {
     )
     fireEvent.click(screen.getByRole("button", { name: "Graduation: 86.4%" }))
     expect(onGraduationClick).toHaveBeenCalledOnce()
+  })
+
+  it("puts the graduation button last, after duration, labelled above its value", () => {
+    render(
+      <I18nProvider>
+        <MetricsCard result={result} theoreticalDps={10000} />
+      </I18nProvider>,
+    )
+
+    const button = screen.getByRole("button", { name: "Graduation: 86.4%" })
+    const duration = screen.getByText("Duration")
+
+    expect(duration.compareDocumentPosition(button) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(button.parentElement?.lastElementChild).toBe(button)
+
+    const label = screen.getByText("Graduation")
+    const value = screen.getByText("86.4%")
+    expect(label.compareDocumentPosition(value) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true")
   })
 
   it("shows a pending placeholder before the first benchmark arrives", () => {
