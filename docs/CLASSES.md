@@ -28,6 +28,10 @@ engine. Test-suite consequences are in TESTING.md § "Class scoping".
 
 - **Adding a class touches only `src/data/`** — its own modules plus a one-line
   entry in the class barrel. Never `src/definitions/`, never `src/engine/`.
+- **Every entity is authored through a `define*` factory** from
+  `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
+  ways, classes. There is no JSON authoring format: the only JSON under
+  `src/data/` is lookup tables with no contract to check.
 - Nothing under `src/data/` may declare a `define*` contract or call a
   `register*` entry point.
 - Nothing under `src/definitions/` may reach past a `src/data/` folder barrel, an
