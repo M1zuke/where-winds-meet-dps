@@ -16,7 +16,14 @@ export const frostCladSnowbreakIPConsume = defineClassBuff({
   affects: AFFECTS,
   triggeredBy: [],
   duration: 0,
-  perCastConsume: { property: PROP.consumesInnerPassion, from: BUFF.innerPassion },
+  perCastConsume: {
+    property: PROP.consumesInnerPassion,
+    from: BUFF.innerPassion,
+    phaseAlternative: {
+      phase: "exhausted",
+      requires: { param: PARAM.frostCladNight, minTier: 6 },
+    },
+  },
   summary: "bossBoost +40% on a cast that consumes Inner Passion",
   effects: (ctx) => {
     if (ctx.event.kind !== "damage" || !matchesScope(ctx.event.tags, { affects: AFFECTS }))

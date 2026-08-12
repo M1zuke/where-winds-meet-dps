@@ -24,6 +24,7 @@ import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
+import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
@@ -48,6 +49,9 @@ interface HitEvent {
   seq: number
   skill: Skill
   hit: SkillHit
+  // The frame the CAST started, which is what cast-scoped buff ids are keyed
+  // by — not this hit's own frame, which may be well after it.
+  castFrame: number
 }
 
 class EventQueue {
@@ -245,6 +249,24 @@ export function simulateTimeline(inputs: Inputs): Result {
     return props
   }
 
+  // Ids that count as active for one cast only, keyed by the cast that earned
+  // them — a per-cast consume never opens a timed window, so nothing in the
+  // buff history can carry it.
+  const castScopedBuffs = new Map<string, string[]>()
+  const castScopedKey = (frame: number, skillId: string) => `${frame}|${skillId}`
+
+  interface PendingCast {
+    frame: number
+    sequence: number
+    skill: Skill
+    hitCount: number
+    generated: boolean
+    inheritedBuffIds: readonly string[]
+  }
+
+  // The prepass. It walks the whole cast graph — the rotation's casts and every
+  // cast they generate — in frame order, so the buff history and the consume
+  // ledger are both complete before the damage loop asks anything of them.
   const buffEngine: BuffEngine | null = (() => {
     try {
       const engine = new BuffEngine(
@@ -252,16 +274,58 @@ export function simulateTimeline(inputs: Inputs): Result {
         buffDefsForClass(inputs.classId),
         groupBuffDefs(),
       )
-      for (const ls of laidSteps) {
-        const skill = ls.resolved.skill
-        const castTag = castTagOf(skill)
-        if (!castTag) continue
-        engine.processSkillCast(
-          castTag,
-          ls.startFrame / FPS,
-          propsOfSkill(skill, ls.performedHits.length),
-        )
+      let sequence = 0
+      const pending: PendingCast[] = laidSteps.map((ls) => ({
+        frame: ls.startFrame,
+        sequence: sequence++,
+        skill: ls.resolved.skill,
+        hitCount: ls.performedHits.length,
+        generated: false,
+        inheritedBuffIds: [],
+      }))
+      const damageFrames: number[] = []
+
+      let processed = 0
+      while (pending.length > 0 && processed < EVENT_CAP) {
+        pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
+        const cast = pending.shift()!
+        processed++
+        const castTag = castTagOf(cast.skill)
+        let propagated = [...cast.inheritedBuffIds]
+        if (castTag) {
+          const result = engine.processSkillCast(
+            castTag,
+            cast.frame / FPS,
+            propsOfSkill(cast.skill, cast.hitCount),
+            cast.generated,
+          )
+          const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
+          propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
+          const key = castScopedKey(cast.frame, cast.skill.id)
+          castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
+        }
+        for (const hit of cast.skill.hits) {
+          const hitFrame = cast.frame + hit.frame
+          if (hitDealsDamage(hit)) damageFrames.push(hitFrame)
+          for (const trigger of hit.triggers) {
+            if (trigger.kind !== "castSkill") continue
+            if (!triggerConditions(trigger).every((c) => conditionHolds(c, hitFrame))) continue
+            const generatedSkill = skillsById.get(trigger.targetId)
+            if (!generatedSkill) continue
+            pending.push({
+              frame: hitFrame,
+              sequence: sequence++,
+              skill: generatedSkill,
+              hitCount: generatedSkill.hits.length,
+              generated: true,
+              inheritedBuffIds: propagated,
+            })
+          }
+        }
       }
+
+      damageFrames.sort((left, right) => left - right)
+      for (const frame of damageFrames) engine.processDamageHit(frame / FPS)
       return engine
     } catch {
       return null
@@ -306,7 +370,12 @@ export function simulateTimeline(inputs: Inputs): Result {
     frame: number,
     skill?: Skill,
     override?: ResolveOverride,
-  ): Resolved & { forceCrit: boolean } {
+    castFrame = frame,
+  ): Resolved & {
+    forceCrit: boolean
+    damageFactor: number
+    conditionalFinalCrit: ConditionalFinalCrit | null
+  } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
     const effects: BuffStatEffect[] = []
@@ -322,9 +391,11 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     let sig = sigParts.sort().join("|")
     let forceCritFromBuff = false
+    let damageFactor = 1
+    let conditionalFinalCrit: ConditionalFinalCrit | null = null
     if (buffEngine && skill) {
-      buffEngine.processDamageHit(skill, frame / FPS)
-      const site = buffEngine.calculateDamageEffects(skill, frame / FPS)
+      const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
+      const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
         sig +=
@@ -335,6 +406,11 @@ export function simulateTimeline(inputs: Inputs): Result {
             .join(",")
       }
       if (site.forceCrit) forceCritFromBuff = true
+      damageFactor = site.damageFactor
+      conditionalFinalCrit = site.conditionalFinalCrit
+      if (damageFactor !== 1) sig += `~x${damageFactor}`
+      if (conditionalFinalCrit)
+        sig += `~cfc${conditionalFinalCrit.threshold}:${conditionalFinalCrit.bonusBelowThreshold}`
     }
     if (override?.extraEffects && override.extraEffects.length > 0) {
       for (const e of override.extraEffects) effects.push(e)
@@ -402,14 +478,20 @@ export function simulateTimeline(inputs: Inputs): Result {
       r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
-    return { ...r, forceCrit: forceCritFromBuff }
+    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit }
   }
 
   const queue = new EventQueue()
   let seq = 0
   for (const ls of laidSteps) {
     for (const hit of ls.performedHits) {
-      queue.push({ frame: ls.startFrame + hit.frame, seq: seq++, skill: ls.resolved.skill, hit })
+      queue.push({
+        frame: ls.startFrame + hit.frame,
+        seq: seq++,
+        skill: ls.resolved.skill,
+        hit,
+        castFrame: ls.startFrame,
+      })
     }
   }
 
@@ -435,7 +517,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     const ev = queue.pop()!
     processed++
-    const { frame, skill, hit } = ev
+    const { frame, skill, hit, castFrame } = ev
 
     const behavior = behaviorFor(skill)
     const hitInput = hitInputAt(skill, hit, frame)
@@ -468,7 +550,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       extraEffects.length > 0 || forceGuaranteedAffinity
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
-    const st = resolveState(frame, skill, resolveOverride)
+    const st = resolveState(frame, skill, resolveOverride, castFrame)
     const hitContext: HitContext = {
       phase: qiPhase,
       qiBreakEnabled,
@@ -492,6 +574,8 @@ export function simulateTimeline(inputs: Inputs): Result {
       },
     }
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
+    if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
+    if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
     const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
@@ -534,7 +618,13 @@ export function simulateTimeline(inputs: Inputs): Result {
           const sub = skillsById.get(det.skillId)
           if (sub)
             for (const subHit of sub.hits) {
-              queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
+              queue.push({
+                frame: frame + subHit.frame,
+                seq: seq++,
+                skill: sub,
+                hit: subHit,
+                castFrame: frame,
+              })
             }
         }
         continue
@@ -571,15 +661,14 @@ export function simulateTimeline(inputs: Inputs): Result {
       } else {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
-        // The generated cast reaches the buff engine before its own hits are
-        // queued, so a def that opts into generated skills sees it at the frame
-        // it happens rather than at whatever frame the parent cast started.
-        const subCastTag = castTagOf(sub)
-        if (buffEngine && subCastTag) {
-          buffEngine.processSkillCast(subCastTag, frame / FPS, propsOfSkill(sub), true)
-        }
         for (const subHit of sub.hits) {
-          queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
+          queue.push({
+            frame: frame + subHit.frame,
+            seq: seq++,
+            skill: sub,
+            hit: subHit,
+            castFrame: frame,
+          })
         }
       }
     }

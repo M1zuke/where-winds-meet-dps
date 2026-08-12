@@ -30,6 +30,8 @@ export interface PerCastConsume {
   from: string
   preferredFrom?: readonly string[]
   grants?: readonly { whenConsumedFrom: string; buffIds: readonly string[]; propagate?: boolean }[]
+  // A second route to the same bonus, riding a Qi phase instead of a consume.
+  phaseAlternative?: { phase: QiPhase | readonly QiPhase[]; requires?: BuffRequirements }
 }
 
 // The declarative core: the Skill Editor catalog derives `affects`, `bonus`,

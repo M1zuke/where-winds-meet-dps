@@ -9,7 +9,14 @@
 // Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
-import type { BuffModule, ConditionalFinalCrit } from "./buffModule"
+import type { BuffModule, BuffRequirements, ConditionalFinalCrit } from "./buffModule"
+
+// What a cast carries away from the buff engine: ids that count as active for
+// that cast alone, and the subset its generated skills inherit.
+export interface CastBuffResult {
+  buffIds: string[]
+  propagatedBuffIds: string[]
+}
 import { matchesAnyTag, matchesScope } from "../scope"
 import { castTagOf, skillTagsOf, PROP_TAG } from "./tags"
 import type {
@@ -96,6 +103,7 @@ export class BuffEngine {
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
+  private consumeEvents = new Set<string>()
 
   constructor(
     params: BuffParams,
@@ -133,12 +141,15 @@ export class BuffEngine {
     return typeof value === "number" ? value : 0
   }
 
-  private gateOk(module: BuffModule): boolean {
-    const requires = module.requires
+  private requirementsMet(requires: BuffRequirements | undefined): boolean {
     if (!requires?.param) return true
     if (!this.paramOn(requires.param)) return false
     if (requires.minTier && this.paramTier(requires.param) < requires.minTier) return false
     return true
+  }
+
+  private gateOk(module: BuffModule): boolean {
+    return this.requirementsMet(module.requires)
   }
 
   qiPhase(time: number): QiPhase {
@@ -415,8 +426,10 @@ export class BuffEngine {
     time: number,
     props: SkillProperties = {},
     fromGeneratedSkill = false,
-  ): void {
-    if (props.noBuffTrigger) return
+  ): CastBuffResult {
+    const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
+    if (props.noBuffTrigger) return result
+    if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
     for (const [trigger, modules] of this.triggerMap) {
       if (trigger !== castTag) continue
       for (const module of modules) {
@@ -484,32 +497,28 @@ export class BuffEngine {
       }
     }
     if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, props)
+    return result
   }
 
-  // Pass 1's damage-side counterpart: a def that stacks on being hit sees every
-  // damaging hit, wherever it came from, which is why it is driven from the
-  // timeline's hit loop rather than from `processSkillCast`.
-  processDamageHit(skill: Skill, time: number): void {
-    const tagSet = skillTagsOf(skill)
+  // Every damaging hit stacks these, wherever the hit came from — the scope on
+  // such a def says who RECEIVES its bonus, never what grants it a stack. The
+  // timeline drives this over the prepass's sorted damage frames, so the stack
+  // history is complete before the first damage query reads it.
+  processDamageHit(time: number): void {
     for (const [id, module] of this.definitions) {
       if (!module.stackOnDamage || !this.gateOk(module)) continue
-      if (!matchesScope(tagSet, module)) continue
-      if (!this.canGrantStack(module, time)) continue
       this.applyBuff(id, time, null, 1)
     }
   }
 
   // Resolves one cast's consumption against the live pools and spends them.
-  // Returns the def ids whose consume succeeded, plus the buff ids that success
-  // attaches to this cast and, separately, to the skills it generates.
-  consumeForCast(
+  // A generated cast never consumes — only the cast that was authored to.
+  private processPerCastConsume(
+    castTag: string,
     time: number,
     props: SkillProperties,
-  ): { satisfied: Set<string>; buffIds: Set<string>; propagatedBuffIds: Set<string> } {
-    const satisfied = new Set<string>()
-    const buffIds = new Set<string>()
-    const propagatedBuffIds = new Set<string>()
-
+    result: CastBuffResult,
+  ): void {
     for (const [id, module] of this.definitions) {
       const consume = module.perCastConsume
       if (!consume || !this.gateOk(module)) continue
@@ -520,37 +529,51 @@ export class BuffEngine {
 
       const pools = [...(consume.preferredFrom ?? []), consume.from]
       const drained = pools.find((pool) => this.getHistoricalBuffStacks(pool, time) > 0)
-      if (!drained) continue
+      if (!drained || !this.spendStack(drained, time)) continue
 
-      this.spendStack(drained, time)
-      satisfied.add(id)
+      this.consumeEvents.add(`${time}|${castTag}|${id}`)
+      if (!result.buffIds.includes(id)) result.buffIds.push(id)
       for (const grant of consume.grants ?? []) {
         if (grant.whenConsumedFrom !== drained) continue
         for (const buffId of grant.buffIds) {
-          buffIds.add(buffId)
-          if (grant.propagate) propagatedBuffIds.add(buffId)
+          if (!result.buffIds.includes(buffId)) result.buffIds.push(buffId)
+          if (grant.propagate && !result.propagatedBuffIds.includes(buffId))
+            result.propagatedBuffIds.push(buffId)
         }
       }
     }
-    return { satisfied, buffIds, propagatedBuffIds }
   }
 
-  private spendStack(id: string, time: number): void {
+  // True when this def's bonus rides a Qi phase rather than an actual consume —
+  // the tier-gated second route the same def can take.
+  private phaseAlternativeHolds(module: BuffModule, time: number): boolean {
+    const alternative = module.perCastConsume?.phaseAlternative
+    if (!alternative) return false
+    if (alternative.requires && !this.requirementsMet(alternative.requires)) return false
+    const phase = this.qiPhase(time)
+    return Array.isArray(alternative.phase)
+      ? alternative.phase.includes(phase)
+      : alternative.phase === phase
+  }
+
+  // The new stack count is recorded as an `apply`, not a `refresh`:
+  // `getHistoricalBuffStacks` reads `apply` entries alone, so a spend written
+  // any other way is invisible to every later damage query.
+  private spendStack(id: string, time: number): boolean {
     const active = this.activeBuffs.get(id)
-    if (!active) return
-    const next = Math.max((active.stacks ?? 1) - 1, 0)
-    if (next === 0) {
-      this.activeBuffs.delete(id)
-    } else {
-      this.activeBuffs.set(id, { ...active, stacks: next })
-    }
+    if (!active || time < active.appliedAt || time >= active.expiresAt) return false
+    const before = active.stacks ?? 1
+    if (before <= 0) return false
+    const next = Math.max(0, before - 1)
+    this.activeBuffs.set(id, { ...active, stacks: next })
     this.buffHistory.push({
       time,
       buffType: id,
-      action: "refresh",
-      expiresAt: next === 0 ? time : active.expiresAt,
+      action: "apply",
+      expiresAt: active.expiresAt,
       stacks: next,
     })
+    return true
   }
 
   private isMistwillowLightOverride(castTag: string): boolean {
@@ -624,9 +647,14 @@ export class BuffEngine {
     return 0
   }
 
-  calculateDamageEffects(skill: Skill, time: number): DamageEffectsResult {
+  calculateDamageEffects(
+    skill: Skill,
+    time: number,
+    castScopedBuffIds: readonly string[] = [],
+  ): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
+    const scopedBuffIds = new Set(castScopedBuffIds)
     const effects: { statKey: StatKey; amount: number }[] = []
     const breakdown: Record<string, number> = {}
     let forceCrit = false
@@ -652,10 +680,19 @@ export class BuffEngine {
     }
 
     for (const [id, module] of this.definitions) {
-      const active = module.activeAfterBuffEnds
-        ? this.isActiveAfterBuffEndsActive(module, time)
-        : this.isBuffActiveAtTime(id, time)
+      // A cast-scoped id counts as active for this cast alone: a def whose
+      // window never opens (a per-cast consume) and one another def attached to
+      // this cast both arrive here, and neither is live on the clock.
+      const active =
+        scopedBuffIds.has(id) ||
+        (module.perCastConsume
+          ? this.consumeEvents.has(`${time}|${castTag}|${id}`) ||
+            this.phaseAlternativeHolds(module, time)
+          : module.activeAfterBuffEnds
+            ? this.isActiveAfterBuffEndsActive(module, time)
+            : this.isBuffActiveAtTime(id, time))
       if (!active) continue
+      if (!this.gateOk(module)) continue
       if (
         module.requires?.minTier &&
         module.requires.param &&

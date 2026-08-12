@@ -47,6 +47,12 @@ export function hasProp(tagSet: ReadonlySet<string>, prop: string): boolean {
   return tagSet.has(PROP_TAG + prop)
 }
 
+// `Scope.affectsProperty` is the bare key, not the namespaced tag — this is how
+// a def names one from the `PROP` table without restating the string.
+export function propKeyOf(tag: string): string {
+  return tag.startsWith(PROP_TAG) ? tag.slice(PROP_TAG.length) : tag
+}
+
 export function hasAnyWeapon(tagSet: ReadonlySet<string>, weapons: readonly string[]): boolean {
   for (const w of weapons) if (tagSet.has(WEAPON_TAG + w)) return true
   return false

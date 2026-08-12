@@ -1,5 +1,6 @@
 import { defineClass } from "../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../skills/stonesplit-strength"
+import { DEBUFFS } from "../skills/stonesplit-strength/debuffs"
 import { withUniversalSkills } from "../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../definitions/rotations/registry"
 import { STONESPLIT_POOL } from "./retunementPools"
@@ -27,7 +28,7 @@ export const stonesplitStrength = defineClass({
   weapons: ["Hengdao", "Modao"],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
-  debuffs: [],
+  debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   retunementPool: STONESPLIT_POOL,
   classBuffDefs: [ironGuards, shatteredRidgeDeflect, stonesplitStrengthSkillCritDamage],

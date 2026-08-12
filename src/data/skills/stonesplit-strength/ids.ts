@@ -25,6 +25,13 @@ export const SKILL = {
   snowpartingvcPrepull: "stonesplitStrength-snowpartingvc-prepull",
 } as const
 
+export const DEBUFF = {
+  toadPoison: "debuff-stonesplitStrength-toad-poison",
+  combustion: "debuff-stonesplitStrength-combustion",
+  fluteRipple: "debuff-stonesplitStrength-flute-ripple",
+  bitterSeasonTick: "debuff-stonesplitStrength-bitter-season-tick",
+} as const
+
 // The two gate buffs `stonesplitStrengthGates.ts` registers — a rotation hit
 // applies them, and they carry the stat effects the timeline reads.
 export const STATUS = {
