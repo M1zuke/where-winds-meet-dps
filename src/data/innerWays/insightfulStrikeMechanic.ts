@@ -4,6 +4,7 @@
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
 import { innerWayHasNode, slottedInnerWayTier } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
+import { BUFF } from "../skills/buffs/ids"
 import { insightfulStrike } from "./insightfulStrike"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
@@ -18,8 +19,6 @@ const EFFECTS = [
   { statKey: "allDamageBoost" as const, amount: 0.015 },
 ]
 
-// The Skill Editor shows this def as active for exactly the builds the mechanic
-// runs for, so the gate is exported rather than mirrored there.
 export function concentrationAvailable(inputs: {
   mindMethods: readonly { id?: string; name: string; stacks: string }[]
 }): boolean {
@@ -38,7 +37,13 @@ interface State {
 // is not.
 export function insightfulStrikeMechanic(): TimelineMechanic<State> {
   return {
-    id: "concentration",
+    id: BUFF.concentration,
+
+    catalogRow: {
+      name: "Concentration",
+      effects: () => EFFECTS,
+      available: concentrationAvailable,
+    },
 
     prepare(setup) {
       if (!setup.hasBuffEngine || !concentrationAvailable(setup.inputs)) return null
@@ -82,7 +87,7 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
       if (probability < DISPLAY_THRESHOLD) return []
       return [
         {
-          id: "concentration",
+          id: BUFF.concentration,
           name: "Concentration",
           stacks: 1,
           maxStacks: 1,

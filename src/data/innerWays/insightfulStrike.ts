@@ -1,21 +1,11 @@
 import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
-import { BUFF } from "../skills/buffs/ids"
-import { concentrationAvailable, insightfulStrikeMechanic } from "./insightfulStrikeMechanic"
-import { concentrationBuffDef } from "./insightfulStrikeConcentration"
+import { insightfulStrikeMechanic } from "./insightfulStrikeMechanic"
 
-// VERIFIED as the right inner way for `concentration`, but deliberately left
-// without a `buffParam` after an overlap audit: the only def gated by it
-// (`concentration`) is composed entirely of `affinityDmg` / `directAffinity` /
-// `dotDamage` + `enhancedDotDamage` stat modifiers — every one of those
-// channels (`affinityDamageBoost`, `directAffinityRate`, `sustainDamageBoost`)
-// is ALREADY baked into the panel's own Insightful Strike model
-// (`insightfulStrikeMechanic.ts`'s `EFFECTS`, fed through `buildContext`'s
-// `dotDamageBoost` — see `insightfulStrike.test.ts`). Mapping it would
-// double-count those bonuses on top of the panel model with zero new content
-// from the site buff. If `concentration` is ever extended with a genuinely
-// new (non-overlapping) effect, re-derive this decision before adding one.
+// Deliberately maps no `buffParam` and declares no `buffDefs`: Concentration is
+// a probability schedule, so `insightfulStrikeMechanic.ts` is this inner way's
+// whole runtime model, and it carries its own Skill Editor row.
 export const insightfulStrike = defineInnerWay({
   id: INNER_WAY_ID.insightfulStrike,
   name: "Insightful Strike",
@@ -35,6 +25,4 @@ export const insightfulStrike = defineInnerWay({
     },
   },
   mechanics: [declareMechanic(insightfulStrikeMechanic(), MECHANIC_ORDER.concentration)],
-  displayGates: [{ defId: BUFF.concentration, predicate: concentrationAvailable }],
-  buffDefs: [concentrationBuffDef()],
 })

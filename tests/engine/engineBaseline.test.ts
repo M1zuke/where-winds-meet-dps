@@ -6,9 +6,10 @@
 //
 // Scoped to Bellstrike Umbra — see CLASSES.md § "Implemented classes".
 import { createHash } from "node:crypto"
-import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
+import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
@@ -249,7 +250,7 @@ function currentBaseline(): Baseline {
 }
 
 if (REGENERATE) {
-  writeFileSync(FIXTURE_PATH, JSON.stringify(currentBaseline(), null, 2) + "\n")
+  await writeFixture(FIXTURE_PATH, currentBaseline())
 }
 
 describe("engine baseline", () => {

@@ -78,7 +78,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
 
   it("buffModules composes every slottable inner way's buffDefs (barrel order) ahead of the class's own", () => {
     expect(umbra.buffModules.map((module) => module.id)).toEqual([
-      "concentration",
       "buff-bellstrikeUmbra-zenith-bar",
       "potentRiverFlow",
       "wineGu",
@@ -88,9 +87,8 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 17-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 16-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
-      "concentration",
       "buff-bellstrikeUmbra-zenith-bar",
       "potentRiverFlow",
       "wineGu",

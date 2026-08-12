@@ -71,34 +71,6 @@
       },
       "buffs": [
         {
-          "id": "concentration",
-          "name": "Concentration",
-          "classBuff": true,
-          "requires": {
-            "param": "insightfulStrike"
-          },
-          "affects": null,
-          "affectsProperty": null,
-          "affectsWeaponTypes": null,
-          "excludes": null,
-          "triggeredBy": [],
-          "alwaysActive": false,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": true,
-          "refreshOnAnyCast": true,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 10,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "affinityDmg +10%, directAffinity +3%"
-        },
-        {
           "id": "buff-bellstrikeUmbra-zenith-bar",
           "name": "Zenith Bar",
           "classBuff": true,
@@ -715,27 +687,12 @@
       ],
       "damage": {
         "0|": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "0|role:bleedDetonation": {
           "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
             {
               "statKey": "affinityDamageBoost",
               "amount": 0.18
@@ -745,10 +702,6 @@
               "amount": 0.15
             },
             {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "phys.penetration",
               "amount": 0.15
             }
@@ -756,27 +709,18 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "0|role:bleedTick": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "phys.penetration",
@@ -786,175 +730,77 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "0|role:combustion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "0|role:dragonHead": {
           "effects": [
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "surgingWaves": 0.1
           }
         },
         "0|role:dragonHeadPlus": {
           "effects": [
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45
           }
         },
         "0|prop:isCharged": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "0|prop:isExecution": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "0|type:sustain": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "0|attack:heavy": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "0|attack:light": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|role:bleedDetonation": {
           "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
             {
               "statKey": "affinityDamageBoost",
               "amount": 0.18
@@ -964,10 +810,6 @@
               "amount": 0.15
             },
             {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "phys.penetration",
               "amount": 0.15
             }
@@ -975,27 +817,18 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "1|role:bleedTick": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "phys.penetration",
@@ -1005,152 +838,69 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "1|role:combustion": {
           "effects": [
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13
+            "bellstrikeUmbraBleedingDamage": 0.18
           }
         },
         "1|role:dragonHead": {
           "effects": [
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "surgingWaves": 0.1
           }
         },
         "1|role:dragonHeadPlus": {
           "effects": [
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45
           }
         },
         "1|prop:isCharged": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|prop:isExecution": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|type:sustain": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|attack:heavy": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "1|attack:light": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
+          "effects": [],
           "forceCrit": false,
-          "breakdown": {
-            "concentration": 0.13
-          }
+          "breakdown": {}
         },
         "2|": {
           "effects": [
@@ -1159,21 +909,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1185,19 +926,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1212,7 +945,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1224,19 +956,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1251,7 +975,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1263,15 +986,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1281,7 +996,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1292,16 +1006,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1310,7 +1016,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175,
             "surgingWaves": 0.1
           }
@@ -1322,16 +1027,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1340,7 +1037,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -1352,21 +1048,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1377,21 +1064,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1402,21 +1080,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1427,21 +1096,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1452,21 +1112,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1477,21 +1128,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1503,19 +1145,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1530,7 +1164,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1542,19 +1175,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1569,7 +1194,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1581,15 +1205,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1599,7 +1215,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1610,16 +1225,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1628,7 +1235,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175,
             "surgingWaves": 0.1
           }
@@ -1640,16 +1246,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1658,7 +1256,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -1670,21 +1267,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1695,21 +1283,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1720,21 +1299,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1745,21 +1315,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1770,21 +1331,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1795,21 +1347,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1821,19 +1364,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1848,7 +1383,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1860,19 +1394,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1887,7 +1413,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1899,15 +1424,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1917,7 +1434,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -1928,16 +1444,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1946,7 +1454,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175,
             "surgingWaves": 0.1
           }
@@ -1958,16 +1465,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -1976,7 +1475,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -1988,21 +1486,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2013,21 +1502,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2038,21 +1518,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2063,21 +1534,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2088,21 +1550,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2113,21 +1566,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2139,19 +1583,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2166,7 +1602,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2178,19 +1613,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2205,7 +1632,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2217,15 +1643,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2235,7 +1653,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2246,16 +1663,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2264,7 +1673,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175,
             "surgingWaves": 0.1
           }
@@ -2276,16 +1684,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2294,7 +1694,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -2306,21 +1705,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2331,21 +1721,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2356,21 +1737,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2381,21 +1753,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2406,21 +1769,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2431,21 +1785,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2457,19 +1802,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2484,7 +1821,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2496,19 +1832,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2523,7 +1851,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2535,15 +1862,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2553,7 +1872,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2564,21 +1882,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2589,16 +1898,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2607,7 +1908,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -2619,21 +1919,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2644,21 +1935,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2669,21 +1951,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2694,21 +1967,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2719,21 +1983,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2744,21 +1999,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2770,19 +2016,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2797,7 +2035,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2809,19 +2046,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2836,7 +2065,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2848,15 +2076,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2866,7 +2086,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2877,21 +2096,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2902,16 +2112,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -2920,7 +2122,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -2932,21 +2133,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2957,21 +2149,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -2982,21 +2165,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3007,21 +2181,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3032,21 +2197,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3057,21 +2213,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3083,19 +2230,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3110,7 +2249,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3122,19 +2260,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3149,7 +2279,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3161,15 +2290,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3179,7 +2300,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3190,21 +2310,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3215,16 +2326,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3233,7 +2336,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -3245,21 +2347,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3270,21 +2363,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3295,21 +2379,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3320,21 +2395,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3345,21 +2411,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3370,21 +2427,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3396,19 +2444,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3423,7 +2463,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3435,19 +2474,11 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
             },
             {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3462,7 +2493,6 @@
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3474,15 +2504,7 @@
             },
             {
               "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "affinityDamageBoost",
               "amount": 0.18
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3492,7 +2514,6 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3503,21 +2524,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3528,16 +2540,8 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
               "statKey": "allDamageBoost",
               "amount": 0.45
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
             },
             {
               "statKey": "directAffinityRate",
@@ -3546,7 +2550,6 @@
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "dragonHeadLowHp": 0.45,
             "jadeware": 0.175
           }
@@ -3558,21 +2561,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3583,21 +2577,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3608,21 +2593,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3633,21 +2609,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -3658,21 +2625,12 @@
               "amount": 0.1
             },
             {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            },
-            {
               "statKey": "directAffinityRate",
               "amount": 0.075
             }
           ],
           "forceCrit": false,
           "breakdown": {
-            "concentration": 0.13,
             "jadeware": 0.175
           }
         },
@@ -21058,22 +20016,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21114,22 +20056,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21168,22 +20094,6 @@
             "maxStacks": 1,
             "effects": [],
             "requires": "swordHorizon"
-          },
-          {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
           },
           {
             "id": "dragonHeadLowHp",
@@ -21242,22 +20152,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21312,22 +20206,6 @@
             "maxStacks": 1,
             "effects": [],
             "requires": "swordHorizon"
-          },
-          {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
           },
           {
             "id": "dragonHeadLowHp",
@@ -21386,22 +20264,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21458,22 +20320,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21518,22 +20364,6 @@
             "requires": "swordHorizon"
           },
           {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
-          },
-          {
             "id": "dragonHeadLowHp",
             "stacks": 1,
             "maxStacks": 1,
@@ -21576,22 +20406,6 @@
             "maxStacks": 1,
             "effects": [],
             "requires": "swordHorizon"
-          },
-          {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
           },
           {
             "id": "dragonHeadLowHp",
@@ -21643,22 +20457,6 @@
             "maxStacks": 1,
             "effects": [],
             "requires": "swordHorizon"
-          },
-          {
-            "id": "concentration",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.1
-              },
-              {
-                "statKey": "directAffinityRate",
-                "amount": 0.03
-              }
-            ],
-            "requires": "insightfulStrike"
           },
           {
             "id": "dragonHeadLowHp",

@@ -26,9 +26,10 @@
 // the one-time before/after dump comparison done at conversion time (see the
 // migration/deviation notes wherever that conversion is reported).
 import { createHash } from "node:crypto"
-import { existsSync, readFileSync, writeFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
+import { writeFixture } from "../writeFixture"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { BuffEngine, type DamageEffectsResult } from "../../src/engine/buffs/buffEngine"
@@ -222,7 +223,7 @@ function currentSnapshot(): Snapshot {
 }
 
 if (REGENERATE) {
-  writeFileSync(FIXTURE_PATH, JSON.stringify(currentSnapshot(), null, 2) + "\n")
+  await writeFixture(FIXTURE_PATH, currentSnapshot())
 }
 
 describe("buff engine equivalence — every registered class", () => {
