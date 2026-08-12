@@ -46,8 +46,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-bellstrikeRainbow-flute-ripple",
@@ -58,9 +57,9 @@
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Bellstrike",
         "skillType": "sustain",
@@ -95,12 +94,168 @@
       "maxStacks": 5,
       "stackScaling": "perStack",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:bleedTick"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-bellstrikeRainbow-bitter-season-tick",
       "classId": "bellstrikeRainbow",
+      "name": "Bitter Season Tick",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.15,
+        "physFixed": 0,
+        "attributeMultiplier": 0.225,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": null,
+        "mysticCategory": null,
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-06T00:00:00.000Z",
+      "updatedAt": "2026-08-06T00:00:00.000Z"
+    }
+  ],
+  "bellstrikeUmbra": [
+    {
+      "id": "debuff-bellstrikeUmbra-toad-poison",
+      "classId": "bellstrikeUmbra",
+      "name": "Toad Poison",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 300,
+        "physMultiplier": 1.6216,
+        "physFixed": 219,
+        "attributeMultiplier": 1.6216,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "area-debuff",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-combustion",
+      "classId": "bellstrikeUmbra",
+      "name": "Combustion",
+      "activation": "triggered",
+      "durationFrames": 481,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.2953,
+        "physFixed": 39,
+        "attributeMultiplier": 0.2953,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-dark-fire",
+      "classId": "bellstrikeUmbra",
+      "name": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.236,
+        "physFixed": 44,
+        "attributeMultiplier": 0.354,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-07-30T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-flute-ripple",
+      "classId": "bellstrikeUmbra",
+      "name": "Flute Ripple",
+      "activation": "triggered",
+      "durationFrames": 751,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 150,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "area-damage",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleed Tick",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.06864,
+        "physFixed": 0,
+        "attributeMultiplier": 0.10296,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 5,
+      "stackScaling": "perStack",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 0,
+        "retainParam": "swordHorizon",
+        "retainMinTier": 6,
+        "retainParamStacks": 2
+      },
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-bitter-season-tick",
+      "classId": "bellstrikeUmbra",
       "name": "Bitter Season Tick",
       "activation": "triggered",
       "durationFrames": 300,
@@ -172,8 +327,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-flute-ripple",
@@ -184,9 +338,9 @@
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Silkbind",
         "skillType": "sustain",
@@ -220,8 +374,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbDrone"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-umbdrone-20hit",
@@ -244,8 +397,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbDrone"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-umbdrone-12hit",
@@ -268,8 +420,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbDrone"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-umbdrone-16hit",
@@ -292,8 +443,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbDrone"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-umbdrone-23hit",
@@ -316,8 +466,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbDrone"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-umblightcharge",
@@ -340,8 +489,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:umbLightCharge"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-silkbindJade-bitter-season-tick",
@@ -417,8 +565,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-stonesplitPower-flute-ripple",
@@ -429,9 +576,9 @@
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Stonesplit",
         "skillType": "sustain",
@@ -471,10 +618,10 @@
       "updatedAt": "2026-08-06T00:00:00.000Z"
     }
   ],
-  "stonesplitBalancePureTang": [
+  "stonesplitStrength": [
     {
-      "id": "debuff-stonesplitBalancePureTang-toad-poison",
-      "classId": "stonesplitBalancePureTang",
+      "id": "debuff-stonesplitStrength-toad-poison",
+      "classId": "stonesplitStrength",
       "name": "Toad Poison",
       "activation": "triggered",
       "durationFrames": 601,
@@ -497,8 +644,8 @@
       "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
-      "id": "debuff-stonesplitBalancePureTang-combustion",
-      "classId": "stonesplitBalancePureTang",
+      "id": "debuff-stonesplitStrength-combustion",
+      "classId": "stonesplitStrength",
       "name": "Combustion",
       "activation": "triggered",
       "durationFrames": 481,
@@ -518,21 +665,20 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
-      "id": "debuff-stonesplitBalancePureTang-flute-ripple",
-      "classId": "stonesplitBalancePureTang",
+      "id": "debuff-stonesplitStrength-flute-ripple",
+      "classId": "stonesplitStrength",
       "name": "Flute Ripple",
       "activation": "triggered",
       "durationFrames": 751,
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Stonesplit",
         "skillType": "sustain",
@@ -546,8 +692,8 @@
       "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
-      "id": "debuff-stonesplitBalancePureTang-bitter-season-tick",
-      "classId": "stonesplitBalancePureTang",
+      "id": "debuff-stonesplitStrength-bitter-season-tick",
+      "classId": "stonesplitStrength",
       "name": "Bitter Season Tick",
       "activation": "triggered",
       "durationFrames": 300,
@@ -619,8 +765,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-bamboocutWindTwinblade-flute-ripple",
@@ -631,9 +776,9 @@
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Bamboocut",
         "skillType": "sustain",
@@ -720,8 +865,7 @@
       "maxStacks": 1,
       "stackScaling": "flat",
       "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
+      "updatedAt": "2026-07-19T00:00:00.000Z"
     },
     {
       "id": "debuff-bamboocutDust-flute-ripple",
@@ -732,9 +876,9 @@
       "effects": [],
       "dot": {
         "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
+        "physMultiplier": 1.4696,
+        "physFixed": 310,
+        "attributeMultiplier": 2.2044,
         "attributeFixed": 0,
         "attributeAttack": "Bamboocut",
         "skillType": "sustain",
@@ -750,107 +894,6 @@
     {
       "id": "debuff-bamboocutDust-bitter-season-tick",
       "classId": "bamboocutDust",
-      "name": "Bitter Season Tick",
-      "activation": "triggered",
-      "durationFrames": 300,
-      "effects": [],
-      "dot": {
-        "tickIntervalFrames": 60,
-        "physMultiplier": 0.15,
-        "physFixed": 0,
-        "attributeMultiplier": 0.225,
-        "attributeFixed": 0,
-        "attributeAttack": "Bamboocut",
-        "skillType": "sustain",
-        "weaponOrAttribute": null,
-        "mysticCategory": null,
-        "count": 1,
-        "perStackShapes": null,
-        "perStackMultipliers": null
-      },
-      "maxStacks": 1,
-      "stackScaling": "flat",
-      "createdAt": "2026-08-06T00:00:00.000Z",
-      "updatedAt": "2026-08-06T00:00:00.000Z"
-    }
-  ],
-  "stonesplitBalanceDualCut": [
-    {
-      "id": "debuff-stonesplitBalanceDualCut-toad-poison",
-      "classId": "stonesplitBalanceDualCut",
-      "name": "Toad Poison",
-      "activation": "triggered",
-      "durationFrames": 601,
-      "effects": [],
-      "dot": {
-        "tickIntervalFrames": 300,
-        "physMultiplier": 1.6216,
-        "physFixed": 219,
-        "attributeMultiplier": 1.6216,
-        "attributeFixed": 0,
-        "attributeAttack": "Bamboocut",
-        "skillType": "sustain",
-        "mysticCategory": "area-debuff",
-        "count": 1,
-        "perStackShapes": null
-      },
-      "maxStacks": 1,
-      "stackScaling": "flat",
-      "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
-    },
-    {
-      "id": "debuff-stonesplitBalanceDualCut-combustion",
-      "classId": "stonesplitBalanceDualCut",
-      "name": "Combustion",
-      "activation": "triggered",
-      "durationFrames": 481,
-      "effects": [],
-      "dot": {
-        "tickIntervalFrames": 30,
-        "physMultiplier": 0.2953,
-        "physFixed": 39,
-        "attributeMultiplier": 0.2953,
-        "attributeFixed": 0,
-        "attributeAttack": "Bamboocut",
-        "skillType": "sustain",
-        "mysticCategory": "burst",
-        "count": 1,
-        "perStackShapes": null
-      },
-      "maxStacks": 1,
-      "stackScaling": "flat",
-      "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z",
-      "tags": ["role:combustion"]
-    },
-    {
-      "id": "debuff-stonesplitBalanceDualCut-flute-ripple",
-      "classId": "stonesplitBalanceDualCut",
-      "name": "Flute Ripple",
-      "activation": "triggered",
-      "durationFrames": 751,
-      "effects": [],
-      "dot": {
-        "tickIntervalFrames": 150,
-        "physMultiplier": 1.4614,
-        "physFixed": 300,
-        "attributeMultiplier": 2.1921,
-        "attributeFixed": 0,
-        "attributeAttack": "Bamboocut",
-        "skillType": "sustain",
-        "mysticCategory": "area-damage",
-        "count": 1,
-        "perStackShapes": null
-      },
-      "maxStacks": 1,
-      "stackScaling": "flat",
-      "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-07-19T00:00:00.000Z"
-    },
-    {
-      "id": "debuff-stonesplitBalanceDualCut-bitter-season-tick",
-      "classId": "stonesplitBalanceDualCut",
       "name": "Bitter Season Tick",
       "activation": "triggered",
       "durationFrames": 300,

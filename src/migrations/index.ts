@@ -2,7 +2,10 @@ import type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 import { V5__englishIdsWithoutSitePrefix } from "./V5__englishIdsWithoutSitePrefix"
 import { V6__dropDerivedStats } from "./V6__dropDerivedStats"
 import { V7__clampSingleMysticWordRoll } from "./V7__clampSingleMysticWordRoll"
-import { V8__setIdsWithoutDisplayName } from "./V8__setIdsWithoutDisplayName"
+import { V8__dropRemovedArmorSets } from "./V8__dropRemovedArmorSets"
+import { V9__renameSteadfastDevotion } from "./V9__renameSteadfastDevotion"
+import { V10__renameFrostCladNight } from "./V10__renameFrostCladNight"
+import { V11__setIdsWithoutDisplayName } from "./V11__setIdsWithoutDisplayName"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -10,13 +13,16 @@ export {
   migrateEntityId,
   LEGACY_CLASS_IDS,
 } from "./V5__englishIdsWithoutSitePrefix"
-export { migrateSetId } from "./V8__setIdsWithoutDisplayName"
+export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
   V6__dropDerivedStats,
   V7__clampSingleMysticWordRoll,
-  V8__setIdsWithoutDisplayName,
+  V8__dropRemovedArmorSets,
+  V9__renameSteadfastDevotion,
+  V10__renameFrostCladNight,
+  V11__setIdsWithoutDisplayName,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { computeSkillDamage } from "../../src/engine/formula"
+import {
+  computeSkillDamage,
+  FOOD_MAX_PHYS_BONUS,
+  FOOD_MIN_PHYS_BONUS,
+} from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
 import { penResistanceForLevel } from "../../src/engine/panel"
@@ -104,6 +108,60 @@ const baseCtx: FormulaContext = {
 }
 
 const art = ROPE_DART_Q
+
+describe("physical attack range normalization", () => {
+  it("uses min phys as the effective max when min phys exceeds max phys", () => {
+    const inverted = computeSkillDamage(
+      MODAO_CHARGE,
+      slots,
+      { ...baseCtx, smallPhys: 2000, largePhys: 1000 },
+      1,
+    )
+    const normalized = computeSkillDamage(
+      MODAO_CHARGE,
+      slots,
+      { ...baseCtx, smallPhys: 2000, largePhys: 2000 },
+      1,
+    )
+
+    expect(inverted.cells.AG).toBeCloseTo(normalized.cells.AG, 9)
+    expect(inverted.expectedDamage).toBeCloseTo(normalized.expectedDamage, 9)
+  })
+
+  it("keeps equal min and max phys equal when no range-specific modifiers apply", () => {
+    const cells = computeSkillDamage(
+      art,
+      slots,
+      { ...baseCtx, smallPhys: 2000, largePhys: 2000 },
+      1,
+    ).cells
+
+    expect(cells.AG).toBeCloseTo(cells.AE, 9)
+  })
+
+  it("applies food before choosing the effective max phys", () => {
+    const withFood = computeSkillDamage(
+      MODAO_CHARGE,
+      slots,
+      { ...baseCtx, smallPhys: 1000, largePhys: 900, food: true },
+      1,
+    )
+    const foodFoldedIntoPanel = computeSkillDamage(
+      MODAO_CHARGE,
+      slots,
+      {
+        ...baseCtx,
+        smallPhys: 1000 + FOOD_MIN_PHYS_BONUS,
+        largePhys: 900 + FOOD_MAX_PHYS_BONUS,
+        food: false,
+      },
+      1,
+    )
+
+    expect(withFood.cells.AG).toBeCloseTo(foodFoldedIntoPanel.cells.AG, 9)
+    expect(withFood.expectedDamage).toBeCloseTo(foodFoldedIntoPanel.expectedDamage, 9)
+  })
+})
 
 // PDF §8
 describe("graze (abrasion) rate — (1 − precision)(1 − affinity)", () => {

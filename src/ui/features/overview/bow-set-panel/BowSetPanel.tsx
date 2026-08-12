@@ -44,6 +44,7 @@ const STAT_TO_I18N_KEY: Readonly<Record<string, string>> = {
   critRate: "Crit",
   precisionRate: "Precision",
   maxPhys: "Max Phys",
+  minPhys: "Min Phys",
 }
 
 const fmtDelta = (delta: number) => {
@@ -72,7 +73,7 @@ export function BowSetPanel({ inputs, onChange, armorDpsByKey, bowDpsByChoice, i
       <div className={`${setTiles.tileGrid} ${setTiles.cols2}`}>
         {ARMOR_SET_OPTIONS.map((opt) => {
           const statKey = STAT_TO_I18N_KEY[opt.stat] ?? opt.stat
-          const isFlat = opt.stat === "maxPhys"
+          const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys"
           return (
             <SetTile
               key={opt.setKey}

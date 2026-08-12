@@ -1,0 +1,115 @@
+{
+  "id": "stonesplitStrength-snowpartingspecial",
+  "classId": "stonesplitStrength",
+  "name": "SnowpartingSpecial",
+  "abilityTag": "SnowpartingSpecial",
+  "tags": ["weapon:Heng Blade", "attune:snowpartingQ"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Hengdao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 13,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-2",
+      "frame": 26,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-3",
+      "frame": 39,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-4",
+      "frame": 52,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-5",
+      "frame": 65,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-6",
+      "frame": 78,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-7",
+      "frame": 91,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-8",
+      "frame": 104,
+      "physMultiplier": 0.4199666667,
+      "attributeMultiplier": 0.6299555556,
+      "physFixed": 116.111111111111,
+      "attributeFixed": 63.33333333333,
+      "extraCritDamage": 0,
+      "triggers": [
+        {
+          "id": "tg-snowpartingspecial-dread",
+          "kind": "applyBuff",
+          "targetId": "buff-stonesplitStrength-dread",
+          "stacks": 1,
+          "condition": null
+        }
+      ]
+    }
+  ],
+  "castFrames": 125,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false
+}

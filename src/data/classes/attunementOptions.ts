@@ -47,4 +47,14 @@ export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
     enginePath: "dingYinByTag.Bleed Boost",
     affectsTag: "attune:bleed",
   },
+  {
+    id: "phalanxChargeDamage",
+    label: "Phalanx Charge Boost",
+    min: 0.03,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["stonesplitStrength"],
+    enginePath: "dingYinByTag.Phalanx Charge Boost",
+    affectsTag: "attune:phalanxbaneCharged",
+  },
 ]

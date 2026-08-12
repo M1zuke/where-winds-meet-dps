@@ -7,4 +7,5 @@ export const shatteredRidge = defineSet({
   id: SET_ID.shatteredRidge,
   name: "Shattered Ridge",
   siteKey: "shatteredridge",
+  panelBonus: { stat: "minPhys", value: 78 },
 })

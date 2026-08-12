@@ -58,7 +58,10 @@ describe("V5 step — v4 → v5 in isolation", () => {
       "V5__englishIdsWithoutSitePrefix",
       "V6__dropDerivedStats",
       "V7__clampSingleMysticWordRoll",
-      "V8__setIdsWithoutDisplayName",
+      "V8__dropRemovedArmorSets",
+      "V9__renameSteadfastDevotion",
+      "V10__renameFrostCladNight",
+      "V11__setIdsWithoutDisplayName",
     ])
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })

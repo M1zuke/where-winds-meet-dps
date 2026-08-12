@@ -40,6 +40,10 @@ export function defineInnerWayGateBuff<const T extends InnerWayGateBuff>(buff: T
 export interface InnerWayDef {
   id: string
   name: string
+  // Display names this inner way has shipped under before. A saved slot that
+  // stored one still resolves to this id — the standing invariant behind the
+  // rename migrations, covering the two paths that never walk the chain.
+  legacyNames?: readonly string[]
   selectableTiers: readonly number[]
   // The reference site's param this inner way turns on when selected —
   // undefined for one that is deliberately never mapped (see

@@ -7,7 +7,7 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggeredBy": ["cast:fanHeavyPursuit3Hit", "cast:fanHeavyPursuit5Hit", "cast:umbHeavyLight"],
+        "triggers": ["Umb HeavyLight", "FanHeavyPursuit"],
         "duration": 12,
         "affects": null,
         "bonus": null,
@@ -15,7 +15,7 @@
         "stacksPerHit": 1,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["role:umbHeavyLight", "role:fanHeavyPursuit"],
+          "prefixes": ["Umb HeavyLight", "FanHeavyPursuit"],
           "match": {
             "physPen": 3,
             "critDmg": 0.03
@@ -32,11 +32,7 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggeredBy": [
-          "cast:moBladeVariedCombo2BW",
-          "cast:moBladeVariedCombo2BWCancel",
-          "cast:moBladeVariedComboGroundSlam2BW"
-        ],
+        "triggers": ["MoBladeVariedCombo"],
         "duration": 12,
         "affects": null,
         "bonus": null,
@@ -44,7 +40,7 @@
         "stacksPerCast": 2,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["role:moBladeVariedCombo"],
+          "prefixes": ["MoBladeVariedCombo"],
           "match": {
             "physPen": 3,
             "critDmg": 0.03
@@ -61,24 +57,19 @@
       "def": {
         "id": "throatPierced",
         "name": "Throat-Pierced",
-        "triggeredBy": [
-          "cast:anxiSoldierHeng",
-          "cast:snowpartingCharged",
-          "cast:snowpartingChargedForgetfulness",
-          "cast:snowpartingVC",
-          "cast:snowpartingVCPrepull"
-        ],
+        "triggers": ["AnxiSoldier", "SnowpartingQ-Stab", "SnowpartingVC", "PhalanxCharged", "PhalanxQ"],
         "duration": 15,
         "affects": null,
         "bonus": null,
         "maxStacks": 5,
         "stacksPerHit": true,
+        "triggersFromGeneratedSkills": true,
         "enabledParam": "throatPierced",
         "__statModByPrefix": {
-          "prefixes": ["role:anxiSoldier", "role:snowpartingVC", "role:snowpartingCharged"],
+          "prefixes": ["AnxiSoldier", "SnowpartingQ-Stab", "SnowpartingVC", "PhalanxCharged", "PhalanxQ"],
           "match": {
-            "physPen": 2,
-            "critDmg": 0.02
+            "physPen": 3,
+            "critDmg": 0.03
           },
           "default": {
             "physPen": 2,

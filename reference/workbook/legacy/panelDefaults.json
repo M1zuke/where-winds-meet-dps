@@ -124,12 +124,12 @@
     "t": "s"
   },
   "K8": {
-    "v": "Frostwhite Night",
+    "v": "Frost-Clad Night",
     "f": "HLOOKUP($C$2,Class!$A$1:$H$11,11,0)",
     "t": "s"
   },
   "M8": {
-    "v": "Lone Loyalty",
+    "v": "Steadfast Devotion",
     "t": "s"
   },
   "O8": {

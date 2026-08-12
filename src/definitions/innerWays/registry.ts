@@ -29,7 +29,10 @@ export function innerWayName(id: string): string {
 }
 
 export function innerWayIdForName(name: string): string | null {
-  return INNER_WAYS.find((def) => def.name === name)?.id ?? null
+  const def =
+    INNER_WAYS.find((candidate) => candidate.name === name) ??
+    INNER_WAYS.find((candidate) => candidate.legacyNames?.includes(name))
+  return def?.id ?? null
 }
 
 // Accepts either, so a saved slot healed to an id and one still carrying a name

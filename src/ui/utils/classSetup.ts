@@ -11,9 +11,9 @@ export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
   const school = getSchool(classId)
   const lockedName = school.classMindGroup ?? ""
   const talents =
-    inputs.martialArtsTalents.length === 0
-      ? getDefaultTalentsForClass(classId)
-      : inputs.martialArtsTalents
+    inputs.classId === classId && inputs.martialArtsTalents.length > 0
+      ? inputs.martialArtsTalents
+      : getDefaultTalentsForClass(classId)
   const withArsenal = swapArsenal(inputs, defaultArsenalForClass(classId))
   const allowed = new Set(allowedInnerWaysForClass(classId))
   return {

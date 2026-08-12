@@ -13,12 +13,21 @@
         "bonus": null,
         "perCastConsume": {
           "triggerSkillProperty": "consumesInnerPassionBurningHeart",
-          "consumesFromBuffStack": "innerPassion",
+          "consumesFromBuffStack": "chargeEnhancement",
+          "bonus": null,
+          "damageMultiplier": 1.32,
+          "effectEnabledParam": "steadfastDevotion",
+          "effectMinTier": 4,
           "preferredSources": [
             {
-              "buffStack": "chargeEnhancement",
-              "enabledParam": "steadfastDevotion",
-              "minTier": 6
+              "buffStack": "innerPassion"
+            }
+          ],
+          "sourceBuffs": [
+            {
+              "consumedBuffStack": "chargeEnhancement",
+              "buffIds": ["mountainSplitter"],
+              "propagateToTriggeredSkills": true
             }
           ]
         }

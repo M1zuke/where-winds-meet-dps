@@ -1,0 +1,27 @@
+{
+  "id": "stonesplitStrength-snowpartingdual",
+  "classId": "stonesplitStrength",
+  "name": "SnowpartingDual",
+  "abilityTag": "SnowpartingDual",
+  "tags": ["weapon:Heng Blade", "attune:snowpartingVariedCombo"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Hengdao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.6486,
+      "attributeMultiplier": 0.9729,
+      "physFixed": 180,
+      "attributeFixed": 98,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 35,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false
+}

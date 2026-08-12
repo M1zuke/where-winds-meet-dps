@@ -9,7 +9,7 @@
         "name": "Inner Passion",
         "triggeredBy": ["cast:snowpartingSpecial"],
         "duration": 12,
-        "maxStacks": 3,
+        "maxStacks": 4,
         "stacksPerHit": false,
         "affects": null,
         "bonus": null,

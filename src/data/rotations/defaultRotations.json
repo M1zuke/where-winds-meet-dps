@@ -1899,5 +1899,892 @@
       }
     ],
     "defaultRotationId": "builtin-bellstrikeUmbra-eazy-t6-wolf"
+  },
+  "stonesplitStrength": {
+    "rotations": [
+      {
+        "id": "builtin-stonesplitStrength-tilla-dummy-rotation",
+        "name": "Tilla Dummy Rotation",
+        "classId": "stonesplitStrength",
+        "steps": [
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-0",
+            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-1",
+            "skillId": "stonesplitStrength-phalanxspecial-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-2",
+            "skillId": "stonesplitStrength-snowpartingdual-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-3",
+            "skillId": "stonesplitStrength-snowpartingslide-prepull-hit",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-4",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-5",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-6",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-7",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-8",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-9",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-10",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-11",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-12",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-13",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-14",
+            "skillId": "stonesplitStrength-soaring",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-15",
+            "skillId": "stonesplitStrength-snowpartingcharged",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-16",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-17",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-18",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-19",
+            "skillId": "stonesplitStrength-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-20",
+            "skillId": "stonesplitStrength-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-21",
+            "skillId": "stonesplitStrength-phalanxspecial",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-22",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-23",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-24",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-25",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-26",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-27",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-28",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-29",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-30",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-31",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-32",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-33",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-34",
+            "skillId": "stonesplitStrength-snowpartingcharged",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-35",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-36",
+            "skillId": "stonesplitStrength-snowpartingcharged",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-37",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-38",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-39",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-40",
+            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-41",
+            "skillId": "stonesplitStrength-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-42",
+            "skillId": "stonesplitStrength-phalanxspecial",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-43",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-44",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-45",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-46",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-47",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-48",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-49",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-50",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-51",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-52",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-53",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-54",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-55",
+            "skillId": "stonesplitStrength-snowpartingcharged",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-56",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-57",
+            "skillId": "stonesplitStrength-snowpartingcharged",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-tilla-dummy-rotation-58",
+            "skillId": "stonesplitStrength-soaring",
+            "hitCount": 2,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "prePullHitsCount": false,
+        "createdAt": "2026-07-19T00:00:00.000Z",
+        "updatedAt": "2026-07-19T00:00:00.000Z",
+        "description": "Pure Hengdao rotation by Tilla from WSR Discord"
+      },
+      {
+        "id": "builtin-stonesplitStrength-windsfromcn-switch",
+        "name": "WindsFromCN Switch",
+        "classId": "stonesplitStrength",
+        "steps": [
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-0",
+            "skillId": "stonesplitStrength-phalanxspecial-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-1",
+            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-2",
+            "skillId": "stonesplitStrength-snowpartingslide-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-3",
+            "skillId": "stonesplitStrength-snowpartingslide-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-4",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-5",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-6",
+            "skillId": "stonesplitStrength-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-7",
+            "skillId": "stonesplitStrength-deflect",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-8",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-9",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-10",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-11",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-12",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-13",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-14",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-15",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-16",
+            "skillId": "stonesplitStrength-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-17",
+            "skillId": "stonesplitStrength-deflect",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-18",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-19",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-20",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-21",
+            "skillId": "stonesplitStrength-phalanxspecial",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-22",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-23",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-24",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-25",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-26",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-27",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-28",
+            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-29",
+            "skillId": "stonesplitStrength-deflect",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-30",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-31",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-32",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-33",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-34",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-35",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-36",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-37",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-38",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-39",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-40",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "prePullHitsCount": false,
+        "createdAt": "2026-07-19T00:00:00.000Z",
+        "updatedAt": "2026-07-19T00:00:00.000Z",
+        "description": "https://www.youtube.com/watch?v=gG4_DvJFcig"
+      },
+      {
+        "id": "builtin-stonesplitStrength-windsfromcn-switch-no-toad",
+        "name": "WindsFromCN Switch (No Toad)",
+        "classId": "stonesplitStrength",
+        "steps": [
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-0",
+            "skillId": "stonesplitStrength-phalanxspecial-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-1",
+            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-2",
+            "skillId": "stonesplitStrength-snowpartingslide-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-3",
+            "skillId": "stonesplitStrength-snowpartingslide-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-4",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-5",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-8",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-9",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-10",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-11",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-12",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-13",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-14",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-15",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-16",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-17",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-18",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-19",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-20",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-21",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-22",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-23",
+            "skillId": "stonesplitStrength-phalanxspecial",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-24",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-25",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-26",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-27",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-28",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-29",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-30",
+            "skillId": "stonesplitStrength-snowpartingslide",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-31",
+            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-32",
+            "skillId": "stonesplitStrength-deflect",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-33",
+            "skillId": "stonesplitStrength-snowpartingspecial",
+            "hitCount": 9,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-34",
+            "skillId": "stonesplitStrength-snowpartingq-stab",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-35",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-36",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-37",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-38",
+            "skillId": "stonesplitStrength-phalanxcharged-s3-innerpassion",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-39",
+            "skillId": "stonesplitStrength-phalanxq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-40",
+            "skillId": "stonesplitStrength-snowpartingdual",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-41",
+            "skillId": "stonesplitStrength-snowpartingvc",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-stonesplitStrength-windsfromcn-switch-no-toad-42",
+            "skillId": "stonesplitStrength-snowpartingcharged-forgetfulness",
+            "hitCount": 4,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "prePullHitsCount": false,
+        "createdAt": "2026-07-19T00:00:00.000Z",
+        "updatedAt": "2026-07-19T00:00:00.000Z",
+        "description": "Use vc to replace toad"
+      }
+    ],
+    "defaultRotationId": "builtin-stonesplitStrength-tilla-dummy-rotation"
   }
 }

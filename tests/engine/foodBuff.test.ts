@@ -6,6 +6,7 @@ import { describe, expect, it } from "vitest"
 import { buildContext } from "../../src/engine/panel"
 import {
   computeSkillDamage,
+  effectivePhysRange,
   FOOD_MIN_PHYS_BONUS,
   FOOD_MAX_PHYS_BONUS,
 } from "../../src/engine/formula"
@@ -36,6 +37,11 @@ describe("food buff (Simmering Fish Slices)", () => {
 
   it("raises damage", () => {
     expect(damage(base(true))).toBeGreaterThan(damage(base(false)))
+  })
+
+  it("clamps max phys only after both food bonuses are applied", () => {
+    expect(effectivePhysRange(1000, 900, true)).toEqual({ min: 1120, max: 1140 })
+    expect(effectivePhysRange(1200, 900, true)).toEqual({ min: 1320, max: 1320 })
   })
 
   it("is exactly a flat addition to the raw min/max phys terms", () => {

@@ -7,9 +7,10 @@
       "def": {
         "id": "shatteredRidgeDeflect",
         "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggeredBy": ["cast:deflect"],
+        "triggers": ["Deflect"],
+        "exactMatch": true,
         "duration": 8,
-        "affects": ["role:moBladeVariedCombo"],
+        "affects": ["MoBladeVariedCombo"],
         "bonus": {
           "type": "buffBonus",
           "value": 0.06
@@ -21,19 +22,15 @@
       "specs": ["stonesplit_strength"],
       "def": {
         "id": "shatteredRidgeDeflect",
-        "name": "Shattered Ridge (Deflect Max Stacks)",
-        "triggeredBy": ["cast:deflect"],
-        "duration": 8,
-        "affects": [
-          "role:snowpartingVC",
-          "role:phalanxQ",
-          "role:phalanxCharged",
-          "role:snowpartingQStab",
-          "role:anxiSoldier"
-        ],
+        "name": "Shattered Ridge (Max Stacks)",
+        "stackOnDamage": true,
+        "duration": 5,
+        "maxStacks": 5,
+        "affectsProperty": "shatteredRidgeBoost",
         "bonus": {
           "type": "buffBonus",
-          "value": 0.06
+          "value": 0.08,
+          "minStacks": 5
         },
         "requiresSet": "shatteredridge"
       }

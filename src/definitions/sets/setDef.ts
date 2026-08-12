@@ -25,7 +25,7 @@ export interface SetFormulaBonus {
 
 // The 2-piece bonus: one scalar into one named panel stat.
 export interface SetPanelBonus {
-  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys"
+  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
   value: number
 }
 

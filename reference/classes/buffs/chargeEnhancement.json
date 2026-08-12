@@ -7,9 +7,11 @@
       "def": {
         "id": "chargeEnhancement",
         "name": "Charge Enhancement",
-        "triggeredBy": ["cast:phalanxChargedS3", "cast:phalanxChargedS3InnerPassion"],
-        "duration": 3,
+        "triggers": ["PhalanxCharged"],
+        "exactMatch": false,
+        "duration": 18,
         "maxStacks": 3,
+        "stacksPerCast": 3,
         "affects": null,
         "bonus": null,
         "enabledParam": "steadfastDevotion",
@@ -19,8 +21,7 @@
           "window": 30
         },
         "triggerPhaseGate": "exhausted",
-        "buffAppliesOnCastEnd": true,
-        "onApply": ["mountainSplitter"]
+        "buffAppliesOnCastEnd": true
       }
     }
   ]
