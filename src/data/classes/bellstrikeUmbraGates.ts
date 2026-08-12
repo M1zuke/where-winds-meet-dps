@@ -2,6 +2,7 @@
 // they are gates consumed by the timeline (HitVariant swaps, trigger
 // conditions), not `{statKey, amount}` effects.
 import type { Buff } from "../../engine/buff"
+import { defineGateBuff } from "../../definitions/skills/skillDef"
 import { STATUS } from "../skills/bellstrike-umbra/ids"
 
 export const RIVER_FLOW_DURATION_FRAMES = 900
@@ -11,7 +12,7 @@ export const RIVER_FLOW_BUFF_ID = STATUS.riverFlow
 export const SPEAR_SPECIAL_COOLDOWN_BUFF_ID = STATUS.spearSpecialCooldown
 
 export const BELLSTRIKE_UMBRA_GATES: Buff[] = [
-  {
+  defineGateBuff({
     id: RIVER_FLOW_BUFF_ID,
     classId: "bellstrikeUmbra",
     name: "River Flow",
@@ -23,8 +24,8 @@ export const BELLSTRIKE_UMBRA_GATES: Buff[] = [
     stackScaling: "flat",
     createdAt: "2026-07-30T00:00:00.000Z",
     updatedAt: "2026-07-30T00:00:00.000Z",
-  },
-  {
+  }),
+  defineGateBuff({
     id: SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
     classId: "bellstrikeUmbra",
     name: "Spear Special Cooldown",
@@ -36,5 +37,5 @@ export const BELLSTRIKE_UMBRA_GATES: Buff[] = [
     stackScaling: "flat",
     createdAt: "2026-07-30T00:00:00.000Z",
     updatedAt: "2026-07-30T00:00:00.000Z",
-  },
+  }),
 ]

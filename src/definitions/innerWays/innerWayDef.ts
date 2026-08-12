@@ -33,6 +33,10 @@ export interface InnerWayScalars {
 // `builtinBuffsForClass` set from the inner ways that class can slot.
 export type InnerWayGateBuff = Omit<Buff, "classId">
 
+export function defineInnerWayGateBuff<const T extends InnerWayGateBuff>(buff: T): T {
+  return buff
+}
+
 export interface InnerWayDef {
   id: string
   name: string

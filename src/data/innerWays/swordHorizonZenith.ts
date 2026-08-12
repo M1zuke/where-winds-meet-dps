@@ -16,7 +16,10 @@
 // that helper — but if it were ever marked `alwaysActive`, or moved onto a
 // class's own `classBuffDefs` and marked `alwaysActive` there, the shared id
 // would hide the Zenith Bar timeline chip. It must stay off both.
-import type { InnerWayGateBuff } from "../../definitions/innerWays/innerWayDef"
+import {
+  defineInnerWayGateBuff,
+  type InnerWayGateBuff,
+} from "../../definitions/innerWays/innerWayDef"
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { PARAM } from "../skills/buffs/ids"
 import { ROLE } from "../skills/ids"
@@ -45,7 +48,7 @@ export const ZENITH_BAR_MAX_CHARGES = 5
 export const ZENITH_BAR_DAMAGE_BONUS = 0.15
 
 export const SWORD_HORIZON_GATES: readonly InnerWayGateBuff[] = [
-  {
+  defineInnerWayGateBuff({
     id: ZENITH_BAR_BUFF_ID,
     name: "Zenith Bar",
     scope: "player",
@@ -56,8 +59,8 @@ export const SWORD_HORIZON_GATES: readonly InnerWayGateBuff[] = [
     stackScaling: "flat",
     createdAt: "2026-07-31T00:00:00.000Z",
     updatedAt: "2026-07-31T00:00:00.000Z",
-  },
-  {
+  }),
+  defineInnerWayGateBuff({
     id: ZENITH_DETONATION_BUFF_ID,
     name: "Zenith Detonation",
     scope: "player",
@@ -68,7 +71,7 @@ export const SWORD_HORIZON_GATES: readonly InnerWayGateBuff[] = [
     stackScaling: "flat",
     createdAt: "2026-07-30T00:00:00.000Z",
     updatedAt: "2026-07-30T00:00:00.000Z",
-  },
+  }),
 ]
 
 export const zenithBar = defineClassBuff({

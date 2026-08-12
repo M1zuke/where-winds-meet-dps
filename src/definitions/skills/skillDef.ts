@@ -1,5 +1,6 @@
 import type { HitVariant, Skill, SkillHit } from "../../engine/skill"
 import type { Debuff } from "../../engine/debuff"
+import type { Buff } from "../../engine/buff"
 
 // Crosses two boundaries a skill must stay a plain value for — `localStorage`
 // (`Inputs.customSkills`) and `postMessage` (`Inputs` → `dpsWorker.ts`) — so,
@@ -14,6 +15,12 @@ export function defineSkill<const T extends Skill>(skill: T): T {
 // and `postMessage`, so it stays a plain value with no callbacks.
 export function defineDebuff<const T extends Debuff>(debuff: T): T {
   return debuff
+}
+
+// A class-owned `Buff` the timeline reads as a gate, listed on `ClassDef.gateBuffs`.
+// Same plain-value constraint again — `Inputs.customBuffs` crosses both boundaries.
+export function defineGateBuff<const T extends Buff>(buff: T): T {
+  return buff
 }
 
 interface HitSpec {
