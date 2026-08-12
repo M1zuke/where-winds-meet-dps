@@ -79,12 +79,21 @@ function suggestedTargets(affix: ImportedAffix, targets: readonly AffixTarget[])
   return []
 }
 
+/**
+ * Raw words arrive in their own units. Everything else is a rate, which the payload
+ * reports as a fraction for some affixes and as a percentage for others, so the
+ * magnitude of the reported ceiling is what says which: no rate this app models
+ * caps above 100 %, so a ceiling over 1 can only be a percentage.
+ *
+ * Deciding this by matching our own cap instead would break on any gear tier whose
+ * ceiling differs from the one in our tables — a lower-tier disc capping physical
+ * penetration at 9 % against our 11 % matched neither unit, fell back to fractions,
+ * and imported 8.9 % as 890 % clamped down to the cap.
+ */
 function scaleFor(affix: ImportedAffix, target: AffixTarget): number {
-  if (affix.derivedMax === null) return 1
-  for (const scale of VALUE_SCALES) {
-    if (matchesMaxRoll(affix.derivedMax * scale, ceilingOf(target))) return scale
-  }
-  return 1
+  if (target.kind === "word" && target.unit === "raw") return 1
+  const reported = affix.derivedMax ?? affix.rawValue
+  return reported !== null && Math.abs(reported) > 1 ? 0.01 : 1
 }
 
 function resolveAffix(
@@ -112,9 +121,10 @@ function resolveAffix(
     }
   }
 
+  // Only the ceiling clamps. An attunement's `min` is the lowest roll at the top
+  // breakthrough, so raising a lower-tier piece up to it would invent stats.
   const scaled = affix.rawValue * scaleFor(affix, target)
-  const lowest = target.kind === "attunement" ? target.min : 0
-  const value = Math.min(Math.max(scaled, lowest), ceilingOf(target))
+  const value = Math.min(Math.max(scaled, 0), ceilingOf(target))
 
   return {
     ...affix,

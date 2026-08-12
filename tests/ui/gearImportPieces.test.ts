@@ -208,6 +208,45 @@ describe("a user choice maps an id", () => {
   })
 })
 
+describe("reported units", () => {
+  function attunementOn(gameSlotId: string, affixId: number, value: number, ratio: number) {
+    const text = JSON.stringify({
+      wearEquipsDetailed: {
+        [gameSlotId]: {
+          exVo: { baseAffixes: [{ equipmentDetails: [affixId, value, ratio, 3, true] }] },
+        },
+      },
+    })
+    return resolveAgainstBuild(parseDashboardGearPayload(text), {
+      ...defaultInputs,
+      classId: "stonesplitStrength",
+    }).pieces[0]!.attunement!.resolution
+  }
+
+  it("reads a percent-reported attunement whose tier caps below our table", () => {
+    // A lower-tier disc caps physical penetration at 9 %, not the 11 % we model.
+    expect(attunementOn("10", 270701, 8.9, 8.9 / 9)).toMatchObject({
+      kind: "resolved",
+      clampedFrom: null,
+    })
+    const resolution = attunementOn("10", 270701, 8.9, 8.9 / 9)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.089, 10)
+  })
+
+  it("reads a fraction-reported attunement as itself", () => {
+    const resolution = attunementOn("3", 279905, 0.059, 0.059 / 0.06)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.059, 10)
+  })
+
+  it("never raises a roll up to an attunement's minimum", () => {
+    const resolution = attunementOn("10", 270701, 4, 4 / 9)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.04, 10)
+  })
+})
+
 describe("level and rarity inference", () => {
   it("reads a legendary weapon from its attack range", () => {
     expect(pieceFor("1").identity).toMatchObject({ level: 96, rarity: "legendary" })
