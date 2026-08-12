@@ -4,6 +4,7 @@ import { gearBaseStatsFor } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import type { Inputs } from "../../src/engine/types"
+import { isGearWordName } from "../../src/engine/types"
 import {
   parseDashboardGearPayload,
   targetKey,
@@ -70,15 +71,11 @@ describe("the shipped affix table is the authority", () => {
     expect(affix.resolution.kind).toBe("unmapped")
   })
 
-  // The table spans every class, so a name is checked against the whole catalogue
-  // rather than one build's slice of it — resolveAgainstBuild is what narrows an
-  // entry to the active class, and the illegal-for-this-slot case covers that.
   it("names only stats that exist", () => {
-    const words = new Set(getWordSpecs(inputs).map((spec) => spec.word))
-    const attunements = new Set(ATTUNEMENT_OPTIONS.map((option) => option.id))
+    const attunements = new Set<string>(ATTUNEMENT_OPTIONS.map((option) => option.id))
     for (const key of Object.values(AFFIX_ID_TO_STAT_LINE)) {
       const [kind, name] = [key.slice(0, key.indexOf(":")), key.slice(key.indexOf(":") + 1)]
-      if (kind === "word") expect(words.has(name) || name.endsWith(" Martial Boost")).toBe(true)
+      if (kind === "word") expect(isGearWordName(name), name).toBe(true)
       else expect(attunements.has(name), name).toBe(true)
     }
   })

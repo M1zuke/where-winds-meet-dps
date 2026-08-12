@@ -1,4 +1,4 @@
-import type { Arsenal, AttributeKey, BowSet, GearPiece } from "../../engine/types"
+import type { Arsenal, AttributeKey, BowSet, GearPiece, GearWordName } from "../../engine/types"
 import type { Skill } from "../../engine/skill"
 import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
@@ -9,9 +9,8 @@ import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
-// Stat ids must match `WordSpec.word` strings in `engine/itemRanking.ts`.
 export interface RetunementPool {
-  stats: readonly string[]
+  stats: readonly GearWordName[]
 }
 
 export interface PoisonExtensionRegistration {

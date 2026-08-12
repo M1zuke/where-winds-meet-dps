@@ -18,6 +18,8 @@ export interface AttunementOption {
 
 export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = OPTIONS
 
+export type AttunementId = (typeof OPTIONS)[number]["id"]
+
 export function attunementsForClass(classId: string): AttunementOption[] {
   return ATTUNEMENT_OPTIONS.filter((opt) => !opt.classIds || opt.classIds.includes(classId))
 }

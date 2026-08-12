@@ -1,4 +1,5 @@
-import type { Inputs, ItemRankingRow } from "./types"
+import type { AttributeKey, GearWordName, Inputs, ItemRankingRow, WeaponName } from "./types"
+import { isWeaponName } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
@@ -8,18 +9,18 @@ import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { resolveRotation } from "./rotation"
 
-export interface WordSpec {
-  word: string
+export interface WordSpec<TName extends string = string> {
+  word: TName
   amount: number
   unit: "raw" | "percent"
   apply(inputs: Inputs): Inputs
 }
 
-export function getWordSpecs(inputs: Inputs): WordSpec[] {
+export function getWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
   return buildWordSpecs(inputs)
 }
 
-function rotationWeapons(inputs: Inputs): string[] {
+function rotationWeapons(inputs: Inputs): WeaponName[] {
   const active = inputs.activeCustomRotation
   const rotation =
     active && active.classId === inputs.classId ? active : defaultRotationForClass(inputs.classId)
@@ -37,18 +38,20 @@ function rotationWeapons(inputs: Inputs): string[] {
       counts[skill.weaponOrAttribute] = (counts[skill.weaponOrAttribute] ?? 0) + step.hitCount
   }
   return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([w]) => w)
+    .sort((first, second) => second[1] - first[1])
+    .map(([weapon]) => weapon)
+    .filter(isWeaponName)
 }
 
-function buildWordSpecs(inputs: Inputs): WordSpec[] {
+function buildWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
   const school = getSchool(inputs.classId)
   const physPenMax = getAttunement("physPen")?.max ?? 0.078
   const attrPenMax = getAttunement("formlessPen")?.max ?? 0.092
   const weapons = rotationWeapons(inputs)
-  const w0 = weapons[0] ?? school.weapons[0] ?? null
-  const w1 = weapons[1] ?? school.weapons[1] ?? null
-  const specs: WordSpec[] = [
+  const schoolWeapons = school.weapons.filter(isWeaponName)
+  const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
+  const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
+  const specs: WordSpec<GearWordName>[] = [
     {
       word: "Power",
       amount: 49.4,
@@ -135,19 +138,19 @@ function buildWordSpecs(inputs: Inputs): WordSpec[] {
     },
   ]
   // Weapon boost max roll: 6.2 % at breakthrough-16 (in-game, uniform across weapons).
-  if (w0)
+  if (primaryWeapon)
     specs.push({
-      word: `${w0} Martial Boost`,
+      word: `${primaryWeapon} Martial Boost`,
       amount: 0.062,
       unit: "percent",
-      apply: (i) => clone(i, applyWeaponBoost(w0, 0.062)),
+      apply: (i) => clone(i, applyWeaponBoost(primaryWeapon, 0.062)),
     })
-  if (w1)
+  if (secondaryWeapon)
     specs.push({
-      word: `${w1} Martial Boost`,
+      word: `${secondaryWeapon} Martial Boost`,
       amount: 0.062,
       unit: "percent",
-      apply: (i) => clone(i, applyWeaponBoost(w1, 0.062)),
+      apply: (i) => clone(i, applyWeaponBoost(secondaryWeapon, 0.062)),
     })
 
   specs.push(
@@ -311,7 +314,7 @@ function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
     }))
 }
 
-function applyWeaponBoost(weapon: string, amt: number) {
+function applyWeaponBoost(weapon: WeaponName, amt: number) {
   return (i: Inputs) => {
     const key = WEAPON_BOOST_STAT_KEY[weapon]
     if (!key) return
@@ -320,11 +323,7 @@ function applyWeaponBoost(weapon: string, amt: number) {
   }
 }
 
-function applyAttrPenetration(
-  i: Inputs,
-  attr: "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut",
-  amt: number,
-) {
+function applyAttrPenetration(i: Inputs, attr: AttributeKey, amt: number) {
   const block =
     attr === "Bellstrike"
       ? i.bellstrike
@@ -336,12 +335,7 @@ function applyAttrPenetration(
   block.penetration += amt
 }
 
-function applyAttrAttack(
-  i: Inputs,
-  attr: "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut",
-  field: "min" | "max",
-  amt: number,
-) {
+function applyAttrAttack(i: Inputs, attr: AttributeKey, field: "min" | "max", amt: number) {
   const block =
     attr === "Bellstrike"
       ? i.bellstrike

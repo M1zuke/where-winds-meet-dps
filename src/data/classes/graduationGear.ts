@@ -1,7 +1,8 @@
-import type { GearPiece, GearSlot } from "../../engine/types"
+import type { GearPiece, GearSlot, GearWordName } from "../../engine/types"
+import type { AttunementId } from "../../engine/attunements"
 
 export interface GraduationWordRoll {
-  word: string
+  word: GearWordName
   value: number
 }
 
@@ -17,7 +18,7 @@ interface GraduationGearPieceOptions {
   idPrefix: string
   slot: GearSlot
   words: GraduationWordRolls
-  attunement: string
+  attunement: AttunementId
   attunementValue: number
 }
 

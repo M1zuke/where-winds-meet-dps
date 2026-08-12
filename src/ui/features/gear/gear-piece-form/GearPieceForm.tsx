@@ -6,7 +6,7 @@ import type {
   GearSlot,
   GearWordEntry,
 } from "../../../../engine/types"
-import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { GEAR_SLOTS, isGearWordName, isWeaponSlot } from "../../../../engine/types"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue, gearBaseStatsFor } from "../../../../engine/gearStats"
 import { attunementsFor, getAttunement } from "../../../../engine/attunements"
@@ -101,7 +101,7 @@ export function GearPieceForm({
   const weaponSide = isWeaponSlot(piece.slot)
   const base = gearBaseStatsFor(piece)
 
-  function capFor(word: string, relayed: boolean): number | null {
+  function capFor(word: GearWordEntry["word"], relayed: boolean): number | null {
     const spec = wordSpecs.find((candidate) => candidate.word === word)
     if (!spec) return null
     return relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
@@ -126,7 +126,7 @@ export function GearPieceForm({
       physDef: base.physDef,
     })
   }
-  function clampAndRound(value: number, word: string, relayed: boolean): number {
+  function clampAndRound(value: number, word: GearWordEntry["word"], relayed: boolean): number {
     const spec = wordSpecs.find((candidate) => candidate.word === word)
     if (!spec || !Number.isFinite(value)) return value
     const cap = relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
@@ -237,7 +237,7 @@ export function GearPieceForm({
                   className={styles.wordCombobox}
                   value={word.word}
                   options={wordOptions}
-                  onChange={(value) => patchWord(idx, { word: value })}
+                  onChange={(value) => patchWord(idx, { word: isGearWordName(value) ? value : "" })}
                   placeholder={t("(none)")}
                 />
                 <ValueInput

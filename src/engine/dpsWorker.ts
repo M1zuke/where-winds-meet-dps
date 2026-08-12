@@ -8,7 +8,15 @@ import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withDerivedStats } from "./derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "./panel"
 import { graduationInputs } from "./graduation"
-import type { Arsenal, BowSet, GearPiece, GearSlot, Inputs, ItemRankingRow } from "./types"
+import type {
+  Arsenal,
+  BowSet,
+  GearPiece,
+  GearSlot,
+  GearWordName,
+  Inputs,
+  ItemRankingRow,
+} from "./types"
 
 export interface DpsDelta {
   current: number
@@ -88,7 +96,7 @@ export interface RetunementWorkerRequest {
 
 export interface RetunementRow {
   slotIndex: number
-  word: string
+  word: GearWordName
   legal: boolean
   isCurrent: boolean
   deltaDps: number
