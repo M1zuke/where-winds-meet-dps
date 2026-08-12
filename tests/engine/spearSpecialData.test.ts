@@ -5,7 +5,7 @@ import {
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   RIVER_FLOW_DURATION_FRAMES,
   SPEAR_SPECIAL_COOLDOWN_FRAMES,
-} from "../../src/data/classes/bellstrikeUmbraGates"
+} from "../../src/data/classes/bellstrike-umbra/gates"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_DETONATION_FRAMES,

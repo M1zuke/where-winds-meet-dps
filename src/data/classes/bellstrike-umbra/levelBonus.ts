@@ -3,8 +3,8 @@
 import {
   APP_PLAYER_LEVEL,
   playerLevelAttributeAttackBonus,
-} from "../../engine/buffs/levelAttributeBonus"
-import type { TimelineMechanic } from "../../engine/mechanics/types"
+} from "../../../engine/buffs/levelAttributeBonus"
+import type { TimelineMechanic } from "../../../engine/mechanics/types"
 
 const CLASS_ID = "bellstrikeUmbra"
 const ROLES = ["role:bleedDetonation", "role:bleedTick"]

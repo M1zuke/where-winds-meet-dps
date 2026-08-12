@@ -36,7 +36,7 @@ export const DEBUFF = {
   bitterSeasonTick: "debuff-bellstrikeUmbra-bitter-season-tick",
 } as const
 
-// The two gate buffs `bellstrikeUmbraGates.ts` registers — consumed by the
+// The two gate buffs `classes/bellstrike-umbra/gates.ts` registers — consumed by the
 // timeline (`HitVariant` swaps, trigger conditions), never carrying stat
 // effects of their own. Sword Horizon's two Zenith gates are declared by
 // `data/innerWays/swordHorizonZenith.ts` instead.

@@ -32,7 +32,7 @@ export const DEBUFF = {
   bitterSeasonTick: "debuff-stonesplitStrength-bitter-season-tick",
 } as const
 
-// The two gate buffs `stonesplitStrengthGates.ts` registers — a rotation hit
+// The two gate buffs `classes/stonesplit-strength/gates.ts` registers — a rotation hit
 // applies them, and they carry the stat effects the timeline reads.
 export const STATUS = {
   dread: "buff-stonesplitStrength-dread",

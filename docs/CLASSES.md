@@ -34,8 +34,12 @@ Test-suite consequences are in TESTING.md § "Class scoping".
 `src/data/` holds **only content** — value declarations, id tables, JSON tables.
 `src/definitions/` holds the contracts, registries and composition.
 
-- **Adding a class touches only `src/data/`** — its own modules plus a one-line
-  entry in the class barrel. Never `src/definitions/`, never `src/engine/`.
+- **Adding a class touches only `src/data/`** — its own folder in the class tree,
+  its skill folder, plus a one-line entry in the class barrel. Never
+  `src/definitions/`, never `src/engine/`.
+- **A class's own modules live in one folder per class**, whose barrel exports the
+  `defineClass` call. A module only one class uses belongs there, not beside the
+  barrel.
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
   ways, classes. There is no JSON authoring format: the only JSON under
@@ -46,8 +50,9 @@ Test-suite consequences are in TESTING.md § "Class scoping".
   `ids.ts` or a JSON table into an individual content module.
 - Both halves are mechanically guarded (TESTING.md § "The architecture guards").
 
-Naming: modules and tables under `src/data/` are camelCase; per-class skill
-folders and the skill files inside them stay kebab-case.
+Naming: per-class folders are kebab-case in both the class and the skill tree,
+as are the skill files inside one. Every other module and table under `src/data/`
+is camelCase.
 
 ## One definition per class
 

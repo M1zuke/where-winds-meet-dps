@@ -10,7 +10,7 @@ import { SKILL, STATUS } from "../../src/data/skills/stonesplit-strength/ids"
 import {
   DREAD_DURATION_FRAMES,
   FEARFUL_BLADE_DURATION_FRAMES,
-} from "../../src/data/classes/stonesplitStrengthGates"
+} from "../../src/data/classes/stonesplit-strength/gates"
 import { shatteredRidge } from "../../src/data/sets/shatteredRidge"
 
 const CLASS = "stonesplitStrength"

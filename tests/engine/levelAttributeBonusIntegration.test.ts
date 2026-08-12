@@ -5,7 +5,7 @@ import { computeSkillDamage } from "../../src/engine/formula"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { defaultInputs } from "../../src/engine/defaults"
-import { levelAttributeBonusMechanic } from "../../src/data/classes/bellstrikeUmbraLevelBonus"
+import { levelAttributeBonusMechanic } from "../../src/data/classes/bellstrike-umbra/levelBonus"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
 
 import type { Inputs } from "../../src/engine/types"
@@ -128,7 +128,7 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
   // `simulateTimeline` run can't exercise this directly any more — with only
   // Bellstrike Umbra shipped, every other classId is unknown and
   // `buildContext`'s `getSchool` throws on it — so this drives the gate
-  // itself, the same unit `bellstrikeUmbraLevelBonus.ts` declares it against.
+  // itself, the same unit `bellstrike-umbra/levelBonus.ts` declares it against.
   it("does not arm for a Bleed Detonation-named skill on a non-bellstrikeUmbra class", () => {
     const setup: MechanicSetup = {
       inputs: defaultInputs,

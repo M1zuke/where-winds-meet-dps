@@ -1,6 +1,6 @@
-import type { Buff } from "../../engine/buff"
-import { defineGateBuff } from "../../definitions/skills/skillDef"
-import { STATUS } from "../skills/stonesplit-strength/ids"
+import type { Buff } from "../../../engine/buff"
+import { defineGateBuff } from "../../../definitions/skills/skillDef"
+import { STATUS } from "../../skills/stonesplit-strength/ids"
 
 export const DREAD_DURATION_FRAMES = 420
 export const FEARFUL_BLADE_DURATION_FRAMES = 900

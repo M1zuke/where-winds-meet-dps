@@ -1,18 +1,18 @@
-import { defineClass } from "../../definitions/classes/classDef"
-import { CLASS_ID, SKILLS } from "../skills/bellstrike-umbra"
-import { withUniversalSkills } from "../../definitions/skills/universalSkills"
-import { DEBUFFS } from "../skills/bellstrike-umbra/debuffs"
-import { rotationPoolFor } from "../../definitions/rotations/registry"
-import { BELLSTRIKE_POOL } from "./retunementPools"
-import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
-import { bellstrikeUmbraBleedPen } from "../skills/bellstrike-umbra/buffs/bleedPen"
-import { bellstrikeUmbraBleedingDamage } from "../skills/bellstrike-umbra/buffs/bleedingDamage"
-import { BELLSTRIKE_UMBRA_GATES } from "./bellstrikeUmbraGates"
+import { defineClass } from "../../../definitions/classes/classDef"
+import { CLASS_ID, SKILLS } from "../../skills/bellstrike-umbra"
+import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
+import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
+import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { BELLSTRIKE_POOL } from "./retunementPool"
+import { declareMechanic, MECHANIC_ORDER } from "../../../engine/mechanics"
+import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
+import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
+import { BELLSTRIKE_UMBRA_GATES } from "./gates"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
-} from "../innerWays/swordHorizonZenith"
-import { levelAttributeBonusMechanic } from "./bellstrikeUmbraLevelBonus"
+} from "../../innerWays/swordHorizonZenith"
+import { levelAttributeBonusMechanic } from "./levelBonus"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,

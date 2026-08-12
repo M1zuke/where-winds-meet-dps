@@ -28,7 +28,7 @@ function repoRelative(path: string): string {
 
 function importSpecifiers(text: string): string[] {
   const fromImports = [...text.matchAll(/\bfrom\s+["']([^"']+)["']/g)].map((match) => match[1])
-  // `import "../../data/classes/bellstrikeUmbra"` has no `from` clause but
+  // `import "../../data/classes/bellstrike-umbra"` has no `from` clause but
   // still reaches the target module for its side effect — the exact form
   // this guard exists to catch.
   const bareImports = [...text.matchAll(/^\s*import\s+["']([^"']+)["']/gm)].map((match) => match[1])
