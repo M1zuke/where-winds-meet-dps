@@ -4,7 +4,7 @@ import { createGraduationGearPiece } from "../graduationGear"
 
 const idPrefix = "graduation-stonesplit-strength"
 
-export const STONESPLIT_STRENGTH_GRADUATION_BUILD = {
+export const STONESPLIT_STRENGTH_GRADUATION_BUILD: GraduationBuild = {
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -58,4 +58,4 @@ export const STONESPLIT_STRENGTH_GRADUATION_BUILD = {
   set: SET_ID.shatteredRidge,
   bowSet: "crit",
   arsenal: "stonesplit",
-} satisfies GraduationBuild
+}

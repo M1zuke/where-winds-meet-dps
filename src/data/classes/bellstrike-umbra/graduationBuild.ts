@@ -4,7 +4,7 @@ import { createGraduationGearPiece } from "../graduationGear"
 
 const idPrefix = "graduation-bellstrike-umbra"
 
-export const BELLSTRIKE_UMBRA_GRADUATION_BUILD = {
+export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -58,4 +58,4 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD = {
   set: SET_ID.hawking,
   bowSet: "crit",
   arsenal: "bellstrike",
-} satisfies GraduationBuild
+}
