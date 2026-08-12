@@ -49,6 +49,24 @@
   font-size: 0.86em;
 }
 
+.statsPane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statsMeta {
+  color: var(--color-text-muted);
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.statsMetaValue {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+
 .identityBadge {
   padding: 2px 7px;
   border: 1px solid var(--color-border);

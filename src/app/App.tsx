@@ -245,7 +245,7 @@ function AppInner() {
       )}
       {graduationDialogOpen && (
         <GraduationBuildDialog
-          classId={inputs.classId}
+          inputs={configuredInputs}
           theoreticalDps={graduation.theoreticalDps}
           onClose={() => setGraduationDialogOpen(false)}
         />

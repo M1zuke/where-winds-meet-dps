@@ -1,17 +1,21 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { getAttunement } from "../../../../engine/attunements"
-import type { Arsenal, BowSet, GearPiece } from "../../../../engine/types"
+import { graduationInputs } from "../../../../engine/graduation"
+import { resistanceForInputs } from "../../../../engine/panel"
+import type { Arsenal, BowSet, GearPiece, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
+import { SubTabs } from "../../../components/sub-tabs/SubTabs"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
 import previewStyles from "../shared/gearPreview.module.scss"
 import styles from "./GraduationBuildDialog.module.scss"
 
 interface Props {
-  classId: string
+  inputs: Inputs
   theoreticalDps: number | null
   onClose(): void
 }
@@ -47,10 +51,12 @@ function baseStatsLabel(piece: GearPiece, t: (text: string) => string): string {
     : `${t("HP")} ${piece.hp.toLocaleString()} · ${t("Phys Defense")} ${piece.physDef}`
 }
 
-export function GraduationBuildDialog({ classId, theoreticalDps, onClose }: Props) {
+export function GraduationBuildDialog({ inputs, theoreticalDps, onClose }: Props) {
   const { t } = useI18n()
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
-  const classDef = classDefinition(classId)
+  const [tab, setTab] = useState<"build" | "stats">("build")
+  const classDef = classDefinition(inputs.classId)
+  const benchmarkInputs = useMemo(() => graduationInputs(inputs), [inputs])
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -62,7 +68,7 @@ export function GraduationBuildDialog({ classId, theoreticalDps, onClose }: Prop
     return () => document.removeEventListener("keydown", onKey)
   }, [onClose])
 
-  if (!classDef) return null
+  if (!classDef || !benchmarkInputs) return null
   const build = classDef.graduationBuild
   const piecesBySlot = new Map(build.gear.map((piece) => [piece.slot, piece]))
   const armorSet = build.set ? SET_BY_ID[build.set]?.name : null
@@ -92,56 +98,81 @@ export function GraduationBuildDialog({ classId, theoreticalDps, onClose }: Prop
             </span>
           </div>
 
-          <div className={styles.buildSummary}>
-            <SummaryItem label={t("Armor Set")} value={t(armorSet ?? "(unselected)")} />
-            <SummaryItem label={t("Bow Set")} value={t(bowSet)} />
-            <SummaryItem label={t("Arsenal")} value={t(ARSENAL_LABELS[build.arsenal])} />
-            <SummaryItem label={t("Talents & Oddities")} value={t("All enabled")} />
-          </div>
+          <SubTabs
+            active={tab}
+            onSelect={setTab}
+            tabs={[
+              { key: "build", label: t("Build") },
+              { key: "stats", label: t("Panel Stats") },
+            ]}
+          />
 
-          <div className={previewStyles.pieceList}>
-            {GEAR_SLOTS.map((slot) => {
-              const piece = piecesBySlot.get(slot)
-              if (!piece) return null
-              const attunement = getAttunement(piece.attunement)
-              return (
-                <article
-                  className={previewStyles.piece}
-                  key={slot}
-                  aria-label={t(GEAR_SLOT_LABELS[slot])}
-                >
-                  <div className={previewStyles.pieceHead}>
-                    <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
-                    <span className="hint">{baseStatsLabel(piece, t)}</span>
-                  </div>
-                  <div className={previewStyles.identityRow}>
-                    <span className={styles.identityBadge}>{t(`Level ${piece.level}`)}</span>
-                    <span className={styles.identityBadge}>{t(piece.rarity)}</span>
-                  </div>
-                  <div className={previewStyles.affixList}>
-                    {piece.words.map((word, index) => (
-                      <div className={previewStyles.affix} key={`${word.word}-${index}`}>
-                        <span className={previewStyles.affixName}>{t(word.word)}</span>
-                        <span className={previewStyles.affixValue}>
-                          {formatGearValue(word.value)}
-                        </span>
-                        <span />
+          {tab === "build" && (
+            <>
+              <div className={styles.buildSummary}>
+                <SummaryItem label={t("Armor Set")} value={t(armorSet ?? "(unselected)")} />
+                <SummaryItem label={t("Bow Set")} value={t(bowSet)} />
+                <SummaryItem label={t("Arsenal")} value={t(ARSENAL_LABELS[build.arsenal])} />
+                <SummaryItem label={t("Talents & Oddities")} value={t("All enabled")} />
+              </div>
+
+              <div className={previewStyles.pieceList}>
+                {GEAR_SLOTS.map((slot) => {
+                  const piece = piecesBySlot.get(slot)
+                  if (!piece) return null
+                  const attunement = getAttunement(piece.attunement)
+                  return (
+                    <article
+                      className={previewStyles.piece}
+                      key={slot}
+                      aria-label={t(GEAR_SLOT_LABELS[slot])}
+                    >
+                      <div className={previewStyles.pieceHead}>
+                        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
+                        <span className="hint">{baseStatsLabel(piece, t)}</span>
                       </div>
-                    ))}
-                    <div className={`${previewStyles.affix} ${styles.attunement}`}>
-                      <span className={previewStyles.affixName}>
-                        {t(attunement?.label ?? piece.attunement)}
-                      </span>
-                      <span className={previewStyles.affixValue}>
-                        {formatGearValue(piece.attunementValue)}
-                      </span>
-                      <span className={styles.attunementLabel}>{t("Attunement")}</span>
-                    </div>
-                  </div>
-                </article>
-              )
-            })}
-          </div>
+                      <div className={previewStyles.identityRow}>
+                        <span className={styles.identityBadge}>{t(`Level ${piece.level}`)}</span>
+                        <span className={styles.identityBadge}>{t(piece.rarity)}</span>
+                      </div>
+                      <div className={previewStyles.affixList}>
+                        {piece.words.map((word, index) => (
+                          <div className={previewStyles.affix} key={`${word.word}-${index}`}>
+                            <span className={previewStyles.affixName}>{t(word.word)}</span>
+                            <span className={previewStyles.affixValue}>
+                              {formatGearValue(word.value)}
+                            </span>
+                            <span />
+                          </div>
+                        ))}
+                        <div className={`${previewStyles.affix} ${styles.attunement}`}>
+                          <span className={previewStyles.affixName}>
+                            {t(attunement?.label ?? piece.attunement)}
+                          </span>
+                          <span className={previewStyles.affixValue}>
+                            {formatGearValue(piece.attunementValue)}
+                          </span>
+                          <span className={styles.attunementLabel}>{t("Attunement")}</span>
+                        </div>
+                      </div>
+                    </article>
+                  )
+                })}
+              </div>
+            </>
+          )}
+
+          {tab === "stats" && (
+            <div className={styles.statsPane}>
+              <div className={styles.statsMeta}>
+                {t("Resistance")}:{" "}
+                <span className={styles.statsMetaValue}>
+                  {resistanceForInputs(benchmarkInputs)}%
+                </span>
+              </div>
+              <StatsOverviewPanel inputs={benchmarkInputs} />
+            </div>
+          )}
         </div>
 
         <div className={dialogChrome.footer}>

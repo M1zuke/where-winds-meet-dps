@@ -4,7 +4,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
-import { StatsOverviewPanel } from "../../src/ui/features/overview/stats-overview-panel/StatsOverviewPanel"
+import { StatsOverviewPanel } from "../../src/ui/components/stats-overview-panel/StatsOverviewPanel"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
 describe("StatsOverviewPanel", () => {

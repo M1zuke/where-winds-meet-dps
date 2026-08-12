@@ -1,10 +1,10 @@
-import type { Inputs } from "../../../../engine/types"
-import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
-import { totalPlayerAttributes } from "../../../../definitions/baseStats"
-import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../../engine/formula"
-import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../../engine/panel"
-import { useI18n } from "../../../../i18n/i18nContext"
-import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../../utils/statFormatting"
+import type { Inputs } from "../../../engine/types"
+import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
+import { totalPlayerAttributes } from "../../../definitions/baseStats"
+import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
+import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
+import { useI18n } from "../../../i18n/i18nContext"
+import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../utils/statFormatting"
 import styles from "./StatsOverviewPanel.module.scss"
 
 interface Props {
