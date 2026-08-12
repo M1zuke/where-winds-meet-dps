@@ -234,6 +234,17 @@ export function simulateTimeline(inputs: Inputs): Result {
     holds: (condition) => conditionHolds(condition, frame),
   })
 
+  const propsOfSkill = (skill: Skill, hitCount = skill.hits.length): SkillProperties => {
+    const props: SkillProperties = { hitCount, castTime: (skill.castFrames || 1) / FPS }
+    for (const tag of skill.tags ?? []) {
+      const propertyKey = PROP_TO_PROPERTY[tag as (typeof PROP)[keyof typeof PROP]]
+      if (propertyKey) props[propertyKey] = true
+      else if (tag.startsWith("attack:"))
+        props.attackType = tag.slice(7) as SkillProperties["attackType"]
+    }
+    return props
+  }
+
   const buffEngine: BuffEngine | null = (() => {
     try {
       const engine = new BuffEngine(
@@ -245,17 +256,11 @@ export function simulateTimeline(inputs: Inputs): Result {
         const skill = ls.resolved.skill
         const castTag = castTagOf(skill)
         if (!castTag) continue
-        const props: SkillProperties = {
-          hitCount: ls.performedHits.length,
-          castTime: (skill.castFrames || 1) / FPS,
-        }
-        for (const tag of skill.tags ?? []) {
-          const propertyKey = PROP_TO_PROPERTY[tag as (typeof PROP)[keyof typeof PROP]]
-          if (propertyKey) props[propertyKey] = true
-          else if (tag.startsWith("attack:"))
-            props.attackType = tag.slice(7) as SkillProperties["attackType"]
-        }
-        engine.processSkillCast(castTag, ls.startFrame / FPS, props)
+        engine.processSkillCast(
+          castTag,
+          ls.startFrame / FPS,
+          propsOfSkill(skill, ls.performedHits.length),
+        )
       }
       return engine
     } catch {
@@ -318,6 +323,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     let sig = sigParts.sort().join("|")
     let forceCritFromBuff = false
     if (buffEngine && skill) {
+      buffEngine.processDamageHit(skill, frame / FPS)
       const site = buffEngine.calculateDamageEffects(skill, frame / FPS)
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
@@ -565,6 +571,13 @@ export function simulateTimeline(inputs: Inputs): Result {
       } else {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
+        // The generated cast reaches the buff engine before its own hits are
+        // queued, so a def that opts into generated skills sees it at the frame
+        // it happens rather than at whatever frame the parent cast started.
+        const subCastTag = castTagOf(sub)
+        if (buffEngine && subCastTag) {
+          buffEngine.processSkillCast(subCastTag, frame / FPS, propsOfSkill(sub), true)
+        }
         for (const subHit of sub.hits) {
           queue.push({ frame: frame + subHit.frame, seq: seq++, skill: sub, hit: subHit })
         }

@@ -8,4 +8,5 @@ export const shatteredRidge = defineSet({
   name: "Shattered Ridge",
   siteKey: "shatteredridge",
   panelBonus: { stat: "minPhys", value: 78 },
+  formulaBonus: { generalDamageBoost: 0.05 },
 })
