@@ -56,6 +56,6 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD = {
     }),
   ],
   set: SET_ID.hawking,
-  bowSet: "precision",
+  bowSet: "crit",
   arsenal: "bellstrike",
 } satisfies GraduationBuild
