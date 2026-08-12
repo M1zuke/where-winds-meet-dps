@@ -12,14 +12,13 @@ import {
   resolveInnerWayId,
 } from "../../src/definitions/innerWays/registry"
 import { CLASS_DEFS } from "../../src/definitions/classes/registry"
-import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { PARAM } from "../../src/data/skills/buffs/ids"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
 import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
 import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
-import { displayGateFor } from "../../src/engine/buffs/displayGates"
 import { hiddenTimelineBuffIds } from "../../src/engine/buffs/catalog"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { prepareMechanics } from "../../src/engine/mechanics"
@@ -221,8 +220,8 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
     for (const buff of buffs) expect(buff.classId).toBe("bellstrikeUmbra")
   })
 
-  it("Insightful Strike's display gate answers on the slotted inner ways alone, no class check", () => {
-    const gate = displayGateFor(BUFF.concentration)!
+  it("Concentration's catalog row answers on the slotted inner ways alone, no class check", () => {
+    const { catalogRow } = innerWayDefinition(INNER_WAY_ID.insightfulStrike)!.mechanics![0].mechanic
     const insightfulStrikeSlotted: Inputs = {
       ...defaultInputs,
       classId: "notARealClass",
@@ -233,8 +232,8 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
         { ...emptyMindMethod },
       ],
     }
-    expect(gate(insightfulStrikeSlotted)).toBe(true)
-    expect(gate({ ...defaultInputs, classId: "bellstrikeUmbra" })).toBe(false)
+    expect(catalogRow!.available(insightfulStrikeSlotted)).toBe(true)
+    expect(catalogRow!.available({ ...defaultInputs, classId: "bellstrikeUmbra" })).toBe(false)
   })
 
   it("the Concentration mechanic prepares for a build with Insightful Strike slotted", () => {
@@ -271,7 +270,7 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
 
 describe("inner-way ownership — buffDefs and skillBehaviors", () => {
   it.each([
-    [INNER_WAY_ID.insightfulStrike, ["concentration"]],
+    [INNER_WAY_ID.insightfulStrike, []],
     [INNER_WAY_ID.wolfchasersArt, ["potentRiverFlow", "wineGu", "soulShaken"]],
     [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
     [INNER_WAY_ID.moraleChant, []],

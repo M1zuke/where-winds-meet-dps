@@ -29,7 +29,8 @@ describe("spec-scoping — buffDefsForClass", () => {
 
   it("unknown class falls back to the full universe", () => {
     const ids = new Set(buffDefsForClass("unknownClass").map((d) => d.id))
-    expect(ids.has("concentration")).toBe(true)
+    expect(ids.has("soulShaken")).toBe(true)
+    expect(ids.has("fluteBoost")).toBe(true)
   })
 })
 

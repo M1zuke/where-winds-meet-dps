@@ -71,45 +71,6 @@
       },
       "buffs": [
         {
-          "id": "concentration",
-          "name": "Concentration",
-          "classBuff": true,
-          "requires": {
-            "param": "insightfulStrike"
-          },
-          "affects": null,
-          "affectsProperty": null,
-          "affectsWeaponTypes": null,
-          "excludes": null,
-          "triggeredBy": [],
-          "alwaysActive": false,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 10,
-          "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "affinityDamageBoost",
-              "amount": 0.1
-            },
-            {
-              "kind": "stat",
-              "statKey": "directAffinityRate",
-              "amount": 0.03
-            }
-          ],
-          "summary": "affinityDmg +10%, directAffinity +3%"
-        },
-        {
           "id": "buff-bellstrikeUmbra-zenith-bar",
           "name": "Zenith Bar",
           "classBuff": true,

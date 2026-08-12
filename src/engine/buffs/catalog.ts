@@ -1,6 +1,6 @@
 import { catalogBuffDefs } from "./data"
 import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
-import { matchesScope } from "../scope"
+import { matchesScope, type Scope } from "../scope"
 import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
@@ -19,9 +19,11 @@ import type { BuffParams } from "./buffEngine"
 import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass } from "../builtinLibrary"
-import { CLASS_DEFS, classDefinition } from "../../definitions/classes/registry"
+import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/classes/registry"
+import { INNER_WAYS } from "../../definitions/innerWays/registry"
+import type { BuffStatEffect } from "../buff"
 
-function affectsSummary(module: BuffModule): string {
+function affectsSummary(module: Scope): string {
   if (module.affectsProperty) return module.affectsProperty
   if (module.affectsWeaponTypes) return module.affectsWeaponTypes.join("/")
   if (module.affects === null || module.affects === undefined) return "all"
@@ -145,6 +147,41 @@ export interface ReceivesRow {
   triggeredBy: string | null
 }
 
+// A mechanic's Receives row, derived from the very `effects` it applies so the
+// card cannot drift from the engine, and labelled with the inner way that
+// declares it. A mechanic is never one of the class's own defs, so it never
+// counts as a spec mechanic and nothing triggers it.
+function mechanicRows(tagSet: Set<string>, classId?: string, inputs?: Inputs): ReceivesRow[] {
+  const definition = classId ? classDefinition(classId) : undefined
+  const rows: ReceivesRow[] = []
+  for (const owner of definition ? innerWayDefsOf(definition) : INNER_WAYS) {
+    for (const { mechanic } of owner.mechanics ?? []) {
+      const row = mechanic.catalogRow
+      if (!row || !matchesScope(tagSet, row)) continue
+      rows.push({
+        id: mechanic.id,
+        name: `${row.name} (${affectsSummary(row)})`,
+        effect: summaryFromMechanicEffects(row.effects()),
+        requires: owner.name,
+        isSpecMechanic: false,
+        active: inputs ? row.available(inputs) : true,
+        triggeredBy: null,
+      })
+    }
+  }
+  return rows
+}
+
+function summaryFromMechanicEffects(effects: readonly BuffStatEffect[]): string {
+  return effects
+    .map(
+      (effect) =>
+        `${STAT_DEF_BY_KEY[effect.statKey]?.label ?? effect.statKey} ` +
+        `${effect.amount >= 0 ? "+" : ""}${(effect.amount * 100).toFixed(1)}%`,
+    )
+    .join(", ")
+}
+
 function gearStatRow(key: StatKey, affects: string, inputs?: Inputs): ReceivesRow {
   const label = STAT_DEF_BY_KEY[key]?.label ?? key
   const value = inputs ? ((inputs as unknown as Record<string, number>)[key] ?? 0) : null
@@ -188,6 +225,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
       triggeredBy: triggeredByNote(module, defsById),
     })
   }
+  rows.push(...mechanicRows(tagSet, classId, inputs))
 
   const weaponBoostKey = WEAPON_BOOST_STAT_KEY[skill.weaponOrAttribute ?? ""]
   if (weaponBoostKey) {

@@ -153,13 +153,15 @@ describe("Class Buffs column — scope, not alwaysActive, decides membership", (
 })
 
 describe("catalog summary pins — concentration", () => {
-  it("Receives row omits the tier-6 pair, matching the pre-conversion display path", () => {
+  it("Receives row reads the mechanic's own effects, the ones it applies", () => {
     const rows = receivesForSkill(findSkill("Sword Martial Q"), CLASS, {
       ...defaultInputs,
       classId: CLASS,
     })
-    expect(rows.find((row) => row.id === "concentration")!.effect).toBe(
-      "affinityDmg +10%, directAffinity +3%",
+    const concentration = rows.find((row) => row.id === "concentration")!
+    expect(concentration.effect).toBe(
+      "Affinity Damage Boost +10.0%, Direct Affinity +3.0%, General Damage Boost +1.5%",
     )
+    expect(concentration.requires).toBe("Insightful Strike")
   })
 })
