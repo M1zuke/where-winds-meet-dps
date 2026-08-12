@@ -23,6 +23,7 @@ export interface GraduationBuild {
   set: string | null
   bowSet: BowSet
   arsenal: Arsenal
+  relayedOverrides?: Partial<Pick<GraduationBuild, "gear" | "set" | "bowSet" | "arsenal">>
 }
 
 // Everything a class *is*. A field it does not use is an empty array — see

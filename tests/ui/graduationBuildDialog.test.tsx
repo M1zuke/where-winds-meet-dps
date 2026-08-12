@@ -15,6 +15,7 @@ describe("GraduationBuildDialog", () => {
         <GraduationBuildDialog
           inputs={defaultInputs}
           theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -31,12 +32,64 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Bleed Boost")
   })
 
+  it("relays every word, swaps to the relayed bow set and shows the relayed DPS", () => {
+    render(
+      <I18nProvider>
+        <GraduationBuildDialog
+          inputs={defaultInputs}
+          theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
+          onClose={() => undefined}
+        />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Bow Set").nextElementSibling).toHaveTextContent("Crit")
+    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent("77.8")
+
+    fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
+
+    expect(screen.getByText("DPS 11,111.11")).toBeInTheDocument()
+    expect(screen.getByText("Bow Set").nextElementSibling).toHaveTextContent("Affinity")
+
+    const relayedWeapon = screen.getByRole("article", { name: "Left Weapon" })
+    expect(relayedWeapon).toHaveTextContent("73.13")
+    expect(relayedWeapon).toHaveTextContent("46.44")
+    expect(relayedWeapon).not.toHaveTextContent("77.8")
+  })
+
+  it("carries the relayed toggle into the panel stats", () => {
+    render(
+      <I18nProvider>
+        <GraduationBuildDialog
+          inputs={defaultInputs}
+          theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
+          onClose={() => undefined}
+        />
+      </I18nProvider>,
+    )
+
+    fireEvent.click(screen.getByRole("tab", { name: "Panel Stats" }))
+    const maxRollPhys = screen.getByText("Max Phys").parentElement?.textContent
+
+    fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
+    const relayedPhys = screen.getByText("Max Phys").parentElement?.textContent
+
+    const relayed = applyBowSet(
+      applyArmorSet(withDerivedStats(graduationInputs(defaultInputs, "relayed")!)),
+    )
+    expect(relayedPhys).toContain(fmt(relayed.phys.max, false))
+    expect(relayedPhys).not.toBe(maxRollPhys)
+  })
+
   it("switches to the stats tab and reports the graduation build's panel stats", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
           inputs={defaultInputs}
           theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -66,6 +119,7 @@ describe("GraduationBuildDialog", () => {
         <GraduationBuildDialog
           inputs={{ ...defaultInputs, classId: "stonesplitStrength" }}
           theoreticalDps={null}
+          relayedTheoreticalDps={null}
           onClose={onClose}
         />
       </I18nProvider>,

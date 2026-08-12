@@ -7,9 +7,14 @@ import { WORKER_DEBOUNCE_MS } from "./workerDebounce"
 export interface GraduationRateData {
   rate: number | null
   theoreticalDps: number | null
+  relayedTheoreticalDps: number | null
 }
 
-const EMPTY_DATA: GraduationRateData = { rate: null, theoreticalDps: null }
+const EMPTY_DATA: GraduationRateData = {
+  rate: null,
+  theoreticalDps: null,
+  relayedTheoreticalDps: null,
+}
 
 export function useGraduationRate(
   inputs: Inputs,
@@ -26,10 +31,10 @@ export function useGraduationRate(
     workerRef.current = worker
     worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
       if (event.data.kind !== "graduation") return
-      const { reqId, graduationRate, theoreticalDps } = event.data
+      const { reqId, graduationRate, theoreticalDps, relayedTheoreticalDps } = event.data
       if (reqId < lastReceivedRef.current) return
       lastReceivedRef.current = reqId
-      setData({ rate: graduationRate, theoreticalDps })
+      setData({ rate: graduationRate, theoreticalDps, relayedTheoreticalDps })
       if (reqId === reqIdRef.current) setIsPending(false)
     }
     return () => {

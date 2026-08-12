@@ -9,6 +9,13 @@ function sameRollFor<TName extends string>(
   return Object.fromEntries(names.map((name) => [name, roll])) as Record<TName, number>
 }
 
+function sameUnitFor<TName extends string>(
+  names: readonly TName[],
+  unit: GearWordUnit,
+): Record<TName, GearWordUnit> {
+  return Object.fromEntries(names.map((name) => [name, unit])) as Record<TName, GearWordUnit>
+}
+
 export const GEAR_WORD_MAX_ROLL: Readonly<Record<GearWordName, number>> = {
   Power: 49.4,
   Agility: 49.4,
@@ -33,5 +40,34 @@ export const GEAR_WORD_MAX_ROLL: Readonly<Record<GearWordName, number>> = {
   ...sameRollFor(
     ATTRIBUTE_KEYS.flatMap((attribute) => [`Min ${attribute}`, `Max ${attribute}`] as const),
     44.2,
+  ),
+}
+
+export type GearWordUnit = "raw" | "percent"
+
+export const GEAR_WORD_UNIT: Readonly<Record<GearWordName, GearWordUnit>> = {
+  Power: "raw",
+  Agility: "raw",
+  Momentum: "raw",
+  "Min Phys": "raw",
+  "Max Phys": "raw",
+  Precision: "percent",
+  Crit: "percent",
+  Affinity: "percent",
+  "All Martial Boost": "percent",
+  "Damage VS Boss %": "percent",
+  "Single-Target Mystic Skill DMG Boost": "percent",
+  "Area Mystic Skill DMG Boost": "percent",
+  "Min Void Attack": "raw",
+  "Max Void Attack": "raw",
+  "Physical Penetration": "percent",
+  "Attribute Penetration": "percent",
+  ...sameUnitFor(
+    WEAPON_NAMES.map((weapon) => `${weapon} Martial Boost` as const),
+    "percent",
+  ),
+  ...sameUnitFor(
+    ATTRIBUTE_KEYS.flatMap((attribute) => [`Min ${attribute}`, `Max ${attribute}`] as const),
+    "raw",
   ),
 }

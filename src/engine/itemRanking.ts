@@ -1,9 +1,9 @@
-import type { AttributeKey, GearWordName, Inputs, ItemRankingRow, WeaponName } from "./types"
+﻿import type { AttributeKey, GearWordName, Inputs, ItemRankingRow, WeaponName } from "./types"
 import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
-import { GEAR_WORD_MAX_ROLL } from "../data/stats/gearWordRolls"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../data/stats/gearWordRolls"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
 import { attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
@@ -46,11 +46,15 @@ function rotationWeapons(inputs: Inputs): WeaponName[] {
 
 function wordSpec(
   word: GearWordName,
-  unit: WordSpec["unit"],
   apply: (inputs: Inputs, roll: number) => void,
 ): WordSpec<GearWordName> {
   const roll = GEAR_WORD_MAX_ROLL[word]
-  return { word, amount: roll, unit, apply: (inputs) => clone(inputs, (next) => apply(next, roll)) }
+  return {
+    word,
+    amount: roll,
+    unit: GEAR_WORD_UNIT[word],
+    apply: (inputs) => clone(inputs, (next) => apply(next, roll)),
+  }
 }
 
 function buildWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
@@ -60,78 +64,78 @@ function buildWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
   const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
   const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
   const specs: WordSpec<GearWordName>[] = [
-    wordSpec("Power", "raw", (x) => {
+    wordSpec("Power", (x) => {
       x.phys.min += 11.115
       x.phys.max += 67.184
     }),
-    wordSpec("Agility", "raw", (x, roll) => {
+    wordSpec("Agility", (x, roll) => {
       x.phys.min += 44.46
       x.critRate += roll * 0.00076
     }),
-    wordSpec("Momentum", "raw", (x, roll) => {
+    wordSpec("Momentum", (x, roll) => {
       x.phys.max += 44.46
       x.affinityRate += roll * 0.00038
     }),
-    wordSpec("Min Phys", "raw", (x, roll) => {
+    wordSpec("Min Phys", (x, roll) => {
       x.phys.min += roll
     }),
-    wordSpec("Max Phys", "raw", (x, roll) => {
+    wordSpec("Max Phys", (x, roll) => {
       x.phys.max += roll
     }),
-    wordSpec("Precision", "percent", (x, roll) => {
+    wordSpec("Precision", (x, roll) => {
       x.precision += roll
     }),
-    wordSpec("Crit", "percent", (x, roll) => {
+    wordSpec("Crit", (x, roll) => {
       x.critRate += roll
     }),
-    wordSpec("Affinity", "percent", (x, roll) => {
+    wordSpec("Affinity", (x, roll) => {
       x.affinityRate += roll
     }),
-    wordSpec("All Martial Boost", "percent", (x, roll) => {
+    wordSpec("All Martial Boost", (x, roll) => {
       x.allMartialBoost += roll
     }),
   ]
   if (primaryWeapon)
     specs.push(
-      wordSpec(`${primaryWeapon} Martial Boost`, "percent", (x, roll) => {
+      wordSpec(`${primaryWeapon} Martial Boost`, (x, roll) => {
         applyWeaponBoost(x, primaryWeapon, roll)
       }),
     )
   if (secondaryWeapon)
     specs.push(
-      wordSpec(`${secondaryWeapon} Martial Boost`, "percent", (x, roll) => {
+      wordSpec(`${secondaryWeapon} Martial Boost`, (x, roll) => {
         applyWeaponBoost(x, secondaryWeapon, roll)
       }),
     )
 
   specs.push(
-    wordSpec("Damage VS Boss %", "percent", (x, roll) => {
+    wordSpec("Damage VS Boss %", (x, roll) => {
       x.bossBoost += roll
     }),
-    wordSpec("Single-Target Mystic Skill DMG Boost", "percent", (x, roll) => {
+    wordSpec("Single-Target Mystic Skill DMG Boost", (x, roll) => {
       x.singleMysticBoost += roll
     }),
-    wordSpec("Area Mystic Skill DMG Boost", "percent", (x, roll) => {
+    wordSpec("Area Mystic Skill DMG Boost", (x, roll) => {
       x.areaMysticBoost += roll
     }),
     ...ATTRIBUTE_KEYS.flatMap((attribute) => [
-      wordSpec(`Min ${attribute}`, "raw", (x, roll) => {
+      wordSpec(`Min ${attribute}`, (x, roll) => {
         applyAttrAttack(x, attribute, "min", roll)
       }),
-      wordSpec(`Max ${attribute}`, "raw", (x, roll) => {
+      wordSpec(`Max ${attribute}`, (x, roll) => {
         applyAttrAttack(x, attribute, "max", roll)
       }),
     ]),
-    wordSpec("Min Void Attack", "raw", (x, roll) => {
+    wordSpec("Min Void Attack", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "min", roll)
     }),
-    wordSpec("Max Void Attack", "raw", (x, roll) => {
+    wordSpec("Max Void Attack", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "max", roll)
     }),
-    wordSpec("Physical Penetration", "percent", (x, roll) => {
+    wordSpec("Physical Penetration", (x, roll) => {
       x.phys.penetration += roll
     }),
-    wordSpec("Attribute Penetration", "percent", (x, roll) => {
+    wordSpec("Attribute Penetration", (x, roll) => {
       applyAttrPenetration(x, school.primaryAttribute, roll)
     }),
   )

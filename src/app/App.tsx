@@ -247,6 +247,7 @@ function AppInner() {
         <GraduationBuildDialog
           inputs={configuredInputs}
           theoreticalDps={graduation.theoreticalDps}
+          relayedTheoreticalDps={graduation.relayedTheoreticalDps}
           onClose={() => setGraduationDialogOpen(false)}
         />
       )}

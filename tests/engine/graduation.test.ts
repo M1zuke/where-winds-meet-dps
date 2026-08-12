@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest"
-import { CLASS_DEFS } from "../../src/definitions/classes/registry"
+import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
 import { getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../../src/data/stats/gearWordRolls"
+import { relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
-import { graduationInputs } from "../../src/engine/graduation"
+import { graduationBuild, graduationInputs } from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { GEAR_SLOTS } from "../../src/engine/types"
 
@@ -58,6 +60,48 @@ describe("graduation builds", () => {
     },
   )
 
+  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s relays every graduation word to the shared relayed cap and keeps its attunement at max",
+    (classId, classDef) => {
+      const relayed = graduationBuild(classId, "relayed")
+      expect(relayed).not.toBeNull()
+
+      for (const piece of relayed!.gear) {
+        expect(piece.relayed).toBe(true)
+        for (const word of piece.words) {
+          if (!word.word) continue
+          expect(word.value).toBe(
+            relayedCapValue(GEAR_WORD_MAX_ROLL[word.word], GEAR_WORD_UNIT[word.word]),
+          )
+        }
+        expect(piece.attunementValue).toBe(getAttunement(piece.attunement)?.max)
+      }
+      expect(relayed!.gear.map((piece) => piece.id)).toEqual(
+        classDef.graduationBuild.gear.map((piece) => piece.id),
+      )
+    },
+  )
+
+  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s takes its relayed set, bow set and arsenal from the relayed overrides",
+    (classId, classDef) => {
+      const build = classDef.graduationBuild
+      const overrides = build.relayedOverrides ?? {}
+      const relayed = graduationBuild(classId, "relayed")
+
+      expect(relayed!.set).toBe(overrides.set ?? build.set)
+      expect(relayed!.bowSet).toBe(overrides.bowSet ?? build.bowSet)
+      expect(relayed!.arsenal).toBe(overrides.arsenal ?? build.arsenal)
+    },
+  )
+
+  it("leaves the max-roll variant untouched by the relayed overrides", () => {
+    const build = graduationBuild("bellstrikeUmbra", "maxRolls")
+    expect(build).toBe(classDefinition("bellstrikeUmbra")!.graduationBuild)
+    expect(build!.bowSet).toBe("crit")
+    expect(graduationBuild("bellstrikeUmbra", "relayed")!.bowSet).toBe("affinity")
+  })
+
   it("always enables every class talent and oddity", () => {
     const benchmarkInputs = graduationInputs(defaultInputs)
     expect(benchmarkInputs).not.toBeNull()
@@ -86,5 +130,17 @@ describe("computeGraduation", () => {
     expect(response.graduationRate).toBe(currentDps / theoreticalDps)
     expect(response.graduationRate).toBeGreaterThan(0)
     expect(response.graduationRate).toBeLessThan(1)
+  })
+
+  it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
+    const currentDps = dpsFor()
+    const relayedInputs = graduationInputs(defaultInputs, "relayed")
+    expect(relayedInputs).not.toBeNull()
+
+    const response = computeGraduation({ reqId: 18, inputs: defaultInputs, currentDps })
+
+    expect(response.relayedTheoreticalDps).toBe(dpsFor(relayedInputs!))
+    expect(response.relayedTheoreticalDps!).toBeLessThan(response.theoreticalDps!)
+    expect(response.graduationRate).toBe(currentDps / response.theoreticalDps!)
   })
 })

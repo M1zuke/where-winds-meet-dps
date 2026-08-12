@@ -14,6 +14,20 @@
   color: var(--color-text);
 }
 
+.relayedToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8em;
+  color: var(--color-text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+
+.relayedToggle input {
+  accent-color: var(--color-accent);
+}
+
 .theoreticalDps {
   color: var(--color-accent-bright);
   font-variant-numeric: tabular-nums;

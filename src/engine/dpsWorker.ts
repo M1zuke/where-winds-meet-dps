@@ -369,6 +369,7 @@ export interface GraduationWorkerRequest {
 export interface GraduationWorkerResponse {
   reqId: number
   theoreticalDps: number | null
+  relayedTheoreticalDps: number | null
   graduationRate: number | null
 }
 
@@ -405,13 +406,20 @@ function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
 
 function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerResponse {
   const benchmarkInputs = graduationInputs(req.inputs)
-  if (!benchmarkInputs) {
-    return { reqId: req.reqId, theoreticalDps: null, graduationRate: null }
+  const relayedInputs = graduationInputs(req.inputs, "relayed")
+  if (!benchmarkInputs || !relayedInputs) {
+    return {
+      reqId: req.reqId,
+      theoreticalDps: null,
+      relayedTheoreticalDps: null,
+      graduationRate: null,
+    }
   }
   const theoreticalDps = dpsFor(benchmarkInputs)
   return {
     reqId: req.reqId,
     theoreticalDps,
+    relayedTheoreticalDps: dpsFor(relayedInputs),
     graduationRate: theoreticalDps > 0 ? req.currentDps / theoreticalDps : null,
   }
 }

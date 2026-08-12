@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { getAttunement } from "../../../../engine/attunements"
-import { graduationInputs } from "../../../../engine/graduation"
+import { RELAYED_FACTOR } from "../../../../engine/gearStats"
+import { graduationBuild, graduationInputs } from "../../../../engine/graduation"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Arsenal, BowSet, GearPiece, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
@@ -17,6 +18,7 @@ import styles from "./GraduationBuildDialog.module.scss"
 interface Props {
   inputs: Inputs
   theoreticalDps: number | null
+  relayedTheoreticalDps: number | null
   onClose(): void
 }
 
@@ -33,6 +35,8 @@ const ARSENAL_LABELS: Readonly<Record<Arsenal, string>> = {
   silkbind: "Silkbind Arsenal",
   bamboocut: "Bamboocut Arsenal",
 }
+
+const RELAYED_PERCENT = Math.round(RELAYED_FACTOR * 100)
 
 function formatDps(value: number | null): string {
   return value === null
@@ -51,12 +55,20 @@ function baseStatsLabel(piece: GearPiece, t: (text: string) => string): string {
     : `${t("HP")} ${piece.hp.toLocaleString()} · ${t("Phys Defense")} ${piece.physDef}`
 }
 
-export function GraduationBuildDialog({ inputs, theoreticalDps, onClose }: Props) {
+export function GraduationBuildDialog({
+  inputs,
+  theoreticalDps,
+  relayedTheoreticalDps,
+  onClose,
+}: Props) {
   const { t } = useI18n()
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
   const [tab, setTab] = useState<"build" | "stats">("build")
+  const [relayed, setRelayed] = useState(false)
+  const variant = relayed ? "relayed" : "maxRolls"
   const classDef = classDefinition(inputs.classId)
-  const benchmarkInputs = useMemo(() => graduationInputs(inputs), [inputs])
+  const build = useMemo(() => graduationBuild(inputs.classId, variant), [inputs.classId, variant])
+  const benchmarkInputs = useMemo(() => graduationInputs(inputs, variant), [inputs, variant])
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -68,8 +80,7 @@ export function GraduationBuildDialog({ inputs, theoreticalDps, onClose }: Props
     return () => document.removeEventListener("keydown", onKey)
   }, [onClose])
 
-  if (!classDef || !benchmarkInputs) return null
-  const build = classDef.graduationBuild
+  if (!classDef || !build || !benchmarkInputs) return null
   const piecesBySlot = new Map(build.gear.map((piece) => [piece.slot, piece]))
   const armorSet = build.set ? SET_BY_ID[build.set]?.name : null
   const bowSet = build.bowSet ? BOW_SET_LABELS[build.bowSet] : "(unselected)"
@@ -93,8 +104,16 @@ export function GraduationBuildDialog({ inputs, theoreticalDps, onClose }: Props
         <div className={dialogChrome.body}>
           <div className={styles.intro} id="graduation-build-description">
             <span>{t(classDef.displayName)}</span>
+            <label className={styles.relayedToggle}>
+              <input
+                type="checkbox"
+                checked={relayed}
+                onChange={(event) => setRelayed(event.target.checked)}
+              />
+              {t(`Relayed words (${RELAYED_PERCENT}% of max roll)`)}
+            </label>
             <span className={styles.theoreticalDps}>
-              {t("DPS")} {formatDps(theoreticalDps)}
+              {t("DPS")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
             </span>
           </div>
 

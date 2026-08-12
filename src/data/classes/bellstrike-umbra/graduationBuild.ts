@@ -58,4 +58,5 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.hawking,
   bowSet: "crit",
   arsenal: "bellstrike",
+  relayedOverrides: { bowSet: "affinity" },
 }

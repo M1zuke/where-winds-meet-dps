@@ -1,8 +1,9 @@
 import type { GearPiece, GearSlot, GearWordName } from "../../engine/types"
 import type { AttunementId } from "../../engine/attunements"
 import { getAttunement } from "../../engine/attunements"
+import { relayedCapValue } from "../../engine/gearStats"
 import { gearBaseStatsFor } from "../stats/gearBaseStats"
-import { GEAR_WORD_MAX_ROLL } from "../stats/gearWordRolls"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../stats/gearWordRolls"
 
 export type GraduationWords = readonly [
   GearWordName,
@@ -41,5 +42,20 @@ export function createGraduationGearPiece(options: GraduationGearPieceOptions): 
     attunement: options.attunement,
     attunementValue: getAttunement(options.attunement)?.max ?? 0,
     relayed: false,
+  }
+}
+
+export function relayGraduationGearPiece(piece: GearPiece): GearPiece {
+  return {
+    ...piece,
+    words: piece.words.map((entry) =>
+      entry.word
+        ? {
+            ...entry,
+            value: relayedCapValue(GEAR_WORD_MAX_ROLL[entry.word], GEAR_WORD_UNIT[entry.word]),
+          }
+        : entry,
+    ) as GearPiece["words"],
+    relayed: true,
   }
 }
