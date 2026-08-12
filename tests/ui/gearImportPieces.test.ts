@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import { gearBaseStatsFor } from "../../src/engine/gearStats"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import type { Inputs } from "../../src/engine/types"

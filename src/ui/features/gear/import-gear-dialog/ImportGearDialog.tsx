@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
-import { gearBaseStatsFor } from "../../../../engine/gearStats"
+import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"

@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { CLASS_DEFS } from "../../src/definitions/classes/registry"
+import { getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
+import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
@@ -23,6 +26,35 @@ describe("graduation builds", () => {
         GEAR_SLOTS.length,
       )
       expect(classDef.graduationBuild.gear.every((piece) => piece.words.length === 5)).toBe(true)
+    },
+  )
+
+  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s rolls every graduation word and attunement at the catalogue's max",
+    (classId, classDef) => {
+      const specs = getWordSpecs({ ...defaultInputs, classId })
+      for (const piece of classDef.graduationBuild.gear) {
+        for (const word of piece.words) {
+          const spec = specs.find((candidate) => candidate.word === word.word)
+          expect(
+            spec,
+            `${piece.slot} names ${word.word}, which this class cannot roll`,
+          ).toBeDefined()
+          expect(word.value).toBe(spec!.amount)
+        }
+        expect(piece.attunementValue).toBe(getAttunement(piece.attunement)?.max)
+      }
+    },
+  )
+
+  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s equips lv96 legendary base stats straight from the gear table",
+    (_classId, classDef) => {
+      for (const piece of classDef.graduationBuild.gear) {
+        expect(piece.level).toBe(96)
+        expect(piece.rarity).toBe("legendary")
+        expect(piece).toMatchObject(gearBaseStatsFor(piece))
+      }
     },
   )
 

@@ -1,5 +1,3 @@
-// Slot 0 is always locked and never enters retunement analysis.
-
 import type { GearPiece, GearWordName } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
 

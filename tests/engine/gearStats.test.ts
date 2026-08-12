@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest"
 import {
   applyPieceContribution,
-  gearBaseStatsFor,
   maxRelayedClone,
   relayedCapValue,
 } from "../../src/engine/gearStats"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"

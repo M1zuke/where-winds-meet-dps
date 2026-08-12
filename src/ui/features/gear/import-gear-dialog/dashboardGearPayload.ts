@@ -1,4 +1,5 @@
-import type { GearBaseStats, InferredGearIdentity } from "../../../../engine/gearStats"
+import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
+import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
 import { GEAR_SLOTS, type GearSlot, type GearWordName } from "../../../../engine/types"
 import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
 
