@@ -63,11 +63,8 @@ export interface GearImportResult {
   unrecognizedPayloadKeys: readonly string[]
 }
 
-/**
- * Attunement ("suffix") affixes are 6-digit ids in a `280xxx` block; tunements are
- * 7-digit `97xxxxx` ids (live capture, 2026-08-11). The two namespaces overlap in
- * max roll — physical penetration exists as both — so the id is what separates them.
- */
+// Tunement and attunement ids overlap in max roll — physical penetration exists as
+// both — so the id, not the ceiling, is what tells the two apart.
 const LOWEST_TUNEMENT_AFFIX_ID = 1_000_000
 
 const BASE_STAT_KEYS: Readonly<Record<keyof GearBaseStats, readonly string[]>> = {
