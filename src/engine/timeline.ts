@@ -1,6 +1,5 @@
 import type {
   BuffWindow,
-  CastBuffTag,
   Inputs,
   Result,
   RotationCast,
@@ -8,118 +7,38 @@ import type {
   TimelineEvent,
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
-import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
+import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
-import {
-  hitToArtRow,
-  isPrePullSkill,
-  hitDealsDamage,
-  triggerConditions,
-  selectHitVariant,
-} from "./skill"
+import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import {
-  deriveStats,
-  buildContext,
-  effectiveRates,
-  getBreakthrough,
-  henZhiActiveForInputs,
-} from "./panel"
+import { StatusLedger } from "./ledger"
+import { collectCastBuffs } from "./castBuffs"
+import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
+import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
+import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
+import { applyEffect, type EffectSink } from "./effects/apply"
+import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage } from "./formula"
-import { padSlots } from "./perSkillDamage"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
-import {
-  builtinBuffsForClass,
-  ZENITH_BAR_BUFF_ID,
-  ZENITH_DETONATION_BUFF_ID,
-  ZENITH_MAX_EXTENDED_DURATION_FRAMES,
-} from "./builtinBuffs"
+import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine } from "./buffs/buffEngine"
-import type { ConditionalFinalCrit } from "./buffs/buffDef"
-import { buffDefsForClass, groupBuffDefs, mechanicBuffDefsForClass } from "./buffs/data"
+import type { ConditionalFinalCrit } from "./buffs/buffModule"
+import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
+import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { castTagOf, mysticCategoryOf, WEAPON_TAG } from "./buffs/tags"
-import { CrosswindTracker } from "./buffs/crosswind"
-import { classGrantsMinPhysCritBoost } from "./buffs/critBoostWeapons"
-import { skillAttunementDamageMultiplier } from "./attunements"
-import {
-  MORALE_MAX_STACKS,
-  MORALE_PEN_PER_STACK,
-  MORALE_STACK_THRESHOLD,
-  YI_RIVER_INTERVAL_SEC,
-  moraleDmgPerStack,
-  moraleStacksAtTime,
-} from "./buffs/morale"
+import { castTagOf } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
-import {
-  hawkwingStacksSchedule,
-  HAWKWING_MAX_STACKS,
-  HAWKWING_BONUS_PER_STACK,
-  type HawkwingStacksSchedule,
-} from "./buffs/hawkwing"
-import { concentrationActiveProbSchedule } from "./buffs/concentration"
-import { APP_PLAYER_LEVEL, playerLevelAttributeAttackBonus } from "./buffs/levelAttributeBonus"
-import { zhongToTier } from "./buffs/paramMap"
-import {
-  bitterSeasonDebuffId,
-  bitterSeasonEnvelopeWindows,
-  bitterSeasonPoisonSchedule,
-  bitterSeasonStackSchedule,
-  resolveBitterSeasonTuning,
-  BITTER_SEASON_INNER_WAY,
-  BITTER_SEASON_MAX_STACKS,
-  type BitterSeasonPoisonSchedule,
-  type BitterSeasonStackSchedule,
-} from "./buffs/bitterSeason"
+import { innerWayTier } from "../definitions/innerWays/registry"
+import { PROP } from "../data/skills/ids"
 
 export const FPS = 60
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
 
-// A built-in site skill's `extraCritDamage === 1` is a boolean GATE, not a
-// damage amount (it carries the source catalog's `critBoost` straight through,
-// and that is always 0/1/absent). When the gate passes (weapon-type match — see
-// `site/critBoostWeapons.ts`, `.tmp/site/deobfuscated.js` ~L42153-42161), the
-// real term is `floor(min(minPhys, 750) / 50) * 0.024` (capped at +0.36),
-// where `minPhys` is `ctx.smallPhys` — the food-free base.
-const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
-
-// Qi-phase per-ability flags (`.tmp/site/deobfuscated.js` ~L42150-42174):
-// QI_LOW_CRIT_TAG / QI_LOW_DMG_TAG add +0.30 crit rate / +0.08 all-damage
-// while in low qi (below-30 or qi-break); QI_BREAK_PEN_TAG adds +5 phys pen
-// UNCONDITIONALLY, plus +15 more during qi-break or Lingering Bone.
-const QI_LOW_CRIT_TAG = "prop:hasLowQiCritBoost"
-const QI_LOW_DMG_TAG = "prop:hasLowQiDmgBoost"
-const QI_BREAK_PEN_TAG = "prop:hasQiBreakPhysPen"
-const QI_LOW_CRIT_BOOST = 0.3
-const QI_LOW_DMG_BOOST = 0.08
-const QI_BREAK_PEN_BASE = 5
-const QI_BREAK_PEN_BONUS = 15
-
-// "If the skill hits a non-player target without Qi or with depleted Qi, the
-// damage dealt is doubled" (Dragon Head - Plus, official text in
-// `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
-// the sim has no "target has no Qi bar at all" state, so only the window
-// triggers it. Multiplicative on top of (1+H), hence `correction` rather than
-// an allDamageBoost effect — a +1.0 boost would be diluted by the additive pool.
-const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
-const QI_BREAK_DAMAGE_MULTIPLIER = 2
-
-// These two bleed skills receive the level-based Bellstrike attribute bonus.
-// Their attunement damage is resolved generically from their `attune:bleed`
-// tags; this set is unrelated to attunements.
-const BELLSTRIKE_LEVEL_BONUS_SKILLS = new Set(["Bleed Detonation", "Bleed Tick"])
-
-const CONCENTRATION_DOT_MULT_SKILLS = new Set(["Bleed Detonation", "Bleed Tick", "Combustion"])
-
-const CONCENTRATION_DISPLAY_THRESHOLD = 0.5
-
-const BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD = 0.5
-
 type Ctx = ReturnType<typeof buildContext>
-type Derived = ReturnType<typeof deriveStats>
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
@@ -130,8 +49,9 @@ interface HitEvent {
   seq: number
   skill: Skill
   hit: SkillHit
-  scopedBuffIds: string[]
-  propagatedBuffIds: string[]
+  // The frame the CAST started, which is what cast-scoped buff ids are keyed
+  // by — not this hit's own frame, which may be well after it.
+  castFrame: number
 }
 
 class EventQueue {
@@ -178,19 +98,6 @@ class EventQueue {
   private less(a: HitEvent, b: HitEvent): boolean {
     return a.frame !== b.frame ? a.frame < b.frame : a.seq < b.seq
   }
-}
-
-interface Window {
-  start: number
-  end: number
-  extensions?: Array<{ frame: number; amount: number }>
-}
-
-function windowEndAt(w: Window, frame: number): number {
-  if (!w.extensions) return w.end
-  let end = w.end
-  for (const ext of w.extensions) if (ext.frame > frame) end -= ext.amount
-  return end
 }
 
 export function simulateTimeline(inputs: Inputs): Result {
@@ -259,92 +166,18 @@ export function simulateTimeline(inputs: Inputs): Result {
   const spanStart = Math.min(0, -prePullTotal)
   const rotationDurationSec = durationFrames / FPS
 
-  const hawkwingStacks: HawkwingStacksSchedule | null =
-    inputs.set === "Hawking"
-      ? (() => {
-          const hitTimesSec: number[] = []
-          for (const ls of laidSteps) {
-            for (const hit of ls.performedHits) {
-              if (!hitDealsDamage(hit)) continue
-              hitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-            }
-          }
-          hitTimesSec.sort((a, b) => a - b)
-          const p = Math.min(effectiveRates(inputs).affinityRate, 0.4)
-          return hawkwingStacksSchedule(hitTimesSec, p, rotationDurationSec)
-        })()
-      : null
-
-  const concentrationSchedule =
-    inputs.classId === "bellstrikeUmbra" &&
-    inputs.mindMethods.some((m) => m.name === "Insightful Strike")
-      ? (() => {
-          const weaponHitTimesSec: number[] = []
-          for (const ls of laidSteps) {
-            if (ls.resolved.skill.skillType !== "weapon") continue
-            for (const hit of ls.performedHits) {
-              if (!hitDealsDamage(hit)) continue
-              weaponHitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-            }
-          }
-          weaponHitTimesSec.sort((a, b) => a - b)
-          const p = Math.min(effectiveRates(inputs).affinityRate, 0.4) + inputs.directAffinityRate
-          return concentrationActiveProbSchedule(weaponHitTimesSec, p, rotationDurationSec)
-        })()
-      : null
-  const concentrationTier6 =
-    inputs.mindMethods.find((m) => m.name === "Insightful Strike")?.stacks === "tier 6"
-
-  const bitterSeasonId = bitterSeasonDebuffId(inputs.classId)
-  const bitterSeasonSlot =
-    inputs.mindMethods.find((slot) => slot.name === BITTER_SEASON_INNER_WAY) ?? null
-  const bitterSeasonTuning = bitterSeasonSlot
-    ? resolveBitterSeasonTuning(zhongToTier(bitterSeasonSlot.stacks))
-    : null
-  const bitterSeasonHitTimesSec: number[] = []
-  if (bitterSeasonTuning) {
-    for (const ls of laidSteps) {
-      for (const hit of ls.performedHits) {
-        if (!hitDealsDamage(hit)) continue
-        bitterSeasonHitTimesSec.push((ls.startFrame + hit.frame) / FPS)
-      }
+  const damagingHitTimesSec: number[] = []
+  const weaponHitTimesSec: number[] = []
+  for (const ls of laidSteps) {
+    for (const hit of ls.performedHits) {
+      if (!hitDealsDamage(hit)) continue
+      const timeSec = (ls.startFrame + hit.frame) / FPS
+      damagingHitTimesSec.push(timeSec)
+      if (ls.resolved.skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
     }
-    bitterSeasonHitTimesSec.sort((a, b) => a - b)
   }
-  const bitterSeasonStacks: BitterSeasonStackSchedule | null = bitterSeasonTuning
-    ? bitterSeasonStackSchedule(
-        bitterSeasonHitTimesSec,
-        bitterSeasonTuning.procChance,
-        rotationDurationSec,
-      )
-    : null
-  // The party-applied shared debuff (`shareDebuff5HenZhi`/Year-Long Lament T6)
-  // already supplies the fully-stacked reduction.
-  const bitterSeasonSuppressed = henZhiActiveForInputs(inputs)
-  const bitterSeasonBaseTargetDefense = getBreakthrough(inputs.breakthrough).defense
-
-  function bitterSeasonEffectsAt(tSec: number): BuffStatEffect[] {
-    if (!bitterSeasonStacks || !bitterSeasonTuning) return []
-    const out: BuffStatEffect[] = []
-    const stacks = bitterSeasonStacks.expectedStacksAtTime(tSec)
-    if (stacks > 0) {
-      out.push({
-        statKey: "target.defense",
-        amount:
-          -stacks * bitterSeasonTuning.defenseReductionPerStack * bitterSeasonBaseTargetDefense,
-      })
-    }
-    if (bitterSeasonTuning.physPenetrationAtMaxStacks > 0) {
-      const maxStackProb = bitterSeasonStacks.maxStackProbAtTime(tSec)
-      if (maxStackProb > 0) {
-        out.push({
-          statKey: "phys.penetration",
-          amount: bitterSeasonTuning.physPenetrationAtMaxStacks * maxStackProb,
-        })
-      }
-    }
-    return out
-  }
+  damagingHitTimesSec.sort((a, b) => a - b)
+  weaponHitTimesSec.sort((a, b) => a - b)
 
   const prePullHitsCount = rotation.prePullHitsCount ?? false
   const inWindow = (frame: number): boolean =>
@@ -362,49 +195,12 @@ export function simulateTimeline(inputs: Inputs): Result {
     } else castMetrics.set(name, { castCount: 1, castFrames: castLens[i] })
   }
 
-  const stackHistory = new Map<string, Array<{ frame: number; value: number }>>()
-  function recordStack(buffId: string, frame: number, value: number): void {
-    const arr = stackHistory.get(buffId)
-    if (arr) arr.push({ frame, value })
-    else stackHistory.set(buffId, [{ frame, value }])
-  }
-  function hasStackHistory(buffId: string): boolean {
-    const arr = stackHistory.get(buffId)
-    return !!arr && arr.length > 0
-  }
-  function stacksAt(buffId: string, frame: number): number {
-    const arr = stackHistory.get(buffId)
-    if (!arr || arr.length === 0) return 0
-    let lo = 0
-    let hi = arr.length - 1
-    let ans = 0
-    while (lo <= hi) {
-      const mid = (lo + hi) >> 1
-      if (arr[mid].frame <= frame) {
-        ans = arr[mid].value
-        lo = mid + 1
-      } else hi = mid - 1
-    }
-    return ans
-  }
-  function conditionStacksAt(statusId: string, frame: number): number {
-    const arr = windowsByBuff.get(statusId)
-    if (!arr || !arr.some((w) => frame >= w.start && frame < w.end)) return 0
-    return stacksAt(statusId, frame)
-  }
-
-  const windowsByBuff = new Map<string, Window[]>()
-  function pushWindow(buffId: string, start: number, end: number): void {
-    const arr = windowsByBuff.get(buffId)
-    if (arr) arr.push({ start, end })
-    else windowsByBuff.set(buffId, [{ start, end }])
-  }
-  const permanentOpened = new Set<string>()
-  function openPermanent(buffId: string): void {
-    if (permanentOpened.has(buffId)) return
-    permanentOpened.add(buffId)
-    pushWindow(buffId, spanStart, durationFrames)
-  }
+  const ledger = new StatusLedger(spanStart, durationFrames)
+  const recordStack = (id: string, frame: number, value: number) =>
+    ledger.recordStack(id, frame, value)
+  const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
+  const pushWindow = (id: string, start: number, end: number) => ledger.pushWindow(id, start, end)
+  const openPermanent = (id: string) => ledger.openPermanent(id)
 
   for (const id of rotation.permanentBuffIds) {
     if (statusById.has(id)) openPermanent(id)
@@ -412,154 +208,125 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   function activeBuffsAt(frame: number): (Buff | Debuff)[] {
     const out: (Buff | Debuff)[] = []
-    for (const [buffId, arr] of windowsByBuff) {
-      for (const w of arr) {
-        if (frame >= w.start && frame < w.end) {
-          const b = statusById.get(buffId)
-          if (b) out.push(b)
-          break
-        }
-      }
+    for (const id of ledger.activeIdsAt(frame)) {
+      const status = statusById.get(id)
+      if (status) out.push(status)
     }
     return out
   }
 
   const conditionHolds = (c: TriggerCondition, frame: number): boolean => {
-    const cur = conditionStacksAt(c.buffId, frame)
+    const cur = ledger.conditionStacksAt(c.buffId, frame)
     return c.op === "gte" ? cur >= c.stacks : c.op === "gt" ? cur > c.stacks : cur === c.stacks
   }
 
-  const castScopedBuffs = new Map<string, { buffIds: string[]; propagatedBuffIds: string[] }>()
-  const castScopedBuffKey = (frame: number, skill: Skill) => `${frame}|${skill.id}`
+  const buildView: BuildView = {
+    classId: inputs.classId,
+    innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
+    dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
+    grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
+  }
 
+  const behaviorFor = buildBehaviors(buildView)
+
+  const hitInputAt = (skill: Skill, hit: SkillHit, frame: number): HitInput => ({
+    skill,
+    hit,
+    frame,
+    statuses: ledger,
+    build: buildView,
+    holds: (condition) => conditionHolds(condition, frame),
+  })
+
+  const propsOfSkill = (skill: Skill, hitCount = skill.hits.length): SkillProperties => {
+    const props: SkillProperties = { hitCount, castTime: (skill.castFrames || 1) / FPS }
+    for (const tag of skill.tags ?? []) {
+      const propertyKey = PROP_TO_PROPERTY[tag as (typeof PROP)[keyof typeof PROP]]
+      if (propertyKey) props[propertyKey] = true
+      else if (tag.startsWith("attack:"))
+        props.attackType = tag.slice(7) as SkillProperties["attackType"]
+    }
+    return props
+  }
+
+  // Ids that count as active for one cast only, keyed by the cast that earned
+  // them — a per-cast consume never opens a timed window, so nothing in the
+  // buff history can carry it.
+  const castScopedBuffs = new Map<string, string[]>()
+  const castScopedKey = (frame: number, skillId: string) => `${frame}|${skillId}`
+
+  interface PendingCast {
+    frame: number
+    sequence: number
+    skill: Skill
+    hitCount: number
+    generated: boolean
+    inheritedBuffIds: readonly string[]
+  }
+
+  // The prepass. It walks the whole cast graph — the rotation's casts and every
+  // cast they generate — in frame order, so the buff history and the consume
+  // ledger are both complete before the damage loop asks anything of them.
   const buffEngine: BuffEngine | null = (() => {
     try {
-      const eng = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(inputs.classId), [
-        ...groupBuffDefs(),
-        ...mechanicBuffDefsForClass(inputs.classId),
-      ])
-      type BuffCastEvent = {
-        frame: number
-        sequence: number
-        skill: Skill
-        hits: SkillHit[]
-        generated: boolean
-        inheritedBuffIds: string[]
-      }
-      let buffCastSequence = 0
-      const pendingBuffCasts: BuffCastEvent[] = laidSteps.map((ls) => ({
+      const engine = new BuffEngine(
+        paramsFromInputs(inputs),
+        buffDefsForClass(inputs.classId),
+        groupBuffDefs(),
+      )
+      let sequence = 0
+      const pending: PendingCast[] = laidSteps.map((ls) => ({
         frame: ls.startFrame,
-        sequence: buffCastSequence++,
+        sequence: sequence++,
         skill: ls.resolved.skill,
-        hits: ls.performedHits,
+        hitCount: ls.performedHits.length,
         generated: false,
         inheritedBuffIds: [],
       }))
-      let processedBuffCasts = 0
-      const damageHitFrames: number[] = []
+      const damageFrames: number[] = []
 
-      while (pendingBuffCasts.length > 0 && processedBuffCasts < EVENT_CAP) {
-        pendingBuffCasts.sort(
-          (left, right) => left.frame - right.frame || left.sequence - right.sequence,
-        )
-        const event = pendingBuffCasts.shift()!
-        processedBuffCasts++
-        const castTag = castTagOf(event.skill)
-        let eventBuffIds = [...event.inheritedBuffIds]
-        let propagatedBuffIds = [...event.inheritedBuffIds]
+      let processed = 0
+      while (pending.length > 0 && processed < EVENT_CAP) {
+        pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
+        const cast = pending.shift()!
+        processed++
+        const castTag = castTagOf(cast.skill)
+        let propagated = [...cast.inheritedBuffIds]
         if (castTag) {
-          const opts: Record<string, unknown> = {
-            hitCount: event.hits.length,
-            castTime: (event.skill.castFrames || 1) / FPS,
-            generated: event.generated,
-          }
-          for (const tag of event.skill.tags ?? []) {
-            if (tag.startsWith("prop:")) opts[tag.slice(5)] = true
-            else if (tag.startsWith("attack:")) opts.attackType = tag.slice(7)
-          }
-          const castResult = eng.processSkillCast(castTag, event.frame / FPS, opts)
-          eventBuffIds = [...new Set([...eventBuffIds, ...castResult.buffIds])]
-          propagatedBuffIds = [...new Set([...propagatedBuffIds, ...castResult.propagatedBuffIds])]
-          const key = castScopedBuffKey(event.frame, event.skill)
-          const existing = castScopedBuffs.get(key)
-          castScopedBuffs.set(key, {
-            buffIds: [...new Set([...(existing?.buffIds ?? []), ...eventBuffIds])],
-            propagatedBuffIds: [
-              ...new Set([...(existing?.propagatedBuffIds ?? []), ...propagatedBuffIds]),
-            ],
-          })
-          if (!event.generated && opts.isDrone && event.hits.length > 1) {
-            const useExternalLB = !!eng.params.starReacher
-            for (let i = 1; i < event.hits.length; i++) {
-              const t = (event.frame + event.hits[i].frame) / FPS
-              if (useExternalLB) eng.processDroneTickWithExternalLB(t)
-              else eng.processDroneTick(t)
-            }
-          }
+          const result = engine.processSkillCast(
+            castTag,
+            cast.frame / FPS,
+            propsOfSkill(cast.skill, cast.hitCount),
+            cast.generated,
+          )
+          const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
+          propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
+          const key = castScopedKey(cast.frame, cast.skill.id)
+          castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
         }
-
-        for (const hit of event.hits) {
-          const triggerFrame = event.frame + hit.frame
-          if (hitDealsDamage(hit)) damageHitFrames.push(triggerFrame)
+        for (const hit of cast.skill.hits) {
+          const hitFrame = cast.frame + hit.frame
+          if (hitDealsDamage(hit)) damageFrames.push(hitFrame)
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
-            if (
-              !triggerConditions(trigger).every((condition) =>
-                conditionHolds(condition, triggerFrame),
-              )
-            )
-              continue
-            const triggeredSkill = skillsById.get(trigger.targetId)
-            if (!triggeredSkill) continue
-            pendingBuffCasts.push({
-              frame: triggerFrame,
-              sequence: buffCastSequence++,
-              skill: triggeredSkill,
-              hits: triggeredSkill.hits,
+            if (!triggerConditions(trigger).every((c) => conditionHolds(c, hitFrame))) continue
+            const generatedSkill = skillsById.get(trigger.targetId)
+            if (!generatedSkill) continue
+            pending.push({
+              frame: hitFrame,
+              sequence: sequence++,
+              skill: generatedSkill,
+              hitCount: generatedSkill.hits.length,
               generated: true,
-              inheritedBuffIds: propagatedBuffIds,
+              inheritedBuffIds: propagated,
             })
           }
         }
       }
-      if (pendingBuffCasts.length > 0)
-        eng.warnings.add(`Buff trigger prepass exceeded ${EVENT_CAP} generated casts.`)
 
-      for (const [buffId, windows] of windowsByBuff) {
-        const status = statusById.get(buffId)
-        if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
-          continue
-        const episodes: Window[] = []
-        for (const window of windows) {
-          const last = episodes[episodes.length - 1]
-          if (last && window.start < last.end) last.end = Math.max(last.end, window.end)
-          else episodes.push({ start: window.start, end: window.end })
-        }
-        for (const episode of episodes)
-          for (
-            let frame = episode.start + status.dot.tickIntervalFrames;
-            frame < episode.end;
-            frame += status.dot.tickIntervalFrames
-          )
-            if (frame >= 0 && inWindow(frame)) damageHitFrames.push(frame)
-      }
-
-      if (eng.paramOn("moraleChant") && eng.paramTier("moraleChant") >= 6) {
-        const durationSec = durationFrames / FPS
-        let firstTick = 0
-        while (
-          firstTick < durationSec &&
-          moraleStacksAtTime(firstTick, eng.qiPhase(firstTick) === "exhausted") <
-            MORALE_STACK_THRESHOLD
-        )
-          firstTick += 0.5
-        for (let time = firstTick; time <= durationSec; time += YI_RIVER_INTERVAL_SEC)
-          damageHitFrames.push(Math.round(time * FPS))
-      }
-
-      damageHitFrames.sort((left, right) => left - right)
-      for (const frame of damageHitFrames) eng.processDamageHit(frame / FPS)
-      return eng
+      damageFrames.sort((left, right) => left - right)
+      for (const frame of damageFrames) engine.processDamageHit(frame / FPS)
+      return engine
     } catch {
       return null
     }
@@ -572,17 +339,27 @@ export function simulateTimeline(inputs: Inputs): Result {
       })()
     : null
 
-  const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
+  const { precision, critRate, affinityRate } = effectiveRates(inputs)
+  const mechanicSetup: MechanicSetup = {
+    inputs,
+    classId: inputs.classId,
+    fps: FPS,
+    rotationDurationSec,
+    hitTimesSec: damagingHitTimesSec,
+    weaponHitTimesSec,
+    qiPhaseAt: (timeSec) => buffEngine?.qiPhase(timeSec) ?? "normal",
+    paramOn: (name) => buffEngine?.paramOn(name) ?? false,
+    paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
+    hasBuffEngine: !!buffEngine,
+    effectiveRates: { precision, critRate, affinityRate },
+  }
+  const mechanics = prepareMechanics(mechanicSetup)
 
-  const crosswindTracker =
-    buffEngine && buffEngine.paramOn("swordHorizon")
-      ? new CrosswindTracker(buffEngine.paramTier("swordHorizon") >= 6)
-      : null
+  const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
 
   interface Resolved {
     inputs: Inputs
     ctx: Ctx
-    derived: Derived
   }
   interface ResolveOverride {
     extraEffects?: BuffStatEffect[]
@@ -593,16 +370,15 @@ export function simulateTimeline(inputs: Inputs): Result {
     frame: number,
     skill?: Skill,
     override?: ResolveOverride,
-    castScopedBuffIds: readonly string[] = [],
+    castFrame = frame,
   ): Resolved & {
-    damageMultiplier: number
     forceCrit: boolean
+    damageFactor: number
     conditionalFinalCrit: ConditionalFinalCrit | null
   } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
     const effects: BuffStatEffect[] = []
-    let dotDamageMultiplier: number | undefined
     for (const b of active) {
       const perStack = (b.stackScaling ?? "flat") === "perStack"
       const count = perStack ? Math.max(0, stacksAt(b.id, frame)) : 1
@@ -615,10 +391,11 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     let sig = sigParts.sort().join("|")
     let forceCritFromBuff = false
-    let damageMultiplier = 1
+    let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     if (buffEngine && skill) {
-      const site = buffEngine.calculateDamageEffects(skill, frame / FPS, castScopedBuffIds)
+      const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
+      const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
         sig +=
@@ -629,8 +406,11 @@ export function simulateTimeline(inputs: Inputs): Result {
             .join(",")
       }
       if (site.forceCrit) forceCritFromBuff = true
-      damageMultiplier = site.damageMultiplier
+      damageFactor = site.damageFactor
       conditionalFinalCrit = site.conditionalFinalCrit
+      if (damageFactor !== 1) sig += `~x${damageFactor}`
+      if (conditionalFinalCrit)
+        sig += `~cfc${conditionalFinalCrit.threshold}:${conditionalFinalCrit.bonusBelowThreshold}`
     }
     if (override?.extraEffects && override.extraEffects.length > 0) {
       for (const e of override.extraEffects) effects.push(e)
@@ -642,60 +422,23 @@ export function simulateTimeline(inputs: Inputs): Result {
           .join(",")
     }
     if (override?.forceGuaranteedAffinity) sig += "~forcedAffinity"
-    if (buffEngine && buffEngine.paramOn("moraleChant")) {
-      const tSec = frame / FPS
-      const moraleQiBreak = buffEngine.qiPhase(tSec) === "exhausted"
-      const stacks = moraleStacksAtTime(tSec, moraleQiBreak)
-      if (stacks > 0) {
-        effects.push({
-          statKey: "allDamageBoost",
-          amount: stacks * moraleDmgPerStack(moraleQiBreak),
-        })
-        effects.push({ statKey: "phys.penetration", amount: stacks * MORALE_PEN_PER_STACK })
-        sig += `~morale:${stacks}${moraleQiBreak ? "q" : ""}`
-      }
-    }
-    if (buffEngine && inputs.classId === "bellstrikeUmbra") {
-      if (skill) {
-        if (BELLSTRIKE_LEVEL_BONUS_SKILLS.has(skill.name)) {
-          const levelBonus = playerLevelAttributeAttackBonus(APP_PLAYER_LEVEL)
-          if (levelBonus !== 0) {
-            effects.push({ statKey: "bellstrike.min", amount: levelBonus })
-            effects.push({ statKey: "bellstrike.max", amount: levelBonus })
-            sig += `~juLevelBonus:${levelBonus}`
-          }
-        }
-      }
-      if (concentrationSchedule) {
-        const activeProb = concentrationSchedule.getActiveProbAtTime(frame / FPS)
-        if (activeProb > 0) {
-          effects.push({ statKey: "affinityDamageBoost", amount: 0.1 * activeProb })
-          effects.push({ statKey: "directAffinityRate", amount: 0.03 * activeProb })
-          effects.push({ statKey: "allDamageBoost", amount: 0.015 * activeProb })
-          sig += `~concentration:${activeProb.toFixed(4)}`
-        }
-        if (concentrationTier6 && skill && CONCENTRATION_DOT_MULT_SKILLS.has(skill.name)) {
-          dotDamageMultiplier = 1 + 0.1 * activeProb
-          sig += `~dotMult:${dotDamageMultiplier.toFixed(4)}`
-        }
-      }
-    }
-    let hawkwingPhysBonus: number | undefined
-    if (hawkwingStacks) {
-      const stacks = Math.round(hawkwingStacks.getExpectedStacksAtTime(frame / FPS))
-      hawkwingPhysBonus = stacks * HAWKWING_BONUS_PER_STACK
-      sig += `~hawkwing:${stacks}`
-    }
-    if (bitterSeasonTuning && !bitterSeasonSuppressed) {
-      const bitterSeasonEffects = bitterSeasonEffectsAt(frame / FPS)
-      if (bitterSeasonEffects.length > 0) {
-        effects.push(...bitterSeasonEffects)
-        sig +=
-          "~bitterSeason:" +
-          bitterSeasonEffects
-            .map((effect) => `${effect.statKey}:${effect.amount.toFixed(6)}`)
-            .join(",")
-      }
+    let contextPatch: ContextPatch = {}
+    for (const { mechanic, state } of mechanics) {
+      const contribution = mechanic.contributeAt?.(state, frame, skill, mechanicSetup)
+      if (!contribution) continue
+      for (const effect of contribution.effects ?? []) effects.push(effect)
+      if (contribution.context) contextPatch = { ...contextPatch, ...contribution.context }
+      sig +=
+        "~" +
+        mechanic.id +
+        ":" +
+        (contribution.effects ?? []).map((e) => e.statKey + "=" + e.amount).join(",") +
+        (contribution.context
+          ? "|" +
+            Object.entries(contribution.context)
+              .map(([k, v]) => k + "=" + v)
+              .join(",")
+          : "")
     }
     const combat = inputs.combatSettings
     if (combat?.revelryScript) {
@@ -713,7 +456,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         effects.push({ statKey: "allDamageBoost", amount: healerAmount })
         sig += `~healerBuff:${healerAmount}`
       }
-      const innerWayBonus = innerWayAllDamageBoost(buffEngine, inputs.mindMethods)
+      const innerWayBonus = innerWayAllDamageBoost(inputs.mindMethods)
       if (innerWayBonus !== 0) {
         effects.push({ statKey: "allDamageBoost", amount: innerWayBonus })
         sig += `~innerWay:${innerWayBonus}`
@@ -722,30 +465,32 @@ export function simulateTimeline(inputs: Inputs): Result {
     let r = stateMemo.get(sig)
     if (!r) {
       const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
-      const ctx = buildContext(effInputs, targetOverride, hawkwingPhysBonus, dotDamageMultiplier)
+      const ctx = buildContext(
+        effInputs,
+        targetOverride,
+        contextPatch.hawkwingPhysBonus,
+        contextPatch.dotDamageMultiplier,
+      )
       if (override?.forceGuaranteedAffinity) {
         ctx.affinityPanel = 0
         ctx.directAffinityPanel = 1
       }
-      const derived = deriveStats(effInputs)
-      r = { inputs: effInputs, ctx, derived }
+      r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
-    return { ...r, damageMultiplier, forceCrit: forceCritFromBuff, conditionalFinalCrit }
+    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit }
   }
 
   const queue = new EventQueue()
   let seq = 0
   for (const ls of laidSteps) {
-    const scoped = castScopedBuffs.get(castScopedBuffKey(ls.startFrame, ls.resolved.skill))
     for (const hit of ls.performedHits) {
       queue.push({
         frame: ls.startFrame + hit.frame,
         seq: seq++,
         skill: ls.resolved.skill,
         hit,
-        scopedBuffIds: scoped?.buffIds ?? [],
-        propagatedBuffIds: scoped?.propagatedBuffIds ?? [],
+        castFrame: ls.startFrame,
       })
     }
   }
@@ -772,69 +517,66 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     const ev = queue.pop()!
     processed++
-    const { frame, skill, hit } = ev
+    const { frame, skill, hit, castFrame } = ev
 
+    const behavior = behaviorFor(skill)
+    const hitInput = hitInputAt(skill, hit, frame)
     const extraEffects: BuffStatEffect[] = []
     let forceGuaranteedAffinity = false
-    if (crosswindTracker && castTagOf(skill) === "Bleed Detonation") {
-      const outcome = crosswindTracker.onDetonation()
-      if (outcome.spiritBonusActive) extraEffects.push({ statKey: "allDamageBoost", amount: 0.15 })
-      forceGuaranteedAffinity = outcome.guaranteedAffinity
-      if (statusById.has(ZENITH_BAR_BUFF_ID)) {
-        openPermanent(ZENITH_BAR_BUFF_ID)
-        recordStack(ZENITH_BAR_BUFF_ID, frame, crosswindTracker.charge)
-      }
-      if (forceGuaranteedAffinity && statusById.has(ZENITH_DETONATION_BUFF_ID)) {
-        const marker = statusById.get(ZENITH_DETONATION_BUFF_ID)!
-        recordStack(marker.id, frame, 1)
-        pushWindow(marker.id, frame, frame + Math.max(1, marker.durationFrames))
-      }
+    // `onHit`/`claimStatEffects` run BEFORE the formula context is built, so
+    // only the effect kinds that can change that context are live here.
+    const hitSink: EffectSink = {
+      stat: (statKey, amount) => extraEffects.push({ statKey, amount }),
+      forceOutcome: (outcome) => {
+        if (outcome === "affinity") forceGuaranteedAffinity = true
+      },
+      setStatus: (id, stacks, permanent, durationFrames) => {
+        const status = statusById.get(id)
+        if (!status) return
+        if (permanent) openPermanent(status.id)
+        else
+          pushWindow(status.id, frame, frame + Math.max(1, durationFrames ?? status.durationFrames))
+        if (stacks !== undefined) recordStack(status.id, frame, stacks)
+      },
+      applyBuff: () => {},
+      consumeStacks: () => {},
+      artBonus: () => {},
+      damageMultiplier: () => {},
     }
-    const tags = skill.tags
+    for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
-    const inLowQi = qiPhase !== "normal"
-    const inQiBreak = qiPhase === "exhausted"
-    if (inLowQi && tags?.includes(QI_LOW_DMG_TAG)) {
-      extraEffects.push({ statKey: "allDamageBoost", amount: QI_LOW_DMG_BOOST })
-    }
+    for (const effect of behavior.claimStatEffects(hitInput, qiPhase)) applyEffect(hitSink, effect)
     const resolveOverride: ResolveOverride | undefined =
       extraEffects.length > 0 || forceGuaranteedAffinity
         ? { extraEffects, forceGuaranteedAffinity }
         : undefined
-    const st = resolveState(frame, skill, resolveOverride, ev.scopedBuffIds)
-    const art = hitToArtRow(hit, skill)
-    const variant = selectHitVariant(hit, (c) => conditionHolds(c, frame))
-    if (variant) {
-      art.physMultiplier = variant.physMultiplier
-      art.attributeMultiplier = variant.attributeMultiplier
-      art.physFixed = variant.physFixed
-      art.attributeFixed = variant.attributeFixed
+    const st = resolveState(frame, skill, resolveOverride, castFrame)
+    const hitContext: HitContext = {
+      phase: qiPhase,
+      qiBreakEnabled,
+      smallPhys: st.ctx.smallPhys,
+      isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
     }
+    const art = behavior.buildArt(hitInput, hitContext)
     if (st.forceCrit) art.guaranteedCrit = 1
+    // `patchArt` runs AFTER the formula context is built and may read it.
+    const artSink: EffectSink = {
+      stat: () => {},
+      forceOutcome: () => {},
+      applyBuff: () => {},
+      consumeStacks: () => {},
+      setStatus: () => {},
+      artBonus: (field, amount) => {
+        art[field] = (art[field] ?? 0) + amount
+      },
+      damageMultiplier: (factor) => {
+        art.correction = (art.correction ?? 1) * factor
+      },
+    }
+    for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
+    if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
     if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
-    if (st.damageMultiplier !== 1) art.correction = (art.correction ?? 1) * st.damageMultiplier
-    const attunementMultiplier = skillAttunementDamageMultiplier(skill, inputs)
-    if (attunementMultiplier !== 1) art.correction = (art.correction ?? 1) * attunementMultiplier
-    if (skill.id.startsWith("") && hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
-      const weaponType = tags?.find((t) => t.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
-      art.extraCritDamage = classGrantsMinPhysCritBoost(inputs.classId, weaponType)
-        ? Math.floor(Math.min(Math.max(0, st.ctx.smallPhys), 750) / 50) * 0.024
-        : 0
-    }
-    if (inLowQi && tags?.includes(QI_LOW_CRIT_TAG)) {
-      art.extraCritRate = (art.extraCritRate ?? 0) + QI_LOW_CRIT_BOOST
-    }
-    if (tags?.includes(QI_BREAK_PEN_TAG)) {
-      const hasLingeringBone = buffEngine?.isBuffActiveAtTime("lingeringBone", frame / FPS) ?? false
-      art.extraPhysPenetration =
-        (art.extraPhysPenetration ?? 0) +
-        QI_BREAK_PEN_BASE +
-        (inQiBreak || hasLingeringBone ? QI_BREAK_PEN_BONUS : 0)
-    }
-    if (inQiBreak && qiBreakEnabled && tags?.includes(QI_BREAK_DOUBLE_TAG)) {
-      art.correction = (art.correction ?? 1) * QI_BREAK_DAMAGE_MULTIPLIER
-    }
-    const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
+    const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
       totalDamage += expectedDamage
@@ -881,8 +623,7 @@ export function simulateTimeline(inputs: Inputs): Result {
                 seq: seq++,
                 skill: sub,
                 hit: subHit,
-                scopedBuffIds: ev.propagatedBuffIds,
-                propagatedBuffIds: ev.propagatedBuffIds,
+                castFrame: frame,
               })
             }
         }
@@ -892,19 +633,11 @@ export function simulateTimeline(inputs: Inputs): Result {
         const status = statusById.get(trigger.targetId)
         if (!status) continue
         if (trigger.extendFrames != null) {
-          const arr = windowsByBuff.get(status.id)
-          let w: Window | undefined
-          if (arr)
-            for (const cand of arr) {
-              if (frame >= cand.start && frame < cand.end && (!w || cand.end > w.end)) w = cand
-            }
+          const w = ledger.longestActiveWindow(status.id, frame)
           if (w) {
-            // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts).
-            const isZenithExtension = trigger.condition?.buffId === ZENITH_DETONATION_BUFF_ID
+            const cap = trigger.maxExtendedDurationFrames
             const rawEnd = w.end + trigger.extendFrames
-            const nextEnd = isZenithExtension
-              ? Math.max(w.end, Math.min(rawEnd, frame + ZENITH_MAX_EXTENDED_DURATION_FRAMES))
-              : rawEnd
+            const nextEnd = cap ? Math.max(w.end, Math.min(rawEnd, frame + cap)) : rawEnd
             const appliedAmount = nextEnd - w.end
             w.end = nextEnd
             if (appliedAmount > 0) (w.extensions ??= []).push({ frame, amount: appliedAmount })
@@ -934,8 +667,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             seq: seq++,
             skill: sub,
             hit: subHit,
-            scopedBuffIds: ev.propagatedBuffIds,
-            propagatedBuffIds: ev.propagatedBuffIds,
+            castFrame: frame,
           })
         }
       }
@@ -945,44 +677,19 @@ export function simulateTimeline(inputs: Inputs): Result {
   // Zenith extension events only exist for a Sword Horizon build (the only
   // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
   // so this list is empty for every other build without a class check.
-  let bitterSeasonPoison: BitterSeasonPoisonSchedule | null = null
-  if (bitterSeasonTuning && durationFrames > 0 && bitterSeasonHitTimesSec.length > 0) {
-    const bitterSeasonDebuff = statusById.get(bitterSeasonId)
-    if (bitterSeasonDebuff && isDebuffStatus(bitterSeasonDebuff) && bitterSeasonDebuff.dot) {
-      const zenithExtensionTimesSec = (windowsByBuff.get(ZENITH_DETONATION_BUFF_ID) ?? [])
-        .map((zenithWindow) => zenithWindow.start / FPS)
-        .sort((a, b) => a - b)
-      const poisonDurationSec = bitterSeasonDebuff.durationFrames / FPS
-      bitterSeasonPoison = bitterSeasonPoisonSchedule(
-        bitterSeasonHitTimesSec,
-        bitterSeasonTuning.procChance,
-        poisonDurationSec,
-        rotationDurationSec,
-        zenithExtensionTimesSec,
-      )
-      // Bounds tick emission to the guaranteed-proc envelope instead of one
-      // span covering the whole rotation — activeProbAtTime is 0 outside it,
-      // so no expected damage is lost by not ticking there.
-      for (const envelopeWindow of bitterSeasonEnvelopeWindows(
-        bitterSeasonHitTimesSec,
-        poisonDurationSec,
-        zenithExtensionTimesSec,
-      )) {
-        pushWindow(
-          bitterSeasonDebuff.id,
-          Math.round(envelopeWindow.startSec * FPS),
-          Math.round(envelopeWindow.endSec * FPS),
-        )
-      }
-      recordStack(
-        bitterSeasonDebuff.id,
-        Math.max(0, Math.round(bitterSeasonHitTimesSec[0] * FPS)),
-        1,
-      )
-    }
+  for (const { mechanic, state } of mechanics) {
+    mechanic.seedStatuses?.(
+      state,
+      {
+        ledger,
+        hasStatus: (id) => statusById.has(id),
+        statusDurationFrames: (id) => statusById.get(id)?.durationFrames ?? null,
+      },
+      mechanicSetup,
+    )
   }
 
-  for (const arr of windowsByBuff.values()) arr.sort((a, b) => a.start - b.start)
+  ledger.sortWindows()
 
   const castsUnsorted: RotationCast[] = laidSteps.map((ls, i) => {
     const lastHitFrame =
@@ -993,160 +700,34 @@ export function simulateTimeline(inputs: Inputs): Result {
       ls.startFrame + lastHitFrame,
     )
     const queryTimeSec = queryFrame / FPS
-    const buffs: CastBuffTag[] = []
-    const seenBuffIds = new Set<string>()
-    for (const b of activeBuffsAt(queryFrame)) {
-      if (seenBuffIds.has(b.id)) continue
-      seenBuffIds.add(b.id)
-      const tracked = stacksAt(b.id, queryFrame)
-      const stacks = tracked > 0 ? tracked : hasStackHistory(b.id) ? tracked : 1
-      const dotIntervalSec =
-        isDebuffStatus(b) && b.dot && b.dot.tickIntervalFrames > 0
-          ? b.dot.tickIntervalFrames / FPS
-          : undefined
-      let remainingSec: number | undefined
-      if (b.activation !== "permanent") {
-        const arr = windowsByBuff.get(b.id)
-        let end: number | undefined
-        if (arr)
-          for (const w of arr) {
-            const endHere = windowEndAt(w, queryFrame)
-            if (
-              queryFrame >= w.start &&
-              queryFrame < endHere &&
-              (end === undefined || endHere > end)
-            )
-              end = endHere
-          }
-        if (end !== undefined) remainingSec = (end - queryFrame) / FPS
-      }
+    const { buffs, seen: seenBuffIds } = collectCastBuffs({
+      frame: queryFrame,
+      timeSec: queryTimeSec,
+      fps: FPS,
+      ledger,
+      statusById,
+      buffEngine,
       // Below the display threshold there's a real chance no poison has
       // procced yet at all (e.g. right after the very first eligible hits),
       // so the expected-remaining number alone would understate that and
       // read as an oddly short "duration" — withhold it until more likely
       // than not to be up, same convention as Concentration's own gate.
-      if (b.id === bitterSeasonId && bitterSeasonPoison) {
-        const isLikelyActive =
-          bitterSeasonPoison.activeProbAtTime(queryTimeSec) >=
-          BITTER_SEASON_REMAINING_DISPLAY_THRESHOLD
-        const activeSec = isLikelyActive
-          ? bitterSeasonPoison.remainingActiveSecAtTime(queryTimeSec)
-          : 0
-        remainingSec = activeSec > 0 ? activeSec : undefined
-      }
-      buffs.push({
-        id: b.id,
-        name: b.name,
-        stacks,
-        maxStacks: b.maxStacks ?? 1,
-        effects: b.effects,
-        dotIntervalSec,
-        remainingSec,
-      })
-    }
-    if (buffEngine) {
-      for (const sb of buffEngine.activeBuffsForDisplay(queryTimeSec)) {
-        if (seenBuffIds.has(sb.id)) continue
-        seenBuffIds.add(sb.id)
-        buffs.push({
-          id: sb.id,
-          name: sb.name,
-          stacks: sb.stacks,
-          maxStacks: sb.maxStacks,
-          effects: sb.effects,
-          requires: sb.requires,
-        })
-      }
-      if (buffEngine.paramOn("moraleChant") && !seenBuffIds.has("moraleChant")) {
-        const moraleQiBreak = buffEngine.qiPhase(queryTimeSec) === "exhausted"
-        const ms = moraleStacksAtTime(queryTimeSec, moraleQiBreak)
-        if (ms > 0) {
-          seenBuffIds.add("moraleChant")
-          buffs.push({
-            id: "moraleChant",
-            name: "Morale Chant",
-            stacks: ms,
-            maxStacks: MORALE_MAX_STACKS,
-            effects: [
-              { statKey: "allDamageBoost", amount: ms * moraleDmgPerStack(moraleQiBreak) },
-              { statKey: "phys.penetration", amount: ms * MORALE_PEN_PER_STACK },
-            ],
-          })
+      overrideRemainingSec: (id, timeSec) => {
+        for (const { mechanic, state } of mechanics) {
+          const override = mechanic.remainingSecAt?.(state, id, timeSec)
+          if (override) return override
         }
+        return null
+      },
+    })
+    for (const { mechanic, state } of mechanics) {
+      for (const chip of mechanic.display?.(state, queryTimeSec, ls.prePull, mechanicSetup) ?? []) {
+        if (seenBuffIds.has(chip.id)) continue
+        seenBuffIds.add(chip.id)
+        buffs.push(chip)
       }
     }
-    if (!ls.prePull) {
-      if (concentrationSchedule && !seenBuffIds.has("concentration")) {
-        const prob = concentrationSchedule.getActiveProbAtTime(queryTimeSec)
-        if (prob >= CONCENTRATION_DISPLAY_THRESHOLD) {
-          seenBuffIds.add("concentration")
-          buffs.push({
-            id: "concentration",
-            name: "Concentration",
-            stacks: 1,
-            maxStacks: 1,
-            effects: [
-              { statKey: "affinityDamageBoost", amount: 0.1 },
-              { statKey: "directAffinityRate", amount: 0.03 },
-              { statKey: "allDamageBoost", amount: 0.015 },
-            ],
-            description: `≈${Math.round(prob * 100)}% active`,
-          })
-        }
-      }
-      if (hawkwingStacks && !seenBuffIds.has("hawkwing")) {
-        const shown = Math.round(hawkwingStacks.getExpectedStacksAtTime(queryTimeSec))
-        if (shown >= 1) {
-          seenBuffIds.add("hawkwing")
-          buffs.push({
-            id: "hawkwing",
-            name: "Hawkwing (4-pc)",
-            stacks: shown,
-            maxStacks: HAWKWING_MAX_STACKS,
-            effects: [],
-            requires: "Hawking",
-            description:
-              "expected stacks (avg of 500 sims, rounded) · +2% phys attack/stack, 5s decay",
-          })
-        }
-      }
-      if (bitterSeasonTuning && !seenBuffIds.has("bitterSeasonPoison")) {
-        const shown = bitterSeasonSuppressed
-          ? BITTER_SEASON_MAX_STACKS
-          : Math.round(bitterSeasonStacks?.expectedStacksAtTime(queryTimeSec) ?? 0)
-        if (shown >= 1) {
-          seenBuffIds.add("bitterSeasonPoison")
-          const uptimePct = Math.round(
-            (bitterSeasonPoison?.activeProbAtTime(queryTimeSec) ?? 0) * 100,
-          )
-          // The mechanic's own numbers (both worded as a target physical
-          // defense reduction, per the in-game hint, even though the tier-6
-          // node is implemented through `phys.penetration` — see
-          // `bitterSeasonEffectsAt`), stated plainly rather than surfacing
-          // that internal stat-key vehicle, and scaled to the shown stack
-          // count rather than always quoting the 5-stack cap.
-          const currentDefensePct = Math.round(
-            bitterSeasonTuning.defenseReductionPerStack * shown * 100,
-          )
-          const tier6DefenseFlatAmount = bitterSeasonTuning.physPenetrationAtMaxStacks * 100
-          const mechanicText =
-            `at ${shown}/${BITTER_SEASON_MAX_STACKS} stacks: -${currentDefensePct}% target physical defense` +
-            (tier6DefenseFlatAmount > 0
-              ? ` · -${tier6DefenseFlatAmount} target physical defense at ${BITTER_SEASON_MAX_STACKS}/${BITTER_SEASON_MAX_STACKS} stacks (tier 6)`
-              : "")
-          buffs.push({
-            id: "bitterSeasonPoison",
-            name: "Bitter Season Poison",
-            stacks: shown,
-            maxStacks: BITTER_SEASON_MAX_STACKS,
-            effects: [],
-            description: bitterSeasonSuppressed
-              ? "party-applied Bitter Season debuff already caps the reduction — the inner way adds none"
-              : `expected stacks (avg of 500 sims, rounded) · ${mechanicText} · ≈${uptimePct}% poison uptime`,
-          })
-        }
-      }
-    }
+
     return {
       index: 0,
       stepId: ls.resolved.step.id,
@@ -1162,7 +743,7 @@ export function simulateTimeline(inputs: Inputs): Result {
   const casts: RotationCast[] = castsUnsorted.map((c, i) => ({ ...c, index: i + 1 }))
 
   const buffWindows: BuffWindow[] = []
-  for (const [id, arr] of windowsByBuff) {
+  for (const [id, arr] of ledger.entries()) {
     const status = statusById.get(id)
     if (!status) continue
     for (const w of arr) {
@@ -1170,147 +751,70 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  for (const [buffId, arr] of windowsByBuff) {
+  for (const [buffId, arr] of ledger.entries()) {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
       continue
-    const debuffDef = status
-    const baseDot = debuffDef.dot!
-    const tickSkillId = debuffDef.id.startsWith("debuff-")
-      ? "" + debuffDef.id.slice("debuff-".length)
-      : null
-    const tickSkill = tickSkillId ? skillsById.get(tickSkillId) : undefined
-    const srcHit = tickSkill?.hits[0]
-    const dot: DebuffDotSpec = srcHit
-      ? {
-          ...baseDot,
-          physMultiplier: srcHit.physMultiplier,
-          physFixed: srcHit.physFixed,
-          attributeMultiplier: srcHit.attributeMultiplier,
-          attributeFixed: srcHit.attributeFixed,
-          attributeAttack: (tickSkill!.attributeAttack ||
-            baseDot.attributeAttack) as DebuffDotSpec["attributeAttack"],
-          weaponOrAttribute: tickSkill!.weaponOrAttribute || null,
-          mysticCategory: mysticCategoryOf(tickSkill!) || null,
+    const tickSkill = skillsById.get(tickSourceSkillId(status) ?? "")
+    const dot = resolveTickDot(status, tickSkill)
+    if (!dot) continue
+    const debuffForTick: Debuff = { ...status, dot }
+    const dotSkill = dotTickSkill(status, tickSkill)
+    const dotName = `${status.name} (DoT)`
+    const dotType = dot.skillType || "sustain"
+
+    for (const tick of emitDotTicks({
+      debuff: status,
+      dot,
+      windows: arr,
+      stacksAt: (frame) => stacksAt(buffId, frame),
+      inWindow,
+      weightAt: (frame) => {
+        for (const { mechanic, state } of mechanics) {
+          const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
+          if (weight !== null && weight !== undefined) return weight
         }
-      : baseDot
-    const debuffForTick: Debuff = srcHit ? { ...debuffDef, dot } : debuffDef
-    const interval = dot.tickIntervalFrames
-    const perStack = (debuffDef.stackScaling ?? "flat") === "perStack"
-    const table: DotStackShape[] | null =
-      dot.perStackShapes && dot.perStackShapes.length > 0 ? dot.perStackShapes : null
-    const ladder: number[] | null =
-      !table && dot.perStackMultipliers && dot.perStackMultipliers.length > 0
-        ? dot.perStackMultipliers
-        : null
-    const episodes: Window[] = []
-    for (const w of arr) {
-      const last = episodes[episodes.length - 1]
-      if (last && w.start < last.end) last.end = Math.max(last.end, w.end)
-      else episodes.push({ start: w.start, end: w.end })
-    }
-    const dotSkill = dotTickSkill(debuffDef)
-    const attunementCorrection = skillAttunementDamageMultiplier(tickSkill ?? dotSkill, inputs)
-    for (const ep of episodes) {
-      for (let f = ep.start + interval; f < ep.end; f += interval) {
-        if (f < 0 || !inWindow(f)) continue
-        const tickWeight =
-          bitterSeasonPoison && buffId === bitterSeasonId
-            ? bitterSeasonPoison.activeProbAtTime(f / FPS)
-            : 1
-        if (tickWeight <= 0) continue
-        let dmg: number
-        if (table) {
-          const liveStacks = Math.max(1, stacksAt(buffId, f))
-          const shape = table[clamp(liveStacks, 1, table.length) - 1]
-          const st = resolveState(f, dotSkill)
-          dmg = dotTickDamageForShape(
-            debuffForTick,
-            shape,
-            st.ctx,
-            st.forceCrit,
-            attunementCorrection,
-          )
-        } else if (ladder) {
-          const liveStacks = Math.max(0, stacksAt(buffId, f))
-          if (liveStacks === 0) continue
-          const scale = ladder[clamp(liveStacks, 1, ladder.length) - 1]
-          const st = resolveState(f, dotSkill)
-          dmg = dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * scale
-        } else {
-          const stackCount = perStack ? Math.max(0, stacksAt(buffId, f)) : 1
-          if (perStack && stackCount === 0) continue
-          const st = resolveState(f, dotSkill)
-          dmg =
-            dotTickDamage(debuffForTick, st.ctx, st.forceCrit, attunementCorrection) * stackCount
-        }
-        dmg *= tickWeight
-        totalDamage += dmg
-        const dotName = `${debuffDef.name} (DoT)`
-        const dotType = dot.skillType || "sustain"
-        add(dotName, dotType, 1, dmg)
-        timeline.push({
-          frame: f,
-          timeSec: f / FPS,
-          skillName: dotName,
-          type: dotType,
-          kind: "dot",
-          damage: dmg,
-          inWindow: true,
-        })
-      }
+        return 1
+      },
+      damageAt: (frame, shape, scale) => {
+        const st = resolveState(frame, dotSkill)
+        return (
+          dotTickDamage(debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, shape) *
+          (scale ?? 1)
+        )
+      },
+    })) {
+      totalDamage += tick.damage
+      add(dotName, dotType, 1, tick.damage)
+      timeline.push({
+        frame: tick.frame,
+        timeSec: tick.frame / FPS,
+        skillName: dotName,
+        type: dotType,
+        kind: "dot",
+        damage: tick.damage,
+        inWindow: true,
+      })
     }
   }
 
-  // Morale Chant's Yi River (`.tmp/site/deobfuscated.js` `yiRiver.calculate`
-  // ~L21287-21409): no weapon/mystic boosts apply.
-  if (buffEngine && buffEngine.paramOn("moraleChant") && buffEngine.paramTier("moraleChant") >= 6) {
-    const durationSec = durationFrames / FPS
-    let tFirst = 0
-    while (
-      tFirst < durationSec &&
-      moraleStacksAtTime(tFirst, buffEngine.qiPhase(tFirst) === "exhausted") <
-        MORALE_STACK_THRESHOLD
-    ) {
-      tFirst += 0.5
-    }
-    if (tFirst <= durationSec) {
-      const yiRiverSkill: Skill = {
-        id: "yi-river",
-        classId: inputs.classId,
-        name: "Yi River",
-        skillType: "mindMethod",
-        weaponOrAttribute: "",
-        attributeAttack: "",
-        hits: [],
-        castFrames: 0,
-        triggerable: false,
-        createdAt: "1970-01-01T00:00:00.000Z",
-        updatedAt: "1970-01-01T00:00:00.000Z",
-      }
-      for (let t = tFirst; t <= durationSec; t += YI_RIVER_INTERVAL_SEC) {
-        const f = Math.round(t * FPS)
-        const st = resolveState(f, yiRiverSkill)
-        const art = {
-          name: "Yi River",
-          physMultiplier: 1,
-          attributeMultiplier: 1,
-          skillType: "mindMethod",
-        } as Parameters<typeof computeSkillDamage>[0]
-        if (st.forceCrit) art.guaranteedCrit = 1
-        const { expectedDamage } = computeSkillDamage(art, padSlots([]), st.ctx, 1)
-        totalDamage += expectedDamage
-        add("Yi River", "mindMethod", 1, expectedDamage)
-        timeline.push({
-          frame: f,
-          timeSec: t,
-          skillName: "Yi River",
-          type: "mindMethod",
-          kind: "hit",
-          damage: expectedDamage,
-          inWindow: true,
-        })
-      }
+  for (const { mechanic, state } of mechanics) {
+    for (const event of mechanic.extraEvents?.(state, mechanicSetup) ?? []) {
+      const st = resolveState(event.frame, event.skill)
+      const art = { ...event.art } as Parameters<typeof computeSkillDamage>[0]
+      if (st.forceCrit) art.guaranteedCrit = 1
+      const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
+      totalDamage += expectedDamage
+      add(event.name, event.type, 1, expectedDamage)
+      timeline.push({
+        frame: event.frame,
+        timeSec: event.frame / FPS,
+        skillName: event.name,
+        type: event.type,
+        kind: "hit",
+        damage: expectedDamage,
+        inWindow: true,
+      })
     }
   }
 
@@ -1351,70 +855,6 @@ export function simulateTimeline(inputs: Inputs): Result {
     qiBreakWindow,
     casts,
   }
-}
-
-function dotTickSkill(debuff: Debuff): Skill {
-  return {
-    id: `dot-${debuff.id}`,
-    classId: debuff.classId,
-    name: debuff.name,
-    skillType: debuff.dot?.skillType || "sustain",
-    weaponOrAttribute: "",
-    attributeAttack: "",
-    hits: [],
-    castFrames: 0,
-    triggerable: false,
-    createdAt: debuff.createdAt,
-    updatedAt: debuff.updatedAt,
-  }
-}
-
-function dotTickDamage(debuff: Debuff, ctx: Ctx, forceCrit = false, correction = 1): number {
-  const dot = debuff.dot
-  if (!dot) return 0
-  const art = {
-    name: debuff.name,
-    physMultiplier: dot.physMultiplier,
-    physFixed: dot.physFixed,
-    attributeMultiplier: dot.attributeMultiplier,
-    attributeFixed: dot.attributeFixed,
-    attributeAttack: dot.attributeAttack || undefined,
-    skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
-    guaranteedCrit: forceCrit ? 1 : undefined,
-    correction,
-    weaponOrAttribute: dot.weaponOrAttribute || undefined,
-    mysticCategory: dot.mysticCategory || undefined,
-  } as Parameters<typeof computeSkillDamage>[0]
-  return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
-}
-
-function dotTickDamageForShape(
-  debuff: Debuff,
-  shape: DotStackShape,
-  ctx: Ctx,
-  forceCrit = false,
-  correction = 1,
-): number {
-  const dot = debuff.dot
-  if (!dot) return 0
-  const art = {
-    name: debuff.name,
-    physMultiplier: shape.physMultiplier,
-    physFixed: shape.physFixed,
-    attributeMultiplier: shape.attributeMultiplier,
-    attributeFixed: shape.attributeFixed,
-    attributeAttack: dot.attributeAttack || undefined,
-    skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
-    guaranteedCrit: forceCrit ? 1 : undefined,
-    correction,
-    weaponOrAttribute: dot.weaponOrAttribute || undefined,
-    mysticCategory: dot.mysticCategory || undefined,
-  } as Parameters<typeof computeSkillDamage>[0]
-  return computeSkillDamage(art, padSlots([]), ctx, Math.max(1, dot.count)).expectedDamage
 }
 
 function emptyResult(warnings: string[]): Result {

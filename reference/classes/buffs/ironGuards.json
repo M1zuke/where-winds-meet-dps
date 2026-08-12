@@ -1,0 +1,25 @@
+{
+  "id": "ironGuards",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["stonesplit_strength"],
+      "def": {
+        "id": "ironGuards",
+        "name": "Iron Guards",
+        "triggeredBy": ["cast:phalanxSpecial", "cast:phalanxSpecialPrepull"],
+        "duration": 40,
+        "cooldown": 20,
+        "affects": null,
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.08
+        },
+        "statModifiers": {
+          "physPen": 12,
+          "stonesplitPen": 12
+        }
+      }
+    }
+  ]
+}

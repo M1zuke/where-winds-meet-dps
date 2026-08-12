@@ -11,7 +11,7 @@ describe("translate", () => {
 
   it("passes already-English built-in skill names through unchanged", async () => {
     const { builtinSkillsForClass } = await import("../src/engine/builtinLibrary")
-    const skills = builtinSkillsForClass("bamboocutDust")
+    const skills = builtinSkillsForClass("bellstrikeUmbra")
     expect(skills.length).toBeGreaterThan(0)
     for (const s of skills) {
       expect(translate(s.name, "en")).toBe(s.name)

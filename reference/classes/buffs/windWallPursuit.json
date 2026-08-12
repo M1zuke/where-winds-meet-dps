@@ -1,0 +1,20 @@
+{
+  "id": "windWallPursuit",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "windWallPursuit",
+        "name": "Wind Wall (Pursuit)",
+        "triggeredBy": ["cast:fanQ", "cast:fanQCancel", "cast:fanQPrepull"],
+        "duration": 15,
+        "affects": ["role:fanHeavyPursuit"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.1
+        }
+      }
+    }
+  ]
+}

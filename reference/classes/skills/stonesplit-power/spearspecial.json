@@ -1,0 +1,28 @@
+{
+  "id": "stonesplitPower-spearspecial",
+  "classId": "stonesplitPower",
+  "name": "SpearSpecial",
+  "abilityTag": "SpearSpecial",
+  "tags": ["weapon:Stormbreaker Spear", "attune:spearSpecial"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Spear",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 1.0757,
+      "attributeMultiplier": 1.6135,
+      "physFixed": 249,
+      "attributeFixed": 139,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 49,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:spearSpecial"
+}

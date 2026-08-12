@@ -1,9 +1,15 @@
 import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { defaultInputs } from "./engine/defaults"
-import { allowedInnerWaysForClass, defaultArsenalForClass, ARMOR_SET_OPTIONS } from "./engine/panel"
+import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
+import { CLASS_IDS } from "./definitions/classes/registry"
+import {
+  innerWayIdForName,
+  innerWayName,
+  resolveInnerWayId,
+} from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
-import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./data/baseStats"
+import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
 import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation } from "./engine/rotation"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
@@ -29,6 +35,7 @@ import {
   runProfileMigrations,
   migrateClassId,
   migrateEntityId,
+  migrateSetId,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -146,11 +153,6 @@ const LEGACY_GEAR_WORD_RENAMES: Record<string, string> = {
   "Max Formless": "Max Void Attack",
 }
 
-const LEGACY_MIND_METHOD_RENAMES: Record<string, string> = {
-  "Lone Loyalty": "Steadfast Devotion",
-  "Frostwhite Night": "Frost-Clad Night",
-}
-
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
@@ -160,7 +162,15 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // profiles, neither of which is version-walked. Must run before anything
   // that reads `classId` (arsenal / inner-way allowlist / talent defaults).
   next.classId = migrateClassId(next.classId)
+  // A class id naming a class that no longer exists degrades to the default
+  // build's class rather than reaching `getSchool()`, which throws on an
+  // unknown id — see CLAUDE.md → "localStorage migrations".
+  if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
   next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
+  // Value-level repair for the legacy `wwm.inputs` blob, which has no version
+  // chain of its own (V8 covers `wwm.profiles`) — idempotent, so re-running it
+  // on an already-migrated id is a no-op.
+  next.set = migrateSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)
   }
@@ -195,12 +205,6 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).calcMode
   if (next.bowSet !== "affinity" && next.bowSet !== "crit" && next.bowSet !== "precision") {
     next.bowSet = null
-  }
-  // `V8__dropRemovedArmorSets` heals stored profiles; this is the standing
-  // invariant for the paths that never walk the chain — the legacy `wwm.inputs`
-  // blob rolled in below, and a bare (unwrapped) imported profile.
-  if (next.set !== null && !ARMOR_SET_OPTIONS.some((option) => option.setKey === next.set)) {
-    next.set = null
   }
   if (
     next.arsenal !== "general" &&
@@ -245,20 +249,30 @@ function hydrateInputs(inputs: Inputs): Inputs {
   } else {
     next.equipped = { ...EMPTY_EQUIPPED, ...next.equipped }
   }
+  // additive value-level repair — see CLAUDE.md → "localStorage migrations"
+  //
+  // A slot used to be identified by its display name. It now carries a stable
+  // `id`, healed here from whatever the profile stored. A slot naming an inner
+  // way that no longer exists resolves to nothing the class allows and is
+  // cleared, which is the same path an already-disallowed slot takes.
   if (Array.isArray(next.mindMethods)) {
     const allowed = new Set(allowedInnerWaysForClass(next.classId))
     const seen = new Set<string>()
     next.mindMethods = next.mindMethods.map((slot) => {
       if (!slot) return slot
-      const name = LEGACY_MIND_METHOD_RENAMES[slot.name] ?? slot.name
-      const disallowed = !!name && allowed.size > 0 && !allowed.has(name)
-      const duplicate = !!name && seen.has(name)
-      if (disallowed || duplicate) return { ...slot, name: "", stacks: "" }
-      if (name) seen.add(name)
-      if (name !== slot.name || (name && !slot.stacks)) {
-        return { ...slot, name, stacks: slot.stacks || "tier 6" }
+      const innerWayId = slot.name || slot.id ? resolveInnerWayId(slot.id ?? slot.name) : ""
+      const known = !!innerWayId && !!innerWayIdForName(innerWayName(innerWayId))
+      const disallowed = !!innerWayId && allowed.size > 0 && !allowed.has(innerWayId)
+      const duplicate = !!innerWayId && seen.has(innerWayId)
+      if (!innerWayId) return { ...slot, id: undefined, name: "", stacks: "" }
+      if (!known || disallowed || duplicate) return { id: undefined, name: "", stacks: "" }
+      seen.add(innerWayId)
+      return {
+        ...slot,
+        id: innerWayId,
+        name: innerWayName(innerWayId),
+        stacks: slot.stacks || "tier 6",
       }
-      return slot
     }) as Inputs["mindMethods"]
   }
   {
@@ -550,13 +564,33 @@ interface CustomSkillsBlob {
 // Plus without its qi-break doubling, and nothing in the UI would show that.
 const QI_BREAK_DOUBLE_TAG = "prop:hasQiBreakDoubleDamage"
 
-function healSkillTags(id: string, tags: string[]): string[] {
-  if (!id.endsWith("-dragon-head-plus") || tags.includes(QI_BREAK_DOUBLE_TAG)) return tags
-  return [...tags, QI_BREAK_DOUBLE_TAG]
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// A skill seeded from a built-in copies that built-in's tags at the moment it
+// was seeded, so `role:` / `cast:` tags added to a built-in afterwards are
+// missing from stored copies — and without them a seeded copy silently stops
+// receiving the buffs its original receives. Unioning is safe because no editor
+// surface can remove one of these tags.
+let builtinTagsById: Map<string, string[]> | null = null
+function builtinTagsFor(id: string): string[] {
+  if (!builtinTagsById) {
+    builtinTagsById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.tags?.length) builtinTagsById.set(skill.id, skill.tags)
+  }
+  return builtinTagsById.get(id) ?? []
 }
 
-// The Dragon Head coefficients were replaced wholesale (2026-08-08), so a
-// stored copy carrying the superseded workbook numbers scores ~69x low. Only
+function healSkillTags(id: string, tags: string[]): string[] {
+  const healed = new Set(tags)
+  for (const tag of builtinTagsFor(id)) healed.add(tag)
+  if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
+  return healed.size === tags.length ? tags : [...healed]
+}
+
+// These coefficients were replaced wholesale, so a stored copy carrying the
+// superseded workbook numbers scores ~69x low. Only
 // an untouched copy is rewritten — a hit the user actually edited is left
 // alone, since we cannot tell a stale value from a deliberate one once it
 // differs.

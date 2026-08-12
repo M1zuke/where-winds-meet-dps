@@ -1,0 +1,23 @@
+{
+  "id": "frostCladSnowbreakT6",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["stonesplit_strength"],
+      "def": {
+        "id": "frostCladSnowbreakT6",
+        "name": "Frost-Clad Night T6 (Snowbreak)",
+        "triggeredBy": [],
+        "duration": 9999,
+        "alwaysActive": true,
+        "affects": ["role:snowpartingVC"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.1
+        },
+        "enabledParam": "frostCladNight",
+        "minTier": 6
+      }
+    }
+  ]
+}

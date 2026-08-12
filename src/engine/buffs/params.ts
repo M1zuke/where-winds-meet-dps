@@ -1,25 +1,50 @@
 import type { Inputs } from "../types"
 import type { BuffParams } from "./buffEngine"
-import { APP_SET_TO_SITE_SET, SITE_PARAM_TO_INNER_WAY, zhongToTier } from "./paramMap"
+import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
+import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
+import { SET_BY_ID } from "../../definitions/sets/registry"
+import { specForClass } from "./data"
+
+// The one place `Inputs.buffParams`' `<param>Tier` wire-key convention is
+// written — every reader goes through `paramOnOf`/`paramTierOf` instead of
+// rebuilding the key itself.
+function tierKey(param: string): string {
+  return param + "Tier"
+}
+
+export function paramOnOf(params: BuffParams, param: string): boolean {
+  return !!params[param]
+}
+
+export function paramTierOf(params: BuffParams, param: string): number {
+  const tier = params[tierKey(param)]
+  return typeof tier === "number" ? tier : 0
+}
 
 export function paramsFromInputs(inputs: Inputs): BuffParams {
-  const params: BuffParams = { isTrainingDummy: !!inputs.dummyMode }
+  const params: BuffParams = {
+    isTrainingDummy: !!inputs.dummyMode,
+    classId: inputs.classId,
+    spec: specForClass(inputs.classId),
+  }
 
-  const armorSetKey = inputs.set ? APP_SET_TO_SITE_SET[inputs.set] : undefined
+  const armorSetKey = inputs.set ? SET_BY_ID[inputs.set]?.siteKey : undefined
   if (armorSetKey) {
     params.armorSet = armorSetKey
     if (armorSetKey === "starsAlign") params.starsAlignActive = true
   }
 
-  const tierBySlotName = new Map<string, number>()
+  const tierByInnerWayId = new Map<string, number>()
   for (const slot of inputs.mindMethods) {
-    if (slot.name) tierBySlotName.set(slot.name, zhongToTier(slot.stacks))
+    const innerWayId = slotInnerWayId(slot)
+    if (innerWayId) tierByInnerWayId.set(innerWayId, tierFromStacks(slot.stacks))
   }
-  for (const [param, mapping] of Object.entries(SITE_PARAM_TO_INNER_WAY)) {
-    if (tierBySlotName.has(mapping.mindMethod)) {
-      params[param] = true
-      params[param + "Tier"] = tierBySlotName.get(mapping.mindMethod)!
-    }
+  for (const def of INNER_WAYS) {
+    if (!def.buffParam) continue
+    const tier = tierByInnerWayId.get(def.id)
+    if (tier === undefined) continue
+    params[def.buffParam] = true
+    params[tierKey(def.buffParam)] = tier
   }
 
   const qiBreak = inputs.combatSettings?.qiBreak

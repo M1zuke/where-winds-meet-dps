@@ -3,7 +3,7 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 describe("rundown — perSkill percent invariant", () => {

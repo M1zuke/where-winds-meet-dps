@@ -1,38 +1,35 @@
 import type { Inputs, AttributeKey, Arsenal } from "./types"
 import type { FormulaContext } from "./formula"
-import { resolveMindMethodOverrides } from "./mindMethodOverrides"
-import schools from "../data/classes/schools.json"
-import breakthroughs from "../data/baseStats/breakthroughTiers.json"
-import sets from "../data/sets/sets.json"
-import armorSetBoniJson from "../data/sets/armorSetBoni.json"
+import { ATTUNEMENT_OPTIONS } from "./attunements"
+import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
+import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
+import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
+import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
 
-const SCHOOLS = schools as ReadonlyArray<{
-  id: string
-  cn: string
-  en: string
-  displayName: string
-  primaryAttribute: AttributeKey
-  attributeMultiplier: number
-  permanentBuffs: string[]
-  classMindGroup: string
-  allowedMindMethods: string[]
-  classBuffs: { label: string; slot: number }[]
-  weapons: string[]
-  rotations: string[]
-}>
+export { getBreakthrough, henZhiActiveForInputs }
 
-const BREAKTHROUGHS = breakthroughs as ReadonlyArray<{
-  breakthrough: number
-  name: string
-  levelRange: string
-  resistance: number
-  defense: number
-  generalDamageTaken: number
-  fatigueDamageTaken: number
-  multiplier: number
-}>
+const DING_YIN_PATH_PREFIX = "dingYinByTag."
 
-const SETS = (sets as { sets: { name: string; [k: string]: unknown }[] }).sets
+// The scoped stats (BUFFS.md § "Category 3") are keyed by what the entity
+// declares — a weapon name, a mystic category — and `statRegistry` already owns
+// that vocabulary. Reading it here keeps one list instead of a copy per
+// consumer.
+function scopedStatMap(
+  inputs: Inputs,
+  keyByCategory: Readonly<Record<string, StatKey>>,
+): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const [category, statKey] of Object.entries(keyByCategory)) {
+    out[category] = (inputs as unknown as Record<string, number>)[statKey] ?? 0
+  }
+  return out
+}
+
+// The 6 % target-defense reduction. The party-applied debuff is its only live
+// supplier; the channel stays open because an inner way may declare
+// `targetDefenseMultiplier` instead.
+const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 
 export interface DerivedStats {
   classId: string
@@ -46,25 +43,17 @@ export interface DerivedStats {
   generalDamageBoost: number
   weaponBoosts: Record<string, number>
   typeBoosts: Record<string, number>
-  setBonus: Record<string, number>
 }
 
-export function getSchool(classId: string) {
-  const s = SCHOOLS.find((x) => x.id === classId)
-  if (!s) throw new Error(`Unknown classId: ${classId}`)
-  return s
+export function getSchool(classId: string): ClassDefinition {
+  const definition = classDefinition(classId)
+  if (!definition) throw new Error(`Unknown classId: ${classId}`)
+  return definition
 }
 
+// Returns inner-way IDS; the UI renders them through `innerWayName`.
 export function allowedInnerWaysForClass(classId: string): string[] {
-  const s = SCHOOLS.find((x) => x.id === classId)
-  if (!s) return []
-  return [...new Set([s.classMindGroup ?? "", ...s.allowedMindMethods].filter(Boolean))]
-}
-
-export function getBreakthrough(bt: number) {
-  const t = BREAKTHROUGHS.find((x) => x.breakthrough === bt)
-  if (!t) throw new Error(`Unknown breakthrough: ${bt}`)
-  return t
+  return [...(classDefinition(classId)?.innerWays ?? [])]
 }
 
 export function resistanceForBreakthrough(bt: number): number {
@@ -73,16 +62,6 @@ export function resistanceForBreakthrough(bt: number): number {
 
 export function resistanceForInputs(inputs: Inputs): number {
   return resistanceForBreakthrough(inputs.breakthrough)
-}
-
-export function henZhiActiveForInputs(inputs: Inputs): boolean {
-  const stackOf = (name: string) =>
-    inputs.mindMethods.find((slot) => slot.name === name)?.stacks ?? ""
-  return (
-    inputs.shareDebuff5HenZhi ||
-    (inputs.mindMethods.some((slot) => slot.name === "Year-Long Lament") &&
-      stackOf("Year-Long Lament") === "tier 6")
-  )
 }
 
 // Pen resistance is zero for every target per the 2026-07 decision; the
@@ -112,14 +91,17 @@ export const BOW_SET_BONUS = {
   precision: 0.04,
 } as const
 
-// Source: `data/sets/armorSetBoni.json`.
+// `setKey` is the set's id (`Inputs.set` value), not its display name; render
+// `name` for the label.
 export interface ArmorSetOption {
   name: string
   setKey: string
   stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
   value: number
 }
-export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = armorSetBoniJson as ArmorSetOption[]
+export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.filter(
+  (set) => set.panelBonus,
+).map((set) => ({ name: set.name, setKey: set.id, ...set.panelBonus! }))
 
 export function applyArmorSet(inputs: Inputs): Inputs {
   if (!inputs.set) return inputs
@@ -176,15 +158,7 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const effectiveDefense = target.defense * (1 - inputs.phys.penetration)
 
-  const setBonus: Record<string, number> = {}
-  if (inputs.set) {
-    const s = SETS.find((x) => x.name === inputs.set)
-    if (s) {
-      for (const [k, v] of Object.entries(s)) {
-        if (typeof v === "number") setBonus[k] = v
-      }
-    }
-  }
+  const setFormula = (inputs.set ? SET_BY_ID[inputs.set]?.formulaBonus : undefined) ?? {}
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
@@ -193,9 +167,9 @@ export function deriveStats(inputs: Inputs): DerivedStats {
   const henZhi = inputs.shareDebuff5HenZhi ? 0.05 : 0
   const easyHurt = inputs.shareEasyHurt ? 0.05 : 0
   const tianGongFire =
-    inputs.tianGongElement === "fire" ? (setBonus["Low-Qi Direct Affinity Rate"] ?? 0) : 0
+    inputs.tianGongElement === "fire" ? (setFormula.lowQiDirectAffinityRate ?? 0) : 0
   const generalDamageBoost =
-    henZhi + easyHurt + tianGongFire + (setBonus["Phys Boost"] ?? 0) + targetGeneralDamageTaken
+    henZhi + easyHurt + tianGongFire + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
 
   const weaponBoosts: Record<string, number> = {
     Sword: inputs.swordBoost,
@@ -230,7 +204,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     generalDamageBoost,
     weaponBoosts,
     typeBoosts,
-    setBonus,
   }
 }
 
@@ -260,23 +233,10 @@ export function buildContext(
 
   const pct = (n: number) => n * 100
 
-  const mindMethodNames = inputs.mindMethods.filter((m) => m.name).map((m) => m.name)
-  const has = (name: string) => mindMethodNames.includes(name)
-  const stackOf = (name: string) => inputs.mindMethods.find((m) => m.name === name)?.stacks ?? ""
-
   const henZhiActive = henZhiActiveForInputs(inputs)
-  const effectiveDefense = target.defense * (henZhiActive ? 0.94 : 1)
+  const effectiveDefense = target.defense * (henZhiActive ? HEN_ZHI_DEFENSE_MULTIPLIER : 1)
 
-  const chargeBonus = has("Mighty Song") ? 0.15 : 0
-
-  const setBonus: Record<string, number> = {}
-  if (inputs.set) {
-    const s = SETS.find((x) => x.name === inputs.set)
-    if (s)
-      for (const [k, v] of Object.entries(s)) {
-        if (typeof v === "number") setBonus[k] = v
-      }
-  }
+  const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
   const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
@@ -284,18 +244,24 @@ export function buildContext(
 
   const generalDamageBoost =
     targetGeneralDamageTaken +
-    (has("Soldier's Return") ? 0.08 : 0) +
-    (has("Star-Picker") && stackOf("Star-Picker") === "tier 6" ? 0.03 : 0) +
+    innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
+    (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
     (inputs.tianGongElement === "fire" ? 0.015 : 0) +
     (inputs.tianGongElement === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
-    (has("Endurance Doctrine") ? 0.02 : 0) +
-    (setBonus["General Damage Boost"] ?? 0)
+    (school.generalDamageBoost ?? 0)
 
   const dingYinByTag: Record<string, number> = {}
-  for (const tag of school.permanentBuffs) {
-    if (tag && tag !== "N/A") dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
+  for (const tag of school.dingYinTags) dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
+
+  const attuneBoostByTag: Record<string, number> = {}
+  for (const option of ATTUNEMENT_OPTIONS) {
+    if (!option.affectsTag || !option.enginePath?.startsWith(DING_YIN_PATH_PREFIX)) continue
+    if (option.classIds && !option.classIds.includes(inputs.classId)) continue
+    const amount = inputs.dingYinByTag[option.enginePath.slice(DING_YIN_PATH_PREFIX.length)] ?? 0
+    if (amount)
+      attuneBoostByTag[option.affectsTag] = (attuneBoostByTag[option.affectsTag] ?? 0) + amount
   }
 
   return {
@@ -346,30 +312,15 @@ export function buildContext(
     set: inputs.set,
     tianGong: inputs.tianGongElement,
     dingYinByTag,
+    attuneBoostByTag,
     shareDebuffs: {
       henZhi: inputs.shareDebuff5HenZhi,
       easyHurt: inputs.shareEasyHurt,
     },
-    boostZoneOverrides: resolveMindMethodOverrides(inputs).boostZoneOverrides,
     allMartialBoost: inputs.allMartialBoost,
-    weaponBoosts: {
-      Sword: inputs.swordBoost,
-      Spear: inputs.spearBoost,
-      Fan: inputs.fanBoost,
-      Umbrella: inputs.umbrellaBoost,
-      Modao: inputs.modaoBoost,
-      "Twin Blades": inputs.dualKnivesBoost,
-      "Rope Dart": inputs.ropeDartBoost,
-      Hengdao: inputs.hengDaoBoost,
-    },
-    mysticTypeBoosts: {
-      control: inputs.singleMysticBoost,
-      burst: inputs.singleMysticBoost,
-      area: inputs.areaMysticBoost,
-      "area-debuff": inputs.areaMysticBoost,
-      "area-damage": inputs.areaMysticBoost,
-    },
-    dotDamageBoost: has("Insightful Strike") ? 0.1 : 0,
+    weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
+    mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
+    dotDamageBoost: innerWayScalar(inputs.mindMethods, "dotDamageBoost"),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     rateResistance: eff.resistance,

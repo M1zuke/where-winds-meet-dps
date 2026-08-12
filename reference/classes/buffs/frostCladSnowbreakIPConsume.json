@@ -1,0 +1,32 @@
+{
+  "id": "frostCladSnowbreakIPConsume",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["stonesplit_strength"],
+      "def": {
+        "id": "frostCladSnowbreakIPConsume",
+        "name": "Frost-Clad Night T4 (IP Consume)",
+        "triggeredBy": [],
+        "duration": 0,
+        "affects": ["SnowpartingVC"],
+        "bonus": null,
+        "enabledParam": "frostCladNight",
+        "minTier": 4,
+        "perCastConsume": {
+          "triggerSkillProperty": "consumesInnerPassion",
+          "consumesFromBuffStack": "innerPassion",
+          "bonus": {
+            "type": "bossOnlyBuffBonus",
+            "value": 0.4
+          },
+          "effectPhaseAlternative": {
+            "phase": "exhausted",
+            "enabledParam": "frostCladNight",
+            "minTier": 6
+          }
+        }
+      }
+    }
+  ]
+}

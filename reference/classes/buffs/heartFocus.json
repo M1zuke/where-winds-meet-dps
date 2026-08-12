@@ -1,0 +1,23 @@
+{
+  "id": "heartFocus",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_deluge"],
+      "def": {
+        "id": "heartFocus",
+        "name": "Heart Focus",
+        "triggeredBy": [],
+        "duration": 9999,
+        "alwaysActive": true,
+        "affects": null,
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.06
+        },
+        "enabledParam": "restoringBlossom",
+        "minTier": 6
+      }
+    }
+  ]
+}

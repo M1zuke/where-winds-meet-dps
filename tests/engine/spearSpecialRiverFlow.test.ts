@@ -5,7 +5,7 @@ import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeSkill, makeHit, type Skill } from "../../src/engine/skill"
-import { RIVER_FLOW_DURATION_FRAMES } from "../../src/engine/builtinBuffs"
+import { RIVER_FLOW_DURATION_FRAMES } from "../../src/data/classes/bellstrike-umbra/gates"
 import type { Inputs, Result } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"

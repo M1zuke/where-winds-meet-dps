@@ -1,0 +1,56 @@
+{
+  "id": "silkbindJade-fanheavypursuit-3-hit",
+  "classId": "silkbindJade",
+  "name": "FanHeavyPursuit 3-Hit",
+  "abilityTag": "FanHeavyPursuit 3-Hit",
+  "tags": [
+    "prop:isExecution",
+    "prop:hasLowQiCritBoost",
+    "prop:hasLowQiDmgBoost",
+    "weapon:Fan",
+    "attack:heavy",
+    "attune:fanSpecial",
+    "role:fanHeavyPursuit"
+  ],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Fan",
+  "attributeAttack": "Silkbind",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.4157666666666667,
+      "attributeMultiplier": 0.6236333333333334,
+      "physFixed": 96.33333333333333,
+      "attributeFixed": 53.666666666666664,
+      "extraCritDamage": 1,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 30,
+      "physMultiplier": 0.4157666666666667,
+      "attributeMultiplier": 0.6236333333333334,
+      "physFixed": 96.33333333333333,
+      "attributeFixed": 53.666666666666664,
+      "extraCritDamage": 1,
+      "triggers": []
+    },
+    {
+      "id": "hit-2",
+      "frame": 60,
+      "physMultiplier": 0.4157666666666667,
+      "attributeMultiplier": 0.6236333333333334,
+      "physFixed": 96.33333333333333,
+      "attributeFixed": 53.666666666666664,
+      "extraCritDamage": 1,
+      "triggers": []
+    }
+  ],
+  "castFrames": 90,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:fanHeavyPursuit3Hit"
+}

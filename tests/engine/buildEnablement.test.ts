@@ -1,18 +1,20 @@
 // Build-driven buff enablement: a gated site buff turns on because the
 // character's build selects the matching inner way or equips the matching
 // gear set — never from a manual toggle. See `src/engine/buffs/params.ts` /
-// `paramMap.ts`.
+// `src/data/innerWays/`.
 import { describe, it, expect } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import type { BuffDef } from "../../src/engine/buffs/buffDef"
+import type { BuffModule } from "../../src/engine/buffs/buffModule"
+import { stat } from "../../src/engine/effects/effect"
 import { allBuffDefsDeduped, groupBuffDefs } from "../../src/engine/buffs/data"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
-import { zhongToTier } from "../../src/engine/buffs/paramMap"
+import { tierFromStacks } from "../../src/definitions/innerWays/innerWayDef"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets/ids"
 
 function taggedSkill(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -39,7 +41,7 @@ describe("paramsFromInputs — build derivation", () => {
         { ...emptyMindMethod },
         { ...emptyMindMethod },
       ],
-      set: "Shattered Ridge",
+      set: SET_ID.shatteredRidge,
     }
     const params = paramsFromInputs(inputs)
     expect(params.wolfchasersArt).toBe(true)
@@ -64,7 +66,7 @@ describe("paramsFromInputs — build derivation", () => {
   })
 
   it("Stars Align enables starsAlignActive", () => {
-    const inputs: Inputs = { ...base, set: "Stars Align" }
+    const inputs: Inputs = { ...base, set: SET_ID.starsAlign }
     const params = paramsFromInputs(inputs)
     expect(params.starsAlignActive).toBe(true)
     expect(params.armorSet).toBe("starsAlign")
@@ -108,20 +110,26 @@ describe("paramsFromInputs — build derivation", () => {
   it("the default build enables no gated buff param", () => {
     const params = paramsFromInputs({ ...defaultInputs, classId: "bellstrikeUmbra" })
     for (const [param, def] of Object.entries(params)) {
-      if (param === "isTrainingDummy" || param === "armorSet") continue
+      if (
+        param === "isTrainingDummy" ||
+        param === "armorSet" ||
+        param === "classId" ||
+        param === "spec"
+      )
+        continue
       expect(def).toBeFalsy()
     }
   })
 })
 
-describe("zhongToTier", () => {
+describe("tierFromStacks", () => {
   it.each([
     ["tier 6", 6],
     ["tier 5", 5],
     ["tier 0", 0],
     ["", 0],
   ])("%s -> %d", (stacks, expected) => {
-    expect(zhongToTier(stacks)).toBe(expected)
+    expect(tierFromStacks(stacks)).toBe(expected)
   })
 })
 
@@ -175,14 +183,14 @@ describe("build-driven enablement moves timeline DPS", () => {
 describe("set enablement registers a requiresSet buff", () => {
   it("Jadeware registers jadeware; Hawking does not", () => {
     const withSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: "Jadeware" }),
+      paramsFromInputs({ ...defaultInputs, set: SET_ID.jadeware }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
     expect(withSet.definitions.has("jadeware")).toBe(true)
 
     const withoutSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: "Hawking" }),
+      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawking }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )
@@ -192,21 +200,22 @@ describe("set enablement registers a requiresSet buff", () => {
 
 describe("time-windowed application", () => {
   it("a buff only affects hits cast inside its duration window", () => {
-    const defs: BuffDef[] = [
+    const modules: BuffModule[] = [
       {
         id: "windowed",
-        triggers: ["X"],
+        name: "Windowed",
+        triggeredBy: ["X"],
         duration: 10,
         affects: null,
-        bonus: { type: "buffBonus", value: 0.2 },
+        effects: [stat("allDamageBoost", 0.2)],
       },
     ]
-    const e = new BuffEngine({}, defs)
-    e.processSkillCast("X", 0, {})
-    expect(e.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
+    const engine = new BuffEngine({}, modules)
+    engine.processSkillCast("X", 0, {})
+    expect(engine.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.2,
     })
-    expect(e.calculateDamageEffects(taggedSkill("Y"), 11).effects).toHaveLength(0)
+    expect(engine.calculateDamageEffects(taggedSkill("Y"), 11).effects).toHaveLength(0)
   })
 })

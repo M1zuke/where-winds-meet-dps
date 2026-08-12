@@ -5,72 +5,78 @@ import {
   bitterSeasonEnvelopeWindows,
   bitterSeasonPoisonSchedule,
   bitterSeasonStackSchedule,
-  resolveBitterSeasonTuning,
   BITTER_SEASON_MAX_STACKS,
 } from "../../src/engine/buffs/bitterSeason"
+import { bitterSeasonTuningAtTier } from "../../src/data/innerWays/bitterSeason"
+import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/innerWays/swordHorizonZenith"
 import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
+
+// Sword Horizon's ceiling on the remaining duration an extension may leave.
+const ZENITH_CAP_SEC = ZENITH_MAX_EXTENDED_DURATION_FRAMES / 60
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { runEngine } from "../../src/engine/dps"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { seedSkillFromBuiltin, makeSkill, makeHit } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { getMindMethodContributions } from "../../src/data/baseStats"
-import schools from "../../src/data/classes/schools.json"
+import { getMindMethodContributions } from "../../src/definitions/baseStats"
+import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import type { Inputs } from "../../src/engine/types"
-
-const ALL_CLASSES = (schools as { id: string }[]).map((school) => school.id)
 
 describe("bitterSeasonPoisonSchedule", () => {
   it("stays active for the poison duration after a single guaranteed proc", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
     expect(schedule.activeProbAtTime(1)).toBe(1)
     expect(schedule.activeProbAtTime(4.9)).toBe(1)
     expect(schedule.activeProbAtTime(6)).toBe(0)
   })
 
   it("a Zenith extension on an active poison pushes its end back 10 s", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3], ZENITH_CAP_SEC)
     expect(schedule.activeProbAtTime(14.9)).toBe(1)
     expect(schedule.activeProbAtTime(15.1)).toBe(0)
   })
 
   it("a Zenith extension after the poison has already expired does not reopen it", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [6])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [6], ZENITH_CAP_SEC)
     expect(schedule.activeProbAtTime(7)).toBe(0)
   })
 
   it("caps each Zenith extension's resulting remaining duration at 16 s, re-evaluated per extension", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 40, [4, 9, 14])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 40, [4, 9, 14], ZENITH_CAP_SEC)
     expect(schedule.activeProbAtTime(29.9)).toBe(1)
     expect(schedule.activeProbAtTime(30.1)).toBe(0)
   })
 
   it("an empty extension list (no Zenith bar) gives the same curve as the unextended case", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
     expect(schedule.activeProbAtTime(1)).toBe(1)
     expect(schedule.activeProbAtTime(4.9)).toBe(1)
     expect(schedule.activeProbAtTime(6)).toBe(0)
   })
 
   it("returns a zero schedule and does not throw for empty hits / zero proc chance / non-positive duration", () => {
-    expect(bitterSeasonPoisonSchedule([], 1, 5, 20, []).activeProbAtTime(1)).toBe(0)
-    expect(bitterSeasonPoisonSchedule([0], 0, 5, 20, []).activeProbAtTime(1)).toBe(0)
-    expect(bitterSeasonPoisonSchedule([0], 1, 0, 20, []).activeProbAtTime(1)).toBe(0)
-    expect(bitterSeasonPoisonSchedule([0], 1, 5, 0, []).activeProbAtTime(1)).toBe(0)
+    expect(bitterSeasonPoisonSchedule([], 1, 5, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(0)
+    expect(bitterSeasonPoisonSchedule([0], 0, 5, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(
+      0,
+    )
+    expect(bitterSeasonPoisonSchedule([0], 1, 0, 20, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(
+      0,
+    )
+    expect(bitterSeasonPoisonSchedule([0], 1, 5, 0, [], ZENITH_CAP_SEC).activeProbAtTime(1)).toBe(0)
   })
 })
 
 describe("bitterSeasonPoisonSchedule.remainingActiveSecAtTime", () => {
   it("counts down toward 0 as the poison's nominal duration elapses, assuming no further hits", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [], ZENITH_CAP_SEC)
     expect(schedule.remainingActiveSecAtTime(1)).toBe(4)
     expect(schedule.remainingActiveSecAtTime(6)).toBe(0)
   })
 
   it("does not keep counting future hits — it decays even though the schedule as a whole is dense", () => {
     const hits = [0, 0.5, 1, 1.5, 2]
-    const schedule = bitterSeasonPoisonSchedule(hits, 1, 5, 20, [])
+    const schedule = bitterSeasonPoisonSchedule(hits, 1, 5, 20, [], ZENITH_CAP_SEC)
     // The last hit is at 2s, so from 2s the guaranteed window ends at 7s —
     // "remaining" should reflect that, not the rest of the rotation.
     expect(schedule.remainingActiveSecAtTime(2)).toBe(5)
@@ -78,23 +84,25 @@ describe("bitterSeasonPoisonSchedule.remainingActiveSecAtTime", () => {
   })
 
   it("reflects a Zenith extension that landed while the poison was active", () => {
-    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3])
+    const schedule = bitterSeasonPoisonSchedule([0], 1, 5, 20, [3], ZENITH_CAP_SEC)
     expect(schedule.remainingActiveSecAtTime(4)).toBe(11)
   })
 
   it("is 0 for an empty/zero-guarded schedule", () => {
-    expect(bitterSeasonPoisonSchedule([], 1, 5, 20, []).remainingActiveSecAtTime(1)).toBe(0)
+    expect(
+      bitterSeasonPoisonSchedule([], 1, 5, 20, [], ZENITH_CAP_SEC).remainingActiveSecAtTime(1),
+    ).toBe(0)
   })
 })
 
 describe("bitterSeasonEnvelopeWindows", () => {
   it("refreshes a single window across hits closer together than the poison duration", () => {
-    const windows = bitterSeasonEnvelopeWindows([0, 1, 2], 5, [])
+    const windows = bitterSeasonEnvelopeWindows([0, 1, 2], 5, [], ZENITH_CAP_SEC)
     expect(windows).toEqual([{ startSec: 0, endSec: 7 }])
   })
 
   it("splits into separate windows across a gap wider than the poison duration", () => {
-    const windows = bitterSeasonEnvelopeWindows([0, 20], 5, [])
+    const windows = bitterSeasonEnvelopeWindows([0, 20], 5, [], ZENITH_CAP_SEC)
     expect(windows).toEqual([
       { startSec: 0, endSec: 5 },
       { startSec: 20, endSec: 25 },
@@ -102,12 +110,12 @@ describe("bitterSeasonEnvelopeWindows", () => {
   })
 
   it("extends the window that is active when the extension lands", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [3])
+    const windows = bitterSeasonEnvelopeWindows([0], 5, [3], ZENITH_CAP_SEC)
     expect(windows).toEqual([{ startSec: 0, endSec: 15 }])
   })
 
   it("does not extend a window that has already closed", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [6])
+    const windows = bitterSeasonEnvelopeWindows([0], 5, [6], ZENITH_CAP_SEC)
     expect(windows).toEqual([{ startSec: 0, endSec: 5 }])
   })
 
@@ -116,7 +124,7 @@ describe("bitterSeasonEnvelopeWindows", () => {
     // -> 16 s (capped) -> 5 s elapse -> 11 s left -> Zenith hit -> 16 s
     // (capped again, since remaining had decayed back under 16 s by the time
     // this hit landed).
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [4, 9, 14])
+    const windows = bitterSeasonEnvelopeWindows([0], 5, [4, 9, 14], ZENITH_CAP_SEC)
     // Poison starts at t=0 (ends at 5, i.e. "1 s left" at t=4).
     // t=4: remaining 1 -> min(1+10,16)=11 -> end 15.
     // t=9: remaining 6 -> min(6+10,16)=16 -> end 25.
@@ -125,7 +133,7 @@ describe("bitterSeasonEnvelopeWindows", () => {
   })
 
   it("a further extension arriving while remaining is already at the 16 s cap is a no-op", () => {
-    const windows = bitterSeasonEnvelopeWindows([0], 5, [3, 8, 8])
+    const windows = bitterSeasonEnvelopeWindows([0], 5, [3, 8, 8], ZENITH_CAP_SEC)
     // t=3: remaining 2 -> min(2+10,16)=12 -> end 15.
     // t=8 (first): remaining 7 -> min(7+10,16)=16 -> end 24.
     // t=8 (second, same instant): remaining already 16 -> min(16+10,16)=16 -> no change.
@@ -133,8 +141,8 @@ describe("bitterSeasonEnvelopeWindows", () => {
   })
 
   it("returns no windows for an empty hit list or a non-positive poison duration", () => {
-    expect(bitterSeasonEnvelopeWindows([], 5, [])).toEqual([])
-    expect(bitterSeasonEnvelopeWindows([0], 0, [])).toEqual([])
+    expect(bitterSeasonEnvelopeWindows([], 5, [], ZENITH_CAP_SEC)).toEqual([])
+    expect(bitterSeasonEnvelopeWindows([0], 0, [], ZENITH_CAP_SEC)).toEqual([])
   })
 })
 
@@ -154,29 +162,29 @@ describe("bitterSeasonStackSchedule", () => {
   })
 })
 
-describe("resolveBitterSeasonTuning", () => {
+describe("bitterSeasonTuningAtTier", () => {
   it("is total for tier 0 (base values everywhere)", () => {
-    const tuning = resolveBitterSeasonTuning(0)
+    const tuning = bitterSeasonTuningAtTier(0)
     expect(tuning.procChance).toBe(0.1)
     expect(tuning.defenseReductionPerStack).toBe(0.006)
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
   it("upgrades defenseReductionPerStack at tier 1, before proc chance or penetration upgrade", () => {
-    const tuning = resolveBitterSeasonTuning(1)
+    const tuning = bitterSeasonTuningAtTier(1)
     expect(tuning.procChance).toBe(0.1)
     expect(tuning.defenseReductionPerStack).toBe(0.012)
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
   it("upgrades procChance at tier 4", () => {
-    expect(resolveBitterSeasonTuning(3).procChance).toBe(0.1)
-    expect(resolveBitterSeasonTuning(4).procChance).toBe(0.15)
+    expect(bitterSeasonTuningAtTier(3).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.15)
   })
 
   it("upgrades physPenetrationAtMaxStacks only at tier 6", () => {
-    expect(resolveBitterSeasonTuning(5).physPenetrationAtMaxStacks).toBe(0)
-    expect(resolveBitterSeasonTuning(6).physPenetrationAtMaxStacks).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(5).physPenetrationAtMaxStacks).toBe(0)
+    expect(bitterSeasonTuningAtTier(6).physPenetrationAtMaxStacks).toBe(0.1)
   })
 })
 
@@ -186,7 +194,7 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       mindMethods: [
-        { name: "Bitter Season", stacks },
+        { name: "bitterSeason", stacks },
         emptyMindMethod,
         emptyMindMethod,
         emptyMindMethod,
@@ -212,32 +220,18 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
       expect(contributions.physBoost).toBeCloseTo(0.025, 10)
     }
   })
-
-  it("does not gate any other inner way's flat entry (Stone-Cutter's precision stays unconditional)", () => {
-    const contributions = getMindMethodContributions({
-      ...defaultInputs,
-      classId: "bellstrikeUmbra",
-      mindMethods: [
-        { name: "Stone-Cutter", stacks: "tier 1" },
-        emptyMindMethod,
-        emptyMindMethod,
-        emptyMindMethod,
-      ] as Inputs["mindMethods"],
-    })
-    expect(contributions.precision).toBeCloseTo(0.059, 10)
-  })
 })
 
-describe("registry coverage — all seven classes (metadata only, no DPS)", () => {
+describe("registry coverage — every registered class (metadata only, no DPS)", () => {
   it("every class's allowedInnerWaysForClass contains Bitter Season exactly once", () => {
-    for (const classId of ALL_CLASSES) {
+    for (const classId of CLASS_IDS()) {
       const list = allowedInnerWaysForClass(classId)
-      expect(list.filter((name) => name === "Bitter Season")).toHaveLength(1)
+      expect(list.filter((name) => name === "bitterSeason")).toHaveLength(1)
     }
   })
 
   it("every class resolves the debuff/skill id pair, matching dot shape and primary attribute", () => {
-    for (const classId of ALL_CLASSES) {
+    for (const classId of CLASS_IDS()) {
       const debuff = builtinDebuffsForClass(classId).find(
         (debuff) => debuff.id === bitterSeasonDebuffId(classId),
       )
@@ -262,9 +256,9 @@ describe("registry coverage — all seven classes (metadata only, no DPS)", () =
 })
 
 const UMBRA_BASE_MIND_METHODS: Inputs["mindMethods"] = [
-  { name: "Sword Horizon", stacks: "tier 6" },
-  { name: "Wolfchaser's Art", stacks: "tier 6" },
-  { name: "Insightful Strike", stacks: "tier 6" },
+  { name: "swordHorizon", stacks: "tier 6" },
+  { name: "wolfchasersArt", stacks: "tier 6" },
+  { name: "insightfulStrike", stacks: "tier 6" },
   { name: "", stacks: "" },
 ]
 
@@ -273,7 +267,7 @@ function withBitterSeasonAt(tier: "tier 5" | "tier 6"): Inputs["mindMethods"] {
     UMBRA_BASE_MIND_METHODS[0],
     UMBRA_BASE_MIND_METHODS[1],
     UMBRA_BASE_MIND_METHODS[2],
-    { name: "Bitter Season", stacks: tier },
+    { name: "bitterSeason", stacks: tier },
   ]
 }
 

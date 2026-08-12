@@ -1,0 +1,36 @@
+{
+  "id": "silkbindJade-umbdronelaunch-12hit",
+  "classId": "silkbindJade",
+  "name": "UmbDroneLaunch[12hit]",
+  "abilityTag": "UmbDroneLaunch[12hit]",
+  "tags": ["prop:hasQiBreakPhysPen", "weapon:Umbrella", "attack:heavy", "role:umbDrone", "role:umbDroneLaunch"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Umbrella",
+  "attributeAttack": "Silkbind",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.5396,
+      "attributeMultiplier": 0.8094,
+      "physFixed": 124,
+      "attributeFixed": 69,
+      "extraCritDamage": 1,
+      "triggers": [
+        {
+          "id": "tg-umbdronelaunch-12hit-triggered",
+          "kind": "applyDebuff",
+          "targetId": "debuff-silkbindJade-umbdrone-12hit",
+          "stacks": 1,
+          "condition": null
+        }
+      ]
+    }
+  ],
+  "castFrames": 68,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:umbDroneLaunch12hit"
+}

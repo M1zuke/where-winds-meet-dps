@@ -1,0 +1,22 @@
+{
+  "id": "combo",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "combo",
+        "name": "Combo",
+        "triggeredBy": ["cast:umbQ", "cast:umbQPrepull"],
+        "duration": 15,
+        "affects": ["role:umbQ", "role:umbDrone", "role:umbLightCharge"],
+        "excludes": ["role:umbDroneLaunch"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.2
+        },
+        "enabledParam": "combo"
+      }
+    }
+  ]
+}

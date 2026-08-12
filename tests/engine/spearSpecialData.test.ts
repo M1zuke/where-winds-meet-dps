@@ -1,15 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import {
-  builtinBuffsForClass,
   RIVER_FLOW_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   RIVER_FLOW_DURATION_FRAMES,
   SPEAR_SPECIAL_COOLDOWN_FRAMES,
+} from "../../src/data/classes/bellstrike-umbra/gates"
+import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_DETONATION_FRAMES,
   ZENITH_BAR_BUFF_ID,
-} from "../../src/engine/builtinBuffs"
+} from "../../src/data/innerWays/swordHorizonZenith"
+import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
 
@@ -185,6 +187,6 @@ describe("builtinBuffsForClass", () => {
   })
 
   it("a class with no built-in buffs returns an empty array", () => {
-    expect(builtinBuffsForClass("bamboocutWindTwinblade")).toEqual([])
+    expect(builtinBuffsForClass("notAClass")).toEqual([])
   })
 })

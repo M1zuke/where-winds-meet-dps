@@ -5,12 +5,30 @@
 // Two-pass usage (see timeline.ts): pass 1 replays the rotation via
 // `processSkillCast` (records into `buffHistory`); pass 2 queries
 // `calculateDamageEffects` per damage event, time-indexed against that history.
+//
+// Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
-import type { BuffDef, ConditionalFinalCrit, ConsumeOnMatch, BuffStatMods } from "./buffDef"
-import { BONUS_TYPE_TO_STATKEY, statModsToEffects } from "./buffDef"
-import { onApplyHandlers } from "./handlers"
-import { anyTagStartsWith, castTagOf, hasAnyWeapon, hasProp, skillTagsOf } from "./tags"
+import type { BuffModule, BuffRequirements, ConditionalFinalCrit } from "./buffModule"
+
+// What a cast carries away from the buff engine: ids that count as active for
+// that cast alone, and the subset its generated skills inherit.
+export interface CastBuffResult {
+  buffIds: string[]
+  propagatedBuffIds: string[]
+}
+import { matchesAnyTag, matchesScope } from "../scope"
+import { castTagOf, skillTagsOf, PROP_TAG } from "./tags"
+import type {
+  BuildView,
+  EffectContext,
+  EffectEvent,
+  QiPhase,
+  SkillProperties,
+} from "../effects/context"
+import type { Effect } from "../effects/effect"
+import { applyEffect, type EffectSink } from "../effects/apply"
+import { paramOnOf, paramTierOf } from "./params"
 
 export type BuffParams = Record<string, unknown>
 
@@ -27,22 +45,25 @@ interface HistoryEntry {
   stacks?: number
 }
 
-export type QiPhase = "normal" | "below30" | "exhausted"
+export type { QiPhase }
 
 export interface DamageEffectsResult {
   effects: { statKey: StatKey; amount: number }[]
-  damageMultiplier: number
   forceCrit: boolean
+  // Post-formula, so it multiplies the finished number rather than joining the
+  // stat sum — 1 when no active def contributes one.
+  damageFactor: number
   conditionalFinalCrit: ConditionalFinalCrit | null
+  // Per-source attribution, keyed by def id — read directly by
+  // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
+  // which def a contribution came from.
   breakdown: Record<string, number>
 }
 
-export interface CastBuffResult {
-  buffIds: string[]
-  propagatedBuffIds: string[]
-}
-
 const DEFAULT_DURATION = 15
+// `runCastEffects`'s synthetic cast context only — never `processSkillCast`'s
+// default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
+const EMPTY_PROPS: SkillProperties = {}
 
 const DISPLAY_NAME_FALLBACK: Record<string, string> = {
   mistwillowHeavyBuff: "Mistwillow (Heavy)",
@@ -53,83 +74,90 @@ const MISTWILLOW_HEAVY_BUFF = "mistwillowHeavyBuff"
 const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
 const MISTWILLOW_BUFF_DURATION = 15
 const MISTWILLOW_BONUS = 0.1
-const MISTWILLOW_LIGHT_OVERRIDE_PREFIXES = ["UmbQ", "UmbDrone", "UmbLightCharge", "FanLightCharged"]
+// Enumerated rather than prefix-matched: a modifier never reaches a cast by
+// what it is called (CLASSES.md § "Id schemes").
+const MISTWILLOW_LIGHT_OVERRIDE_CASTS = new Set([
+  "cast:umbQ",
+  "cast:umbQPrepull",
+  "cast:umbDroneLaunch12hit",
+  "cast:umbDroneLaunch16hit",
+  "cast:umbDroneLaunch20hit",
+  "cast:umbDroneLaunch23hit",
+  "cast:umbDroneLaunch26hit",
+  "cast:umbLightCharge",
+  "cast:fanLightCharged",
+])
+const MISTWILLOW_HEAVY_OVERRIDE_CASTS = new Set([
+  "cast:fanHeavyPursuit3Hit",
+  "cast:fanHeavyPursuit5Hit",
+])
 
-interface StackPoolState {
-  stacks: number
-  expiresAt: number
-  lastStackTime?: number
-  lastRestoreTime?: number
+function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
+  return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
 }
 
 export class BuffEngine {
   params: BuffParams
-  definitions = new Map<string, BuffDef>()
-  private triggerMap = new Map<string, BuffDef[]>()
-  private damageTriggerDefs: BuffDef[] = []
-  private refreshDefs: BuffDef[] = []
-  private perCastConsumeDefs: BuffDef[] = []
-  private stackPoolDefs: BuffDef[] = []
+  definitions = new Map<string, BuffModule>()
+  private triggerMap = new Map<string, BuffModule[]>()
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
-  private lastStackTimes = new Map<string, number>()
-  private stackPools = new Map<string, StackPoolState>()
   private consumeEvents = new Set<string>()
-  warnings = new Set<string>()
 
   constructor(
     params: BuffParams,
-    buffDefs: readonly BuffDef[],
-    groupDefs: readonly BuffDef[] = [],
+    modules: readonly BuffModule[],
+    groupModules: readonly BuffModule[] = [],
   ) {
     this.params = params ?? {}
-    const register = (def: BuffDef) => {
-      if (def.requiresSet && def.requiresSet !== this.params.armorSet) return
-      this.definitions.set(def.id, def)
-      if (def.triggers)
-        for (const tr of def.triggers) {
-          if (!this.triggerMap.has(tr)) this.triggerMap.set(tr, [])
-          this.triggerMap.get(tr)!.push(def)
+    const register = (module: BuffModule) => {
+      if (module.requires?.set && module.requires.set !== this.params.armorSet) return
+      this.definitions.set(module.id, module)
+      if (module.triggeredBy)
+        for (const castTag of module.triggeredBy) {
+          if (!this.triggerMap.has(castTag)) this.triggerMap.set(castTag, [])
+          this.triggerMap.get(castTag)!.push(module)
         }
-      if (def.stackOnDamage) this.damageTriggerDefs.push(def)
-      if (def.refreshOn) this.refreshDefs.push(def)
-      if (def.consumableStackPool) this.stackPoolDefs.push(def)
-      if (def.perCastConsume) this.perCastConsumeDefs.push(def)
     }
-    for (const d of buffDefs) register(d)
-    for (const d of groupDefs) register(d)
-    for (const [id, def] of this.definitions) {
-      if (def.counterMechanic && def.enabledParam && this.paramOn(def.enabledParam))
-        this.applyBuff(id, 0)
+    for (const module of modules) register(module)
+    for (const module of groupModules) register(module)
+    for (const [id, module] of this.definitions) {
+      if (module.seedAtStart && this.gateOk(module)) this.applyBuff(id, 0)
     }
-    for (const [id, def] of this.definitions) {
-      if (def.alwaysActive && (!def.enabledParam || this.paramOn(def.enabledParam))) {
-        if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-          continue
-        this.applyBuff(id, 0)
-      }
+    for (const [id, module] of this.definitions) {
+      if (module.alwaysActive && this.gateOk(module)) this.applyBuff(id, 0)
     }
   }
 
   paramOn(name: string): boolean {
-    return !!this.params[name]
+    return paramOnOf(this.params, name)
   }
   paramTier(name: string): number {
-    const v = this.params[name + "Tier"]
-    return typeof v === "number" ? v : 0
+    return paramTierOf(this.params, name)
   }
   paramNum(name: string): number {
-    const v = this.params[name]
-    return typeof v === "number" ? v : 0
+    const value = this.params[name]
+    return typeof value === "number" ? value : 0
+  }
+
+  private requirementsMet(requires: BuffRequirements | undefined): boolean {
+    if (!requires?.param) return true
+    if (!this.paramOn(requires.param)) return false
+    if (requires.minTier && this.paramTier(requires.param) < requires.minTier) return false
+    return true
+  }
+
+  private gateOk(module: BuffModule): boolean {
+    return this.requirementsMet(module.requires)
   }
 
   qiPhase(time: number): QiPhase {
-    const p = this.params
-    const qiBreakTime = (p.qiBreakTime as number) ?? 25
-    const belowQiTime = (p.belowQiTime as number) ?? qiBreakTime
-    const bossBreakDuration = (p.bossBreakDuration as number) ?? 10
-    const healerExt = (p.healerBreakExtension as number) ?? 0
+    const params = this.params
+    const qiBreakTime = (params.qiBreakTime as number) ?? 25
+    const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
+    const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
+    const healerExt = (params.healerBreakExtension as number) ?? 0
     const breakEnd = qiBreakTime + bossBreakDuration + healerExt
     if (time >= qiBreakTime && time < breakEnd) return "exhausted"
     if (time >= belowQiTime && time < qiBreakTime) return "below30"
@@ -137,11 +165,45 @@ export class BuffEngine {
   }
 
   qiBreakWindow(): { start: number; end: number } {
-    const p = this.params
-    const qiBreakTime = (p.qiBreakTime as number) ?? 25
-    const bossBreakDuration = (p.bossBreakDuration as number) ?? 10
-    const healerExt = (p.healerBreakExtension as number) ?? 0
+    const params = this.params
+    const qiBreakTime = (params.qiBreakTime as number) ?? 25
+    const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
+    const healerExt = (params.healerBreakExtension as number) ?? 0
     return { start: qiBreakTime, end: qiBreakTime + bossBreakDuration + healerExt }
+  }
+
+  private buildContext(time: number, event: EffectEvent, selfStacks: number): EffectContext {
+    const build: BuildView = {
+      classId: (this.params.classId as string) ?? "",
+      spec: this.params.spec as string | undefined,
+      armorSet: this.params.armorSet as string | undefined,
+      param: (id) => this.paramOn(id),
+      paramTier: (id) => this.paramTier(id),
+      paramValue: (id) => this.paramNum(id),
+    }
+    return {
+      timeSec: time,
+      phase: this.qiPhase(time),
+      build,
+      target: { isTrainingDummy: !!this.params.isTrainingDummy },
+      status: {
+        isActive: (id) => this.isBuffActiveAtTime(id, time),
+        stacks: (id) => this.getHistoricalBuffStacks(id, time),
+        appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
+        expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
+      },
+      self: { stacks: selfStacks },
+      event,
+    }
+  }
+
+  private resolveDuration(
+    module: BuffModule,
+    time: number,
+    event: EffectEvent = { kind: "display" },
+  ): number {
+    if (typeof module.duration === "number") return module.duration
+    return module.duration(this.buildContext(time, event, 0))
   }
 
   activeBuffsForDisplay(time: number): {
@@ -161,80 +223,46 @@ export class BuffEngine {
       requires?: string
     }[] = []
     const seen = new Set<string>()
-    const push = (id: string, def: BuffDef | undefined, stacks: number) => {
+    const push = (id: string, module: BuffModule | undefined, stacks: number) => {
       if (seen.has(id)) return
       seen.add(id)
-      const effects = [
-        ...statModsToEffects(def?.statModifiers),
-        ...statModsToEffects(def?.bossStatModifiers),
-      ]
-      const bonus = def?.bonus
-      if (bonus) {
-        const value =
-          bonus.minStacks !== undefined && stacks < bonus.minStacks
-            ? 0
-            : (bonus.value ??
-              (bonus.valuePerStack != null
-                ? bonus.valuePerStack * stacks
-                : bonus.valueFromParam
-                  ? this.paramNum(bonus.valueFromParam)
-                  : 0))
-        if (value !== 0) effects.push({ statKey: BONUS_TYPE_TO_STATKEY[bonus.type], amount: value })
-      }
+      const ctx = this.buildContext(time, { kind: "display" }, stacks)
+      const effects: { statKey: StatKey; amount: number }[] = module
+        ? resolveEffects(module, ctx).flatMap((effect) =>
+            effect.kind === "stat" ? [{ statKey: effect.statKey, amount: effect.amount }] : [],
+          )
+        : []
       out.push({
         id,
-        name: def?.name ?? DISPLAY_NAME_FALLBACK[id] ?? id,
+        name: module?.name ?? DISPLAY_NAME_FALLBACK[id] ?? id,
         stacks: Math.max(1, stacks),
-        maxStacks: def?.maxStacks ?? 1,
+        maxStacks: module?.maxStacks ?? 1,
         effects,
-        requires: def?.requiresSet ?? def?.enabledParam,
+        requires: module?.requires?.set ?? module?.requires?.param,
       })
     }
-    const appliedIds = new Set(this.buffHistory.map((h) => h.buffType))
+    const appliedIds = new Set(this.buffHistory.map((historyEntry) => historyEntry.buffType))
     for (const id of appliedIds) {
-      if (id === "crosswindSpirit") continue
-      const def = this.definitions.get(id)
-      if (def?.triggerOnBuffEnd) continue
-      if (def?.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-        continue
+      const module = this.definitions.get(id)
+      if (module?.activeAfterBuffEnds) continue
+      if (module && !this.gateOk(module)) continue
       if (!this.isBuffActiveAtTime(id, time)) continue
-      const stacks = def?.maxStacks ? this.getHistoricalBuffStacks(id, time) : 1
-      if (def?.maxStacks && stacks <= 0) continue
-      push(id, def, stacks)
+      const stacks = module?.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      push(id, module, stacks)
     }
-    for (const [id, def] of this.definitions) {
-      if (!def.triggerOnBuffEnd || id === "crosswindSpirit") continue
-      if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-        continue
-      if (!this.isTriggerOnBuffEndActive(def, time)) continue
-      push(id, def, 1)
+    for (const [id, module] of this.definitions) {
+      if (!module.activeAfterBuffEnds) continue
+      if (!this.gateOk(module)) continue
+      if (!this.isActiveAfterBuffEndsActive(module, time)) continue
+      push(id, module, 1)
     }
     return out
   }
 
-  private getEffectiveMaxStacks(def: BuffDef): number {
-    const tc = def.tierConditionalStacks as
-      { enabledParam?: string; minTier?: number; maxStacks?: number } | undefined
-    if (!tc) return def.maxStacks ?? 1
-    const on = !tc.enabledParam || this.paramOn(tc.enabledParam)
-    const tierOk = !tc.minTier || !tc.enabledParam || this.paramTier(tc.enabledParam) >= tc.minTier
-    return on && tierOk && tc.maxStacks != null ? tc.maxStacks : (def.maxStacks ?? 1)
-  }
-  private getEffectiveStacksPerCast(def: BuffDef): number {
-    const tc = def.tierConditionalStacks as
-      { enabledParam?: string; minTier?: number; stacksPerCast?: number } | undefined
-    if (tc && tc.stacksPerCast != null) {
-      const on = !tc.enabledParam || this.paramOn(tc.enabledParam)
-      const tierOk =
-        !tc.minTier || !tc.enabledParam || this.paramTier(tc.enabledParam) >= tc.minTier
-      if (on && tierOk) return tc.stacksPerCast
-    }
-    return def.stacksPerCast ?? 1
-  }
-  private canGrantStack(def: BuffDef, time: number): boolean {
-    if (!def.stackRateLimit) return true
-    const { count, window } = def.stackRateLimit
-    const key = "stack:" + def.id
+  private canGrantStack(module: BuffModule, time: number): boolean {
+    if (!module.stackRateLimit) return true
+    const { count, window } = module.stackRateLimit
+    const key = "stack:" + module.id
     let times = this.grantTimes.get(key)
     if (!times) {
       times = []
@@ -247,17 +275,37 @@ export class BuffEngine {
     return true
   }
 
+  // `rateLimit` caps how many times the WHOLE trigger may grant per window
+  // (as opposed to `stackRateLimit`, which caps individual stack grants within
+  // one trigger) — keyed on the bare module id so it never collides with
+  // `canGrantStack`'s `"stack:"`-prefixed key.
+  private canGrantTrigger(module: BuffModule, applyTime: number): boolean {
+    if (!module.rateLimit) return true
+    const { count, window } = module.rateLimit
+    let times = this.grantTimes.get(module.id)
+    if (!times) {
+      times = []
+      this.grantTimes.set(module.id, times)
+    }
+    const cutoff = applyTime - window
+    while (times.length > 0 && times[0] <= cutoff) times.shift()
+    if (times.length >= count) return false
+    times.push(applyTime)
+    return true
+  }
+
   applyBuff(
     id: string,
     time: number,
     durationOverride: number | null = null,
     stacksToAdd = 1,
   ): void {
-    const def = this.definitions.get(id)
-    const duration = durationOverride ?? def?.duration ?? DEFAULT_DURATION
+    const module = this.definitions.get(id)
+    const duration =
+      durationOverride ?? (module ? this.resolveDuration(module, time) : DEFAULT_DURATION)
     let stacks: number | undefined
-    if (def?.maxStacks) {
-      const max = this.getEffectiveMaxStacks(def)
+    if (module?.maxStacks !== undefined) {
+      const max = module.maxStacks
       const cur = this.activeBuffs.get(id)
       if (cur && time >= cur.appliedAt && time < cur.expiresAt)
         stacks = Math.min((cur.stacks || 1) + stacksToAdd, max)
@@ -276,17 +324,36 @@ export class BuffEngine {
       expiresAt: time + duration,
       ...(stacks !== undefined && { stacks }),
     })
-    if (def?.onApply)
-      for (const other of def.onApply) {
-        const od = this.definitions.get(other)
-        if (!od?.enabledParam || this.paramOn(od.enabledParam)) this.applyBuff(other, time)
-      }
-    if (def?.onApplyFn?.__handler) onApplyHandlers[def.onApplyFn.__handler]?.(this, time)
+    if (module) this.runCastEffects(module, time, stacks ?? 1)
   }
+
+  private runCastEffects(module: BuffModule, time: number, selfStacks: number): void {
+    const ctx = this.buildContext(
+      time,
+      { kind: "cast", castTag: "", props: EMPTY_PROPS },
+      selfStacks,
+    )
+    const sink: EffectSink = {
+      stat: () => {},
+      forceOutcome: () => {},
+      consumeStacks: () => {},
+      artBonus: () => {},
+      damageMultiplier: () => {},
+      setStatus: () => {},
+      applyBuff: (id, stacks, durationSec) => {
+        const target = this.definitions.get(id)
+        if (target && !this.gateOk(target)) return
+        this.applyBuff(id, time, durationSec ?? null, stacks ?? 1)
+      },
+    }
+    for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+  }
+
   private refreshBuff(id: string, time: number): void {
     const cur = this.activeBuffs.get(id)
     if (!cur || time < cur.appliedAt || time >= cur.expiresAt) return
-    const duration = this.definitions.get(id)?.duration ?? 12
+    const module = this.definitions.get(id)
+    const duration = module ? this.resolveDuration(module, time) : 12
     this.activeBuffs.set(id, {
       appliedAt: time,
       expiresAt: time + duration,
@@ -296,221 +363,224 @@ export class BuffEngine {
   }
 
   isBuffActive(id: string, time: number): boolean {
-    const b = this.activeBuffs.get(id)
-    return !!b && time >= b.appliedAt && time < b.expiresAt
+    const active = this.activeBuffs.get(id)
+    return !!active && time >= active.appliedAt && time < active.expiresAt
   }
   isBuffActiveAtTime(id: string, time: number): boolean {
+    return this.historicalApplyAt(id, time) !== null
+  }
+  private historicalApplyAt(id: string, time: number): { time: number; expiresAt: number } | null {
     for (let i = this.buffHistory.length - 1; i >= 0; i--) {
-      const h = this.buffHistory[i]
-      if (h.buffType === id && h.action === "apply" && h.time <= time) return time < h.expiresAt
+      const historyEntry = this.buffHistory[i]
+      if (
+        historyEntry.buffType === id &&
+        historyEntry.action === "apply" &&
+        historyEntry.time <= time
+      )
+        return time < historyEntry.expiresAt
+          ? { time: historyEntry.time, expiresAt: historyEntry.expiresAt }
+          : null
     }
-    return false
+    return null
   }
   getHistoricalBuffStacks(id: string, time: number): number {
     for (let i = this.buffHistory.length - 1; i >= 0; i--) {
-      const h = this.buffHistory[i]
-      if (h.buffType === id && h.action === "apply" && h.time <= time)
-        return time < h.expiresAt ? (h.stacks ?? 1) : 0
+      const historyEntry = this.buffHistory[i]
+      if (
+        historyEntry.buffType === id &&
+        historyEntry.action === "apply" &&
+        historyEntry.time <= time
+      )
+        return time < historyEntry.expiresAt ? (historyEntry.stacks ?? 1) : 0
     }
     return 0
   }
-  private consumeStack(id: string, time: number, amount = 1): boolean {
-    const cur = this.activeBuffs.get(id)
-    if (!cur || time < cur.appliedAt || time >= cur.expiresAt) return false
-    const before = cur.stacks ?? 1
-    if (before <= 0) return false
-    const next = Math.max(0, before - amount)
-    const entry: ActiveBuff = { ...cur, stacks: next }
-    this.activeBuffs.set(id, entry)
-    this.buffHistory.push({
-      time,
-      buffType: id,
-      action: "apply",
-      expiresAt: cur.expiresAt,
-      stacks: next,
-    })
-    return true
-  }
-  private isTriggerOnBuffEndActive(def: BuffDef, time: number): boolean {
-    const tob = def.triggerOnBuffEnd
-    if (!tob) return false
-    const duration = def.duration ?? DEFAULT_DURATION
+  private isActiveAfterBuffEndsActive(module: BuffModule, time: number): boolean {
+    const rule = module.activeAfterBuffEnds
+    if (!rule) return false
+    const duration = this.resolveDuration(module, time)
     const applies = this.buffHistory
-      .filter((h) => h.buffType === tob.sourceBuff && h.action === "apply" && h.time <= time)
+      .filter(
+        (historyEntry) =>
+          historyEntry.buffType === rule.buffId &&
+          historyEntry.action === "apply" &&
+          historyEntry.time <= time,
+      )
       .sort((a, b) => a.time - b.time)
     if (applies.length === 0) return false
-    if (tob.cancelledByReapply) {
+    if (rule.cancelledByReapply) {
       const end = applies[applies.length - 1].expiresAt
       return time >= end && time < end + duration
     }
-    return applies.some((h) => time >= h.expiresAt && time < h.expiresAt + duration)
+    return applies.some(
+      (historyEntry) => time >= historyEntry.expiresAt && time < historyEntry.expiresAt + duration,
+    )
   }
-  private matchesConsumeOn(
-    match: ConsumeOnMatch | undefined,
-    opts: Record<string, unknown>,
-  ): boolean {
-    if (!match) return false
-    if (match.excludeProperty && opts[match.excludeProperty]) return false
-    if (match.skillProperty) return !!opts[match.skillProperty]
-    if (match.mistwillowCategory) return !!opts.mistwillowCategory
-    return false
+  private requiresBuffActiveGate(module: BuffModule, applyTime: number): boolean | null {
+    if (module.requiresBuffActive) return this.isBuffActive(module.requiresBuffActive, applyTime)
+    return null
   }
 
   processSkillCast(
     castTag: string,
     time: number,
-    opts: Record<string, unknown> = {},
+    props: SkillProperties = {},
+    fromGeneratedSkill = false,
   ): CastBuffResult {
     const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
-    if (opts.noBuffTrigger) return result
-    const generated = !!opts.generated
-    if (!generated) this.processPerCastConsume(castTag, time, opts, result)
-    for (const [prefix, defs] of this.triggerMap) {
-      if (!castTag.startsWith(prefix)) continue
-      for (const def of defs) {
-        if (generated && !def.triggersFromGeneratedSkills) continue
-        if (def.exactMatch && castTag !== prefix) continue
-        if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
+    if (props.noBuffTrigger) return result
+    if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
+    for (const [trigger, modules] of this.triggerMap) {
+      if (trigger !== castTag) continue
+      for (const module of modules) {
+        if (!this.gateOk(module)) continue
+        if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) continue
+        if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) continue
         if (
-          def.requiresActiveBuffOnTrigger &&
-          !this.isBuffActiveAtTime(def.requiresActiveBuffOnTrigger, time)
+          module.requiresActiveBuffOnTrigger &&
+          !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
         )
           continue
-        if (def.cooldown) {
-          const last = this.activeBuffs.get(def.id)
-          if (last && time - last.appliedAt < def.cooldown) continue
+        if (module.cooldown) {
+          const last = this.activeBuffs.get(module.id)
+          if (last && time - last.appliedAt < module.cooldown) continue
         }
-        if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-          continue
         const applyTime =
-          def.buffAppliesOnCastEnd || opts.buffAppliesOnCastEnd
-            ? time + ((opts.castTime as number) ?? 1)
+          module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
+            ? time + (props.castTime ?? 1)
             : time
-        if (def.triggerPhaseGate) {
-          const gate = Array.isArray(def.triggerPhaseGate)
-            ? def.triggerPhaseGate
-            : [def.triggerPhaseGate]
-          if (!gate.includes(this.qiPhase(applyTime))) continue
-        }
-        if (def.rateLimit) {
-          const { count, window } = def.rateLimit
-          let times = this.grantTimes.get(def.id)
-          if (!times) {
-            times = []
-            this.grantTimes.set(def.id, times)
-          }
-          const cutoff = applyTime - window
-          while (times.length > 0 && times[0] <= cutoff) times.shift()
-          if (times.length >= count) continue
-          times.push(applyTime)
-        }
-        if (def.stacksPerHit && ((opts.hitCount as number) ?? 1) > 1) {
-          const hitCount = opts.hitCount as number
-          const span = (opts.duration as number) || (opts.castTime as number) || 0
+
+        if (!this.canGrantTrigger(module, applyTime)) continue
+
+        if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
+          const hitCount = props.hitCount ?? 1
+          const span = props.duration || props.castTime || 0
           if (span > 0) {
             const step = span / hitCount
             for (let i = 0; i < hitCount; i++) {
-              const t = applyTime + i * step
-              if (!this.canGrantStack(def, t)) continue
-              if (def.stackIcd != null) {
-                const last = this.lastStackTimes.get(def.id)
-                if (last != null && t - last < def.stackIcd - 1e-9) continue
-                this.lastStackTimes.set(def.id, t)
-              }
-              this.applyBuff(def.id, t, null, 1)
+              const hitTime = applyTime + i * step
+              if (!this.canGrantStack(module, hitTime)) continue
+              this.applyBuff(module.id, hitTime, null, 1)
             }
           } else {
             let granted = 0
-            for (let i = 0; i < hitCount; i++) if (this.canGrantStack(def, applyTime)) granted++
-            if (granted > 0) this.applyBuff(def.id, applyTime, null, granted)
+            for (let i = 0; i < hitCount; i++) if (this.canGrantStack(module, applyTime)) granted++
+            if (granted > 0) this.applyBuff(module.id, applyTime, null, granted)
           }
-        } else if (def.conditionalTrigger) {
-          const ct = def.conditionalTrigger
-          const refresh = ct.refreshIfActive && this.isBuffActive(ct.refreshIfActive, applyTime)
-          const upgrade = ct.upgradeFromActive && this.isBuffActive(ct.upgradeFromActive, applyTime)
-          if (refresh || upgrade) this.applyBuff(def.id, applyTime, null, 1)
+          continue
+        }
+
+        const requiresActive = this.requiresBuffActiveGate(module, applyTime)
+        if (requiresActive !== null) {
+          if (requiresActive) this.applyBuff(module.id, applyTime, null, 1)
+          continue
+        }
+
+        const castEvent: EffectEvent = { kind: "cast", castTag, props }
+        const duration = this.resolveDuration(module, applyTime, castEvent)
+        const perCast = module.stacks
+          ? module.stacks(this.buildContext(applyTime, castEvent, 0))
+          : 1
+        if (module.stackRateLimit) {
+          let granted = 0
+          for (let i = 0; i < perCast; i++) if (this.canGrantStack(module, applyTime)) granted++
+          if (granted <= 0) continue
+          this.applyBuff(module.id, applyTime, duration, granted)
         } else {
-          let dur = def.triggerDurations?.[prefix] ?? null
-          if (def.extendDurationToIfBuffActive) {
-            const ext = def.extendDurationToIfBuffActive
-            const on = !ext.enabledParam || this.paramOn(ext.enabledParam)
-            const tierOk =
-              !ext.minTier || !ext.enabledParam || this.paramTier(ext.enabledParam) >= ext.minTier
-            if (on && tierOk && this.isBuffActive(ext.buffId, applyTime)) {
-              const base = dur ?? def.duration ?? 0
-              if (ext.targetDuration > base) dur = ext.targetDuration
-            }
-          }
-          const perCast = this.getEffectiveStacksPerCast(def)
-          if (def.stackRateLimit) {
-            let granted = 0
-            for (let i = 0; i < perCast; i++) if (this.canGrantStack(def, applyTime)) granted++
-            if (granted <= 0) continue
-            this.applyBuff(def.id, applyTime, dur, granted)
-          } else {
-            this.applyBuff(def.id, applyTime, dur, perCast)
-          }
+          this.applyBuff(module.id, applyTime, duration, perCast)
         }
       }
     }
-    if (generated) return result
-    for (const def of this.refreshDefs) {
-      const ro = def.refreshOn!
-      if (ro.skillProperty && opts[ro.skillProperty]) {
-        if (ro.onlyIfActive) {
-          if (this.isBuffActive(def.id, time)) this.refreshBuff(def.id, time)
-        } else this.refreshBuff(def.id, time)
-      }
-    }
-    for (const [id, def] of this.definitions) {
-      const cm = def.counterMechanic
-      if (
-        cm &&
-        typeof cm === "object" &&
-        cm.refreshable &&
-        def.enabledParam &&
-        this.paramOn(def.enabledParam) &&
-        this.isBuffActive(id, time)
-      ) {
+    for (const [id, module] of this.definitions) {
+      if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
         this.refreshBuff(id, time)
       }
     }
-    if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, opts)
-    this.processConsumableStackPools(castTag, time, opts)
+    if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, props)
     return result
   }
 
+  // Every damaging hit stacks these, wherever the hit came from — the scope on
+  // such a def says who RECEIVES its bonus, never what grants it a stack. The
+  // timeline drives this over the prepass's sorted damage frames, so the stack
+  // history is complete before the first damage query reads it.
   processDamageHit(time: number): void {
-    for (const def of this.damageTriggerDefs) {
-      if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
-      if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-        continue
-      this.applyBuff(def.id, time)
+    for (const [id, module] of this.definitions) {
+      if (!module.stackOnDamage || !this.gateOk(module)) continue
+      this.applyBuff(id, time, null, 1)
     }
   }
 
-  processDroneTick(time: number): void {
-    for (const def of this.refreshDefs) {
-      if (
-        def.refreshOn?.skillProperty === "isDrone" &&
-        def.refreshOn?.onlyIfActive &&
-        this.isBuffActive(def.id, time)
-      ) {
-        this.refreshBuff(def.id, time)
+  // Resolves one cast's consumption against the live pools and spends them.
+  // A generated cast never consumes — only the cast that was authored to.
+  private processPerCastConsume(
+    castTag: string,
+    time: number,
+    props: SkillProperties,
+    result: CastBuffResult,
+  ): void {
+    for (const [id, module] of this.definitions) {
+      const consume = module.perCastConsume
+      if (!consume || !this.gateOk(module)) continue
+      const property = consume.property.startsWith(PROP_TAG)
+        ? consume.property.slice(PROP_TAG.length)
+        : consume.property
+      if (!props[property as keyof SkillProperties]) continue
+
+      const pools = [...(consume.preferredFrom ?? []), consume.from]
+      const drained = pools.find((pool) => this.getHistoricalBuffStacks(pool, time) > 0)
+      if (!drained || !this.spendStack(drained, time)) continue
+
+      this.consumeEvents.add(`${time}|${castTag}|${id}`)
+      if (!result.buffIds.includes(id)) result.buffIds.push(id)
+      for (const grant of consume.grants ?? []) {
+        if (grant.whenConsumedFrom !== drained) continue
+        for (const buffId of grant.buffIds) {
+          if (!result.buffIds.includes(buffId)) result.buffIds.push(buffId)
+          if (grant.propagate && !result.propagatedBuffIds.includes(buffId))
+            result.propagatedBuffIds.push(buffId)
+        }
       }
     }
   }
 
-  processDroneTickWithExternalLB(time: number): void {
-    this.applyBuff("lingeringBone", time)
-    this.processDroneTick(time)
+  // True when this def's bonus rides a Qi phase rather than an actual consume —
+  // the tier-gated second route the same def can take.
+  private phaseAlternativeHolds(module: BuffModule, time: number): boolean {
+    const alternative = module.perCastConsume?.phaseAlternative
+    if (!alternative) return false
+    if (alternative.requires && !this.requirementsMet(alternative.requires)) return false
+    const phase = this.qiPhase(time)
+    return Array.isArray(alternative.phase)
+      ? alternative.phase.includes(phase)
+      : alternative.phase === phase
+  }
+
+  // The new stack count is recorded as an `apply`, not a `refresh`:
+  // `getHistoricalBuffStacks` reads `apply` entries alone, so a spend written
+  // any other way is invisible to every later damage query.
+  private spendStack(id: string, time: number): boolean {
+    const active = this.activeBuffs.get(id)
+    if (!active || time < active.appliedAt || time >= active.expiresAt) return false
+    const before = active.stacks ?? 1
+    if (before <= 0) return false
+    const next = Math.max(0, before - 1)
+    this.activeBuffs.set(id, { ...active, stacks: next })
+    this.buffHistory.push({
+      time,
+      buffType: id,
+      action: "apply",
+      expiresAt: active.expiresAt,
+      stacks: next,
+    })
+    return true
   }
 
   private isMistwillowLightOverride(castTag: string): boolean {
-    return MISTWILLOW_LIGHT_OVERRIDE_PREFIXES.some((p) => castTag.startsWith(p))
+    return MISTWILLOW_LIGHT_OVERRIDE_CASTS.has(castTag)
   }
   private isMistwillowHeavyOverride(castTag: string, isExecution: boolean): boolean {
-    return isExecution || castTag.includes("Pursuit")
+    return isExecution || MISTWILLOW_HEAVY_OVERRIDE_CASTS.has(castTag)
   }
   private mistwillowGrantCategory(
     castTag: string,
@@ -539,13 +609,9 @@ export class BuffEngine {
     if (attackType === "mixed") return "both"
     return null
   }
-  processMistwillowBuffGrant(
-    castTag: string,
-    time: number,
-    opts: Record<string, unknown> = {},
-  ): void {
-    const attackType = (opts.attackType as string) ?? "none"
-    const isExecution = !!opts.isExecution
+  processMistwillowBuffGrant(castTag: string, time: number, props: SkillProperties): void {
+    const attackType = props.attackType ?? "none"
+    const isExecution = !!props.isExecution
     const category = this.mistwillowGrantCategory(castTag, attackType, isExecution)
     if (!category) return
     const heavyActive = this.isBuffActive(MISTWILLOW_HEAVY_BUFF, time)
@@ -560,9 +626,9 @@ export class BuffEngine {
   private mistwillowBonusValue(castTag: string, time: number, tagSet: Set<string>): number {
     if (this.params.armorSet !== "mistwillow") return 0
     let attackType = "none"
-    for (const t of tagSet)
-      if (t.startsWith("attack:")) {
-        attackType = t.slice(7)
+    for (const tag of tagSet)
+      if (tag.startsWith("attack:")) {
+        attackType = tag.slice(7)
         break
       }
     const isExecution = tagSet.has("prop:isExecution")
@@ -571,133 +637,14 @@ export class BuffEngine {
     const heavyActive = this.isBuffActiveAtTime(MISTWILLOW_HEAVY_BUFF, time)
     const lightActive = this.isBuffActiveAtTime(MISTWILLOW_LIGHT_BUFF, time)
     if (category === "both") {
-      let v = 0
-      if (heavyActive) v += MISTWILLOW_BONUS * 0.5
-      if (lightActive) v += MISTWILLOW_BONUS * 0.5
-      return v
+      let bonus = 0
+      if (heavyActive) bonus += MISTWILLOW_BONUS * 0.5
+      if (lightActive) bonus += MISTWILLOW_BONUS * 0.5
+      return bonus
     }
     if (category === MISTWILLOW_HEAVY_BUFF && heavyActive) return MISTWILLOW_BONUS
     if (category === MISTWILLOW_LIGHT_BUFF && lightActive) return MISTWILLOW_BONUS
     return 0
-  }
-
-  private processPerCastConsume(
-    castTag: string,
-    time: number,
-    opts: Record<string, unknown>,
-    result: CastBuffResult,
-  ): void {
-    for (const def of this.perCastConsumeDefs) {
-      const pc = def.perCastConsume!
-      if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
-      if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-        continue
-      if (!opts[pc.triggerSkillProperty]) continue
-      let source: string | null = null
-      for (const pref of pc.preferredSources ?? []) {
-        if (pref.enabledParam && !this.paramOn(pref.enabledParam)) continue
-        if (pref.minTier && pref.enabledParam && this.paramTier(pref.enabledParam) < pref.minTier)
-          continue
-        if (this.getHistoricalBuffStacks(pref.buffStack, time) > 0) {
-          source = pref.buffStack
-          break
-        }
-      }
-      if (!source && this.getHistoricalBuffStacks(pc.consumesFromBuffStack, time) > 0)
-        source = pc.consumesFromBuffStack
-      if (!source) continue
-      if (!this.consumeStack(source, time, 1)) continue
-      this.consumeEvents.add(`${time}|${castTag}|${def.id}`)
-      const effectEnabled =
-        !pc.effectEnabledParam ||
-        (this.paramOn(pc.effectEnabledParam) &&
-          (!pc.effectMinTier || this.paramTier(pc.effectEnabledParam) >= pc.effectMinTier))
-      if (
-        (pc.bonus || pc.damageMultiplier !== undefined) &&
-        effectEnabled &&
-        !result.buffIds.includes(def.id)
-      )
-        result.buffIds.push(def.id)
-      for (const sourceBuff of pc.sourceBuffs ?? []) {
-        if (sourceBuff.consumedBuffStack !== source) continue
-        for (const buffId of sourceBuff.buffIds) {
-          if (!result.buffIds.includes(buffId)) result.buffIds.push(buffId)
-          if (sourceBuff.propagateToTriggeredSkills && !result.propagatedBuffIds.includes(buffId))
-            result.propagatedBuffIds.push(buffId)
-        }
-      }
-    }
-  }
-
-  private processConsumableStackPools(
-    castTag: string,
-    time: number,
-    opts: Record<string, unknown>,
-  ): void {
-    for (const def of this.stackPoolDefs) {
-      const pool = def.consumableStackPool!
-      if (def.enabledParam && !this.paramOn(def.enabledParam)) continue
-      const state = this.stackPools.get(def.id) ?? { stacks: 0, expiresAt: -Infinity }
-      const alive = time < state.expiresAt
-
-      if (opts[pool.stackOn.skillProperty]) {
-        const icdOk =
-          pool.stackOn.icd == null ||
-          state.lastStackTime == null ||
-          time - state.lastStackTime >= pool.stackOn.icd
-        if (icdOk) {
-          const cur = alive ? state.stacks : 0
-          const next = Math.min(pool.stackCap, cur + (pool.stackOn.stacksPerTrigger ?? 1))
-          this.stackPools.set(def.id, {
-            ...state,
-            stacks: next,
-            expiresAt: time + pool.stackLifetime,
-            lastStackTime: time,
-          })
-        }
-      }
-
-      const restore = pool.tierStackRestore
-      if (
-        restore &&
-        def.enabledParam &&
-        this.paramTier(def.enabledParam) >= restore.minTier &&
-        this.matchesConsumeOn(restore.restoreOn, opts)
-      ) {
-        const gate =
-          restore.phaseGate == null ||
-          (Array.isArray(restore.phaseGate)
-            ? restore.phaseGate.includes(this.qiPhase(time))
-            : restore.phaseGate === this.qiPhase(time))
-        const cur = this.stackPools.get(def.id) ?? { stacks: 0, expiresAt: -Infinity }
-        const stillAlive = time < cur.expiresAt
-        const activeOk = !restore.requireBuffActive || stillAlive
-        const icdOk =
-          restore.icd == null ||
-          cur.lastRestoreTime == null ||
-          time - cur.lastRestoreTime >= restore.icd
-        if (gate && activeOk && icdOk) {
-          const next = Math.min(
-            pool.stackCap,
-            (stillAlive ? cur.stacks : 0) + (restore.stacksPerTrigger ?? 1),
-          )
-          this.stackPools.set(def.id, {
-            ...cur,
-            stacks: next,
-            expiresAt: time + pool.stackLifetime,
-            lastRestoreTime: time,
-          })
-        }
-      }
-
-      if (this.matchesConsumeOn(pool.consumeOn, opts)) {
-        const cur = this.stackPools.get(def.id)
-        if (cur && time < cur.expiresAt && cur.stacks > 0) {
-          this.stackPools.set(def.id, { ...cur, stacks: 0 })
-          this.consumeEvents.add(`${time}|${castTag}|${def.id}`)
-        }
-      }
-    }
   }
 
   calculateDamageEffects(
@@ -707,128 +654,59 @@ export class BuffEngine {
   ): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
-    const phase = this.qiPhase(time)
-    const isDummy = !!this.params.isTrainingDummy
+    const scopedBuffIds = new Set(castScopedBuffIds)
     const effects: { statKey: StatKey; amount: number }[] = []
     const breakdown: Record<string, number> = {}
-    const scopedBuffIds = new Set(castScopedBuffIds)
-    let damageMultiplier = 1
     let forceCrit = false
+    let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
+    let currentId = ""
 
-    const pushMods = (mods: BuffStatMods | null | undefined, stacks: number, id: string) => {
-      for (const e of statModsToEffects(mods)) {
-        effects.push({ statKey: e.statKey, amount: e.amount * stacks })
-        breakdown[id] = (breakdown[id] ?? 0) + e.amount * stacks
-      }
+    const sink: EffectSink = {
+      stat(statKey, amount) {
+        effects.push({ statKey, amount })
+        breakdown[currentId] = (breakdown[currentId] ?? 0) + amount
+      },
+      forceOutcome(outcome) {
+        if (outcome === "crit") forceCrit = true
+      },
+      applyBuff: () => {},
+      consumeStacks: () => {},
+      artBonus: () => {},
+      damageMultiplier(factor) {
+        damageFactor *= factor
+      },
+      setStatus: () => {},
     }
 
-    for (const [id, def] of this.definitions) {
-      if (id === "crosswindSpirit") continue
+    for (const [id, module] of this.definitions) {
+      // A cast-scoped id counts as active for this cast alone: a def whose
+      // window never opens (a per-cast consume) and one another def attached to
+      // this cast both arrive here, and neither is live on the clock.
       const active =
         scopedBuffIds.has(id) ||
-        (def.triggerOnBuffEnd
-          ? this.isTriggerOnBuffEndActive(def, time)
-          : this.isBuffActiveAtTime(id, time))
+        (module.perCastConsume
+          ? this.consumeEvents.has(`${time}|${castTag}|${id}`) ||
+            this.phaseAlternativeHolds(module, time)
+          : module.activeAfterBuffEnds
+            ? this.isActiveAfterBuffEndsActive(module, time)
+            : this.isBuffActiveAtTime(id, time))
       if (!active) continue
-      if (def.minTier && def.enabledParam && this.paramTier(def.enabledParam) < def.minTier)
-        continue
-      if (def.excludes && anyTagStartsWith(tagSet, def.excludes)) continue
-
-      const stacks = def.maxStacks ? this.getHistoricalBuffStacks(id, time) : 1
-
-      let mods: BuffStatMods | null | undefined = def.statModifiers
-      if (def.__statModByPrefix) {
-        const p = def.__statModByPrefix
-        mods = p.prefixes.some((pre) => castTag.startsWith(pre)) ? p.match : p.default
-      }
-      pushMods(mods, stacks, id)
-      if (def.bossStatModifiers && !isDummy) pushMods(def.bossStatModifiers, stacks, id)
-      if (def.tier6StatModifiers && def.enabledParam && this.paramTier(def.enabledParam) >= 6)
-        pushMods(def.tier6StatModifiers, 1, id)
-
-      if (def.forceCrit && this.bonusAffects(def, tagSet)) forceCrit = true
-      if (def.conditionalFinalCrit && this.bonusAffects(def, tagSet))
-        conditionalFinalCrit = def.conditionalFinalCrit
-
-      if (!def.bonus) continue
-      if (!this.bonusAffects(def, tagSet)) continue
-      if (def.overriddenBy && this.isBuffActiveAtTime(def.overriddenBy, time)) continue
+      if (!this.gateOk(module)) continue
       if (
-        def.phaseGate &&
-        def.bonus.type === "bossOnlyBuffBonus" &&
-        this.qiPhase(time) !== def.phaseGate
+        module.requires?.minTier &&
+        module.requires.param &&
+        this.paramTier(module.requires.param) < module.requires.minTier
       )
         continue
+      if (module.excludes && matchesAnyTag(tagSet, module.excludes)) continue
+      if (!matchesScope(tagSet, module)) continue
 
-      const b = def.bonus
-      const tier6 = def.enabledParam ? this.paramTier(def.enabledParam) >= 6 : false
-      let value: number
-      if (b.minStacks !== undefined && stacks < b.minStacks) value = 0
-      else if (b.valuePerStack !== undefined) value = b.valuePerStack * stacks
-      else if (b.valueFromParam) value = this.paramNum(b.valueFromParam)
-      else
-        value =
-          def.tier6Value !== undefined &&
-          def.enabledParam &&
-          this.paramOn(def.enabledParam) &&
-          tier6
-            ? def.tier6Value
-            : (b.value ?? 0)
-      if (b.phaseBonus) value += b.phaseBonus[phase] ?? 0
-      if (value !== 0) {
-        const statKey = BONUS_TYPE_TO_STATKEY[b.type]
-        effects.push({ statKey, amount: value })
-        breakdown[id] = (breakdown[id] ?? 0) + value
-      }
-    }
-
-    for (const def of this.perCastConsumeDefs) {
-      const pc = def.perCastConsume!
-      const consumed =
-        scopedBuffIds.has(def.id) || this.consumeEvents.has(`${time}|${castTag}|${def.id}`)
-      const alternative = pc.effectPhaseAlternative
-      const alternativeEnabled =
-        alternative != null &&
-        (!alternative.enabledParam || this.paramOn(alternative.enabledParam)) &&
-        (!alternative.minTier ||
-          !alternative.enabledParam ||
-          this.paramTier(alternative.enabledParam) >= alternative.minTier)
-      const phaseAlternative =
-        alternativeEnabled &&
-        (Array.isArray(alternative.phase)
-          ? alternative.phase.includes(phase)
-          : alternative.phase === phase) &&
-        this.bonusAffects(def, tagSet)
-      if (!consumed && !phaseAlternative) continue
-      if (pc.effectEnabledParam && !this.paramOn(pc.effectEnabledParam)) continue
-      if (
-        pc.effectMinTier &&
-        pc.effectEnabledParam &&
-        this.paramTier(pc.effectEnabledParam) < pc.effectMinTier
-      )
-        continue
-      if (pc.bonus) {
-        const value = pc.bonus.value ?? 0
-        if (value !== 0) {
-          const statKey = BONUS_TYPE_TO_STATKEY[pc.bonus.type]
-          effects.push({ statKey, amount: value })
-          breakdown[def.id] = (breakdown[def.id] ?? 0) + value
-        }
-      }
-      if (pc.damageMultiplier !== undefined && pc.damageMultiplier !== 1) {
-        damageMultiplier *= pc.damageMultiplier
-        breakdown[def.id] = (breakdown[def.id] ?? 0) + (pc.damageMultiplier - 1)
-      }
-    }
-    for (const def of this.stackPoolDefs) {
-      const pool = def.consumableStackPool!
-      if (!this.consumeEvents.has(`${time}|${castTag}|${def.id}`)) continue
-      const value = pool.bonus.value ?? 0
-      if (value === 0) continue
-      const statKey = BONUS_TYPE_TO_STATKEY[pool.bonus.type]
-      effects.push({ statKey, amount: value })
-      breakdown[def.id] = (breakdown[def.id] ?? 0) + value
+      const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks)
+      currentId = id
+      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+      if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
     const mistwillow = this.mistwillowBonusValue(castTag, time, tagSet)
@@ -836,13 +714,7 @@ export class BuffEngine {
       effects.push({ statKey: "allDamageBoost", amount: mistwillow })
       breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow
     }
-    return { effects, damageMultiplier, forceCrit, conditionalFinalCrit, breakdown }
-  }
 
-  private bonusAffects(def: BuffDef, tagSet: Set<string>): boolean {
-    if (def.affectsProperty) return hasProp(tagSet, def.affectsProperty)
-    if (def.affectsWeaponTypes) return hasAnyWeapon(tagSet, def.affectsWeaponTypes)
-    if (def.affects === null || def.affects === undefined) return true
-    return def.affects.length > 0 && anyTagStartsWith(tagSet, def.affects)
+    return { effects, forceCrit, damageFactor, conditionalFinalCrit, breakdown }
   }
 }

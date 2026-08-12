@@ -1,253 +1,182 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { receivesForSkill } from "../../src/engine/buffs/catalog"
-import { buffDefsForSpec, groupBuffDefs } from "../../src/engine/buffs/data"
-import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import { computeSkillDamage } from "../../src/engine/formula"
-import { buildContext } from "../../src/engine/panel"
-import { padSlots } from "../../src/engine/perSkillDamage"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
-import { simulateTimeline } from "../../src/engine/timeline"
-import { defaultCombatSettings } from "../../src/engine/types"
+import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
+import { makeSkill } from "../../src/engine/skill"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { CAST, PROP, ROLE, WEAPON } from "../../src/data/skills/ids"
 
-const SPEC = "stonesplit_strength"
 const CLASS = "stonesplitStrength"
 
 function engine(tier: number, overrides: Record<string, unknown> = {}) {
   return new BuffEngine(
-    { steadfastDevotion: true, steadfastDevotionTier: tier, ...overrides },
-    buffDefsForSpec(SPEC),
+    { classId: CLASS, steadfastDevotion: true, steadfastDevotionTier: tier, ...overrides },
+    buffDefsForClass(CLASS),
     groupBuffDefs(),
   )
 }
 
-function affectedSkill(name = "PhalanxCharged-S3") {
+function skill(name: string, tags: string[], castTag: string) {
   return makeSkill(CLASS, {
     name,
+    castTag,
     weaponOrAttribute: "Modao",
     attributeAttack: "Stonesplit",
-    tags: ["weapon:Mo Blade"],
+    tags,
   })
 }
 
-describe("Steadfast Devotion Mountain Splitter", () => {
-  it("requires Inner Passion and accepts generated Modao Anxi Soldier triggers at tier 3", () => {
-    const withoutInnerPassion = engine(3)
-    withoutInnerPassion.processSkillCast("AnxiSoldierMoDown", 1, { generated: true })
-    expect(withoutInnerPassion.isBuffActiveAtTime("mountainSplitter", 1)).toBe(false)
+const phalanxCharged = () =>
+  skill(
+    "PhalanxCharged-S3",
+    [WEAPON.moBlade, ROLE.phalanxCharged, PROP.consumesInnerPassionBurningHeart],
+    CAST.phalanxChargedS3,
+  )
 
-    const withInnerPassion = engine(3)
-    withInnerPassion.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
-    withInnerPassion.processSkillCast("AnxiSoldierMoDown", 1.1, { generated: true })
+const anxiMoJump = () =>
+  skill(
+    "AnxiSoldierMoJump",
+    [WEAPON.moBlade, ROLE.anxiSoldier, ROLE.anxiSoldierMoJump],
+    CAST.anxiSoldierMoJump,
+  )
 
-    expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 1.1)).toBe(true)
-    expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 11.099)).toBe(true)
-    expect(withInnerPassion.isBuffActiveAtTime("mountainSplitter", 11.1)).toBe(false)
-    const effects = withInnerPassion.calculateDamageEffects(affectedSkill(), 2)
-    expect(effects.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
-    expect(effects.effects).toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
+// Keyed by def id, so the class's flat 21% crit damage does not get counted as
+// Mountain Splitter's contribution.
+const splitterShare = (engineUnderTest: BuffEngine, target: ReturnType<typeof skill>, at: number) =>
+  engineUnderTest.calculateDamageEffects(target, at).breakdown[BUFF.mountainSplitter] ?? 0
 
-    const unaffected = withInnerPassion.calculateDamageEffects(
-      affectedSkill("AnxiSoldierMoSweep"),
-      2,
-    )
-    expect(unaffected.conditionalFinalCrit).toBeNull()
-    expect(unaffected.effects).not.toContainEqual({ statKey: "critDamageBoost", amount: 0.1 })
+describe("Mountain Splitter — the tier 3 window", () => {
+  it("opens only while Inner Passion is live, and only for a generated Anxi attack", () => {
+    const live = engine(3)
+    live.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    expect(live.getHistoricalBuffStacks(BUFF.innerPassion, 1.5)).toBeGreaterThan(0)
+    live.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+    expect(live.isBuffActive(BUFF.mountainSplitter, 2)).toBe(true)
+
+    const withoutPassion = engine(3)
+    withoutPassion.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+    expect(withoutPassion.isBuffActive(BUFF.mountainSplitter, 2)).toBe(false)
   })
 
-  it("enforces the 15-second ICD only on the Inner Passion activation route", () => {
-    const buffs = engine(3)
-    buffs.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
-    buffs.processSkillCast("AnxiSoldierMoSweep", 1.1, { generated: true })
-    buffs.processSkillCast("SnowpartingSpecial", 10, { castTime: 1 })
-    buffs.processSkillCast("AnxiSoldierMoJump", 16.099, { generated: true })
-    expect(buffs.isBuffActiveAtTime("mountainSplitter", 16.099)).toBe(false)
-
-    buffs.processSkillCast("AnxiSoldierMoJump", 16.1, { generated: true })
-    expect(buffs.isBuffActiveAtTime("mountainSplitter", 16.1)).toBe(true)
+  it("opts generated casts IN rather than shutting rotation casts out", () => {
+    const rotationCast = engine(3)
+    rotationCast.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    rotationCast.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, false)
+    expect(rotationCast.isBuffActive(BUFF.mountainSplitter, 2)).toBe(true)
   })
 
-  it("grants the tier 4 damage bonus only when a charge consumes a valid source", () => {
-    const tier3 = engine(3)
-    tier3.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
-    const tier3Cast = tier3.processSkillCast("PhalanxCharged-S3[InnerPassion]", 1.1, {
+  it("is unavailable below tier 3", () => {
+    const belowTier = engine(2)
+    belowTier.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    belowTier.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+    expect(belowTier.isBuffActive(BUFF.mountainSplitter, 2)).toBe(false)
+  })
+
+  it("holds a 15-second cooldown on that activation route", () => {
+    const cooling = engine(3)
+    cooling.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    cooling.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+    const firstApplied = cooling.getHistoricalBuffStacks(BUFF.mountainSplitter, 2)
+    cooling.processSkillCast(CAST.anxiSoldierMoJump, 12, {}, true)
+    expect(cooling.isBuffActive(BUFF.mountainSplitter, 13)).toBe(false)
+    expect(firstApplied).toBeGreaterThan(0)
+
+    cooling.processSkillCast(CAST.snowpartingSpecial, 16, { castTime: 1 })
+    cooling.processSkillCast(CAST.anxiSoldierMoJump, 17.5, {}, true)
+    expect(cooling.isBuffActive(BUFF.mountainSplitter, 18)).toBe(true)
+  })
+
+  it("reaches Phalanx Charged and the two Modao Anxi attacks, and nothing else", () => {
+    const live = engine(3)
+    live.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    live.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+
+    expect(splitterShare(live, phalanxCharged(), 2)).toBeCloseTo(0.1, 9)
+    expect(splitterShare(live, anxiMoJump(), 2)).toBeCloseTo(0.1, 9)
+
+    const unaffected = skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+    expect(splitterShare(live, unaffected, 2)).toBe(0)
+  })
+
+  it("carries a final-crit rule that fires at 75% and adds 15 points below it", () => {
+    const live = engine(3)
+    live.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    live.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true)
+    const result = live.calculateDamageEffects(phalanxCharged(), 2)
+    expect(result.conditionalFinalCrit).toEqual({ threshold: 0.75, bonusBelowThreshold: 0.15 })
+  })
+})
+
+describe("Burning Heart — what a charge consumes, and what that grants", () => {
+  it("drains Inner Passion before Charge Enhancement", () => {
+    const both = engine(6, { [PARAM.frostCladNight]: true, frostCladNightTier: 6 })
+    both.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    const passionBefore = both.getHistoricalBuffStacks(BUFF.innerPassion, 1.5)
+
+    both.processSkillCast(CAST.phalanxChargedS3, 2, {
       consumesInnerPassionBurningHeart: true,
+      castTime: 1,
     })
-    expect(tier3Cast.buffIds).not.toContain("burningHeartIPConsume")
+    expect(both.getHistoricalBuffStacks(BUFF.innerPassion, 2.5)).toBe(passionBefore - 1)
+  })
 
-    const tier4 = engine(4)
-    tier4.processSkillCast("SnowpartingSpecial", 0, { castTime: 1 })
-    const tier4Cast = tier4.processSkillCast("PhalanxCharged-S3[InnerPassion]", 1.1, {
+  it("multiplies a consuming cast's damage by 1.32", () => {
+    const consuming = engine(6, { [PARAM.frostCladNight]: true, frostCladNightTier: 6 })
+    consuming.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    const cast = consuming.processSkillCast(CAST.phalanxChargedS3, 2, {
       consumesInnerPassionBurningHeart: true,
+      castTime: 1,
     })
-    expect(tier4Cast.buffIds).toContain("burningHeartIPConsume")
-    expect(
-      tier4.calculateDamageEffects(affectedSkill(), 1.1, tier4Cast.buffIds).damageMultiplier,
-    ).toBe(1.32)
+    const result = consuming.calculateDamageEffects(phalanxCharged(), 2, cast.buffIds)
+    expect(result.damageFactor).toBeCloseTo(1.32, 9)
+  })
 
-    const noSource = engine(4).processSkillCast("PhalanxCharged-S3[InnerPassion]", 1.1, {
+  it("leaves a non-consuming cast at its plain damage", () => {
+    const idle = engine(6, { [PARAM.frostCladNight]: true, frostCladNightTier: 6 })
+    idle.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 })
+    const cast = idle.processSkillCast(CAST.phalanxChargedS3, 2, { castTime: 1 })
+    expect(idle.calculateDamageEffects(phalanxCharged(), 2, cast.buffIds).damageFactor).toBe(1)
+  })
+
+  it("attaches Mountain Splitter only on the Charge Enhancement route, and propagates it", () => {
+    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 })
+    expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 3)).toBe(3)
+
+    const cast = exhausted.processSkillCast(CAST.phalanxChargedS3, 4, {
       consumesInnerPassionBurningHeart: true,
+      castTime: 1,
     })
-    expect(noSource.buffIds).not.toContain("burningHeartIPConsume")
+    expect(cast.buffIds).toContain(BUFF.mountainSplitter)
+    expect(cast.propagatedBuffIds).toContain(BUFF.mountainSplitter)
+    expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 4.5)).toBe(2)
   })
 
-  it("shows the tier 4 consumption bonus in the affected skill's buff table", () => {
-    const skill = makeSkill(CLASS, {
-      name: "PhalanxCharged-S3[InnerPassion]",
-      tags: ["prop:consumesInnerPassionBurningHeart"],
-    })
-    const row = receivesForSkill(skill, CLASS, {
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: [
-        { name: "Steadfast Devotion", stacks: "tier 4" },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-      ],
-    }).find((candidate) => candidate.id === "burningHeartIPConsume")
-
-    expect(row).toMatchObject({
-      effect: "×1.32 damage after resource consumption",
-      requires: "Steadfast Devotion tier 4+",
-      active: true,
-    })
-  })
-
-  it("grants three tier 6 Enhanced Charge stacks for 18 seconds and consumes Inner Passion first", () => {
-    const buffs = engine(6, { qiBreakTime: 0, bossBreakDuration: 1.5 })
-    buffs.processSkillCast("PhalanxCharged-S3", 0, { castTime: 1 })
-    expect(buffs.getHistoricalBuffStacks("chargeEnhancement", 1)).toBe(3)
-    expect(buffs.getHistoricalBuffStacks("chargeEnhancement", 18.999)).toBe(3)
-    expect(buffs.getHistoricalBuffStacks("chargeEnhancement", 19)).toBe(0)
-
-    buffs.applyBuff("innerPassion", 1.1, null, 3)
-    for (const time of [2, 3, 4]) {
-      const result = buffs.processSkillCast("PhalanxCharged-S3[InnerPassion]", time, {
-        consumesInnerPassionBurningHeart: true,
-      })
-      expect(result.buffIds).not.toContain("mountainSplitter")
-      expect(buffs.getHistoricalBuffStacks("chargeEnhancement", time)).toBe(3)
-    }
-    expect(buffs.getHistoricalBuffStacks("innerPassion", 4)).toBe(0)
-    expect(buffs.activeBuffsForDisplay(4).some((buff) => buff.id === "innerPassion")).toBe(false)
-
-    const enhanced = buffs.processSkillCast("PhalanxCharged-S3[InnerPassion]", 5, {
+  it("does not open the tier 3 window when Charge Enhancement is what was spent", () => {
+    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 })
+    exhausted.processSkillCast(CAST.phalanxChargedS3, 4, {
       consumesInnerPassionBurningHeart: true,
+      castTime: 1,
     })
-    expect(buffs.getHistoricalBuffStacks("chargeEnhancement", 5)).toBe(2)
-    expect(enhanced.buffIds).toContain("mountainSplitter")
-    expect(enhanced.propagatedBuffIds).toEqual(["mountainSplitter"])
-    expect(buffs.isBuffActiveAtTime("mountainSplitter", 5)).toBe(false)
+    expect(exhausted.isBuffActive(BUFF.mountainSplitter, 4.5)).toBe(false)
+  })
+})
+
+describe("Charge Enhancement — the tier 6 pool", () => {
+  it("grants three stacks for 18 seconds, and only during Qi break", () => {
+    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    exhausted.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 })
+    expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 3)).toBe(3)
+    expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 21)).toBe(0)
+
+    const normalPhase = engine(6, { qiBreakTime: 100, bossBreakDuration: 10 })
+    normalPhase.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 })
+    expect(normalPhase.getHistoricalBuffStacks(BUFF.chargeEnhancement, 3)).toBe(0)
   })
 
-  it("checks the threshold after precision and adds 15 percentage points below it", () => {
-    const baseContext = buildContext({ ...defaultInputs, classId: CLASS, set: null })
-    const art = {
-      name: "Mountain Splitter Probe",
-      physMultiplier: 1,
-      attributeMultiplier: 1.5,
-      skillType: "weapon",
-      weaponOrAttribute: "Modao",
-      attributeAttack: "Stonesplit",
-      conditionalFinalCrit: { threshold: 0.75, bonusBelowThreshold: 0.15 },
-    }
-    const context = {
-      ...baseContext,
-      precisionPanel: 1,
-      affinityPanel: 0,
-      directCritPanel: 0,
-      directAffinityPanel: 0,
-      rateResistance: 0,
-      set: null,
-    }
-
-    const guaranteed = computeSkillDamage(art, padSlots([]), { ...context, critPanel: 0.75 }, 1)
-    const explicitGuaranteed = computeSkillDamage(
-      { ...art, conditionalFinalCrit: undefined, guaranteedCrit: 1 },
-      padSlots([]),
-      { ...context, critPanel: 0.75 },
-      1,
-    )
-    expect(guaranteed.expectedDamage).toBeCloseTo(explicitGuaranteed.expectedDamage, 10)
-
-    const boosted = computeSkillDamage(art, padSlots([]), { ...context, critPanel: 0.74 }, 1)
-    expect(boosted.cells.AN).toBeCloseTo(0.89, 10)
-    expect(boosted.expectedDamage).not.toBeCloseTo(explicitGuaranteed.expectedDamage, 10)
-  })
-
-  it("propagates a consumed Enhanced Charge to the generated Anxi chain", () => {
-    const controlAnxi = makeSkill(CLASS, {
-      name: "AnxiSoldierMoDownControl",
-      weaponOrAttribute: "Modao",
-      attributeAttack: "Stonesplit",
-      tags: ["weapon:Mo Blade"],
-      hits: [makeHit({ physMultiplier: 1, attributeMultiplier: 1.5 })],
-    })
-    const enhancedAnxi = makeSkill(CLASS, {
-      name: "AnxiSoldierMoDownEnhanced",
-      weaponOrAttribute: "Modao",
-      attributeAttack: "Stonesplit",
-      tags: ["weapon:Mo Blade"],
-      hits: [makeHit({ physMultiplier: 1, attributeMultiplier: 1.5 })],
-    })
-    const grant = makeSkill(CLASS, {
-      name: "PhalanxCharged-Grant",
-      weaponOrAttribute: "Modao",
-      attributeAttack: "Stonesplit",
-      tags: ["weapon:Mo Blade"],
-      castFrames: 60,
-      hits: [
-        makeHit({
-          physMultiplier: 1,
-          attributeMultiplier: 1.5,
-          triggers: [makeTrigger({ kind: "castSkill", targetId: controlAnxi.id, stacks: 0 })],
-        }),
-      ],
-    })
-    const consume = makeSkill(CLASS, {
-      name: "PhalanxCharged-Consume",
-      weaponOrAttribute: "Modao",
-      attributeAttack: "Stonesplit",
-      tags: ["weapon:Mo Blade", "prop:consumesInnerPassionBurningHeart"],
-      castFrames: 60,
-      hits: [
-        makeHit({
-          physMultiplier: 1,
-          attributeMultiplier: 1.5,
-          triggers: [makeTrigger({ kind: "castSkill", targetId: enhancedAnxi.id, stacks: 0 })],
-        }),
-      ],
-    })
-    const customSkills = [controlAnxi, enhancedAnxi, grant, consume]
-    const result = simulateTimeline({
-      ...defaultInputs,
-      classId: CLASS,
-      precision: 1.3,
-      critRate: 1.3,
-      affinityRate: 0,
-      directAffinityRate: 0,
-      mindMethods: [
-        { name: "Steadfast Devotion", stacks: "tier 6" },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-        { ...emptyMindMethod },
-      ],
-      combatSettings: {
-        ...defaultCombatSettings(),
-        qiBreak: { enabled: true, startSec: 0, durationSec: 10 },
-      },
-      customSkills,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [grant, consume].map((skill) =>
-          makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
-        ),
-      }),
-    })
-    const damage = (name: string) =>
-      result.perSkill.find((row) => row.name === name)?.expectedDamage ?? 0
-
-    expect(damage(enhancedAnxi.name)).toBeGreaterThan(damage(controlAnxi.name))
+  it("is unavailable below tier 6", () => {
+    const belowTier = engine(5, { qiBreakTime: 0, bossBreakDuration: 30 })
+    belowTier.processSkillCast(CAST.phalanxChargedS3, 1, { castTime: 1 })
+    expect(belowTier.getHistoricalBuffStacks(BUFF.chargeEnhancement, 3)).toBe(0)
   })
 })

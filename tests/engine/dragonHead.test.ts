@@ -1,6 +1,3 @@
-// Mechanics, sources, and coefficient provenance:
-// src/data/skills/universal/dragon-head.md.
-//
 // Damage assertions scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
 import { computeSkillDamage } from "../../src/engine/formula"
@@ -10,62 +7,65 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeSkill } from "../../src/engine/skill"
+import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { Inputs } from "../../src/engine/types"
 
-const ALL_CLASS_IDS = [
-  "bellstrikeUmbra",
-  "bellstrikeRainbow",
-  "silkbindJade",
-  "stonesplitPower",
-  "stonesplitStrength",
-  "bamboocutDust",
-  "bamboocutWindTwinblade",
-]
-
 describe("Dragon Head registry — universal mystic, both versions", () => {
-  it("every class exposes both versions with the workbook coefficients", () => {
-    for (const classId of ALL_CLASS_IDS) {
-      const skills = builtinSkillsForClass(classId)
-      const base = skills.find((s) => s.name === "Dragon Head")
-      const plus = skills.find((s) => s.name === "Dragon Head - Plus")
-      expect(base, classId).toBeTruthy()
-      expect(plus, classId).toBeTruthy()
-      expect(base!.id).toBe(`${classId}-dragon-head`)
-      expect(plus!.id).toBe(`${classId}-dragon-head-plus`)
-      expect(base!.skillType).toBe("mystic")
-      expect(plus!.skillType).toBe("mystic")
-      expect(base!.tags).toContain("mystic:burst")
-      expect(plus!.tags).toContain("mystic:burst")
-      expect(base!.guaranteedNormal).toBe(true)
-      expect(plus!.guaranteedPrecision).toBe(true)
+  it("Bellstrike Umbra exposes both versions with the workbook coefficients", () => {
+    const classId = "bellstrikeUmbra"
+    const skills = builtinSkillsForClass(classId)
+    const base = skills.find((skill) => skill.name === "Dragon Head")
+    const plus = skills.find((skill) => skill.name === "Dragon Head - Plus")
+    expect(base).toBeTruthy()
+    expect(plus).toBeTruthy()
+    expect(base!.id).toBe(`${classId}-dragon-head`)
+    expect(plus!.id).toBe(`${classId}-dragon-head-plus`)
+    expect(base!.skillType).toBe("mystic")
+    expect(plus!.skillType).toBe("mystic")
+    expect(base!.tags).toContain("mystic:burst")
+    expect(plus!.tags).toContain("mystic:burst")
+    expect(base!.guaranteedNormal).toBe(true)
+    expect(plus!.guaranteedPrecision).toBe(true)
 
-      const baseHit = base!.hits[0]
-      const plusHit = plus!.hits[0]
-      expect(plusHit.physMultiplier).toBeCloseTo(17.3793, 9)
-      expect(plusHit.attributeMultiplier).toBeCloseTo(26.0689, 9)
-      expect(plusHit.physFixed).toBeCloseTo(3237, 9)
-      expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
-      expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
-      expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 4)
-    }
+    const baseHit = base!.hits[0]
+    const plusHit = plus!.hits[0]
+    expect(plusHit.physMultiplier).toBeCloseTo(17.3793, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(26.0689, 9)
+    expect(plusHit.physFixed).toBeCloseTo(3237, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
+    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 4)
   })
 
-  it("Surging Waves is a global buff def: 8 stacks/cast of the Plus, +1.25 %/stack, max 40, gated to Dragon Head", () => {
-    const surgingWaves = GLOBAL_BUFF_DEFS.find((d) => d.id === "surgingWaves")
+  it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
+    const surgingWaves = GLOBAL_BUFF_DEFS.find((module) => module.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
-    expect(surgingWaves!.triggers).toEqual(["Dragon Head - Plus"])
-    expect(surgingWaves!.stacksPerCast).toBe(8)
+    expect(surgingWaves!.triggeredBy).toEqual(["cast:dragonHeadPlus"])
     expect(surgingWaves!.maxStacks).toBe(40)
     expect(surgingWaves!.duration).toBe(6)
-    expect(surgingWaves!.affects).toEqual(["Dragon Head"])
-    expect(surgingWaves!.bonus).toEqual({ type: "buffBonus", valuePerStack: 0.0125 })
+    expect(surgingWaves!.affects).toEqual(["role:dragonHead"])
+
+    const dragonHeadHit = makeSkill("test", { name: "probe", tags: ["role:dragonHead"] })
+    const engine = new BuffEngine({}, GLOBAL_BUFF_DEFS)
+    engine.processSkillCast("cast:dragonHeadPlus", 0)
+    expect(engine.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.0125 * 8,
+    })
+
+    const engineWithAllies = new BuffEngine({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
+    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0)
+    expect(engineWithAllies.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.0125 * 40,
+    })
   })
 })
 
 type Art = Parameters<typeof computeSkillDamage>[0]
-const art_ = (a: Record<string, unknown>) => a as unknown as Art
-const slots = ["N/A", "N/A", "N/A", "N/A", "N/A"] as const
+const asArt = (fields: Record<string, unknown>) => fields as unknown as Art
 
 const DRAGON_HEAD_ROW = {
   physMultiplier: 24.827571,
@@ -110,22 +110,21 @@ const ctx: FormulaContext = {
 }
 
 describe("guaranteedNormal — fixed damage, immune to every rate", () => {
-  const fixed = art_({ name: "Dragon Head", ...DRAGON_HEAD_ROW, guaranteedNormal: 1 })
-  const normal = art_({ name: "Dragon Head (unflagged)", ...DRAGON_HEAD_ROW })
+  const fixed = asArt({ name: "Dragon Head", ...DRAGON_HEAD_ROW, guaranteedNormal: 1 })
+  const normal = asArt({ name: "Dragon Head (unflagged)", ...DRAGON_HEAD_ROW })
 
   it("expected damage equals the normal row (EF), not the rate-weighted mix", () => {
-    const result = computeSkillDamage(fixed, slots, ctx, 1)
+    const result = computeSkillDamage(fixed, ctx, 1)
     expect(result.expectedDamage).toBeCloseTo(result.cells.EF, 6)
-    const unflagged = computeSkillDamage(normal, slots, ctx, 1)
+    const unflagged = computeSkillDamage(normal, ctx, 1)
     expect(unflagged.expectedDamage).toBeCloseTo(unflagged.cells.EH, 6)
     expect(result.expectedDamage).not.toBeCloseTo(unflagged.expectedDamage, 0)
   })
 
   it("crit, affinity and precision rates do not move it", () => {
-    const base = computeSkillDamage(fixed, slots, ctx, 1).expectedDamage
+    const base = computeSkillDamage(fixed, ctx, 1).expectedDamage
     const ratesUp = computeSkillDamage(
       fixed,
-      slots,
       { ...ctx, critPanel: 0.8, affinityPanel: 0.4, precisionPanel: 0.5 },
       1,
     ).expectedDamage
@@ -134,7 +133,7 @@ describe("guaranteedNormal — fixed damage, immune to every rate", () => {
 })
 
 describe("guaranteedPrecision — never abrades, crit/affinity still roll", () => {
-  const plus = art_({
+  const plus = asArt({
     name: "Dragon Head - Plus",
     ...DRAGON_HEAD_ROW,
     physMultiplier: 17.3793,
@@ -144,25 +143,25 @@ describe("guaranteedPrecision — never abrades, crit/affinity still roll", () =
   })
 
   it("U is 1 and the abrasion weight AL is 0 even at low panel precision", () => {
-    const c = computeSkillDamage(plus, slots, { ...ctx, precisionPanel: 0.5 }, 1).cells
-    expect(c.U).toBe(1)
-    expect(c.AL).toBe(0)
+    const cells = computeSkillDamage(plus, { ...ctx, precisionPanel: 0.5 }, 1).cells
+    expect(cells.U).toBe(1)
+    expect(cells.AL).toBe(0)
   })
 
   it("lowering precision does not lower it, but does lower the unflagged variant", () => {
     const lowPrecision = { ...ctx, precisionPanel: 0.5 }
-    const flagged = computeSkillDamage(plus, slots, lowPrecision, 1).expectedDamage
-    expect(flagged).toBeCloseTo(computeSkillDamage(plus, slots, ctx, 1).expectedDamage, 6)
+    const flagged = computeSkillDamage(plus, lowPrecision, 1).expectedDamage
+    expect(flagged).toBeCloseTo(computeSkillDamage(plus, ctx, 1).expectedDamage, 6)
 
-    const unflagged = art_({ ...plus, guaranteedPrecision: undefined })
-    const unflaggedLow = computeSkillDamage(unflagged, slots, lowPrecision, 1).expectedDamage
-    const unflaggedBase = computeSkillDamage(unflagged, slots, ctx, 1).expectedDamage
+    const unflagged = asArt({ ...plus, guaranteedPrecision: undefined })
+    const unflaggedLow = computeSkillDamage(unflagged, lowPrecision, 1).expectedDamage
+    const unflaggedBase = computeSkillDamage(unflagged, ctx, 1).expectedDamage
     expect(unflaggedLow).toBeLessThan(unflaggedBase)
   })
 
   it("raising crit rate still raises it", () => {
-    const base = computeSkillDamage(plus, slots, ctx, 1).expectedDamage
-    const highCrit = computeSkillDamage(plus, slots, { ...ctx, critPanel: 0.8 }, 1).expectedDamage
+    const base = computeSkillDamage(plus, ctx, 1).expectedDamage
+    const highCrit = computeSkillDamage(plus, { ...ctx, critPanel: 0.8 }, 1).expectedDamage
     expect(highCrit).toBeGreaterThan(base)
   })
 })
@@ -170,7 +169,7 @@ describe("guaranteedPrecision — never abrades, crit/affinity still roll", () =
 function rotationOf(classId: string, skillNames: string[]) {
   const skills = builtinSkillsForClass(classId)
   const steps = skillNames.map((name) => {
-    const skill = skills.find((s) => s.name === name)
+    const skill = skills.find((candidate) => candidate.name === name)
     if (!skill) throw new Error(`no built-in skill "${name}" for ${classId}`)
     return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
   })
@@ -195,8 +194,8 @@ function withFullStacks(): Partial<Inputs> {
 
 function skillDamage(result: ReturnType<typeof simulateTimeline>, name: string): number {
   return result.perSkill
-    .filter((p) => p.name === name)
-    .reduce((sum, p) => sum + p.expectedDamage, 0)
+    .filter((entry) => entry.name === name)
+    .reduce((sum, entry) => sum + entry.expectedDamage, 0)
 }
 
 describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
@@ -238,7 +237,9 @@ describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
 
 describe("40 Stacks (Dragon Head) teammate buff", () => {
   const surgingWavesStacks = (result: ReturnType<typeof simulateTimeline>) =>
-    (result.casts ?? []).map((c) => c.buffs.find((b) => b.id === "surgingWaves")?.stacks ?? 0)
+    (result.casts ?? []).map(
+      (cast) => cast.buffs.find((buff) => buff.id === "surgingWaves")?.stacks ?? 0,
+    )
 
   it("holds every cast at the 40-stack cap instead of climbing 8 at a time", () => {
     const fiveCasts = Array(5).fill("Dragon Head - Plus")
@@ -273,12 +274,14 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
   })
 
   it("is a global buff def applying the sourced 45 % cap, gated to the Plus", () => {
-    const def = GLOBAL_BUFF_DEFS.find((d) => d.id === "dragonHeadLowHp")
-    expect(def).toBeTruthy()
-    expect(def!.bonus).toEqual({ type: "buffBonus", value: 0.45 })
-    expect(def!.affects).toEqual(["Dragon Head - Plus"])
-    expect(def!.enabledParam).toBe("dragonHeadLowHpMaxBonus")
-    expect(def!.alwaysActive).toBe(true)
+    const dragonHeadLowHp = GLOBAL_BUFF_DEFS.find((module) => module.id === "dragonHeadLowHp")
+    expect(dragonHeadLowHp).toBeTruthy()
+    expect(dragonHeadLowHp!.effects).toEqual([
+      { kind: "stat", statKey: "allDamageBoost", amount: 0.45 },
+    ])
+    expect(dragonHeadLowHp!.affects).toEqual(["role:dragonHeadPlus"])
+    expect(dragonHeadLowHp!.requires?.param).toBe("dragonHeadLowHpMaxBonus")
+    expect(dragonHeadLowHp!.alwaysActive).toBe(true)
   })
 
   it("does nothing until the toggle is on", () => {
@@ -325,14 +328,12 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   const insideBreak = qiBreak(true, 0)
   const outsideBreak = qiBreak(true, 60)
 
-  it("carries the tag on every class's built-in Plus, and never on the base version", () => {
-    for (const classId of ALL_CLASS_IDS) {
-      const skills = builtinSkillsForClass(classId)
-      const plus = skills.find((s) => s.name === "Dragon Head - Plus")!
-      const base = skills.find((s) => s.name === "Dragon Head")!
-      expect(plus.tags, classId).toContain("prop:hasQiBreakDoubleDamage")
-      expect(base.tags, classId).not.toContain("prop:hasQiBreakDoubleDamage")
-    }
+  it("carries the tag on Bellstrike Umbra's built-in Plus, and never on the base version", () => {
+    const skills = builtinSkillsForClass("bellstrikeUmbra")
+    const plus = skills.find((skill) => skill.name === "Dragon Head - Plus")!
+    const base = skills.find((skill) => skill.name === "Dragon Head")!
+    expect(plus.tags).toContain("prop:hasQiBreakDoubleDamage")
+    expect(base.tags).not.toContain("prop:hasQiBreakDoubleDamage")
   })
 
   // Same id, so it replaces the built-in wholesale: identical name, hits and
@@ -340,9 +341,14 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   // pre-existing +10 % boost instead would not isolate the doubling.
   const withoutTheTag = (): Inputs["customSkills"] => {
     const plus = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Dragon Head - Plus",
+      (skill) => skill.name === "Dragon Head - Plus",
     )!
-    return [{ ...plus, tags: (plus.tags ?? []).filter((t) => t !== "prop:hasQiBreakDoubleDamage") }]
+    return [
+      {
+        ...plus,
+        tags: (plus.tags ?? []).filter((tag) => tag !== "prop:hasQiBreakDoubleDamage"),
+      },
+    ]
   }
 
   it("is worth exactly x2 inside the window", () => {

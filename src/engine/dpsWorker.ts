@@ -1,7 +1,7 @@
 import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
-import { poolForClass } from "../data/classes/retunementPools"
+import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
 import { attunementsFor } from "./attunements"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"

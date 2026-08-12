@@ -1,0 +1,38 @@
+{
+  "id": "stonesplitPower-mobladeheavycharge-2bw",
+  "classId": "stonesplitPower",
+  "name": "MoBladeHeavyCharge-2BW",
+  "abilityTag": "MoBladeHeavyCharge-2BW",
+  "tags": ["prop:isCharged", "prop:abrasionImmune", "weapon:Mo Blade", "attack:charge", "attune:moBladeCharge"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Modao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 3.6181,
+      "attributeMultiplier": 5.42715,
+      "physFixed": 835.5,
+      "attributeFixed": 467,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 113,
+      "physMultiplier": 3.6181,
+      "attributeMultiplier": 5.42715,
+      "physFixed": 835.5,
+      "attributeFixed": 467,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 226,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:moBladeHeavyCharge2BW"
+}

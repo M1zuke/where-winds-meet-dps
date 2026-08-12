@@ -2,10 +2,8 @@ import { useRef, useState } from "react"
 import type { StoredProfile } from "../../../../engine/types"
 import { exportProfile, importProfile } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
-import schools from "../../../../data/classes/schools.json"
+import { classDefinition } from "../../../../definitions/classes/registry"
 import styles from "./ProfilePanel.module.scss"
-
-const SCHOOLS = schools as { id: string; cn: string; en: string }[]
 
 interface Props {
   profiles: StoredProfile[]
@@ -51,9 +49,9 @@ export function ProfilePanel({
   }
 
   function classLabel(classId: string): string {
-    const school = SCHOOLS.find((candidate) => candidate.id === classId)
-    if (!school) return classId
-    return t(school.cn)
+    const definition = classDefinition(classId)
+    if (!definition) return classId
+    return t(definition.displayName)
   }
 
   function handleExport(profile: StoredProfile) {

@@ -1,0 +1,22 @@
+{
+  "id": "comboUmbLightBonus",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "comboUmbLightBonus",
+        "name": "Combo (UmbLight)",
+        "triggeredBy": ["cast:umbQ", "cast:umbQPrepull"],
+        "duration": 15,
+        "affects": ["role:umbLightCharge"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.1
+        },
+        "enabledParam": "combo",
+        "minTier": 4
+      }
+    }
+  ]
+}

@@ -1,13 +1,9 @@
-// A class only loads buff-defs from its OWN site spec, so a foreign spec's
-// buff can't attach to an ability tag two specs happen to share (both
-// bellstrike_umbra and stonesplit_might have a `SpearHeavy` skill, but only
-// stonesplit_might's `drumbeat` should fire on it).
+// A class's own `classBuffDefs` is reachable purely by being that class;
+// `buffDefsForClass` additionally folds in every slottable inner way's
+// buffDefs and the globals — see docs/CLASSES.md § "Buff ownership".
 import { describe, expect, it } from "vitest"
-import {
-  buffDefsForClass,
-  mechanicBuffDefsForClass,
-  specForClass,
-} from "../../src/engine/buffs/data"
+import { buffDefsForClass, specForClass } from "../../src/engine/buffs/data"
+import { classDefinition } from "../../src/definitions/classes/registry"
 
 describe("spec-scoping — buffDefsForClass", () => {
   it("maps the class to its spec", () => {
@@ -15,11 +11,15 @@ describe("spec-scoping — buffDefsForClass", () => {
     expect(specForClass("unknownClass")).toBeUndefined()
   })
 
-  it("umbra (bellstrikeUmbra) does NOT load stonesplit's drumbeat/vulnerability", () => {
+  it("bellstrikeUmbra's composed bucket DOES contain the once-mechanic-scoped defs, each still carrying the class-buff marker", () => {
     const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((d) => d.id))
-    expect(ids.has("drumbeat")).toBe(false)
-    expect(ids.has("vulnerability")).toBe(false)
-    expect(ids.has("vulnerabilityWeapon")).toBe(false)
+    expect(ids.has("soulShaken")).toBe(true)
+    expect(ids.has("bellstrikeUmbraBleedPen")).toBe(true)
+    expect(ids.has("bellstrikeUmbraBleedingDamage")).toBe(true)
+    for (const id of ["soulShaken", "bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]) {
+      const module = buffDefsForClass("bellstrikeUmbra").find((candidate) => candidate.id === id)!
+      expect("classBuff" in module).toBe(true)
+    }
   })
 
   it("keeps the universal fluteBoost for a class whose spec bucket omits it", () => {
@@ -29,20 +29,16 @@ describe("spec-scoping — buffDefsForClass", () => {
 
   it("unknown class falls back to the full universe", () => {
     const ids = new Set(buffDefsForClass("unknownClass").map((d) => d.id))
-    expect(ids.has("drumbeat")).toBe(true)
+    expect(ids.has("concentration")).toBe(true)
   })
 })
 
-describe("spec-scoping — mechanicBuffDefsForClass", () => {
-  it("loads soulShaken + umbra bleed buffs for the umbra class, spec-gated so they cannot leak elsewhere", () => {
-    const umbra = mechanicBuffDefsForClass("bellstrikeUmbra")
-    const ids = new Set(umbra.map((d) => d.id))
-    expect(ids.has("soulShaken")).toBe(true)
-    expect(ids.has("bellstrikeUmbraBleedPen")).toBe(true)
-
-    // The gate itself: an untagged def is universal, so these must carry the spec.
-    for (const id of ["soulShaken", "bellstrikeUmbraBleedPen"]) {
-      expect(umbra.find((d) => d.id === id)!.spec).toBe("bellstrike_umbra")
-    }
+describe("spec-scoping — classDef.classBuffDefs, the class's own", () => {
+  it("bellstrikeUmbra's own list is exactly the two bleed passives, each carrying the class-buff marker", () => {
+    const umbra = classDefinition("bellstrikeUmbra")!.classBuffDefs
+    expect(umbra.map((module) => module.id).sort()).toEqual(
+      ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"].sort(),
+    )
+    for (const module of umbra) expect("classBuff" in module).toBe(true)
   })
 })

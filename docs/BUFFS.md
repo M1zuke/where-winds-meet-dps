@@ -1,85 +1,101 @@
-# BUFFS.md — classifying a buff before you build it
+# BUFFS.md — classify a buff before you build it
 
-Read this before implementing any buff, debuff, or "this mechanic boosts X"
-effect. **Classify first** — the two categories live in completely different
-places, and putting one in the other's home is the most common way this engine
-grows a double-count.
-
-TIMELINE.md § 5 documents the *schemas* (`Buff`/`Debuff` + `HitTrigger` vs
-`BuffDef`/`BuffEngine`). This file decides *which* you want.
+**Classify first.** The categories live in different places, and putting one in
+another's home is the most common way this engine grows a double-count.
+TIMELINE.md carries the authoring rules for each system; this file decides which
+one you are in.
 
 ## The dividing question
 
-> Does it change the character's **stats** (→ category 1, stat layer,
-> invisible), or does it change the **damage of specific skills only**
-> (→ category 2, buff-def, visible in the Skill Editor)?
+> 1. Is it a **stat the character has**, or an **effect that switches on**?
+> 2. If it is a stat: does it apply to **everything** (category 1), or only to a
+>    category of skills (category 3)?
+>
+> An effect that switches on and reaches only certain skills is **category 2**.
 
-## Category 1 — base-stat / overall-stat buffs
+## Category 1 — base-stat buffs
 
-A permanent modifier to the character's OWN stats (penetration, affinity/crit
-damage, min/max attack, …) that applies to **every** skill.
+A permanent modifier to the character's own stats — penetration, crit or
+affinity damage, min/max attack — that applies to **every** skill.
 
-Examples: the food buff (Simmering Fish Slices, +120 min / +240 max phys —
-`FOOD_MIN_PHYS_BONUS` / `FOOD_MAX_PHYS_BONUS` in `formula.ts`, applied once in
-AE/AG and re-shown read-only as the yellow "effective" min/max phys in Panel
-Stats); flat inner-way and gear-set stats folded into the panel.
-
-Apply these in the **stat/base layer** as a permanent stat modifier —
-class-gating is fine. They do **NOT** go through the per-skill buff-def system
-and do **NOT** need to be visible in the Skill Editor.
-
-See CALCULATION.md § "The stat layer" for where in the chain this lands.
+Apply it in the stat layer as a permanent stat modifier. Class-gating is fine. It
+does **not** go through the buff-def system and does **not** need to be visible in
+the Skill Editor. CALCULATION.md § "The stat layer" has the rules for that layer.
 
 ## Category 2 — skill-specific buffs
 
-Affects only certain skills.
+Reaches only certain skills. **A stat that reaches only some skills is
+category 2, not category 1** — that is the distinction people get wrong.
 
-Examples: Soul Shaken (boosts only the bleed/DoT skills); Bellstrike Umbra's
-bleed penetration and bleeding/affinity damage — these reach only the bleed
-skills, so they are skill-specific **even though the quantity they change is a
-stat**. That last point is the one people get wrong.
+These MUST be first-class, data-driven defs in the trigger-driven buff system.
+The skill that _causes_ it declares it; the skills that _receive_ it are matched
+by tags. Both must be visible and referenced in the Skill Editor. This is the
+**"no invisible magic"** rule.
 
-These MUST be **first-class, data-driven buff-defs** in the trigger-driven buff
-system (`src/engine/buffs/buffEngine.ts`; Soul Shaken in
-`src/engine/buffs/mechanics.ts` `MECHANIC_BUFF_DEFS` is the precedent). The
-skill that *causes* the buff declares it (triggers); the skills that *receive*
-it are matched by `affects` / tags. Both must be **visible and referenced in the
-Skill Editor** (`SkillsTab.tsx`), and class-tied ones are surfaced in the Class
-Buffs tab.
+### What not to do
 
-This is the **"no invisible magic"** rule.
+- **Never hardcode a per-skill mechanic in the timeline.** A
+  `if (classId === …)` damage branch belongs in a class- or inner-way-gated def.
+- **Never add a read-only display wrapper that duplicates an engine constant.**
 
-## For category 2 specifically — what not to do
+Both hide the mechanic from where the user edits skills, and both create a second
+application path that can double-count.
 
-- **Do NOT hardcode per-skill mechanics in `timeline.ts`** — the way
-  `bellstrikeUmbraMaxPhysEffects` was once layered into `resolveState`. A
-  class-specific `if (classId === …)` per-skill damage branch belongs in a
-  class-gated buff-def instead.
-- **Do NOT add read-only display wrappers that duplicate an engine constant.**
+**One source of truth:** value, scaling and reach live in the def; the engine
+reads it and the UI renders from it. If a skill-specific mechanic does not fit
+the schema, **extend the schema** rather than working around it.
 
-Both hide the buff from where the user edits skills, and both create a second
-application path that risks double-counting.
+### The two sanctioned escapes
 
-**One source of truth:** value / scaling / `affects` live in the def; the engine
-reads it, the UI renders from it. If a skill-specific mechanic doesn't fit the
-buff-def schema, **extend the schema** rather than working around it.
+- **A skill-behaviour factory**, registered against a skill id, when the def
+  schema genuinely cannot express the mechanic. It returns what it wants written
+  and the timeline decides ordering, so a mechanic can hold state without the
+  loop knowing about it. Built-ins only — a user-authored skill is data and can
+  never carry code, which is exactly why the data path must stay fully capable.
+- **One declaration, one id, two projections**, when a mechanic needs both a
+  timeline gate and a catalog row: the same id names the gate the ledger tracks
+  and the module the Skill Editor reads, and the effect is still applied in
+  exactly one place. What distinguishes this from the forbidden wrapper is that
+  neither projection is reachable without the other, and neither re-applies a
+  value the engine already applies elsewhere.
 
-## Which system, once you're in category 2
+## Category 3 — scoped stats
 
-| effect | system |
-| --- | --- |
-| class-tied site mechanic | a `BuffDef` gated by `spec` / `enabledParam` (TIMELINE.md § 5b) |
-| user- or class-authored effect | a `Buff` / `Debuff` with `HitTrigger`s (TIMELINE.md § 5a) |
-| a damage-over-time | **always** a `Debuff` with a `dot` — a `sustain` *skill type* is just a scaling tag on one hit, not a DoT |
+A stat the character **has**, whose value reaches only a category of skills. It
+is not a buff: nothing switches it on, and it does not belong in the buff-def
+system. The entity declares what it is, the stat declares what it reaches, and
+the kernel joins them.
 
-## Known exceptions
+| stat                       | the entity declares | joined                           |
+| -------------------------- | ------------------- | -------------------------------- |
+| weapon boost               | its weapon key      | additively, inside the boost sum |
+| mystic-category boost      | a `mystic:` tag     | additively, inside the boost sum |
+| attunement (dingYin) boost | an `attune:` tag    | **multiplicatively**             |
 
-A handful of mechanics genuinely don't fit the buff-def vocabulary and are
-realized at the `timeline.ts` boundary on purpose — Crosswind Spirit's charge
-counter, the Hawkwing and Concentration probability schedules, Morale Chant's
-stack curve, and the Bitter Season inner way's poison (`buffs/bitterSeason.ts`):
-a stochastic per-hit proc plus a percentage target-defense reduction that
-stacks and decays is not expressible as a static `Buff`/`Debuff`. Each is
-documented in CALCULATION.md § "Mechanic coverage" with the reason. Adding to
-that list needs the same justification: not "it was easier here", but "the def
-schema cannot express this".
+⚠️ **The attunement channel is multiplicative and the other two are additive.**
+They are not interchangeable; never fold one into the other.
+
+Wiring a new one is data, not code: give the entities the tag, and give the
+attunement option the tag it affects. No engine file learns a tag's name.
+
+These belong in Panel Stats, and in the Skill Editor's _Receives_ column beside
+the defs reaching the same skill. That is how they satisfy "no invisible magic" —
+not by becoming a def.
+
+## Which system, once you are in category 2
+
+| effect                   | system                             |
+| ------------------------ | ---------------------------------- |
+| class- or inner-way-tied | a buff module gated by `requires`  |
+| user- or class-authored  | a buff or debuff with hit triggers |
+| a damage-over-time       | **always** a debuff with a `dot`   |
+
+## Mechanics — the last resort
+
+A mechanic is for what the def vocabulary genuinely cannot say: a stochastic
+per-hit proc, a reduction that stacks and decays, a stateful counter. Each is
+declared by the thing it is a mechanic of, and CALCULATION.md § "Mechanic rules"
+binds it.
+
+Adding one needs the same justification every time: not "it was easier here", but
+**"the def schema cannot express this"** — stated in the module itself.

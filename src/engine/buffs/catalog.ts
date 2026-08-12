@@ -1,99 +1,70 @@
-import { catalogBuffDefs, dedupedMechanicBuffDefs, dedupedMechanicBuffDefsForClass } from "./data"
-import {
-  anyTagStartsWith,
-  castTagOf,
-  hasAnyWeapon,
-  hasProp,
-  mysticCategoryOf,
-  skillTagsOf,
-} from "./tags"
+import { catalogBuffDefs } from "./data"
+import { attuneTagOf, castTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
+import { matchesScope } from "../scope"
+import { displayGateFor } from "./displayGates"
+import { ATTUNEMENT_OPTIONS } from "../attunements"
 import {
   MYSTIC_TYPE_BOOST_STAT_KEY,
   STAT_DEF_BY_KEY,
   WEAPON_BOOST_STAT_KEY,
   type StatKey,
 } from "../statRegistry"
-import type { BuffDef, BuffBonus, BuffStatMods } from "./buffDef"
+import type { BuffModule } from "./buffModule"
+import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"
 import type { Debuff } from "../debuff"
 import type { Inputs } from "../types"
-import { paramsFromInputs } from "./params"
+import { paramOnOf, paramsFromInputs, paramTierOf } from "./params"
 import type { BuffParams } from "./buffEngine"
-import { INNER_WAY_BY_PARAM, SITE_SET_TO_APP_SET } from "./paramMap"
+import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
+import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass } from "../builtinLibrary"
+import { CLASS_DEFS, classDefinition } from "../../definitions/classes/registry"
 
-export interface BuffSummary {
-  id: string
-  name: string
-  enabledParam?: string
-  minTier?: number
-  triggers: string[]
-  affects: string
-  bonus: string
+function affectsSummary(module: BuffModule): string {
+  if (module.affectsProperty) return module.affectsProperty
+  if (module.affectsWeaponTypes) return module.affectsWeaponTypes.join("/")
+  if (module.affects === null || module.affects === undefined) return "all"
+  return module.affects.join("/")
 }
 
-function bonusSummary(b?: BuffBonus | null): string {
-  if (!b) return "—"
-  const pct = (n: number) => `${(n * 100).toFixed(1)}%`
-  const stackGate = b.minStacks === undefined ? "" : ` at ${b.minStacks} stacks`
-  const label =
-    b.type === "phyBoostMod"
-      ? "phys"
-      : b.type === "bossOnlyBuffBonus"
-        ? "boss"
-        : b.type === "groupDamage"
-          ? "all (team)"
-          : "all"
-  if (b.valuePerStack !== undefined) return `+${pct(b.valuePerStack)} ${label}/stack${stackGate}`
-  if (b.valueFromParam) return `+${label} (from ${b.valueFromParam})`
-  return `+${pct(b.value ?? 0)} ${label}${stackGate}`
+// A native module's `effects` static array carries no bonus "type" (team vs
+// solo, phys vs all) beyond its `StatKey`, so it is read back off that key —
+// every buff converted so far picks a key `BONUS_TYPE_TO_STATKEY` only ever
+// produces from one bonus type, so this is lossless for all of them.
+const STATKEY_BONUS_LABEL: Partial<Record<StatKey, string>> = {
+  allDamageBoost: "all",
+  physBoost: "phys",
+  bossBoost: "boss",
 }
+const STATKEY_POINT_VALUED = new Set<StatKey>(["phys.penetration", "bellstrike.penetration"])
 
-function affectsSummary(d: BuffDef): string {
-  if (d.affectsProperty) return d.affectsProperty
-  if (d.affectsWeaponTypes) return d.affectsWeaponTypes.join("/")
-  if (d.affects === null || d.affects === undefined) return "all"
-  return d.affects.join("/")
-}
-
-function conditionalFinalCritSummary(def: BuffDef): string {
-  const rule = def.conditionalFinalCrit
-  if (!rule) return ""
-  return `guaranteed crit at ${(rule.threshold * 100).toFixed(0)}% final crit; otherwise +${(
-    rule.bonusBelowThreshold * 100
-  ).toFixed(0)}% final crit`
-}
-
-function toSummary(d: BuffDef): BuffSummary {
-  return {
-    id: d.id,
-    name: d.name ?? d.id,
-    enabledParam: d.enabledParam,
-    minTier: d.minTier,
-    triggers: d.triggers ?? [],
-    affects: affectsSummary(d),
-    bonus: bonusSummary(d.bonus),
-  }
-}
-
-export function buffSummaries(classId?: string): BuffSummary[] {
-  return catalogBuffDefs(classId)
-    .map(toSummary)
-    .sort((a, b) => a.name.localeCompare(b.name))
-}
-
-const POINT_VALUED_MODS = new Set<keyof BuffStatMods>(["physPen", "bellstrikePen"])
-
-export function statModsSummary(mods: BuffStatMods | null | undefined): string {
-  if (!mods) return ""
+function summaryFromStaticEffects(effects: Effect[]): string {
   const parts: string[] = []
-  for (const k of Object.keys(mods) as (keyof BuffStatMods)[]) {
-    const v = mods[k]
-    if (typeof v !== "number" || v === 0) continue
-    const formatted = POINT_VALUED_MODS.has(k) ? `${v}` : `${(v * 100).toFixed(0)}%`
-    parts.push(`${k} ${v >= 0 ? "+" : ""}${formatted}`)
+  for (const effect of effects) {
+    if (effect.kind !== "stat") continue
+    const bonusLabel = STATKEY_BONUS_LABEL[effect.statKey]
+    if (bonusLabel) {
+      parts.push(`+${(effect.amount * 100).toFixed(1)}% ${bonusLabel}`)
+      continue
+    }
+    const formatted = STATKEY_POINT_VALUED.has(effect.statKey)
+      ? `${effect.amount / 0.01}`
+      : `${(effect.amount * 100).toFixed(0)}%`
+    parts.push(`${effect.statKey} ${effect.amount >= 0 ? "+" : ""}${formatted}`)
   }
   return parts.join(", ")
+}
+
+function moduleContribution(
+  module: BuffModule,
+  tagSet: Set<string>,
+): { applies: boolean; text: string } {
+  const applies = matchesScope(tagSet, module)
+  const text =
+    module.summary ??
+    (Array.isArray(module.effects) ? summaryFromStaticEffects(module.effects) : "")
+  return { applies, text }
 }
 
 function humanize(param: string): string {
@@ -104,59 +75,59 @@ function humanize(param: string): string {
     .join(" ")
 }
 
-function paramRequiresLabel(param: string, minTier?: number): string {
-  const innerWay = INNER_WAY_BY_PARAM[param]
-  if (innerWay) return innerWay + (minTier ? ` tier ${minTier}+` : "")
-  if (param === "starsAlignActive") return "Stars Align"
-  return humanize(param) + (minTier ? ` T${minTier}+` : "")
+export function requiresLabel(module: BuffModule): string | null {
+  const requires = module.requires
+  if (requires?.set) return setDisplayNameForSiteKey(requires.set) ?? requires.set
+  if (!requires?.param) return null
+  const innerWayName = innerWayForBuffParam(requires.param)?.name
+  if (innerWayName) return innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
+  if (requires.param === "starsAlignActive") return "Stars Align"
+  return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
 
-export function requiresLabel(def: BuffDef): string | null {
-  if (def.requiresSet) return SITE_SET_TO_APP_SET[def.requiresSet] ?? def.requiresSet
-  if (!def.enabledParam) return null
-  return paramRequiresLabel(def.enabledParam, def.minTier)
+// Both scoped to the class's OWN `classBuffDefs` — never `buffDefsForClass`'s
+// composed set, which folds in `GLOBAL_BUFF_DEFS`. `dragonHeadLowHp` is a
+// global and `alwaysActive`, so widening there would newly hide a timeline
+// chip that shows today.
+function ownBuffDefsFor(classId?: string): readonly BuffModule[] {
+  if (!classId) return CLASS_DEFS().flatMap((classDef) => classDef.classBuffDefs)
+  return classDefinition(classId)?.classBuffDefs ?? []
 }
 
-function bonusAffectsTags(def: BuffDef, tagSet: Set<string>): boolean {
-  if (def.affectsProperty) return hasProp(tagSet, def.affectsProperty)
-  if (def.affectsWeaponTypes) return hasAnyWeapon(tagSet, def.affectsWeaponTypes)
-  if (def.affects === null || def.affects === undefined) return true
-  return def.affects.length > 0 && anyTagStartsWith(tagSet, def.affects)
+// The Skill Editor's "Spec Mechanics" column: a row belongs there because
+// the class itself declares the def, not because of any property on it.
+export function specMechanicIds(classId?: string): Set<string> {
+  return new Set(ownBuffDefsFor(classId).map((module) => module.id))
 }
 
-export function specMechanicDefIds(classId?: string): Set<string> {
-  const defs = classId ? dedupedMechanicBuffDefsForClass(classId) : dedupedMechanicBuffDefs()
-  return new Set(defs.filter((d) => d.alwaysActive).map((d) => d.id))
-}
-
-export function buffGateSatisfied(def: BuffDef, params: BuffParams): boolean {
-  if (def.requiresSet && def.requiresSet !== params.armorSet) return false
-  if (def.enabledParam && !params[def.enabledParam]) return false
-  if (
-    def.minTier &&
-    def.enabledParam &&
-    ((params[def.enabledParam + "Tier"] as number) ?? 0) < def.minTier
+// The rotation editor's per-cast chip suppression: narrower than the column
+// above, the `alwaysActive` subset only.
+export function hiddenTimelineBuffIds(classId?: string): Set<string> {
+  return new Set(
+    ownBuffDefsFor(classId)
+      .filter((module) => module.alwaysActive)
+      .map((module) => module.id),
   )
+}
+
+export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
+  const requires = module.requires
+  if (requires?.set && requires.set !== params.armorSet) return false
+  if (requires?.param && !paramOnOf(params, requires.param)) return false
+  if (requires?.minTier && requires.param && paramTierOf(params, requires.param) < requires.minTier)
     return false
   return true
-}
-
-const DISPLAY_ACTIVE_GATES: Record<string, (inputs: Inputs) => boolean> = {
-  concentration: (inputs) =>
-    inputs.classId === "bellstrikeUmbra" &&
-    inputs.mindMethods.some((m) => m.name === "Insightful Strike"),
-  vulnerabilityTeammate: (inputs) => !!inputs.shareEasyHurt,
 }
 
 const DISPLAY_REQUIRES: Record<string, string> = {
   vulnerabilityTeammate: "Encounter Settings: Tank Spear Debuff",
 }
 
-function triggeredByNote(def: BuffDef, defsById: Map<string, BuffDef>): string | null {
-  if (def.alwaysActive) return null
-  if (!def.triggers || def.triggers.length === 0) return null
-  let note = `on cast: ${def.triggers.join("/")}`
-  const upgradeFrom = def.conditionalTrigger?.upgradeFromActive
+function triggeredByNote(module: BuffModule, defsById: Map<string, BuffModule>): string | null {
+  if (module.alwaysActive) return null
+  if (!module.triggeredBy || module.triggeredBy.length === 0) return null
+  let note = `on cast: ${module.triggeredBy.join("/")}`
+  const upgradeFrom = module.requiresBuffActive
   if (upgradeFrom) {
     const src = defsById.get(upgradeFrom)
     note += ` · requires ${src?.name ?? upgradeFrom} active`
@@ -190,74 +161,31 @@ function gearStatRow(key: StatKey, affects: string, inputs?: Inputs): ReceivesRo
 
 export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs): ReceivesRow[] {
   const tagSet = skillTagsOf(skill)
-  const specIds = specMechanicDefIds(classId)
+  const specIds = specMechanicIds(classId)
   const params = inputs ? paramsFromInputs(inputs) : null
   const defs = catalogBuffDefs(classId)
   const defsById = new Map(defs.map((d) => [d.id, d] as const))
   const rows: ReceivesRow[] = []
-  for (const def of defs) {
-    const perCast = def.perCastConsume
-    const perCastApplies = !!(
-      perCast &&
-      hasProp(tagSet, perCast.triggerSkillProperty) &&
-      (perCast.bonus || perCast.damageMultiplier !== undefined)
-    )
-    const hasStatMods = !!(
-      def.statModifiers ||
-      def.tier6StatModifiers ||
-      def.bossStatModifiers ||
-      def.__statModByPrefix
-    )
-    const hasConditionalFinalCrit = !!def.conditionalFinalCrit && bonusAffectsTags(def, tagSet)
-    let resolvedMods = def.statModifiers ?? null
-    let statModApplies = hasStatMods
-    if (def.__statModByPrefix) {
-      const p = def.__statModByPrefix
-      resolvedMods = p.prefixes.some((pre) => anyTagStartsWith(tagSet, [pre])) ? p.match : p.default
-      statModApplies = resolvedMods != null
-    }
-    const bonusApplies = !!def.bonus && bonusAffectsTags(def, tagSet)
-    if (!statModApplies && !bonusApplies && !hasConditionalFinalCrit && !perCastApplies) continue
+  for (const module of defs) {
+    const { applies, text } = moduleContribution(module, tagSet)
+    if (!applies) continue
 
-    const parts: string[] = []
-    const statPart = statModsSummary(resolvedMods)
-    if (statPart) parts.push(statPart)
-    if (def.bonus) {
-      const bonusPart = bonusSummary(def.bonus)
-      if (bonusPart) parts.push(bonusPart)
-    }
-    const conditionalCritPart = conditionalFinalCritSummary(def)
-    if (conditionalCritPart) parts.push(conditionalCritPart)
-    if (perCastApplies && perCast?.bonus) parts.push(bonusSummary(perCast.bonus))
-    if (perCastApplies && perCast?.damageMultiplier !== undefined)
-      parts.push(`×${perCast.damageMultiplier.toFixed(2)} damage after resource consumption`)
-
-    const displayGate = inputs ? DISPLAY_ACTIVE_GATES[def.id] : undefined
+    const displayGate = inputs ? displayGateFor(module.id) : undefined
     const displayActive = displayGate ? displayGate(inputs!) : undefined
 
     rows.push({
-      id: def.id,
-      name: `${def.name ?? def.id} (${affectsSummary(def)})`,
-      effect: parts.join(", "),
-      requires:
-        DISPLAY_REQUIRES[def.id] ??
-        (perCastApplies && perCast?.effectEnabledParam
-          ? paramRequiresLabel(perCast.effectEnabledParam, perCast.effectMinTier)
-          : requiresLabel(def)),
-      isSpecMechanic: specIds.has(def.id),
+      id: module.id,
+      name: `${module.name} (${affectsSummary(module)})`,
+      effect: text,
+      requires: DISPLAY_REQUIRES[module.id] ?? requiresLabel(module),
+      isSpecMechanic: specIds.has(module.id),
       active:
         displayActive !== undefined
           ? displayActive
           : params
-            ? buffGateSatisfied(def, params) &&
-              (!perCastApplies ||
-                !perCast?.effectEnabledParam ||
-                (!!params[perCast.effectEnabledParam] &&
-                  (!perCast.effectMinTier ||
-                    ((params[perCast.effectEnabledParam + "Tier"] as number) ?? 0) >=
-                      perCast.effectMinTier)))
+            ? buffGateSatisfied(module, params)
             : true,
-      triggeredBy: triggeredByNote(def, defsById),
+      triggeredBy: triggeredByNote(module, defsById),
     })
   }
 
@@ -271,6 +199,23 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   if (mysticBoostKey) {
     rows.push(gearStatRow(mysticBoostKey, `mystic: ${mysticCategory}`, inputs))
   }
+  const attuneTag = attuneTagOf(skill)
+  const attunement = attuneTag
+    ? ATTUNEMENT_OPTIONS.find((option) => option.affectsTag === attuneTag)
+    : undefined
+  if (attunement?.enginePath) {
+    const rolled = inputs?.dingYinByTag[attunement.enginePath.slice("dingYinByTag.".length)] ?? 0
+    const forThisClass = !attunement.classIds || !classId || attunement.classIds.includes(classId)
+    rows.push({
+      id: `attunement:${attunement.id}`,
+      name: `${attunement.label} (${attuneTag})`,
+      effect: inputs ? `+${(rolled * 100).toFixed(1)}% damage` : "gear attunement",
+      requires: `${attunement.slots.join("/")} attunement`,
+      isSpecMechanic: false,
+      active: forThisClass && rolled > 0,
+      triggeredBy: null,
+    })
+  }
 
   if (classId) {
     const debuffsById = new Map<string, Debuff>()
@@ -279,19 +224,18 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     for (const d of debuffsById.values()) {
       const det = d.detonation
       if (!det?.retainParam || d.name !== skill.name) continue
-      const innerWay = INNER_WAY_BY_PARAM[det.retainParam] ?? humanize(det.retainParam)
+      const innerWayLabel = innerWayForBuffParam(det.retainParam)?.name ?? humanize(det.retainParam)
       const minTier = det.retainMinTier ?? 6
       const retained = det.retainParamStacks ?? det.retainStacks ?? 0
       const baseline = det.retainStacks ?? 0
       rows.push({
         id: `dotRetention:${d.id}`,
-        name: `${innerWay} (${d.name})`,
+        name: `${innerWayLabel} (${d.name})`,
         effect: `retains ${retained} ${d.name} stacks after detonation (${baseline} without it)`,
-        requires: `${innerWay} tier ${minTier}+`,
+        requires: `${innerWayLabel} tier ${minTier}+`,
         isSpecMechanic: false,
         active: params
-          ? !!params[det.retainParam] &&
-            ((params[det.retainParam + "Tier"] as number) ?? 0) >= minTier
+          ? paramOnOf(params, det.retainParam) && paramTierOf(params, det.retainParam) >= minTier
           : true,
         triggeredBy: null,
       })
@@ -312,28 +256,24 @@ export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
   const castTag = castTagOf(skill)
   if (!castTag) return []
   const rows: AppliesRow[] = []
-  for (const def of catalogBuffDefs(classId)) {
-    if (!def.triggers || def.triggers.length === 0) continue
-    const triggered = def.triggers.some((pre) =>
-      def.exactMatch ? castTag === pre : castTag.startsWith(pre),
-    )
+  for (const module of catalogBuffDefs(classId)) {
+    if (!module.triggeredBy || module.triggeredBy.length === 0) continue
+    const triggered = module.triggeredBy.includes(castTag)
     if (!triggered) continue
 
     const parts: string[] = []
-    const statPart = statModsSummary(def.statModifiers)
-    if (statPart) parts.push(statPart)
-    if (def.bonus) {
-      const bonusPart = bonusSummary(def.bonus)
-      if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    if (module.summary) {
+      parts.push(module.summary)
+    } else if (Array.isArray(module.effects)) {
+      const text = summaryFromStaticEffects(module.effects)
+      if (text) parts.push(text)
     }
-    const conditionalCritPart = conditionalFinalCritSummary(def)
-    if (conditionalCritPart) parts.push(conditionalCritPart)
 
     rows.push({
-      id: def.id,
-      name: `${def.name ?? def.id} (${affectsSummary(def)})`,
+      id: module.id,
+      name: `${module.name} (${affectsSummary(module)})`,
       effect: parts.join(", "),
-      requires: requiresLabel(def),
+      requires: requiresLabel(module),
     })
   }
   return rows.sort((a, b) => a.name.localeCompare(b.name))
@@ -347,30 +287,47 @@ export interface ClassBuffRow {
   requires: string | null
 }
 
+// The column lists defs that scope themselves to specific skills; an unscoped
+// def applies to the whole build and is shown on the skills it triggers from
+// instead (an Applies row — see `appliesForSkill`). An empty `affects` array
+// matches `matchesScope` (`../scope.ts`): it means "matches nothing", not
+// "matches everything", so it does not count as scoped either.
+function hasScope(module: BuffModule): boolean {
+  return (
+    (module.affects?.length ?? 0) > 0 ||
+    module.affectsProperty != null ||
+    module.affectsWeaponTypes != null
+  )
+}
+
 export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const params = paramsFromInputs(inputs)
+  const classDef = classDefinition(inputs.classId)
+  const byId = new Map<string, BuffModule>()
+  for (const module of classDef?.buffModules ?? []) byId.set(module.id, module)
   const rows: ClassBuffRow[] = []
-  for (const def of dedupedMechanicBuffDefsForClass(inputs.classId)) {
-    if (!def.alwaysActive) continue
-    if (def.enabledParam && !params[def.enabledParam]) continue
+  for (const module of byId.values()) {
+    if (!hasScope(module)) continue
+    if (module.requires?.param && !paramOnOf(params, module.requires.param)) continue
     if (
-      def.minTier &&
-      def.enabledParam &&
-      ((params[def.enabledParam + "Tier"] as number) ?? 0) < def.minTier
+      module.requires?.minTier &&
+      module.requires.param &&
+      paramTierOf(params, module.requires.param) < module.requires.minTier
     )
       continue
-    const mods = def.__statModByPrefix?.match ?? def.statModifiers ?? null
     const parts: string[] = []
-    const statPart = statModsSummary(mods)
-    if (statPart) parts.push(statPart)
-    const bonusPart = bonusSummary(def.bonus)
-    if (bonusPart && bonusPart !== "—") parts.push(bonusPart)
+    if (module.summary) {
+      parts.push(module.summary)
+    } else if (Array.isArray(module.effects)) {
+      const text = summaryFromStaticEffects(module.effects)
+      if (text) parts.push(text)
+    }
     rows.push({
-      id: def.id,
-      name: def.name ?? def.id,
+      id: module.id,
+      name: module.name,
       effect: parts.join(", "),
-      affects: affectsSummary(def),
-      requires: requiresLabel(def),
+      affects: affectsSummary(module),
+      requires: requiresLabel(module),
     })
   }
   return rows

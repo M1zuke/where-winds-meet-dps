@@ -1,0 +1,28 @@
+{
+  "id": "stonesplitPower-mobladeq",
+  "classId": "stonesplitPower",
+  "name": "MoBladeQ",
+  "abilityTag": "MoBladeQ",
+  "tags": ["weapon:Mo Blade"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Modao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0,
+      "attributeMultiplier": 0,
+      "physFixed": 0,
+      "attributeFixed": 0,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 60,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:moBladeQ"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "starReacherBelow30",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "starReacherBelow30",
+        "name": "Star Reacher (<30%)",
+        "triggeredBy": [],
+        "duration": 12,
+        "affects": null,
+        "bonus": {
+          "type": "phyBoostMod",
+          "value": 0.15
+        },
+        "enabledParam": "starReacher"
+      }
+    }
+  ]
+}

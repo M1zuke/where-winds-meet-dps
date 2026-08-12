@@ -1,5 +1,5 @@
 import type { computeSkillDamage } from "./formula"
-import { mysticCategoryOf } from "./buffs/tags"
+import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -31,6 +31,11 @@ export interface HitTrigger {
   conditions?: TriggerCondition[]
   extendFrames?: number
   extendOnly?: boolean
+  // A ceiling on the REMAINING duration this extension may leave, measured from
+  // the extending frame and re-evaluated per extension — not a lifetime cap on
+  // the window. An extension always adds its full amount; if the window is
+  // already longer than the ceiling it is left alone, never truncated down.
+  maxExtendedDurationFrames?: number
 }
 
 export interface SkillHit {
@@ -53,6 +58,9 @@ export interface Skill {
   weaponOrAttribute: string
   attributeAttack: string
   tags?: string[]
+  // The identity a cast presents to `BuffModule.triggeredBy`. Authored, so a
+  // rename is only a rename; falls back to `name` for user-authored skills.
+  castTag?: string
   hits: SkillHit[]
   castFrames: number
   triggerable: boolean
@@ -268,6 +276,7 @@ export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
     guaranteedPrecision: skill.guaranteedPrecision ? 1 : undefined,
     guaranteedNormal: skill.guaranteedNormal ? 1 : undefined,
     mysticCategory: mysticCategoryOf(skill) || undefined,
+    attuneTag: attuneTagOf(skill) || undefined,
   } as ArtRow
 }
 
@@ -285,6 +294,8 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
     tags: [...(src.tags ?? [])],
+    // Carried so that renaming a seeded copy keeps the buffs it triggers.
+    castTag: src.castTag,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

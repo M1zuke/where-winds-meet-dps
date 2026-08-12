@@ -1,50 +1,50 @@
 import type { Skill } from "../../../engine/skill"
-import phalanxspecialPrepull from "./phalanxspecial-prepull.json"
-import snowpartingdualPrepull from "./snowpartingdual-prepull.json"
-import snowpartingslidePrepullHit from "./snowpartingslide-prepull-hit.json"
-import snowpartingvc from "./snowpartingvc.json"
-import snowpartingchargedForgetfulness from "./snowpartingcharged-forgetfulness.json"
-import snowpartingspecial from "./snowpartingspecial.json"
-import snowpartingqStab from "./snowpartingq-stab.json"
-import phalanxq from "./phalanxq.json"
-import snowpartingdual from "./snowpartingdual.json"
-import snowpartingcharged from "./snowpartingcharged.json"
-import phalanxspecial from "./phalanxspecial.json"
-import snowpartingslide from "./snowpartingslide.json"
-import snowpartingslidePrepull from "./snowpartingslide-prepull.json"
-import deflect from "./deflect.json"
-import phalanxchargedS3Innerpassion from "./phalanxcharged-s3-innerpassion.json"
-import snowpartingvcPrepull from "./snowpartingvc-prepull.json"
-import phalanxchargedS3 from "./phalanxcharged-s3.json"
-import blockperception from "./blockperception.json"
-import anxisoldierheng from "./anxisoldierheng.json"
-import anxisoldiermodown from "./anxisoldiermodown.json"
-import anxisoldiermosweep from "./anxisoldiermosweep.json"
-import anxisoldiermojump from "./anxisoldiermojump.json"
+import { anxisoldierheng } from "./anxisoldierheng"
+import { anxisoldiermodown } from "./anxisoldiermodown"
+import { anxisoldiermojump } from "./anxisoldiermojump"
+import { anxisoldiermosweep } from "./anxisoldiermosweep"
+import { blockperception } from "./blockperception"
+import { deflect } from "./deflect"
+import { phalanxchargedS3Innerpassion } from "./phalanxcharged-s3-innerpassion"
+import { phalanxchargedS3 } from "./phalanxcharged-s3"
+import { phalanxq } from "./phalanxq"
+import { phalanxspecialPrepull } from "./phalanxspecial-prepull"
+import { phalanxspecial } from "./phalanxspecial"
+import { snowpartingchargedForgetfulness } from "./snowpartingcharged-forgetfulness"
+import { snowpartingcharged } from "./snowpartingcharged"
+import { snowpartingdualPrepull } from "./snowpartingdual-prepull"
+import { snowpartingdual } from "./snowpartingdual"
+import { snowpartingqStab } from "./snowpartingq-stab"
+import { snowpartingslidePrepullHit } from "./snowpartingslide-prepull-hit"
+import { snowpartingslidePrepull } from "./snowpartingslide-prepull"
+import { snowpartingslide } from "./snowpartingslide"
+import { snowpartingspecial } from "./snowpartingspecial"
+import { snowpartingvcPrepull } from "./snowpartingvc-prepull"
+import { snowpartingvc } from "./snowpartingvc"
 
 export const CLASS_ID = "stonesplitStrength"
 
-export const SKILLS = [
-  phalanxspecialPrepull,
-  snowpartingdualPrepull,
-  snowpartingslidePrepullHit,
-  snowpartingvc,
-  snowpartingchargedForgetfulness,
-  snowpartingspecial,
-  snowpartingqStab,
-  phalanxq,
-  snowpartingdual,
-  snowpartingcharged,
-  phalanxspecial,
-  snowpartingslide,
-  snowpartingslidePrepull,
-  deflect,
-  phalanxchargedS3Innerpassion,
-  snowpartingvcPrepull,
-  phalanxchargedS3,
-  blockperception,
+export const SKILLS: Skill[] = [
   anxisoldierheng,
   anxisoldiermodown,
-  anxisoldiermosweep,
   anxisoldiermojump,
-] as unknown as Skill[]
+  anxisoldiermosweep,
+  blockperception,
+  deflect,
+  phalanxchargedS3Innerpassion,
+  phalanxchargedS3,
+  phalanxq,
+  phalanxspecialPrepull,
+  phalanxspecial,
+  snowpartingchargedForgetfulness,
+  snowpartingcharged,
+  snowpartingdualPrepull,
+  snowpartingdual,
+  snowpartingqStab,
+  snowpartingslidePrepullHit,
+  snowpartingslidePrepull,
+  snowpartingslide,
+  snowpartingspecial,
+  snowpartingvcPrepull,
+  snowpartingvc,
+]

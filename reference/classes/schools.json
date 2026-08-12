@@ -1,0 +1,179 @@
+[
+  {
+    "id": "bellstrikeRainbow",
+    "cn": "Bellstrike Rainbow",
+    "en": "Bellstrike Rainbow",
+    "displayName": "Bellstrike Rainbow",
+    "primaryAttribute": "Bellstrike",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Sword Charge Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Sword",
+      "Spear"
+    ],
+    "rotations": [
+      "Qi-Surge"
+    ],
+    "validated": false
+  },
+  {
+    "id": "silkbindJade",
+    "cn": "Silkbind Jade",
+    "en": "Silkbind Jade",
+    "displayName": "Silkbind Jade",
+    "primaryAttribute": "Silkbind",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Umbrella Special Boost",
+      "Umbrella Charge Boost",
+      "Umbrella Martial Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Umbrella",
+      "Fan"
+    ],
+    "rotations": [
+      "6× Fan-Fire-Fist"
+    ],
+    "validated": false
+  },
+  {
+    "id": "stonesplitPower",
+    "cn": "Stonesplit Power",
+    "en": "Stonesplit Power",
+    "displayName": "Stonesplit Power",
+    "primaryAttribute": "Stonesplit",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Modao Charge Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Modao",
+      "Spear"
+    ],
+    "rotations": [
+      "6× Mountain-River Speed"
+    ],
+    "validated": false
+  },
+  {
+    "id": "stonesplitBalancePureTang",
+    "cn": "Stonesplit Balance — Pure Tang",
+    "en": "Stonesplit Balance — Pure Tang",
+    "displayName": "Stonesplit Balance — Pure Tang",
+    "primaryAttribute": "Stonesplit",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Hengdao Derivative Boost",
+      "Modao Charge Skill Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Hengdao",
+      "Modao"
+    ],
+    "rotations": [
+      "Dual-Cut"
+    ],
+    "generalDamageBoost": 0.08,
+    "validated": false
+  },
+  {
+    "id": "bamboocutWindTwinblade",
+    "cn": "Bamboocut Wind (Twinblade)",
+    "en": "Bamboocut Wind",
+    "displayName": "Bamboocut Wind (Twinblade)",
+    "primaryAttribute": "Bamboocut",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Mouse Boost",
+      "Strong Light-Hit Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Twin Blades",
+      "Rope Dart"
+    ],
+    "rotations": [
+      "Twin-Red"
+    ],
+    "validated": false
+  },
+  {
+    "id": "bamboocutDust",
+    "cn": "Bamboocut Dust",
+    "en": "Bamboocut Dust (Twinblade)",
+    "displayName": "Bamboocut Dust",
+    "primaryAttribute": "Bamboocut",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [
+      "Umbrella Martial Boost"
+    ],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Umbrella",
+      "Rope Dart"
+    ],
+    "rotations": [
+      "Twin Flute",
+      "Umbrella Stall"
+    ],
+    "validated": false
+  },
+  {
+    "id": "stonesplitBalanceDualCut",
+    "cn": "Stonesplit Balance — Dual-cut",
+    "en": "Stonesplit Balance — Dual-cut",
+    "displayName": "Stonesplit Balance — Dual-cut",
+    "primaryAttribute": "Bamboocut",
+    "attributeMultiplier": 51.5,
+    "permanentBuffs": [],
+    "classMindGroup": "",
+    "allowedMindMethods": [
+      "moraleChant",
+      "bitterSeason"
+    ],
+    "classBuffs": [],
+    "weapons": [
+      "Knuckles",
+      "Rope Dart"
+    ],
+    "rotations": [],
+    "validated": false
+  }
+]

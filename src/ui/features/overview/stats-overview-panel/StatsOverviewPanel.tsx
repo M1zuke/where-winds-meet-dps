@@ -1,7 +1,7 @@
 import type { Inputs } from "../../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
-import { totalPlayerAttributes } from "../../../../data/baseStats"
-import { effectivePhysRange } from "../../../../engine/formula"
+import { totalPlayerAttributes } from "../../../../definitions/baseStats"
+import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../../engine/formula"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../../utils/statFormatting"
@@ -84,10 +84,19 @@ export function StatsOverviewPanel({ inputs }: Props) {
 
   const physMin = readPath(withSets, "phys.min")
   const physMax = readPath(withSets, "phys.max")
-  const effectivePhys = effectivePhysRange(physMin, physMax, withSets.food)
   const attackRows: RowEntry[] = [
-    row(t(PATH_LABELS["phys.min"]), physMin, false, withSets.food ? effectivePhys.min : undefined),
-    row(t(PATH_LABELS["phys.max"]), physMax, false, withSets.food ? effectivePhys.max : undefined),
+    row(
+      t(PATH_LABELS["phys.min"]),
+      physMin,
+      false,
+      withSets.food ? physMin + FOOD_MIN_PHYS_BONUS : undefined,
+    ),
+    row(
+      t(PATH_LABELS["phys.max"]),
+      physMax,
+      false,
+      withSets.food ? physMax + FOOD_MAX_PHYS_BONUS : undefined,
+    ),
   ]
   const penetrationRows: RowEntry[] = [
     row(
@@ -124,9 +133,9 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
   ).filter((entry) => entry.value !== 0)
 
-  const classBuffRows: RowEntry[] = school.permanentBuffs
-    .filter((tag) => tag && tag !== "N/A")
-    .map((tag) => row(t(tag), withSets.dingYinByTag[tag] ?? 0, true))
+  const classBuffRows: RowEntry[] = school.dingYinTags.map((tag) =>
+    row(t(tag), withSets.dingYinByTag[tag] ?? 0, true),
+  )
 
   return (
     <div className={styles.statsOverview}>

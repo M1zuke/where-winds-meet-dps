@@ -1,0 +1,738 @@
+{
+  "v": 9,
+  "profile": {
+    "id": "pr-ms9h5obb-umkihk-2",
+    "name": "Mizukee",
+    "inputs": {
+      "classId": "bellstrikeUmbra",
+      "breakthrough": 16,
+      "allDamageBoost": 0,
+      "mindMethods": [
+        {
+          "name": "Sword Horizon",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Wolfchaser's Art",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Insightful Strike",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Morale Chant",
+          "stacks": "tier 6"
+        }
+      ],
+      "food": true,
+      "tianGongElement": "fire",
+      "set": "Hawking",
+      "shareDebuff5HenZhi": true,
+      "shareEasyHurt": true,
+      "bowSet": "affinity",
+      "arsenal": "bellstrike",
+      "dummyMode": true,
+      "rotation": null,
+      "activeCustomRotation": null,
+      "inventory": [
+        {
+          "id": "gp-ms9h9cgs-269r62-1",
+          "slot": "leftWeapon",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 65,
+          "maxPhys": 151,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "Max Void Attack",
+              "value": 37.3,
+              "retuned": false
+            },
+            {
+              "word": "Max Void Attack",
+              "value": 39.2,
+              "retuned": false
+            },
+            {
+              "word": "Sword Martial Boost",
+              "value": 0.058,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 73.1,
+              "retuned": false
+            },
+            {
+              "word": "Momentum",
+              "value": 45.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.107,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hahfr-5uvjeo-2",
+          "slot": "rightWeapon",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 59,
+          "maxPhys": 136,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "Max Phys",
+              "value": 70.4,
+              "retuned": false
+            },
+            {
+              "word": "Momentum",
+              "value": 45.9,
+              "retuned": false
+            },
+            {
+              "word": "Affinity",
+              "value": 0.041,
+              "retuned": false
+            },
+            {
+              "word": "Power",
+              "value": 44.4,
+              "retuned": true
+            },
+            {
+              "word": "Max Phys",
+              "value": 73.1,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.107,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hccrh-6y8qcx-3",
+          "slot": "disc",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 86,
+          "maxPhys": 0,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "Max Phys",
+              "value": 63.5,
+              "retuned": false
+            },
+            {
+              "word": "Max Bellstrike",
+              "value": 34,
+              "retuned": false
+            },
+            {
+              "word": "Affinity",
+              "value": 0.038,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 60,
+              "retuned": false
+            },
+            {
+              "word": "All Martial Boost",
+              "value": 0.024,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.104,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hdmcx-30tt7f-4",
+          "slot": "pendant",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 116,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "Max Phys",
+              "value": 70.4,
+              "retuned": false
+            },
+            {
+              "word": "All Martial Boost",
+              "value": 0.02,
+              "retuned": false
+            },
+            {
+              "word": "Power",
+              "value": 41.8,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 64.5,
+              "retuned": false
+            },
+            {
+              "word": "Momentum",
+              "value": 44.8,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.099,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hfcpj-r5uvyj-5",
+          "slot": "helm",
+          "level": 91,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4614,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "Affinity",
+              "value": 0.035,
+              "retuned": false
+            },
+            {
+              "word": "Affinity",
+              "value": 0.034,
+              "retuned": false
+            },
+            {
+              "word": "Max Bellstrike",
+              "value": 34.4,
+              "retuned": false
+            },
+            {
+              "word": "Crit",
+              "value": 0.069,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 63.8,
+              "retuned": true
+            }
+          ],
+          "attunement": "bleedingDamage",
+          "attunementValue": 0.05,
+          "relayed": false
+        },
+        {
+          "id": "gp-ms9hh82z-aba86x-6",
+          "slot": "armor",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 9227,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "Affinity",
+              "value": 0.04,
+              "retuned": false
+            },
+            {
+              "word": "Power",
+              "value": 40.4,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 63.8,
+              "retuned": true
+            },
+            {
+              "word": "Affinity",
+              "value": 0.038,
+              "retuned": false
+            },
+            {
+              "word": "Single-Target Mystic Skill DMG Boost",
+              "value": 0.092,
+              "retuned": false
+            }
+          ],
+          "attunement": "bleedingDamage",
+          "attunementValue": 0.052,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hiw6b-wxbo56-7",
+          "slot": "greaves",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 32,
+          "words": [
+            {
+              "word": "Power",
+              "value": 44.6,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "Damage VS Boss %",
+              "value": 0.03,
+              "retuned": false
+            },
+            {
+              "word": "Affinity",
+              "value": 0.038,
+              "retuned": true
+            },
+            {
+              "word": "Power",
+              "value": 44.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "bleedingDamage",
+          "attunementValue": 0.058,
+          "relayed": true
+        },
+        {
+          "id": "gp-ms9hkp0q-4bwvf2-8",
+          "slot": "bracer",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 16,
+          "words": [
+            {
+              "word": "Power",
+              "value": 44.6,
+              "retuned": false
+            },
+            {
+              "word": "Crit",
+              "value": 0.07,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "Momentum",
+              "value": 42.4,
+              "retuned": true
+            },
+            {
+              "word": "Power",
+              "value": 42.4,
+              "retuned": false
+            }
+          ],
+          "attunement": "bleedingDamage",
+          "attunementValue": 0.054,
+          "relayed": true
+        },
+        {
+          "id": "gp-mscbnonp-1zyh3n-1",
+          "slot": "helm",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4614,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "Affinity",
+              "value": 0.04,
+              "retuned": false
+            },
+            {
+              "word": "Affinity",
+              "value": 0.04,
+              "retuned": true
+            },
+            {
+              "word": "Single-Target Mystic Skill DMG Boost",
+              "value": 0.092,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 70.8,
+              "retuned": false
+            },
+            {
+              "word": "Power",
+              "value": 44.8,
+              "retuned": false
+            }
+          ],
+          "attunement": "bleedingDamage",
+          "attunementValue": 0.055,
+          "relayed": true
+        },
+        {
+          "id": "gp-mshtzfiu-b8llz0-2",
+          "slot": "disc",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 86,
+          "maxPhys": 0,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "Max Phys",
+              "value": 68.2,
+              "retuned": false
+            },
+            {
+              "word": "Power",
+              "value": 45.5,
+              "retuned": true
+            },
+            {
+              "word": "All Martial Boost",
+              "value": 0.03,
+              "retuned": false
+            },
+            {
+              "word": "Max Phys",
+              "value": 73.1,
+              "retuned": false
+            },
+            {
+              "word": "Crit",
+              "value": 0.07,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.098,
+          "relayed": true
+        }
+      ],
+      "equipped": {
+        "leftWeapon": "gp-ms9h9cgs-269r62-1",
+        "rightWeapon": "gp-ms9hahfr-5uvjeo-2",
+        "disc": "gp-ms9hccrh-6y8qcx-3",
+        "pendant": "gp-ms9hdmcx-30tt7f-4",
+        "helm": "gp-mscbnonp-1zyh3n-1",
+        "armor": "gp-ms9hh82z-aba86x-6",
+        "greaves": "gp-ms9hiw6b-wxbo56-7",
+        "bracer": "gp-ms9hkp0q-4bwvf2-8"
+      },
+      "martialArtsTalents": [
+        {
+          "id": "default-bellstrikeUmbra-0",
+          "name": "Affinity Rate UP",
+          "enabled": true,
+          "stat": "affinityRate",
+          "maxBonus": 0.043,
+          "scalesWith": "power",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-bellstrikeUmbra-1",
+          "name": "Physical Attack UP",
+          "enabled": true,
+          "stat": "maxPhys",
+          "maxBonus": 73.9,
+          "scalesWith": "power",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-bellstrikeUmbra-2",
+          "name": "Sword Bellstrike Attack Min",
+          "enabled": true,
+          "stat": "minBellstrike",
+          "maxBonus": 98,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bellstrikeUmbra-3",
+          "name": "Sword Bellstrike Attack Max",
+          "enabled": true,
+          "stat": "maxBellstrike",
+          "maxBonus": 196,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bellstrikeUmbra-4",
+          "name": "Spear Bellstrike Attack Min",
+          "enabled": true,
+          "stat": "minBellstrike",
+          "maxBonus": 98,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bellstrikeUmbra-5",
+          "name": "Spear Bellstrike Attack Max",
+          "enabled": true,
+          "stat": "maxBellstrike",
+          "maxBonus": 196,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bellstrikeUmbra-6",
+          "name": "Bellstrike Penetration Scale",
+          "enabled": true,
+          "stat": "bellstrikePenetration",
+          "maxBonus": 0.22,
+          "scalesWith": "bellstrike.max",
+          "scaleMax": 655
+        },
+        {
+          "id": "default-bellstrikeUmbra-7",
+          "name": "Attribute Damage Scale",
+          "enabled": true,
+          "stat": "attributeDamage",
+          "maxBonus": 0.11,
+          "scalesWith": "bellstrike.max",
+          "scaleMax": 655
+        }
+      ],
+      "oddities": {
+        "Qinghe": [
+          {
+            "id": 1,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 7,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 8,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 9,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 10,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hexi": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng Palace": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hidden Mountain: Suixiang": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": false
+          }
+        ]
+      },
+      "combatSettings": {
+        "qiBreak": {
+          "enabled": true,
+          "startSec": 34,
+          "durationSec": 10
+        },
+        "dragonsBreath": false,
+        "healerBuff": false,
+        "breakExtension": false,
+        "revelryScript": false,
+        "dragonHeadFullStacks": true,
+        "dragonHeadLowHpMaxBonus": true
+      },
+      "selectedBuiltinRotationId": "builtin-bellstrikeUmbra-nox-1m-dh"
+    }
+  }
+}

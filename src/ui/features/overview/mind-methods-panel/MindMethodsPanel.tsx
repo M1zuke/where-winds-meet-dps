@@ -1,22 +1,18 @@
 import type { Inputs, MindMethodSlot } from "../../../../engine/types"
+import {
+  innerWayDefinition,
+  innerWayName,
+  slotInnerWayId,
+} from "../../../../definitions/innerWays/registry"
 import { allowedInnerWaysForClass } from "../../../../engine/panel"
-import { BITTER_SEASON_INNER_WAY } from "../../../../engine/buffs/bitterSeason"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./MindMethodsPanel.module.scss"
 
-const TIER_OPTIONS = ["tier 6", "tier 5"] as const
-// Bitter Season's ladder has a distinct node at every tier (`buffs/bitterSeason.ts`).
-const BITTER_SEASON_TIER_OPTIONS = [
-  "tier 6",
-  "tier 5",
-  "tier 4",
-  "tier 3",
-  "tier 2",
-  "tier 1",
-] as const
+const DEFAULT_TIER_OPTIONS = ["tier 6", "tier 5"] as const
 
-function tierOptionsFor(name: string): readonly string[] {
-  return name === BITTER_SEASON_INNER_WAY ? BITTER_SEASON_TIER_OPTIONS : TIER_OPTIONS
+function tierOptionsFor(innerWayId: string): readonly string[] {
+  const selectableTiers = innerWayDefinition(innerWayId)?.selectableTiers
+  return selectableTiers ? selectableTiers.map((tier) => `tier ${tier}`) : DEFAULT_TIER_OPTIONS
 }
 
 interface Props {
@@ -45,43 +41,47 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
     <>
       {slotConfigs.map(({ idx, label }) => {
         const slot = inputs.mindMethods[idx]
-        const currentName = slot.name
-        const fallbackNames = slot.name && !options.includes(slot.name) ? [slot.name] : []
+        const currentId = slotInnerWayId(slot)
+        const fallbackIds = currentId && !options.includes(currentId) ? [currentId] : []
         const takenElsewhere = new Set(
           inputs.mindMethods
-            .filter((otherSlot, otherIdx) => otherIdx !== idx && otherSlot.name)
-            .map((otherSlot) => otherSlot.name),
+            .filter((otherSlot, otherIdx) => otherIdx !== idx && slotInnerWayId(otherSlot))
+            .map((otherSlot) => slotInnerWayId(otherSlot)),
         )
-        const isTaken = (name: string) =>
-          name !== "" && name !== currentName && takenElsewhere.has(name)
-        const tierOptions = tierOptionsFor(currentName)
+        const isTaken = (id: string) => id !== "" && id !== currentId && takenElsewhere.has(id)
+        const tierOptions = tierOptionsFor(currentId)
         const fallbackTier = slot.stacks && !tierOptions.includes(slot.stacks) ? [slot.stacks] : []
         return (
           <div key={idx} className={styles.mindSlot}>
             <label>{label}</label>
             <select
-              value={currentName}
+              value={currentId}
               onChange={(e) => {
-                const name = e.target.value
-                const patch: Partial<MindMethodSlot> = { name }
-                if (!name) {
+                const innerWayId = e.target.value
+                // Both are stored: the id is the identity, the name keeps an
+                // exported profile readable and older readers working.
+                const patch: Partial<MindMethodSlot> = {
+                  id: innerWayId || undefined,
+                  name: innerWayId ? innerWayName(innerWayId) : "",
+                }
+                if (!innerWayId) {
                   patch.stacks = ""
-                } else if (!slot.stacks || !tierOptionsFor(name).includes(slot.stacks)) {
+                } else if (!slot.stacks || !tierOptionsFor(innerWayId).includes(slot.stacks)) {
                   patch.stacks = "tier 6"
                 }
                 updateSlot(idx, patch)
               }}
             >
-              {options.map((name) => (
-                <option key={name || "-"} value={name} disabled={isTaken(name)}>
-                  {name ? t(name) : t("(unselected)")}
+              {options.map((id) => (
+                <option key={id || "-"} value={id} disabled={isTaken(id)}>
+                  {id ? t(innerWayName(id)) : t("(unselected)")}
                 </option>
               ))}
-              {fallbackNames.length > 0 && (
+              {fallbackIds.length > 0 && (
                 <optgroup label={t("No longer available")}>
-                  {fallbackNames.map((name) => (
-                    <option key={name} value={name} disabled={isTaken(name)}>
-                      {t(name)}
+                  {fallbackIds.map((id) => (
+                    <option key={id} value={id} disabled={isTaken(id)}>
+                      {t(innerWayName(id))}
                     </option>
                   ))}
                 </optgroup>
@@ -89,7 +89,7 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
             </select>
             <select
               value={slot.stacks || "tier 6"}
-              disabled={!currentName}
+              disabled={!currentId}
               onChange={(e) => updateSlot(idx, { stacks: e.target.value })}
             >
               {tierOptions.map((tier) => (

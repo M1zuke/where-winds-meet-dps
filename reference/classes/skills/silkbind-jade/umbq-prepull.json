@@ -1,0 +1,28 @@
+{
+  "id": "silkbindJade-umbq-prepull",
+  "classId": "silkbindJade",
+  "name": "UmbQ Prepull",
+  "abilityTag": "UmbQ Prepull",
+  "tags": ["prop:isMartialSkillQ", "prop:hasQiBreakPhysPen", "weapon:Umbrella", "attune:umbQ", "role:umbQ"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Umbrella",
+  "attributeAttack": "Silkbind",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 2.3389,
+      "attributeMultiplier": 3.5084,
+      "physFixed": 541,
+      "attributeFixed": 303,
+      "extraCritDamage": 1,
+      "triggers": []
+    }
+  ],
+  "castFrames": 18,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:umbQPrepull"
+}

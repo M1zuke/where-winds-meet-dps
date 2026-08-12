@@ -1,393 +1,202 @@
 import { describe, expect, it } from "vitest"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { buffDefsForClass, mechanicBuffDefsForClass } from "../../src/engine/buffs/data"
-import { paramsFromInputs } from "../../src/engine/buffs/params"
+import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
+import { makeSkill } from "../../src/engine/skill"
+import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { BUFF } from "../../src/data/skills/buffs/ids"
+import { CAST, PROP, ROLE, WEAPON } from "../../src/data/skills/ids"
+import { SKILL, STATUS } from "../../src/data/skills/stonesplit-strength/ids"
 import {
-  DREAD_BUFF_ID,
   DREAD_DURATION_FRAMES,
-  FEARFUL_BLADE_BUFF_ID,
   FEARFUL_BLADE_DURATION_FRAMES,
-} from "../../src/engine/builtinBuffs"
-import { builtinBuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { defaultInputs } from "../../src/engine/defaults"
-import { buildContext } from "../../src/engine/panel"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
-import { applyBuffEffects } from "../../src/engine/statRegistry"
-import { simulateTimeline } from "../../src/engine/timeline"
-import type { Result } from "../../src/engine/types"
+} from "../../src/data/classes/stonesplit-strength/gates"
+import { shatteredRidge } from "../../src/data/sets/shatteredRidge"
 
 const CLASS = "stonesplitStrength"
 
-function skillNamed(name: string): Skill {
-  const skill = builtinSkillsForClass(CLASS).find((candidate) => candidate.name === name)
-  if (!skill) throw new Error(`missing built-in skill "${name}"`)
-  return skill
+function engine(params: Record<string, unknown> = {}) {
+  return new BuffEngine({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
 }
 
-function run(skills: Skill[], customSkills: Skill[] = []): Result {
-  return simulateTimeline({
-    ...defaultInputs,
-    classId: CLASS,
-    customSkills,
-    activeCustomRotation: makeRotation(CLASS, {
-      steps: skills.map((skill) => makeStep({ skillId: skill.id, hitCount: skill.hits.length })),
-    }),
+function skill(name: string, tags: string[], castTag: string) {
+  return makeSkill(CLASS, {
+    name,
+    castTag,
+    weaponOrAttribute: "Modao",
+    attributeAttack: "Stonesplit",
+    tags,
   })
 }
 
-function damageOf(result: Result, name: string): number {
-  return result.perSkill
-    .filter((row) => row.name === name)
-    .reduce((total, row) => total + row.expectedDamage, 0)
-}
+const share = (
+  engineUnderTest: BuffEngine,
+  target: ReturnType<typeof skill>,
+  at: number,
+  defId: string,
+) => engineUnderTest.calculateDamageEffects(target, at).breakdown[defId] ?? 0
 
-function withoutTrigger(skill: Skill, targetId: string): Skill {
-  return {
-    ...skill,
-    hits: skill.hits.map((hit) => ({
-      ...hit,
-      triggers: hit.triggers.filter((trigger) => trigger.targetId !== targetId),
-    })),
-  }
-}
+const statOf = (
+  engineUnderTest: BuffEngine,
+  target: ReturnType<typeof skill>,
+  at: number,
+  statKey: string,
+) =>
+  engineUnderTest
+    .calculateDamageEffects(target, at)
+    .effects.filter((effect) => effect.statKey === statKey)
+    .reduce((total, effect) => total + effect.amount, 0)
 
-describe("Stonesplit Strength built-in buffs", () => {
-  it("builds Throat-Pierced stacks per hit from every configured skill family", () => {
-    const defs = buffDefsForClass(CLASS)
-    const cases = [
-      { name: "AnxiSoldierMoDown", generated: true, hitCount: 1, stacks: 1 },
-      { name: "AnxiSoldierMoJump", generated: true, hitCount: 1, stacks: 1 },
-      { name: "AnxiSoldierMoSweep", generated: true, hitCount: 1, stacks: 1 },
-      { name: "AnxiSoldierHeng", generated: true, hitCount: 4, stacks: 4 },
-      { name: "SnowpartingQ-Stab", generated: false, hitCount: 1, stacks: 1 },
-      { name: "SnowpartingVC", generated: false, hitCount: 1, stacks: 1 },
-      { name: "PhalanxCharged-S3", generated: false, hitCount: 2, stacks: 2 },
-      { name: "PhalanxCharged-S3[InnerPassion]", generated: false, hitCount: 2, stacks: 2 },
-      { name: "PhalanxQ", generated: false, hitCount: 1, stacks: 1 },
-    ]
+describe("Throat-Pierced", () => {
+  const applying = () => skill("PhalanxQ", [WEAPON.moBlade, ROLE.phalanxQ], CAST.phalanxQ)
+  const bystander = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
-    for (const testCase of cases) {
-      const engine = new BuffEngine({ throatPierced: true }, defs)
-      engine.processSkillCast(testCase.name, 0, {
-        generated: testCase.generated,
-        hitCount: testCase.hitCount,
-      })
+  it("stacks once per hit of an applying cast, to a ceiling of five", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 3, castTime: 1, duration: 1 })
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(3)
+    pierced.processSkillCast(CAST.snowpartingQStab, 2, { hitCount: 4, castTime: 1, duration: 1 })
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 3.5)).toBe(5)
+  })
 
-      expect(engine.getHistoricalBuffStacks("throatPierced", 0), testCase.name).toBe(
-        testCase.stacks,
-      )
+  it("takes stacks from every family that applies it, generated attacks included", () => {
+    for (const castTag of [
+      CAST.anxiSoldierHeng,
+      CAST.anxiSoldierMoDown,
+      CAST.anxiSoldierMoJump,
+      CAST.anxiSoldierMoSweep,
+      CAST.snowpartingQStab,
+      CAST.snowpartingVC,
+      CAST.phalanxChargedS3,
+      CAST.phalanxQ,
+    ]) {
+      const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+      pierced.processSkillCast(castTag, 0, { castTime: 1 }, true)
+      expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5), castTag).toBe(1)
     }
   })
 
-  it("gives Throat-Pierced's trigger skills 3% penetration and crit damage per stack", () => {
-    const engine = new BuffEngine({ throatPierced: true }, buffDefsForClass(CLASS))
-    engine.processSkillCast("AnxiSoldierHeng", 0, { generated: true, hitCount: 4 })
-    engine.processSkillCast("SnowpartingVC", 0, { hitCount: 1 })
+  it("pays the applying families 3 points a stack and everything else 2", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
+    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 })
 
-    const enhancedSkills = [
-      "AnxiSoldierMoJump",
-      "SnowpartingQ-Stab",
-      "SnowpartingVC",
-      "PhalanxCharged-S3[InnerPassion]",
-      "PhalanxQ",
-    ]
-    for (const name of enhancedSkills) {
-      expect(engine.calculateDamageEffects(skillNamed(name), 0).effects, name).toEqual(
-        expect.arrayContaining([
-          { statKey: "phys.penetration", amount: 0.15 },
-          { statKey: "critDamageBoost", amount: 0.15 },
-        ]),
-      )
-    }
-
-    expect(engine.calculateDamageEffects(skillNamed("SnowpartingSpecial"), 0).effects).toEqual(
-      expect.arrayContaining([
-        { statKey: "phys.penetration", amount: 0.1 },
-        { statKey: "critDamageBoost", amount: 0.1 },
-      ]),
-    )
+    expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBeCloseTo(0.15, 9)
+    expect(share(pierced, applying(), 1.5, BUFF.throatPierced)).toBeCloseTo(0.15 + 0.15, 9)
+    expect(statOf(pierced, bystander(), 1.5, "phys.penetration")).toBeCloseTo(0.1, 9)
   })
 
-  it("does not grant Stonesplit Strength Throat-Pierced from Deflect or a charged attack", () => {
-    const defs = buffDefsForClass(CLASS)
-    const engine = new BuffEngine({ throatPierced: true }, defs)
-
-    expect(defs.some((def) => def.id === "throatPiercedDeflect")).toBe(false)
-    engine.processSkillCast("Deflect", 0, { hitCount: 1 })
-    engine.processSkillCast("SnowpartingCharged", 1, { hitCount: 1 })
-    expect(engine.getHistoricalBuffStacks("throatPierced", 1)).toBe(0)
+  it("contributes nothing without the inner way slotted", () => {
+    const unslotted = engine()
+    unslotted.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 })
+    expect(statOf(unslotted, applying(), 1.5, "phys.penetration")).toBe(0)
   })
+})
 
-  it("models the workbook's skill critical damage as a class mechanic", () => {
-    const baseline = buildContext({ ...defaultInputs, classId: "bellstrikeUmbra" })
-    const stonesplitStrength = buildContext({ ...defaultInputs, classId: CLASS })
-    const engine = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, classId: CLASS }),
-      [],
-      mechanicBuffDefsForClass(CLASS),
-    )
+describe("Shattered Ridge", () => {
+  const boosted = () =>
+    skill("SnowpartingVC", [WEAPON.hengBlade, PROP.shatteredRidgeBoost], CAST.snowpartingVC)
+  const plain = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
-    expect(stonesplitStrength.critDmgBoostPanel).toBeCloseTo(baseline.critDmgBoostPanel, 10)
+  it("registers only while the set is equipped", () => {
     expect(
-      mechanicBuffDefsForClass("bellstrikeUmbra").some(
-        (def) => def.id === "stonesplitStrengthSkillCritDamage",
-      ),
-    ).toBe(false)
-    expect(
-      engine.calculateDamageEffects(skillNamed("SnowpartingCharged"), 0).effects,
-    ).toContainEqual({
-      statKey: "critDamageBoost",
-      amount: 0.21,
-    })
+      engine({ armorSet: shatteredRidge.siteKey }).definitions.has(BUFF.shatteredRidgeDeflect),
+    ).toBe(true)
+    expect(engine({ armorSet: "jadeware" }).definitions.has(BUFF.shatteredRidgeDeflect)).toBe(false)
   })
 
-  it("applies Shattered Ridge's base and active-window damage bonuses", () => {
-    const withoutSet = buildContext({ ...defaultInputs, classId: CLASS, set: null })
-    const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
-    const withSet = buildContext(withSetInputs)
-    const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
-    const affectedSkills = [
-      "SnowpartingQ-Stab",
-      "AnxiSoldierHeng",
-      "AnxiSoldierMoDown",
-      "AnxiSoldierMoJump",
-      "PhalanxCharged-S3",
-      "PhalanxCharged-S3[InnerPassion]",
-      "SnowpartingVC",
-      "SnowpartingVC Prepull",
-      "PhalanxQ",
-      "AnxiSoldierMoSweep",
-    ].map(skillNamed)
+  it("pays out at five damage stacks and not before", () => {
+    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
+    expect(share(ridged, boosted(), 0.5, BUFF.shatteredRidgeDeflect)).toBe(0)
 
-    for (let time = 0; time < 5; time++) engine.processDamageHit(time)
-
-    expect(withSet.generalDamageBoost - withoutSet.generalDamageBoost).toBeCloseTo(0.05, 10)
-    for (const skill of affectedSkills) {
-      expect(skill.tags).toContain("prop:shatteredRidgeBoost")
-      expect(engine.calculateDamageEffects(skill, 4).effects).toContainEqual({
-        statKey: "allDamageBoost",
-        amount: 0.08,
-      })
-    }
-    const unaffected = skillNamed("SnowpartingSpecial")
-    expect(unaffected.tags).not.toContain("prop:shatteredRidgeBoost")
-    expect(engine.calculateDamageEffects(unaffected, 4).effects).not.toContainEqual({
-      statKey: "allDamageBoost",
-      amount: 0.08,
-    })
+    ridged.processDamageHit(0.4)
+    expect(share(ridged, boosted(), 0.5, BUFF.shatteredRidgeDeflect)).toBeCloseTo(0.08, 9)
   })
 
-  it("activates at five damage stacks and refreshes their five-second lifetime", () => {
-    const withSetInputs = { ...defaultInputs, classId: CLASS, set: "Shattered Ridge" }
-    const engine = new BuffEngine(paramsFromInputs(withSetInputs), buffDefsForClass(CLASS))
-    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
-    for (let time = 0; time < 4; time++) engine.processDamageHit(time)
-
-    expect(engine.calculateDamageEffects(charged, 3).effects).not.toContainEqual({
-      statKey: "allDamageBoost",
-      amount: 0.08,
-    })
-    expect(engine.activeBuffsForDisplay(3)).toContainEqual(
-      expect.objectContaining({ id: "shatteredRidgeDeflect", stacks: 4, effects: [] }),
-    )
-
-    engine.processDamageHit(4)
-    expect(engine.calculateDamageEffects(charged, 4).effects).toContainEqual({
-      statKey: "allDamageBoost",
-      amount: 0.08,
-    })
-    expect(engine.activeBuffsForDisplay(4)).toContainEqual(
-      expect.objectContaining({
-        id: "shatteredRidgeDeflect",
-        stacks: 5,
-        effects: [{ statKey: "allDamageBoost", amount: 0.08 }],
-      }),
-    )
-
-    engine.processDamageHit(8.5)
-
-    expect(engine.calculateDamageEffects(charged, 13.49).effects).toContainEqual({
-      statKey: "allDamageBoost",
-      amount: 0.08,
-    })
-    expect(engine.calculateDamageEffects(charged, 13.5).effects).not.toContainEqual({
-      statKey: "allDamageBoost",
-      amount: 0.08,
-    })
+  it("stacks on any damaging hit, but reaches only the skills that carry the property", () => {
+    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
+    expect(share(ridged, plain(), 0.5, BUFF.shatteredRidgeDeflect)).toBe(0)
   })
 
-  it("counts generated Anxi damage toward Shattered Ridge's stacks", () => {
-    const source = skillNamed("SnowpartingVC")
-    const anxi = skillNamed("AnxiSoldierHeng")
-    const parent: Skill = {
-      ...source,
-      id: "test-shattered-ridge-generated-parent",
-      name: "Generated Anxi Parent",
-      tags: (source.tags ?? []).filter((tag) => tag !== "prop:shatteredRidgeBoost"),
-    }
-    const probe: Skill = {
-      ...anxi,
-      id: "test-shattered-ridge-anxi-probe",
-      name: "Anxi Probe",
-      tags: (anxi.tags ?? []).filter((tag) => tag !== "prop:shatteredRidgeBoost"),
-      hits: anxi.hits.map((hit) => ({ ...hit, triggers: [] })),
-    }
-    const result = simulateTimeline({
-      ...defaultInputs,
-      classId: CLASS,
-      set: "Shattered Ridge",
-      customSkills: [parent, probe],
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [parent, probe].map((skill) =>
-          makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
-        ),
-      }),
-    })
-
-    expect(damageOf(result, "AnxiSoldierHeng")).toBeGreaterThan(damageOf(result, "Anxi Probe"))
+  it("lets its five-second window lapse", () => {
+    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
+    expect(share(ridged, boosted(), 6, BUFF.shatteredRidgeDeflect)).toBe(0)
   })
+})
 
-  it("applies Iron Guards' damage and penetration effects", () => {
-    const inputs = { ...defaultInputs, classId: CLASS }
-    const engine = new BuffEngine(paramsFromInputs(inputs), buffDefsForClass(CLASS))
-    const charged = skillNamed("PhalanxCharged-S3[InnerPassion]")
+describe("Iron Guards", () => {
+  const any = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
-    engine.processSkillCast("PhalanxSpecial", 0)
-    const effects = engine.calculateDamageEffects(charged, 1).effects
+  it("pays damage and both penetrations off Phalanx Special, on a 20-second cooldown", () => {
+    const guarded = engine()
+    guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 })
+    expect(statOf(guarded, any(), 1, "allDamageBoost")).toBeCloseTo(0.08, 9)
+    expect(statOf(guarded, any(), 1, "phys.penetration")).toBeCloseTo(0.12, 9)
+    expect(statOf(guarded, any(), 1, "stonesplit.penetration")).toBeCloseTo(0.12, 9)
+    expect(statOf(guarded, any(), 41, "allDamageBoost")).toBe(0)
+  })
+})
 
-    expect(effects).toEqual(
-      expect.arrayContaining([
-        { statKey: "allDamageBoost", amount: 0.08 },
-        { statKey: "phys.penetration", amount: 0.12 },
-        { statKey: "stonesplit.penetration", amount: 0.12 },
-      ]),
+describe("the class's flat skill crit damage", () => {
+  it("is always on, and reaches everything", () => {
+    const plainEngine = engine()
+    const target = skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+    expect(share(plainEngine, target, 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(
+      0.21,
+      9,
     )
   })
+})
 
-  it("defines Dread and Fearful Blade with their workbook stat effects", () => {
-    const buffs = builtinBuffsForClass(CLASS)
-    const dread = buffs.find((buff) => buff.id === DREAD_BUFF_ID)
-    const fearfulBlade = buffs.find((buff) => buff.id === FEARFUL_BLADE_BUFF_ID)
+describe("Dread and Fearful Blade — the two gate buffs", () => {
+  const gates = builtinBuffsForClass(CLASS)
+  const dread = gates.find((buff) => buff.id === STATUS.dread)!
+  const fearfulBlade = gates.find((buff) => buff.id === STATUS.fearfulBlade)!
 
-    expect(dread).toMatchObject({
-      name: "Dread",
-      durationFrames: DREAD_DURATION_FRAMES,
-      effects: [{ statKey: "allDamageBoost", amount: 0.12 }],
-    })
-    expect(fearfulBlade).toMatchObject({
-      name: "Fearful Blade",
-      scope: "team",
-      durationFrames: FEARFUL_BLADE_DURATION_FRAMES,
-      effects: [
-        { statKey: "allDamageBoost", amount: 0.08 },
-        { statKey: "bellstrike.penetration", amount: 0.16 },
-        { statKey: "stonesplit.penetration", amount: 0.16 },
-        { statKey: "silkbind.penetration", amount: 0.16 },
-        { statKey: "bamboocut.penetration", amount: 0.16 },
-      ],
-    })
+  it("carry their measured stat effects", () => {
+    expect(dread.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.12 }])
+    expect(fearfulBlade.effects).toEqual([
+      { statKey: "allDamageBoost", amount: 0.08 },
+      { statKey: "bellstrike.penetration", amount: 0.16 },
+      { statKey: "stonesplit.penetration", amount: 0.16 },
+      { statKey: "silkbind.penetration", amount: 0.16 },
+      { statKey: "bamboocut.penetration", amount: 0.16 },
+    ])
   })
 
-  it("converts Fearful Blade's fractional penetration to 16 formula points", () => {
-    const fearfulBlade = builtinBuffsForClass(CLASS).find(
-      (buff) => buff.id === FEARFUL_BLADE_BUFF_ID,
+  it("are a player buff and a team buff, at their configured durations", () => {
+    expect(dread.scope).toBe("player")
+    expect(dread.durationFrames).toBe(DREAD_DURATION_FRAMES)
+    expect(fearfulBlade.scope).toBe("team")
+    expect(fearfulBlade.durationFrames).toBe(FEARFUL_BLADE_DURATION_FRAMES)
+  })
+})
+
+describe("what lays the two gate buffs", () => {
+  const skills = builtinSkillsForClass(CLASS)
+  const triggersOf = (id: string) =>
+    skills.find((s) => s.id === id)!.hits.flatMap((hit) => hit.triggers)
+
+  it("Snowparting Special opens Dread", () => {
+    const opening = triggersOf(SKILL.snowpartingspecial).find(
+      (trigger) => trigger.targetId === STATUS.dread,
     )!
-    const baseInputs = { ...defaultInputs, classId: CLASS }
-    const { inputs: boostedInputs } = applyBuffEffects(baseInputs, fearfulBlade.effects)
-    const baseContext = buildContext(baseInputs)
-    const boostedContext = buildContext(boostedInputs)
-
-    expect(boostedInputs.bellstrike.penetration - baseInputs.bellstrike.penetration).toBeCloseTo(
-      0.16,
-      10,
-    )
-    expect(boostedInputs.stonesplit.penetration - baseInputs.stonesplit.penetration).toBeCloseTo(
-      0.16,
-      10,
-    )
-    expect(boostedInputs.silkbind.penetration - baseInputs.silkbind.penetration).toBeCloseTo(
-      0.16,
-      10,
-    )
-    expect(boostedInputs.bamboocut.penetration - baseInputs.bamboocut.penetration).toBeCloseTo(
-      0.16,
-      10,
-    )
-    expect(boostedContext.bellstrike.pen - baseContext.bellstrike.pen).toBeCloseTo(16, 10)
-    expect(boostedContext.stonesplit.pen - baseContext.stonesplit.pen).toBeCloseTo(16, 10)
-    expect(boostedContext.silkbind.pen - baseContext.silkbind.pen).toBeCloseTo(16, 10)
-    expect(boostedContext.bamboocut.pen - baseContext.bamboocut.pen).toBeCloseTo(16, 10)
+    expect(opening.stacks).toBe(1)
+    expect(opening.extendFrames).toBeUndefined()
   })
 
-  it("wires Dread to Snowparting Special's final hit and both stab effects to the stab's final hit", () => {
-    const special = skillNamed("SnowpartingSpecial")
-    const stab = skillNamed("SnowpartingQ-Stab")
-    const dreadApply = special.hits
-      .at(-1)!
-      .triggers.find((trigger) => trigger.targetId === DREAD_BUFF_ID)
-    const dreadExtension = stab.hits
-      .at(-1)!
-      .triggers.find((trigger) => trigger.targetId === DREAD_BUFF_ID)
-    const fearfulBladeApply = stab.hits
-      .at(-1)!
-      .triggers.find((trigger) => trigger.targetId === FEARFUL_BLADE_BUFF_ID)
+  // The stab EXTENDS Dread rather than reopening it — without `extendOnly` the
+  // window collapses from thirteen seconds to seven.
+  it("the stab extends Dread by six seconds and lays Fearful Blade", () => {
+    const stab = triggersOf(SKILL.snowpartingqStab)
+    const extension = stab.find((trigger) => trigger.targetId === STATUS.dread)!
+    expect(extension.stacks).toBe(0)
+    expect(extension.extendFrames).toBe(360)
+    expect(extension.extendOnly).toBe(true)
 
-    expect(special.hits.slice(0, -1).flatMap((hit) => hit.triggers)).not.toContainEqual(
-      expect.objectContaining({ targetId: DREAD_BUFF_ID }),
-    )
-    expect(dreadApply).toMatchObject({ kind: "applyBuff", stacks: 1 })
-    expect(stab.hits.slice(0, -1).flatMap((hit) => hit.triggers)).not.toContainEqual(
-      expect.objectContaining({ targetId: FEARFUL_BLADE_BUFF_ID }),
-    )
-    expect(dreadExtension).toMatchObject({
-      kind: "applyBuff",
-      stacks: 0,
-      extendFrames: 360,
-      extendOnly: true,
-    })
-    expect(fearfulBladeApply).toMatchObject({ kind: "applyBuff", stacks: 1 })
-  })
-
-  it("opens, extends, and expires the two windows at their configured frames", () => {
-    const special = skillNamed("SnowpartingSpecial")
-    const stab = skillNamed("SnowpartingQ-Stab")
-    const result = run([special, stab])
-    const dread = result.buffWindows!.find((window) => window.id === DREAD_BUFF_ID)!
-    const fearfulBlade = result.buffWindows!.find((window) => window.id === FEARFUL_BLADE_BUFF_ID)!
-    const dreadStartFrame = special.hits.at(-1)!.frame
-    const stabFinalFrame = special.castFrames + stab.hits.at(-1)!.frame
-
-    expect(dread.startSec * 60).toBeCloseTo(dreadStartFrame, 10)
-    expect(dread.endSec * 60).toBeCloseTo(dreadStartFrame + DREAD_DURATION_FRAMES + 360, 10)
-    expect(fearfulBlade.startSec * 60).toBeCloseTo(stabFinalFrame, 10)
-    expect(fearfulBlade.endSec * 60).toBeCloseTo(stabFinalFrame + FEARFUL_BLADE_DURATION_FRAMES, 10)
-
-    const stabOnly = run([stab])
-    expect(stabOnly.buffWindows!.some((window) => window.id === DREAD_BUFF_ID)).toBe(false)
-    expect(stabOnly.buffWindows!.some((window) => window.id === FEARFUL_BLADE_BUFF_ID)).toBe(true)
-  })
-
-  it("applies Dread to subsequent damage and Fearful Blade to the stab-triggered skill", () => {
-    const special = skillNamed("SnowpartingSpecial")
-    const stab = skillNamed("SnowpartingQ-Stab")
-    const probe = makeSkill(CLASS, {
-      name: "Dread Probe",
-      skillType: "weapon",
-      weaponOrAttribute: "Hengdao",
-      attributeAttack: "Stonesplit",
-      hits: [makeHit({ physMultiplier: 1, attributeMultiplier: 1.5 })],
-    })
-
-    const dreadResult = run([special, probe], [probe])
-    const noDreadResult = run([special, probe], [withoutTrigger(special, DREAD_BUFF_ID), probe])
-    expect(damageOf(dreadResult, probe.name)).toBeGreaterThan(damageOf(noDreadResult, probe.name))
-
-    const fearfulResult = run([stab])
-    const noFearfulResult = run([stab], [withoutTrigger(stab, FEARFUL_BLADE_BUFF_ID)])
-    const fearfulDamage = damageOf(fearfulResult, "AnxiSoldierHeng")
-    const noFearfulDamage = damageOf(noFearfulResult, "AnxiSoldierHeng")
-    expect(fearfulDamage).toBeGreaterThan(noFearfulDamage)
-    expect(fearfulDamage / noFearfulDamage).toBeLessThan(1.5)
+    const fearful = stab.find((trigger) => trigger.targetId === STATUS.fearfulBlade)!
+    expect(fearful.stacks).toBe(1)
   })
 })

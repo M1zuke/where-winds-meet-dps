@@ -1,0 +1,28 @@
+{
+  "id": "silkbindJade-fanqcancel",
+  "classId": "silkbindJade",
+  "name": "FanQCancel",
+  "abilityTag": "FanQCancel",
+  "tags": ["prop:isMartialSkillQ", "weapon:Fan", "attune:fanQ"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Fan",
+  "attributeAttack": "Silkbind",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.9266,
+      "attributeMultiplier": 1.3899,
+      "physFixed": 215,
+      "attributeFixed": 120,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 6,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:fanQCancel"
+}
