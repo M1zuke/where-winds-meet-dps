@@ -3,18 +3,19 @@
 `pnpm test` runs vitest (jsdom, globals on, a shared setup file). **A red suite on
 `main` is not a state this repo tolerates.**
 
-## Class scoping — the suite is Umbra-only
+## Class scoping — a class's numbers are defended only by an anchor
 
-Only `bellstrikeUmbra` is implemented and validated (CLASSES.md). A passing sweep
-over the unimplemented classes reads as validation they have not had.
+Only `bellstrikeUmbra` is validated (CLASSES.md). A passing sweep over a class
+that has no anchor reads as validation it has not had.
 
 - **Do not add an all-classes `dps > 0` sweep.** It proves nothing and
   manufactures false confidence.
 - Registry and metadata tests that legitimately span every **registered** class
   stay. The unregistered reference classes are not additional ids for these to
   iterate.
-- When a class is genuinely built out, add its tests back **with real anchors** — a
-  verified rotation, a known damage figure — not a smoke sweep.
+- A registered class earns damage tests only through a **real anchor** — a
+  verified rotation and a measured figure, asserted exactly. That anchor, not a
+  smoke test, is what lets `ClassDef.validated` become true.
 - A scoped test file says so in a header comment.
 
 ## Locked fixtures assert _unchanged_, never _right_

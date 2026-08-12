@@ -13,10 +13,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import type { Result } from "../../src/engine/types"
 
 const SKILL_ATTUNEMENTS = ATTUNEMENT_OPTIONS.filter(
-  (
-    option,
-  ): option is AttunementOption & { skillEffect: NonNullable<AttunementOption["skillEffect"]> } =>
-    option.skillEffect?.kind === "damageMultiplier",
+  (option): option is AttunementOption & { affectsTag: string } => !!option.affectsTag,
 )
 
 function damageOf(result: Result, name: string): number {
@@ -31,7 +28,7 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
     throw new Error(`${option.id} is not a class-scoped dingYin skill attunement`)
   }
 
-  const tag = `attune:${option.skillEffect.tag}`
+  const tag = option.affectsTag
   const directName = `${option.id} Direct`
   const tickName = `${option.id} Tick`
   const tickId = `${classId}-test-${option.id}-tick`

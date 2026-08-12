@@ -6,7 +6,13 @@ import { matchesScope } from "../../../engine/scope"
 
 // The skills that lay the stacks also take the larger per-stack cut; everything
 // else the character does takes the smaller one.
-const MATCHED = [ROLE.anxiSoldier, ROLE.snowpartingQStab, ROLE.snowpartingVC, ROLE.phalanxCharged, ROLE.phalanxQ]
+const MATCHED = [
+  ROLE.anxiSoldier,
+  ROLE.snowpartingQStab,
+  ROLE.snowpartingVC,
+  ROLE.phalanxCharged,
+  ROLE.phalanxQ,
+]
 
 export const throatPierced = defineClassBuff({
   id: BUFF.throatPierced,

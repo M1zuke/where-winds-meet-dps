@@ -11,9 +11,9 @@ import {
   type RawProfilesBlob,
 } from "../../src/migrations"
 import {
-  V8__setIdsWithoutDisplayName,
+  V11__setIdsWithoutDisplayName,
   migrateSetId,
-} from "../../src/migrations/V8__setIdsWithoutDisplayName"
+} from "../../src/migrations/V11__setIdsWithoutDisplayName"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/profile-v7.json"
 
@@ -59,12 +59,9 @@ describe("profile-v7 fixture — the stored blob predates the set id rename", ()
 })
 
 describe("migrateSetId — the frozen name table", () => {
-  it("maps every one of the 11 legacy display names to its id", () => {
+  it("maps every surviving legacy display name to its id", () => {
     expect(migrateSetId("Hawking")).toBe("hawking")
     expect(migrateSetId("Jadeware")).toBe("jadeware")
-    expect(migrateSetId("Rainwhisper")).toBe("rainwhisper")
-    expect(migrateSetId("Rainwhisper (no shield)")).toBe("rainwhisperNoShield")
-    expect(migrateSetId("Ivorybloom")).toBe("ivorybloom")
     expect(migrateSetId("Swallowcall")).toBe("swallowcall")
     expect(migrateSetId("Swift Gale")).toBe("swiftGale")
     expect(migrateSetId("Swaying Heights")).toBe("swayingHeights")
@@ -83,31 +80,31 @@ describe("migrateSetId — the frozen name table", () => {
 
   it("is idempotent — an already-migrated id passes through unchanged", () => {
     expect(migrateSetId("hawking")).toBe("hawking")
-    expect(migrateSetId("rainwhisperNoShield")).toBe("rainwhisperNoShield")
+    expect(migrateSetId("shatteredRidge")).toBe("shatteredRidge")
   })
 })
 
 describe("V8 step — v7 → v8 in isolation", () => {
   it("rewrites the legacy display name to its id", () => {
-    const migrated = V8__setIdsWithoutDisplayName.migrate(blobOf(clone(LEGACY.profile)))
-    expect(migrated.v).toBe(V8__setIdsWithoutDisplayName.to)
+    const migrated = V11__setIdsWithoutDisplayName.migrate(blobOf(clone(LEGACY.profile)))
+    expect(migrated.v).toBe(V11__setIdsWithoutDisplayName.to)
     expect(inputsOf(migrated).set).toBe("hawking")
   })
 
   it("degrades an unrecognised set to null instead of leaving it dangling", () => {
-    const migrated = V8__setIdsWithoutDisplayName.migrate(
+    const migrated = V11__setIdsWithoutDisplayName.migrate(
       blobOf(withSet(LEGACY.profile, "A Removed Set")),
     )
     expect(inputsOf(migrated).set).toBeNull()
   })
 
   it("leaves no set (null) alone", () => {
-    const migrated = V8__setIdsWithoutDisplayName.migrate(blobOf(withSet(LEGACY.profile, null)))
+    const migrated = V11__setIdsWithoutDisplayName.migrate(blobOf(withSet(LEGACY.profile, null)))
     expect(inputsOf(migrated).set).toBeNull()
   })
 
   it("carries every neighbouring field across the step untouched", () => {
-    const migrated = V8__setIdsWithoutDisplayName.migrate(blobOf(clone(LEGACY.profile)))
+    const migrated = V11__setIdsWithoutDisplayName.migrate(blobOf(clone(LEGACY.profile)))
     const before = LEGACY.profile.inputs
     const after = inputsOf(migrated)
     expect(after.inventory).toEqual(before.inventory)
@@ -119,16 +116,16 @@ describe("V8 step — v7 → v8 in isolation", () => {
 
   it("is registered, and the chain reports it for a v7 blob", () => {
     const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toContain("V8__setIdsWithoutDisplayName")
+    expect(result.applied).toContain("V11__setIdsWithoutDisplayName")
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })
 
   it("does not mutate its input, and migrating twice equals migrating once", () => {
     const input = blobOf(clone(LEGACY.profile))
     const snapshot = clone(input)
-    const once = V8__setIdsWithoutDisplayName.migrate(input)
+    const once = V11__setIdsWithoutDisplayName.migrate(input)
     expect(input).toEqual(snapshot)
-    const twice = V8__setIdsWithoutDisplayName.migrate(once)
+    const twice = V11__setIdsWithoutDisplayName.migrate(once)
     expect(twice).toEqual(once)
   })
 })

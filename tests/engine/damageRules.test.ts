@@ -113,13 +113,11 @@ describe("physical attack range normalization", () => {
   it("uses min phys as the effective max when min phys exceeds max phys", () => {
     const inverted = computeSkillDamage(
       MODAO_CHARGE,
-      slots,
       { ...baseCtx, smallPhys: 2000, largePhys: 1000 },
       1,
     )
     const normalized = computeSkillDamage(
       MODAO_CHARGE,
-      slots,
       { ...baseCtx, smallPhys: 2000, largePhys: 2000 },
       1,
     )
@@ -129,12 +127,7 @@ describe("physical attack range normalization", () => {
   })
 
   it("keeps equal min and max phys equal when no range-specific modifiers apply", () => {
-    const cells = computeSkillDamage(
-      art,
-      slots,
-      { ...baseCtx, smallPhys: 2000, largePhys: 2000 },
-      1,
-    ).cells
+    const cells = computeSkillDamage(art, { ...baseCtx, smallPhys: 2000, largePhys: 2000 }, 1).cells
 
     expect(cells.AG).toBeCloseTo(cells.AE, 9)
   })
@@ -142,13 +135,11 @@ describe("physical attack range normalization", () => {
   it("applies food before choosing the effective max phys", () => {
     const withFood = computeSkillDamage(
       MODAO_CHARGE,
-      slots,
       { ...baseCtx, smallPhys: 1000, largePhys: 900, food: true },
       1,
     )
     const foodFoldedIntoPanel = computeSkillDamage(
       MODAO_CHARGE,
-      slots,
       {
         ...baseCtx,
         smallPhys: 1000 + FOOD_MIN_PHYS_BONUS,

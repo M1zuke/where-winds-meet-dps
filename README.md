@@ -24,14 +24,14 @@ Vite prints the local URL (usually `http://localhost:5173`). The app hot-reloads
 
 ### Scripts
 
-| command | what it does |
-| --- | --- |
-| `pnpm run dev` | dev server with hot reload |
-| `pnpm test` | run the test suite once (`test:watch` for watch mode) |
-| `pnpm run typecheck` | TypeScript type-check |
-| `pnpm run lint` | ESLint, zero warnings allowed |
-| `pnpm run format` | Prettier (`format:check` for CI's check mode) |
-| `pnpm run build` | type-check + production build |
+| command              | what it does                                          |
+| -------------------- | ----------------------------------------------------- |
+| `pnpm run dev`       | dev server with hot reload                            |
+| `pnpm test`          | run the test suite once (`test:watch` for watch mode) |
+| `pnpm run typecheck` | TypeScript type-check                                 |
+| `pnpm run lint`      | ESLint, zero warnings allowed                         |
+| `pnpm run format`    | Prettier (`format:check` for CI's check mode)         |
+| `pnpm run build`     | type-check + production build                         |
 
 ## Contributing
 

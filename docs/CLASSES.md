@@ -5,21 +5,29 @@ mints an entity id.
 
 ## Implemented classes
 
+A class is **registered** once it appears in the class barrel: its data is live
+and the app runs it. A class is **validated** only once its output is pinned
+against a measured build. `ClassDef.validated` states which, and the two are
+independent — register a class the moment its data is authored, flip `validated`
+only when an anchor test defends its numbers.
+
 **Only Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) is
-implemented and validated.** It is the only registered class.
+validated.** Stonesplit Strength (`stonesplitStrength`, spec
+`stonesplit_strength`) is registered but not: rely on nothing it reports beyond
+what its anchor pins.
 
-The other seven — Bellstrike Rainbow, Silkbind Jade, and the Stonesplit and
-Bamboocut specs — are **not implemented**. Their imported data lives under
-`reference/classes/`, unimported by the app and the tests. Treat everything there
-as provisional, and do not rely on any engine output for them.
+The remaining classes — Bellstrike Rainbow, Silkbind Jade, and the other
+Stonesplit and Bamboocut specs — are **not registered**. Their imported data
+lives under `reference/classes/`, unimported by the app and the tests. Treat
+everything there as provisional.
 
-Three of the seven **share one spec** as a stand-in. That is not a claim they play
+Two of them **share one spec** as a stand-in. That is not a claim they play
 alike, and it is why a trigger authored for one can silently target a skill
 another never received.
 
-**Building out one of the seven is data work, not engine work**: sourcing and
-verifying its numbers. The extension points are already proven from outside the
-engine. Test-suite consequences are in TESTING.md § "Class scoping".
+**Registering one of them is data work, not engine work**: sourcing and verifying
+its numbers. The extension points are already proven from outside the engine.
+Test-suite consequences are in TESTING.md § "Class scoping".
 
 ## Where content lives
 

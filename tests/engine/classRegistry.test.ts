@@ -14,8 +14,7 @@ import { buffDefsForClass } from "../../src/engine/buffs/data"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
-    expect(CLASS_IDS()).toContain("bellstrikeUmbra")
-    expect(CLASS_IDS()).toHaveLength(1)
+    expect(CLASS_IDS()).toEqual(["bellstrikeUmbra", "stonesplitStrength"])
     expect(classDefinition("notAClass")).toBeNull()
   })
 

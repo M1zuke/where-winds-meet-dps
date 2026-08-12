@@ -274,9 +274,13 @@ visible tags via `ClassDef.dingYinTags` (`src/data/classes/<class>.ts`).
 
 ## Implemented classes
 
-**Only Bellstrike Umbra (`bellstrikeUmbra`) is implemented and validated.** The
-other six carry unverified imported data; their engine output should not be
-relied on. The test suite is Umbra-only and must stay that way.
+**Registered and validated are two different things.** A class is registered once
+its data is live; it is validated only once its output is checked against a
+measured build. `ClassDef.validated` states which, and only a validated class's
+numbers may be relied on.
+
+**Only Bellstrike Umbra (`bellstrikeUmbra`) is validated.** Every other class
+carries unverified numbers, whether registered or not.
 
 → The full class/spec table and what that means for tests: **docs/CLASSES.md**,
 **docs/TESTING.md** § "Class scoping".

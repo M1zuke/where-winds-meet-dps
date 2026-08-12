@@ -7,7 +7,14 @@ export const snowpartingvcPrepull = defineSkill({
   id: SKILL.snowpartingvcPrepull,
   classId: "stonesplitStrength",
   name: "SnowpartingVC Prepull",
-  tags: [PROP.consumesInnerPassion, PROP.shatteredRidgeBoost, WEAPON.hengBlade, ATTACK.heavy, ATTUNE.snowpartingVariedCombo, ROLE.snowpartingVC],
+  tags: [
+    PROP.consumesInnerPassion,
+    PROP.shatteredRidgeBoost,
+    WEAPON.hengBlade,
+    ATTACK.heavy,
+    ATTUNE.snowpartingVariedCombo,
+    ROLE.snowpartingVC,
+  ],
   skillType: "weapon",
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
@@ -22,7 +29,11 @@ export const snowpartingvcPrepull = defineSkill({
       physFixed: 480,
       attributeFixed: 268,
       triggers: [
-        castSkill({ id: "tg-snowpartingvc-prepull-cast", target: SKILL.anxisoldierheng, stacks: 0 }),
+        castSkill({
+          id: "tg-snowpartingvc-prepull-cast",
+          target: SKILL.anxisoldierheng,
+          stacks: 0,
+        }),
       ],
     }),
   ],

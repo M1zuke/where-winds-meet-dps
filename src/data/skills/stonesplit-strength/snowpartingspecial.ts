@@ -77,9 +77,7 @@ export const snowpartingspecial = defineSkill({
       attributeMultiplier: 0.6299555556,
       physFixed: 116.111111111111,
       attributeFixed: 63.33333333333,
-      triggers: [
-        applyBuff({ id: "tg-snowpartingspecial-dread", target: STATUS.dread }),
-      ],
+      triggers: [applyBuff({ id: "tg-snowpartingspecial-dread", target: STATUS.dread })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

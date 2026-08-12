@@ -31,9 +31,12 @@ const soulShaken = soulShakenBuffDef()
 describe("INNER_WAYS — ids and display names are pinned", () => {
   it.each([
     [INNER_WAY_ID.bitterSeason, "Bitter Season"],
+    [INNER_WAY_ID.frostCladNight, "Frost-Clad Night"],
     [INNER_WAY_ID.insightfulStrike, "Insightful Strike"],
     [INNER_WAY_ID.moraleChant, "Morale Chant"],
+    [INNER_WAY_ID.steadfastDevotion, "Steadfast Devotion"],
     [INNER_WAY_ID.swordHorizon, "Sword Horizon"],
+    [INNER_WAY_ID.throatPierce, "Throat-Pierce"],
     [INNER_WAY_ID.wolfchasersArt, "Wolfchaser's Art"],
   ])("%s -> %s", (id, name) => {
     const def = INNER_WAYS.find((candidate) => candidate.id === id)
@@ -53,6 +56,9 @@ describe("INNER_WAYS — selectable tiers", () => {
     [INNER_WAY_ID.wolfchasersArt, [6, 5]],
     [INNER_WAY_ID.moraleChant, [6, 5]],
     [INNER_WAY_ID.insightfulStrike, [6, 5]],
+    [INNER_WAY_ID.frostCladNight, [6, 5]],
+    [INNER_WAY_ID.steadfastDevotion, [6, 5]],
+    [INNER_WAY_ID.throatPierce, [6, 5]],
     [INNER_WAY_ID.bitterSeason, [6, 5, 4, 3, 2, 1]],
   ])("%s offers %j", (id, tiers) => {
     const def = INNER_WAYS.find((candidate) => candidate.id === id)
@@ -161,6 +167,14 @@ describe("resolveInnerWayId", () => {
   it("resolves a display name to its id", () => {
     expect(resolveInnerWayId("Sword Horizon")).toBe(INNER_WAY_ID.swordHorizon)
     expect(innerWayIdForName("Sword Horizon")).toBe(INNER_WAY_ID.swordHorizon)
+  })
+
+  // The two names V9 and V10 renamed. A profile that never walks the migration
+  // chain — the legacy `wwm.inputs` blob, a bare imported profile — still
+  // arrives carrying them.
+  it("resolves a retired display name to the id that replaced it", () => {
+    expect(resolveInnerWayId("Frostwhite Night")).toBe(INNER_WAY_ID.frostCladNight)
+    expect(resolveInnerWayId("Lone Loyalty")).toBe(INNER_WAY_ID.steadfastDevotion)
   })
 
   it("returns the input unchanged for an unknown name, and '' for empty", () => {
@@ -274,11 +288,15 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     ])
   })
 
-  it("every inner-way buffDefs entry reaches buffDefsForClass('bellstrikeUmbra')", () => {
-    const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((module) => module.id))
-    for (const def of INNER_WAYS) {
-      for (const module of def.buffDefs ?? []) {
-        expect(ids.has(module.id), `${def.id}/${module.id}`).toBe(true)
+  it("every inner-way buffDefs entry reaches each class that can slot that inner way", () => {
+    for (const classDef of CLASS_DEFS()) {
+      const slottable = new Set<string>([classDef.classMindGroup, ...classDef.allowedMindMethods])
+      const ids = new Set(buffDefsForClass(classDef.id).map((module) => module.id))
+      for (const def of INNER_WAYS) {
+        if (!slottable.has(def.id)) continue
+        for (const module of def.buffDefs ?? []) {
+          expect(ids.has(module.id), `${classDef.id}/${def.id}/${module.id}`).toBe(true)
+        }
       }
     }
   })

@@ -96,8 +96,6 @@ function withStepAfterPrePull(raw: Inputs, skillId: string): Inputs {
 // `Inputs` moved from the name to the id.
 const ARMOUR_SETS: readonly [label: string, id: string][] = [
   ["Jadeware", SET_ID.jadeware],
-  ["Rainwhisper", SET_ID.rainwhisper],
-  ["Ivorybloom", SET_ID.ivorybloom],
   ["Mistwillow", SET_ID.mistwillow],
   ["StarsAlign", SET_ID.starsAlign],
   ["ShatteredRidge", SET_ID.shatteredRidge],
