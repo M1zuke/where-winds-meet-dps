@@ -279,8 +279,9 @@ its data is live; it is validated only once its output is checked against a
 measured build. `ClassDef.validated` states which, and only a validated class's
 numbers may be relied on.
 
-**Only Bellstrike Umbra (`bellstrikeUmbra`) is validated.** Every other class
-carries unverified numbers, whether registered or not.
+**Bellstrike Umbra (`bellstrikeUmbra`) and Stonesplit Strength
+(`stonesplitStrength`) are validated.** Every other class carries unverified
+numbers, whether registered or not.
 
 → The full class/spec table and what that means for tests: **docs/CLASSES.md**,
 **docs/TESTING.md** § "Class scoping".

@@ -15,10 +15,10 @@ only when an anchor test defends its numbers.
 offered in the class picker; `validated` gates how far its numbers may be trusted,
 never whether the UI shows it.
 
-**Only Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) is
-validated.** Stonesplit Strength (`stonesplitStrength`, spec
-`stonesplit_strength`) is registered but not: rely on nothing it reports beyond
-what its anchor pins.
+**Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) and Stonesplit
+Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — each
+holds a measured build exactly. Rely on nothing either reports beyond what its
+anchor pins.
 
 The remaining classes — Bellstrike Rainbow, Silkbind Jade, and the other
 Stonesplit and Bamboocut specs — are **not registered**. Their imported data

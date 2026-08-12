@@ -13,7 +13,7 @@ import { STONESPLIT_STRENGTH_GATES } from "./gates"
 export const stonesplitStrength = defineClass({
   id: CLASS_ID,
   displayName: "Stonesplit Strength",
-  validated: false,
+  validated: true,
   spec: "stonesplit_strength",
   primaryAttribute: "Stonesplit",
   attributeMultiplier: 51.5,
