@@ -11,6 +11,10 @@ against a measured build. `ClassDef.validated` states which, and the two are
 independent — register a class the moment its data is authored, flip `validated`
 only when an anchor test defends its numbers.
 
+**Registration alone makes a class selectable.** Every class the barrel carries is
+offered in the class picker; `validated` gates how far its numbers may be trusted,
+never whether the UI shows it.
+
 **Only Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) is
 validated.** Stonesplit Strength (`stonesplitStrength`, spec
 `stonesplit_strength`) is registered but not: rely on nothing it reports beyond

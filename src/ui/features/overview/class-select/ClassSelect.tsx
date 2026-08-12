@@ -8,9 +8,7 @@ interface Props {
 
 export function ClassSelect({ value, onChange }: Props) {
   const { t } = useI18n()
-  const visible = CLASS_IDS()
-    .map((id) => classDefinition(id)!)
-    .filter((def) => def.validated)
+  const visible = CLASS_IDS().map((id) => classDefinition(id)!)
   return (
     <div className="row">
       <label>{t("Class")}</label>
