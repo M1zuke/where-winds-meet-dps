@@ -8,10 +8,16 @@
 // so changing a value here would silently stop that match.
 
 export const CAST = {
+  anxiSoldierHeng: "cast:anxiSoldierHeng",
+  anxiSoldierMoDown: "cast:anxiSoldierMoDown",
+  anxiSoldierMoJump: "cast:anxiSoldierMoJump",
+  anxiSoldierMoSweep: "cast:anxiSoldierMoSweep",
   bitterSeasonTick: "cast:bitterSeasonTick",
+  blockPerception: "cast:blockPerception",
   bleedDetonation: "cast:bleedDetonation",
   bleedTick: "cast:bleedTick",
   crosswindBlade: "cast:crosswindBlade",
+  deflect: "cast:deflect",
   deflectCancel: "cast:deflectCancel",
   deflectCancelPrepull: "cast:deflectCancelPrepull",
   delay: "cast:delay",
@@ -40,6 +46,11 @@ export const CAST = {
   moBladeQPrepull: "cast:moBladeQPrepull",
   perfectDodge: "cast:perfectDodge",
   perfectDodgeFull: "cast:perfectDodgeFull",
+  phalanxChargedS3: "cast:phalanxChargedS3",
+  phalanxChargedS3InnerPassion: "cast:phalanxChargedS3InnerPassion",
+  phalanxQ: "cast:phalanxQ",
+  phalanxSpecial: "cast:phalanxSpecial",
+  phalanxSpecialPrepull: "cast:phalanxSpecialPrepull",
   poet1: "cast:poet1",
   poet2: "cast:poet2",
   poet3: "cast:poet3",
@@ -47,7 +58,17 @@ export const CAST = {
   poetFinalHitCancel: "cast:poetFinalHitCancel",
   ropeQ: "cast:ropeQ",
   ropeQ1Hit: "cast:ropeQ1Hit",
+  snowpartingCharged: "cast:snowpartingCharged",
+  snowpartingChargedForgetfulness: "cast:snowpartingChargedForgetfulness",
+  snowpartingDual: "cast:snowpartingDual",
+  snowpartingDualPrepull: "cast:snowpartingDualPrepull",
+  snowpartingQStab: "cast:snowpartingQStab",
+  snowpartingSlide: "cast:snowpartingSlide",
+  snowpartingSlidePrepull: "cast:snowpartingSlidePrepull",
+  snowpartingSlidePrepullHit: "cast:snowpartingSlidePrepullHit",
   snowpartingSpecial: "cast:snowpartingSpecial",
+  snowpartingVC: "cast:snowpartingVC",
+  snowpartingVCPrepull: "cast:snowpartingVCPrepull",
   soaring: "cast:soaring",
   soaring1Hit: "cast:soaring1Hit",
   spearHeavy: "cast:spearHeavy",
@@ -88,6 +109,11 @@ export const CAST = {
 } as const
 
 export const ROLE = {
+  // Every Anxi Soldier attack carries `anxiSoldier` as well as its own role, so
+  // a scope naming the family reaches all four without prefix matching.
+  anxiSoldier: "role:anxiSoldier",
+  anxiSoldierMoDown: "role:anxiSoldierMoDown",
+  anxiSoldierMoJump: "role:anxiSoldierMoJump",
   bleedDetonation: "role:bleedDetonation",
   bleedTick: "role:bleedTick",
   combustion: "role:combustion",
@@ -95,6 +121,10 @@ export const ROLE = {
   dragonHeadPlus: "role:dragonHeadPlus",
   fireOil: "role:fireOil",
   fivefoldBleed: "role:fivefoldBleed",
+  phalanxCharged: "role:phalanxCharged",
+  phalanxQ: "role:phalanxQ",
+  snowpartingQStab: "role:snowpartingQStab",
+  snowpartingVC: "role:snowpartingVC",
 } as const
 
 export const WEAPON = {
@@ -111,6 +141,11 @@ export const WEAPON = {
 
 export const ATTUNE = {
   bleed: "attune:bleed",
+  phalanxbaneCharged: "attune:phalanxbaneCharged",
+  phalanxbaneQ: "attune:phalanxbaneQ",
+  snowpartingCharged: "attune:snowpartingCharged",
+  snowpartingQ: "attune:snowpartingQ",
+  snowpartingVariedCombo: "attune:snowpartingVariedCombo",
   spearCharged: "attune:spearCharged",
   spearQ: "attune:spearQ",
   spearSpecial: "attune:spearSpecial",
@@ -133,6 +168,7 @@ export const PROP = {
   isCharged: "prop:isCharged",
   isExecution: "prop:isExecution",
   isMartialSkillQ: "prop:isMartialSkillQ",
+  shatteredRidgeBoost: "prop:shatteredRidgeBoost",
 } as const
 
 export const ATTACK = {
