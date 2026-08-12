@@ -20,7 +20,9 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByText("DPS 12,345.67")).toBeInTheDocument()
     expect(screen.getByText("All enabled")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent("Max Bellstrike")
+    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+      "Sword Martial Boost",
+    )
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Bleed Boost")
   })
 
