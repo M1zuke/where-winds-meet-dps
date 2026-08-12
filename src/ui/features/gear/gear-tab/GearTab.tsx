@@ -165,7 +165,11 @@ export function GearTab({
     }
   }
 
-  async function importGear(imported: GearPiece[], keepDisplaced: boolean): Promise<void> {
+  async function importGear(
+    imported: GearPiece[],
+    mindMethods: Inputs["mindMethods"] | null,
+    keepDisplaced: boolean,
+  ): Promise<void> {
     const displaced = GEAR_SLOTS.map((slot) => equipped[slot]).filter(
       (pieceId): pieceId is string => !!pieceId,
     )
@@ -189,7 +193,8 @@ export function GearTab({
     for (const piece of imported) nextEquipped[piece.slot] = piece.id
 
     setImportOpen(false)
-    commitGearChange([...kept, ...imported], nextEquipped)
+    const next: Inputs = { ...inputs, inventory: [...kept, ...imported], equipped: nextEquipped }
+    onChange(mindMethods ? { ...next, mindMethods } : next)
     const first = imported[0]
     if (first) {
       setSelectedSlot(first.slot)
