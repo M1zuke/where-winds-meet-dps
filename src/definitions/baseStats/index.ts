@@ -17,13 +17,12 @@ import baseStatsJson from "../../data/baseStats/baseStats.json"
 import talentPointsJson from "../../data/baseStats/talentPoints.json"
 import odditiesJson from "../../data/baseStats/oddities.json"
 import enhancementsJson from "../../data/baseStats/enhancements.json"
-import breakthroughJson from "../../data/baseStats/breakthroughAttributes.json"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
+import { breakthroughAttributes } from "./breakthroughs"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
 const TALENT_TIERS = ["95.1", "95.2", "100.1"] as const
 const ENHANCEMENT_TIER = "95"
-const BREAKTHROUGH_TIER = "16"
 
 // Phys deltas mirror `engine/itemRanking.ts` rows 62-64 (Power/Agility/Momentum
 // at amount 40.4 splitting into the listed white deltas). Crit/affinity
@@ -123,49 +122,65 @@ function applyAll(acc: BaseAccumulator, entries: readonly BaseEntry[] | undefine
   for (const e of entries) applyEntry(acc, e)
 }
 
-function buildAccumulator(): BaseAccumulator {
+function buildAccumulator(breakthrough: number): BaseAccumulator {
   const acc = readBaseLevel()
   for (const tier of TALENT_TIERS) {
     applyAll(acc, (talentPointsJson as TieredEntries)[tier])
   }
   applyAll(acc, (enhancementsJson as TieredEntries)[ENHANCEMENT_TIER])
-  applyAll(acc, (breakthroughJson as TieredEntries)[BREAKTHROUGH_TIER])
+  applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
 }
 
-const ACC: BaseAccumulator = buildAccumulator()
-
-export const PLAYER_ATTRIBUTES: Readonly<{
+export interface PlayerAttributes {
   power: number
   agility: number
   momentum: number
-}> = {
-  power: ACC.power,
-  agility: ACC.agility,
-  momentum: ACC.momentum,
 }
 
-export const GLOBAL_BASE: Readonly<Record<string, number>> = (() => {
-  const minPhys =
-    ACC.minPhys + ACC.power * POWER_PER_POINT.minPhys + ACC.agility * AGILITY_PER_POINT.minPhys
-  const maxPhys =
-    ACC.maxPhys + ACC.power * POWER_PER_POINT.maxPhys + ACC.momentum * MOMENTUM_PER_POINT.maxPhys
-  const critRate = ACC.critRate + ACC.agility * AGILITY_PER_POINT.critRate
-  const affinityRate = ACC.affinityRate + ACC.momentum * MOMENTUM_PER_POINT.affinityRate
-  return {
-    "phys.min": minPhys,
-    "phys.max": maxPhys,
-    precision: ACC.precision,
-    critRate,
-    affinityRate,
-    critDamageBoost: ACC.critDamageBoost,
-    affinityDamageBoost: ACC.affinityDamageBoost,
+const ACCUMULATOR_BY_BREAKTHROUGH = new Map<number, BaseAccumulator>()
+const ATTRIBUTES_BY_BREAKTHROUGH = new Map<number, Readonly<PlayerAttributes>>()
+const GLOBAL_BASE_BY_BREAKTHROUGH = new Map<number, Readonly<Record<string, number>>>()
+
+function accumulatorFor(breakthrough: number): BaseAccumulator {
+  const cached = ACCUMULATOR_BY_BREAKTHROUGH.get(breakthrough)
+  if (cached) return cached
+  const built = buildAccumulator(breakthrough)
+  ACCUMULATOR_BY_BREAKTHROUGH.set(breakthrough, built)
+  return built
+}
+
+export function playerAttributes(breakthrough: number): Readonly<PlayerAttributes> {
+  const cached = ATTRIBUTES_BY_BREAKTHROUGH.get(breakthrough)
+  if (cached) return cached
+  const acc = accumulatorFor(breakthrough)
+  const attributes = { power: acc.power, agility: acc.agility, momentum: acc.momentum }
+  ATTRIBUTES_BY_BREAKTHROUGH.set(breakthrough, attributes)
+  return attributes
+}
+
+export function globalBase(breakthrough: number): Readonly<Record<string, number>> {
+  const cached = GLOBAL_BASE_BY_BREAKTHROUGH.get(breakthrough)
+  if (cached) return cached
+  const acc = accumulatorFor(breakthrough)
+  const base = {
+    "phys.min":
+      acc.minPhys + acc.power * POWER_PER_POINT.minPhys + acc.agility * AGILITY_PER_POINT.minPhys,
+    "phys.max":
+      acc.maxPhys + acc.power * POWER_PER_POINT.maxPhys + acc.momentum * MOMENTUM_PER_POINT.maxPhys,
+    precision: acc.precision,
+    critRate: acc.critRate + acc.agility * AGILITY_PER_POINT.critRate,
+    affinityRate: acc.affinityRate + acc.momentum * MOMENTUM_PER_POINT.affinityRate,
+    critDamageBoost: acc.critDamageBoost,
+    affinityDamageBoost: acc.affinityDamageBoost,
     directCritRate: 0,
     directAffinityRate: 0,
     physBoost: 0,
     attributeDamageBoost: 0,
   }
-})()
+  GLOBAL_BASE_BY_BREAKTHROUGH.set(breakthrough, base)
+  return base
+}
 
 export const DEFAULT_ODDITIES: OddityRegions = (() => {
   const out: OddityRegions = {}
@@ -197,7 +212,7 @@ interface ClassSkillBoost {
   skill: string
   stat: string
   maxBonus: number
-  scalesWith: keyof typeof PLAYER_ATTRIBUTES
+  scalesWith: keyof PlayerAttributes
   scaleMax: number
 }
 type ClassSkillBoosts = Record<string, ClassSkillBoost[]>
@@ -240,16 +255,16 @@ export function getDefaultTalentsForClass(classId: string): MartialArtsTalent[] 
   }))
 }
 
-export function totalPlayerAttributes(equippedPieces: readonly GearPiece[]): {
-  power: number
-  agility: number
-  momentum: number
-} {
+export function totalPlayerAttributes(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+): Readonly<PlayerAttributes> {
+  const fromBreakthrough = playerAttributes(breakthrough)
   const gear = gearAttributeTotals(equippedPieces)
   return {
-    power: PLAYER_ATTRIBUTES.power + gear.power,
-    agility: PLAYER_ATTRIBUTES.agility + gear.agility,
-    momentum: PLAYER_ATTRIBUTES.momentum + gear.momentum,
+    power: fromBreakthrough.power + gear.power,
+    agility: fromBreakthrough.agility + gear.agility,
+    momentum: fromBreakthrough.momentum + gear.momentum,
   }
 }
 
@@ -286,7 +301,7 @@ export function buildScalingSources(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[] = [],
 ): Record<ScalingSource, number> {
-  const totals = totalPlayerAttributes(equippedPieces)
+  const totals = totalPlayerAttributes(inputs.breakthrough, equippedPieces)
   return {
     power: totals.power,
     agility: totals.agility,
@@ -315,7 +330,7 @@ export function getConfiguredBase(
 ): Readonly<Record<string, number>> {
   const key = primaryAttackKey(inputs.classId)
   const base: Record<string, number> = {
-    ...GLOBAL_BASE,
+    ...globalBase(inputs.breakthrough),
     [`${key}.min`]: CLASS_PRIMARY_BASE.min,
     [`${key}.max`]: CLASS_PRIMARY_BASE.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,

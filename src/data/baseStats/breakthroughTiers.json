@@ -27,7 +27,29 @@
     "defense": 351,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.45
+    "multiplier": 1.45,
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.135
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 120
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 120
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 120
+      }
+    ]
   },
   {
     "breakthrough": 15,
@@ -37,7 +59,29 @@
     "defense": 351,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.45
+    "multiplier": 1.45,
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.14
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 125
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 125
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 125
+      }
+    ]
   },
   {
     "breakthrough": 16,
@@ -47,7 +91,29 @@
     "defense": 408,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "multiplier": 1.65,
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.153
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 138
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 138
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 138
+      }
+    ]
   },
   {
     "breakthrough": 17,
@@ -57,7 +123,29 @@
     "defense": 408,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "multiplier": 1.65,
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.165
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 150
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 150
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 150
+      }
+    ]
   },
   {
     "breakthrough": 18,

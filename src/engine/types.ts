@@ -70,8 +70,6 @@ export function defaultCombatSettings(): CombatSettings {
 // (29.2 % → 0.292).
 export interface Inputs {
   classId: string
-  // Encounter bracket — NOT the player's base-stat breakthrough tier
-  // (`baseStats.ts` BREAKTHROUGH_TIER).
   breakthrough: number
 
   phys: AttackBlock
