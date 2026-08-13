@@ -7,6 +7,7 @@ export const fluteOfTheTidesPrepull = defineSkill({
   id: SKILL.fluteOfTheTidesPrepull,
   classId: "universal",
   name: "Flute of the Tides Prepull",
+  breakdownName: "Flute Chanting a Thousand Waves",
   tags: [MYSTIC.areaDamage],
   skillType: "mystic",
   weaponOrAttribute: "",

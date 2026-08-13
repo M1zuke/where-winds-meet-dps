@@ -6,6 +6,7 @@ export const bleedTick = defineSkill({
   id: SKILL.bleedTick,
   classId: "bellstrikeUmbra",
   name: "Bleed Tick",
+  breakdownName: "Bleeding",
   tags: [WEAPON.sword, ATTUNE.bleed, ROLE.bleedTick],
   skillType: "sustain",
   weaponOrAttribute: "Sword",

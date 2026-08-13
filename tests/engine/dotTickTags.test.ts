@@ -4,7 +4,7 @@ import { dotTickSkill } from "../../src/engine/dot"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
 const CLASS_ID = "bellstrikeUmbra"
-const bleedTickDebuff = builtinDebuffsForClass(CLASS_ID).find((d) => d.name === "Bleed Tick")!
+const bleedTickDebuff = builtinDebuffsForClass(CLASS_ID).find((d) => d.name === "Bleeding")!
 const bleedTickSkill = builtinSkillsForClass(CLASS_ID).find(
   (s) => s.id === `${CLASS_ID}-bleed-tick`,
 )!

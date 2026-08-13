@@ -4,7 +4,7 @@ import {
   receivesForSkill,
   specMechanicIds,
 } from "../../src/engine/buffs/catalog"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 import type { Skill } from "../../src/engine/skill"
@@ -52,9 +52,22 @@ describe("catalog receives — Sword Horizon retention on Bleed Tick", () => {
     expect(none.find((r) => r.id === RETENTION_ROW_ID)!.active).toBe(false)
   })
 
-  it("does not appear on Bleed Detonation or Crosswind Blade (appliers, not the DoT skill)", () => {
+  it("survives renaming the debuff away from its tick skill — the row is matched by id", () => {
+    const bleedTick = findSkill("Bleed Tick")
     const inputs = inputsWithSwordHorizon("tier 6")
-    const detonation = receivesForSkill(findSkill("Bleed Detonation"), CLASS, inputs)
+    const renamed = builtinDebuffsForClass(CLASS).map((debuff) => ({
+      ...debuff,
+      name: `${debuff.name} renamed`,
+    }))
+
+    const rows = receivesForSkill(bleedTick, CLASS, { ...inputs, customDebuffs: renamed })
+
+    expect(rows.some((row) => row.id === RETENTION_ROW_ID)).toBe(true)
+  })
+
+  it("does not appear on Blood Burst or Crosswind Blade (appliers, not the DoT skill)", () => {
+    const inputs = inputsWithSwordHorizon("tier 6")
+    const detonation = receivesForSkill(findSkill("Blood Burst"), CLASS, inputs)
     const crosswind = receivesForSkill(findSkill("Crosswind Blade"), CLASS, inputs)
     expect(detonation.some((r) => r.id === RETENTION_ROW_ID)).toBe(false)
     expect(crosswind.some((r) => r.id === RETENTION_ROW_ID)).toBe(false)
@@ -103,8 +116,8 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
     allMartialBoost: 0.03,
   }
 
-  it("Bleed Tick and Bleed Detonation list Sword Martial Boost and All Martial Boost", () => {
-    for (const name of ["Bleed Tick", "Bleed Detonation"]) {
+  it("Bleed Tick and Blood Burst list Sword Martial Boost and All Martial Boost", () => {
+    for (const name of ["Bleed Tick", "Blood Burst"]) {
       const rows = receivesForSkill(findSkill(name), CLASS, inputs)
       const sword = rows.find((r) => r.id === "stat:swordBoost")
       const allMartial = rows.find((r) => r.id === "stat:allMartialBoost")

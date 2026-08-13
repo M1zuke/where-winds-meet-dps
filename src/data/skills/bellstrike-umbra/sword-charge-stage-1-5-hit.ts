@@ -7,6 +7,7 @@ export const swordChargeStage15Hit = defineSkill({
   id: SKILL.swordChargeStage15Hit,
   classId: "bellstrikeUmbra",
   name: "Sword Charge Stage 1, 5-Hit",
+  breakdownName: "Second Track Slash",
   tags: [WEAPON.sword, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

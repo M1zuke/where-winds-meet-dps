@@ -7,6 +7,7 @@ export const swordqFollowUp1HitCancel = defineSkill({
   id: SKILL.swordqFollowUp1HitCancel,
   classId: "bellstrikeUmbra",
   name: "Sword Martial QQ 1-Hit [Cancel]",
+  breakdownName: "Inner Track Slash",
   tags: [WEAPON.sword, ATTUNE.swordQ],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

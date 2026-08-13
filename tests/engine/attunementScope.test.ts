@@ -58,8 +58,8 @@ describe("attunement scope — the two entities that declare it", () => {
   const skills = builtinSkillsForClass("bellstrikeUmbra")
   const tagged = skills.filter((skill) => (skill.tags ?? []).includes("attune:bleed"))
 
-  it("is exactly Bleed Detonation and Bleed Tick", () => {
-    expect(tagged.map((skill) => skill.name).sort()).toEqual(["Bleed Detonation", "Bleed Tick"])
+  it("is exactly Bleed Tick and Blood Burst", () => {
+    expect(tagged.map((skill) => skill.name).sort()).toEqual(["Bleed Tick", "Blood Burst"])
   })
 
   it("puts the tag on the art row the timeline builds", () => {
@@ -77,8 +77,8 @@ describe("attunement scope — the two entities that declare it", () => {
         inputs,
       ).filter((row) => row.id === "attunement:bleedingDamage")
 
-    expect(rowsFor("Bleed Detonation")).toHaveLength(1)
-    expect(rowsFor("Bleed Detonation")[0].active).toBe(true)
+    expect(rowsFor("Blood Burst")).toHaveLength(1)
+    expect(rowsFor("Blood Burst")[0].active).toBe(true)
     expect(rowsFor("SpearQ")).toHaveLength(0)
   })
 })

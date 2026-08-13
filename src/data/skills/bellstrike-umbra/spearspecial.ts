@@ -7,6 +7,7 @@ export const spearspecial = defineSkill({
   id: SKILL.spearspecial,
   classId: "bellstrikeUmbra",
   name: "Spear Special",
+  breakdownName: "Sweep All",
   tags: [WEAPON.spear, ATTACK.heavy, ATTUNE.spearSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Spear",

@@ -19,6 +19,7 @@ import type { BuffParams } from "./buffEngine"
 import { innerWayForBuffParam } from "../../definitions/innerWays/registry"
 import { setDisplayNameForSiteKey } from "../../definitions/sets/registry"
 import { builtinDebuffsForClass } from "../builtinLibrary"
+import { tickSourceSkillId } from "../dot"
 import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/classes/registry"
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
@@ -261,7 +262,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     for (const d of inputs?.customDebuffs ?? []) debuffsById.set(d.id, d)
     for (const d of debuffsById.values()) {
       const det = d.detonation
-      if (!det?.retainParam || d.name !== skill.name) continue
+      if (!det?.retainParam || tickSourceSkillId(d) !== skill.id) continue
       const innerWayLabel = innerWayForBuffParam(det.retainParam)?.name ?? humanize(det.retainParam)
       const minTier = det.retainMinTier ?? 6
       const retained = det.retainParamStacks ?? det.retainStacks ?? 0

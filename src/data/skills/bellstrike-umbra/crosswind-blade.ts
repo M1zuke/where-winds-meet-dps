@@ -7,6 +7,7 @@ export const crosswindBlade = defineSkill({
   id: SKILL.crosswindBlade,
   classId: "bellstrikeUmbra",
   name: "Crosswind Blade",
+  breakdownName: "Crisscross - Inner Balance III",
   tags: [WEAPON.sword],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

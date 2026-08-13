@@ -32,7 +32,7 @@ function sumsFor(params: Record<string, unknown>, tags: string[]) {
 const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6 }
 
 describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
-  it("Bleed Detonation gets both the affinity-damage and bleed-penetration terms", () => {
+  it("Blood Burst gets both the affinity-damage and bleed-penetration terms", () => {
     expect(sumsFor(SWORD_HORIZON, ["role:bleedDetonation"])).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0.15,
@@ -66,9 +66,9 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
 })
 
 describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility", () => {
-  it("surfaces both buff ids for the Bleed Detonation skill and neither for Sword Martial Q", () => {
+  it("surfaces both buff ids for the Blood Burst skill and neither for Sword Martial Q", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Bleed Detonation",
+      (s) => s.name === "Blood Burst",
     )
     const swordQ = builtinSkillsForClass("bellstrikeUmbra").find(
       (s) => s.name === "Sword Martial Q",
@@ -87,7 +87,7 @@ describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility"
 
   it("flags the Umbra bleed buffs as spec mechanics, split out from ordinary buff rows", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Bleed Detonation",
+      (s) => s.name === "Blood Burst",
     )
     const detRows = receivesForSkill(detonation!, "bellstrikeUmbra")
     const specIds = detRows.filter((r) => r.isSpecMechanic).map((r) => r.id)

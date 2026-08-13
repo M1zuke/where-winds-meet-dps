@@ -35,7 +35,7 @@ function runSteps(
 }
 
 function detonationEvents(result: Result) {
-  return result.timeline!.filter((ev) => ev.skillName === "Bleed Detonation")
+  return result.timeline!.filter((ev) => ev.skillName === "Blood Burst")
 }
 
 function damageOf(result: Result, name: string): number {
@@ -52,7 +52,7 @@ describe("Spear Special — no River Flow", () => {
   it("deals base coefficients with no bleed payload or detonation", () => {
     const r = runSteps([{ skillId: spearSpecialId, hitCount: 1 }])
     expect(detonationEvents(r)).toHaveLength(0)
-    expect(r.perSkill.some((p) => p.name.startsWith("Bleed Tick"))).toBe(false)
+    expect(r.perSkill.some((p) => p.name.startsWith("Bleeding"))).toBe(false)
     expect(damageOf(r, "Spear Special")).toBeGreaterThan(0)
   })
 })
@@ -95,7 +95,7 @@ function describeEmpoweredCast(name: string) {
       expect(empowered).toBeCloseTo(damageOf(control, name), 6)
     })
 
-    it("fires the bleed payload exactly once, on the hit that carries it, and leaves a Bleed Tick (DoT) row standing", () => {
+    it("fires the bleed payload exactly once, on the hit that carries it, and leaves a Bleeding (DoT) row standing", () => {
       const id = skillId(name)
       const filler = makeFiller(300)
       const r = runSteps(
@@ -112,7 +112,7 @@ function describeEmpoweredCast(name: string) {
         SPEARQ_CAST_FRAMES +
         builtinSkillsForClass(CLASS).find((s) => s.name === name)!.hits[0].frame
       expect(dets[0].frame).toBe(hitFrame)
-      expect(r.perSkill.some((p) => p.name.startsWith("Bleed Tick"))).toBe(true)
+      expect(r.perSkill.some((p) => p.name.startsWith("Bleeding"))).toBe(true)
     })
   })
 }

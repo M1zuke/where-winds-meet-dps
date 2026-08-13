@@ -35,11 +35,11 @@ function baseInputs(classId: string): Inputs {
   }
 }
 
-describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
-  it("adds exactly +150 bellstrike min/max to a single Bleed Detonation hit (bellstrikeUmbra)", () => {
+describe("level-based attribute-attack bonus (ju) on Blood Burst", () => {
+  it("adds exactly +150 bellstrike min/max to a single Blood Burst hit (bellstrikeUmbra)", () => {
     const hit = makeHit({ frame: 0, physMultiplier: 2.4, attributeMultiplier: 3.6 })
     const skill = makeSkill("bellstrikeUmbra", {
-      name: "Bleed Detonation",
+      name: "Blood Burst",
       // The bonus follows the declared role, not the name: the name alone must
       // not make a skill inherit the mechanic.
       tags: ["role:bleedDetonation"],
@@ -59,11 +59,11 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
     }
 
     const result = simulateTimeline(inputs)
-    const detonation = result.perSkill.find((p) => p.name === "Bleed Detonation")
+    const detonation = result.perSkill.find((p) => p.name === "Blood Burst")
     expect(detonation).toBeTruthy()
 
     const art = {
-      name: "Bleed Detonation",
+      name: "Blood Burst",
       physMultiplier: 2.4,
       attributeMultiplier: 3.6,
       skillType: "sustain",
@@ -129,7 +129,7 @@ describe("level-based attribute-attack bonus (ju) on Bleed Detonation", () => {
   // Bellstrike Umbra shipped, every other classId is unknown and
   // `buildContext`'s `getSchool` throws on it — so this drives the gate
   // itself, the same unit `bellstrike-umbra/levelBonus.ts` declares it against.
-  it("does not arm for a Bleed Detonation-named skill on a non-bellstrikeUmbra class", () => {
+  it("does not arm for a Blood Burst-named skill on a non-bellstrikeUmbra class", () => {
     const setup: MechanicSetup = {
       inputs: defaultInputs,
       classId: "someOtherClass",

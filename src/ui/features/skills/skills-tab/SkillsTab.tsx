@@ -429,8 +429,8 @@ export function SkillsTab({
       label: value === "" ? t("None") : labelFn ? labelFn(value) : t(value),
     }))
 
-  const adoptedBuiltinNames = useMemo(
-    () => new Set(classSkills.map((skill) => skill.name)),
+  const adoptedBuiltinIds = useMemo(
+    () => new Set(classSkills.map((skill) => skill.id)),
     [classSkills],
   )
 
@@ -660,7 +660,7 @@ export function SkillsTab({
                 onClick={() => seedFromBuiltin(skill)}
               >
                 <span className={styles.skillsListName}>{t(skill.name)}</span>
-                {adoptedBuiltinNames.has(skill.name) ? (
+                {adoptedBuiltinIds.has(skill.id) ? (
                   <span className={`${styles.skillsTag} ${styles.isEdit}`}>{t("Adopted")}</span>
                 ) : (
                   <span className={styles.skillsTag}>{typeBadge(skill, t)}</span>

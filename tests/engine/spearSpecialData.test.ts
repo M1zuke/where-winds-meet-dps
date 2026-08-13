@@ -53,7 +53,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancelVariant.attributeFixed).toBeCloseTo(154.8, 10)
   })
 
-  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Bleed Detonation), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
+  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Blood Burst), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
     const defenseDownId = "debuff-bellstrikeUmbra-defense-down"

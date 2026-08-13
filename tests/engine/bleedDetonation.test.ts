@@ -7,9 +7,9 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 
 describe("bleed detonation — bellstrikeUmbra default rotation", () => {
-  it("fires at least one Bleed Detonation hit", () => {
+  it("fires at least one Blood Burst hit", () => {
     const result = runEngine({ ...defaultInputs, classId: "bellstrikeUmbra" })
-    const detonationRow = result.perSkill.find((p) => p.name === "Bleed Detonation")
+    const detonationRow = result.perSkill.find((p) => p.name === "Blood Burst")
     expect(detonationRow).toBeTruthy()
     expect(detonationRow!.count).toBeGreaterThanOrEqual(1)
     expect(detonationRow!.expectedDamage).toBeGreaterThan(0)
@@ -32,11 +32,11 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
       activeCustomRotation: rotation,
     }
     const result = simulateTimeline(inputs)
-    const detonationRow = result.perSkill.find((p) => p.name === "Bleed Detonation")
+    const detonationRow = result.perSkill.find((p) => p.name === "Blood Burst")
     expect(detonationRow).toBeTruthy()
     expect(detonationRow!.count).toBe(1)
 
-    const detonationEvents = result.timeline!.filter((ev) => ev.skillName === "Bleed Detonation")
+    const detonationEvents = result.timeline!.filter((ev) => ev.skillName === "Blood Burst")
     expect(detonationEvents).toHaveLength(1)
     expect(detonationEvents[0].frame).toBe(80)
   })
@@ -76,8 +76,8 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     }
     const belowResult = simulateTimeline(below6)
     const atResult = simulateTimeline(at6)
-    expect(belowResult.perSkill.find((p) => p.name === "Bleed Detonation")!.count).toBe(1)
-    expect(atResult.perSkill.find((p) => p.name === "Bleed Detonation")!.count).toBe(2)
+    expect(belowResult.perSkill.find((p) => p.name === "Blood Burst")!.count).toBe(1)
+    expect(atResult.perSkill.find((p) => p.name === "Blood Burst")!.count).toBe(2)
 
     const noInnerWay: Inputs = {
       ...defaultInputs,
@@ -91,7 +91,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
       ],
     }
     const noneResult = simulateTimeline(noInnerWay)
-    expect(noneResult.perSkill.find((p) => p.name === "Bleed Detonation")!.count).toBe(1)
+    expect(noneResult.perSkill.find((p) => p.name === "Blood Burst")!.count).toBe(1)
   })
 
   it("increases bellstrikeUmbra's total DPS relative to a build with detonation triggers stripped", () => {
@@ -140,8 +140,7 @@ describe("bleed detonation — Sword Martial QQQ", () => {
       classId: "bellstrikeUmbra",
       activeCustomRotation: makeRotation("bellstrikeUmbra", { name: names.join("+"), steps }),
     }
-    return simulateTimeline(inputs).timeline!.filter((ev) => ev.skillName === "Bleed Detonation")
-      .length
+    return simulateTimeline(inputs).timeline!.filter((ev) => ev.skillName === "Blood Burst").length
   }
 
   it("carries apply + detonate on every hit", () => {
@@ -214,9 +213,7 @@ describe("Sword R Charge follow-up", () => {
       classId: "bellstrikeUmbra",
       activeCustomRotation: makeRotation("bellstrikeUmbra", { name: "qq+followup", steps }),
     }
-    const events = simulateTimeline(inputs).timeline!.filter(
-      (ev) => ev.skillName === "Bleed Detonation",
-    )
+    const events = simulateTimeline(inputs).timeline!.filter((ev) => ev.skillName === "Blood Burst")
     expect(events).toHaveLength(1)
   })
 })

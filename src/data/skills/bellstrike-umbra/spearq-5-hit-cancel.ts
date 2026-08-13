@@ -7,6 +7,7 @@ export const spearq5HitCancel = defineSkill({
   id: SKILL.spearq5HitCancel,
   classId: "bellstrikeUmbra",
   name: "SpearQ 5-Hit Cancel",
+  breakdownName: "Sober Sorrow",
   tags: [WEAPON.spear, ATTUNE.spearQ],
   skillType: "weapon",
   weaponOrAttribute: "Spear",

@@ -24,9 +24,9 @@ const bleedTickSkill = () =>
 
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 const bleedDamage = (r: ReturnType<typeof runEngine>) =>
-  r.perSkill.find((p) => p.name === "Bleed Tick (DoT)")?.expectedDamage ?? 0
+  r.perSkill.find((p) => p.name === "Bleeding (DoT)")?.expectedDamage ?? 0
 const bleedTickCount = (r: ReturnType<typeof runEngine>) =>
-  r.timeline!.filter((e) => e.kind === "dot" && e.skillName.includes("Bleed Tick")).length
+  r.timeline!.filter((e) => e.kind === "dot" && e.skillName.includes("Bleeding")).length
 
 describe("bleed per-stack ladder — data", () => {
   it("carries the ladder and a max of 5 stacks on a 1 s cadence", () => {
@@ -89,7 +89,7 @@ describe("bleed per-stack ladder — engine behaviour", () => {
 
   it("skips ticks at 0 live stacks (post-detonation) rather than flooring to 1", () => {
     const ticks = withLadder.timeline!.filter(
-      (e) => e.kind === "dot" && e.skillName.includes("Bleed Tick"),
+      (e) => e.kind === "dot" && e.skillName.includes("Bleeding"),
     )
     expect(ticks.length).toBeGreaterThan(0)
     for (const tick of ticks) expect(tick.damage).toBeGreaterThan(0)

@@ -8,7 +8,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
   const result = runEngine({ ...defaultInputs, classId: "bellstrikeUmbra" })
   const bleedTicks = result
-    .timeline!.filter((ev) => ev.kind === "dot" && ev.skillName.includes("Bleed Tick"))
+    .timeline!.filter((ev) => ev.kind === "dot" && ev.skillName.includes("Bleeding"))
     .map((ev) => ev.frame)
     .sort((a, b) => a - b)
 
@@ -23,8 +23,8 @@ describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
     }
   })
 
-  it("Bleed Tick (DoT) contributes a materially higher damage share than the old per-window scheduling", () => {
-    const dotRow = result.perSkill.find((p) => p.name === "Bleed Tick (DoT)")
+  it("Bleeding (DoT) contributes a materially higher damage share than the old per-window scheduling", () => {
+    const dotRow = result.perSkill.find((p) => p.name === "Bleeding (DoT)")
     expect(dotRow).toBeTruthy()
     expect(dotRow!.percentOfTotal).toBeGreaterThan(0.07)
   })

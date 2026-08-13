@@ -7,6 +7,7 @@ export const swordRChargeFollowUp = defineSkill({
   id: SKILL.swordRChargeFollowUp,
   classId: "bellstrikeUmbra",
   name: "Sword R Charge - Follow Up",
+  breakdownName: "Crisscross - Second Track",
   tags: [WEAPON.sword],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

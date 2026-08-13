@@ -1,4 +1,4 @@
-// Bleed ticks and Bleed Detonation are Sword-typed (lvl-110 workbook
+// Bleed ticks and Blood Burst are Sword-typed (lvl-110 workbook
 // skill-type column), so they take swordBoost AND allMartialBoost like any
 // Sword skill; mystic skills and their DoTs take neither. Guards the
 // data-driven typing against a reintroduced per-skill exclusion.
@@ -42,26 +42,18 @@ const BURST_ROTATION = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
 describe("all-martial and sword boost reach every Sword-typed row", () => {
   const base = simulate(BLEED_ROTATION)
 
-  it("allMartialBoost raises Bleed Tick ticks and Bleed Detonation", () => {
+  it("allMartialBoost raises Bleeding ticks and Blood Burst", () => {
     const boosted = simulate(BLEED_ROTATION, { allMartialBoost: 0.1 })
-    expect(damageOf(base, "Bleed Tick (DoT)")).toBeGreaterThan(0)
-    expect(damageOf(boosted, "Bleed Tick (DoT)")).toBeGreaterThan(
-      damageOf(base, "Bleed Tick (DoT)"),
-    )
-    expect(damageOf(base, "Bleed Detonation")).toBeGreaterThan(0)
-    expect(damageOf(boosted, "Bleed Detonation")).toBeGreaterThan(
-      damageOf(base, "Bleed Detonation"),
-    )
+    expect(damageOf(base, "Bleeding (DoT)")).toBeGreaterThan(0)
+    expect(damageOf(boosted, "Bleeding (DoT)")).toBeGreaterThan(damageOf(base, "Bleeding (DoT)"))
+    expect(damageOf(base, "Blood Burst")).toBeGreaterThan(0)
+    expect(damageOf(boosted, "Blood Burst")).toBeGreaterThan(damageOf(base, "Blood Burst"))
   })
 
-  it("swordBoost raises Bleed Tick ticks and Bleed Detonation", () => {
+  it("swordBoost raises Bleeding ticks and Blood Burst", () => {
     const boosted = simulate(BLEED_ROTATION, { swordBoost: 0.1 })
-    expect(damageOf(boosted, "Bleed Tick (DoT)")).toBeGreaterThan(
-      damageOf(base, "Bleed Tick (DoT)"),
-    )
-    expect(damageOf(boosted, "Bleed Detonation")).toBeGreaterThan(
-      damageOf(base, "Bleed Detonation"),
-    )
+    expect(damageOf(boosted, "Bleeding (DoT)")).toBeGreaterThan(damageOf(base, "Bleeding (DoT)"))
+    expect(damageOf(boosted, "Blood Burst")).toBeGreaterThan(damageOf(base, "Blood Burst"))
   })
 
   it("per point, allMartialBoost and swordBoost are identical on an all-Sword rotation", () => {

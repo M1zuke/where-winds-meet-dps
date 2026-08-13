@@ -85,12 +85,8 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
     )
   })
 
-  it("Receives row on Bleed Detonation reads the same point units", () => {
-    const rows = receivesForSkill(
-      findSkill("Bleed Detonation"),
-      CLASS,
-      inputsWithSwordHorizon("tier 6"),
-    )
+  it("Receives row on Blood Burst reads the same point units", () => {
+    const rows = receivesForSkill(findSkill("Blood Burst"), CLASS, inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.effect).toBe(
       "physPen +15, bellstrikePen +15",
     )
@@ -126,12 +122,8 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
     )
   })
 
-  it("Receives row on Bleed Detonation reads the same text", () => {
-    const rows = receivesForSkill(
-      findSkill("Bleed Detonation"),
-      CLASS,
-      inputsWithSwordHorizon("tier 6"),
-    )
+  it("Receives row on Blood Burst reads the same text", () => {
+    const rows = receivesForSkill(findSkill("Blood Burst"), CLASS, inputsWithSwordHorizon("tier 6"))
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedingDamage")!.effect).toBe(
       "affinityDmg +18%",
     )

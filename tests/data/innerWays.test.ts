@@ -149,7 +149,7 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
 })
 
 describe("a tier-6 node resolves to 6, never undefined, feeding buffEngineEquivalence.fixture.json", () => {
-  it("Bleed Tick's detonation.retainMinTier is the number 6", () => {
+  it("Bleeding's detonation.retainMinTier is the number 6", () => {
     expect(bleedTick.detonation?.retainMinTier).toBe(6)
   })
 
@@ -280,7 +280,7 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     expect((def.buffDefs ?? []).map((module) => module.id)).toEqual(ids)
   })
 
-  it("Sword Horizon names Bleed Detonation literally, not by a role tag", () => {
+  it("Sword Horizon names Blood Burst literally, not by a role tag", () => {
     const def = innerWayDefinition(INNER_WAY_ID.swordHorizon)!
     expect(def.skillBehaviors?.map((registration) => registration.skillId)).toEqual([
       "bellstrikeUmbra-bleed-detonation",

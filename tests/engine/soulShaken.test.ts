@@ -76,7 +76,7 @@ describe("Soul Shaken — BuffEngine unit", () => {
 })
 
 describe("Soul Shaken — end to end through simulateTimeline", () => {
-  it("boosts bellstrikeUmbra's Bleed Tick DoT damage relative to a build without wolfchasersArt (default rotation already casts SpearHeavy + SpearQ)", () => {
+  it("boosts bellstrikeUmbra's Bleeding DoT damage relative to a build without wolfchasersArt (default rotation already casts SpearHeavy + SpearQ)", () => {
     const rotation = defaultRotationForClass("bellstrikeUmbra")!
     const withoutWolf: Inputs = {
       ...defaultInputs,
@@ -98,7 +98,7 @@ describe("Soul Shaken — end to end through simulateTimeline", () => {
     const after = simulateTimeline(withWolf)
     const bleedDamage = (timeline: ReturnType<typeof simulateTimeline>) =>
       timeline.perSkill
-        .filter((skill) => skill.name.startsWith("Bleed Tick"))
+        .filter((skill) => skill.name.startsWith("Bleeding"))
         .reduce((sum, skill) => sum + skill.expectedDamage, 0)
     expect(bleedDamage(after)).toBeGreaterThan(bleedDamage(before))
   })

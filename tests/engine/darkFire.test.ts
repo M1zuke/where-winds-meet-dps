@@ -180,8 +180,8 @@ describe("Smolder duration", () => {
 })
 
 describe("Zenith detonation extends Smolder", () => {
-  it("Bleed Detonation carries an extend-only, zenith-gated Smolder trigger", () => {
-    const det = builtinSkillsForClass(CLASS).find((s) => s.name === "Bleed Detonation")!
+  it("Blood Burst carries an extend-only, zenith-gated Smolder trigger", () => {
+    const det = builtinSkillsForClass(CLASS).find((s) => s.name === "Blood Burst")!
     const t = det.hits.flatMap((h) => h.triggers).find((tr) => tr.targetId === DARK_FIRE_ID)
     expect(t).toBeTruthy()
     expect(t!.extendFrames).toBe(600)
@@ -196,7 +196,7 @@ describe("Zenith detonation extends Smolder", () => {
       { name: "Insightful Strike", stacks: "tier 6" },
       { name: "Morale Chant", stacks: "tier 6" },
     ]
-    const detonation = skillNamed("Bleed Detonation")
+    const detonation = skillNamed("Blood Burst")
     const smolder = skillNamed(TWO_HITS)
     const filler = skillNamed("Soaring")
     const ticksFor = (detonations: number) => {
@@ -231,7 +231,7 @@ describe("Zenith detonation extends Smolder", () => {
       { name: "Insightful Strike", stacks: "tier 6" },
       { name: "Morale Chant", stacks: "tier 6" },
     ]
-    const detonation = skillNamed("Bleed Detonation")
+    const detonation = skillNamed("Blood Burst")
     const smolder = skillNamed(TWO_HITS)
     const filler = skillNamed("Soaring")
     const ticksFor = (smolderCasts: number, detonations: number) => {

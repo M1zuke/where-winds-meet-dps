@@ -7,6 +7,7 @@ export const dragonFireSmolder1Hit = defineSkill({
   id: SKILL.dragonFireSmolder1Hit,
   classId: "bellstrikeUmbra",
   name: "Dragon's Breath: Smolder 1 Hit",
+  breakdownName: "Dragon's Breath",
   tags: [MYSTIC.burst],
   skillType: "mystic",
   weaponOrAttribute: "",

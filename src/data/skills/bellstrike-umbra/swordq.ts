@@ -7,6 +7,7 @@ export const swordq = defineSkill({
   id: SKILL.swordq,
   classId: "bellstrikeUmbra",
   name: "Sword Martial Q",
+  breakdownName: "Inner Track Slash",
   tags: [WEAPON.sword, ATTUNE.swordQ],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

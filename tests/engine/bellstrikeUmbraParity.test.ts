@@ -1,6 +1,6 @@
 // Diagnostic parity check for one confirmed-correct bellstrikeUmbra (Bellstrike
 // Umbra) build against the reference site's cached run (T6-Bili rotation,
-// target DPS 48,365 / total damage 2,936,621 / Bleed Detonation 1,578,359
+// target DPS 48,365 / total damage 2,936,621 / Blood Burst 1,578,359
 // over a ~60.7 s window). The DPS/total/detonation bands below are an
 // intentionally LOOSE, re-centered fit around what the engine actually
 // produces — NOT a locked fixture — while the rate-conversion assertion is
@@ -107,7 +107,7 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(result.rotationDuration).toBeGreaterThan(60.2)
     expect(result.rotationDuration).toBeLessThan(61.2)
 
-    const detonation = result.perSkill.find((s) => s.name === "Bleed Detonation")
+    const detonation = result.perSkill.find((s) => s.name === "Blood Burst")
 
     console.log("warnings:", result.warnings)
     console.log(
@@ -118,7 +118,7 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     )
     if (detonation) {
       console.log(
-        `Bleed Detonation ${detonation.expectedDamage.toFixed(0)} over ${detonation.count} hits ` +
+        `Blood Burst ${detonation.expectedDamage.toFixed(0)} over ${detonation.count} hits ` +
           `(avg ${(detonation.expectedDamage / detonation.count).toFixed(0)}, site target ${SITE_TARGET_DETONATION} / 29 hits)`,
       )
     }
