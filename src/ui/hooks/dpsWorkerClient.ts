@@ -6,6 +6,9 @@ type RequestKind = WorkerRequest["kind"]
 type ResponseOfKind<K extends RequestKind> = Extract<WorkerResponse, { kind: K }>
 type ResponseListener = (response: WorkerResponse) => void
 
+type WithoutReqId<Request> = Request extends unknown ? Omit<Request, "reqId"> : never
+export type UnsentRequest = WithoutReqId<WorkerRequest>
+
 const MAX_POOL_SIZE = 4
 
 interface KindState {
@@ -21,6 +24,7 @@ interface KindState {
 const stateByKind = new Map<RequestKind, KindState>()
 const pool: Worker[] = []
 const workerByKind = new Map<RequestKind, Worker>()
+let lastAssignedReqId = 0
 
 function stateFor(kind: RequestKind): KindState {
   const existing = stateByKind.get(kind)
@@ -65,19 +69,21 @@ function setPending(state: KindState, isPending: boolean): void {
 function deliver(response: WorkerResponse): void {
   const state = stateFor(response.kind)
   if (response.reqId === state.latestReqId) setPending(state, false)
-  if (response.reqId < state.lastDeliveredReqId) return
+  if (response.reqId <= state.lastDeliveredReqId) return
   state.lastDeliveredReqId = response.reqId
   for (const listener of state.responseListeners) listener(response)
 }
 
-function cancelQueued(state: KindState): void {
+function abandonRequests(state: KindState): void {
   if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
   state.debounceHandle = null
   state.queued = null
+  state.lastDeliveredReqId = state.latestReqId
   setPending(state, false)
 }
 
-export function postToDpsWorker(request: WorkerRequest): void {
+export function postToDpsWorker(unsent: UnsentRequest): void {
+  const request = { ...unsent, reqId: ++lastAssignedReqId } as WorkerRequest
   const state = stateFor(request.kind)
   state.queued = request
   state.latestReqId = request.reqId
@@ -100,7 +106,7 @@ export function subscribeToDpsWorker<K extends RequestKind>(
   state.responseListeners.add(typedListener)
   return () => {
     state.responseListeners.delete(typedListener)
-    if (state.responseListeners.size === 0) cancelQueued(state)
+    if (state.responseListeners.size === 0) abandonRequests(state)
   }
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { GearPiece, Inputs } from "../../engine/types"
 import type { WordMaxRow } from "../../engine/dpsWorker"
 import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
@@ -19,7 +19,6 @@ const NO_SELECTION_RESULT: WordMaxAnalysisResult = {
 }
 
 export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): WordMaxAnalysisResult {
-  const reqIdRef = useRef(0)
   const [received, setReceived] = useState<{ rows: WordMaxRow[]; pieceId: string } | null>(null)
   const isPending = useDpsWorkerPending("wordMax")
 
@@ -29,7 +28,7 @@ export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): Wor
 
   useEffect(() => {
     if (!piece) return
-    postToDpsWorker({ kind: "wordMax", reqId: ++reqIdRef.current, inputs, piece })
+    postToDpsWorker({ kind: "wordMax", inputs, piece })
   }, [inputs, piece])
 
   if (!piece) return NO_SELECTION_RESULT
