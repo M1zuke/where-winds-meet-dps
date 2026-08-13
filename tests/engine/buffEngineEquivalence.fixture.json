@@ -55,19 +55,20 @@
           "bellstrikeUmbra-swordspecial-4-hit",
           "bellstrikeUmbra-toad-cancel"
         ],
-        "digest": "fe32d11dc64dbd3ba6f4fd5b26e4dae366162bba5b88705f41b7f475688e3ab3"
+        "digest": "2735a57019323a47fa247197ecfd44ef8bb01b04971a7ebe7c9e6011cb5e6df4"
       },
       "debuffs": {
-        "count": 6,
+        "count": 7,
         "ids": [
           "debuff-bellstrikeUmbra-bitter-season-tick",
           "debuff-bellstrikeUmbra-bleed-tick",
           "debuff-bellstrikeUmbra-combustion",
           "debuff-bellstrikeUmbra-dark-fire",
+          "debuff-bellstrikeUmbra-defense-down",
           "debuff-bellstrikeUmbra-flute-ripple",
           "debuff-bellstrikeUmbra-toad-poison"
         ],
-        "digest": "3ec6cb9665d33a74fe1442e24f985a3320af66f473d781d87e787bf7c10d29e4"
+        "digest": "706b1660f269d0e1e96e0f102906a8d122d9f23e683681f439dae126e758ea4e"
       },
       "buffs": [
         {

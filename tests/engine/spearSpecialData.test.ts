@@ -53,12 +53,13 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancelVariant.attributeFixed).toBeCloseTo(154.8, 10)
   })
 
-  it("hit-0's five triggers: 3×applyDot(bleed), 1×castSkill(Bleed Detonation), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
+  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Bleed Detonation), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
+    const defenseDownId = "debuff-bellstrikeUmbra-defense-down"
     for (const s of [spearSpecial[0], cancel[0]]) {
       const triggers = s.hits[0].triggers
-      expect(triggers).toHaveLength(5)
+      expect(triggers).toHaveLength(6)
       expect(triggers.some((t) => t.kind === "detonateDot")).toBe(false)
       const applyDots = triggers.filter((t) => t.kind === "applyDot")
       expect(applyDots).toHaveLength(3)
@@ -66,6 +67,9 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       const casts = triggers.filter((t) => t.kind === "castSkill")
       expect(casts).toHaveLength(1)
       expect(casts[0].targetId).toBe(detonationId)
+      const applyDebuffs = triggers.filter((t) => t.kind === "applyDebuff")
+      expect(applyDebuffs).toHaveLength(1)
+      expect(applyDebuffs[0].targetId).toBe(defenseDownId)
       const applyBuffs = triggers.filter((t) => t.kind === "applyBuff")
       expect(applyBuffs).toHaveLength(1)
       expect(applyBuffs[0].targetId).toBe(SPEAR_SPECIAL_COOLDOWN_BUFF_ID)
