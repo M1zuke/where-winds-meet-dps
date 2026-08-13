@@ -110,7 +110,7 @@ const CASES: { name: string; build: () => Inputs }[] = [
   // `anchor` are the two `attune:bleed` entities.
   {
     name: "anchor:noAttunement",
-    build: () => ({ ...toEngineInputs(anchorInputs()), dingYinByTag: {} }),
+    build: () => ({ ...toEngineInputs(anchorInputs()), classSpecificAttunement: {} }),
   },
   { name: "anchor:dummyOff", build: () => toEngineInputs({ ...anchorInputs(), dummyMode: false }) },
   {

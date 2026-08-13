@@ -5,6 +5,8 @@ import { getConfiguredBase, getMindMethodContributions } from "../definitions/ba
 
 export const DERIVED_STAT_FIELDS: readonly string[] = [
   ...new Set(listKnownPaths().map((path) => path.split(".")[0])),
+  "classSpecificAttunement",
+  // The previous shape held the same tag map under this key.
   "dingYinByTag",
 ]
 
@@ -30,7 +32,7 @@ export function withZeroedDerivedStats(inputs: Inputs): Inputs {
         ? { ...(block as Record<string, number>), [tail]: 0 }
         : { ...ZERO_ATTACK_BLOCK }
   }
-  next.dingYinByTag = {}
+  next.classSpecificAttunement = {}
   return next as unknown as Inputs
 }
 
@@ -54,14 +56,14 @@ function clone(inputs: Inputs): Inputs {
     stonesplit: { ...inputs.stonesplit },
     silkbind: { ...inputs.silkbind },
     bamboocut: { ...inputs.bamboocut },
-    dingYinByTag: {},
+    classSpecificAttunement: {},
     mindMethods: inputs.mindMethods.map((m) => ({ ...m })) as Inputs["mindMethods"],
   }
 }
 
 function writePath(inputs: Inputs, path: string, value: number): void {
-  if (path.startsWith("dingYinByTag.")) {
-    inputs.dingYinByTag[path.slice("dingYinByTag.".length)] = value
+  if (path.startsWith("classSpecificAttunement.")) {
+    inputs.classSpecificAttunement[path.slice("classSpecificAttunement.".length)] = value
     return
   }
   const parts = path.split(".")
@@ -91,7 +93,7 @@ export function withDerivedStats(inputs: Inputs): Inputs {
       writePath(next, path, sum)
     }
     for (const e of gear) {
-      if (e.path.startsWith("dingYinByTag.")) {
+      if (e.path.startsWith("classSpecificAttunement.")) {
         writePath(next, e.path, e.amount)
       }
     }

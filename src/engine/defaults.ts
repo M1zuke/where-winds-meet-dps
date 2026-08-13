@@ -46,7 +46,7 @@ export const defaultInputs: Inputs = {
   singleMysticBoost: 0,
   areaMysticBoost: 0,
 
-  dingYinByTag: { "Mouse Boost": 0.153 },
+  classSpecificAttunement: { "Mouse Boost": 0.153 },
 
   // Unslotted: no validated class allows four slottable inner ways.
   mindMethods: [
@@ -101,7 +101,7 @@ export const blankInputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
 
-  dingYinByTag: {},
+  classSpecificAttunement: {},
 
   mindMethods: [
     { ...emptyMindMethod },

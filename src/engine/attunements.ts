@@ -10,7 +10,7 @@ export interface AttunementOption {
   classIds: readonly string[] | null
   enginePath: string | null
   // Which entities the rolled stat reaches. Only meaningful for the
-  // `dingYinByTag.*` attunements, whose value is scoped to a category of skills
+  // `classSpecificAttunement.*` attunements, whose value is scoped to a category of skills
   // rather than applying to everything the character does.
   affectsTag?: string
   hint?: string

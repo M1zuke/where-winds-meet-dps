@@ -28,7 +28,7 @@ function baseInputs(classId: string, mindMethods: Inputs["mindMethods"]): Inputs
     allMartialBoost: 0,
     phys: { min: 977.23, max: 0, penetration: 0.2 },
     bellstrike: { min: 0, max: 0, penetration: 0 },
-    dingYinByTag: {},
+    classSpecificAttunement: {},
     mindMethods,
   }
 }

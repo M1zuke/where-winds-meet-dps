@@ -225,7 +225,7 @@ export function simulateTimeline(inputs: Inputs): Result {
   const buildView: BuildView = {
     classId: inputs.classId,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
-    dingYin: (tag) => inputs.dingYinByTag[tag] ?? 0,
+    classSpecificAttunement: (tag) => inputs.classSpecificAttunement[tag] ?? 0,
     grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
   }
 

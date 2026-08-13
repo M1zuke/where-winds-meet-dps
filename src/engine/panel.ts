@@ -9,7 +9,7 @@ import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
 
 export { getBreakthrough, henZhiActiveForInputs }
 
-const DING_YIN_PATH_PREFIX = "dingYinByTag."
+const CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX = "classSpecificAttunement."
 
 // The scoped stats (BUFFS.md § "Category 3") are keyed by what the entity
 // declares — a weapon name, a mystic category — and `statRegistry` already owns
@@ -252,14 +252,20 @@ export function buildContext(
     effectiveBossBoost +
     (school.generalDamageBoost ?? 0)
 
-  const dingYinByTag: Record<string, number> = {}
-  for (const tag of school.dingYinTags) dingYinByTag[tag] = inputs.dingYinByTag[tag] ?? 0
+  const classSpecificAttunement: Record<string, number> = {}
+  for (const tag of school.classSpecificAttunements) {
+    classSpecificAttunement[tag] = inputs.classSpecificAttunement[tag] ?? 0
+  }
 
   const attuneBoostByTag: Record<string, number> = {}
   for (const option of ATTUNEMENT_OPTIONS) {
-    if (!option.affectsTag || !option.enginePath?.startsWith(DING_YIN_PATH_PREFIX)) continue
+    if (!option.affectsTag || !option.enginePath?.startsWith(CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX))
+      continue
     if (option.classIds && !option.classIds.includes(inputs.classId)) continue
-    const amount = inputs.dingYinByTag[option.enginePath.slice(DING_YIN_PATH_PREFIX.length)] ?? 0
+    const amount =
+      inputs.classSpecificAttunement[
+        option.enginePath.slice(CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX.length)
+      ] ?? 0
     if (amount)
       attuneBoostByTag[option.affectsTag] = (attuneBoostByTag[option.affectsTag] ?? 0) + amount
   }
@@ -311,7 +317,7 @@ export function buildContext(
     food: inputs.food,
     set: inputs.set,
     tianGong: inputs.tianGongElement,
-    dingYinByTag,
+    classSpecificAttunement,
     attuneBoostByTag,
     shareDebuffs: {
       henZhi: inputs.shareDebuff5HenZhi,

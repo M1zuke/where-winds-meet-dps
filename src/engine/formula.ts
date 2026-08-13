@@ -99,9 +99,9 @@ export interface FormulaContext {
   food: boolean
   set: string | null
   tianGong: "fire" | "poison" | null
-  dingYinByTag: Record<string, number>
-  // The scoped view of `dingYinByTag`, keyed by the `attune:` tag an entity
-  // declares rather than by the stat's display name.
+  classSpecificAttunement: Record<string, number>
+  // The scoped view of `classSpecificAttunement`, keyed by the `attune:` tag an
+  // entity declares rather than by the stat's display name.
   attuneBoostByTag?: Record<string, number>
   shareDebuffs: { henZhi: boolean; easyHurt: boolean }
   physPenResistance?: number
@@ -348,14 +348,14 @@ export function computeSkillDamage(
   // A scoped stat, in the same family as `weaponBoosts` / `mysticTypeBoosts`
   // (folded into `T` above) — but multiplicative here rather than additive
   // inside `H_total`. Do not merge the two: they are different numbers.
-  const E_dingYin = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
+  const E_attuneBoost = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
 
   const I_corr = num(art.correction) || 1
 
   // Fixed-damage skills (e.g. Dragon Head) can trigger neither crit, affinity
   // nor abrasion — they always deal the normal row.
   const F_base = guaranteedNormal ? EF : guaranteedCrit ? EB : EH
-  const F = F_base * (1 + H_total) * count * I_corr * (1 + E_dingYin) * dotMult
+  const F = F_base * (1 + H_total) * count * I_corr * (1 + E_attuneBoost) * dotMult
 
   return {
     expectedDamage: F,
@@ -405,7 +405,7 @@ export function computeSkillDamage(
       EF,
       EH,
       H: H_total,
-      E: E_dingYin,
+      E: E_attuneBoost,
       I: I_corr,
       F,
       normalMin,
