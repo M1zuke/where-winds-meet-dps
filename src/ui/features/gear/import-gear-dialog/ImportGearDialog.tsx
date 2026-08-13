@@ -38,7 +38,7 @@ import {
   type AffixChoices,
   type IdentityOverrides,
 } from "./importedGearPieces"
-import { toMindMethods } from "./importedInnerWays"
+import { toMindMethods, unsupportedInnerWayNames } from "./importedInnerWays"
 import styles from "./ImportGearDialog.module.scss"
 
 export const DASHBOARD_URL = "https://www.wherewindsmeetgame.com/m/2025h5sjgj/en/"
@@ -122,6 +122,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   const pieces = useMemo(() => (result ? toGearPieces(result, overrides) : []), [result, overrides])
   const shown = useMemo(() => (result ? previewablePieces(result) : []), [result])
   const innerWays = result?.innerWays ?? []
+  const unsupportedInnerWays = unsupportedInnerWayNames(innerWays)
   const mindMethods = useMemo(
     () => (result ? toMindMethods(result.innerWays, inputs) : null),
     [result, inputs],
@@ -280,6 +281,15 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
                     ))}
                   </div>
                 </>
+              )}
+
+              {unsupportedInnerWays.length > 0 && (
+                <div className="warnings">
+                  ⚠ {t("This app does not model")} {unsupportedInnerWays.map(t).join(", ")} —{" "}
+                  {t(
+                    "they are left out of the import and out of the calculation, so your real damage will differ.",
+                  )}
+                </div>
               )}
 
               {innerWaysAbsentFromCapture(result) && (
@@ -533,6 +543,8 @@ function innerWayNote(innerWay: ImportedInnerWay): string {
       return innerWay.resolution.tierAssumed ? "tier assumed" : ""
     case "notForThisClass":
       return "this class cannot slot it — left out"
+    case "unsupported":
+      return "not modelled yet — left out"
     case "unmapped":
       return "no mapping yet — left out"
   }

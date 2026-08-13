@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { PASSIVE_ID_TO_INNER_WAY } from "../../src/data/innerWays/passiveIds"
+import {
+  PASSIVE_ID_TO_INNER_WAY,
+  PASSIVE_INNER_WAY_NAMES,
+} from "../../src/data/innerWays/passiveIds"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { innerWayDefinition } from "../../src/definitions/innerWays/registry"
+import { INNER_WAYS, innerWayDefinition } from "../../src/definitions/innerWays/registry"
 import { defaultInputs } from "../../src/engine/defaults"
 import { allowedInnerWaysForClass } from "../../src/engine/panel"
 import type { Inputs } from "../../src/engine/types"
@@ -17,7 +20,9 @@ import {
   importableInnerWays,
   resolveInnerWays,
   toMindMethods,
+  unsupportedInnerWayNames,
   type PassiveInnerWayMapping,
+  type PassiveInnerWayNames,
 } from "../../src/ui/features/gear/import-gear-dialog/importedInnerWays"
 import fixture from "./fixtures/dashboardRoleInfo.json"
 
@@ -34,8 +39,12 @@ function captureWith(passiveSlots: unknown): string {
   return JSON.stringify({ wearEquipsDetailed: {}, passiveSlots })
 }
 
-function resolvedFor(text: string, withMapping: PassiveInnerWayMapping = mapping) {
-  return resolveInnerWays(parseDashboardGearPayload(text), inputs, withMapping)
+function resolvedFor(
+  text: string,
+  withMapping: PassiveInnerWayMapping = mapping,
+  withNames: PassiveInnerWayNames = {},
+) {
+  return resolveInnerWays(parseDashboardGearPayload(text), inputs, withMapping, withNames)
 }
 
 describe("reading passiveSlots", () => {
@@ -105,11 +114,62 @@ describe("the shipped passive table is the authority", () => {
     }
   })
 
-  it("leaves an id it does not carry unmapped", () => {
+  it("carries a passive id for every inner way the engine models", () => {
+    const mapped = new Set(Object.values(PASSIVE_ID_TO_INNER_WAY))
+    for (const def of INNER_WAYS) expect(mapped, def.id).toContain(def.id)
+  })
+
+  it("maps each passive id to at most one inner way", () => {
+    const mapped = Object.values(PASSIVE_ID_TO_INNER_WAY)
+    expect(new Set(mapped).size).toBe(mapped.length)
+  })
+
+  it("has a catalog name for every id it models", () => {
+    for (const passiveId of Object.keys(PASSIVE_ID_TO_INNER_WAY)) {
+      expect(PASSIVE_INNER_WAY_NAMES[passiveId], passiveId).toBeDefined()
+    }
+  })
+
+  it("leaves an id in neither table unmapped", () => {
     const innerWays = resolveInnerWays(parseDashboardGearPayload(fixtureText), inputs)
     expect(innerWays.map((innerWay) => innerWay.resolution.kind)).toEqual(
       Array(innerWays.length).fill("unmapped"),
     )
+  })
+})
+
+describe("an inner way the engine has no module for", () => {
+  const catalog = {
+    "3011001": "Sandswirl Tail",
+    "3011002": "Vital Leech",
+    "3019999": "Sandswirl Tail",
+  }
+
+  it("keeps the game's name so the user can see what is missing", () => {
+    expect(resolvedFor(fixtureText, {}, catalog)[0]!.resolution).toEqual({
+      kind: "unsupported",
+      name: "Sandswirl Tail",
+    })
+  })
+
+  it("names each one once, in capture order", () => {
+    const resolved = resolvedFor(fixtureText, {}, catalog)
+    expect(unsupportedInnerWayNames(resolved)).toEqual(["Sandswirl Tail", "Vital Leech"])
+  })
+
+  it("names none when every entry resolved", () => {
+    expect(unsupportedInnerWayNames(resolvedFor(fixtureText))).toEqual([])
+  })
+
+  it("is left out of the slots", () => {
+    expect(toMindMethods(resolvedFor(fixtureText, {}, catalog), inputs)).toBeNull()
+  })
+
+  it("yields to the engine's own name once a module is mapped", () => {
+    expect(resolvedFor(fixtureText, mapping, catalog)[0]!.resolution).toMatchObject({
+      kind: "resolved",
+      name: "Sword Horizon",
+    })
   })
 })
 

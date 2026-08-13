@@ -1,4 +1,7 @@
-import { PASSIVE_ID_TO_INNER_WAY } from "../../../../data/innerWays/passiveIds"
+import {
+  PASSIVE_ID_TO_INNER_WAY,
+  PASSIVE_INNER_WAY_NAMES,
+} from "../../../../data/innerWays/passiveIds"
 import type { InnerWayDef } from "../../../../definitions/innerWays/innerWayDef"
 import { innerWayDefinition, innerWayName } from "../../../../definitions/innerWays/registry"
 import { allowedInnerWaysForClass, getSchool } from "../../../../engine/panel"
@@ -9,6 +12,7 @@ export const MIND_METHOD_SLOT_COUNT = 4
 const FALLBACK_TIER = 6
 
 export type PassiveInnerWayMapping = Readonly<Record<string, string>>
+export type PassiveInnerWayNames = Readonly<Record<string, string>>
 
 function narrowedTier(
   def: InnerWayDef,
@@ -30,13 +34,16 @@ export function resolveInnerWays(
   result: GearImportResult,
   inputs: Inputs,
   mapping: PassiveInnerWayMapping = PASSIVE_ID_TO_INNER_WAY,
+  catalogNames: PassiveInnerWayNames = PASSIVE_INNER_WAY_NAMES,
 ): ImportedInnerWay[] {
   const allowed = new Set(allowedInnerWaysForClass(inputs.classId))
   return result.innerWays.map((innerWay) => {
     const innerWayId = mapping[innerWay.passiveId]
     const def = innerWayId ? innerWayDefinition(innerWayId) : undefined
     if (!innerWayId || !def) {
-      return { ...innerWay, resolution: { kind: "unmapped" as const } }
+      const catalogName = catalogNames[innerWay.passiveId]
+      if (!catalogName) return { ...innerWay, resolution: { kind: "unmapped" as const } }
+      return { ...innerWay, resolution: { kind: "unsupported" as const, name: catalogName } }
     }
     const name = innerWayName(innerWayId)
     if (!allowed.has(innerWayId)) {
@@ -48,6 +55,18 @@ export function resolveInnerWays(
       resolution: { kind: "resolved" as const, innerWayId, name, tier, tierAssumed: assumed },
     }
   })
+}
+
+/**
+ * The names of the inner ways the capture carries that the engine has no module
+ * for, in capture order and without repeats. What the dialog names back to the
+ * user so a build that silently loses one is visible before the import lands.
+ */
+export function unsupportedInnerWayNames(innerWays: readonly ImportedInnerWay[]): string[] {
+  const names = innerWays.flatMap((innerWay) =>
+    innerWay.resolution.kind === "unsupported" ? [innerWay.resolution.name] : [],
+  )
+  return [...new Set(names)]
 }
 
 export interface ImportableInnerWay {

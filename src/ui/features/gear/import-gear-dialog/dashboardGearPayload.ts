@@ -45,6 +45,8 @@ export interface ImportedAffix {
 export type InnerWayResolution =
   | { kind: "resolved"; innerWayId: string; name: string; tier: number; tierAssumed: boolean }
   | { kind: "notForThisClass"; innerWayId: string; name: string }
+  /** In the game's passive catalog, with no `defineInnerWay` module behind it. */
+  | { kind: "unsupported"; name: string }
   | { kind: "unmapped" }
 
 export interface ImportedInnerWay {
@@ -356,6 +358,12 @@ export function summarizeImport(result: GearImportResult): GearImportSummary {
   return summary
 }
 
+function resolvedInnerWayId(resolution: InnerWayResolution): string | null {
+  return resolution.kind === "resolved" || resolution.kind === "notForThisClass"
+    ? resolution.innerWayId
+    : null
+}
+
 /** Ids and raw entries only — no role name, no role id. */
 export function buildImportDiagnostics(result: GearImportResult): string {
   return JSON.stringify(
@@ -380,7 +388,7 @@ export function buildImportDiagnostics(result: GearImportResult): string {
       passiveSlots: result.innerWays.map((innerWay) => ({
         passiveId: innerWay.passiveId,
         reportedTier: innerWay.reportedTier,
-        resolved: innerWay.resolution.kind === "unmapped" ? null : innerWay.resolution.innerWayId,
+        resolved: resolvedInnerWayId(innerWay.resolution),
         raw: innerWay.raw,
       })),
     },
