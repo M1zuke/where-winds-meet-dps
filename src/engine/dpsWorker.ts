@@ -13,7 +13,7 @@ import type {
   BowSet,
   GearPiece,
   GearSlot,
-  GearWordName,
+  GearWordId,
   Inputs,
   ItemRankingRow,
 } from "./types"
@@ -96,7 +96,7 @@ export interface RetunementWorkerRequest {
 
 export interface RetunementRow {
   slotIndex: number
-  word: GearWordName
+  word: GearWordId
   legal: boolean
   isCurrent: boolean
   deltaDps: number

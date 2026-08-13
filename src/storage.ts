@@ -1,5 +1,6 @@
-import type { GearWordName, Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
-import { EMPTY_EQUIPPED, defaultCombatSettings, isGearWordName } from "./engine/types"
+import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
+import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
+import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS } from "./definitions/classes/registry"
@@ -35,6 +36,7 @@ import {
   runProfileMigrations,
   migrateClassId,
   migrateEntityId,
+  migrateGearWordId,
   migrateSetId,
 } from "./migrations"
 
@@ -142,25 +144,14 @@ function migrateRotationIds<T>(rotation: T): T {
   return next as unknown as T
 }
 
-const LEGACY_GEAR_WORD_RENAMES: Record<string, GearWordName> = {
-  "Single Burst": "Single-Target Mystic Skill DMG Boost",
-  "Single Control": "Single-Target Mystic Skill DMG Boost",
-  "AoE Anomaly": "Area Mystic Skill DMG Boost",
-  "AoE Damage": "Area Mystic Skill DMG Boost",
-  "Area Debuff Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
-  "Area DMG Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
-  "Min Formless": "Min Void Attack",
-  "Max Formless": "Max Void Attack",
-}
-
 // A word outside the catalogue already scores nothing, so clearing the row costs
 // the user no contribution.
 function repairGearWord(entry: unknown): unknown {
   if (!entry || typeof entry !== "object") return entry
   const stored = (entry as { word?: unknown }).word
   if (typeof stored !== "string") return entry
-  const renamed = LEGACY_GEAR_WORD_RENAMES[stored] ?? stored
-  return isGearWordName(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
+  const renamed = migrateGearWordId(stored)
+  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"

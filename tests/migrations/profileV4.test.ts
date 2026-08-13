@@ -62,6 +62,7 @@ describe("V5 step — v4 → v5 in isolation", () => {
       "V9__renameSteadfastDevotion",
       "V10__renameFrostCladNight",
       "V11__setIdsWithoutDisplayName",
+      "V12__gearWordIds",
     ])
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })

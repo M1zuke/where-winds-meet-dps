@@ -6,7 +6,8 @@ import type {
   GearSlot,
   GearWordEntry,
 } from "../../../../engine/types"
-import { GEAR_SLOTS, isGearWordName, isWeaponSlot } from "../../../../engine/types"
+import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { isGearWordId } from "../../../../data/stats/statLines"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
@@ -84,7 +85,7 @@ export function GearPieceForm({
   )
   const wordSpecs = useMemo(() => getWordSpecs(inputs), [inputs])
   const wordOptions: ComboboxOption[] = useMemo(() => {
-    const list = wordSpecs.map((spec) => ({ value: spec.word, label: t(spec.word) }))
+    const list = wordSpecs.map((spec) => ({ value: spec.word, label: t(spec.label) }))
     return [{ value: "", label: t("(none)") }, ...list]
   }, [wordSpecs, t])
   const attunementCatalog = useMemo(
@@ -238,7 +239,7 @@ export function GearPieceForm({
                   className={styles.wordCombobox}
                   value={word.word}
                   options={wordOptions}
-                  onChange={(value) => patchWord(idx, { word: isGearWordName(value) ? value : "" })}
+                  onChange={(value) => patchWord(idx, { word: isGearWordId(value) ? value : "" })}
                   placeholder={t("(none)")}
                 />
                 <ValueInput

@@ -25,7 +25,7 @@ export type ArtRow = Parameters<typeof computeSkillDamage>[0]
 export interface BuildView {
   classId: string
   innerWayTier(name: string): number | null
-  classSpecificAttunement(tag: string): number
+  classSpecificAttunement(attunementId: string): number
   grantsMinPhysCritBoost(weaponType: string | undefined): boolean
 }
 

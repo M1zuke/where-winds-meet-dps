@@ -2,6 +2,7 @@ import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import { totalPlayerAttributes } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
+import { getAttunement } from "../../../engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../utils/statFormatting"
@@ -138,8 +139,12 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
   ).filter((entry) => entry.value !== 0)
 
-  const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((tag) =>
-    row(t(tag), withSets.classSpecificAttunement[tag] ?? 0, true),
+  const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((attunementId) =>
+    row(
+      t(getAttunement(attunementId)?.label ?? attunementId),
+      withSets.classSpecificAttunement[attunementId] ?? 0,
+      true,
+    ),
   )
 
   return (

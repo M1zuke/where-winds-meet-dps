@@ -1,4 +1,7 @@
+import type { GearWordId } from "../data/stats/statLines"
 import type { Rotation } from "./rotation"
+
+export type { GearWordId } from "../data/stats/statLines"
 import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
@@ -229,43 +232,8 @@ export function isWeaponSlot(slot: GearSlot): boolean {
 export type GearLevel = 86 | 91 | 96
 export type GearRarity = "legendary" | "epic"
 
-const UNPATTERNED_GEAR_WORD_NAMES = [
-  "Power",
-  "Agility",
-  "Momentum",
-  "Min Phys",
-  "Max Phys",
-  "Precision",
-  "Crit",
-  "Affinity",
-  "All Martial Boost",
-  "Damage VS Boss %",
-  "Single-Target Mystic Skill DMG Boost",
-  "Area Mystic Skill DMG Boost",
-  "Min Void Attack",
-  "Max Void Attack",
-  "Physical Penetration",
-  "Attribute Penetration",
-] as const
-
-export type GearWordName =
-  | (typeof UNPATTERNED_GEAR_WORD_NAMES)[number]
-  | `${WeaponName} Martial Boost`
-  | `Min ${AttributeKey}`
-  | `Max ${AttributeKey}`
-
-const GEAR_WORD_NAMES: ReadonlySet<string> = new Set<GearWordName>([
-  ...UNPATTERNED_GEAR_WORD_NAMES,
-  ...WEAPON_NAMES.map((weapon) => `${weapon} Martial Boost` as const),
-  ...ATTRIBUTE_KEYS.flatMap((attribute) => [`Min ${attribute}`, `Max ${attribute}`] as const),
-])
-
-export function isGearWordName(value: unknown): value is GearWordName {
-  return typeof value === "string" && GEAR_WORD_NAMES.has(value)
-}
-
 export interface GearWordEntry {
-  word: GearWordName | ""
+  word: GearWordId | ""
   value: number
   retuned: boolean
 }
@@ -387,7 +355,8 @@ export interface BuffWindow {
 }
 
 export interface ItemRankingRow {
-  word: string
+  statLineId: string
+  label: string
   source: "tunement" | "attunement"
   amount: number
   unit: "raw" | "percent"

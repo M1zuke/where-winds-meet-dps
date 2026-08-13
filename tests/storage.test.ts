@@ -374,7 +374,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     const { profiles } = loadProfiles()
     const hydratedInputs = profiles[0].inputs
     for (const piece of hydratedInputs.inventory) {
-      expect(piece.words[0].word).toBe("Single-Target Mystic Skill DMG Boost")
+      expect(piece.words[0].word).toBe("singleTargetMysticBoost")
       expect(piece.words[0].value).toBe(0.07)
       const contribution = computeGearContribution(piece, hydratedInputs)
       const entry = contribution.find((row) => row.path === "singleMysticBoost")
@@ -416,8 +416,8 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     const { profiles } = loadProfiles()
     const hydratedInputs = profiles[0].inputs
     const piece = hydratedInputs.inventory[0]
-    expect(piece.words[0].word).toBe("Max Void Attack")
-    expect(piece.words[1].word).toBe("Min Void Attack")
+    expect(piece.words[0].word).toBe("maxVoidAttack")
+    expect(piece.words[1].word).toBe("minVoidAttack")
     const contribution = computeGearContribution(piece, hydratedInputs)
     expect(contribution.find((row) => row.path === "bellstrike.max")?.amount).toBeCloseTo(44.2, 10)
     expect(contribution.find((row) => row.path === "bellstrike.min")?.amount).toBeCloseTo(22.1, 10)
@@ -465,7 +465,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     const { profiles } = loadProfiles()
     const hydratedInputs = profiles[0].inputs
     for (const piece of hydratedInputs.inventory) {
-      expect(piece.words[0].word).toBe("Area Mystic Skill DMG Boost")
+      expect(piece.words[0].word).toBe("areaMysticBoost")
       expect(piece.words[0].value).toBe(0.05)
       const contribution = computeGearContribution(piece, hydratedInputs)
       const entry = contribution.find((row) => row.path === "areaMysticBoost")
@@ -507,7 +507,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     const { profiles } = loadProfiles()
     const piece = profiles[0].inputs.inventory[0]
     expect(piece.words[0]).toEqual({ word: "", value: 0, retuned: false })
-    expect(piece.words[1]).toEqual({ word: "Crit", value: 0.09, retuned: true })
+    expect(piece.words[1]).toEqual({ word: "crit", value: 0.09, retuned: true })
   })
 
   it("renames a legacy word rather than clearing it as unknown", () => {
@@ -544,7 +544,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
 
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.inventory[0].words[0]).toEqual({
-      word: "Area Mystic Skill DMG Boost",
+      word: "areaMysticBoost",
       value: 0.05,
       retuned: false,
     })

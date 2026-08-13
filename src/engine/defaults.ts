@@ -46,7 +46,7 @@ export const defaultInputs: Inputs = {
   singleMysticBoost: 0,
   areaMysticBoost: 0,
 
-  classSpecificAttunement: { "Mouse Boost": 0.153 },
+  classSpecificAttunement: {},
 
   // Unslotted: no validated class allows four slottable inner ways.
   mindMethods: [

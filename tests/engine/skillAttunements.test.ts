@@ -74,12 +74,10 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
   const rotation = makeRotation(classId, {
     steps: [makeStep({ skillId: directSkill.id, hitCount: 1 })],
   })
-  const inputTag = option.enginePath.slice("classSpecificAttunement.".length)
-
   return simulateTimeline({
     ...defaultInputs,
     classId,
-    classSpecificAttunement: { [inputTag]: value },
+    classSpecificAttunement: { [option.id]: value },
     customSkills: [directSkill, tickSkill],
     customDebuffs: [debuff],
     activeCustomRotation: rotation,
@@ -87,10 +85,13 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
 }
 
 describe("declarative skill attunements", () => {
-  it.each(SKILL_ATTUNEMENTS)("$id is a tag its class declares", (option) => {
+  it.each(SKILL_ATTUNEMENTS)("$id keys its engine path by its own id", (option) => {
+    expect(option.enginePath).toBe(`classSpecificAttunement.${option.id}`)
+  })
+
+  it.each(SKILL_ATTUNEMENTS)("$id is an attunement its class declares", (option) => {
     const classId = option.classIds![0]!
-    const tag = option.enginePath!.slice("classSpecificAttunement.".length)
-    expect(classDefinition(classId)!.classSpecificAttunements).toContain(tag)
+    expect(classDefinition(classId)!.classSpecificAttunements).toContain(option.id)
   })
 
   it.each(SKILL_ATTUNEMENTS)(
@@ -111,7 +112,7 @@ describe("declarative skill attunements", () => {
     },
   )
 
-  it("applies Phalanx Charge Boost to the real Inner Passion skill but not other Mo Blade skills", () => {
+  it("applies the Phalanxbane charge attunement to the real Inner Passion skill but not other Mo Blade skills", () => {
     const option = getAttunement("phalanxChargeDamage")!
     const skills = builtinSkillsForClass("stonesplitStrength")
     const phalanx = skills.find(
@@ -131,7 +132,7 @@ describe("declarative skill attunements", () => {
       return simulateTimeline({
         ...defaultInputs,
         classId: "stonesplitStrength",
-        classSpecificAttunement: { "Phalanx Charge Boost": value },
+        classSpecificAttunement: { phalanxChargeDamage: value },
         activeCustomRotation: rotation,
       })
     }

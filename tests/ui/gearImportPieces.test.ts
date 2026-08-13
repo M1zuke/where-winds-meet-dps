@@ -4,7 +4,7 @@ import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import type { Inputs } from "../../src/engine/types"
-import { isGearWordName } from "../../src/engine/types"
+import { isGearWordId } from "../../src/data/stats/statLines"
 import {
   parseDashboardGearPayload,
   targetKey,
@@ -60,7 +60,7 @@ describe("the shipped affix table is the authority", () => {
   it("resolves an id it carries without any user choice", () => {
     const affix = pieceFor("1", {}).affixes[1]!
     expect(affix.affixId).toBe("9793119")
-    expect(affix.resolution).toMatchObject({ kind: "resolved", target: { word: "Crit" } })
+    expect(affix.resolution).toMatchObject({ kind: "resolved", target: { word: "crit" } })
   })
 
   it("resolves the whole first weapon from the table alone", () => {
@@ -79,7 +79,7 @@ describe("the shipped affix table is the authority", () => {
     const attunements = new Set<string>(ATTUNEMENT_OPTIONS.map((option) => option.id))
     for (const key of Object.values(AFFIX_ID_TO_STAT_LINE)) {
       const [kind, name] = [key.slice(0, key.indexOf(":")), key.slice(key.indexOf(":") + 1)]
-      if (kind === "word") expect(isGearWordName(name), name).toBe(true)
+      if (kind === "word") expect(isGearWordId(name), name).toBe(true)
       else expect(attunements.has(name), name).toBe(true)
     }
   })
@@ -171,7 +171,7 @@ describe("suggestions from the reported max roll", () => {
     expect(affix.derivedMax).toBeCloseTo(49.4, 6)
     const suggested = affix.resolution.suggestions.map(targetKey)
     expect(suggested).toEqual(
-      expect.arrayContaining(["word:Power", "word:Agility", "word:Momentum"]),
+      expect.arrayContaining(["word:power", "word:agility", "word:momentum"]),
     )
   })
 
@@ -210,20 +210,20 @@ describe("suggestions from the reported max roll", () => {
 
 describe("a user choice maps an id the table does not carry", () => {
   it("resolves a chosen word and keeps the payload value", () => {
-    const chosen: AffixChoices = { "9999999": "word:Power" }
+    const chosen: AffixChoices = { "9999999": "word:power" }
     expect(untabledWordRowOnWeapon(chosen).resolution).toMatchObject({
       kind: "resolved",
-      target: { word: "Power" },
+      target: { word: "power" },
       value: 45.569,
       clampedFrom: null,
     })
   })
 
   it("loses to the shipped table on an id the table does carry", () => {
-    const overridden: AffixChoices = { "9793005": "word:Power" }
+    const overridden: AffixChoices = { "9793005": "word:power" }
     expect(pieceFor("1", overridden).affixes[3]!.resolution).toMatchObject({
       kind: "resolved",
-      target: { word: "Momentum" },
+      target: { word: "momentum" },
     })
   })
 
@@ -251,7 +251,7 @@ describe("a user choice maps an id the table does not carry", () => {
   })
 
   it("clamps above the cap and records what it was", () => {
-    const cap = getWordSpecs(inputs).find((spec) => spec.word === "Crit")!.amount
+    const cap = getWordSpecs(inputs).find((spec) => spec.word === "crit")!.amount
     const text = JSON.stringify({
       wearEquipsDetailed: {
         "1": {
@@ -398,7 +398,7 @@ describe("toGearPieces", () => {
 
   it("pads unmapped rows in place, preserving payload order", () => {
     const helm = toGearPieces(resolved(), {}).find((piece) => piece.slot === "helm")!
-    expect(helm.words[0]).toEqual({ word: "Affinity", value: 0.03996, retuned: false })
+    expect(helm.words[0]).toEqual({ word: "affinity", value: 0.03996, retuned: false })
     expect(helm.words.slice(1)).toEqual(Array(4).fill({ word: "", value: 0, retuned: false }))
   })
 
