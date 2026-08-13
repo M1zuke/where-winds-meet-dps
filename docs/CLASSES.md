@@ -61,7 +61,7 @@ is camelCase.
 ## One definition per class
 
 One accessor answers what a class is made of — spec, primary attribute, inner
-ways, class-specific attunement tags, skills, debuffs, buffs, rotations and
+ways, class-specific attunement ids, skills, debuffs, buffs, rotations and
 default, graduation build, attunements, retunement pool. **Reach for it rather
 than the individual registries.**
 

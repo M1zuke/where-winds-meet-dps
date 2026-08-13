@@ -181,7 +181,7 @@ fixtures, or comments. Every domain term uses its official English form
 (attributes `Bellstrike`/`Stonesplit`/`Silkbind`/`Bamboocut`, weapons
 `Sword`/`Modao`/…, skill types
 `weapon`/`mindMethod`/`mystic`/`sustain`/`settlement`/`weaponMystic`, tiers
-`tier 6`, class-specific attunement tags `Bleed Boost`/`Mouse Boost`/…).
+`tier 6`, and every attunement label — see § "Class-specific attunement map").
 
 Grep guard — must return nothing:
 
@@ -285,12 +285,28 @@ These have no cached anchor — only the directional `damageRules.test.ts`.
 → The reasoning, the sources, and the per-skill gating: **docs/CALCULATION.md**
 § "Calculation rules".
 
-## Class-specific attunement tag map
+## Ids are the identity; a label is only ever display text
 
-`Inputs.classSpecificAttunement: Record<string, number>` keyed by the English tag
-names (`Mouse Boost`, `Bleed Boost`, `Sword Charge Boost`, …). Each class declares
-its visible tags via `ClassDef.classSpecificAttunements`
-(`src/data/classes/<class>.ts`).
+**Nothing keys off a display string.** A stat line, a gear word and an attunement
+are each identified by a stable camelCase id; the label is what the UI renders and
+is free to be corrected without touching storage, an engine path or a test.
+
+- **Stat lines, gear words and buff-targetable stats** —
+  `src/data/stats/statLines.ts` is the only place an id, label, engine path, unit,
+  max roll, scope and category are authored. `PATH_LABELS`, `PERCENT_PATHS`,
+  `PENETRATION_PATHS`, `GEAR_WORD_MAX_ROLL`, `GEAR_WORD_UNIT`, and
+  `statRegistry.ts`'s `StatKey` and `STAT_DEFS` are all **derived** from it —
+  never hand-write a second copy. A line with a `maxRoll` is a rollable gear
+  word; a line with a `category` is buff-targetable. `GearWordEntry.word` stores
+  the id.
+- **Class-specific attunements** — `Inputs.classSpecificAttunement` is keyed by
+  `AttunementOption.id`, so an option's `enginePath` is exactly
+  `classSpecificAttunement.<its own id>`, and each class lists the ids it shows in
+  `ClassDef.classSpecificAttunements`. Attunement labels carry the **official
+  in-game English Attune Effect name**.
+
+Renaming an **id** is a storage change and needs a migration; renaming a **label**
+never is.
 
 ## Implemented classes
 
