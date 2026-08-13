@@ -37,6 +37,10 @@ import { getDefaultTalentsForClass } from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
 import { applyArmorSet, applyBowSet } from "../src/engine/panel"
 
+type StoredGearPiece = Omit<GearPiece, "words"> & {
+  words: readonly { word: string; value: number; retuned: boolean }[]
+}
+
 describe("storage", () => {
   beforeEach(() => {
     localStorage.clear()
@@ -326,7 +330,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
   })
 
   it("renames a stored gear piece's legacy word to the official name and preserves its contribution", () => {
-    const burstPiece: GearPiece = {
+    const burstPiece: StoredGearPiece = {
       id: "test-burst-piece",
       slot: "helm",
       level: 91,
@@ -346,7 +350,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
       attunementValue: 0,
       relayed: false,
     }
-    const controlPiece: GearPiece = {
+    const controlPiece: StoredGearPiece = {
       ...burstPiece,
       id: "test-control-piece",
       words: [
@@ -379,7 +383,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
   })
 
   it("renames a stored piece's Formless words to Void Attack and keeps the primary-attribute contribution", () => {
-    const voidPiece: GearPiece = {
+    const voidPiece: StoredGearPiece = {
       id: "test-void-piece",
       slot: "helm",
       level: 91,
@@ -420,7 +424,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
   })
 
   it("renames both stored area words onto the merged one and preserves their contribution", () => {
-    const areaPiece = (id: string, word: string): GearPiece => ({
+    const areaPiece = (id: string, word: string): StoredGearPiece => ({
       id,
       slot: "helm",
       level: 91,
@@ -467,6 +471,83 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
       const entry = contribution.find((row) => row.path === "areaMysticBoost")
       expect(entry?.amount).toBeCloseTo(0.05, 10)
     }
+  })
+
+  it("clears a stored word the catalogue no longer offers and leaves its neighbours alone", () => {
+    const strandedPiece: StoredGearPiece = {
+      id: "test-stranded-piece",
+      slot: "helm",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "Retired Word", value: 0.09, retuned: false },
+        { word: "Crit", value: 0.09, retuned: true },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+    const legacyInputs = { ...defaultInputs, inventory: [strandedPiece] }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Legacy", inputs: legacyInputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    const piece = profiles[0].inputs.inventory[0]
+    expect(piece.words[0]).toEqual({ word: "", value: 0, retuned: false })
+    expect(piece.words[1]).toEqual({ word: "Crit", value: 0.09, retuned: true })
+  })
+
+  it("renames a legacy word rather than clearing it as unknown", () => {
+    const renamedPiece: StoredGearPiece = {
+      id: "test-renamed-piece",
+      slot: "helm",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "AoE Damage", value: 0.05, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [
+          { id: "p1", name: "Legacy", inputs: { ...defaultInputs, inventory: [renamedPiece] } },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.inventory[0].words[0]).toEqual({
+      word: "Area Mystic Skill DMG Boost",
+      value: 0.05,
+      retuned: false,
+    })
   })
 
   it("drops the legacy groupAnomalyBoost/groupDamageBoost keys off a stored profile", () => {

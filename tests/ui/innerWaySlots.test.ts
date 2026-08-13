@@ -38,9 +38,21 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     }
   }
 
-  it("seeds slot 0 with the new class's signature", () => {
+  it("leaves every slot empty rather than seeding the class signature", () => {
     const next = syncClassPermanent(defaultInputs, "bellstrikeUmbra")
-    expect(next.mindMethods[0]).toEqual({ name: "swordHorizon", stacks: "tier 6" })
+    expect(next.mindMethods).toEqual([
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+    ])
+  })
+
+  it("keeps the signature where the user put it", () => {
+    const before = withSlots(defaultInputs, ["", "", "swordHorizon", ""])
+    const next = syncClassPermanent(before, "bellstrikeUmbra")
+    expect(next.mindMethods[0]).toEqual({ name: "", stacks: "" })
+    expect(next.mindMethods[2].name).toBe("swordHorizon")
   })
 
   // Only Bellstrike Umbra is loadable — `syncClassPermanent` throws via
@@ -67,11 +79,12 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
     expect(next.mindMethods[2].name).toBe("insightfulStrike")
   })
 
-  it("clears a slot that duplicates the signature seeded into slot 0", () => {
-    const before = withSlots(defaultInputs, ["", "swordHorizon", "", ""])
+  it("clears a later slot that duplicates an earlier one", () => {
+    const before = withSlots(defaultInputs, ["swordHorizon", "moraleChant", "swordHorizon", ""])
     const next = syncClassPermanent(before, "bellstrikeUmbra")
     expect(next.mindMethods[0].name).toBe("swordHorizon")
-    expect(next.mindMethods[1]).toEqual({ name: "", stacks: "" })
+    expect(next.mindMethods[1].name).toBe("moraleChant")
+    expect(next.mindMethods[2]).toEqual({ name: "", stacks: "" })
   })
 
   it("leaves the loadout untouched when re-synced to the same class", () => {

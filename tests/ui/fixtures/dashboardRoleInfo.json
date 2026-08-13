@@ -71,5 +71,11 @@
       }
     }
   },
+  "passiveSlots": [
+    { "id": 3011001, "level": 6 },
+    { "id": 3011002, "level": 5 },
+    { "id": 3019999, "level": 4 },
+    { "id": 0, "level": 0 }
+  ],
   "unrecognizedPayloadKeys": ["roleId", "xiuWeiKungFu", "battleQs"]
 }

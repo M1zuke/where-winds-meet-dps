@@ -62,13 +62,17 @@ Every section should read like a checklist: imperative, checkable, no story.
 system it plugs into. Read the how-to **first** — it is the ordered file list,
 the wiring, the tests to update and the migration question, in one place.
 
-| adding                     | read                          |
-| -------------------------- | ----------------------------- |
-| a class or spec            | `How to Add a Class`          |
-| a skill                    | `How to Add a Skill`          |
-| a rotation                 | `How to Add a Rotation`       |
-| a buff, debuff or DoT      | `How to Add a Buff or Debuff` |
-| an inner way (mind method) | `How to Add an Inner Way`     |
+| adding                       | read                          |
+| ---------------------------- | ----------------------------- |
+| a class or spec              | `How to Add a Class`          |
+| a skill                      | `How to Add a Skill`          |
+| a rotation                   | `How to Add a Rotation`       |
+| a buff, debuff or DoT        | `How to Add a Buff or Debuff` |
+| an inner way (mind method)   | `How to Add an Inner Way`     |
+| a changelog entry, releasing | `src/changelog/README.md`     |
+
+The changelog how-to is the one that lives in the repo rather than the wiki: it
+is read while editing the folder it documents.
 
 The wiki is the [project wiki](https://github.com/M1zuke/where-winds-meet-dps/wiki),
 cloned beside this repo at `../where-winds-meet-dps.wiki` — read the `.md` files
@@ -142,6 +146,22 @@ Whole files with no comments at all are the normal outcome, not a warning sign.
 Moving code does not move its comments with it: re-judge each one against this
 bar and drop it if it fails, even when you were told to preserve it.
 
+### The comment pass — the last step of every task
+
+**No task is finished until this has run.** When the work is otherwise done and
+before you report it, re-read your own diff and judge every comment in it again
+— the ones you just wrote included — then delete the ones that fail the bar and
+keep the ones that pass. Three questions catch most of them:
+
+1. Is the fact already visible at the call site, or in a name?
+2. Is it said twice — in another comment, or in the commit message?
+3. Could a **test name** carry it instead?
+
+"It was non-obvious while I was writing it" is not the bar: that preserves the
+author's reasoning, not something the reader cannot reconstruct. Shortening a
+comment is not the same as re-judging it, and reporting the one as the other
+misstates the work. Say in your summary that the pass ran.
+
 ## Names say what they hold at their point of use
 
 No `a`, `b`, `x`, `tmp`, no one-letter stand-in for a longer word — locals,
@@ -151,8 +171,7 @@ understood is a name to replace, and this outranks any external convention that
 prefers brevity.
 
 If you find yourself writing a comment to explain an identifier, fix the
-identifier instead. Before calling any task done, re-read your own diff and
-delete every comment a reader of the code would not miss.
+identifier instead.
 
 ## Language: English-first — no Chinese in code
 

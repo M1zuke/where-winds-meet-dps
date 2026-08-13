@@ -1,25 +1,27 @@
-import type { Inputs, ItemRankingRow } from "./types"
+﻿import type { AttributeKey, GearWordName, Inputs, ItemRankingRow, WeaponName } from "./types"
+import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../data/stats/gearWordRolls"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
-import { attunementsForClass, getAttunement } from "./attunements"
+import { attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { resolveRotation } from "./rotation"
 
-export interface WordSpec {
-  word: string
+export interface WordSpec<TName extends string = string> {
+  word: TName
   amount: number
   unit: "raw" | "percent"
   apply(inputs: Inputs): Inputs
 }
 
-export function getWordSpecs(inputs: Inputs): WordSpec[] {
+export function getWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
   return buildWordSpecs(inputs)
 }
 
-function rotationWeapons(inputs: Inputs): string[] {
+function rotationWeapons(inputs: Inputs): WeaponName[] {
   const active = inputs.activeCustomRotation
   const rotation =
     active && active.classId === inputs.classId ? active : defaultRotationForClass(inputs.classId)
@@ -37,263 +39,109 @@ function rotationWeapons(inputs: Inputs): string[] {
       counts[skill.weaponOrAttribute] = (counts[skill.weaponOrAttribute] ?? 0) + step.hitCount
   }
   return Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([w]) => w)
+    .sort((first, second) => second[1] - first[1])
+    .map(([weapon]) => weapon)
+    .filter(isWeaponName)
 }
 
-function buildWordSpecs(inputs: Inputs): WordSpec[] {
+function wordSpec(
+  word: GearWordName,
+  apply: (inputs: Inputs, roll: number) => void,
+): WordSpec<GearWordName> {
+  const roll = GEAR_WORD_MAX_ROLL[word]
+  return {
+    word,
+    amount: roll,
+    unit: GEAR_WORD_UNIT[word],
+    apply: (inputs) => clone(inputs, (next) => apply(next, roll)),
+  }
+}
+
+function buildWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
   const school = getSchool(inputs.classId)
-  const physPenMax = getAttunement("physPen")?.max ?? 0.078
-  const attrPenMax = getAttunement("formlessPen")?.max ?? 0.092
   const weapons = rotationWeapons(inputs)
-  const w0 = weapons[0] ?? school.weapons[0] ?? null
-  const w1 = weapons[1] ?? school.weapons[1] ?? null
-  const specs: WordSpec[] = [
-    {
-      word: "Power",
-      amount: 49.4,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.min += 11.115
-          x.phys.max += 67.184
-        }),
-    },
-    {
-      word: "Agility",
-      amount: 49.4,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.min += 44.46
-          x.critRate += 49.4 * 0.00076
-        }),
-    },
-    {
-      word: "Momentum",
-      amount: 49.4,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.max += 44.46
-          x.affinityRate += 49.4 * 0.00038
-        }),
-    },
-    {
-      word: "Min Phys",
-      amount: 77.8,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.min += 77.8
-        }),
-    },
-    {
-      word: "Max Phys",
-      amount: 77.8,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.max += 77.8
-        }),
-    },
-    {
-      word: "Precision",
-      amount: 0.08,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.precision += 0.08
-        }),
-    },
-    {
-      word: "Crit",
-      amount: 0.09,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.critRate += 0.09
-        }),
-    },
-    {
-      word: "Affinity",
-      amount: 0.044,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.affinityRate += 0.044
-        }),
-    },
-    {
-      word: "All Martial Boost",
-      amount: 0.032,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.allMartialBoost += 0.032
-        }),
-    },
+  const schoolWeapons = school.weapons.filter(isWeaponName)
+  const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
+  const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
+  const specs: WordSpec<GearWordName>[] = [
+    wordSpec("Power", (x) => {
+      x.phys.min += 11.115
+      x.phys.max += 67.184
+    }),
+    wordSpec("Agility", (x, roll) => {
+      x.phys.min += 44.46
+      x.critRate += roll * 0.00076
+    }),
+    wordSpec("Momentum", (x, roll) => {
+      x.phys.max += 44.46
+      x.affinityRate += roll * 0.00038
+    }),
+    wordSpec("Min Phys", (x, roll) => {
+      x.phys.min += roll
+    }),
+    wordSpec("Max Phys", (x, roll) => {
+      x.phys.max += roll
+    }),
+    wordSpec("Precision", (x, roll) => {
+      x.precision += roll
+    }),
+    wordSpec("Crit", (x, roll) => {
+      x.critRate += roll
+    }),
+    wordSpec("Affinity", (x, roll) => {
+      x.affinityRate += roll
+    }),
+    wordSpec("All Martial Boost", (x, roll) => {
+      x.allMartialBoost += roll
+    }),
   ]
-  // Weapon boost max roll: 6.2 % at breakthrough-16 (in-game, uniform across weapons).
-  if (w0)
-    specs.push({
-      word: `${w0} Martial Boost`,
-      amount: 0.062,
-      unit: "percent",
-      apply: (i) => clone(i, applyWeaponBoost(w0, 0.062)),
-    })
-  if (w1)
-    specs.push({
-      word: `${w1} Martial Boost`,
-      amount: 0.062,
-      unit: "percent",
-      apply: (i) => clone(i, applyWeaponBoost(w1, 0.062)),
-    })
+  if (primaryWeapon)
+    specs.push(
+      wordSpec(`${primaryWeapon} Martial Boost`, (x, roll) => {
+        applyWeaponBoost(x, primaryWeapon, roll)
+      }),
+    )
+  if (secondaryWeapon)
+    specs.push(
+      wordSpec(`${secondaryWeapon} Martial Boost`, (x, roll) => {
+        applyWeaponBoost(x, secondaryWeapon, roll)
+      }),
+    )
 
   specs.push(
-    // Boss boost max roll: 3.2 % (in-game, 2026-08-01).
-    {
-      word: "Damage VS Boss %",
-      amount: 0.032,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.bossBoost += 0.032
-        }),
-    },
-    {
-      word: "Single-Target Mystic Skill DMG Boost",
-      amount: 0.09797,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.singleMysticBoost += 0.09797
-        }),
-    },
-    {
-      word: "Area Mystic Skill DMG Boost",
-      amount: 0.07,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.areaMysticBoost += 0.07
-        }),
-    },
-    {
-      word: "Min Bellstrike",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.bellstrike.min += 44.2
-        }),
-    },
-    {
-      word: "Max Bellstrike",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.bellstrike.max += 44.2
-        }),
-    },
-    {
-      word: "Min Stonesplit",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.stonesplit.min += 44.2
-        }),
-    },
-    {
-      word: "Max Stonesplit",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.stonesplit.max += 44.2
-        }),
-    },
-    {
-      word: "Min Silkbind",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.silkbind.min += 44.2
-        }),
-    },
-    {
-      word: "Max Silkbind",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.silkbind.max += 44.2
-        }),
-    },
-    {
-      word: "Min Bamboocut",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.bamboocut.min += 44.2
-        }),
-    },
-    {
-      word: "Max Bamboocut",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.bamboocut.max += 44.2
-        }),
-    },
-    {
-      word: "Min Void Attack",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          applyAttrAttack(x, school.primaryAttribute, "min", 44.2)
-        }),
-    },
-    {
-      word: "Max Void Attack",
-      amount: 44.2,
-      unit: "raw",
-      apply: (i) =>
-        clone(i, (x) => {
-          applyAttrAttack(x, school.primaryAttribute, "max", 44.2)
-        }),
-    },
-    {
-      word: "Physical Penetration",
-      amount: physPenMax,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          x.phys.penetration += physPenMax
-        }),
-    },
-    {
-      word: "Attribute Penetration",
-      amount: attrPenMax,
-      unit: "percent",
-      apply: (i) =>
-        clone(i, (x) => {
-          applyAttrPenetration(x, school.primaryAttribute, attrPenMax)
-        }),
-    },
+    wordSpec("Damage VS Boss %", (x, roll) => {
+      x.bossBoost += roll
+    }),
+    wordSpec("Single-Target Mystic Skill DMG Boost", (x, roll) => {
+      x.singleMysticBoost += roll
+    }),
+    wordSpec("Area Mystic Skill DMG Boost", (x, roll) => {
+      x.areaMysticBoost += roll
+    }),
+    ...ATTRIBUTE_KEYS.flatMap((attribute) => [
+      wordSpec(`Min ${attribute}`, (x, roll) => {
+        applyAttrAttack(x, attribute, "min", roll)
+      }),
+      wordSpec(`Max ${attribute}`, (x, roll) => {
+        applyAttrAttack(x, attribute, "max", roll)
+      }),
+    ]),
+    wordSpec("Min Void Attack", (x, roll) => {
+      applyAttrAttack(x, school.primaryAttribute, "min", roll)
+    }),
+    wordSpec("Max Void Attack", (x, roll) => {
+      applyAttrAttack(x, school.primaryAttribute, "max", roll)
+    }),
+    wordSpec("Physical Penetration", (x, roll) => {
+      x.phys.penetration += roll
+    }),
+    wordSpec("Attribute Penetration", (x, roll) => {
+      applyAttrPenetration(x, school.primaryAttribute, roll)
+    }),
   )
   return specs
 }
 
-// The `Physical Penetration` and `Attribute Penetration` word specs above take
-// their max roll straight from these two attunements, so listing the attunements
-// again would produce a duplicate row with identical numbers.
 const ATTUNEMENTS_ALREADY_LISTED_AS_WORDS = new Set(["physPen", "formlessPen"])
 
 function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
@@ -311,20 +159,14 @@ function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
     }))
 }
 
-function applyWeaponBoost(weapon: string, amt: number) {
-  return (i: Inputs) => {
-    const key = WEAPON_BOOST_STAT_KEY[weapon]
-    if (!key) return
-    const target = i as unknown as Record<string, number>
-    target[key] = (target[key] ?? 0) + amt
-  }
+function applyWeaponBoost(i: Inputs, weapon: WeaponName, amt: number) {
+  const key = WEAPON_BOOST_STAT_KEY[weapon]
+  if (!key) return
+  const target = i as unknown as Record<string, number>
+  target[key] = (target[key] ?? 0) + amt
 }
 
-function applyAttrPenetration(
-  i: Inputs,
-  attr: "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut",
-  amt: number,
-) {
+function applyAttrPenetration(i: Inputs, attr: AttributeKey, amt: number) {
   const block =
     attr === "Bellstrike"
       ? i.bellstrike
@@ -336,12 +178,7 @@ function applyAttrPenetration(
   block.penetration += amt
 }
 
-function applyAttrAttack(
-  i: Inputs,
-  attr: "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut",
-  field: "min" | "max",
-  amt: number,
-) {
+function applyAttrAttack(i: Inputs, attr: AttributeKey, field: "min" | "max", amt: number) {
   const block =
     attr === "Bellstrike"
       ? i.bellstrike

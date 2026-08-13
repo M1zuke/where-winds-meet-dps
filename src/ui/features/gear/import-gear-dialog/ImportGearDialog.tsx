@@ -1,12 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useId, useMemo, useRef, useState } from "react"
 import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
-import { gearBaseStatsFor } from "../../../../engine/gearStats"
+import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { getAttunement } from "../../../../engine/attunements"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
+import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import dialogChrome from "../shared/gearDialog.module.scss"
+import previewStyles from "../shared/gearPreview.module.scss"
+import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
 import bookmarkletSource from "./gearImportBookmarklet.js?raw"
 import { bookmarkletHref } from "./bookmarkletHref"
 import {
@@ -20,6 +23,7 @@ import { loadKeepDisplaced, saveKeepDisplaced } from "./importPreferences"
 import {
   GearImportError,
   buildImportDiagnostics,
+  innerWaysAbsentFromCapture,
   parseDashboardGearPayload,
   previewablePieces,
   summarizeImport,
@@ -28,6 +32,7 @@ import {
   type AffixTarget,
   type GearImportResult,
   type ImportedAffix,
+  type ImportedInnerWay,
   type ImportedPiece,
 } from "./dashboardGearPayload"
 import {
@@ -37,20 +42,10 @@ import {
   type AffixChoices,
   type IdentityOverrides,
 } from "./importedGearPieces"
+import { toMindMethods, unsupportedInnerWayNames } from "./importedInnerWays"
 import styles from "./ImportGearDialog.module.scss"
 
 export const DASHBOARD_URL = "https://www.wherewindsmeetgame.com/m/2025h5sjgj/en/"
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
-}
 
 const LEVEL_OPTIONS: ComboboxOption[] = [
   { value: "86", label: "lv86" },
@@ -68,7 +63,11 @@ function fmtUnmapped(value: number | null): string {
 interface Props {
   inputs: Inputs
   onCancel(): void
-  onImport(pieces: GearPiece[], keepDisplaced: boolean): void
+  onImport(
+    pieces: GearPiece[],
+    mindMethods: Inputs["mindMethods"] | null,
+    keepDisplaced: boolean,
+  ): void
 }
 
 export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
@@ -79,6 +78,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   const [keepDisplaced, setKeepDisplaced] = useState(loadKeepDisplaced)
   const [copyNotice, setCopyNotice] = useState("")
   const mappingFileRef = useRef<HTMLInputElement | null>(null)
+  const titleId = useId()
 
   // Set through a ref rather than the href prop so React never inspects the
   // javascript: URL, and on every mount because the anchor unmounts while a
@@ -86,17 +86,6 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   function attachBookmarklet(anchor: HTMLAnchorElement | null): void {
     anchor?.setAttribute("href", bookmarkletHref(bookmarkletSource))
   }
-
-  useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if (event.key !== "Escape") return
-      if (event.defaultPrevented) return
-      onCancel()
-    }
-    document.addEventListener("keydown", onKey)
-    return () => document.removeEventListener("keydown", onKey)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const parsed = useMemo((): { result: GearImportResult | null; error: string } => {
     if (!pasted.trim()) return { result: null, error: "" }
@@ -115,6 +104,12 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   const summary = useMemo(() => (result ? summarizeImport(result) : null), [result])
   const pieces = useMemo(() => (result ? toGearPieces(result, overrides) : []), [result, overrides])
   const shown = useMemo(() => (result ? previewablePieces(result) : []), [result])
+  const innerWays = result?.innerWays ?? []
+  const unsupportedInnerWays = unsupportedInnerWayNames(innerWays)
+  const mindMethods = useMemo(() => (result ? toMindMethods(result.innerWays) : null), [result])
+  const emptiedMindMethods = mindMethods
+    ? inputs.mindMethods.filter((slot, index) => slot.name && !mindMethods[index]!.name).length
+    : 0
 
   const filledSlots = new Set(pieces.map((piece) => piece.slot))
   const emptiedSlots = GEAR_SLOTS.filter((slot) => !filledSlots.has(slot))
@@ -186,216 +181,241 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   }
 
   return (
-    <div
-      className={dialogChrome.overlay}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="import-gear-title"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onCancel()
-      }}
-    >
-      <div className={`${dialogChrome.modal} ${styles.wideModal}`}>
-        <div className={dialogChrome.header}>
-          <h2 id="import-gear-title">{t("Import gear")}</h2>
-        </div>
+    <Dialog labelledBy={titleId} onClose={onCancel} surfaceClassName={dialogChrome.wide}>
+      <DialogHeader>
+        <h2 id={titleId}>{t("Import gear")}</h2>
+      </DialogHeader>
 
-        <div className={dialogChrome.body}>
-          {!result && (
-            <>
-              <ol className={styles.steps}>
-                <li>
-                  {t("Drag this to your bookmarks bar:")}{" "}
-                  <a
-                    ref={attachBookmarklet}
-                    className={styles.bookmarklet}
-                    onClick={(event) => event.preventDefault()}
-                  >
-                    {t("Import WWM Gear")}
-                  </a>
-                </li>
-                <li>
-                  {t("Open the")}{" "}
-                  <a href={DASHBOARD_URL} target="_blank" rel="noreferrer">
-                    {t("official WWM dashboard")}
-                  </a>{" "}
-                  {t("and sign in, then click the bookmark.")}
-                </li>
-                <li>{t("Paste what it copied below.")}</li>
-              </ol>
-
-              {copyNotice && <div className="hint">{copyNotice}</div>}
-
-              <textarea
-                className={styles.paste}
-                value={pasted}
-                spellCheck={false}
-                placeholder={t("Paste the copied gear JSON here")}
-                onChange={(event) => setPasted(event.target.value)}
-              />
-
-              {parsed.error && <div className="warnings">⚠ {parsed.error}</div>}
-            </>
-          )}
-
-          {result && summary && (
-            <>
-              <div className={styles.summary}>
-                <span>
-                  {result.roleName ?? t("Unnamed character")}
-                  {result.characterLevel !== null
-                    ? ` · ${t("Level")} ${result.characterLevel}`
-                    : ""}
-                </span>
-                <span className="hint">
-                  {`${summary.mappedPieceCount}/${summary.pieceCount} ${t("pieces matched")} · ${summary.resolvedAffixCount} ${t("stats read")}${summary.unmappedAffixCount ? ` · ${summary.unmappedAffixCount} ${t("unmapped")}` : ""}${summary.clampedCount ? ` · ${summary.clampedCount} ${t("clamped")}` : ""}`}
-                </span>
-              </div>
-
-              {summary.notInThisBuildCount > 0 && (
-                <div className="warnings">
-                  ⚠ {summary.notInThisBuildCount}{" "}
-                  {t(
-                    "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — Bleed Boost is Bellstrike Umbra's and Phalanx Charge Boost is Stonesplit Strength's — and a weapon's Martial Boost only exists for the classes that wield it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
-                  )}
-                </div>
-              )}
-
-              {summary.unmappedAffixCount - summary.notInThisBuildCount > 0 && (
-                <div className="warnings">
-                  ⚠ {summary.unmappedAffixCount - summary.notInThisBuildCount}{" "}
-                  {t(
-                    "stat lines have no mapping yet. Pick the stat each one is — a ✓ marks the ones whose max roll fits, and every choice is remembered for next time.",
-                  )}{" "}
-                  <button
-                    type="button"
-                    className="btn"
-                    onClick={() =>
-                      copyToClipboard(
-                        buildImportDiagnostics(result),
-                        t("Diagnostics copied — they contain no account details."),
-                      )
-                    }
-                  >
-                    {t("Copy diagnostics")}
-                  </button>
-                </div>
-              )}
-
-              <div className={styles.toolRow}>
-                <span className="section-label">{t("Stat-line mappings")}</span>
-                <button
-                  type="button"
-                  className="btn"
-                  disabled={!Object.keys(choices).length}
-                  onClick={exportMappings}
+      <DialogBody>
+        {!result && (
+          <>
+            <ol className={styles.steps}>
+              <li>
+                {t("Drag this to your bookmarks bar:")}{" "}
+                <a
+                  ref={attachBookmarklet}
+                  className={styles.bookmarklet}
+                  onClick={(event) => event.preventDefault()}
                 >
-                  {t("Export as JSON")}
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => mappingFileRef.current?.click()}
-                >
-                  {t("Import JSON")}
-                </button>
-                <span className="hint">
-                  {Object.keys(choices).length} {t("mapped by you")}
-                </span>
-                <input
-                  ref={mappingFileRef}
-                  type="file"
-                  accept="application/json,.json"
-                  style={{ display: "none" }}
-                  onChange={importMappings}
-                />
-              </div>
+                  {t("Import WWM Gear")}
+                </a>
+              </li>
+              <li>
+                {t("Open the")}{" "}
+                <a href={DASHBOARD_URL} target="_blank" rel="noreferrer">
+                  {t("official WWM dashboard")}
+                </a>{" "}
+                {t("and sign in, then click the bookmark.")}
+              </li>
+              <li>{t("Paste what it copied below.")}</li>
+            </ol>
 
-              {copyNotice && <div className="hint">{copyNotice}</div>}
+            {copyNotice && <div className="hint">{copyNotice}</div>}
 
-              {!shown.length && (
-                <div className="warnings">
-                  ⚠ {t("This capture holds no gear this app can import.")}
-                </div>
-              )}
+            <textarea
+              className={styles.paste}
+              value={pasted}
+              spellCheck={false}
+              placeholder={t("Paste the copied gear JSON here")}
+              onChange={(event) => setPasted(event.target.value)}
+            />
 
-              <div className={styles.pieceList}>
-                {shown.map((piece) => (
-                  <PiecePreview
-                    key={piece.gameSlotId}
-                    piece={piece}
-                    allPieces={result.pieces}
-                    overrides={overrides}
-                    onOverride={setOverride}
-                    onChooseTarget={chooseTarget}
-                  />
-                ))}
-              </div>
+            {parsed.error && <div className="warnings">⚠ {parsed.error}</div>}
+          </>
+        )}
 
-              {assumedIdentitySlots.length > 0 && (
-                <div className="warnings">
-                  ⚠{" "}
-                  {t(
-                    "These pieces report base stats this app has no tier for, so their level and rarity are a guess — set them yourself",
-                  )}
-                  : {assumedIdentitySlots.map((slot) => t(SLOT_LABEL_KEYS[slot])).join(", ")}.{" "}
-                  {t("On armor this only changes the HP and defense shown, never the DPS.")}
-                </div>
-              )}
-
-              {emptiedSlots.length > 0 && (
-                <div className="warnings">
-                  ⚠ {emptiedSlots.length} {t("slots aren't in this payload and will be emptied")}:{" "}
-                  {emptiedSlots.map((slot) => t(SLOT_LABEL_KEYS[slot])).join(", ")}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className={dialogChrome.footer}>
-          {result && (
-            <div className={styles.modeChoice}>
-              <span className="section-label">{t("Gear you have now")}</span>
-              <label>
-                <input
-                  type="radio"
-                  checked={!keepDisplaced}
-                  onChange={() => chooseKeepDisplaced(false)}
-                />
-                {t("Remove replaced")}
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  checked={keepDisplaced}
-                  onChange={() => chooseKeepDisplaced(true)}
-                />
-                {t("Keep in inventory")}
-              </label>
+        {result && summary && (
+          <>
+            <div className={styles.summary}>
+              <span>
+                {result.roleName ?? t("Unnamed character")}
+                {result.characterLevel !== null ? ` · ${t("Level")} ${result.characterLevel}` : ""}
+              </span>
+              <span className="hint">
+                {`${summary.mappedPieceCount}/${summary.pieceCount} ${t("pieces matched")} · ${summary.resolvedAffixCount} ${t("stats read")}${summary.unmappedAffixCount ? ` · ${summary.unmappedAffixCount} ${t("unmapped")}` : ""}${summary.clampedCount ? ` · ${summary.clampedCount} ${t("clamped")}` : ""}`}
+              </span>
             </div>
-          )}
-          <span className="spacer" />
-          <span className="hint">{t("Nothing is written until you press Save.")}</span>
-          {result && (
-            <button type="button" className="btn" onClick={clearPaste}>
-              {t("Back")}
-            </button>
-          )}
-          <button type="button" className="btn" onClick={onCancel}>
-            {t("Cancel")}
+
+            {innerWays.length > 0 && (
+              <>
+                <div className={styles.toolRow}>
+                  <span className="section-label">{t("Inner ways")}</span>
+                  <span className="hint">
+                    {`${summary.resolvedInnerWayCount}/${summary.innerWayCount} ${t("matched")}`}
+                  </span>
+                </div>
+                <div className={styles.innerWayGrid}>
+                  {innerWays.map((innerWay, index) => (
+                    <InnerWayCard key={index} innerWay={innerWay} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {unsupportedInnerWays.length > 0 && (
+              <div className="warnings">
+                ⚠ {t("This app does not model")} {unsupportedInnerWays.map(t).join(", ")} —{" "}
+                {t(
+                  "they are left out of the import and out of the calculation, so your real damage will differ.",
+                )}
+              </div>
+            )}
+
+            {innerWaysAbsentFromCapture(result) && (
+              <div className="warnings">
+                ⚠{" "}
+                {t(
+                  "This capture carries no inner ways — re-drag the bookmarklet from this dialog and run it again.",
+                )}
+              </div>
+            )}
+
+            {emptiedMindMethods > 0 && (
+              <div className="warnings">
+                ⚠ {emptiedMindMethods}{" "}
+                {t("of your inner-way slots aren't in this capture and will be emptied.")}
+              </div>
+            )}
+
+            {summary.notInThisBuildCount > 0 && (
+              <div className="warnings">
+                ⚠ {summary.notInThisBuildCount}{" "}
+                {t(
+                  "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — Bleed Boost is Bellstrike Umbra's and Phalanx Charge Boost is Stonesplit Strength's — and a weapon's Martial Boost only exists for the classes that wield it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
+                )}
+              </div>
+            )}
+
+            {summary.unmappedAffixCount - summary.notInThisBuildCount > 0 && (
+              <div className="warnings">
+                ⚠ {summary.unmappedAffixCount - summary.notInThisBuildCount}{" "}
+                {t(
+                  "stat lines have no mapping yet. Pick the stat each one is — a ✓ marks the ones whose max roll fits, and every choice is remembered for next time.",
+                )}{" "}
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() =>
+                    copyToClipboard(
+                      buildImportDiagnostics(result),
+                      t("Diagnostics copied — they contain no account details."),
+                    )
+                  }
+                >
+                  {t("Copy diagnostics")}
+                </button>
+              </div>
+            )}
+
+            <div className={styles.toolRow}>
+              <span className="section-label">{t("Stat-line mappings")}</span>
+              <button
+                type="button"
+                className="btn"
+                disabled={!Object.keys(choices).length}
+                onClick={exportMappings}
+              >
+                {t("Export as JSON")}
+              </button>
+              <button type="button" className="btn" onClick={() => mappingFileRef.current?.click()}>
+                {t("Import JSON")}
+              </button>
+              <span className="hint">
+                {Object.keys(choices).length} {t("mapped by you")}
+              </span>
+              <input
+                ref={mappingFileRef}
+                type="file"
+                accept="application/json,.json"
+                style={{ display: "none" }}
+                onChange={importMappings}
+              />
+            </div>
+
+            {copyNotice && <div className="hint">{copyNotice}</div>}
+
+            {!shown.length && (
+              <div className="warnings">
+                ⚠ {t("This capture holds no gear this app can import.")}
+              </div>
+            )}
+
+            <div className={previewStyles.pieceList}>
+              {shown.map((piece) => (
+                <PiecePreview
+                  key={piece.gameSlotId}
+                  piece={piece}
+                  allPieces={result.pieces}
+                  overrides={overrides}
+                  onOverride={setOverride}
+                  onChooseTarget={chooseTarget}
+                />
+              ))}
+            </div>
+
+            {assumedIdentitySlots.length > 0 && (
+              <div className="warnings">
+                ⚠{" "}
+                {t(
+                  "These pieces report base stats this app has no tier for, so their level and rarity are a guess — set them yourself",
+                )}
+                : {assumedIdentitySlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}.{" "}
+                {t("On armor this only changes the HP and defense shown, never the DPS.")}
+              </div>
+            )}
+
+            {emptiedSlots.length > 0 && (
+              <div className="warnings">
+                ⚠ {emptiedSlots.length} {t("slots aren't in this payload and will be emptied")}:{" "}
+                {emptiedSlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}
+              </div>
+            )}
+          </>
+        )}
+      </DialogBody>
+
+      <DialogFooter>
+        {result && (
+          <div className={styles.modeChoice}>
+            <span className="section-label">{t("Gear you have now")}</span>
+            <label>
+              <input
+                type="radio"
+                checked={!keepDisplaced}
+                onChange={() => chooseKeepDisplaced(false)}
+              />
+              {t("Remove replaced")}
+            </label>
+            <label>
+              <input
+                type="radio"
+                checked={keepDisplaced}
+                onChange={() => chooseKeepDisplaced(true)}
+              />
+              {t("Keep in inventory")}
+            </label>
+          </div>
+        )}
+        <span className="spacer" />
+        <span className="hint">{t("Nothing is written until you press Save.")}</span>
+        {result && (
+          <button type="button" className="btn" onClick={clearPaste}>
+            {t("Back")}
           </button>
-          <button
-            type="button"
-            className="btn primary"
-            disabled={!pieces.length}
-            onClick={() => onImport(pieces, keepDisplaced)}
-          >
-            {t("Import gear")}
-          </button>
-        </div>
-      </div>
-    </div>
+        )}
+        <button type="button" className="btn" onClick={onCancel}>
+          {t("Cancel")}
+        </button>
+        <button
+          type="button"
+          className="btn primary"
+          disabled={!pieces.length}
+          onClick={() => onImport(pieces, mindMethods, keepDisplaced)}
+        >
+          {t("Import gear")}
+        </button>
+      </DialogFooter>
+    </Dialog>
   )
 }
 
@@ -427,9 +447,9 @@ function PiecePreview({
 
   if (piece.slot.kind !== "mapped") {
     return (
-      <div className={`${styles.piece} ${styles.skipped}`}>
-        <div className={styles.pieceHead}>
-          <span className={styles.pieceSlot}>
+      <div className={`${previewStyles.piece} ${previewStyles.skipped}`}>
+        <div className={previewStyles.pieceHead}>
+          <span className={previewStyles.pieceSlot}>
             {t("Game slot")} {piece.gameSlotId}
           </span>
           <span className="hint">{t("unknown slot — skipped")}</span>
@@ -443,9 +463,9 @@ function PiecePreview({
   const base = gearBaseStatsFor({ slot, ...identity })
 
   return (
-    <div className={styles.piece}>
-      <div className={styles.pieceHead}>
-        <span className={styles.pieceSlot}>{t(SLOT_LABEL_KEYS[slot])}</span>
+    <div className={previewStyles.piece}>
+      <div className={previewStyles.pieceHead}>
+        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
         <span className="hint">
           {isWeaponSlot(slot)
             ? `${t("Min Phys")} ${base.minPhys} · ${t("Max Phys")} ${base.maxPhys}`
@@ -453,15 +473,15 @@ function PiecePreview({
         </span>
       </div>
 
-      <div className={styles.identityRow}>
+      <div className={previewStyles.identityRow}>
         <Combobox
-          className={styles.identityPicker}
+          className={previewStyles.identityPicker}
           value={String(identity.level)}
           options={LEVEL_OPTIONS}
           onChange={(value) => onOverride(piece.gameSlotId, { level: Number(value) as GearLevel })}
         />
         <Combobox
-          className={styles.identityPicker}
+          className={previewStyles.identityPicker}
           value={identity.rarity}
           options={rarityOptions}
           onChange={(value) => onOverride(piece.gameSlotId, { rarity: value as GearRarity })}
@@ -469,7 +489,7 @@ function PiecePreview({
         <span className="hint">{t(identityHint(piece))}</span>
       </div>
 
-      <div className={styles.affixList}>
+      <div className={previewStyles.affixList}>
         {piece.affixes.map((affix, index) => (
           <AffixRow key={index} affix={affix} onChooseTarget={onChooseTarget} />
         ))}
@@ -479,7 +499,7 @@ function PiecePreview({
       </div>
 
       {piece.overflowAffixes.length > 0 && (
-        <div className={styles.overflow}>
+        <div className={previewStyles.overflow}>
           <span className="hint">{t("Beyond the 5 tunement rows — not imported")}</span>
           {piece.overflowAffixes.map((affix, index) => (
             <AffixRow key={index} affix={affix} onChooseTarget={onChooseTarget} />
@@ -495,6 +515,44 @@ function statLineName(mappedTo: string, t: (key: string) => string): string {
   const name = mappedTo.slice(separator + 1)
   if (mappedTo.slice(0, separator) !== "attunement") return t(name)
   return t(getAttunement(name)?.label ?? name)
+}
+
+function innerWayNote(innerWay: ImportedInnerWay): string {
+  switch (innerWay.resolution.kind) {
+    case "resolved":
+      return innerWay.resolution.tierAssumed ? "tier assumed" : ""
+    case "notForThisClass":
+      return "this class cannot slot it — left out"
+    case "unsupported":
+      return "not modelled yet — left out"
+    case "unmapped":
+      return "no mapping yet — left out"
+  }
+}
+
+function InnerWayCard({ innerWay }: { innerWay: ImportedInnerWay }) {
+  const { t } = useI18n()
+  const resolution = innerWay.resolution
+  const tier = resolution.kind === "resolved" ? resolution.tier : innerWay.reportedTier
+  const note = innerWayNote(innerWay)
+
+  return (
+    <div
+      className={
+        resolution.kind === "resolved"
+          ? styles.innerWayCard
+          : `${styles.innerWayCard} ${styles.unresolved}`
+      }
+    >
+      <span className={styles.innerWayTier}>
+        {tier !== null ? t(`tier ${tier}`) : t("no tier")}
+      </span>
+      <span className={styles.innerWayName}>
+        {resolution.kind === "unmapped" ? `#${innerWay.passiveId}` : t(resolution.name)}
+      </span>
+      {note && <span className="hint">{t(note)}</span>}
+    </div>
+  )
 }
 
 function targetOptions(
@@ -528,9 +586,9 @@ function AffixRow({
   if (resolution.kind !== "resolved") {
     const known = resolution.mappedTo ? statLineName(resolution.mappedTo, t) : null
     return (
-      <div className={`${styles.affix} ${styles.unresolved}`}>
+      <div className={`${previewStyles.affix} ${previewStyles.unresolved}`}>
         <Combobox
-          className={styles.affixPicker}
+          className={previewStyles.affixPicker}
           value=""
           options={options}
           placeholder={
@@ -539,7 +597,7 @@ function AffixRow({
           }
           onChange={(value) => onChooseTarget(affix.affixId, value)}
         />
-        <span className={styles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
+        <span className={previewStyles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
         <span className="hint">
           {known
             ? t("not on this class")
@@ -555,16 +613,16 @@ function AffixRow({
   const isPercent = target.kind === "attunement" || target.unit === "percent"
 
   return (
-    <div className={styles.affix}>
+    <div className={previewStyles.affix}>
       <Combobox
-        className={styles.affixPicker}
+        className={previewStyles.affixPicker}
         value={targetKey(target)}
         options={options}
         onChange={(value) => onChooseTarget(affix.affixId, value)}
       />
-      <span className={styles.affixValue}>{fmt(resolution.value, isPercent)}</span>
+      <span className={previewStyles.affixValue}>{fmt(resolution.value, isPercent)}</span>
       {resolution.clampedFrom !== null ? (
-        <span className={`${styles.affixNote} is-negative`}>
+        <span className={`${previewStyles.affixNote} is-negative`}>
           {`${fmt(resolution.clampedFrom, isPercent)} → ${t("in range")}`}
         </span>
       ) : (

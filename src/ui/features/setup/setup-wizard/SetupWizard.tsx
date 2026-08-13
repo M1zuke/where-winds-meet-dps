@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import { applyArmorSet, applyBowSet } from "../../../../engine/panel"
 import { withDerivedStats } from "../../../../engine/derivedInputs"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { Dialog } from "../../../components/dialog/Dialog"
 import { syncClassPermanent } from "../../../utils/classSetup"
 import { ClassSelect } from "../../overview/class-select/ClassSelect"
 import { MindMethodsPanel } from "../../overview/mind-methods-panel/MindMethodsPanel"
@@ -24,6 +25,7 @@ const STEP_COUNT = 3
 
 export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCancel }: Props) {
   const { t } = useI18n()
+  const headingId = useId()
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [name, setName] = useState(initialName)
   const [draft, setDraft] = useState<Inputs>(() =>
@@ -60,54 +62,51 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
   const finishLabel = mode === "first-run" ? t("Finish setup") : t("Create profile")
 
   return (
-    <div
-      className={styles.wizardOverlay}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="wizard-heading"
+    <Dialog
+      labelledBy={headingId}
+      layer="wizard"
+      surfaceClassName={styles.wizardSurface + (step === 3 ? ` ${styles.surfaceGear}` : "")}
     >
-      <div className={styles.wizardModal + (step === 3 ? ` ${styles.modalGear}` : "")}>
-        <div className={styles.wizardHeader}>
-          <div className={styles.wizardStepIndicator}>
-            {t("Step {n}").replace("{n}", `${step} / ${STEP_COUNT}`)}
-          </div>
-          <h2 id="wizard-heading">{heading}</h2>
-          <p className={styles.wizardInstruction}>{instruction}</p>
+      <div className={styles.wizardHeader}>
+        <div className={styles.wizardStepIndicator}>
+          {t("Step {n}").replace("{n}", `${step} / ${STEP_COUNT}`)}
         </div>
-
-        <div className={styles.wizardBody}>
-          {step === 1 && <Step1Name name={name} onChange={setName} onSubmit={next} />}
-          {step === 2 && <Step2Class draft={draft} onChange={setDraft} />}
-          {step === 3 && (
-            <Step3Gear draft={draft} onChange={setDraft} name={trimmedName || initialName} />
-          )}
-        </div>
-
-        <div className={styles.wizardFooter}>
-          <button type="button" className="btn" onClick={back} disabled={!canGoBack}>
-            {backLabel}
-          </button>
-          <div className={styles.wizardProgress} aria-hidden="true">
-            {Array.from({ length: STEP_COUNT }).map((_, index) => (
-              <span
-                key={index}
-                className={
-                  styles.wizardDot +
-                  (index + 1 === step
-                    ? ` ${styles.isActive}`
-                    : index + 1 < step
-                      ? ` ${styles.isDone}`
-                      : "")
-                }
-              />
-            ))}
-          </div>
-          <button type="button" className="btn primary" onClick={next} disabled={!canAdvance}>
-            {step === STEP_COUNT ? finishLabel : t("Next")}
-          </button>
-        </div>
+        <h2 id={headingId}>{heading}</h2>
+        <p className={styles.wizardInstruction}>{instruction}</p>
       </div>
-    </div>
+
+      <div className={styles.wizardBody}>
+        {step === 1 && <Step1Name name={name} onChange={setName} onSubmit={next} />}
+        {step === 2 && <Step2Class draft={draft} onChange={setDraft} />}
+        {step === 3 && (
+          <Step3Gear draft={draft} onChange={setDraft} name={trimmedName || initialName} />
+        )}
+      </div>
+
+      <div className={styles.wizardFooter}>
+        <button type="button" className="btn" onClick={back} disabled={!canGoBack}>
+          {backLabel}
+        </button>
+        <div className={styles.wizardProgress} aria-hidden="true">
+          {Array.from({ length: STEP_COUNT }).map((_, index) => (
+            <span
+              key={index}
+              className={
+                styles.wizardDot +
+                (index + 1 === step
+                  ? ` ${styles.isActive}`
+                  : index + 1 < step
+                    ? ` ${styles.isDone}`
+                    : "")
+              }
+            />
+          ))}
+        </div>
+        <button type="button" className="btn primary" onClick={next} disabled={!canAdvance}>
+          {step === STEP_COUNT ? finishLabel : t("Next")}
+        </button>
+      </div>
+    </Dialog>
   )
 }
 

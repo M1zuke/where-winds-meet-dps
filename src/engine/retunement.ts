@@ -1,6 +1,4 @@
-// Slot 0 is always locked and never enters retunement analysis.
-
-import type { GearPiece } from "./types"
+import type { GearPiece, GearWordName } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
 
 export const FIRST_LOCKED_SLOT = 0
@@ -13,18 +11,18 @@ export function rerollableSlots(piece: GearPiece): readonly number[] {
 
 export interface FilteredPool {
   slotIndex: number
-  candidates: readonly string[]
+  candidates: readonly GearWordName[]
   poolSize: number
 }
 
 export interface CandidateLegality {
-  word: string
+  word: GearWordName
   legal: boolean
   isCurrent: boolean
 }
 
-function countOthers(piece: GearPiece, exceptSlot: number): Map<string, number> {
-  const counts = new Map<string, number>()
+function countOthers(piece: GearPiece, exceptSlot: number): Map<GearWordName, number> {
+  const counts = new Map<GearWordName, number>()
   piece.words.forEach((w, i) => {
     if (i === exceptSlot) return
     if (!w.word) return
@@ -33,7 +31,7 @@ function countOthers(piece: GearPiece, exceptSlot: number): Map<string, number> 
   return counts
 }
 
-function maxAllowedFor(stat: string, firstStat: string): number {
+function maxAllowedFor(stat: GearWordName, firstStat: GearWordName | ""): number {
   return stat === firstStat ? 1 : 0
 }
 
@@ -44,7 +42,7 @@ export function filterPoolForSlot(
 ): FilteredPool {
   const firstStat = piece.words[FIRST_LOCKED_SLOT].word
   const others = countOthers(piece, slotIndex)
-  const candidates: string[] = []
+  const candidates: GearWordName[] = []
   for (const stat of pool.stats) {
     const have = others.get(stat) ?? 0
     if (have <= maxAllowedFor(stat, firstStat)) candidates.push(stat)

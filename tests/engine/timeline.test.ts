@@ -724,4 +724,36 @@ describe("timeline — cast chips sample once the cast has fully resolved", () =
     expect(markerOn(second)).toBeTruthy()
     expect(markerOn(first)!.remainingSec!).toBeGreaterThan(markerOn(second)!.remainingSec!)
   })
+
+  it("leaves out what the next cast applies on that same closing frame", () => {
+    const buff = makeBuff(CLASS, { name: "Marker", durationFrames: 600, maxStacks: 5 })
+    const opener = makeSkill(CLASS, {
+      name: "Opener",
+      castFrames: 30,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyBuff", targetId: buff.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const silent = makeSkill(CLASS, {
+      name: "Silent",
+      castFrames: 100,
+      hits: [makeHit({ frame: 100, physMultiplier: 1 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+        makeStep({ skillId: silent.id, hitCount: 1 }),
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+      ],
+    })
+    const r = simulateTimeline(timelineInputs(rotation, [opener, silent], [buff]))
+
+    const silentCast = r.casts!.find((c) => c.skillName === "Silent")!
+    const lastCast = r.casts![r.casts!.length - 1]
+    expect(silentCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(1)
+    expect(lastCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(2)
+  })
 })

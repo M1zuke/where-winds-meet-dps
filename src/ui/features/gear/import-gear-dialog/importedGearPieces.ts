@@ -1,5 +1,6 @@
 import { attunementsFor } from "../../../../engine/attunements"
-import { gearBaseStatsFor, inferGearIdentity } from "../../../../engine/gearStats"
+import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { emptyGearWord } from "../../../../engine/types"
 import type {
@@ -13,6 +14,7 @@ import type {
 import { newGearPieceId } from "../../../../storage"
 import { AFFIX_ID_TO_STAT_LINE } from "./affixStatLineTable"
 import { targetKey } from "./dashboardGearPayload"
+import { resolveInnerWays } from "./importedInnerWays"
 import type {
   AffixTarget,
   GearImportResult,
@@ -166,7 +168,7 @@ export function resolveAgainstBuild(
       attunement: piece.attunement ? resolveAffix(piece.attunement, slot, inputs, choices) : null,
     }
   })
-  return { ...result, pieces }
+  return { ...result, pieces, innerWays: resolveInnerWays(result, inputs) }
 }
 
 export function effectiveIdentity(

@@ -50,6 +50,13 @@
   margin-bottom: 12px;
 }
 
+.appTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .appTitlebarActions {
   display: flex;
   align-items: center;

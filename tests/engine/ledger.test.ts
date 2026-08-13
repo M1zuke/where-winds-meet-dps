@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { StatusLedger, windowEndAt } from "../../src/engine/ledger"
+import { StatusLedger, UNOWNED, windowEndAt } from "../../src/engine/ledger"
 
 const SPAN_START = -120
 const SPAN_END = 3600
@@ -48,7 +48,7 @@ describe("StatusLedger — windows", () => {
     const led = ledger()
     led.openPermanent("aura")
     led.openPermanent("aura")
-    expect(led.windowsOf("aura")).toEqual([{ start: SPAN_START, end: SPAN_END }])
+    expect(led.windowsOf("aura")).toEqual([{ start: SPAN_START, end: SPAN_END, owner: UNOWNED }])
   })
 
   it("gates stacks on the window — the question a trigger condition asks", () => {

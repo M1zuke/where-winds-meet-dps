@@ -1,0 +1,99 @@
+@use "breakpoints";
+
+.pieceList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 8px;
+}
+
+.piece {
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  padding: 8px 10px;
+  background: var(--color-bg);
+}
+
+.skipped {
+  opacity: 0.6;
+}
+
+.pieceHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pieceSlot {
+  font-size: 0.85em;
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.identityRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0;
+  flex-wrap: wrap;
+}
+
+.identityPicker {
+  width: 96px;
+}
+
+.affixList {
+  display: grid;
+  gap: 2px;
+}
+
+.affix {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.82em;
+  padding: 1px 0;
+}
+
+.affixPicker {
+  min-width: 0;
+}
+
+.affixName {
+  color: var(--color-text);
+}
+
+.affixValue {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.affixNote {
+  font-size: 0.9em;
+}
+
+.affixNote:global(.is-negative) {
+  color: var(--color-negative);
+}
+
+.unresolved .affixName,
+.unresolved .affixValue {
+  color: var(--color-text-muted);
+}
+
+.overflow {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--color-border);
+}
+
+@include breakpoints.below(breakpoints.$bp-760) {
+  .pieceList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
