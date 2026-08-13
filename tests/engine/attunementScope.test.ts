@@ -29,12 +29,12 @@ function damageWith(attuneTag: string | undefined, inputs: Inputs): number {
 
 describe("attunement scope — the stat reaches only what declares the tag", () => {
   it("exposes the rolled stat under the tag its option declares", () => {
-    const ctx = buildContext(umbraInputs({ "Bleed Boost": BLEED_BOOST }))
+    const ctx = buildContext(umbraInputs({ bleedingDamage: BLEED_BOOST }))
     expect(ctx.attuneBoostByTag).toEqual({ "attune:bleed": BLEED_BOOST })
   })
 
   it("multiplies a tagged art row by (1 + rolled), and leaves an untagged one alone", () => {
-    const inputs = umbraInputs({ "Bleed Boost": BLEED_BOOST })
+    const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST })
     const untagged = damageWith(undefined, inputs)
     expect(damageWith("attune:bleed", inputs)).toBeCloseTo(untagged * (1 + BLEED_BOOST), 6)
     expect(damageWith("attune:swordQ", inputs)).toBeCloseTo(untagged, 6)
@@ -69,7 +69,7 @@ describe("attunement scope — the two entities that declare it", () => {
   })
 
   it("shows up in the Skill Editor's Receives column for those skills only", () => {
-    const inputs = umbraInputs({ "Bleed Boost": BLEED_BOOST })
+    const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST })
     const rowsFor = (name: string) =>
       receivesForSkill(
         skills.find((skill) => skill.name === name)!,

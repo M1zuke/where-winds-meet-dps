@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest"
 import { computeRanking, getWordSpecs } from "../../src/engine/itemRanking"
 import { computeGearContribution } from "../../src/engine/gearStats"
-import { attunementsForClass } from "../../src/engine/attunements"
+import { attunementsForClass, getAttunement } from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { GearPiece } from "../../src/engine/types"
@@ -22,11 +22,11 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
     expect(rows.filter((row) => row.source === "tunement").length).toBe(26)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.word)).toEqual([
       "Physical Resistance",
-      "Bleed Boost",
-      "Strategic Sword Martial Boost",
-      "Strategic Sword Special Boost",
-      "Heavenquaker Spear Martial Boost",
-      "Heavenquaker Spear Charged Boost",
+      "Strategic Sword - Bleeding DMG Boost",
+      "Strategic Sword Martial Art Skill DMG Boost",
+      "Strategic Sword Special Skill DMG Boost",
+      "Heavenquaker Spear Martial Art Skill DMG Boost",
+      "Heavenquaker Spear Charged Skill DMG Boost",
     ])
   })
 
@@ -63,8 +63,8 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   })
 })
 
-// Eleven rather than ten: the Bleed Boost attunement row lands third on this
-// build, pushing Max Phys one place down without changing any word's own lift.
+// Eleven rather than ten: the bleed attunement row lands third on this build,
+// pushing Max Phys one place down without changing any word's own lift.
 describe("computeRanking — top-rank consistency", () => {
   const base = runEngine(umbraInputs)
   const rows = computeRanking(umbraInputs, base.dps)
@@ -145,8 +145,9 @@ describe("attunement rows", () => {
     }
   })
 
-  it("Bleed Boost lifts DPS — the gear tag reaches Umbra's bleed rows", () => {
-    const bleed = attunementRows.find((row) => row.word === "Bleed Boost")!
+  it("the bleed attunement lifts DPS — the gear tag reaches Umbra's bleed rows", () => {
+    const bleedLabel = getAttunement("bleedingDamage")!.label
+    const bleed = attunementRows.find((row) => row.word === bleedLabel)!
     expect(bleed.liftPercent).toBeGreaterThan(0)
     expect(bleed.dpsDelta).toBeGreaterThan(0)
   })

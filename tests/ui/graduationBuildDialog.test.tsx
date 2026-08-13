@@ -29,7 +29,9 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
       "Sword Martial Boost",
     )
-    expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Bleed Boost")
+    expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
+      "Strategic Sword - Bleeding DMG Boost",
+    )
   })
 
   it("relays every word, swaps to the relayed bow set and shows the relayed DPS", () => {

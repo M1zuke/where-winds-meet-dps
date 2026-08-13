@@ -281,7 +281,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
               <div className="warnings">
                 ⚠ {summary.notInThisBuildCount}{" "}
                 {t(
-                  "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — Bleed Boost is Bellstrike Umbra's and Phalanx Charge Boost is Stonesplit Strength's — and a weapon's Martial Boost only exists for the classes that wield it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
+                  "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — each names the weapon art it boosts, so only the classes that wield that art can roll it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
                 )}
               </div>
             )}

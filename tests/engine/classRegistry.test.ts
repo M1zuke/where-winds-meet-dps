@@ -24,11 +24,11 @@ describe("class registry — one call answers what a class is made of", () => {
     expect(umbra.primaryAttribute).toBe("Bellstrike")
     expect(umbra.innerWays).toContain("swordHorizon")
     expect(umbra.classSpecificAttunements).toEqual([
-      "Bleed Boost",
-      "Strategic Sword Martial Boost",
-      "Strategic Sword Special Boost",
-      "Heavenquaker Spear Martial Boost",
-      "Heavenquaker Spear Charged Boost",
+      "bleedingDamage",
+      "swordQ",
+      "swordSpecial",
+      "spearQ",
+      "spearCharged",
     ])
     expect(umbra.skills.length).toBeGreaterThan(20)
     expect(umbra.debuffs.map((d) => d.name)).toContain("Bleed Tick")
@@ -59,11 +59,11 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
   it("spec and classSpecificAttunements", () => {
     expect(umbra.spec).toBe("bellstrike_umbra")
     expect(umbra.classSpecificAttunements).toEqual([
-      "Bleed Boost",
-      "Strategic Sword Martial Boost",
-      "Strategic Sword Special Boost",
-      "Heavenquaker Spear Martial Boost",
-      "Heavenquaker Spear Charged Boost",
+      "bleedingDamage",
+      "swordQ",
+      "swordSpecial",
+      "spearQ",
+      "spearCharged",
     ])
   })
 
