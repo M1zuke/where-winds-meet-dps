@@ -11,6 +11,7 @@ import { poisonExtensionForClass } from "../../src/definitions/classes/poisonExt
 import { buildBehaviors, DEFAULT_BEHAVIOR, type BuildView } from "../../src/engine/behavior"
 import { defaultInputs } from "../../src/engine/defaults"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
+import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
@@ -31,7 +32,7 @@ describe("class registry — one call answers what a class is made of", () => {
       "spearCharged",
     ])
     expect(umbra.skills.length).toBeGreaterThan(20)
-    expect(umbra.debuffs.map((d) => d.name)).toContain("Bleeding")
+    expect(umbra.debuffs.map((d) => d.id)).toContain(DEBUFF.bleedTick)
     expect(umbra.buffs.map((b) => b.name)).toContain("River Flow")
     expect(umbra.rotations.length).toBeGreaterThan(0)
     expect(umbra.defaultRotationId).toBeTruthy()
@@ -158,7 +159,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
   })
 
   it("the skill behaviour is registered for Blood Burst", () => {
-    const bleedDetonation = umbra.skills.find((skill) => skill.name === "Blood Burst")!
+    const bleedDetonation = umbra.skills.find((skill) => skill.id === SKILL.bleedDetonation)!
     const build: BuildView = {
       classId: "bellstrikeUmbra",
       innerWayTier: (name) => (name === "swordHorizon" ? 1 : null),

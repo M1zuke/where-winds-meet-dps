@@ -9,18 +9,14 @@ import {
   builtinDebuffsForClass,
   builtinSkillsForClass,
 } from "../../src/engine/builtinLibrary"
+import { builtinSkill } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
-function skillNamed(name: string) {
-  const skill = builtinSkillsForClass(CLASS).find((s) => s.name === name)
-  expect(skill, `${CLASS} has no built-in skill named ${name}`).toBeTruthy()
-  return skill!
-}
-
 describe("built-in skill coefficient split — coeffsAreTotal only", () => {
   it("Bleed Tick (a DoT tick) carries the FULL per-hit coeff on every hit", () => {
-    const bleedTick = skillNamed("Bleed Tick")
+    const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
     expect(bleedTick.hits.length).toBeGreaterThan(1)
     for (const hit of bleedTick.hits) {
       expect(hit.physMultiplier).toBeCloseTo(0.06864, 10)

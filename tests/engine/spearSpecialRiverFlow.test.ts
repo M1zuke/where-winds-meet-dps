@@ -1,20 +1,17 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeSkill, makeHit, type Skill } from "../../src/engine/skill"
 import { RIVER_FLOW_DURATION_FRAMES } from "../../src/data/classes/bellstrike-umbra/gates"
 import type { Inputs, Result } from "../../src/engine/types"
+import { builtinSkill, dotRow } from "../builtins"
+import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
-function skillId(name: string): string {
-  const s = builtinSkillsForClass(CLASS).find((sk) => sk.name === name)
-  if (!s) throw new Error(`missing built-in skill "${name}"`)
-  return s.id
-}
+const skillOf = (id: string) => builtinSkill(CLASS, id)
 
 function makeFiller(frames: number): Skill {
   return makeSkill(CLASS, { name: "Filler", castFrames: frames, hits: [makeHit({ frame: 0 })] })
@@ -35,16 +32,16 @@ function runSteps(
 }
 
 function detonationEvents(result: Result) {
-  return result.timeline!.filter((ev) => ev.skillName === "Blood Burst")
+  return result.timeline!.filter((ev) => ev.skillName === skillOf(SKILL.bleedDetonation).name)
 }
 
 function damageOf(result: Result, name: string): number {
   return result.perSkill.find((p) => p.name === name)?.expectedDamage ?? 0
 }
 
-const spearQId = skillId("SpearQ")
-const spearSpecialId = skillId("Spear Special")
-const swordSpecial3Id = skillId("SwordSpecial 3-Hit")
+const spearQId = SKILL.spearq
+const spearSpecialId = SKILL.spearspecial
+const swordSpecial3Id = SKILL.swordspecial3Hit
 
 const SPEARQ_CAST_FRAMES = 120
 
@@ -52,15 +49,16 @@ describe("Spear Special — no River Flow", () => {
   it("deals base coefficients with no bleed payload or detonation", () => {
     const r = runSteps([{ skillId: spearSpecialId, hitCount: 1 }])
     expect(detonationEvents(r)).toHaveLength(0)
-    expect(r.perSkill.some((p) => p.name.startsWith("Bleeding"))).toBe(false)
+    expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(false)
     expect(damageOf(r, "Spear Special")).toBeGreaterThan(0)
   })
 })
 
-function describeEmpoweredCast(name: string) {
+function describeEmpoweredCast(skillIdArg: string) {
+  const name = builtinSkill(CLASS, skillIdArg).name
   describe(`${name} — River Flow active, cooldown inactive`, () => {
     it("uses the EXACT River Flow coefficients (not merely a larger number)", () => {
-      const id = skillId(name)
+      const id = skillIdArg
       const baseline = damageOf(runSteps([{ skillId: id, hitCount: 1 }]), name)
       const r = runSteps([
         { skillId: spearQId, hitCount: 6 },
@@ -69,7 +67,7 @@ function describeEmpoweredCast(name: string) {
       const empowered = damageOf(r, name)
       expect(empowered).toBeGreaterThan(baseline)
 
-      const trueSkill = builtinSkillsForClass(CLASS).find((s) => s.name === name)!
+      const trueSkill = skillOf(skillIdArg)
       const variant = trueSkill.hits[0].variants![0]
       const stripped: Skill = {
         ...trueSkill,
@@ -96,7 +94,7 @@ function describeEmpoweredCast(name: string) {
     })
 
     it("fires the bleed payload exactly once, on the hit that carries it, and leaves a Bleeding (DoT) row standing", () => {
-      const id = skillId(name)
+      const id = skillIdArg
       const filler = makeFiller(300)
       const r = runSteps(
         [
@@ -108,16 +106,14 @@ function describeEmpoweredCast(name: string) {
       )
       const dets = detonationEvents(r)
       expect(dets).toHaveLength(1)
-      const hitFrame =
-        SPEARQ_CAST_FRAMES +
-        builtinSkillsForClass(CLASS).find((s) => s.name === name)!.hits[0].frame
+      const hitFrame = SPEARQ_CAST_FRAMES + skillOf(skillIdArg).hits[0].frame
       expect(dets[0].frame).toBe(hitFrame)
-      expect(r.perSkill.some((p) => p.name.startsWith("Bleeding"))).toBe(true)
+      expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(true)
     })
   })
 }
-describeEmpoweredCast("Spear Special")
-describeEmpoweredCast("Spear Special (1 Hit Cancel)")
+describeEmpoweredCast(SKILL.spearspecial)
+describeEmpoweredCast(SKILL.spearspecial1HitCancel)
 
 describe("Spear Special — bleed stacks are not consumed by its own payload", () => {
   it("SwordSpecial 3-Hit continues from the 3 stacks Spear Special left standing, detonating on its 2nd hit ⇒ 2 detonations total", () => {
@@ -145,7 +141,7 @@ describe("Spear Special Cooldown — suppresses a second payload", () => {
       { skillId: spearSpecialId, hitCount: 1 },
     ])
     expect(detonationEvents(r)).toHaveLength(1)
-    const row = r.perSkill.find((p) => p.name === "Spear Special")!
+    const row = r.perSkill.find((p) => p.name === skillOf(SKILL.spearspecial).name)!
     expect(row.count).toBe(2)
     expect(row.expectedDamage).toBeGreaterThan(singleCast * 1.9)
     expect(row.expectedDamage).toBeLessThan(singleCast * 2.1)
@@ -158,7 +154,7 @@ describe("Spear Special — fewer than 5 SpearQ hits", () => {
       { skillId: spearQId, hitCount: 4 },
       { skillId: spearSpecialId, hitCount: 1 },
     ])
-    const trueSkill = builtinSkillsForClass(CLASS).find((s) => s.name === "Spear Special")!
+    const trueSkill = skillOf(SKILL.spearspecial)
     const strippedToBase: Skill = {
       ...trueSkill,
       hits: [{ ...trueSkill.hits[0], variants: undefined }],
@@ -184,7 +180,7 @@ describe("River Flow — window expiry", () => {
       { skillId: spearSpecialId, hitCount: 1 },
     ]
     const r = runSteps(steps, [filler])
-    const trueSkill = builtinSkillsForClass(CLASS).find((s) => s.name === "Spear Special")!
+    const trueSkill = skillOf(SKILL.spearspecial)
     const strippedToBase: Skill = {
       ...trueSkill,
       hits: [{ ...trueSkill.hits[0], variants: undefined }],
@@ -220,6 +216,6 @@ describe("Spear Special — no collateral damage elsewhere", () => {
       selectedBuiltinRotationId: "builtin-bellstrikeUmbra-eazy-t6-wolf",
     })
     expect(result.dps).toBeGreaterThan(0)
-    expect(result.perSkill.some((p) => p.name.startsWith("Spear Special"))).toBe(false)
+    expect(result.perSkill.some((p) => p.name === skillOf(SKILL.spearspecial).name)).toBe(false)
   })
 })

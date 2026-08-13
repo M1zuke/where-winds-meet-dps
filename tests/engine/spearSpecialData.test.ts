@@ -14,13 +14,14 @@ import {
 import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
 describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)", () => {
   const skills = builtinSkillsForClass(CLASS)
-  const spearSpecial = skills.filter((s) => s.name === "Spear Special")
-  const cancel = skills.filter((s) => s.name === "Spear Special (1 Hit Cancel)")
+  const spearSpecial = skills.filter((s) => s.id === SKILL.spearspecial)
+  const cancel = skills.filter((s) => s.id === SKILL.spearspecial1HitCancel)
 
   it("exactly one of each skill exists", () => {
     expect(spearSpecial).toHaveLength(1)

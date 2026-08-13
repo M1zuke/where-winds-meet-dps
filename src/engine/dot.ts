@@ -37,6 +37,10 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
   }
 }
 
+export function dotRowName(debuff: Pick<Debuff, "name">): string {
+  return `${debuff.name} (DoT)`
+}
+
 // A tick is evaluated as a synthetic one-off skill. Without the source skill's
 // and the debuff's tags it would carry nothing but its own display name, which
 // is what forced every DoT-targeted modifier to address it by name.

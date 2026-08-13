@@ -8,6 +8,8 @@ import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { attunementsForClass } from "../../src/engine/attunements"
 import { hitToArtRow } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
+import { builtinSkill } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const BLEED_BOOST = 0.2
 
@@ -59,7 +61,9 @@ describe("attunement scope — the two entities that declare it", () => {
   const tagged = skills.filter((skill) => (skill.tags ?? []).includes("attune:bleed"))
 
   it("is exactly Bleed Tick and Blood Burst", () => {
-    expect(tagged.map((skill) => skill.name).sort()).toEqual(["Bleed Tick", "Blood Burst"])
+    expect(tagged.map((skill) => skill.id).sort()).toEqual(
+      [SKILL.bleedTick, SKILL.bleedDetonation].sort(),
+    )
   })
 
   it("puts the tag on the art row the timeline builds", () => {
@@ -70,15 +74,13 @@ describe("attunement scope — the two entities that declare it", () => {
 
   it("shows up in the Skill Editor's Receives column for those skills only", () => {
     const inputs = umbraInputs({ bleedingDamage: BLEED_BOOST })
-    const rowsFor = (name: string) =>
-      receivesForSkill(
-        skills.find((skill) => skill.name === name)!,
-        "bellstrikeUmbra",
-        inputs,
-      ).filter((row) => row.id === "attunement:bleedingDamage")
+    const rowsFor = (skillId: string) =>
+      receivesForSkill(builtinSkill("bellstrikeUmbra", skillId), "bellstrikeUmbra", inputs).filter(
+        (row) => row.id === "attunement:bleedingDamage",
+      )
 
-    expect(rowsFor("Blood Burst")).toHaveLength(1)
-    expect(rowsFor("Blood Burst")[0].active).toBe(true)
-    expect(rowsFor("SpearQ")).toHaveLength(0)
+    expect(rowsFor(SKILL.bleedDetonation)).toHaveLength(1)
+    expect(rowsFor(SKILL.bleedDetonation)[0].active).toBe(true)
+    expect(rowsFor(SKILL.spearq)).toHaveLength(0)
   })
 })

@@ -5,6 +5,7 @@ import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { StatKey } from "../../src/engine/statRegistry"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const umbraOwnBuffDefs = () => classDefinition("bellstrikeUmbra")!.classBuffDefs
 
@@ -68,11 +69,9 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
 describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility", () => {
   it("surfaces both buff ids for the Blood Burst skill and neither for Sword Martial Q", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Blood Burst",
+      (s) => s.id === SKILL.bleedDetonation,
     )
-    const swordQ = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Sword Martial Q",
-    )
+    const swordQ = builtinSkillsForClass("bellstrikeUmbra").find((s) => s.id === SKILL.swordq)
     expect(detonation).toBeTruthy()
     expect(swordQ).toBeTruthy()
 
@@ -87,7 +86,7 @@ describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility"
 
   it("flags the Umbra bleed buffs as spec mechanics, split out from ordinary buff rows", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Blood Burst",
+      (s) => s.id === SKILL.bleedDetonation,
     )
     const detRows = receivesForSkill(detonation!, "bellstrikeUmbra")
     const specIds = detRows.filter((r) => r.isSpecMechanic).map((r) => r.id)

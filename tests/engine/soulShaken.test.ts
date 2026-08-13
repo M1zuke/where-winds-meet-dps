@@ -8,6 +8,8 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
+import { dotRow } from "../builtins"
+import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 
 function bleedTick(tags: string[] = []) {
   return makeSkill("test", { name: "Bleed Tick", skillType: "sustain", tags })
@@ -98,7 +100,7 @@ describe("Soul Shaken — end to end through simulateTimeline", () => {
     const after = simulateTimeline(withWolf)
     const bleedDamage = (timeline: ReturnType<typeof simulateTimeline>) =>
       timeline.perSkill
-        .filter((skill) => skill.name.startsWith("Bleeding"))
+        .filter((skill) => skill.name === dotRow("bellstrikeUmbra", DEBUFF.bleedTick))
         .reduce((sum, skill) => sum + skill.expectedDamage, 0)
     expect(bleedDamage(after)).toBeGreaterThan(bleedDamage(before))
   })

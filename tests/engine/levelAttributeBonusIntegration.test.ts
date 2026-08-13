@@ -9,6 +9,10 @@ import { levelAttributeBonusMechanic } from "../../src/data/classes/bellstrike-u
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
 
 import type { Inputs } from "../../src/engine/types"
+import { skillRow } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+
+const CLASS = "bellstrikeUmbra"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes"). `defaultInputs` itself is a bellstrikeUmbra build.
@@ -59,7 +63,9 @@ describe("level-based attribute-attack bonus (ju) on Blood Burst", () => {
     }
 
     const result = simulateTimeline(inputs)
-    const detonation = result.perSkill.find((p) => p.name === "Blood Burst")
+    const detonation = result.perSkill.find(
+      (p) => p.name === skillRow(CLASS, SKILL.bleedDetonation),
+    )
     expect(detonation).toBeTruthy()
 
     const art = {

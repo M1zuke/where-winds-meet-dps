@@ -12,6 +12,10 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { skillRow } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+
+const CLASS = "bellstrikeUmbra"
 
 const SITE_TARGET_DPS = 48365
 const SITE_TARGET_TOTAL = 2936621
@@ -107,7 +111,9 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(result.rotationDuration).toBeGreaterThan(60.2)
     expect(result.rotationDuration).toBeLessThan(61.2)
 
-    const detonation = result.perSkill.find((s) => s.name === "Blood Burst")
+    const detonation = result.perSkill.find(
+      (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
+    )
 
     console.log("warnings:", result.warnings)
     console.log(

@@ -14,7 +14,14 @@ import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, UNOWNED } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
-import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
+import {
+  dotRowName,
+  dotTickDamage,
+  dotTickSkill,
+  emitDotTicks,
+  resolveTickDot,
+  tickSourceSkillId,
+} from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
@@ -785,7 +792,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     if (!dot) continue
     const debuffForTick: Debuff = { ...status, dot }
     const dotSkill = dotTickSkill(status, tickSkill)
-    const dotName = `${status.name} (DoT)`
+    const dotName = dotRowName(status)
     const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
     const dotType = dot.skillType || "sustain"
 

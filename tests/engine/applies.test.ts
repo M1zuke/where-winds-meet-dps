@@ -5,12 +5,14 @@ import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
+import { builtinSkill } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
 describe("appliesForSkill — the Skill Editor's TRIGGERS column (buff half)", () => {
   it("a set-gated buff (jadeware) surfaces for the skill that triggers it, with a non-empty effect and the set name as its gate", () => {
-    const swordQ = builtinSkillsForClass(CLASS).find((s) => s.name === "Sword Martial Q")
+    const swordQ = builtinSkill(CLASS, SKILL.swordq)
     expect(swordQ).toBeTruthy()
     const rows = appliesForSkill(swordQ!)
     const jadeware = rows.find((r) => r.id === "jadeware")

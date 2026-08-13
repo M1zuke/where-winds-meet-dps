@@ -4,11 +4,16 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
+import { dotRow } from "../builtins"
+import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
+
+const CLASS = "bellstrikeUmbra"
+const BLEED_ROW = dotRow(CLASS, DEBUFF.bleedTick)
 
 describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
   const result = runEngine({ ...defaultInputs, classId: "bellstrikeUmbra" })
   const bleedTicks = result
-    .timeline!.filter((ev) => ev.kind === "dot" && ev.skillName.includes("Bleeding"))
+    .timeline!.filter((ev) => ev.kind === "dot" && ev.skillName === BLEED_ROW)
     .map((ev) => ev.frame)
     .sort((a, b) => a - b)
 
@@ -24,7 +29,7 @@ describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
   })
 
   it("Bleeding (DoT) contributes a materially higher damage share than the old per-window scheduling", () => {
-    const dotRow = result.perSkill.find((p) => p.name === "Bleeding (DoT)")
+    const dotRow = result.perSkill.find((p) => p.name === BLEED_ROW)
     expect(dotRow).toBeTruthy()
     expect(dotRow!.percentOfTotal).toBeGreaterThan(0.07)
   })
