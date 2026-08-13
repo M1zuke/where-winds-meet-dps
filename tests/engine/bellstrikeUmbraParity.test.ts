@@ -56,7 +56,7 @@ const inputs: Inputs = {
     { name: "Insightful Strike", stacks: "tier 6" },
     { name: "Morale Chant", stacks: "tier 6" },
   ],
-  dingYinByTag: { "Bleed Boost": 0.1988 },
+  classSpecificAttunement: { "Bleed Boost": 0.1988 },
   combatSettings: {
     qiBreak: { enabled: true, startSec: 25, durationSec: 10 },
     dragonsBreath: false,

@@ -106,7 +106,7 @@ function resolveAffix(
 ): ImportedAffix {
   const targets = legalTargets(affix, slot, inputs)
   const suggestions = suggestedTargets(affix, targets)
-  const mappedKey = choices[affix.affixId] ?? AFFIX_ID_TO_STAT_LINE[affix.affixId]
+  const mappedKey = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
   const target = mappedKey
     ? targets.find((candidate) => targetKey(candidate) === mappedKey)
     : undefined

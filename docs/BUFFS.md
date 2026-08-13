@@ -66,11 +66,11 @@ is not a buff: nothing switches it on, and it does not belong in the buff-def
 system. The entity declares what it is, the stat declares what it reaches, and
 the kernel joins them.
 
-| stat                       | the entity declares | joined                           |
-| -------------------------- | ------------------- | -------------------------------- |
-| weapon boost               | its weapon key      | additively, inside the boost sum |
-| mystic-category boost      | a `mystic:` tag     | additively, inside the boost sum |
-| attunement (dingYin) boost | an `attune:` tag    | **multiplicatively**             |
+| stat                      | the entity declares | joined                           |
+| ------------------------- | ------------------- | -------------------------------- |
+| weapon boost              | its weapon key      | additively, inside the boost sum |
+| mystic-category boost     | a `mystic:` tag     | additively, inside the boost sum |
+| class-specific attunement | an `attune:` tag    | **multiplicatively**             |
 
 ⚠️ **The attunement channel is multiplicative and the other two are additive.**
 They are not interchangeable; never fold one into the other.

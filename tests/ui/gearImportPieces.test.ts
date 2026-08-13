@@ -24,32 +24,36 @@ import fixture from "./fixtures/dashboardRoleInfo.json"
 const fixtureText = JSON.stringify(fixture)
 const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
-// Mirrors the ids in the fixture; the shipped table only carries what is confirmed.
-const choices: AffixChoices = {
-  "9793015": "word:Sword Martial Boost",
-  "9793120": "word:Affinity",
-  "9793005": "word:Power",
-  "9793008": "word:Min Phys",
-  "280701": "attunement:physPen",
-  "9794014": "word:Affinity",
-  "9793121": "word:All Martial Boost",
-  "9794008": "word:Max Phys",
-  "9794002": "word:Momentum",
-  "9713004": "word:Min Bellstrike",
-  "9743005": "word:Affinity",
-  "280103": "attunement:bleedingDamage",
-}
-
-function resolved(text = fixtureText, withChoices: AffixChoices = choices) {
+function resolved(text = fixtureText, withChoices: AffixChoices = {}) {
   return resolveAgainstBuild(parseDashboardGearPayload(text), inputs, withChoices)
 }
 
-function pieceFor(gameSlotId: string, withChoices: AffixChoices = choices) {
+function pieceFor(gameSlotId: string, withChoices: AffixChoices = {}) {
   const found = resolved(fixtureText, withChoices).pieces.find(
     (piece) => piece.gameSlotId === gameSlotId,
   )
   if (!found) throw new Error(`no piece for slot ${gameSlotId}`)
   return found
+}
+
+function weaponWithLoneAffix(affixId: number, value: number, derivedMax: number) {
+  return JSON.stringify({
+    wearEquipsDetailed: {
+      "1": {
+        exVo: {
+          baseAffixes: [{ equipmentDetails: [affixId, value, value / derivedMax, 3, true] }],
+        },
+      },
+    },
+  })
+}
+
+function untabledAttunementRowOnWeapon(withChoices: AffixChoices) {
+  return resolved(weaponWithLoneAffix(280999, 10.7, 11), withChoices).pieces[0]!.attunement!
+}
+
+function untabledWordRowOnWeapon(withChoices: AffixChoices) {
+  return resolved(weaponWithLoneAffix(9999999, 45.569, 49.4), withChoices).pieces[0]!.affixes[0]!
 }
 
 describe("the shipped affix table is the authority", () => {
@@ -77,6 +81,79 @@ describe("the shipped affix table is the authority", () => {
       const [kind, name] = [key.slice(0, key.indexOf(":")), key.slice(key.indexOf(":") + 1)]
       if (kind === "word") expect(isGearWordName(name), name).toBe(true)
       else expect(attunements.has(name), name).toBe(true)
+    }
+  })
+
+  // The five come from the in-game Attune Effect list (2026-08-13).
+  it("keeps Umbra's five attunement effects distinct", () => {
+    const expected: Readonly<Record<string, string>> = {
+      "260101": "attunement:swordQ",
+      "260102": "attunement:swordSpecial",
+      "260103": "attunement:bleedingDamage",
+      "260104": "attunement:spearQ",
+      "260105": "attunement:spearCharged",
+      "270101": "attunement:swordQ",
+      "270102": "attunement:swordSpecial",
+      "270103": "attunement:bleedingDamage",
+      "270104": "attunement:spearQ",
+      "270105": "attunement:spearCharged",
+      "280101": "attunement:swordQ",
+      "280102": "attunement:swordSpecial",
+      "280103": "attunement:bleedingDamage",
+      "280104": "attunement:spearQ",
+      "280105": "attunement:spearCharged",
+    }
+    for (const [affixId, statLine] of Object.entries(expected)) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe(statLine)
+    }
+  })
+
+  // The five come from the in-game Attune Effect list (2026-08-13).
+  it("keeps Stonesplit Strength's five attunement effects distinct", () => {
+    const expected: Readonly<Record<string, string>> = {
+      "208001": "attunement:snowpartingQ",
+      "208002": "attunement:snowpartingCharged",
+      "208003": "attunement:snowpartingVariedCombo",
+      "208004": "attunement:phalanxbaneQ",
+      "208005": "attunement:phalanxChargeDamage",
+      "218001": "attunement:snowpartingQ",
+      "218002": "attunement:snowpartingCharged",
+      "218003": "attunement:snowpartingVariedCombo",
+      "218004": "attunement:phalanxbaneQ",
+      "218005": "attunement:phalanxChargeDamage",
+      "228001": "attunement:snowpartingQ",
+      "228002": "attunement:snowpartingCharged",
+      "228003": "attunement:snowpartingVariedCombo",
+      "228004": "attunement:phalanxbaneQ",
+      "228005": "attunement:phalanxChargeDamage",
+      "239751": "attunement:snowpartingQ",
+      "239752": "attunement:snowpartingCharged",
+      "239753": "attunement:snowpartingVariedCombo",
+      "239754": "attunement:phalanxbaneQ",
+      "239755": "attunement:phalanxChargeDamage",
+      "249901": "attunement:snowpartingQ",
+      "249902": "attunement:snowpartingCharged",
+      "249903": "attunement:snowpartingVariedCombo",
+      "249904": "attunement:phalanxbaneQ",
+      "249905": "attunement:phalanxChargeDamage",
+      "259901": "attunement:snowpartingQ",
+      "259902": "attunement:snowpartingCharged",
+      "259903": "attunement:snowpartingVariedCombo",
+      "259904": "attunement:phalanxbaneQ",
+      "259905": "attunement:phalanxChargeDamage",
+      "269901": "attunement:snowpartingQ",
+      "269902": "attunement:snowpartingCharged",
+      "269903": "attunement:snowpartingVariedCombo",
+      "269904": "attunement:phalanxbaneQ",
+      "269905": "attunement:phalanxChargeDamage",
+      "279901": "attunement:snowpartingQ",
+      "279902": "attunement:snowpartingCharged",
+      "279903": "attunement:snowpartingVariedCombo",
+      "279904": "attunement:phalanxbaneQ",
+      "279905": "attunement:phalanxChargeDamage",
+    }
+    for (const [affixId, statLine] of Object.entries(expected)) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe(statLine)
     }
   })
 
@@ -123,21 +200,30 @@ describe("suggestions from the reported max roll", () => {
   })
 
   it("refuses a word mapped onto an attunement row instead of dropping the line", () => {
-    const crossed: AffixChoices = { "280701": "word:Physical Penetration" }
-    expect(pieceFor("1", crossed).attunement!.resolution).toMatchObject({
+    const crossed: AffixChoices = { "280999": "word:Physical Penetration" }
+    expect(untabledAttunementRowOnWeapon(crossed).resolution).toMatchObject({
       kind: "unmapped",
       mappedTo: "word:Physical Penetration",
     })
   })
 })
 
-describe("a user choice maps an id", () => {
+describe("a user choice maps an id the table does not carry", () => {
   it("resolves a chosen word and keeps the payload value", () => {
-    expect(pieceFor("1").affixes[3]!.resolution).toMatchObject({
+    const chosen: AffixChoices = { "9999999": "word:Power" }
+    expect(untabledWordRowOnWeapon(chosen).resolution).toMatchObject({
       kind: "resolved",
       target: { word: "Power" },
       value: 45.569,
       clampedFrom: null,
+    })
+  })
+
+  it("loses to the shipped table on an id the table does carry", () => {
+    const overridden: AffixChoices = { "9793005": "word:Power" }
+    expect(pieceFor("1", overridden).affixes[3]!.resolution).toMatchObject({
+      kind: "resolved",
+      target: { word: "Momentum" },
     })
   })
 
@@ -197,8 +283,8 @@ describe("a user choice maps an id", () => {
   })
 
   it("refuses a choice that is illegal for the resolved slot", () => {
-    const armorOnly: AffixChoices = { "280701": "attunement:bleedingDamage" }
-    expect(pieceFor("1", armorOnly).attunement!.resolution).toMatchObject({
+    const armorOnly: AffixChoices = { "280999": "attunement:bleedingDamage" }
+    expect(untabledAttunementRowOnWeapon(armorOnly).resolution).toMatchObject({
       kind: "unmapped",
       mappedTo: "attunement:bleedingDamage",
     })

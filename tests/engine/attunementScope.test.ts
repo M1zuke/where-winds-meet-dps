@@ -11,8 +11,8 @@ import type { Inputs } from "../../src/engine/types"
 
 const BLEED_BOOST = 0.2
 
-function umbraInputs(dingYinByTag: Record<string, number> = {}): Inputs {
-  return { ...defaultInputs, classId: "bellstrikeUmbra", dingYinByTag }
+function umbraInputs(classSpecificAttunement: Record<string, number> = {}): Inputs {
+  return { ...defaultInputs, classId: "bellstrikeUmbra", classSpecificAttunement }
 }
 
 const ART = {

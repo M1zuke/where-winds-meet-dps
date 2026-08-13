@@ -5,6 +5,7 @@ import {
   type AttunementOption,
 } from "../../src/engine/attunements"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { classDefinition } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeDebuff } from "../../src/engine/debuff"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
@@ -24,8 +25,8 @@ function damageOf(result: Result, name: string): number {
 
 function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value: number): Result {
   const classId = option.classIds?.[0]
-  if (!classId || !option.enginePath?.startsWith("dingYinByTag.")) {
-    throw new Error(`${option.id} is not a class-scoped dingYin skill attunement`)
+  if (!classId || !option.enginePath?.startsWith("classSpecificAttunement.")) {
+    throw new Error(`${option.id} is not a class-scoped skill attunement`)
   }
 
   const tag = option.affectsTag
@@ -73,12 +74,12 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
   const rotation = makeRotation(classId, {
     steps: [makeStep({ skillId: directSkill.id, hitCount: 1 })],
   })
-  const inputTag = option.enginePath.slice("dingYinByTag.".length)
+  const inputTag = option.enginePath.slice("classSpecificAttunement.".length)
 
   return simulateTimeline({
     ...defaultInputs,
     classId,
-    dingYinByTag: { [inputTag]: value },
+    classSpecificAttunement: { [inputTag]: value },
     customSkills: [directSkill, tickSkill],
     customDebuffs: [debuff],
     activeCustomRotation: rotation,
@@ -86,6 +87,12 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
 }
 
 describe("declarative skill attunements", () => {
+  it.each(SKILL_ATTUNEMENTS)("$id is a tag its class declares", (option) => {
+    const classId = option.classIds![0]!
+    const tag = option.enginePath!.slice("classSpecificAttunement.".length)
+    expect(classDefinition(classId)!.classSpecificAttunements).toContain(tag)
+  })
+
   it.each(SKILL_ATTUNEMENTS)(
     "$id applies its configured multiplier to a tagged direct skill and linked DoT",
     (option) => {
@@ -124,7 +131,7 @@ describe("declarative skill attunements", () => {
       return simulateTimeline({
         ...defaultInputs,
         classId: "stonesplitStrength",
-        dingYinByTag: { "Phalanx Charge Boost": value },
+        classSpecificAttunement: { "Phalanx Charge Boost": value },
         activeCustomRotation: rotation,
       })
     }

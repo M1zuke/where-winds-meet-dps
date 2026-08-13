@@ -181,7 +181,7 @@ fixtures, or comments. Every domain term uses its official English form
 (attributes `Bellstrike`/`Stonesplit`/`Silkbind`/`Bamboocut`, weapons
 `Sword`/`Modao`/…, skill types
 `weapon`/`mindMethod`/`mystic`/`sustain`/`settlement`/`weaponMystic`, tiers
-`tier 6`, dingYin tags `Bleed Boost`/`Mouse Boost`/…).
+`tier 6`, class-specific attunement tags `Bleed Boost`/`Mouse Boost`/…).
 
 Grep guard — must return nothing:
 
@@ -285,11 +285,12 @@ These have no cached anchor — only the directional `damageRules.test.ts`.
 → The reasoning, the sources, and the per-skill gating: **docs/CALCULATION.md**
 § "Calculation rules".
 
-## dingYin tag map
+## Class-specific attunement tag map
 
-`Inputs.dingYinByTag: Record<string, number>` keyed by the English tag names
-(`Mouse Boost`, `Bleed Boost`, `Sword Charge Boost`, …). Each class declares its
-visible tags via `ClassDef.dingYinTags` (`src/data/classes/<class>.ts`).
+`Inputs.classSpecificAttunement: Record<string, number>` keyed by the English tag
+names (`Mouse Boost`, `Bleed Boost`, `Sword Charge Boost`, …). Each class declares
+its visible tags via `ClassDef.classSpecificAttunements`
+(`src/data/classes/<class>.ts`).
 
 ## Implemented classes
 

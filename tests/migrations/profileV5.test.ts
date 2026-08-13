@@ -158,7 +158,7 @@ describe("v5 profile → v6 dropped-stats scheme", () => {
 
     expect(after.inputs.phys).toEqual({ min: 0, max: 0, penetration: 0 })
     expect(after.inputs.critRate).toBe(0)
-    expect(after.inputs.dingYinByTag).toEqual({})
+    expect(after.inputs.classSpecificAttunement).toEqual({})
   })
 
   it("re-persists the blob at the latest version with no derived stat field present", () => {

@@ -23,6 +23,10 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.word)).toEqual([
       "Physical Resistance",
       "Bleed Boost",
+      "Strategic Sword Martial Boost",
+      "Strategic Sword Special Boost",
+      "Heavenquaker Spear Martial Boost",
+      "Heavenquaker Spear Charged Boost",
     ])
   })
 
@@ -159,9 +163,9 @@ describe("attunement rows", () => {
     expect(resist.leadVsMin).toBe("(none)")
   })
 
-  it("leaves the caller's inputs untouched — the dingYin tag map is cloned", () => {
-    const before = JSON.stringify(umbraInputs.dingYinByTag)
+  it("leaves the caller's inputs untouched — the classSpecificAttunement tag map is cloned", () => {
+    const before = JSON.stringify(umbraInputs.classSpecificAttunement)
     computeRanking(umbraInputs, base.dps)
-    expect(JSON.stringify(umbraInputs.dingYinByTag)).toBe(before)
+    expect(JSON.stringify(umbraInputs.classSpecificAttunement)).toBe(before)
   })
 })

@@ -105,7 +105,7 @@ export interface Inputs {
   singleMysticBoost: number
   areaMysticBoost: number
 
-  dingYinByTag: Record<string, number>
+  classSpecificAttunement: Record<string, number>
 
   mindMethods: [MindMethodSlot, MindMethodSlot, MindMethodSlot, MindMethodSlot]
 

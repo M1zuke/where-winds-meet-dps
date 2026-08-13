@@ -41,7 +41,7 @@ export interface ClassDef {
   generalDamageBoost?: number
   classMindGroup: InnerWayId | ""
   allowedMindMethods: readonly InnerWayId[]
-  dingYinTags: readonly string[]
+  classSpecificAttunements: readonly string[]
   // The fallback pair `itemRanking.ts` reads when the active rotation casts
   // neither of the class's weapons yet.
   weapons: readonly string[]

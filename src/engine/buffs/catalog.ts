@@ -242,7 +242,10 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
     ? ATTUNEMENT_OPTIONS.find((option) => option.affectsTag === attuneTag)
     : undefined
   if (attunement?.enginePath) {
-    const rolled = inputs?.dingYinByTag[attunement.enginePath.slice("dingYinByTag.".length)] ?? 0
+    const rolled =
+      inputs?.classSpecificAttunement[
+        attunement.enginePath.slice("classSpecificAttunement.".length)
+      ] ?? 0
     const forThisClass = !attunement.classIds || !classId || attunement.classIds.includes(classId)
     rows.push({
       id: `attunement:${attunement.id}`,
