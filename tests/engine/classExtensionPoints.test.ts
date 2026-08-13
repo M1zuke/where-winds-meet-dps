@@ -67,7 +67,7 @@ const buildFor = (classId: string) => ({
   classId,
   set: null,
   innerWayTier: () => null,
-  dingYin: () => 0,
+  classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,
 })
 

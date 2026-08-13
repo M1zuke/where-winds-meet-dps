@@ -61,9 +61,9 @@ is camelCase.
 ## One definition per class
 
 One accessor answers what a class is made of — spec, primary attribute, inner
-ways, dingYin tags, skills, debuffs, buffs, rotations and default, graduation
-build, attunements, retunement pool. **Reach for it rather than the individual
-registries.**
+ways, class-specific attunement tags, skills, debuffs, buffs, rotations and
+default, graduation build, attunements, retunement pool. **Reach for it rather
+than the individual registries.**
 
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build

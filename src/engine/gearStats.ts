@@ -167,7 +167,7 @@ function clonePieceShape(i: Inputs): Inputs {
     silkbind: { ...i.silkbind },
     bamboocut: { ...i.bamboocut },
     mindMethods: i.mindMethods.map((m) => ({ ...m })) as Inputs["mindMethods"],
-    dingYinByTag: { ...i.dingYinByTag },
+    classSpecificAttunement: { ...i.classSpecificAttunement },
   }
 }
 

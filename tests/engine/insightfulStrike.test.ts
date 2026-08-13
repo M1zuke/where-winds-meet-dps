@@ -108,7 +108,7 @@ describe("Insightful Strike — DoT +10%", () => {
       food: false,
       set: null,
       tianGong: null,
-      dingYinByTag: {},
+      classSpecificAttunement: {},
       shareDebuffs: { henZhi: false, easyHurt: false },
     }
     const dotArt = BLEED_DOT

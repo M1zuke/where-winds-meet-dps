@@ -32,7 +32,7 @@ export function addStatDelta(inputs: Inputs, path: string, delta: number): void 
   if (!cursor || typeof cursor !== "object") return
   const block = cursor as Record<string, unknown>
   const last = parts[parts.length - 1]
-  if (block[last] === undefined && parts[0] === "dingYinByTag") {
+  if (block[last] === undefined && parts[0] === "classSpecificAttunement") {
     block[last] = 0
   }
   if (typeof block[last] === "number") {

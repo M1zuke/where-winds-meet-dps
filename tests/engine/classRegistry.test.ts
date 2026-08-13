@@ -23,13 +23,21 @@ describe("class registry — one call answers what a class is made of", () => {
     expect(umbra.spec).toBe("bellstrike_umbra")
     expect(umbra.primaryAttribute).toBe("Bellstrike")
     expect(umbra.innerWays).toContain("swordHorizon")
-    expect(umbra.dingYinTags).toEqual(["Bleed Boost"])
+    expect(umbra.classSpecificAttunements).toEqual([
+      "Bleed Boost",
+      "Strategic Sword Martial Boost",
+      "Strategic Sword Special Boost",
+      "Heavenquaker Spear Martial Boost",
+      "Heavenquaker Spear Charged Boost",
+    ])
     expect(umbra.skills.length).toBeGreaterThan(20)
     expect(umbra.debuffs.map((d) => d.name)).toContain("Bleed Tick")
     expect(umbra.buffs.map((b) => b.name)).toContain("River Flow")
     expect(umbra.rotations.length).toBeGreaterThan(0)
     expect(umbra.defaultRotationId).toBeTruthy()
-    expect(umbra.attunements.map((a) => a.id)).toContain("bleedingDamage")
+    expect(umbra.attunements.map((a) => a.id)).toEqual(
+      expect.arrayContaining(["bleedingDamage", "swordQ"]),
+    )
     expect(umbra.retunementPool).not.toBeNull()
   })
 
@@ -48,9 +56,15 @@ describe("class registry — one call answers what a class is made of", () => {
 describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
   const umbra = classDefinition("bellstrikeUmbra")!
 
-  it("spec and dingYinTags", () => {
+  it("spec and classSpecificAttunements", () => {
     expect(umbra.spec).toBe("bellstrike_umbra")
-    expect(umbra.dingYinTags).toEqual(["Bleed Boost"])
+    expect(umbra.classSpecificAttunements).toEqual([
+      "Bleed Boost",
+      "Strategic Sword Martial Boost",
+      "Strategic Sword Special Boost",
+      "Heavenquaker Spear Martial Boost",
+      "Heavenquaker Spear Charged Boost",
+    ])
   })
 
   it("allowedMindMethods, folded with the class signature into innerWays", () => {
@@ -148,7 +162,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     const build: BuildView = {
       classId: "bellstrikeUmbra",
       innerWayTier: (name) => (name === "swordHorizon" ? 1 : null),
-      dingYin: () => 0,
+      classSpecificAttunement: () => 0,
       grantsMinPhysCritBoost: () => false,
     }
     expect(buildBehaviors(build)(bleedDetonation)).not.toBe(DEFAULT_BEHAVIOR)

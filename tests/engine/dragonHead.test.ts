@@ -105,7 +105,11 @@ const ctx: FormulaContext = {
   food: false,
   set: null,
   tianGong: null,
-  dingYinByTag: { "DingYin 1": 0, "DingYin 2": 0, "DingYin 3": 0 },
+  classSpecificAttunement: {
+    "classSpecificAttunement 1": 0,
+    "classSpecificAttunement 2": 0,
+    "classSpecificAttunement 3": 0,
+  },
   shareDebuffs: { henZhi: false, easyHurt: false },
 }
 

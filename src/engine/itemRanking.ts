@@ -229,7 +229,7 @@ function clone(i: Inputs, mut: (x: Inputs) => void): Inputs {
     stonesplit: { ...i.stonesplit },
     silkbind: { ...i.silkbind },
     bamboocut: { ...i.bamboocut },
-    dingYinByTag: { ...i.dingYinByTag },
+    classSpecificAttunement: { ...i.classSpecificAttunement },
     mindMethods: i.mindMethods.map((m) => ({ ...m })) as Inputs["mindMethods"],
   }
   mut(next)
