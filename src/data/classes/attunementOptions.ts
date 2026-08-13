@@ -4,7 +4,7 @@ import { GENERAL_SLOTS } from "./attunementSlots"
 import { BELLSTRIKE_UMBRA_ATTUNEMENTS } from "./bellstrike-umbra/attunements"
 import { STONESPLIT_STRENGTH_ATTUNEMENTS } from "./stonesplit-strength/attunements"
 
-const EVERY_CLASS_OPTIONS: readonly AttunementOption[] = [
+const EVERY_CLASS_OPTIONS = [
   {
     id: "physPen",
     label: "Physical Penetration",
@@ -33,10 +33,10 @@ const EVERY_CLASS_OPTIONS: readonly AttunementOption[] = [
     enginePath: null,
     hint: "(defense only)",
   },
-]
+] as const satisfies readonly AttunementOption[]
 
-export const ATTUNEMENT_OPTIONS: readonly AttunementOption[] = [
+export const ATTUNEMENT_OPTIONS = [
   ...EVERY_CLASS_OPTIONS,
   ...BELLSTRIKE_UMBRA_ATTUNEMENTS,
   ...STONESPLIT_STRENGTH_ATTUNEMENTS,
-]
+] as const satisfies readonly AttunementOption[]

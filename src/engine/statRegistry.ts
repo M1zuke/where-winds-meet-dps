@@ -5,6 +5,7 @@
 // stored as a fraction (0.292 == 29.2 %).
 import type { Inputs } from "./types"
 import type { TargetOverride } from "./panel"
+import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
 
 export type StatScope = "player" | "target"
 export type StatUnit = "fraction" | "flat"
@@ -49,6 +50,7 @@ export type StatKey =
   | "bamboocut.max"
   | "bamboocut.penetration"
   | "target.defense"
+  | "target.defensePct"
   | "target.generalDamageTaken"
   | "target.fatigueDamageTaken"
 
@@ -323,6 +325,13 @@ export const STAT_DEFS: readonly StatDef[] = [
     category: "Target",
   },
   {
+    key: "target.defensePct",
+    label: "Target Defense %",
+    scope: "target",
+    unit: "fraction",
+    category: "Target",
+  },
+  {
     key: "target.generalDamageTaken",
     label: "Target Vulnerability",
     scope: "target",
@@ -390,6 +399,12 @@ export function applyBuffEffects(
 
   for (const { statKey, amount } of effects) {
     if (!amount || !STAT_DEF_BY_KEY[statKey]) continue
+
+    if (statKey === "target.defensePct") {
+      const baseDefense = getBreakthrough(inputs.breakthrough).defense
+      targetOverride.defenseDelta = (targetOverride.defenseDelta ?? 0) + amount * baseDefense
+      continue
+    }
 
     const targetField = TARGET_DELTA_FIELD[statKey]
     if (targetField) {

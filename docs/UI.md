@@ -3,26 +3,37 @@
 Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a full
 60 fps timeline simulation, so heavy work stays off the main thread.
 
-## The five rules
+## The rules
 
 1. **At most ONE synchronous engine pass per input change** — the baseline pass
    that feeds the DPS header. Anything that runs the engine more than once per
    change (ranking sweeps, per-piece deltas, tile variants, retunement and
-   word-max analyses) goes through the shared worker: add a request kind and a
-   compute function there, and drive it from a hook shaped like the existing
-   ones — own worker instance, monotonic request id, stale-response discard, a
-   pending flag, terminate on unmount, and an empty result **derived at the
-   hook's return** from a module-level constant, never written back by a
-   `setState` inside an effect. **Never** run the engine in a render-path memo
-   outside that one baseline pass.
-2. **Debounce every worker post** with the shared debounce constant. Each post
-   structured-clones the full inputs, gear inventory included, on the main
-   thread — a zero-delay timeout is not a debounce.
-3. **Mount worker hooks where the results are consumed**, not in the app shell, so
+   word-max analyses) goes through the shared worker client: add a request kind
+   and a compute function there, and drive it from a hook shaped like the
+   existing ones — a monotonic request id, subscribe on mount and unsubscribe on
+   unmount, and an empty result **derived at the hook's return** from a
+   module-level constant, never written back by a `setState` inside an effect.
+   **Never** run the engine in a render-path memo outside that one baseline pass.
+2. **Exactly one hook owns each request kind.** The client routes by kind alone,
+   so a second subscriber to a kind receives the first one's results and their
+   request-id counters collide.
+3. **Never construct a worker in a hook.** The client owns a bounded, lazily
+   grown pool and keeps it for the life of the document. A hook that spawns its
+   own pays a full module instantiation per mount — for a route-mounted tab, per
+   visit.
+4. **Post through the client, never around it.** It debounces per kind with the
+   shared constant, keeps only the newest request, discards superseded responses,
+   and drops a queued request once a kind has no listeners left. Each post
+   structured-clones the full inputs, gear inventory included, on the main thread
+   — a zero-delay timeout is not a debounce.
+5. **Mount worker hooks where the results are consumed**, not in the app shell, so
    a tab that does not show the data does not pay for the sweep.
-4. **While a recompute is in flight, show last-known values** with a subtle
-   opacity dim. Never unmount or flash the UI.
-5. **Never serialize large state per render.** Memoize on the value that actually
+6. **While a recompute is in flight, show last-known values** with a subtle
+   opacity dim. Never unmount or flash the UI. Take the flag from the client,
+   which counts a kind pending from the moment a request is owed rather than when
+   the debounce fires — so a sustained drag dims throughout — and never mirror it
+   into hook state.
+7. **Never serialize large state per render.** Memoize on the value that actually
    changed.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
@@ -66,3 +77,10 @@ Follow the nearest existing worker hook rather than inventing a new shape.
 - A buff the user can edit must be visible in the Skill Editor (BUFFS.md).
 - Worker compute functions get direct-call parity tests (TESTING.md § "Worker
   tests").
+- Changelog data lives in `src/changelog/` — the format in `types.ts`, the
+  ordered version list in `registry.ts`, one module per release under
+  `entries/`.
+- The version shown in the header comes from `package.json`; nothing else
+  declares it.
+- A version bump ships an entry naming that version at the top of the
+  registry, whose body module is loaded only when that version is selected.

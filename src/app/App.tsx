@@ -7,12 +7,15 @@ import type { Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
 import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel"
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
+import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { RotationTab } from "../ui/features/rotation/rotation-tab/RotationTab"
 import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
 import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
 import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/TalentsOdditiesTab"
 import { SkillsTab } from "../ui/features/skills/skills-tab/SkillsTab"
 import { useDpsDeltas } from "../ui/hooks/useDpsDeltas"
+import { useGraduationRate } from "../ui/hooks/useGraduationRate"
+import { GraduationBuildDialog } from "../ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/SetupWizard"
 import { useI18n } from "../i18n/i18nContext"
 import { I18nProvider } from "../i18n/I18nProvider"
@@ -50,6 +53,7 @@ function AppInner() {
   const setInputs = setActiveDraft
   const [lastSavedJson, setLastSavedJson] = useState(() => JSON.stringify(initialActive.inputs))
   const [savedAt, setSavedAt] = useState<number | null>(null)
+  const [graduationDialogOpen, setGraduationDialogOpen] = useState(false)
 
   const [wizard, setWizard] = useState<{ mode: SetupMode; defaultName: string } | null>(() =>
     initial.firstRun ? { mode: "first-run", defaultName: "" } : null,
@@ -62,22 +66,26 @@ function AppInner() {
   const [customBuffs] = useState<Buff[]>(() => loadCustomBuffs())
   const [customDebuffs] = useState<Debuff[]>(() => loadCustomDebuffs())
 
-  const engineInputs = useMemo(() => {
-    const derived = withDerivedStats(inputs)
-    const withArmor = applyArmorSet(derived)
-    const withBow = applyBowSet(withArmor)
+  const configuredInputs = useMemo(() => {
     const classSkills = customSkills.filter((skill) => skill.classId === inputs.classId)
     const classBuffs = customBuffs.filter((buff) => buff.classId === inputs.classId)
     const classDebuffs = customDebuffs.filter((debuff) => debuff.classId === inputs.classId)
-    const withSkills = classSkills.length ? { ...withBow, customSkills: classSkills } : withBow
+    const withSkills = classSkills.length ? { ...inputs, customSkills: classSkills } : inputs
     const withBuffs = classBuffs.length ? { ...withSkills, customBuffs: classBuffs } : withSkills
-    const withDebuffs = classDebuffs.length
-      ? { ...withBuffs, customDebuffs: classDebuffs }
-      : withBuffs
-    return withDebuffs
+    return classDebuffs.length ? { ...withBuffs, customDebuffs: classDebuffs } : withBuffs
   }, [inputs, customSkills, customBuffs, customDebuffs])
 
+  const engineInputs = useMemo(() => {
+    const derived = withDerivedStats(configuredInputs)
+    return applyBowSet(applyArmorSet(derived))
+  }, [configuredInputs])
+
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
+  const graduation = useGraduationRate(configuredInputs, result.dps)
+  const headerResult = useMemo(
+    () => ({ ...result, graduationRate: graduation.rate }),
+    [result, graduation.rate],
+  )
 
   const foreignCandidates = useMemo(() => {
     return committed.profiles
@@ -236,9 +244,20 @@ function AppInner() {
           onCancel={wizard.mode === "new-profile" ? () => setWizard(null) : undefined}
         />
       )}
+      {graduationDialogOpen && (
+        <GraduationBuildDialog
+          inputs={configuredInputs}
+          theoreticalDps={graduation.theoreticalDps}
+          relayedTheoreticalDps={graduation.relayedTheoreticalDps}
+          onClose={() => setGraduationDialogOpen(false)}
+        />
+      )}
       <div className={styles.appHeader}>
         <header className={styles.appTitlebar}>
-          <h1>{t("Where Winds Meet DPS")}</h1>
+          <div className={styles.appTitle}>
+            <h1>{t("Where Winds Meet DPS")}</h1>
+            <ChangelogButton />
+          </div>
           <div className={styles.appTitlebarActions}>
             <GithubLink />
             <button
@@ -263,7 +282,13 @@ function AppInner() {
           </div>
         </header>
 
-        <MetricsCard result={result} className={styles.headerMetrics} />
+        <MetricsCard
+          result={headerResult}
+          className={styles.headerMetrics}
+          graduationPending={graduation.isPending}
+          theoreticalDps={graduation.theoreticalDps}
+          onGraduationClick={() => setGraduationDialogOpen(true)}
+        />
 
         <nav className={styles.tabs} role="tablist">
           {TABS.map((tab) => (

@@ -3,7 +3,26 @@ import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
 
-export type AttributeKey = "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut"
+export const ATTRIBUTE_KEYS = ["Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"] as const
+
+export type AttributeKey = (typeof ATTRIBUTE_KEYS)[number]
+
+export const WEAPON_NAMES = [
+  "Sword",
+  "Spear",
+  "Fan",
+  "Umbrella",
+  "Modao",
+  "Twin Blades",
+  "Rope Dart",
+  "Hengdao",
+] as const
+
+export type WeaponName = (typeof WEAPON_NAMES)[number]
+
+export function isWeaponName(value: string): value is WeaponName {
+  return (WEAPON_NAMES as readonly string[]).includes(value)
+}
 
 export type BowSet = "affinity" | "crit" | "precision" | null
 
@@ -212,8 +231,43 @@ export function isWeaponSlot(slot: GearSlot): boolean {
 export type GearLevel = 86 | 91 | 96
 export type GearRarity = "legendary" | "epic"
 
+const UNPATTERNED_GEAR_WORD_NAMES = [
+  "Power",
+  "Agility",
+  "Momentum",
+  "Min Phys",
+  "Max Phys",
+  "Precision",
+  "Crit",
+  "Affinity",
+  "All Martial Boost",
+  "Damage VS Boss %",
+  "Single-Target Mystic Skill DMG Boost",
+  "Area Mystic Skill DMG Boost",
+  "Min Void Attack",
+  "Max Void Attack",
+  "Physical Penetration",
+  "Attribute Penetration",
+] as const
+
+export type GearWordName =
+  | (typeof UNPATTERNED_GEAR_WORD_NAMES)[number]
+  | `${WeaponName} Martial Boost`
+  | `Min ${AttributeKey}`
+  | `Max ${AttributeKey}`
+
+const GEAR_WORD_NAMES: ReadonlySet<string> = new Set<GearWordName>([
+  ...UNPATTERNED_GEAR_WORD_NAMES,
+  ...WEAPON_NAMES.map((weapon) => `${weapon} Martial Boost` as const),
+  ...ATTRIBUTE_KEYS.flatMap((attribute) => [`Min ${attribute}`, `Max ${attribute}`] as const),
+])
+
+export function isGearWordName(value: unknown): value is GearWordName {
+  return typeof value === "string" && GEAR_WORD_NAMES.has(value)
+}
+
 export interface GearWordEntry {
-  word: string
+  word: GearWordName | ""
   value: number
   retuned: boolean
 }

@@ -1,10 +1,10 @@
-import type { Inputs } from "../../../../engine/types"
-import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
-import { totalPlayerAttributes } from "../../../../definitions/baseStats"
-import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../../engine/formula"
-import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../../engine/panel"
-import { useI18n } from "../../../../i18n/i18nContext"
-import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../../utils/statFormatting"
+import type { Inputs } from "../../../engine/types"
+import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
+import { totalPlayerAttributes } from "../../../definitions/baseStats"
+import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
+import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
+import { useI18n } from "../../../i18n/i18nContext"
+import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../utils/statFormatting"
 import styles from "./StatsOverviewPanel.module.scss"
 
 interface Props {
@@ -66,6 +66,9 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const withSets = applyBowSet(applyArmorSet(derived))
 
   const eff = effectiveRates(withSets)
+  const finalEffectiveCritRate = eff.precision * (eff.critRate + withSets.directCritRate)
+  const finalEffectiveAffinityRate =
+    eff.precision * (eff.affinityRate + withSets.directAffinityRate)
 
   const attrs = totalPlayerAttributes(equippedPiecesFor(inputs))
   const attributeRows: RowEntry[] = [
@@ -80,6 +83,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(t(PATH_LABELS.affinityRate), withSets.affinityRate, true, eff.affinityRate),
     row(t(PATH_LABELS.directCritRate), withSets.directCritRate, true),
     row(t(PATH_LABELS.directAffinityRate), withSets.directAffinityRate, true),
+    row(t("Final Crit"), finalEffectiveCritRate, true),
+    row(t("Final Affinity"), finalEffectiveAffinityRate, true),
   ]
 
   const physMin = readPath(withSets, "phys.min")

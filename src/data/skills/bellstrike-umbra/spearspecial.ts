@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
 
@@ -44,6 +44,12 @@ export const spearspecial = defineSkill({
           id: "tg-spearspecial-detonation-h0",
           target: SKILL.bleedDetonation,
           stacks: 0,
+          condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
+          conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
+        }),
+        applyDebuff({
+          id: "tg-spearspecial-defense-down-h0",
+          target: DEBUFF.defenseDown,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),

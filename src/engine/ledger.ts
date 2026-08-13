@@ -9,8 +9,11 @@
 export interface StatusWindow {
   start: number
   end: number
+  owner?: number
   extensions?: Array<{ frame: number; amount: number }>
 }
+
+export const UNOWNED = Number.NEGATIVE_INFINITY
 
 export interface StatusView {
   activeIdsAt(frame: number): string[]
@@ -30,9 +33,16 @@ export function windowEndAt(window: StatusWindow, frame: number): number {
   return end
 }
 
+function cloneWindow(window: StatusWindow): StatusWindow {
+  return window.extensions ? { ...window, extensions: [...window.extensions] } : { ...window }
+}
+
 export class StatusLedger implements StatusView {
   private readonly windows = new Map<string, StatusWindow[]>()
-  private readonly stacks = new Map<string, Array<{ frame: number; value: number }>>()
+  private readonly stacks = new Map<
+    string,
+    Array<{ frame: number; value: number; owner: number }>
+  >()
   private readonly permanentOpened = new Set<string>()
 
   constructor(
@@ -40,10 +50,11 @@ export class StatusLedger implements StatusView {
     private readonly spanEnd: number,
   ) {}
 
-  pushWindow(id: string, start: number, end: number): void {
+  pushWindow(id: string, start: number, end: number, owner: number = UNOWNED): void {
+    const window: StatusWindow = { start, end, owner }
     const existing = this.windows.get(id)
-    if (existing) existing.push({ start, end })
-    else this.windows.set(id, [{ start, end }])
+    if (existing) existing.push(window)
+    else this.windows.set(id, [window])
   }
 
   openPermanent(id: string): void {
@@ -52,10 +63,23 @@ export class StatusLedger implements StatusView {
     this.pushWindow(id, this.spanStart, this.spanEnd)
   }
 
-  recordStack(id: string, frame: number, value: number): void {
+  recordStack(id: string, frame: number, value: number, owner: number = UNOWNED): void {
     const existing = this.stacks.get(id)
-    if (existing) existing.push({ frame, value })
-    else this.stacks.set(id, [{ frame, value }])
+    if (existing) existing.push({ frame, value, owner })
+    else this.stacks.set(id, [{ frame, value, owner }])
+  }
+
+  throughOwner(ownerLimit: number): StatusLedger {
+    const view = new StatusLedger(this.spanStart, this.spanEnd)
+    for (const [id, windows] of this.windows) {
+      const kept = windows.filter((window) => (window.owner ?? UNOWNED) <= ownerLimit)
+      if (kept.length > 0) view.windows.set(id, kept.map(cloneWindow))
+    }
+    for (const [id, history] of this.stacks) {
+      const kept = history.filter((entry) => entry.owner <= ownerLimit)
+      if (kept.length > 0) view.stacks.set(id, kept)
+    }
+    return view
   }
 
   hasStackHistory(id: string): boolean {

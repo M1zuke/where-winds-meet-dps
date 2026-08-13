@@ -11,7 +11,7 @@ import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
 import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import { StatusLedger } from "./ledger"
+import { StatusLedger, UNOWNED } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
 import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
@@ -52,6 +52,7 @@ interface HitEvent {
   // The frame the CAST started, which is what cast-scoped buff ids are keyed
   // by — not this hit's own frame, which may be well after it.
   castFrame: number
+  stepStart: number
 }
 
 class EventQueue {
@@ -196,10 +197,11 @@ export function simulateTimeline(inputs: Inputs): Result {
   }
 
   const ledger = new StatusLedger(spanStart, durationFrames)
-  const recordStack = (id: string, frame: number, value: number) =>
-    ledger.recordStack(id, frame, value)
+  const recordStack = (id: string, frame: number, value: number, owner = UNOWNED) =>
+    ledger.recordStack(id, frame, value, owner)
   const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
-  const pushWindow = (id: string, start: number, end: number) => ledger.pushWindow(id, start, end)
+  const pushWindow = (id: string, start: number, end: number, owner = UNOWNED) =>
+    ledger.pushWindow(id, start, end, owner)
   const openPermanent = (id: string) => ledger.openPermanent(id)
 
   for (const id of rotation.permanentBuffIds) {
@@ -491,6 +493,7 @@ export function simulateTimeline(inputs: Inputs): Result {
         skill: ls.resolved.skill,
         hit,
         castFrame: ls.startFrame,
+        stepStart: ls.startFrame,
       })
     }
   }
@@ -517,7 +520,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
     const ev = queue.pop()!
     processed++
-    const { frame, skill, hit, castFrame } = ev
+    const { frame, skill, hit, castFrame, stepStart } = ev
 
     const behavior = behaviorFor(skill)
     const hitInput = hitInputAt(skill, hit, frame)
@@ -535,8 +538,13 @@ export function simulateTimeline(inputs: Inputs): Result {
         if (!status) return
         if (permanent) openPermanent(status.id)
         else
-          pushWindow(status.id, frame, frame + Math.max(1, durationFrames ?? status.durationFrames))
-        if (stacks !== undefined) recordStack(status.id, frame, stacks)
+          pushWindow(
+            status.id,
+            frame,
+            frame + Math.max(1, durationFrames ?? status.durationFrames),
+            stepStart,
+          )
+        if (stacks !== undefined) recordStack(status.id, frame, stacks, stepStart)
       },
       applyBuff: () => {},
       consumeStacks: () => {},
@@ -600,9 +608,9 @@ export function simulateTimeline(inputs: Inputs): Result {
         if (!status || !isDebuffStatus(status)) continue
         const maxStacks = Math.max(1, status.maxStacks)
         const next = clamp(stacksAt(status.id, frame) + 1, 0, maxStacks)
-        recordStack(status.id, frame, next)
+        recordStack(status.id, frame, next, stepStart)
         if (status.activation === "permanent") openPermanent(status.id)
-        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames))
+        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
         const det = status.detonation ?? null
         const flagged =
           det &&
@@ -614,7 +622,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             buffEngine.paramTier(det.retainParam) >= (det.retainMinTier ?? 6)
               ? (det.retainParamStacks ?? det.retainStacks ?? 0)
               : (det.retainStacks ?? 0)
-          recordStack(status.id, frame, clamp(retained, 0, maxStacks))
+          recordStack(status.id, frame, clamp(retained, 0, maxStacks), stepStart)
           const sub = skillsById.get(det.skillId)
           if (sub)
             for (const subHit of sub.hits) {
@@ -624,6 +632,7 @@ export function simulateTimeline(inputs: Inputs): Result {
                 skill: sub,
                 hit: subHit,
                 castFrame: frame,
+                stepStart,
               })
             }
         }
@@ -647,17 +656,17 @@ export function simulateTimeline(inputs: Inputs): Result {
               0,
               Math.max(1, status.maxStacks),
             )
-            recordStack(status.id, frame, next)
+            recordStack(status.id, frame, next, stepStart)
             if (status.activation === "permanent") openPermanent(status.id)
-            else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames))
+            else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
           }
           continue
         }
         const cur = stacksAt(status.id, frame)
         const next = clamp(cur + trigger.stacks, 0, Math.max(1, status.maxStacks))
-        recordStack(status.id, frame, next)
+        recordStack(status.id, frame, next, stepStart)
         if (status.activation === "permanent") openPermanent(status.id)
-        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames))
+        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
       } else {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
@@ -668,6 +677,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             skill: sub,
             hit: subHit,
             castFrame: frame,
+            stepStart,
           })
         }
       }
@@ -704,7 +714,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       frame: queryFrame,
       timeSec: queryTimeSec,
       fps: FPS,
-      ledger,
+      ledger: ledger.throughOwner(ls.startFrame),
       statusById,
       buffEngine,
       // Below the display threshold there's a real chance no poison has

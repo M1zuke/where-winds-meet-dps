@@ -57,11 +57,6 @@ export function resolveInnerWays(
   })
 }
 
-/**
- * The names of the inner ways the capture carries that the engine has no module
- * for, in capture order and without repeats. What the dialog names back to the
- * user so a build that silently loses one is visible before the import lands.
- */
 export function unsupportedInnerWayNames(innerWays: readonly ImportedInnerWay[]): string[] {
   const names = innerWays.flatMap((innerWay) =>
     innerWay.resolution.kind === "unsupported" ? [innerWay.resolution.name] : [],

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { gearBaseStatsFor, inferGearIdentity } from "../../src/engine/gearStats"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
+import { inferGearIdentity } from "../../src/engine/gearIdentity"
 import { GEAR_SLOTS, type GearLevel, type GearRarity } from "../../src/engine/types"
 
 const TABLED_LEVELS: GearLevel[] = [91, 96]
@@ -59,5 +60,16 @@ describe("inferGearIdentity", () => {
 
   it("reports no candidates when nothing was observed", () => {
     expect(inferGearIdentity("helm", {}).candidates).toEqual([])
+  })
+})
+
+describe("the lv96 gear table", () => {
+  it("does not scale greaves defense from helm at epic the way it does at legendary", () => {
+    const helm = (rarity: GearRarity) => gearBaseStatsFor({ slot: "helm", level: 96, rarity })
+    const greaves = (rarity: GearRarity) => gearBaseStatsFor({ slot: "greaves", level: 96, rarity })
+
+    expect(greaves("legendary").physDef).toBe(helm("legendary").physDef * 2)
+    expect(greaves("epic").physDef).toBe(39)
+    expect(greaves("epic").physDef).not.toBe(helm("epic").physDef * 2)
   })
 })

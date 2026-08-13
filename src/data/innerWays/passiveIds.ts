@@ -1,9 +1,7 @@
 import type { InnerWayId } from "./ids"
 
-// Every inner way the game offers, as served to the dashboard 2026-08, with the
-// name it shows for it. Names only: an id absent from `PASSIVE_ID_TO_INNER_WAY`
-// is one the engine cannot compute, and this is what lets the import say so by
-// name. The catalog's higher id ranges are gear and weapon passives, not inner
+// Every inner way the game offers, as served to the dashboard 2026-08. That
+// catalog's higher id ranges are gear and weapon passives rather than inner
 // ways, and are deliberately not carried here.
 export const PASSIVE_INNER_WAY_NAMES: Readonly<Record<string, string>> = {
   "1": "Wind Beneath Wings",
@@ -60,9 +58,6 @@ export const PASSIVE_INNER_WAY_NAMES: Readonly<Record<string, string>> = {
   "604": "Celestial Vigor",
 }
 
-// The catalog entries the engine models — one per `defineInnerWay` module, typed
-// against `InnerWayId` so a typo is a build error. Adding an inner way moves its
-// id in here; nothing else in the import changes.
 export const PASSIVE_ID_TO_INNER_WAY: Readonly<Record<string, InnerWayId>> = {
   "42": "bitterSeason",
   "81": "moraleChant",

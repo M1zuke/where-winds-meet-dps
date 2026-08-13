@@ -1,0 +1,78 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.layerWizard {
+  z-index: 1000;
+}
+
+.layerDialog {
+  z-index: 1200;
+}
+
+// Above every dialog (1200) and the combobox dropdown portal (1300): a confirm
+// blocks the thing that raised it.
+.layerConfirm {
+  z-index: 1400;
+}
+
+.surface {
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+// Only when no `surfaceClassName` sizes the dialog: two width rules on the same
+// element are equal-specificity, so the winner would be whichever stylesheet
+// the bundler happened to emit last.
+.defaultWidth {
+  width: min(95vw, 560px);
+}
+
+.header {
+  padding: 16px 20px 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.05em;
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.body {
+  padding: 12px 20px;
+  overflow-y: auto;
+}
+
+.footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--color-bg);
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 12px;
+  }
+}

@@ -2,7 +2,7 @@
 import type { AttunementOption } from "../../../engine/attunements"
 import { ARMOR_SLOTS } from "../attunementSlots"
 
-export const BELLSTRIKE_UMBRA_ATTUNEMENTS: readonly AttunementOption[] = [
+export const BELLSTRIKE_UMBRA_ATTUNEMENTS = [
   {
     id: "bleedingDamage",
     label: "Bleed Boost",
@@ -13,4 +13,4 @@ export const BELLSTRIKE_UMBRA_ATTUNEMENTS: readonly AttunementOption[] = [
     enginePath: "dingYinByTag.Bleed Boost",
     affectsTag: "attune:bleed",
   },
-]
+] as const satisfies readonly AttunementOption[]

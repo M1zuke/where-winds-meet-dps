@@ -1,5 +1,6 @@
 import { attunementsFor } from "../../../../engine/attunements"
-import { gearBaseStatsFor, inferGearIdentity } from "../../../../engine/gearStats"
+import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { emptyGearWord } from "../../../../engine/types"
 import type {

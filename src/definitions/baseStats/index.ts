@@ -42,10 +42,7 @@ const MOMENTUM_PER_POINT = {
   affinityRate: 0.00038,
 } as const
 
-interface BaseStatRow {
-  Level: number
-  Attrs: { Id: number; Name: string; Key: string; Value: number }[]
-}
+type BaseStatsByLevel = Record<string, Record<string, number>>
 
 interface BaseEntry {
   id: number
@@ -69,10 +66,9 @@ interface BaseAccumulator {
 }
 
 function readBaseLevel(): BaseAccumulator {
-  const rows = baseStatsJson as BaseStatRow[]
-  const row = rows.find((r) => r.Level === BASE_LEVEL)
+  const row = (baseStatsJson as BaseStatsByLevel)[String(BASE_LEVEL)]
   if (!row) throw new Error(`baseStats.json missing Level ${BASE_LEVEL}`)
-  const get = (key: string) => row.Attrs.find((a) => a.Key === key)?.Value ?? 0
+  const get = (key: string) => row[key] ?? 0
   return {
     minPhys: get("MIN_W_ATK"),
     maxPhys: get("MAX_W_ATK"),
