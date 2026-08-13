@@ -7,6 +7,7 @@ import { graduationBuild, graduationInputs } from "../../../../engine/graduation
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Arsenal, BowSet, GearPiece, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
+import { statLineLabel } from "../../../../data/stats/statLines"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -146,7 +147,9 @@ export function GraduationBuildDialog({
                     <div className={previewStyles.affixList}>
                       {piece.words.map((word, index) => (
                         <div className={previewStyles.affix} key={`${word.word}-${index}`}>
-                          <span className={previewStyles.affixName}>{t(word.word)}</span>
+                          <span className={previewStyles.affixName}>
+                            {t(statLineLabel(word.word))}
+                          </span>
                           <span className={previewStyles.affixValue}>
                             {formatGearValue(word.value)}
                           </span>

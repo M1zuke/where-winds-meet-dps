@@ -3,7 +3,7 @@ import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/regis
 import { getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
-import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../../src/data/stats/gearWordRolls"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../../src/data/stats/statLines"
 import { relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"

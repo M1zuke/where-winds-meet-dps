@@ -6,6 +6,7 @@ import { V8__dropRemovedArmorSets } from "./V8__dropRemovedArmorSets"
 import { V9__renameSteadfastDevotion } from "./V9__renameSteadfastDevotion"
 import { V10__renameFrostCladNight } from "./V10__renameFrostCladNight"
 import { V11__setIdsWithoutDisplayName } from "./V11__setIdsWithoutDisplayName"
+import { V12__gearWordIds } from "./V12__gearWordIds"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -14,6 +15,7 @@ export {
   LEGACY_CLASS_IDS,
 } from "./V5__englishIdsWithoutSitePrefix"
 export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
+export { migrateGearWordId } from "./V12__gearWordIds"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -23,6 +25,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V9__renameSteadfastDevotion,
   V10__renameFrostCladNight,
   V11__setIdsWithoutDisplayName,
+  V12__gearWordIds,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

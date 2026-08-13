@@ -20,7 +20,7 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
 
   it("produces a row per gear word plus one per class-legal attunement", () => {
     expect(rows.filter((row) => row.source === "tunement").length).toBe(26)
-    expect(rows.filter((row) => row.source === "attunement").map((row) => row.word)).toEqual([
+    expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
       "Strategic Sword - Bleeding DMG Boost",
       "Strategic Sword Martial Art Skill DMG Boost",
@@ -30,13 +30,13 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
     ])
   })
 
-  it("includes the default rotation's resolved weapon labels (Sword + Spear)", () => {
-    expect(rows.some((r) => r.word === "Sword Martial Boost")).toBe(true)
-    expect(rows.some((r) => r.word === "Spear Martial Boost")).toBe(true)
+  it("includes the default rotation's resolved weapons (Sword + Spear)", () => {
+    expect(rows.some((r) => r.statLineId === "swordBoost")).toBe(true)
+    expect(rows.some((r) => r.statLineId === "spearBoost")).toBe(true)
   })
 
   it("Precision (already at 100 %) caps at (none) — no positive lift", () => {
-    const precision = rows.find((r) => r.word === "Precision")!
+    const precision = rows.find((r) => r.statLineId === "precision")!
     expect(precision.leadVsMin).toBe("(none)")
   })
 
@@ -69,15 +69,13 @@ describe("computeRanking — top-rank consistency", () => {
   const base = runEngine(umbraInputs)
   const rows = computeRanking(umbraInputs, base.dps)
   const sorted = [...rows].sort((a, b) => b.liftPercent - a.liftPercent)
-  const top11 = new Set(sorted.slice(0, 11).map((r) => r.word))
+  const top11 = new Set(sorted.slice(0, 11).map((r) => r.statLineId))
 
   it("Physical Penetration ranks in the top 11", () =>
-    expect(top11.has("Physical Penetration")).toBe(true))
-  it("Max Phys ranks in the top 11", () => expect(top11.has("Max Phys")).toBe(true))
-  it("Sword Martial Boost ranks in the top 11", () =>
-    expect(top11.has("Sword Martial Boost")).toBe(true))
-  it("All Martial Boost ranks in the top 11", () =>
-    expect(top11.has("All Martial Boost")).toBe(true))
+    expect(top11.has("physicalPenetration")).toBe(true))
+  it("Max Phys ranks in the top 11", () => expect(top11.has("maxPhys")).toBe(true))
+  it("Sword Martial Boost ranks in the top 11", () => expect(top11.has("swordBoost")).toBe(true))
+  it("All Martial Boost ranks in the top 11", () => expect(top11.has("allMartialBoost")).toBe(true))
 })
 
 // `WordSpec.amount` and the `apply` delta must stay in lockstep, since
@@ -86,17 +84,17 @@ describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
   const specs = getWordSpecs(umbraInputs)
 
   it("is pinned at 9.797 %, while the area mystic word stays at 7 %", () => {
-    const single = specs.find((s) => s.word === "Single-Target Mystic Skill DMG Boost")!
+    const single = specs.find((s) => s.word === "singleTargetMysticBoost")!
     expect(single.unit).toBe("percent")
     expect(single.amount).toBeCloseTo(0.09797, 10)
 
-    const area = specs.find((s) => s.word === "Area Mystic Skill DMG Boost")!
+    const area = specs.find((s) => s.word === "areaMysticBoost")!
     expect(area.amount).toBeCloseTo(0.07, 10)
   })
 
   it("offers one merged area word, not the two pre-merge ones", () => {
-    const areaWords = specs.filter((s) => s.word.startsWith("Area"))
-    expect(areaWords.map((s) => s.word)).toEqual(["Area Mystic Skill DMG Boost"])
+    const areaWords = specs.filter((s) => s.label.startsWith("Area"))
+    expect(areaWords.map((s) => s.word)).toEqual(["areaMysticBoost"])
   })
 
   it("a piece rolled at the new max contributes the full 9.797 % to singleMysticBoost", () => {
@@ -110,7 +108,7 @@ describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
       hp: 0,
       physDef: 0,
       words: [
-        { word: "Single-Target Mystic Skill DMG Boost", value: 0.09797, retuned: false },
+        { word: "singleTargetMysticBoost", value: 0.09797, retuned: false },
         { word: "", value: 0, retuned: false },
         { word: "", value: 0, retuned: false },
         { word: "", value: 0, retuned: false },
@@ -138,7 +136,7 @@ describe("attunement rows", () => {
 
   it("carries each option's in-game max roll as the amount", () => {
     for (const option of attunementsForClass("bellstrikeUmbra")) {
-      const row = attunementRows.find((candidate) => candidate.word === option.label)
+      const row = attunementRows.find((candidate) => candidate.label === option.label)
       if (!row) continue
       expect(row.unit).toBe("percent")
       expect(row.amount).toBeCloseTo(option.max, 10)
@@ -147,19 +145,19 @@ describe("attunement rows", () => {
 
   it("the bleed attunement lifts DPS — the gear tag reaches Umbra's bleed rows", () => {
     const bleedLabel = getAttunement("bleedingDamage")!.label
-    const bleed = attunementRows.find((row) => row.word === bleedLabel)!
+    const bleed = attunementRows.find((row) => row.label === bleedLabel)!
     expect(bleed.liftPercent).toBeGreaterThan(0)
     expect(bleed.dpsDelta).toBeGreaterThan(0)
   })
 
   it("does not repeat the two penetration attunements already listed as words", () => {
-    expect(attunementRows.some((row) => row.word === "Physical Penetration")).toBe(false)
-    expect(attunementRows.some((row) => row.word === "Formless Penetration")).toBe(false)
-    expect(rows.filter((row) => row.word === "Physical Penetration")).toHaveLength(1)
+    expect(attunementRows.some((row) => row.label === "Physical Penetration")).toBe(false)
+    expect(attunementRows.some((row) => row.label === "Formless Penetration")).toBe(false)
+    expect(rows.filter((row) => row.label === "Physical Penetration")).toHaveLength(1)
   })
 
   it("Physical Resistance is inert for DPS — it has no engine path", () => {
-    const resist = attunementRows.find((row) => row.word === "Physical Resistance")!
+    const resist = attunementRows.find((row) => row.label === "Physical Resistance")!
     expect(resist.dpsDelta).toBeCloseTo(0, 6)
     expect(resist.leadVsMin).toBe("(none)")
   })

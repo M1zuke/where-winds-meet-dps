@@ -150,9 +150,9 @@ export function gearAttributeTotals(pieces: readonly GearPiece[]): {
   for (const p of pieces) {
     for (const w of p.words) {
       if (!w.word || !w.value) continue
-      if (w.word === "Power") power += w.value
-      else if (w.word === "Agility") agility += w.value
-      else if (w.word === "Momentum") momentum += w.value
+      if (w.word === "power") power += w.value
+      else if (w.word === "agility") agility += w.value
+      else if (w.word === "momentum") momentum += w.value
     }
   }
   return { power, agility, momentum }

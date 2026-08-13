@@ -2,6 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { graduationInputs } from "../../src/engine/graduation"
+import { statLineLabel } from "../../src/data/stats/statLines"
+import { getAttunement } from "../../src/engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
@@ -27,10 +29,10 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByText("All enabled")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
     expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
-      "Sword Martial Boost",
+      statLineLabel("swordBoost"),
     )
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
-      "Strategic Sword - Bleeding DMG Boost",
+      getAttunement("bleedingDamage")!.label,
     )
   })
 
@@ -73,10 +75,10 @@ describe("GraduationBuildDialog", () => {
     )
 
     fireEvent.click(screen.getByRole("tab", { name: "Panel Stats" }))
-    const maxRollPhys = screen.getByText("Max Phys").parentElement?.textContent
+    const maxRollPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
-    const relayedPhys = screen.getByText("Max Phys").parentElement?.textContent
+    const relayedPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
     const relayed = applyBowSet(
       applyArmorSet(withDerivedStats(graduationInputs(defaultInputs, "relayed")!)),
@@ -109,7 +111,7 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByText("Final Crit").parentElement).toHaveTextContent(
       fmt(finalEffectiveCritRate, true),
     )
-    expect(screen.getByText("Max Phys").parentElement).toHaveTextContent(
+    expect(screen.getByText(statLineLabel("maxPhys")).parentElement).toHaveTextContent(
       fmt(benchmark.phys.max, false),
     )
   })

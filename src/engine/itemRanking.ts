@@ -1,9 +1,14 @@
-﻿import type { AttributeKey, GearWordName, Inputs, ItemRankingRow, WeaponName } from "./types"
+﻿import type { AttributeKey, GearWordId, Inputs, ItemRankingRow, WeaponName } from "./types"
 import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
-import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../data/stats/gearWordRolls"
+import {
+  GEAR_WORD_MAX_ROLL,
+  GEAR_WORD_UNIT,
+  gearWordIdForPath,
+  statLineLabel,
+} from "../data/stats/statLines"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
 import { attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
@@ -12,12 +17,13 @@ import { resolveRotation } from "./rotation"
 
 export interface WordSpec<TName extends string = string> {
   word: TName
+  label: string
   amount: number
   unit: "raw" | "percent"
   apply(inputs: Inputs): Inputs
 }
 
-export function getWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
+export function getWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
   return buildWordSpecs(inputs)
 }
 
@@ -45,97 +51,96 @@ function rotationWeapons(inputs: Inputs): WeaponName[] {
 }
 
 function wordSpec(
-  word: GearWordName,
+  word: GearWordId,
   apply: (inputs: Inputs, roll: number) => void,
-): WordSpec<GearWordName> {
+): WordSpec<GearWordId> {
   const roll = GEAR_WORD_MAX_ROLL[word]
   return {
     word,
+    label: statLineLabel(word),
     amount: roll,
     unit: GEAR_WORD_UNIT[word],
     apply: (inputs) => clone(inputs, (next) => apply(next, roll)),
   }
 }
 
-function buildWordSpecs(inputs: Inputs): WordSpec<GearWordName>[] {
+function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
   const school = getSchool(inputs.classId)
   const weapons = rotationWeapons(inputs)
   const schoolWeapons = school.weapons.filter(isWeaponName)
   const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
   const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
-  const specs: WordSpec<GearWordName>[] = [
-    wordSpec("Power", (x) => {
+  const specs: WordSpec<GearWordId>[] = [
+    wordSpec("power", (x) => {
       x.phys.min += 11.115
       x.phys.max += 67.184
     }),
-    wordSpec("Agility", (x, roll) => {
+    wordSpec("agility", (x, roll) => {
       x.phys.min += 44.46
       x.critRate += roll * 0.00076
     }),
-    wordSpec("Momentum", (x, roll) => {
+    wordSpec("momentum", (x, roll) => {
       x.phys.max += 44.46
       x.affinityRate += roll * 0.00038
     }),
-    wordSpec("Min Phys", (x, roll) => {
+    wordSpec("minPhys", (x, roll) => {
       x.phys.min += roll
     }),
-    wordSpec("Max Phys", (x, roll) => {
+    wordSpec("maxPhys", (x, roll) => {
       x.phys.max += roll
     }),
-    wordSpec("Precision", (x, roll) => {
+    wordSpec("precision", (x, roll) => {
       x.precision += roll
     }),
-    wordSpec("Crit", (x, roll) => {
+    wordSpec("crit", (x, roll) => {
       x.critRate += roll
     }),
-    wordSpec("Affinity", (x, roll) => {
+    wordSpec("affinity", (x, roll) => {
       x.affinityRate += roll
     }),
-    wordSpec("All Martial Boost", (x, roll) => {
+    wordSpec("allMartialBoost", (x, roll) => {
       x.allMartialBoost += roll
     }),
   ]
-  if (primaryWeapon)
+  for (const weapon of [primaryWeapon, secondaryWeapon]) {
+    if (!weapon) continue
+    const weaponWordId = gearWordIdForPath(WEAPON_BOOST_STAT_KEY[weapon])
+    if (!weaponWordId) continue
     specs.push(
-      wordSpec(`${primaryWeapon} Martial Boost`, (x, roll) => {
-        applyWeaponBoost(x, primaryWeapon, roll)
+      wordSpec(weaponWordId, (x, roll) => {
+        applyWeaponBoost(x, weapon, roll)
       }),
     )
-  if (secondaryWeapon)
-    specs.push(
-      wordSpec(`${secondaryWeapon} Martial Boost`, (x, roll) => {
-        applyWeaponBoost(x, secondaryWeapon, roll)
-      }),
-    )
+  }
 
   specs.push(
-    wordSpec("Damage VS Boss %", (x, roll) => {
+    wordSpec("damageVsBoss", (x, roll) => {
       x.bossBoost += roll
     }),
-    wordSpec("Single-Target Mystic Skill DMG Boost", (x, roll) => {
+    wordSpec("singleTargetMysticBoost", (x, roll) => {
       x.singleMysticBoost += roll
     }),
-    wordSpec("Area Mystic Skill DMG Boost", (x, roll) => {
+    wordSpec("areaMysticBoost", (x, roll) => {
       x.areaMysticBoost += roll
     }),
     ...ATTRIBUTE_KEYS.flatMap((attribute) => [
-      wordSpec(`Min ${attribute}`, (x, roll) => {
+      wordSpec(`min${attribute}`, (x, roll) => {
         applyAttrAttack(x, attribute, "min", roll)
       }),
-      wordSpec(`Max ${attribute}`, (x, roll) => {
+      wordSpec(`max${attribute}`, (x, roll) => {
         applyAttrAttack(x, attribute, "max", roll)
       }),
     ]),
-    wordSpec("Min Void Attack", (x, roll) => {
+    wordSpec("minVoidAttack", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "min", roll)
     }),
-    wordSpec("Max Void Attack", (x, roll) => {
+    wordSpec("maxVoidAttack", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "max", roll)
     }),
-    wordSpec("Physical Penetration", (x, roll) => {
+    wordSpec("physicalPenetration", (x, roll) => {
       x.phys.penetration += roll
     }),
-    wordSpec("Attribute Penetration", (x, roll) => {
+    wordSpec("formlessPenetration", (x, roll) => {
       applyAttrPenetration(x, school.primaryAttribute, roll)
     }),
   )
@@ -148,7 +153,8 @@ function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
   return attunementsForClass(inputs.classId)
     .filter((opt) => !ATTUNEMENTS_ALREADY_LISTED_AS_WORDS.has(opt.id))
     .map((opt) => ({
-      word: opt.label,
+      word: opt.id,
+      label: opt.label,
       amount: opt.max,
       unit: "percent" as const,
       apply: (i: Inputs) =>
@@ -201,7 +207,8 @@ export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[
       const withSpec = runEngine(spec.apply(inputs))
       const lift = baseDps > 0 ? withSpec.dps / baseDps - 1 : 0
       rows.push({
-        word: spec.word,
+        statLineId: spec.word,
+        label: spec.label,
         source,
         amount: spec.amount,
         unit: spec.unit,

@@ -46,8 +46,8 @@ export function ItemRankingTable({ rows }: Props) {
       </thead>
       <tbody>
         {sorted.map((row, index) => (
-          <tr key={row.word + index}>
-            <td>{t(row.word)}</td>
+          <tr key={row.statLineId + index}>
+            <td>{t(row.label)}</td>
             <td>{row.unit === "percent" ? fmt(row.amount * 100, 2) + " %" : fmt(row.amount, 2)}</td>
             <td
               className={`${styles.dpsDelta} ${deltaSignClass(row.dpsDelta)}`}
