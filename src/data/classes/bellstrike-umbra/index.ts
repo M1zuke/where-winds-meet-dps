@@ -26,9 +26,6 @@ export const bellstrikeUmbra = defineClass({
   allowedMindMethods: ["wolfchasersArt", "insightfulStrike", "moraleChant", "bitterSeason"],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
   weapons: ["Sword", "Spear"],
-  // `.tmp/site/deobfuscated.js` ~L42153-42160 gates the min-phys crit-damage
-  // bonus on a weapon match against `grantsCritBoost === true` items — neither
-  // of Umbra's (Strategic Sword, Heavenquaker Spear) is one.
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
