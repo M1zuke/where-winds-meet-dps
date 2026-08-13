@@ -32,7 +32,11 @@ function piece(words: GearPiece["words"], overrides: Partial<GearPiece> = {}): G
   }
 }
 
-function w(word: string, value = 0, retuned = false): GearPiece["words"][number] {
+function w(
+  word: GearPiece["words"][number]["word"],
+  value = 0,
+  retuned = false,
+): GearPiece["words"][number] {
   return { word, value, retuned }
 }
 const EMPTY = w("", 0)

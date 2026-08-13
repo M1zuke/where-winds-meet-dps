@@ -39,8 +39,54 @@ const fmt = (n: number, digits = 2) =>
     ? n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })
     : "—"
 
-export function MetricsCard({ result, className }: { result: Result; className?: string }) {
+interface MetricsCardProps {
+  result: Result
+  className?: string
+  graduationPending?: boolean
+  theoreticalDps?: number | null
+  onGraduationClick?: () => void
+}
+
+function OpenIcon() {
+  return (
+    <svg className={styles.graduationIcon} viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+      <path
+        d="M6.5 3.25H4.25A1.75 1.75 0 0 0 2.5 5v6.75a1.75 1.75 0 0 0 1.75 1.75H11a1.75 1.75 0 0 0 1.75-1.75V9.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.75 2.5h3.75v3.75M13.5 2.5 8.25 7.75"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export function MetricsCard({
+  result,
+  className,
+  graduationPending = false,
+  theoreticalDps = null,
+  onGraduationClick,
+}: MetricsCardProps) {
   const { t } = useI18n()
+  const graduationText =
+    result.graduationRate === null
+      ? graduationPending
+        ? "…"
+        : "—"
+      : fmt(result.graduationRate * 100, 1) + "%"
+  const graduationTitle =
+    theoreticalDps === null
+      ? t("Current DPS divided by the theoretical class maximum")
+      : `${t("Current DPS divided by the theoretical class maximum")}: ${fmt(theoreticalDps, 2)} DPS`
   return (
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
@@ -55,6 +101,20 @@ export function MetricsCard({ result, className }: { result: Result; className?:
         <span className={styles.label}>{t("Duration")}</span>
         <span className={styles.value}>{fmt(result.rotationDuration, 0)}s</span>
       </div>
+      <button
+        type="button"
+        className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
+        title={graduationTitle}
+        aria-label={`${t("Graduation")}: ${graduationText}`}
+        aria-live="polite"
+        onClick={onGraduationClick}
+      >
+        <span className={styles.stat}>
+          <span className={styles.label}>{t("Graduation")}</span>
+          <span className={styles.value}>{graduationText}</span>
+        </span>
+        <OpenIcon />
+      </button>
     </div>
   )
 }

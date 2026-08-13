@@ -13,6 +13,7 @@ import {
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
 import { levelAttributeBonusMechanic } from "./levelBonus"
+import { BELLSTRIKE_UMBRA_GRADUATION_BUILD } from "./graduationBuild"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -32,6 +33,7 @@ export const bellstrikeUmbra = defineClass({
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
+  graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
   retunementPool: BELLSTRIKE_POOL,
   classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: BELLSTRIKE_UMBRA_GATES,

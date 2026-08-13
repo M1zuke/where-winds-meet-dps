@@ -1,4 +1,4 @@
-import type { AttributeKey } from "../../engine/types"
+import type { Arsenal, AttributeKey, BowSet, GearPiece, GearWordName } from "../../engine/types"
 import type { Skill } from "../../engine/skill"
 import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
@@ -9,14 +9,21 @@ import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
-// Stat ids must match `WordSpec.word` strings in `engine/itemRanking.ts`.
 export interface RetunementPool {
-  stats: readonly string[]
+  stats: readonly GearWordName[]
 }
 
 export interface PoisonExtensionRegistration {
   statusId: string
   maxRemainingSec: number
+}
+
+export interface GraduationBuild {
+  gear: readonly GearPiece[]
+  set: string | null
+  bowSet: BowSet
+  arsenal: Arsenal
+  relayedOverrides?: Partial<Pick<GraduationBuild, "gear" | "set" | "bowSet" | "arsenal">>
 }
 
 // Everything a class *is*. A field it does not use is an empty array — see
@@ -43,6 +50,7 @@ export interface ClassDef {
   debuffs: readonly Debuff[]
   rotations: readonly Rotation[]
   defaultRotationId: string | null
+  graduationBuild: GraduationBuild
   retunementPool: RetunementPool | null
   // Only defs the class itself owns — docs/CLASSES.md § "Buff ownership".
   // Membership here is also what puts a row in the Skill Editor's Spec

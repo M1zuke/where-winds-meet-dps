@@ -35,6 +35,47 @@
   line-height: 1.1;
 }
 
+.graduation {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface-raised);
+  transition:
+    opacity 120ms ease,
+    border-color 120ms ease;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.graduation:hover {
+  border-color: var(--color-border-hover);
+}
+
+.graduation:focus-visible {
+  border-color: var(--color-border-hover);
+  background: var(--color-bg);
+}
+
+.graduationIcon {
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  color: var(--color-text-dim);
+}
+
+.graduation:hover .graduationIcon {
+  color: var(--color-text);
+}
+
+.pending {
+  opacity: 0.55;
+}
+
 .stat {
   flex: 0 0 auto;
   display: flex;

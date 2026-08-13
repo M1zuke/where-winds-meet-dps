@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { emptyGearWords } from "../../../../engine/types"
-import { gearBaseStatsFor } from "../../../../engine/gearStats"
+import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"

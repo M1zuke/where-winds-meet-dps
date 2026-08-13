@@ -1,5 +1,6 @@
-import type { GearBaseStats, InferredGearIdentity } from "../../../../engine/gearStats"
-import { GEAR_SLOTS, type GearSlot } from "../../../../engine/types"
+import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
+import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
+import { GEAR_SLOTS, type GearSlot, type GearWordName } from "../../../../engine/types"
 import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
 
 export const BOOKMARKLET_ENVELOPE_VERSION = 1
@@ -8,7 +9,7 @@ const ENVELOPE_SOURCE = "wwm-dashboard"
 export class GearImportError extends Error {}
 
 export type AffixTarget =
-  | { kind: "word"; word: string; unit: "raw" | "percent"; cap: number }
+  | { kind: "word"; word: GearWordName; unit: "raw" | "percent"; cap: number }
   | { kind: "attunement"; attunementId: string; label: string; min: number; max: number }
 
 export type AffixResolution =

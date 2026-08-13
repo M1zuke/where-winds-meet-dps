@@ -2,7 +2,7 @@
 import type { AttunementOption } from "../../../engine/attunements"
 import { ARMOR_SLOTS } from "../attunementSlots"
 
-export const STONESPLIT_STRENGTH_ATTUNEMENTS: readonly AttunementOption[] = [
+export const STONESPLIT_STRENGTH_ATTUNEMENTS = [
   {
     id: "phalanxChargeDamage",
     label: "Phalanx Charge Boost",
@@ -13,4 +13,4 @@ export const STONESPLIT_STRENGTH_ATTUNEMENTS: readonly AttunementOption[] = [
     enginePath: "dingYinByTag.Phalanx Charge Boost",
     affectsTag: "attune:phalanxbaneCharged",
   },
-]
+] as const satisfies readonly AttunementOption[]
