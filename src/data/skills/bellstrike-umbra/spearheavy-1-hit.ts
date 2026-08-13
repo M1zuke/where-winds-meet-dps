@@ -5,6 +5,7 @@ import { SKILL } from "./ids"
 export const spearheavy1Hit = defineSkill({
   id: SKILL.spearheavy1Hit,
   classId: "bellstrikeUmbra",
+  breakdownName: "Drifting Thrust",
   name: "SpearHeavy 1-Hit",
   tags: [WEAPON.spear, ATTACK.heavy, ATTUNE.spearCharged],
   skillType: "weapon",

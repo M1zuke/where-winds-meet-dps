@@ -9,12 +9,19 @@ import type {
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
-import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
+import { breakdownNameOf, isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, UNOWNED } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
-import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
+import {
+  dotRowName,
+  dotTickDamage,
+  dotTickSkill,
+  emitDotTicks,
+  resolveTickDot,
+  tickSourceSkillId,
+} from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
@@ -498,13 +505,22 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  const byName = new Map<string, { type: string; count: number; damage: number }>()
-  function add(name: string, type: string, count: number, damage: number): void {
+  const byName = new Map<
+    string,
+    { breakdownName: string; type: string; count: number; damage: number }
+  >()
+  function add(
+    name: string,
+    type: string,
+    count: number,
+    damage: number,
+    breakdownName: string,
+  ): void {
     const e = byName.get(name)
     if (e) {
       e.count += count
       e.damage += damage
-    } else byName.set(name, { type, count, damage })
+    } else byName.set(name, { breakdownName, type, count, damage })
   }
 
   const timeline: TimelineEvent[] = []
@@ -588,7 +604,13 @@ export function simulateTimeline(inputs: Inputs): Result {
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
       totalDamage += expectedDamage
-      add(skill.name, skill.skillType, 1, expectedDamage)
+      add(
+        skill.name,
+        skill.skillType,
+        1,
+        expectedDamage,
+        breakdownNameOf(skill.breakdownName, skill.name),
+      )
     }
     timeline.push({
       frame,
@@ -770,7 +792,8 @@ export function simulateTimeline(inputs: Inputs): Result {
     if (!dot) continue
     const debuffForTick: Debuff = { ...status, dot }
     const dotSkill = dotTickSkill(status, tickSkill)
-    const dotName = `${status.name} (DoT)`
+    const dotName = dotRowName(status)
+    const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
     const dotType = dot.skillType || "sustain"
 
     for (const tick of emitDotTicks({
@@ -795,7 +818,7 @@ export function simulateTimeline(inputs: Inputs): Result {
       },
     })) {
       totalDamage += tick.damage
-      add(dotName, dotType, 1, tick.damage)
+      add(dotName, dotType, 1, tick.damage, dotBreakdownName)
       timeline.push({
         frame: tick.frame,
         timeSec: tick.frame / FPS,
@@ -815,7 +838,13 @@ export function simulateTimeline(inputs: Inputs): Result {
       if (st.forceCrit) art.guaranteedCrit = 1
       const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
       totalDamage += expectedDamage
-      add(event.name, event.type, 1, expectedDamage)
+      add(
+        event.name,
+        event.type,
+        1,
+        expectedDamage,
+        breakdownNameOf(event.skill.breakdownName, event.name),
+      )
       timeline.push({
         frame: event.frame,
         timeSec: event.frame / FPS,
@@ -837,6 +866,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     const dpsOfCastTime = castTimeSec > 0 ? e.damage / castTimeSec : 0
     return {
       name,
+      breakdownName: e.breakdownName,
       type: e.type,
       count: e.count,
       expectedDamage: e.damage,

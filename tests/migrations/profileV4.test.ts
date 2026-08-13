@@ -63,6 +63,7 @@ describe("V5 step — v4 → v5 in isolation", () => {
       "V10__renameFrostCladNight",
       "V11__setIdsWithoutDisplayName",
       "V12__gearWordIds",
+      "V13__gearWordCurrentLabels",
     ])
     expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
   })

@@ -1,4 +1,4 @@
-// Bleed ticks and Bleed Detonation are Sword-typed (lvl-110 workbook
+// Bleed ticks and Blood Burst are Sword-typed (lvl-110 workbook
 // skill-type column), so they take swordBoost AND allMartialBoost like any
 // Sword skill; mystic skills and their DoTs take neither. Guards the
 // data-driven typing against a reintroduced per-skill exclusion.
@@ -8,6 +8,10 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
+import { dotRow, skillRow } from "../builtins"
+import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+
+const CLASS = "bellstrikeUmbra"
 
 function rotationOf(skillNames: string[]) {
   const skills = builtinSkillsForClass("bellstrikeUmbra")
@@ -42,25 +46,25 @@ const BURST_ROTATION = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
 describe("all-martial and sword boost reach every Sword-typed row", () => {
   const base = simulate(BLEED_ROTATION)
 
-  it("allMartialBoost raises Bleed Tick ticks and Bleed Detonation", () => {
+  it("allMartialBoost raises Bleeding ticks and Blood Burst", () => {
     const boosted = simulate(BLEED_ROTATION, { allMartialBoost: 0.1 })
-    expect(damageOf(base, "Bleed Tick (DoT)")).toBeGreaterThan(0)
-    expect(damageOf(boosted, "Bleed Tick (DoT)")).toBeGreaterThan(
-      damageOf(base, "Bleed Tick (DoT)"),
+    expect(damageOf(base, dotRow(CLASS, DEBUFF.bleedTick))).toBeGreaterThan(0)
+    expect(damageOf(boosted, dotRow(CLASS, DEBUFF.bleedTick))).toBeGreaterThan(
+      damageOf(base, dotRow(CLASS, DEBUFF.bleedTick)),
     )
-    expect(damageOf(base, "Bleed Detonation")).toBeGreaterThan(0)
-    expect(damageOf(boosted, "Bleed Detonation")).toBeGreaterThan(
-      damageOf(base, "Bleed Detonation"),
+    expect(damageOf(base, skillRow(CLASS, SKILL.bleedDetonation))).toBeGreaterThan(0)
+    expect(damageOf(boosted, skillRow(CLASS, SKILL.bleedDetonation))).toBeGreaterThan(
+      damageOf(base, skillRow(CLASS, SKILL.bleedDetonation)),
     )
   })
 
-  it("swordBoost raises Bleed Tick ticks and Bleed Detonation", () => {
+  it("swordBoost raises Bleeding ticks and Blood Burst", () => {
     const boosted = simulate(BLEED_ROTATION, { swordBoost: 0.1 })
-    expect(damageOf(boosted, "Bleed Tick (DoT)")).toBeGreaterThan(
-      damageOf(base, "Bleed Tick (DoT)"),
+    expect(damageOf(boosted, dotRow(CLASS, DEBUFF.bleedTick))).toBeGreaterThan(
+      damageOf(base, dotRow(CLASS, DEBUFF.bleedTick)),
     )
-    expect(damageOf(boosted, "Bleed Detonation")).toBeGreaterThan(
-      damageOf(base, "Bleed Detonation"),
+    expect(damageOf(boosted, skillRow(CLASS, SKILL.bleedDetonation))).toBeGreaterThan(
+      damageOf(base, skillRow(CLASS, SKILL.bleedDetonation)),
     )
   })
 
@@ -75,7 +79,7 @@ describe("mystic skills and their DoTs take neither weapon boost", () => {
   it("allMartialBoost and swordBoost leave a burst-mystic rotation (incl. Combustion DoT) untouched", () => {
     const base = simulate(BURST_ROTATION)
     const boosted = simulate(BURST_ROTATION, { allMartialBoost: 0.1, swordBoost: 0.1 })
-    expect(damageOf(base, "Combustion (DoT)")).toBeGreaterThan(0)
+    expect(damageOf(base, dotRow(CLASS, DEBUFF.combustion))).toBeGreaterThan(0)
     expect(boosted.totalDamage).toBe(base.totalDamage)
   })
 

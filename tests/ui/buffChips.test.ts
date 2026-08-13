@@ -26,8 +26,8 @@ function cast(index: number, timeSec: number, buffs: CastBuffTag[]): RotationCas
 }
 
 describe("buffChipHue", () => {
-  it("returns the pinned hues for Bleed Tick / Smolder / Zenith Bar / Bitter Season Tick / Bitter Season Poison", () => {
-    expect(buffChipHue("Bleed Tick")).toBe(0)
+  it("returns the pinned hues for Bleeding / Smolder / Zenith Bar / Bitter Season Tick / Bitter Season Poison", () => {
+    expect(buffChipHue("Bleeding")).toBe(0)
     expect(buffChipHue("Smolder")).toBe(30)
     expect(buffChipHue("Zenith Bar")).toBe(200)
     expect(buffChipHue("Bitter Season Tick")).toBe(100)
@@ -36,7 +36,7 @@ describe("buffChipHue", () => {
 
   it("the five pinned hues are distinct", () => {
     const hues = new Set([
-      buffChipHue("Bleed Tick"),
+      buffChipHue("Bleeding"),
       buffChipHue("Smolder"),
       buffChipHue("Zenith Bar"),
       buffChipHue("Bitter Season Tick"),

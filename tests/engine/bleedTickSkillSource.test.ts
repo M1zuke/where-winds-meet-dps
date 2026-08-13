@@ -25,7 +25,7 @@ function findBleedTickDebuff() {
   const debuff = builtinDebuffsForClass("bellstrikeUmbra").find(
     (d) => d.id === "debuff-bellstrikeUmbra-bleed-tick",
   )
-  if (!debuff) throw new Error("expected the bellstrikeUmbra Bleed Tick debuff to exist")
+  if (!debuff) throw new Error("expected the bellstrikeUmbra Bleeding debuff to exist")
   return debuff
 }
 

@@ -784,7 +784,7 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
     const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === current.id)!
     expect(reloaded.tags).toEqual(current.tags)
 
-    const ownSkill = makeSkill(CLASS_ID, { name: "Bleed Detonation", tags: ["weapon:Sword"] })
+    const ownSkill = makeSkill(CLASS_ID, { name: "Blood Burst", tags: ["weapon:Sword"] })
     saveCustomSkill(ownSkill)
     const ownReloaded = loadCustomSkillsForClass(CLASS_ID).find(
       (skill) => skill.id === ownSkill.id,

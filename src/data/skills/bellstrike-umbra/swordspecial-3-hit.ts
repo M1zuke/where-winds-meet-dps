@@ -7,6 +7,7 @@ export const swordspecial3Hit = defineSkill({
   id: SKILL.swordspecial3Hit,
   classId: "bellstrikeUmbra",
   name: "SwordSpecial 3-Hit",
+  breakdownName: "Inner Balance Strike III",
   tags: [WEAPON.sword, ATTUNE.swordSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

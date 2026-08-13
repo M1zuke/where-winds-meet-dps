@@ -14,13 +14,14 @@ import {
 import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
 describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)", () => {
   const skills = builtinSkillsForClass(CLASS)
-  const spearSpecial = skills.filter((s) => s.name === "Spear Special")
-  const cancel = skills.filter((s) => s.name === "Spear Special (1 Hit Cancel)")
+  const spearSpecial = skills.filter((s) => s.id === SKILL.spearspecial)
+  const cancel = skills.filter((s) => s.id === SKILL.spearspecial1HitCancel)
 
   it("exactly one of each skill exists", () => {
     expect(spearSpecial).toHaveLength(1)
@@ -53,7 +54,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancelVariant.attributeFixed).toBeCloseTo(154.8, 10)
   })
 
-  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Bleed Detonation), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
+  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Blood Burst), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
     const defenseDownId = "debuff-bellstrikeUmbra-defense-down"

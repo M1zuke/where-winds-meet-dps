@@ -9,12 +9,11 @@ import { classDefinition } from "../../src/definitions/classes/registry"
 import { INNER_WAYS } from "../../src/definitions/innerWays/registry"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 
-const skill = classDefinition(CLASS)!.skills.find(
-  (candidate) => candidate.name === "Sword Martial Q",
-)!
+const skill = classDefinition(CLASS)!.skills.find((candidate) => candidate.id === SKILL.swordq)!
 
 function inputsWith(mindMethodName: string | null): Inputs {
   return {

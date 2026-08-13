@@ -1,10 +1,12 @@
 // Scoped to Bellstrike Umbra — see CLASSES.md § "Implemented classes".
 import { describe, expect, it } from "vitest"
 import { dotTickSkill } from "../../src/engine/dot"
-import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinDebuff } from "../builtins"
+import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS_ID = "bellstrikeUmbra"
-const bleedTickDebuff = builtinDebuffsForClass(CLASS_ID).find((d) => d.name === "Bleed Tick")!
+const bleedTickDebuff = builtinDebuff(CLASS_ID, DEBUFF.bleedTick)
 const bleedTickSkill = builtinSkillsForClass(CLASS_ID).find(
   (s) => s.id === `${CLASS_ID}-bleed-tick`,
 )!

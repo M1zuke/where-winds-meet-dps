@@ -55,6 +55,13 @@ describe("the engine names no class", () => {
     expect(offenders).toEqual([])
   })
 
+  it("pairs no two entities by comparing their display names", () => {
+    const offenders = sources
+      .filter(({ text }) => /\.name (===|!==) \w+\.name\b/.test(text))
+      .map(({ path }) => path)
+    expect(offenders).toEqual([])
+  })
+
   it("matches no cast tag by prefix", () => {
     const offenders = sources
       .filter(({ text }) => /castTag\.startsWith|anyTagStartsWith/.test(text))

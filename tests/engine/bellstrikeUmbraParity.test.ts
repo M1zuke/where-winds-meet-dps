@@ -1,6 +1,6 @@
 // Diagnostic parity check for one confirmed-correct bellstrikeUmbra (Bellstrike
 // Umbra) build against the reference site's cached run (T6-Bili rotation,
-// target DPS 48,365 / total damage 2,936,621 / Bleed Detonation 1,578,359
+// target DPS 48,365 / total damage 2,936,621 / Blood Burst 1,578,359
 // over a ~60.7 s window). The DPS/total/detonation bands below are an
 // intentionally LOOSE, re-centered fit around what the engine actually
 // produces — NOT a locked fixture — while the rate-conversion assertion is
@@ -12,6 +12,10 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { skillRow } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+
+const CLASS = "bellstrikeUmbra"
 
 const SITE_TARGET_DPS = 48365
 const SITE_TARGET_TOTAL = 2936621
@@ -107,7 +111,9 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(result.rotationDuration).toBeGreaterThan(60.2)
     expect(result.rotationDuration).toBeLessThan(61.2)
 
-    const detonation = result.perSkill.find((s) => s.name === "Bleed Detonation")
+    const detonation = result.perSkill.find(
+      (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
+    )
 
     console.log("warnings:", result.warnings)
     console.log(
@@ -118,7 +124,7 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     )
     if (detonation) {
       console.log(
-        `Bleed Detonation ${detonation.expectedDamage.toFixed(0)} over ${detonation.count} hits ` +
+        `Blood Burst ${detonation.expectedDamage.toFixed(0)} over ${detonation.count} hits ` +
           `(avg ${(detonation.expectedDamage / detonation.count).toFixed(0)}, site target ${SITE_TARGET_DETONATION} / 29 hits)`,
       )
     }

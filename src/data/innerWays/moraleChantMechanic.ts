@@ -64,6 +64,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
         id: "yi-river",
         classId: setup.classId,
         name: "Yi River",
+        breakdownName: "Morale Chant",
         skillType: "mindMethod",
         weaponOrAttribute: "",
         attributeAttack: "",

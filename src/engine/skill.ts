@@ -58,6 +58,7 @@ export interface Skill {
   weaponOrAttribute: string
   attributeAttack: string
   tags?: string[]
+  breakdownName?: string
   // The identity a cast presents to `BuffModule.triggeredBy`. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
   castTag?: string
@@ -228,6 +229,10 @@ export function selectHitVariant(
   return null
 }
 
+export function breakdownNameOf(breakdownName: string | undefined, fallbackName: string): string {
+  return breakdownName?.trim() || fallbackName
+}
+
 export function isPrePullSkill(skill: Skill): boolean {
   return skill.prePull ?? /prepull/i.test(skill.name)
 }
@@ -296,6 +301,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,
+    breakdownName: src.breakdownName,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),
