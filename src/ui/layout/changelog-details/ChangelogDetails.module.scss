@@ -1,0 +1,126 @@
+.heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.version {
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.date {
+  color: var(--color-text-muted);
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+}
+
+.headline {
+  margin: 3px 0 18px;
+  font-size: 1em;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.status {
+  margin: 4px 0;
+  color: var(--color-text-muted);
+  font-size: 0.85em;
+}
+
+.section {
+  margin-bottom: 18px;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.toneAdded {
+  --section-tone: var(--color-positive);
+}
+
+.toneChanged {
+  --section-tone: var(--color-accent);
+}
+
+.toneFixed {
+  --section-tone: var(--color-negative);
+}
+
+.sectionLabel {
+  display: inline-block;
+  font-size: 0.66em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--section-tone);
+  background: color-mix(in srgb, var(--section-tone) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--section-tone) 30%, transparent);
+  border-radius: 999px;
+  padding: 2px 9px;
+  margin-bottom: 8px;
+}
+
+.changes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.change {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 2px solid color-mix(in srgb, var(--section-tone) 55%, transparent);
+  border-radius: 4px;
+  padding: 7px 10px;
+}
+
+.changeText {
+  color: var(--color-text-dim);
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
+.credit {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-top: 1px;
+}
+
+.creditLabel {
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.authorLink {
+  display: block;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-strong);
+  overflow: hidden;
+  line-height: 0;
+  transition: border-color 0.1s;
+}
+
+.authorLink:hover,
+.authorLink:focus-visible {
+  border-color: var(--color-accent);
+}
+
+.authorLink img {
+  display: block;
+  width: 18px;
+  height: 18px;
+}

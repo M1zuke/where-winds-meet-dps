@@ -1,24 +1,6 @@
-.confirmOverlay {
-  position: fixed;
-  inset: 0;
-  // Above every dialog (1200) and the combobox dropdown portal (1300): a confirm
-  // blocks the thing that raised it.
-  z-index: 1400;
-  background: var(--color-overlay);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  box-sizing: border-box;
-}
-
-.confirmModal {
-  background: var(--color-surface-alt);
-  border: 1px solid #3a3a3a;
-  border-radius: 8px;
+.confirmSurface {
   width: min(90vw, 420px);
   padding: 20px 22px 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
 .confirmMessage {

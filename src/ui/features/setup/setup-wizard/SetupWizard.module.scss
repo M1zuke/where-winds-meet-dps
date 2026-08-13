@@ -1,29 +1,9 @@
-.wizardOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.78);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-
-.wizardModal {
-  background: var(--color-surface-alt);
-  border: 1px solid #3a3a3a;
-  border-radius: 8px;
+.wizardSurface {
   width: min(95vw, 720px);
-  max-height: calc(100vh - 48px);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
   overflow: hidden;
 }
 
-.wizardModal.modalGear {
+.wizardSurface.surfaceGear {
   width: min(95vw, 1180px);
 }
 

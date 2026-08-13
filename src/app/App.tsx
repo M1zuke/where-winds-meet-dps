@@ -7,6 +7,7 @@ import type { Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
 import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel"
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
+import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { RotationTab } from "../ui/features/rotation/rotation-tab/RotationTab"
 import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
 import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
@@ -253,7 +254,10 @@ function AppInner() {
       )}
       <div className={styles.appHeader}>
         <header className={styles.appTitlebar}>
-          <h1>{t("Where Winds Meet DPS")}</h1>
+          <div className={styles.appTitle}>
+            <h1>{t("Where Winds Meet DPS")}</h1>
+            <ChangelogButton />
+          </div>
           <div className={styles.appTitlebarActions}>
             <GithubLink />
             <button
