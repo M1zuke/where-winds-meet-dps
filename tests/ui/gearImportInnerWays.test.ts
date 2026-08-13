@@ -6,7 +6,7 @@ import {
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import { INNER_WAYS, innerWayDefinition } from "../../src/definitions/innerWays/registry"
 import { defaultInputs } from "../../src/engine/defaults"
-import { allowedInnerWaysForClass } from "../../src/engine/panel"
+import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
 import type { Inputs } from "../../src/engine/types"
 import {
   buildImportDiagnostics,
@@ -162,7 +162,7 @@ describe("an inner way the engine has no module for", () => {
   })
 
   it("is left out of the slots", () => {
-    expect(toMindMethods(resolvedFor(fixtureText, {}, catalog), inputs)).toBeNull()
+    expect(toMindMethods(resolvedFor(fixtureText, {}, catalog))).toBeNull()
   })
 
   it("yields to the engine's own name once a module is mapped", () => {
@@ -219,11 +219,11 @@ describe("resolving against the build", () => {
 
 describe("toMindMethods", () => {
   it("leaves the slots alone when nothing resolved", () => {
-    expect(toMindMethods(resolvedFor(fixtureText, {}), inputs)).toBeNull()
+    expect(toMindMethods(resolvedFor(fixtureText, {}))).toBeNull()
   })
 
-  it("writes the class inner way into the locked first slot", () => {
-    const slots = toMindMethods(resolvedFor(fixtureText), inputs)!
+  it("fills the slots in capture order, whichever the class signature is", () => {
+    const slots = toMindMethods(resolvedFor(fixtureText))!
     expect(slots[0]).toEqual({
       id: INNER_WAY_ID.swordHorizon,
       name: "Sword Horizon",
@@ -236,7 +236,15 @@ describe("toMindMethods", () => {
     })
   })
 
-  it("keeps the locked slot when the capture has no class inner way for it", () => {
+  it("gives the first slot away to a non-signature inner way", () => {
+    const signature = getSchool(inputs.classId).classMindGroup
+    expect(signature).toBe(INNER_WAY_ID.swordHorizon)
+    const withoutSignature: PassiveInnerWayMapping = { "3011002": INNER_WAY_ID.wolfchasersArt }
+    const slots = toMindMethods(resolvedFor(fixtureText, withoutSignature))!
+    expect(slots[0]!.id).toBe(INNER_WAY_ID.wolfchasersArt)
+  })
+
+  it("replaces a held slot the capture does not carry rather than keeping it", () => {
     const held: Inputs = {
       ...inputs,
       mindMethods: [
@@ -250,18 +258,30 @@ describe("toMindMethods", () => {
       resolveInnerWays(parseDashboardGearPayload(fixtureText), held, {
         "3011002": INNER_WAY_ID.wolfchasersArt,
       }),
-      held,
     )!
-    expect(slots[0]).toEqual(held.mindMethods[0])
-    expect(slots[1]!.id).toBe(INNER_WAY_ID.wolfchasersArt)
+    expect(slots[0]!.id).toBe(INNER_WAY_ID.wolfchasersArt)
+    expect(slots.map((slot) => slot.id)).not.toContain(INNER_WAY_ID.swordHorizon)
   })
 
   it("always writes four slots and empties the ones the capture has nothing for", () => {
-    const slots = toMindMethods(resolvedFor(fixtureText), inputs)!
+    const slots = toMindMethods(resolvedFor(fixtureText))!
     expect(slots).toHaveLength(MIND_METHOD_SLOT_COUNT)
     expect(slots.slice(2)).toEqual([
       { name: "", stacks: "" },
       { name: "", stacks: "" },
+    ])
+  })
+
+  it("keeps only the first four when the capture carries more", () => {
+    const five = captureWith([151, 153, 154, 81, 42].map((id) => ({ id, level: 6 })))
+    const slots = toMindMethods(
+      resolveInnerWays(parseDashboardGearPayload(five), inputs, PASSIVE_ID_TO_INNER_WAY),
+    )!
+    expect(slots.map((slot) => slot.id)).toEqual([
+      INNER_WAY_ID.wolfchasersArt,
+      INNER_WAY_ID.insightfulStrike,
+      INNER_WAY_ID.swordHorizon,
+      INNER_WAY_ID.moraleChant,
     ])
   })
 

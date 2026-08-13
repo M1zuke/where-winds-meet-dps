@@ -4,7 +4,7 @@ import {
 } from "../../../../data/innerWays/passiveIds"
 import type { InnerWayDef } from "../../../../definitions/innerWays/innerWayDef"
 import { innerWayDefinition, innerWayName } from "../../../../definitions/innerWays/registry"
-import { allowedInnerWaysForClass, getSchool } from "../../../../engine/panel"
+import { allowedInnerWaysForClass } from "../../../../engine/panel"
 import type { Inputs, MindMethodSlot } from "../../../../engine/types"
 import type { GearImportResult, ImportedInnerWay } from "./dashboardGearPayload"
 
@@ -90,33 +90,13 @@ function slotFor(importable: ImportableInnerWay): MindMethodSlot {
   }
 }
 
-/**
- * Null when the capture resolved nothing, so an import against an unfilled
- * mapping table leaves the slots the user set by hand alone.
- *
- * Slot 0 belongs to the class's own inner way (`syncClassPermanent`), so it takes
- * the capture's entry for that inner way if there is one and the current slot
- * otherwise — never one of the free inner ways.
- */
 export function toMindMethods(
   innerWays: readonly ImportedInnerWay[],
-  inputs: Inputs,
 ): Inputs["mindMethods"] | null {
   const importable = importableInnerWays(innerWays)
   if (!importable.length) return null
 
-  const locked = getSchool(inputs.classId).classMindGroup
-  const lockedImport = locked
-    ? importable.find((candidate) => candidate.innerWayId === locked)
-    : undefined
-  const free = importable.filter((candidate) => candidate !== lockedImport)
-
-  const slots: MindMethodSlot[] = []
-  if (locked) slots.push(lockedImport ? slotFor(lockedImport) : inputs.mindMethods[0])
-  for (const candidate of free) {
-    if (slots.length === MIND_METHOD_SLOT_COUNT) break
-    slots.push(slotFor(candidate))
-  }
+  const slots: MindMethodSlot[] = importable.slice(0, MIND_METHOD_SLOT_COUNT).map(slotFor)
   while (slots.length < MIND_METHOD_SLOT_COUNT) slots.push({ name: "", stacks: "" })
   return slots as Inputs["mindMethods"]
 }

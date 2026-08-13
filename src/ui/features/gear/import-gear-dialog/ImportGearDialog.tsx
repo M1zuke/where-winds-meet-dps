@@ -105,10 +105,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   const shown = useMemo(() => (result ? previewablePieces(result) : []), [result])
   const innerWays = result?.innerWays ?? []
   const unsupportedInnerWays = unsupportedInnerWayNames(innerWays)
-  const mindMethods = useMemo(
-    () => (result ? toMindMethods(result.innerWays, inputs) : null),
-    [result, inputs],
-  )
+  const mindMethods = useMemo(() => (result ? toMindMethods(result.innerWays) : null), [result])
   const emptiedMindMethods = mindMethods
     ? inputs.mindMethods.filter((slot, index) => slot.name && !mindMethods[index]!.name).length
     : 0
