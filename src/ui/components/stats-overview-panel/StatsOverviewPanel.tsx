@@ -70,7 +70,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const finalEffectiveAffinityRate =
     eff.precision * (eff.affinityRate + withSets.directAffinityRate)
 
-  const attrs = totalPlayerAttributes(equippedPiecesFor(inputs))
+  const attrs = totalPlayerAttributes(inputs.breakthrough, equippedPiecesFor(inputs))
   const attributeRows: RowEntry[] = [
     row(t("Power"), attrs.power, false),
     row(t("Agility"), attrs.agility, false),
