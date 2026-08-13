@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from "react"
 import { useI18n } from "../../../i18n/i18nContext"
 import { CHANGELOG_ENTRIES } from "../../../changelog/registry"
 import type { ChangelogEntryDetails } from "../../../changelog/types"
+import { Dialog, DialogFooter, DialogHeader } from "../../components/dialog/Dialog"
 import { ChangelogDetails } from "../changelog-details/ChangelogDetails"
 import { ChangelogContributors } from "../changelog-contributors/ChangelogContributors"
 import styles from "./ChangelogDialog.module.scss"
@@ -21,21 +22,6 @@ export function ChangelogDialog({ onClose }: { onClose: () => void }) {
   const selectedEntry = CHANGELOG_ENTRIES.find((entry) => entry.version === selectedVersion) ?? null
   const details = detailsByVersion[selectedVersion] ?? null
   const hasFailed = failedVersions.includes(selectedVersion)
-
-  useEffect(() => {
-    closeButtonRef.current?.focus()
-  }, [])
-
-  useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        event.preventDefault()
-        onClose()
-      }
-    }
-    document.addEventListener("keydown", onKey)
-    return () => document.removeEventListener("keydown", onKey)
-  }, [onClose])
 
   useEffect(() => {
     if (detailsByVersion[selectedVersion] || failedVersions.includes(selectedVersion)) return
@@ -59,62 +45,57 @@ export function ChangelogDialog({ onClose }: { onClose: () => void }) {
   }, [selectedVersion, detailsByVersion, failedVersions])
 
   return (
-    <div
-      className={styles.overlay}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose()
-      }}
+    <Dialog
+      labelledBy={titleId}
+      onClose={onClose}
+      surfaceClassName={styles.surface}
+      initialFocusRef={closeButtonRef}
     >
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <h2 id={titleId}>{t("Changelog")}</h2>
-        </div>
-        <div className={styles.content}>
-          <div className={styles.sidebar}>
-            <ul className={styles.versionList}>
-              {CHANGELOG_ENTRIES.map((entry) => (
-                <li key={entry.version}>
-                  <button
-                    type="button"
-                    className={
-                      entry.version === selectedVersion
-                        ? `${styles.versionButton} ${styles.versionButtonSelected}`
-                        : styles.versionButton
-                    }
-                    aria-current={entry.version === selectedVersion}
-                    aria-controls={panelId}
-                    onClick={() => setSelectedVersion(entry.version)}
-                  >
-                    <span className={styles.versionNumber}>{`v${entry.version}`}</span>
-                    <span className={styles.versionDate}>{entry.date}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <div className={styles.contributorsArea}>
-              <ChangelogContributors />
-            </div>
-          </div>
-          <div className={styles.panel} id={panelId}>
-            {selectedEntry && (
-              <ChangelogDetails
-                entry={selectedEntry}
-                details={details}
-                isLoading={!details && !hasFailed}
-                hasFailed={hasFailed}
-              />
-            )}
+      <DialogHeader>
+        <h2 id={titleId}>{t("Changelog")}</h2>
+      </DialogHeader>
+      <div className={styles.content}>
+        <div className={styles.sidebar}>
+          <ul className={styles.versionList}>
+            {CHANGELOG_ENTRIES.map((entry) => (
+              <li key={entry.version}>
+                <button
+                  type="button"
+                  className={
+                    entry.version === selectedVersion
+                      ? `${styles.versionButton} ${styles.versionButtonSelected}`
+                      : styles.versionButton
+                  }
+                  aria-current={entry.version === selectedVersion}
+                  aria-controls={panelId}
+                  onClick={() => setSelectedVersion(entry.version)}
+                >
+                  <span className={styles.versionNumber}>{`v${entry.version}`}</span>
+                  <span className={styles.versionDate}>{entry.date}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className={styles.contributorsArea}>
+            <ChangelogContributors />
           </div>
         </div>
-        <div className={styles.footer}>
-          <button type="button" ref={closeButtonRef} className="btn" onClick={onClose}>
-            {t("Close")}
-          </button>
+        <div className={styles.panel} id={panelId}>
+          {selectedEntry && (
+            <ChangelogDetails
+              entry={selectedEntry}
+              details={details}
+              isLoading={!details && !hasFailed}
+              hasFailed={hasFailed}
+            />
+          )}
         </div>
       </div>
-    </div>
+      <DialogFooter>
+        <button type="button" ref={closeButtonRef} className="btn" onClick={onClose}>
+          {t("Close")}
+        </button>
+      </DialogFooter>
+    </Dialog>
   )
 }
