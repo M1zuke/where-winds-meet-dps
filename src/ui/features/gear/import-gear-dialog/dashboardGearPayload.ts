@@ -43,6 +43,21 @@ export interface ImportedAffix {
   resolution: AffixResolution
 }
 
+export type InnerWayResolution =
+  | { kind: "resolved"; innerWayId: string; name: string; tier: number; tierAssumed: boolean }
+  | { kind: "notForThisClass"; innerWayId: string; name: string }
+  /** In the game's passive catalog, with no `defineInnerWay` module behind it. */
+  | { kind: "unsupported"; name: string }
+  | { kind: "unmapped" }
+
+export interface ImportedInnerWay {
+  passiveId: string
+  /** The tier the payload reports, before it is narrowed to a selectable one. */
+  reportedTier: number | null
+  raw: unknown
+  resolution: InnerWayResolution
+}
+
 export type SlotResolution =
   { kind: "mapped"; slot: GearSlot } | { kind: "noAppEquivalent" } | { kind: "unknownSlotId" }
 
@@ -61,12 +76,19 @@ export interface GearImportResult {
   roleName: string | null
   characterLevel: number | null
   pieces: ImportedPiece[]
+  innerWays: ImportedInnerWay[]
   unrecognizedPayloadKeys: readonly string[]
 }
+
+const PASSIVE_SLOTS_KEY = "passiveSlots"
 
 // Tunement and attunement ids overlap in max roll — physical penetration exists as
 // both — so the id, not the ceiling, is what tells the two apart.
 const LOWEST_TUNEMENT_AFFIX_ID = 1_000_000
+
+const PASSIVE_ID_KEYS: readonly string[] = ["id", "passiveId", "no", "passiveNo"]
+const PASSIVE_TIER_KEYS: readonly string[] = ["tier", "level", "lv", "grade", "stage"]
+const EMPTY_PASSIVE_ID = "0"
 
 const BASE_STAT_KEYS: Readonly<Record<keyof GearBaseStats, readonly string[]>> = {
   minPhys: ["MIN_W_ATK", "minPhys"],
@@ -143,6 +165,42 @@ function readAffix(entry: unknown): ImportedAffix {
     firstNumber(entry, ["ratio", "rolledRatio"]),
     entry,
   )
+}
+
+function unresolvedInnerWay(
+  passiveId: string,
+  reportedTier: number | null,
+  raw: unknown,
+): ImportedInnerWay {
+  return { passiveId, reportedTier, raw, resolution: { kind: "unmapped" } }
+}
+
+// The passive-slot entry shape is not yet confirmed against a live account, so a
+// bare id, an `[id, tier]` tuple and a record all read — and `raw` is what the
+// diagnostics carry to pin it down.
+function readInnerWay(entry: unknown): ImportedInnerWay {
+  if (typeof entry === "number") return unresolvedInnerWay(String(entry), null, entry)
+  if (Array.isArray(entry)) {
+    const passiveId = asNumber(entry[0])
+    return unresolvedInnerWay(
+      passiveId !== null ? String(passiveId) : "?",
+      asNumber(entry[1]),
+      entry,
+    )
+  }
+  if (!isRecord(entry)) return unresolvedInnerWay("?", null, entry)
+
+  const passiveId = firstNumber(entry, PASSIVE_ID_KEYS)
+  return unresolvedInnerWay(
+    passiveId !== null ? String(passiveId) : "?",
+    firstNumber(entry, PASSIVE_TIER_KEYS),
+    entry,
+  )
+}
+
+function readInnerWays(source: unknown): ImportedInnerWay[] {
+  const entries = Array.isArray(source) ? source : isRecord(source) ? Object.values(source) : []
+  return entries.map(readInnerWay).filter((innerWay) => innerWay.passiveId !== EMPTY_PASSIVE_ID)
 }
 
 function readObservedBaseStats(sources: readonly unknown[]): Partial<GearBaseStats> | null {
@@ -224,6 +282,7 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
     roleName: typeof envelope.roleName === "string" ? envelope.roleName : null,
     characterLevel: asNumber(envelope.level),
     pieces,
+    innerWays: readInnerWays(envelope[PASSIVE_SLOTS_KEY]),
     unrecognizedPayloadKeys: Array.isArray(declaredExtras)
       ? declaredExtras.filter((key): key is string => typeof key === "string")
       : [],
@@ -243,6 +302,11 @@ export function previewablePieces(result: GearImportResult): ImportedPiece[] {
     .sort((left, right) => order(left) - order(right))
 }
 
+/** A capture that lists the key as an extra came from a bookmarklet too old to carry it. */
+export function innerWaysAbsentFromCapture(result: GearImportResult): boolean {
+  return result.unrecognizedPayloadKeys.includes(PASSIVE_SLOTS_KEY)
+}
+
 export function targetKey(target: AffixTarget): string {
   return target.kind === "word" ? `word:${target.word}` : `attunement:${target.attunementId}`
 }
@@ -258,6 +322,8 @@ export interface GearImportSummary {
   unmappedAffixCount: number
   clampedCount: number
   overflowCount: number
+  innerWayCount: number
+  resolvedInnerWayCount: number
 }
 
 function affixRows(piece: ImportedPiece): ImportedAffix[] {
@@ -272,6 +338,10 @@ export function summarizeImport(result: GearImportResult): GearImportSummary {
     unmappedAffixCount: 0,
     clampedCount: 0,
     overflowCount: 0,
+    innerWayCount: result.innerWays.length,
+    resolvedInnerWayCount: result.innerWays.filter(
+      (innerWay) => innerWay.resolution.kind === "resolved",
+    ).length,
   }
   for (const piece of previewablePieces(result)) {
     summary.pieceCount += 1
@@ -287,6 +357,12 @@ export function summarizeImport(result: GearImportResult): GearImportSummary {
     }
   }
   return summary
+}
+
+function resolvedInnerWayId(resolution: InnerWayResolution): string | null {
+  return resolution.kind === "resolved" || resolution.kind === "notForThisClass"
+    ? resolution.innerWayId
+    : null
 }
 
 /** Ids and raw entries only — no role name, no role id. */
@@ -309,6 +385,12 @@ export function buildImportDiagnostics(result: GearImportResult): string {
         attunement: piece.attunement
           ? { affixId: piece.attunement.affixId, derivedMax: piece.attunement.derivedMax }
           : null,
+      })),
+      passiveSlots: result.innerWays.map((innerWay) => ({
+        passiveId: innerWay.passiveId,
+        reportedTier: innerWay.reportedTier,
+        resolved: resolvedInnerWayId(innerWay.resolution),
+        raw: innerWay.raw,
       })),
     },
     null,

@@ -22,6 +22,7 @@ import { loadKeepDisplaced, saveKeepDisplaced } from "./importPreferences"
 import {
   GearImportError,
   buildImportDiagnostics,
+  innerWaysAbsentFromCapture,
   parseDashboardGearPayload,
   previewablePieces,
   summarizeImport,
@@ -30,6 +31,7 @@ import {
   type AffixTarget,
   type GearImportResult,
   type ImportedAffix,
+  type ImportedInnerWay,
   type ImportedPiece,
 } from "./dashboardGearPayload"
 import {
@@ -39,6 +41,7 @@ import {
   type AffixChoices,
   type IdentityOverrides,
 } from "./importedGearPieces"
+import { toMindMethods, unsupportedInnerWayNames } from "./importedInnerWays"
 import styles from "./ImportGearDialog.module.scss"
 
 export const DASHBOARD_URL = "https://www.wherewindsmeetgame.com/m/2025h5sjgj/en/"
@@ -59,7 +62,11 @@ function fmtUnmapped(value: number | null): string {
 interface Props {
   inputs: Inputs
   onCancel(): void
-  onImport(pieces: GearPiece[], keepDisplaced: boolean): void
+  onImport(
+    pieces: GearPiece[],
+    mindMethods: Inputs["mindMethods"] | null,
+    keepDisplaced: boolean,
+  ): void
 }
 
 export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
@@ -96,6 +103,12 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
   const summary = useMemo(() => (result ? summarizeImport(result) : null), [result])
   const pieces = useMemo(() => (result ? toGearPieces(result, overrides) : []), [result, overrides])
   const shown = useMemo(() => (result ? previewablePieces(result) : []), [result])
+  const innerWays = result?.innerWays ?? []
+  const unsupportedInnerWays = unsupportedInnerWayNames(innerWays)
+  const mindMethods = useMemo(() => (result ? toMindMethods(result.innerWays) : null), [result])
+  const emptiedMindMethods = mindMethods
+    ? inputs.mindMethods.filter((slot, index) => slot.name && !mindMethods[index]!.name).length
+    : 0
 
   const filledSlots = new Set(pieces.map((piece) => piece.slot))
   const emptiedSlots = GEAR_SLOTS.filter((slot) => !filledSlots.has(slot))
@@ -222,6 +235,47 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
               </span>
             </div>
 
+            {innerWays.length > 0 && (
+              <>
+                <div className={styles.toolRow}>
+                  <span className="section-label">{t("Inner ways")}</span>
+                  <span className="hint">
+                    {`${summary.resolvedInnerWayCount}/${summary.innerWayCount} ${t("matched")}`}
+                  </span>
+                </div>
+                <div className={styles.innerWayGrid}>
+                  {innerWays.map((innerWay, index) => (
+                    <InnerWayCard key={index} innerWay={innerWay} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            {unsupportedInnerWays.length > 0 && (
+              <div className="warnings">
+                ⚠ {t("This app does not model")} {unsupportedInnerWays.map(t).join(", ")} —{" "}
+                {t(
+                  "they are left out of the import and out of the calculation, so your real damage will differ.",
+                )}
+              </div>
+            )}
+
+            {innerWaysAbsentFromCapture(result) && (
+              <div className="warnings">
+                ⚠{" "}
+                {t(
+                  "This capture carries no inner ways — re-drag the bookmarklet from this dialog and run it again.",
+                )}
+              </div>
+            )}
+
+            {emptiedMindMethods > 0 && (
+              <div className="warnings">
+                ⚠ {emptiedMindMethods}{" "}
+                {t("of your inner-way slots aren't in this capture and will be emptied.")}
+              </div>
+            )}
+
             {summary.unmappedAffixCount > 0 && (
               <div className="warnings">
                 ⚠ {summary.unmappedAffixCount}{" "}
@@ -346,7 +400,7 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
           type="button"
           className="btn primary"
           disabled={!pieces.length}
-          onClick={() => onImport(pieces, keepDisplaced)}
+          onClick={() => onImport(pieces, mindMethods, keepDisplaced)}
         >
           {t("Import gear")}
         </button>
@@ -442,6 +496,44 @@ function PiecePreview({
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+function innerWayNote(innerWay: ImportedInnerWay): string {
+  switch (innerWay.resolution.kind) {
+    case "resolved":
+      return innerWay.resolution.tierAssumed ? "tier assumed" : ""
+    case "notForThisClass":
+      return "this class cannot slot it — left out"
+    case "unsupported":
+      return "not modelled yet — left out"
+    case "unmapped":
+      return "no mapping yet — left out"
+  }
+}
+
+function InnerWayCard({ innerWay }: { innerWay: ImportedInnerWay }) {
+  const { t } = useI18n()
+  const resolution = innerWay.resolution
+  const tier = resolution.kind === "resolved" ? resolution.tier : innerWay.reportedTier
+  const note = innerWayNote(innerWay)
+
+  return (
+    <div
+      className={
+        resolution.kind === "resolved"
+          ? styles.innerWayCard
+          : `${styles.innerWayCard} ${styles.unresolved}`
+      }
+    >
+      <span className={styles.innerWayTier}>
+        {tier !== null ? t(`tier ${tier}`) : t("no tier")}
+      </span>
+      <span className={styles.innerWayName}>
+        {resolution.kind === "unmapped" ? `#${innerWay.passiveId}` : t(resolution.name)}
+      </span>
+      {note && <span className="hint">{t(note)}</span>}
     </div>
   )
 }

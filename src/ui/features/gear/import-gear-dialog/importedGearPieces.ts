@@ -14,6 +14,7 @@ import type {
 import { newGearPieceId } from "../../../../storage"
 import { AFFIX_ID_TO_STAT_LINE } from "./affixStatLineTable"
 import { targetKey } from "./dashboardGearPayload"
+import { resolveInnerWays } from "./importedInnerWays"
 import type {
   AffixTarget,
   GearImportResult,
@@ -157,7 +158,7 @@ export function resolveAgainstBuild(
       attunement: piece.attunement ? resolveAffix(piece.attunement, slot, inputs, choices) : null,
     }
   })
-  return { ...result, pieces }
+  return { ...result, pieces, innerWays: resolveInnerWays(result, inputs) }
 }
 
 export function effectiveIdentity(
