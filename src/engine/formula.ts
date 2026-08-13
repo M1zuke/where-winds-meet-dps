@@ -122,9 +122,6 @@ interface SkillResult {
 }
 
 export interface RotationCounters {
-  qiExhausted: number
-  yiShuiLayer: number
-  bengJieLayer: number
   lowQi: number
 }
 
@@ -132,7 +129,7 @@ export function computeSkillDamage(
   art: ArtRow,
   ctx: FormulaContext,
   count: number,
-  counters: RotationCounters = { qiExhausted: 0, yiShuiLayer: 0, bengJieLayer: 0, lowQi: 0 },
+  counters: RotationCounters = { lowQi: 0 },
 ): SkillResult {
   const num = (v: number | undefined) => v ?? 0
   const N = num(art.physMultiplier)
@@ -164,11 +161,7 @@ export function computeSkillDamage(
   const dotRules = !getsElevatedMultiplier
 
   const skillCritDamage = num(art.extraCritDamage)
-  const X =
-    ctx.critDmgBoostPanel +
-    skillCritDamage +
-    setFormulaBonus(ctx.set, "critDamage") +
-    counters.bengJieLayer * 0.05
+  const X = ctx.critDmgBoostPanel + skillCritDamage + setFormulaBonus(ctx.set, "critDamage")
 
   const skillAffinityDamage = num(art.extraAffinityDamage)
   const Y =
@@ -214,12 +207,7 @@ export function computeSkillDamage(
 
   const AF = (AE + AG) / 2
 
-  const physPenTotal =
-    ctx.outerPen +
-    num(art.extraPhysPenetration) +
-    counters.bengJieLayer * 5 +
-    counters.yiShuiLayer * 2 +
-    (ctx.hasSixHenZhi ? 10 : 0)
+  const physPenTotal = ctx.outerPen + num(art.extraPhysPenetration) + (ctx.hasSixHenZhi ? 10 : 0)
   const AH = penFrac(physPenTotal, physPenRes)
 
   const AI = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
@@ -336,8 +324,6 @@ export function computeSkillDamage(
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
     T +
-    counters.yiShuiLayer * 0.01 +
-    counters.qiExhausted * ctx.fatigueDamageTaken +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
     num(art.extraDamageBoost) +
     (isPersistent

@@ -51,9 +51,10 @@ anything rate-shaped. Two rules bind here:
   formula was reverse-engineered from. They carry **no meaning** beyond that:
   treat them as opaque, not as a claim about any live data source.
 - Two kernel parameters are vestigial on the live path — the per-call hit count
-  is always 1, and the counters are always zero. Do not build a mechanic that
-  depends on either; the qi phase reaches the kernel through buff effects and
-  per-hit art patches instead.
+  is always 1, and the one surviving counter is always zero. Do not build a
+  mechanic that depends on either; the qi phase reaches the kernel through buff
+  effects and per-hit art patches instead. A counter no set or skill reads is
+  deleted rather than kept for the transcription's sake.
 
 ## Calculation rules
 
