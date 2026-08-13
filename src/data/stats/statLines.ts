@@ -24,7 +24,7 @@ export const STAT_LINES = [
   { id: "momentum", label: "Momentum", unit: "raw", maxRoll: 49.4 },
   {
     id: "precision",
-    label: "Precision",
+    label: "Precision Rate",
     unit: "percent",
     enginePath: "precision",
     maxRoll: 0.08,
@@ -33,7 +33,7 @@ export const STAT_LINES = [
   },
   {
     id: "crit",
-    label: "Crit",
+    label: "Critical Rate",
     unit: "percent",
     enginePath: "critRate",
     maxRoll: 0.09,
@@ -42,7 +42,7 @@ export const STAT_LINES = [
   },
   {
     id: "affinity",
-    label: "Affinity",
+    label: "Affinity Rate",
     unit: "percent",
     enginePath: "affinityRate",
     maxRoll: 0.044,
@@ -124,7 +124,7 @@ export const STAT_LINES = [
   },
   {
     id: "swordBoost",
-    label: "Sword Martial Boost",
+    label: "Art of Sword DMG Boost",
     unit: "percent",
     enginePath: "swordBoost",
     maxRoll: 0.062,
@@ -223,7 +223,7 @@ export const STAT_LINES = [
   },
   {
     id: "minPhys",
-    label: "Min Phys",
+    label: "Min Physical Attack",
     unit: "raw",
     enginePath: "phys.min",
     maxRoll: 77.8,
@@ -232,7 +232,7 @@ export const STAT_LINES = [
   },
   {
     id: "maxPhys",
-    label: "Max Phys",
+    label: "Max Physical Attack",
     unit: "raw",
     enginePath: "phys.max",
     maxRoll: 77.8,
