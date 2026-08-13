@@ -5,6 +5,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets/ids"
 
 function tagged(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -38,7 +39,7 @@ describe("mistwillow — BuffEngine", () => {
 
   it("a hardcoded 'light override' ability (UmbQ) grants the light stance even without attack:light", () => {
     const e = new BuffEngine({ armorSet: "mistwillow" }, [], [])
-    e.processSkillCast("UmbQ", 0, {})
+    e.processSkillCast("cast:umbQ", 0, {})
     const heavyHit = tagged("SomeHeavyHit", ["attack:heavy"])
     expect(e.calculateDamageEffects(heavyHit, 0.1).breakdown.mistwillow).toBe(0.1)
   })
@@ -70,7 +71,7 @@ describe("mistwillow — end to end through simulateTimeline", () => {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       activeCustomRotation: rotation,
-      set: "Mistwillow",
+      set: SET_ID.mistwillow,
     }
     const before = simulateTimeline(without)
     const after = simulateTimeline(withMistwillow)

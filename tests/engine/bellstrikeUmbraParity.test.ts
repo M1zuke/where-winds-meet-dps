@@ -11,6 +11,7 @@ import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets/ids"
 
 const SITE_TARGET_DPS = 48365
 const SITE_TARGET_TOTAL = 2936621
@@ -25,8 +26,8 @@ const inputs: Inputs = {
   // build's older food tier (pre Simmering Fish Slices), folded into `phys`
   // instead of `food: true` so this fixture measures engine parity rather
   // than the food-table change. Equivalent to `food: true` only because
-  // `classGrantsMinPhysCritBoost` is false for every bellstrikeUmbra weapon type
-  // — do NOT copy this trick to a class where that gate can pass.
+  // `BuildView.grantsMinPhysCritBoost` is false for every bellstrikeUmbra
+  // weapon type — do NOT copy this trick to a class where that gate can pass.
   phys: { min: 977.23 + 90, max: 2983.92 + 180, penetration: 0.411 },
   bellstrike: { min: 274, max: 687.63, penetration: 0.18 },
   stonesplit: { min: 0, max: 0, penetration: 0 },
@@ -46,7 +47,7 @@ const inputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
 
-  set: "Hawking",
+  set: SET_ID.hawking,
   bowSet: "affinity",
   arsenal: "bellstrike",
   mindMethods: [

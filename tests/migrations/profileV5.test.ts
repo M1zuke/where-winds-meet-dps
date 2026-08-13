@@ -16,7 +16,7 @@ import {
 } from "../../src/migrations"
 import { V6__dropDerivedStats } from "../../src/migrations/V6__dropDerivedStats"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v5.json"
+import legacyProfileFile from "./testProfiles/v5/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 

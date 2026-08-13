@@ -1,7 +1,6 @@
-// Ticks on ONE unbroken 1-second grid anchored at the first application, not
-// a fresh grid per re-application — see docs/CALCULATION.md's "Mechanic coverage"
-// section for the prior per-window phase-reset bug this locks against a
-// regression of.
+// Ticks on ONE unbroken 1-second grid anchored at the first application, not a
+// fresh grid per re-application — docs/CALCULATION.md § "Mechanic rules". Locks
+// against a per-window phase reset.
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"

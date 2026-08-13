@@ -5,7 +5,6 @@ import { defaultInputs } from "../../src/engine/defaults"
 
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
-import { padSlots } from "../../src/engine/perSkillDamage"
 import {
   makeSkill,
   makeHit,
@@ -22,7 +21,7 @@ import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine
 import type { Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 const CLASS = umbraInputs.classId
@@ -98,12 +97,7 @@ describe("timeline — no-buff parity with the formula kernel", () => {
     const r = simulateTimeline(inputs)
 
     const ctx = buildContext(inputs)
-    const expected = computeSkillDamage(
-      hitToArtRow(hit, skill),
-      padSlots([]),
-      ctx,
-      1,
-    ).expectedDamage
+    const expected = computeSkillDamage(hitToArtRow(hit, skill), ctx, 1).expectedDamage
     expect(r.totalDamage).toBeCloseTo(expected, 6)
   })
 })
@@ -343,7 +337,7 @@ function expectedRowDamage(inputs: Inputs, row: DotStackShape, buffName: string)
     specialTag: "sustain",
     elevatedAttributeMultiplier: false,
   } as Parameters<typeof computeSkillDamage>[0]
-  return computeSkillDamage(art, padSlots([]), ctx, 1).expectedDamage
+  return computeSkillDamage(art, ctx, 1).expectedDamage
 }
 
 describe("timeline — per-stack DoT damage table", () => {
@@ -729,5 +723,37 @@ describe("timeline — cast chips sample once the cast has fully resolved", () =
     expect(markerOn(first)).toBeTruthy()
     expect(markerOn(second)).toBeTruthy()
     expect(markerOn(first)!.remainingSec!).toBeGreaterThan(markerOn(second)!.remainingSec!)
+  })
+
+  it("leaves out what the next cast applies on that same closing frame", () => {
+    const buff = makeBuff(CLASS, { name: "Marker", durationFrames: 600, maxStacks: 5 })
+    const opener = makeSkill(CLASS, {
+      name: "Opener",
+      castFrames: 30,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyBuff", targetId: buff.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const silent = makeSkill(CLASS, {
+      name: "Silent",
+      castFrames: 100,
+      hits: [makeHit({ frame: 100, physMultiplier: 1 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+        makeStep({ skillId: silent.id, hitCount: 1 }),
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+      ],
+    })
+    const r = simulateTimeline(timelineInputs(rotation, [opener, silent], [buff]))
+
+    const silentCast = r.casts!.find((c) => c.skillName === "Silent")!
+    const lastCast = r.casts![r.casts!.length - 1]
+    expect(silentCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(1)
+    expect(lastCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(2)
   })
 })

@@ -1,0 +1,38 @@
+{
+  "id": "bamboocutDust-rope-charge-6-7-hit",
+  "classId": "bamboocutDust",
+  "name": "Rope Charge 6-7 Hit",
+  "abilityTag": "Rope Charge 6-7 Hit",
+  "tags": ["prop:isCharged", "weapon:RopeDart", "attune:ropeDartCharged"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Rope Dart",
+  "attributeAttack": "Bamboocut",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.86185,
+      "attributeMultiplier": 1.29275,
+      "physFixed": 199.5,
+      "attributeFixed": 111.5,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 25,
+      "physMultiplier": 0.86185,
+      "attributeMultiplier": 1.29275,
+      "physFixed": 199.5,
+      "attributeFixed": 111.5,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 51,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:ropeCharge67Hit"
+}

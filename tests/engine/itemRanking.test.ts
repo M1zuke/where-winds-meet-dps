@@ -1,7 +1,7 @@
 // The two class-specific weapon-boost rows are driven by the resolved
 // active-or-default rotation's most-used weapons (`rotationWeapons` in
-// `itemRanking.ts`), not `schools.json`'s static weapon list — the two can
-// differ, so this asserts against what the rotation actually casts.
+// `itemRanking.ts`), not `ClassDef.weapons`' static fallback list — the two
+// can differ, so this asserts against what the rotation actually casts.
 import { describe, expect, it } from "vitest"
 import { computeRanking, getWordSpecs } from "../../src/engine/itemRanking"
 import { computeGearContribution } from "../../src/engine/gearStats"
@@ -11,7 +11,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import type { GearPiece } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
-// § "Implemented classes"). `defaultInputs` itself is a bamboocutWindTwinblade build.
+// § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 describe("computeRanking — Bellstrike Umbra baseline rows", () => {

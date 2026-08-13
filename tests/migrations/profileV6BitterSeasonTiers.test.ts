@@ -12,7 +12,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { LATEST_PROFILES_VERSION } from "../../src/migrations"
 import { kvStore } from "../../src/kvStore"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v6.json"
+import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 
@@ -64,7 +64,14 @@ describe("profile-v6 (real fixture, unmodified) survives the widened tier dropdo
   it("round-trips its mind methods exactly and still computes positive DPS", () => {
     writeProfile(clone(LEGACY.profile))
     const after = loadOne()
-    expect(after.inputs.mindMethods).toEqual(LEGACY.profile.inputs.mindMethods)
+    // The selection and tier survive; the heal adds the stable id the slot
+    // predates (see storage.ts § mindMethods).
+    expect(
+      after.inputs.mindMethods.map((slot) => ({ name: slot.name, stacks: slot.stacks })),
+    ).toEqual(LEGACY.profile.inputs.mindMethods)
+    for (const slot of after.inputs.mindMethods) {
+      if (slot.name) expect(slot.id, slot.name).toBeTruthy()
+    }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(after.inputs))))
     expect(result.dps).toBeGreaterThan(0)
   })
@@ -73,10 +80,14 @@ describe("profile-v6 (real fixture, unmodified) survives the widened tier dropdo
 describe("profile-v6 with a slot at a tier only reachable via the widened Bitter Season dropdown", () => {
   beforeEach(() => localStorage.clear())
 
-  it("survives hydration unchanged — 'tier 3' is not clamped or cleared", () => {
+  it("survives hydration with its id healed — 'tier 3' is not clamped or cleared", () => {
     writeProfile(withBitterSeasonAtTier3(clone(LEGACY.profile)))
     const after = loadOne()
-    expect(after.inputs.mindMethods[0]).toEqual({ name: "Bitter Season", stacks: "tier 3" })
+    expect(after.inputs.mindMethods[0]).toEqual({
+      id: "bitterSeason",
+      name: "Bitter Season",
+      stacks: "tier 3",
+    })
   })
 
   it("still computes a valid, positive-DPS run with the rest of the real build intact", () => {
@@ -95,8 +106,8 @@ describe("profile-v6 with a slot at a tier only reachable via the widened Bitter
 })
 
 // Additive, no version bump — see MIGRATIONS.md. Widening the inner-way NAME
-// allowlist (`allowedMindMethods` in schools.json) to include Bitter Season on
-// every class can only make previously-illegal slot values legal, never the
+// allowlist (`ClassDef.allowedMindMethods`) to include Bitter Season on every
+// class can only make previously-illegal slot values legal, never the
 // reverse.
 describe("Bitter Season inner way — widened allowlist round-trips (no version bump)", () => {
   beforeEach(() => {
@@ -123,7 +134,7 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     }
   }
 
-  it("a Bellstrike Umbra profile holding Bitter Season survives hydration unchanged", () => {
+  it("a Bellstrike Umbra profile holding Bitter Season survives hydration with its id healed", () => {
     const inputs = withBitterSeasonSlot("bellstrikeUmbra")
     kvStore.set(
       PROFILES_KEY,
@@ -135,10 +146,18 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.mindMethods[0]).toEqual({ name: "Bitter Season", stacks: "tier 6" })
+    expect(profiles[0].inputs.mindMethods[0]).toEqual({
+      id: "bitterSeason",
+      name: "Bitter Season",
+      stacks: "tier 6",
+    })
   })
 
-  it("survives hydration unchanged on a non-Umbra class too (inner ways are global)", () => {
+  // A profile naming a class that no longer exists degrades that classId to
+  // Bellstrike Umbra (CLAUDE.md § "localStorage migrations") before the
+  // inner-way heal below runs — Bitter Season being global-allowed continues
+  // to hold on the degraded class too.
+  it("survives hydration with its id healed on a profile whose classId gets degraded", () => {
     const inputs = withBitterSeasonSlot("silkbindJade")
     kvStore.set(
       PROFILES_KEY,
@@ -150,7 +169,12 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.mindMethods[0]).toEqual({ name: "Bitter Season", stacks: "tier 6" })
+    expect(profiles[0].inputs.classId).toBe("bellstrikeUmbra")
+    expect(profiles[0].inputs.mindMethods[0]).toEqual({
+      id: "bitterSeason",
+      name: "Bitter Season",
+      stacks: "tier 6",
+    })
   })
 
   it("is idempotent across repeated hydration", () => {
@@ -175,6 +199,7 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     )
     const second = loadProfiles()
     expect(second.profiles[0].inputs.mindMethods[0]).toEqual({
+      id: "bitterSeason",
       name: "Bitter Season",
       stacks: "tier 6",
     })

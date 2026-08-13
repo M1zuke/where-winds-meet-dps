@@ -18,7 +18,7 @@ import {
 } from "../../src/migrations"
 import { V8__dropRemovedArmorSets } from "../../src/migrations/V8__dropRemovedArmorSets"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
-import legacyProfileFile from "./testProfiles/profile-v7.json"
+import legacyProfileFile from "./testProfiles/v7/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
 const REMOVED_SETS = ["Ivorybloom", "Rainwhisper", "Rainwhisper (no shield)"]
@@ -144,7 +144,9 @@ describe("V8__dropRemovedArmorSets — end to end through loadProfiles", () => {
     expect(cleared.name).toBe(LEGACY.profile.name)
     expect(cleared.inputs.breakthrough).toBe(LEGACY.profile.inputs.breakthrough)
     expect(cleared.inputs.arsenal).toBe(LEGACY.profile.inputs.arsenal)
-    expect(cleared.inputs.mindMethods).toEqual(LEGACY.profile.inputs.mindMethods)
+    expect(cleared.inputs.mindMethods.map((slot) => slot.name)).toEqual(
+      LEGACY.profile.inputs.mindMethods.map((slot) => slot.name),
+    )
     expect(cleared.inputs.inventory).toHaveLength(LEGACY.profile.inputs.inventory.length)
     expect(cleared.inputs.equipped).toEqual(LEGACY.profile.inputs.equipped)
   })
@@ -177,9 +179,9 @@ describe("hydrateInputs backstop — the paths that bypass the chain", () => {
     expect(importProfile(JSON.stringify(bare)).inputs.set).toBeNull()
   })
 
-  it("keeps a surviving set on a bare imported profile", () => {
+  it("keeps a surviving set on a bare imported profile, healed to its id", () => {
     const bare = withSet(clone(LEGACY.profile), "Jadeware")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("Jadeware")
+    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("jadeware")
   })
 
   it("clears a removed set on the legacy wwm.inputs blob rolled into a profile", () => {

@@ -1,0 +1,21 @@
+{
+  "id": "starReacherExhausted",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "starReacherExhausted",
+        "name": "Star Reacher (Exhausted)",
+        "triggeredBy": [],
+        "duration": 12,
+        "affects": null,
+        "bonus": {
+          "type": "phyBoostMod",
+          "value": 0.25
+        },
+        "enabledParam": "starReacher"
+      }
+    }
+  ]
+}

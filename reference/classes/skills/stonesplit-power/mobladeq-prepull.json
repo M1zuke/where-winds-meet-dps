@@ -1,0 +1,28 @@
+{
+  "id": "stonesplitPower-mobladeq-prepull",
+  "classId": "stonesplitPower",
+  "name": "MoBladeQ Prepull",
+  "abilityTag": "MoBladeQ Prepull",
+  "tags": ["weapon:Mo Blade"],
+  "skillType": "weapon",
+  "weaponOrAttribute": "Modao",
+  "attributeAttack": "Stonesplit",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0,
+      "attributeMultiplier": 0,
+      "physFixed": 0,
+      "attributeFixed": 0,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 0,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": false,
+  "castTag": "cast:moBladeQPrepull"
+}

@@ -18,6 +18,10 @@ export interface DebuffDotSpec {
   skillType: string
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
+  attuneTag?: string | null
+  // The skill whose first hit supplies this tick's coefficients. Absent, the
+  // `debuff-<classId>-<slug>` id convention is used instead.
+  sourceSkillId?: string | null
   count: number
   perStackShapes?: DotStackShape[] | null
   perStackMultipliers?: number[] | null
@@ -35,6 +39,10 @@ export interface Debuff {
   id: string
   classId: string
   name: string
+  // Namespaced tags, same vocabulary as `Skill.tags`. A DoT tick is a damage
+  // event like any other, so a modifier must be able to address it structurally
+  // rather than through the debuff's display name.
+  tags?: string[]
   activation: BuffActivation
   durationFrames: number
   effects: BuffStatEffect[]
@@ -77,6 +85,7 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
   return makeDebuff(classId, {
     id: src.id,
     name: src.name,
+    tags: src.tags ? [...src.tags] : undefined,
     activation: src.activation,
     durationFrames: src.durationFrames,
     effects: src.effects.map((e) => ({ ...e })),
@@ -103,6 +112,10 @@ export function isDebuff(x: unknown): x is Debuff {
   if (typeof d.id !== "string" || !d.id) return false
   if (typeof d.classId !== "string" || !d.classId) return false
   if (typeof d.name !== "string") return false
+  if (d.tags !== undefined) {
+    if (!Array.isArray(d.tags)) return false
+    for (const tag of d.tags) if (typeof tag !== "string") return false
+  }
   if (d.activation !== "permanent" && d.activation !== "triggered") return false
   if (typeof d.durationFrames !== "number" || !Number.isFinite(d.durationFrames)) return false
   if (!Array.isArray(d.effects)) return false

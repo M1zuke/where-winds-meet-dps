@@ -1,14 +1,5 @@
-import breakthroughs from "../../../../data/baseStats/breakthroughTiers.json"
+import { BREAKTHROUGH_TIERS } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
-
-interface BreakthroughRow {
-  breakthrough: number
-  name: string
-  levelRange: string
-  resistance: number
-  defense: number
-}
-const BREAKTHROUGHS = breakthroughs as BreakthroughRow[]
 
 interface Props {
   value: number
@@ -21,7 +12,7 @@ export function BreakthroughSelect({ value, onChange }: Props) {
     <div className="row">
       <label>{t("Breakthrough")}</label>
       <select value={String(value)} onChange={(e) => onChange(Number(e.target.value))}>
-        {BREAKTHROUGHS.map((tier) => (
+        {BREAKTHROUGH_TIERS.map((tier) => (
           <option key={tier.breakthrough} value={tier.breakthrough}>
             {`${t("Lv.")} ${tier.breakthrough}${tier.name ? ` · ${tier.name}` : ""} (${t("Lv.")} ${tier.levelRange}, def ${tier.defense}, res ${tier.resistance}%)`}
           </option>

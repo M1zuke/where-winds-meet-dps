@@ -10,7 +10,7 @@ import { MindMethodsPanel } from "../mind-methods-panel/MindMethodsPanel"
 import { EncounterSettingsPanel } from "../encounter-settings-panel/EncounterSettingsPanel"
 import { BowSetPanel } from "../bow-set-panel/BowSetPanel"
 import { ArsenalPanel } from "../arsenal-panel/ArsenalPanel"
-import { StatsOverviewPanel } from "../stats-overview-panel/StatsOverviewPanel"
+import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { ItemRankingTable } from "../item-ranking-table/ItemRankingTable"
 import styles from "./OverviewTab.module.scss"
 

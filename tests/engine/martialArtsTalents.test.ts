@@ -3,7 +3,7 @@ import {
   userTalentContributions,
   getConfiguredBase,
   getDefaultTalentsForClass,
-} from "../../src/data/baseStats"
+} from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import type { Inputs, MartialArtsTalent } from "../../src/engine/types"

@@ -1,0 +1,29 @@
+{
+  "id": "drumbeat",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["stonesplit_might"],
+      "def": {
+        "id": "drumbeat",
+        "name": "Drumbeat",
+        "triggeredBy": [
+          "cast:spearHeavy",
+          "cast:spearHeavy1Hit",
+          "cast:spearHeavy1HitPrepull",
+          "cast:spearQ",
+          "cast:spearQ0HitCancel",
+          "cast:spearQ5HitCancel",
+          "cast:spearQPrepull"
+        ],
+        "duration": 6,
+        "affectsProperty": "isCharged",
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.15
+        },
+        "overriddenBy": "breakthrough"
+      }
+    }
+  ]
+}

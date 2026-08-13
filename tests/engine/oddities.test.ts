@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { oddityContributions, DEFAULT_ODDITIES, getConfiguredBase } from "../../src/data/baseStats"
+import {
+  oddityContributions,
+  DEFAULT_ODDITIES,
+  getConfiguredBase,
+} from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import odditiesJson from "../../src/data/baseStats/oddities.json"
 import type { Inputs, OddityRegions } from "../../src/engine/types"

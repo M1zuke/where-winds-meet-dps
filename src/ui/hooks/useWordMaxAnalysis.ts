@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import type { GearPiece, Inputs } from "../../engine/types"
-import type { WordMaxRow, WorkerRequest, WorkerResponse } from "../../engine/dpsWorker"
-import DpsWorker from "../../engine/dpsWorker?worker"
-import { WORKER_DEBOUNCE_MS } from "./workerDebounce"
+import type { WordMaxRow } from "../../engine/dpsWorker"
+import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
+import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export interface WordMaxAnalysisResult {
   rows: WordMaxRow[]
@@ -10,55 +10,28 @@ export interface WordMaxAnalysisResult {
   forPieceId: string | null
 }
 
+const NO_ROWS: WordMaxRow[] = []
+
 const NO_SELECTION_RESULT: WordMaxAnalysisResult = {
-  rows: [],
+  rows: NO_ROWS,
   isPending: false,
   forPieceId: null,
 }
 
 export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): WordMaxAnalysisResult {
-  const workerRef = useRef<Worker | null>(null)
   const reqIdRef = useRef(0)
-  const lastReceivedRef = useRef(-1)
-  const [rows, setRows] = useState<WordMaxRow[]>([])
-  const [forPieceId, setForPieceId] = useState<string | null>(null)
-  const [isPending, setIsPending] = useState(false)
+  const [received, setReceived] = useState<{ rows: WordMaxRow[]; pieceId: string } | null>(null)
+  const isPending = useDpsWorkerPending("wordMax")
 
   useEffect(() => {
-    const w = new DpsWorker()
-    workerRef.current = w
-    w.onmessage = (e: MessageEvent<WorkerResponse>) => {
-      if (e.data.kind !== "wordMax") return
-      const { reqId, rows: nextRows, pieceId } = e.data
-      if (reqId < lastReceivedRef.current) return
-      lastReceivedRef.current = reqId
-      setRows(nextRows)
-      setForPieceId(pieceId)
-      if (reqId === reqIdRef.current) setIsPending(false)
-    }
-    return () => {
-      w.terminate()
-      workerRef.current = null
-    }
+    return subscribeToDpsWorker("wordMax", ({ rows, pieceId }) => setReceived({ rows, pieceId }))
   }, [])
 
   useEffect(() => {
-    const w = workerRef.current
-    if (!w || !piece) return
-    const reqId = ++reqIdRef.current
-    setIsPending(true)
-    const handle = setTimeout(() => {
-      const req: WorkerRequest = {
-        kind: "wordMax",
-        reqId,
-        inputs,
-        piece,
-      }
-      w.postMessage(req)
-    }, WORKER_DEBOUNCE_MS)
-    return () => clearTimeout(handle)
+    if (!piece) return
+    postToDpsWorker({ kind: "wordMax", reqId: ++reqIdRef.current, inputs, piece })
   }, [inputs, piece])
 
   if (!piece) return NO_SELECTION_RESULT
-  return { rows, isPending, forPieceId }
+  return { rows: received?.rows ?? NO_ROWS, isPending, forPieceId: received?.pieceId ?? null }
 }

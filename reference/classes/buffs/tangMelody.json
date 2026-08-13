@@ -1,0 +1,36 @@
+{
+  "id": "tangMelody",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["bamboocut_dust"],
+      "def": {
+        "id": "tangMelody",
+        "name": "Tang Melody",
+        "triggeredBy": [
+          "cast:firstResonance",
+          "cast:resonance",
+          "cast:ropeQ",
+          "cast:ropeQ1Hit",
+          "cast:umbrellaQ",
+          "cast:umbrellaQEmpoweredPerfectCatch",
+          "cast:umbrellaQPerfectCatch"
+        ],
+        "duration": 7,
+        "maxStacks": 5,
+        "stacksPerHit": 1,
+        "stackRateLimit": {
+          "count": 2,
+          "window": 1
+        },
+        "affects": [],
+        "bonus": null,
+        "statModifiers": {
+          "critDmg": 0.03
+        },
+        "enabledParam": "songOfTang",
+        "minTier": 4
+      }
+    }
+  ]
+}

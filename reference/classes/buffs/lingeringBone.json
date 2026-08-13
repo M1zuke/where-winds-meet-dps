@@ -1,0 +1,24 @@
+{
+  "id": "lingeringBone",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "lingeringBone",
+        "name": "Lingering Bone",
+        "triggeredBy": ["cast:fanLightCharged", "cast:fanSpecial"],
+        "duration": 2,
+        "affects": [],
+        "bonus": null,
+        "onApplyFn": {
+          "__handler": "lingeringBone"
+        },
+        "refreshOn": {
+          "skillProperty": "isDrone",
+          "onlyIfActive": true
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "pursuitChargedBoost",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["silkbind_jade"],
+      "def": {
+        "id": "pursuitChargedBoost",
+        "name": "Spring Shock",
+        "triggeredBy": ["cast:fanHeavyPursuit3Hit", "cast:fanHeavyPursuit5Hit"],
+        "duration": 15,
+        "maxStacks": 5,
+        "stacksPerHit": true,
+        "affectsProperty": "isCharged",
+        "bonus": {
+          "type": "buffBonus",
+          "valuePerStack": 0.04
+        }
+      }
+    }
+  ]
+}

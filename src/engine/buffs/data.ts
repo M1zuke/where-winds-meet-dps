@@ -1,136 +1,52 @@
-import specMeta from "../../data/classes/specMeta.json"
-import { SITE_BUFF_DEFS_BY_SPEC, GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../data/skills/buffs"
-import type { BuffDef } from "./buffDef"
-import { MECHANIC_BUFF_DEFS } from "./mechanics"
-
-interface SpecMetaFile {
-  specIds: string[]
-  defaultSpec: string
-  onApplyHandlers: string[]
-}
-
-const BUFFS = {
-  specs: SITE_BUFF_DEFS_BY_SPEC,
-  global: GLOBAL_BUFF_DEFS,
-  group: GROUP_BUFF_DEFS,
-}
-const META = specMeta as unknown as SpecMetaFile
-
-export const SPEC_IDS: readonly string[] = META.specIds ?? []
-export const DEFAULT_SPEC = META.defaultSpec
-
-export const CLASS_SPEC: Record<string, string> = {
-  bellstrikeUmbra: "bellstrike_umbra",
-  bellstrikeRainbow: "bellstrike_splendor",
-  silkbindJade: "silkbind_jade",
-  stonesplitPower: "stonesplit_might",
-  stonesplitStrength: "stonesplit_strength",
-  bamboocutWindTwinblade: "bamboocut_dust",
-  bamboocutDust: "bamboocut_dust",
-}
+import { classDefinition, CLASS_DEFS, innerWayDefsOf } from "../../definitions/classes/registry"
+import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../data/skills/buffs"
+import type { BuffModule } from "./buffModule"
 
 export function specForClass(classId: string): string | undefined {
-  return CLASS_SPEC[classId]
+  return classDefinition(classId)?.spec
 }
 
-const UNIVERSAL_SPEC_BUFF_IDS = new Set<string>(["fluteBoost"])
-
-export function buffDefsForSpec(spec: string): BuffDef[] {
-  return [...(BUFFS.specs[spec] ?? []), ...(BUFFS.global ?? [])]
+// Three blocks, in order: every slottable inner way's `buffDefs` (barrel
+// order), then `GLOBAL_BUFF_DEFS` filtered against the owned-id set (an owned
+// def beats a global of the same id), then the class's own `classBuffDefs`.
+export function buffDefsForClass(classId: string): BuffModule[] {
+  const definition = classDefinition(classId)
+  if (!definition) return allBuffDefsDeduped()
+  const innerWayOwned = innerWayDefsOf(definition).flatMap((def) => def.buffDefs ?? [])
+  const ownedIds = new Set(
+    [...innerWayOwned, ...definition.classBuffDefs].map((module) => module.id),
+  )
+  const globals = GLOBAL_BUFF_DEFS.filter((module) => !ownedIds.has(module.id))
+  return [...innerWayOwned, ...globals, ...definition.classBuffDefs].map((module) => ({
+    ...module,
+  }))
 }
 
-export function buffDefsForClass(classId: string): BuffDef[] {
-  const spec = specForClass(classId)
-  if (!spec) return allBuffDefsDeduped()
-  const byId = new Map<string, BuffDef>()
-  for (const d of BUFFS.specs[spec] ?? []) byId.set(d.id, { ...d })
-  for (const d of BUFFS.global ?? []) if (!byId.has(d.id)) byId.set(d.id, { ...d })
-  for (const s of SPEC_IDS) {
-    if (s === spec) continue
-    for (const d of BUFFS.specs[s] ?? []) {
-      if (UNIVERSAL_SPEC_BUFF_IDS.has(d.id) && !byId.has(d.id)) byId.set(d.id, { ...d })
-    }
-  }
-  return [...byId.values()]
+export function groupBuffDefs(): BuffModule[] {
+  return GROUP_BUFF_DEFS
 }
 
-export function groupBuffDefs(): BuffDef[] {
-  return BUFFS.group ?? []
-}
-
-export function mechanicBuffDefs(): BuffDef[] {
-  return MECHANIC_BUFF_DEFS
-}
-
-export function mechanicBuffDefsForClass(classId: string): BuffDef[] {
-  const spec = specForClass(classId)
-  if (!spec) return MECHANIC_BUFF_DEFS
-  return MECHANIC_BUFF_DEFS.filter((d) => !d.spec || d.spec === spec)
-}
-
-export function dedupedMechanicBuffDefsForClass(classId: string): BuffDef[] {
-  const byId = new Map<string, BuffDef>()
-  for (const d of mechanicBuffDefsForClass(classId)) {
-    const existing = byId.get(d.id)
+export function allBuffDefsDeduped(): BuffModule[] {
+  const byId = new Map<string, BuffModule>()
+  const consider = (module: BuffModule) => {
+    const existing = byId.get(module.id)
     if (!existing) {
-      byId.set(d.id, { ...d })
-      continue
-    }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
-  }
-  return [...byId.values()]
-}
-
-export function allBuffDefsDeduped(): BuffDef[] {
-  const byId = new Map<string, BuffDef>()
-  const consider = (d: BuffDef) => {
-    const existing = byId.get(d.id)
-    if (!existing) {
-      byId.set(d.id, { ...d })
+      byId.set(module.id, { ...module })
       return
     }
-    if (d.triggers?.length) {
-      const merged = new Set([...(existing.triggers ?? []), ...d.triggers])
-      existing.triggers = [...merged]
+    if (module.triggeredBy?.length) {
+      const merged = new Set([...(existing.triggeredBy ?? []), ...module.triggeredBy])
+      existing.triggeredBy = [...merged]
     }
   }
-  for (const spec of SPEC_IDS) for (const d of BUFFS.specs[spec] ?? []) consider(d)
-  for (const d of BUFFS.global ?? []) consider(d)
+  for (const classDef of CLASS_DEFS()) {
+    const definition = classDefinition(classDef.id)
+    for (const module of definition?.buffModules ?? []) consider(module)
+  }
+  for (const module of GLOBAL_BUFF_DEFS) consider(module)
   return [...byId.values()]
 }
 
-export function hasBuffData(spec: string): boolean {
-  return !!BUFFS.specs[spec] && BUFFS.specs[spec].length > 0
-}
-
-export function dedupedMechanicBuffDefs(): BuffDef[] {
-  const byId = new Map<string, BuffDef>()
-  for (const d of MECHANIC_BUFF_DEFS) {
-    const existing = byId.get(d.id)
-    if (!existing) {
-      byId.set(d.id, { ...d })
-      continue
-    }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
-  }
-  return [...byId.values()]
-}
-
-export function catalogBuffDefs(classId?: string): BuffDef[] {
-  const byId = new Map<string, BuffDef>()
-  const base = classId ? buffDefsForClass(classId) : allBuffDefsDeduped()
-  const mechanics = classId ? dedupedMechanicBuffDefsForClass(classId) : dedupedMechanicBuffDefs()
-  for (const d of base) byId.set(d.id, d)
-  for (const d of mechanics) {
-    const existing = byId.get(d.id)
-    if (!existing) {
-      byId.set(d.id, d)
-      continue
-    }
-    if (d.triggers?.length)
-      existing.triggers = [...new Set([...(existing.triggers ?? []), ...d.triggers])]
-  }
-  return [...byId.values()]
+export function catalogBuffDefs(classId?: string): BuffModule[] {
+  return classId ? buffDefsForClass(classId) : allBuffDefsDeduped()
 }

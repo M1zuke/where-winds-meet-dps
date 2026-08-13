@@ -1,0 +1,118 @@
+{
+  "id": "silkbindJade-healer-extension",
+  "classId": "silkbindJade",
+  "name": "Healer Extension",
+  "abilityTag": "Healer Extension",
+  "tags": [],
+  "skillType": "weapon",
+  "weaponOrAttribute": "",
+  "attributeAttack": "Silkbind",
+  "hits": [
+    {
+      "id": "hit-0",
+      "frame": 0,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-1",
+      "frame": 18,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-2",
+      "frame": 36,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-3",
+      "frame": 54,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-4",
+      "frame": 72,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-5",
+      "frame": 90,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-6",
+      "frame": 108,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-7",
+      "frame": 126,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-8",
+      "frame": 144,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    },
+    {
+      "id": "hit-9",
+      "frame": 162,
+      "physMultiplier": 0.19388,
+      "attributeMultiplier": 0.290832,
+      "physFixed": 44.8,
+      "attributeFixed": 25.04,
+      "extraCritDamage": 0,
+      "triggers": []
+    }
+  ],
+  "castFrames": 180,
+  "triggerable": true,
+  "createdAt": "2026-07-19T00:00:00.000Z",
+  "updatedAt": "2026-07-19T00:00:00.000Z",
+  "universal": true,
+  "castTag": "cast:healerExtension"
+}

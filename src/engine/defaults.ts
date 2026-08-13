@@ -1,11 +1,12 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ODDITIES } from "../data/baseStats"
+import { DEFAULT_ODDITIES } from "../definitions/baseStats"
+import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
 
 export const defaultInputs: Inputs = {
-  classId: "bamboocutWindTwinblade",
+  classId: "bellstrikeUmbra",
   breakthrough: 13,
 
   phys: { min: 1043.0, max: 2006.0, penetration: 0.292 },
@@ -47,16 +48,17 @@ export const defaultInputs: Inputs = {
 
   dingYinByTag: { "Mouse Boost": 0.153 },
 
+  // Unslotted: no validated class allows four slottable inner ways.
   mindMethods: [
-    { name: "Forgotten River Echo", stacks: "tier 6" },
-    { name: "Mud-Fish Heart", stacks: "tier 6" },
-    { name: "Bliss Bleeding", stacks: "tier 6" },
-    { name: "Stone-Cutter", stacks: "tier 5" },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
+    { ...emptyMindMethod },
   ],
 
   food: true,
   tianGongElement: "fire",
-  set: "Hawking",
+  set: SET_ID.hawking,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
   bowSet: null,

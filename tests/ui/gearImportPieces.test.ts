@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import { gearBaseStatsFor } from "../../src/engine/gearStats"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import type { Inputs } from "../../src/engine/types"
+import { isGearWordName } from "../../src/engine/types"
 import {
   parseDashboardGearPayload,
   targetKey,
@@ -70,15 +71,11 @@ describe("the shipped affix table is the authority", () => {
     expect(affix.resolution.kind).toBe("unmapped")
   })
 
-  // The table spans every class, so a name is checked against the whole catalogue
-  // rather than one build's slice of it — resolveAgainstBuild is what narrows an
-  // entry to the active class, and the illegal-for-this-slot case covers that.
   it("names only stats that exist", () => {
-    const words = new Set(getWordSpecs(inputs).map((spec) => spec.word))
-    const attunements = new Set(ATTUNEMENT_OPTIONS.map((option) => option.id))
+    const attunements = new Set<string>(ATTUNEMENT_OPTIONS.map((option) => option.id))
     for (const key of Object.values(AFFIX_ID_TO_STAT_LINE)) {
       const [kind, name] = [key.slice(0, key.indexOf(":")), key.slice(key.indexOf(":") + 1)]
-      if (kind === "word") expect(words.has(name) || name.endsWith(" Martial Boost")).toBe(true)
+      if (kind === "word") expect(isGearWordName(name), name).toBe(true)
       else expect(attunements.has(name), name).toBe(true)
     }
   })
@@ -205,6 +202,45 @@ describe("a user choice maps an id", () => {
       kind: "unmapped",
       mappedTo: "attunement:bleedingDamage",
     })
+  })
+})
+
+describe("reported units", () => {
+  function attunementOn(gameSlotId: string, affixId: number, value: number, ratio: number) {
+    const text = JSON.stringify({
+      wearEquipsDetailed: {
+        [gameSlotId]: {
+          exVo: { baseAffixes: [{ equipmentDetails: [affixId, value, ratio, 3, true] }] },
+        },
+      },
+    })
+    return resolveAgainstBuild(parseDashboardGearPayload(text), {
+      ...defaultInputs,
+      classId: "stonesplitStrength",
+    }).pieces[0]!.attunement!.resolution
+  }
+
+  it("reads a percent-reported attunement whose tier caps below our table", () => {
+    // A lower-tier disc caps physical penetration at 9 %, not the 11 % we model.
+    expect(attunementOn("10", 270701, 8.9, 8.9 / 9)).toMatchObject({
+      kind: "resolved",
+      clampedFrom: null,
+    })
+    const resolution = attunementOn("10", 270701, 8.9, 8.9 / 9)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.089, 10)
+  })
+
+  it("reads a fraction-reported attunement as itself", () => {
+    const resolution = attunementOn("3", 279905, 0.059, 0.059 / 0.06)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.059, 10)
+  })
+
+  it("never raises a roll up to an attunement's minimum", () => {
+    const resolution = attunementOn("10", 270701, 4, 4 / 9)
+    if (resolution.kind !== "resolved") throw new Error("expected resolved")
+    expect(resolution.value).toBeCloseTo(0.04, 10)
   })
 })
 

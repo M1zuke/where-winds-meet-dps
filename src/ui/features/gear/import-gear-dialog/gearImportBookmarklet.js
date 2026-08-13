@@ -5,7 +5,14 @@
   var CACHE_KEY = "getAreaServer"
   var TOKEN_KEY = "h72na_data_token"
   var ROLE_INFO_URL = "https://s2.easebar.com/78ae9d90792a3e9b/role/roleInfo"
-  var CARRIED_FIELDS = ["roleName", "level", "school", "wearEquips", "wearEquipsDetailed"]
+  var CARRIED_FIELDS = [
+    "roleName",
+    "level",
+    "school",
+    "wearEquips",
+    "wearEquipsDetailed",
+    "passiveSlots",
+  ]
 
   function looksLikeRoleInfo(value) {
     return !!value && typeof value === "object" && !!value.wearEquipsDetailed
@@ -84,11 +91,12 @@
     return envelope
   }
 
-  function countPieces(envelope) {
-    var detailed = envelope.wearEquipsDetailed || {}
+  function countEntries(value) {
+    if (!value || typeof value !== "object") return 0
+    if (Object.prototype.toString.call(value) === "[object Array]") return value.length
     var total = 0
-    for (var key in detailed) {
-      if (Object.prototype.hasOwnProperty.call(detailed, key)) total += 1
+    for (var key in value) {
+      if (Object.prototype.hasOwnProperty.call(value, key)) total += 1
     }
     return total
   }
@@ -134,7 +142,11 @@
         return
       }
       window.alert(
-        "Copied " + countPieces(envelope) + " gear pieces. Paste them into Import Gear.",
+        "Copied " +
+          countEntries(envelope.wearEquipsDetailed) +
+          " gear pieces and " +
+          countEntries(envelope.passiveSlots) +
+          " inner ways. Paste them into Import Gear.",
       )
     })
   }

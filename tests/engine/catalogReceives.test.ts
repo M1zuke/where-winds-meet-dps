@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { receivesForSkill } from "../../src/engine/buffs/catalog"
+import {
+  hiddenTimelineBuffIds,
+  receivesForSkill,
+  specMechanicIds,
+} from "../../src/engine/buffs/catalog"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
@@ -86,7 +90,7 @@ describe("catalog receives — Mirage Bonus surfaces its cast condition", () => 
     const rows = receivesForSkill(swordQ, CLASS, { ...defaultInputs, classId: CLASS })
     const row = rows.find((r) => r.id === "mirageBonus")
     expect(row).toBeTruthy()
-    expect(row!.triggeredBy).toMatch(/Perfect Dodge/)
+    expect(row!.triggeredBy).toMatch(/cast:perfectDodge/)
     expect(row!.triggeredBy).toMatch(/Mirage/)
   })
 })
@@ -116,5 +120,24 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
     expect(rows.some((r) => r.id === "stat:singleMysticBoost")).toBe(true)
     expect(rows.some((r) => r.id === "stat:allMartialBoost")).toBe(false)
     expect(rows.some((r) => r.id === "stat:swordBoost")).toBe(false)
+  })
+})
+
+// Both derivations stay scoped to a class's own `classBuffDefs`, never
+// `buffDefsForClass`'s composed set (which folds in `GLOBAL_BUFF_DEFS`):
+// `dragonHeadLowHp` is a global and `alwaysActive`, and must not be caught
+// by either.
+describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
+  it("the Spec Mechanics column is exactly the two bleed passives", () => {
+    const ids = specMechanicIds(CLASS)
+    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids.has("soulShaken")).toBe(false)
+    expect(ids.has("dragonHeadLowHp")).toBe(false)
+  })
+
+  it("the timeline chip-hiding set is the same two", () => {
+    const ids = hiddenTimelineBuffIds(CLASS)
+    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids.has("dragonHeadLowHp")).toBe(false)
   })
 })

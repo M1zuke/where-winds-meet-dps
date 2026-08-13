@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest"
 import {
   applyPieceContribution,
-  gearBaseStatsFor,
   maxRelayedClone,
   relayedCapValue,
 } from "../../src/engine/gearStats"
+import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
-import type { GearPiece, Inputs } from "../../src/engine/types"
+import type { GearPiece, GearWordName, Inputs } from "../../src/engine/types"
 
 function weaponPiece(): GearPiece {
   return {
@@ -197,7 +197,7 @@ describe("formless penetration routes to the class primary attribute", () => {
 })
 
 describe("void attack words route to the class primary attribute attack", () => {
-  function voidAttackPiece(word: string, value: number): GearPiece {
+  function voidAttackPiece(word: GearWordName, value: number): GearPiece {
     return {
       id: "void-attack-piece",
       slot: "helm",

@@ -3,7 +3,26 @@ import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
 
-export type AttributeKey = "Bellstrike" | "Stonesplit" | "Silkbind" | "Bamboocut"
+export const ATTRIBUTE_KEYS = ["Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"] as const
+
+export type AttributeKey = (typeof ATTRIBUTE_KEYS)[number]
+
+export const WEAPON_NAMES = [
+  "Sword",
+  "Spear",
+  "Fan",
+  "Umbrella",
+  "Modao",
+  "Twin Blades",
+  "Rope Dart",
+  "Hengdao",
+] as const
+
+export type WeaponName = (typeof WEAPON_NAMES)[number]
+
+export function isWeaponName(value: string): value is WeaponName {
+  return (WEAPON_NAMES as readonly string[]).includes(value)
+}
 
 export type BowSet = "affinity" | "crit" | "precision" | null
 
@@ -21,12 +40,10 @@ export interface QiBreakSettings {
   durationSec: number
 }
 
-// NOT here (deliberately, they had duplicate homes and were double-counted):
-//  - Fire Oil — it is the Divinecraft fire choice (`Inputs.tianGongElement ===
-//    "fire"`, +1.5 % via `panel.ts`'s calc!D1), not a separate consumable.
-//  - Vulnerability — it IS the tank spear debuff (`Inputs.shareEasyHurt`, Q15,
-//    +8 % via calc!D1); one toggle, one application path.
-//  - Formbend Set — a stored-but-inert toggle with no modeled effect.
+// Deliberately NOT settings here, because each already has exactly one home and
+// a second would double-count it: Fire Oil is the Divinecraft fire choice
+// (`Inputs.tianGongElement`), Vulnerability is the tank spear debuff
+// (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
   qiBreak: QiBreakSettings
   dragonsBreath: boolean
@@ -53,8 +70,6 @@ export function defaultCombatSettings(): CombatSettings {
 // (29.2 % → 0.292).
 export interface Inputs {
   classId: string
-  // Encounter bracket — NOT the player's base-stat breakthrough tier
-  // (`baseStats.ts` BREAKTHROUGH_TIER).
   breakthrough: number
 
   phys: AttackBlock
@@ -73,7 +88,7 @@ export interface Inputs {
   affinityDamageBoost: number
   attributeDamageBoost: number
   sustainDamageBoost: number
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
+  // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
 
   allMartialBoost: number
@@ -96,6 +111,7 @@ export interface Inputs {
 
   food: boolean
   tianGongElement: "fire" | "poison" | null
+  // A `SET_ID` value, never the display name.
   set: string | null
   shareDebuff5HenZhi: boolean
   shareEasyHurt: boolean
@@ -106,18 +122,13 @@ export interface Inputs {
 
   rotation: string | null
 
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
-  activeCustomRotation?: Rotation | null
-
   selectedBuiltinRotationId?: string | null
 
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
+  // Injected at the engine boundary, not persisted on the profile blob — the
+  // engine never reads storage, so locked fixtures stay byte-exact.
+  activeCustomRotation?: Rotation | null
   customSkills?: Skill[] | null
-
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
   customBuffs?: Buff[] | null
-
-  // Injected at the engine boundary (App.tsx), not persisted on the profile blob.
   customDebuffs?: Debuff[] | null
 
   buffParams?: Record<string, unknown> | null
@@ -218,8 +229,43 @@ export function isWeaponSlot(slot: GearSlot): boolean {
 export type GearLevel = 86 | 91 | 96
 export type GearRarity = "legendary" | "epic"
 
+const UNPATTERNED_GEAR_WORD_NAMES = [
+  "Power",
+  "Agility",
+  "Momentum",
+  "Min Phys",
+  "Max Phys",
+  "Precision",
+  "Crit",
+  "Affinity",
+  "All Martial Boost",
+  "Damage VS Boss %",
+  "Single-Target Mystic Skill DMG Boost",
+  "Area Mystic Skill DMG Boost",
+  "Min Void Attack",
+  "Max Void Attack",
+  "Physical Penetration",
+  "Attribute Penetration",
+] as const
+
+export type GearWordName =
+  | (typeof UNPATTERNED_GEAR_WORD_NAMES)[number]
+  | `${WeaponName} Martial Boost`
+  | `Min ${AttributeKey}`
+  | `Max ${AttributeKey}`
+
+const GEAR_WORD_NAMES: ReadonlySet<string> = new Set<GearWordName>([
+  ...UNPATTERNED_GEAR_WORD_NAMES,
+  ...WEAPON_NAMES.map((weapon) => `${weapon} Martial Boost` as const),
+  ...ATTRIBUTE_KEYS.flatMap((attribute) => [`Min ${attribute}`, `Max ${attribute}`] as const),
+])
+
+export function isGearWordName(value: unknown): value is GearWordName {
+  return typeof value === "string" && GEAR_WORD_NAMES.has(value)
+}
+
 export interface GearWordEntry {
-  word: string
+  word: GearWordName | ""
   value: number
   retuned: boolean
 }
@@ -262,6 +308,9 @@ export function emptyGearWords(): GearPiece["words"] {
 }
 
 export interface MindMethodSlot {
+  // The stable identity. `name` is the display string and is kept only so an
+  // older saved profile still resolves; `hydrateInputs` fills `id` from it.
+  id?: string
   name: string
   stacks: string
 }

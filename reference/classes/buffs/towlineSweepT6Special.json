@@ -1,0 +1,24 @@
+{
+  "id": "towlineSweepT6Special",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["bamboocut_dust"],
+      "def": {
+        "id": "towlineSweepT6Special",
+        "name": "Towline Sweep T6",
+        "triggeredBy": [],
+        "duration": 9999,
+        "alwaysActive": true,
+        "affects": ["role:ropeSpecial"],
+        "bonus": {
+          "type": "buffBonus",
+          "value": 0.15
+        },
+        "forceCrit": true,
+        "enabledParam": "towlineSweep",
+        "minTier": 6
+      }
+    }
+  ]
+}

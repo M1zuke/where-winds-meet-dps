@@ -1,123 +1,86 @@
 # UI.md — the UI layer and keeping it responsive
 
-Read this before editing `src/ui/**`, `src/app/App.tsx`, or `src/engine/dpsWorker.ts`.
+Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a full
+60 fps timeline simulation, so heavy work stays off the main thread.
 
-A `runEngine` pass is a full 60 fps timeline simulation — expensive. The UI must
-stay responsive while the user types, so heavy engine work stays off the main
-thread.
+## The rules
 
-## The five rules
+1. **At most ONE synchronous engine pass per input change** — the baseline pass
+   that feeds the DPS header. Anything that runs the engine more than once per
+   change (ranking sweeps, per-piece deltas, tile variants, retunement and
+   word-max analyses) goes through the shared worker client: add a request kind
+   and a compute function there, and drive it from a hook shaped like the
+   existing ones — a monotonic request id, subscribe on mount and unsubscribe on
+   unmount, and an empty result **derived at the hook's return** from a
+   module-level constant, never written back by a `setState` inside an effect.
+   **Never** run the engine in a render-path memo outside that one baseline pass.
+2. **Exactly one hook owns each request kind.** The client routes by kind alone,
+   so a second subscriber to a kind receives the first one's results and their
+   request-id counters collide.
+3. **Never construct a worker in a hook.** The client owns a bounded, lazily
+   grown pool and keeps it for the life of the document. A hook that spawns its
+   own pays a full module instantiation per mount — for a route-mounted tab, per
+   visit.
+4. **Post through the client, never around it.** It debounces per kind with the
+   shared constant, keeps only the newest request, discards superseded responses,
+   and drops a queued request once a kind has no listeners left. Each post
+   structured-clones the full inputs, gear inventory included, on the main thread
+   — a zero-delay timeout is not a debounce.
+5. **Mount worker hooks where the results are consumed**, not in the app shell, so
+   a tab that does not show the data does not pay for the sweep.
+6. **While a recompute is in flight, show last-known values** with a subtle
+   opacity dim. Never unmount or flash the UI. Take the flag from the client,
+   which counts a kind pending from the moment a request is owed rather than when
+   the debounce fires — so a sustained drag dims throughout — and never mirror it
+   into hook state.
+7. **Never serialize large state per render.** Memoize on the value that actually
+   changed.
 
-1. **At most ONE synchronous `runEngine` per input change** — the baseline pass
-   in `App.tsx`'s `result` memo, which feeds the DPS header instantly.
-   Everything that runs the engine more than once per change (ranking sweeps,
-   per-piece deltas, armor/bow/arsenal tile variants, retunement / word-max
-   analyses) goes through the shared web worker `src/engine/dpsWorker.ts`: add a
-   request kind + compute function there, and drive it from a hook modeled on
-   `src/ui/hooks/useDpsDeltas.ts` — own worker instance, monotonic `reqId`,
-   stale-response discard, `isPending`, terminate on unmount, and an
-   empty / no-selection result **derived at the hook's return** from a
-   module-level constant, never written back by a `setState` inside the effect
-   (`react-hooks/set-state-in-effect` is error-level). **Never** call
-   `runEngine` in a render-path `useMemo` outside that one baseline pass.
-2. **Debounce every worker post** with `WORKER_DEBOUNCE_MS` from
-   `src/ui/hooks/workerDebounce.ts`. Each `postMessage` structured-clones the
-   full `Inputs` (gear inventory included) on the main thread, so
-   `setTimeout(0)` is not a debounce.
-3. **Mount worker hooks where the results are consumed** — e.g. inside
-   `src/ui/features/overview/overview-tab/OverviewTab.tsx`, not `AppInner` in
-   `App.tsx` — so tabs that don't show the data don't pay for the sweep.
-4. **While a recompute is in flight, show last-known values** with a subtle
-   opacity dim. Never unmount or flash the UI.
-5. **Don't `JSON.stringify` large state** (drafts, inventory) per render.
-   Memoize on the value that actually changed — `isDirty` in `App.tsx` is the
-   precedent.
+Follow the nearest existing worker hook rather than inventing a new shape.
 
-## Existing worker hooks
+## Component layout
 
-`useDpsDeltas` · `useItemRanking` · `useRetunementAnalysis` ·
-`useReattunementAnalysis` · `useWordMaxAnalysis` · `useSetTileDps`, all under
-`src/ui/hooks/`. Follow the nearest one rather than inventing a new shape.
-
-## Folder layout
-
-```
-src/
-  styles/         global layer: base.scss, primitives.scss, _mixins.scss,
-                  _breakpoints.scss — imported once from main.tsx
-  app/            App.tsx + App.module.scss (the root shell)
-  ui/
-    components/   generic, domain-agnostic widgets
-    hooks/        worker-backed hooks + the shared debounce constant
-    utils/        pure UI helpers shared across features
-    layout/       app-shell chrome (header metrics, global warnings)
-    features/
-      <tab>/      one folder per top-level tab (overview, gear, rotation, …)
-        shared/   styles used by exactly two sibling components in that tab
-```
-
-Every component lives in its own kebab-case folder next to the `.tsx` file it
-belongs to (`gear/gear-piece-form/GearPieceForm.tsx` +
-`GearPieceForm.module.scss`). A panel used by exactly one tab lives in that
-tab's feature folder; promote it to `components/`, `hooks/` or `utils/` only
-when a second feature needs it. Cross-feature imports are allowed but stay
-rare. No barrel `index.ts` files and no path aliases — import the file
-directly.
+- Every component lives in its own kebab-case folder beside the file it belongs
+  to, with its stylesheet next to it.
+- A panel used by exactly one tab lives in that tab's feature folder. Promote it
+  to the shared component, hook or util folders **only when a second feature needs
+  it**. Cross-feature imports are allowed but stay rare.
+- **No barrel `index.ts` files and no path aliases** — import the file directly.
 
 ## Styling
 
-Every component that carries its own CSS gets a same-named `*.module.scss`
-next to it, imported as:
+- A component carrying its own CSS gets a same-named `*.module.scss` beside it.
+- **The module import binding is always `styles`** — never a single letter, even
+  though that is the common idiom elsewhere. An identifier says what it holds, and
+  that outranks conventions from outside this repo (CLAUDE.md § "Names"). If a
+  component already uses `styles` for something else, rename **that** binding.
+- Class names inside a module are **camelCase** and drop the component-name
+  prefix — the import already scopes them. Modifier classes used by a single
+  component are local too.
+- **Stylesheets are code**: no comments a reader could recover from the selector
+  and its declarations. Most modules have none.
+- Cross-cutting primitives are a **closed, documented list** in the global
+  stylesheet, plus marker-only sign modifiers with no rules of their own, which a
+  module targets compound with a local class. **Adding anything to that list means
+  updating the list.**
+- Palette tokens and the element baseline live in the global base stylesheet.
+  Breakpoints go through the shared mixin, never a hardcoded media query.
+  Repeated form-control declarations go through the shared field mixins.
+- Bare element selectors inside a module are not hashed and keep working through
+  ancestor scoping. That is what lets a class-less shared input stay styled by
+  whichever module renders it — **never add a class to it**.
 
-```ts
-import styles from "./<Component>.module.scss";
-```
+## Related rules
 
-**The binding is always `styles`** — never `s` or any other abbreviation, even
-though single-letter imports are the common idiom for CSS modules elsewhere.
-CLAUDE.md § "Comments and names" governs: an identifier says what it holds, and
-that outranks brevity conventions from outside this repo. If a component already
-uses `styles` for something else, rename *that* binding to something more
-specific rather than shortening this one.
-
-Class names inside a module are **camelCase** and drop the component name
-prefix — the module import already scopes them (`gear-tile-stat-label` →
-`styles.statLabel`). Modifier classes used by a single component
-(`.isSelected`, `.active`, `.isOff`) are local too, composed in the JSX with a
-template string or `+`.
-
-Stylesheets are code: they get no comments a reader could recover from the
-selector and its declarations. Most modules here have none.
-
-A closed, documented list of cross-cutting primitives stays global —
-`src/styles/primitives.scss` (`panel`, `row`, `btn` + modifiers, `toolbar`,
-`hint`, `spacer`, `section-label`, the ranking/skill tables, `warnings`,
-`empty-tab`, `muted`) — plus four marker-only sign modifiers with no rules of
-their own: `is-positive`, `is-negative`, `is-zero`, `is-pending`, produced by
-each component's local `signClass`/`deltaSignClass` helper. A module targets
-one of these compound with a local class via `:global(...)`, e.g.
-`.stat:global(.is-positive) { color: var(--color-positive) }`. Adding anything
-else to `primitives.scss` requires updating this list.
-
-Shared palette tokens (`--color-accent`, `--color-text-muted`, …) and the
-element baseline live in `src/styles/base.scss`; breakpoints go through the
-`below()` mixin in `src/styles/_breakpoints.scss` rather than hardcoded
-`@media` queries. Repeated form-control declarations use the `field-input` /
-`field-focus` mixins in `src/styles/_mixins.scss`.
-
-Bare element selectors (`input`, `select`, `h2`, `button`) inside a module are
-not hashed and keep working through ancestor scoping — this is what lets
-`NumberInputs` (a class-less `<input>`) stay styled by whichever module
-renders it; never add a class to `NumberInputs` itself.
-
-## Testing
-
-Worker compute functions get direct-call parity tests — **never spin up a real
-`Worker` in vitest**. See TESTING.md § "Worker tests".
-
-## Related conventions
-
-- Gear-word deltas are applied directly to **white** stats — see CLAUDE.md
-  § "White vs Yellow rates" before touching anything rate-shaped in the UI.
-- A buff the user can edit must be visible in the Skill Editor; see BUFFS.md
-  for what belongs in a def versus the stat layer.
+- Gear-word deltas apply to **white** stats — read CLAUDE.md § "White vs Yellow
+  rates" before touching anything rate-shaped.
+- A buff the user can edit must be visible in the Skill Editor (BUFFS.md).
+- Worker compute functions get direct-call parity tests (TESTING.md § "Worker
+  tests").
+- Changelog data lives in `src/changelog/` — the format in `types.ts`, the
+  ordered version list in `registry.ts`, one module per release under
+  `entries/`.
+- The version shown in the header comes from `package.json`; nothing else
+  declares it.
+- A version bump ships an entry naming that version at the top of the
+  registry, whose body module is loaded only when that version is selected.

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { useI18n } from "../../../i18n/i18nContext"
+import { Dialog } from "../dialog/Dialog"
 import { ConfirmContext, type ConfirmFn } from "./confirmContext"
 import styles from "./ConfirmDialog.module.scss"
 
@@ -10,6 +11,7 @@ interface PendingState {
 
 export function ConfirmProvider({ children }: { children: React.ReactNode }) {
   const { t } = useI18n()
+  const messageId = useId()
   const [pending, setPending] = useState<PendingState | null>(null)
   const okButtonRef = useRef<HTMLButtonElement | null>(null)
 
@@ -28,16 +30,11 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!pending) return
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault()
-        close(false)
-      } else if (e.key === "Enter") {
-        e.preventDefault()
-        close(true)
-      }
+      if (e.key !== "Enter" || e.defaultPrevented) return
+      e.preventDefault()
+      close(true)
     }
     document.addEventListener("keydown", onKey)
-    okButtonRef.current?.focus()
     return () => document.removeEventListener("keydown", onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pending])
@@ -46,34 +43,30 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
     <ConfirmContext.Provider value={confirm}>
       {children}
       {pending && (
-        <div
-          className={styles.confirmOverlay}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="confirm-message"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) close(false)
-          }}
+        <Dialog
+          labelledBy={messageId}
+          onClose={() => close(false)}
+          layer="confirm"
+          surfaceClassName={styles.confirmSurface}
+          initialFocusRef={okButtonRef}
         >
-          <div className={styles.confirmModal}>
-            <p id="confirm-message" className={styles.confirmMessage}>
-              {pending.message}
-            </p>
-            <div className={styles.confirmButtons}>
-              <button type="button" className="btn" onClick={() => close(false)}>
-                {t("Cancel")}
-              </button>
-              <button
-                type="button"
-                ref={okButtonRef}
-                className="btn primary"
-                onClick={() => close(true)}
-              >
-                {t("Confirm")}
-              </button>
-            </div>
+          <p id={messageId} className={styles.confirmMessage}>
+            {pending.message}
+          </p>
+          <div className={styles.confirmButtons}>
+            <button type="button" className="btn" onClick={() => close(false)}>
+              {t("Cancel")}
+            </button>
+            <button
+              type="button"
+              ref={okButtonRef}
+              className="btn primary"
+              onClick={() => close(true)}
+            >
+              {t("Confirm")}
+            </button>
           </div>
-        </div>
+        </Dialog>
       )}
     </ConfirmContext.Provider>
   )

@@ -1,0 +1,18 @@
+{
+  "id": "empoweredUmbQCrit",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["bamboocut_dust"],
+      "def": {
+        "id": "empoweredUmbQCrit",
+        "name": "Fragrant Song",
+        "triggeredBy": ["cast:umbrellaQEmpoweredPerfectCatch"],
+        "duration": 30,
+        "affects": ["role:umbrellaQEmpoweredPerfectCatch"],
+        "bonus": null,
+        "forceCrit": true
+      }
+    }
+  ]
+}

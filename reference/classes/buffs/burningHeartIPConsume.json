@@ -1,0 +1,37 @@
+{
+  "id": "burningHeartIPConsume",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["stonesplit_strength"],
+      "def": {
+        "id": "burningHeartIPConsume",
+        "name": "Burning Heart (IP Consume)",
+        "triggeredBy": [],
+        "duration": 0,
+        "affects": null,
+        "bonus": null,
+        "perCastConsume": {
+          "triggerSkillProperty": "consumesInnerPassionBurningHeart",
+          "consumesFromBuffStack": "chargeEnhancement",
+          "bonus": null,
+          "damageMultiplier": 1.32,
+          "effectEnabledParam": "steadfastDevotion",
+          "effectMinTier": 4,
+          "preferredSources": [
+            {
+              "buffStack": "innerPassion"
+            }
+          ],
+          "sourceBuffs": [
+            {
+              "consumedBuffStack": "chargeEnhancement",
+              "buffIds": ["mountainSplitter"],
+              "propagateToTriggeredSkills": true
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

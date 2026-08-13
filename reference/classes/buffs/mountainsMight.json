@@ -1,0 +1,25 @@
+{
+  "id": "mountainsMight",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["bellstrike_splendor"],
+      "def": {
+        "id": "mountainsMight",
+        "name": "Mountain's Might",
+        "triggeredBy": ["cast:spearQ", "cast:spearQ0HitCancel", "cast:spearQ5HitCancel", "cast:spearQPrepull"],
+        "duration": 8,
+        "affects": null,
+        "bonus": null,
+        "statModifiers": {
+          "directAffinity": 0.015
+        },
+        "bossStatModifiers": {
+          "directAffinity": 0.015
+        },
+        "buffAppliesOnCastEnd": true,
+        "enabledParam": "mountainsMight"
+      }
+    }
+  ]
+}

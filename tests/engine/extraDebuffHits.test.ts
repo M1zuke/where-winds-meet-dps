@@ -4,7 +4,7 @@
 // Both are asserted on the data the app actually loads, since `timeline.ts` reads
 // `extendFrames` / `extendOnly` at runtime.
 import { describe, expect, it } from "vitest"
-import { BUILTIN_SKILLS_BY_CLASS } from "../../src/data/skills"
+import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 
 const FPS = 60
@@ -60,7 +60,8 @@ describe("extraDebuffHits wiring", () => {
   // optional.
   it("every extend-only trigger in the library carries a positive extendFrames", () => {
     const broken: string[] = []
-    for (const [classId, skills] of Object.entries(BUILTIN_SKILLS_BY_CLASS)) {
+    for (const classId of CLASS_IDS()) {
+      const skills = classDefinition(classId)?.skills ?? []
       for (const skill of skills) {
         for (const hit of skill.hits) {
           for (const trigger of hit.triggers) {

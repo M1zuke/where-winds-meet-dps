@@ -1,0 +1,21 @@
+{
+  "id": "starsAlign4pc",
+  "scope": "spec",
+  "variants": [
+    {
+      "specs": ["bamboocut_dust"],
+      "def": {
+        "id": "starsAlign4pc",
+        "name": "Stars Align",
+        "triggeredBy": [],
+        "duration": 9999,
+        "affects": ["role:umbrellaQ", "role:resonance", "role:firstResonance"],
+        "bonus": {
+          "type": "buffBonus",
+          "valueFromParam": "starsAlignBonus"
+        },
+        "enabledParam": "starsAlignActive"
+      }
+    }
+  ]
+}
