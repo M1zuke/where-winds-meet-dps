@@ -2,6 +2,12 @@ import type { ChangelogEntry } from "./types"
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   {
+    version: "0.2.1",
+    date: "2026-08-13",
+    headline: "Attune effects on import, and panels that stay filled",
+    loadDetails: () => import("./entries/v0-2-1").then((module) => module.details),
+  },
+  {
     version: "0.2.0",
     date: "2026-08-13",
     headline: "Graduation builds, and a changelog",
