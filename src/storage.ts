@@ -37,6 +37,7 @@ import {
   migrateClassId,
   migrateEntityId,
   migrateGearWordId,
+  migrateCurrentGearWordLabel,
   migrateSetId,
 } from "./migrations"
 
@@ -150,7 +151,7 @@ function repairGearWord(entry: unknown): unknown {
   if (!entry || typeof entry !== "object") return entry
   const stored = (entry as { word?: unknown }).word
   if (typeof stored !== "string") return entry
-  const renamed = migrateGearWordId(stored)
+  const renamed = migrateCurrentGearWordLabel(migrateGearWordId(stored))
   return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
 }
 

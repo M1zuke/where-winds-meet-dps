@@ -7,6 +7,7 @@ import { V9__renameSteadfastDevotion } from "./V9__renameSteadfastDevotion"
 import { V10__renameFrostCladNight } from "./V10__renameFrostCladNight"
 import { V11__setIdsWithoutDisplayName } from "./V11__setIdsWithoutDisplayName"
 import { V12__gearWordIds } from "./V12__gearWordIds"
+import { V13__gearWordCurrentLabels } from "./V13__gearWordCurrentLabels"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -16,6 +17,7 @@ export {
 } from "./V5__englishIdsWithoutSitePrefix"
 export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
 export { migrateGearWordId } from "./V12__gearWordIds"
+export { migrateCurrentGearWordLabel } from "./V13__gearWordCurrentLabels"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -26,6 +28,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V10__renameFrostCladNight,
   V11__setIdsWithoutDisplayName,
   V12__gearWordIds,
+  V13__gearWordCurrentLabels,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4
