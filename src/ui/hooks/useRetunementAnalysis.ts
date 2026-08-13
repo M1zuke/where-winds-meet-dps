@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { Inputs } from "../../engine/types"
 import type { RetunementRow } from "../../engine/dpsWorker"
 import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
@@ -32,7 +32,6 @@ export function useRetunementAnalysis(
   inputs: Inputs,
   selectedPieceId: string | null,
 ): RetunementAnalysisResult {
-  const reqIdRef = useRef(0)
   const [received, setReceived] = useState<ReceivedRetunement | null>(null)
   const isPending = useDpsWorkerPending("retunement")
 
@@ -44,12 +43,7 @@ export function useRetunementAnalysis(
 
   useEffect(() => {
     if (!selectedPieceId) return
-    postToDpsWorker({
-      kind: "retunement",
-      reqId: ++reqIdRef.current,
-      inputs,
-      pieceId: selectedPieceId,
-    })
+    postToDpsWorker({ kind: "retunement", inputs, pieceId: selectedPieceId })
   }, [inputs, selectedPieceId])
 
   if (!selectedPieceId) return NO_SELECTION_RESULT

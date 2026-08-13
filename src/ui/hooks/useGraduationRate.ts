@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { Inputs } from "../../engine/types"
 import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
 import { useDpsWorkerPending } from "./useDpsWorkerPending"
@@ -19,7 +19,6 @@ export function useGraduationRate(
   inputs: Inputs,
   currentDps: number,
 ): GraduationRateData & { isPending: boolean } {
-  const reqIdRef = useRef(0)
   const [data, setData] = useState<GraduationRateData | null>(null)
   const isPending = useDpsWorkerPending("graduation")
 
@@ -32,7 +31,7 @@ export function useGraduationRate(
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "graduation", reqId: ++reqIdRef.current, inputs, currentDps })
+    postToDpsWorker({ kind: "graduation", inputs, currentDps })
   }, [inputs, currentDps])
 
   return { ...(data ?? EMPTY_DATA), isPending }

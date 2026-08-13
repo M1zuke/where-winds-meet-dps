@@ -10,30 +10,35 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    change (ranking sweeps, per-piece deltas, tile variants, retunement and
    word-max analyses) goes through the shared worker client: add a request kind
    and a compute function there, and drive it from a hook shaped like the
-   existing ones — a monotonic request id, subscribe on mount and unsubscribe on
-   unmount, and an empty result **derived at the hook's return** from a
-   module-level constant, never written back by a `setState` inside an effect.
-   **Never** run the engine in a render-path memo outside that one baseline pass.
-2. **Exactly one hook owns each request kind.** The client routes by kind alone,
+   existing ones — subscribe on mount and unsubscribe on unmount, and an empty
+   result **derived at the hook's return** from a module-level constant, never
+   written back by a `setState` inside an effect. **Never** run the engine in a
+   render-path memo outside that one baseline pass.
+2. **The client assigns request ids; a hook never numbers its own requests.**
+   Superseded responses are recognised by id against document-lifetime state, so
+   a counter that restarts — as any per-mount counter does on a route revisit —
+   makes the client discard live responses as stale.
+3. **Exactly one hook owns each request kind.** The client routes by kind alone,
    so a second subscriber to a kind receives the first one's results and their
-   request-id counters collide.
-3. **Never construct a worker in a hook.** The client owns a bounded, lazily
+   posts coalesce into one request.
+4. **Never construct a worker in a hook.** The client owns a bounded, lazily
    grown pool and keeps it for the life of the document. A hook that spawns its
    own pays a full module instantiation per mount — for a route-mounted tab, per
    visit.
-4. **Post through the client, never around it.** It debounces per kind with the
+5. **Post through the client, never around it.** It debounces per kind with the
    shared constant, keeps only the newest request, discards superseded responses,
-   and drops a queued request once a kind has no listeners left. Each post
-   structured-clones the full inputs, gear inventory included, on the main thread
-   — a zero-delay timeout is not a debounce.
-5. **Mount worker hooks where the results are consumed**, not in the app shell, so
+   and once a kind has no listeners left drops its queued request and voids the
+   ones already in flight, so the next mount is never handed the previous one's
+   result. Each post structured-clones the full inputs, gear inventory included,
+   on the main thread — a zero-delay timeout is not a debounce.
+6. **Mount worker hooks where the results are consumed**, not in the app shell, so
    a tab that does not show the data does not pay for the sweep.
-6. **While a recompute is in flight, show last-known values** with a subtle
+7. **While a recompute is in flight, show last-known values** with a subtle
    opacity dim. Never unmount or flash the UI. Take the flag from the client,
    which counts a kind pending from the moment a request is owed rather than when
    the debounce fires — so a sustained drag dims throughout — and never mirror it
    into hook state.
-7. **Never serialize large state per render.** Memoize on the value that actually
+8. **Never serialize large state per render.** Memoize on the value that actually
    changed.
 
 Follow the nearest existing worker hook rather than inventing a new shape.

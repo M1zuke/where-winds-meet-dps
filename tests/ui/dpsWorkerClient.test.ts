@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { WorkerRequest, WorkerResponse } from "../../src/engine/dpsWorker"
+import type { UnsentRequest } from "../../src/ui/hooks/dpsWorkerClient"
 import { defaultInputs } from "../../src/engine/defaults"
 
 const { created, MockWorker } = vi.hoisted(() => {
@@ -32,8 +33,8 @@ async function freshClient(cores = 8): Promise<Client> {
   return import("../../src/ui/hooks/dpsWorkerClient")
 }
 
-function rankingRequest(reqId: number): WorkerRequest {
-  return { kind: "ranking", reqId, inputs: defaultInputs, baselineDps: 1000 }
+function rankingRequest(): UnsentRequest {
+  return { kind: "ranking", inputs: defaultInputs, baselineDps: 1000 }
 }
 
 function rankingResponse(reqId: number): WorkerResponse {
@@ -42,6 +43,11 @@ function rankingResponse(reqId: number): WorkerResponse {
 
 function respond(workerIndex: number, response: WorkerResponse): void {
   created[workerIndex].onmessage?.({ data: response })
+}
+
+function reqIdOfLastPost(workerIndex: number): number {
+  const posted = created[workerIndex].posted
+  return (posted[posted.length - 1] as WorkerRequest).reqId
 }
 
 beforeEach(() => {
@@ -57,13 +63,13 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
     client.subscribeToDpsWorker("ranking", () => {})
 
-    client.postToDpsWorker(rankingRequest(1))
-    client.postToDpsWorker(rankingRequest(2))
-    client.postToDpsWorker(rankingRequest(3))
+    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(rankingRequest())
     await vi.runAllTimersAsync()
 
     expect(created).toHaveLength(1)
-    expect(created[0].posted).toEqual([rankingRequest(3)])
+    expect(created[0].posted).toEqual([{ ...rankingRequest(), reqId: 3 }])
   })
 
   it("reports pending from the first post until the matching response", async () => {
@@ -71,13 +77,13 @@ describe("dpsWorkerClient", () => {
     client.subscribeToDpsWorker("ranking", () => {})
 
     expect(client.isDpsWorkerPending("ranking")).toBe(false)
-    client.postToDpsWorker(rankingRequest(1))
+    client.postToDpsWorker(rankingRequest())
     expect(client.isDpsWorkerPending("ranking")).toBe(true)
 
     await vi.runAllTimersAsync()
     expect(client.isDpsWorkerPending("ranking")).toBe(true)
 
-    respond(0, rankingResponse(1))
+    respond(0, rankingResponse(reqIdOfLastPost(0)))
     expect(client.isDpsWorkerPending("ranking")).toBe(false)
   })
 
@@ -85,15 +91,16 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
     client.subscribeToDpsWorker("ranking", () => {})
 
-    client.postToDpsWorker(rankingRequest(1))
+    client.postToDpsWorker(rankingRequest())
     await vi.runAllTimersAsync()
-    client.postToDpsWorker(rankingRequest(2))
+    const supersededReqId = reqIdOfLastPost(0)
+    client.postToDpsWorker(rankingRequest())
     await vi.runAllTimersAsync()
 
-    respond(0, rankingResponse(1))
+    respond(0, rankingResponse(supersededReqId))
     expect(client.isDpsWorkerPending("ranking")).toBe(true)
 
-    respond(0, rankingResponse(2))
+    respond(0, rankingResponse(reqIdOfLastPost(0)))
     expect(client.isDpsWorkerPending("ranking")).toBe(false)
   })
 
@@ -104,11 +111,12 @@ describe("dpsWorkerClient", () => {
     client.subscribeToDpsWorker("ranking", ({ reqId }) => rankingSeen.push(reqId))
     client.subscribeToDpsWorker("setTiles", ({ reqId }) => setTilesSeen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest(1))
+    client.postToDpsWorker(rankingRequest())
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(1))
+    const reqId = reqIdOfLastPost(0)
+    respond(0, rankingResponse(reqId))
 
-    expect(rankingSeen).toEqual([1])
+    expect(rankingSeen).toEqual([reqId])
     expect(setTilesSeen).toEqual([])
   })
 
@@ -117,12 +125,49 @@ describe("dpsWorkerClient", () => {
     const seen: number[] = []
     client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
 
-    client.postToDpsWorker(rankingRequest(2))
+    client.postToDpsWorker(rankingRequest())
     await vi.runAllTimersAsync()
-    respond(0, rankingResponse(2))
-    respond(0, rankingResponse(1))
+    const newest = reqIdOfLastPost(0)
+    respond(0, rankingResponse(newest))
+    respond(0, rankingResponse(newest - 1))
 
-    expect(seen).toEqual([2])
+    expect(seen).toEqual([newest])
+  })
+
+  it("numbers requests itself so a remounted listener still gets its results", async () => {
+    const client = await freshClient()
+
+    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    for (const _change of [0, 1, 2]) {
+      client.postToDpsWorker(rankingRequest())
+      await vi.runAllTimersAsync()
+      respond(0, rankingResponse(reqIdOfLastPost(0)))
+    }
+    firstVisit()
+
+    const seen: number[] = []
+    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+    respond(0, rankingResponse(reqIdOfLastPost(0)))
+
+    expect(seen).toEqual([reqIdOfLastPost(0)])
+  })
+
+  it("withholds a response the previous listener abandoned from the next one", async () => {
+    const client = await freshClient()
+
+    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+    const abandonedReqId = reqIdOfLastPost(0)
+    firstVisit()
+
+    const seen: number[] = []
+    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+    respond(0, rankingResponse(abandonedReqId))
+
+    expect(seen).toEqual([])
   })
 
   it("reuses one worker across resubscribe cycles", async () => {
@@ -130,7 +175,7 @@ describe("dpsWorkerClient", () => {
 
     for (const _visit of [0, 1, 2]) {
       const unsubscribe = client.subscribeToDpsWorker("ranking", () => {})
-      client.postToDpsWorker(rankingRequest(1))
+      client.postToDpsWorker(rankingRequest())
       await vi.runAllTimersAsync()
       unsubscribe()
     }
@@ -142,7 +187,7 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
     const unsubscribe = client.subscribeToDpsWorker("ranking", () => {})
 
-    client.postToDpsWorker(rankingRequest(1))
+    client.postToDpsWorker(rankingRequest())
     unsubscribe()
     await vi.runAllTimersAsync()
 
@@ -163,7 +208,7 @@ describe("dpsWorkerClient", () => {
     ]
     for (const kind of kinds) {
       client.subscribeToDpsWorker(kind, () => {})
-      client.postToDpsWorker({ ...rankingRequest(1), kind } as WorkerRequest)
+      client.postToDpsWorker({ ...rankingRequest(), kind } as UnsentRequest)
       await vi.runAllTimersAsync()
     }
 

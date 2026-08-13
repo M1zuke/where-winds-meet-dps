@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { Inputs } from "../../engine/types"
 import type { SetTilesWorkerResponse } from "../../engine/dpsWorker"
 import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
@@ -15,7 +15,6 @@ export interface SetTileDpsResult {
 }
 
 export function useSetTileDps(inputs: Inputs): SetTileDpsResult {
-  const reqIdRef = useRef(0)
   const [data, setData] = useState<SetTileDps | null>(null)
   const isPending = useDpsWorkerPending("setTiles")
 
@@ -28,7 +27,7 @@ export function useSetTileDps(inputs: Inputs): SetTileDpsResult {
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "setTiles", reqId: ++reqIdRef.current, inputs })
+    postToDpsWorker({ kind: "setTiles", inputs })
   }, [inputs])
 
   return { data, isPending }

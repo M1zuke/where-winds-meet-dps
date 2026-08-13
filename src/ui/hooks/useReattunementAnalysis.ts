@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import type { Inputs } from "../../engine/types"
 import type { ReattunementOption } from "../../engine/dpsWorker"
 import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
@@ -35,7 +35,6 @@ export function useReattunementAnalysis(
   inputs: Inputs,
   selectedPieceId: string | null,
 ): ReattunementAnalysisResult {
-  const reqIdRef = useRef(0)
   const [received, setReceived] = useState<ReceivedReattunement | null>(null)
   const isPending = useDpsWorkerPending("reattunement")
 
@@ -49,12 +48,7 @@ export function useReattunementAnalysis(
 
   useEffect(() => {
     if (!selectedPieceId) return
-    postToDpsWorker({
-      kind: "reattunement",
-      reqId: ++reqIdRef.current,
-      inputs,
-      pieceId: selectedPieceId,
-    })
+    postToDpsWorker({ kind: "reattunement", inputs, pieceId: selectedPieceId })
   }, [inputs, selectedPieceId])
 
   if (!selectedPieceId) return NO_SELECTION_RESULT
