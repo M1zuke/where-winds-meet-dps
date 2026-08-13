@@ -30,6 +30,19 @@ stated in `docs/UI.md`.
    player-facing sentence. Be thorough — a release that shipped a lot should read
    as though it did, so do not compress ten visible changes into three lines.
 
+   Each item is the **end state against the previous release**, not the path the
+   commits took to reach it. The reader upgraded from one published version to
+   this one, so everything in between is invisible to them. A commit that fixed,
+   refined or reverted something introduced earlier in the same range is not its
+   own item — it folds into the item for the thing itself, or it disappears; a
+   feature and the fix that corrected it before release are one line, describing
+   what actually ships. A `Changed` item needs a prior published state to have
+   changed from: if the thing it changes is new in this release, it belongs in
+   that `Added` line or nowhere. Read the drafted sections against each other
+   before writing and strike any two lines a player would experience as one
+   change — thoroughness means covering every visible change once, not counting
+   one twice because two commits touched it.
+
    The author column is not optional context: every item names at least one
    GitHub login, so map each sentence back to the commit it came from rather than
    crediting a whole release to one person. When several commits by different
