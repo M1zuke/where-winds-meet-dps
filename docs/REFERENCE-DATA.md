@@ -17,6 +17,7 @@ English labels — never read these at runtime, and never in a test.
 | `reference/formula/`  | the external damage-formula reference                                       | the calculation rules (CALCULATION.md)         |
 | `reference/workbook/` | curated coefficient tables and a full cell dump from the community workbook | provenance for a coefficient baked into `src/` |
 | `reference/classes/`  | the unimplemented classes' imported data                                    | building one of them out (CLASSES.md)          |
+| `reference/baseStats/` | the full per-level base attribute dump                                     | adding a base attribute the app does not read yet |
 | `excels/`             | the workbook itself                                                         | re-deriving an extraction                      |
 
 - **Naming a domain term**: look the Chinese up in the pair list and copy the
