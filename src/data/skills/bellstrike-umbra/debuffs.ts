@@ -172,4 +172,31 @@ export const bitterSeasonTick = defineDebuff({
   updatedAt: "2026-08-06T00:00:00.000Z",
 })
 
-export const DEBUFFS: readonly Debuff[] = [toadPoison, combustion, darkFire, fluteRipple, bleedTick, bitterSeasonTick]
+// 5 %: the spear special's in-game hint, "Reduces Physical Defense by 5 %
+// (25 % for players)" — the non-player figure, game client locale as of
+// 2026-08-13. 10 s: the workbook states no duration, so it is read off its own
+// defense-reduction buff slot (umbraWorkbook.wb1.5-lvl110, rotation sheet),
+// flagged across five full runs of ten consecutive one-second bleed ticks.
+export const defenseDown = defineDebuff({
+  id: DEBUFF.defenseDown,
+  classId: CLASS_ID,
+  name: "Defense Down",
+  activation: "triggered",
+  durationFrames: 600,
+  effects: [{ statKey: "target.defensePct", amount: -0.05 }],
+  dot: null,
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-08-13T00:00:00.000Z",
+  updatedAt: "2026-08-13T00:00:00.000Z",
+})
+
+export const DEBUFFS: readonly Debuff[] = [
+  toadPoison,
+  combustion,
+  darkFire,
+  fluteRipple,
+  bleedTick,
+  bitterSeasonTick,
+  defenseDown,
+]

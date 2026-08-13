@@ -34,6 +34,7 @@ export const DEBUFF = {
   fluteRipple: "debuff-bellstrikeUmbra-flute-ripple",
   bleedTick: "debuff-bellstrikeUmbra-bleed-tick",
   bitterSeasonTick: "debuff-bellstrikeUmbra-bitter-season-tick",
+  defenseDown: "debuff-bellstrikeUmbra-defense-down",
 } as const
 
 // The two gate buffs `classes/bellstrike-umbra/gates.ts` registers — consumed by the
