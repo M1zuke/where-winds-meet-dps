@@ -66,3 +66,10 @@ Follow the nearest existing worker hook rather than inventing a new shape.
 - A buff the user can edit must be visible in the Skill Editor (BUFFS.md).
 - Worker compute functions get direct-call parity tests (TESTING.md § "Worker
   tests").
+- Changelog data lives in `src/changelog/` — the format in `types.ts`, the
+  ordered version list in `registry.ts`, one module per release under
+  `entries/`.
+- The version shown in the header comes from `package.json`; nothing else
+  declares it.
+- A version bump ships an entry naming that version at the top of the
+  registry, whose body module is loaded only when that version is selected.

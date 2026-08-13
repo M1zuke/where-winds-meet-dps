@@ -62,13 +62,17 @@ Every section should read like a checklist: imperative, checkable, no story.
 system it plugs into. Read the how-to **first** — it is the ordered file list,
 the wiring, the tests to update and the migration question, in one place.
 
-| adding                     | read                          |
-| -------------------------- | ----------------------------- |
-| a class or spec            | `How to Add a Class`          |
-| a skill                    | `How to Add a Skill`          |
-| a rotation                 | `How to Add a Rotation`       |
-| a buff, debuff or DoT      | `How to Add a Buff or Debuff` |
-| an inner way (mind method) | `How to Add an Inner Way`     |
+| adding                       | read                          |
+| ---------------------------- | ----------------------------- |
+| a class or spec              | `How to Add a Class`          |
+| a skill                      | `How to Add a Skill`          |
+| a rotation                   | `How to Add a Rotation`       |
+| a buff, debuff or DoT        | `How to Add a Buff or Debuff` |
+| an inner way (mind method)   | `How to Add an Inner Way`     |
+| a changelog entry, releasing | `src/changelog/README.md`     |
+
+The changelog how-to is the one that lives in the repo rather than the wiki: it
+is read while editing the folder it documents.
 
 The wiki is the [project wiki](https://github.com/M1zuke/where-winds-meet-dps/wiki),
 cloned beside this repo at `../where-winds-meet-dps.wiki` — read the `.md` files
