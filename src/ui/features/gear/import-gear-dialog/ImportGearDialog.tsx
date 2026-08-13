@@ -2,6 +2,7 @@ import { useId, useMemo, useRef, useState } from "react"
 import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { getAttunement } from "../../../../engine/attunements"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
@@ -276,9 +277,18 @@ export function ImportGearDialog({ inputs, onCancel, onImport }: Props) {
               </div>
             )}
 
-            {summary.unmappedAffixCount > 0 && (
+            {summary.notInThisBuildCount > 0 && (
               <div className="warnings">
-                ⚠ {summary.unmappedAffixCount}{" "}
+                ⚠ {summary.notInThisBuildCount}{" "}
+                {t(
+                  "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — Bleed Boost is Bellstrike Umbra's and Phalanx Charge Boost is Stonesplit Strength's — and a weapon's Martial Boost only exists for the classes that wield it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
+                )}
+              </div>
+            )}
+
+            {summary.unmappedAffixCount - summary.notInThisBuildCount > 0 && (
+              <div className="warnings">
+                ⚠ {summary.unmappedAffixCount - summary.notInThisBuildCount}{" "}
                 {t(
                   "stat lines have no mapping yet. Pick the stat each one is — a ✓ marks the ones whose max roll fits, and every choice is remembered for next time.",
                 )}{" "}
@@ -500,6 +510,13 @@ function PiecePreview({
   )
 }
 
+function statLineName(mappedTo: string, t: (key: string) => string): string {
+  const separator = mappedTo.indexOf(":")
+  const name = mappedTo.slice(separator + 1)
+  if (mappedTo.slice(0, separator) !== "attunement") return t(name)
+  return t(getAttunement(name)?.label ?? name)
+}
+
 function innerWayNote(innerWay: ImportedInnerWay): string {
   switch (innerWay.resolution.kind) {
     case "resolved":
@@ -567,17 +584,27 @@ function AffixRow({
   const options = targetOptions(resolution.suggestions, resolution.choosableTargets, t)
 
   if (resolution.kind !== "resolved") {
+    const known = resolution.mappedTo ? statLineName(resolution.mappedTo, t) : null
     return (
       <div className={`${previewStyles.affix} ${previewStyles.unresolved}`}>
         <Combobox
           className={previewStyles.affixPicker}
           value=""
           options={options}
-          placeholder={`#${affix.affixId}${affix.derivedMax !== null ? ` · ${t("max")} ${fmtUnmapped(affix.derivedMax)}` : ""}`}
+          placeholder={
+            known ??
+            `#${affix.affixId}${affix.derivedMax !== null ? ` · ${t("max")} ${fmtUnmapped(affix.derivedMax)}` : ""}`
+          }
           onChange={(value) => onChooseTarget(affix.affixId, value)}
         />
         <span className={previewStyles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
-        <span className="hint">{isAttunement ? t("attunement — pick one") : t("pick one")}</span>
+        <span className="hint">
+          {known
+            ? t("not on this class")
+            : isAttunement
+              ? t("attunement — pick one")
+              : t("pick one")}
+        </span>
       </div>
     )
   }

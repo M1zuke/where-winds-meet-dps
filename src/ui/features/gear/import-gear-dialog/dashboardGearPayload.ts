@@ -320,6 +320,8 @@ export interface GearImportSummary {
   mappedPieceCount: number
   resolvedAffixCount: number
   unmappedAffixCount: number
+  /** Known stat lines this build cannot carry — a subset of `unmappedAffixCount`. */
+  notInThisBuildCount: number
   clampedCount: number
   overflowCount: number
   innerWayCount: number
@@ -336,6 +338,7 @@ export function summarizeImport(result: GearImportResult): GearImportSummary {
     mappedPieceCount: 0,
     resolvedAffixCount: 0,
     unmappedAffixCount: 0,
+    notInThisBuildCount: 0,
     clampedCount: 0,
     overflowCount: 0,
     innerWayCount: result.innerWays.length,
@@ -350,6 +353,7 @@ export function summarizeImport(result: GearImportResult): GearImportSummary {
     for (const affix of affixRows(piece)) {
       if (affix.resolution.kind !== "resolved") {
         summary.unmappedAffixCount += 1
+        if (affix.resolution.mappedTo) summary.notInThisBuildCount += 1
         continue
       }
       summary.resolvedAffixCount += 1
