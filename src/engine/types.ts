@@ -328,6 +328,7 @@ export interface RotationCast {
 
 export interface SkillTickResult {
   name: string
+  breakdownName: string
   type: "weapon" | "mindMethod" | "mystic" | "sustain" | "settlement" | "weaponMystic" | string
   count: number
   expectedDamage: number

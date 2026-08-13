@@ -726,6 +726,19 @@ export function SkillsTab({
                     onChange={(e) => patchDraft({ name: e.target.value })}
                   />
                 </Field>
+                <Field label={t("Breakdown Name")}>
+                  <input
+                    type="text"
+                    value={draft.breakdownName ?? ""}
+                    placeholder={draft.name}
+                    onChange={(e) => patchDraft({ breakdownName: e.target.value })}
+                  />
+                </Field>
+                <div className={styles.skillsHint}>
+                  {t(
+                    "The in-game skill name this reports under in the DPS breakdown. Every skill sharing one breakdown name is summed into a single row. Leave empty to use the skill name.",
+                  )}
+                </div>
                 <Field label={t("Type")}>
                   <Combobox
                     className={styles.fieldCombobox}

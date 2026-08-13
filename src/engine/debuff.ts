@@ -39,6 +39,7 @@ export interface Debuff {
   id: string
   classId: string
   name: string
+  breakdownName?: string
   // Namespaced tags, same vocabulary as `Skill.tags`. A DoT tick is a damage
   // event like any other, so a modifier must be able to address it structurally
   // rather than through the debuff's display name.
@@ -85,6 +86,7 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
   return makeDebuff(classId, {
     id: src.id,
     name: src.name,
+    breakdownName: src.breakdownName,
     tags: src.tags ? [...src.tags] : undefined,
     activation: src.activation,
     durationFrames: src.durationFrames,

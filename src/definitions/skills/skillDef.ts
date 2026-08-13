@@ -2,24 +2,28 @@ import type { HitVariant, Skill, SkillHit } from "../../engine/skill"
 import type { Debuff } from "../../engine/debuff"
 import type { Buff } from "../../engine/buff"
 
+// An undeclared key is otherwise accepted and then read by nothing, leaving the
+// author believing an unimplemented field took effect.
+type NoExcessKeys<T, Shape> = { [K in Exclude<keyof T, keyof Shape>]: never }
+
 // Crosses two boundaries a skill must stay a plain value for — `localStorage`
 // (`Inputs.customSkills`) and `postMessage` (`Inputs` → `dpsWorker.ts`) — so,
 // unlike `defineBuff`, this takes no callbacks. It does no runtime work; it
 // exists so TypeScript checks each literal at its definition site, and the
 // `const` type parameter keeps literal id/tag types narrow.
-export function defineSkill<const T extends Skill>(skill: T): T {
+export function defineSkill<const T extends Skill>(skill: T & NoExcessKeys<T, Skill>): T {
   return skill
 }
 
 // Same reasoning as `defineSkill`: a `Debuff` crosses `Inputs.customDebuffs`
 // and `postMessage`, so it stays a plain value with no callbacks.
-export function defineDebuff<const T extends Debuff>(debuff: T): T {
+export function defineDebuff<const T extends Debuff>(debuff: T & NoExcessKeys<T, Debuff>): T {
   return debuff
 }
 
 // A class-owned `Buff` the timeline reads as a gate, listed on `ClassDef.gateBuffs`.
 // Same plain-value constraint again — `Inputs.customBuffs` crosses both boundaries.
-export function defineGateBuff<const T extends Buff>(buff: T): T {
+export function defineGateBuff<const T extends Buff>(buff: T & NoExcessKeys<T, Buff>): T {
   return buff
 }
 

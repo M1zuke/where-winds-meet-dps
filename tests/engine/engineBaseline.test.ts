@@ -226,6 +226,7 @@ function summarize(result: Result) {
     warnings: result.warnings,
     perSkill: result.perSkill.map((row) => ({
       name: row.name,
+      breakdownName: row.breakdownName,
       type: row.type,
       count: row.count,
       expectedDamage: round(row.expectedDamage, 6),

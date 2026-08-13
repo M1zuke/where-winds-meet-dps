@@ -45,6 +45,15 @@ empowered form is authored** — never with a per-skill branch in the timeline.
   giving every member the family tag _as well as_ its own — never by one name
   being a stem of another. A skill may then belong to several families, which a
   prefix cannot express.
+- **The breakdown row a cast reports into is authored, not derived.** A skill's
+  `breakdownName` is the in-game name its casts are summed under, so the
+  engine-level variants of one in-game skill read as a single row; absent or
+  blank falls back to the skill's own `name`. It is display text only — nothing
+  matches on it, and it changes neither damage nor a cast's own timeline row.
+- **A DoT row is named by its debuff, and only by its debuff** — never by the
+  skill supplying the tick's coefficients. Absent or blank it falls back to the
+  debuff's own `name`. **No marker is appended either way**, so a DoT and the
+  cast that applies it report as one row whenever they carry the same name.
 - ⚠️ **Two fields are named for triggering, in opposite directions.** A hit's
   `triggers` is **outgoing** — what this hit sets off — and is persisted user
   data. A buff-def's `triggeredBy` is **incoming** — the casts that set it off.
