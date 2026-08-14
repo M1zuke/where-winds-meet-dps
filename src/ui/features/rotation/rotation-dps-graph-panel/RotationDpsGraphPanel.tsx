@@ -1,13 +1,14 @@
-import { useMemo } from "react"
+import { useMemo, useRef, useState } from "react"
 import type { Result } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { runningDpsSeries } from "./dpsSeries"
+import { smoothPath } from "./smoothPath"
 import styles from "./RotationDpsGraphPanel.module.scss"
 
 const GRID_FRACTIONS = [1, 0.75, 0.5, 0.25, 0]
 const AXIS_TICK_FRACTIONS = [0, 0.25, 0.5, 0.75, 1]
-
 const NICE_STEPS = [1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]
+const TOOLTIP_FLIP_AT = 60
 
 function niceCeiling(value: number): number {
   if (!(value > 0)) return 1
@@ -27,6 +28,8 @@ const fullNumber = (value: number) => Math.round(value).toLocaleString("en-US")
 export function RotationDpsGraphPanel({ result }: { result: Result }) {
   const { t } = useI18n()
   const samples = useMemo(() => runningDpsSeries(result), [result])
+  const plotRef = useRef<HTMLDivElement>(null)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   if (samples.length < 2) {
     return <div className="empty-tab">{t("(none)")}</div>
@@ -39,13 +42,25 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
   const xOf = (timeSec: number) => (timeSec / duration) * 100
   const yOf = (dps: number) => 100 - (dps / axisTop) * 100
 
-  const linePoints = samples
-    .map((sample) => `${xOf(sample.timeSec).toFixed(3)},${yOf(sample.dps).toFixed(3)}`)
-    .join(" ")
-  const areaPoints = `${xOf(samples[0].timeSec).toFixed(3)},100 ${linePoints} ${xOf(
-    samples[samples.length - 1].timeSec,
-  ).toFixed(3)},100`
-  const averageY = yOf(result.dps).toFixed(3)
+  const points = samples.map((sample) => ({ x: xOf(sample.timeSec), y: yOf(sample.dps) }))
+  const linePath = smoothPath(points)
+  const areaPath = `${linePath} L ${points[points.length - 1].x} 100 L ${points[0].x} 100 Z`
+  const averageY = yOf(result.dps)
+
+  const hovered = hoveredIndex === null ? null : samples[hoveredIndex]
+
+  function trackPointer(clientX: number) {
+    const rect = plotRef.current?.getBoundingClientRect()
+    if (!rect || rect.width === 0) return
+    const timeSec = ((clientX - rect.left) / rect.width) * duration
+    let nearest = 0
+    for (let index = 1; index < samples.length; index++) {
+      const closer =
+        Math.abs(samples[index].timeSec - timeSec) < Math.abs(samples[nearest].timeSec - timeSec)
+      if (closer) nearest = index
+    }
+    setHoveredIndex(nearest)
+  }
 
   return (
     <div className={styles.graphPanel}>
@@ -61,7 +76,12 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
             </span>
           ))}
         </div>
-        <div className={styles.plot}>
+        <div
+          ref={plotRef}
+          className={styles.plot}
+          onMouseMove={(event) => trackPointer(event.clientX)}
+          onMouseLeave={() => setHoveredIndex(null)}
+        >
           <svg
             className={styles.chart}
             viewBox="0 0 100 100"
@@ -79,10 +99,31 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
                 y2={(1 - fraction) * 100}
               />
             ))}
-            <polygon className={styles.area} points={areaPoints} />
-            <polyline className={styles.line} points={linePoints} />
+            <path className={styles.area} d={areaPath} />
+            <path className={styles.line} d={linePath} />
             <line className={styles.averageLine} x1="0" x2="100" y1={averageY} y2={averageY} />
           </svg>
+          {hovered && (
+            <>
+              <div className={styles.hoverGuide} style={{ left: xOf(hovered.timeSec) + "%" }} />
+              <div
+                className={styles.hoverMarker}
+                style={{ left: xOf(hovered.timeSec) + "%", top: yOf(hovered.dps) + "%" }}
+              />
+              <div
+                className={
+                  styles.hoverTooltip +
+                  (xOf(hovered.timeSec) > TOOLTIP_FLIP_AT ? ` ${styles.flipped}` : "")
+                }
+                style={{ left: xOf(hovered.timeSec) + "%", top: yOf(hovered.dps) + "%" }}
+              >
+                <div className={styles.hoverTime}>{hovered.timeSec.toFixed(2)}s</div>
+                <div className={styles.hoverDps}>
+                  {fullNumber(hovered.dps)} {t("DPS")}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div className={styles.xAxis}>
