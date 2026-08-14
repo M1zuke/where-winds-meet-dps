@@ -131,11 +131,11 @@ export function computeSkillDamage(
   count: number,
   counters: RotationCounters = { lowQi: 0 },
 ): SkillResult {
-  const num = (v: number | undefined) => v ?? 0
-  const N = num(art.physMultiplier)
-  const O = num(art.attributeMultiplier)
-  const P = num(art.physFixed)
-  const Q = num(art.attributeFixed)
+  const numberOrZero = (value: number | undefined) => value ?? 0
+  const physCoefficient = numberOrZero(art.physMultiplier)
+  const attributeCoefficient = numberOrZero(art.attributeMultiplier)
+  const physFlat = numberOrZero(art.physFixed)
+  const attributeFlat = numberOrZero(art.attributeFixed)
   const skillType = art.skillType ?? ""
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"
@@ -146,28 +146,29 @@ export function computeSkillDamage(
   const usesChargeBoost = art.usesChargeBoost === 1
   const usesGyrationUmbrella = art.specialTag === "Spinning Umbrella"
 
-  const physPenRes = ctx.physPenResistance ?? 0
-  const attrPenRes = ctx.attrPenResistance ?? 0
+  const physPenResistance = ctx.physPenResistance ?? 0
+  const attributePenResistance = ctx.attrPenResistance ?? 0
   // Deliberately INVERTS Midasione PDF §7 (net>0 → ÷200, not ÷100) — see
   // docs/CALCULATION.md § "Calculation rules" rule 2.
-  const penFrac = (pen: number, resPct: number) => {
-    const net = pen - resPct
+  const penetrationFraction = (penetration: number, resistancePercent: number) => {
+    const net = penetration - resistancePercent
     return net <= 0 ? net / 100 : net / 200
   }
   // DoT rows lose flat damage and elevated matching-path scaling (PDF §1); a
   // sustain-tagged burst detonation (elevatedAttributeMultiplier defaults
   // true) is NOT demoted — see docs/CALCULATION.md § "Calculation rules" rule 3.
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
-  const dotRules = !getsElevatedMultiplier
+  const usesDotRules = !getsElevatedMultiplier
 
-  const skillCritDamage = num(art.extraCritDamage)
-  const X = ctx.critDmgBoostPanel + skillCritDamage + setFormulaBonus(ctx.set, "critDamage")
+  const skillCritDamage = numberOrZero(art.extraCritDamage)
+  const critDamageBoost =
+    ctx.critDmgBoostPanel + skillCritDamage + setFormulaBonus(ctx.set, "critDamage")
 
-  const skillAffinityDamage = num(art.extraAffinityDamage)
-  const Y =
+  const skillAffinityDamage = numberOrZero(art.extraAffinityDamage)
+  const affinityDamageBoost =
     ctx.affinityDmgBoostPanel + skillAffinityDamage + setFormulaBonus(ctx.set, "affinityDamage")
 
-  const U = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
+  const precisionRate = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
 
   // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
   // `panel.ts`'s white→yellow conversion, so they are never divided here.
@@ -175,75 +176,110 @@ export function computeSkillDamage(
   // formula still receives, per PDF §11 divided by (1 + resistance) before
   // the 40 % cap. Exception: Thundercry Blade's (Modao) charged-attack crit
   // rate (`art.extraCritRate`) is a flat, unresisted addition after the cap.
-  const rateRes = ctx.rateResistance ?? 0
-  const V = isTianGong
+  const rateResistance = ctx.rateResistance ?? 0
+  const critRate = isTianGong
     ? 0
     : Math.min(ctx.critPanel, 0.8) +
       ctx.directCritPanel +
       setFormulaBonus(ctx.set, "directCrit") +
-      num(art.extraCritRate)
+      numberOrZero(art.extraCritRate)
 
   const isLowQi = counters.lowQi === 1
-  const W = isTianGong
+  const affinityRate = isTianGong
     ? 0
-    : Math.min(ctx.affinityPanel + num(art.extraAffinityRate) / (1 + rateRes), 0.4) +
+    : Math.min(
+        ctx.affinityPanel + numberOrZero(art.extraAffinityRate) / (1 + rateResistance),
+        0.4,
+      ) +
       ctx.directAffinityPanel +
       (isLowQi ? setFormulaBonus(ctx.set, "lowQiDirectAffinityRate") : 0)
 
-  const setFalcon = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
+  const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
-  const AE =
-    (effectivePhys.min + num(art.minPhysFlatBonus)) *
-      (1 + num(art.minPhysPctBonus)) *
-      (1 + setFalcon) -
+  const physMin =
+    (effectivePhys.min + numberOrZero(art.minPhysFlatBonus)) *
+      (1 + numberOrZero(art.minPhysPctBonus)) *
+      (1 + setPhysBoost) -
     ctx.effectiveDefense
 
-  const AG_raw =
-    (effectivePhys.max + num(art.maxPhysFlatBonus)) *
-      (1 + num(art.maxPhysPctBonus)) *
-      (1 + setFalcon) -
+  const physMaxRaw =
+    (effectivePhys.max + numberOrZero(art.maxPhysFlatBonus)) *
+      (1 + numberOrZero(art.maxPhysPctBonus)) *
+      (1 + setPhysBoost) -
     ctx.effectiveDefense
-  const AG = Math.max(AG_raw, AE)
+  const physMax = Math.max(physMaxRaw, physMin)
 
-  const AF = (AE + AG) / 2
+  const physAvg = (physMin + physMax) / 2
 
-  const physPenTotal = ctx.outerPen + num(art.extraPhysPenetration) + (ctx.hasSixHenZhi ? 10 : 0)
-  const AH = penFrac(physPenTotal, physPenRes)
+  const physPenTotal =
+    ctx.outerPen + numberOrZero(art.extraPhysPenetration) + (ctx.hasSixHenZhi ? 10 : 0)
+  const physPenFraction = penetrationFraction(physPenTotal, physPenResistance)
 
-  const AI = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
+  const physDamageBoost = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
 
-  const AJ = 1
+  const physRowScale = 1
 
-  const AK = AE * N * AJ * (1 + AI) * (1 + AH)
-  const AL = (1 - U) * (1 - W)
-  const AM = AF * N * (1 + AI) * (1 + AH) * AJ * (1 + X)
-  let AN = V + W <= 1 ? U * V : U * (1 - W)
-  const AO = AG * N * AJ * (1 + Y) * (1 + AH) * (1 + AI)
-  const AP = W
-  const AQ = AF * N * (1 + AH) * (1 + AI) * AJ
+  const physGrazeRow =
+    physMin * physCoefficient * physRowScale * (1 + physDamageBoost) * (1 + physPenFraction)
+  const grazeChance = (1 - precisionRate) * (1 - affinityRate)
+  const physCritRow =
+    physAvg *
+    physCoefficient *
+    (1 + physDamageBoost) *
+    (1 + physPenFraction) *
+    physRowScale *
+    (1 + critDamageBoost)
+  let critChance =
+    critRate + affinityRate <= 1 ? precisionRate * critRate : precisionRate * (1 - affinityRate)
+  const physAffinityRow =
+    physMax *
+    physCoefficient *
+    physRowScale *
+    (1 + affinityDamageBoost) *
+    (1 + physPenFraction) *
+    (1 + physDamageBoost)
+  const affinityChance = affinityRate
+  const physNormalRow =
+    physAvg * physCoefficient * (1 + physPenFraction) * (1 + physDamageBoost) * physRowScale
   if (!guaranteedCrit && art.conditionalFinalCrit) {
-    if (AN >= art.conditionalFinalCrit.threshold) guaranteedCrit = true
-    else AN = Math.min(AN + art.conditionalFinalCrit.bonusBelowThreshold, Math.max(1 - AL - AP, 0))
+    if (critChance >= art.conditionalFinalCrit.threshold) guaranteedCrit = true
+    else
+      critChance = Math.min(
+        critChance + art.conditionalFinalCrit.bonusBelowThreshold,
+        Math.max(1 - grazeChance - affinityChance, 0),
+      )
   }
-  const AR = Math.max(1 - AL - AN - AP, 0)
+  const normalChance = Math.max(1 - grazeChance - critChance - affinityChance, 0)
 
-  const P_eff = dotRules ? 0 : P
-  const AS = P_eff
-  const AU = P_eff
-  const AT = (AS + AU) / 2
-  const AV = AH
-  const AW = AI
-  const AX = 1
-  const BA = AT * (1 + AW) * (1 + X) * AX * (1 + AV)
-  const AY = AS * AX * (1 + AW) * (1 + AV)
-  const BC = AU * AX * (1 + Y) * (1 + AV) * (1 + AW)
-  const BE = AT * (1 + AV) * (1 + AW) * AX
+  const physFlatEffective = usesDotRules ? 0 : physFlat
+  const physFlatMin = physFlatEffective
+  const physFlatMax = physFlatEffective
+  const physFlatAvg = (physFlatMin + physFlatMax) / 2
+  const physFlatPenFraction = physPenFraction
+  const physFlatDamageBoost = physDamageBoost
+  const physFlatRowScale = 1
+  const physFlatCritRow =
+    physFlatAvg *
+    (1 + physFlatDamageBoost) *
+    (1 + critDamageBoost) *
+    physFlatRowScale *
+    (1 + physFlatPenFraction)
+  const physFlatGrazeRow =
+    physFlatMin * physFlatRowScale * (1 + physFlatDamageBoost) * (1 + physFlatPenFraction)
+  const physFlatAffinityRow =
+    physFlatMax *
+    physFlatRowScale *
+    (1 + affinityDamageBoost) *
+    (1 + physFlatPenFraction) *
+    (1 + physFlatDamageBoost)
+  const physFlatNormalRow =
+    physFlatAvg * (1 + physFlatPenFraction) * (1 + physFlatDamageBoost) * physFlatRowScale
 
-  const Q_eff = dotRules ? 0 : Q
-  const BG = Q_eff
-  const BI = Q_eff
-  const BH = (BG + BI) / 2
-  const attrPen =
+  const attributeFlatEffective = usesDotRules ? 0 : attributeFlat
+  const attributeFlatMin = attributeFlatEffective
+  const attributeFlatMax = attributeFlatEffective
+  const attributeFlatAvg = (attributeFlatMin + attributeFlatMax) / 2
+  const primaryAttributePenetration =
     ctx.primaryAttribute === "Bellstrike"
       ? ctx.bellstrike.pen
       : ctx.primaryAttribute === "Stonesplit"
@@ -251,149 +287,285 @@ export function computeSkillDamage(
         : ctx.primaryAttribute === "Silkbind"
           ? ctx.silkbind.pen
           : ctx.bamboocut.pen
-  const BJ = attrPen
-  const BK = ctx.attributeDmgBoostPanel
-  const BL = 1
-  const BJpen = penFrac(BJ, attrPenRes)
-  const BM = BG * (1 + BJpen) * (1 + BK) * BL
-  const BO = BH * (1 + X) * (1 + BJpen) * (1 + BK) * BL
-  const BQ = BI * (1 + BJpen) * (1 + BK) * (1 + Y) * BL
-  const BS = BH * (1 + BJpen) * (1 + BK) * BL
+  const attributeFlatPenetration = primaryAttributePenetration
+  const attributeDamageBoost = ctx.attributeDmgBoostPanel
+  const attributeFlatRowScale = 1
+  const attributeFlatPenFraction = penetrationFraction(
+    attributeFlatPenetration,
+    attributePenResistance,
+  )
+  const attributeFlatGrazeRow =
+    attributeFlatMin *
+    (1 + attributeFlatPenFraction) *
+    (1 + attributeDamageBoost) *
+    attributeFlatRowScale
+  const attributeFlatCritRow =
+    attributeFlatAvg *
+    (1 + critDamageBoost) *
+    (1 + attributeFlatPenFraction) *
+    (1 + attributeDamageBoost) *
+    attributeFlatRowScale
+  const attributeFlatAffinityRow =
+    attributeFlatMax *
+    (1 + attributeFlatPenFraction) *
+    (1 + attributeDamageBoost) *
+    (1 + affinityDamageBoost) *
+    attributeFlatRowScale
+  const attributeFlatNormalRow =
+    attributeFlatAvg *
+    (1 + attributeFlatPenFraction) *
+    (1 + attributeDamageBoost) *
+    attributeFlatRowScale
 
-  const BU: Attribute | "" = isWeapon
+  const scalingAttribute: Attribute | "" = isWeapon
     ? ((art.attributeAttack as Attribute | undefined) ?? "")
     : ctx.primaryAttribute
 
-  function attrBlock(attribute: Attribute, block: AttackBlock, pen: number, extraSkillPen: number) {
-    const matches = BU === attribute && isWeapon
-    const small = block.min + (matches ? ctx.attributePrimaryBonus : 0)
-    const large = Math.max(block.max + (matches ? ctx.attributePrimaryBonus : 0), small)
-    const avg = (small + large) / 2
-    const penBoost = pen + extraSkillPen
+  function attributeRows(
+    attribute: Attribute,
+    block: AttackBlock,
+    penetration: number,
+    extraSkillPenetration: number,
+  ) {
+    const isScalingAttribute = scalingAttribute === attribute && isWeapon
+    const minAttack = block.min + (isScalingAttribute ? ctx.attributePrimaryBonus : 0)
+    const maxAttack = Math.max(
+      block.max + (isScalingAttribute ? ctx.attributePrimaryBonus : 0),
+      minAttack,
+    )
+    const avgAttack = (minAttack + maxAttack) / 2
+    const penetrationTotal = penetration + extraSkillPenetration
     // The Swallowcall low-qi bonus is read twice — see `data/sets/swallowcall.ts`.
-    const dmgBoost =
-      (BU === attribute ? ctx.attributeDmgBoostPanel : 0) +
+    const damageBoost =
+      (scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0) +
       (isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0)
-    const mult = BU === attribute && !dotRules ? O : N
+    const coefficient =
+      scalingAttribute === attribute && !usesDotRules ? attributeCoefficient : physCoefficient
     const setLowQiBonus = isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0
-    const setMul = 1 + setLowQiBonus
-    const penMul = 1 + penFrac(penBoost, attrPenRes)
-    const graze = small * mult * penMul * (1 + dmgBoost) * setMul
-    const crit = avg * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const aff = large * mult * penMul * (1 + dmgBoost) * (1 + Y) * setMul
-    const norm = avg * mult * (1 + dmgBoost) * penMul * setMul
-    const critMin = small * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const critMax = large * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const normMax = large * mult * (1 + dmgBoost) * penMul * setMul
-    return { graze, crit, aff, norm, critMin, critMax, normMax }
+    const setMultiplier = 1 + setLowQiBonus
+    const penetrationMultiplier = 1 + penetrationFraction(penetrationTotal, attributePenResistance)
+    const grazeRow =
+      minAttack * coefficient * penetrationMultiplier * (1 + damageBoost) * setMultiplier
+    const critRow =
+      avgAttack *
+      coefficient *
+      penetrationMultiplier *
+      (1 + damageBoost) *
+      (1 + critDamageBoost) *
+      setMultiplier
+    const affinityRow =
+      maxAttack *
+      coefficient *
+      penetrationMultiplier *
+      (1 + damageBoost) *
+      (1 + affinityDamageBoost) *
+      setMultiplier
+    const normalRow =
+      avgAttack * coefficient * (1 + damageBoost) * penetrationMultiplier * setMultiplier
+    const critRowMin =
+      minAttack *
+      coefficient *
+      penetrationMultiplier *
+      (1 + damageBoost) *
+      (1 + critDamageBoost) *
+      setMultiplier
+    const critRowMax =
+      maxAttack *
+      coefficient *
+      penetrationMultiplier *
+      (1 + damageBoost) *
+      (1 + critDamageBoost) *
+      setMultiplier
+    const normalRowMax =
+      maxAttack * coefficient * (1 + damageBoost) * penetrationMultiplier * setMultiplier
+    return { grazeRow, critRow, affinityRow, normalRow, critRowMin, critRowMax, normalRowMax }
   }
 
-  const bell = attrBlock("Bellstrike", ctx.bellstrike, ctx.bellstrike.pen, 0)
-  const stone = attrBlock(
+  const bellstrike = attributeRows("Bellstrike", ctx.bellstrike, ctx.bellstrike.pen, 0)
+  const stonesplit = attributeRows(
     "Stonesplit",
     ctx.stonesplit,
     ctx.stonesplit.pen,
-    num(art.extraStonesplitPenetration),
+    numberOrZero(art.extraStonesplitPenetration),
   )
-  const silk = attrBlock("Silkbind", ctx.silkbind, ctx.silkbind.pen, 0)
-  const bamboo = attrBlock("Bamboocut", ctx.bamboocut, ctx.bamboocut.pen, 0)
+  const silkbind = attributeRows("Silkbind", ctx.silkbind, ctx.silkbind.pen, 0)
+  const bamboocut = attributeRows("Bamboocut", ctx.bamboocut, ctx.bamboocut.pen, 0)
 
-  const DZ = AK + AY + BM + bell.graze + stone.graze + silk.graze + bamboo.graze
-  const EB = AM + BA + BO + bell.crit + stone.crit + silk.crit + bamboo.crit
-  const ED = AO + BC + BQ + bell.aff + stone.aff + silk.aff + bamboo.aff
-  const EF = AQ + BE + BS + bell.norm + stone.norm + silk.norm + bamboo.norm
-  const EH = DZ * AL + EB * AN + ED * AP + EF * AR
+  const grazeTotal =
+    physGrazeRow +
+    physFlatGrazeRow +
+    attributeFlatGrazeRow +
+    bellstrike.grazeRow +
+    stonesplit.grazeRow +
+    silkbind.grazeRow +
+    bamboocut.grazeRow
+  const critTotal =
+    physCritRow +
+    physFlatCritRow +
+    attributeFlatCritRow +
+    bellstrike.critRow +
+    stonesplit.critRow +
+    silkbind.critRow +
+    bamboocut.critRow
+  const affinityTotal =
+    physAffinityRow +
+    physFlatAffinityRow +
+    attributeFlatAffinityRow +
+    bellstrike.affinityRow +
+    stonesplit.affinityRow +
+    silkbind.affinityRow +
+    bamboocut.affinityRow
+  const normalTotal =
+    physNormalRow +
+    physFlatNormalRow +
+    attributeFlatNormalRow +
+    bellstrike.normalRow +
+    stonesplit.normalRow +
+    silkbind.normalRow +
+    bamboocut.normalRow
+  const expectedTotal =
+    grazeTotal * grazeChance +
+    critTotal * critChance +
+    affinityTotal * affinityChance +
+    normalTotal * normalChance
 
-  const AM_min = AE * N * (1 + AI) * (1 + AH) * AJ * (1 + X)
-  const AM_max = AG * N * (1 + AI) * (1 + AH) * AJ * (1 + X)
-  const AQ_max = AG * N * (1 + AH) * (1 + AI) * AJ
-  const normalMin = DZ
-  const normalMax = AQ_max + BE + BS + bell.normMax + stone.normMax + silk.normMax + bamboo.normMax
-  const critMin = AM_min + BA + BO + bell.critMin + stone.critMin + silk.critMin + bamboo.critMin
-  const critMax = AM_max + BA + BO + bell.critMax + stone.critMax + silk.critMax + bamboo.critMax
+  const physCritRowMin =
+    physMin *
+    physCoefficient *
+    (1 + physDamageBoost) *
+    (1 + physPenFraction) *
+    physRowScale *
+    (1 + critDamageBoost)
+  const physCritRowMax =
+    physMax *
+    physCoefficient *
+    (1 + physDamageBoost) *
+    (1 + physPenFraction) *
+    physRowScale *
+    (1 + critDamageBoost)
+  const physNormalRowMax =
+    physMax * physCoefficient * (1 + physPenFraction) * (1 + physDamageBoost) * physRowScale
+  const normalMin = grazeTotal
+  const normalMax =
+    physNormalRowMax +
+    physFlatNormalRow +
+    attributeFlatNormalRow +
+    bellstrike.normalRowMax +
+    stonesplit.normalRowMax +
+    silkbind.normalRowMax +
+    bamboocut.normalRowMax
+  const critMin =
+    physCritRowMin +
+    physFlatCritRow +
+    attributeFlatCritRow +
+    bellstrike.critRowMin +
+    stonesplit.critRowMin +
+    silkbind.critRowMin +
+    bamboocut.critRowMin
+  const critMax =
+    physCritRowMax +
+    physFlatCritRow +
+    attributeFlatCritRow +
+    bellstrike.critRowMax +
+    stonesplit.critRowMax +
+    silkbind.critRowMax +
+    bamboocut.critRowMax
 
-  const sCol = art.weaponOrAttribute ?? ""
+  const weaponOrAttributeKey = art.weaponOrAttribute ?? ""
   const weaponBoostMap = ctx.weaponBoosts ?? {}
-  const weaponVal = weaponBoostMap[sCol]
+  const weaponBoost = weaponBoostMap[weaponOrAttributeKey]
   const mysticCategory = art.mysticCategory
-  const T =
-    (weaponVal !== undefined ? weaponVal + (ctx.allMartialBoost ?? 0) : 0) +
+  const scopedDamageBoost =
+    (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
-  const dotMult = isPersistent ? (ctx.dotDamageMultiplier ?? 1) : 1
-  const H_total =
+  const dotMultiplier = isPersistent ? (ctx.dotDamageMultiplier ?? 1) : 1
+  const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
-    T +
+    scopedDamageBoost +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
-    num(art.extraDamageBoost) +
+    numberOrZero(art.extraDamageBoost) +
     (isPersistent
       ? ctx.sustainDmgBoostPanel +
         (ctx.dotDamageMultiplier === undefined ? (ctx.dotDamageBoost ?? 0) : 0)
       : 0)
 
   // A scoped stat, in the same family as `weaponBoosts` / `mysticTypeBoosts`
-  // (folded into `T` above) — but multiplicative here rather than additive
-  // inside `H_total`. Do not merge the two: they are different numbers.
-  const E_attuneBoost = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
+  // (folded into `scopedDamageBoost` above) — but multiplicative here rather
+  // than additive inside `damageBoostTotal`. Do not merge the two: they are
+  // different numbers.
+  const attuneBoost = art.attuneTag ? (ctx.attuneBoostByTag?.[art.attuneTag] ?? 0) : 0
 
-  const I_corr = num(art.correction) || 1
+  const correction = numberOrZero(art.correction) || 1
 
   // Fixed-damage skills (e.g. Dragon Head) can trigger neither crit, affinity
   // nor abrasion — they always deal the normal row.
-  const F_base = guaranteedNormal ? EF : guaranteedCrit ? EB : EH
-  const F = F_base * (1 + H_total) * count * I_corr * (1 + E_attuneBoost) * dotMult
+  const selectedRowTotal = guaranteedNormal
+    ? normalTotal
+    : guaranteedCrit
+      ? critTotal
+      : expectedTotal
+  const expectedDamage =
+    selectedRowTotal *
+    (1 + damageBoostTotal) *
+    count *
+    correction *
+    (1 + attuneBoost) *
+    dotMultiplier
 
+  // Keys are the source workbook's cell coordinates — a breakdown row stays
+  // cross-checkable against the spreadsheet this was ported from.
   return {
-    expectedDamage: F,
+    expectedDamage,
     cells: {
-      X,
-      Y,
-      U,
-      V,
-      W,
-      AE,
-      AF,
-      AG,
-      AH,
-      AI,
-      AJ,
-      AK,
-      AL,
-      AM,
-      AN,
-      AO,
-      AP,
-      AQ,
-      AR,
-      AS,
-      AT,
-      AU,
-      AV,
-      AW,
-      AX,
-      AY,
-      BA,
-      BC,
-      BE,
-      BG,
-      BH,
-      BI,
-      BJ,
-      BK,
-      BL,
-      BM,
-      BO,
-      BQ,
-      BS,
-      DZ,
-      EB,
-      ED,
-      EF,
-      EH,
-      H: H_total,
-      E: E_attuneBoost,
-      I: I_corr,
-      F,
+      X: critDamageBoost,
+      Y: affinityDamageBoost,
+      U: precisionRate,
+      V: critRate,
+      W: affinityRate,
+      AE: physMin,
+      AF: physAvg,
+      AG: physMax,
+      AH: physPenFraction,
+      AI: physDamageBoost,
+      AJ: physRowScale,
+      AK: physGrazeRow,
+      AL: grazeChance,
+      AM: physCritRow,
+      AN: critChance,
+      AO: physAffinityRow,
+      AP: affinityChance,
+      AQ: physNormalRow,
+      AR: normalChance,
+      AS: physFlatMin,
+      AT: physFlatAvg,
+      AU: physFlatMax,
+      AV: physFlatPenFraction,
+      AW: physFlatDamageBoost,
+      AX: physFlatRowScale,
+      AY: physFlatGrazeRow,
+      BA: physFlatCritRow,
+      BC: physFlatAffinityRow,
+      BE: physFlatNormalRow,
+      BG: attributeFlatMin,
+      BH: attributeFlatAvg,
+      BI: attributeFlatMax,
+      BJ: attributeFlatPenetration,
+      BK: attributeDamageBoost,
+      BL: attributeFlatRowScale,
+      BM: attributeFlatGrazeRow,
+      BO: attributeFlatCritRow,
+      BQ: attributeFlatAffinityRow,
+      BS: attributeFlatNormalRow,
+      DZ: grazeTotal,
+      EB: critTotal,
+      ED: affinityTotal,
+      EF: normalTotal,
+      EH: expectedTotal,
+      H: damageBoostTotal,
+      E: attuneBoost,
+      I: correction,
+      F: expectedDamage,
       normalMin,
       normalMax,
       critMin,
