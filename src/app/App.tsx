@@ -339,7 +339,14 @@ function AppInner() {
           />
           <Route
             path="/rotation"
-            element={<RotationTab inputs={inputs} onChange={setInputs} result={result} />}
+            element={
+              <RotationTab
+                inputs={inputs}
+                engineInputs={engineInputs}
+                onChange={setInputs}
+                result={result}
+              />
+            }
           />
           <Route
             path="/skills"

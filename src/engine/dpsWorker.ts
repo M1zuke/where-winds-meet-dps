@@ -8,6 +8,7 @@ import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withDerivedStats } from "./derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "./panel"
 import { graduationInputs } from "./graduation"
+import type { Rotation } from "./rotation"
 import type {
   Arsenal,
   BowSet,
@@ -360,6 +361,29 @@ export interface SetTilesWorkerResponse {
   arsenalDpsByChoice: Record<string, number>
 }
 
+export interface RotationDpsWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  options: { optionId: string; rotation: Rotation | null }[]
+}
+
+export interface RotationDpsWorkerResponse {
+  reqId: number
+  dpsByOptionId: Record<string, number>
+}
+
+function computeRotationDps(req: RotationDpsWorkerRequest): RotationDpsWorkerResponse {
+  const dpsByOptionId: Record<string, number> = {}
+  for (const { optionId, rotation } of req.options) {
+    dpsByOptionId[optionId] = runEngine({
+      ...req.inputs,
+      activeCustomRotation: rotation,
+      selectedBuiltinRotationId: null,
+    }).dps
+  }
+  return { reqId: req.reqId, dpsByOptionId }
+}
+
 export interface GraduationWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -431,6 +455,7 @@ export type WorkerRequest =
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
   | ({ kind: "setTiles" } & SetTilesWorkerRequest)
+  | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
 
 export type WorkerResponse =
@@ -440,6 +465,7 @@ export type WorkerResponse =
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
   | ({ kind: "setTiles" } & SetTilesWorkerResponse)
+  | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
 
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
@@ -462,6 +488,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "setTiles") {
     const res = computeSetTiles(req)
     ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
+  } else if (req.kind === "rotationDps") {
+    const res = computeRotationDps(req)
+    ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
   } else {
     const res = computeGraduation(req)
     ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
@@ -475,5 +504,6 @@ export {
   computeWordMax,
   computeRankingRequest,
   computeSetTiles,
+  computeRotationDps,
   computeGraduation,
 }

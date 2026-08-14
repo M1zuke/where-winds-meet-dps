@@ -1,7 +1,9 @@
 import type { BowSet, Inputs } from "../../../../engine/types"
 import { ARMOR_SET_OPTIONS, BOW_SET_BONUS } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
-import setTiles from "../shared/setTiles.module.scss"
+import { OptionTile } from "../../../components/option-tile/OptionTile"
+import { deltaTone } from "../../../components/option-tile/optionTileTone"
+import optionTiles from "../../../components/option-tile/OptionTile.module.scss"
 
 interface Props {
   inputs: Inputs
@@ -70,7 +72,7 @@ export function BowSetPanel({ inputs, onChange, armorDpsByKey, bowDpsByChoice, i
   return (
     <div style={{ opacity: isPending ? 0.6 : 1 }}>
       <div className="section-label">{t("Armor Set")}</div>
-      <div className={`${setTiles.tileGrid} ${setTiles.cols2}`}>
+      <div className={`${optionTiles.tileGrid} ${optionTiles.cols2}`}>
         {ARMOR_SET_OPTIONS.map((opt) => {
           const statKey = STAT_TO_I18N_KEY[opt.stat] ?? opt.stat
           const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys"
@@ -99,7 +101,7 @@ export function BowSetPanel({ inputs, onChange, armorDpsByKey, bowDpsByChoice, i
       </div>
 
       <div className="section-label">{t("Bow Set")}</div>
-      <div className={`${setTiles.tileGrid} ${setTiles.cols4}`}>
+      <div className={`${optionTiles.tileGrid} ${optionTiles.cols4}`}>
         {BOW_TILES.map((tile) => (
           <SetTile
             key={tile.choice ?? "none"}
@@ -137,22 +139,15 @@ function SetTile({
   currentLabel,
 }: SetTileProps) {
   const delta = dps - currentDps
-  const tileClassName =
-    setTiles.tile +
-    (selected ? ` ${setTiles.isSelected}` : "") +
-    (!selected && delta > 0 ? ` ${setTiles.isPositive}` : "") +
-    (!selected && delta < 0 ? ` ${setTiles.isNegative}` : "")
   return (
-    <button type="button" className={tileClassName} onClick={onClick}>
-      <div className={setTiles.tileHead}>
-        <span className={setTiles.tileLabel}>{label}</span>
-        {bonusLabel && <span className={setTiles.tileBonus}>{bonusLabel}</span>}
-      </div>
-      {!selected && <div className={setTiles.tileDelta}>{fmtDelta(delta)}</div>}
-      {selected && (
-        <div className={`${setTiles.tileDelta} ${setTiles.isCurrent}`}>{currentLabel}</div>
-      )}
-    </button>
+    <OptionTile
+      label={label}
+      headMeta={bonusLabel || undefined}
+      detail={selected ? currentLabel : fmtDelta(delta)}
+      tone={selected ? "current" : deltaTone(delta)}
+      selected={selected}
+      onClick={onClick}
+    />
   )
 }
 

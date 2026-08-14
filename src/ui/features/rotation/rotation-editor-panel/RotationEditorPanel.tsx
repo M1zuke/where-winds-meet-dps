@@ -14,14 +14,16 @@ import { activeRotationForInputs } from "../../../../engine/dps"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
-import {
-  builtinSkillsForClass,
-  builtinRotationsForClass,
-  defaultRotationForClass,
-} from "../../../../engine/builtinLibrary"
+import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import { buffChipHue, castBuffDisplayOrder, visibleCastBuffs } from "../buffChips"
+import {
+  inputsWithRotationOption,
+  rotationOptions,
+  selectedRotationOptionId,
+  usesCustomRotation,
+} from "../rotationOptions"
 import {
   loadCustomRotations,
   saveCustomRotation,
@@ -108,16 +110,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const confirm = useConfirm()
 
   const [saved, setSaved] = useState<Rotation[]>(() => loadCustomRotations())
-  const [expanded, setExpanded] = useState(true)
   const [nameDraft, setNameDraft] = useState<{ rotationId: string | null; value: string } | null>(
     null,
   )
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const savedForClass = useMemo(
-    () => saved.filter((rotation) => rotation.classId === inputs.classId),
-    [saved, inputs.classId],
-  )
 
   const classSkills = useMemo<Skill[]>(() => {
     const byId = new Map<string, Skill>()
@@ -143,10 +139,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 
   const builtinRotations = useMemo(() => builtinRotationsForClass(inputs.classId), [inputs.classId])
-  const defaultRotationId = useMemo(
-    () => defaultRotationForClass(inputs.classId)?.id ?? "",
-    [inputs.classId],
-  )
+  const options = useMemo(() => rotationOptions(inputs.classId, saved), [inputs.classId, saved])
 
   const activeRotation = useMemo(() => activeRotationForInputs(inputs), [inputs])
   const activeRotationId = activeRotation?.id ?? null
@@ -154,13 +147,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     nameDraft && nameDraft.rotationId === activeRotationId
       ? nameDraft.value
       : (activeRotation?.name ?? "")
-  const isCustom =
-    !!inputs.activeCustomRotation && inputs.activeCustomRotation.classId === inputs.classId
+  const isCustom = usesCustomRotation(inputs)
   const isPersisted =
     isCustom && !!activeRotation && saved.some((rotation) => rotation.id === activeRotation.id)
-  const selectedRotationValue = isCustom
-    ? (activeRotation?.id ?? "")
-    : (inputs.selectedBuiltinRotationId ?? "")
+  const selectedRotationValue = selectedRotationOptionId(inputs)
   const selectedBuiltin = !isCustom
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
@@ -214,27 +204,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 
   function selectRotation(id: string) {
-    if (!id) {
-      onChange({ ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: null })
-      return
-    }
-    const builtin = builtinRotations.find((rotation) => rotation.id === id)
-    if (builtin) {
-      onChange({ ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: id })
-      return
-    }
-    const custom = saved.find((rotation) => rotation.id === id)
-    if (custom) {
-      const steps = custom.steps.map((step) => {
-        const skill = skillsById.get(step.skillId)
-        return skill ? { ...step, hitCount: skill.hits.length } : step
-      })
-      onChange({
-        ...inputs,
-        activeCustomRotation: { ...custom, steps },
-        selectedBuiltinRotationId: null,
-      })
-    }
+    const option = options.find((candidate) => candidate.id === id)
+    if (option) onChange(inputsWithRotationOption(inputs, option))
   }
 
   function commitRotation(updater: (rotation: Rotation) => Rotation) {
@@ -304,7 +275,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function handleNew() {
     const empty = makeRotation(inputs.classId)
     onChange({ ...inputs, activeCustomRotation: empty, selectedBuiltinRotationId: null })
-    setExpanded(true)
   }
 
   function forkToCustom() {
@@ -319,7 +289,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       prePullHitsCount: activeRotation.prePullHitsCount,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
-    setExpanded(true)
   }
 
   function handleSave() {
@@ -387,7 +356,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       const persisted = saveCustomRotation(imported)
       setSaved(loadCustomRotations())
       onChange({ ...inputs, activeCustomRotation: persisted, selectedBuiltinRotationId: null })
-      setExpanded(true)
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
       alert(`${t("Import failed")}: ${msg}`)
@@ -405,21 +373,24 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           value={selectedRotationValue}
           onChange={(e) => selectRotation(e.target.value)}
         >
-          <option value="">{t("Default class axis")}</option>
           <optgroup label={t("Built-in rotations")}>
-            {builtinRotations.map((rotation) => (
-              <option key={rotation.id} value={rotation.id}>
-                {(rotation.name || t("(unnamed)")) +
-                  (rotation.id === defaultRotationId ? t(" (default)") : "")}
-              </option>
-            ))}
+            {options
+              .filter((option) => option.group === "builtin")
+              .map((option) => (
+                <option key={option.id} value={option.id}>
+                  {(t(option.name) || t("(unnamed)")) +
+                    (option.isClassDefault ? t(" (default)") : "")}
+                </option>
+              ))}
           </optgroup>
           <optgroup label={t("Custom Rotation")}>
-            {savedForClass.map((rotation) => (
-              <option key={rotation.id} value={rotation.id}>
-                {rotation.name || t("(unnamed)")}
-              </option>
-            ))}
+            {options
+              .filter((option) => option.group === "custom")
+              .map((option) => (
+                <option key={option.id} value={option.id}>
+                  {t(option.name) || t("(unnamed)")}
+                </option>
+              ))}
           </optgroup>
         </select>
         {selectedBuiltin?.description && (
@@ -428,9 +399,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         <div className="spacer" />
         <button type="button" className="btn" onClick={handleNew}>
           + {t("New")}
-        </button>
-        <button type="button" className="btn" onClick={() => setExpanded((prev) => !prev)}>
-          {expanded ? t("Close editor") : t("Open editor")}
         </button>
         <input
           ref={fileInputRef}
@@ -441,7 +409,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         />
       </div>
 
-      {expanded && activeRotation && (
+      {activeRotation && (
         <div className={styles.editor}>
           <div className={styles.meta}>
             <label className={styles.field}>
