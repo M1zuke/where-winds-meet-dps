@@ -147,6 +147,34 @@ describe("Class Buffs column — scope, not alwaysActive, decides membership", (
   })
 })
 
+describe("reverse index — affectsSummary reads the injected skill list, never the deleted affects array", () => {
+  it('Receives row on Bleed Tick names the skills bellstrikeUmbraBleedPen actually reaches, not "all"', () => {
+    const rows = receivesForSkill(
+      builtinSkill(CLASS, SKILL.bleedTick),
+      CLASS,
+      inputsWithSwordHorizon("tier 6"),
+    )
+    expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.name).toBe(
+      "Bleed penetration Enhancement (Bleed Tick/Blood Burst)",
+    )
+  })
+
+  it("Class Buffs rows carry the same skill names in affects", () => {
+    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
+    expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.affects).toBe(
+      "Bleed Tick/Blood Burst",
+    )
+    expect(rows.find((row) => row.id === "soulShaken")!.affects).toBe(
+      "Bleed Tick/Blood Burst/Bitter Season Tick",
+    )
+  })
+
+  it('names "nothing" for a scoped module no skill lists in receives, rather than falling back to "all"', () => {
+    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.ghostlySteps), CLASS)
+    expect(rows.find((row) => row.id === "mirage")!.name).toBe("Mirage (nothing)")
+  })
+})
+
 describe("catalog summary pins — concentration", () => {
   it("Receives row reads the mechanic's own effects, the ones it applies", () => {
     const rows = receivesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS, {

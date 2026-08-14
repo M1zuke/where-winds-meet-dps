@@ -1,12 +1,11 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "./ids"
-import { CAST } from "../ids"
 import { stat } from "../../../engine/effects/effect"
 
 export const fluteBoost = defineBuff({
   id: BUFF.fluteBoost,
   name: "Flute DMG Boost",
-  triggeredBy: [CAST.fluteOfTheTidesCancel, CAST.fluteOfTheTidesFull, CAST.fluteOfTheTidesPrepull],
+  affectsAll: true,
   duration: 12.5,
   summary: "+all (from fluteBoostValue)",
   // Omit the effect at 0 rather than emitting a no-op stat — the pre-conversion

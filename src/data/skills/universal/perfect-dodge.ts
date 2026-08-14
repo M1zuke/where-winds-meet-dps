@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const perfectDodge = defineSkill({
@@ -11,6 +12,7 @@ export const perfectDodge = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.perfectDodge,
+  triggersBuffs: [BUFF.mirageBonus],
   castFrames: 0,
   triggerable: true,
   hits: [hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0 })],

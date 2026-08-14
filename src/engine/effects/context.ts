@@ -72,6 +72,6 @@ export interface EffectContext {
   readonly build: BuildView
   readonly target: TargetView
   readonly status: StatusView
-  readonly self: { stacks: number }
+  readonly self: { stacks: number; reachesEvent: boolean }
   readonly event: EffectEvent
 }

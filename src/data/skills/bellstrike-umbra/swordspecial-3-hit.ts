@@ -22,10 +22,7 @@ export const swordspecial3Hit = defineSkill({
       attributeMultiplier: 0.3271,
       physFixed: 50.333333333333336,
       attributeFixed: 28.333333333333332,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-3-hit-bleed-h0", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-3-hit-detonate-h0", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(1, {
       frame: 20,
@@ -33,10 +30,7 @@ export const swordspecial3Hit = defineSkill({
       attributeMultiplier: 0.3271,
       physFixed: 50.333333333333336,
       attributeFixed: 28.333333333333332,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-3-hit-bleed-h1", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-3-hit-detonate-h1", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(2, {
       frame: 40,
@@ -44,10 +38,7 @@ export const swordspecial3Hit = defineSkill({
       attributeMultiplier: 0.3271,
       physFixed: 50.333333333333336,
       attributeFixed: 28.333333333333332,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-3-hit-bleed-h2", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-3-hit-detonate-h2", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

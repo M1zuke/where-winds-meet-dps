@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const phalanxq = defineSkill({
@@ -12,6 +13,8 @@ export const phalanxq = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxQ,
+  receives: [BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced],
   castFrames: 49,
   triggerable: true,
   hits: [
@@ -21,9 +24,7 @@ export const phalanxq = defineSkill({
       attributeMultiplier: 2.8422,
       physFixed: 525,
       attributeFixed: 286,
-      triggers: [
-        castSkill({ id: "tg-phalanxq-cast", target: SKILL.anxisoldiermosweep, stacks: 0 }),
-      ],
+      triggers: [castSkill({ target: SKILL.anxisoldiermosweep, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

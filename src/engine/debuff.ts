@@ -44,6 +44,8 @@ export interface Debuff {
   // event like any other, so a modifier must be able to address it structurally
   // rather than through the debuff's display name.
   tags?: string[]
+  receives?: string[]
+  triggersBuffs?: string[]
   activation: BuffActivation
   durationFrames: number
   effects: BuffStatEffect[]
@@ -88,6 +90,8 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
     name: src.name,
     breakdownName: src.breakdownName,
     tags: src.tags ? [...src.tags] : undefined,
+    receives: src.receives ? [...src.receives] : undefined,
+    triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
     activation: src.activation,
     durationFrames: src.durationFrames,
     effects: src.effects.map((e) => ({ ...e })),
@@ -117,6 +121,14 @@ export function isDebuff(x: unknown): x is Debuff {
   if (d.tags !== undefined) {
     if (!Array.isArray(d.tags)) return false
     for (const tag of d.tags) if (typeof tag !== "string") return false
+  }
+  if (d.receives !== undefined) {
+    if (!Array.isArray(d.receives)) return false
+    for (const id of d.receives) if (typeof id !== "string") return false
+  }
+  if (d.triggersBuffs !== undefined) {
+    if (!Array.isArray(d.triggersBuffs)) return false
+    for (const id of d.triggersBuffs) if (typeof id !== "string") return false
   }
   if (d.activation !== "permanent" && d.activation !== "triggered") return false
   if (typeof d.durationFrames !== "number" || !Number.isFinite(d.durationFrames)) return false

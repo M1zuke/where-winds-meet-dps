@@ -1,122 +1,85 @@
-// The guard for CLASSES.md § "Id schemes": a modifier addresses an entity by a
-// namespaced tag it declares, never by a string that happens to match its
-// display name. Spans every registered class on purpose.
+// The guard for CLASSES.md § "Id schemes": a skill or debuff reaches or
+// triggers a buff through an id it declares (`Skill.receives`,
+// `Skill.triggersBuffs`, `Debuff.receives`, `Debuff.triggersBuffs`), and that id
+// must actually name a registered buff module — never a typo that silently
+// reaches or triggers nothing.
 import { describe, expect, it } from "vitest"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { CLASS_IDS, CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
-import type { BuffModule } from "../../src/engine/buffs/buffModule"
 
-const NAMESPACES = ["role:", "type:", "weapon:", "mystic:", "attune:", "prop:", "attack:", "cast:"]
-
-// Every class's composed `buffModules` (its own `classBuffDefs` plus every
-// slottable inner way's `buffDefs`), plus global/group.
-const entries: { label: string; module: BuffModule }[] = [
-  ...CLASS_DEFS().flatMap((classDef) =>
-    (classDefinition(classDef.id)?.buffModules ?? []).map((module) => ({
-      label: `${classDef.id}/buffModule/${module.id}`,
-      module,
-    })),
-  ),
-  ...GLOBAL_BUFF_DEFS.map((module) => ({ label: `global/${module.id}`, module })),
-  ...GROUP_BUFF_DEFS.map((module) => ({ label: `group/${module.id}`, module })),
+const DEFINED_MODULES = [
+  ...CLASS_DEFS().flatMap((classDef) => classDefinition(classDef.id)?.buffModules ?? []),
+  ...GLOBAL_BUFF_DEFS,
+  ...GROUP_BUFF_DEFS,
 ]
+const DEFINED_BUFF_IDS = new Set(DEFINED_MODULES.map((module) => module.id))
 
-function scopeEntries(module: BuffModule): string[] {
-  return [...(module.affects ?? []), ...(module.excludes ?? [])]
-}
-
-function triggerEntries(module: BuffModule): string[] {
-  return module.triggeredBy ?? []
-}
-
-// Scope entries that no entity carries, and deliberately so: both were already
-// dead references under name matching — they name mechanics this app never
-// modelled. Listed rather than hidden, because under exact matching "reaches
-// nothing" is otherwise indistinguishable from a typo.
-const KNOWN_UNCARRIED = new Set(["role:fireOil", "role:fivefoldBleed"])
-
-// Trigger entries for the seven classes under `reference/classes/`:
-// `jadeware` and `rainwhisperShield` are set/global buffs
-// whose trigger list spans every class's own "Q" cast so the buff still
-// fires however a future class equips the set; `soulShaken` /
-// `potentRiverFlow` / `wineGu` carry Bellstrike Rainbow's Spear Q variants
-// alongside Umbra's; `healerBuff`'s own cast belonged to Silkbind Jade.
-// Listed rather than hidden, same reasoning as `KNOWN_UNCARRIED` above.
-const KNOWN_UNCARRIED_TRIGGERS = new Set([
-  "cast:spearQ0HitCancel",
-  "cast:spearQPrepull",
-  "cast:fanQ",
-  "cast:fanQCancel",
-  "cast:fanQPrepull",
-  "cast:moBladeQ",
-  "cast:moBladeQPrepull",
-  "cast:ropeQ",
-  "cast:ropeQ1Hit",
-  "cast:snowpartingSpecial",
-  "cast:swordQ",
-  "cast:swordQ2nd",
-  "cast:umbQ",
-  "cast:umbQPrepull",
-  "cast:umbrellaQ",
-  "cast:umbrellaQEmpoweredPerfectCatch",
-  "cast:umbrellaQPerfectCatch",
-  "cast:healerBuff",
-])
-
-describe("scope is addressed by tag, never by display name", () => {
-  it("every affects entry is namespaced", () => {
-    const bare: string[] = []
-    for (const { label, module } of entries)
-      for (const entry of scopeEntries(module))
-        if (!NAMESPACES.some((ns) => entry.startsWith(ns))) bare.push(`${label}: ${entry}`)
-    expect(bare).toEqual([])
-  })
-
-  // Bellstrike Umbra's own native set — six defs carry a scope entry.
-  it("covers a non-trivial number of defs, so the check cannot pass vacuously", () => {
-    const withScope = entries.filter(({ module }) => scopeEntries(module).length > 0)
-    expect(withScope.length).toBeGreaterThanOrEqual(6)
-  })
-})
-
-describe("triggers are addressed by cast tag, never by display name", () => {
-  it("every triggeredBy key is namespaced", () => {
-    const bare: string[] = []
-    for (const { label, module } of entries)
-      for (const entry of triggerEntries(module))
-        if (!entry.startsWith("cast:")) bare.push(`${label}: ${entry}`)
-    expect(bare).toEqual([])
-  })
-})
-
-// Exact matching turns a mistyped tag into a silently inert buff, where prefix
-// matching would at least still fire on a stem. This is the guard for that.
-describe("every declared tag is actually carried by something", () => {
-  const carried = new Set<string>()
+function receivedBuffIds(): Set<string> {
+  const ids = new Set<string>()
   for (const classId of CLASS_IDS()) {
-    for (const skill of builtinSkillsForClass(classId)) {
-      for (const tag of skill.tags ?? []) carried.add(tag)
-      if (skill.castTag) carried.add(skill.castTag)
-    }
+    for (const skill of builtinSkillsForClass(classId))
+      for (const id of skill.receives ?? []) ids.add(id)
     for (const debuff of builtinDebuffsForClass(classId))
-      for (const tag of debuff.tags ?? []) carried.add(tag)
+      for (const id of debuff.receives ?? []) ids.add(id)
   }
+  return ids
+}
 
-  it("every scope entry reaches at least one skill or debuff", () => {
-    const orphans = new Set<string>()
-    for (const { module } of entries)
-      for (const entry of scopeEntries(module))
-        if (entry.startsWith("role:") && !carried.has(entry) && !KNOWN_UNCARRIED.has(entry))
-          orphans.add(entry)
-    expect([...orphans]).toEqual([])
+// Pure state markers: no stat effects of their own, so nothing needs to
+// `receive` them — `mirageBonus`/`resistanceResolve` read their windows via
+// `requiresBuffActive`/`activeAfterBuffEnds` instead.
+const RECEIVES_NOTHING_BY_DESIGN = new Set(["mirage", "rainwhisperShield"])
+
+describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {
+  it("every receives/triggersBuffs entry resolves to a registered buff module", () => {
+    const orphans: string[] = []
+    for (const classId of CLASS_IDS()) {
+      for (const skill of builtinSkillsForClass(classId)) {
+        for (const id of [...(skill.receives ?? []), ...(skill.triggersBuffs ?? [])])
+          if (!DEFINED_BUFF_IDS.has(id)) orphans.push(`${classId}/${skill.id}: ${id}`)
+      }
+      for (const debuff of builtinDebuffsForClass(classId)) {
+        for (const id of [...(debuff.receives ?? []), ...(debuff.triggersBuffs ?? [])])
+          if (!DEFINED_BUFF_IDS.has(id)) orphans.push(`${classId}/${debuff.id}: ${id}`)
+      }
+    }
+    expect(orphans).toEqual([])
   })
 
-  it("every trigger entry reaches at least one skill", () => {
-    const orphans = new Set<string>()
-    for (const { module } of entries)
-      for (const entry of triggerEntries(module))
-        if (!carried.has(entry) && !KNOWN_UNCARRIED_TRIGGERS.has(entry)) orphans.add(entry)
-    expect([...orphans]).toEqual([])
+  it("covers a non-trivial number of pairs, so the check cannot pass vacuously", () => {
+    let count = 0
+    for (const classId of CLASS_IDS()) {
+      for (const skill of builtinSkillsForClass(classId)) {
+        count += (skill.receives?.length ?? 0) + (skill.triggersBuffs?.length ?? 0)
+      }
+      for (const debuff of builtinDebuffsForClass(classId)) {
+        count += (debuff.receives?.length ?? 0) + (debuff.triggersBuffs?.length ?? 0)
+      }
+    }
+    expect(count).toBeGreaterThanOrEqual(6)
+  })
+})
+
+describe("no buff module a skill or debuff lists in receives may also claim affectsAll", () => {
+  it("every module named in a receives array is scoped, not global", () => {
+    const namedIds = receivedBuffIds()
+    const offenders = DEFINED_MODULES.filter(
+      (module) => namedIds.has(module.id) && module.affectsAll === true,
+    ).map((module) => module.id)
+    expect(offenders).toEqual([])
+  })
+})
+
+describe("a scoped module a skill or debuff could list in receives isn't orphaned", () => {
+  it("every non-affectsAll module is named by at least one skill or debuff, or is a listed exception", () => {
+    const namedIds = receivedBuffIds()
+    const orphans = DEFINED_MODULES.filter(
+      (module) =>
+        !module.affectsAll &&
+        !namedIds.has(module.id) &&
+        !RECEIVES_NOTHING_BY_DESIGN.has(module.id),
+    ).map((module) => module.id)
+    expect(orphans).toEqual([])
   })
 })

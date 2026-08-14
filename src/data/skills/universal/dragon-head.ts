@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, MYSTIC, ROLE } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 // Fixed damage — triggers neither crit, affinity nor abrasion (CN mystic-arts
@@ -14,6 +15,7 @@ export const dragonHead = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonHead,
+  receives: [BUFF.surgingWaves],
   guaranteedNormal: true,
   castFrames: 246,
   triggerable: true,

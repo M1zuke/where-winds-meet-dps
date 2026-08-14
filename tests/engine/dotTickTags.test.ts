@@ -30,3 +30,24 @@ describe("DoT ticks are addressable by tag, not only by name", () => {
     expect(dotTickSkill(untagged, undefined).tags).toEqual([])
   })
 })
+
+describe("DoT ticks merge `receives` the same way they merge tags", () => {
+  it("carries the tick-source skill's receives", () => {
+    const debuffWithoutReceives = { ...bleedTickDebuff, receives: undefined }
+    const withReceives = { ...bleedTickSkill, receives: ["bleedPen"] }
+    expect(dotTickSkill(debuffWithoutReceives, withReceives).receives).toEqual(["bleedPen"])
+  })
+
+  it("merges the debuff's own receives on top, deduped", () => {
+    const skillReceives = { ...bleedTickSkill, receives: ["bleedPen"] }
+    const debuffReceives = { ...bleedTickDebuff, receives: ["bleedPen", "soulShaken"] }
+    const merged = dotTickSkill(debuffReceives, skillReceives).receives!
+    expect(new Set(merged)).toEqual(new Set(["bleedPen", "soulShaken"]))
+  })
+
+  it("still yields a receives-less tick when both sides are cleared, even though the real Bleed Tick debuff/skill both carry receives", () => {
+    const debuffWithoutReceives = { ...bleedTickDebuff, receives: undefined }
+    const skillWithoutReceives = { ...bleedTickSkill, receives: undefined }
+    expect(dotTickSkill(debuffWithoutReceives, skillWithoutReceives).receives).toEqual([])
+  })
+})

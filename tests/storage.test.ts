@@ -7,6 +7,10 @@ import {
   migrateSeededSkillIds,
   saveCustomSkill,
   loadCustomSkillsForClass,
+  saveCustomDebuff,
+  loadCustomDebuffsForClass,
+  exportCustomDebuff,
+  importCustomDebuff,
   saveCustomRotation,
   loadCustomRotations,
   loadProfiles,
@@ -17,7 +21,7 @@ import {
   importProfile,
 } from "../src/storage"
 import { defaultInputs } from "../src/engine/defaults"
-import { builtinSkillsForClass } from "../src/engine/builtinLibrary"
+import { builtinSkillsForClass, builtinDebuffsForClass } from "../src/engine/builtinLibrary"
 import { seedSkillFromBuiltin } from "../src/engine/skill"
 import { makeSkill } from "../src/engine/skill"
 import { makeRotation, makeStep } from "../src/engine/rotation"
@@ -790,6 +794,168 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
       (skill) => skill.id === ownSkill.id,
     )!
     expect(ownReloaded.tags).toEqual(["weapon:Sword"])
+  })
+
+  it("heals a copy carrying only the v0.1.7-era tags through to its full reach, tags first then receives", () => {
+    const builtinDragonHeadPlus = builtinSkillsForClass(CLASS_ID).find(
+      (skill) => skill.name === "Dragon Head - Plus",
+    )!
+    const stale = {
+      ...seedSkillFromBuiltin(CLASS_ID, builtinDragonHeadPlus),
+      tags: ["mystic:burst"],
+    }
+    delete stale.receives
+    delete stale.triggersBuffs
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.tags).toEqual(expect.arrayContaining(builtinDragonHeadPlus.tags!))
+    expect(healed.receives).toEqual(expect.arrayContaining(["surgingWaves", "dragonHeadLowHp"]))
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations". A
+// skill/debuff saved while a buff def still declared `affects`/`triggeredBy`
+// itself carries neither `receives` nor `triggersBuffs` — recovered here from
+// the `role:`/`type:`/`cast:` tags it already carries, same reasoning as the
+// tag heal above.
+describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", () => {
+  const CLASS_ID = "stonesplitStrength"
+  const builtinModown = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === `${CLASS_ID}-anxisoldiermodown`,
+  )!
+
+  it("recovers receives and triggersBuffs from the tags/cast tag a stale copy already carries", () => {
+    const stale = { ...seedSkillFromBuiltin(CLASS_ID, builtinModown) }
+    delete stale.receives
+    delete stale.triggersBuffs
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.receives).toEqual(
+      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect"]),
+    )
+    expect(healed.triggersBuffs).toEqual(
+      expect.arrayContaining(["throatPierced", "mountainSplitter"]),
+    )
+  })
+
+  it("recovers the same receives from a copy carrying none of the built-in's tags at all, via the tag heal that runs first", () => {
+    const stale = {
+      ...seedSkillFromBuiltin(CLASS_ID, builtinModown),
+      tags: ["weapon:Mo Blade"],
+    }
+    delete stale.receives
+    delete stale.triggersBuffs
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.receives).toEqual(
+      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect"]),
+    )
+    expect(healed.triggersBuffs).toEqual(
+      expect.arrayContaining(["throatPierced", "mountainSplitter"]),
+    )
+  })
+
+  it("leaves an already-authored copy alone, including one explicitly emptied", () => {
+    const explicit = {
+      ...seedSkillFromBuiltin(CLASS_ID, builtinModown),
+      receives: [],
+      triggersBuffs: ["mountainSplitter"],
+    }
+    saveCustomSkill(explicit)
+    const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === explicit.id)!
+    expect(reloaded.receives).toEqual([])
+    expect(reloaded.triggersBuffs).toEqual(["mountainSplitter"])
+  })
+
+  it("derives triggersBuffs from a user-authored skill's name when it carries no castTag, in the value saveCustomSkill itself returns", () => {
+    const spearQNamed = makeSkill("bellstrikeUmbra", { name: "Spear Q", tags: ["weapon:Spear"] })
+    expect(spearQNamed.castTag).toBeUndefined()
+    const returned = saveCustomSkill(spearQNamed)
+
+    const expectedTriggers = expect.arrayContaining([
+      "potentRiverFlow",
+      "wineGu",
+      "soulShaken",
+      "jadeware",
+    ])
+    expect(returned.find((skill) => skill.id === spearQNamed.id)!.triggersBuffs).toEqual(
+      expectedTriggers,
+    )
+
+    const healed = loadCustomSkillsForClass("bellstrikeUmbra").find(
+      (skill) => skill.id === spearQNamed.id,
+    )!
+    expect(healed.triggersBuffs).toEqual(expectedTriggers)
+  })
+
+  it("computes an empty reach for a genuinely custom skill whose tags match no legacy def", () => {
+    const ownSkill = makeSkill(CLASS_ID, { name: "My Own Move", tags: ["weapon:Sword"] })
+    saveCustomSkill(ownSkill)
+    const ownReloaded = loadCustomSkillsForClass(CLASS_ID).find(
+      (skill) => skill.id === ownSkill.id,
+    )!
+    expect(ownReloaded.receives).toEqual([])
+    expect(ownReloaded.triggersBuffs).toEqual([])
+  })
+
+  it("recovers a debuff's receives from its own tags and its dot's implied sustain type, in the value saveCustomDebuff itself returns", () => {
+    const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+    )!
+    const stale = { ...builtinCombustion }
+    delete stale.receives
+    const returned = saveCustomDebuff(stale)
+
+    const expectedReceives = expect.arrayContaining(["bellstrikeUmbraBleedingDamage", "soulShaken"])
+    expect(returned.find((debuff) => debuff.id === stale.id)!.receives).toEqual(expectedReceives)
+
+    const healed = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === stale.id,
+    )!
+    expect(healed.receives).toEqual(expectedReceives)
+  })
+
+  it("leaves an already-authored debuff's receives alone, including an explicit empty one", () => {
+    const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+    )!
+    const explicit = { ...builtinCombustion, receives: [] }
+    saveCustomDebuff(explicit)
+    const reloaded = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === explicit.id,
+    )!
+    expect(reloaded.receives).toEqual([])
+  })
+
+  it("carries an explicit triggersBuffs through save/load and export/import unchanged", () => {
+    const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+    )!
+    const explicit = { ...builtinCombustion, triggersBuffs: ["mountainSplitter"] }
+    saveCustomDebuff(explicit)
+    const reloaded = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === explicit.id,
+    )!
+    expect(reloaded.triggersBuffs).toEqual(["mountainSplitter"])
+
+    const imported = importCustomDebuff(exportCustomDebuff(explicit), "bellstrikeUmbra")
+    expect(imported.triggersBuffs).toEqual(["mountainSplitter"])
+  })
+
+  it("leaves a stale debuff missing triggersBuffs without one — nothing to heal it from", () => {
+    const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+    )!
+    const stale = { ...builtinCombustion }
+    delete stale.triggersBuffs
+    saveCustomDebuff(stale)
+    const reloaded = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === stale.id,
+    )!
+    expect(reloaded.triggersBuffs).toBeUndefined()
   })
 })
 

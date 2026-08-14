@@ -1,5 +1,6 @@
 import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const spearheavy = defineSkill({
@@ -12,6 +13,7 @@ export const spearheavy = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy,
+  triggersBuffs: [BUFF.soulShaken],
   castFrames: 90,
   triggerable: true,
   hits: dotTicks({

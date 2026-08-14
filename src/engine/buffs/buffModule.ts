@@ -34,19 +34,15 @@ export interface PerCastConsume {
   phaseAlternative?: { phase: QiPhase | readonly QiPhase[]; requires?: BuffRequirements }
 }
 
-// The declarative core: the Skill Editor catalog derives `affects`, `bonus`,
-// `triggeredBy`, `enabledParam`, `minTier` and the Receives / Applies / Class
-// Buffs rows from these fields, and `displayGates.ts` filters on them, so they
-// must stay readable without executing anything.
+// The declarative core: the Skill Editor catalog derives `bonus`, `enabledParam`,
+// `minTier` and the Receives / Applies / Class Buffs rows from these fields, and
+// `displayGates.ts` filters on them, so they must stay readable without
+// executing anything.
 export interface BuffMeta {
   id: string
   name: string
   requires?: BuffRequirements
-  affects?: string[] | null
-  affectsProperty?: string
-  affectsWeaponTypes?: string[]
-  excludes?: string[]
-  triggeredBy?: string[]
+  affectsAll?: boolean
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean
   maxStacks?: number
@@ -54,8 +50,6 @@ export interface BuffMeta {
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
-  // Grants and refreshes one stack per damaging hit rather than per cast —
-  // including hits a `castSkill` trigger generated and deterministic DoT ticks.
   stackOnDamage?: boolean
   // A generated (`castSkill`-triggered) attack reaches only the defs that opt
   // in; every other def still sees rotation casts alone.

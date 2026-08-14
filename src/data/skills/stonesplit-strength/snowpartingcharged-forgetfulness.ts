@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const snowpartingchargedForgetfulness = defineSkill({
@@ -11,6 +12,7 @@ export const snowpartingchargedForgetfulness = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingChargedForgetfulness,
+  triggersBuffs: [BUFF.forgetfulness],
   castFrames: 57,
   triggerable: true,
   hits: [

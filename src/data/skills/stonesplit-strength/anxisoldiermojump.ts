@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const anxisoldiermojump = defineSkill({
@@ -17,6 +18,8 @@ export const anxisoldiermojump = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierMoJump,
+  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
   castFrames: 0,
   triggerable: true,
   hits: [

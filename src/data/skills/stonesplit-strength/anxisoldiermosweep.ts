@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const anxisoldiermosweep = defineSkill({
@@ -11,6 +12,8 @@ export const anxisoldiermosweep = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierMoSweep,
+  receives: [BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
   castFrames: 0,
   triggerable: true,
   hits: [

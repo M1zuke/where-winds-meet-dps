@@ -17,7 +17,7 @@ export interface CastBuffResult {
   buffIds: string[]
   propagatedBuffIds: string[]
 }
-import { matchesAnyTag, matchesScope } from "../scope"
+import { reaches } from "../scope"
 import { castTagOf, skillTagsOf, PROP_TAG } from "./tags"
 import type {
   BuildView,
@@ -74,23 +74,6 @@ const MISTWILLOW_HEAVY_BUFF = "mistwillowHeavyBuff"
 const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
 const MISTWILLOW_BUFF_DURATION = 15
 const MISTWILLOW_BONUS = 0.1
-// Enumerated rather than prefix-matched: a modifier never reaches a cast by
-// what it is called (CLASSES.md § "Id schemes").
-const MISTWILLOW_LIGHT_OVERRIDE_CASTS = new Set([
-  "cast:umbQ",
-  "cast:umbQPrepull",
-  "cast:umbDroneLaunch12hit",
-  "cast:umbDroneLaunch16hit",
-  "cast:umbDroneLaunch20hit",
-  "cast:umbDroneLaunch23hit",
-  "cast:umbDroneLaunch26hit",
-  "cast:umbLightCharge",
-  "cast:fanLightCharged",
-])
-const MISTWILLOW_HEAVY_OVERRIDE_CASTS = new Set([
-  "cast:fanHeavyPursuit3Hit",
-  "cast:fanHeavyPursuit5Hit",
-])
 
 function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
@@ -99,7 +82,6 @@ function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
 export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffModule>()
-  private triggerMap = new Map<string, BuffModule[]>()
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
@@ -114,11 +96,6 @@ export class BuffEngine {
     const register = (module: BuffModule) => {
       if (module.requires?.set && module.requires.set !== this.params.armorSet) return
       this.definitions.set(module.id, module)
-      if (module.triggeredBy)
-        for (const castTag of module.triggeredBy) {
-          if (!this.triggerMap.has(castTag)) this.triggerMap.set(castTag, [])
-          this.triggerMap.get(castTag)!.push(module)
-        }
     }
     for (const module of modules) register(module)
     for (const module of groupModules) register(module)
@@ -172,7 +149,12 @@ export class BuffEngine {
     return { start: qiBreakTime, end: qiBreakTime + bossBreakDuration + healerExt }
   }
 
-  private buildContext(time: number, event: EffectEvent, selfStacks: number): EffectContext {
+  private buildContext(
+    time: number,
+    event: EffectEvent,
+    selfStacks: number,
+    module?: BuffModule,
+  ): EffectContext {
     const build: BuildView = {
       classId: (this.params.classId as string) ?? "",
       spec: this.params.spec as string | undefined,
@@ -192,7 +174,11 @@ export class BuffEngine {
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
       },
-      self: { stacks: selfStacks },
+      self: {
+        stacks: selfStacks,
+        reachesEvent:
+          module !== undefined && event.kind === "damage" && reaches(event.tags, module),
+      },
       event,
     }
   }
@@ -203,7 +189,7 @@ export class BuffEngine {
     event: EffectEvent = { kind: "display" },
   ): number {
     if (typeof module.duration === "number") return module.duration
-    return module.duration(this.buildContext(time, event, 0))
+    return module.duration(this.buildContext(time, event, 0, module))
   }
 
   activeBuffsForDisplay(time: number): {
@@ -226,7 +212,7 @@ export class BuffEngine {
     const push = (id: string, module: BuffModule | undefined, stacks: number) => {
       if (seen.has(id)) return
       seen.add(id)
-      const ctx = this.buildContext(time, { kind: "display" }, stacks)
+      const ctx = this.buildContext(time, { kind: "display" }, stacks, module)
       const effects: { statKey: StatKey; amount: number }[] = module
         ? resolveEffects(module, ctx).flatMap((effect) =>
             effect.kind === "stat" ? [{ statKey: effect.statKey, amount: effect.amount }] : [],
@@ -332,6 +318,7 @@ export class BuffEngine {
       time,
       { kind: "cast", castTag: "", props: EMPTY_PROPS },
       selfStacks,
+      module,
     )
     const sink: EffectSink = {
       stat: () => {},
@@ -426,78 +413,102 @@ export class BuffEngine {
     time: number,
     props: SkillProperties = {},
     fromGeneratedSkill = false,
+    declaredBuffIds: readonly string[] = [],
   ): CastBuffResult {
     const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
     if (props.noBuffTrigger) return result
     if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
-    for (const [trigger, modules] of this.triggerMap) {
-      if (trigger !== castTag) continue
-      for (const module of modules) {
-        if (!this.gateOk(module)) continue
-        if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) continue
-        if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) continue
-        if (
-          module.requiresActiveBuffOnTrigger &&
-          !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
-        )
-          continue
-        if (module.cooldown) {
-          const last = this.activeBuffs.get(module.id)
-          if (last && time - last.appliedAt < module.cooldown) continue
-        }
-        const applyTime =
-          module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
-            ? time + (props.castTime ?? 1)
-            : time
 
-        if (!this.canGrantTrigger(module, applyTime)) continue
+    this.triggerDeclaredBuffs(declaredBuffIds, castTag, time, props, fromGeneratedSkill)
 
-        if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
-          const hitCount = props.hitCount ?? 1
-          const span = props.duration || props.castTime || 0
-          if (span > 0) {
-            const step = span / hitCount
-            for (let i = 0; i < hitCount; i++) {
-              const hitTime = applyTime + i * step
-              if (!this.canGrantStack(module, hitTime)) continue
-              this.applyBuff(module.id, hitTime, null, 1)
-            }
-          } else {
-            let granted = 0
-            for (let i = 0; i < hitCount; i++) if (this.canGrantStack(module, applyTime)) granted++
-            if (granted > 0) this.applyBuff(module.id, applyTime, null, granted)
-          }
-          continue
-        }
-
-        const requiresActive = this.requiresBuffActiveGate(module, applyTime)
-        if (requiresActive !== null) {
-          if (requiresActive) this.applyBuff(module.id, applyTime, null, 1)
-          continue
-        }
-
-        const castEvent: EffectEvent = { kind: "cast", castTag, props }
-        const duration = this.resolveDuration(module, applyTime, castEvent)
-        const perCast = module.stacks
-          ? module.stacks(this.buildContext(applyTime, castEvent, 0))
-          : 1
-        if (module.stackRateLimit) {
-          let granted = 0
-          for (let i = 0; i < perCast; i++) if (this.canGrantStack(module, applyTime)) granted++
-          if (granted <= 0) continue
-          this.applyBuff(module.id, applyTime, duration, granted)
-        } else {
-          this.applyBuff(module.id, applyTime, duration, perCast)
-        }
-      }
-    }
     for (const [id, module] of this.definitions) {
       if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
         this.refreshBuff(id, time)
       }
     }
-    if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(castTag, time, props)
+    if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(time, props)
     return result
+  }
+
+  triggerDeclaredBuffs(
+    declaredBuffIds: readonly string[],
+    castTag: string,
+    time: number,
+    props: SkillProperties = {},
+    fromGeneratedSkill = false,
+  ): void {
+    const triggered = new Set<string>()
+    for (const buffId of declaredBuffIds) {
+      if (triggered.has(buffId)) continue
+      triggered.add(buffId)
+      const module = this.definitions.get(buffId)
+      if (module) this.applyTriggeredModule(module, castTag, time, props, fromGeneratedSkill)
+    }
+  }
+
+  private applyTriggeredModule(
+    module: BuffModule,
+    castTag: string,
+    time: number,
+    props: SkillProperties,
+    fromGeneratedSkill: boolean,
+  ): void {
+    if (!this.gateOk(module)) return
+    if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
+    if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) return
+    if (
+      module.requiresActiveBuffOnTrigger &&
+      !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
+    )
+      return
+    if (module.cooldown) {
+      const last = this.activeBuffs.get(module.id)
+      if (last && time - last.appliedAt < module.cooldown) return
+    }
+    const applyTime =
+      module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
+        ? time + (props.castTime ?? 1)
+        : time
+
+    if (!this.canGrantTrigger(module, applyTime)) return
+
+    if (module.stacksPerHit && (props.hitCount ?? 1) > 1) {
+      const hitCount = props.hitCount ?? 1
+      const span = props.duration || props.castTime || 0
+      if (span > 0) {
+        const step = span / hitCount
+        for (let i = 0; i < hitCount; i++) {
+          const hitTime = applyTime + i * step
+          if (!this.canGrantStack(module, hitTime)) continue
+          this.applyBuff(module.id, hitTime, null, 1)
+        }
+      } else {
+        let granted = 0
+        for (let i = 0; i < hitCount; i++) if (this.canGrantStack(module, applyTime)) granted++
+        if (granted > 0) this.applyBuff(module.id, applyTime, null, granted)
+      }
+      return
+    }
+
+    const requiresActive = this.requiresBuffActiveGate(module, applyTime)
+    if (requiresActive !== null) {
+      if (requiresActive) this.applyBuff(module.id, applyTime, null, 1)
+      return
+    }
+
+    const castEvent: EffectEvent = { kind: "cast", castTag, props }
+    const duration = this.resolveDuration(module, applyTime, castEvent)
+    const perCast = module.stacks
+      ? module.stacks(this.buildContext(applyTime, castEvent, 0, module))
+      : 1
+    if (module.stackRateLimit) {
+      let granted = 0
+      for (let i = 0; i < perCast; i++) if (this.canGrantStack(module, applyTime)) granted++
+      if (granted <= 0) return
+      this.applyBuff(module.id, applyTime, duration, granted)
+    } else {
+      this.applyBuff(module.id, applyTime, duration, perCast)
+    }
   }
 
   // Every damaging hit stacks these, wherever the hit came from — the scope on
@@ -576,43 +587,25 @@ export class BuffEngine {
     return true
   }
 
-  private isMistwillowLightOverride(castTag: string): boolean {
-    return MISTWILLOW_LIGHT_OVERRIDE_CASTS.has(castTag)
-  }
-  private isMistwillowHeavyOverride(castTag: string, isExecution: boolean): boolean {
-    return isExecution || MISTWILLOW_HEAVY_OVERRIDE_CASTS.has(castTag)
-  }
-  private mistwillowGrantCategory(
-    castTag: string,
-    attackType: string,
-    isExecution: boolean,
-  ): string | null {
-    if (attackType === "heavy" || this.isMistwillowHeavyOverride(castTag, isExecution))
-      return MISTWILLOW_HEAVY_BUFF
-    if (attackType === "light" || this.isMistwillowLightOverride(castTag))
-      return MISTWILLOW_LIGHT_BUFF
+  private mistwillowGrantCategory(attackType: string, isExecution: boolean): string | null {
+    if (attackType === "heavy" || isExecution) return MISTWILLOW_HEAVY_BUFF
+    if (attackType === "light") return MISTWILLOW_LIGHT_BUFF
     if (attackType === "mixed") return "both"
     return null
   }
   // Deliberately INVERTED from the grant category (site's `Nl`) — the
   // cross-stance synergy: a light hit reads the HEAVY buff's bonus and vice
   // versa. Do not "fix" this to mirror mistwillowGrantCategory.
-  private mistwillowBonusCategory(
-    castTag: string,
-    attackType: string,
-    isExecution: boolean,
-  ): string | null {
-    if (attackType === "light" || this.isMistwillowLightOverride(castTag))
-      return MISTWILLOW_HEAVY_BUFF
-    if (attackType === "heavy" || this.isMistwillowHeavyOverride(castTag, isExecution))
-      return MISTWILLOW_LIGHT_BUFF
+  private mistwillowBonusCategory(attackType: string, isExecution: boolean): string | null {
+    if (attackType === "light") return MISTWILLOW_HEAVY_BUFF
+    if (attackType === "heavy" || isExecution) return MISTWILLOW_LIGHT_BUFF
     if (attackType === "mixed") return "both"
     return null
   }
-  processMistwillowBuffGrant(castTag: string, time: number, props: SkillProperties): void {
+  processMistwillowBuffGrant(time: number, props: SkillProperties): void {
     const attackType = props.attackType ?? "none"
     const isExecution = !!props.isExecution
-    const category = this.mistwillowGrantCategory(castTag, attackType, isExecution)
+    const category = this.mistwillowGrantCategory(attackType, isExecution)
     if (!category) return
     const heavyActive = this.isBuffActive(MISTWILLOW_HEAVY_BUFF, time)
     const lightActive = this.isBuffActive(MISTWILLOW_LIGHT_BUFF, time)
@@ -623,7 +616,7 @@ export class BuffEngine {
       this.applyBuff(category, time, MISTWILLOW_BUFF_DURATION)
     }
   }
-  private mistwillowBonusValue(castTag: string, time: number, tagSet: Set<string>): number {
+  private mistwillowBonusValue(time: number, tagSet: Set<string>): number {
     if (this.params.armorSet !== "mistwillow") return 0
     let attackType = "none"
     for (const tag of tagSet)
@@ -632,7 +625,7 @@ export class BuffEngine {
         break
       }
     const isExecution = tagSet.has("prop:isExecution")
-    const category = this.mistwillowBonusCategory(castTag, attackType, isExecution)
+    const category = this.mistwillowBonusCategory(attackType, isExecution)
     if (!category) return 0
     const heavyActive = this.isBuffActiveAtTime(MISTWILLOW_HEAVY_BUFF, time)
     const lightActive = this.isBuffActiveAtTime(MISTWILLOW_LIGHT_BUFF, time)
@@ -699,17 +692,16 @@ export class BuffEngine {
         this.paramTier(module.requires.param) < module.requires.minTier
       )
         continue
-      if (module.excludes && matchesAnyTag(tagSet, module.excludes)) continue
-      if (!matchesScope(tagSet, module)) continue
+      if (!reaches(tagSet, module)) continue
 
       const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
-      const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks)
+      const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks, module)
       currentId = id
       for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
-    const mistwillow = this.mistwillowBonusValue(castTag, time, tagSet)
+    const mistwillow = this.mistwillowBonusValue(time, tagSet)
     if (mistwillow > 0) {
       effects.push({ statKey: "allDamageBoost", amount: mistwillow })
       breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow

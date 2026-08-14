@@ -19,13 +19,14 @@ function engine(params: Record<string, unknown> = {}) {
   return new BuffEngine({ classId: CLASS, ...params }, buffDefsForClass(CLASS), groupBuffDefs())
 }
 
-function skill(name: string, tags: string[], castTag: string) {
+function skill(name: string, tags: string[], castTag: string, receives: string[] = []) {
   return makeSkill(CLASS, {
     name,
     castTag,
     weaponOrAttribute: "Modao",
     attributeAttack: "Stonesplit",
     tags,
+    receives,
   })
 }
 
@@ -53,9 +54,17 @@ describe("Throat-Pierced", () => {
 
   it("stacks once per hit of an applying cast, to a ceiling of five", () => {
     const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 3, castTime: 1, duration: 1 })
+    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 3, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
     expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(3)
-    pierced.processSkillCast(CAST.snowpartingQStab, 2, { hitCount: 4, castTime: 1, duration: 1 })
+    pierced.processSkillCast(
+      CAST.snowpartingQStab,
+      2,
+      { hitCount: 4, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+    )
     expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 3.5)).toBe(5)
   })
 
@@ -71,14 +80,16 @@ describe("Throat-Pierced", () => {
       CAST.phalanxQ,
     ]) {
       const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-      pierced.processSkillCast(castTag, 0, { castTime: 1 }, true)
+      pierced.processSkillCast(castTag, 0, { castTime: 1 }, true, [BUFF.throatPierced])
       expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5), castTag).toBe(1)
     }
   })
 
   it("pays the applying families 3 points a stack and everything else 2", () => {
     const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 })
+    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
 
     expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBeCloseTo(0.15, 9)
     expect(share(pierced, applying(), 1.5, BUFF.throatPierced)).toBeCloseTo(0.15 + 0.15, 9)
@@ -87,14 +98,18 @@ describe("Throat-Pierced", () => {
 
   it("contributes nothing without the inner way slotted", () => {
     const unslotted = engine()
-    unslotted.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 })
+    unslotted.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
     expect(statOf(unslotted, applying(), 1.5, "phys.penetration")).toBe(0)
   })
 })
 
 describe("Shattered Ridge", () => {
   const boosted = () =>
-    skill("SnowpartingVC", [WEAPON.hengBlade, PROP.shatteredRidgeBoost], CAST.snowpartingVC)
+    skill("SnowpartingVC", [WEAPON.hengBlade, PROP.shatteredRidgeBoost], CAST.snowpartingVC, [
+      BUFF.shatteredRidgeDeflect,
+    ])
   const plain = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
   it("registers only while the set is equipped", () => {
@@ -131,7 +146,7 @@ describe("Iron Guards", () => {
 
   it("pays damage and both penetrations off Phalanx Special, on a 20-second cooldown", () => {
     const guarded = engine()
-    guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 })
+    guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
     expect(statOf(guarded, any(), 1, "allDamageBoost")).toBeCloseTo(0.08, 9)
     expect(statOf(guarded, any(), 1, "phys.penetration")).toBeCloseTo(0.12, 9)
     expect(statOf(guarded, any(), 1, "stonesplit.penetration")).toBeCloseTo(0.12, 9)

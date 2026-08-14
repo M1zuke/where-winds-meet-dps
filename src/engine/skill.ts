@@ -23,7 +23,6 @@ export interface HitVariant {
 }
 
 export interface HitTrigger {
-  id: string
   kind: TriggerKind
   targetId: string
   stacks: number
@@ -59,9 +58,12 @@ export interface Skill {
   attributeAttack: string
   tags?: string[]
   breakdownName?: string
-  // The identity a cast presents to `BuffModule.triggeredBy`. Authored, so a
+  // The identity this cast presents to the buff engine and to the migration
+  // that backfills `receives`/`triggersBuffs` on an old save. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
   castTag?: string
+  receives?: string[]
+  triggersBuffs?: string[]
   hits: SkillHit[]
   castFrames: number
   triggerable: boolean
@@ -86,16 +88,12 @@ export function newSkillId(): string {
 export function newHitId(): string {
   return nextId("hit")
 }
-export function newTriggerId(): string {
-  return nextId("tg")
-}
 export function newVariantId(): string {
   return nextId("hv")
 }
 
 export function makeTrigger(patch: Partial<HitTrigger> = {}): HitTrigger {
   return {
-    id: newTriggerId(),
     kind: "applyBuff",
     targetId: "",
     stacks: 1,
@@ -149,7 +147,6 @@ export function isTriggerCondition(x: unknown): x is TriggerCondition {
 export function isHitTrigger(x: unknown): x is HitTrigger {
   if (!x || typeof x !== "object") return false
   const t = x as Record<string, unknown>
-  if (typeof t.id !== "string" || !t.id) return false
   if (
     t.kind !== "applyBuff" &&
     t.kind !== "applyDebuff" &&
@@ -262,7 +259,13 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.castFrames !== "number" || !Number.isFinite(s.castFrames)) return false
   if (typeof s.createdAt !== "string") return false
   if (typeof s.updatedAt !== "string") return false
+  if (s.receives !== undefined && !isStringArray(s.receives)) return false
+  if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
   return true
+}
+
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((entry) => typeof entry === "string")
 }
 
 export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
@@ -302,6 +305,8 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,
     breakdownName: src.breakdownName,
+    receives: src.receives ? [...src.receives] : undefined,
+    triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),
@@ -312,7 +317,6 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
       })),
       triggers: h.triggers.map((tr) => ({
         ...tr,
-        id: newTriggerId(),
         conditions: tr.conditions ? tr.conditions.map((c) => ({ ...c })) : undefined,
       })),
     })),

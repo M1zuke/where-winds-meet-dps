@@ -1,4 +1,5 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
+import { BUFF } from "../buffs/ids"
 import { DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
 
@@ -27,6 +28,7 @@ export const toadPoison = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const combustion = defineDebuff({
@@ -52,6 +54,7 @@ export const combustion = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const fluteRipple = defineDebuff({
@@ -77,6 +80,7 @@ export const fluteRipple = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const bitterSeasonTick = defineDebuff({
@@ -104,6 +108,7 @@ export const bitterSeasonTick = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-08-06T00:00:00.000Z",
   updatedAt: "2026-08-06T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const DEBUFFS: readonly Debuff[] = [toadPoison, combustion, fluteRipple, bitterSeasonTick]

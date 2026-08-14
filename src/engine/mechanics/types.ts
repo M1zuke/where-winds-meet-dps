@@ -11,7 +11,6 @@ import type { BuffStatEffect } from "../buff"
 import type { CastBuffTag } from "../types"
 import type { StatusLedger } from "../ledger"
 import type { QiPhase } from "../behavior"
-import type { Scope } from "../scope"
 
 export interface MechanicSetup {
   inputs: Inputs
@@ -63,7 +62,7 @@ export interface MechanicSeedTarget {
 // `effects` is read through a call, never held as a value: a mechanic module
 // and the def that declares it import each other, so the row is built while
 // the mechanic module's own top-level consts are still in TDZ.
-export interface MechanicCatalogRow extends Scope {
+export interface MechanicCatalogRow {
   name: string
   effects(): readonly BuffStatEffect[]
   available(inputs: Inputs): boolean

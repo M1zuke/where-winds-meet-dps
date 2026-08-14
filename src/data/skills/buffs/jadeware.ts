@@ -1,6 +1,5 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF } from "./ids"
-import { CAST } from "../ids"
 import { stat } from "../../../engine/effects/effect"
 import { jadeware as jadewareSet } from "../../sets/jadeware"
 
@@ -8,32 +7,7 @@ export const jadeware = defineBuff({
   id: BUFF.jadeware,
   name: "Jadeware",
   requires: { set: jadewareSet.siteKey },
-  triggeredBy: [
-    CAST.fanQ,
-    CAST.fanQCancel,
-    CAST.fanQPrepull,
-    CAST.moBladeQ,
-    CAST.moBladeQPrepull,
-    CAST.ropeQ,
-    CAST.ropeQ1Hit,
-    CAST.snowpartingSpecial,
-    CAST.spearQ,
-    CAST.spearQ0HitCancel,
-    CAST.spearQ5HitCancel,
-    CAST.spearQPrepull,
-    CAST.swordMartialQ,
-    CAST.swordMartialQQ,
-    CAST.swordMartialQQ1HitCancel,
-    CAST.swordMartialQQ2HitCancel,
-    CAST.swordMartialQQQ,
-    CAST.swordQ,
-    CAST.swordQ2nd,
-    CAST.umbQ,
-    CAST.umbQPrepull,
-    CAST.umbrellaQ,
-    CAST.umbrellaQEmpoweredPerfectCatch,
-    CAST.umbrellaQPerfectCatch,
-  ],
+  affectsAll: true,
   duration: 10,
   cooldown: 12,
   // The pre-conversion `BuffDef` rendered its own key names and rounding

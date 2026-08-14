@@ -22,9 +22,7 @@ export const dragonFireSmolder1Hit = defineSkill({
       attributeMultiplier: 1.9272,
       physFixed: 241.5,
       attributeFixed: 0,
-      triggers: [
-        applyDebuff({ id: "tg-dragon-fire-smolder-1-hit-dark-fire-h0", target: DEBUFF.darkFire, extendFrames: 240 }),
-      ],
+      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

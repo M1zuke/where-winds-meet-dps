@@ -24,38 +24,32 @@ export const spearspecial = defineSkill({
       attributeFixed: 258,
       triggers: [
         applyDot({
-          id: "tg-spearspecial-bleed-1-h0",
           target: DEBUFF.bleedTick,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),
         applyDot({
-          id: "tg-spearspecial-bleed-2-h0",
           target: DEBUFF.bleedTick,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),
         applyDot({
-          id: "tg-spearspecial-bleed-3-h0",
           target: DEBUFF.bleedTick,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),
         castSkill({
-          id: "tg-spearspecial-detonation-h0",
           target: SKILL.bleedDetonation,
           stacks: 0,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),
         applyDebuff({
-          id: "tg-spearspecial-defense-down-h0",
           target: DEBUFF.defenseDown,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],
         }),
         applyBuff({
-          id: "tg-spearspecial-cooldown-h0",
           target: STATUS.spearSpecialCooldown,
           condition: { buffId: STATUS.riverFlow, op: "gte", stacks: 1 },
           conditions: [{ buffId: STATUS.spearSpecialCooldown, op: "eq", stacks: 0 }],

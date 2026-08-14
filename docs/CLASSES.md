@@ -116,9 +116,9 @@ module itself is inert everywhere else.
 ## Universal skills — one source, instantiated per class
 
 A skill every class can equip lives **once**, with `universal` as its id segment,
-and is instantiated per class: the `universal` segment in the skill id and in
-every trigger and condition id becomes the class id, and the attribute path
-becomes the instantiating class's primary attribute.
+and is instantiated per class: the `universal` segment in the skill id, and in
+every id a trigger's target or a condition's buff names, becomes the class id,
+and the attribute path becomes the instantiating class's primary attribute.
 
 - **Never duplicate a universal skill into a class folder.**
 - The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved

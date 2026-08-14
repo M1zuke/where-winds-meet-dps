@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { useId, useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
@@ -23,6 +23,8 @@ import {
   type AppliesRow,
   type ReceivesRow,
 } from "../../../../engine/buffs/catalog"
+import { catalogBuffDefs } from "../../../../engine/buffs/data"
+import type { BuffModule } from "../../../../engine/buffs/buffModule"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
   saveCustomSkill,
@@ -155,6 +157,21 @@ function dotDisplayName(debuff: Debuff): string {
   return debuff.name.replace(/\s*Tick$/, "")
 }
 
+function declaresOwnReach(module: BuffModule): boolean {
+  return !module.affectsAll
+}
+
+function buffAddOptions(
+  picked: readonly string[] | undefined,
+  modules: readonly BuffModule[],
+): ComboboxOption[] {
+  const pickedIds = new Set(picked ?? [])
+  return modules
+    .filter((module) => !pickedIds.has(module.id))
+    .map((module) => ({ value: module.id, label: module.name }))
+    .sort((optionA, optionB) => optionA.label.localeCompare(optionB.label))
+}
+
 const INNER_WAY_DOT_TAG = "source:innerWayDot"
 
 function typeBadge(skill: Skill, t: (text: string) => string): string {
@@ -280,6 +297,33 @@ export function SkillsTab({
 
   function patchDraft(patch: Partial<Skill>) {
     setDraft((prev) => (prev ? { ...prev, ...patch } : prev))
+  }
+
+  function addReceivesBuff(buffId: string) {
+    if (!buffId) return
+    setDraft((prev) => {
+      if (!prev || prev.receives?.includes(buffId)) return prev
+      return { ...prev, receives: [...(prev.receives ?? []), buffId] }
+    })
+  }
+  function removeReceivesBuff(buffId: string) {
+    setDraft((prev) =>
+      prev ? { ...prev, receives: (prev.receives ?? []).filter((id) => id !== buffId) } : prev,
+    )
+  }
+  function addTriggersBuff(buffId: string) {
+    if (!buffId) return
+    setDraft((prev) => {
+      if (!prev || prev.triggersBuffs?.includes(buffId)) return prev
+      return { ...prev, triggersBuffs: [...(prev.triggersBuffs ?? []), buffId] }
+    })
+  }
+  function removeTriggersBuff(buffId: string) {
+    setDraft((prev) =>
+      prev
+        ? { ...prev, triggersBuffs: (prev.triggersBuffs ?? []).filter((id) => id !== buffId) }
+        : prev,
+    )
   }
 
   function patchHit(idx: number, patch: Partial<SkillHit>) {
@@ -518,14 +562,37 @@ export function SkillsTab({
     [draft],
   )
 
+  const scopeSkills = useMemo(
+    () => [...builtinSkills, ...classSkills],
+    [builtinSkills, classSkills],
+  )
+
+  const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
+  const buffNameById = useMemo(
+    () => new Map(reachableBuffModules.map((module) => [module.id, module.name] as const)),
+    [reachableBuffModules],
+  )
+  const receivableBuffModules = useMemo(
+    () => reachableBuffModules.filter(declaresOwnReach),
+    [reachableBuffModules],
+  )
+  const receivesAddOptions = useMemo(
+    () => buffAddOptions(draft?.receives, receivableBuffModules),
+    [draft?.receives, receivableBuffModules],
+  )
+  const triggersAddOptions = useMemo(
+    () => buffAddOptions(draft?.triggersBuffs, reachableBuffModules),
+    [draft?.triggersBuffs, reachableBuffModules],
+  )
+
   const appliesRows = useMemo<AppliesRow[]>(
-    () => (draft ? appliesForSkill(draft, classId) : []),
-    [draft, classId],
+    () => (draft ? appliesForSkill(draft, classId, scopeSkills) : []),
+    [draft, classId, scopeSkills],
   )
 
   const receivesRows = useMemo<ReceivesRow[]>(
-    () => (draft ? receivesForSkill(draft, classId, inputs) : []),
-    [draft, classId, inputs],
+    () => (draft ? receivesForSkill(draft, classId, inputs, scopeSkills) : []),
+    [draft, classId, inputs, scopeSkills],
   )
   const specMechanicRows = useMemo(
     () => receivesRows.filter((row) => row.isSpecMechanic),
@@ -1019,22 +1086,83 @@ export function SkillsTab({
                           onChange={setMysticFlag}
                         />
                       </Field>
-                      <div className={styles.skillsHint}>
-                        {t("Optional flags used by site buff matching. All fields are optional.")}
-                      </div>
-                      {otherTags.length > 0 && (
-                        <Field label={t("Other Tags")}>
+                      <FieldGroup label={t("Buffs Received")}>
+                        <div className={styles.skillsFieldStack}>
                           <div className={styles.skillsChips}>
-                            {otherTags.map((tag) => (
-                              <span
-                                className={`${styles.skillsChip} ${styles.isReadonly}`}
-                                key={tag}
-                              >
-                                {tag}
+                            {(draft.receives ?? []).map((buffId) => (
+                              <span className={styles.skillsChip} key={buffId}>
+                                {buffNameById.get(buffId) ?? buffId}
+                                <button
+                                  type="button"
+                                  aria-label={t("Remove")}
+                                  onClick={() => removeReceivesBuff(buffId)}
+                                >
+                                  ×
+                                </button>
                               </span>
                             ))}
                           </div>
-                        </Field>
+                          <Combobox
+                            className={styles.fieldCombobox}
+                            value=""
+                            options={receivesAddOptions}
+                            placeholder={t("Add buff…")}
+                            aria-label={t("Add received buff")}
+                            onChange={addReceivesBuff}
+                          />
+                        </div>
+                      </FieldGroup>
+                      <FieldGroup label={t("Buffs Triggered")}>
+                        <div className={styles.skillsFieldStack}>
+                          <div className={styles.skillsChips}>
+                            {(draft.triggersBuffs ?? []).map((buffId) => (
+                              <span className={styles.skillsChip} key={buffId}>
+                                {buffNameById.get(buffId) ?? buffId}
+                                <button
+                                  type="button"
+                                  aria-label={t("Remove")}
+                                  onClick={() => removeTriggersBuff(buffId)}
+                                >
+                                  ×
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                          <Combobox
+                            className={styles.fieldCombobox}
+                            value=""
+                            options={triggersAddOptions}
+                            placeholder={t("Add buff…")}
+                            aria-label={t("Add triggered buff")}
+                            onChange={addTriggersBuff}
+                          />
+                        </div>
+                      </FieldGroup>
+                      <div className={styles.skillsHint}>
+                        {t(
+                          "Weapon Type, Attunement and Mystic Category feed gear-boost matching. A scoped buff reaches this skill only if it is listed under Buffs Received — a buff that applies to your whole build applies regardless — and Buffs Triggered names the buffs this skill's cast applies. All fields are optional.",
+                        )}
+                      </div>
+                      {otherTags.length > 0 && (
+                        <>
+                          <Field label={t("Other Tags")}>
+                            <div className={styles.skillsChips}>
+                              {otherTags.map((tag) => (
+                                <span
+                                  className={`${styles.skillsChip} ${styles.isReadonly}`}
+                                  key={tag}
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </Field>
+                          <div className={styles.skillsHint}>
+                            {t(
+                              "Read-only — still used for mechanic scope, attunement reach and a couple of magnitude-picking guards, but no longer for which buffs reach this skill.",
+                            )}
+                          </div>
+                        </>
                       )}
                       <div className={`${styles.skillsHint} ${styles.skillsEffectsFlags}`}>
                         <strong>{t("Skill Flags")}:</strong>
@@ -1050,7 +1178,7 @@ export function SkillsTab({
                         {triggerRows.length === 0 ? (
                           <div className={styles.skillsEffectsEmpty}>—</div>
                         ) : (
-                          triggerRows.map((trigger) => {
+                          triggerRows.map((trigger, triggerIndex) => {
                             const effKind = effectiveTriggerKind(trigger)
                             const summary = summarizeTriggerDraft(trigger)
                             const scopeNote =
@@ -1070,7 +1198,7 @@ export function SkillsTab({
                             return (
                               <div
                                 className={`${styles.skillsEffectsRow} ${kindClass(effKind)}`}
-                                key={trigger.id}
+                                key={triggerIndex}
                                 title={tooltip}
                               >
                                 <span className={styles.skillsEffectsRowName}>{summary.label}</span>
@@ -1289,5 +1417,21 @@ function Field({
         {unit && <span className={styles.skillsFieldUnit}>{unit}</span>}
       </span>
     </label>
+  )
+}
+
+function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  const labelId = useId()
+  return (
+    <div
+      className={`${styles.skillsField} ${styles.skillsFieldWide}`}
+      role="group"
+      aria-labelledby={labelId}
+    >
+      <span id={labelId} className={styles.skillsFieldLabel}>
+        {label}
+      </span>
+      <span className={styles.skillsFieldInput}>{children}</span>
+    </div>
   )
 }

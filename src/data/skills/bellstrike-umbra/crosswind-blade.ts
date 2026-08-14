@@ -22,10 +22,7 @@ export const crosswindBlade = defineSkill({
       attributeMultiplier: 0.9,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [
-        applyDot({ id: "tg-crosswind-blade-bleed", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-crosswind-blade-detonate", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

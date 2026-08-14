@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, MYSTIC, PROP, ROLE } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const dragonHeadPlus = defineSkill({
@@ -11,6 +12,8 @@ export const dragonHeadPlus = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonHeadPlus,
+  receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
+  triggersBuffs: [BUFF.surgingWaves],
   guaranteedPrecision: true,
   castFrames: 246,
   triggerable: true,
