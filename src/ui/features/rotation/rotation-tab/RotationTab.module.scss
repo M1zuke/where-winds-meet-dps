@@ -1,0 +1,18 @@
+@use "breakpoints";
+
+.overviewGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.spanColumns {
+  grid-column: 1 / -1;
+}
+
+@include breakpoints.below(breakpoints.$bp-1100) {
+  .overviewGrid {
+    grid-template-columns: 1fr;
+  }
+}

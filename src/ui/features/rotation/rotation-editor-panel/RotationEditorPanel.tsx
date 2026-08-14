@@ -108,7 +108,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const confirm = useConfirm()
 
   const [saved, setSaved] = useState<Rotation[]>(() => loadCustomRotations())
-  const [expanded, setExpanded] = useState(true)
   const [nameDraft, setNameDraft] = useState<{ rotationId: string | null; value: string } | null>(
     null,
   )
@@ -304,7 +303,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function handleNew() {
     const empty = makeRotation(inputs.classId)
     onChange({ ...inputs, activeCustomRotation: empty, selectedBuiltinRotationId: null })
-    setExpanded(true)
   }
 
   function forkToCustom() {
@@ -319,7 +317,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       prePullHitsCount: activeRotation.prePullHitsCount,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
-    setExpanded(true)
   }
 
   function handleSave() {
@@ -387,7 +384,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       const persisted = saveCustomRotation(imported)
       setSaved(loadCustomRotations())
       onChange({ ...inputs, activeCustomRotation: persisted, selectedBuiltinRotationId: null })
-      setExpanded(true)
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
       alert(`${t("Import failed")}: ${msg}`)
@@ -429,9 +425,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         <button type="button" className="btn" onClick={handleNew}>
           + {t("New")}
         </button>
-        <button type="button" className="btn" onClick={() => setExpanded((prev) => !prev)}>
-          {expanded ? t("Close editor") : t("Open editor")}
-        </button>
         <input
           ref={fileInputRef}
           type="file"
@@ -441,7 +434,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         />
       </div>
 
-      {expanded && activeRotation && (
+      {activeRotation && (
         <div className={styles.editor}>
           <div className={styles.meta}>
             <label className={styles.field}>

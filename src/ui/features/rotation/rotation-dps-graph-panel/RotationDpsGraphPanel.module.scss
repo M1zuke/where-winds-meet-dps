@@ -1,0 +1,133 @@
+$y-axis-width: 40px;
+$axis-gap: 8px;
+$plot-height: 220px;
+
+.graphPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plotRow {
+  display: grid;
+  grid-template-columns: $y-axis-width 1fr;
+  gap: $axis-gap;
+}
+
+.yAxis {
+  position: relative;
+  height: $plot-height;
+}
+
+.yAxisLabel {
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 0.7em;
+  color: #777;
+  font-variant-numeric: tabular-nums;
+}
+
+.plot {
+  height: $plot-height;
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface-raised);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gridLine {
+  stroke: var(--color-surface-raised);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.area {
+  fill: rgba(192, 160, 96, 0.16);
+}
+
+.line {
+  fill: none;
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.averageLine {
+  stroke: #6a9bd8;
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.xAxis {
+  display: grid;
+  grid-template-columns: $y-axis-width 1fr;
+  gap: $axis-gap;
+}
+
+.xAxisTrack {
+  grid-column: 2;
+  position: relative;
+  height: 16px;
+}
+
+.xAxisTick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.7em;
+  color: #777;
+  font-variant-numeric: tabular-nums;
+}
+
+.alignStart {
+  transform: none;
+}
+
+.alignEnd {
+  transform: translateX(-100%);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-left: $y-axis-width + $axis-gap;
+  font-size: 0.75em;
+  color: var(--color-text-muted);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swatch {
+  width: 14px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
+}
+
+.swatchLine {
+  border-top-color: var(--color-accent);
+}
+
+.swatchAverage {
+  border-top-width: 1px;
+  border-top-style: dashed;
+  border-top-color: #6a9bd8;
+}
+
+.legendValue {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
