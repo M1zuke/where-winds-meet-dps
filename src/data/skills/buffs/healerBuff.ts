@@ -1,6 +1,5 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF } from "./ids"
-import { CAST } from "../ids"
 import { stat } from "../../../engine/effects/effect"
 
 // The display chip shows the flat 20% — `phaseBonus` only ever applied to
@@ -8,7 +7,7 @@ import { stat } from "../../../engine/effects/effect"
 export const healerBuff = defineBuff({
   id: BUFF.healerBuff,
   name: "Healer Buff",
-  triggeredBy: [CAST.healerBuff],
+  affectsAll: true,
   duration: 12,
   buffAppliesOnCastEnd: true,
   // "(team)" is the pre-conversion `groupDamage` bonus label — the only

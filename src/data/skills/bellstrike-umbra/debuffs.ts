@@ -1,5 +1,5 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
-import { PARAM } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
@@ -32,6 +32,7 @@ export const toadPoison = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const combustion = defineDebuff({
@@ -58,6 +59,7 @@ export const combustion = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   tags: [ROLE.combustion],
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const darkFire = defineDebuff({
@@ -85,6 +87,7 @@ export const darkFire = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-07-30T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const fluteRipple = defineDebuff({
@@ -111,6 +114,7 @@ export const fluteRipple = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const bleedTick = defineDebuff({
@@ -145,6 +149,7 @@ export const bleedTick = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   tags: [ROLE.bleedTick],
+  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const bitterSeasonTick = defineDebuff({
@@ -172,6 +177,7 @@ export const bitterSeasonTick = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-08-06T00:00:00.000Z",
   updatedAt: "2026-08-06T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 // 5 %: the spear special's in-game hint, "Reduces Physical Defense by 5 %

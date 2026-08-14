@@ -38,13 +38,16 @@ empowered form is authored** — never with a per-skill branch in the timeline.
 
 ## Identity and tags
 
-- **Ids are matched, names are not.** A modifier reaches a skill through
-  namespaced tags only. Never make a display name load-bearing, and never match
-  a tag by prefix.
-- Matching is **exact membership** for both directions. Express a family by
-  giving every member the family tag _as well as_ its own — never by one name
-  being a stem of another. A skill may then belong to several families, which a
-  prefix cannot express.
+- **Ids are matched, names are not.** A buff reaches or is triggered by a skill
+  or debuff through an id it declares — `receives` / `triggersBuffs` — never a
+  display name. Namespaced tags still address the few things that read them
+  directly: a mechanic's own scope, an attunement's reach, and a guard picking
+  between magnitudes under a single reach. Never make a display name
+  load-bearing, and never match a tag or an id by prefix.
+- Wherever a tag is still the addressing mechanism, matching is **exact
+  membership**. Express a family by giving every member the family tag _as
+  well as_ its own — never by one name being a stem of another. A skill may
+  then belong to several families, which a prefix cannot express.
 - **The breakdown row a cast reports into is authored, not derived.** A skill's
   `breakdownName` is the in-game name its casts are summed under, so the
   engine-level variants of one in-game skill read as a single row; absent or
@@ -54,9 +57,14 @@ empowered form is authored** — never with a per-skill branch in the timeline.
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the
   cast that applies it report as one row whenever they carry the same name.
-- ⚠️ **Two fields are named for triggering, in opposite directions.** A hit's
-  `triggers` is **outgoing** — what this hit sets off — and is persisted user
-  data. A buff-def's `triggeredBy` is **incoming** — the casts that set it off.
+- ⚠️ **Three fields name this relationship, and the directions differ.** A
+  hit's `triggers` is **outgoing** — what this hit sets off — and is persisted
+  user data. A skill's or debuff's `triggersBuffs` is also **outgoing** — the
+  buff ids a cast, or every tick of a debuff's `dot`, sets off. A skill's or
+  debuff's `receives` is **incoming** — the buff ids that reach it. A buff
+  module itself declares neither: it is a policy (`requires`, always-active,
+  cooldown, rate limits) and a magnitude, addressed only by the id the skill or
+  debuff names.
 
 ## Triggers
 
@@ -109,11 +117,22 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 
 ### The class-buff system — buff modules
 
-Tag-matched, not id-referenced. A module declares **who applies it**
-(`triggeredBy` cast tags, or always-active, gated by `requires`), **who it
-boosts** (`affects` tags, a property, weapon types, exclusions), and its
-**magnitude** as effects.
+Id-referenced, not tag-matched. A module declares its **activation policy**
+(always-active, or gated by `requires`, a cooldown, a rate limit) and its
+**magnitude** as effects. Who applies it and who it boosts are declared by the
+skill or debuff that owns that direction — `triggersBuffs` for applying,
+`receives` for boosting — never by the module itself.
 
+- A debuff's `triggersBuffs` fires on every tick of its `dot`, not once per
+  window — the module's own policy (`cooldown`, a rate limit, `triggerPhase`,
+  `requiresActiveBuffOnTrigger`, `requires`) gates a tick exactly as it gates a
+  cast, so a def that should fire once per application still needs that gate
+  authored on the module, not assumed from the trigger site.
+- ⚠️ **A buff a debuff's tick applies can reach only the tick that applied it
+  and every later tick (of the same or a different debuff), or a mechanic's own
+  extra event — never a regular hit, and never a cast's displayed buff list.**
+  Do not declare `triggersBuffs` on a debuff expecting it to reach either of
+  those.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this
@@ -145,10 +164,11 @@ a refactor.
 3. `skillType` correct — it selects the boost bucket and the sustain branch.
 4. `elevatedAttributeMultiplier` left default except on a real DoT tick.
 5. DoTs on a debuff's `dot`, never faked with a `sustain` hit.
-6. Giving a status: a hit trigger (editor system) or a `requires`-gated module
-   with `triggeredBy` (class-buff system). Links to a stacking DoT stay
-   logic-free.
-7. Receiving: the skill declares the exact tags the buff names.
+6. Giving a status: a hit trigger (editor system) or a `requires`-gated
+   module, applied by the skill's own `triggersBuffs`, or by every tick of a
+   debuff's `dot` via the debuff's own `triggersBuffs` (class-buff system).
+   Links to a stacking DoT stay logic-free.
+7. Receiving: the skill or debuff lists the buff's id in its own `receives`.
 8. **No invisible magic** — the effect is a data-driven def visible in the Skill
    Editor. Extend the schema rather than branching in the timeline.
 9. Verify: locked fixtures stay bit-exact, and add or extend a test. The

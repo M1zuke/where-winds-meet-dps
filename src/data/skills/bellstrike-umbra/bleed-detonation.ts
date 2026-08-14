@@ -1,8 +1,10 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import {
+  ZENITH_BAR_BUFF_ID,
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
   ZENITH_SMOLDER_EXTEND_FRAMES,
@@ -17,6 +19,7 @@ export const bleedDetonation = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.bleedDetonation,
+  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, ZENITH_BAR_BUFF_ID, BUFF.soulShaken],
   castFrames: 0,
   triggerable: true,
   hits: [
@@ -28,7 +31,6 @@ export const bleedDetonation = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyDebuff({
-          id: "tg-bleed-detonation-zenith-dark-fire-h0",
           target: DEBUFF.darkFire,
           stacks: 0,
           condition: { buffId: ZENITH_DETONATION_BUFF_ID, op: "gte", stacks: 1 },

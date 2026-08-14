@@ -1,5 +1,6 @@
 import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const bleedTick = defineSkill({
@@ -12,6 +13,7 @@ export const bleedTick = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.bleedTick,
+  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
   elevatedAttributeMultiplier: false,
   castFrames: 0,
   triggerable: true,

@@ -39,9 +39,18 @@ interface Props {
   placeholder?: string
   disabled?: boolean
   className?: string
+  "aria-label"?: string
 }
 
-export function Combobox({ value, options, onChange, placeholder, disabled, className }: Props) {
+export function Combobox({
+  value,
+  options,
+  onChange,
+  placeholder,
+  disabled,
+  className,
+  "aria-label": ariaLabel,
+}: Props) {
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [highlight, setHighlight] = useState(0)
@@ -116,6 +125,7 @@ export function Combobox({ value, options, onChange, placeholder, disabled, clas
         disabled={disabled}
         autoComplete="off"
         role="combobox"
+        aria-label={ariaLabel}
         aria-expanded={open}
         aria-autocomplete="list"
         onFocus={openWithReset}

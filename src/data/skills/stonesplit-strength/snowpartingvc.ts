@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const snowpartingvc = defineSkill({
@@ -19,6 +20,13 @@ export const snowpartingvc = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVC,
+  receives: [
+    BUFF.frostCladSnowbreak,
+    BUFF.frostCladSnowbreakIPConsume,
+    BUFF.frostCladSnowbreakT6,
+    BUFF.shatteredRidgeDeflect,
+  ],
+  triggersBuffs: [BUFF.throatPierced, BUFF.forgetfulness],
   castFrames: 52,
   triggerable: true,
   hits: [
@@ -28,9 +36,7 @@ export const snowpartingvc = defineSkill({
       attributeMultiplier: 3.1153,
       physFixed: 575,
       attributeFixed: 313,
-      triggers: [
-        castSkill({ id: "tg-snowpartingvc-cast", target: SKILL.anxisoldierheng, stacks: 0 }),
-      ],
+      triggers: [castSkill({ target: SKILL.anxisoldierheng, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

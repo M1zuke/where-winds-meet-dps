@@ -23,9 +23,8 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
       physFixed: 0,
       attributeFixed: 0,
       triggers: [
-        applyDot({ id: "tg-sword-r-charge-follow-up-1-hit-cancel-bleed-h0", target: DEBUFF.bleedTick }),
+        applyDot({ target: DEBUFF.bleedTick }),
         detonateDot({
-          id: "tg-sword-r-charge-follow-up-1-hit-cancel-detonate-h0",
           target: DEBUFF.bleedTick,
           stacks: 0,
         }),

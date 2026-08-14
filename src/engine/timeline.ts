@@ -18,9 +18,10 @@ import {
   dotRowName,
   dotTickDamage,
   dotTickSkill,
-  emitDotTicks,
+  planDotTicks,
   resolveTickDot,
   tickSourceSkillId,
+  type DotTickPlan,
 } from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
@@ -307,6 +308,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             cast.frame / FPS,
             propsOfSkill(cast.skill, cast.hitCount),
             cast.generated,
+            cast.skill.triggersBuffs ?? [],
           )
           const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
           propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
@@ -783,6 +785,18 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
+  interface DotTickEntry extends DotTickPlan {
+    seq: number
+    debuff: Debuff
+    debuffForTick: Debuff
+    dotSkill: Skill
+    dotName: string
+    dotBreakdownName: string
+    dotType: string
+  }
+
+  const dotTickEntries: DotTickEntry[] = []
+  let dotTickSeq = 0
   for (const [buffId, arr] of ledger.entries()) {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
@@ -796,7 +810,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
     const dotType = dot.skillType || "sustain"
 
-    for (const tick of emitDotTicks({
+    for (const plan of planDotTicks({
       debuff: status,
       dot,
       windows: arr,
@@ -809,26 +823,56 @@ export function simulateTimeline(inputs: Inputs): Result {
         }
         return 1
       },
-      damageAt: (frame, shape, scale) => {
-        const st = resolveState(frame, dotSkill)
-        return (
-          dotTickDamage(debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, shape) *
-          (scale ?? 1)
-        )
-      },
     })) {
-      totalDamage += tick.damage
-      add(dotName, dotType, 1, tick.damage, dotBreakdownName)
-      timeline.push({
-        frame: tick.frame,
-        timeSec: tick.frame / FPS,
-        skillName: dotName,
-        type: dotType,
-        kind: "dot",
-        damage: tick.damage,
-        inWindow: true,
+      dotTickEntries.push({
+        ...plan,
+        seq: dotTickSeq++,
+        debuff: status,
+        debuffForTick,
+        dotSkill,
+        dotName,
+        dotBreakdownName,
+        dotType,
       })
     }
+  }
+
+  // A tick's declared buffs must reach `buffHistory` before ANY tick's damage
+  // is queried, in real chronological order across every debuff — not in the
+  // per-debuff batches `dotTickEntries` was built in above, or a tick from a
+  // debuff visited later in `ledger.entries()` could be evaluated as if an
+  // earlier-in-time tick from a different debuff hadn't triggered yet.
+  const byTriggerTime = [...dotTickEntries].sort(
+    (left, right) => left.frame - right.frame || left.seq - right.seq,
+  )
+  for (const entry of byTriggerTime) {
+    if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
+      buffEngine?.triggerDeclaredBuffs(
+        entry.debuff.triggersBuffs,
+        castTagOf(entry.dotSkill),
+        entry.frame / FPS,
+        propsOfSkill(entry.dotSkill, 1),
+      )
+    }
+  }
+
+  for (const entry of dotTickEntries) {
+    const st = resolveState(entry.frame, entry.dotSkill)
+    const damage =
+      dotTickDamage(entry.debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, entry.shape) *
+      (entry.scale ?? 1) *
+      entry.weight
+    totalDamage += damage
+    add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName)
+    timeline.push({
+      frame: entry.frame,
+      timeSec: entry.frame / FPS,
+      skillName: entry.dotName,
+      type: entry.dotType,
+      kind: "dot",
+      damage,
+      inWindow: true,
+    })
   }
 
   for (const { mechanic, state } of mechanics) {

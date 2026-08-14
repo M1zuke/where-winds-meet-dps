@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 
 export const snowpartingspecial = defineSkill({
@@ -12,6 +13,7 @@ export const snowpartingspecial = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSpecial,
+  triggersBuffs: [BUFF.innerPassion, BUFF.jadeware],
   castFrames: 125,
   triggerable: true,
   hits: [
@@ -77,7 +79,7 @@ export const snowpartingspecial = defineSkill({
       attributeMultiplier: 0.6299555556,
       physFixed: 116.111111111111,
       attributeFixed: 63.33333333333,
-      triggers: [applyBuff({ id: "tg-snowpartingspecial-dread", target: STATUS.dread })],
+      triggers: [applyBuff({ target: STATUS.dread })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

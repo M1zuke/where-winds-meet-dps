@@ -22,7 +22,7 @@ export const swordChargeStage13Hit = defineSkill({
       attributeMultiplier: 0.47008333333333335,
       physFixed: 86.66666666666667,
       attributeFixed: 47.166666666666664,
-      triggers: [applyDot({ id: "tg-sword-charge-stage-1-3-hit-bleed-h0", target: DEBUFF.bleedTick })],
+      triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(1, {
       frame: 22,
@@ -30,7 +30,7 @@ export const swordChargeStage13Hit = defineSkill({
       attributeMultiplier: 0.47008333333333335,
       physFixed: 86.66666666666667,
       attributeFixed: 47.166666666666664,
-      triggers: [applyDot({ id: "tg-sword-charge-stage-1-3-hit-bleed-h1", target: DEBUFF.bleedTick })],
+      triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(2, {
       frame: 44,
@@ -38,7 +38,7 @@ export const swordChargeStage13Hit = defineSkill({
       attributeMultiplier: 0.47008333333333335,
       physFixed: 86.66666666666667,
       attributeFixed: 47.166666666666664,
-      triggers: [applyDot({ id: "tg-sword-charge-stage-1-3-hit-bleed-h2", target: DEBUFF.bleedTick })],
+      triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
   ],
   createdAt: "2026-07-31T00:00:00.000Z",

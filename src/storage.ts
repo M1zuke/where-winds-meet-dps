@@ -17,7 +17,6 @@ import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "
 import {
   newSkillId,
   newHitId,
-  newTriggerId,
   newVariantId,
   isSkill,
   isHitVariant,
@@ -25,6 +24,7 @@ import {
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { seedSkillFromBuiltin } from "./engine/skill"
+import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
 import { isBuff, makeBuff, newBuffId } from "./engine/buff"
@@ -580,6 +580,119 @@ function healSkillTags(id: string, tags: string[]): string[] {
   return healed.size === tags.length ? tags : [...healed]
 }
 
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations". Before
+// `Skill.receives` / `Skill.triggersBuffs` / `Debuff.receives` existed, a buff
+// def named who it reached (`affects`) and what cast set it off (`triggeredBy`)
+// itself; a skill or debuff saved under that scheme carries neither field, and
+// its old reach is recoverable purely from the `role:` / `type:` / `cast:` tags
+// it already carries. These are the exact `affects` / `triggeredBy` values every
+// def declared before the inversion, frozen here rather than read from the
+// (now-inverted) defs — storage is specified by the shape it was written in.
+const LEGACY_AFFECTS: Record<string, readonly string[]> = {
+  "role:bleedTick": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"],
+  "role:bleedDetonation": [
+    "bellstrikeUmbraBleedPen",
+    "bellstrikeUmbraBleedingDamage",
+    "buff-bellstrikeUmbra-zenith-bar",
+  ],
+  "role:combustion": ["bellstrikeUmbraBleedingDamage"],
+  "role:fireOil": ["bellstrikeUmbraBleedingDamage"],
+  "role:fivefoldBleed": ["bellstrikeUmbraBleedingDamage"],
+  "role:phalanxCharged": ["mountainSplitter"],
+  "role:anxiSoldierMoDown": ["mountainSplitter"],
+  "role:anxiSoldierMoJump": ["mountainSplitter"],
+  "role:snowpartingVC": [
+    "frostCladSnowbreak",
+    "frostCladSnowbreakIPConsume",
+    "frostCladSnowbreakT6",
+  ],
+  "role:dragonHeadPlus": ["dragonHeadLowHp"],
+  "role:dragonHead": ["surgingWaves"],
+  "type:sustain": ["soulShaken"],
+  "prop:shatteredRidgeBoost": ["shatteredRidgeDeflect"],
+}
+const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
+  "cast:anxiSoldierMoDown": ["mountainSplitter", "throatPierced"],
+  "cast:anxiSoldierMoJump": ["mountainSplitter", "throatPierced"],
+  "cast:anxiSoldierMoSweep": ["mountainSplitter", "throatPierced"],
+  "cast:phalanxSpecial": ["ironGuards"],
+  "cast:phalanxSpecialPrepull": ["ironGuards"],
+  "cast:phalanxChargedS3": ["throatPierced", "chargeEnhancement"],
+  "cast:phalanxChargedS3InnerPassion": ["throatPierced", "chargeEnhancement"],
+  "cast:anxiSoldierHeng": ["throatPierced"],
+  "cast:snowpartingQStab": ["throatPierced"],
+  "cast:snowpartingVC": ["throatPierced", "forgetfulness"],
+  "cast:snowpartingVCPrepull": ["throatPierced", "forgetfulness"],
+  "cast:phalanxQ": ["throatPierced"],
+  "cast:snowpartingCharged": ["forgetfulness"],
+  "cast:snowpartingChargedForgetfulness": ["forgetfulness"],
+  "cast:snowpartingDual": ["forgetfulness"],
+  "cast:snowpartingDualPrepull": ["forgetfulness"],
+  "cast:deflect": ["forgetfulness"],
+  "cast:snowpartingSpecial": ["innerPassion", "jadeware"],
+  "cast:spearQ": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQ0HitCancel": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQ5HitCancel": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQPrepull": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearHeavy": ["soulShaken"],
+  "cast:spearHeavy1Hit": ["soulShaken"],
+  "cast:spearHeavy1HitPrepull": ["soulShaken"],
+  "cast:perfectDodge": ["mirageBonus"],
+  "cast:perfectDodgeFull": ["mirageBonus"],
+  "cast:ghostlySteps": ["mirage"],
+  "cast:fluteOfTheTidesCancel": ["fluteBoost"],
+  "cast:fluteOfTheTidesFull": ["fluteBoost"],
+  "cast:fluteOfTheTidesPrepull": ["fluteBoost"],
+  "cast:healerBuff": ["healerBuff"],
+  "cast:dragonHeadPlus": ["surgingWaves"],
+  "cast:goldenBodyCancel": ["rainwhisperShield"],
+  "cast:goldenBodyDeflectCancel": ["rainwhisperShield"],
+  "cast:moBladeQ": ["rainwhisperShield", "jadeware"],
+  "cast:moBladeQPrepull": ["rainwhisperShield", "jadeware"],
+  "cast:fanQ": ["jadeware"],
+  "cast:fanQCancel": ["jadeware"],
+  "cast:fanQPrepull": ["jadeware"],
+  "cast:ropeQ": ["jadeware"],
+  "cast:ropeQ1Hit": ["jadeware"],
+  "cast:swordMartialQ": ["jadeware"],
+  "cast:swordMartialQQ": ["jadeware"],
+  "cast:swordMartialQQ1HitCancel": ["jadeware"],
+  "cast:swordMartialQQ2HitCancel": ["jadeware"],
+  "cast:swordMartialQQQ": ["jadeware"],
+  "cast:swordQ": ["jadeware"],
+  "cast:swordQ2nd": ["jadeware"],
+  "cast:umbQ": ["jadeware"],
+  "cast:umbQPrepull": ["jadeware"],
+  "cast:umbrellaQ": ["jadeware"],
+  "cast:umbrellaQEmpoweredPerfectCatch": ["jadeware"],
+  "cast:umbrellaQPerfectCatch": ["jadeware"],
+}
+
+function legacyReceives(tags: readonly string[]): string[] {
+  return [...new Set(tags.flatMap((tag) => LEGACY_AFFECTS[tag] ?? []))]
+}
+
+// A skill's `type:<skillType>` tag is derived, never stored, so it is added
+// back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
+function healSkillReach(
+  skill: Pick<Skill, "receives" | "triggersBuffs" | "tags" | "skillType" | "castTag" | "name">,
+  tags: readonly string[],
+): Pick<Skill, "receives" | "triggersBuffs"> {
+  const legacyTags = skill.skillType ? [...tags, `type:${skill.skillType}`] : tags
+  const receives = Array.isArray(skill.receives) ? skill.receives : legacyReceives(legacyTags)
+  const triggersBuffs = Array.isArray(skill.triggersBuffs)
+    ? skill.triggersBuffs
+    : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
+  return { receives, triggersBuffs }
+}
+
+function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
+  if (Array.isArray(debuff.receives)) return debuff.receives
+  const tags = debuff.tags ?? []
+  const legacyTags = debuff.dot ? [...tags, `type:${debuff.dot.skillType || "sustain"}`] : tags
+  return legacyReceives(legacyTags)
+}
+
 // These coefficients were replaced wholesale, so a stored copy carrying the
 // superseded workbook numbers scores ~69x low. Only
 // an untouched copy is rewritten — a hit the user actually edited is left
@@ -626,18 +739,20 @@ function hydrateSkill(s: Skill): Skill {
   void _legacyAbilityTag
   const id = migrateEntityId(s.id)
   const tags = Array.isArray(s.tags) ? s.tags.filter((t): t is string => typeof t === "string") : []
+  const healedTags = healSkillTags(id, tags)
   return {
     ...rest,
     id,
     classId: migrateClassId(s.classId),
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
-    tags: healSkillTags(id, tags),
+    tags: healedTags,
     hits: Array.isArray(s.hits)
       ? healDragonHeadCoefficients(
           id,
           s.hits.map((h) => hydrateSkillHit(h)),
         )
       : s.hits,
+    ...healSkillReach(s, healedTags),
   }
 }
 
@@ -699,7 +814,7 @@ export function saveCustomSkill(s: Skill): Skill[] {
   if (idx >= 0) all[idx] = next
   else all.push(next)
   writeCustomSkills(all)
-  return all
+  return loadCustomSkills()
 }
 
 export function deleteCustomSkill(id: string): Skill[] {
@@ -830,7 +945,6 @@ function importedTrigger(t: unknown): HitTrigger {
         }
       : null
   const trigger: HitTrigger = {
-    id: newTriggerId(),
     kind: c.kind === "castSkill" ? "castSkill" : "applyBuff",
     targetId: typeof c.targetId === "string" ? c.targetId : "",
     stacks: typeof c.stacks === "number" ? c.stacks : 1,
@@ -890,13 +1004,20 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     guaranteedPrecision: c.guaranteedPrecision === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
+    receives: Array.isArray(c.receives)
+      ? c.receives.filter((id): id is string => typeof id === "string")
+      : undefined,
+    triggersBuffs: Array.isArray(c.triggersBuffs)
+      ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
+      : undefined,
     createdAt: now,
     updatedAt: now,
   }
-  if (!isSkill(fresh)) {
+  const healed = hydrateSkill(fresh)
+  if (!isSkill(healed)) {
     throw new Error("Imported skill failed validation (missing or invalid fields)")
   }
-  return fresh
+  return healed
 }
 
 const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
@@ -1168,6 +1289,7 @@ function hydrateDebuff(d: Debuff): Debuff {
     stackScaling: d.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof d.maxStacks === "number" && d.maxStacks > 0 ? d.maxStacks : 1,
     detonation,
+    receives: healDebuffReceives(d),
   }
 }
 
@@ -1203,7 +1325,7 @@ export function saveCustomDebuff(d: Debuff): Debuff[] {
   if (idx >= 0) all[idx] = next
   else all.push(next)
   writeCustomDebuffs(all)
-  return all
+  return loadCustomDebuffs()
 }
 
 export function deleteCustomDebuff(id: string): Debuff[] {
@@ -1254,9 +1376,16 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
     dot,
     maxStacks: typeof c.maxStacks === "number" && c.maxStacks > 0 ? c.maxStacks : 1,
     stackScaling: c.stackScaling === "perStack" ? "perStack" : "flat",
+    receives: Array.isArray(c.receives)
+      ? c.receives.filter((id): id is string => typeof id === "string")
+      : undefined,
+    triggersBuffs: Array.isArray(c.triggersBuffs)
+      ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
+      : undefined,
   })
-  if (!isDebuff(fresh)) {
+  const healed = hydrateDebuff(fresh)
+  if (!isDebuff(healed)) {
     throw new Error("Imported debuff failed validation (missing or invalid fields)")
   }
-  return fresh
+  return healed
 }

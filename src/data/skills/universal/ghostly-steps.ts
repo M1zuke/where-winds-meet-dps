@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const ghostlySteps = defineSkill({
@@ -11,6 +12,7 @@ export const ghostlySteps = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.ghostlySteps,
+  triggersBuffs: [BUFF.mirage],
   castFrames: 0,
   triggerable: true,
   hits: [hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0 })],

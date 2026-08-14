@@ -22,9 +22,7 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [
-        applyDebuff({ id: "tg-dragon-fire-smolder-2-hits-dark-fire-h0", target: DEBUFF.darkFire, extendFrames: 240 }),
-      ],
+      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
     }),
     hit(1, {
       frame: 70,
@@ -32,9 +30,7 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [
-        applyDebuff({ id: "tg-dragon-fire-smolder-2-hits-dark-fire-h1", target: DEBUFF.darkFire, extendFrames: 240 }),
-      ],
+      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
     }),
     hit(2, {
       frame: 100,
@@ -42,9 +38,7 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [
-        applyDebuff({ id: "tg-dragon-fire-smolder-2-hits-dark-fire-h2", target: DEBUFF.darkFire, extendFrames: 240 }),
-      ],
+      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

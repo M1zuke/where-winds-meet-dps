@@ -11,15 +11,13 @@ const umbraOwnBuffDefs = () => classDefinition("bellstrikeUmbra")!.classBuffDefs
 
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
-// Built from tags, never from the display name — a def reaches an entity
-// because the entity declares what it is (CLASSES.md § "Id schemes").
-function skill(tags: string[]) {
-  return makeSkill("test", { name: "probe", tags })
+function skill(receives: string[]) {
+  return makeSkill("test", { name: "probe", receives })
 }
 
-function sumsFor(params: Record<string, unknown>, tags: string[]) {
+function sumsFor(params: Record<string, unknown>, receives: string[]) {
   const engine = new BuffEngine(params, [], umbraOwnBuffDefs())
-  const result = engine.calculateDamageEffects(skill(tags), 0)
+  const result = engine.calculateDamageEffects(skill(receives), 0)
   return Object.fromEntries(
     TRACKED.map((statKey) => [
       statKey,
@@ -34,7 +32,9 @@ const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6 }
 
 describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   it("Blood Burst gets both the affinity-damage and bleed-penetration terms", () => {
-    expect(sumsFor(SWORD_HORIZON, ["role:bleedDetonation"])).toEqual({
+    expect(
+      sumsFor(SWORD_HORIZON, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]),
+    ).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0.15,
       "bellstrike.penetration": 0.15,
@@ -42,7 +42,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("Combustion gets only the affinity-damage term, never the bleed penetration", () => {
-    expect(sumsFor(SWORD_HORIZON, ["role:combustion"])).toEqual({
+    expect(sumsFor(SWORD_HORIZON, ["bellstrikeUmbraBleedingDamage"])).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
@@ -58,7 +58,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("with no swordHorizon param, neither Umbra buff is seeded (alwaysActive gated off)", () => {
-    expect(sumsFor({}, ["role:bleedDetonation"])).toEqual({
+    expect(sumsFor({}, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"])).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,

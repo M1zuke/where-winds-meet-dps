@@ -15,6 +15,7 @@ import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 
 function taggedSkill(name: string, tags: string[] = []) {
   return makeSkill("test", { name, tags })
@@ -138,6 +139,7 @@ describe("build-driven enablement moves timeline DPS", () => {
     const trigger = makeSkill("bellstrikeUmbra", {
       name: "SpearQ",
       castFrames: 60,
+      triggersBuffs: [BUFF.potentRiverFlow, BUFF.wineGu, BUFF.soulShaken],
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 50 })],
     })
     const follow = makeSkill("bellstrikeUmbra", {
@@ -204,14 +206,13 @@ describe("time-windowed application", () => {
       {
         id: "windowed",
         name: "Windowed",
-        triggeredBy: ["X"],
         duration: 10,
-        affects: null,
+        affectsAll: true,
         effects: [stat("allDamageBoost", 0.2)],
       },
     ]
     const engine = new BuffEngine({}, modules)
-    engine.processSkillCast("X", 0, {})
+    engine.processSkillCast("X", 0, {}, false, ["windowed"])
     expect(engine.calculateDamageEffects(taggedSkill("Y"), 5).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.2,

@@ -7,14 +7,16 @@ export const ATTUNE_TAG = "attune:"
 export const TYPE_TAG = "type:"
 export const ROLE_TAG = "role:"
 export const CAST_TAG = "cast:"
+export const BUFF_TAG = "buff:"
 
 // Namespaced tags only — never the display name or a bare `skillType` /
 // `weaponOrAttribute` / `attributeAttack` value, so a modifier cannot reach a
 // skill by what it is called (CLASSES.md § "Id schemes").
 export function skillTagsOf(skill: Skill): Set<string> {
-  const t = new Set<string>(skill.tags ?? [])
-  if (skill.skillType) t.add(TYPE_TAG + skill.skillType)
-  return t
+  const tags = new Set<string>(skill.tags ?? [])
+  if (skill.skillType) tags.add(TYPE_TAG + skill.skillType)
+  for (const buffId of skill.receives ?? []) tags.add(BUFF_TAG + buffId)
+  return tags
 }
 
 // Built-ins author their cast tag, so renaming one is only a rename. A
@@ -41,21 +43,6 @@ export function deriveCastTag(name: string): string {
 
 export function castTagOf(skill: Pick<Skill, "castTag" | "name">): string {
   return skill.castTag ?? deriveCastTag(skill.name ?? "")
-}
-
-export function hasProp(tagSet: ReadonlySet<string>, prop: string): boolean {
-  return tagSet.has(PROP_TAG + prop)
-}
-
-// `Scope.affectsProperty` is the bare key, not the namespaced tag — this is how
-// a def names one from the `PROP` table without restating the string.
-export function propKeyOf(tag: string): string {
-  return tag.startsWith(PROP_TAG) ? tag.slice(PROP_TAG.length) : tag
-}
-
-export function hasAnyWeapon(tagSet: ReadonlySet<string>, weapons: readonly string[]): boolean {
-  for (const w of weapons) if (tagSet.has(WEAPON_TAG + w)) return true
-  return false
 }
 
 export function mysticCategoryOf(skill: Pick<Skill, "tags">): string {

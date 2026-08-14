@@ -44,21 +44,20 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
     const surgingWaves = GLOBAL_BUFF_DEFS.find((module) => module.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
-    expect(surgingWaves!.triggeredBy).toEqual(["cast:dragonHeadPlus"])
     expect(surgingWaves!.maxStacks).toBe(40)
     expect(surgingWaves!.duration).toBe(6)
-    expect(surgingWaves!.affects).toEqual(["role:dragonHead"])
+    expect(surgingWaves!.affectsAll).toBeUndefined()
 
-    const dragonHeadHit = makeSkill("test", { name: "probe", tags: ["role:dragonHead"] })
+    const dragonHeadHit = makeSkill("test", { name: "probe", receives: ["surgingWaves"] })
     const engine = new BuffEngine({}, GLOBAL_BUFF_DEFS)
-    engine.processSkillCast("cast:dragonHeadPlus", 0)
+    engine.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engine.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.0125 * 8,
     })
 
     const engineWithAllies = new BuffEngine({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
-    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0)
+    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engineWithAllies.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.0125 * 40,
@@ -290,7 +289,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(dragonHeadLowHp!.effects).toEqual([
       { kind: "stat", statKey: "allDamageBoost", amount: 0.45 },
     ])
-    expect(dragonHeadLowHp!.affects).toEqual(["role:dragonHeadPlus"])
+    expect(dragonHeadLowHp!.affectsAll).toBeUndefined()
     expect(dragonHeadLowHp!.requires?.param).toBe("dragonHeadLowHpMaxBonus")
     expect(dragonHeadLowHp!.alwaysActive).toBe(true)
   })

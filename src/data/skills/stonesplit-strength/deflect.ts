@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const deflect = defineSkill({
@@ -10,6 +11,7 @@ export const deflect = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Stonesplit",
   castTag: CAST.deflect,
+  triggersBuffs: [BUFF.forgetfulness],
   castFrames: 25,
   triggerable: true,
   hits: [

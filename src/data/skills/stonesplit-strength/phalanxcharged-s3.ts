@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const phalanxchargedS3 = defineSkill({
@@ -19,6 +20,8 @@ export const phalanxchargedS3 = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3,
+  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 188,
   triggerable: true,
   hits: [
@@ -35,9 +38,7 @@ export const phalanxchargedS3 = defineSkill({
       attributeMultiplier: 6.0196,
       physFixed: 1110,
       attributeFixed: 604,
-      triggers: [
-        castSkill({ id: "tg-phalanxcharged-s3-cast", target: SKILL.anxisoldiermodown, stacks: 0 }),
-      ],
+      triggers: [castSkill({ target: SKILL.anxisoldiermodown, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

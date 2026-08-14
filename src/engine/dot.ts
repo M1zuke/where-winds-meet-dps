@@ -50,6 +50,7 @@ export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
     classId: debuff.classId,
     name: debuff.name,
     tags: [...new Set([...(tickSkill?.tags ?? []), ...(debuff.tags ?? [])])],
+    receives: [...new Set([...(tickSkill?.receives ?? []), ...(debuff.receives ?? [])])],
     skillType: debuff.dot?.skillType || "sustain",
     weaponOrAttribute: "",
     attributeAttack: "",
@@ -115,12 +116,14 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
   return episodes
 }
 
-export interface DotTick {
+export interface DotTickPlan {
   frame: number
-  damage: number
+  weight: number
+  shape?: DotStackShape
+  scale?: number
 }
 
-export interface DotEmitQuery {
+export interface DotPlanQuery {
   debuff: Debuff
   dot: DebuffDotSpec
   windows: readonly StatusWindow[]
@@ -129,10 +132,9 @@ export interface DotEmitQuery {
   // Expected uptime for a stochastic DoT: a tick is worth the probability the
   // debuff is actually up at that moment. 1 for a deterministic one.
   weightAt(frame: number): number
-  damageAt(frame: number, shape?: DotStackShape, scale?: number): number
 }
 
-export function emitDotTicks(query: DotEmitQuery): DotTick[] {
+export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
   const { debuff, dot } = query
   const interval = dot.tickIntervalFrames
   if (interval <= 0) return []
@@ -141,28 +143,26 @@ export function emitDotTicks(query: DotEmitQuery): DotTick[] {
   const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null
   const ladder = !shapes && dot.perStackMultipliers?.length ? dot.perStackMultipliers : null
 
-  const ticks: DotTick[] = []
+  const plans: DotTickPlan[] = []
   for (const episode of mergeEpisodes(query.windows)) {
     for (let frame = episode.start + interval; frame < episode.end; frame += interval) {
       if (frame < 0 || !query.inWindow(frame)) continue
       const weight = query.weightAt(frame)
       if (weight <= 0) continue
 
-      let damage: number
       if (shapes) {
         const live = Math.max(1, query.stacksAt(frame))
-        damage = query.damageAt(frame, shapes[Math.min(live, shapes.length) - 1])
+        plans.push({ frame, weight, shape: shapes[Math.min(live, shapes.length) - 1] })
       } else if (ladder) {
         const live = Math.max(0, query.stacksAt(frame))
         if (live === 0) continue
-        damage = query.damageAt(frame, undefined, ladder[Math.min(live, ladder.length) - 1])
+        plans.push({ frame, weight, scale: ladder[Math.min(live, ladder.length) - 1] })
       } else {
         const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
         if (perStack && count === 0) continue
-        damage = query.damageAt(frame, undefined, count)
+        plans.push({ frame, weight, scale: count })
       }
-      ticks.push({ frame, damage: damage * weight })
     }
   }
-  return ticks
+  return plans
 }

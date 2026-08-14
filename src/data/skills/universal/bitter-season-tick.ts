@@ -1,5 +1,6 @@
 import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
 import { CAST, SOURCE } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 // `physMultiplier` is an UNVERIFIED placeholder — no workbook row or
@@ -16,6 +17,7 @@ export const bitterSeasonTick = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.bitterSeasonTick,
+  receives: [BUFF.soulShaken],
   elevatedAttributeMultiplier: false,
   castFrames: 0,
   triggerable: true,

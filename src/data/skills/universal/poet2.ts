@@ -23,7 +23,6 @@ export const poet2 = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyDebuff({
-          id: "tg-poet2-combustion-ext",
           target: DEBUFF.combustion,
           stacks: 0,
           extendFrames: 90,

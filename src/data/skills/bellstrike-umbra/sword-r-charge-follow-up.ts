@@ -22,10 +22,7 @@ export const swordRChargeFollowUp = defineSkill({
       attributeMultiplier: 0.609975,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [
-        applyDot({ id: "tg-sword-r-charge-follow-up-bleed-h0", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-sword-r-charge-follow-up-detonate-h0", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(1, {
       frame: 15,
@@ -33,10 +30,7 @@ export const swordRChargeFollowUp = defineSkill({
       attributeMultiplier: 0.609975,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [
-        applyDot({ id: "tg-sword-r-charge-follow-up-bleed-h1", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-sword-r-charge-follow-up-detonate-h1", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

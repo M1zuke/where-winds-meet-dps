@@ -22,10 +22,7 @@ export const swordspecial4Hit = defineSkill({
       attributeMultiplier: 0.367975,
       physFixed: 56.75,
       attributeFixed: 31.75,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-4-hit-bleed-h0", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-4-hit-detonate-h0", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(1, {
       frame: 15,
@@ -33,10 +30,7 @@ export const swordspecial4Hit = defineSkill({
       attributeMultiplier: 0.367975,
       physFixed: 56.75,
       attributeFixed: 31.75,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-4-hit-bleed-h1", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-4-hit-detonate-h1", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(2, {
       frame: 30,
@@ -44,10 +38,7 @@ export const swordspecial4Hit = defineSkill({
       attributeMultiplier: 0.367975,
       physFixed: 56.75,
       attributeFixed: 31.75,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-4-hit-bleed-h2", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-4-hit-detonate-h2", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(3, {
       frame: 45,
@@ -55,10 +46,7 @@ export const swordspecial4Hit = defineSkill({
       attributeMultiplier: 0.367975,
       physFixed: 56.75,
       attributeFixed: 31.75,
-      triggers: [
-        applyDot({ id: "tg-swordspecial-4-hit-bleed-h3", target: DEBUFF.bleedTick }),
-        detonateDot({ id: "tg-swordspecial-4-hit-detonate-h3", target: DEBUFF.bleedTick, stacks: 0 }),
-      ],
+      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

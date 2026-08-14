@@ -1,10 +1,6 @@
 import type { HitTrigger, TriggerCondition, TriggerKind } from "../../engine/skill"
 
-// Trigger ids are NOT positional (`tg-swordq-bleed`, `tg-spearspecial-bleed-1-h0`,
-// …) and stay explicit — these helpers fill `condition: null` and `stacks`
-// defaults only, they never invent an id.
 interface TriggerSpec {
-  id: string
   target: string
   stacks?: number
   condition?: TriggerCondition | null
@@ -16,7 +12,6 @@ interface TriggerSpec {
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
   return {
-    id: spec.id,
     kind,
     targetId: spec.target,
     stacks: spec.stacks ?? 1,

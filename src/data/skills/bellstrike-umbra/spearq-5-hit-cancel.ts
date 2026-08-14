@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 
 export const spearq5HitCancel = defineSkill({
@@ -8,11 +9,12 @@ export const spearq5HitCancel = defineSkill({
   classId: "bellstrikeUmbra",
   name: "SpearQ 5-Hit Cancel",
   breakdownName: "Sober Sorrow",
-  tags: [WEAPON.spear, ATTUNE.spearQ],
+  tags: [WEAPON.spear, ATTUNE.spearQ, PROP.isMartialSkillQ],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ5HitCancel,
+  triggersBuffs: [BUFF.potentRiverFlow, BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
   castFrames: 85,
   triggerable: true,
   hits: [
@@ -26,7 +28,7 @@ export const spearq5HitCancel = defineSkill({
       attributeMultiplier: 0.4814,
       physFixed: 74,
       attributeFixed: 41,
-      triggers: [applyBuff({ id: "tg-spearq-5-hit-cancel-river-flow-h4", target: STATUS.riverFlow })],
+      triggers: [applyBuff({ target: STATUS.riverFlow })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
