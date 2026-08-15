@@ -675,9 +675,31 @@ function legacyReceives(tags: readonly string[]): string[] {
   return [...new Set(tags.flatMap((tag) => LEGACY_AFFECTS[tag] ?? []))]
 }
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The list each of these built-ins carried while it was still missing the set
+// buff its Martial Art tag entitles it to. A copy seeded then never activates
+// the set, and no editor surface shows the gap. Only a list still identical to
+// what was seeded is rewritten, same reason as the coefficient repair below.
+const TRIGGERS_BUFFS_BEFORE_JADEWARE: Record<string, readonly string[]> = {
+  "bellstrikeSplendor-swordq-2nd": ["mountainsMightQiImbalance"],
+  "bellstrikeSplendor-spearq-0-hit-cancel": ["endlessGale", "mountainsMight", "qiImbalance"],
+  "bellstrikeSplendor-spearq-prepull": ["endlessGale", "mountainsMight", "qiImbalance"],
+}
+
+function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
+  const seeded = TRIGGERS_BUFFS_BEFORE_JADEWARE[id]
+  if (!seeded) return triggersBuffs
+  const untouched =
+    triggersBuffs.length === seeded.length &&
+    seeded.every((buffId, index) => triggersBuffs[index] === buffId)
+  return untouched ? ["jadeware", ...triggersBuffs] : triggersBuffs
+}
+
 // A skill's `type:<skillType>` tag is derived, never stored, so it is added
 // back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
 function healSkillReach(
+  id: string,
   skill: Pick<Skill, "receives" | "triggersBuffs" | "tags" | "skillType" | "castTag" | "name">,
   tags: readonly string[],
 ): Pick<Skill, "receives" | "triggersBuffs"> {
@@ -686,7 +708,7 @@ function healSkillReach(
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
-  return { receives, triggersBuffs }
+  return { receives, triggersBuffs: healJadewareTrigger(id, triggersBuffs) }
 }
 
 function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
@@ -755,7 +777,7 @@ function hydrateSkill(s: Skill): Skill {
           s.hits.map((h) => hydrateSkillHit(h)),
         )
       : s.hits,
-    ...healSkillReach(s, healedTags),
+    ...healSkillReach(id, s, healedTags),
   }
 }
 

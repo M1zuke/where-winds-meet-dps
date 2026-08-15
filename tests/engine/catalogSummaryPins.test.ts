@@ -54,10 +54,10 @@ function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
 }
 
 describe("catalog summary pins — jadeware", () => {
-  it("Applies row on Sword Martial Q reads the pre-conversion BuffDef text", () => {
+  it("Applies row on Sword Martial Q names the target state the bonus needs", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10%, directAffinity +8%",
+      "affinityDmg +10%, directAffinity +7.5% — low-Qi targets only",
     )
   })
 })
