@@ -23,7 +23,7 @@
   gap: 3px;
   width: 100%;
   padding: 7px 10px;
-  background: var(--color-bg);
+  background: var(--color-surface-inset);
   border: 1px solid var(--color-border-strong);
   border-left: 3px solid var(--color-border-strong);
   border-radius: 4px;
@@ -38,7 +38,7 @@
 }
 
 .tile:hover {
-  background: var(--color-surface-raised);
+  background: var(--color-surface-inset-hover);
   border-color: var(--color-border-hover);
 }
 
@@ -47,7 +47,7 @@
 }
 
 .tile.selected {
-  background: #2a2418;
+  background: var(--color-surface-selected);
   border-color: var(--color-border-strong);
   border-left-color: var(--color-accent);
 }

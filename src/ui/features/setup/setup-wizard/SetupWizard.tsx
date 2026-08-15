@@ -8,6 +8,7 @@ import { GearImportInstructions } from "../../gear/import-gear-dialog/GearImport
 import { GearImportPreview } from "../../gear/import-gear-dialog/GearImportPreview"
 import { useGearImportDraft } from "../../gear/import-gear-dialog/useGearImportDraft"
 import { equippedFromImported } from "../../gear/import-gear-dialog/importedGearPieces"
+import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./SetupWizard.module.scss"
 
 export type SetupMode = "first-run" | "new-profile"
@@ -166,9 +167,8 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
         {step === 3 && (
           <div className={`row ${styles.wizardNameRow}`}>
             <label htmlFor="wizard-name">{t("Profile name")}</label>
-            <input
+            <TextInput
               id="wizard-name"
-              type="text"
               autoFocus
               value={name}
               onChange={(event) => setName(event.target.value)}

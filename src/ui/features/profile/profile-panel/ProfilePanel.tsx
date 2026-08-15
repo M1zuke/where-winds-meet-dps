@@ -3,6 +3,7 @@ import type { StoredProfile } from "../../../../engine/types"
 import { exportProfile, importProfile } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { classDefinition } from "../../../../definitions/classes/registry"
+import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./ProfilePanel.module.scss"
 
 interface Props {
@@ -117,8 +118,7 @@ export function ProfilePanel({
             >
               <div className={styles.profileName}>
                 {isEditing ? (
-                  <input
-                    type="text"
+                  <TextInput
                     autoFocus
                     value={draftName}
                     onChange={(e) => setDraftName(e.target.value)}

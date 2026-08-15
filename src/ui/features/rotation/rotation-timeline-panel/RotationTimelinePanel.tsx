@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import type { Result, TimelineEvent } from "../../../../engine/types"
+import { breakdownNameOf } from "../../../../engine/skill"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./RotationTimelinePanel.module.scss"
 
@@ -9,14 +10,18 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const events = result.timeline ?? []
 
   const eventsByLane = useMemo(() => {
+    const laneOf = new Map(
+      result.perSkill.map((row) => [row.name, breakdownNameOf(row.breakdownName, row.name)]),
+    )
     const map = new Map<string, TimelineEvent[]>()
     for (const event of result.timeline ?? []) {
-      const existing = map.get(event.skillName)
+      const lane = laneOf.get(event.skillName) ?? event.skillName
+      const existing = map.get(lane)
       if (existing) existing.push(event)
-      else map.set(event.skillName, [event])
+      else map.set(lane, [event])
     }
     return map
-  }, [result.timeline])
+  }, [result.timeline, result.perSkill])
 
   if (events.length === 0 || duration <= 0) {
     return <div className="empty-tab">{t("(none)")}</div>

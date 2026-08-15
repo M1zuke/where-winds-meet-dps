@@ -6,23 +6,12 @@
   gap: 12px;
 }
 
-:global(.toolbar) select.activeSelect {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 5px 8px;
-  font-size: 0.88em;
+:global(.toolbar) .activeSelect {
+  width: auto;
   min-width: 220px;
 }
 
-:global(.toolbar) select.activeSelect:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-:global(.toolbar) select.activeSelect.isActive {
-  border-color: var(--color-accent);
+:global(.toolbar) .activeSelect.isActive {
   color: var(--color-accent);
 }
 
@@ -62,27 +51,11 @@
   color: var(--color-text-muted);
 }
 
-.meta input[type="text"],
-.meta input[type="number"] {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 5px 8px;
-  font-size: 0.9em;
-  box-sizing: border-box;
-}
-
 .meta input[type="text"] {
   min-width: 220px;
 }
 .meta input[type="number"] {
   width: 90px;
-}
-
-.meta input:focus {
-  outline: none;
-  border-color: var(--color-accent);
 }
 
 .meta .actions {
@@ -145,24 +118,6 @@
   font-size: 0.82em;
 }
 
-.entry input[type="number"] {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 4px 6px;
-  font-size: 0.85em;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.entry input[type="number"]:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
 .entry .rowActions {
   display: flex;
   gap: 4px;
@@ -171,7 +126,7 @@
 .entriesEmpty {
   padding: 24px 12px;
   text-align: center;
-  color: #555;
+  color: var(--color-text-faint);
   font-size: 0.88em;
   border: 1px dashed #2e2e2e;
   border-radius: 4px;
@@ -317,7 +272,7 @@
   background: var(--color-surface-raised);
 }
 .buffEmpty {
-  color: #777;
+  color: var(--color-text-faint);
   padding: 4px;
   font-size: 0.85em;
 }

@@ -1,3 +1,47 @@
-.gearDetails :global(.row) {
-  padding: 3px 0;
+.identity {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 2px 0 10px;
+  padding: 6px 10px;
+  background: var(--color-surface-inset);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: 3px;
+}
+
+.identity.rarityLegendary {
+  border-left-color: var(--color-rarity-legendary);
+}
+
+.identity.rarityEpic {
+  border-left-color: var(--color-rarity-epic);
+}
+
+.identitySlot {
+  font-size: 0.95em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--color-rarity-legendary);
+}
+
+.identity.rarityEpic .identitySlot {
+  color: var(--color-rarity-epic);
+}
+
+.identityMeta {
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.identityBadge {
+  margin-left: auto;
+  padding: 1px 8px;
+  border: 1px solid var(--color-accent);
+  border-radius: 9px;
+  color: var(--color-accent);
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }

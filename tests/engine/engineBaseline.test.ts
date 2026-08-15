@@ -231,7 +231,6 @@ function summarize(result: Result) {
       count: row.count,
       expectedDamage: round(row.expectedDamage, 6),
       castCount: row.castCount ?? 0,
-      castTimeSec: round(row.castTimeSec ?? 0, 6),
     })),
     counts: {
       timeline: result.timeline?.length ?? 0,

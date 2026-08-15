@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useI18n } from "../../../../i18n/i18nContext"
 import type { Inputs, Result } from "../../../../engine/types"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
+import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { RotationEditorPanel } from "../rotation-editor-panel/RotationEditorPanel"
 import { RotationOptionsPanel } from "../rotation-options-panel/RotationOptionsPanel"
 import { RotationBreakdownPanel } from "../rotation-breakdown-panel/RotationBreakdownPanel"
@@ -32,38 +33,38 @@ export function RotationTab({
           { key: "editor", label: t("Rotation Editor") },
         ]}
       />
-      {sub === "overview" && (
-        <div className={styles.overviewLayout}>
-          <div className={`panel ${styles.optionsPanel}`}>
-            <h2>{t("Rotations")}</h2>
-            <RotationOptionsPanel
-              inputs={inputs}
-              engineInputs={engineInputs}
-              onChange={onChange}
-              currentDps={result.dps}
-            />
+      <SubTabPanel>
+        {sub === "overview" && (
+          <div className={styles.overviewLayout}>
+            <div className={`panel ${styles.optionsPanel}`}>
+              <h2>{t("Rotations")}</h2>
+              <RotationOptionsPanel
+                inputs={inputs}
+                engineInputs={engineInputs}
+                onChange={onChange}
+                currentDps={result.dps}
+              />
+            </div>
+            <div className={styles.outputGrid}>
+              <div className="panel">
+                <h2>{t("DPS Breakdown")}</h2>
+                <RotationBreakdownPanel result={result} />
+              </div>
+              <div className="panel">
+                <h2>{t("DPS Graph")}</h2>
+                <RotationDpsGraphPanel result={result} />
+              </div>
+              <div className={`panel ${styles.spanColumns}`}>
+                <h2>{t("Cast Timeline")}</h2>
+                <RotationTimelinePanel result={result} />
+              </div>
+            </div>
           </div>
-          <div className={styles.outputGrid}>
-            <div className="panel">
-              <h2>{t("DPS Breakdown")}</h2>
-              <RotationBreakdownPanel result={result} />
-            </div>
-            <div className="panel">
-              <h2>{t("DPS Graph")}</h2>
-              <RotationDpsGraphPanel result={result} />
-            </div>
-            <div className={`panel ${styles.spanColumns}`}>
-              <h2>{t("Cast Timeline")}</h2>
-              <RotationTimelinePanel result={result} />
-            </div>
-          </div>
-        </div>
-      )}
-      {sub === "editor" && (
-        <div className="panel">
+        )}
+        {sub === "editor" && (
           <RotationEditorPanel inputs={inputs} onChange={onChange} result={result} />
-        </div>
-      )}
+        )}
+      </SubTabPanel>
     </>
   )
 }

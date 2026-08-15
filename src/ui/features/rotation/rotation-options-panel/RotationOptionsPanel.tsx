@@ -6,6 +6,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { useRotationDps } from "../../../hooks/useRotationDps"
 import { OptionTile } from "../../../components/option-tile/OptionTile"
 import { deltaTone } from "../../../components/option-tile/optionTileTone"
+import { Select } from "../../../components/select/Select"
 import {
   inputsWithRotationOption,
   rotationOptions,
@@ -53,18 +54,19 @@ export function RotationOptionsPanel({
 
   return (
     <>
-      <select
-        className={styles.optionSelect}
-        value={selectedId}
-        onChange={(event) => select(event.target.value)}
-        aria-label={t("Rotation")}
-      >
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {(t(option.name) || t("(unnamed)")) + (option.isClassDefault ? t(" (default)") : "")}
-          </option>
-        ))}
-      </select>
+      <div className={styles.optionSelect}>
+        <Select
+          ariaLabel={t("Rotation")}
+          value={selectedId}
+          onChange={select}
+          options={options.map((option) => ({
+            value: option.id,
+            label:
+              (t(option.name) || t("(unnamed)")) + (option.isClassDefault ? t(" (default)") : ""),
+            group: t(GROUP_LABELS[option.group]),
+          }))}
+        />
+      </div>
 
       <ul className={styles.optionList} style={{ opacity: isPending ? 0.6 : 1 }}>
         {options.map((option, index) => {

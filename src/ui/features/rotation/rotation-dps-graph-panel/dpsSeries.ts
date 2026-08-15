@@ -5,27 +5,40 @@ export interface DpsSample {
   dps: number
 }
 
-export function runningDpsSeries(result: Result): DpsSample[] {
-  const duration = result.rotationDuration
-  if (duration <= 0) return []
+export interface DpsSeries {
+  perSecond: DpsSample[]
+  cumulative: DpsSample[]
+}
 
+function bucketEndsWithTailMerged(duration: number): number[] {
+  const ends: number[] = []
+  for (let second = 1; second + 1 <= duration; second++) ends.push(second)
+  ends.push(duration)
+  return ends
+}
+
+export function dpsSeries(result: Result): DpsSeries {
+  const duration = result.rotationDuration
   const events = (result.timeline ?? [])
     .filter((event) => event.inWindow)
     .sort((left, right) => left.timeSec - right.timeSec)
+  if (duration <= 0 || events.length === 0) return { perSecond: [], cumulative: [] }
 
-  const samples: DpsSample[] = []
-  let cumulativeDamage = 0
-  for (let index = 0; index < events.length; index++) {
-    cumulativeDamage += events[index].damage
-    const timeSec = events[index].timeSec
-    if (timeSec <= 0) continue
-    if (events[index + 1]?.timeSec === timeSec) continue
-    samples.push({ timeSec, dps: cumulativeDamage / timeSec })
+  const perSecond: DpsSample[] = [{ timeSec: 0, dps: 0 }]
+  const cumulative: DpsSample[] = [{ timeSec: 0, dps: 0 }]
+  let nextEvent = 0
+  let bucketStart = 0
+  let damageSoFar = 0
+  for (const bucketEnd of bucketEndsWithTailMerged(duration)) {
+    let damage = 0
+    while (nextEvent < events.length && events[nextEvent].timeSec <= bucketEnd) {
+      damage += events[nextEvent].damage
+      nextEvent++
+    }
+    damageSoFar += damage
+    perSecond.push({ timeSec: bucketEnd, dps: damage / (bucketEnd - bucketStart) })
+    cumulative.push({ timeSec: bucketEnd, dps: damageSoFar / bucketEnd })
+    bucketStart = bucketEnd
   }
-  if (samples.length === 0) return []
-
-  if (samples[samples.length - 1].timeSec < duration) {
-    samples.push({ timeSec: duration, dps: cumulativeDamage / duration })
-  }
-  return samples
+  return { perSecond, cumulative }
 }

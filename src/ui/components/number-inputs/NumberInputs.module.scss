@@ -1,0 +1,8 @@
+@use "mixins";
+
+.numberInput {
+  @include mixins.field-input;
+  @include mixins.field-states;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

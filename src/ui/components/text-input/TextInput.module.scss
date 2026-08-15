@@ -1,0 +1,6 @@
+@use "mixins";
+
+.textInput {
+  @include mixins.field-input;
+  @include mixins.field-states;
+}

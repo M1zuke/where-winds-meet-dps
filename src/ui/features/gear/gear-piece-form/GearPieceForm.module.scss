@@ -1,149 +1,150 @@
 @use "mixins";
 @use "breakpoints";
 
-.gearPairedRow {
+.gearForm {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.identityRow {
   display: grid;
-  grid-template-columns: 70px 1fr 70px 1fr;
-  gap: 4px 6px;
-  align-items: center;
-  padding: 2px 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.gearPairedRow label {
-  font-size: 0.85em;
-  color: var(--color-text-dim);
-}
-
-.gearPairedRow input,
-.gearPairedRow select {
-  @include mixins.field-input;
-  min-width: 0;
-}
-
-.gearPairedRow input:focus,
-.gearPairedRow select:focus {
-  @include mixins.field-focus;
-}
-
-.gearPairedRow .gearDerivedValue {
-  background: #161616;
-  border: 1px solid var(--color-border);
+.baseStats {
+  display: flex;
+  margin-top: 10px;
+  padding: 7px 0;
+  background: var(--color-surface-inset);
   border-radius: 4px;
-  color: #b8b8b8;
-  padding: 3px 6px;
-  font-size: 0.85em;
-  width: 100%;
-  box-sizing: border-box;
+}
+
+.baseStat {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1;
   min-width: 0;
+  padding: 0 12px;
+}
+
+.baseStat + .baseStat {
+  border-left: 1px solid var(--color-border);
+}
+
+.baseStatLabel {
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.baseStatValue {
+  font-size: 0.95em;
+  color: var(--color-text);
   font-variant-numeric: tabular-nums;
 }
 
-@include breakpoints.below(breakpoints.$bp-700) {
-  .gearPairedRow {
-    grid-template-columns: 70px 1fr;
-  }
-}
-
 .gearWordsSection {
-  margin: 8px 0 4px 0;
-  border-top: 1px solid var(--color-surface-raised);
+  margin-top: 12px;
+  border-top: 1px solid var(--color-border);
   padding-top: 8px;
 }
 
-.gearWordsHeader {
+.relayedCell {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
+  justify-content: flex-end;
+  grid-column: 1 / -1;
+  padding-bottom: 8px;
 }
 
-.gearRelayedToggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.78em;
-  color: var(--color-text-dim);
-  cursor: pointer;
-  user-select: none;
-}
-
-.gearRelayedToggle input {
-  accent-color: var(--color-accent);
-}
-
-.gearWordsTitle {
-  font-size: 0.72em;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 6px;
-}
-
-/* One grid for every word row, with the rows themselves transparent — a grid per
-   row would size its `auto` max column to its own text, so a wider figure in one
-   row would leave that row's border-left out of line with the others. */
 .gearWordsGrid {
   display: grid;
-  grid-template-columns: 1fr 90px 32px auto;
-  column-gap: 6px;
+  grid-template-columns: 1fr 88px 30px 62px 58px;
+  column-gap: 8px;
   align-items: center;
 }
 
-/* Without the max figures a row contributes three cells, and a fourth track would
-   pull the next row's first cell into it. */
 .gearWordsGridNoMax {
-  grid-template-columns: 1fr 90px 32px;
+  grid-template-columns: 1fr 88px 30px;
+}
+
+.colHead {
+  display: flex;
+  align-items: flex-end;
+  align-self: stretch;
+  font-size: 0.66em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.colHeadRight {
+  justify-content: flex-end;
+}
+
+.sectionTitle {
+  font-size: 0.72em;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--color-accent);
 }
 
 .wordRow {
   display: contents;
 }
 
-.wordRow > input,
-.wordRow > :global(.btn) {
-  margin: 2px 0;
+.wordRow > input {
+  margin: 3px 0;
+}
+
+.gearWordsGrid .wordRow > :global(.btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 3px 0;
+  padding: 4px 0;
 }
 
 .wordCombobox {
-  margin: 2px 0;
+  margin: 3px 0;
 }
 
-.wordRow select,
-.wordRow input {
-  @include mixins.field-input;
-}
-
-.wordRow select:focus,
-.wordRow input:focus {
-  @include mixins.field-focus;
-}
-
-/* align-self: stretch + zero row-gap make adjacent rows' border-left touch,
-   reading as one continuous line down the column. */
-.gearWordMax {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-left: 6px;
-  padding: 0 2px 0 10px;
-  border-left: 1px solid #3a3a3a;
-  align-self: stretch;
+.gearWordsGrid.isRelayed .wordRow > input {
+  border-left: 3px solid var(--color-accent);
 }
 
 .gearWordMaxValue,
 .maxDelta {
-  font-size: 0.74em;
+  font-size: 0.76em;
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
-  min-width: 3.6em;
   color: var(--color-text-dim);
 }
-.maxDelta {
-  min-width: 3em;
-}
+
 .maxDelta:global(.is-positive) {
   color: var(--color-positive);
 }
@@ -151,5 +152,21 @@
   color: var(--color-negative);
 }
 .maxDelta:global(.is-zero) {
-  color: #777;
+  color: var(--color-text-faint);
+}
+
+.attunementSection {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  column-gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 8px;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .identityRow {
+    grid-template-columns: 1fr;
+  }
 }

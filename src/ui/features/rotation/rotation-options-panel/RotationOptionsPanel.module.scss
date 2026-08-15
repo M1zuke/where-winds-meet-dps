@@ -1,13 +1,7 @@
 @use "breakpoints";
-@use "mixins";
 
 .optionSelect {
   display: none;
-  @include mixins.field-input;
-}
-
-.optionSelect:focus {
-  @include mixins.field-focus;
 }
 
 .optionList {

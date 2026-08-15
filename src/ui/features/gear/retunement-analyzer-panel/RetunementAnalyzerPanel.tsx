@@ -2,6 +2,8 @@ import { useMemo } from "react"
 import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
+import { statLineLabel } from "../../../../data/stats/statLines"
+import { HelpHint } from "../help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
 import retunement from "../shared/retunement.module.scss"
 
@@ -12,11 +14,15 @@ interface Props {
   isPending: boolean
 }
 
-interface Pick {
+interface Ranked {
+  deltaDps: number
+  deltaDpsRelayed: number
+}
+
+interface Pick extends Ranked {
   slotIndex: number
   currentWord: string
   word: string
-  deltaDps: number
   legalCount: number
 }
 
@@ -51,23 +57,33 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
     return counts
   }, [rows])
 
-  const best: Pick | null = useMemo(() => {
+  const pickBy = useMemo(() => {
     if (!piece) return null
-    let pick: Pick | null = null
-    for (const row of rows) {
-      if (!row.legal || row.isCurrent) continue
-      if (!pick || row.deltaDps > pick.deltaDps) {
-        pick = {
-          slotIndex: row.slotIndex,
-          currentWord: piece.words[row.slotIndex]?.word ?? "",
-          word: row.word,
-          deltaDps: row.deltaDps,
-          legalCount: countBySlot.get(row.slotIndex) ?? 0,
+    const current = piece
+    return (rank: (candidate: Ranked) => number): Pick | null => {
+      let pick: Pick | null = null
+      for (const row of rows) {
+        if (!row.legal || row.isCurrent) continue
+        if (!pick || rank(row) > rank(pick)) {
+          pick = {
+            slotIndex: row.slotIndex,
+            currentWord: current.words[row.slotIndex]?.word ?? "",
+            word: row.word,
+            deltaDps: row.deltaDps,
+            deltaDpsRelayed: row.deltaDpsRelayed,
+            legalCount: countBySlot.get(row.slotIndex) ?? 0,
+          }
         }
       }
+      return pick
     }
-    return pick
   }, [piece, rows, countBySlot])
+
+  const best = useMemo(() => pickBy?.((candidate) => candidate.deltaDps) ?? null, [pickBy])
+  const bestRelayed = useMemo(
+    () => pickBy?.((candidate) => candidate.deltaDpsRelayed) ?? null,
+    [pickBy],
+  )
 
   const recommended = best !== null && best.deltaDps > 0
 
@@ -82,6 +98,7 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
         currentWord: piece.words[row.slotIndex]?.word ?? "",
         word: row.word,
         deltaDps: row.deltaDps,
+        deltaDpsRelayed: row.deltaDpsRelayed,
         legalCount: best.legalCount,
       })
     }
@@ -148,14 +165,32 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             </span>
             <span className={retunement.bestSlot}>
               {t("Slot ") + (best.slotIndex + 1) + t("")}
-              {best.currentWord ? ` (${t("Active")}: ${t(best.currentWord)})` : ""}
+              {best.currentWord ? ` (${t("Active")}: ${t(statLineLabel(best.currentWord))})` : ""}
               {" → "}
-              <strong>{t(best.word)}</strong>
+              <strong>{t(statLineLabel(best.word))}</strong>
             </span>
             <span className={`${retunement.bestDelta} ${deltaSignClass(best.deltaDps)}`}>
               {fmtDpsDelta(best.deltaDps)} DPS
             </span>
           </div>
+          {bestRelayed && (
+            <div className={retunement.bestRow}>
+              <span className={retunement.bestLabel}>{t("Best both at 94%")}</span>
+              <span className={retunement.bestSlot}>
+                {t("Slot ") + (bestRelayed.slotIndex + 1) + t("")}
+                {bestRelayed.currentWord
+                  ? ` (${t("Active")}: ${t(statLineLabel(bestRelayed.currentWord))})`
+                  : ""}
+                {" → "}
+                <strong>{t(statLineLabel(bestRelayed.word))}</strong>
+              </span>
+              <span
+                className={`${retunement.bestDelta} ${deltaSignClass(bestRelayed.deltaDpsRelayed)}`}
+              >
+                {fmtDpsDelta(bestRelayed.deltaDpsRelayed)} DPS
+              </span>
+            </div>
+          )}
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>{t("Success")}</span>
             <span>{fmtChance(best.legalCount)}</span>
@@ -167,20 +202,28 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
       )}
 
       {focusSlotCandidates.length > 0 && (
-        <div className={retunement.table}>
+        <div className={retunement.retuneTable}>
           <div className={retunement.th}>{t("Tunements")}</div>
-          <div className={retunement.th}>{t("Δ")}</div>
-          {focusSlotCandidates.map((candidate) => {
-            const sign = deltaSignClass(candidate.deltaDps)
-            return (
-              <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
-                <div className={retunement.cell}>{t(candidate.word)}</div>
-                <div className={`${retunement.cell} ${sign}`}>
-                  {fmtDpsDelta(candidate.deltaDps)}
-                </div>
+          <div className={retunement.th}>{t("Δ now")}</div>
+          <div className={retunement.th}>
+            {t("Δ both at 94%")}
+            <HelpHint
+              text={t(
+                "Scores the swap with every tunement on this piece — the one you have and the one you would roll — relayed to 94 % of its max. It answers which tunement wins once the piece is finished, not what rolling this one to 94 % would give you today.",
+              )}
+            />
+          </div>
+          {focusSlotCandidates.map((candidate) => (
+            <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
+              <div className={retunement.cell}>{t(statLineLabel(candidate.word))}</div>
+              <div className={`${retunement.cell} ${deltaSignClass(candidate.deltaDps)}`}>
+                {fmtDpsDelta(candidate.deltaDps)}
               </div>
-            )
-          })}
+              <div className={`${retunement.cell} ${deltaSignClass(candidate.deltaDpsRelayed)}`}>
+                {fmtDpsDelta(candidate.deltaDpsRelayed)}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

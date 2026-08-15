@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import type { Result } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { runningDpsSeries } from "./dpsSeries"
-import { smoothPath } from "./smoothPath"
+import { dpsSeries, type DpsSample } from "./dpsSeries"
 import styles from "./RotationDpsGraphPanel.module.scss"
 
 const GRID_FRACTIONS = [1, 0.75, 0.5, 0.25, 0]
@@ -27,36 +26,44 @@ const fullNumber = (value: number) => Math.round(value).toLocaleString("en-US")
 
 export function RotationDpsGraphPanel({ result }: { result: Result }) {
   const { t } = useI18n()
-  const samples = useMemo(() => runningDpsSeries(result), [result])
+  const { perSecond, cumulative } = useMemo(() => dpsSeries(result), [result])
   const plotRef = useRef<HTMLDivElement>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  if (samples.length < 2) {
+  if (perSecond.length < 2) {
     return <div className="empty-tab">{t("(none)")}</div>
   }
 
   const duration = result.rotationDuration
-  const peakDps = Math.max(...samples.map((sample) => sample.dps))
+  const peakDps = Math.max(...perSecond.map((sample) => sample.dps))
   const axisTop = niceCeiling(peakDps)
 
   const xOf = (timeSec: number) => (timeSec / duration) * 100
   const yOf = (dps: number) => 100 - (dps / axisTop) * 100
+  const pathOf = (series: DpsSample[]) =>
+    series
+      .map(
+        (sample, index) => `${index === 0 ? "M" : "L"} ${xOf(sample.timeSec)} ${yOf(sample.dps)}`,
+      )
+      .join(" ")
 
-  const points = samples.map((sample) => ({ x: xOf(sample.timeSec), y: yOf(sample.dps) }))
-  const linePath = smoothPath(points)
-  const areaPath = `${linePath} L ${points[points.length - 1].x} 100 L ${points[0].x} 100 Z`
+  const linePath = pathOf(perSecond)
+  const areaPath = `${linePath} L 100 100 L 0 100 Z`
+  const cumulativePath = pathOf(cumulative)
   const averageY = yOf(result.dps)
 
-  const hovered = hoveredIndex === null ? null : samples[hoveredIndex]
+  const hovered = hoveredIndex === null ? null : perSecond[hoveredIndex]
+  const hoveredCumulative = hoveredIndex === null ? null : cumulative[hoveredIndex]
 
   function trackPointer(clientX: number) {
     const rect = plotRef.current?.getBoundingClientRect()
     if (!rect || rect.width === 0) return
     const timeSec = ((clientX - rect.left) / rect.width) * duration
     let nearest = 0
-    for (let index = 1; index < samples.length; index++) {
+    for (let index = 1; index < perSecond.length; index++) {
       const closer =
-        Math.abs(samples[index].timeSec - timeSec) < Math.abs(samples[nearest].timeSec - timeSec)
+        Math.abs(perSecond[index].timeSec - timeSec) <
+        Math.abs(perSecond[nearest].timeSec - timeSec)
       if (closer) nearest = index
     }
     setHoveredIndex(nearest)
@@ -101,6 +108,7 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
             ))}
             <path className={styles.area} d={areaPath} />
             <path className={styles.line} d={linePath} />
+            <path className={styles.cumulativeLine} d={cumulativePath} />
             <line className={styles.averageLine} x1="0" x2="100" y1={averageY} y2={averageY} />
           </svg>
           {hovered && (
@@ -121,6 +129,11 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
                 <div className={styles.hoverDps}>
                   {fullNumber(hovered.dps)} {t("DPS")}
                 </div>
+                {hoveredCumulative && (
+                  <div className={styles.hoverCumulative}>
+                    {fullNumber(hoveredCumulative.dps)} {t("DPS so far")}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -150,6 +163,10 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
       <div className={styles.legend}>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchLine}`} />
+          {t("DPS Over Time")}
+        </span>
+        <span className={styles.legendItem}>
+          <span className={`${styles.swatch} ${styles.swatchCumulative}`} />
           {t("DPS so far")}
         </span>
         <span className={styles.legendItem}>

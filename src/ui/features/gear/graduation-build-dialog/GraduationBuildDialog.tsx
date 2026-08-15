@@ -11,6 +11,7 @@ import { statLineLabel } from "../../../../data/stats/statLines"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
+import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
@@ -116,72 +117,76 @@ export function GraduationBuildDialog({
           ]}
         />
 
-        {tab === "build" && (
-          <>
-            <div className={styles.buildSummary}>
-              <SummaryItem label={t("Armor Set")} value={t(armorSet ?? "(unselected)")} />
-              <SummaryItem label={t("Bow Set")} value={t(bowSet)} />
-              <SummaryItem label={t("Arsenal")} value={t(ARSENAL_LABELS[build.arsenal])} />
-              <SummaryItem label={t("Talents & Oddities")} value={t("All enabled")} />
-            </div>
+        <SubTabPanel>
+          {tab === "build" && (
+            <>
+              <div className={styles.buildSummary}>
+                <SummaryItem label={t("Armor Set")} value={t(armorSet ?? "(unselected)")} />
+                <SummaryItem label={t("Bow Set")} value={t(bowSet)} />
+                <SummaryItem label={t("Arsenal")} value={t(ARSENAL_LABELS[build.arsenal])} />
+                <SummaryItem label={t("Talents & Oddities")} value={t("All enabled")} />
+              </div>
 
-            <div className={previewStyles.pieceList}>
-              {GEAR_SLOTS.map((slot) => {
-                const piece = piecesBySlot.get(slot)
-                if (!piece) return null
-                const attunement = getAttunement(piece.attunement)
-                return (
-                  <article
-                    className={previewStyles.piece}
-                    key={slot}
-                    aria-label={t(GEAR_SLOT_LABELS[slot])}
-                  >
-                    <div className={previewStyles.pieceHead}>
-                      <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
-                      <span className="hint">{baseStatsLabel(piece, t)}</span>
-                    </div>
-                    <div className={previewStyles.identityRow}>
-                      <span className={styles.identityBadge}>{t(`Level ${piece.level}`)}</span>
-                      <span className={styles.identityBadge}>{t(piece.rarity)}</span>
-                    </div>
-                    <div className={previewStyles.affixList}>
-                      {piece.words.map((word, index) => (
-                        <div className={previewStyles.affix} key={`${word.word}-${index}`}>
+              <div className={previewStyles.pieceList}>
+                {GEAR_SLOTS.map((slot) => {
+                  const piece = piecesBySlot.get(slot)
+                  if (!piece) return null
+                  const attunement = getAttunement(piece.attunement)
+                  return (
+                    <article
+                      className={previewStyles.piece}
+                      key={slot}
+                      aria-label={t(GEAR_SLOT_LABELS[slot])}
+                    >
+                      <div className={previewStyles.pieceHead}>
+                        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
+                        <span className="hint">{baseStatsLabel(piece, t)}</span>
+                      </div>
+                      <div className={previewStyles.identityRow}>
+                        <span className={styles.identityBadge}>{t(`Level ${piece.level}`)}</span>
+                        <span className={styles.identityBadge}>{t(piece.rarity)}</span>
+                      </div>
+                      <div className={previewStyles.affixList}>
+                        {piece.words.map((word, index) => (
+                          <div className={previewStyles.affix} key={`${word.word}-${index}`}>
+                            <span className={previewStyles.affixName}>
+                              {t(statLineLabel(word.word))}
+                            </span>
+                            <span className={previewStyles.affixValue}>
+                              {formatGearValue(word.value)}
+                            </span>
+                            <span />
+                          </div>
+                        ))}
+                        <div className={`${previewStyles.affix} ${styles.attunement}`}>
                           <span className={previewStyles.affixName}>
-                            {t(statLineLabel(word.word))}
+                            {t(attunement?.label ?? piece.attunement)}
                           </span>
                           <span className={previewStyles.affixValue}>
-                            {formatGearValue(word.value)}
+                            {formatGearValue(piece.attunementValue)}
                           </span>
-                          <span />
+                          <span className={styles.attunementLabel}>{t("Attunement")}</span>
                         </div>
-                      ))}
-                      <div className={`${previewStyles.affix} ${styles.attunement}`}>
-                        <span className={previewStyles.affixName}>
-                          {t(attunement?.label ?? piece.attunement)}
-                        </span>
-                        <span className={previewStyles.affixValue}>
-                          {formatGearValue(piece.attunementValue)}
-                        </span>
-                        <span className={styles.attunementLabel}>{t("Attunement")}</span>
                       </div>
-                    </div>
-                  </article>
-                )
-              })}
-            </div>
-          </>
-        )}
+                    </article>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
-        {tab === "stats" && (
-          <div className={styles.statsPane}>
-            <div className={styles.statsMeta}>
-              {t("Resistance")}:{" "}
-              <span className={styles.statsMetaValue}>{resistanceForInputs(benchmarkInputs)}%</span>
+          {tab === "stats" && (
+            <div className={styles.statsPane}>
+              <div className={styles.statsMeta}>
+                {t("Resistance")}:{" "}
+                <span className={styles.statsMetaValue}>
+                  {resistanceForInputs(benchmarkInputs)}%
+                </span>
+              </div>
+              <StatsOverviewPanel inputs={benchmarkInputs} />
             </div>
-            <StatsOverviewPanel inputs={benchmarkInputs} />
-          </div>
-        )}
+          )}
+        </SubTabPanel>
       </DialogBody>
 
       <DialogFooter>

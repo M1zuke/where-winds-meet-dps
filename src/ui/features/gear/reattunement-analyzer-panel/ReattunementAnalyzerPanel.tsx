@@ -57,7 +57,7 @@ export function ReattunementAnalyzerPanel({
     return (
       <div className={`panel ${retunement.panel}`}>
         <div className="toolbar">
-          <span className="toolbar-label">{t("Attunement")}</span>
+          <span className="toolbar-label">{t("Reattunement")}</span>
         </div>
         <div className="hint">{t("Select a gear piece to analyze attunement gains")}</div>
       </div>
@@ -68,7 +68,7 @@ export function ReattunementAnalyzerPanel({
     return (
       <div className={`panel ${retunement.panel}`}>
         <div className="toolbar">
-          <span className="toolbar-label">{t("Attunement")}</span>
+          <span className="toolbar-label">{t("Reattunement")}</span>
         </div>
         <div className="hint">{t("No attunement options available for this slot/class")}</div>
       </div>
@@ -78,7 +78,7 @@ export function ReattunementAnalyzerPanel({
   return (
     <div className={`panel ${retunement.panel}`}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Attunement")}</span>
+        <span className="toolbar-label">{t("Reattunement")}</span>
         {isPending && <span className="hint">{t("Computing…")}</span>}
       </div>
 

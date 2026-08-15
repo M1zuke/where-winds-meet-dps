@@ -1,0 +1,11 @@
+.subtabPanel {
+  padding: 12px 14px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+.subtabPanel > :last-child {
+  margin-bottom: 0;
+}

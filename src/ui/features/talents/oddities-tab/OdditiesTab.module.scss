@@ -7,18 +7,6 @@
   color: var(--color-text);
 }
 
-.talentsCell input[type="text"],
-.talentsCell input[type="number"],
-.talentsCell select {
-  width: 100%;
-  background: var(--color-bg);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 3px;
-  padding: 3px 6px;
-  font-size: 0.95em;
-}
-
 .talentsCell input[type="checkbox"] {
   margin: 0;
 }

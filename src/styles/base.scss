@@ -5,12 +5,13 @@
   color: #e8e8e8;
 
   --color-accent: #c0a060;
-  --color-text-muted: #888;
+  --color-text-muted: #9c9c9c;
+  --color-text-faint: #7c7c7c;
   --color-text: #e8e8e8;
   --color-bg: #1a1a1a;
   --color-border: #333;
   --color-border-strong: #444;
-  --color-text-dim: #aaa;
+  --color-text-dim: #bcbcbc;
   --color-surface-raised: #2a2a2a;
   --color-accent-bright: #d8b070;
   --color-positive: #5fb86b;
@@ -18,6 +19,11 @@
   --color-negative: #d05a5a;
   --color-surface-alt: #1f1f1f;
   --color-surface: #232323;
+  --color-surface-inset: #1d1d1d;
+  --color-surface-inset-hover: #282828;
+  --color-surface-selected: #2a2418;
+  --color-rarity-legendary: #b89865;
+  --color-rarity-epic: #a890c4;
   --color-overlay: rgba(0, 0, 0, 0.72);
 }
 
@@ -39,4 +45,13 @@ body {
 h1 {
   margin: 0;
   font-size: 1.3em;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--color-accent);
+}
+
+:focus,
+:focus-visible {
+  outline: none;
 }
