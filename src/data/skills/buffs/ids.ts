@@ -41,15 +41,18 @@ export const BUFF = {
 export const PARAM = {
   allySurgingWaves: "allySurgingWaves",
   artOfResistance: "artOfResistance",
+  battleAnthem: "battleAnthem",
   dragonHeadLowHpMaxBonus: "dragonHeadLowHpMaxBonus",
   fluteBoostValue: "fluteBoostValue",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
   moraleChant: "moraleChant",
+  mountainsMight: "mountainsMight",
   revelryScript: "revelryScript",
   starsAlignActive: "starsAlignActive",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
+  swordMorph: "swordMorph",
   throatPierced: "throatPierced",
   wolfchasersArt: "wolfchasersArt",
 } as const

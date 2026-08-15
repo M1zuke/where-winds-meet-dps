@@ -61,6 +61,9 @@ export const PASSIVE_INNER_WAY_NAMES: Readonly<Record<string, string>> = {
 export const PASSIVE_ID_TO_INNER_WAY: Readonly<Record<string, InnerWayId>> = {
   "42": "bitterSeason",
   "81": "moraleChant",
+  "101": "mountainsMight",
+  "103": "battleAnthem",
+  "104": "swordMorph",
   "151": "wolfchasersArt",
   "153": "insightfulStrike",
   "154": "swordHorizon",
