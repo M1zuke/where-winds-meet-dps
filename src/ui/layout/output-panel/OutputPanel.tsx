@@ -79,7 +79,7 @@ export function MetricsCard({
         aria-live="polite"
         onClick={onGraduationClick}
       >
-        {result.graduationRate !== null && result.graduationRate > 0.91 && (
+        {result.graduationRate !== null && result.graduationRate > 0.94 && (
           <GraduationFire rate={result.graduationRate} />
         )}
         <span className={styles.stat}>

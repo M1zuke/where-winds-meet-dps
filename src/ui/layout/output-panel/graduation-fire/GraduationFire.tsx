@@ -176,7 +176,7 @@ export function GraduationFire({ rate }: { rate: number }) {
       }
       const dt = Math.min((now - last) / 1000, MAX_DT)
       last = now
-      const intensity = Math.min(1, Math.max(0, (rateRef.current - 0.91) / 0.09))
+      const intensity = Math.min(1, Math.max(0, (rateRef.current - 0.94) / 0.06))
       spawnCarry += (SPAWN_BASE + SPAWN_PER_INTENSITY * intensity) * dt
       while (spawnCarry >= 1) {
         spawnCarry -= 1
