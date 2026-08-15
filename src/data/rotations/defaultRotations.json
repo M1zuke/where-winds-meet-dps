@@ -3103,6 +3103,263 @@
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Bellstrike Splendor 44 Vagrant Sword rotation, no Dragon Breath. Source: Crylis."
+      },
+      {
+        "id": "builtin-bellstrikeSplendor-60s-78-waves-2-flute-1-frog",
+        "name": "60s 78 waves 2 flute 1 frog",
+        "classId": "bellstrikeSplendor",
+        "steps": [
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-0",
+            "skillId": "bellstrikeSplendor-spearq-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-1",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-2",
+            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-3",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-4",
+            "skillId": "bellstrikeSplendor-swordheavycharged-prepull",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-5",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-6",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-7",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-8",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-9",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-10",
+            "skillId": "bellstrikeSplendor-spearq-0-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-11",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-12",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-13",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-14",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-15",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-16",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-17",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-18",
+            "skillId": "bellstrikeSplendor-spearq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-19",
+            "skillId": "bellstrikeSplendor-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-20",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-21",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-22",
+            "skillId": "bellstrikeSplendor-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-23",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-24",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-25",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-26",
+            "skillId": "bellstrikeSplendor-spearq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-27",
+            "skillId": "bellstrikeSplendor-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-28",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-29",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-30",
+            "skillId": "bellstrikeSplendor-flute-of-the-tides-full",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-31",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-32",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-33",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-34",
+            "skillId": "bellstrikeSplendor-spearq-0-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-35",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-36",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-37",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-38",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-39",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-60s-78-waves-2-flute-1-frog-40",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "createdAt": "2026-08-15T00:00:00.000Z",
+        "updatedAt": "2026-08-15T00:00:00.000Z",
+        "description": "Bellstrike Splendor 60-second rotation: 78 waves, 2 Flute of the Tides, 1 toad."
       }
     ],
     "defaultRotationId": "builtin-bellstrikeSplendor-kaezuma-42vs-1db"
