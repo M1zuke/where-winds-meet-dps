@@ -142,6 +142,7 @@ function migrateRotationIds<T>(rotation: T): T {
   if (Array.isArray(r.permanentBuffIds)) {
     next.permanentBuffIds = r.permanentBuffIds.map((b) => migrateEntityId(b))
   }
+  delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
 }
 
@@ -535,8 +536,6 @@ export function importCustomRotation(text: string): Rotation {
     permanentBuffIds: Array.isArray(candidate.permanentBuffIds)
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
-    prePullHitsCount:
-      typeof candidate.prePullHitsCount === "boolean" ? candidate.prePullHitsCount : false,
     createdAt: now,
     updatedAt: now,
   }

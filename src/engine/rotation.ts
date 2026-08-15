@@ -14,7 +14,6 @@ export interface Rotation {
   classId: string
   steps: RotationStep[]
   permanentBuffIds: string[]
-  prePullHitsCount: boolean
   createdAt: string
   updatedAt: string
   description?: string
@@ -52,7 +51,6 @@ export function makeRotation(classId: string, patch: Partial<Rotation> = {}): Ro
     classId,
     steps: [],
     permanentBuffIds: [],
-    prePullHitsCount: false,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -83,7 +81,6 @@ export function isRotation(x: unknown): x is Rotation {
   for (const id of r.permanentBuffIds) {
     if (typeof id !== "string") return false
   }
-  if (typeof r.prePullHitsCount !== "boolean") return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
   return true

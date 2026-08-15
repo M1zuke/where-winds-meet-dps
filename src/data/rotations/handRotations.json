@@ -483,7 +483,6 @@
           }
         ],
         "permanentBuffIds": [],
-        "prePullHitsCount": false,
         "createdAt": "2026-08-01T00:00:00.000Z",
         "updatedAt": "2026-08-01T00:00:00.000Z",
         "description": "36 Bleed Bursts"
@@ -909,7 +908,6 @@
           }
         ],
         "permanentBuffIds": [],
-        "prePullHitsCount": false,
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
         "description": "1-minute Dragon Head rotation from Nox"
@@ -1095,7 +1093,6 @@
           }
         ],
         "permanentBuffIds": [],
-        "prePullHitsCount": false,
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
         "description": "30-second Dragon Head rotation from Nox"

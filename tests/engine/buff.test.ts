@@ -199,17 +199,15 @@ describe("persistence — customBuffs CRUD (player/team-only, no DoT)", () => {
     expect((imported as unknown as Record<string, unknown>).dot).toBeUndefined()
   })
 
-  it("importCustomRotation preserves steps + permanentBuffIds + prePullHitsCount", () => {
+  it("importCustomRotation preserves steps + permanentBuffIds", () => {
     const json = JSON.stringify({
       name: "t",
       classId: "bellstrikeUmbra",
       permanentBuffIds: ["p1"],
-      prePullHitsCount: true,
       steps: [{ id: "old-step-id", skillId: "sk-1", hitCount: 3, prePull: true }],
     })
     const r = importCustomRotation(json)
     expect(r.permanentBuffIds).toEqual(["p1"])
-    expect(r.prePullHitsCount).toBe(true)
     expect(r.steps[0].skillId).toBe("sk-1")
     expect(r.steps[0].hitCount).toBe(3)
     expect(r.steps[0].prePull).toBe(true)

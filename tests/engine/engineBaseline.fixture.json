@@ -6,6 +6,22 @@
     "warnings": [],
     "perSkill": [
       {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
@@ -171,7 +187,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "7a184b949430b00c636e7595f3ded116d296611f95d4fc88531dc5aa02f9ac67"
+    "digest": "4e29fac83a299207c958837aff22229661968509ad427b837da3b067382e0595"
   },
   "anchor:noAttunement": {
     "dps": 67057.926526,
@@ -179,6 +195,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -345,7 +377,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "3f24e5bc35e62b3420a2c557d7df74ffd7d47889bcd033230b3c3214a17a1999"
+    "digest": "aaf60b6c6a375f3ea5a8e6169884fa248d97585f2ea80bf7e19f92f6a6d67517"
   },
   "anchor:dummyOff": {
     "dps": 79817.28725,
@@ -353,6 +385,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -519,7 +567,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "f7230b7776b5f9ff8285718d87fccf78bd2374436052c89382e154c7736a03e6"
+    "digest": "85ab65d585cdbad469b83020a1afa3c8f033e3f6b1eb425e7090e67c94338fe3"
   },
   "anchor:noQiBreak": {
     "dps": 67762.517268,
@@ -527,6 +575,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -693,7 +757,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "20758be4eecb357f8e7908855966cdd68d32c22b264a66e6844981d9db15cfc7"
+    "digest": "3639d48dcd965850dcb3fd5c44e09ed31e88049e810acb75216f6f4c5a225e94"
   },
   "anchor:healerBuff": {
     "dps": 81936.851166,
@@ -701,6 +765,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -867,7 +947,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "474625707d6ff7d3593d3537c8cfb5e2ff461a2d636971b2537050cd03ea87d0"
+    "digest": "86de0aab4401009b257463a3dec823e492e1288a59950f38fe206778807e7ffd"
   },
   "anchor:revelryScript": {
     "dps": 84979.037904,
@@ -875,6 +955,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1041,7 +1137,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "5f77cc9fff35f0cc9ad275106de0555b55accf432b8afcffa5a27937ac759e2f"
+    "digest": "19b32ded2500210179b48df03f26085d3db45c27ea5af2ae3bb8cff3e5364fc6"
   },
   "anchor:breakExtension": {
     "dps": 75764.268469,
@@ -1049,6 +1145,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1215,7 +1327,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "16f18005b41ba53874446b22b5fc7136fb89247b3c9ff7aefd1a5d4db72d29be"
+    "digest": "8a8507815cbcd41711f055eaacfe98c46f830bd321451076bcbca6c8cd5e2c97"
   },
   "anchor:swordHorizonT1": {
     "dps": 52580.608994,
@@ -1223,6 +1335,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1389,7 +1517,7 @@
       "buffWindows": 126,
       "casts": 69
     },
-    "digest": "7aa238eecf489fa26ae9457c11592f14f6e5afa0d078e5778ecb62f4ef587b83"
+    "digest": "5e5a83d3901452b5af2a80a52cc37a673b1867cec40de31ad0245ee82d2d4703"
   },
   "anchor:noSwordHorizon": {
     "dps": 45780.487525,
@@ -1397,6 +1525,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1563,7 +1707,7 @@
       "buffWindows": 122,
       "casts": 69
     },
-    "digest": "4a1f4509769a9834e9b1ef47ad0d100da5bb86f34c7a6f9edaca18926987e20d"
+    "digest": "7682a2ff672ac6f45590388bdddcfe42886ac0fedafc87595392fb6078ab7cbb"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63829.099957,
@@ -1571,6 +1715,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1737,7 +1897,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "6051898a981a5246b7d673d25967c767f943dbd5201c6dd6c6ac63d90436d8ea"
+    "digest": "ea799f75084b6c1524fe5e03aee61012163b5c0e08e39cf9a7dc44deb3c3e4a4"
   },
   "anchor:noMoraleChant": {
     "dps": 68363.838788,
@@ -1745,6 +1905,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -1903,7 +2079,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "1d317e55130afe10f9105074ea4b183ca44ea4e58e64a82b453cb10ac76f1053"
+    "digest": "36e69c1313ff8c28de1c33b486ab080ffd2e011f2b4d4b2455a7e33d1f4bd7ae"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 43287.157857,
@@ -1911,6 +2087,22 @@
     "rotationDuration": 60.75,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "SpearHeavy",
         "breakdownName": "Drifting Thrust",
@@ -2085,7 +2277,7 @@
       "buffWindows": 145,
       "casts": 80
     },
-    "digest": "1368a088a6f138b9ecd45923a46b4c07e7865779787c7a742e5cfc31e8e2e5fa"
+    "digest": "5b24b6e0227f344350b6df677b8ffecc8c8030c556cde65f147205f3c1bb4051"
   },
   "anchor:bitterSeasonT6": {
     "dps": 54285.184355,
@@ -2093,6 +2285,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -2267,7 +2475,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "d6583fbde925aedaa2b0a4ee74cec6e1210b775204b45f6d6e8c019d6aecfb9c"
+    "digest": "c7c7c2f4ae2582a1d6df86eee2366f6aa366e741126266555201597c91ea609c"
   },
   "anchor:bitterSeasonT4": {
     "dps": 53271.680242,
@@ -2275,6 +2483,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -2449,7 +2673,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "afe7d0ebe6f27bbfd76068c38dba59eebcf08f6efcd992ff44590b59c384fd0d"
+    "digest": "90efc0412d8d2e8c6c924010158e7e3c63aa5251e196a58f5e1a3ea33ef50902"
   },
   "anchor:bitterSeasonT1": {
     "dps": 52816.898483,
@@ -2457,6 +2681,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -2631,7 +2871,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "1df0e3b22c6f5e10a4da5d4934879b3acd6bbce469b786d2775c2790c10260cd"
+    "digest": "c48ae8e806e6382db5aae48ce4379cd3bfe530cf437f22b0d5f82f2062601268"
   },
   "anchor:noSet": {
     "dps": 68216.838824,
@@ -2639,6 +2879,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -2805,7 +3061,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c1c82a564b7612b913b3e29b7a351f53b3cc822e28306a5349e69bd593b59996"
+    "digest": "cf50fc24ccc92d7f8819a33b60896bfbd878cc48517f09abfae997b3ddacdc0e"
   },
   "anchor:set-Jadeware": {
     "dps": 70499.082814,
@@ -2813,6 +3069,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -2979,7 +3251,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "d8a61ea04a268e7b5c0ef99fb14f0ba08ca008082d6c1be21799b49489fe2ab5"
+    "digest": "e2219804518fdf1a4678786dd85b209e5771d730cc1b2c4cf13aa4c567993e75"
   },
   "anchor:set-Mistwillow": {
     "dps": 68216.838824,
@@ -2988,6 +3260,22 @@
     "warnings": [],
     "perSkill": [
       {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
@@ -3153,7 +3441,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "ce95db05260898cbc16fd0950d7f1232e636d6e3da268d6831d989d643fc95af"
+    "digest": "d3b06f71486e79d5a522df5f73e957793f87095e6d73afa95e8ff13919f72bc4"
   },
   "anchor:set-StarsAlign": {
     "dps": 68216.838824,
@@ -3162,6 +3450,22 @@
     "warnings": [],
     "perSkill": [
       {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
@@ -3327,7 +3631,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c1c82a564b7612b913b3e29b7a351f53b3cc822e28306a5349e69bd593b59996"
+    "digest": "cf50fc24ccc92d7f8819a33b60896bfbd878cc48517f09abfae997b3ddacdc0e"
   },
   "anchor:set-ShatteredRidge": {
     "dps": 70150.547589,
@@ -3335,6 +3639,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -3501,7 +3821,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "642975f255972302cc6f0334a827e4c01bc896bd80b55e3926293a3e29d483ab"
+    "digest": "cc7daa112ced682f4ccb31a739c45ffb59b543efd760946f5f7e0dce4fb93984"
   },
   "anchor:set-Swallowcall": {
     "dps": 68216.838824,
@@ -3509,6 +3829,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -3675,7 +4011,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c1c82a564b7612b913b3e29b7a351f53b3cc822e28306a5349e69bd593b59996"
+    "digest": "cf50fc24ccc92d7f8819a33b60896bfbd878cc48517f09abfae997b3ddacdc0e"
   },
   "anchor:set-SwayingHeights": {
     "dps": 69396.140848,
@@ -3683,6 +4019,22 @@
     "rotationDuration": 57.616667,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -3849,7 +4201,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "a8286851930a0aa05eed177c277fefef3ba37651333b7550769ffe18447a5777"
+    "digest": "6eca3dd7e53a1cce4c06627163047c77bdb9f7645b6edc628068a678c6f258e0"
   },
   "defaults:umbra": {
     "dps": 11120.690575,
@@ -3857,6 +4209,22 @@
     "rotationDuration": 59.25,
     "warnings": [],
     "perSkill": [
+      {
+        "name": "DrunkenPoet Prepull",
+        "breakdownName": "DrunkenPoet Prepull",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "Flute of the Tides Prepull",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "mystic",
+        "count": 1,
+        "expectedDamage": 0,
+        "castCount": 1
+      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -4015,6 +4383,6 @@
       "buffWindows": 137,
       "casts": 79
     },
-    "digest": "271e7acc1961751b3b029f19accee8bba163a8c5ad833ee5d5457fd4e29b2a25"
+    "digest": "2e40ed74250eafc740961efa8d8de031a65b7c986de4135ec94fc4706b7c3948"
   }
 }
