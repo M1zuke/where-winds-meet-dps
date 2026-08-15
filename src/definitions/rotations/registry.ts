@@ -1,5 +1,5 @@
 import type { Rotation, RotationStep } from "../../engine/rotation"
-import rotationsData from "../../data/rotations/defaultRotations.json"
+import rotationsData from "../../data/rotations/rotations.json"
 
 interface RotationFileEntry extends Omit<Rotation, "steps"> {
   steps: Omit<RotationStep, "id">[]
