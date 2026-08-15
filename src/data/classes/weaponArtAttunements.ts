@@ -20,6 +20,17 @@ export const WEAPON_ART_ATTUNEMENTS = [
     affectsTag: "attune:swordQ",
   },
   {
+    id: "swordCharged",
+    label: "Sword Charged Skill DMG Boost",
+    labelByClass: { bellstrikeSplendor: "Nameless Sword Charged Skill DMG Boost" },
+    min: 0.036,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["bellstrikeSplendor"],
+    enginePath: "classSpecificAttunement.swordCharged",
+    affectsTag: "attune:swordCharged",
+  },
+  {
     id: "swordSpecial",
     label: "Sword Special Skill DMG Boost",
     labelByClass: {
@@ -57,5 +68,16 @@ export const WEAPON_ART_ATTUNEMENTS = [
     classIds: ["bellstrikeUmbra", "bellstrikeSplendor"],
     enginePath: "classSpecificAttunement.spearCharged",
     affectsTag: "attune:spearCharged",
+  },
+  {
+    id: "spearSpecial",
+    label: "Spear Special Skill DMG Boost",
+    labelByClass: { bellstrikeSplendor: "Nameless Spear Special Skill DMG Boost" },
+    min: 0.036,
+    max: 0.06,
+    slots: ARMOR_SLOTS,
+    classIds: ["bellstrikeSplendor"],
+    enginePath: "classSpecificAttunement.spearSpecial",
+    affectsTag: "attune:spearSpecial",
   },
 ] as const satisfies readonly AttunementOption[]

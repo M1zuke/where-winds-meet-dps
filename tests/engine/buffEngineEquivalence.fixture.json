@@ -35876,5 +35876,366 @@
     "dynamic": {
       "digest": "b889119a19f9e818ae100a855b3c50089d72882780a947a7377bf7063b8e5598"
     }
+  },
+  "bellstrikeSplendor": {
+    "static": {
+      "skills": {
+        "count": 38,
+        "ids": [
+          "bellstrikeSplendor-bitter-season-tick",
+          "bellstrikeSplendor-deflect-cancel",
+          "bellstrikeSplendor-deflect-cancel-prepull",
+          "bellstrikeSplendor-delay",
+          "bellstrikeSplendor-dragon-head",
+          "bellstrikeSplendor-dragon-head-plus",
+          "bellstrikeSplendor-drunkenpoet-prepull",
+          "bellstrikeSplendor-energysurge",
+          "bellstrikeSplendor-fire-breath-1-hit",
+          "bellstrikeSplendor-fire-breath-1-hit-prepull",
+          "bellstrikeSplendor-fire-breath-2-hit",
+          "bellstrikeSplendor-flute-of-the-tides-cancel",
+          "bellstrikeSplendor-flute-of-the-tides-full",
+          "bellstrikeSplendor-flute-of-the-tides-prepull",
+          "bellstrikeSplendor-ghostly-steps",
+          "bellstrikeSplendor-golden-body-cancel",
+          "bellstrikeSplendor-golden-body-deflect-cancel",
+          "bellstrikeSplendor-perfect-dodge",
+          "bellstrikeSplendor-perfect-dodge-full",
+          "bellstrikeSplendor-poet-final-hit-cancel",
+          "bellstrikeSplendor-poet1",
+          "bellstrikeSplendor-poet2",
+          "bellstrikeSplendor-poet3",
+          "bellstrikeSplendor-poet4",
+          "bellstrikeSplendor-soaring",
+          "bellstrikeSplendor-soaring-1-hit",
+          "bellstrikeSplendor-spearq",
+          "bellstrikeSplendor-spearq-0-hit-cancel",
+          "bellstrikeSplendor-spearq-prepull",
+          "bellstrikeSplendor-swordheavycharged",
+          "bellstrikeSplendor-swordheavycharged-2-hit",
+          "bellstrikeSplendor-swordheavycharged-prepull",
+          "bellstrikeSplendor-swordq",
+          "bellstrikeSplendor-swordq-2nd",
+          "bellstrikeSplendor-swordspecial",
+          "bellstrikeSplendor-swordspecial-2nd",
+          "bellstrikeSplendor-swordspecial-deflect",
+          "bellstrikeSplendor-toad-cancel"
+        ],
+        "digest": "916b2ff6e054d41c946be4169cb152e40db75575ce4ba69d61688b532724974b"
+      },
+      "debuffs": {
+        "count": 5,
+        "ids": [
+          "debuff-bellstrikeSplendor-bitter-season-tick",
+          "debuff-bellstrikeSplendor-combustion",
+          "debuff-bellstrikeSplendor-dark-fire",
+          "debuff-bellstrikeSplendor-flute-ripple",
+          "debuff-bellstrikeSplendor-toad-poison"
+        ],
+        "digest": "4c5937362de2f439b8dae94e5ef8680c4e0c599ef5a6b798c2ae1e0883798aec"
+      },
+      "buffs": [
+        {
+          "id": "revelryScript",
+          "name": "Revelry Script",
+          "classBuff": false,
+          "requires": {
+            "param": "revelryScript"
+          },
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.3
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "fluteBoost",
+          "name": "Flute DMG Boost",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 12.5,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "+all (from fluteBoostValue)"
+        },
+        {
+          "id": "vulnerabilityTeammate",
+          "name": "Vulnerability (Teammate)",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.08
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "jadeware",
+          "name": "Jadeware",
+          "classBuff": false,
+          "requires": {
+            "set": "jadeware"
+          },
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": 12,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 10,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "affinityDamageBoost",
+              "amount": 0.1
+            },
+            {
+              "kind": "stat",
+              "statKey": "directAffinityRate",
+              "amount": 0.075
+            }
+          ],
+          "summary": "affinityDmg +10%, directAffinity +8%"
+        },
+        {
+          "id": "mirage",
+          "name": "Mirage",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 30,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
+        },
+        {
+          "id": "mirageBonus",
+          "name": "Mirage Bonus",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": "mirage",
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 8,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.15
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "rainwhisperShield",
+          "name": "HP Shield",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
+        },
+        {
+          "id": "resistanceResolve",
+          "name": "Resistance Resolve",
+          "classBuff": false,
+          "requires": {
+            "param": "artOfResistance",
+            "minTier": 6
+          },
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": {
+            "buffId": "rainwhisperShield",
+            "cancelledByReapply": true
+          },
+          "hasStacksFn": false,
+          "duration": 12,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.1
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "surgingWaves",
+          "name": "Surging Waves",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": true,
+          "duration": 6,
+          "maxStacks": 40,
+          "effects": "[fn]",
+          "summary": "+1.3% all/stack"
+        },
+        {
+          "id": "dragonHeadLowHp",
+          "name": "Low HP Bonus (Dragon Head)",
+          "classBuff": false,
+          "requires": {
+            "param": "dragonHeadLowHpMaxBonus"
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.45
+            }
+          ],
+          "summary": null
+        }
+      ],
+      "group": [
+        {
+          "id": "healerBuff",
+          "name": "Healer Buff",
+          "classBuff": false,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 12,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "+20.0% all (team)"
+        }
+      ]
+    },
+    "dynamic": {
+      "digest": "285c14b11a189f29a1bcb10d4d5ee6ad51f241b91c4753551a86f5700e4f4770"
+    }
   }
 }

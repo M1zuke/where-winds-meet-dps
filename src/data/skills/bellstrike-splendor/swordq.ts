@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const swordq = defineSkill({
@@ -12,6 +13,7 @@ export const swordq = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ,
+  triggersBuffs: [BUFF.jadeware],
   castFrames: 26,
   triggerable: true,
   hits: [

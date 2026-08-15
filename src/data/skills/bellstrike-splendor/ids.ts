@@ -12,3 +12,11 @@ export const SKILL = {
   spearqPrepull: "bellstrikeSplendor-spearq-prepull",
   spearq0HitCancel: "bellstrikeSplendor-spearq-0-hit-cancel",
 } as const
+
+export const DEBUFF = {
+  toadPoison: "debuff-bellstrikeSplendor-toad-poison",
+  combustion: "debuff-bellstrikeSplendor-combustion",
+  darkFire: "debuff-bellstrikeSplendor-dark-fire",
+  fluteRipple: "debuff-bellstrikeSplendor-flute-ripple",
+  bitterSeasonTick: "debuff-bellstrikeSplendor-bitter-season-tick",
+} as const

@@ -2786,5 +2786,334 @@
       }
     ],
     "defaultRotationId": "builtin-stonesplitStrength-tilla-dummy-rotation"
+  },
+  "bellstrikeSplendor": {
+    "rotations": [
+      {
+        "id": "builtin-bellstrikeSplendor-kaezuma-42vs-1db",
+        "name": "Kaezuma' 42VS 1DB",
+        "classId": "bellstrikeSplendor",
+        "steps": [
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-0",
+            "skillId": "bellstrikeSplendor-drunkenpoet-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-1",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-2",
+            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-3",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-4",
+            "skillId": "bellstrikeSplendor-spearq-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-5",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-6",
+            "skillId": "bellstrikeSplendor-swordheavycharged-prepull",
+            "hitCount": 3,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-7",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-8",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-9",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-10",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-11",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-12",
+            "skillId": "bellstrikeSplendor-soaring",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-13",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-14",
+            "skillId": "bellstrikeSplendor-fire-breath-1-hit",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-15",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-16",
+            "skillId": "bellstrikeSplendor-spearq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-17",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-18",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-19",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-20",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-21",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-22",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-23",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "prePullHitsCount": false,
+        "createdAt": "2026-07-19T00:00:00.000Z",
+        "updatedAt": "2026-07-19T00:00:00.000Z",
+        "description": "Bellstrike Splendor 42 Vagrant Sword + 1 Dragon Breath rotation (requires T6 Sword Morph + T6 Mountain's Might). Source: Kaezuma."
+      },
+      {
+        "id": "builtin-bellstrikeSplendor-crylis-44vs-full-waves",
+        "name": "Crylis' 44VS (Full Waves)",
+        "classId": "bellstrikeSplendor",
+        "steps": [
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-0",
+            "skillId": "bellstrikeSplendor-ghostly-steps",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-1",
+            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-2",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-3",
+            "skillId": "bellstrikeSplendor-spearq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-4",
+            "skillId": "bellstrikeSplendor-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-5",
+            "skillId": "bellstrikeSplendor-swordheavycharged-prepull",
+            "hitCount": 3,
+            "prePull": true
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-6",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-7",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-8",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-9",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-10",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-11",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-12",
+            "skillId": "bellstrikeSplendor-spearq-0-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-13",
+            "skillId": "bellstrikeSplendor-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-14",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-15",
+            "skillId": "bellstrikeSplendor-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-16",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-17",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-18",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-19",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-20",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-21",
+            "skillId": "bellstrikeSplendor-spearq-0-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-22",
+            "skillId": "bellstrikeSplendor-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-23",
+            "skillId": "bellstrikeSplendor-swordheavycharged",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-24",
+            "skillId": "bellstrikeSplendor-energysurge",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-25",
+            "skillId": "bellstrikeSplendor-swordheavycharged-2-hit",
+            "hitCount": 2,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "prePullHitsCount": false,
+        "createdAt": "2026-07-19T00:00:00.000Z",
+        "updatedAt": "2026-07-19T00:00:00.000Z",
+        "description": "Bellstrike Splendor 44 Vagrant Sword rotation, no Dragon Breath. Source: Crylis."
+      }
+    ],
+    "defaultRotationId": "builtin-bellstrikeSplendor-kaezuma-42vs-1db"
   }
 }
