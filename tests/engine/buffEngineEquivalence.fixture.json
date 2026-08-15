@@ -33836,14 +33836,8 @@
           "hasStacksFn": false,
           "duration": 9999,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "affinityDamageBoost",
-              "amount": 0.18
-            }
-          ],
-          "summary": null
+          "effects": "[fn]",
+          "summary": "affinityDmg +18%, except while Endless Gale already grants it"
         }
       ],
       "group": [
@@ -33872,7 +33866,7 @@
       ]
     },
     "dynamic": {
-      "digest": "71a1c90ca2bfb8755c974c1bf4670a8467b175ec53dad6c7b8dac3a633d322ca"
+      "digest": "20fd64a53b77646a2d28a0bb3b634dbe2497fbb76f4f3655b91ee4736be1f75f"
     }
   }
 }
