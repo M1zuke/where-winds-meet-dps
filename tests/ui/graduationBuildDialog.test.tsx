@@ -7,6 +7,7 @@ import { getAttunement } from "../../src/engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
+import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
 import { GraduationBuildDialog } from "../../src/ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
@@ -105,11 +106,16 @@ describe("GraduationBuildDialog", () => {
 
     const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(defaultInputs)!)))
     const effective = effectiveRates(benchmark)
-    const finalEffectiveCritRate =
-      effective.precision * (effective.critRate + benchmark.directCritRate)
+    const finalRates = finalCritAffinityRates({
+      precision: effective.precision,
+      critRate: effective.critRate,
+      directCritRate: benchmark.directCritRate,
+      affinityRate: effective.affinityRate,
+      directAffinityRate: benchmark.directAffinityRate,
+    })
 
     expect(screen.getByText("Final Crit").parentElement).toHaveTextContent(
-      fmt(finalEffectiveCritRate, true),
+      fmt(finalRates.critRate, true),
     )
     expect(screen.getByText(statLineLabel("maxPhys")).parentElement).toHaveTextContent(
       fmt(benchmark.phys.max, false),
