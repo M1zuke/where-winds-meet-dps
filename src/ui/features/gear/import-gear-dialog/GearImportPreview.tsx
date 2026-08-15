@@ -2,6 +2,7 @@ import { useRef } from "react"
 import type { GearLevel, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { statLineLabel } from "../../../../data/stats/statLines"
 import { getAttunement } from "../../../../engine/attunements"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fmt } from "../../../utils/statFormatting"
@@ -318,7 +319,7 @@ function PiecePreview({
 function statLineName(mappedTo: string, t: (key: string) => string): string {
   const separator = mappedTo.indexOf(":")
   const name = mappedTo.slice(separator + 1)
-  if (mappedTo.slice(0, separator) !== "attunement") return t(name)
+  if (mappedTo.slice(0, separator) !== "attunement") return t(statLineLabel(name))
   return t(getAttunement(name)?.label ?? name)
 }
 

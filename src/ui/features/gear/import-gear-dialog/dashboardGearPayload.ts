@@ -1,4 +1,5 @@
 import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
+import { statLineLabel } from "../../../../data/stats/statLines"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
 import { GEAR_SLOTS, type GearSlot, type GearWordId } from "../../../../engine/types"
 import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
@@ -312,7 +313,7 @@ export function targetKey(target: AffixTarget): string {
 }
 
 export function targetLabel(target: AffixTarget): string {
-  return target.kind === "word" ? target.word : target.label
+  return target.kind === "word" ? statLineLabel(target.word) : target.label
 }
 
 export interface GearImportSummary {

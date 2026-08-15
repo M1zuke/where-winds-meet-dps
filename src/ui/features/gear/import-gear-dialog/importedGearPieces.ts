@@ -36,6 +36,10 @@ export type AffixChoices = Readonly<Record<string, string>>
 const VALUE_SCALES: readonly number[] = [1, 0.01]
 const MAX_ROLL_TOLERANCE = 1e-3
 
+// The payload carries float32 values, so a roll sitting exactly on its ceiling
+// arrives a few billionths above or below it.
+const CLAMP_TOLERANCE = 1e-6
+
 function matchesMaxRoll(derivedMax: number, knownMax: number): boolean {
   return Math.abs(derivedMax - knownMax) <= Math.abs(knownMax) * MAX_ROLL_TOLERANCE
 }
@@ -128,6 +132,7 @@ function resolveAffix(
   // breakthrough, so raising a lower-tier piece up to it would invent stats.
   const scaled = affix.rawValue * scaleFor(affix, target)
   const value = Math.min(Math.max(scaled, 0), ceilingOf(target))
+  const shaved = Math.abs(scaled - value) > Math.abs(scaled) * CLAMP_TOLERANCE
 
   return {
     ...affix,
@@ -135,7 +140,7 @@ function resolveAffix(
       kind: "resolved",
       target,
       value,
-      clampedFrom: value === scaled ? null : scaled,
+      clampedFrom: shaved ? scaled : null,
       suggestions,
       choosableTargets: targets,
     },
