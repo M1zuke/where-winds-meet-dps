@@ -35921,7 +35921,7 @@
           "bellstrikeSplendor-swordspecial-deflect",
           "bellstrikeSplendor-toad-cancel"
         ],
-        "digest": "f8fb16a17d70cf522e934682f0b41f23bd4b8fa0f5683dfa446a2b5186e2c1b5"
+        "digest": "db8fb8590e78e151e3ab1884ff7578cfd596c8192b1e5146b6db12c9dddb8d75"
       },
       "debuffs": {
         "count": 5,
@@ -35985,6 +35985,37 @@
               "kind": "stat",
               "statKey": "directAffinityRate",
               "amount": 0.03
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "mountainsMightQiImbalance",
+          "name": "Qi Imbalance (Splendor path)",
+          "classBuff": true,
+          "requires": {
+            "param": "mountainsMight"
+          },
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "applyBuff",
+              "id": "qiImbalance",
+              "stacks": 1,
+              "durationSec": 15
             }
           ],
           "summary": null
@@ -36334,7 +36365,7 @@
           "duration": 15,
           "maxStacks": 3,
           "effects": "[fn]",
-          "summary": "+10.0% all/stack"
+          "summary": "+8.0% all/stack, +10.0% while Exhausted"
         },
         {
           "id": "swordEnergyEnhancement",
@@ -36356,7 +36387,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "affinityDmg +18%"
+          "summary": "affinityDmg +18% against a low-Qi target"
         },
         {
           "id": "qiImbalance",
@@ -36437,7 +36468,7 @@
       ]
     },
     "dynamic": {
-      "digest": "1df38885c7fedb91a68a7faf1d827b9998ff3b050a27a129dbf52228c0d8c560"
+      "digest": "b5177cebb8708c150512b509d666500c86ac058df51dbc2a928a95425515ea09"
     }
   }
 }

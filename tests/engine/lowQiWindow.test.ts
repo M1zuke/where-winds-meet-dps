@@ -90,13 +90,31 @@ describe("Qi Imbalance as a low-Qi source", () => {
     expect(engine.qiPhase(2)).toBe("below30")
   })
 
-  // Mountain's Might Tier 1 inflicts it from any martial art of the path, not
-  // from the spear alone — so both weapons' martial arts have to apply it.
-  it("is applied by both weapons' martial arts", () => {
-    const weapons = builtinSkillsForClass("bellstrikeSplendor")
-      .filter((skill) => skill.triggersBuffs?.includes(QI_IMBALANCE_STATUS))
-      .map((skill) => skill.weaponOrAttribute)
-    expect([...new Set(weapons)].sort()).toEqual(["Spear", "Sword"])
+  // The spear applies it from the Nameless Spear talent, ungated. The sword
+  // only applies it because Mountain's Might Tier 1 widens the rule to any
+  // martial art of the path, so it routes through that inner way's def.
+  it("is applied directly by the spear and through Mountain's Might by the sword", () => {
+    const triggering = (buffId: string) =>
+      [
+        ...new Set(
+          builtinSkillsForClass("bellstrikeSplendor")
+            .filter((skill) => skill.triggersBuffs?.includes(buffId))
+            .map((skill) => skill.weaponOrAttribute),
+        ),
+      ].sort()
+    expect(triggering(QI_IMBALANCE_STATUS)).toEqual(["Spear"])
+    expect(triggering(BUFF.mountainsMightQiImbalance)).toEqual(["Sword"])
+  })
+
+  it("the sword's application needs Mountain's Might slotted", () => {
+    const defs = buffDefsForClass("bellstrikeSplendor")
+    const fire = (params: Record<string, unknown>) => {
+      const engine = new BuffEngine({ classId: "bellstrikeSplendor", ...params }, defs)
+      engine.triggerDeclaredBuffs([BUFF.mountainsMightQiImbalance], "cast:swordQ", 1)
+      return engine.isBuffActiveAtTime(QI_IMBALANCE_STATUS, 2)
+    }
+    expect(fire({})).toBe(false)
+    expect(fire({ mountainsMight: true })).toBe(true)
   })
 
   it("leaves the timeline band showing only the clock-driven span", () => {

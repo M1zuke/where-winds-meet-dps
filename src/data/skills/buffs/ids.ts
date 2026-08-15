@@ -19,6 +19,7 @@ export const BUFF = {
   ironGuards: "ironGuards",
   mountainSplitter: "mountainSplitter",
   mountainsMight: "mountainsMight",
+  mountainsMightQiImbalance: "mountainsMightQiImbalance",
   shatteredRidgeDeflect: "shatteredRidgeDeflect",
   stonesplitStrengthSkillCritDamage: "stonesplitStrengthSkillCritDamage",
   throatPierced: "throatPierced",
