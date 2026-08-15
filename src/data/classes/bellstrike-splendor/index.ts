@@ -9,6 +9,7 @@ import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belo
 import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
 import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
+import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
 import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/swordSlashDamageBoost"
 
 export const bellstrikeSplendor = defineClass({
@@ -44,6 +45,7 @@ export const bellstrikeSplendor = defineClass({
     endlessGale,
     swordSlashDamageBoost,
     swordEnergyEnhancement,
+    swordEnergyHpDamage,
     qiImbalance,
     belowSixtyEndurance,
   ],

@@ -17,6 +17,7 @@ export const energySurge = defineSkill({
   receives: [
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
+    BUFF.swordEnergyHpDamage,
     BUFF.swordMorphEnduranceBoost,
     BUFF.battleAnthemEnduranceBoost,
   ],

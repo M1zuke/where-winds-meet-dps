@@ -17,6 +17,7 @@ export const swordHeavyCharged = defineSkill({
   receives: [
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
+    BUFF.swordEnergyHpDamage,
     BUFF.swordMorphEnduranceBoost,
     BUFF.battleAnthemEnduranceBoost,
   ],

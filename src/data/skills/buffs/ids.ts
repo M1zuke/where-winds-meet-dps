@@ -38,6 +38,7 @@ export const BUFF = {
   soulShaken: "soulShaken",
   surgingWaves: "surgingWaves",
   swordEnergyEnhancement: "swordEnergyEnhancement",
+  swordEnergyHpDamage: "swordEnergyHpDamage",
   swordMorphEnduranceBoost: "swordMorphEnduranceBoost",
   swordSlashDamageBoost: "swordSlashDamageBoost",
   vulnerabilityTeammate: "vulnerabilityTeammate",
