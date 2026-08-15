@@ -13,7 +13,7 @@ export const swordq = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ,
-  triggersBuffs: [BUFF.jadeware],
+  triggersBuffs: [BUFF.jadeware, BUFF.qiImbalance],
   castFrames: 26,
   triggerable: true,
   hits: [

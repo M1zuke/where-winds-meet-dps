@@ -90,6 +90,15 @@ describe("Qi Imbalance as a low-Qi source", () => {
     expect(engine.qiPhase(2)).toBe("below30")
   })
 
+  // Mountain's Might Tier 1 inflicts it from any martial art of the path, not
+  // from the spear alone — so both weapons' martial arts have to apply it.
+  it("is applied by both weapons' martial arts", () => {
+    const weapons = builtinSkillsForClass("bellstrikeSplendor")
+      .filter((skill) => skill.triggersBuffs?.includes(QI_IMBALANCE_STATUS))
+      .map((skill) => skill.weaponOrAttribute)
+    expect([...new Set(weapons)].sort()).toEqual(["Spear", "Sword"])
+  })
+
   it("leaves the timeline band showing only the clock-driven span", () => {
     const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
     engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
