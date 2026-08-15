@@ -182,3 +182,22 @@ $plot-height: 220px;
   color: var(--color-accent-bright);
   font-variant-numeric: tabular-nums;
 }
+
+.cumulativeLine {
+  fill: none;
+  stroke: #6ad8c4;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.swatchCumulative {
+  border-top-color: #6ad8c4;
+}
+
+.hoverCumulative {
+  font-size: 0.78em;
+  color: #6ad8c4;
+  font-variant-numeric: tabular-nums;
+}
