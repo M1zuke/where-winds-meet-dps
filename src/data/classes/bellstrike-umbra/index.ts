@@ -3,7 +3,6 @@ import { CLASS_ID, SKILLS } from "../../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
-import { BELLSTRIKE_POOL } from "./retunementPool"
 import { declareMechanic, MECHANIC_ORDER } from "../../../engine/mechanics"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
@@ -32,7 +31,6 @@ export const bellstrikeUmbra = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
-  retunementPool: BELLSTRIKE_POOL,
   classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: BELLSTRIKE_UMBRA_GATES,
   mechanics: [declareMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus)],

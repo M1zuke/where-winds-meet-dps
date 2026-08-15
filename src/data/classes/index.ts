@@ -11,3 +11,5 @@ export const CLASSES: readonly ClassDef[] = [
   stonesplitStrength,
   bellstrikeSplendor,
 ]
+
+export { RETUNEMENT_POOLS } from "./retunementPools"

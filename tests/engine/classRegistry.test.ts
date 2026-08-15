@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   CLASS_IDS,
   classDefinition,
+  poolForClass,
   grantsMinPhysCritBoostFor,
 } from "../../src/definitions/classes/registry"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
@@ -39,7 +40,7 @@ describe("class registry — one call answers what a class is made of", () => {
     expect(umbra.attunements.map((a) => a.id)).toEqual(
       expect.arrayContaining(["bleedingDamage", "swordQ"]),
     )
-    expect(umbra.retunementPool).not.toBeNull()
+    expect(poolForClass("bellstrikeUmbra")).not.toBeNull()
   })
 
   it("gives every class a resolvable definition", () => {

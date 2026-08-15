@@ -3,7 +3,6 @@ import { CLASS_ID, SKILLS } from "../../skills/stonesplit-strength"
 import { DEBUFFS } from "../../skills/stonesplit-strength/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
-import { STONESPLIT_POOL } from "./retunementPool"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { ironGuards } from "../../skills/stonesplit-strength/buffs/ironGuards"
 import { shatteredRidgeDeflect } from "../../skills/stonesplit-strength/buffs/shatteredRidgeDeflect"
@@ -39,7 +38,6 @@ export const stonesplitStrength = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: STONESPLIT_STRENGTH_GRADUATION_BUILD,
-  retunementPool: STONESPLIT_POOL,
   classBuffDefs: [ironGuards, shatteredRidgeDeflect, stonesplitStrengthSkillCritDamage],
   gateBuffs: STONESPLIT_STRENGTH_GATES,
   mechanics: [],

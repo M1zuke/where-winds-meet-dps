@@ -40,7 +40,6 @@ export const bellstrikeSplendor = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_SPLENDOR_GRADUATION_BUILD,
-  retunementPool: null,
   classBuffDefs: [
     endlessGale,
     swordSlashDamageBoost,

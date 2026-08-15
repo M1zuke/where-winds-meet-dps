@@ -52,7 +52,7 @@ export interface ClassDef {
   rotations: readonly Rotation[]
   defaultRotationId: string | null
   graduationBuild: GraduationBuild
-  retunementPool: RetunementPool | null
+
   // Only defs the class itself owns — docs/CLASSES.md § "Buff ownership".
   // Membership here is also what puts a row in the Skill Editor's Spec
   // Mechanics column.

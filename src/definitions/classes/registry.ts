@@ -17,7 +17,7 @@ import type { AttunementOption } from "../../engine/attunements"
 import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import type { ClassDef, RetunementPool } from "./classDef"
-import { CLASSES } from "../../data/classes"
+import { CLASSES, RETUNEMENT_POOLS } from "../../data/classes"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
@@ -109,7 +109,8 @@ export function classDefinition(classId: string): ClassDefinition | null {
 }
 
 export function poolForClass(classId: string): RetunementPool | null {
-  return CLASSES.find((classDef) => classDef.id === classId)?.retunementPool ?? null
+  const attribute = CLASSES.find((classDef) => classDef.id === classId)?.primaryAttribute
+  return (attribute && RETUNEMENT_POOLS[attribute]) ?? null
 }
 
 // The one place `BuildView.grantsMinPhysCritBoost` gets built from a class's
