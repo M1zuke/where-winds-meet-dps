@@ -24,6 +24,8 @@ import { registerDisplayGate } from "../../engine/buffs/displayGates"
 import { registerPoisonExtension } from "./poisonExtensions"
 import { INNER_WAYS, innerWayDefinition } from "../innerWays/registry"
 import type { InnerWayDef } from "../innerWays/innerWayDef"
+import { martialArtDefinition } from "../martialArts/registry"
+import type { MartialArtDef } from "../martialArts/martialArtDef"
 
 function innerWayIdsOf(classDef: ClassDef): readonly string[] {
   return [...new Set([classDef.classMindGroup, ...classDef.allowedMindMethods].filter(Boolean))]
@@ -36,6 +38,12 @@ function innerWayIdsOf(classDef: ClassDef): readonly string[] {
 export function innerWayDefsOf(classDef: ClassDef): readonly InnerWayDef[] {
   const ids = new Set(innerWayIdsOf(classDef))
   return INNER_WAYS.filter((def) => ids.has(def.id))
+}
+
+export function martialArtsOf(classDef: ClassDef): readonly MartialArtDef[] {
+  return classDef.weapons
+    .map((id) => martialArtDefinition(id))
+    .filter((def): def is MartialArtDef => !!def)
 }
 
 for (const classDef of CLASSES) {
@@ -64,6 +72,7 @@ export function CLASS_IDS(): readonly string[] {
 export interface ClassDefinition extends ClassDef {
   // The class's own signature inner way, plus the ones it may slot alongside it.
   innerWays: readonly string[]
+  martialArts: readonly MartialArtDef[]
   buffs: readonly Buff[]
   // Every slottable inner way's `buffDefs` plus the class's own
   // `classBuffDefs` — not `GLOBAL_BUFF_DEFS`, which `buffDefsForClass`
@@ -87,6 +96,7 @@ export function classDefinition(classId: string): ClassDefinition | null {
   const definition: ClassDefinition = {
     ...classDef,
     innerWays: innerWayIdsOf(classDef),
+    martialArts: martialArtsOf(classDef),
     buffs: builtinBuffsForClass(classId),
     buffModules: [
       ...innerWayDefsOf(classDef).flatMap((def) => def.buffDefs ?? []),

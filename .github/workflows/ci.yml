@@ -32,7 +32,7 @@ jobs:
           LC_ALL: C.UTF-8
           LANG: C.UTF-8
         run: |
-          hits=$(grep -rlP '[\x{4e00}-\x{9fff}]' src tests || true)
+          hits=$(grep -rlIP '[\x{4e00}-\x{9fff}]' src tests || true)
           if [ -n "$hits" ]; then
             echo "Chinese characters found in src/ or tests/ (English-only repo):" >&2
             echo "$hits" >&2

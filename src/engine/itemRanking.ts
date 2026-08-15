@@ -67,7 +67,7 @@ function wordSpec(
 function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
   const school = getSchool(inputs.classId)
   const weapons = rotationWeapons(inputs)
-  const schoolWeapons = school.weapons.filter(isWeaponName)
+  const schoolWeapons = school.martialArts.map((martialArt) => martialArt.weaponType)
   const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
   const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
   const specs: WordSpec<GearWordId>[] = [

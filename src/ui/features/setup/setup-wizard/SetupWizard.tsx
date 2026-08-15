@@ -1,13 +1,13 @@
-import { useId, useMemo, useState } from "react"
+import { useId, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
-import { applyArmorSet, applyBowSet } from "../../../../engine/panel"
-import { withDerivedStats } from "../../../../engine/derivedInputs"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog } from "../../../components/dialog/Dialog"
 import { syncClassPermanent } from "../../../utils/classSetup"
-import { ClassSelect } from "../../overview/class-select/ClassSelect"
-import { MindMethodsPanel } from "../../overview/mind-methods-panel/MindMethodsPanel"
-import { GearTab } from "../../gear/gear-tab/GearTab"
+import { ClassPicker } from "../class-picker/ClassPicker"
+import { GearImportInstructions } from "../../gear/import-gear-dialog/GearImportInstructions"
+import { GearImportPreview } from "../../gear/import-gear-dialog/GearImportPreview"
+import { useGearImportDraft } from "../../gear/import-gear-dialog/useGearImportDraft"
+import { equippedFromImported } from "../../gear/import-gear-dialog/importedGearPieces"
 import styles from "./SetupWizard.module.scss"
 
 export type SetupMode = "first-run" | "new-profile"
@@ -20,66 +20,164 @@ interface Props {
   onCancel?: () => void
 }
 
-const TEMP_PROFILE_ID = "__setup_wizard__"
-const STEP_COUNT = 3
-
 export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCancel }: Props) {
   const { t } = useI18n()
   const headingId = useId()
   const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [manual, setManual] = useState(false)
   const [name, setName] = useState(initialName)
   const [draft, setDraft] = useState<Inputs>(() =>
     syncClassPermanent(initialInputs, initialInputs.classId),
   )
+  const importDraft = useGearImportDraft(draft)
 
+  const totalSteps = manual ? 3 : 2
   const trimmedName = name.trim()
-  const canAdvance = step === 1 ? trimmedName.length > 0 : true
+  const finishLabel = mode === "first-run" ? t("Finish setup") : t("Create profile")
 
-  function next() {
-    if (!canAdvance) return
-    if (step < STEP_COUNT) setStep((prev) => (prev + 1) as 1 | 2 | 3)
-    else onFinish(trimmedName, draft)
+  function goToImportStep(): void {
+    setStep(2)
   }
-  function back() {
-    if (step > 1) setStep((prev) => (prev - 1) as 1 | 2 | 3)
-    else if (onCancel) onCancel()
+  function backToClassStep(): void {
+    setStep(1)
   }
-  const canGoBack = step > 1 || !!onCancel
-  const backLabel = step === 1 && onCancel ? t("Cancel") : t("Back")
+  function goManual(): void {
+    setManual(true)
+    setStep(3)
+  }
+  function backToImportStep(): void {
+    setManual(false)
+    setStep(2)
+  }
+
+  function finishImportPath(): void {
+    if (!importDraft.result || !importDraft.pieces.length) return
+    const finishedInputs: Inputs = {
+      ...draft,
+      inventory: importDraft.pieces,
+      equipped: equippedFromImported(importDraft.pieces),
+      mindMethods: importDraft.mindMethods ?? draft.mindMethods,
+    }
+    const capturedName = importDraft.result.roleName?.trim()
+    const finalName = capturedName || initialName.trim() || t("New profile")
+    onFinish(finalName, finishedInputs)
+  }
+
+  function finishManualPath(): void {
+    if (!trimmedName) return
+    onFinish(trimmedName, draft)
+  }
 
   const heading =
-    step === 1 ? t("Name your profile") : step === 2 ? t("Class & Inner Ways") : t("Your gear")
+    step === 1
+      ? t("Choose your class")
+      : step === 2
+        ? t("Import your gear")
+        : t("Name your profile")
 
   const instruction =
     step === 1
-      ? t("Give this profile a name — your character name works well.")
+      ? t("Pick the class you play — everything after this is filtered to it.")
       : step === 2
-        ? t("Pick your class, then fill in the four Inner Way slots.")
-        : t(
-            "Add the gear you currently own. We'll skip DPS comparisons during setup — you can review them on the Gear tab once you're done.",
+        ? t(
+            "Paste a capture from the official dashboard, or tell us you'd rather set your gear up yourself.",
           )
+        : t("Give this profile a name — your character name works well.")
 
-  const finishLabel = mode === "first-run" ? t("Finish setup") : t("Create profile")
+  const canGoBack = step > 1 || !!onCancel
+  const backLabel = step === 1 && onCancel ? t("Cancel") : t("Back")
+
+  function back(): void {
+    if (step === 3) backToImportStep()
+    else if (step === 2) backToClassStep()
+    else onCancel?.()
+  }
+
+  const primaryDisabled =
+    step === 2 ? !importDraft.pieces.length : step === 3 ? !trimmedName : false
+
+  function primaryAction(): void {
+    if (step === 1) goToImportStep()
+    else if (step === 2) finishImportPath()
+    else finishManualPath()
+  }
 
   return (
     <Dialog
       labelledBy={headingId}
       layer="wizard"
-      surfaceClassName={styles.wizardSurface + (step === 3 ? ` ${styles.surfaceGear}` : "")}
+      surfaceClassName={styles.wizardSurface + (step === 2 ? ` ${styles.surfaceImport}` : "")}
     >
       <div className={styles.wizardHeader}>
         <div className={styles.wizardStepIndicator}>
-          {t("Step {n}").replace("{n}", `${step} / ${STEP_COUNT}`)}
+          {t("Step {n}").replace("{n}", `${step} / ${totalSteps}`)}
         </div>
         <h2 id={headingId}>{heading}</h2>
         <p className={styles.wizardInstruction}>{instruction}</p>
       </div>
 
       <div className={styles.wizardBody}>
-        {step === 1 && <Step1Name name={name} onChange={setName} onSubmit={next} />}
-        {step === 2 && <Step2Class draft={draft} onChange={setDraft} />}
+        {step === 1 && (
+          <ClassPicker
+            value={draft.classId}
+            onChange={(classId) => setDraft(syncClassPermanent(draft, classId))}
+          />
+        )}
+
+        {step === 2 && (
+          <div className={styles.wizardImportSplit}>
+            <div>
+              {!importDraft.result ? (
+                <GearImportInstructions
+                  pasted={importDraft.pasted}
+                  onPasteChange={importDraft.setPasted}
+                  parseError={importDraft.parseError}
+                  notice={importDraft.copyNotice}
+                />
+              ) : (
+                <GearImportPreview
+                  draft={importDraft}
+                  mindMethods={draft.mindMethods}
+                  onClearPaste={importDraft.clearPaste}
+                  warnAboutDisplacedSlots={false}
+                />
+              )}
+            </div>
+            <div className={styles.wizardManualDivider}>
+              <span className={styles.wizardManualDividerLabel}>{t("OR")}</span>
+            </div>
+            <div className={styles.wizardManualArea}>
+              <button
+                type="button"
+                className={`btn ${styles.wizardManualButton}`}
+                onClick={goManual}
+              >
+                {t("I'd rather do it manually")}
+              </button>
+              <p className={styles.wizardManualNote}>
+                {t(
+                  "Enter your gear yourself later — you can import from the Gear tab at any time.",
+                )}
+              </p>
+            </div>
+          </div>
+        )}
+
         {step === 3 && (
-          <Step3Gear draft={draft} onChange={setDraft} name={trimmedName || initialName} />
+          <div className={`row ${styles.wizardNameRow}`}>
+            <label htmlFor="wizard-name">{t("Profile name")}</label>
+            <input
+              id="wizard-name"
+              type="text"
+              autoFocus
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") finishManualPath()
+              }}
+              placeholder={t("e.g. my character name")}
+            />
+          </div>
         )}
       </div>
 
@@ -88,7 +186,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           {backLabel}
         </button>
         <div className={styles.wizardProgress} aria-hidden="true">
-          {Array.from({ length: STEP_COUNT }).map((_, index) => (
+          {Array.from({ length: totalSteps }).map((_, index) => (
             <span
               key={index}
               className={
@@ -102,90 +200,15 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
             />
           ))}
         </div>
-        <button type="button" className="btn primary" onClick={next} disabled={!canAdvance}>
-          {step === STEP_COUNT ? finishLabel : t("Next")}
+        <button
+          type="button"
+          className="btn primary"
+          onClick={primaryAction}
+          disabled={primaryDisabled}
+        >
+          {step === 1 ? t("Next") : finishLabel}
         </button>
       </div>
     </Dialog>
-  )
-}
-
-function Step1Name({
-  name,
-  onChange,
-  onSubmit,
-}: {
-  name: string
-  onChange: (value: string) => void
-  onSubmit: () => void
-}) {
-  const { t } = useI18n()
-  return (
-    <div className={`row ${styles.wizardNameRow}`}>
-      <label htmlFor="wizard-name">{t("Profile name")}</label>
-      <input
-        id="wizard-name"
-        type="text"
-        autoFocus
-        value={name}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") onSubmit()
-        }}
-        placeholder={t("e.g. my character name")}
-      />
-    </div>
-  )
-}
-
-function Step2Class({ draft, onChange }: { draft: Inputs; onChange: (next: Inputs) => void }) {
-  const { t } = useI18n()
-  return (
-    <>
-      <div className="panel">
-        <h2>{t("Class")}</h2>
-        <ClassSelect
-          value={draft.classId}
-          onChange={(classId) => onChange(syncClassPermanent(draft, classId))}
-        />
-      </div>
-      <div className="panel">
-        <h2>{t("mindMethod")}</h2>
-        <MindMethodsPanel inputs={draft} onChange={onChange} />
-      </div>
-    </>
-  )
-}
-
-function Step3Gear({
-  draft,
-  onChange,
-  name,
-}: {
-  draft: Inputs
-  onChange: (next: Inputs) => void
-  name: string
-}) {
-  const tempProfile = {
-    id: TEMP_PROFILE_ID,
-    name: name || "—",
-    inputs: draft,
-  }
-  const engineInputs = useMemo(() => {
-    const derived = withDerivedStats(draft)
-    return applyBowSet(applyArmorSet(derived))
-  }, [draft])
-  return (
-    <GearTab
-      inputs={draft}
-      engineInputs={engineInputs}
-      onChange={onChange}
-      profiles={[tempProfile]}
-      activeProfileId={TEMP_PROFILE_ID}
-      currentDps={0}
-      dpsDeltas={{}}
-      dpsDeltasPending={false}
-      hideComparisons
-    />
   )
 }
