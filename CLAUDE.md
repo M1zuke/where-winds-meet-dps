@@ -186,11 +186,12 @@ fixtures, or comments. Every domain term uses its official English form
 Grep guard — must return nothing:
 
 ```
-grep -rlP '[\x{4e00}-\x{9fff}]' src tests
+grep -rlIP '[\x{4e00}-\x{9fff}]' src tests
 ```
 
 Use `-P`, not `-E`: `grep -E` doesn't understand `\x{…}` and silently reports
-false positives.
+false positives. Keep `-I`: the guard is about source text, and a binary asset
+under `src/` will otherwise trip it on bytes that happen to fall in the range.
 
 **The only sanctioned Chinese** is dev-only reference material outside `src/`:
 the workbook in `excels/`, its extractions in `reference/workbook/`, the
