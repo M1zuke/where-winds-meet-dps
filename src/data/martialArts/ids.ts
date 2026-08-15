@@ -3,6 +3,8 @@ export const MARTIAL_ART_ID = {
   heavenquakerSpear: "heavenquakerSpear",
   snowpartingBlade: "snowpartingBlade",
   phalanxbaneBlade: "phalanxbaneBlade",
+  namelessSword: "namelessSword",
+  namelessSpear: "namelessSpear",
 } as const
 
 export type MartialArtId = (typeof MARTIAL_ART_ID)[keyof typeof MARTIAL_ART_ID]

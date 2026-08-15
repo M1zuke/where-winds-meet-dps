@@ -4,6 +4,7 @@ import { DEBUFFS } from "../../skills/bellstrike-splendor/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { INNER_WAY_ID } from "../../innerWays/ids"
+import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { BELLSTRIKE_SPLENDOR_GRADUATION_BUILD } from "./graduationBuild"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
 import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
@@ -34,7 +35,7 @@ export const bellstrikeSplendor = defineClass({
     "spearCharged",
     "spearSpecial",
   ],
-  weapons: ["Sword", "Spear"],
+  weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
