@@ -36,6 +36,8 @@
 }
 
 .graduation {
+  position: relative;
+  z-index: 0;
   flex: 0 0 auto;
   display: flex;
   align-items: center;
