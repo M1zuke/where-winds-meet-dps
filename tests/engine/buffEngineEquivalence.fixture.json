@@ -35921,7 +35921,7 @@
           "bellstrikeSplendor-swordspecial-deflect",
           "bellstrikeSplendor-toad-cancel"
         ],
-        "digest": "916b2ff6e054d41c946be4169cb152e40db75575ce4ba69d61688b532724974b"
+        "digest": "a8d8844c48a6ccb04b8e790c6a32e51fa718ae52ee1006ca79ab965b3fa12fbe"
       },
       "debuffs": {
         "count": 5,
@@ -35935,6 +35935,84 @@
         "digest": "4c5937362de2f439b8dae94e5ef8680c4e0c599ef5a6b798c2ae1e0883798aec"
       },
       "buffs": [
+        {
+          "id": "battleAnthemEnduranceBoost",
+          "name": "Battle Anthem",
+          "classBuff": true,
+          "requires": {
+            "param": "battleAnthem"
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "allDamageBoost +25%"
+        },
+        {
+          "id": "mountainsMight",
+          "name": "Mountain's Might",
+          "classBuff": true,
+          "requires": {
+            "param": "mountainsMight"
+          },
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 8,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "directAffinityRate",
+              "amount": 0.03
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "swordMorphEnduranceBoost",
+          "name": "Extra Endurance",
+          "classBuff": true,
+          "requires": {
+            "param": "swordMorph"
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "allDamageBoost +30%"
+        },
         {
           "id": "revelryScript",
           "name": "Revelry Script",
@@ -36207,6 +36285,78 @@
             }
           ],
           "summary": null
+        },
+        {
+          "id": "endlessGale",
+          "name": "Endless Gale",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 8,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "affinityDamageBoost",
+              "amount": 0.18
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "swordSlashDamageBoost",
+          "name": "Sword Slash Damage Boost",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": true,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": 3,
+          "effects": "[fn]",
+          "summary": "+10.0% all/stack"
+        },
+        {
+          "id": "swordEnergyEnhancement",
+          "name": "Sword Energy Enhancement",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "affinityDmg +18%"
         }
       ],
       "group": [
@@ -36235,7 +36385,7 @@
       ]
     },
     "dynamic": {
-      "digest": "285c14b11a189f29a1bcb10d4d5ee6ad51f241b91c4753551a86f5700e4f4770"
+      "digest": "84a04e54e176f640c7e27d6931b1dc95afd7a4d34b47c6c4b433bb566d27c893"
     }
   }
 }

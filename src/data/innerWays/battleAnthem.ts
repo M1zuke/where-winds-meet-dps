@@ -1,6 +1,7 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
+import { battleAnthemEnduranceBoost } from "./battleAnthemBuffs"
 
 // The in-game panel reads 3.3% affinity rate at solo mode level 14 (2026-05),
 // scaled here to the level the shipped inner ways store. The affinity damage
@@ -17,4 +18,5 @@ export const battleAnthem = defineInnerWay({
   tiers: {
     6: { nodes: [INNER_WAY_NODE.battleAnthemEnduranceBonus] },
   },
+  buffDefs: [battleAnthemEnduranceBoost],
 })

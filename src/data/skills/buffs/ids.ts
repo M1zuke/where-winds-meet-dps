@@ -3,8 +3,10 @@
 // `activeAfterBuffEnds.buffId` reference becomes a build error instead of a
 // silently-never-firing buff.
 export const BUFF = {
+  battleAnthemEnduranceBoost: "battleAnthemEnduranceBoost",
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
+  endlessGale: "endlessGale",
   burningHeartIPConsume: "burningHeartIPConsume",
   chargeEnhancement: "chargeEnhancement",
   concentration: "concentration",
@@ -15,6 +17,7 @@ export const BUFF = {
   innerPassion: "innerPassion",
   ironGuards: "ironGuards",
   mountainSplitter: "mountainSplitter",
+  mountainsMight: "mountainsMight",
   shatteredRidgeDeflect: "shatteredRidgeDeflect",
   stonesplitStrengthSkillCritDamage: "stonesplitStrengthSkillCritDamage",
   throatPierced: "throatPierced",
@@ -31,6 +34,9 @@ export const BUFF = {
   revelryScript: "revelryScript",
   soulShaken: "soulShaken",
   surgingWaves: "surgingWaves",
+  swordEnergyEnhancement: "swordEnergyEnhancement",
+  swordMorphEnduranceBoost: "swordMorphEnduranceBoost",
+  swordSlashDamageBoost: "swordSlashDamageBoost",
   vulnerabilityTeammate: "vulnerabilityTeammate",
   wineGu: "wineGu",
 } as const

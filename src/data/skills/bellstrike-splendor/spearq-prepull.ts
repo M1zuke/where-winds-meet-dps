@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 // Cast before the pull, so it lands no damage of its own — it is in the
@@ -14,6 +15,7 @@ export const spearqPrepull = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
+  triggersBuffs: [BUFF.endlessGale, BUFF.mountainsMight],
   castFrames: 0,
   triggerable: true,
   hits: [

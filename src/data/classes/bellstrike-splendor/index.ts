@@ -5,6 +5,9 @@ import { withUniversalSkills } from "../../../definitions/skills/universalSkills
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { BELLSTRIKE_SPLENDOR_GRADUATION_BUILD } from "./graduationBuild"
+import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
+import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
+import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/swordSlashDamageBoost"
 
 export const bellstrikeSplendor = defineClass({
   id: CLASS_ID,
@@ -35,7 +38,7 @@ export const bellstrikeSplendor = defineClass({
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_SPLENDOR_GRADUATION_BUILD,
   retunementPool: null,
-  classBuffDefs: [],
+  classBuffDefs: [endlessGale, swordSlashDamageBoost, swordEnergyEnhancement],
   gateBuffs: [],
   mechanics: [],
   skillBehaviors: [],

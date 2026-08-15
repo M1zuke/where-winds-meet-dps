@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 // The reference export gives one row for all three waves here, unlike the full
@@ -15,6 +16,13 @@ export const swordHeavyChargedPrepull = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyChargedPrepull,
+  triggersBuffs: [BUFF.swordSlashDamageBoost],
+  receives: [
+    BUFF.swordSlashDamageBoost,
+    BUFF.swordEnergyEnhancement,
+    BUFF.swordMorphEnduranceBoost,
+    BUFF.battleAnthemEnduranceBoost,
+  ],
   castFrames: 51,
   triggerable: true,
   hits: [

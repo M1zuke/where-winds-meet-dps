@@ -13,7 +13,7 @@ export const spearq = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
-  triggersBuffs: [BUFF.jadeware],
+  triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.mountainsMight],
   castFrames: 42,
   triggerable: true,
   hits: [
