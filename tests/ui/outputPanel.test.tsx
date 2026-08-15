@@ -53,7 +53,7 @@ describe("MetricsCard", () => {
     expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true")
   })
 
-  it("sets the graduation button on fire above a 91% rate", () => {
+  it("sets the graduation button on fire above a 94% rate", () => {
     render(
       <I18nProvider>
         <MetricsCard result={{ ...result, graduationRate: 0.95 }} />
@@ -65,14 +65,14 @@ describe("MetricsCard", () => {
     expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true")
   })
 
-  it("keeps the graduation button unlit at a 91% rate", () => {
+  it("keeps the graduation button unlit at a 94% rate", () => {
     render(
       <I18nProvider>
-        <MetricsCard result={{ ...result, graduationRate: 0.91 }} />
+        <MetricsCard result={{ ...result, graduationRate: 0.94 }} />
       </I18nProvider>,
     )
 
-    const button = screen.getByRole("button", { name: "Graduation: 91.0%" })
+    const button = screen.getByRole("button", { name: "Graduation: 94.0%" })
     expect(button.querySelector("canvas")).toBeNull()
   })
 
