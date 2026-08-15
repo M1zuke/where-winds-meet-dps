@@ -3,6 +3,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { getSchool } from "../../../../engine/panel"
 import type { Inputs } from "../../../../engine/types"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
+import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { TalentsTab } from "../talents-tab/TalentsTab"
 import { OdditiesTab } from "../oddities-tab/OdditiesTab"
 
@@ -26,8 +27,10 @@ export function TalentsOdditiesTab({
           { key: "oddities", label: t("Oddities") },
         ]}
       />
-      {sub === "talents" && <TalentsTab inputs={inputs} />}
-      {sub === "oddities" && <OdditiesTab inputs={inputs} onChange={onChange} />}
+      <SubTabPanel>
+        {sub === "talents" && <TalentsTab inputs={inputs} />}
+        {sub === "oddities" && <OdditiesTab inputs={inputs} onChange={onChange} />}
+      </SubTabPanel>
     </>
   )
 }

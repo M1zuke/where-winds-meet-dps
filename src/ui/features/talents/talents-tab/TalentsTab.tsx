@@ -313,7 +313,7 @@ export function TalentsTab({ inputs }: Props) {
   }
 
   return (
-    <div className="panel">
+    <div>
       <div>
         <div className="toolbar">
           <span className="toolbar-label">{t("Stat Buffs")}</span>
