@@ -9,16 +9,12 @@ export interface SetFormulaBonus {
   physBoost?: number
   /** `Y` term. */
   affinityDamage?: number
-  /** `W` term, gated on low Qi. */
+  /** `panel.ts`'s Divinecraft-fire addend to `generalDamageBoost`. */
   lowQiDirectAffinityRate?: number
   /** `X` term. */
   critDamage?: number
   /** `V` term. */
   directCrit?: number
-  /** `attrBlock`'s `setLowQiBonus`, gated on low Qi — applied to every
-   * attribute block alike, not scoped to Bamboocut despite the name;
-   * preserved exactly as inherited. */
-  lowQiBambooDamage?: number
   /** Swaying Heights only — `panel.ts buildContext`'s `generalDamageBoost`. */
   generalDamageBoost?: number
 }

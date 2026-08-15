@@ -121,19 +121,7 @@ interface SkillResult {
   cells: Record<string, number>
 }
 
-export interface RotationCounters {
-  qiExhausted: number
-  yiShuiLayer: number
-  bengJieLayer: number
-  lowQi: number
-}
-
-export function computeSkillDamage(
-  art: ArtRow,
-  ctx: FormulaContext,
-  count: number,
-  counters: RotationCounters = { qiExhausted: 0, yiShuiLayer: 0, bengJieLayer: 0, lowQi: 0 },
-): SkillResult {
+export function computeSkillDamage(art: ArtRow, ctx: FormulaContext, count: number): SkillResult {
   const num = (v: number | undefined) => v ?? 0
   const N = num(art.physMultiplier)
   const O = num(art.attributeMultiplier)
@@ -164,11 +152,7 @@ export function computeSkillDamage(
   const dotRules = !getsElevatedMultiplier
 
   const skillCritDamage = num(art.extraCritDamage)
-  const X =
-    ctx.critDmgBoostPanel +
-    skillCritDamage +
-    setFormulaBonus(ctx.set, "critDamage") +
-    counters.bengJieLayer * 0.05
+  const X = ctx.critDmgBoostPanel + skillCritDamage + setFormulaBonus(ctx.set, "critDamage")
 
   const skillAffinityDamage = num(art.extraAffinityDamage)
   const Y =
@@ -190,12 +174,10 @@ export function computeSkillDamage(
       setFormulaBonus(ctx.set, "directCrit") +
       num(art.extraCritRate)
 
-  const isLowQi = counters.lowQi === 1
   const W = isTianGong
     ? 0
     : Math.min(ctx.affinityPanel + num(art.extraAffinityRate) / (1 + rateRes), 0.4) +
-      ctx.directAffinityPanel +
-      (isLowQi ? setFormulaBonus(ctx.set, "lowQiDirectAffinityRate") : 0)
+      ctx.directAffinityPanel
 
   const setFalcon = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
@@ -214,12 +196,7 @@ export function computeSkillDamage(
 
   const AF = (AE + AG) / 2
 
-  const physPenTotal =
-    ctx.outerPen +
-    num(art.extraPhysPenetration) +
-    counters.bengJieLayer * 5 +
-    counters.yiShuiLayer * 2 +
-    (ctx.hasSixHenZhi ? 10 : 0)
+  const physPenTotal = ctx.outerPen + num(art.extraPhysPenetration) + (ctx.hasSixHenZhi ? 10 : 0)
   const AH = penFrac(physPenTotal, physPenRes)
 
   const AI = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
@@ -282,21 +259,16 @@ export function computeSkillDamage(
     const large = Math.max(block.max + (matches ? ctx.attributePrimaryBonus : 0), small)
     const avg = (small + large) / 2
     const penBoost = pen + extraSkillPen
-    // The Swallowcall low-qi bonus is read twice — see `data/sets/swallowcall.ts`.
-    const dmgBoost =
-      (BU === attribute ? ctx.attributeDmgBoostPanel : 0) +
-      (isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0)
+    const dmgBoost = BU === attribute ? ctx.attributeDmgBoostPanel : 0
     const mult = BU === attribute && !dotRules ? O : N
-    const setLowQiBonus = isLowQi ? setFormulaBonus(ctx.set, "lowQiBambooDamage") : 0
-    const setMul = 1 + setLowQiBonus
     const penMul = 1 + penFrac(penBoost, attrPenRes)
-    const graze = small * mult * penMul * (1 + dmgBoost) * setMul
-    const crit = avg * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const aff = large * mult * penMul * (1 + dmgBoost) * (1 + Y) * setMul
-    const norm = avg * mult * (1 + dmgBoost) * penMul * setMul
-    const critMin = small * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const critMax = large * mult * penMul * (1 + dmgBoost) * (1 + X) * setMul
-    const normMax = large * mult * (1 + dmgBoost) * penMul * setMul
+    const graze = small * mult * penMul * (1 + dmgBoost)
+    const crit = avg * mult * penMul * (1 + dmgBoost) * (1 + X)
+    const aff = large * mult * penMul * (1 + dmgBoost) * (1 + Y)
+    const norm = avg * mult * (1 + dmgBoost) * penMul
+    const critMin = small * mult * penMul * (1 + dmgBoost) * (1 + X)
+    const critMax = large * mult * penMul * (1 + dmgBoost) * (1 + X)
+    const normMax = large * mult * (1 + dmgBoost) * penMul
     return { graze, crit, aff, norm, critMin, critMax, normMax }
   }
 
@@ -336,8 +308,6 @@ export function computeSkillDamage(
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
     T +
-    counters.yiShuiLayer * 0.01 +
-    counters.qiExhausted * ctx.fatigueDamageTaken +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
     num(art.extraDamageBoost) +
     (isPersistent
