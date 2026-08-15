@@ -1,6 +1,7 @@
 import type { Result } from "../../../engine/types"
 import { useI18n } from "../../../i18n/i18nContext"
 import { groupByBreakdownName } from "../../utils/skillBreakdown"
+import { GraduationFire } from "./graduation-fire/GraduationFire"
 import styles from "./OutputPanel.module.scss"
 
 const fmt = (n: number, digits = 2) =>
@@ -78,6 +79,9 @@ export function MetricsCard({
         aria-live="polite"
         onClick={onGraduationClick}
       >
+        {result.graduationRate !== null && result.graduationRate > 0.91 && (
+          <GraduationFire rate={result.graduationRate} />
+        )}
         <span className={styles.stat}>
           <span className={styles.label}>{t("Graduation")}</span>
           <span className={styles.value}>{graduationText}</span>
