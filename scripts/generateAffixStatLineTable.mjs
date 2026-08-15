@@ -57,6 +57,7 @@ const OFFICIAL_TO_TARGET = {
   stBurstMysticDmg: "word:singleTargetMysticBoost",
   stControlMysticDmg: "word:singleTargetMysticBoost",
   stMysticDmg: "word:singleTargetMysticBoost",
+  swordCharged: "attunement:swordCharged",
   swordDmg: "word:swordBoost",
   swordQ: "attunement:swordQ",
   swordSpecial: "attunement:swordSpecial",
