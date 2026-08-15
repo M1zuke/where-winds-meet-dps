@@ -96,3 +96,30 @@ describe("Qi Imbalance as a low-Qi source", () => {
     expect(engine.lowQiWindow()).toBeNull()
   })
 })
+
+describe("Qi Imbalance's damage effects", () => {
+  const defs = () => buffDefsForClass("bellstrikeSplendor")
+  const module = () => defs().find((def) => def.id === BUFF.qiImbalance)!
+
+  it("gives Qi damage whatever the target's state", () => {
+    const effects = module().effects
+    if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
+    for (const phase of ["normal", "below30", "exhausted"] as const) {
+      expect(effects({ phase } as never)).toContainEqual({
+        kind: "stat",
+        statKey: "attributeDamageBoost",
+        amount: 0.1,
+      })
+    }
+  })
+
+  it("adds its damage multiplier only inside the break window", () => {
+    const effects = module().effects
+    if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
+    const multiplierAt = (phase: string) =>
+      effects({ phase } as never).find((effect) => effect.kind === "damageMultiplier")
+    expect(multiplierAt("normal")).toBeUndefined()
+    expect(multiplierAt("below30")).toBeUndefined()
+    expect(multiplierAt("exhausted")).toEqual({ kind: "damageMultiplier", factor: 1.1 })
+  })
+})

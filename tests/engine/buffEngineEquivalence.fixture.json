@@ -36377,14 +36377,8 @@
           "hasStacksFn": false,
           "duration": 15,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "attributeDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "summary": null
+          "effects": "[fn]",
+          "summary": "Qi dmg +10%, and +10% damage taken while Exhausted"
         },
         {
           "id": "belowSixtyEndurance",
