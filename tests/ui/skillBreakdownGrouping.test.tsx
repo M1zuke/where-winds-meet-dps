@@ -21,11 +21,11 @@ function row(patch: Partial<SkillTickResult>): SkillTickResult {
   }
 }
 
-function resultWith(perSkill: SkillTickResult[]): Result {
+function resultWith(perSkill: SkillTickResult[], rotationDuration = 0): Result {
   return {
     dps: 0,
     totalDamage: 0,
-    rotationDuration: 0,
+    rotationDuration,
     graduationRate: null,
     perSkill,
     ranking: [],
@@ -34,7 +34,7 @@ function resultWith(perSkill: SkillTickResult[]): Result {
 }
 
 describe("grouping the breakdown by breakdown name", () => {
-  it("sums hits, cast time, damage and share of every row sharing one breakdown name", () => {
+  it("sums hits, damage and share of every row sharing one breakdown name", () => {
     const grouped = groupByBreakdownName([
       row({ name: "Skill 3-Hit", breakdownName: "In-Game Skill", count: 3, expectedDamage: 300 }),
       row({ name: "Skill 4-Hit", breakdownName: "In-Game Skill", count: 4, expectedDamage: 400 }),
@@ -44,19 +44,44 @@ describe("grouping the breakdown by breakdown name", () => {
     expect(grouped[0]).toMatchObject({
       name: "In-Game Skill",
       count: 7,
-      castTimeSec: 2,
       expectedDamage: 700,
       percentOfTotal: 0.2,
     })
   })
 
-  it("derives the group's cast-time DPS from the summed damage and summed cast time", () => {
-    const grouped = groupByBreakdownName([
-      row({ breakdownName: "In-Game Skill", expectedDamage: 300, castTimeSec: 2 }),
-      row({ breakdownName: "In-Game Skill", expectedDamage: 900, castTimeSec: 4 }),
-    ])
+  it("reads a skill's DPS as its damage over the rotation duration, not over its cast time", () => {
+    const result = resultWith(
+      [row({ name: "Skill", breakdownName: "In-Game Skill", expectedDamage: 600, castTimeSec: 2 })],
+      60,
+    )
 
-    expect(grouped[0].dpsOfCastTime).toBe(200)
+    render(
+      <I18nProvider>
+        <RotationBreakdownPanel result={result} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("10.0")).toBeInTheDocument()
+    expect(screen.queryByText("300.0")).not.toBeInTheDocument()
+  })
+
+  it("makes the DPS column sum to the rotation's own DPS", () => {
+    const result = resultWith(
+      [
+        row({ name: "Big", breakdownName: "Big", expectedDamage: 900 }),
+        row({ name: "Small", breakdownName: "Small", expectedDamage: 300 }),
+      ],
+      60,
+    )
+
+    render(
+      <I18nProvider>
+        <RotationBreakdownPanel result={result} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("15.0")).toBeInTheDocument()
+    expect(screen.getByText("5.0")).toBeInTheDocument()
   })
 
   it("keeps rows apart when their breakdown names differ, ordered by damage", () => {

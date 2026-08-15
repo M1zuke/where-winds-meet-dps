@@ -36,6 +36,8 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
   }
 
   const maxDmg = rows[0]?.expectedDamage || 1
+  const dpsOverRotation = (damage: number) =>
+    result.rotationDuration > 0 ? damage / result.rotationDuration : Number.NaN
 
   return (
     <table className="ranking-table skill-table">
@@ -44,9 +46,8 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
           <th>{t("Skill")}</th>
           <th className="bar-col" />
           <th>{t("Hit Count")}</th>
-          <th>{t("Duration")}</th>
           <th>{t("Share")}</th>
-          <th>{t("DPS (cast time)")}</th>
+          <th>{t("DPS")}</th>
           <th>{t("Total Damage")}</th>
         </tr>
       </thead>
@@ -65,9 +66,8 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
                 </div>
               </td>
               <td>{row.count}</td>
-              <td>{row.castTimeSec.toFixed(2)} s</td>
               <td>{(row.percentOfTotal * 100).toFixed(1)} %</td>
-              <td>{fmt(row.dpsOfCastTime, 1)}</td>
+              <td>{fmt(dpsOverRotation(row.expectedDamage), 1)}</td>
               <td>{fmt(row.expectedDamage, 0)}</td>
             </tr>
           )
