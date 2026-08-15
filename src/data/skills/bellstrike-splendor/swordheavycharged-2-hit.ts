@@ -7,7 +7,7 @@ export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
   classId: "bellstrikeSplendor",
   name: "SwordHeavyCharged 2 Hit",
-  breakdownName: "Vagrant Sword (2 waves)",
+  breakdownName: "Vagrant Sword",
   tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

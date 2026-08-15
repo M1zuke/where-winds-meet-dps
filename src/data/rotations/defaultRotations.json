@@ -2954,7 +2954,7 @@
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-0",
             "skillId": "bellstrikeSplendor-ghostly-steps",
             "hitCount": 1,
-            "prePull": false
+            "prePull": true
           },
           {
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-1",
@@ -2972,7 +2972,7 @@
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-3",
             "skillId": "bellstrikeSplendor-spearq",
             "hitCount": 1,
-            "prePull": false
+            "prePull": true
           },
           {
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-4",

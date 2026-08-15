@@ -10,7 +10,7 @@ export const swordHeavyChargedPrepull = defineSkill({
   id: SKILL.swordHeavyChargedPrepull,
   classId: "bellstrikeSplendor",
   name: "SwordHeavyCharged[Prepull]",
-  breakdownName: "Vagrant Sword (prepull)",
+  breakdownName: "Vagrant Sword",
   tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",

@@ -6,7 +6,7 @@ import { stat } from "../../../../engine/effects/effect"
 // open for the whole rotation" rather than following a live value. It is off
 // by default because the reference rotation only holds it for a fraction of
 // its rows, and unlike the other endurance buffs it reaches everything — the
-// workbook attaches it to the mystics and Flying Sword as readily as to the
+// workbook attaches it to the mystics and Daunting Strike as readily as to the
 // sword energy attacks.
 export const belowSixtyEndurance = defineClassBuff({
   id: BUFF.belowSixtyEndurance,
