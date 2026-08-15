@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   CLASS_IDS,
   classDefinition,
+  poolForClass,
   grantsMinPhysCritBoostFor,
 } from "../../src/definitions/classes/registry"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
@@ -15,7 +16,7 @@ import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
-    expect(CLASS_IDS()).toEqual(["bellstrikeUmbra", "stonesplitStrength"])
+    expect(CLASS_IDS()).toEqual(["bellstrikeUmbra", "stonesplitStrength", "bellstrikeSplendor"])
     expect(classDefinition("notAClass")).toBeNull()
   })
 
@@ -39,7 +40,7 @@ describe("class registry — one call answers what a class is made of", () => {
     expect(umbra.attunements.map((a) => a.id)).toEqual(
       expect.arrayContaining(["bleedingDamage", "swordQ"]),
     )
-    expect(umbra.retunementPool).not.toBeNull()
+    expect(poolForClass("bellstrikeUmbra")).not.toBeNull()
   })
 
   it("gives every class a resolvable definition", () => {

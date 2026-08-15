@@ -270,10 +270,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
-  function setPrePullHitsCount(prePullHitsCount: boolean) {
-    commitRotation((rotation) => ({ ...rotation, prePullHitsCount }))
-  }
-
   function handleNew() {
     const empty = makeRotation(inputs.classId)
     onChange({ ...inputs, activeCustomRotation: empty, selectedBuiltinRotationId: null })
@@ -288,7 +284,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         return { ...step, id: newStepId(), hitCount: skill ? skill.hits.length : step.hitCount }
       }),
       permanentBuffIds: [...activeRotation.permanentBuffIds],
-      prePullHitsCount: activeRotation.prePullHitsCount,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -427,15 +422,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
             <label className={styles.field}>
               <span>{t("Duration (computed)")}</span>
               <span className={styles.durationDisplay}>{computedDurationSec.toFixed(2)} s</span>
-            </label>
-            <label className={`${styles.field} ${styles.timelineToggle}`}>
-              <span>{t("Pre-pull hits count toward damage")}</span>
-              <input
-                type="checkbox"
-                checked={activeRotation.prePullHitsCount}
-                disabled={!isCustom}
-                onChange={(e) => setPrePullHitsCount(e.target.checked)}
-              />
             </label>
             <div className={styles.actions}>
               {isCustom ? (

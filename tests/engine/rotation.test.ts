@@ -18,7 +18,6 @@ describe("makeRotation / makeStep — defaults", () => {
     expect(r.classId).toBe(CLASS)
     expect(r.steps).toEqual([])
     expect(r.permanentBuffIds).toEqual([])
-    expect(r.prePullHitsCount).toBe(false)
     expect(isRotation(r)).toBe(true)
   })
 
@@ -104,7 +103,6 @@ describe("storage round-trip", () => {
       name: "Saved Rotation",
       steps: [makeStep({ skillId: "sk-a", hitCount: 3, prePull: true })],
       permanentBuffIds: ["bf-a"],
-      prePullHitsCount: true,
     })
     saveCustomRotation(r)
     const loaded = loadCustomRotations().find((x) => x.id === r.id)
@@ -113,7 +111,13 @@ describe("storage round-trip", () => {
     expect(loaded!.steps[0].hitCount).toBe(3)
     expect(loaded!.steps[0].prePull).toBe(true)
     expect(loaded!.permanentBuffIds).toEqual(["bf-a"])
-    expect(loaded!.prePullHitsCount).toBe(true)
+  })
+
+  it("drops the retired pre-pull toggle from a rotation saved while it still existed", () => {
+    const stale = { ...makeRotation(CLASS, { name: "Stale" }), prePullHitsCount: false }
+    saveCustomRotation(stale)
+    const loaded = loadCustomRotations().find((x) => x.id === stale.id)!
+    expect("prePullHitsCount" in loaded).toBe(false)
   })
 
   it("export → import regenerates rotation + step ids", () => {

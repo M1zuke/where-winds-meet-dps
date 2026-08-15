@@ -361,11 +361,15 @@ function hasScope(module: BuffModule, skills: readonly Skill[]): boolean {
   return skills.some((skill) => skill.receives?.includes(module.id))
 }
 
+// `classBuffDefs`, not the composed `buffModules`: a buff an inner way owns is
+// the inner way's, and reading it under a class heading credits it to whichever
+// class happens to slot that inner way. Being gated on an inner way is a
+// different thing and stays — the row names the gate in `requires`.
 export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const params = paramsFromInputs(inputs)
   const classDef = classDefinition(inputs.classId)
   const byId = new Map<string, BuffModule>()
-  for (const module of classDef?.buffModules ?? []) byId.set(module.id, module)
+  for (const module of classDef?.classBuffDefs ?? []) byId.set(module.id, module)
   const skills = skillsInScope(inputs.classId, inputs)
   const rows: ClassBuffRow[] = []
   for (const module of byId.values()) {

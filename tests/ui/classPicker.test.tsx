@@ -69,4 +69,23 @@ describe("ClassPicker", () => {
     expect(helpLink).not.toHaveAttribute("aria-current")
     expect(screen.getAllByRole("button")).toHaveLength(CLASS_DEFS().length)
   })
+
+  // Keyed to `ClassDef.validated` rather than to a class name, so validating a
+  // class moves the badge without this test being touched.
+  it("badges every unvalidated class as WIP, and no validated one", () => {
+    render(
+      <I18nProvider>
+        <ClassPicker value={CLASS_DEFS()[0].id} onChange={() => {}} />
+      </I18nProvider>,
+    )
+
+    for (const classDef of CLASS_DEFS()) {
+      const tile = screen.getByRole("button", {
+        name: new RegExp(classDef.displayName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+      })
+      if (classDef.validated) expect(tile).not.toHaveTextContent("WIP")
+      else expect(tile).toHaveTextContent("WIP")
+    }
+    expect(CLASS_DEFS().some((classDef) => !classDef.validated)).toBe(true)
+  })
 })

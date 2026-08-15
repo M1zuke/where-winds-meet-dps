@@ -22,11 +22,11 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
     expect(rows.filter((row) => row.source === "tunement").length).toBe(26)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
-      "Strategic Sword - Bleeding DMG Boost",
       "Strategic Sword Martial Art Skill DMG Boost",
       "Strategic Sword Special Skill DMG Boost",
       "Heavenquaker Spear Martial Art Skill DMG Boost",
       "Heavenquaker Spear Charged Skill DMG Boost",
+      "Strategic Sword - Bleeding DMG Boost",
     ])
   })
 

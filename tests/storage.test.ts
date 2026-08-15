@@ -959,6 +959,39 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
   })
 })
 
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("seeded-skill set-buff trigger heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeSplendor"
+  const builtinSwordq2nd = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === "bellstrikeSplendor-swordq-2nd",
+  )!
+
+  const staleCopy = (triggersBuffs: string[]) => ({
+    ...seedSkillFromBuiltin(CLASS_ID, builtinSwordq2nd),
+    triggersBuffs,
+  })
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it("adds the set buff to a copy seeded before the built-in triggered it", () => {
+    const stale = staleCopy(["mountainsMightQiImbalance"])
+    saveCustomSkill(stale)
+    expect(reload(stale.id).triggersBuffs).toEqual(["jadeware", "mountainsMightQiImbalance"])
+  })
+
+  it("leaves a curated list alone rather than guessing which entry is stale", () => {
+    const curated = staleCopy(["mountainsMightQiImbalance", "endlessGale"])
+    saveCustomSkill(curated)
+    expect(reload(curated.id).triggersBuffs).toEqual(["mountainsMightQiImbalance", "endlessGale"])
+  })
+
+  it("round-trips a current copy without listing the set buff twice", () => {
+    const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq2nd)
+    saveCustomSkill(current)
+    expect(reload(current.id).triggersBuffs).toEqual(builtinSwordq2nd.triggersBuffs)
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". The
 // legacy `wwm.inputs` blob has no version chain of its own (V8 in
 // `src/migrations/` covers `wwm.profiles`), so `set` is healed here instead —

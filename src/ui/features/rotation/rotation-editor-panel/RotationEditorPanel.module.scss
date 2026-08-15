@@ -204,11 +204,6 @@
   display: block;
 }
 
-.timelineToggle {
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-}
 .durationDisplay {
   color: var(--color-accent);
   font-variant-numeric: tabular-nums;

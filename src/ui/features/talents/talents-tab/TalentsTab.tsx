@@ -188,6 +188,113 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
       ],
     },
   ],
+  bellstrikeSplendor: [
+    {
+      weapon: "Nameless Sword",
+      cards: [
+        {
+          name: "Qi Struggle Enhancement",
+          lines: [
+            { kind: "talent", skill: "Qi DMG Bonus", label: "Qi Damage Boost" },
+            {
+              kind: "mechanic",
+              id: "swordEnergyHpDamage",
+              note: "Scales with Max Phys (full at 1000)",
+            },
+          ],
+        },
+        {
+          name: "Physical Attack UP",
+          lines: [{ kind: "talent", skill: "Physical Attack UP" }],
+        },
+        {
+          name: "Sword Qi Affinity",
+          lines: [
+            {
+              kind: "mechanic",
+              id: "swordEnergyEnhancement",
+              note: "Scales with Max Phys (full at 1500)",
+            },
+          ],
+        },
+        {
+          name: "Bellstrike Attribute UP",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"],
+              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+            },
+            { kind: "talent", skill: "Bellstrike Penetration Scale" },
+          ],
+        },
+        {
+          name: "Attr. Attack DMG UP",
+          lines: [
+            {
+              kind: "static",
+              text: "Bellstrike Attack deals 50% bonus damage.",
+              subNote:
+                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      weapon: "Nameless Spear",
+      cards: [
+        {
+          name: "Max Endurance UP",
+          lines: [
+            {
+              kind: "static",
+              text: "+10 Max Endurance, and up to +10 more from Affinity Rate.",
+              subNote:
+                "The engine runs no endurance economy, so this contributes nothing to damage.",
+            },
+          ],
+        },
+        {
+          name: "Affinity Rate UP",
+          lines: [{ kind: "talent", skill: "Affinity Rate UP" }],
+        },
+        {
+          name: "Affinity DMG UP",
+          lines: [
+            {
+              kind: "static",
+              text: "+18% Affinity DMG while Endless Gale is up or Endurance is below 60%.",
+              subNote:
+                "One bonus behind two conditions: Endless Gale is the timed window, and the Endurance half is a combat-setting toggle that stands in for the whole rotation.",
+            },
+          ],
+        },
+        {
+          name: "Bellstrike Attribute UP",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Spear Bellstrike Attack Min", "Spear Bellstrike Attack Max"],
+              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+            },
+            { kind: "talent", skill: "Attribute Damage Scale", label: "Attribute Damage Boost" },
+          ],
+        },
+        {
+          name: "Attr. Attack DMG UP",
+          lines: [
+            {
+              kind: "static",
+              text: "Bellstrike Attack deals 50% bonus damage.",
+              subNote:
+                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 export function TalentsTab({ inputs }: Props) {

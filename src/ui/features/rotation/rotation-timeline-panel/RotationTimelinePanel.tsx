@@ -38,10 +38,32 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const qiEnd = qiBreak ? Math.min(qiBreak.endSec, duration) : 0
   const showQi = qiBreak != null && qiEnd > qiStart
 
+  const lowQi = result.lowQiWindow
+  const lowQiStart = lowQi ? Math.max(lowQi.startSec, minTime) : 0
+  const lowQiEnd = lowQi ? Math.min(lowQi.endSec, duration) : 0
+  const showLowQi = lowQi != null && lowQiEnd > lowQiStart
+
   return (
     <div className={styles.timelinePanel}>
       <div className={styles.timelineScroll}>
         <div className={styles.timelineTrack}>
+          {showLowQi && (
+            <div className={styles.timelineBuffGroup}>
+              <span className={styles.timelineBuffGroupLabel}>{t("Low Qi Window")}</span>
+              <div className={styles.timelineBuffLane}>
+                <div
+                  className={`${styles.timelineBuffSpan} ${styles.timelineLowQi}`}
+                  style={{
+                    left: pct(lowQiStart) + "%",
+                    width: Math.max(pct(lowQiEnd) - pct(lowQiStart), 0.3) + "%",
+                  }}
+                  title={`${t("Low Qi Window")} — ${lowQiStart.toFixed(2)}s – ${lowQiEnd.toFixed(2)}s`}
+                >
+                  <span className={styles.timelineBuffLabel}>{t("Low Qi Window")}</span>
+                </div>
+              </div>
+            </div>
+          )}
           {showQi && (
             <div className={styles.timelineBuffGroup}>
               <span className={styles.timelineBuffGroupLabel}>{t("Qi Break Window")}</span>

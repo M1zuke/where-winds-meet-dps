@@ -7,6 +7,8 @@ import styles from "./ClassPicker.module.scss"
 
 const WIKI_URL = `${GITHUB_REPO_URL}/wiki`
 
+const UNVALIDATED_HINT = "Numbers are sourced but not yet checked against a measured build."
+
 interface Props {
   value: string
   onChange(classId: string): void
@@ -36,7 +38,14 @@ export function ClassPicker({ value, onChange }: Props) {
                 <div className={styles.icon} />
               )}
               <div className={styles.info}>
-                <div className={styles.name}>{t(classDef.displayName)}</div>
+                <div className={styles.nameRow}>
+                  <span className={styles.name}>{t(classDef.displayName)}</span>
+                  {classDef.validated ? null : (
+                    <span className={styles.wip} title={t(UNVALIDATED_HINT)}>
+                      {t("WIP")}
+                    </span>
+                  )}
+                </div>
                 {martialArts.map((martialArt, index) => (
                   <div key={martialArt.id} className={styles.weaponRow}>
                     <span className={styles.weaponLabel}>

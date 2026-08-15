@@ -174,7 +174,6 @@ describe("v4 profile carrying legacy `site-` entity ids", () => {
         { id: "s2", skillId: "site-mingJinYing-spearheavy", hitCount: 1, prePull: false },
       ],
       permanentBuffIds: ["site-buff-mingJinYing-river-flow"],
-      prePullHitsCount: false,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z",
     }

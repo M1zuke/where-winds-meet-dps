@@ -166,10 +166,8 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const henZhi = inputs.shareDebuff5HenZhi ? 0.05 : 0
   const easyHurt = inputs.shareEasyHurt ? 0.05 : 0
-  const tianGongFire =
-    inputs.tianGongElement === "fire" ? (setFormula.lowQiDirectAffinityRate ?? 0) : 0
   const generalDamageBoost =
-    henZhi + easyHurt + tianGongFire + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
+    henZhi + easyHurt + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
 
   const weaponBoosts: Record<string, number> = {
     Sword: inputs.swordBoost,

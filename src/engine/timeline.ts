@@ -188,13 +188,10 @@ export function simulateTimeline(inputs: Inputs): Result {
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
 
-  const prePullHitsCount = rotation.prePullHitsCount ?? false
-  const inWindow = (frame: number): boolean =>
-    frame >= 0 ? frame <= durationFrames : prePullHitsCount
+  const inWindow = (frame: number): boolean => frame <= durationFrames
 
   const castCounts = new Map<string, number>()
   for (const ls of laidSteps) {
-    if (ls.prePull && !prePullHitsCount) continue
     const name = ls.resolved.skill.name
     castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
   }
@@ -342,6 +339,13 @@ export function simulateTimeline(inputs: Inputs): Result {
     ? (() => {
         const w = buffEngine.qiBreakWindow()
         return { startSec: w.start, endSec: w.end }
+      })()
+    : null
+
+  const lowQiWindow = buffEngine
+    ? (() => {
+        const w = buffEngine.lowQiWindow()
+        return w ? { startSec: w.start, endSec: w.end } : null
       })()
     : null
 
@@ -924,6 +928,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     timeline,
     buffWindows,
     qiBreakWindow,
+    lowQiWindow,
     casts,
   }
 }
@@ -940,6 +945,7 @@ function emptyResult(warnings: string[]): Result {
     timeline: [],
     buffWindows: [],
     qiBreakWindow: null,
+    lowQiWindow: null,
     casts: [],
   }
 }

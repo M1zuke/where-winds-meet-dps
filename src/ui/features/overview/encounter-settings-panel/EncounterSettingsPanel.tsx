@@ -51,6 +51,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             on={settings.dragonHeadLowHpMaxBonus}
             onToggle={() => setCombat("dragonHeadLowHpMaxBonus", !settings.dragonHeadLowHpMaxBonus)}
           />
+          <ToggleChip
+            label={t("Below 60% Endurance")}
+            on={settings.lowEndurance}
+            onToggle={() => setCombat("lowEndurance", !settings.lowEndurance)}
+          />
         </div>
       </div>
 
@@ -139,6 +144,13 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
                 value={settings.qiBreak.durationSec}
                 onChange={(value) =>
                   setCombat("qiBreak", { ...settings.qiBreak, durationSec: value })
+                }
+              />
+              <label>{t("Low Qi Lead (s)")}</label>
+              <NumInput
+                value={settings.qiBreak.lowQiLeadSec}
+                onChange={(value) =>
+                  setCombat("qiBreak", { ...settings.qiBreak, lowQiLeadSec: value })
                 }
               />
             </span>

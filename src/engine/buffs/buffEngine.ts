@@ -75,6 +75,10 @@ const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
 const MISTWILLOW_BUFF_DURATION = 15
 const MISTWILLOW_BONUS = 0.1
 
+// Bare, not `debuff-<classId>-…`: whichever class inflicts it names this id,
+// so the engine learns no class (docs/CLASSES.md § "One definition per class").
+export const QI_IMBALANCE_STATUS = "qiImbalance"
+
 function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
 }
@@ -138,6 +142,7 @@ export class BuffEngine {
     const breakEnd = qiBreakTime + bossBreakDuration + healerExt
     if (time >= qiBreakTime && time < breakEnd) return "exhausted"
     if (time >= belowQiTime && time < qiBreakTime) return "below30"
+    if (this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time)) return "below30"
     return "normal"
   }
 
@@ -147,6 +152,15 @@ export class BuffEngine {
     const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
     const healerExt = (params.healerBreakExtension as number) ?? 0
     return { start: qiBreakTime, end: qiBreakTime + bossBreakDuration + healerExt }
+  }
+
+  // Clock-driven lead-in only: the timeline already draws a Qi Imbalance
+  // window in its own lane, so folding it in here would show the span twice.
+  lowQiWindow(): { start: number; end: number } | null {
+    const params = this.params
+    const qiBreakTime = (params.qiBreakTime as number) ?? 25
+    const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
+    return belowQiTime < qiBreakTime ? { start: belowQiTime, end: qiBreakTime } : null
   }
 
   private buildContext(
