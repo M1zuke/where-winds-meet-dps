@@ -69,6 +69,7 @@ const inputs: Inputs = {
     revelryScript: false,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
+    lowEndurance: false,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,

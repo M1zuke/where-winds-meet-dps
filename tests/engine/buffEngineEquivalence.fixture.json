@@ -36385,6 +36385,36 @@
             }
           ],
           "summary": null
+        },
+        {
+          "id": "belowSixtyEndurance",
+          "name": "Below 60% Endurance",
+          "classBuff": true,
+          "requires": {
+            "param": "lowEndurance"
+          },
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "affinityDamageBoost",
+              "amount": 0.18
+            }
+          ],
+          "summary": null
         }
       ],
       "group": [
@@ -36413,7 +36443,7 @@
       ]
     },
     "dynamic": {
-      "digest": "6c5ff0c2223cfbdbee40ff677de11357048197eea9cbd74173f1741a08b1e0f9"
+      "digest": "1df38885c7fedb91a68a7faf1d827b9998ff3b050a27a129dbf52228c0d8c560"
     }
   }
 }

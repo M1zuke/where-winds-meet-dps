@@ -56,6 +56,7 @@ export interface CombatSettings {
   revelryScript: boolean
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
+  lowEndurance: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -67,6 +68,7 @@ export function defaultCombatSettings(): CombatSettings {
     revelryScript: false,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
+    lowEndurance: false,
   }
 }
 

@@ -51,6 +51,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             on={settings.dragonHeadLowHpMaxBonus}
             onToggle={() => setCombat("dragonHeadLowHpMaxBonus", !settings.dragonHeadLowHpMaxBonus)}
           />
+          <ToggleChip
+            label={t("Below 60% Endurance")}
+            on={settings.lowEndurance}
+            onToggle={() => setCombat("lowEndurance", !settings.lowEndurance)}
+          />
         </div>
       </div>
 

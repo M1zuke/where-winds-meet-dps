@@ -61,6 +61,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       revelryScript: false,
       dragonHeadFullStacks: false,
       dragonHeadLowHpMaxBonus: false,
+      lowEndurance: false,
     }
     writeProfilesBlob({ combatSettings: custom })
     const first = loadProfiles()

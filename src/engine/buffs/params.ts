@@ -62,6 +62,7 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
 
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
+  if (inputs.combatSettings?.lowEndurance) params.lowEndurance = true
 
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 

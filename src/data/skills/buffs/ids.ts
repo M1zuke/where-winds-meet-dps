@@ -4,6 +4,7 @@
 // silently-never-firing buff.
 export const BUFF = {
   battleAnthemEnduranceBoost: "battleAnthemEnduranceBoost",
+  belowSixtyEndurance: "belowSixtyEndurance",
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
   endlessGale: "endlessGale",
@@ -53,6 +54,7 @@ export const PARAM = {
   fluteBoostValue: "fluteBoostValue",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
+  lowEndurance: "lowEndurance",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
   revelryScript: "revelryScript",

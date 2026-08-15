@@ -339,6 +339,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
+      lowEndurance: typeof r.lowEndurance === "boolean" ? r.lowEndurance : def.lowEndurance,
     }
   }
   return withZeroedDerivedStats(next)
