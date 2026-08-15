@@ -38,6 +38,7 @@ import { NumInput, PercentInput } from "../../../components/number-inputs/Number
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { FPS } from "../../../../engine/timeline"
 import { formatConditions, statusTooltip } from "../statusText"
+import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./SkillsTab.module.scss"
 
 const WEAPONS = [
@@ -690,8 +691,7 @@ export function SkillsTab({
               {t("New Skill")}
             </button>
           </div>
-          <input
-            type="text"
+          <TextInput
             className={styles.skillsSearch}
             placeholder={t("Search skills…")}
             value={search}
@@ -787,15 +787,13 @@ export function SkillsTab({
 
               <Section title={t("Skill")}>
                 <Field label={t("Skill Name")}>
-                  <input
-                    type="text"
+                  <TextInput
                     value={draft.name}
                     onChange={(e) => patchDraft({ name: e.target.value })}
                   />
                 </Field>
                 <Field label={t("Breakdown Name")}>
-                  <input
-                    type="text"
+                  <TextInput
                     value={draft.breakdownName ?? ""}
                     placeholder={draft.name}
                     onChange={(e) => patchDraft({ breakdownName: e.target.value })}

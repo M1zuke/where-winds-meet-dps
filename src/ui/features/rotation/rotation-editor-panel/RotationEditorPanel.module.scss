@@ -51,27 +51,11 @@
   color: var(--color-text-muted);
 }
 
-.meta input[type="text"],
-.meta input[type="number"] {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 5px 8px;
-  font-size: 0.9em;
-  box-sizing: border-box;
-}
-
 .meta input[type="text"] {
   min-width: 220px;
 }
 .meta input[type="number"] {
   width: 90px;
-}
-
-.meta input:focus {
-  outline: none;
-  border-color: var(--color-accent);
 }
 
 .meta .actions {
@@ -132,24 +116,6 @@
   color: #666;
   text-align: right;
   font-size: 0.82em;
-}
-
-.entry input[type="number"] {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 4px 6px;
-  font-size: 0.85em;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.entry input[type="number"]:focus {
-  outline: none;
-  border-color: var(--color-accent);
 }
 
 .entry .rowActions {

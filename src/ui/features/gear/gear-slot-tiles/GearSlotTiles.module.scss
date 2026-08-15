@@ -7,7 +7,7 @@
 }
 
 .gearTile {
-  background: var(--color-surface-control);
+  background: var(--color-surface-inset);
   border: 1px solid var(--color-border-strong);
   border-left: 3px solid var(--color-border-strong);
   border-radius: 4px;
@@ -25,7 +25,7 @@
 }
 
 .gearTile:hover {
-  background: var(--color-surface-control-hover);
+  background: var(--color-surface-inset-hover);
   border-color: var(--color-border-hover);
 }
 

@@ -4,6 +4,7 @@ import { DEFAULT_ODDITIES } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
+import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import styles from "./OdditiesTab.module.scss"
 
 interface Props {
@@ -528,11 +529,10 @@ function NodeEditor({
       </div>
       <div className={styles.talentsCell}>
         <label>{t("Amount")}</label>
-        <input
-          type="number"
+        <NumInput
           step={isRate ? 0.1 : 1}
           value={Number.isFinite(displayValue) ? displayValue : 0}
-          onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
+          onChange={setValue}
         />
         <span className={styles.talentsUnit}>{isRate && !isPen ? "%" : ""}</span>
       </div>

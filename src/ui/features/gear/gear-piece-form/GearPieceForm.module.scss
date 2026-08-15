@@ -32,7 +32,7 @@
   display: flex;
   margin-top: 10px;
   padding: 7px 0;
-  background: var(--color-surface-alt);
+  background: var(--color-surface-inset);
   border-radius: 4px;
 }
 
@@ -115,21 +115,21 @@
   display: contents;
 }
 
-.wordRow > input,
-.wordRow > :global(.btn) {
+.wordRow > input {
   margin: 3px 0;
+}
+
+.gearWordsGrid .wordRow > :global(.btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 3px 0;
+  padding: 4px 0;
 }
 
 .wordCombobox {
   margin: 3px 0;
-}
-
-.wordRow input {
-  @include mixins.field-input;
-}
-
-.wordRow input:focus {
-  @include mixins.field-focus;
 }
 
 .gearWordsGrid.isRelayed .wordRow > input {
@@ -163,14 +163,6 @@
   margin-top: 12px;
   border-top: 1px solid var(--color-border);
   padding-top: 8px;
-}
-
-.attunementSection input {
-  @include mixins.field-input;
-}
-
-.attunementSection input:focus {
-  @include mixins.field-focus;
 }
 
 @include breakpoints.below(breakpoints.$bp-700) {

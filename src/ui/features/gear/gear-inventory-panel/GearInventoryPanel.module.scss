@@ -23,11 +23,12 @@
   align-items: center;
   gap: 4px;
   font-size: 0.78em;
-  color: #b89865;
-  background: #262019;
-  border: 1px solid #4a3f2a;
-  border-radius: 10px;
-  padding: 2px 4px 2px 9px;
+  color: var(--color-accent);
+  background: var(--color-surface-selected);
+  border: 1px solid var(--color-border-strong);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 4px;
+  padding: 3px 5px 3px 9px;
 }
 
 .gearInvFilterClear {
@@ -52,7 +53,7 @@
 
 .gearInvTile {
   position: relative;
-  background: var(--color-surface-control);
+  background: var(--color-surface-inset);
   border: 1px solid var(--color-border-strong);
   border-left: 3px solid var(--color-border-strong);
   border-radius: 4px;
@@ -87,7 +88,7 @@
 }
 
 .gearInvTile:hover {
-  background: var(--color-surface-control-hover);
+  background: var(--color-surface-inset-hover);
   border-color: var(--color-border-hover);
 }
 

@@ -37,6 +37,7 @@ import {
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
+import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
 
 interface Props {
@@ -414,8 +415,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.meta}>
             <label className={styles.field}>
               <span>{t("Name")}</span>
-              <input
-                type="text"
+              <TextInput
                 value={isCustom ? effectiveName : activeRotation.name}
                 placeholder={t("(unnamed)")}
                 disabled={!isCustom}

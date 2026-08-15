@@ -19,8 +19,8 @@
   --color-negative: #d05a5a;
   --color-surface-alt: #1f1f1f;
   --color-surface: #232323;
-  --color-surface-control: #1d1d1d;
-  --color-surface-control-hover: #282828;
+  --color-surface-inset: #1d1d1d;
+  --color-surface-inset-hover: #282828;
   --color-surface-selected: #2a2418;
   --color-rarity-legendary: #b89865;
   --color-rarity-epic: #a890c4;
@@ -45,4 +45,8 @@ body {
 h1 {
   margin: 0;
   font-size: 1.3em;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--color-accent);
 }
