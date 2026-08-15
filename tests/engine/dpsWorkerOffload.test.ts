@@ -2,10 +2,12 @@
 // `Worker` in vitest/jsdom.
 import { describe, expect, it } from "vitest"
 import {
+  computeGearAnalysisRequest,
   computeRankingRequest,
   computeRotationDps,
   computeSetTiles,
 } from "../../src/engine/dpsWorker"
+import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { computeRanking } from "../../src/engine/itemRanking"
 import { runEngine } from "../../src/engine/dps"
@@ -32,6 +34,21 @@ describe("computeRankingRequest", () => {
   it("echoes reqId", () => {
     const baselineDps = runEngine(umbraInputs).dps
     const res = computeRankingRequest({ reqId: 42, inputs: umbraInputs, baselineDps })
+    expect(res.reqId).toBe(42)
+  })
+})
+
+describe("computeGearAnalysisRequest", () => {
+  it("matches computeGearAnalysis(inputs, baselineDps) for the same inputs", () => {
+    const baselineDps = runEngine(umbraInputs).dps
+    const expected = computeGearAnalysis(umbraInputs, baselineDps)
+    const res = computeGearAnalysisRequest({ reqId: 1, inputs: umbraInputs, baselineDps })
+    expect(res.rows).toEqual(expected)
+  })
+
+  it("echoes reqId", () => {
+    const baselineDps = runEngine(umbraInputs).dps
+    const res = computeGearAnalysisRequest({ reqId: 42, inputs: umbraInputs, baselineDps })
     expect(res.reqId).toBe(42)
   })
 })

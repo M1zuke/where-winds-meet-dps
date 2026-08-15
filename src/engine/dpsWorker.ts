@@ -1,6 +1,7 @@
 import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
+import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
 import { attunementsFor } from "./attunements"
@@ -360,6 +361,21 @@ function computeRankingRequest(req: RankingWorkerRequest): RankingWorkerResponse
   return { reqId: req.reqId, rows: computeRanking(req.inputs, req.baselineDps) }
 }
 
+export interface GearAnalysisWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  baselineDps: number
+}
+
+export interface GearAnalysisWorkerResponse {
+  reqId: number
+  rows: GearSlotAnalysisRow[]
+}
+
+function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysisWorkerResponse {
+  return { reqId: req.reqId, rows: computeGearAnalysis(req.inputs, req.baselineDps) }
+}
+
 export interface SetTilesWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -465,6 +481,7 @@ export type WorkerRequest =
   | ({ kind: "reattunement" } & ReattunementWorkerRequest)
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
+  | ({ kind: "gearAnalysis" } & GearAnalysisWorkerRequest)
   | ({ kind: "setTiles" } & SetTilesWorkerRequest)
   | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
@@ -475,6 +492,7 @@ export type WorkerResponse =
   | ({ kind: "reattunement" } & ReattunementWorkerResponse)
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
+  | ({ kind: "gearAnalysis" } & GearAnalysisWorkerResponse)
   | ({ kind: "setTiles" } & SetTilesWorkerResponse)
   | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
@@ -496,6 +514,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "ranking") {
     const res = computeRankingRequest(req)
     ;(self as unknown as Worker).postMessage({ kind: "ranking", ...res })
+  } else if (req.kind === "gearAnalysis") {
+    const res = computeGearAnalysisRequest(req)
+    ;(self as unknown as Worker).postMessage({ kind: "gearAnalysis", ...res })
   } else if (req.kind === "setTiles") {
     const res = computeSetTiles(req)
     ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
@@ -514,6 +535,7 @@ export {
   computeReattunement,
   computeWordMax,
   computeRankingRequest,
+  computeGearAnalysisRequest,
   computeSetTiles,
   computeRotationDps,
   computeGraduation,

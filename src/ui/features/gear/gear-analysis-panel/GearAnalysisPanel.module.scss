@@ -1,0 +1,62 @@
+.analysis {
+  transition: opacity 0.1s;
+  overflow-x: auto;
+}
+
+.analysisTable {
+  width: 100%;
+}
+
+.analysisTable th:not(:first-child),
+.analysisTable td:not(:first-child) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.analysisTable th.rankHead,
+.analysisTable td.rankCell {
+  text-align: center;
+  width: 1%;
+}
+
+.analysisTable th.lossHead,
+.analysisTable td.loss {
+  text-align: right;
+}
+
+.analysisTable tfoot td {
+  border-bottom: none;
+  color: var(--color-text-dim);
+}
+
+.rank {
+  display: inline-block;
+  min-width: 26px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--color-surface-raised);
+  color: var(--color-accent-bright);
+  text-align: center;
+}
+
+.rank.noRank {
+  background: none;
+  color: var(--color-text-muted);
+}
+
+.loss:global(.is-negative) {
+  color: var(--color-negative);
+}
+
+.loss:global(.is-positive) {
+  color: var(--color-positive);
+}
+
+.loss:global(.is-zero) {
+  color: var(--color-text-muted);
+}
+
+.share {
+  margin-left: 6px;
+  color: var(--color-text-muted);
+}
