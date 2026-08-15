@@ -36,29 +36,32 @@ export const BELLSTRIKE_SPLENDOR_GRADUATION_BUILD: GraduationBuild = {
     createGraduationGearPiece({
       idPrefix,
       slot: "helm",
-      words: ["affinity", "affinity", "momentum", "maxPhys", "singleTargetMysticBoost"],
+      words: ["affinity", "affinity", "momentum", "maxPhys", "power"],
       attunement: "swordCharged",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "armor",
-      words: ["affinity", "affinity", "momentum", "maxPhys", "singleTargetMysticBoost"],
+      words: ["affinity", "affinity", "momentum", "maxPhys", "power"],
       attunement: "swordCharged",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "greaves",
-      words: ["momentum", "momentum", "maxPhys", "damageVsBoss", "affinity"],
+      words: ["power", "power", "maxPhys", "damageVsBoss", "affinity"],
       attunement: "swordCharged",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "bracer",
-      words: ["momentum", "momentum", "maxPhys", "damageVsBoss", "power"],
+      words: ["power", "power", "maxPhys", "damageVsBoss", "momentum"],
       attunement: "swordCharged",
     }),
   ],
   set: SET_ID.jadeware,
-  bowSet: "affinity",
+  bowSet: "crit",
   arsenal: "bellstrike",
+  relayedOverrides: {
+    bowSet: "affinity",
+  },
 }

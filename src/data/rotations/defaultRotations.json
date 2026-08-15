@@ -2834,7 +2834,7 @@
             "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-6",
             "skillId": "bellstrikeSplendor-swordheavycharged-prepull",
             "hitCount": 3,
-            "prePull": true
+            "prePull": false
           },
           {
             "id": "br-bellstrikeSplendor-kaezuma-42vs-1db-7",
@@ -2984,7 +2984,7 @@
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-5",
             "skillId": "bellstrikeSplendor-swordheavycharged-prepull",
             "hitCount": 3,
-            "prePull": true
+            "prePull": false
           },
           {
             "id": "br-bellstrikeSplendor-crylis-44vs-full-waves-6",

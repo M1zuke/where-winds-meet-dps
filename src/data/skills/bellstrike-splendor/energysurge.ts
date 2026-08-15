@@ -7,7 +7,7 @@ export const energySurge = defineSkill({
   id: SKILL.energySurge,
   classId: "bellstrikeSplendor",
   name: "EnergySurge",
-  breakdownName: "Energy Surge",
+  breakdownName: "Vagrant Sword",
   tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
