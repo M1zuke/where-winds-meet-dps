@@ -152,11 +152,10 @@ export function computeSkillDamage(art: ArtRow, ctx: FormulaContext, count: numb
   const dotRules = !getsElevatedMultiplier
 
   const skillCritDamage = num(art.extraCritDamage)
-  const X = ctx.critDmgBoostPanel + skillCritDamage + setFormulaBonus(ctx.set, "critDamage")
+  const X = ctx.critDmgBoostPanel + skillCritDamage
 
   const skillAffinityDamage = num(art.extraAffinityDamage)
-  const Y =
-    ctx.affinityDmgBoostPanel + skillAffinityDamage + setFormulaBonus(ctx.set, "affinityDamage")
+  const Y = ctx.affinityDmgBoostPanel + skillAffinityDamage
 
   const U = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
 
@@ -169,10 +168,7 @@ export function computeSkillDamage(art: ArtRow, ctx: FormulaContext, count: numb
   const rateRes = ctx.rateResistance ?? 0
   const V = isTianGong
     ? 0
-    : Math.min(ctx.critPanel, 0.8) +
-      ctx.directCritPanel +
-      setFormulaBonus(ctx.set, "directCrit") +
-      num(art.extraCritRate)
+    : Math.min(ctx.critPanel, 0.8) + ctx.directCritPanel + num(art.extraCritRate)
 
   const W = isTianGong
     ? 0
