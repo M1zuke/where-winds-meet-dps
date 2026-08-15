@@ -2,6 +2,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs, Result } from "../../../../engine/types"
 import { syncClassPermanent } from "../../../utils/classSetup"
+import { slotInnerWayId } from "../../../../definitions/innerWays/registry"
 import { useItemRanking } from "../../../hooks/useItemRanking"
 import { useSetTileDps } from "../../../hooks/useSetTileDps"
 import { ClassSelect } from "../class-select/ClassSelect"
@@ -28,6 +29,7 @@ export function OverviewTab({
   const { t } = useI18n()
   const { rows: rankingRows, isPending: rankingPending } = useItemRanking(engineInputs, result.dps)
   const { data: tileDps, isPending: tilesPending } = useSetTileDps(inputs)
+  const slottedInnerWays = inputs.mindMethods.filter((slot) => slotInnerWayId(slot)).length
   return (
     <>
       <div className={styles.overviewGrid}>
@@ -42,17 +44,26 @@ export function OverviewTab({
               value={inputs.breakthrough}
               onChange={(breakthrough) => onChange({ ...inputs, breakthrough })}
             />
-            <div className="row">
-              <label>{t("Enable Dummy")}</label>
-              <input
-                type="checkbox"
-                checked={inputs.dummyMode}
-                onChange={(e) => onChange({ ...inputs, dummyMode: e.target.checked })}
-              />
+            <div className={styles.toggleRow}>
+              <span>{t("Enable Dummy")}</span>
+              <button
+                type="button"
+                className={`btn${inputs.dummyMode ? " is-on" : ""}`}
+                aria-pressed={inputs.dummyMode}
+                onClick={() => onChange({ ...inputs, dummyMode: !inputs.dummyMode })}
+              >
+                {inputs.dummyMode ? t("On") : t("Off")}
+              </button>
             </div>
           </div>
           <div className="panel">
-            <h2>{t("Inner Ways")}</h2>
+            <div className="panel-head">
+              <h2>{t("Inner Ways")}</h2>
+              <span className="panel-head-meta">
+                <span className="panel-head-meta-value">{slottedInnerWays}</span> /{" "}
+                {inputs.mindMethods.length}
+              </span>
+            </div>
             <MindMethodsPanel inputs={inputs} onChange={onChange} />
           </div>
           <div className="panel">

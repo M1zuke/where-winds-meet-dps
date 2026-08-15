@@ -36,6 +36,7 @@ import {
 } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
+import { Select } from "../../../components/select/Select"
 import styles from "./RotationEditorPanel.module.scss"
 
 interface Props {
@@ -368,31 +369,30 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     <div className={styles.customRotationPanel}>
       <div className="toolbar">
         <span className="toolbar-label">{t("Rotation Editor")}</span>
-        <select
+        <Select
           className={styles.activeSelect + (isCustom ? ` ${styles.isActive}` : "")}
+          ariaLabel={t("Rotation")}
           value={selectedRotationValue}
-          onChange={(e) => selectRotation(e.target.value)}
-        >
-          <optgroup label={t("Built-in rotations")}>
-            {options
+          onChange={selectRotation}
+          options={[
+            ...options
               .filter((option) => option.group === "builtin")
-              .map((option) => (
-                <option key={option.id} value={option.id}>
-                  {(t(option.name) || t("(unnamed)")) +
-                    (option.isClassDefault ? t(" (default)") : "")}
-                </option>
-              ))}
-          </optgroup>
-          <optgroup label={t("Custom Rotation")}>
-            {options
+              .map((option) => ({
+                value: option.id,
+                label:
+                  (t(option.name) || t("(unnamed)")) +
+                  (option.isClassDefault ? t(" (default)") : ""),
+                group: t("Built-in rotations"),
+              })),
+            ...options
               .filter((option) => option.group === "custom")
-              .map((option) => (
-                <option key={option.id} value={option.id}>
-                  {t(option.name) || t("(unnamed)")}
-                </option>
-              ))}
-          </optgroup>
-        </select>
+              .map((option) => ({
+                value: option.id,
+                label: t(option.name) || t("(unnamed)"),
+                group: t("Custom Rotation"),
+              })),
+          ]}
+        />
         {selectedBuiltin?.description && (
           <span className={styles.builtinHint}>{selectedBuiltin.description}</span>
         )}

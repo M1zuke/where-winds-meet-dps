@@ -3,6 +3,7 @@ import type { Inputs, OddityNode, OddityRegions, TalentStat } from "../../../../
 import { DEFAULT_ODDITIES } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
+import { Select } from "../../../components/select/Select"
 import styles from "./OdditiesTab.module.scss"
 
 interface Props {
@@ -518,13 +519,12 @@ function NodeEditor({
       <h3>{t("Edit oddity node")}</h3>
       <div className={styles.talentsCell}>
         <label>{t("Stat")}</label>
-        <select value={node.stat} onChange={(e) => onPatch({ stat: e.target.value as TalentStat })}>
-          {STAT_OPTIONS.map((stat) => (
-            <option key={stat} value={stat}>
-              {t(`stat.${stat}`)}
-            </option>
-          ))}
-        </select>
+        <Select
+          ariaLabel={t("Stat")}
+          value={node.stat}
+          onChange={(stat) => onPatch({ stat: stat as TalentStat })}
+          options={STAT_OPTIONS.map((stat) => ({ value: stat, label: t(`stat.${stat}`) }))}
+        />
       </div>
       <div className={styles.talentsCell}>
         <label>{t("Amount")}</label>

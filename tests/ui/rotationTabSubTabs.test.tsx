@@ -94,8 +94,8 @@ describe("RotationTab subtabs", () => {
   it("offers the same rotations through a select for narrow screens", () => {
     renderTab()
 
-    const select = screen.getByRole("combobox", { name: "Rotation" })
-    const values = [...select.querySelectorAll("option")].map((option) => option.value)
+    fireEvent.click(screen.getByRole("combobox", { name: "Rotation" }))
+    const values = screen.getAllByRole("option").map((option) => option.getAttribute("data-value"))
 
     expect(values).toEqual(
       builtinRotationsForClass(defaultInputs.classId).map((rotation) => rotation.id),

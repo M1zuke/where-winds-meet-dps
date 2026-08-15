@@ -53,13 +53,11 @@
   color: var(--color-text-dim);
 }
 
-.row input,
-.row select {
+.row input {
   @include mixins.field-input;
 }
 
-.row input:focus,
-.row select:focus {
+.row input:focus {
   @include mixins.field-focus;
 }
 

@@ -47,7 +47,7 @@
 }
 
 .tile.selected {
-  background: #2a2418;
+  background: var(--color-surface-selected);
   border-color: var(--color-border-strong);
   border-left-color: var(--color-accent);
 }
