@@ -25,7 +25,6 @@ interface Props {
   showGlobal: boolean
   onToggleGlobal(): void
   onSelect(row: InventoryRow): void
-  onCreate(): void
   slotFilter: GearSlot | null
   onClearSlotFilter(): void
   dpsDeltas: DpsDeltaMap
@@ -58,7 +57,6 @@ export function GearInventoryPanel({
   showGlobal,
   onToggleGlobal,
   onSelect,
-  onCreate,
   slotFilter,
   onClearSlotFilter,
   dpsDeltas,
@@ -138,9 +136,6 @@ export function GearInventoryPanel({
   return (
     <div className={styles.gearInventory}>
       <div className="toolbar">
-        <button type="button" className="btn primary" onClick={onCreate}>
-          + {t("New piece")}
-        </button>
         {slotFilter != null && (
           <span className={styles.gearInvFilter}>
             {t(SLOT_LABEL_KEYS[slotFilter])}
@@ -165,9 +160,9 @@ export function GearInventoryPanel({
       {visibleRows.length === 0 ? (
         <div className="empty-tab">
           {slotFilter != null
-            ? t("No pieces of this type — click 'New piece' to add one")
+            ? t("No pieces of this type — click 'Create Gear' to add one")
             : rows.length === 0
-              ? t("No gear yet — click 'New piece' to add one")
+              ? t("No gear yet — click 'Create Gear' to add one")
               : t("Equipped pieces are shown above")}
         </div>
       ) : (
