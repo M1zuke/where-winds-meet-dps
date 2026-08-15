@@ -133,17 +133,24 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
   })
 })
 
-describe("Class Buffs column — scope, not alwaysActive, decides membership", () => {
-  it("is exactly the four scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
+describe("Class Buffs column — class ownership and scope decide membership", () => {
+  it("is exactly the class's own scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
       [
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
-        "soulShaken: +10.0% all/stack",
-        "buff-bellstrikeUmbra-zenith-bar: +15.0% all",
       ].sort(),
     )
+  })
+
+  // Both are scoped and both are live at these tiers — only their owner keeps
+  // them out, so nothing else in this file would notice the rule lapsing.
+  it("leaves out a slotted inner way's own buffs, however scoped they are", () => {
+    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
+    const ids = rows.map((row) => row.id)
+    expect(ids).not.toContain("soulShaken")
+    expect(ids).not.toContain("buff-bellstrikeUmbra-zenith-bar")
   })
 })
 
@@ -159,13 +166,10 @@ describe("reverse index — affectsSummary reads the injected skill list, never 
     )
   })
 
-  it("Class Buffs rows carry the same skill names in affects", () => {
+  it("a Class Buffs row carries the same skill names in affects", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.affects).toBe(
       "Bleed Tick/Blood Burst",
-    )
-    expect(rows.find((row) => row.id === "soulShaken")!.affects).toBe(
-      "Bleed Tick/Blood Burst/Bitter Season Tick",
     )
   })
 
