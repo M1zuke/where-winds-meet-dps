@@ -1,14 +1,35 @@
-import type { Rotation } from "../../engine/rotation"
+import type { Rotation, RotationStep } from "../../engine/rotation"
 import defaultRotationsData from "../../data/rotations/defaultRotations.json"
 import handRotationsData from "../../data/rotations/handRotations.json"
 
+interface RotationFileEntry extends Omit<Rotation, "steps"> {
+  steps: Omit<RotationStep, "id">[]
+}
+
 interface RotationPoolFile {
-  rotations: Rotation[]
+  rotations: RotationFileEntry[]
   defaultRotationId?: string
 }
 
-const DEFAULT_ROTATIONS = defaultRotationsData as unknown as Record<string, RotationPoolFile>
-const HAND_ROTATIONS = handRotationsData as unknown as Record<string, RotationPoolFile>
+function withStepIds(rotation: RotationFileEntry): Rotation {
+  return {
+    ...rotation,
+    steps: rotation.steps.map((step, index) => ({ ...step, id: `${rotation.id}-${index}` })),
+  }
+}
+
+function pools(data: unknown): Record<string, { rotations: Rotation[]; defaultRotationId?: string }> {
+  const files = data as Record<string, RotationPoolFile>
+  return Object.fromEntries(
+    Object.entries(files).map(([classId, file]) => [
+      classId,
+      { ...file, rotations: file.rotations.map(withStepIds) },
+    ]),
+  )
+}
+
+const DEFAULT_ROTATIONS = pools(defaultRotationsData)
+const HAND_ROTATIONS = pools(handRotationsData)
 
 export interface RotationPool {
   rotations: readonly Rotation[]
