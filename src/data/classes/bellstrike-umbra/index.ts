@@ -14,6 +14,7 @@ import {
 } from "../../innerWays/swordHorizonZenith"
 import { levelAttributeBonusMechanic } from "./levelBonus"
 import { BELLSTRIKE_UMBRA_GRADUATION_BUILD } from "./graduationBuild"
+import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -25,7 +26,7 @@ export const bellstrikeUmbra = defineClass({
   classMindGroup: "swordHorizon",
   allowedMindMethods: ["wolfchasersArt", "insightfulStrike", "moraleChant", "bitterSeason"],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
-  weapons: ["Sword", "Spear"],
+  weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,

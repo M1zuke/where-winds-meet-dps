@@ -23,7 +23,6 @@ interface Props {
   onSelectSlot(slot: GearSlot, pieceId: string | null): void
   dpsDeltas: DpsDeltaMap
   dpsDeltasPending: boolean
-  hideComparisons?: boolean
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -53,7 +52,6 @@ export function GearSlotTiles({
   onSelectSlot,
   dpsDeltas,
   dpsDeltasPending,
-  hideComparisons = false,
 }: Props) {
   const { t } = useI18n()
   return (
@@ -84,7 +82,7 @@ export function GearSlotTiles({
                 ? `lv${piece.level} · ${t(piece.rarity === "legendary" ? "Legendary" : "Epic")}`
                 : t("Empty")}
             </div>
-            {piece && !hideComparisons && (
+            {piece && (
               <div className={styles.gearTileStats}>
                 <SlotStat
                   label={t("Max (94%)")}

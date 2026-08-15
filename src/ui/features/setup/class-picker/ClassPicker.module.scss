@@ -1,0 +1,115 @@
+.tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: 4px;
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    border-color 0.1s,
+    transform 0.1s;
+}
+
+.tile:hover {
+  background: var(--color-surface-raised);
+  border-color: var(--color-border-hover);
+}
+
+.tile:active {
+  transform: translateY(1px);
+}
+
+.tile.selected {
+  background: #2a2418;
+  border-color: var(--color-border-strong);
+  border-left-color: var(--color-accent);
+}
+
+.tile.selected:hover {
+  border-color: var(--color-border-hover);
+  border-left-color: var(--color-accent);
+}
+
+.icon {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.name {
+  font-size: 0.95em;
+  color: var(--color-text);
+}
+
+.tile.selected .name {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.weaponRow {
+  display: flex;
+  gap: 6px;
+  font-size: 0.8em;
+}
+
+.weaponLabel {
+  color: var(--color-text-muted);
+}
+
+.weaponValue {
+  color: var(--color-text-dim);
+}
+
+.pickerRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.helpLink {
+  align-self: center;
+  box-sizing: border-box;
+  width: calc(50% - 3px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-bg);
+  color: var(--color-text-muted);
+  font-size: 0.95em;
+  text-decoration: none;
+}
+
+.helpLink:hover {
+  border-color: var(--color-border-hover);
+  color: var(--color-text);
+}
+
+.helpIcon {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.helpIcon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
+}

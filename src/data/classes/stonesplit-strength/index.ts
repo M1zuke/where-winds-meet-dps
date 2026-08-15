@@ -10,6 +10,7 @@ import { shatteredRidgeDeflect } from "../../skills/stonesplit-strength/buffs/sh
 import { stonesplitStrengthSkillCritDamage } from "../../skills/stonesplit-strength/buffs/skillCritDamage"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
 import { STONESPLIT_STRENGTH_GRADUATION_BUILD } from "./graduationBuild"
+import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
 export const stonesplitStrength = defineClass({
   id: CLASS_ID,
@@ -32,7 +33,7 @@ export const stonesplitStrength = defineClass({
     "snowpartingCharged",
     "snowpartingVariedCombo",
   ],
-  weapons: ["Hengdao", "Modao"],
+  weapons: [MARTIAL_ART_ID.snowpartingBlade, MARTIAL_ART_ID.phalanxbaneBlade],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
   debuffs: DEBUFFS,

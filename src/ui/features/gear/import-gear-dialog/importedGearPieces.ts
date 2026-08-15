@@ -2,8 +2,9 @@ import { attunementsFor } from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
-import { emptyGearWord } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
 import type {
+  EquippedSlots,
   GearLevel,
   GearPiece,
   GearRarity,
@@ -186,6 +187,12 @@ export function effectiveIdentity(
 
 export function importablePieces(result: GearImportResult): ImportedPiece[] {
   return result.pieces.filter((piece) => piece.slot.kind === "mapped")
+}
+
+export function equippedFromImported(pieces: readonly GearPiece[]): EquippedSlots {
+  const equipped: EquippedSlots = { ...EMPTY_EQUIPPED }
+  for (const piece of pieces) equipped[piece.slot] = piece.id
+  return equipped
 }
 
 export function toGearPieces(result: GearImportResult, overrides: IdentityOverrides): GearPiece[] {

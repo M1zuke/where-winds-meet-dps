@@ -28,7 +28,6 @@ interface Props {
   onClearSlotFilter(): void
   dpsDeltas: DpsDeltaMap
   dpsDeltasPending: boolean
-  hideComparisons?: boolean
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -62,7 +61,6 @@ export function GearInventoryPanel({
   onClearSlotFilter,
   dpsDeltas,
   dpsDeltasPending,
-  hideComparisons = false,
 }: Props) {
   const { t } = useI18n()
 
@@ -104,14 +102,12 @@ export function GearInventoryPanel({
           </span>
         </div>
 
-        {!hideComparisons && (
-          <div className={styles.gearInvTileStats}>
-            <Stat label={t("Now")} delta={delta?.current} pending={dpsDeltasPending} />
-            <Stat label={t("Max (94%)")} delta={delta?.upgraded} pending={dpsDeltasPending} />
-            <Stat label="FP" delta={delta?.fullPotential} pending={dpsDeltasPending} />
-            <Stat label="FP(E)" delta={delta?.fullPotentialE} pending={dpsDeltasPending} />
-          </div>
-        )}
+        <div className={styles.gearInvTileStats}>
+          <Stat label={t("Now")} delta={delta?.current} pending={dpsDeltasPending} />
+          <Stat label={t("Max (94%)")} delta={delta?.upgraded} pending={dpsDeltasPending} />
+          <Stat label="FP" delta={delta?.fullPotential} pending={dpsDeltasPending} />
+          <Stat label="FP(E)" delta={delta?.fullPotentialE} pending={dpsDeltasPending} />
+        </div>
 
         {isForeign && <div className={styles.gearInvTileOwner}>{row.ownerProfileName}</div>}
       </button>

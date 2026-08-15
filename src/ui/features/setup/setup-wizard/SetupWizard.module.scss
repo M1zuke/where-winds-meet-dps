@@ -3,8 +3,8 @@
   overflow: hidden;
 }
 
-.wizardSurface.surfaceGear {
-  width: min(95vw, 1180px);
+.wizardSurface.surfaceImport {
+  width: min(95vw, 940px);
 }
 
 .wizardHeader {
@@ -42,17 +42,57 @@
   overflow-y: auto;
 }
 
-.wizardBody :global(.panel) {
-  margin-bottom: 10px;
-}
-
-.wizardBody :global(.panel):last-child {
-  margin-bottom: 0;
-}
-
 .wizardNameRow {
   grid-template-columns: 130px 1fr;
   padding: 6px 0;
+}
+
+.wizardImportSplit {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wizardManualDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wizardManualDivider::before,
+.wizardManualDivider::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: #2c2c2c;
+}
+
+.wizardManualDividerLabel {
+  color: var(--color-accent);
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wizardManualArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.wizardManualButton {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05em;
+}
+
+.wizardManualNote {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82em;
 }
 
 .wizardFooter {

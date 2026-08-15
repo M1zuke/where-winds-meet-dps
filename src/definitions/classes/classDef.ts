@@ -7,6 +7,7 @@ import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
+import type { MartialArtId } from "../../data/martialArts/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
 export interface RetunementPool {
@@ -44,7 +45,7 @@ export interface ClassDef {
   classSpecificAttunements: readonly string[]
   // The fallback pair `itemRanking.ts` reads when the active rotation casts
   // neither of the class's weapons yet.
-  weapons: readonly string[]
+  weapons: readonly MartialArtId[]
   critBoostWeaponTypes: readonly string[]
   skills: readonly Skill[]
   debuffs: readonly Debuff[]
