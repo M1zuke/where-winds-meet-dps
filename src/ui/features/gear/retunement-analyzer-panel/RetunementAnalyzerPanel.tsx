@@ -2,6 +2,7 @@ import { useMemo } from "react"
 import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
+import { statLineLabel } from "../../../../data/stats/statLines"
 import { useI18n } from "../../../../i18n/i18nContext"
 import retunement from "../shared/retunement.module.scss"
 
@@ -148,9 +149,9 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             </span>
             <span className={retunement.bestSlot}>
               {t("Slot ") + (best.slotIndex + 1) + t("")}
-              {best.currentWord ? ` (${t("Active")}: ${t(best.currentWord)})` : ""}
+              {best.currentWord ? ` (${t("Active")}: ${t(statLineLabel(best.currentWord))})` : ""}
               {" → "}
-              <strong>{t(best.word)}</strong>
+              <strong>{t(statLineLabel(best.word))}</strong>
             </span>
             <span className={`${retunement.bestDelta} ${deltaSignClass(best.deltaDps)}`}>
               {fmtDpsDelta(best.deltaDps)} DPS
@@ -174,7 +175,7 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             const sign = deltaSignClass(candidate.deltaDps)
             return (
               <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
-                <div className={retunement.cell}>{t(candidate.word)}</div>
+                <div className={retunement.cell}>{t(statLineLabel(candidate.word))}</div>
                 <div className={`${retunement.cell} ${sign}`}>
                   {fmtDpsDelta(candidate.deltaDps)}
                 </div>

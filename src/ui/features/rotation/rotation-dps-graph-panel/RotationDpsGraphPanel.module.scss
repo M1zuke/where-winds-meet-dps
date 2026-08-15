@@ -24,7 +24,7 @@ $plot-height: 220px;
   right: 0;
   transform: translateY(-50%);
   font-size: 0.7em;
-  color: #777;
+  color: var(--color-text-faint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -134,7 +134,7 @@ $plot-height: 220px;
   position: absolute;
   transform: translateX(-50%);
   font-size: 0.7em;
-  color: #777;
+  color: var(--color-text-faint);
   font-variant-numeric: tabular-nums;
 }
 

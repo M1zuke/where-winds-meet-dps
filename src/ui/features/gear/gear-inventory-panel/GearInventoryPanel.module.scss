@@ -52,9 +52,10 @@
 
 .gearInvTile {
   position: relative;
-  background: var(--color-surface-alt);
-  border: 2px solid #2e2e2e;
-  border-radius: 6px;
+  background: var(--color-surface-control);
+  border: 1px solid var(--color-border-strong);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: 4px;
   padding: 10px 12px;
   color: var(--color-text);
   cursor: pointer;
@@ -86,24 +87,30 @@
 }
 
 .gearInvTile:hover {
-  background: #262626;
+  background: var(--color-surface-control-hover);
+  border-color: var(--color-border-hover);
 }
 
 .gearInvTile.isSelected {
-  background: #2a2419;
-  box-shadow: 0 0 0 2px var(--color-accent) inset;
+  background: var(--color-surface-selected);
+  border-color: var(--color-accent);
 }
 
 .gearInvTile.isForeign {
   border-style: dashed;
+  border-left-style: solid;
   opacity: 0.85;
 }
 
-.gearInvTile.rarityLegendary {
-  border-color: #8e7330;
+.gearInvTile.rarityLegendary,
+.gearInvTile.rarityLegendary:hover,
+.gearInvTile.rarityLegendary.isSelected {
+  border-left-color: var(--color-rarity-legendary);
 }
-.gearInvTile.rarityEpic {
-  border-color: #6a4a98;
+.gearInvTile.rarityEpic,
+.gearInvTile.rarityEpic:hover,
+.gearInvTile.rarityEpic.isSelected {
+  border-left-color: var(--color-rarity-epic);
 }
 
 .gearInvTileHead {
@@ -112,14 +119,14 @@
   justify-content: space-between;
   gap: 6px;
   padding-bottom: 6px;
-  border-bottom: 1px solid #2e2e2e;
+  border-bottom: 1px solid var(--color-border);
   margin-bottom: 4px;
 }
 
 .gearInvTileSlot {
   font-size: 0.84em;
   font-weight: 600;
-  color: #b89865;
+  color: var(--color-rarity-legendary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -127,7 +134,7 @@
 }
 
 .gearInvTile.rarityEpic .gearInvTileSlot {
-  color: #a890c4;
+  color: var(--color-rarity-epic);
 }
 
 .gearInvTileMeta {
@@ -177,7 +184,7 @@
   color: var(--color-text-muted);
 }
 .gearInvTileStat:global(.is-pending) .gearInvTileStatValue {
-  color: #555;
+  color: var(--color-text-faint);
 }
 
 .gearInvTileOwner {

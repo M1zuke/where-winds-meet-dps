@@ -135,7 +135,7 @@ $track-min-width: 720px;
   position: absolute;
   transform: translateX(-50%);
   font-size: 0.7em;
-  color: #777;
+  color: var(--color-text-faint);
   font-variant-numeric: tabular-nums;
 }
 

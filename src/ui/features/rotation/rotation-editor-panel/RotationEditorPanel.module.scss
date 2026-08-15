@@ -160,7 +160,7 @@
 .entriesEmpty {
   padding: 24px 12px;
   text-align: center;
-  color: #555;
+  color: var(--color-text-faint);
   font-size: 0.88em;
   border: 1px dashed #2e2e2e;
   border-radius: 4px;
@@ -306,7 +306,7 @@
   background: var(--color-surface-raised);
 }
 .buffEmpty {
-  color: #777;
+  color: var(--color-text-faint);
   padding: 4px;
   font-size: 0.85em;
 }

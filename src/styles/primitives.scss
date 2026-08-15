@@ -179,7 +179,8 @@
   font-size: 0.72em;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  font-weight: 600;
+  color: var(--color-accent);
 }
 
 .spacer {
@@ -188,7 +189,7 @@
 
 .hint {
   font-size: 0.75em;
-  color: var(--color-border-hover);
+  color: var(--color-text-muted);
   letter-spacing: 0.02em;
 }
 
@@ -268,7 +269,7 @@
 .empty-tab {
   padding: 60px 20px;
   text-align: center;
-  color: var(--color-border-hover);
+  color: var(--color-text-muted);
   font-size: 0.95em;
   background: var(--color-surface);
   border: 1px dashed var(--color-border);

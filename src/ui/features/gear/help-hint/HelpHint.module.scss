@@ -1,0 +1,43 @@
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 11px;
+  height: 11px;
+  margin-left: 4px;
+  border: 1px solid var(--color-border-hover);
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  cursor: help;
+}
+
+.marker:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.bubble {
+  position: fixed;
+  z-index: 1400;
+  width: max-content;
+  max-width: 240px;
+  padding: 7px 10px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-hover);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+  color: var(--color-text);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+}

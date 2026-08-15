@@ -12,6 +12,7 @@ import { EncounterSettingsPanel } from "../encounter-settings-panel/EncounterSet
 import { BowSetPanel } from "../bow-set-panel/BowSetPanel"
 import { ArsenalPanel } from "../arsenal-panel/ArsenalPanel"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
+import { Switch } from "../../../components/switch/Switch"
 import { ItemRankingTable } from "../item-ranking-table/ItemRankingTable"
 import styles from "./OverviewTab.module.scss"
 
@@ -45,15 +46,11 @@ export function OverviewTab({
               onChange={(breakthrough) => onChange({ ...inputs, breakthrough })}
             />
             <div className={styles.toggleRow}>
-              <span>{t("Enable Dummy")}</span>
-              <button
-                type="button"
-                className={`btn${inputs.dummyMode ? " is-on" : ""}`}
-                aria-pressed={inputs.dummyMode}
-                onClick={() => onChange({ ...inputs, dummyMode: !inputs.dummyMode })}
-              >
-                {inputs.dummyMode ? t("On") : t("Off")}
-              </button>
+              <Switch
+                checked={inputs.dummyMode}
+                label={t("Enable Dummy")}
+                onChange={(dummyMode) => onChange({ ...inputs, dummyMode })}
+              />
             </div>
           </div>
           <div className="panel">
