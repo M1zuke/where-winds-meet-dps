@@ -36334,7 +36334,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 8,
+          "duration": "[fn]",
           "maxStacks": null,
           "effects": [
             {
@@ -36343,7 +36343,7 @@
               "amount": 0.18
             }
           ],
-          "summary": null
+          "summary": "affinityDmg +18%"
         },
         {
           "id": "swordSlashDamageBoost",
@@ -36490,7 +36490,7 @@
       ]
     },
     "dynamic": {
-      "digest": "230237e11fc6d5acb26761144899b9372267b1162d62f30393855dd9a1f84d58"
+      "digest": "856156375025a0d53e647f44d78e1a8667121c7c52006ad27586ecd421228507"
     }
   }
 }

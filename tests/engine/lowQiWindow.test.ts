@@ -150,3 +150,20 @@ describe("Qi Imbalance's damage effects", () => {
     expect(multiplierAt("exhausted")).toEqual({ kind: "damageMultiplier", factor: 1.1 })
   })
 })
+
+describe("Endless Gale's window", () => {
+  const module = () =>
+    buffDefsForClass("bellstrikeSplendor").find((def) => def.id === BUFF.endlessGale)!
+
+  const durationWith = (params: Record<string, unknown>) => {
+    const duration = module().duration
+    if (typeof duration !== "function") throw new Error("expected a context-dependent duration")
+    return duration({ build: { param: (id: string) => !!params[id] } } as never)
+  }
+
+  // Mountain's Might extends it; on its own the spear talent's window is shorter.
+  it("is 8s alone and 10s with Mountain's Might", () => {
+    expect(durationWith({})).toBe(8)
+    expect(durationWith({ mountainsMight: true })).toBe(10)
+  })
+})
