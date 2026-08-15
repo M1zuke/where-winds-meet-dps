@@ -11,8 +11,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10251.948062,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -20,8 +19,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34457.23155,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -29,8 +27,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13723.962041,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -38,8 +35,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -47,8 +43,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 73451.7746,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -56,8 +51,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2158431.324457,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -65,8 +59,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 61966.048413,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -74,8 +67,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 49691.679103,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -83,8 +75,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 49750.249706,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -92,8 +83,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 35683.265827,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -101,8 +91,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13965.033488,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -110,8 +99,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 28076.272525,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -119,8 +107,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 111884.865908,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -128,8 +115,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 56152.545051,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -137,8 +123,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 78951.750826,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -146,8 +131,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 728473.439983,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -155,8 +139,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 88039.566181,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -164,8 +147,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 278171.372294,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -173,8 +155,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 381006.203583,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -182,8 +163,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 49274.633238,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -191,7 +171,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "d712898cd15c10b662f6ad0e3eed13266902e9ce23ae5a8dff40b38a456f8ee8"
+    "digest": "65dcc3e8b7c4e853363cc62e0002fb641f1af43c3cb7781fc5dd21a126e22234"
   },
   "anchor:noAttunement": {
     "dps": 67057.926526,
@@ -205,8 +185,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10251.948062,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -214,8 +193,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34457.23155,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -223,8 +201,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13723.962041,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -232,8 +209,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -241,8 +217,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 73451.7746,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -250,8 +225,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1770657.362147,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -259,8 +233,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 61966.048413,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -268,8 +241,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 49691.679103,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -277,8 +249,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 49750.249706,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -286,8 +257,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 35683.265827,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -295,8 +265,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13965.033488,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -304,8 +273,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 28076.272525,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -313,8 +281,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 111884.865908,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -322,8 +289,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 56152.545051,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -331,8 +297,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 78951.750826,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -340,8 +305,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 728473.439983,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -349,8 +313,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 88039.566181,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -358,8 +321,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 228196.367755,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -367,8 +329,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 381006.203583,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -376,8 +337,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 49274.633238,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -385,7 +345,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "015eeea1e7698645a221ec45268433dace400abce67c7681c31044e4761ddda5"
+    "digest": "2a9da20e7d7a4dbf689680c1363fe6b5a79b55cddc6e3478fee8859ec8c40bf6"
   },
   "anchor:dummyOff": {
     "dps": 79817.28725,
@@ -399,8 +359,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 11480.119073,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -408,8 +367,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 38301.789105,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -417,8 +375,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 15423.100264,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -426,8 +383,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -435,8 +391,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 80248.996113,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -444,8 +399,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2301317.4758,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -453,8 +407,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 67699.869572,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -462,8 +415,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 54512.27736,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -471,8 +423,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 54314.584545,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -480,8 +431,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 39014.131209,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -489,8 +439,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 15268.560593,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -498,8 +447,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 30637.810916,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -507,8 +455,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 122095.143756,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -516,8 +463,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 61275.621832,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -525,8 +471,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 86516.041673,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -534,8 +479,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 767652.721444,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -543,8 +487,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 94830.220925,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -552,8 +495,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 298201.69031,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -561,8 +503,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 405924.311897,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -570,8 +511,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 54091.567314,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -579,7 +519,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "4a2c887c8e3b9331846919884969a270c42da58f4101f4894379ddfdd404baa7"
+    "digest": "12aa735713dce7dc30c970ef7853c80df639397d3f5d9ccb6d4b42230f8f79b9"
   },
   "anchor:noQiBreak": {
     "dps": 67762.517268,
@@ -593,8 +533,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10251.948062,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -602,8 +541,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34457.23155,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -611,8 +549,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13723.962041,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -620,8 +557,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -629,8 +565,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 72951.469024,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -638,8 +573,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2149283.063238,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -647,8 +581,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 61545.275265,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -656,8 +589,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 49691.679103,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -665,8 +597,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 49179.269079,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -674,8 +605,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 35683.265827,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -683,8 +613,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13965.033488,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -692,8 +621,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 27653.833925,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -701,8 +629,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 110219.028647,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -710,8 +637,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 55307.667849,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -719,8 +645,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 78392.855038,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -728,8 +653,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 351176.959504,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -737,8 +661,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 88039.566181,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -746,8 +669,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 276095.069878,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -755,8 +677,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 377993.388936,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -764,8 +685,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 48639.803302,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -773,7 +693,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "5d6986278811b297c762750bb138e03dde457aefa64a98ec504647d38a51e2c0"
+    "digest": "f961a4238dfc54a10915ec7a1be932c723e0b44e97a4380430eabcba86604143"
   },
   "anchor:healerBuff": {
     "dps": 81936.851166,
@@ -787,8 +707,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 11889.50941,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -796,8 +715,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 39583.308291,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -805,8 +723,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 15989.479672,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -814,8 +731,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -823,8 +739,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 82764.889405,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -832,8 +747,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2353520.323524,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -841,8 +755,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 69821.529866,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -850,8 +763,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 56119.143446,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -859,8 +771,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 56121.519805,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -868,8 +779,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 40124.41967,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -877,8 +787,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 15703.069628,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -886,8 +795,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 31702.876347,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -895,8 +803,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 126331.488336,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -904,8 +811,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 63405.752693,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -913,8 +819,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 89316.919849,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -922,8 +827,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 793772.242419,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -931,8 +835,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 97093.772507,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -940,8 +843,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 305916.61419,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -949,8 +851,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 415736.755326,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -958,8 +859,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 56014.626974,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -967,7 +867,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c2fa269aad96d3f9d083ea7b7bb9205059761b6ace4be2d463859faa6a0371c0"
+    "digest": "9e5265b7ebcfcd7b7fe38f5c159e7b16dcb72e1a477832093dbf530e5a036032"
   },
   "anchor:revelryScript": {
     "dps": 84979.037904,
@@ -981,8 +881,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 12708.290084,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -990,8 +889,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 42146.346661,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -999,8 +897,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 17122.238487,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1008,8 +905,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1017,8 +913,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 87046.217626,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1026,8 +921,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2444203.627143,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -1035,8 +929,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 73433.690731,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -1044,8 +937,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 59332.875617,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1053,8 +945,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 58878.919384,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -1062,8 +953,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 42344.996591,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1071,8 +961,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 16572.087698,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -1080,8 +969,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 33199.349306,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -1089,8 +977,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 132305.421605,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -1098,8 +985,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 66398.698613,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -1107,8 +993,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 94080.33252,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -1116,8 +1001,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 806832.002906,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -1125,8 +1009,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 101620.875669,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -1134,8 +1017,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 318232.008326,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -1143,8 +1025,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 430842.420212,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -1152,8 +1033,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 58908.50139,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -1161,7 +1041,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "5130e5ff78cc2aee207703fd432f6ca275ec84b81e04eab9ba590c266b9d6a96"
+    "digest": "215f6dd3820d02d5c3d3d0f06f2972170ff83319dec03665e0ee05e08f9ae5c0"
   },
   "anchor:breakExtension": {
     "dps": 75764.268469,
@@ -1175,8 +1055,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10251.948062,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -1184,8 +1063,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34457.23155,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1193,8 +1071,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13723.962041,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1202,8 +1079,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1211,8 +1087,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 75224.65575,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1220,8 +1095,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2198223.08667,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -1229,8 +1103,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 63245.194064,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -1238,8 +1111,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 50900.012364,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1247,8 +1119,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 50892.210962,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -1256,8 +1127,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 36793.853704,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1265,8 +1135,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 14399.561623,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -1274,8 +1143,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 28718.899355,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -1283,8 +1151,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 114455.373227,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -1292,8 +1159,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 57437.79871,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -1301,8 +1167,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 80628.438189,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -1310,8 +1175,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 728473.439983,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -1319,8 +1183,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 88039.566181,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -1328,8 +1191,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 282692.865649,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -1337,8 +1199,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 386483.141399,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -1346,8 +1207,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 50243.362114,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -1355,7 +1215,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "fc2a27c00e2ebbd96477fb5b0a7ab4330437ed0e9439132455d43d9cc5b0c3c5"
+    "digest": "fbbe66aea9f22c265756370fcc380a22a0fb5e6dfc2f2a1180ef01630da7cfa6"
   },
   "anchor:swordHorizonT1": {
     "dps": 52580.608994,
@@ -1369,8 +1229,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10251.948062,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -1378,8 +1237,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34457.23155,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1387,8 +1245,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13723.962041,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1396,8 +1253,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1405,8 +1261,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 73451.7746,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1414,8 +1269,7 @@
         "type": "sustain",
         "count": 20,
         "expectedDamage": 1277007.915467,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -1423,8 +1277,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 61966.048413,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -1432,8 +1285,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 49691.679103,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1441,8 +1293,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 49750.249706,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -1450,8 +1301,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 35683.265827,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1459,8 +1309,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13965.033488,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -1468,8 +1317,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 28076.272525,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -1477,8 +1325,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 111884.865908,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -1486,8 +1333,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 56152.545051,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -1495,8 +1341,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 78951.750826,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -1504,8 +1349,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 728473.439983,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -1513,8 +1357,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 88039.566181,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -1522,8 +1365,7 @@
         "type": "sustain",
         "count": 40,
         "expectedDamage": 194581.062104,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -1531,8 +1373,7 @@
         "type": "sustain",
         "count": 23,
         "expectedDamage": 74136.177456,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -1540,8 +1381,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 49274.633238,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -1549,7 +1389,7 @@
       "buffWindows": 126,
       "casts": 69
     },
-    "digest": "d3d8bbea127c93d3e47c8599d6f8e2817c0a389c67221cf31ec3dfaf4cd82199"
+    "digest": "69e1017d394ac33e6392562d2a5ba780eaa2a44c4d8e87854142cbac21b17343"
   },
   "anchor:noSwordHorizon": {
     "dps": 45780.487525,
@@ -1563,8 +1403,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9949.613737,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -1572,8 +1411,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33373.968151,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1581,8 +1419,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13277.289191,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1590,8 +1427,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1599,8 +1435,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 71118.319496,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1608,8 +1443,7 @@
         "type": "sustain",
         "count": 20,
         "expectedDamage": 964757.14585,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -1617,8 +1451,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 59866.021874,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -1626,8 +1459,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 48116.935986,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1635,8 +1467,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 48172.135263,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -1644,8 +1475,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 34568.287532,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1653,8 +1483,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13496.471337,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -1662,8 +1491,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 27201.412061,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -1671,8 +1499,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 108405.264381,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -1680,8 +1507,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 54406.669139,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -1689,8 +1515,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 76496.945805,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -1698,8 +1523,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 705694.543802,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -1707,8 +1531,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 84817.419594,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -1716,8 +1539,7 @@
         "type": "sustain",
         "count": 40,
         "expectedDamage": 165081.337131,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -1725,8 +1547,7 @@
         "type": "sustain",
         "count": 23,
         "expectedDamage": 71409.176365,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -1734,8 +1555,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 47510.132884,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -1743,7 +1563,7 @@
       "buffWindows": 122,
       "casts": 69
     },
-    "digest": "4526a7e1914a5a4d2b41cb7b18a3019abd2aa7224545cb8a218ff1af6471bc58"
+    "digest": "bbca62731fc0ef8d1190171c6edf9a2bef21cdf06768eb72ade23eb33426cf17"
   },
   "anchor:noInsightfulStrike": {
     "dps": 63829.099957,
@@ -1757,8 +1577,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9885.41806,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -1766,8 +1585,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33152.064386,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1775,8 +1593,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13001.679542,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1784,8 +1601,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1793,8 +1609,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 66193.53977,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1802,8 +1617,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1779614.03299,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -1811,8 +1625,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 55620.379346,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -1820,8 +1633,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 44713.629978,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1829,8 +1641,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 44773.837351,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -1838,8 +1649,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32100.633286,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1847,8 +1657,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12517.639901,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -1856,8 +1665,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25261.212579,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -1865,8 +1673,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 100669.828312,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -1874,8 +1681,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 50522.425158,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -1883,8 +1689,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 70965.86669,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -1892,8 +1697,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 661286.348252,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -1901,8 +1705,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 76021.317689,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -1910,8 +1713,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 229367.584318,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -1919,8 +1721,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 327929.217016,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -1928,8 +1729,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 44023.321214,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -1937,7 +1737,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "916232fa7dfc4524c0b53388bb12bc862664fb81875094122772fa0fa763f358"
+    "digest": "2d3682de5bc77a598d42045a1b197459d82ba769ee935ec8ed1b3b1051c131f3"
   },
   "anchor:noMoraleChant": {
     "dps": 68363.838788,
@@ -1951,8 +1751,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9879.781234,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -1960,8 +1759,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 32748.498307,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1969,8 +1767,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 12961.20204,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -1978,8 +1775,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -1987,8 +1783,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 67565.534632,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -1996,8 +1791,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2014267.112033,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -2005,8 +1799,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 56943.583548,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -2014,8 +1807,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 45828.476331,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2023,8 +1815,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 45547.373318,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2032,8 +1823,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32850.476692,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2041,8 +1831,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12840.828628,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -2050,8 +1839,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25666.782783,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -2059,8 +1847,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 102295.443027,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -2068,8 +1855,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 51333.565567,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -2077,8 +1863,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 72356.741283,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -2086,8 +1871,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 665122.786533,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -2095,8 +1879,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 82054.414843,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -2104,8 +1887,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 257218.563061,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -2113,8 +1895,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 351415.347614,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -2122,7 +1903,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "826db2e3995b496f46ff086602480174dc62aa67ddb1036a28be0c4641a3be2f"
+    "digest": "c4547fc5379e5772d7966f9448014f6f30f443ff96a1d51c086d005995b62ff9"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 43287.157857,
@@ -2136,8 +1917,7 @@
         "type": "weapon",
         "count": 1,
         "expectedDamage": 2307.187546,
-        "castCount": 1,
-        "castTimeSec": 1.5
+        "castCount": 1
       },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -2145,8 +1925,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 22076.87385,
-        "castCount": 2,
-        "castTimeSec": 2.933333
+        "castCount": 2
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -2154,8 +1933,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33897.213606,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -2163,8 +1941,7 @@
         "type": "weapon",
         "count": 20,
         "expectedDamage": 60415.874506,
-        "castCount": 4,
-        "castTimeSec": 5.666667
+        "castCount": 4
       },
       {
         "name": "Deflect Cancel",
@@ -2172,8 +1949,7 @@
         "type": "weapon",
         "count": 20,
         "expectedDamage": 0,
-        "castCount": 20,
-        "castTimeSec": 8.333333
+        "castCount": 20
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -2181,8 +1957,7 @@
         "type": "weapon",
         "count": 30,
         "expectedDamage": 64433.677137,
-        "castCount": 10,
-        "castTimeSec": 10
+        "castCount": 10
       },
       {
         "name": "Blood Burst",
@@ -2190,8 +1965,7 @@
         "type": "sustain",
         "count": 36,
         "expectedDamage": 1493576.617094,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -2199,8 +1973,7 @@
         "type": "weapon",
         "count": 10,
         "expectedDamage": 54231.060123,
-        "castCount": 10,
-        "castTimeSec": 5
+        "castCount": 10
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -2208,8 +1981,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 49720.272542,
-        "castCount": 5,
-        "castTimeSec": 4.916667
+        "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2217,8 +1989,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 39516.796628,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Martial Q",
@@ -2226,8 +1997,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 27667.388947,
-        "castCount": 5,
-        "castTimeSec": 2.5
+        "castCount": 5
       },
       {
         "name": "Sword Martial QQ",
@@ -2235,8 +2005,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 89032.467611,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -2244,8 +2013,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 44517.443436,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "Ghostly Steps",
@@ -2253,8 +2021,7 @@
         "type": "weapon",
         "count": 1,
         "expectedDamage": 0,
-        "castCount": 1,
-        "castTimeSec": 0.016667
+        "castCount": 1
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2262,8 +2029,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 29118.92713,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2271,8 +2037,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 11379.721878,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Flute of the Tides Cancel",
@@ -2280,8 +2045,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 0,
-        "castCount": 1,
-        "castTimeSec": 1.35
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -2289,8 +2053,7 @@
         "type": "sustain",
         "count": 10,
         "expectedDamage": 120334.101884,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -2298,8 +2061,7 @@
         "type": "sustain",
         "count": 59,
         "expectedDamage": 189425.114452,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -2307,8 +2069,7 @@
         "type": "sustain",
         "count": 114,
         "expectedDamage": 252213.650716,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -2316,8 +2077,7 @@
         "type": "mindMethod",
         "count": 6,
         "expectedDamage": 45830.45074,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -2325,7 +2085,7 @@
       "buffWindows": 145,
       "casts": 80
     },
-    "digest": "4ff4f7c88793aa2bff0c46122417ddad718f2efd6b421e2042ed6a3f43b2d4c6"
+    "digest": "b93803d7facf626af5199d3c018b28848f43442afd6558d6f49e019140ecf23a"
   },
   "anchor:bitterSeasonT6": {
     "dps": 54285.184355,
@@ -2339,8 +2099,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10214.35768,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -2348,8 +2107,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34351.456312,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -2357,8 +2115,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13646.273882,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -2366,8 +2123,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -2375,8 +2131,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 59499.908675,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -2384,8 +2139,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1383117.465691,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -2393,8 +2147,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 50205.721734,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -2402,8 +2155,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 39828.940069,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2411,8 +2163,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 40403.469146,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2420,8 +2171,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 28868.718968,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2429,8 +2179,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 11295.290894,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -2438,8 +2187,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 22832.857643,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -2447,8 +2195,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 90986.793857,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -2456,8 +2203,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 45581.808306,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -2465,8 +2211,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 63385.784215,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -2474,8 +2219,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 641173.989105,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -2483,8 +2227,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 58115.658011,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -2492,8 +2235,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 176172.874666,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -2501,8 +2243,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 250409.133815,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
@@ -2510,8 +2251,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 68160.302832,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -2519,8 +2259,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 39480.56641,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -2528,7 +2267,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "7256a41f6af463f1718892a2cd7a3cb302e8d0fc2636d8ec9e2a513aa1b79b24"
+    "digest": "0bff98b1457fe160c81befce32dcb25f2c6e904694a5d89644f36f79720a286b"
   },
   "anchor:bitterSeasonT4": {
     "dps": 53271.680242,
@@ -2542,8 +2281,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10033.207973,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -2551,8 +2289,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33707.672052,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -2560,8 +2297,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13399.963919,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -2569,8 +2305,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -2578,8 +2313,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 58410.659022,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -2587,8 +2321,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1358259.079291,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -2596,8 +2329,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 49276.48497,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -2605,8 +2337,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 39100.251355,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2614,8 +2345,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 39662.095734,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2623,8 +2353,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 28339.503663,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2632,8 +2361,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 11085.87382,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -2641,8 +2369,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 22414.853267,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -2650,8 +2377,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 89323.205119,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -2659,8 +2385,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 44747.864461,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -2668,8 +2393,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 62225.150808,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -2677,8 +2401,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 628947.323344,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -2686,8 +2409,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 56934.740231,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -2695,8 +2417,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 172719.009738,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -2704,8 +2425,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 245303.714565,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
@@ -2713,8 +2433,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 66770.676054,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -2722,8 +2441,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 38675.313873,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -2731,7 +2449,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "e7e4ab62ea6696e56ea7121677eed3306d0c11982378a4c5215724f189b6d1db"
+    "digest": "766c1e02ee78e48a1dfbc1e4e5bc3e873964f5b62ffb3067a68b5734071f6bd3"
   },
   "anchor:bitterSeasonT1": {
     "dps": 52816.898483,
@@ -2745,8 +2463,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9914.090867,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -2754,8 +2471,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33289.101044,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -2763,8 +2479,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13242.015636,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -2772,8 +2487,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -2781,8 +2495,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 57770.17273,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -2790,8 +2503,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1347454.449254,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -2799,8 +2511,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 48709.558696,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -2808,8 +2519,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 38675.013669,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2817,8 +2527,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 39228.524666,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2826,8 +2535,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 28032.553017,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2835,8 +2543,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 10958.744502,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -2844,8 +2551,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 22172.201034,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -2853,8 +2559,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 88356.427353,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -2862,8 +2567,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 44263.524958,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -2871,8 +2575,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 61550.600209,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -2880,8 +2583,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 628947.323344,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -2889,8 +2591,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 56247.560707,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -2898,8 +2599,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 170863.450964,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -2907,8 +2607,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 242416.106427,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bitter Season Tick (DoT)",
@@ -2916,8 +2615,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 62820.940524,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -2925,8 +2623,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 38221.274661,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -2934,7 +2631,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "36e9f5ac9a677cd41e1f05daec6655f7232586c9374ec79eaea8a751b43cac48"
+    "digest": "5c17ffda99669038025efbaf78331aead053feaaf9b0e0d5ba271cf7a749a108"
   },
   "anchor:noSet": {
     "dps": 68216.838824,
@@ -2948,8 +2645,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9981.355358,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -2957,8 +2653,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 32833.831338,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -2966,8 +2661,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 12849.320482,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -2975,8 +2669,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -2984,8 +2677,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 67268.198067,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -2993,8 +2685,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1969867.587857,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3002,8 +2693,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 56264.446982,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3011,8 +2701,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 45429.230798,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3020,8 +2709,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 45448.103552,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3029,8 +2717,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32641.702231,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3038,8 +2725,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12661.894317,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -3047,8 +2733,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25780.807732,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -3056,8 +2741,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 103127.781687,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -3065,8 +2749,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 51565.256272,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -3074,8 +2757,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 72222.095367,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -3083,8 +2765,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 673475.594626,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -3092,8 +2773,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 79796.398848,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -3101,8 +2781,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 251397.418078,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -3110,8 +2789,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 343395.382508,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -3119,8 +2797,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 44420.457486,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -3128,7 +2805,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c8e6287371feb93f50a67d1b5af4859f3316f77cd4c21eff84b8150d37447f47"
+    "digest": "d7bfb78562361b053a8efa4870fbea4dbec57fba79871e4514522b35ecdd10f7"
   },
   "anchor:set-Jadeware": {
     "dps": 74503.257555,
@@ -3142,8 +2819,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10115.779743,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -3151,8 +2827,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34490.52348,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -3160,8 +2835,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 14379.440114,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -3169,8 +2843,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3178,8 +2851,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 73850.885596,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -3187,8 +2859,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2188357.755146,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3196,8 +2867,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 62032.429026,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3205,8 +2875,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 50926.912363,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3214,8 +2883,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 50979.532075,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3223,8 +2891,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 36585.874364,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3232,8 +2899,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 14272.710314,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -3241,8 +2907,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 27484.37151,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -3250,8 +2915,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 109942.788253,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -3259,8 +2923,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 56448.237795,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -3268,8 +2931,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 80961.697957,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -3277,8 +2939,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 683649.424458,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -3286,8 +2947,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 89106.363581,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -3295,8 +2955,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 278874.771891,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -3304,8 +2963,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 380925.992705,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -3313,8 +2971,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 49243.865736,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -3322,7 +2979,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "946dc0e7e67a4b22ce3220e34708289f0b32a5e26644b0f3ad044544ed32cafb"
+    "digest": "18748dcbe9c9d34ed1280052c412a1081c2d31169f8537bbc2690f5c22d71089"
   },
   "anchor:set-Mistwillow": {
     "dps": 68216.838824,
@@ -3336,8 +2993,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9981.355358,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -3345,8 +3001,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 32833.831338,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -3354,8 +3009,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 12849.320482,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -3363,8 +3017,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3372,8 +3025,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 67268.198067,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -3381,8 +3033,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1969867.587857,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3390,8 +3041,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 56264.446982,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3399,8 +3049,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 45429.230798,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3408,8 +3057,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 45448.103552,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3417,8 +3065,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32641.702231,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3426,8 +3073,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12661.894317,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -3435,8 +3081,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25780.807732,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -3444,8 +3089,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 103127.781687,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -3453,8 +3097,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 51565.256272,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -3462,8 +3105,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 72222.095367,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -3471,8 +3113,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 673475.594626,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -3480,8 +3121,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 79796.398848,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -3489,8 +3129,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 251397.418078,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -3498,8 +3137,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 343395.382508,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -3507,8 +3145,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 44420.457486,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -3516,7 +3153,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "93f818c28129f4e89fb4dd2a5f0c1536f222ab405941be65f4cf2bbcbd34ba3d"
+    "digest": "c5ad7d267519011d034e926984eca4414ad0a959d6072dfa96a38702df2ac199"
   },
   "anchor:set-StarsAlign": {
     "dps": 68216.838824,
@@ -3530,8 +3167,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9981.355358,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -3539,8 +3175,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 32833.831338,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -3548,8 +3183,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 12849.320482,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -3557,8 +3191,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3566,8 +3199,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 67268.198067,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -3575,8 +3207,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1969867.587857,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3584,8 +3215,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 56264.446982,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3593,8 +3223,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 45429.230798,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3602,8 +3231,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 45448.103552,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3611,8 +3239,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32641.702231,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3620,8 +3247,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12661.894317,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -3629,8 +3255,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25780.807732,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -3638,8 +3263,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 103127.781687,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -3647,8 +3271,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 51565.256272,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -3656,8 +3279,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 72222.095367,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -3665,8 +3287,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 673475.594626,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -3674,8 +3295,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 79796.398848,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -3683,8 +3303,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 251397.418078,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -3692,8 +3311,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 343395.382508,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -3701,8 +3319,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 44420.457486,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -3710,7 +3327,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c8e6287371feb93f50a67d1b5af4859f3316f77cd4c21eff84b8150d37447f47"
+    "digest": "d7bfb78562361b053a8efa4870fbea4dbec57fba79871e4514522b35ecdd10f7"
   },
   "anchor:set-ShatteredRidge": {
     "dps": 70150.547589,
@@ -3724,8 +3341,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10445.095407,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -3733,8 +3349,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34286.613094,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -3742,8 +3357,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13463.815354,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -3751,8 +3365,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3760,8 +3373,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 69745.271911,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -3769,8 +3381,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2021976.677995,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3778,8 +3389,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 58368.373623,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3787,8 +3397,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 47166.303087,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3796,8 +3405,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 47108.591407,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3805,8 +3413,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 33848.489156,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3814,8 +3421,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 13138.512365,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -3823,8 +3429,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 26715.448819,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -3832,8 +3437,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 106866.456396,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -3841,8 +3445,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 53434.626739,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -3850,8 +3453,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 74952.685062,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -3859,8 +3461,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 689248.038235,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -3868,8 +3469,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 82447.904322,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -3877,8 +3477,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 259066.505349,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -3886,8 +3485,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 353369.474687,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -3895,8 +3493,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 46191.833913,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -3904,7 +3501,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "ecc60ac086b4b3d93ede6307fc4f1a243715a3bf97100a05c2d802c0457e28fb"
+    "digest": "c83f4ba072c6ac5209e619495fad4bd79075876c71342a828251145ff6155b65"
   },
   "anchor:set-Swallowcall": {
     "dps": 68216.838824,
@@ -3918,8 +3515,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 9981.355358,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -3927,8 +3523,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 32833.831338,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -3936,8 +3531,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 12849.320482,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -3945,8 +3539,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3954,8 +3547,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 67268.198067,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -3963,8 +3555,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 1969867.587857,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -3972,8 +3563,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 56264.446982,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -3981,8 +3571,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 45429.230798,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -3990,8 +3579,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 45448.103552,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3999,8 +3587,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 32641.702231,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -4008,8 +3595,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12661.894317,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -4017,8 +3603,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 25780.807732,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -4026,8 +3611,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 103127.781687,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -4035,8 +3619,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 51565.256272,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -4044,8 +3627,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 72222.095367,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -4053,8 +3635,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 673475.594626,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -4062,8 +3643,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 79796.398848,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -4071,8 +3651,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 251397.418078,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -4080,8 +3659,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 343395.382508,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -4089,8 +3667,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 44420.457486,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -4098,7 +3675,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c8e6287371feb93f50a67d1b5af4859f3316f77cd4c21eff84b8150d37447f47"
+    "digest": "d7bfb78562361b053a8efa4870fbea4dbec57fba79871e4514522b35ecdd10f7"
   },
   "anchor:set-SwayingHeights": {
     "dps": 69396.140848,
@@ -4112,8 +3689,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 10280.294371,
-        "castCount": 1,
-        "castTimeSec": 1.466667
+        "castCount": 1
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -4121,8 +3697,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 33749.688102,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -4130,8 +3705,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 13247.195159,
-        "castCount": 1,
-        "castTimeSec": 1.416667
+        "castCount": 1
       },
       {
         "name": "Deflect Cancel",
@@ -4139,8 +3713,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 0,
-        "castCount": 16,
-        "castTimeSec": 6.666667
+        "castCount": 16
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -4148,8 +3721,7 @@
         "type": "weapon",
         "count": 27,
         "expectedDamage": 68824.347179,
-        "castCount": 9,
-        "castTimeSec": 9
+        "castCount": 9
       },
       {
         "name": "Blood Burst",
@@ -4157,8 +3729,7 @@
         "type": "sustain",
         "count": 33,
         "expectedDamage": 2002467.052025,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -4166,8 +3737,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 57565.877135,
-        "castCount": 9,
-        "castTimeSec": 4.5
+        "castCount": 9
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -4175,8 +3745,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 46531.077018,
-        "castCount": 4,
-        "castTimeSec": 3.933333
+        "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -4184,8 +3753,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 46490.549041,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -4193,8 +3761,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 33403.461741,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -4202,8 +3769,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 12957.372134,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Sword Martial Q",
@@ -4211,8 +3777,7 @@
         "type": "weapon",
         "count": 4,
         "expectedDamage": 26368.705527,
-        "castCount": 4,
-        "castTimeSec": 2
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -4220,8 +3785,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 105479.465349,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -4229,8 +3793,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 52741.12585,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "SpearQ",
@@ -4238,8 +3801,7 @@
         "type": "weapon",
         "count": 18,
         "expectedDamage": 73951.98143,
-        "castCount": 3,
-        "castTimeSec": 6
+        "castCount": 3
       },
       {
         "name": "Dragon Head - Plus",
@@ -4247,8 +3809,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 682531.028997,
-        "castCount": 1,
-        "castTimeSec": 4.1
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -4256,8 +3817,7 @@
         "type": "sustain",
         "count": 5,
         "expectedDamage": 81340.406474,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -4265,8 +3825,7 @@
         "type": "sustain",
         "count": 57,
         "expectedDamage": 255927.170149,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -4274,8 +3833,7 @@
         "type": "sustain",
         "count": 110,
         "expectedDamage": 349011.694195,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Yi River",
@@ -4283,8 +3841,7 @@
         "type": "mindMethod",
         "count": 5,
         "expectedDamage": 45505.823308,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -4292,7 +3849,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "3b96a525bfbcd26af2641c3d11299d6ff7e6dc38a4349a3803e3517f180d920a"
+    "digest": "d50b33d5ba58f982410164d96d1a379c60dfb0b2919c2d371af6eaa9f52127de"
   },
   "defaults:umbra": {
     "dps": 11120.690575,
@@ -4306,8 +3863,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 12286.128316,
-        "castCount": 2,
-        "castTimeSec": 2.933333
+        "castCount": 2
       },
       {
         "name": "Dragon's Breath: Smolder 2 Hits",
@@ -4315,8 +3871,7 @@
         "type": "mystic",
         "count": 3,
         "expectedDamage": 17624.993855,
-        "castCount": 1,
-        "castTimeSec": 1.666667
+        "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -4324,8 +3879,7 @@
         "type": "weapon",
         "count": 20,
         "expectedDamage": 32516.491891,
-        "castCount": 4,
-        "castTimeSec": 5.666667
+        "castCount": 4
       },
       {
         "name": "Deflect Cancel",
@@ -4333,8 +3887,7 @@
         "type": "weapon",
         "count": 20,
         "expectedDamage": 0,
-        "castCount": 20,
-        "castTimeSec": 8.333333
+        "castCount": 20
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -4342,8 +3895,7 @@
         "type": "weapon",
         "count": 30,
         "expectedDamage": 33589.851874,
-        "castCount": 10,
-        "castTimeSec": 10
+        "castCount": 10
       },
       {
         "name": "Blood Burst",
@@ -4351,8 +3903,7 @@
         "type": "sustain",
         "count": 22,
         "expectedDamage": 247411.335743,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Crosswind Blade",
@@ -4360,8 +3911,7 @@
         "type": "weapon",
         "count": 10,
         "expectedDamage": 26526.054907,
-        "castCount": 10,
-        "castTimeSec": 5
+        "castCount": 10
       },
       {
         "name": "Spear Special (1 Hit Cancel)",
@@ -4369,8 +3919,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 26986.674817,
-        "castCount": 5,
-        "castTimeSec": 4.916667
+        "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -4378,8 +3927,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 19831.92296,
-        "castCount": 4,
-        "castTimeSec": 4
+        "castCount": 4
       },
       {
         "name": "Sword Martial Q",
@@ -4387,8 +3935,7 @@
         "type": "weapon",
         "count": 5,
         "expectedDamage": 14371.293696,
-        "castCount": 5,
-        "castTimeSec": 2.5
+        "castCount": 5
       },
       {
         "name": "Sword Martial QQ",
@@ -4396,8 +3943,7 @@
         "type": "weapon",
         "count": 16,
         "expectedDamage": 46182.182611,
-        "castCount": 4,
-        "castTimeSec": 4.4
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQQ",
@@ -4405,8 +3951,7 @@
         "type": "weapon",
         "count": 8,
         "expectedDamage": 23210.055194,
-        "castCount": 4,
-        "castTimeSec": 3.666667
+        "castCount": 4
       },
       {
         "name": "Ghostly Steps",
@@ -4414,8 +3959,7 @@
         "type": "weapon",
         "count": 1,
         "expectedDamage": 0,
-        "castCount": 1,
-        "castTimeSec": 0.016667
+        "castCount": 1
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -4423,8 +3967,7 @@
         "type": "weapon",
         "count": 9,
         "expectedDamage": 14651.694972,
-        "castCount": 3,
-        "castTimeSec": 3.3
+        "castCount": 3
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -4432,8 +3975,7 @@
         "type": "weapon",
         "count": 3,
         "expectedDamage": 5325.733527,
-        "castCount": 3,
-        "castTimeSec": 1.5
+        "castCount": 3
       },
       {
         "name": "Flute of the Tides Cancel",
@@ -4441,8 +3983,7 @@
         "type": "mystic",
         "count": 1,
         "expectedDamage": 0,
-        "castCount": 1,
-        "castTimeSec": 1.35
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
@@ -4450,8 +3991,7 @@
         "type": "sustain",
         "count": 10,
         "expectedDamage": 61570.697321,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
@@ -4459,8 +3999,7 @@
         "type": "sustain",
         "count": 48,
         "expectedDamage": 54495.472604,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
@@ -4468,8 +4007,7 @@
         "type": "sustain",
         "count": 23,
         "expectedDamage": 22320.332256,
-        "castCount": 0,
-        "castTimeSec": 0
+        "castCount": 0
       }
     ],
     "counts": {
@@ -4477,6 +4015,6 @@
       "buffWindows": 137,
       "casts": 79
     },
-    "digest": "292797f85d8aea5eaf8f2c502959f0c9c965445eeb1edfb800ff9f64abba1e96"
+    "digest": "1cc45ccf293e8d41162eb7ffb022b492f97e08966610bda10ab2f1457b8d200c"
   }
 }

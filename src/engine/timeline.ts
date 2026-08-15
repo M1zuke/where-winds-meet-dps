@@ -192,16 +192,11 @@ export function simulateTimeline(inputs: Inputs): Result {
   const inWindow = (frame: number): boolean =>
     frame >= 0 ? frame <= durationFrames : prePullHitsCount
 
-  const castMetrics = new Map<string, { castCount: number; castFrames: number }>()
-  for (let i = 0; i < laidSteps.length; i++) {
-    const ls = laidSteps[i]
+  const castCounts = new Map<string, number>()
+  for (const ls of laidSteps) {
     if (ls.prePull && !prePullHitsCount) continue
     const name = ls.resolved.skill.name
-    const e = castMetrics.get(name)
-    if (e) {
-      e.castCount += 1
-      e.castFrames += castLens[i]
-    } else castMetrics.set(name, { castCount: 1, castFrames: castLens[i] })
+    castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
   }
 
   const ledger = new StatusLedger(spanStart, durationFrames)
@@ -903,23 +898,15 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   timeline.sort((a, b) => a.frame - b.frame || (a.kind === b.kind ? 0 : a.kind === "hit" ? -1 : 1))
 
-  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, e]) => {
-    const cast = castMetrics.get(name)
-    const castCount = cast?.castCount ?? 0
-    const castTimeSec = cast ? cast.castFrames / FPS : 0
-    const dpsOfCastTime = castTimeSec > 0 ? e.damage / castTimeSec : 0
-    return {
-      name,
-      breakdownName: e.breakdownName,
-      type: e.type,
-      count: e.count,
-      expectedDamage: e.damage,
-      percentOfTotal: totalDamage > 0 ? e.damage / totalDamage : 0,
-      castCount,
-      castTimeSec,
-      dpsOfCastTime,
-    }
-  })
+  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, e]) => ({
+    name,
+    breakdownName: e.breakdownName,
+    type: e.type,
+    count: e.count,
+    expectedDamage: e.damage,
+    percentOfTotal: totalDamage > 0 ? e.damage / totalDamage : 0,
+    castCount: castCounts.get(name) ?? 0,
+  }))
 
   const durationSeconds = durationFrames / FPS
   const dps = durationSeconds > 0 ? totalDamage / durationSeconds : 0

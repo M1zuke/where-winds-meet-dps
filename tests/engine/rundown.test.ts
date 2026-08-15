@@ -31,12 +31,11 @@ describe("rundown — timeline event log", () => {
   })
 })
 
-describe("rundown — per-skill cast-time fields", () => {
-  it("every perSkill row has castTimeSec >= 0 and dpsOfCastTime >= 0", () => {
+describe("rundown — per-skill cast fields", () => {
+  it("every perSkill row has castCount >= 0", () => {
     const r = runEngine(umbraInputs)
     for (const row of r.perSkill) {
-      expect(row.castTimeSec ?? 0).toBeGreaterThanOrEqual(0)
-      expect(row.dpsOfCastTime ?? 0).toBeGreaterThanOrEqual(0)
+      expect(row.castCount ?? 0).toBeGreaterThanOrEqual(0)
     }
   })
 

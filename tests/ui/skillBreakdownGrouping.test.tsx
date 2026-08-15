@@ -15,8 +15,6 @@ function row(patch: Partial<SkillTickResult>): SkillTickResult {
     expectedDamage: 100,
     percentOfTotal: 0.1,
     castCount: 1,
-    castTimeSec: 1,
-    dpsOfCastTime: 100,
     ...patch,
   }
 }
@@ -51,7 +49,7 @@ describe("grouping the breakdown by breakdown name", () => {
 
   it("reads a skill's DPS as its damage over the rotation duration, not over its cast time", () => {
     const result = resultWith(
-      [row({ name: "Skill", breakdownName: "In-Game Skill", expectedDamage: 600, castTimeSec: 2 })],
+      [row({ name: "Skill", breakdownName: "In-Game Skill", expectedDamage: 600 })],
       60,
     )
 

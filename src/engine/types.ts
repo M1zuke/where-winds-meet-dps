@@ -334,8 +334,6 @@ export interface SkillTickResult {
   expectedDamage: number
   percentOfTotal: number
   castCount?: number
-  castTimeSec?: number
-  dpsOfCastTime?: number
 }
 
 export interface TimelineEvent {
