@@ -35921,7 +35921,7 @@
           "bellstrikeSplendor-swordspecial-deflect",
           "bellstrikeSplendor-toad-cancel"
         ],
-        "digest": "185fa2573ec4cce8e2f47a783951c83df724a9cd0d97ba368d18ae69322a888a"
+        "digest": "1b95ea6a24a7929b1fcfa551b0fd36529a56e67f23da48923a51f6e94943332b"
       },
       "debuffs": {
         "count": 5,
@@ -35936,8 +35936,8 @@
       },
       "buffs": [
         {
-          "id": "battleAnthemEnduranceBoost",
-          "name": "Battle Anthem",
+          "id": "battleAnthemChargedDamage",
+          "name": "Battle Anthem (Charged Skills)",
           "classBuff": true,
           "requires": {
             "param": "battleAnthem"
@@ -35957,7 +35957,32 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +25%"
+          "summary": "allDamageBoost +10%, +15% from tier 4"
+        },
+        {
+          "id": "battleAnthemEnduranceBoost",
+          "name": "Battle Anthem (Endurance consumed)",
+          "classBuff": true,
+          "requires": {
+            "param": "battleAnthem",
+            "minTier": 6
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "allDamageBoost +10%"
         },
         {
           "id": "mountainsMight",
@@ -36490,7 +36515,7 @@
       ]
     },
     "dynamic": {
-      "digest": "856156375025a0d53e647f44d78e1a8667121c7c52006ad27586ecd421228507"
+      "digest": "71a1c90ca2bfb8755c974c1bf4670a8467b175ec53dad6c7b8dac3a633d322ca"
     }
   }
 }

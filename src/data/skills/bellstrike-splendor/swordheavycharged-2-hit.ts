@@ -19,6 +19,7 @@ export const swordHeavyCharged2Hit = defineSkill({
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,
     BUFF.swordMorphEnduranceBoost,
+    BUFF.battleAnthemChargedDamage,
     BUFF.battleAnthemEnduranceBoost,
   ],
   castFrames: 117,
