@@ -8,7 +8,11 @@ import {
 import { computeReattunement, computeRetunement } from "../../src/engine/dpsWorker"
 import { ATTUNEMENT_OPTIONS, getAttunement } from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
-import { applyPieceContribution } from "../../src/engine/gearStats"
+import {
+  applyPieceContribution,
+  maxRelayedClone,
+  relayedCapValue,
+} from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -197,6 +201,34 @@ describe("computeRetunement (worker compute)", () => {
     expect(row!.legal).toBe(true)
     expect(row!.isCurrent).toBe(true)
     expect(Math.abs(row!.deltaDps)).toBeLessThan(1e-6)
+    expect(Math.abs(row!.deltaDpsRelayed)).toBeLessThan(1e-6)
+  })
+
+  it("scores the 94% column against the piece relayed, candidate capped alongside the rest", () => {
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
+    const inputs = withPieceInInventory(p)
+    const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
+
+    const targetSpec = getWordSpecs(inputs).find((s) => s.word === "maxBellstrike")!
+    const relayed = maxRelayedClone(p, inputs)
+    const relayedSwapped: GearPiece = {
+      ...relayed,
+      words: relayed.words.map((wd, i) =>
+        i === 2
+          ? {
+              word: "maxBellstrike",
+              value: relayedCapValue(targetSpec.amount, targetSpec.unit),
+              retuned: true,
+            }
+          : wd,
+      ) as GearPiece["words"],
+    }
+    const relayedDps = runEngine(applyPieceContribution(inputs, relayed, +1)).dps
+    const swappedDps = runEngine(applyPieceContribution(inputs, relayedSwapped, +1)).dps
+
+    const workerRow = res.rows.find((r) => r.slotIndex === 2 && r.word === "maxBellstrike")!
+    expect(workerRow.legal).toBe(true)
+    expect(Math.abs(workerRow.deltaDpsRelayed - (swappedDps - relayedDps))).toBeLessThan(1e-6)
   })
 
   it("agrees with the virtually-equipped baseline on a hand-rolled swap", () => {

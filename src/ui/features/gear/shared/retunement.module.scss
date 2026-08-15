@@ -64,11 +64,26 @@
   font-size: 0.82em;
 }
 
+.retuneTable {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  column-gap: 20px;
+  font-size: 0.82em;
+}
+
 .reattunementTable {
   display: grid;
-  grid-template-columns: 1.4fr 1.1fr 1fr;
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  column-gap: 20px;
   font-size: 0.82em;
+}
+
+.retuneTable > .th:not(:first-child),
+.retuneTable > * > .cell:not(:first-child),
+.reattunementTable > .th:not(:first-child),
+.reattunementTable > * > .cell:not(:first-child) {
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .th {

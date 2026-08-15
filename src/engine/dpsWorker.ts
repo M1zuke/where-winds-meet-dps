@@ -101,6 +101,9 @@ export interface RetunementRow {
   legal: boolean
   isCurrent: boolean
   deltaDps: number
+  // The same swap with every word on the piece — the candidate included —
+  // relayed to its 94 % cap, measured against that same relayed piece.
+  deltaDpsRelayed: number
   poolSize: number
 }
 
@@ -140,6 +143,15 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
   const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+  const relayedPiece = maxRelayedClone(piece, inputs)
+  const relayedDps = runEngine(applyPieceContribution(slotEmpty, relayedPiece, +1)).dps
+
+  const dpsWithWord = (from: GearPiece, slotIndex: number, word: GearWordId, value: number) => {
+    const words = from.words.map((existing, index) =>
+      index === slotIndex ? { word, value, retuned: true } : existing,
+    ) as GearPiece["words"]
+    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1)).dps
+  }
 
   for (const slotIndex of slots) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -151,6 +163,7 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           legal: false,
           isCurrent: false,
           deltaDps: 0,
+          deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
         })
         continue
@@ -163,21 +176,19 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           legal: true,
           isCurrent,
           deltaDps: 0,
+          deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
         })
         continue
       }
-      const swappedWords = piece.words.map((w, i) =>
-        i === slotIndex ? { word, value: spec.amount, retuned: true } : w,
-      ) as GearPiece["words"]
-      const swapped: GearPiece = { ...piece, words: swappedWords }
-      const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1)).dps
+      const cappedValue = relayedCapValue(spec.amount, spec.unit)
       rows.push({
         slotIndex,
         word,
         legal: true,
         isCurrent,
-        deltaDps: dps - equipDps,
+        deltaDps: dpsWithWord(piece, slotIndex, word, spec.amount) - equipDps,
+        deltaDpsRelayed: dpsWithWord(relayedPiece, slotIndex, word, cappedValue) - relayedDps,
         poolSize: pool.stats.length,
       })
     }
