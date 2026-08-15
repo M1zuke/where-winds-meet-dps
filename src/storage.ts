@@ -324,6 +324,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
         startSec: typeof qbRaw.startSec === "number" ? qbRaw.startSec : def.qiBreak.startSec,
         durationSec:
           typeof qbRaw.durationSec === "number" ? qbRaw.durationSec : def.qiBreak.durationSec,
+        lowQiLeadSec:
+          typeof qbRaw.lowQiLeadSec === "number" ? qbRaw.lowQiLeadSec : def.qiBreak.lowQiLeadSec,
       },
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,

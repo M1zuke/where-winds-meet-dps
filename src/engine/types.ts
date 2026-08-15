@@ -41,6 +41,7 @@ export interface QiBreakSettings {
   enabled: boolean
   startSec: number
   durationSec: number
+  lowQiLeadSec: number
 }
 
 // Deliberately NOT settings here, because each already has exactly one home and
@@ -59,7 +60,7 @@ export interface CombatSettings {
 
 export function defaultCombatSettings(): CombatSettings {
   return {
-    qiBreak: { enabled: true, startSec: 25, durationSec: 10 },
+    qiBreak: { enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 5 },
     dragonsBreath: false,
     healerBuff: false,
     breakExtension: false,
@@ -300,6 +301,7 @@ export interface Result {
   timeline?: TimelineEvent[]
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null
+  lowQiWindow?: { startSec: number; endSec: number } | null
   casts?: RotationCast[]
 }
 

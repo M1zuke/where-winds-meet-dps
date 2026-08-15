@@ -141,6 +141,13 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
                   setCombat("qiBreak", { ...settings.qiBreak, durationSec: value })
                 }
               />
+              <label>{t("Low Qi Lead (s)")}</label>
+              <NumInput
+                value={settings.qiBreak.lowQiLeadSec}
+                onChange={(value) =>
+                  setCombat("qiBreak", { ...settings.qiBreak, lowQiLeadSec: value })
+                }
+              />
             </span>
           )}
         </div>

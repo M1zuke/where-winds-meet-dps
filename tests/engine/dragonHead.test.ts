@@ -342,7 +342,7 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   const qiBreak = (enabled: boolean, startSec: number): Partial<Inputs> => ({
     combatSettings: {
       ...defaultCombatSettings(),
-      qiBreak: { enabled, startSec, durationSec: 10 },
+      qiBreak: { enabled, startSec, durationSec: 10, lowQiLeadSec: 0 },
     },
   })
 

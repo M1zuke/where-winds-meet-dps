@@ -345,6 +345,13 @@ export function simulateTimeline(inputs: Inputs): Result {
       })()
     : null
 
+  const lowQiWindow = buffEngine
+    ? (() => {
+        const w = buffEngine.lowQiWindow()
+        return w ? { startSec: w.start, endSec: w.end } : null
+      })()
+    : null
+
   const { precision, critRate, affinityRate } = effectiveRates(inputs)
   const mechanicSetup: MechanicSetup = {
     inputs,
@@ -924,6 +931,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     timeline,
     buffWindows,
     qiBreakWindow,
+    lowQiWindow,
     casts,
   }
 }
@@ -940,6 +948,7 @@ function emptyResult(warnings: string[]): Result {
     timeline: [],
     buffWindows: [],
     qiBreakWindow: null,
+    lowQiWindow: null,
     casts: [],
   }
 }

@@ -62,7 +62,7 @@ const inputs: Inputs = {
   ],
   classSpecificAttunement: { bleedingDamage: 0.1988 },
   combatSettings: {
-    qiBreak: { enabled: true, startSec: 25, durationSec: 10 },
+    qiBreak: { enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 0 },
     dragonsBreath: false,
     healerBuff: false,
     breakExtension: false,

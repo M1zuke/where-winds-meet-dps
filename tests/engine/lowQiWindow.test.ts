@@ -1,0 +1,74 @@
+import { describe, it, expect } from "vitest"
+import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
+import { paramsFromInputs } from "../../src/engine/buffs/params"
+import { defaultInputs } from "../../src/engine/defaults"
+import { defaultCombatSettings } from "../../src/engine/types"
+import type { Inputs } from "../../src/engine/types"
+
+const inputsWithLead = (lowQiLeadSec: number, startSec = 25): Inputs => ({
+  ...defaultInputs,
+  combatSettings: {
+    ...defaultCombatSettings(),
+    qiBreak: { enabled: true, startSec, durationSec: 10, lowQiLeadSec },
+  },
+})
+
+describe("the low-Qi lead window", () => {
+  it("precedes the break window and ends where it begins", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, belowQiTime: 20, bossBreakDuration: 10 }, [])
+    expect(engine.qiPhase(19.9)).toBe("normal")
+    expect(engine.qiPhase(20)).toBe("below30")
+    expect(engine.qiPhase(24.9)).toBe("below30")
+    expect(engine.qiPhase(25)).toBe("exhausted")
+    expect(engine.qiPhase(34.9)).toBe("exhausted")
+    expect(engine.qiPhase(35)).toBe("normal")
+  })
+
+  it("is absent when no lead is configured", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    expect(engine.qiPhase(24.9)).toBe("normal")
+    expect(engine.lowQiWindow()).toBeNull()
+  })
+
+  it("is derived from the lead setting", () => {
+    expect(paramsFromInputs(inputsWithLead(5)).belowQiTime).toBe(20)
+    expect(paramsFromInputs(inputsWithLead(0)).belowQiTime).toBeUndefined()
+  })
+
+  it("clamps to the start of the fight rather than going negative", () => {
+    expect(paramsFromInputs(inputsWithLead(30, 25)).belowQiTime).toBe(0)
+  })
+
+  it("reports its own span for the rotation timeline", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, belowQiTime: 20, bossBreakDuration: 10 }, [])
+    expect(engine.lowQiWindow()).toEqual({ start: 20, end: 25 })
+  })
+})
+
+describe("Qi Imbalance as a low-Qi source", () => {
+  it("counts as low Qi outside the lead window", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    expect(engine.qiPhase(5)).toBe("normal")
+    engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
+    expect(engine.qiPhase(5)).toBe("below30")
+  })
+
+  it("stops counting once its window expires", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
+    expect(engine.qiPhase(13.9)).toBe("below30")
+    expect(engine.qiPhase(14)).toBe("normal")
+  })
+
+  it("never downgrades a broken target back to low Qi", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    engine.applyBuff(QI_IMBALANCE_STATUS, 24, 15)
+    expect(engine.qiPhase(26)).toBe("exhausted")
+  })
+
+  it("leaves the timeline band showing only the clock-driven span", () => {
+    const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
+    engine.applyBuff(QI_IMBALANCE_STATUS, 4, 10)
+    expect(engine.lowQiWindow()).toBeNull()
+  })
+})

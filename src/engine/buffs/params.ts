@@ -56,6 +56,9 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     params.qiBreakTime = qiBreak.startSec
     params.bossBreakDuration = qiBreak.durationSec + breakExtensionBonus
   }
+  if (qiBreak && qiBreak.lowQiLeadSec > 0) {
+    params.belowQiTime = Math.max(0, qiBreak.startSec - qiBreak.lowQiLeadSec)
+  }
 
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
