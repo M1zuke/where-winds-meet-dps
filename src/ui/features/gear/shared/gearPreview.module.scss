@@ -48,13 +48,14 @@
 
 .affixList {
   display: grid;
-  gap: 2px;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 2px 8px;
 }
 
 .affix {
   display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 8px;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
   font-size: 0.82em;
   padding: 1px 0;
@@ -71,6 +72,7 @@
 .affixValue {
   color: var(--color-accent-bright);
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .affixNote {
@@ -87,9 +89,16 @@
 }
 
 .overflow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 2px 8px;
   margin-top: 6px;
   padding-top: 6px;
   border-top: 1px dashed var(--color-border);
+}
+
+.overflow > :global(.hint) {
+  grid-column: 1 / -1;
 }
 
 @include breakpoints.below(breakpoints.$bp-760) {

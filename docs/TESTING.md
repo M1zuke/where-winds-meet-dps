@@ -75,8 +75,10 @@ assert properties of the code rather than of a build:
   definition site; nothing self-registers
 - content modules importing no barrel-loading registry, and every exported factory
   hoisted rather than `const`-bound — otherwise the failure is a load-order crash
-- every scope and trigger entry namespaced and naming a tag some built-in carries,
-  so a typo fails the suite instead of silently reaching nothing
+- every `receives` / `triggersBuffs` id resolving to a registered buff module, and
+  no module named in a `receives` array also claiming a global reach — so a typo
+  fails the suite instead of silently reaching nothing, and a module can't be both
+  globally- and specifically-scoped at once
 - the `src/data` ↔ `src/definitions` boundary in both directions (CLASSES.md)
 - `docs/**` naming no content and carrying no dates (CLAUDE.md § "Docs are
   implementation rules")

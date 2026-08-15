@@ -2,8 +2,9 @@ import { attunementsFor } from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
-import { emptyGearWord } from "../../../../engine/types"
+import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
 import type {
+  EquippedSlots,
   GearLevel,
   GearPiece,
   GearRarity,
@@ -34,6 +35,10 @@ export type AffixChoices = Readonly<Record<string, string>>
 // the raw ceiling is used as-is, and one that matches it divided by 100 is scaled.
 const VALUE_SCALES: readonly number[] = [1, 0.01]
 const MAX_ROLL_TOLERANCE = 1e-3
+
+// The payload carries float32 values, so a roll sitting exactly on its ceiling
+// arrives a few billionths above or below it.
+const CLAMP_TOLERANCE = 1e-6
 
 function matchesMaxRoll(derivedMax: number, knownMax: number): boolean {
   return Math.abs(derivedMax - knownMax) <= Math.abs(knownMax) * MAX_ROLL_TOLERANCE
@@ -127,6 +132,7 @@ function resolveAffix(
   // breakthrough, so raising a lower-tier piece up to it would invent stats.
   const scaled = affix.rawValue * scaleFor(affix, target)
   const value = Math.min(Math.max(scaled, 0), ceilingOf(target))
+  const shaved = Math.abs(scaled - value) > Math.abs(scaled) * CLAMP_TOLERANCE
 
   return {
     ...affix,
@@ -134,7 +140,7 @@ function resolveAffix(
       kind: "resolved",
       target,
       value,
-      clampedFrom: value === scaled ? null : scaled,
+      clampedFrom: shaved ? scaled : null,
       suggestions,
       choosableTargets: targets,
     },
@@ -186,6 +192,12 @@ export function effectiveIdentity(
 
 export function importablePieces(result: GearImportResult): ImportedPiece[] {
   return result.pieces.filter((piece) => piece.slot.kind === "mapped")
+}
+
+export function equippedFromImported(pieces: readonly GearPiece[]): EquippedSlots {
+  const equipped: EquippedSlots = { ...EMPTY_EQUIPPED }
+  for (const piece of pieces) equipped[piece.slot] = piece.id
+  return equipped
 }
 
 export function toGearPieces(result: GearImportResult, overrides: IdentityOverrides): GearPiece[] {

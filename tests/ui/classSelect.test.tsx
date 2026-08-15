@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { render, screen } from "@testing-library/react"
+import { render, screen, fireEvent } from "@testing-library/react"
 import { ClassSelect } from "../../src/ui/features/overview/class-select/ClassSelect"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { CLASS_DEFS } from "../../src/definitions/classes/registry"
@@ -11,9 +11,11 @@ describe("ClassSelect", () => {
         <ClassSelect value={CLASS_DEFS()[0].id} onChange={() => {}} />
       </I18nProvider>,
     )
-    const offered = screen
-      .getAllByRole("option")
-      .map((option) => (option as HTMLOptionElement).value)
-    expect(offered).toEqual(CLASS_DEFS().map((classDef) => classDef.id))
+    fireEvent.click(screen.getByRole("combobox"))
+    const offered = screen.getAllByRole("option").map((option) => option.textContent ?? "")
+    expect(offered).toHaveLength(CLASS_DEFS().length)
+    CLASS_DEFS().forEach((classDef, index) => {
+      expect(offered[index]).toContain(classDef.displayName)
+    })
   })
 })

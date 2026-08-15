@@ -8,12 +8,13 @@ import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withDerivedStats } from "./derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "./panel"
 import { graduationInputs } from "./graduation"
+import type { Rotation } from "./rotation"
 import type {
   Arsenal,
   BowSet,
   GearPiece,
   GearSlot,
-  GearWordName,
+  GearWordId,
   Inputs,
   ItemRankingRow,
 } from "./types"
@@ -96,10 +97,13 @@ export interface RetunementWorkerRequest {
 
 export interface RetunementRow {
   slotIndex: number
-  word: GearWordName
+  word: GearWordId
   legal: boolean
   isCurrent: boolean
   deltaDps: number
+  // The same swap with every word on the piece — the candidate included —
+  // relayed to its 94 % cap, measured against that same relayed piece.
+  deltaDpsRelayed: number
   poolSize: number
 }
 
@@ -139,6 +143,15 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
   const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+  const relayedPiece = maxRelayedClone(piece, inputs)
+  const relayedDps = runEngine(applyPieceContribution(slotEmpty, relayedPiece, +1)).dps
+
+  const dpsWithWord = (from: GearPiece, slotIndex: number, word: GearWordId, value: number) => {
+    const words = from.words.map((existing, index) =>
+      index === slotIndex ? { word, value, retuned: true } : existing,
+    ) as GearPiece["words"]
+    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1)).dps
+  }
 
   for (const slotIndex of slots) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -150,6 +163,7 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           legal: false,
           isCurrent: false,
           deltaDps: 0,
+          deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
         })
         continue
@@ -162,21 +176,19 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           legal: true,
           isCurrent,
           deltaDps: 0,
+          deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
         })
         continue
       }
-      const swappedWords = piece.words.map((w, i) =>
-        i === slotIndex ? { word, value: spec.amount, retuned: true } : w,
-      ) as GearPiece["words"]
-      const swapped: GearPiece = { ...piece, words: swappedWords }
-      const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1)).dps
+      const cappedValue = relayedCapValue(spec.amount, spec.unit)
       rows.push({
         slotIndex,
         word,
         legal: true,
         isCurrent,
-        deltaDps: dps - equipDps,
+        deltaDps: dpsWithWord(piece, slotIndex, word, spec.amount) - equipDps,
+        deltaDpsRelayed: dpsWithWord(relayedPiece, slotIndex, word, cappedValue) - relayedDps,
         poolSize: pool.stats.length,
       })
     }
@@ -360,6 +372,29 @@ export interface SetTilesWorkerResponse {
   arsenalDpsByChoice: Record<string, number>
 }
 
+export interface RotationDpsWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  options: { optionId: string; rotation: Rotation | null }[]
+}
+
+export interface RotationDpsWorkerResponse {
+  reqId: number
+  dpsByOptionId: Record<string, number>
+}
+
+function computeRotationDps(req: RotationDpsWorkerRequest): RotationDpsWorkerResponse {
+  const dpsByOptionId: Record<string, number> = {}
+  for (const { optionId, rotation } of req.options) {
+    dpsByOptionId[optionId] = runEngine({
+      ...req.inputs,
+      activeCustomRotation: rotation,
+      selectedBuiltinRotationId: null,
+    }).dps
+  }
+  return { reqId: req.reqId, dpsByOptionId }
+}
+
 export interface GraduationWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -431,6 +466,7 @@ export type WorkerRequest =
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
   | ({ kind: "ranking" } & RankingWorkerRequest)
   | ({ kind: "setTiles" } & SetTilesWorkerRequest)
+  | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
 
 export type WorkerResponse =
@@ -440,6 +476,7 @@ export type WorkerResponse =
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
   | ({ kind: "ranking" } & RankingWorkerResponse)
   | ({ kind: "setTiles" } & SetTilesWorkerResponse)
+  | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
 
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
@@ -462,6 +499,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "setTiles") {
     const res = computeSetTiles(req)
     ;(self as unknown as Worker).postMessage({ kind: "setTiles", ...res })
+  } else if (req.kind === "rotationDps") {
+    const res = computeRotationDps(req)
+    ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
   } else {
     const res = computeGraduation(req)
     ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
@@ -475,5 +515,6 @@ export {
   computeWordMax,
   computeRankingRequest,
   computeSetTiles,
+  computeRotationDps,
   computeGraduation,
 }

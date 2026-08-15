@@ -1,13 +1,11 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
-import { CAST } from "../../ids"
 import { stat } from "../../../../engine/effects/effect"
 
 export const ironGuards = defineClassBuff({
   id: BUFF.ironGuards,
   name: "Iron Guards",
-  triggeredBy: [CAST.phalanxSpecial, CAST.phalanxSpecialPrepull],
-  affects: null,
+  affectsAll: true,
   duration: 40,
   cooldown: 20,
   // The pre-conversion `BuffDef` rendered the two penetrations as points, not

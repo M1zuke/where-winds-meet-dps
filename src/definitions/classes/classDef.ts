@@ -1,4 +1,4 @@
-import type { Arsenal, AttributeKey, BowSet, GearPiece, GearWordName } from "../../engine/types"
+import type { Arsenal, AttributeKey, BowSet, GearPiece, GearWordId } from "../../engine/types"
 import type { Skill } from "../../engine/skill"
 import type { Buff } from "../../engine/buff"
 import type { Debuff } from "../../engine/debuff"
@@ -7,10 +7,11 @@ import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
+import type { MartialArtId } from "../../data/martialArts/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 
 export interface RetunementPool {
-  stats: readonly GearWordName[]
+  stats: readonly GearWordId[]
 }
 
 export interface PoisonExtensionRegistration {
@@ -44,14 +45,14 @@ export interface ClassDef {
   classSpecificAttunements: readonly string[]
   // The fallback pair `itemRanking.ts` reads when the active rotation casts
   // neither of the class's weapons yet.
-  weapons: readonly string[]
+  weapons: readonly MartialArtId[]
   critBoostWeaponTypes: readonly string[]
   skills: readonly Skill[]
   debuffs: readonly Debuff[]
   rotations: readonly Rotation[]
   defaultRotationId: string | null
   graduationBuild: GraduationBuild
-  retunementPool: RetunementPool | null
+
   // Only defs the class itself owns — docs/CLASSES.md § "Buff ownership".
   // Membership here is also what puts a row in the Skill Editor's Spec
   // Mechanics column.

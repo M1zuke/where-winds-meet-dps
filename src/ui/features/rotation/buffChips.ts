@@ -1,7 +1,7 @@
 import type { CastBuffTag, RotationCast } from "../../../engine/types"
 
 export const PINNED_BUFF_HUES: Record<string, number> = {
-  "Bleed Tick": 0,
+  Bleeding: 0,
   Smolder: 30,
   "Zenith Bar": 200,
   "Bitter Season Tick": 100,

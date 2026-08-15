@@ -1,6 +1,5 @@
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
-import { CAST } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -13,16 +12,12 @@ import { wolfchasersArt } from "./wolfchasersArt"
 // is still in TDZ. So every export below is a hoisted function, never a
 // `const`, and nothing at this module's top level may read `wolfchasersArt`
 // (only a call made once loading has finished, e.g. inside a getter, may).
-function spearQTriggers(): string[] {
-  return [CAST.spearQ, CAST.spearQ0HitCancel, CAST.spearQ5HitCancel, CAST.spearQPrepull]
-}
-
 export function potentRiverFlowBuffDef() {
   return defineClassBuff({
     id: BUFF.potentRiverFlow,
     name: "Potent River Flow",
     requires: { param: PARAM.wolfchasersArt },
-    triggeredBy: spearQTriggers(),
+    affectsAll: true,
     duration: 15,
     buffAppliesOnCastEnd: true,
     effects: [stat("allDamageBoost", 0.25)],
@@ -34,7 +29,7 @@ export function wineGuBuffDef() {
     id: BUFF.wineGu,
     name: "Wine Gu",
     requires: { param: PARAM.wolfchasersArt, minTier: 6 },
-    triggeredBy: spearQTriggers(),
+    affectsAll: true,
     duration: 15,
     buffAppliesOnCastEnd: true,
     effects: [stat("allDamageBoost", 0.05)],
@@ -50,8 +45,7 @@ let soulShakenMinTier: number | undefined
 
 // Hand-authored port of the reference site's "mechanic list" Soul Shaken def
 // (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
-// Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way —
-// one module, one trigger set.
+// Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way.
 export function soulShakenBuffDef(): BuffModule {
   return defineClassBuff({
     id: BUFF.soulShaken,
@@ -65,16 +59,9 @@ export function soulShakenBuffDef(): BuffModule {
         ))
       },
     },
-    triggeredBy: [
-      ...spearQTriggers(),
-      CAST.spearHeavy,
-      CAST.spearHeavy1Hit,
-      CAST.spearHeavy1HitPrepull,
-    ],
     duration: 15,
     maxStacks: 5,
     stacksPerHit: true,
-    affects: ["type:sustain"],
     summary: "+10.0% all/stack",
     // Omit the effect at 0 stacks rather than a no-op stat, matching the
     // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.

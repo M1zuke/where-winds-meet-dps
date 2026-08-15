@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const anxisoldiermodown = defineSkill({
@@ -18,6 +19,8 @@ export const anxisoldiermodown = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierMoDown,
+  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
   castFrames: 0,
   triggerable: true,
   hits: [
@@ -27,9 +30,7 @@ export const anxisoldiermodown = defineSkill({
       attributeMultiplier: 0.75,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [
-        castSkill({ id: "tg-anxisoldiermodown-cast", target: SKILL.anxisoldiermojump, stacks: 0 }),
-      ],
+      triggers: [castSkill({ target: SKILL.anxisoldiermojump, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

@@ -3,6 +3,8 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
+import { HelpHint } from "../help-hint/HelpHint"
+import { DELTA_HINTS } from "../help-hint/deltaHints"
 import styles from "./GearInventoryPanel.module.scss"
 
 const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
@@ -28,7 +30,6 @@ interface Props {
   onClearSlotFilter(): void
   dpsDeltas: DpsDeltaMap
   dpsDeltasPending: boolean
-  hideComparisons?: boolean
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -62,7 +63,6 @@ export function GearInventoryPanel({
   onClearSlotFilter,
   dpsDeltas,
   dpsDeltasPending,
-  hideComparisons = false,
 }: Props) {
   const { t } = useI18n()
 
@@ -93,7 +93,6 @@ export function GearInventoryPanel({
           (isForeign ? ` ${styles.isForeign}` : "")
         }
         onClick={() => onSelect(row)}
-        title={`${slotLabel} lv${piece.level}`}
       >
         {piece.isNew && !isForeign && <span className={styles.gearInvTileNew}>{t("New")}</span>}
 
@@ -104,14 +103,32 @@ export function GearInventoryPanel({
           </span>
         </div>
 
-        {!hideComparisons && (
-          <div className={styles.gearInvTileStats}>
-            <Stat label={t("Now")} delta={delta?.current} pending={dpsDeltasPending} />
-            <Stat label={t("Max (94%)")} delta={delta?.upgraded} pending={dpsDeltasPending} />
-            <Stat label="FP" delta={delta?.fullPotential} pending={dpsDeltasPending} />
-            <Stat label="FP(E)" delta={delta?.fullPotentialE} pending={dpsDeltasPending} />
-          </div>
-        )}
+        <div className={styles.gearInvTileStats}>
+          <Stat
+            label={t("Now")}
+            hint={t(DELTA_HINTS.current)}
+            delta={delta?.current}
+            pending={dpsDeltasPending}
+          />
+          <Stat
+            label={t("Max (94%)")}
+            hint={t(DELTA_HINTS.upgraded)}
+            delta={delta?.upgraded}
+            pending={dpsDeltasPending}
+          />
+          <Stat
+            label="FP"
+            hint={t(DELTA_HINTS.fullPotential)}
+            delta={delta?.fullPotential}
+            pending={dpsDeltasPending}
+          />
+          <Stat
+            label="FP(E)"
+            hint={t(DELTA_HINTS.fullPotentialE)}
+            delta={delta?.fullPotentialE}
+            pending={dpsDeltasPending}
+          />
+        </div>
 
         {isForeign && <div className={styles.gearInvTileOwner}>{row.ownerProfileName}</div>}
       </button>
@@ -162,10 +179,12 @@ export function GearInventoryPanel({
 
 function Stat({
   label,
+  hint,
   delta,
   pending,
 }: {
   label: string
+  hint: string
   delta: number | undefined
   pending: boolean
 }) {
@@ -173,7 +192,10 @@ function Stat({
   const value = delta === undefined ? (pending ? "…" : "—") : `${fmtDelta(delta)}`
   return (
     <div className={`${styles.gearInvTileStat} ${sign}`}>
-      <span className={styles.gearInvTileStatLabel}>{label}</span>
+      <span className={styles.gearInvTileStatLabel}>
+        {label}
+        <HelpHint text={hint} />
+      </span>
       <span className={styles.gearInvTileStatValue}>{value}</span>
     </div>
   )

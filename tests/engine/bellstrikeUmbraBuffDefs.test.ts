@@ -5,20 +5,19 @@ import { receivesForSkill } from "../../src/engine/buffs/catalog"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { StatKey } from "../../src/engine/statRegistry"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const umbraOwnBuffDefs = () => classDefinition("bellstrikeUmbra")!.classBuffDefs
 
 const TRACKED: StatKey[] = ["affinityDamageBoost", "phys.penetration", "bellstrike.penetration"]
 
-// Built from tags, never from the display name — a def reaches an entity
-// because the entity declares what it is (CLASSES.md § "Id schemes").
-function skill(tags: string[]) {
-  return makeSkill("test", { name: "probe", tags })
+function skill(receives: string[]) {
+  return makeSkill("test", { name: "probe", receives })
 }
 
-function sumsFor(params: Record<string, unknown>, tags: string[]) {
+function sumsFor(params: Record<string, unknown>, receives: string[]) {
   const engine = new BuffEngine(params, [], umbraOwnBuffDefs())
-  const result = engine.calculateDamageEffects(skill(tags), 0)
+  const result = engine.calculateDamageEffects(skill(receives), 0)
   return Object.fromEntries(
     TRACKED.map((statKey) => [
       statKey,
@@ -32,8 +31,10 @@ function sumsFor(params: Record<string, unknown>, tags: string[]) {
 const SWORD_HORIZON = { swordHorizon: true, swordHorizonTier: 6 }
 
 describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
-  it("Bleed Detonation gets both the affinity-damage and bleed-penetration terms", () => {
-    expect(sumsFor(SWORD_HORIZON, ["role:bleedDetonation"])).toEqual({
+  it("Blood Burst gets both the affinity-damage and bleed-penetration terms", () => {
+    expect(
+      sumsFor(SWORD_HORIZON, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]),
+    ).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0.15,
       "bellstrike.penetration": 0.15,
@@ -41,7 +42,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("Combustion gets only the affinity-damage term, never the bleed penetration", () => {
-    expect(sumsFor(SWORD_HORIZON, ["role:combustion"])).toEqual({
+    expect(sumsFor(SWORD_HORIZON, ["bellstrikeUmbraBleedingDamage"])).toEqual({
       affinityDamageBoost: 0.18,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
@@ -57,7 +58,7 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
   })
 
   it("with no swordHorizon param, neither Umbra buff is seeded (alwaysActive gated off)", () => {
-    expect(sumsFor({}, ["role:bleedDetonation"])).toEqual({
+    expect(sumsFor({}, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"])).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,
@@ -66,13 +67,11 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
 })
 
 describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility", () => {
-  it("surfaces both buff ids for the Bleed Detonation skill and neither for Sword Martial Q", () => {
+  it("surfaces both buff ids for the Blood Burst skill and neither for Sword Martial Q", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Bleed Detonation",
+      (s) => s.id === SKILL.bleedDetonation,
     )
-    const swordQ = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Sword Martial Q",
-    )
+    const swordQ = builtinSkillsForClass("bellstrikeUmbra").find((s) => s.id === SKILL.swordq)
     expect(detonation).toBeTruthy()
     expect(swordQ).toBeTruthy()
 
@@ -87,7 +86,7 @@ describe("Bellstrike Umbra bleed buff-defs — Skill Editor RECEIVES visibility"
 
   it("flags the Umbra bleed buffs as spec mechanics, split out from ordinary buff rows", () => {
     const detonation = builtinSkillsForClass("bellstrikeUmbra").find(
-      (s) => s.name === "Bleed Detonation",
+      (s) => s.id === SKILL.bleedDetonation,
     )
     const detRows = receivesForSkill(detonation!, "bellstrikeUmbra")
     const specIds = detRows.filter((r) => r.isSpecMechanic).map((r) => r.id)

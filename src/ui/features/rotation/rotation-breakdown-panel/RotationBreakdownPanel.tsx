@@ -1,48 +1,7 @@
 import { useMemo } from "react"
-import type { Result, SkillTickResult } from "../../../../engine/types"
+import type { Result } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
-
-function groupKey(name: string): string {
-  return name.replace(/\s*\(\d+ stack\)$/, "")
-}
-
-interface GroupedRow {
-  name: string
-  count: number
-  castTimeSec: number
-  expectedDamage: number
-  percentOfTotal: number
-  dpsOfCastTime: number
-}
-
-function groupAndSort(rows: SkillTickResult[]): GroupedRow[] {
-  const map = new Map<string, GroupedRow>()
-  for (const row of rows) {
-    const key = groupKey(row.name)
-    const castTimeSec = row.castTimeSec ?? 0
-    const existing = map.get(key)
-    if (existing) {
-      existing.count += row.count
-      existing.castTimeSec += castTimeSec
-      existing.expectedDamage += row.expectedDamage
-      existing.percentOfTotal += row.percentOfTotal
-    } else {
-      map.set(key, {
-        name: key,
-        count: row.count,
-        castTimeSec,
-        expectedDamage: row.expectedDamage,
-        percentOfTotal: row.percentOfTotal,
-        dpsOfCastTime: 0,
-      })
-    }
-  }
-  const out = Array.from(map.values())
-  for (const row of out) {
-    row.dpsOfCastTime = row.castTimeSec > 0 ? row.expectedDamage / row.castTimeSec : 0
-  }
-  return out.sort((rowA, rowB) => rowB.expectedDamage - rowA.expectedDamage)
-}
+import { groupByBreakdownName } from "../../../utils/skillBreakdown"
 
 const fmt = (value: number, digits = 2) =>
   Number.isFinite(value)
@@ -70,13 +29,15 @@ const colorFor = (index: number) => PALETTE[index % PALETTE.length]
 
 export function RotationBreakdownPanel({ result }: { result: Result }) {
   const { t } = useI18n()
-  const rows = useMemo(() => groupAndSort(result.perSkill), [result.perSkill])
+  const rows = useMemo(() => groupByBreakdownName(result.perSkill), [result.perSkill])
 
   if (rows.length === 0) {
     return <div className="empty-tab">{t("(none)")}</div>
   }
 
   const maxDmg = rows[0]?.expectedDamage || 1
+  const dpsOverRotation = (damage: number) =>
+    result.rotationDuration > 0 ? damage / result.rotationDuration : Number.NaN
 
   return (
     <table className="ranking-table skill-table">
@@ -85,9 +46,8 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
           <th>{t("Skill")}</th>
           <th className="bar-col" />
           <th>{t("Hit Count")}</th>
-          <th>{t("Duration")}</th>
           <th>{t("Share")}</th>
-          <th>{t("DPS (cast time)")}</th>
+          <th>{t("DPS")}</th>
           <th>{t("Total Damage")}</th>
         </tr>
       </thead>
@@ -106,9 +66,8 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
                 </div>
               </td>
               <td>{row.count}</td>
-              <td>{row.castTimeSec.toFixed(2)} s</td>
               <td>{(row.percentOfTotal * 100).toFixed(1)} %</td>
-              <td>{fmt(row.dpsOfCastTime, 1)}</td>
+              <td>{fmt(dpsOverRotation(row.expectedDamage), 1)}</td>
               <td>{fmt(row.expectedDamage, 0)}</td>
             </tr>
           )

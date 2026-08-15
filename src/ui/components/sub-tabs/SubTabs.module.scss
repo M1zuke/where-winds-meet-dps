@@ -1,15 +1,15 @@
 .subtabs {
   display: flex;
   gap: 2px;
-  border-bottom: 1px solid #2a2a2a;
-  margin: 0 0 12px 0;
+  border-bottom: 1px solid var(--color-border);
+  margin: 0;
 }
 
 .subtab {
-  background: transparent;
-  border: 1px solid transparent;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
   border-bottom: none;
-  color: var(--color-text-muted);
+  color: var(--color-text-dim);
   padding: 6px 14px;
   font-size: 0.85em;
   cursor: pointer;
@@ -24,13 +24,16 @@
   top: 1px;
 }
 
-.subtab:hover {
-  color: #d8d8d8;
+.subtab:hover:not(.active) {
+  color: var(--color-text);
+  background: var(--color-surface-inset-hover);
+  border-color: var(--color-border-hover);
 }
 
 .subtab.active {
   color: var(--color-accent);
-  background: var(--color-surface);
-  border-color: #2a2a2a;
+  background: var(--color-surface-alt);
+  border-color: var(--color-border);
   font-weight: 600;
+  z-index: 1;
 }

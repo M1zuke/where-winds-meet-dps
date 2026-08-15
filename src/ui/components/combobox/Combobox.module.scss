@@ -8,10 +8,21 @@
 
 .comboboxInput {
   @include mixins.field-input;
+  padding: 4px 8px;
+  border-color: var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.comboboxInput:hover:not(:disabled) {
+  border-color: var(--color-border-hover);
+  border-left-color: var(--color-accent-bright);
 }
 
 .comboboxInput:focus {
   @include mixins.field-focus;
+  border-color: var(--color-border-hover);
+  border-left-color: var(--color-accent-bright);
 }
 
 .comboboxInput:disabled {
@@ -60,7 +71,7 @@
 .comboboxEmpty {
   padding: 4px 8px;
   font-size: 0.85em;
-  color: var(--color-border-hover);
+  color: var(--color-text-faint);
   text-align: center;
   list-style: none;
 }

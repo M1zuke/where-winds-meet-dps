@@ -3,12 +3,15 @@
 // `MindMethodSlot.id`; renaming a value here changes what a saved profile
 // resolves to (see `docs/MIGRATIONS.md`).
 export const INNER_WAY_ID = {
+  battleAnthem: "battleAnthem",
   bitterSeason: "bitterSeason",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
   moraleChant: "moraleChant",
+  mountainsMight: "mountainsMight",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
+  swordMorph: "swordMorph",
   throatPierce: "throatPierce",
   wolfchasersArt: "wolfchasersArt",
 } as const
@@ -20,7 +23,11 @@ export type InnerWayId = (typeof INNER_WAY_ID)[keyof typeof INNER_WAY_ID]
 // node carries no payload of its own; the magnitude it unlocks stays with
 // whichever consumer reads the node (CALCULATION.md § "Inner-way layers").
 export const INNER_WAY_NODE = {
+  battleAnthemEnduranceBonus: "battleAnthemEnduranceBonus",
   crosswindChargeRetention: "crosswindChargeRetention",
+  energySurge: "energySurge",
+  exhaustedSwordEnergyOutcome: "exhaustedSwordEnergyOutcome",
+  qiImbalanceOnMartialArt: "qiImbalanceOnMartialArt",
   dotDetonationRetention: "dotDetonationRetention",
   soulShaken: "soulShaken",
   concentrationDotMultiplier: "concentrationDotMultiplier",

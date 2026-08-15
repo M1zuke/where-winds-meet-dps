@@ -7,10 +7,11 @@
 }
 
 .gearTile {
-  background: var(--color-surface-alt);
-  border: 2px solid #2e2e2e;
-  border-radius: 6px;
-  padding: 8px 6px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border-strong);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: 4px;
+  padding: 8px 10px;
   text-align: left;
   color: var(--color-text);
   cursor: pointer;
@@ -24,24 +25,30 @@
 }
 
 .gearTile:hover {
-  background: #262626;
+  background: var(--color-surface-inset-hover);
+  border-color: var(--color-border-hover);
 }
 
 .gearTile.isSelected {
-  background: #2a2419;
-  box-shadow: 0 0 0 2px var(--color-accent) inset;
+  background: var(--color-surface-selected);
+  border-color: var(--color-accent);
 }
 
 .gearTile.empty {
   border-style: dashed;
-  color: var(--color-border-hover);
+  border-left-style: solid;
+  color: var(--color-text-faint);
 }
 
-.gearTile.rarityLegendary {
-  border-color: #8e7330;
+.gearTile.rarityLegendary,
+.gearTile.rarityLegendary:hover,
+.gearTile.rarityLegendary.isSelected {
+  border-left-color: var(--color-rarity-legendary);
 }
-.gearTile.rarityEpic {
-  border-color: #6a4a98;
+.gearTile.rarityEpic,
+.gearTile.rarityEpic:hover,
+.gearTile.rarityEpic.isSelected {
+  border-left-color: var(--color-rarity-epic);
 }
 
 .gearTileSlot {
@@ -51,27 +58,20 @@
   color: var(--color-text-muted);
 }
 
-.gearTile.rarityLegendary .gearTileSlot {
-  color: #b89865;
-}
-.gearTile.rarityEpic .gearTileSlot {
-  color: #a890c4;
-}
-
 .gearTilePiece {
   font-size: 0.85em;
-  color: #b89865;
+  color: var(--color-rarity-legendary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .gearTile.rarityEpic .gearTilePiece {
-  color: #a890c4;
+  color: var(--color-rarity-epic);
 }
 
 .gearTile.empty .gearTilePiece {
-  color: #555;
+  color: var(--color-text-faint);
 }
 
 .gearTileStats {
@@ -81,7 +81,7 @@
   column-gap: 6px;
   margin-top: 4px;
   padding-top: 4px;
-  border-top: 1px solid #2e2e2e;
+  border-top: 1px solid var(--color-border);
   font-variant-numeric: tabular-nums;
 }
 
@@ -114,7 +114,7 @@
   color: var(--color-text-muted);
 }
 .gearTileStat:global(.is-pending) .gearTileStatValue {
-  color: #555;
+  color: var(--color-text-faint);
 }
 
 @include breakpoints.below(breakpoints.$bp-1100) {

@@ -2,6 +2,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs, Result } from "../../../../engine/types"
 import { syncClassPermanent } from "../../../utils/classSetup"
+import { slotInnerWayId } from "../../../../definitions/innerWays/registry"
 import { useItemRanking } from "../../../hooks/useItemRanking"
 import { useSetTileDps } from "../../../hooks/useSetTileDps"
 import { ClassSelect } from "../class-select/ClassSelect"
@@ -11,6 +12,7 @@ import { EncounterSettingsPanel } from "../encounter-settings-panel/EncounterSet
 import { BowSetPanel } from "../bow-set-panel/BowSetPanel"
 import { ArsenalPanel } from "../arsenal-panel/ArsenalPanel"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
+import { Switch } from "../../../components/switch/Switch"
 import { ItemRankingTable } from "../item-ranking-table/ItemRankingTable"
 import styles from "./OverviewTab.module.scss"
 
@@ -28,6 +30,7 @@ export function OverviewTab({
   const { t } = useI18n()
   const { rows: rankingRows, isPending: rankingPending } = useItemRanking(engineInputs, result.dps)
   const { data: tileDps, isPending: tilesPending } = useSetTileDps(inputs)
+  const slottedInnerWays = inputs.mindMethods.filter((slot) => slotInnerWayId(slot)).length
   return (
     <>
       <div className={styles.overviewGrid}>
@@ -42,17 +45,22 @@ export function OverviewTab({
               value={inputs.breakthrough}
               onChange={(breakthrough) => onChange({ ...inputs, breakthrough })}
             />
-            <div className="row">
-              <label>{t("Enable Dummy")}</label>
-              <input
-                type="checkbox"
+            <div className={styles.toggleRow}>
+              <Switch
                 checked={inputs.dummyMode}
-                onChange={(e) => onChange({ ...inputs, dummyMode: e.target.checked })}
+                label={t("Enable Dummy")}
+                onChange={(dummyMode) => onChange({ ...inputs, dummyMode })}
               />
             </div>
           </div>
           <div className="panel">
-            <h2>{t("Inner Ways")}</h2>
+            <div className="panel-head">
+              <h2>{t("Inner Ways")}</h2>
+              <span className="panel-head-meta">
+                <span className="panel-head-meta-value">{slottedInnerWays}</span> /{" "}
+                {inputs.mindMethods.length}
+              </span>
+            </div>
             <MindMethodsPanel inputs={inputs} onChange={onChange} />
           </div>
           <div className="panel">

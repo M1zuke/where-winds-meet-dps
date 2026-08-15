@@ -11,7 +11,7 @@ export const revelryScript = defineBuff({
   id: BUFF.revelryScript,
   name: "Revelry Script",
   requires: { param: PARAM.revelryScript },
-  triggeredBy: [],
+  affectsAll: true,
   duration: 9999,
   effects: [stat("allDamageBoost", 0.3)],
 })

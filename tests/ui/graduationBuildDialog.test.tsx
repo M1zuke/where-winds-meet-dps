@@ -2,9 +2,12 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { graduationInputs } from "../../src/engine/graduation"
+import { statLineLabel } from "../../src/data/stats/statLines"
+import { getAttunement } from "../../src/engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
+import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
 import { GraduationBuildDialog } from "../../src/ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
@@ -27,9 +30,11 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByText("All enabled")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
     expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
-      "Sword Martial Boost",
+      statLineLabel("swordBoost"),
     )
-    expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Bleed Boost")
+    expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
+      getAttunement("bleedingDamage")!.label,
+    )
   })
 
   it("relays every word, swaps to the relayed bow set and shows the relayed DPS", () => {
@@ -71,10 +76,10 @@ describe("GraduationBuildDialog", () => {
     )
 
     fireEvent.click(screen.getByRole("tab", { name: "Panel Stats" }))
-    const maxRollPhys = screen.getByText("Max Phys").parentElement?.textContent
+    const maxRollPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
-    const relayedPhys = screen.getByText("Max Phys").parentElement?.textContent
+    const relayedPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
     const relayed = applyBowSet(
       applyArmorSet(withDerivedStats(graduationInputs(defaultInputs, "relayed")!)),
@@ -101,13 +106,18 @@ describe("GraduationBuildDialog", () => {
 
     const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(defaultInputs)!)))
     const effective = effectiveRates(benchmark)
-    const finalEffectiveCritRate =
-      effective.precision * (effective.critRate + benchmark.directCritRate)
+    const finalRates = finalCritAffinityRates({
+      precision: effective.precision,
+      critRate: effective.critRate,
+      directCritRate: benchmark.directCritRate,
+      affinityRate: effective.affinityRate,
+      directAffinityRate: benchmark.directAffinityRate,
+    })
 
     expect(screen.getByText("Final Crit").parentElement).toHaveTextContent(
-      fmt(finalEffectiveCritRate, true),
+      fmt(finalRates.critRate, true),
     )
-    expect(screen.getByText("Max Phys").parentElement).toHaveTextContent(
+    expect(screen.getByText(statLineLabel("maxPhys")).parentElement).toHaveTextContent(
       fmt(benchmark.phys.max, false),
     )
   })

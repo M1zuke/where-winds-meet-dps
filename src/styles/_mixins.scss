@@ -1,15 +1,39 @@
 @mixin field-input {
-  background: var(--color-bg);
+  background: var(--color-surface-inset);
   border: 1px solid var(--color-border-strong);
   border-radius: 4px;
   color: var(--color-text);
-  padding: 3px 6px;
+  padding: 4px 8px;
   font-size: 0.85em;
   width: 100%;
   box-sizing: border-box;
+  transition: border-color 0.12s;
+}
+
+@mixin field-hover {
+  border-color: var(--color-border-hover);
 }
 
 @mixin field-focus {
   outline: none;
   border-color: var(--color-accent);
+}
+
+@mixin field-states {
+  &::placeholder {
+    color: var(--color-text-faint);
+  }
+
+  &:hover:not(:disabled) {
+    @include field-hover;
+  }
+
+  &:focus {
+    @include field-focus;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
 }

@@ -2,6 +2,8 @@ import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
+import { HelpHint } from "../help-hint/HelpHint"
+import { DELTA_HINTS } from "../help-hint/deltaHints"
 import styles from "./GearSlotTiles.module.scss"
 
 const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
@@ -23,7 +25,6 @@ interface Props {
   onSelectSlot(slot: GearSlot, pieceId: string | null): void
   dpsDeltas: DpsDeltaMap
   dpsDeltasPending: boolean
-  hideComparisons?: boolean
 }
 
 const RARITY: Record<GearPiece["rarity"], string> = {
@@ -53,7 +54,6 @@ export function GearSlotTiles({
   onSelectSlot,
   dpsDeltas,
   dpsDeltasPending,
-  hideComparisons = false,
 }: Props) {
   const { t } = useI18n()
   return (
@@ -84,14 +84,20 @@ export function GearSlotTiles({
                 ? `lv${piece.level} · ${t(piece.rarity === "legendary" ? "Legendary" : "Epic")}`
                 : t("Empty")}
             </div>
-            {piece && !hideComparisons && (
+            {piece && (
               <div className={styles.gearTileStats}>
                 <SlotStat
                   label={t("Max (94%)")}
+                  hint={t(DELTA_HINTS.upgraded)}
                   delta={delta?.upgraded}
                   pending={dpsDeltasPending}
                 />
-                <SlotStat label="FP" delta={delta?.fullPotential} pending={dpsDeltasPending} />
+                <SlotStat
+                  label="FP"
+                  hint={t(DELTA_HINTS.fullPotential)}
+                  delta={delta?.fullPotential}
+                  pending={dpsDeltasPending}
+                />
               </div>
             )}
           </button>
@@ -103,10 +109,12 @@ export function GearSlotTiles({
 
 function SlotStat({
   label,
+  hint,
   delta,
   pending,
 }: {
   label: string
+  hint: string
   delta: number | undefined
   pending: boolean
 }) {
@@ -114,7 +122,10 @@ function SlotStat({
   const value = delta === undefined ? (pending ? "…" : "—") : fmtDelta(delta)
   return (
     <div className={`${styles.gearTileStat} ${sign}`}>
-      <span className={styles.gearTileStatLabel}>{label}</span>
+      <span className={styles.gearTileStatLabel}>
+        {label}
+        <HelpHint text={hint} />
+      </span>
       <span className={styles.gearTileStatValue}>{value}</span>
     </div>
   )

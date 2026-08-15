@@ -20,10 +20,14 @@ Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — 
 holds a measured build exactly. Rely on nothing either reports beyond what its
 anchor pins.
 
-The remaining classes — Bellstrike Rainbow, Silkbind Jade, and the other
-Stonesplit and Bamboocut specs — are **not registered**. Their imported data
-lives under `reference/classes/`, unimported by the app and the tests. Treat
-everything there as provisional.
+**Bellstrike Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) is
+registered and not validated** — selectable, and carrying nothing an anchor
+defends.
+
+The remaining classes — Silkbind Jade and the other Stonesplit and Bamboocut
+specs — are **not registered**. Their imported data lives under
+`reference/classes/`, unimported by the app and the tests. Treat everything
+there as provisional.
 
 Two of them **share one spec** as a stand-in. That is not a claim they play
 alike, and it is why a trigger authored for one can silently target a skill
@@ -46,8 +50,8 @@ Test-suite consequences are in TESTING.md § "Class scoping".
   barrel.
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
-  ways, classes. There is no JSON authoring format: the only JSON under
-  `src/data/` is lookup tables with no contract to check.
+  ways, martial arts, classes. There is no JSON authoring format: the only JSON
+  under `src/data/` is lookup tables with no contract to check.
 - Nothing under `src/data/` may declare a `define*` contract or call a
   `register*` entry point.
 - Nothing under `src/definitions/` may reach past a `src/data/` folder barrel, an
@@ -61,7 +65,7 @@ is camelCase.
 ## One definition per class
 
 One accessor answers what a class is made of — spec, primary attribute, inner
-ways, class-specific attunement tags, skills, debuffs, buffs, rotations and
+ways, class-specific attunement ids, skills, debuffs, buffs, rotations and
 default, graduation build, attunements, retunement pool. **Reach for it rather
 than the individual registries.**
 
@@ -116,9 +120,9 @@ module itself is inert everywhere else.
 ## Universal skills — one source, instantiated per class
 
 A skill every class can equip lives **once**, with `universal` as its id segment,
-and is instantiated per class: the `universal` segment in the skill id and in
-every trigger and condition id becomes the class id, and the attribute path
-becomes the instantiating class's primary attribute.
+and is instantiated per class: the `universal` segment in the skill id, and in
+every id a trigger's target or a condition's buff names, becomes the class id,
+and the attribute path becomes the instantiating class's primary attribute.
 
 - **Never duplicate a universal skill into a class folder.**
 - The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved

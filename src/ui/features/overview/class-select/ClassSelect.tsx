@@ -1,5 +1,6 @@
 import { CLASS_IDS, classDefinition } from "../../../../definitions/classes/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { Select } from "../../../components/select/Select"
 
 interface Props {
   value: string
@@ -12,13 +13,16 @@ export function ClassSelect({ value, onChange }: Props) {
   return (
     <div className="row">
       <label>{t("Class")}</label>
-      <select value={value} onChange={(e) => onChange(e.target.value)}>
-        {visible.map((def) => (
-          <option key={def.id} value={def.id}>
-            {t(def.displayName)}
-          </option>
-        ))}
-      </select>
+      <Select
+        ariaLabel={t("Class")}
+        value={value}
+        onChange={onChange}
+        options={visible.map((def) => ({
+          value: def.id,
+          label: t(def.displayName),
+          meta: def.martialArts.map((art) => t(art.weaponType)).join(" · "),
+        }))}
+      />
     </div>
   )
 }

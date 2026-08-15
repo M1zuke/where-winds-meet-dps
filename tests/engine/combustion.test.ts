@@ -7,35 +7,32 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import {
-  builtinSkillsForClass,
-  builtinDebuffsForClass,
-  builtinRotationsForClass,
-} from "../../src/engine/builtinLibrary"
+import { builtinDebuffsForClass, builtinRotationsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
+import { builtinSkill, dotRow } from "../builtins"
+import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
+import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
 
-function rotationOf(classId: string, skillNames: string[]) {
-  const skills = builtinSkillsForClass(classId)
-  const steps = skillNames.map((name) => {
-    const skill = skills.find((s) => s.name === name)
-    if (!skill) throw new Error(`no built-in skill "${name}" for ${classId}`)
+function rotationOf(classId: string, skillIds: string[]) {
+  const steps = skillIds.map((skillId) => {
+    const skill = builtinSkill(classId, skillId)
     return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
   })
-  return makeRotation(classId, { name: `test-${skillNames.join("+")}`, steps })
+  return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }
 
 function combustionDamage(r: ReturnType<typeof simulateTimeline>): number {
   return r.perSkill
-    .filter((p) => p.name.includes("Combustion") && p.name.includes("(DoT)"))
+    .filter((p) => p.name === dotRow("bellstrikeUmbra", DEBUFF.combustion))
     .reduce((a, p) => a + p.expectedDamage, 0)
 }
 
 describe("Dragon's Breath → Combustion DoT", () => {
   it("a rotation casting Dragon's Breath deals real Combustion tick damage", () => {
     const rotation = rotationOf("bellstrikeUmbra", [
-      "Dragon's Breath 1 Hit",
-      "Dragon's Breath 2 Hits",
+      UNIVERSAL_SKILL.fireBreath1Hit,
+      UNIVERSAL_SKILL.fireBreath2Hit,
     ])
     const inputs: Inputs = {
       ...defaultInputs,
@@ -43,17 +40,17 @@ describe("Dragon's Breath → Combustion DoT", () => {
       activeCustomRotation: rotation,
     }
     const result = simulateTimeline(inputs)
-    const dotRow = result.perSkill.find(
-      (p) => p.name.includes("Combustion") && p.name.includes("(DoT)"),
+    const combustionRow = result.perSkill.find(
+      (p) => p.name === dotRow("bellstrikeUmbra", DEBUFF.combustion),
     )
-    expect(dotRow).toBeTruthy()
-    expect(dotRow!.expectedDamage).toBeGreaterThan(0)
+    expect(combustionRow).toBeTruthy()
+    expect(combustionRow!.expectedDamage).toBeGreaterThan(0)
     expect(result.warnings.some((w) => /error|exception/i.test(w))).toBe(false)
   })
 
   it("builtinDebuffsForClass exposes Combustion with the dragonBreath window shape (8s/16 ticks)", () => {
     const debuffs = builtinDebuffsForClass("bellstrikeUmbra")
-    const combustion = debuffs.find((d) => d.name === "Combustion")
+    const combustion = debuffs.find((d) => d.id === DEBUFF.combustion)
     expect(combustion).toBeTruthy()
     expect(combustion!.durationFrames).toBe(481)
     expect(combustion!.dot!.tickIntervalFrames).toBe(30)
@@ -65,12 +62,11 @@ describe("Dragon's Breath → Combustion DoT", () => {
   })
 
   it("Dragon's Breath 1 Hit carries a hit-0 apply-or-extend trigger; a Poet skill carries an extend-only trigger", () => {
-    const skills = builtinSkillsForClass("bellstrikeUmbra")
     const combustionId = builtinDebuffsForClass("bellstrikeUmbra").find(
-      (d) => d.name === "Combustion",
+      (d) => d.id === DEBUFF.combustion,
     )!.id
 
-    const fireBreath = skills.find((s) => s.name === "Dragon's Breath 1 Hit")!
+    const fireBreath = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fireBreath1Hit)
     expect(fireBreath.id).toBe("bellstrikeUmbra-fire-breath-1-hit")
     const fbTrigger = fireBreath.hits[0].triggers.find((t) => t.targetId === combustionId)
     expect(fbTrigger).toBeTruthy()
@@ -78,7 +74,7 @@ describe("Dragon's Breath → Combustion DoT", () => {
     expect(fbTrigger!.extendFrames).toBeGreaterThan(0)
     expect(fbTrigger!.extendOnly).toBeFalsy()
 
-    const poet = skills.find((s) => s.name === "Poet1")!
+    const poet = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.poet1)
     const poetTrigger = poet.hits[0].triggers.find((t) => t.targetId === combustionId)
     expect(poetTrigger).toBeTruthy()
     expect(poetTrigger!.extendOnly).toBe(true)
@@ -86,13 +82,13 @@ describe("Dragon's Breath → Combustion DoT", () => {
   })
 
   it("Poet casts extend the Combustion window: Dragon's Breath + Poet1-4 outdamages Dragon's Breath alone", () => {
-    const alone = rotationOf("bellstrikeUmbra", ["Dragon's Breath 1 Hit"])
+    const alone = rotationOf("bellstrikeUmbra", [UNIVERSAL_SKILL.fireBreath1Hit])
     const extended = rotationOf("bellstrikeUmbra", [
-      "Dragon's Breath 1 Hit",
-      "Poet1",
-      "Poet2",
-      "Poet3",
-      "Poet4",
+      UNIVERSAL_SKILL.fireBreath1Hit,
+      UNIVERSAL_SKILL.poet1,
+      UNIVERSAL_SKILL.poet2,
+      UNIVERSAL_SKILL.poet3,
+      UNIVERSAL_SKILL.poet4,
     ])
     const before = simulateTimeline({
       ...defaultInputs,

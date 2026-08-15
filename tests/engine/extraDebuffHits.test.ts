@@ -5,19 +5,14 @@
 // `extendFrames` / `extendOnly` at runtime.
 import { describe, expect, it } from "vitest"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { builtinSkill } from "../builtins"
+import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
 
 const FPS = 60
 
-function skillNamed(classId: string, name: string) {
-  const skill = builtinSkillsForClass(classId).find((s) => s.name === name)
-  expect(skill, `${classId} has no built-in skill named ${name}`).toBeTruthy()
-  return skill!
-}
-
 describe("extraDebuffHits wiring", () => {
   it("emits a zero-damage applyDebuff hit that re-applies the DoT (generic path)", () => {
-    const flute = skillNamed("bellstrikeUmbra", "Flute of the Tides Cancel")
+    const flute = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fluteOfTheTidesCancel)
     const [hit] = flute.hits
     expect(hit.physMultiplier).toBe(0)
     expect(hit.attributeMultiplier).toBe(0)
@@ -33,7 +28,7 @@ describe("extraDebuffHits wiring", () => {
   })
 
   it("wires Dragon's Breath 2 Hits as one apply plus pure Combustion-extend triggers (dragonBreath path)", () => {
-    const breath = skillNamed("bellstrikeUmbra", "Dragon's Breath 2 Hits")
+    const breath = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fireBreath2Hit)
     expect(breath.hits).toHaveLength(3)
     const [first, ...rest] = breath.hits
 

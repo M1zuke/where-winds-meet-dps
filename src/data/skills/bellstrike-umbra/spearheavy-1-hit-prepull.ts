@@ -1,16 +1,19 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const spearheavy1HitPrepull = defineSkill({
   id: SKILL.spearheavy1HitPrepull,
   classId: "bellstrikeUmbra",
+  breakdownName: "Drifting Thrust",
   name: "SpearHeavy 1-Hit Prepull",
   tags: [WEAPON.spear, ATTACK.heavy, ATTUNE.spearCharged],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy1HitPrepull,
+  triggersBuffs: [BUFF.soulShaken],
   castFrames: 0,
   triggerable: true,
   hits: [

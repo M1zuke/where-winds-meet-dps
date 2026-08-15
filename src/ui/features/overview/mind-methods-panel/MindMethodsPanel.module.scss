@@ -1,15 +1,7 @@
-@use "mixins";
-
 .mindSlot {
   display: grid;
-  grid-template-columns: 150px 1fr 80px;
+  grid-template-columns: 1fr 84px;
   gap: 6px;
-  padding: 2px 0;
   align-items: center;
-  font-size: 0.85em;
-}
-
-.mindSlot select {
-  @include mixins.field-input;
-  min-width: 0;
+  padding: 3px 0;
 }

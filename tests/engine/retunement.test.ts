@@ -8,7 +8,11 @@ import {
 import { computeReattunement, computeRetunement } from "../../src/engine/dpsWorker"
 import { ATTUNEMENT_OPTIONS, getAttunement } from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
-import { applyPieceContribution } from "../../src/engine/gearStats"
+import {
+  applyPieceContribution,
+  maxRelayedClone,
+  relayedCapValue,
+} from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -55,75 +59,75 @@ describe("filterPoolForSlot", () => {
   })
 
   it("allows the first-slot stat to appear once more in slots 2-5", () => {
-    const p = piece([w("Crit", 0.07), EMPTY, EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), EMPTY, EMPTY, EMPTY, EMPTY])
     for (const slot of ALL_REROLLABLE_SLOTS) {
       const f = filterPoolForSlot(p, slot, BELLSTRIKE_POOL)
-      expect(f.candidates).toContain("Crit")
+      expect(f.candidates).toContain("crit")
     }
   })
 
   it("forbids a third copy when the first-slot stat already appears twice", () => {
-    const p = piece([w("Crit", 0.07), w("Crit", 0.05), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("crit", 0.05), EMPTY, EMPTY, EMPTY])
     const f3 = filterPoolForSlot(p, 2, BELLSTRIKE_POOL)
     const f4 = filterPoolForSlot(p, 3, BELLSTRIKE_POOL)
     const f5 = filterPoolForSlot(p, 4, BELLSTRIKE_POOL)
-    expect(f3.candidates).not.toContain("Crit")
-    expect(f4.candidates).not.toContain("Crit")
-    expect(f5.candidates).not.toContain("Crit")
+    expect(f3.candidates).not.toContain("crit")
+    expect(f4.candidates).not.toContain("crit")
+    expect(f5.candidates).not.toContain("crit")
     const f2 = filterPoolForSlot(p, 1, BELLSTRIKE_POOL)
-    expect(f2.candidates).toContain("Crit")
+    expect(f2.candidates).toContain("crit")
   })
 
   it("blocks duplicates of any non-first-slot stat", () => {
-    const p = piece([w("Crit", 0.07), w("Momentum", 35), EMPTY, EMPTY, EMPTY])
-    expect(filterPoolForSlot(p, 2, BELLSTRIKE_POOL).candidates).not.toContain("Momentum")
-    expect(filterPoolForSlot(p, 3, BELLSTRIKE_POOL).candidates).not.toContain("Momentum")
-    expect(filterPoolForSlot(p, 4, BELLSTRIKE_POOL).candidates).not.toContain("Momentum")
-    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).toContain("Momentum")
+    const p = piece([w("crit", 0.07), w("momentum", 35), EMPTY, EMPTY, EMPTY])
+    expect(filterPoolForSlot(p, 2, BELLSTRIKE_POOL).candidates).not.toContain("momentum")
+    expect(filterPoolForSlot(p, 3, BELLSTRIKE_POOL).candidates).not.toContain("momentum")
+    expect(filterPoolForSlot(p, 4, BELLSTRIKE_POOL).candidates).not.toContain("momentum")
+    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).toContain("momentum")
   })
 
   it("treats empty slots as having no stat", () => {
-    const p = piece([w("Crit", 0.07), EMPTY, w("Power", 35), EMPTY, EMPTY])
-    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).not.toContain("Power")
-    expect(filterPoolForSlot(p, 3, BELLSTRIKE_POOL).candidates).not.toContain("Power")
-    expect(filterPoolForSlot(p, 4, BELLSTRIKE_POOL).candidates).not.toContain("Power")
-    expect(filterPoolForSlot(p, 2, BELLSTRIKE_POOL).candidates).toContain("Power")
-    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).toContain("Momentum")
+    const p = piece([w("crit", 0.07), EMPTY, w("power", 35), EMPTY, EMPTY])
+    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).not.toContain("power")
+    expect(filterPoolForSlot(p, 3, BELLSTRIKE_POOL).candidates).not.toContain("power")
+    expect(filterPoolForSlot(p, 4, BELLSTRIKE_POOL).candidates).not.toContain("power")
+    expect(filterPoolForSlot(p, 2, BELLSTRIKE_POOL).candidates).toContain("power")
+    expect(filterPoolForSlot(p, 1, BELLSTRIKE_POOL).candidates).toContain("momentum")
   })
 
   it("covers the listed Bellstrike pool", () => {
     expect(BELLSTRIKE_POOL.stats).toEqual([
-      "Affinity",
-      "Max Phys",
-      "Momentum",
-      "Max Bellstrike",
-      "Power",
-      "Crit",
+      "affinity",
+      "maxPhys",
+      "momentum",
+      "maxBellstrike",
+      "power",
+      "crit",
     ])
   })
 })
 
 describe("rerollableSlots", () => {
   it("returns all of slots 1..4 when no slot is R-marked", () => {
-    const p = piece([w("Crit", 0.07), w("Agility", 35), w("Momentum", 35), EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("agility", 35), w("momentum", 35), EMPTY, EMPTY])
     expect(rerollableSlots(p)).toEqual([1, 2, 3, 4])
   })
 
   it("returns only the R-marked slot when one slot has retuned=true", () => {
-    const p = piece([w("Crit", 0.07), w("Agility", 35), w("Momentum", 35, true), EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("agility", 35), w("momentum", 35, true), EMPTY, EMPTY])
     expect(rerollableSlots(p)).toEqual([2])
   })
 
   it("ignores R-flag on slot 0 (first tunement is always locked)", () => {
-    const p = piece([w("Crit", 0.07, true), w("Agility", 35), w("Momentum", 35), EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07, true), w("agility", 35), w("momentum", 35), EMPTY, EMPTY])
     expect(rerollableSlots(p)).toEqual([1, 2, 3, 4])
   })
 
   it("returns multiple slots only if multiple R-flags exist (data-error tolerant)", () => {
     const p = piece([
-      w("Crit", 0.07),
-      w("Agility", 35, true),
-      w("Momentum", 35, true),
+      w("crit", 0.07),
+      w("agility", 35, true),
+      w("momentum", 35, true),
       EMPTY,
       EMPTY,
     ])
@@ -133,18 +137,18 @@ describe("rerollableSlots", () => {
 
 describe("annotatePoolForSlot", () => {
   it("flags the current slot's stat with isCurrent", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
     const annotated = annotatePoolForSlot(p, 1, BELLSTRIKE_POOL)
-    const min = annotated.find((a) => a.word === "Power")
+    const min = annotated.find((a) => a.word === "power")
     expect(min?.isCurrent).toBe(true)
     expect(min?.legal).toBe(true)
   })
 
   it("returns one entry per pool stat regardless of legality", () => {
-    const p = piece([w("Crit", 0.07), w("Momentum", 35), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("momentum", 35), EMPTY, EMPTY, EMPTY])
     const annotated = annotatePoolForSlot(p, 2, BELLSTRIKE_POOL)
     expect(annotated).toHaveLength(BELLSTRIKE_POOL.stats.length)
-    expect(annotated.find((a) => a.word === "Momentum")?.legal).toBe(false)
+    expect(annotated.find((a) => a.word === "momentum")?.legal).toBe(false)
   })
 })
 
@@ -154,7 +158,7 @@ describe("computeRetunement (worker compute)", () => {
   }
 
   it("returns empty rows for relayed pieces", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), EMPTY, EMPTY, EMPTY], { relayed: true })
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY], { relayed: true })
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
     expect(res.reason).toBe("relayed")
@@ -162,7 +166,7 @@ describe("computeRetunement (worker compute)", () => {
   })
 
   it("returns empty rows when the class has no pool entry", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
     const inputs = { ...withPieceInInventory(p), classId: "noSuchClass" }
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
     expect(res.reason).toBe("no-pool")
@@ -170,7 +174,7 @@ describe("computeRetunement (worker compute)", () => {
   })
 
   it("emits 4 × poolSize rows for a non-relayed Bellstrike piece with no R-flag", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
     expect(res.reason).toBe("ok")
@@ -178,7 +182,7 @@ describe("computeRetunement (worker compute)", () => {
   })
 
   it("emits only 1 × poolSize rows when an R-toggle locks a single slot", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), w("Momentum", 35, true), EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("power", 35), w("momentum", 35, true), EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
     expect(res.reason).toBe("ok")
@@ -188,42 +192,70 @@ describe("computeRetunement (worker compute)", () => {
 
   it("reports ~0 ΔDPS for a candidate identical to the slot's current word", () => {
     const specs = getWordSpecs(defaultInputs)
-    const minSpec = specs.find((s) => s.word === "Power")!
-    const p = piece([w("Crit", 0.07), w("Power", minSpec.amount), EMPTY, EMPTY, EMPTY])
+    const minSpec = specs.find((s) => s.word === "power")!
+    const p = piece([w("crit", 0.07), w("power", minSpec.amount), EMPTY, EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
-    const row = res.rows.find((r) => r.slotIndex === 1 && r.word === "Power")
+    const row = res.rows.find((r) => r.slotIndex === 1 && r.word === "power")
     expect(row).toBeDefined()
     expect(row!.legal).toBe(true)
     expect(row!.isCurrent).toBe(true)
     expect(Math.abs(row!.deltaDps)).toBeLessThan(1e-6)
+    expect(Math.abs(row!.deltaDpsRelayed)).toBeLessThan(1e-6)
+  })
+
+  it("scores the 94% column against the piece relayed, candidate capped alongside the rest", () => {
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
+    const inputs = withPieceInInventory(p)
+    const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
+
+    const targetSpec = getWordSpecs(inputs).find((s) => s.word === "maxBellstrike")!
+    const relayed = maxRelayedClone(p, inputs)
+    const relayedSwapped: GearPiece = {
+      ...relayed,
+      words: relayed.words.map((wd, i) =>
+        i === 2
+          ? {
+              word: "maxBellstrike",
+              value: relayedCapValue(targetSpec.amount, targetSpec.unit),
+              retuned: true,
+            }
+          : wd,
+      ) as GearPiece["words"],
+    }
+    const relayedDps = runEngine(applyPieceContribution(inputs, relayed, +1)).dps
+    const swappedDps = runEngine(applyPieceContribution(inputs, relayedSwapped, +1)).dps
+
+    const workerRow = res.rows.find((r) => r.slotIndex === 2 && r.word === "maxBellstrike")!
+    expect(workerRow.legal).toBe(true)
+    expect(Math.abs(workerRow.deltaDpsRelayed - (swappedDps - relayedDps))).toBeLessThan(1e-6)
   })
 
   it("agrees with the virtually-equipped baseline on a hand-rolled swap", () => {
-    const p = piece([w("Crit", 0.07), w("Power", 35), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.07), w("power", 35), EMPTY, EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
 
     const specs = getWordSpecs(inputs)
-    const targetSpec = specs.find((s) => s.word === "Max Bellstrike")!
+    const targetSpec = specs.find((s) => s.word === "maxBellstrike")!
     const swappedWords = p.words.map((wd, i) =>
-      i === 2 ? { word: "Max Bellstrike", value: targetSpec.amount, retuned: true } : wd,
+      i === 2 ? { word: "maxBellstrike", value: targetSpec.amount, retuned: true } : wd,
     ) as GearPiece["words"]
     const swapped: GearPiece = { ...p, words: swappedWords }
     const equipDps = runEngine(applyPieceContribution(inputs, p, +1)).dps
     const swappedDps = runEngine(applyPieceContribution(inputs, swapped, +1)).dps
     const handRolledDelta = swappedDps - equipDps
 
-    const workerRow = res.rows.find((r) => r.slotIndex === 2 && r.word === "Max Bellstrike")!
+    const workerRow = res.rows.find((r) => r.slotIndex === 2 && r.word === "maxBellstrike")!
     expect(workerRow.legal).toBe(true)
     expect(Math.abs(workerRow.deltaDps - handRolledDelta)).toBeLessThan(1e-6)
   })
 
   it("marks illegal candidates with deltaDps 0", () => {
-    const p = piece([w("Power", 35), w("Power", 30), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("power", 35), w("power", 30), EMPTY, EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
-    const illegalSlot3 = res.rows.find((r) => r.slotIndex === 2 && r.word === "Power")!
+    const illegalSlot3 = res.rows.find((r) => r.slotIndex === 2 && r.word === "power")!
     expect(illegalSlot3.legal).toBe(false)
     expect(illegalSlot3.deltaDps).toBe(0)
   })
@@ -235,7 +267,7 @@ describe("computeReattunement", () => {
   }
 
   function weaponPiece(overrides: Partial<GearPiece> = {}): GearPiece {
-    return piece([w("Crit", 0.07), w("Agility", 35), w("Momentum", 35), EMPTY, EMPTY], {
+    return piece([w("crit", 0.07), w("agility", 35), w("momentum", 35), EMPTY, EMPTY], {
       slot: "leftWeapon",
       minPhys: 1000,
       maxPhys: 2000,
@@ -244,7 +276,7 @@ describe("computeReattunement", () => {
   }
 
   it("returns no-pool when the slot/class has no attunement options", () => {
-    const armor = piece([w("Crit", 0.07), w("Agility", 35), EMPTY, EMPTY, EMPTY], {
+    const armor = piece([w("crit", 0.07), w("agility", 35), EMPTY, EMPTY, EMPTY], {
       slot: "greaves",
       hp: 5000,
       physDef: 800,

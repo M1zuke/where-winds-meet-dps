@@ -37,11 +37,11 @@ describe("mistwillow — BuffEngine", () => {
     expect(e.calculateDamageEffects(lightHit, 0.1).breakdown.mistwillow).toBeUndefined()
   })
 
-  it("a hardcoded 'light override' ability (UmbQ) grants the light stance even without attack:light", () => {
+  it("a cast tag alone grants no stance — only attack: tags and prop:isExecution classify a cast", () => {
     const e = new BuffEngine({ armorSet: "mistwillow" }, [], [])
     e.processSkillCast("cast:umbQ", 0, {})
     const heavyHit = tagged("SomeHeavyHit", ["attack:heavy"])
-    expect(e.calculateDamageEffects(heavyHit, 0.1).breakdown.mistwillow).toBe(0.1)
+    expect(e.calculateDamageEffects(heavyHit, 0.1).breakdown.mistwillow).toBeUndefined()
   })
 
   it("an isExecution-flagged cast grants the heavy stance even without attack:heavy", () => {

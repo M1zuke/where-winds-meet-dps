@@ -1,0 +1,694 @@
+{
+  "_source": {
+    "site": "https://h9dh.cn/",
+    "file": "鸣金虹110阶竞速轴属性毕业率进阶计算器1.3.xlsx",
+    "url": "https://h9dh.cn/excel/%E9%B8%A3%E9%87%91%E8%99%B9110%E9%98%B6%E7%AB%9E%E9%80%9F%E8%BD%B4%E5%B1%9E%E6%80%A7%E6%AF%95%E4%B8%9A%E7%8E%87%E8%BF%9B%E9%98%B6%E8%AE%A1%E7%AE%97%E5%99%A81.3.xlsx",
+    "sheet": "武学奇术 (Martial & Mystic Arts)",
+    "classZh": "鸣金虹",
+    "classEn": "Bellstrike Splendor",
+    "classId": "bellstrikeSplendor",
+    "spec": "bellstrike_splendor",
+    "workbookVersion": "1.3",
+    "level": "110阶 (lvl-110 speed rotation)",
+    "note": "Coefficients/flat values are verbatim cached cell values at full stored precision; formulas are retained in the complete workbook extraction."
+  },
+  "_translation": {
+    "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official ZH<->EN pairs from the game client); 'inherited' means the label was already rendered by the Stonesplit Strength or Bellstrike Umbra extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand; 'untranslated' means the Chinese is kept because the client DB has no key for it.",
+    "columns": [
+      {
+        "col": "A",
+        "zh": null,
+        "en": "(row label)",
+        "enSource": "n/a"
+      },
+      {
+        "col": "B",
+        "zh": "通用增伤",
+        "en": "Universal DMG Boost",
+        "enSource": "inherited"
+      },
+      {
+        "col": "C",
+        "zh": "最小外功",
+        "en": "Min Physical",
+        "enSource": "inherited"
+      },
+      {
+        "col": "D",
+        "zh": "最大外功",
+        "en": "Max Physical",
+        "enSource": "inherited"
+      },
+      {
+        "col": "E",
+        "zh": "外功加成",
+        "en": "Physical Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "F",
+        "zh": "外功穿透",
+        "en": "Physical Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "G",
+        "zh": "外攻伤害加成",
+        "en": "Physical DMG Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "H",
+        "zh": "属性攻击加成",
+        "en": "Attribute Attack Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "I",
+        "zh": "鸣金穿透",
+        "en": "Bellstrike Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "J",
+        "zh": "鸣金加成",
+        "en": "Bellstrike Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "K",
+        "zh": "裂石穿透",
+        "en": "Stonesplit Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "L",
+        "zh": "裂石加成",
+        "en": "Stonesplit Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "M",
+        "zh": "牵丝穿透",
+        "en": "Silkbind Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "N",
+        "zh": "牵丝加成",
+        "en": "Silkbind Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "O",
+        "zh": "破竹穿透",
+        "en": "Bamboocut Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "P",
+        "zh": "破竹加成",
+        "en": "Bamboocut Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "Q",
+        "zh": "会心率",
+        "en": "Critical Rate",
+        "enSource": "inherited"
+      },
+      {
+        "col": "R",
+        "zh": "会心伤害",
+        "en": "Critical DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "S",
+        "zh": "会意率",
+        "en": "Affinity Rate",
+        "enSource": "inherited"
+      },
+      {
+        "col": "T",
+        "zh": "会意伤害",
+        "en": "Affinity Damage",
+        "enSource": "inherited"
+      },
+      {
+        "col": "U",
+        "zh": "蓄力",
+        "en": "Charged Attack",
+        "enSource": "inherited"
+      },
+      {
+        "col": "V",
+        "zh": "强制精准",
+        "en": "Guaranteed Precision",
+        "enSource": "inherited"
+      },
+      {
+        "col": "W",
+        "zh": "强制会心",
+        "en": "Guaranteed Critical",
+        "enSource": "inherited"
+      },
+      {
+        "col": "X",
+        "zh": "强制会意",
+        "en": "Guaranteed Affinity",
+        "enSource": "inherited"
+      },
+      {
+        "col": "Y",
+        "zh": "类型",
+        "en": "Type",
+        "enSource": "inherited"
+      },
+      {
+        "col": "Z",
+        "zh": "外功倍率",
+        "en": "Physical Multiplier",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AA",
+        "zh": "外攻固伤",
+        "en": "Physical Fixed DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AB",
+        "zh": "属性倍率",
+        "en": "Attribute Multiplier",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AC",
+        "zh": "属性固伤",
+        "en": "Attribute Fixed DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AD",
+        "zh": "定音加成",
+        "en": "Attunement Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AE",
+        "zh": "真气比例",
+        "en": "Qi Ratio",
+        "enSource": "inherited"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "row": 2,
+      "nameZh": "第一道剑气",
+      "nameEn": "1st Sword Energy",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.3066,
+        "Physical Fixed DMG": 361,
+        "Attribute Multiplier": 1.9598,
+        "Attribute Fixed DMG": 197,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 3,
+      "nameZh": "第二道剑气",
+      "nameEn": "2nd Sword Energy",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.5679,
+        "Physical Fixed DMG": 433,
+        "Attribute Multiplier": 2.3518,
+        "Attribute Fixed DMG": 236,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 4,
+      "nameZh": "第三道剑气",
+      "nameEn": "3rd Sword Energy",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.8292,
+        "Physical Fixed DMG": 506,
+        "Attribute Multiplier": 2.7438,
+        "Attribute Fixed DMG": 276,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 5,
+      "nameZh": "三剑气",
+      "nameEn": "Three Sword Energy (total)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 4.7037,
+        "Physical Fixed DMG": 1300,
+        "Attribute Multiplier": 7.0554,
+        "Attribute Fixed DMG": 709,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 6,
+      "nameZh": "第一道剑气(气竭)",
+      "nameEn": "1st Sword Energy (Exhausted)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.3066,
+        "Physical Fixed DMG": 361,
+        "Attribute Multiplier": 1.9598,
+        "Attribute Fixed DMG": 197,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 7,
+      "nameZh": "第二道剑气(气竭)",
+      "nameEn": "2nd Sword Energy (Exhausted)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.5679,
+        "Physical Fixed DMG": 433,
+        "Attribute Multiplier": 2.3518,
+        "Attribute Fixed DMG": 236,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 8,
+      "nameZh": "第三道剑气(气竭)",
+      "nameEn": "3rd Sword Energy (Exhausted)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.2,
+        "Guaranteed Affinity": 1,
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.8292,
+        "Physical Fixed DMG": 506,
+        "Attribute Multiplier": 2.7438,
+        "Attribute Fixed DMG": 276,
+        "Attunement Bonus": {
+          "zh": "蓄力技",
+          "en": "Charged Skill"
+        },
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 9,
+      "nameZh": "飞剑",
+      "nameEn": "Flying Sword",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "剑",
+          "en": "Sword"
+        },
+        "Physical Multiplier": 1.0253,
+        "Physical Fixed DMG": 283,
+        "Attribute Multiplier": 1.538,
+        "Attribute Fixed DMG": 154,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 10,
+      "nameZh": "枪Q",
+      "nameEn": "Spear Q",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "枪",
+          "en": "Spear"
+        },
+        "Physical Multiplier": 0.5732,
+        "Physical Fixed DMG": 160,
+        "Attribute Multiplier": 0.8598,
+        "Attribute Fixed DMG": 87,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 11,
+      "nameZh": "萧呤千浪AOE",
+      "nameEn": "Flute of the Tides (AoE)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 3.9744,
+        "Physical Fixed DMG": 982,
+        "Attribute Multiplier": 5.9613,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 12,
+      "nameZh": "萧呤千浪流星",
+      "nameEn": "Flute of the Tides (Meteor)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 1.4904,
+        "Physical Fixed DMG": 368,
+        "Attribute Multiplier": 2.2353,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 13,
+      "nameZh": "衍九矢7hit",
+      "nameEn": "Bursting Nine (7 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 8.277425,
+        "Physical Fixed DMG": 1631.85,
+        "Attribute Multiplier": 12.4161375,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 14,
+      "nameZh": "骑龙回马",
+      "nameEn": "Soaring Spin",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 7.1074,
+        "Physical Fixed DMG": 1320,
+        "Attribute Multiplier": 10.6596,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 15,
+      "nameZh": "叶龙骧首(32层+50%HP)",
+      "nameEn": "Dragon Head (32 stacks +50%HP)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.57,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 25.200406,
+        "Physical Fixed DMG": 4695.46,
+        "Attribute Multiplier": 37.800609,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 16,
+      "nameZh": "墨洗翰华(打盾)",
+      "nameEn": "Inkwash Splendor (vs Shield)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 23.7712,
+        "Physical Fixed DMG": 4418,
+        "Attribute Multiplier": 35.6568,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 17,
+      "nameZh": "神龙吐火暗灼1hit",
+      "nameEn": "Dragon's Breath (Smolder 1 hit)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.2848,
+        "Physical Fixed DMG": 241.5,
+        "Attribute Multiplier": 1.9272,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 18,
+      "nameZh": "神龙吐火暗灼2hit",
+      "nameEn": "Dragon's Breath (Smolder 2 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 3.9855,
+        "Physical Fixed DMG": 749,
+        "Attribute Multiplier": 5.97825,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 19,
+      "nameZh": "神龙吐火暗灼dot",
+      "nameEn": "Dragon's Breath (Smolder DoT)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.236,
+        "Physical Fixed DMG": 44,
+        "Attribute Multiplier": 0.354,
+        "Qi Ratio": 0.66
+      }
+    },
+    {
+      "row": 20,
+      "nameZh": "神龙吐火1hit",
+      "nameEn": "Dragon's Breath (1 hit)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.36185,
+        "Physical Fixed DMG": 254,
+        "Attribute Multiplier": 2.042775,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 21,
+      "nameZh": "神龙吐火2hit",
+      "nameEn": "Dragon's Breath (2 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 4.2245,
+        "Physical Fixed DMG": 788,
+        "Attribute Multiplier": 6.33675,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 22,
+      "nameZh": "神龙吐火dot",
+      "nameEn": "Dragon's Breath (DoT)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.2957,
+        "Physical Fixed DMG": 55,
+        "Attribute Multiplier": 0.44355,
+        "Qi Ratio": 0.66
+      }
+    },
+    {
+      "row": 23,
+      "nameZh": "太白醉月1-4",
+      "nameEn": "Drunken Poet (1-4)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.0238,
+        "Physical Fixed DMG": 189,
+        "Attribute Multiplier": 1.5357,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 24,
+      "nameZh": "太白醉月5",
+      "nameEn": "Drunken Poet (5)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.8,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.7063,
+        "Physical Fixed DMG": 315,
+        "Attribute Multiplier": 2.55945,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 25,
+      "nameZh": "太白醉月爆燃",
+      "nameEn": "Drunken Poet (Combustion)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.702,
+        "Physical Fixed DMG": 129,
+        "Attribute Multiplier": 1.053,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 26,
+      "nameZh": "太白醉月暗灼",
+      "nameEn": "Drunken Poet (Smolder)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.6088,
+        "Physical Fixed DMG": 297,
+        "Attribute Multiplier": 2.4132,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 27,
+      "nameZh": "易水歌6重",
+      "nameEn": "Morale Chant (6 Tier)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 1,
+        "Attribute Multiplier": 1,
+        "Qi Ratio": 1.1
+      }
+    },
+    {
+      "row": 28,
+      "nameZh": "N/a",
+      "nameEn": "N/A",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 0,
+        "Attribute Multiplier": 0,
+        "Qi Ratio": 1.1
+      }
+    }
+  ],
+  "_comparison": {
+    "ourSource": null,
+    "rule": "Bellstrike Splendor is not a registered ClassDef, so there is no implemented skill set to compare against and no ourSkill block is emitted. Populate one when the class is registered.",
+    "matched": 0,
+    "totalDamageRows": 27
+  }
+}

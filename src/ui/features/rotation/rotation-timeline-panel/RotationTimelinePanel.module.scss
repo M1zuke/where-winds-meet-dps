@@ -75,6 +75,15 @@ $track-min-width: 720px;
   color: #f0c8a8;
 }
 
+.timelineLowQi {
+  background: rgba(216, 175, 74, 0.2);
+  border-color: rgba(216, 175, 74, 0.45);
+}
+
+.timelineLowQi .timelineBuffLabel {
+  color: #e8d4a0;
+}
+
 .timelineLane {
   display: grid;
   grid-template-columns: $lane-label-width 1fr;
@@ -135,7 +144,7 @@ $track-min-width: 720px;
   position: absolute;
   transform: translateX(-50%);
   font-size: 0.7em;
-  color: #777;
+  color: var(--color-text-faint);
   font-variant-numeric: tabular-nums;
 }
 

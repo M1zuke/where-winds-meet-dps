@@ -3,7 +3,6 @@ import { CLASS_ID, SKILLS } from "../../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
-import { BELLSTRIKE_POOL } from "./retunementPool"
 import { declareMechanic, MECHANIC_ORDER } from "../../../engine/mechanics"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
@@ -14,6 +13,7 @@ import {
 } from "../../innerWays/swordHorizonZenith"
 import { levelAttributeBonusMechanic } from "./levelBonus"
 import { BELLSTRIKE_UMBRA_GRADUATION_BUILD } from "./graduationBuild"
+import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -24,23 +24,13 @@ export const bellstrikeUmbra = defineClass({
   attributeMultiplier: 51.5,
   classMindGroup: "swordHorizon",
   allowedMindMethods: ["wolfchasersArt", "insightfulStrike", "moraleChant", "bitterSeason"],
-  classSpecificAttunements: [
-    "Bleed Boost",
-    "Strategic Sword Martial Boost",
-    "Strategic Sword Special Boost",
-    "Heavenquaker Spear Martial Boost",
-    "Heavenquaker Spear Charged Boost",
-  ],
-  weapons: ["Sword", "Spear"],
-  // `.tmp/site/deobfuscated.js` ~L42153-42160 gates the min-phys crit-damage
-  // bonus on a weapon match against `grantsCritBoost === true` items — neither
-  // of Umbra's (Strategic Sword, Heavenquaker Spear) is one.
+  classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
+  weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
-  retunementPool: BELLSTRIKE_POOL,
   classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: BELLSTRIKE_UMBRA_GATES,
   mechanics: [declareMechanic(levelAttributeBonusMechanic, MECHANIC_ORDER.levelAttributeBonus)],

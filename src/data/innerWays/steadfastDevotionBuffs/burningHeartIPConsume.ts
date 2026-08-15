@@ -11,8 +11,7 @@ export const burningHeartIPConsume = defineClassBuff({
   id: BUFF.burningHeartIPConsume,
   name: "Burning Heart (IP Consume)",
   requires: { param: PARAM.steadfastDevotion, minTier: 4 },
-  triggeredBy: [],
-  affects: null,
+  affectsAll: true,
   duration: 0,
   perCastConsume: {
     property: PROP.consumesInnerPassionBurningHeart,

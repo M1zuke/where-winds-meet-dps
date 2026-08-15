@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import type { Result, TimelineEvent } from "../../../../engine/types"
+import { breakdownNameOf } from "../../../../engine/skill"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./RotationTimelinePanel.module.scss"
 
@@ -9,14 +10,18 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const events = result.timeline ?? []
 
   const eventsByLane = useMemo(() => {
+    const laneOf = new Map(
+      result.perSkill.map((row) => [row.name, breakdownNameOf(row.breakdownName, row.name)]),
+    )
     const map = new Map<string, TimelineEvent[]>()
     for (const event of result.timeline ?? []) {
-      const existing = map.get(event.skillName)
+      const lane = laneOf.get(event.skillName) ?? event.skillName
+      const existing = map.get(lane)
       if (existing) existing.push(event)
-      else map.set(event.skillName, [event])
+      else map.set(lane, [event])
     }
     return map
-  }, [result.timeline])
+  }, [result.timeline, result.perSkill])
 
   if (events.length === 0 || duration <= 0) {
     return <div className="empty-tab">{t("(none)")}</div>
@@ -33,10 +38,32 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const qiEnd = qiBreak ? Math.min(qiBreak.endSec, duration) : 0
   const showQi = qiBreak != null && qiEnd > qiStart
 
+  const lowQi = result.lowQiWindow
+  const lowQiStart = lowQi ? Math.max(lowQi.startSec, minTime) : 0
+  const lowQiEnd = lowQi ? Math.min(lowQi.endSec, duration) : 0
+  const showLowQi = lowQi != null && lowQiEnd > lowQiStart
+
   return (
     <div className={styles.timelinePanel}>
       <div className={styles.timelineScroll}>
         <div className={styles.timelineTrack}>
+          {showLowQi && (
+            <div className={styles.timelineBuffGroup}>
+              <span className={styles.timelineBuffGroupLabel}>{t("Low Qi Window")}</span>
+              <div className={styles.timelineBuffLane}>
+                <div
+                  className={`${styles.timelineBuffSpan} ${styles.timelineLowQi}`}
+                  style={{
+                    left: pct(lowQiStart) + "%",
+                    width: Math.max(pct(lowQiEnd) - pct(lowQiStart), 0.3) + "%",
+                  }}
+                  title={`${t("Low Qi Window")} — ${lowQiStart.toFixed(2)}s – ${lowQiEnd.toFixed(2)}s`}
+                >
+                  <span className={styles.timelineBuffLabel}>{t("Low Qi Window")}</span>
+                </div>
+              </div>
+            </div>
+          )}
           {showQi && (
             <div className={styles.timelineBuffGroup}>
               <span className={styles.timelineBuffGroupLabel}>{t("Qi Break Window")}</span>

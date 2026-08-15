@@ -1,5 +1,6 @@
-import type { GearWordName, Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
-import { EMPTY_EQUIPPED, defaultCombatSettings, isGearWordName } from "./engine/types"
+import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
+import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
+import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS } from "./definitions/classes/registry"
@@ -16,7 +17,6 @@ import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "
 import {
   newSkillId,
   newHitId,
-  newTriggerId,
   newVariantId,
   isSkill,
   isHitVariant,
@@ -24,6 +24,7 @@ import {
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { seedSkillFromBuiltin } from "./engine/skill"
+import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
 import { isBuff, makeBuff, newBuffId } from "./engine/buff"
@@ -35,6 +36,8 @@ import {
   runProfileMigrations,
   migrateClassId,
   migrateEntityId,
+  migrateGearWordId,
+  migrateCurrentGearWordLabel,
   migrateSetId,
 } from "./migrations"
 
@@ -139,18 +142,8 @@ function migrateRotationIds<T>(rotation: T): T {
   if (Array.isArray(r.permanentBuffIds)) {
     next.permanentBuffIds = r.permanentBuffIds.map((b) => migrateEntityId(b))
   }
+  delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
-}
-
-const LEGACY_GEAR_WORD_RENAMES: Record<string, GearWordName> = {
-  "Single Burst": "Single-Target Mystic Skill DMG Boost",
-  "Single Control": "Single-Target Mystic Skill DMG Boost",
-  "AoE Anomaly": "Area Mystic Skill DMG Boost",
-  "AoE Damage": "Area Mystic Skill DMG Boost",
-  "Area Debuff Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
-  "Area DMG Mystic Skill DMG Boost": "Area Mystic Skill DMG Boost",
-  "Min Formless": "Min Void Attack",
-  "Max Formless": "Max Void Attack",
 }
 
 // A word outside the catalogue already scores nothing, so clearing the row costs
@@ -159,8 +152,8 @@ function repairGearWord(entry: unknown): unknown {
   if (!entry || typeof entry !== "object") return entry
   const stored = (entry as { word?: unknown }).word
   if (typeof stored !== "string") return entry
-  const renamed = LEGACY_GEAR_WORD_RENAMES[stored] ?? stored
-  return isGearWordName(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
+  const renamed = migrateCurrentGearWordLabel(migrateGearWordId(stored))
+  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -332,6 +325,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
         startSec: typeof qbRaw.startSec === "number" ? qbRaw.startSec : def.qiBreak.startSec,
         durationSec:
           typeof qbRaw.durationSec === "number" ? qbRaw.durationSec : def.qiBreak.durationSec,
+        lowQiLeadSec:
+          typeof qbRaw.lowQiLeadSec === "number" ? qbRaw.lowQiLeadSec : def.qiBreak.lowQiLeadSec,
       },
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
@@ -345,6 +340,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
+      lowEndurance: typeof r.lowEndurance === "boolean" ? r.lowEndurance : def.lowEndurance,
     }
   }
   return withZeroedDerivedStats(next)
@@ -540,8 +536,6 @@ export function importCustomRotation(text: string): Rotation {
     permanentBuffIds: Array.isArray(candidate.permanentBuffIds)
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
-    prePullHitsCount:
-      typeof candidate.prePullHitsCount === "boolean" ? candidate.prePullHitsCount : false,
     createdAt: now,
     updatedAt: now,
   }
@@ -586,6 +580,141 @@ function healSkillTags(id: string, tags: string[]): string[] {
   for (const tag of builtinTagsFor(id)) healed.add(tag)
   if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
   return healed.size === tags.length ? tags : [...healed]
+}
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations". Before
+// `Skill.receives` / `Skill.triggersBuffs` / `Debuff.receives` existed, a buff
+// def named who it reached (`affects`) and what cast set it off (`triggeredBy`)
+// itself; a skill or debuff saved under that scheme carries neither field, and
+// its old reach is recoverable purely from the `role:` / `type:` / `cast:` tags
+// it already carries. These are the exact `affects` / `triggeredBy` values every
+// def declared before the inversion, frozen here rather than read from the
+// (now-inverted) defs — storage is specified by the shape it was written in.
+const LEGACY_AFFECTS: Record<string, readonly string[]> = {
+  "role:bleedTick": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"],
+  "role:bleedDetonation": [
+    "bellstrikeUmbraBleedPen",
+    "bellstrikeUmbraBleedingDamage",
+    "buff-bellstrikeUmbra-zenith-bar",
+  ],
+  "role:combustion": ["bellstrikeUmbraBleedingDamage"],
+  "role:fireOil": ["bellstrikeUmbraBleedingDamage"],
+  "role:fivefoldBleed": ["bellstrikeUmbraBleedingDamage"],
+  "role:phalanxCharged": ["mountainSplitter"],
+  "role:anxiSoldierMoDown": ["mountainSplitter"],
+  "role:anxiSoldierMoJump": ["mountainSplitter"],
+  "role:snowpartingVC": [
+    "frostCladSnowbreak",
+    "frostCladSnowbreakIPConsume",
+    "frostCladSnowbreakT6",
+  ],
+  "role:dragonHeadPlus": ["dragonHeadLowHp"],
+  "role:dragonHead": ["surgingWaves"],
+  "type:sustain": ["soulShaken"],
+  "prop:shatteredRidgeBoost": ["shatteredRidgeDeflect"],
+}
+const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
+  "cast:anxiSoldierMoDown": ["mountainSplitter", "throatPierced"],
+  "cast:anxiSoldierMoJump": ["mountainSplitter", "throatPierced"],
+  "cast:anxiSoldierMoSweep": ["mountainSplitter", "throatPierced"],
+  "cast:phalanxSpecial": ["ironGuards"],
+  "cast:phalanxSpecialPrepull": ["ironGuards"],
+  "cast:phalanxChargedS3": ["throatPierced", "chargeEnhancement"],
+  "cast:phalanxChargedS3InnerPassion": ["throatPierced", "chargeEnhancement"],
+  "cast:anxiSoldierHeng": ["throatPierced"],
+  "cast:snowpartingQStab": ["throatPierced"],
+  "cast:snowpartingVC": ["throatPierced", "forgetfulness"],
+  "cast:snowpartingVCPrepull": ["throatPierced", "forgetfulness"],
+  "cast:phalanxQ": ["throatPierced"],
+  "cast:snowpartingCharged": ["forgetfulness"],
+  "cast:snowpartingChargedForgetfulness": ["forgetfulness"],
+  "cast:snowpartingDual": ["forgetfulness"],
+  "cast:snowpartingDualPrepull": ["forgetfulness"],
+  "cast:deflect": ["forgetfulness"],
+  "cast:snowpartingSpecial": ["innerPassion", "jadeware"],
+  "cast:spearQ": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQ0HitCancel": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQ5HitCancel": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearQPrepull": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+  "cast:spearHeavy": ["soulShaken"],
+  "cast:spearHeavy1Hit": ["soulShaken"],
+  "cast:spearHeavy1HitPrepull": ["soulShaken"],
+  "cast:perfectDodge": ["mirageBonus"],
+  "cast:perfectDodgeFull": ["mirageBonus"],
+  "cast:ghostlySteps": ["mirage"],
+  "cast:fluteOfTheTidesCancel": ["fluteBoost"],
+  "cast:fluteOfTheTidesFull": ["fluteBoost"],
+  "cast:fluteOfTheTidesPrepull": ["fluteBoost"],
+  "cast:healerBuff": ["healerBuff"],
+  "cast:dragonHeadPlus": ["surgingWaves"],
+  "cast:goldenBodyCancel": ["rainwhisperShield"],
+  "cast:goldenBodyDeflectCancel": ["rainwhisperShield"],
+  "cast:moBladeQ": ["rainwhisperShield", "jadeware"],
+  "cast:moBladeQPrepull": ["rainwhisperShield", "jadeware"],
+  "cast:fanQ": ["jadeware"],
+  "cast:fanQCancel": ["jadeware"],
+  "cast:fanQPrepull": ["jadeware"],
+  "cast:ropeQ": ["jadeware"],
+  "cast:ropeQ1Hit": ["jadeware"],
+  "cast:swordMartialQ": ["jadeware"],
+  "cast:swordMartialQQ": ["jadeware"],
+  "cast:swordMartialQQ1HitCancel": ["jadeware"],
+  "cast:swordMartialQQ2HitCancel": ["jadeware"],
+  "cast:swordMartialQQQ": ["jadeware"],
+  "cast:swordQ": ["jadeware"],
+  "cast:swordQ2nd": ["jadeware"],
+  "cast:umbQ": ["jadeware"],
+  "cast:umbQPrepull": ["jadeware"],
+  "cast:umbrellaQ": ["jadeware"],
+  "cast:umbrellaQEmpoweredPerfectCatch": ["jadeware"],
+  "cast:umbrellaQPerfectCatch": ["jadeware"],
+}
+
+function legacyReceives(tags: readonly string[]): string[] {
+  return [...new Set(tags.flatMap((tag) => LEGACY_AFFECTS[tag] ?? []))]
+}
+
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The list each of these built-ins carried while it was still missing the set
+// buff its Martial Art tag entitles it to. A copy seeded then never activates
+// the set, and no editor surface shows the gap. Only a list still identical to
+// what was seeded is rewritten, same reason as the coefficient repair below.
+const TRIGGERS_BUFFS_BEFORE_JADEWARE: Record<string, readonly string[]> = {
+  "bellstrikeSplendor-swordq-2nd": ["mountainsMightQiImbalance"],
+  "bellstrikeSplendor-spearq-0-hit-cancel": ["endlessGale", "mountainsMight", "qiImbalance"],
+  "bellstrikeSplendor-spearq-prepull": ["endlessGale", "mountainsMight", "qiImbalance"],
+}
+
+function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
+  const seeded = TRIGGERS_BUFFS_BEFORE_JADEWARE[id]
+  if (!seeded) return triggersBuffs
+  const untouched =
+    triggersBuffs.length === seeded.length &&
+    seeded.every((buffId, index) => triggersBuffs[index] === buffId)
+  return untouched ? ["jadeware", ...triggersBuffs] : triggersBuffs
+}
+
+// A skill's `type:<skillType>` tag is derived, never stored, so it is added
+// back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
+function healSkillReach(
+  id: string,
+  skill: Pick<Skill, "receives" | "triggersBuffs" | "tags" | "skillType" | "castTag" | "name">,
+  tags: readonly string[],
+): Pick<Skill, "receives" | "triggersBuffs"> {
+  const legacyTags = skill.skillType ? [...tags, `type:${skill.skillType}`] : tags
+  const receives = Array.isArray(skill.receives) ? skill.receives : legacyReceives(legacyTags)
+  const triggersBuffs = Array.isArray(skill.triggersBuffs)
+    ? skill.triggersBuffs
+    : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
+  return { receives, triggersBuffs: healJadewareTrigger(id, triggersBuffs) }
+}
+
+function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
+  if (Array.isArray(debuff.receives)) return debuff.receives
+  const tags = debuff.tags ?? []
+  const legacyTags = debuff.dot ? [...tags, `type:${debuff.dot.skillType || "sustain"}`] : tags
+  return legacyReceives(legacyTags)
 }
 
 // These coefficients were replaced wholesale, so a stored copy carrying the
@@ -634,18 +763,20 @@ function hydrateSkill(s: Skill): Skill {
   void _legacyAbilityTag
   const id = migrateEntityId(s.id)
   const tags = Array.isArray(s.tags) ? s.tags.filter((t): t is string => typeof t === "string") : []
+  const healedTags = healSkillTags(id, tags)
   return {
     ...rest,
     id,
     classId: migrateClassId(s.classId),
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
-    tags: healSkillTags(id, tags),
+    tags: healedTags,
     hits: Array.isArray(s.hits)
       ? healDragonHeadCoefficients(
           id,
           s.hits.map((h) => hydrateSkillHit(h)),
         )
       : s.hits,
+    ...healSkillReach(id, s, healedTags),
   }
 }
 
@@ -707,7 +838,7 @@ export function saveCustomSkill(s: Skill): Skill[] {
   if (idx >= 0) all[idx] = next
   else all.push(next)
   writeCustomSkills(all)
-  return all
+  return loadCustomSkills()
 }
 
 export function deleteCustomSkill(id: string): Skill[] {
@@ -838,7 +969,6 @@ function importedTrigger(t: unknown): HitTrigger {
         }
       : null
   const trigger: HitTrigger = {
-    id: newTriggerId(),
     kind: c.kind === "castSkill" ? "castSkill" : "applyBuff",
     targetId: typeof c.targetId === "string" ? c.targetId : "",
     stacks: typeof c.stacks === "number" ? c.stacks : 1,
@@ -898,13 +1028,20 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     guaranteedPrecision: c.guaranteedPrecision === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
+    receives: Array.isArray(c.receives)
+      ? c.receives.filter((id): id is string => typeof id === "string")
+      : undefined,
+    triggersBuffs: Array.isArray(c.triggersBuffs)
+      ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
+      : undefined,
     createdAt: now,
     updatedAt: now,
   }
-  if (!isSkill(fresh)) {
+  const healed = hydrateSkill(fresh)
+  if (!isSkill(healed)) {
     throw new Error("Imported skill failed validation (missing or invalid fields)")
   }
-  return fresh
+  return healed
 }
 
 const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
@@ -1176,6 +1313,7 @@ function hydrateDebuff(d: Debuff): Debuff {
     stackScaling: d.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof d.maxStacks === "number" && d.maxStacks > 0 ? d.maxStacks : 1,
     detonation,
+    receives: healDebuffReceives(d),
   }
 }
 
@@ -1211,7 +1349,7 @@ export function saveCustomDebuff(d: Debuff): Debuff[] {
   if (idx >= 0) all[idx] = next
   else all.push(next)
   writeCustomDebuffs(all)
-  return all
+  return loadCustomDebuffs()
 }
 
 export function deleteCustomDebuff(id: string): Debuff[] {
@@ -1262,9 +1400,16 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
     dot,
     maxStacks: typeof c.maxStacks === "number" && c.maxStacks > 0 ? c.maxStacks : 1,
     stackScaling: c.stackScaling === "perStack" ? "perStack" : "flat",
+    receives: Array.isArray(c.receives)
+      ? c.receives.filter((id): id is string => typeof id === "string")
+      : undefined,
+    triggersBuffs: Array.isArray(c.triggersBuffs)
+      ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
+      : undefined,
   })
-  if (!isDebuff(fresh)) {
+  const healed = hydrateDebuff(fresh)
+  if (!isDebuff(healed)) {
     throw new Error("Imported debuff failed validation (missing or invalid fields)")
   }
-  return fresh
+  return healed
 }

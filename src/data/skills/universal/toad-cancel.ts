@@ -22,7 +22,7 @@ export const toadCancel = defineSkill({
       attributeMultiplier: 2.8378,
       physFixed: 255.5,
       attributeFixed: 0,
-      triggers: [applyDebuff({ id: "tg-toad-cancel-triggered", target: DEBUFF.toadPoison })],
+      triggers: [applyDebuff({ target: DEBUFF.toadPoison })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

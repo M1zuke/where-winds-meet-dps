@@ -16,12 +16,18 @@ import {
   type RawProfilesBlob,
 } from "../../src/migrations"
 import { V7__clampSingleMysticWordRoll } from "../../src/migrations/V7__clampSingleMysticWordRoll"
+import { migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
 import type { GearPiece, Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 
 const PROFILES_KEY = "wwm.profiles"
-const WORD = "Single-Target Mystic Skill DMG Boost"
+const LEGACY_WORD = "Single-Target Mystic Skill DMG Boost"
+const WORD_ID = "singleTargetMysticBoost"
 const MAX_ROLL = 0.09797
+
+// The fixture is pre-V12, so the same word reads as a display name before the
+// chain runs and as an id after it.
+const isMysticWord = (word: string) => word === LEGACY_WORD || word === WORD_ID
 
 type LegacyFile = { v: number; profile: StoredProfile }
 const LEGACY = legacyProfileFile as unknown as LegacyFile
@@ -49,7 +55,7 @@ const inputsOf = (blob: RawProfilesBlob) =>
 
 function mysticWordValues(inputs: Inputs): number[] {
   return inputs.inventory.flatMap((piece) =>
-    piece.words.filter((entry) => entry.word === WORD).map((entry) => entry.value),
+    piece.words.filter((entry) => isMysticWord(entry.word)).map((entry) => entry.value),
   )
 }
 
@@ -60,7 +66,7 @@ function withMysticWordAt(profile: StoredProfile, value: number, relayed: boolea
   const piece = next.inputs.inventory[PIECE_WITH_MYSTIC_WORD]
   piece.relayed = relayed
   piece.words = piece.words.map((entry) =>
-    entry.word === WORD ? { ...entry, value } : entry,
+    isMysticWord(entry.word) ? { ...entry, value } : entry,
   ) as GearPiece["words"]
   return next
 }
@@ -73,20 +79,24 @@ describe("profile-v6 fixture — the stored blob predates the corrected max roll
   it("is version 6 and carries the word at a value the old cap allowed", () => {
     expect(LEGACY.v).toBe(6)
     const piece = LEGACY.profile.inputs.inventory[PIECE_WITH_MYSTIC_WORD]
-    expect(piece.words.some((entry) => entry.word === WORD)).toBe(true)
+    expect(piece.words.some((entry) => isMysticWord(entry.word))).toBe(true)
     expect(mysticWordValues(LEGACY.profile.inputs)).toEqual([0.078])
   })
 })
 
 describe("the corrected cap is what the gear form and the engine both use", () => {
   it("getWordSpecs reports 9.797 %, and relayed gear 9.21 %", () => {
-    const spec = getWordSpecs(LEGACY.profile.inputs).find((candidate) => candidate.word === WORD)!
+    const spec = getWordSpecs(LEGACY.profile.inputs).find(
+      (candidate) => candidate.word === WORD_ID,
+    )!
     expect(spec.amount).toBeCloseTo(MAX_ROLL, 10)
     expect(relayedCapValue(spec.amount, spec.unit)).toBeCloseTo(0.0921, 10)
   })
 
   it("only ever raises the cap a stored roll was clamped to, so v7 profiles stay legal", () => {
-    const spec = getWordSpecs(LEGACY.profile.inputs).find((candidate) => candidate.word === WORD)!
+    const spec = getWordSpecs(LEGACY.profile.inputs).find(
+      (candidate) => candidate.word === WORD_ID,
+    )!
     expect(relayedCapValue(spec.amount, spec.unit)).toBeGreaterThanOrEqual(0.092)
   })
 })
@@ -138,8 +148,8 @@ describe("V7 step — v6 → v7 in isolation", () => {
     )
     const clamped = after.inventory[PIECE_WITH_MYSTIC_WORD]
     const original = before.inventory[PIECE_WITH_MYSTIC_WORD]
-    expect(clamped.words.filter((entry) => entry.word !== WORD)).toEqual(
-      original.words.filter((entry) => entry.word !== WORD),
+    expect(clamped.words.filter((entry) => !isMysticWord(entry.word))).toEqual(
+      original.words.filter((entry) => !isMysticWord(entry.word)),
     )
 
     const migratedProfile = migrated.profiles[0] as StoredProfile
@@ -184,7 +194,7 @@ describe("v6 profile with an over-cap roll → loaded build", () => {
     const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
     expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
     expect(persisted.profiles[0].inputs.inventory[PIECE_WITH_MYSTIC_WORD].words).toEqual(
-      expect.arrayContaining([{ word: WORD, value: MAX_ROLL, retuned: false }]),
+      expect.arrayContaining([{ word: WORD_ID, value: MAX_ROLL, retuned: false }]),
     )
   })
 
@@ -215,12 +225,15 @@ describe("v6 profile with an over-cap roll → loaded build", () => {
 describe("v6 profile at its captured values", () => {
   beforeEach(() => localStorage.clear())
 
-  it("loads with the word value byte-identical — nothing legal is touched", () => {
+  it("loads with the word value byte-identical — only the word id is rewritten", () => {
     writeProfilesBlob(clone(LEGACY.profile))
     const after = loadOne()
     expect(mysticWordValues(after.inputs)).toEqual([0.078])
     expect(after.inputs.inventory[PIECE_WITH_MYSTIC_WORD].words).toEqual(
-      LEGACY.profile.inputs.inventory[PIECE_WITH_MYSTIC_WORD].words,
+      LEGACY.profile.inputs.inventory[PIECE_WITH_MYSTIC_WORD].words.map((entry) => ({
+        ...entry,
+        word: migrateGearWordId(entry.word),
+      })),
     )
   })
 })

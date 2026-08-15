@@ -21,7 +21,7 @@ export const fireBreath2Hit = defineSkill({
       attributeMultiplier: 2.11225,
       physFixed: 262.6666666666667,
       attributeFixed: 0,
-      triggers: [applyDebuff({ id: "tg-fire-breath-2-hit-combustion", target: DEBUFF.combustion, extendFrames: 90 })],
+      triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
     hit(1, {
       frame: 70,
@@ -31,7 +31,6 @@ export const fireBreath2Hit = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyDebuff({
-          id: "tg-fire-breath-2-hit-combustion-ext-0",
           target: DEBUFF.combustion,
           extendFrames: 60,
           extendOnly: true,
@@ -46,7 +45,6 @@ export const fireBreath2Hit = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyDebuff({
-          id: "tg-fire-breath-2-hit-combustion-ext-1",
           target: DEBUFF.combustion,
           extendFrames: 90,
           extendOnly: true,

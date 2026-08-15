@@ -6,7 +6,7 @@ import type {
   Inputs,
   StoredProfile,
 } from "../../../../engine/types"
-import { EMPTY_EQUIPPED, GEAR_SLOTS } from "../../../../engine/types"
+import { GEAR_SLOTS } from "../../../../engine/types"
 import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
@@ -17,6 +17,7 @@ import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
 import { GearSwapPreviewPanel } from "../gear-swap-preview-panel/GearSwapPreviewPanel"
 import { NewGearPieceDialog } from "../new-gear-piece-dialog/NewGearPieceDialog"
 import { ImportGearDialog } from "../import-gear-dialog/ImportGearDialog"
+import { equippedFromImported } from "../import-gear-dialog/importedGearPieces"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
 import { ReattunementAnalyzerPanel } from "../reattunement-analyzer-panel/ReattunementAnalyzerPanel"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
@@ -34,7 +35,6 @@ interface Props {
   currentDps: number
   dpsDeltas: DpsDeltaMap
   dpsDeltasPending: boolean
-  hideComparisons?: boolean
 }
 
 export function GearTab({
@@ -46,7 +46,6 @@ export function GearTab({
   currentDps,
   dpsDeltas,
   dpsDeltasPending,
-  hideComparisons = false,
 }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -88,9 +87,8 @@ export function GearTab({
   const retuneRowsMatch = retunement.forPieceId === retuneTargetId
   const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId)
   const reattuneOptsMatch = reattunement.forPieceId === retuneTargetId
-  const wordMaxPiece = hideComparisons ? null : selectedPiece
-  const wordMax = useWordMaxAnalysis(engineInputs, wordMaxPiece)
-  const wordMaxRowsMatch = wordMax.forPieceId === (wordMaxPiece?.id ?? null)
+  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece)
+  const wordMaxRowsMatch = wordMax.forPieceId === (selectedPiece?.id ?? null)
 
   function commitGearChange(nextInventory: GearPiece[], nextEquipped: EquippedSlots): void {
     onChange({ ...inputs, inventory: nextInventory, equipped: nextEquipped })
@@ -189,8 +187,7 @@ export function GearTab({
     const kept = keepDisplaced
       ? inventory
       : inventory.filter((piece) => !displaced.includes(piece.id))
-    const nextEquipped: EquippedSlots = { ...EMPTY_EQUIPPED }
-    for (const piece of imported) nextEquipped[piece.slot] = piece.id
+    const nextEquipped = equippedFromImported(imported)
 
     setImportOpen(false)
     const next: Inputs = { ...inputs, inventory: [...kept, ...imported], equipped: nextEquipped }
@@ -224,7 +221,6 @@ export function GearTab({
           onSelectSlot={selectSlot}
           dpsDeltas={dpsDeltas}
           dpsDeltasPending={dpsDeltasPending}
-          hideComparisons={hideComparisons}
         />
       </div>
 
@@ -255,40 +251,37 @@ export function GearTab({
             onClearSlotFilter={() => setSelectedSlot(null)}
             dpsDeltas={dpsDeltas}
             dpsDeltasPending={dpsDeltasPending}
-            hideComparisons={hideComparisons}
           />
         </div>
       </div>
 
-      {!hideComparisons && (
-        <div className={styles.gearSplit}>
-          <div className={styles.gearAnalyzerStack}>
-            <RetunementAnalyzerPanel
-              piece={retuneTargetId ? selectedPiece : null}
-              rows={retuneRowsMatch ? retunement.rows : []}
-              reason={!retuneTargetId ? "no-selection" : retuneRowsMatch ? retunement.reason : "ok"}
-              isPending={retunement.isPending || !retuneRowsMatch}
-            />
-            <ReattunementAnalyzerPanel
-              piece={retuneTargetId ? selectedPiece : null}
-              options={reattuneOptsMatch ? reattunement.options : []}
-              probImproveOverall={reattuneOptsMatch ? reattunement.probImproveOverall : 0}
-              reason={
-                !retuneTargetId ? "no-selection" : reattuneOptsMatch ? reattunement.reason : "ok"
-              }
-              isPending={reattunement.isPending || !reattuneOptsMatch}
-            />
-          </div>
-          <GearSwapPreviewPanel
-            inputs={engineInputs}
-            candidate={selectedPiece}
-            isEquipped={isEquipped}
-            currentDps={currentDps}
-            dpsDelta={selectedPiece ? dpsDeltas[selectedPiece.id] : undefined}
-            dpsDeltasPending={dpsDeltasPending}
+      <div className={styles.gearSplit}>
+        <div className={styles.gearAnalyzerStack}>
+          <RetunementAnalyzerPanel
+            piece={retuneTargetId ? selectedPiece : null}
+            rows={retuneRowsMatch ? retunement.rows : []}
+            reason={!retuneTargetId ? "no-selection" : retuneRowsMatch ? retunement.reason : "ok"}
+            isPending={retunement.isPending || !retuneRowsMatch}
+          />
+          <ReattunementAnalyzerPanel
+            piece={retuneTargetId ? selectedPiece : null}
+            options={reattuneOptsMatch ? reattunement.options : []}
+            probImproveOverall={reattuneOptsMatch ? reattunement.probImproveOverall : 0}
+            reason={
+              !retuneTargetId ? "no-selection" : reattuneOptsMatch ? reattunement.reason : "ok"
+            }
+            isPending={reattunement.isPending || !reattuneOptsMatch}
           />
         </div>
-      )}
+        <GearSwapPreviewPanel
+          inputs={engineInputs}
+          candidate={selectedPiece}
+          isEquipped={isEquipped}
+          currentDps={currentDps}
+          dpsDelta={selectedPiece ? dpsDeltas[selectedPiece.id] : undefined}
+          dpsDeltasPending={dpsDeltasPending}
+        />
+      </div>
 
       {newPieceOpen && (
         <NewGearPieceDialog

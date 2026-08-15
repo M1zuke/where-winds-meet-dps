@@ -29,15 +29,7 @@ export function groupBuffDefs(): BuffModule[] {
 export function allBuffDefsDeduped(): BuffModule[] {
   const byId = new Map<string, BuffModule>()
   const consider = (module: BuffModule) => {
-    const existing = byId.get(module.id)
-    if (!existing) {
-      byId.set(module.id, { ...module })
-      return
-    }
-    if (module.triggeredBy?.length) {
-      const merged = new Set([...(existing.triggeredBy ?? []), ...module.triggeredBy])
-      existing.triggeredBy = [...merged]
-    }
+    if (!byId.has(module.id)) byId.set(module.id, { ...module })
   }
   for (const classDef of CLASS_DEFS()) {
     const definition = classDefinition(classDef.id)

@@ -1,4 +1,4 @@
-import type { GearPiece, GearWordName } from "./types"
+import type { GearPiece, GearWordId } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
 
 export const FIRST_LOCKED_SLOT = 0
@@ -11,18 +11,18 @@ export function rerollableSlots(piece: GearPiece): readonly number[] {
 
 export interface FilteredPool {
   slotIndex: number
-  candidates: readonly GearWordName[]
+  candidates: readonly GearWordId[]
   poolSize: number
 }
 
 export interface CandidateLegality {
-  word: GearWordName
+  word: GearWordId
   legal: boolean
   isCurrent: boolean
 }
 
-function countOthers(piece: GearPiece, exceptSlot: number): Map<GearWordName, number> {
-  const counts = new Map<GearWordName, number>()
+function countOthers(piece: GearPiece, exceptSlot: number): Map<GearWordId, number> {
+  const counts = new Map<GearWordId, number>()
   piece.words.forEach((w, i) => {
     if (i === exceptSlot) return
     if (!w.word) return
@@ -31,7 +31,7 @@ function countOthers(piece: GearPiece, exceptSlot: number): Map<GearWordName, nu
   return counts
 }
 
-function maxAllowedFor(stat: GearWordName, firstStat: GearWordName | ""): number {
+function maxAllowedFor(stat: GearWordId, firstStat: GearWordId | ""): number {
   return stat === firstStat ? 1 : 0
 }
 
@@ -42,7 +42,7 @@ export function filterPoolForSlot(
 ): FilteredPool {
   const firstStat = piece.words[FIRST_LOCKED_SLOT].word
   const others = countOthers(piece, slotIndex)
-  const candidates: GearWordName[] = []
+  const candidates: GearWordId[] = []
   for (const stat of pool.stats) {
     const have = others.get(stat) ?? 0
     if (have <= maxAllowedFor(stat, firstStat)) candidates.push(stat)

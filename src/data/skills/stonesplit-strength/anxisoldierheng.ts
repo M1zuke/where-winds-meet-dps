@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const anxisoldierheng = defineSkill({
@@ -11,6 +12,8 @@ export const anxisoldierheng = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierHeng,
+  receives: [BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced],
   castFrames: 0,
   triggerable: true,
   hits: [

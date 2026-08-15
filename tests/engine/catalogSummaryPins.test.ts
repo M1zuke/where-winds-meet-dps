@@ -13,19 +13,14 @@ import {
   alwaysActiveClassBuffs,
   receivesForSkill,
 } from "../../src/engine/buffs/catalog"
-import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { defaultInputs } from "../../src/engine/defaults"
 import { healerBuff } from "../../src/data/skills/buffs/healerBuff"
 import type { Inputs } from "../../src/engine/types"
-import type { Skill } from "../../src/engine/skill"
+import { builtinSkill } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
 
 const CLASS = "bellstrikeUmbra"
-
-function findSkill(name: string): Skill {
-  const skill = builtinSkillsForClass(CLASS).find((candidate) => candidate.name === name)
-  if (!skill) throw new Error(`missing built-in skill: ${name}`)
-  return skill
-}
 
 function inputsWithSwordHorizon(tier: string): Inputs {
   return {
@@ -59,10 +54,10 @@ function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
 }
 
 describe("catalog summary pins — jadeware", () => {
-  it("Applies row on Sword Martial Q reads the pre-conversion BuffDef text", () => {
-    const rows = appliesForSkill(findSkill("Sword Martial Q"), CLASS)
+  it("Applies row on Sword Martial Q names the target state the bonus needs", () => {
+    const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10%, directAffinity +8%",
+      "affinityDmg +10%, directAffinity +7.5% — low-Qi targets only",
     )
   })
 })
@@ -85,9 +80,9 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
     )
   })
 
-  it("Receives row on Bleed Detonation reads the same point units", () => {
+  it("Receives row on Blood Burst reads the same point units", () => {
     const rows = receivesForSkill(
-      findSkill("Bleed Detonation"),
+      builtinSkill(CLASS, SKILL.bleedDetonation),
       CLASS,
       inputsWithSwordHorizon("tier 6"),
     )
@@ -99,21 +94,21 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
 
 describe("catalog summary pins — soulShaken", () => {
   it("Applies row on SpearQ reads the pre-conversion per-stack text", () => {
-    const rows = appliesForSkill(findSkill("SpearQ"), CLASS)
+    const rows = appliesForSkill(builtinSkill(CLASS, SKILL.spearq), CLASS)
     expect(rows.find((row) => row.id === "soulShaken")!.effect).toBe("+10.0% all/stack")
   })
 })
 
 describe("catalog summary pins — surgingWaves", () => {
   it("Applies row on Dragon Head - Plus reads the pre-conversion per-stack text", () => {
-    const rows = appliesForSkill(findSkill("Dragon Head - Plus"), CLASS)
+    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.dragonHeadPlus), CLASS)
     expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.3% all/stack")
   })
 })
 
 describe("catalog summary pins — fluteBoost", () => {
   it("Applies row on Flute of the Tides Full reads the pre-conversion param-sourced text", () => {
-    const rows = appliesForSkill(findSkill("Flute of the Tides Full"), CLASS)
+    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.fluteOfTheTidesFull), CLASS)
     expect(rows.find((row) => row.id === "fluteBoost")!.effect).toBe("+all (from fluteBoostValue)")
   })
 })
@@ -126,9 +121,9 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
     )
   })
 
-  it("Receives row on Bleed Detonation reads the same text", () => {
+  it("Receives row on Blood Burst reads the same text", () => {
     const rows = receivesForSkill(
-      findSkill("Bleed Detonation"),
+      builtinSkill(CLASS, SKILL.bleedDetonation),
       CLASS,
       inputsWithSwordHorizon("tier 6"),
     )
@@ -138,23 +133,55 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
   })
 })
 
-describe("Class Buffs column — scope, not alwaysActive, decides membership", () => {
-  it("is exactly the four scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
+describe("Class Buffs column — class ownership and scope decide membership", () => {
+  it("is exactly the class's own scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
       [
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
-        "soulShaken: +10.0% all/stack",
-        "buff-bellstrikeUmbra-zenith-bar: +15.0% all",
       ].sort(),
     )
+  })
+
+  // Both are scoped and both are live at these tiers — only their owner keeps
+  // them out, so nothing else in this file would notice the rule lapsing.
+  it("leaves out a slotted inner way's own buffs, however scoped they are", () => {
+    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
+    const ids = rows.map((row) => row.id)
+    expect(ids).not.toContain("soulShaken")
+    expect(ids).not.toContain("buff-bellstrikeUmbra-zenith-bar")
+  })
+})
+
+describe("reverse index — affectsSummary reads the injected skill list, never the deleted affects array", () => {
+  it('Receives row on Bleed Tick names the skills bellstrikeUmbraBleedPen actually reaches, not "all"', () => {
+    const rows = receivesForSkill(
+      builtinSkill(CLASS, SKILL.bleedTick),
+      CLASS,
+      inputsWithSwordHorizon("tier 6"),
+    )
+    expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.name).toBe(
+      "Bleed penetration Enhancement (Bleed Tick/Blood Burst)",
+    )
+  })
+
+  it("a Class Buffs row carries the same skill names in affects", () => {
+    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
+    expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.affects).toBe(
+      "Bleed Tick/Blood Burst",
+    )
+  })
+
+  it('names "nothing" for a scoped module no skill lists in receives, rather than falling back to "all"', () => {
+    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.ghostlySteps), CLASS)
+    expect(rows.find((row) => row.id === "mirage")!.name).toBe("Mirage (nothing)")
   })
 })
 
 describe("catalog summary pins — concentration", () => {
   it("Receives row reads the mechanic's own effects, the ones it applies", () => {
-    const rows = receivesForSkill(findSkill("Sword Martial Q"), CLASS, {
+    const rows = receivesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS, {
       ...defaultInputs,
       classId: CLASS,
     })

@@ -1,17 +1,11 @@
-import type { GearPiece, GearSlot, GearWordName } from "../../engine/types"
+import type { GearPiece, GearSlot, GearWordId } from "../../engine/types"
 import type { AttunementId } from "../../engine/attunements"
 import { getAttunement } from "../../engine/attunements"
 import { relayedCapValue } from "../../engine/gearStats"
 import { gearBaseStatsFor } from "../stats/gearBaseStats"
-import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../stats/gearWordRolls"
+import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../stats/statLines"
 
-export type GraduationWords = readonly [
-  GearWordName,
-  GearWordName,
-  GearWordName,
-  GearWordName,
-  GearWordName,
-]
+export type GraduationWords = readonly [GearWordId, GearWordId, GearWordId, GearWordId, GearWordId]
 
 interface GraduationGearPieceOptions {
   idPrefix: string

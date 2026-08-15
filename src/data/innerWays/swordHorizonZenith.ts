@@ -1,7 +1,7 @@
 // Sword Horizon's Zenith Bar: one 0-5 charge counter, in two projections —
 // a `Buff` gate record the timeline ledger tracks and shows as a chip, and a
 // `BuffModule` the Skill Editor's Receives / Class Buffs columns read for its
-// `affects`/`effects` pair. Sharing `ZENITH_BAR_BUFF_ID` between the two is
+// `effects`. Sharing `ZENITH_BAR_BUFF_ID` between the two is
 // what makes them one entity rather than a duplicate that merely agrees: the
 // two id spaces never collide (`catalogBuffDefs` keys defs, the ledger keys
 // statuses), and `castBuffs.ts` dedupes chips by id, which is the behaviour
@@ -22,7 +22,6 @@ import {
 } from "../../definitions/innerWays/innerWayDef"
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { PARAM } from "../skills/buffs/ids"
-import { ROLE } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 
 // Persisted inside saved custom skills (hit-variant/trigger conditions) and
@@ -78,8 +77,6 @@ export const zenithBar = defineClassBuff({
   id: ZENITH_BAR_BUFF_ID,
   name: "Zenith Bar",
   requires: { param: PARAM.swordHorizon },
-  affects: [ROLE.bleedDetonation],
-  triggeredBy: [],
   duration: 999,
   effects: [stat("allDamageBoost", ZENITH_BAR_DAMAGE_BONUS)],
 })

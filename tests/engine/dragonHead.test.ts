@@ -11,13 +11,15 @@ import { makeSkill } from "../../src/engine/skill"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import type { Inputs } from "../../src/engine/types"
+import { builtinSkill } from "../builtins"
+import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
 
 describe("Dragon Head registry — universal mystic, both versions", () => {
   it("Bellstrike Umbra exposes both versions with the workbook coefficients", () => {
     const classId = "bellstrikeUmbra"
-    const skills = builtinSkillsForClass(classId)
-    const base = skills.find((skill) => skill.name === "Dragon Head")
-    const plus = skills.find((skill) => skill.name === "Dragon Head - Plus")
+    const base = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHead)
+    const plus = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHeadPlus)
     expect(base).toBeTruthy()
     expect(plus).toBeTruthy()
     expect(base!.id).toBe(`${classId}-dragon-head`)
@@ -42,21 +44,20 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
     const surgingWaves = GLOBAL_BUFF_DEFS.find((module) => module.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
-    expect(surgingWaves!.triggeredBy).toEqual(["cast:dragonHeadPlus"])
     expect(surgingWaves!.maxStacks).toBe(40)
     expect(surgingWaves!.duration).toBe(6)
-    expect(surgingWaves!.affects).toEqual(["role:dragonHead"])
+    expect(surgingWaves!.affectsAll).toBeUndefined()
 
-    const dragonHeadHit = makeSkill("test", { name: "probe", tags: ["role:dragonHead"] })
+    const dragonHeadHit = makeSkill("test", { name: "probe", receives: ["surgingWaves"] })
     const engine = new BuffEngine({}, GLOBAL_BUFF_DEFS)
-    engine.processSkillCast("cast:dragonHeadPlus", 0)
+    engine.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engine.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.0125 * 8,
     })
 
     const engineWithAllies = new BuffEngine({ allySurgingWaves: true }, GLOBAL_BUFF_DEFS)
-    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0)
+    engineWithAllies.processSkillCast("cast:dragonHeadPlus", 0, {}, false, ["surgingWaves"])
     expect(engineWithAllies.calculateDamageEffects(dragonHeadHit, 0).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.0125 * 40,
@@ -170,21 +171,19 @@ describe("guaranteedPrecision — never abrades, crit/affinity still roll", () =
   })
 })
 
-function rotationOf(classId: string, skillNames: string[]) {
-  const skills = builtinSkillsForClass(classId)
-  const steps = skillNames.map((name) => {
-    const skill = skills.find((candidate) => candidate.name === name)
-    if (!skill) throw new Error(`no built-in skill "${name}" for ${classId}`)
+function rotationOf(classId: string, skillIds: string[]) {
+  const steps = skillIds.map((skillId) => {
+    const skill = builtinSkill(classId, skillId)
     return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
   })
-  return makeRotation(classId, { name: `test-${skillNames.join("+")}`, steps })
+  return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }
 
-function simulate(skillNames: string[], overrides: Partial<Inputs> = {}) {
+function simulate(skillIds: string[], overrides: Partial<Inputs> = {}) {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: "bellstrikeUmbra",
-    activeCustomRotation: rotationOf("bellstrikeUmbra", skillNames),
+    activeCustomRotation: rotationOf("bellstrikeUmbra", skillIds),
     ...overrides,
   }
   return simulateTimeline(inputs)
@@ -196,7 +195,8 @@ function withFullStacks(): Partial<Inputs> {
   }
 }
 
-function skillDamage(result: ReturnType<typeof simulateTimeline>, name: string): number {
+function skillDamage(result: ReturnType<typeof simulateTimeline>, skillId: string): number {
+  const name = builtinSkill("bellstrikeUmbra", skillId).name
   return result.perSkill
     .filter((entry) => entry.name === name)
     .reduce((sum, entry) => sum + entry.expectedDamage, 0)
@@ -204,10 +204,13 @@ function skillDamage(result: ReturnType<typeof simulateTimeline>, name: string):
 
 describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
   it("a second Plus cast inside the 6 s window is boosted by the first cast's stacks", () => {
-    const oneCast = skillDamage(simulate(["Dragon Head - Plus"]), "Dragon Head - Plus")
+    const oneCast = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus]),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
     const twoCasts = skillDamage(
-      simulate(["Dragon Head - Plus", "Dragon Head - Plus"]),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus, UNIVERSAL_SKILL.dragonHeadPlus]),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     expect(oneCast).toBeGreaterThan(0)
     // cast 1 lands at 8 stacks, cast 2 at 16 — the pair outdamages 2 independent casts
@@ -215,25 +218,25 @@ describe("Surging Waves in the timeline (Bellstrike Umbra)", () => {
   })
 
   it("Surging Waves does not leak onto other skills", () => {
-    const alone = skillDamage(simulate(["Sword Martial Q"]), "Sword Martial Q")
+    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate(["Dragon Head - Plus", "Sword Martial Q"]),
-      "Sword Martial Q",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus, SKILL.swordq]),
+      SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)
   })
 
   it("the base version's timeline damage ignores precision", () => {
-    const base = simulate(["Dragon Head"])
+    const base = simulate([UNIVERSAL_SKILL.dragonHead])
     const lowPrecision = simulateTimeline({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       precision: 0.7,
-      activeCustomRotation: rotationOf("bellstrikeUmbra", ["Dragon Head"]),
+      activeCustomRotation: rotationOf("bellstrikeUmbra", [UNIVERSAL_SKILL.dragonHead]),
     })
-    expect(skillDamage(base, "Dragon Head")).toBeGreaterThan(0)
-    expect(skillDamage(lowPrecision, "Dragon Head")).toBeCloseTo(
-      skillDamage(base, "Dragon Head"),
+    expect(skillDamage(base, UNIVERSAL_SKILL.dragonHead)).toBeGreaterThan(0)
+    expect(skillDamage(lowPrecision, UNIVERSAL_SKILL.dragonHead)).toBeCloseTo(
+      skillDamage(base, UNIVERSAL_SKILL.dragonHead),
       6,
     )
   })
@@ -246,7 +249,7 @@ describe("40 Stacks (Dragon Head) teammate buff", () => {
     )
 
   it("holds every cast at the 40-stack cap instead of climbing 8 at a time", () => {
-    const fiveCasts = Array(5).fill("Dragon Head - Plus")
+    const fiveCasts = Array(5).fill(UNIVERSAL_SKILL.dragonHeadPlus)
     const selfOnly = surgingWavesStacks(simulate(fiveCasts))
     expect(selfOnly[0]).toBeLessThan(40)
     expect(selfOnly).toEqual([...selfOnly].sort((left, right) => left - right))
@@ -254,19 +257,22 @@ describe("40 Stacks (Dragon Head) teammate buff", () => {
   })
 
   it("raises the first cast's damage over the self-only 8 stacks", () => {
-    const selfOnly = skillDamage(simulate(["Dragon Head - Plus"]), "Dragon Head - Plus")
+    const selfOnly = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus]),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
     const withAllies = skillDamage(
-      simulate(["Dragon Head - Plus"], withFullStacks()),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], withFullStacks()),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     expect(withAllies).toBeGreaterThan(selfOnly)
   })
 
   it("leaves other skills untouched", () => {
-    const alone = skillDamage(simulate(["Sword Martial Q"]), "Sword Martial Q")
+    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
     const afterPlus = skillDamage(
-      simulate(["Dragon Head - Plus", "Sword Martial Q"], withFullStacks()),
-      "Sword Martial Q",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus, SKILL.swordq], withFullStacks()),
+      SKILL.swordq,
     )
     expect(afterPlus).toBeCloseTo(alone, 6)
   })
@@ -283,14 +289,20 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(dragonHeadLowHp!.effects).toEqual([
       { kind: "stat", statKey: "allDamageBoost", amount: 0.45 },
     ])
-    expect(dragonHeadLowHp!.affects).toEqual(["role:dragonHeadPlus"])
+    expect(dragonHeadLowHp!.affectsAll).toBeUndefined()
     expect(dragonHeadLowHp!.requires?.param).toBe("dragonHeadLowHpMaxBonus")
     expect(dragonHeadLowHp!.alwaysActive).toBe(true)
   })
 
   it("does nothing until the toggle is on", () => {
-    const plain = skillDamage(simulate(["Dragon Head - Plus"]), "Dragon Head - Plus")
-    const boosted = skillDamage(simulate(["Dragon Head - Plus"], withLowHp()), "Dragon Head - Plus")
+    const plain = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus]),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
+    const boosted = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], withLowHp()),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
     expect(boosted).toBeGreaterThan(plain)
   })
 
@@ -300,19 +312,25 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     const withRevelry = (): Partial<Inputs> => ({
       combatSettings: { ...defaultCombatSettings(), revelryScript: true },
     })
-    const plain = skillDamage(simulate(["Dragon Head - Plus"]), "Dragon Head - Plus")
-    const revelry = skillDamage(
-      simulate(["Dragon Head - Plus"], withRevelry()),
-      "Dragon Head - Plus",
+    const plain = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus]),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
-    const lowHp = skillDamage(simulate(["Dragon Head - Plus"], withLowHp()), "Dragon Head - Plus")
+    const revelry = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], withRevelry()),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
+    const lowHp = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], withLowHp()),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
 
     const pool = 0.3 / (revelry / plain - 1)
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
   it("does not touch the base version or any other skill", () => {
-    for (const name of ["Dragon Head", "Sword Martial Q"]) {
+    for (const name of [UNIVERSAL_SKILL.dragonHead, SKILL.swordq]) {
       const alone = skillDamage(simulate([name]), name)
       const withBonus = skillDamage(simulate([name], withLowHp()), name)
       expect(withBonus, name).toBeCloseTo(alone, 6)
@@ -324,7 +342,7 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   const qiBreak = (enabled: boolean, startSec: number): Partial<Inputs> => ({
     combatSettings: {
       ...defaultCombatSettings(),
-      qiBreak: { enabled, startSec, durationSec: 10 },
+      qiBreak: { enabled, startSec, durationSec: 10, lowQiLeadSec: 0 },
     },
   })
 
@@ -333,9 +351,8 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   const outsideBreak = qiBreak(true, 60)
 
   it("carries the tag on Bellstrike Umbra's built-in Plus, and never on the base version", () => {
-    const skills = builtinSkillsForClass("bellstrikeUmbra")
-    const plus = skills.find((skill) => skill.name === "Dragon Head - Plus")!
-    const base = skills.find((skill) => skill.name === "Dragon Head")!
+    const plus = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHeadPlus)
+    const base = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHead)
     expect(plus.tags).toContain("prop:hasQiBreakDoubleDamage")
     expect(base.tags).not.toContain("prop:hasQiBreakDoubleDamage")
   })
@@ -345,7 +362,7 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   // pre-existing +10 % boost instead would not isolate the doubling.
   const withoutTheTag = (): Inputs["customSkills"] => {
     const plus = builtinSkillsForClass("bellstrikeUmbra").find(
-      (skill) => skill.name === "Dragon Head - Plus",
+      (skill) => skill.id === builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHeadPlus).id,
     )!
     return [
       {
@@ -356,38 +373,53 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
   }
 
   it("is worth exactly x2 inside the window", () => {
-    const tagged = skillDamage(simulate(["Dragon Head - Plus"], insideBreak), "Dragon Head - Plus")
+    const tagged = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], insideBreak),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
     const untagged = skillDamage(
-      simulate(["Dragon Head - Plus"], { ...insideBreak, customSkills: withoutTheTag() }),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], { ...insideBreak, customSkills: withoutTheTag() }),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     expect(tagged / untagged).toBeCloseTo(2, 9)
   })
 
   it("changes nothing outside the window", () => {
-    const tagged = skillDamage(simulate(["Dragon Head - Plus"], outsideBreak), "Dragon Head - Plus")
+    const tagged = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], outsideBreak),
+      UNIVERSAL_SKILL.dragonHeadPlus,
+    )
     const untagged = skillDamage(
-      simulate(["Dragon Head - Plus"], { ...outsideBreak, customSkills: withoutTheTag() }),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], {
+        ...outsideBreak,
+        customSkills: withoutTheTag(),
+      }),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     expect(tagged).toBeCloseTo(untagged, 6)
   })
 
   it("does not double when the Qi Break Window toggle is off", () => {
     const off = skillDamage(
-      simulate(["Dragon Head - Plus"], qiBreak(false, 0)),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], qiBreak(false, 0)),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     const outside = skillDamage(
-      simulate(["Dragon Head - Plus"], outsideBreak),
-      "Dragon Head - Plus",
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], outsideBreak),
+      UNIVERSAL_SKILL.dragonHeadPlus,
     )
     expect(off).toBeCloseTo(outside, 6)
   })
 
   it("does not double the base version, which only gets the window's boost", () => {
-    const outside = skillDamage(simulate(["Dragon Head"], outsideBreak), "Dragon Head")
-    const inside = skillDamage(simulate(["Dragon Head"], insideBreak), "Dragon Head")
+    const outside = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHead], outsideBreak),
+      UNIVERSAL_SKILL.dragonHead,
+    )
+    const inside = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHead], insideBreak),
+      UNIVERSAL_SKILL.dragonHead,
+    )
     expect(inside).toBeGreaterThan(outside)
     expect(inside / outside).toBeLessThan(1.5)
   })

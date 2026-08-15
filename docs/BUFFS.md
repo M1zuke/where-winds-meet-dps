@@ -28,9 +28,10 @@ Reaches only certain skills. **A stat that reaches only some skills is
 category 2, not category 1** — that is the distinction people get wrong.
 
 These MUST be first-class, data-driven defs in the trigger-driven buff system.
-The skill that _causes_ it declares it; the skills that _receive_ it are matched
-by tags. Both must be visible and referenced in the Skill Editor. This is the
-**"no invisible magic"** rule.
+The skill or debuff that _causes_ it declares it, via `triggersBuffs` — a
+debuff's fires on every tick of its `dot`; the skills or debuffs that
+_receive_ it declare it too, via `receives`. Both must be visible and
+referenced in the Skill Editor. This is the **"no invisible magic"** rule.
 
 ### What not to do
 

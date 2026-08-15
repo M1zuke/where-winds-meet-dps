@@ -9,12 +9,20 @@ import type {
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
-import { isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
+import { breakdownNameOf, isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, UNOWNED } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
-import { dotTickDamage, dotTickSkill, emitDotTicks, resolveTickDot, tickSourceSkillId } from "./dot"
+import {
+  dotRowName,
+  dotTickDamage,
+  dotTickSkill,
+  planDotTicks,
+  resolveTickDot,
+  tickSourceSkillId,
+  type DotTickPlan,
+} from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
@@ -180,20 +188,12 @@ export function simulateTimeline(inputs: Inputs): Result {
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
 
-  const prePullHitsCount = rotation.prePullHitsCount ?? false
-  const inWindow = (frame: number): boolean =>
-    frame >= 0 ? frame <= durationFrames : prePullHitsCount
+  const inWindow = (frame: number): boolean => frame <= durationFrames
 
-  const castMetrics = new Map<string, { castCount: number; castFrames: number }>()
-  for (let i = 0; i < laidSteps.length; i++) {
-    const ls = laidSteps[i]
-    if (ls.prePull && !prePullHitsCount) continue
+  const castCounts = new Map<string, number>()
+  for (const ls of laidSteps) {
     const name = ls.resolved.skill.name
-    const e = castMetrics.get(name)
-    if (e) {
-      e.castCount += 1
-      e.castFrames += castLens[i]
-    } else castMetrics.set(name, { castCount: 1, castFrames: castLens[i] })
+    castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
   }
 
   const ledger = new StatusLedger(spanStart, durationFrames)
@@ -225,7 +225,7 @@ export function simulateTimeline(inputs: Inputs): Result {
   const buildView: BuildView = {
     classId: inputs.classId,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
-    classSpecificAttunement: (tag) => inputs.classSpecificAttunement[tag] ?? 0,
+    classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
     grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
   }
 
@@ -300,6 +300,7 @@ export function simulateTimeline(inputs: Inputs): Result {
             cast.frame / FPS,
             propsOfSkill(cast.skill, cast.hitCount),
             cast.generated,
+            cast.skill.triggersBuffs ?? [],
           )
           const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
           propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
@@ -338,6 +339,13 @@ export function simulateTimeline(inputs: Inputs): Result {
     ? (() => {
         const w = buffEngine.qiBreakWindow()
         return { startSec: w.start, endSec: w.end }
+      })()
+    : null
+
+  const lowQiWindow = buffEngine
+    ? (() => {
+        const w = buffEngine.lowQiWindow()
+        return w ? { startSec: w.start, endSec: w.end } : null
       })()
     : null
 
@@ -498,13 +506,22 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
-  const byName = new Map<string, { type: string; count: number; damage: number }>()
-  function add(name: string, type: string, count: number, damage: number): void {
+  const byName = new Map<
+    string,
+    { breakdownName: string; type: string; count: number; damage: number }
+  >()
+  function add(
+    name: string,
+    type: string,
+    count: number,
+    damage: number,
+    breakdownName: string,
+  ): void {
     const e = byName.get(name)
     if (e) {
       e.count += count
       e.damage += damage
-    } else byName.set(name, { type, count, damage })
+    } else byName.set(name, { breakdownName, type, count, damage })
   }
 
   const timeline: TimelineEvent[] = []
@@ -588,7 +605,13 @@ export function simulateTimeline(inputs: Inputs): Result {
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
       totalDamage += expectedDamage
-      add(skill.name, skill.skillType, 1, expectedDamage)
+      add(
+        skill.name,
+        skill.skillType,
+        1,
+        expectedDamage,
+        breakdownNameOf(skill.breakdownName, skill.name),
+      )
     }
     timeline.push({
       frame,
@@ -761,6 +784,18 @@ export function simulateTimeline(inputs: Inputs): Result {
     }
   }
 
+  interface DotTickEntry extends DotTickPlan {
+    seq: number
+    debuff: Debuff
+    debuffForTick: Debuff
+    dotSkill: Skill
+    dotName: string
+    dotBreakdownName: string
+    dotType: string
+  }
+
+  const dotTickEntries: DotTickEntry[] = []
+  let dotTickSeq = 0
   for (const [buffId, arr] of ledger.entries()) {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
@@ -770,10 +805,11 @@ export function simulateTimeline(inputs: Inputs): Result {
     if (!dot) continue
     const debuffForTick: Debuff = { ...status, dot }
     const dotSkill = dotTickSkill(status, tickSkill)
-    const dotName = `${status.name} (DoT)`
+    const dotName = dotRowName(status)
+    const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
     const dotType = dot.skillType || "sustain"
 
-    for (const tick of emitDotTicks({
+    for (const plan of planDotTicks({
       debuff: status,
       dot,
       windows: arr,
@@ -786,26 +822,56 @@ export function simulateTimeline(inputs: Inputs): Result {
         }
         return 1
       },
-      damageAt: (frame, shape, scale) => {
-        const st = resolveState(frame, dotSkill)
-        return (
-          dotTickDamage(debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, shape) *
-          (scale ?? 1)
-        )
-      },
     })) {
-      totalDamage += tick.damage
-      add(dotName, dotType, 1, tick.damage)
-      timeline.push({
-        frame: tick.frame,
-        timeSec: tick.frame / FPS,
-        skillName: dotName,
-        type: dotType,
-        kind: "dot",
-        damage: tick.damage,
-        inWindow: true,
+      dotTickEntries.push({
+        ...plan,
+        seq: dotTickSeq++,
+        debuff: status,
+        debuffForTick,
+        dotSkill,
+        dotName,
+        dotBreakdownName,
+        dotType,
       })
     }
+  }
+
+  // A tick's declared buffs must reach `buffHistory` before ANY tick's damage
+  // is queried, in real chronological order across every debuff — not in the
+  // per-debuff batches `dotTickEntries` was built in above, or a tick from a
+  // debuff visited later in `ledger.entries()` could be evaluated as if an
+  // earlier-in-time tick from a different debuff hadn't triggered yet.
+  const byTriggerTime = [...dotTickEntries].sort(
+    (left, right) => left.frame - right.frame || left.seq - right.seq,
+  )
+  for (const entry of byTriggerTime) {
+    if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
+      buffEngine?.triggerDeclaredBuffs(
+        entry.debuff.triggersBuffs,
+        castTagOf(entry.dotSkill),
+        entry.frame / FPS,
+        propsOfSkill(entry.dotSkill, 1),
+      )
+    }
+  }
+
+  for (const entry of dotTickEntries) {
+    const st = resolveState(entry.frame, entry.dotSkill)
+    const damage =
+      dotTickDamage(entry.debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, entry.shape) *
+      (entry.scale ?? 1) *
+      entry.weight
+    totalDamage += damage
+    add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName)
+    timeline.push({
+      frame: entry.frame,
+      timeSec: entry.frame / FPS,
+      skillName: entry.dotName,
+      type: entry.dotType,
+      kind: "dot",
+      damage,
+      inWindow: true,
+    })
   }
 
   for (const { mechanic, state } of mechanics) {
@@ -815,7 +881,13 @@ export function simulateTimeline(inputs: Inputs): Result {
       if (st.forceCrit) art.guaranteedCrit = 1
       const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
       totalDamage += expectedDamage
-      add(event.name, event.type, 1, expectedDamage)
+      add(
+        event.name,
+        event.type,
+        1,
+        expectedDamage,
+        breakdownNameOf(event.skill.breakdownName, event.name),
+      )
       timeline.push({
         frame: event.frame,
         timeSec: event.frame / FPS,
@@ -830,22 +902,15 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   timeline.sort((a, b) => a.frame - b.frame || (a.kind === b.kind ? 0 : a.kind === "hit" ? -1 : 1))
 
-  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, e]) => {
-    const cast = castMetrics.get(name)
-    const castCount = cast?.castCount ?? 0
-    const castTimeSec = cast ? cast.castFrames / FPS : 0
-    const dpsOfCastTime = castTimeSec > 0 ? e.damage / castTimeSec : 0
-    return {
-      name,
-      type: e.type,
-      count: e.count,
-      expectedDamage: e.damage,
-      percentOfTotal: totalDamage > 0 ? e.damage / totalDamage : 0,
-      castCount,
-      castTimeSec,
-      dpsOfCastTime,
-    }
-  })
+  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, e]) => ({
+    name,
+    breakdownName: e.breakdownName,
+    type: e.type,
+    count: e.count,
+    expectedDamage: e.damage,
+    percentOfTotal: totalDamage > 0 ? e.damage / totalDamage : 0,
+    castCount: castCounts.get(name) ?? 0,
+  }))
 
   const durationSeconds = durationFrames / FPS
   const dps = durationSeconds > 0 ? totalDamage / durationSeconds : 0
@@ -863,6 +928,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     timeline,
     buffWindows,
     qiBreakWindow,
+    lowQiWindow,
     casts,
   }
 }
@@ -879,6 +945,7 @@ function emptyResult(warnings: string[]): Result {
     timeline: [],
     buffWindows: [],
     qiBreakWindow: null,
+    lowQiWindow: null,
     casts: [],
   }
 }

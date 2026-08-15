@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 
 export const snowpartingqStab = defineSkill({
@@ -12,6 +13,8 @@ export const snowpartingqStab = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQStab,
+  receives: [BUFF.shatteredRidgeDeflect],
+  triggersBuffs: [BUFF.throatPierced],
   castFrames: 113,
   triggerable: true,
   hits: [
@@ -22,15 +25,14 @@ export const snowpartingqStab = defineSkill({
       physFixed: 590,
       attributeFixed: 322,
       triggers: [
-        castSkill({ id: "tg-snowpartingq-stab-cast", target: SKILL.anxisoldierheng, stacks: 0 }),
+        castSkill({ target: SKILL.anxisoldierheng, stacks: 0 }),
         applyBuff({
-          id: "tg-snowpartingq-stab-dread-extension",
           target: STATUS.dread,
           stacks: 0,
           extendFrames: 360,
           extendOnly: true,
         }),
-        applyBuff({ id: "tg-snowpartingq-stab-fearful-blade", target: STATUS.fearfulBlade }),
+        applyBuff({ target: STATUS.fearfulBlade }),
       ],
     }),
   ],

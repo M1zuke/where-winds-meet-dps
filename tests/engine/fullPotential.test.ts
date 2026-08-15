@@ -52,7 +52,7 @@ function withInventory(p: GearPiece, equipped: boolean = false, extra: GearPiece
 
 describe("getFTPiece", () => {
   it("for a non-relayed piece, returns the variant whose DPS is at least as high as either build path", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 30), w("Momentum", 30), EMPTY, EMPTY], {
+    const p = piece([w("crit", 0.05), w("agility", 30), w("momentum", 30), EMPTY, EMPTY], {
       attunement: "physPen",
       attunementValue: 0.06,
     })
@@ -66,7 +66,7 @@ describe("getFTPiece", () => {
   })
 
   it("for a relayed piece, modulates word values to the 94 % cap and leaves retune flags untouched", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 30), w("Momentum", 30), EMPTY, EMPTY], {
+    const p = piece([w("crit", 0.05), w("agility", 30), w("momentum", 30), EMPTY, EMPTY], {
       relayed: true,
       attunement: "physPen",
       attunementValue: 0.06,
@@ -90,7 +90,7 @@ describe("getFTPiece", () => {
 
   it("applying the panel's top retune to the piece does not change FP (the picker already accounted for it)", () => {
     const p = piece(
-      [w("Crit", 0.05), w("Agility", 20), w("Momentum", 20), w("Max Bamboocut", 5), EMPTY],
+      [w("crit", 0.05), w("agility", 20), w("momentum", 20), w("maxBamboocut", 5), EMPTY],
       { attunement: "physPen", attunementValue: 0.04 },
     )
     const inputs = withInventory(p, /* equipped */ true)
@@ -138,7 +138,7 @@ describe("getFTPiece", () => {
   })
 
   it("FT retune reaches at least the best single-swap DPS the retunement panel could find", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 20), w("Momentum", 20), EMPTY, EMPTY], {
+    const p = piece([w("crit", 0.05), w("agility", 20), w("momentum", 20), EMPTY, EMPTY], {
       attunement: "",
       attunementValue: 0,
     })
@@ -171,7 +171,7 @@ describe("getFTPiece", () => {
   })
 
   it("upgrades the attunement to the best legal option at its max value", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 30), w("Momentum", 30), EMPTY, EMPTY], {
+    const p = piece([w("crit", 0.05), w("agility", 30), w("momentum", 30), EMPTY, EMPTY], {
       attunement: "",
       attunementValue: 0,
     })
@@ -185,10 +185,10 @@ describe("getFTPiece", () => {
 
   it("for non-relayed gear with all stats at low values, max-relayed beats keeping current values", () => {
     const p = piece([
-      w("Crit", 0.001),
-      w("Agility", 1),
-      w("Momentum", 1),
-      w("Max Bamboocut", 1),
+      w("crit", 0.001),
+      w("agility", 1),
+      w("momentum", 1),
+      w("maxBamboocut", 1),
       EMPTY,
     ])
     const inputs = withInventory(p)
@@ -207,7 +207,7 @@ describe("getFTPiece", () => {
 
 describe("ftDpsWhenEquipped", () => {
   it("returns DPS strictly higher than baseline for an obviously upgradable piece", () => {
-    const p = piece([w("Crit", 0.001), w("Agility", 1), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.001), w("agility", 1), EMPTY, EMPTY, EMPTY])
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
     const dps = ftDpsWhenEquipped(p, inputs)
@@ -215,7 +215,7 @@ describe("ftDpsWhenEquipped", () => {
   })
 
   it("for a relayed piece with weak word values, FT DPS strictly beats baseline (modulation kicks in)", () => {
-    const p = piece([w("Crit", 0.001), w("Agility", 1), EMPTY, EMPTY, EMPTY], {
+    const p = piece([w("crit", 0.001), w("agility", 1), EMPTY, EMPTY, EMPTY], {
       relayed: true,
       attunement: "",
       attunementValue: 0,
@@ -229,7 +229,7 @@ describe("ftDpsWhenEquipped", () => {
 
 describe("computeDpsDeltas → fullPotential field", () => {
   it("for the equipped piece, emits the upside from the current build (FT − baseline)", () => {
-    const p = piece([w("Crit", 0.005), w("Agility", 2), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.005), w("agility", 2), EMPTY, EMPTY, EMPTY])
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
     const res = computeDpsDeltas({
@@ -249,11 +249,11 @@ describe("computeDpsDeltas → fullPotential field", () => {
     }
     const p = piece(
       [
-        { word: "Crit", value: at("Crit"), retuned: false },
-        { word: "Agility", value: at("Agility"), retuned: false },
-        { word: "Momentum", value: at("Momentum"), retuned: false },
-        { word: "Max Bamboocut", value: at("Max Bamboocut"), retuned: false },
-        { word: "Max Phys", value: at("Max Phys"), retuned: false },
+        { word: "crit", value: at("crit"), retuned: false },
+        { word: "agility", value: at("agility"), retuned: false },
+        { word: "momentum", value: at("momentum"), retuned: false },
+        { word: "maxBamboocut", value: at("maxBamboocut"), retuned: false },
+        { word: "maxPhys", value: at("maxPhys"), retuned: false },
       ] as GearPiece["words"],
       { relayed: true, attunement: "physPen", attunementValue: 0.11 },
     )
@@ -269,7 +269,7 @@ describe("computeDpsDeltas → fullPotential field", () => {
   })
 
   it("emits a positive FT delta when the candidate's potential beats the empty slot", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 30), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.05), w("agility", 30), EMPTY, EMPTY, EMPTY])
     const inputs = withInventory(p, /* equipped */ false)
     const baselineDps = runEngine(inputs).dps
     const res = computeDpsDeltas({
@@ -283,7 +283,7 @@ describe("computeDpsDeltas → fullPotential field", () => {
   })
 
   it("for the equipped piece itself, FP(E) is exactly zero (FT − FT)", () => {
-    const p = piece([w("Crit", 0.05), w("Agility", 30), EMPTY, EMPTY, EMPTY])
+    const p = piece([w("crit", 0.05), w("agility", 30), EMPTY, EMPTY, EMPTY])
     const inputs = withInventory(p, /* equipped */ true)
     const baselineDps = runEngine(inputs).dps
     const res = computeDpsDeltas({
@@ -297,13 +297,12 @@ describe("computeDpsDeltas → fullPotential field", () => {
 
   it("FP(E) is non-positive when the candidate has strictly weaker word values than the equipped piece", () => {
     const E = piece(
-      [w("Crit", 0.07), w("Agility", 35), w("Momentum", 35), w("Max Phys", 60), EMPTY],
+      [w("crit", 0.07), w("agility", 35), w("momentum", 35), w("maxPhys", 60), EMPTY],
       { id: "equipped" },
     )
-    const P = piece(
-      [w("Crit", 0.005), w("Agility", 2), w("Momentum", 2), w("Max Phys", 5), EMPTY],
-      { id: "weakcand" },
-    )
+    const P = piece([w("crit", 0.005), w("agility", 2), w("momentum", 2), w("maxPhys", 5), EMPTY], {
+      id: "weakcand",
+    })
     const base: Inputs = {
       ...umbraInputs,
       inventory: [E, P],

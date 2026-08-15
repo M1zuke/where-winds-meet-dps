@@ -166,10 +166,8 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const henZhi = inputs.shareDebuff5HenZhi ? 0.05 : 0
   const easyHurt = inputs.shareEasyHurt ? 0.05 : 0
-  const tianGongFire =
-    inputs.tianGongElement === "fire" ? (setFormula.lowQiDirectAffinityRate ?? 0) : 0
   const generalDamageBoost =
-    henZhi + easyHurt + tianGongFire + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
+    henZhi + easyHurt + (setFormula.physBoost ?? 0) + targetGeneralDamageTaken
 
   const weaponBoosts: Record<string, number> = {
     Sword: inputs.swordBoost,
@@ -253,8 +251,8 @@ export function buildContext(
     (school.generalDamageBoost ?? 0)
 
   const classSpecificAttunement: Record<string, number> = {}
-  for (const tag of school.classSpecificAttunements) {
-    classSpecificAttunement[tag] = inputs.classSpecificAttunement[tag] ?? 0
+  for (const attunementId of school.classSpecificAttunements) {
+    classSpecificAttunement[attunementId] = inputs.classSpecificAttunement[attunementId] ?? 0
   }
 
   const attuneBoostByTag: Record<string, number> = {}
@@ -262,10 +260,7 @@ export function buildContext(
     if (!option.affectsTag || !option.enginePath?.startsWith(CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX))
       continue
     if (option.classIds && !option.classIds.includes(inputs.classId)) continue
-    const amount =
-      inputs.classSpecificAttunement[
-        option.enginePath.slice(CLASS_SPECIFIC_ATTUNEMENT_PATH_PREFIX.length)
-      ] ?? 0
+    const amount = inputs.classSpecificAttunement[option.id] ?? 0
     if (amount)
       attuneBoostByTag[option.affectsTag] = (attuneBoostByTag[option.affectsTag] ?? 0) + amount
   }

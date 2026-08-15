@@ -1,7 +1,12 @@
 // Calls the exported compute functions directly — never spins up a real
 // `Worker` in vitest/jsdom.
 import { describe, expect, it } from "vitest"
-import { computeRankingRequest, computeSetTiles } from "../../src/engine/dpsWorker"
+import {
+  computeRankingRequest,
+  computeRotationDps,
+  computeSetTiles,
+} from "../../src/engine/dpsWorker"
+import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { computeRanking } from "../../src/engine/itemRanking"
 import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
@@ -59,5 +64,67 @@ describe("computeSetTiles", () => {
   it("arsenalDpsByChoice matches the reference pipeline for two choices", () => {
     expect(res.arsenalDpsByChoice.general).toBe(dpsFor(swapArsenal(umbraInputs, "general")))
     expect(res.arsenalDpsByChoice.bellstrike).toBe(dpsFor(swapArsenal(umbraInputs, "bellstrike")))
+  })
+})
+
+describe("computeRotationDps", () => {
+  const builtins = builtinRotationsForClass("bellstrikeUmbra")
+  const options = builtins.map((rotation) => ({ optionId: rotation.id, rotation }))
+
+  it("echoes reqId", () => {
+    expect(computeRotationDps({ reqId: 5, inputs: umbraInputs, options }).reqId).toBe(5)
+  })
+
+  it("matches runEngine with that rotation active, for every option", () => {
+    const res = computeRotationDps({ reqId: 1, inputs: umbraInputs, options })
+
+    for (const { optionId, rotation } of options) {
+      const expected = runEngine({ ...umbraInputs, activeCustomRotation: rotation }).dps
+      expect(res.dpsByOptionId[optionId]).toBe(expected)
+    }
+  })
+
+  it("agrees with the selected-built-in path the app uses", () => {
+    const builtin = builtins[0]
+    const res = computeRotationDps({
+      reqId: 2,
+      inputs: umbraInputs,
+      options: [{ optionId: builtin.id, rotation: builtin }],
+    })
+    const viaSelection = runEngine({
+      ...umbraInputs,
+      activeCustomRotation: null,
+      selectedBuiltinRotationId: builtin.id,
+    }).dps
+
+    expect(res.dpsByOptionId[builtin.id]).toBe(viaSelection)
+  })
+
+  it("treats a null rotation as the class default", () => {
+    const res = computeRotationDps({
+      reqId: 3,
+      inputs: umbraInputs,
+      options: [
+        { optionId: "axis", rotation: null },
+        { optionId: "default", rotation: defaultRotationForClass("bellstrikeUmbra") },
+      ],
+    })
+
+    expect(res.dpsByOptionId.axis).toBe(res.dpsByOptionId.default)
+  })
+
+  it("ignores whatever rotation the incoming inputs already carried", () => {
+    const builtin = builtins[0]
+    const other = builtins[builtins.length - 1]
+    const withOtherActive = { ...umbraInputs, activeCustomRotation: other }
+    const res = computeRotationDps({
+      reqId: 4,
+      inputs: withOtherActive,
+      options: [{ optionId: builtin.id, rotation: builtin }],
+    })
+
+    expect(res.dpsByOptionId[builtin.id]).toBe(
+      runEngine({ ...umbraInputs, activeCustomRotation: builtin }).dps,
+    )
   })
 })

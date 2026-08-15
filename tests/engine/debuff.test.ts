@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import { makeDebuff, isDebuff, type Debuff } from "../../src/engine/debuff"
+import { makeDebuff, isDebuff, seedDebuffFromBuiltin, type Debuff } from "../../src/engine/debuff"
 import {
   saveCustomDebuff,
   deleteCustomDebuff,
@@ -44,6 +44,27 @@ describe("isDebuff — validation + tolerance", () => {
   it("does not deep-validate a malformed dot — hydrate sanitizes it instead", () => {
     const d = makeDebuff(CLASS, { name: "x", dot: "not-an-object" as unknown as Debuff["dot"] })
     expect(isDebuff(d)).toBe(true)
+  })
+
+  it("accepts a triggersBuffs array of ids, and rejects a non-array or non-string entry", () => {
+    const withTriggers = makeDebuff(CLASS, { name: "x", triggersBuffs: ["mountainSplitter"] })
+    expect(isDebuff(withTriggers)).toBe(true)
+    expect(isDebuff({ ...withTriggers, triggersBuffs: "mountainSplitter" })).toBe(false)
+    expect(isDebuff({ ...withTriggers, triggersBuffs: [42] })).toBe(false)
+  })
+})
+
+describe("seedDebuffFromBuiltin — carries triggersBuffs through, like receives", () => {
+  it("copies an explicit triggersBuffs onto the seeded copy", () => {
+    const builtin = makeDebuff(CLASS, { name: "Source", triggersBuffs: ["mountainSplitter"] })
+    const seeded = seedDebuffFromBuiltin(CLASS, builtin)
+    expect(seeded.triggersBuffs).toEqual(["mountainSplitter"])
+  })
+
+  it("leaves the seeded copy without one when the source carries none", () => {
+    const builtin = makeDebuff(CLASS, { name: "Source" })
+    const seeded = seedDebuffFromBuiltin(CLASS, builtin)
+    expect(seeded.triggersBuffs).toBeUndefined()
   })
 })
 
@@ -93,6 +114,42 @@ describe("storage round-trip", () => {
     expect(imported.dot?.tickIntervalFrames).toBe(60)
     expect(imported.maxStacks).toBe(5)
     expect(imported.stackScaling).toBe("perStack")
+  })
+
+  it("export → import carries an explicit receives through unchanged", () => {
+    const debuff = makeDebuff(CLASS, {
+      name: "Combustion",
+      receives: ["bellstrikeUmbraBleedingDamage"],
+    })
+    const imported = importCustomDebuff(exportCustomDebuff(debuff), "bellstrikeUmbra")
+    expect(imported.receives).toEqual(["bellstrikeUmbraBleedingDamage"])
+  })
+
+  it("export → import carries an explicit triggersBuffs through unchanged", () => {
+    const debuff = makeDebuff(CLASS, {
+      name: "Combustion",
+      triggersBuffs: ["mountainSplitter"],
+    })
+    const imported = importCustomDebuff(exportCustomDebuff(debuff), "bellstrikeUmbra")
+    expect(imported.triggersBuffs).toEqual(["mountainSplitter"])
+  })
+
+  it("import heals receives immediately from a dot's implied sustain type", () => {
+    const dotDebuff = makeDebuff(CLASS, {
+      name: "Combustion",
+      dot: {
+        tickIntervalFrames: 60,
+        physMultiplier: 1,
+        physFixed: 100,
+        attributeMultiplier: 0,
+        attributeFixed: 0,
+        attributeAttack: "",
+        skillType: "sustain",
+        count: 1,
+      },
+    })
+    const imported = importCustomDebuff(exportCustomDebuff(dotDebuff), "bellstrikeUmbra")
+    expect(imported.receives).toEqual(["soulShaken"])
   })
 
   it("export → import preserves a well-formed perStackShapes table", () => {

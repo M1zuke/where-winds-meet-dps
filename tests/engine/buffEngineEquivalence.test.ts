@@ -63,11 +63,7 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     name: module.name,
     classBuff: "classBuff" in module,
     requires: module.requires ?? null,
-    affects: module.affects ?? null,
-    affectsProperty: module.affectsProperty ?? null,
-    affectsWeaponTypes: module.affectsWeaponTypes ?? null,
-    excludes: module.excludes ?? null,
-    triggeredBy: module.triggeredBy ?? null,
+    affectsAll: !!module.affectsAll,
     alwaysActive: !!module.alwaysActive,
     buffAppliesOnCastEnd: !!module.buffAppliesOnCastEnd,
     cooldown: module.cooldown ?? null,
@@ -174,13 +170,27 @@ function dynamicDumpFor(classId: string) {
   }
 
   const engine = new BuffEngine(params, buffs, group)
-  const castTags = [...new Set(allModules.flatMap((module) => module.triggeredBy ?? []))].sort()
+  const castTags = allModules.map((module) => `probe:${module.id}`).sort()
+  // Short enough to still be inside every probed module's own duration (so a
+  // `stacksPerHit` module ramps toward its cap) while shorter than every
+  // probed cooldown (so a cooldown-gated module's second grant is the thing
+  // that gets exercised, not just the first).
+  const RETRIGGER_GAP = 3
   let time = 0
-  for (const castTag of castTags) {
-    engine.processSkillCast(castTag, time, { hitCount: 3, castTime: 1 })
+  for (const module of allModules) {
+    engine.processSkillCast(`probe:${module.id}`, time, { hitCount: 3, castTime: 1 }, false, [
+      module.id,
+    ])
+    engine.processSkillCast(
+      `probe:${module.id}`,
+      time + RETRIGGER_GAP,
+      { hitCount: 3, castTime: 1 },
+      false,
+      [module.id],
+    )
     time += 2
   }
-  const lastTime = time + 5
+  const lastTime = time + RETRIGGER_GAP + 5
 
   const damage: Record<string, unknown> = {}
   const display: Record<string, unknown> = {}
@@ -188,6 +198,14 @@ function dynamicDumpFor(classId: string) {
     for (const tags of TAG_COMBOS) {
       const key = `${probeTime}|${tags.join(",")}`
       const skill = makeSkill("test", { name: "probe", tags })
+      damage[key] = summarizeDamage(engine.calculateDamageEffects(skill, probeTime))
+    }
+    // Receiving is id-referenced too — a skill naming a module in `receives`
+    // is the only way a scoped module (no `affectsAll`) reaches anything, so
+    // the tag combos above alone would probe it as permanently unreachable.
+    for (const module of allModules) {
+      const key = `${probeTime}|receives:${module.id}`
+      const skill = makeSkill("test", { name: "probe", receives: [module.id] })
       damage[key] = summarizeDamage(engine.calculateDamageEffects(skill, probeTime))
     }
     display[String(probeTime)] = engine

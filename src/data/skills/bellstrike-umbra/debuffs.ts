@@ -1,5 +1,5 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
-import { PARAM } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { ROLE } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 import type { Debuff } from "../../../engine/debuff"
@@ -32,6 +32,7 @@ export const toadPoison = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const combustion = defineDebuff({
@@ -58,12 +59,14 @@ export const combustion = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   tags: [ROLE.combustion],
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const darkFire = defineDebuff({
   id: DEBUFF.darkFire,
   classId: CLASS_ID,
   name: "Smolder",
+  breakdownName: "Smolder",
   activation: "triggered",
   durationFrames: 240,
   effects: [],
@@ -84,12 +87,14 @@ export const darkFire = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-07-30T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const fluteRipple = defineDebuff({
   id: DEBUFF.fluteRipple,
   classId: CLASS_ID,
   name: "Flute Ripple",
+  breakdownName: "Flute Chanting a Thousand Waves",
   activation: "triggered",
   durationFrames: 751,
   effects: [],
@@ -109,12 +114,13 @@ export const fluteRipple = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 export const bleedTick = defineDebuff({
   id: DEBUFF.bleedTick,
   classId: CLASS_ID,
-  name: "Bleed Tick",
+  name: "Bleeding",
   activation: "triggered",
   durationFrames: 601,
   effects: [],
@@ -143,6 +149,7 @@ export const bleedTick = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   tags: [ROLE.bleedTick],
+  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const bitterSeasonTick = defineDebuff({
@@ -170,6 +177,7 @@ export const bitterSeasonTick = defineDebuff({
   stackScaling: "flat",
   createdAt: "2026-08-06T00:00:00.000Z",
   updatedAt: "2026-08-06T00:00:00.000Z",
+  receives: [BUFF.soulShaken],
 })
 
 // 5 %: the spear special's in-game hint, "Reduces Physical Defense by 5 %

@@ -7,7 +7,7 @@ import { UNIVERSAL_SKILLS } from "../../data/skills/universal"
 // that id shape is load-bearing: saved rotations and user skill overrides
 // match built-ins by id, so universal skills must never surface with a
 // class-less id.
-function retargetId(id: string, classId: string): string {
+export function retargetId(id: string, classId: string): string {
   return id.replace(/^((?:debuff|buff)-)?universal-/, `$1${classId}-`)
 }
 

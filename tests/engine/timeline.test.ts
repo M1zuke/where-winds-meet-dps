@@ -78,6 +78,31 @@ describe("timeline — computed duration", () => {
     expect(r.rotationDuration).toBeCloseTo((120 + 60) / FPS, 10)
   })
 
+  it("a pre-pull cast's damage counts toward the total its frames are excluded from", () => {
+    const pre = makeSkill(CLASS, {
+      name: "Pre Prepull",
+      castFrames: 90,
+      hits: [makeHit({ frame: 0, physMultiplier: 2, physFixed: 50 })],
+    })
+    const main = makeSkill(CLASS, {
+      name: "Main",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, physMultiplier: 2, physFixed: 50 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: pre.id, hitCount: 1 }),
+        makeStep({ skillId: main.id, hitCount: 1 }),
+      ],
+    })
+    const r = simulateTimeline(timelineInputs(rotation, [pre, main], []))
+
+    const prePullRow = r.perSkill.find((s) => s.name === "Pre Prepull")!
+    expect(prePullRow.castCount).toBe(1)
+    expect(prePullRow.expectedDamage).toBeGreaterThan(0)
+    expect(r.rotationDuration).toBeCloseTo(60 / FPS, 10)
+  })
+
   it("empty rotation ⇒ dps 0 + warning", () => {
     const rotation = makeRotation(CLASS, { steps: [] })
     const r = simulateTimeline(timelineInputs(rotation, [], []))

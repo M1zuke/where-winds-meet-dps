@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import styles from "./NumberInputs.module.scss"
 
 interface NumProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange" | "value"> {
   value: number
@@ -10,6 +11,7 @@ function NumberLikeInput({
   onChange,
   format,
   parse,
+  className,
   ...rest
 }: NumProps & { format: (v: number) => string; parse: (s: string) => number }) {
   const [text, setText] = useState(() => (Number.isFinite(value) ? format(value) : "0"))
@@ -24,6 +26,7 @@ function NumberLikeInput({
     <input
       type="number"
       step="any"
+      className={styles.numberInput + (className ? ` ${className}` : "")}
       value={text}
       onFocus={() => {
         focusedRef.current = true

@@ -8,7 +8,7 @@ import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
-import type { GearPiece, GearWordName, Inputs } from "../../src/engine/types"
+import type { GearPiece, GearWordId, Inputs } from "../../src/engine/types"
 
 function weaponPiece(): GearPiece {
   return {
@@ -21,10 +21,10 @@ function weaponPiece(): GearPiece {
     hp: 0,
     physDef: 0,
     words: [
-      { word: "Power", value: 30, retuned: false },
-      { word: "Agility", value: 20, retuned: false },
-      { word: "Crit", value: 0.05, retuned: false },
-      { word: "Damage VS Boss %", value: 0.02, retuned: false },
+      { word: "power", value: 30, retuned: false },
+      { word: "agility", value: 20, retuned: false },
+      { word: "crit", value: 0.05, retuned: false },
+      { word: "damageVsBoss", value: 0.02, retuned: false },
       { word: "", value: 0, retuned: false },
     ],
     attunement: "",
@@ -44,9 +44,9 @@ function armorPiece(): GearPiece {
     hp: 5000,
     physDef: 800,
     words: [
-      { word: "Momentum", value: 35, retuned: false },
-      { word: "Affinity", value: 0.025, retuned: false },
-      { word: "All Martial Boost", value: 0.018, retuned: false },
+      { word: "momentum", value: 35, retuned: false },
+      { word: "affinity", value: 0.025, retuned: false },
+      { word: "allMartialBoost", value: 0.018, retuned: false },
       { word: "", value: 0, retuned: false },
       { word: "", value: 0, retuned: false },
     ],
@@ -125,9 +125,9 @@ describe("applyPieceContribution: white-side stat updates feed effectiveRates", 
       hp: 0,
       physDef: 0,
       words: [
-        { word: "Precision", value: 0.074, retuned: false },
-        { word: "Crit", value: 0.074, retuned: false },
-        { word: "Affinity", value: 0.036, retuned: false },
+        { word: "precision", value: 0.074, retuned: false },
+        { word: "crit", value: 0.074, retuned: false },
+        { word: "affinity", value: 0.036, retuned: false },
         { word: "", value: 0, retuned: false },
         { word: "", value: 0, retuned: false },
       ],
@@ -197,7 +197,7 @@ describe("formless penetration routes to the class primary attribute", () => {
 })
 
 describe("void attack words route to the class primary attribute attack", () => {
-  function voidAttackPiece(word: GearWordName, value: number): GearPiece {
+  function voidAttackPiece(word: GearWordId, value: number): GearPiece {
     return {
       id: "void-attack-piece",
       slot: "helm",
@@ -222,7 +222,7 @@ describe("void attack words route to the class primary attribute attack", () => 
 
   it("for bellstrikeUmbra (primary = Bellstrike), Min Void Attack bumps bellstrike.min only", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("Min Void Attack", 30), +1)
+    const after = applyPieceContribution(inputs, voidAttackPiece("minVoidAttack", 30), +1)
     expect(after.bellstrike.min).toBeCloseTo(inputs.bellstrike.min + 30, 9)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max, 9)
     expect(after.bamboocut.min).toBeCloseTo(inputs.bamboocut.min, 9)
@@ -231,7 +231,7 @@ describe("void attack words route to the class primary attribute attack", () => 
 
   it("for bellstrikeUmbra (primary = Bellstrike), Max Void Attack bumps bellstrike.max only", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("Max Void Attack", 36.2), +1)
+    const after = applyPieceContribution(inputs, voidAttackPiece("maxVoidAttack", 36.2), +1)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max + 36.2, 9)
     expect(after.bellstrike.min).toBeCloseTo(inputs.bellstrike.min, 9)
     expect(after.bamboocut.max).toBeCloseTo(inputs.bamboocut.max, 9)
@@ -239,7 +239,7 @@ describe("void attack words route to the class primary attribute attack", () => 
 
   it("the word value scales linearly (value / spec.amount)", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("Max Void Attack", 18.1), +1)
+    const after = applyPieceContribution(inputs, voidAttackPiece("maxVoidAttack", 18.1), +1)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max + 18.1, 9)
   })
 })

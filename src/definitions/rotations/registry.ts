@@ -1,31 +1,33 @@
-import type { Rotation } from "../../engine/rotation"
-import defaultRotationsData from "../../data/rotations/defaultRotations.json"
-import handRotationsData from "../../data/rotations/handRotations.json"
+import type { Rotation, RotationStep } from "../../engine/rotation"
+import rotationsData from "../../data/rotations/rotations.json"
+
+interface RotationFileEntry extends Omit<Rotation, "steps"> {
+  steps: Omit<RotationStep, "id">[]
+}
 
 interface RotationPoolFile {
-  rotations: Rotation[]
+  rotations: RotationFileEntry[]
   defaultRotationId?: string
 }
 
-const DEFAULT_ROTATIONS = defaultRotationsData as unknown as Record<string, RotationPoolFile>
-const HAND_ROTATIONS = handRotationsData as unknown as Record<string, RotationPoolFile>
+const ROTATION_POOLS = rotationsData as unknown as Record<string, RotationPoolFile>
 
 export interface RotationPool {
   rotations: readonly Rotation[]
   defaultRotationId: string | null
 }
 
-// The default pool, then the hand-authored pool appended after it; a hand
-// rotation's own `defaultRotationId` wins over the default pool's.
-export function rotationPoolFor(classId: string): RotationPool {
+function withStepIds(rotation: RotationFileEntry): Rotation {
   return {
-    rotations: [
-      ...(DEFAULT_ROTATIONS[classId]?.rotations ?? []),
-      ...(HAND_ROTATIONS[classId]?.rotations ?? []),
-    ],
-    defaultRotationId:
-      HAND_ROTATIONS[classId]?.defaultRotationId ??
-      DEFAULT_ROTATIONS[classId]?.defaultRotationId ??
-      null,
+    ...rotation,
+    steps: rotation.steps.map((step, index) => ({ ...step, id: `${rotation.id}-${index}` })),
+  }
+}
+
+export function rotationPoolFor(classId: string): RotationPool {
+  const pool = ROTATION_POOLS[classId]
+  return {
+    rotations: pool?.rotations.map(withStepIds) ?? [],
+    defaultRotationId: pool?.defaultRotationId ?? null,
   }
 }

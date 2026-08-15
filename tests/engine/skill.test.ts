@@ -244,7 +244,7 @@ describe("hitToArtRow — mapping into the formula's ArtRow", () => {
 })
 
 describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
-  it("keeps the source id but gives hits/triggers fresh ids, detached from the source", () => {
+  it("keeps the source id but gives hits fresh ids, detached from the source", () => {
     const src = makeSkill(CLASS, {
       name: "Test",
       skillType: "weapon",
@@ -273,8 +273,8 @@ describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
     expect(s.hits[0].id).not.toBe(src.hits[0].id)
     expect(s.hits[0].physMultiplier).toBe(1.5)
     expect(s.hits[0].physFixed).toBe(20)
-    expect(s.hits[0].triggers[0].id).not.toBe(src.hits[0].triggers[0].id)
     expect(s.hits[0].triggers[0].targetId).toBe("bf-1")
+    expect(s.hits[0].triggers[0]).not.toBe(src.hits[0].triggers[0])
     s.tags!.push("extra")
     s.hits[0].physMultiplier = 999
     expect(src.tags).toEqual(["prop:isCharged"])
@@ -328,7 +328,7 @@ describe("storage round-trip", () => {
     expect(found!.hits[0].triggers[0].targetId).toBe("bf-1")
   })
 
-  it("export → import regenerates skill/hit/trigger ids and forces classId", () => {
+  it("export → import regenerates skill/hit ids and forces classId", () => {
     const s = makeSkill(CLASS, {
       name: "ExportSkill",
       hits: [
@@ -339,9 +339,27 @@ describe("storage round-trip", () => {
     expect(imported.id).not.toBe(s.id)
     expect(imported.classId).toBe("bellstrikeUmbra")
     expect(imported.hits[0].id).not.toBe(s.hits[0].id)
-    expect(imported.hits[0].triggers[0].id).not.toBe(s.hits[0].triggers[0].id)
     expect(imported.hits[0].physFixed).toBe(7)
     expect(imported.hits[0].triggers[0].targetId).toBe("sk-x")
+  })
+
+  it("export → import carries an explicit receives/triggersBuffs through unchanged", () => {
+    const skill = makeSkill(CLASS, {
+      name: "ExportReachSkill",
+      receives: ["bellstrikeUmbraBleedPen"],
+      triggersBuffs: ["jadeware"],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.receives).toEqual(["bellstrikeUmbraBleedPen"])
+    expect(imported.triggersBuffs).toEqual(["jadeware"])
+  })
+
+  it("import heals triggersBuffs immediately for a name-derived cast tag, same as saveCustomSkill", () => {
+    const spearQNamed = makeSkill(CLASS, { name: "Spear Q" })
+    const imported = importCustomSkill(exportCustomSkill(spearQNamed), "bellstrikeUmbra")
+    expect(imported.triggersBuffs).toEqual(
+      expect.arrayContaining(["potentRiverFlow", "wineGu", "soulShaken", "jadeware"]),
+    )
   })
 
   it("export → import carries variants and multi-condition triggers through, with fresh variant ids", () => {

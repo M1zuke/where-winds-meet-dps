@@ -1,7 +1,7 @@
 // Runs in the browser on the official WWM dashboard, not in this app. Kept to
 // ES5 syntax and executed via `new Function` in tests: a bookmarklet gets no
 // transpiler, and a parse error inside a javascript: URL is silent.
-(function () {
+;(function () {
   var CACHE_KEY = "getAreaServer"
   var TOKEN_KEY = "h72na_data_token"
   var ROLE_INFO_URL = "https://s2.easebar.com/78ae9d90792a3e9b/role/roleInfo"
