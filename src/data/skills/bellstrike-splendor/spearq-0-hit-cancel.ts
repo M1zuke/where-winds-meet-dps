@@ -13,7 +13,7 @@ export const spearq0HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ0HitCancel,
-  triggersBuffs: [BUFF.endlessGale, BUFF.mountainsMight],
+  triggersBuffs: [BUFF.endlessGale, BUFF.mountainsMight, BUFF.qiImbalance],
   castFrames: 6,
   triggerable: true,
   hits: [

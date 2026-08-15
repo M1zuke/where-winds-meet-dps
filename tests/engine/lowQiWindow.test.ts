@@ -1,5 +1,8 @@
 import { describe, it, expect } from "vitest"
 import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
+import { buffDefsForClass } from "../../src/engine/buffs/data"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
@@ -64,6 +67,27 @@ describe("Qi Imbalance as a low-Qi source", () => {
     const engine = new BuffEngine({ qiBreakTime: 25, bossBreakDuration: 10 }, [])
     engine.applyBuff(QI_IMBALANCE_STATUS, 24, 15)
     expect(engine.qiPhase(26)).toBe("exhausted")
+  })
+
+  // `ids.ts` takes no imports, so the data-side id is a second literal. Nothing
+  // else would notice the two drifting apart — the buff would simply stop
+  // moving the phase.
+  it("is named the same on both sides of the data/engine boundary", () => {
+    expect(BUFF.qiImbalance).toBe(QI_IMBALANCE_STATUS)
+  })
+
+  it("reaches the phase from a class that applies it", () => {
+    const defs = buffDefsForClass("bellstrikeSplendor")
+    expect(defs.map((def) => def.id)).toContain(QI_IMBALANCE_STATUS)
+
+    const applier = builtinSkillsForClass("bellstrikeSplendor").filter((skill) =>
+      skill.triggersBuffs?.includes(QI_IMBALANCE_STATUS),
+    )
+    expect(applier.length).toBeGreaterThan(0)
+
+    const engine = new BuffEngine({ classId: "bellstrikeSplendor" }, defs)
+    engine.triggerDeclaredBuffs([QI_IMBALANCE_STATUS], applier[0]!.castTag ?? "", 1)
+    expect(engine.qiPhase(2)).toBe("below30")
   })
 
   it("leaves the timeline band showing only the clock-driven span", () => {

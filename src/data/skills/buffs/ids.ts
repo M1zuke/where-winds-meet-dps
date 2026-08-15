@@ -29,6 +29,7 @@ export const BUFF = {
   mirage: "mirage",
   mirageBonus: "mirageBonus",
   potentRiverFlow: "potentRiverFlow",
+  qiImbalance: "qiImbalance",
   rainwhisperShield: "rainwhisperShield",
   resistanceResolve: "resistanceResolve",
   revelryScript: "revelryScript",

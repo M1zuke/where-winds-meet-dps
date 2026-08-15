@@ -35921,7 +35921,7 @@
           "bellstrikeSplendor-swordspecial-deflect",
           "bellstrikeSplendor-toad-cancel"
         ],
-        "digest": "a8d8844c48a6ccb04b8e790c6a32e51fa718ae52ee1006ca79ab965b3fa12fbe"
+        "digest": "805c55f7c15226a53bbe1ac913ce7a8af5aafc11782db1cf206de6dcc2f6e9d9"
       },
       "debuffs": {
         "count": 5,
@@ -36357,6 +36357,34 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "affinityDmg +18%"
+        },
+        {
+          "id": "qiImbalance",
+          "name": "Qi Imbalance",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": true,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "attributeDamageBoost",
+              "amount": 0.1
+            }
+          ],
+          "summary": null
         }
       ],
       "group": [
@@ -36385,7 +36413,7 @@
       ]
     },
     "dynamic": {
-      "digest": "84a04e54e176f640c7e27d6931b1dc95afd7a4d34b47c6c4b433bb566d27c893"
+      "digest": "6c5ff0c2223cfbdbee40ff677de11357048197eea9cbd74173f1741a08b1e0f9"
     }
   }
 }
