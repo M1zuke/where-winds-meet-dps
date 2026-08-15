@@ -50,3 +50,8 @@ h1 {
 input[type="checkbox"] {
   accent-color: var(--color-accent);
 }
+
+:focus,
+:focus-visible {
+  outline: none;
+}
