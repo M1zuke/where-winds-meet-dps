@@ -33791,7 +33791,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physBoost +20%"
+          "summary": "HP damage +20%"
         },
         {
           "id": "qiImbalance",
@@ -33866,7 +33866,7 @@
       ]
     },
     "dynamic": {
-      "digest": "3bd0de0564a612d43d053090cba3856fc2ca670ca9fa4c8ae2e5fe5b415f57cc"
+      "digest": "d335957b6485c3bd91c6080b2be3d067e7099a305133f650b4097c3dd5f96143"
     }
   }
 }
