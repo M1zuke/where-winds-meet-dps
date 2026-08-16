@@ -195,7 +195,12 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
         {
           name: "Qi Struggle Enhancement",
           lines: [
-            { kind: "talent", skill: "Qi DMG Bonus", label: "Qi Damage Boost" },
+            {
+              kind: "static",
+              text: "+10% Qi DMG.",
+              subNote:
+                "Qi damage drains the target's Qi bar rather than its HP, so this contributes nothing to damage.",
+            },
             {
               kind: "mechanic",
               id: "swordEnergyHpDamage",
