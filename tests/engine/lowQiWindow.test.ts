@@ -125,29 +125,25 @@ describe("Qi Imbalance as a low-Qi source", () => {
 })
 
 describe("Qi Imbalance's damage effects", () => {
-  const defs = () => buffDefsForClass("bellstrikeSplendor")
-  const module = () => defs().find((def) => def.id === BUFF.qiImbalance)!
+  const module = () =>
+    buffDefsForClass("bellstrikeSplendor").find((def) => def.id === BUFF.qiImbalance)!
 
-  it("gives Qi damage whatever the target's state", () => {
+  const effectsAt = (phase: string) => {
     const effects = module().effects
     if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
-    for (const phase of ["normal", "below30", "exhausted"] as const) {
-      expect(effects({ phase } as never)).toContainEqual({
-        kind: "stat",
-        statKey: "attributeDamageBoost",
-        amount: 0.1,
-      })
-    }
+    return effects({ phase } as never)
+  }
+
+  it("leaves its Qi damage clause out of every damage stat, in every phase", () => {
+    expect(effectsAt("normal")).toEqual([])
+    expect(effectsAt("below30")).toEqual([])
   })
 
-  it("adds its damage multiplier only inside the break window", () => {
-    const effects = module().effects
-    if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
-    const multiplierAt = (phase: string) =>
-      effects({ phase } as never).find((effect) => effect.kind === "damageMultiplier")
-    expect(multiplierAt("normal")).toBeUndefined()
-    expect(multiplierAt("below30")).toBeUndefined()
-    expect(multiplierAt("exhausted")).toEqual({ kind: "damageMultiplier", factor: 1.1 })
+  it("raises HP damage and Bellstrike damage together, only inside the break window", () => {
+    expect(effectsAt("exhausted")).toEqual([
+      { kind: "damageMultiplier", factor: 1.1 },
+      { kind: "stat", statKey: "attributeDamageBoost", amount: 0.1 },
+    ])
   })
 })
 
