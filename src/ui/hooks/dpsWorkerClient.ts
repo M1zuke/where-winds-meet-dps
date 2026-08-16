@@ -1,6 +1,7 @@
 import type { WorkerRequest, WorkerResponse } from "../../engine/dpsWorker"
 import DpsWorker from "../../engine/dpsWorker?worker"
 import { debounceMsFor } from "./workerDebounce"
+import { cacheResponse, cachedResponse, requestSignature } from "./workerResultCache"
 
 type RequestKind = WorkerRequest["kind"]
 type ResponseKind = WorkerResponse["kind"]
@@ -32,6 +33,8 @@ interface KindState {
   latestReqId: number
   lastDeliveredReqId: number
   isPending: boolean
+  retained: WorkerResponse | null
+  signatureByReqId: Map<number, string>
 }
 
 const stateByKind = new Map<RequestKind, KindState>()
@@ -51,6 +54,8 @@ function stateFor(kind: RequestKind): KindState {
     latestReqId: -1,
     lastDeliveredReqId: -1,
     isPending: false,
+    retained: null,
+    signatureByReqId: new Map(),
   }
   stateByKind.set(kind, created)
   return created
@@ -93,10 +98,17 @@ function deliverProgress(kind: RequestKind, progress: ProgressResponse): void {
 }
 
 function deliver(response: WorkerResponse): void {
-  const state = stateFor(response.kind as RequestKind)
+  const kind = response.kind as RequestKind
+  const state = stateFor(kind)
+  const signature = state.signatureByReqId.get(response.reqId)
+  if (signature !== undefined) {
+    state.signatureByReqId.delete(response.reqId)
+    cacheResponse(kind, signature, response)
+  }
   if (response.reqId === state.latestReqId) setPending(state, false)
   if (response.reqId <= state.lastDeliveredReqId) return
   state.lastDeliveredReqId = response.reqId
+  state.retained = response
   for (const listener of state.responseListeners) listener(response)
 }
 
@@ -112,6 +124,7 @@ function abandonRequests(kind: RequestKind, state: KindState): void {
   if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
   state.debounceHandle = null
   state.queued = null
+  state.signatureByReqId.clear()
   state.lastDeliveredReqId = state.latestReqId
   setPending(state, false)
 }
@@ -120,11 +133,22 @@ export function postToDpsWorker(unsent: UnsentRequest): void {
   const request = { ...unsent, reqId: ++lastAssignedReqId } as WorkerRequest
   const state = stateFor(request.kind)
   postCancel(request.kind, state)
-  state.queued = request
-  state.latestReqId = request.reqId
-  setPending(state, true)
   if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
   state.debounceHandle = null
+  state.queued = null
+  state.latestReqId = request.reqId
+
+  const signature = requestSignature(request)
+  const cached = signature === null ? null : cachedResponse(request.kind, signature)
+  if (cached) {
+    const replay = { ...cached, reqId: request.reqId } as WorkerResponse
+    queueMicrotask(() => deliver(replay))
+    return
+  }
+  if (signature !== null) state.signatureByReqId.set(request.reqId, signature)
+
+  state.queued = request
+  setPending(state, true)
   const delayMs = debounceMsFor(request.kind)
   if (delayMs <= 0) {
     state.queued = null
@@ -145,6 +169,10 @@ export function cancelDpsWorkerRequest(kind: RequestKind): void {
   state.debounceHandle = null
   state.queued = null
   postCancel(kind, state)
+}
+
+export function retainedResponse<K extends ResultKind>(kind: K): ResponseOfKind<K> | null {
+  return (stateFor(kind).retained as ResponseOfKind<K> | null) ?? null
 }
 
 export function subscribeToDpsWorker<K extends ResultKind>(

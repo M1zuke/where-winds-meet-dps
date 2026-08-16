@@ -15,6 +15,7 @@ interface MetricsCardProps {
   graduationPending?: boolean
   theoreticalDps?: number | null
   onGraduationClick?: () => void
+  graduationDisabled?: boolean
 }
 
 function OpenIcon() {
@@ -45,6 +46,7 @@ export function MetricsCard({
   graduationPending = false,
   theoreticalDps = null,
   onGraduationClick,
+  graduationDisabled = false,
 }: MetricsCardProps) {
   const { t } = useI18n()
   const graduationText =
@@ -78,6 +80,7 @@ export function MetricsCard({
         aria-label={`${t("Graduation")}: ${graduationText}`}
         aria-live="polite"
         onClick={onGraduationClick}
+        disabled={graduationDisabled}
       >
         {result.graduationRate !== null && result.graduationRate > 0.94 && (
           <GraduationFire rate={result.graduationRate} />

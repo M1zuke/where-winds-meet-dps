@@ -1,0 +1,66 @@
+.toast {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface-raised);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.title {
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.progress {
+  width: 140px;
+}
+
+.counts {
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cancelButton,
+.checkoutButton {
+  padding: 3px 10px;
+  font-size: 0.72em;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-dim);
+  transition:
+    color 0.1s,
+    background 0.1s,
+    border-color 0.1s;
+}
+
+.cancelButton:hover,
+.cancelButton:focus-visible {
+  color: var(--color-text);
+  border-color: var(--color-border-hover);
+  background: var(--color-surface-inset-hover);
+}
+
+.checkoutButton {
+  border-color: var(--color-accent);
+  color: var(--color-accent-bright);
+}
+
+.checkoutButton:hover,
+.checkoutButton:focus-visible {
+  color: var(--color-bg);
+  background: var(--color-accent);
+}
