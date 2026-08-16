@@ -23,7 +23,6 @@ const RARITY: Record<GearPiece["rarity"], string> = {
 
 interface Props {
   piece: GearPiece | null
-  readOnly: boolean
   isEquipped: boolean
   inputs: Inputs
   onChange(piece: GearPiece): void
@@ -36,7 +35,6 @@ interface Props {
 
 export function GearDetailsPanel({
   piece,
-  readOnly,
   isEquipped,
   inputs,
   onChange,
@@ -64,26 +62,18 @@ export function GearDetailsPanel({
       <div className="toolbar">
         <span className="toolbar-label">{t("Gear details")}</span>
         <div className="spacer" />
-        {readOnly ? (
+        {isEquipped ? (
+          <button type="button" className="btn" onClick={onUnequip}>
+            {t("Unequip")}
+          </button>
+        ) : (
           <button type="button" className="btn primary" onClick={onEquip}>
             {t("Equip")}
           </button>
-        ) : (
-          <>
-            {isEquipped ? (
-              <button type="button" className="btn" onClick={onUnequip}>
-                {t("Unequip")}
-              </button>
-            ) : (
-              <button type="button" className="btn primary" onClick={onEquip}>
-                {t("Equip")}
-              </button>
-            )}
-            <button type="button" className="btn danger" onClick={onDelete}>
-              {t("Delete")}
-            </button>
-          </>
         )}
+        <button type="button" className="btn danger" onClick={onDelete}>
+          {t("Delete")}
+        </button>
       </div>
 
       <div className={`${styles.identity} ${RARITY[piece.rarity]}`}>
@@ -98,19 +88,10 @@ export function GearDetailsPanel({
       <GearPieceForm
         piece={piece}
         inputs={inputs}
-        disabled={readOnly}
         onChange={onChange}
         wordMaxRows={wordMaxRows}
         wordMaxPending={wordMaxPending}
       />
-
-      {readOnly && (
-        <div className="hint">
-          {t(
-            "This gear piece belongs to another profile. Equipping it copies it into the active profile.",
-          )}
-        </div>
-      )}
     </div>
   )
 }

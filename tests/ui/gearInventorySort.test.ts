@@ -31,12 +31,7 @@ function piece(id: string): GearPiece {
 }
 
 function row(id: string): InventoryRow {
-  return {
-    piece: piece(id),
-    ownerProfileId: "p1",
-    ownerProfileName: "Active",
-    isEquipped: false,
-  }
+  return { piece: piece(id), isEquipped: false }
 }
 
 function delta(current: number, upgraded: number, fullPotential: number): DpsDelta {

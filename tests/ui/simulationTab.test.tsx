@@ -53,8 +53,10 @@ function renderTab() {
 }
 
 function lastRequest(): Record<string, unknown> {
-  const posted = created[0].posted
-  return posted[posted.length - 1] as Record<string, unknown>
+  const posted = created.flatMap((worker) => worker.posted as Record<string, unknown>[])
+  return posted.reduce((newest, post) =>
+    (post.reqId as number) > (newest.reqId as number) ? post : newest,
+  )
 }
 
 function respond(response: WorkerResponse): void {

@@ -85,7 +85,7 @@ export function GearSlotTiles({
                 : t("Empty")}
             </div>
             {piece && (
-              <div className={styles.gearTileStats}>
+              <div className={styles.gearTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
                 <SlotStat
                   label={t("Max (94%)")}
                   hint={t(DELTA_HINTS.upgraded)}

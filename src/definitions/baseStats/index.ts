@@ -19,27 +19,11 @@ import odditiesJson from "../../data/baseStats/oddities.json"
 import enhancementsJson from "../../data/baseStats/enhancements.json"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import { breakthroughAttributes } from "./breakthroughs"
+import { AGILITY_PER_POINT, MOMENTUM_PER_POINT, POWER_PER_POINT } from "./attributeConversion"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
 const TALENT_TIERS = ["95.1", "95.2", "100.1"] as const
 const ENHANCEMENT_TIER = "95"
-
-// Phys deltas mirror `engine/itemRanking.ts` rows 62-64 (Power/Agility/Momentum
-// at amount 40.4 splitting into the listed white deltas). Crit/affinity
-// per-point are the user-provided ground-truth values: +0.076 % crit per
-// agility, +0.038 % affinity per momentum.
-const POWER_PER_POINT = {
-  minPhys: 0.225,
-  maxPhys: 1.36,
-} as const
-const AGILITY_PER_POINT = {
-  minPhys: 0.9,
-  critRate: 0.00076,
-} as const
-const MOMENTUM_PER_POINT = {
-  maxPhys: 0.9,
-  affinityRate: 0.00038,
-} as const
 
 type BaseStatsByLevel = Record<string, Record<string, number>>
 

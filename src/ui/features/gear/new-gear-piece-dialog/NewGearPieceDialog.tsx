@@ -49,7 +49,6 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
         <GearPieceForm
           piece={draft}
           inputs={inputs}
-          disabled={false}
           onChange={setDraft}
           wordMaxRows={[]}
           wordMaxPending={false}

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import type { GearPiece, Inputs, StoredProfile } from "../../src/engine/types"
+import type { GearPiece, Inputs } from "../../src/engine/types"
 import type { GearSlotAnalysisRow } from "../../src/engine/gearAnalysis"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmDialog"
@@ -68,20 +68,10 @@ function renderTab() {
     inventory,
     equipped: { ...defaultInputs.equipped, leftWeapon: "weapon", helm: "helm" },
   }
-  const profiles: StoredProfile[] = [{ id: "profile", name: "Main", inputs }]
   render(
     <I18nProvider>
       <ConfirmProvider>
-        <GearTab
-          inputs={inputs}
-          engineInputs={inputs}
-          onChange={() => {}}
-          profiles={profiles}
-          activeProfileId="profile"
-          currentDps={40000}
-          dpsDeltas={{}}
-          dpsDeltasPending={false}
-        />
+        <GearTab inputs={inputs} engineInputs={inputs} onChange={() => {}} currentDps={40000} />
       </ConfirmProvider>
     </I18nProvider>,
   )
@@ -96,7 +86,7 @@ describe("GearTab analysis subtab", () => {
     renderTab()
 
     expect(screen.getByRole("columnheader", { name: /Tuned Stats/ })).toBeInTheDocument()
-    expect(screen.queryByRole("checkbox", { name: "Show global" })).not.toBeInTheDocument()
+    expect(screen.queryByText("FP(E)")).not.toBeInTheDocument()
   })
 
   it("shows the inventory once its subtab is selected", () => {
@@ -104,7 +94,7 @@ describe("GearTab analysis subtab", () => {
 
     fireEvent.click(screen.getByRole("tab", { name: "Inventory" }))
 
-    expect(screen.getByRole("checkbox", { name: "Show global" })).toBeInTheDocument()
+    expect(screen.getAllByText("FP(E)").length).toBeGreaterThan(0)
     expect(screen.queryByRole("columnheader", { name: /Tuned Stats/ })).not.toBeInTheDocument()
   })
 
@@ -150,6 +140,36 @@ describe("GearTab analysis subtab", () => {
     )
     expect(screen.getByRole("cell", { name: /Total tuned-stat DPS contribution/ })).toBeVisible()
     expect(screen.getByText("-4,000")).toBeInTheDocument()
+  })
+})
+
+describe("GearTab column layout", () => {
+  function selectBenchPiece() {
+    fireEvent.click(screen.getByRole("tab", { name: "Inventory" }))
+    const benchTile = screen
+      .getAllByRole("button")
+      .find((button) => button.textContent?.includes("FP(E)"))!
+    fireEvent.click(benchTile)
+  }
+
+  it("puts the stat preview directly under the subtab card, with nothing between", () => {
+    renderTab()
+    selectBenchPiece()
+
+    const subtabCard = screen.getByRole("tabpanel").parentElement!
+    const preview = screen.getByText(/If equipped/)
+
+    expect(subtabCard.nextElementSibling?.contains(preview)).toBe(true)
+  })
+
+  it("keeps the analyzers in the other column, so neither column waits on the other", () => {
+    renderTab()
+
+    const subtabColumn = screen.getByRole("tabpanel").parentElement!.parentElement!
+    const detailsColumn = screen.getByText("Gear details").closest("div.panel")!.parentElement!
+
+    expect(detailsColumn).not.toBe(subtabColumn)
+    expect(detailsColumn.contains(screen.getByText("Retunement"))).toBe(true)
   })
 })
 

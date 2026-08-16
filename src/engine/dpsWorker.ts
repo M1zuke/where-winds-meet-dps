@@ -12,6 +12,7 @@ import { graduationInputs } from "./graduation"
 import type { Rotation } from "./rotation"
 import { RUN_SEED_STRIDE } from "./rng"
 import type { HitOutcome } from "./formula"
+import { GEAR_SLOTS } from "./types"
 import type {
   Arsenal,
   BowSet,
@@ -37,10 +38,21 @@ export interface DpsWorkerRequest {
   inputs: Inputs
   baselineDps: number
   pieceIds: string[]
-  extraCandidates?: GearPiece[]
 }
 
 export interface DpsWorkerResponse {
+  reqId: number
+  deltas: Record<string, DpsDelta>
+}
+
+export interface EquippedDeltasWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  baselineDps: number
+  slots?: readonly GearSlot[]
+}
+
+export interface EquippedDeltasWorkerResponse {
   reqId: number
   deltas: Record<string, DpsDelta>
 }
@@ -50,12 +62,33 @@ function dpsForSwap(unequippedBaseline: Inputs, candidate: GearPiece): number {
   return runEngine(next).dps
 }
 
+function equippedPieceIds(inputs: Inputs, slots: readonly GearSlot[]): string[] {
+  const inInventory = new Set(inputs.inventory.map((piece) => piece.id))
+  return slots
+    .map((slot) => inputs.equipped[slot])
+    .filter((pieceId): pieceId is string => pieceId !== null && inInventory.has(pieceId))
+}
+
+function computeEquippedDeltas(req: EquippedDeltasWorkerRequest): EquippedDeltasWorkerResponse {
+  const { reqId, inputs, baselineDps, slots } = req
+  const pieceIds = equippedPieceIds(inputs, slots ?? GEAR_SLOTS)
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds })
+}
+
 function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
-  const { inputs, baselineDps, pieceIds, extraCandidates } = req
+  const { inputs, baselineDps, pieceIds } = req
   const out: Record<string, DpsDelta> = {}
   const byId = new Map<string, GearPiece>()
-  for (const p of extraCandidates ?? []) byId.set(p.id, p)
-  for (const p of inputs.inventory) byId.set(p.id, p)
+  for (const piece of inputs.inventory) byId.set(piece.id, piece)
+
+  const ftDpsByPieceId = new Map<string, number>()
+  function ftDpsFor(piece: GearPiece): number {
+    const known = ftDpsByPieceId.get(piece.id)
+    if (known !== undefined) return known
+    const ftDps = ftDpsWhenEquipped(piece, inputs)
+    ftDpsByPieceId.set(piece.id, ftDps)
+    return ftDps
+  }
 
   const ftRefBySlot = new Map<GearSlot, number>()
   function ftReferenceForSlot(slot: GearSlot): number {
@@ -63,7 +96,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     if (cached !== undefined) return cached
     const equippedId = inputs.equipped[slot]
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
-    const ref = equipped ? ftDpsWhenEquipped(equipped, inputs) : ftDpsWithSlotEmpty(slot, inputs)
+    const ref = equipped ? ftDpsFor(equipped) : ftDpsWithSlotEmpty(slot, inputs)
     ftRefBySlot.set(slot, ref)
     return ref
   }
@@ -80,7 +113,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     const upgraded = maxRelayedClone(candidate, inputs)
     const upgradedDps = dpsForSwap(unequippedBaseline, upgraded)
 
-    const ftCandidateDps = ftDpsWhenEquipped(candidate, inputs)
+    const ftCandidateDps = ftDpsFor(candidate)
     const fullPotential = ftCandidateDps - baselineDps
     const fullPotentialE = ftCandidateDps - ftReferenceForSlot(candidate.slot)
 
@@ -600,6 +633,7 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
 
 export type WorkerRequest =
   | ({ kind: "dpsDeltas" } & DpsWorkerRequest)
+  | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerRequest)
   | ({ kind: "retunement" } & RetunementWorkerRequest)
   | ({ kind: "reattunement" } & ReattunementWorkerRequest)
   | ({ kind: "wordMax" } & WordMaxWorkerRequest)
@@ -613,6 +647,7 @@ export type WorkerRequest =
 
 export type WorkerResponse =
   | ({ kind: "dpsDeltas" } & DpsWorkerResponse)
+  | ({ kind: "equippedDeltas" } & EquippedDeltasWorkerResponse)
   | ({ kind: "retunement" } & RetunementWorkerResponse)
   | ({ kind: "reattunement" } & ReattunementWorkerResponse)
   | ({ kind: "wordMax" } & WordMaxWorkerResponse)
@@ -631,6 +666,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   if (req.kind === "dpsDeltas") {
     const res = computeDpsDeltas(req)
     ;(self as unknown as Worker).postMessage({ kind: "dpsDeltas", ...res })
+  } else if (req.kind === "equippedDeltas") {
+    const res = computeEquippedDeltas(req)
+    ;(self as unknown as Worker).postMessage({ kind: "equippedDeltas", ...res })
   } else if (req.kind === "retunement") {
     const res = computeRetunement(req)
     ;(self as unknown as Worker).postMessage({ kind: "retunement", ...res })
@@ -677,6 +715,7 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
 
 export {
   computeDpsDeltas,
+  computeEquippedDeltas,
   computeRetunement,
   computeReattunement,
   computeWordMax,

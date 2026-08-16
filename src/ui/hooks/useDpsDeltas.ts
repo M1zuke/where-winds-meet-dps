@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import type { GearPiece, Inputs } from "../../engine/types"
+import type { Inputs } from "../../engine/types"
 import type { DpsDelta } from "../../engine/dpsWorker"
 import { postToDpsWorker, retainedResponse, subscribeToDpsWorker } from "./dpsWorkerClient"
 import { useDpsWorkerPending } from "./useDpsWorkerPending"
@@ -11,25 +11,19 @@ export interface DpsDeltasResult {
   isPending: boolean
 }
 
-const NO_EXTRAS: readonly GearPiece[] = []
-
 const EMPTY_DELTAS: DpsDeltaMap = {}
 
-export function useDpsDeltas(
-  inputs: Inputs,
-  baselineDps: number,
-  extraCandidates: readonly GearPiece[] = NO_EXTRAS,
-): DpsDeltasResult {
+export function useDpsDeltas(inputs: Inputs, baselineDps: number): DpsDeltasResult {
   const [deltas, setDeltas] = useState<DpsDeltaMap>(
     () => retainedResponse("dpsDeltas")?.deltas ?? EMPTY_DELTAS,
   )
   const isPending = useDpsWorkerPending("dpsDeltas")
 
+  const hasCandidates = inputs.inventory.length > 0
+
   useEffect(() => {
     return subscribeToDpsWorker("dpsDeltas", ({ deltas: next }) => setDeltas(next))
   }, [])
-
-  const hasCandidates = inputs.inventory.length > 0 || extraCandidates.length > 0
 
   useEffect(() => {
     if (!hasCandidates) return
@@ -37,10 +31,9 @@ export function useDpsDeltas(
       kind: "dpsDeltas",
       inputs,
       baselineDps,
-      pieceIds: [...inputs.inventory.map((p) => p.id), ...extraCandidates.map((p) => p.id)],
-      extraCandidates: extraCandidates.length > 0 ? [...extraCandidates] : undefined,
+      pieceIds: inputs.inventory.map((piece) => piece.id),
     })
-  }, [inputs, baselineDps, extraCandidates, hasCandidates])
+  }, [inputs, baselineDps, hasCandidates])
 
   if (!hasCandidates) return { deltas: EMPTY_DELTAS, isPending: false }
   return { deltas, isPending }

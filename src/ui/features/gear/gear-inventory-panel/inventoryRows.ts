@@ -3,8 +3,6 @@ import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 
 export interface InventoryRow {
   piece: GearPiece
-  ownerProfileId: string
-  ownerProfileName: string
   isEquipped: boolean
 }
 
