@@ -2,6 +2,8 @@
 // `Worker` in vitest/jsdom.
 import { describe, expect, it } from "vitest"
 import {
+  computeDpsDeltas,
+  computeEquippedDeltas,
   computeGearAnalysisRequest,
   computeParseSimulation,
   computeRankingRequest,
@@ -18,6 +20,8 @@ import { runEngine } from "../../src/engine/dps"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
+import { GEAR_SLOTS } from "../../src/engine/types"
+import type { GearPiece, Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -225,5 +229,97 @@ describe("computeParseSimulation", () => {
     const rates = res.expectedRates!
     const sum = rates.abrasion + rates.normal + rates.crit + rates.affinity
     expect(sum).toBeCloseTo(1, 6)
+  })
+})
+
+describe("computeEquippedDeltas", () => {
+  function gearPiece(id: string, slot: GearPiece["slot"]): GearPiece {
+    return {
+      id,
+      slot,
+      level: 91,
+      rarity: "legendary",
+      minPhys: 1000,
+      maxPhys: 2000,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "crit", value: 0.03, retuned: false },
+        { word: "power", value: 40, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "physPen",
+      attunementValue: 0.03,
+      relayed: true,
+    }
+  }
+
+  const geared: Inputs = {
+    ...umbraInputs,
+    inventory: [
+      gearPiece("worn-weapon", "leftWeapon"),
+      gearPiece("worn-helm", "helm"),
+      gearPiece("benched-helm", "helm"),
+    ],
+    equipped: { ...umbraInputs.equipped, leftWeapon: "worn-weapon", helm: "worn-helm" },
+  }
+  const baselineDps = runEngine(geared).dps
+
+  it("echoes reqId", () => {
+    expect(computeEquippedDeltas({ reqId: 5, inputs: geared, baselineDps }).reqId).toBe(5)
+  })
+
+  it("agrees with computeDpsDeltas on every piece it covers", () => {
+    const equipped = computeEquippedDeltas({ reqId: 1, inputs: geared, baselineDps })
+    const full = computeDpsDeltas({
+      reqId: 1,
+      inputs: geared,
+      baselineDps,
+      pieceIds: geared.inventory.map((piece) => piece.id),
+    })
+
+    for (const [pieceId, delta] of Object.entries(equipped.deltas)) {
+      expect(delta).toEqual(full.deltas[pieceId])
+    }
+  })
+
+  it("covers the equipped pieces and nothing on the bench", () => {
+    const res = computeEquippedDeltas({ reqId: 1, inputs: geared, baselineDps })
+
+    expect(Object.keys(res.deltas).sort()).toEqual(["worn-helm", "worn-weapon"])
+  })
+
+  it("skips a slot whose equipped id is no longer in the inventory", () => {
+    const stale: Inputs = { ...geared, equipped: { ...geared.equipped, bracer: "deleted" } }
+
+    expect(
+      Object.keys(computeEquippedDeltas({ reqId: 1, inputs: stale, baselineDps }).deltas),
+    ).not.toContain("deleted")
+  })
+
+  it("answers the same per slot as it does for every slot at once", () => {
+    const whole = computeEquippedDeltas({ reqId: 1, inputs: geared, baselineDps })
+    const perSlot = GEAR_SLOTS.map(
+      (slot) =>
+        computeEquippedDeltas({ reqId: 1, inputs: geared, baselineDps, slots: [slot] }).deltas,
+    )
+
+    expect(Object.assign({}, ...perSlot)).toEqual(whole.deltas)
+  })
+})
+
+describe("computeDpsDeltas shard parity", () => {
+  it("answers the same per piece-id subset as it does for the whole set", () => {
+    const inputs = umbraInputs
+    const baselineDps = runEngine(inputs).dps
+    const pieceIds = inputs.inventory.map((piece) => piece.id)
+    const whole = computeDpsDeltas({ reqId: 1, inputs, baselineDps, pieceIds })
+    const shards = pieceIds.map(
+      (pieceId) => computeDpsDeltas({ reqId: 1, inputs, baselineDps, pieceIds: [pieceId] }).deltas,
+    )
+
+    expect(Object.assign({}, ...shards)).toEqual(whole.deltas)
   })
 })

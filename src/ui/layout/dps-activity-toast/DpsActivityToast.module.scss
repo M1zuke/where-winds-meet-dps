@@ -1,0 +1,43 @@
+.toast {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1090;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(90vw, 640px);
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface-raised);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.title {
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.progress {
+  width: 120px;
+  flex: none;
+}
+
+.counts {
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.sweeps {
+  font-size: 0.72em;
+  color: var(--color-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

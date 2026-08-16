@@ -14,10 +14,10 @@ import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
 import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
 import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/TalentsOdditiesTab"
 import { SkillsTab } from "../ui/features/skills/skills-tab/SkillsTab"
-import { useDpsDeltas } from "../ui/hooks/useDpsDeltas"
 import { useGraduationRate } from "../ui/hooks/useGraduationRate"
 import { useParseSimulation, type ParseSimulationRequest } from "../ui/hooks/useParseSimulation"
 import { SimulationToast, SIMULATION_PATH } from "../ui/layout/simulation-toast/SimulationToast"
+import { DpsActivityToast } from "../ui/layout/dps-activity-toast/DpsActivityToast"
 import { GraduationBuildDialog } from "../ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/SetupWizard"
 import { useI18n } from "../i18n/i18nContext"
@@ -118,18 +118,6 @@ function AppInner() {
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
-  )
-
-  const foreignCandidates = useMemo(() => {
-    return committed.profiles
-      .filter((profile) => profile.id !== committed.activeId)
-      .flatMap((profile) => profile.inputs.inventory)
-  }, [committed.profiles, committed.activeId])
-
-  const { deltas: dpsDeltas, isPending: dpsDeltasPending } = useDpsDeltas(
-    engineInputs,
-    result.dps,
-    foreignCandidates,
   )
 
   const { t } = useI18n()
@@ -274,6 +262,7 @@ function AppInner() {
 
   return (
     <div className={styles.app}>
+      <DpsActivityToast hidden={isSimulationRunning} />
       <SimulationToast
         status={simulation.status}
         done={simulation.progress.done}
@@ -378,11 +367,7 @@ function AppInner() {
                   inputs={inputs}
                   engineInputs={engineInputs}
                   onChange={setInputs}
-                  profiles={committed.profiles}
-                  activeProfileId={committed.activeId}
                   currentDps={result.dps}
-                  dpsDeltas={dpsDeltas}
-                  dpsDeltasPending={dpsDeltasPending}
                 />
               }
             />
