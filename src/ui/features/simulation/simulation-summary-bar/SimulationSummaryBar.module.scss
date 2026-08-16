@@ -10,7 +10,7 @@
 
 .statStrip {
   display: grid;
-  grid-template-columns: 1.4fr repeat(8, minmax(0, 1fr));
+  grid-template-columns: 1.4fr repeat(7, minmax(0, 1fr));
   gap: 4px 20px;
   align-items: end;
   transition: opacity 120ms ease;
@@ -45,6 +45,15 @@
   line-height: 1.1;
 }
 
+.sub {
+  font-size: 0.72em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .groupStart {
   border-left: 1px solid var(--color-surface-raised);
   padding-left: 20px;
@@ -53,7 +62,7 @@
 
 @include breakpoints.below(breakpoints.$bp-900) {
   .statStrip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px 16px;
   }
 

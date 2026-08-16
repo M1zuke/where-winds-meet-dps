@@ -9,7 +9,7 @@ import { fullNumber } from "../damageFormat"
 import { clampRunCount, DEFAULT_RUN_COUNT } from "../simulationRunSettings"
 import { SimulationControlsPanel } from "../simulation-controls-panel/SimulationControlsPanel"
 import { SimulationSummaryBar } from "../simulation-summary-bar/SimulationSummaryBar"
-import { parseSummary, sortedTotalDamage } from "../simulation-summary-bar/summaryStats"
+import { parseSummary, sortedParses } from "../simulation-summary-bar/summaryStats"
 import { SimulationDistributionPanel } from "../simulation-distribution-panel/SimulationDistributionPanel"
 import { SimulationParseLadderPanel } from "../simulation-parse-ladder-panel/SimulationParseLadderPanel"
 import { SimulationOutcomeMixPanel } from "../simulation-outcome-mix-panel/SimulationOutcomeMixPanel"
@@ -18,11 +18,11 @@ import styles from "./SimulationTab.module.scss"
 export function SimulationTab({
   inputs,
   engineInputs,
-  expectedTotalDamage,
+  expectedDps,
 }: {
   inputs: Inputs
   engineInputs: Inputs
-  expectedTotalDamage: number
+  expectedDps: number
 }) {
   const { t } = useI18n()
   const [saved] = useState<Rotation[]>(() => loadCustomRotations())
@@ -40,7 +40,7 @@ export function SimulationTab({
   const isStale = ranSignature !== null && ranSignature !== signature
 
   const summary = useMemo(() => parseSummary(simulation.runs), [simulation.runs])
-  const sortedTotals = useMemo(() => sortedTotalDamage(simulation.runs), [simulation.runs])
+  const sorted = useMemo(() => sortedParses(simulation.runs), [simulation.runs])
 
   function run() {
     const option = options.find((candidate) => candidate.id === optionId)
@@ -90,16 +90,17 @@ export function SimulationTab({
           }
         >
           <div className={`panel ${styles.spanColumns}`}>
-            <h2>{t("Damage Distribution")}</h2>
+            <h2>{t("DPS Distribution")}</h2>
             <SimulationDistributionPanel
-              sortedTotals={sortedTotals}
-              meanTotalDamage={summary.meanTotalDamage}
-              expectedTotalDamage={expectedTotalDamage}
+              sorted={sorted}
+              meanDps={summary.meanDps}
+              expectedDps={expectedDps}
+              rotationDuration={simulation.rotationDuration}
             />
           </div>
           <div className="panel">
             <h2>{t("Parse Ladder")}</h2>
-            <SimulationParseLadderPanel sortedTotals={sortedTotals} />
+            <SimulationParseLadderPanel sorted={sorted} />
           </div>
           <div className="panel">
             <h2>{t("Outcome Mix")}</h2>

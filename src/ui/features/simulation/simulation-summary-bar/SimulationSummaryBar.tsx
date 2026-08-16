@@ -5,11 +5,22 @@ import styles from "./SimulationSummaryBar.module.scss"
 
 const PLACEHOLDER = "—"
 
-function Stat({ label, value, lead }: { label: string; value: string; lead?: boolean }) {
+function Stat({
+  label,
+  value,
+  sub,
+  lead,
+}: {
+  label: string
+  value: string
+  sub?: string
+  lead?: boolean
+}) {
   return (
     <div className={styles.stat + (lead ? ` ${styles.lead}` : "")}>
       <span className={styles.label}>{label}</span>
       <span className={styles.value}>{value}</span>
+      {sub !== undefined && <span className={styles.sub}>{sub}</span>}
     </div>
   )
 }
@@ -26,7 +37,9 @@ export function SimulationSummaryBar({
   isStale: boolean
 }) {
   const { t } = useI18n()
-  const damage = (value: number | undefined) => (summary ? fullNumber(value ?? 0) : PLACEHOLDER)
+  const dps = (value: number | undefined) => (summary ? decimalNumber(value ?? 0, 2) : PLACEHOLDER)
+  const damage = (value: number | undefined) =>
+    summary ? `${fullNumber(value ?? 0)} ${t("dmg")}` : PLACEHOLDER
   const hits = (value: number | undefined) => (summary ? fixed(value ?? 0, 2) : PLACEHOLDER)
 
   return (
@@ -38,16 +51,26 @@ export function SimulationSummaryBar({
         </span>
       </div>
       <div className={styles.statStrip} style={{ opacity: isPending ? 0.6 : 1 }}>
-        <Stat label={t("Avg Total Damage")} value={damage(summary?.meanTotalDamage)} lead />
         <Stat
           label={t("Avg DPS")}
-          value={summary ? decimalNumber(summary.meanDps, 2) : PLACEHOLDER}
+          value={dps(summary?.meanDps)}
+          sub={damage(summary?.meanTotalDamage)}
+          lead
         />
-        <Stat label={t("Best Parse")} value={damage(summary?.bestTotalDamage)} />
-        <Stat label={t("Worst Parse")} value={damage(summary?.worstTotalDamage)} />
+        <Stat
+          label={t("Best Parse")}
+          value={dps(summary?.bestDps)}
+          sub={damage(summary?.bestTotalDamage)}
+        />
+        <Stat
+          label={t("Worst Parse")}
+          value={dps(summary?.worstDps)}
+          sub={damage(summary?.worstTotalDamage)}
+        />
         <Stat
           label={t("DPS Range")}
           value={summary ? `${fixed(summary.rangeFraction * 100, 1)} %` : PLACEHOLDER}
+          sub={summary ? `${t("best over worst")}` : PLACEHOLDER}
         />
         <div className={styles.groupStart}>
           <Stat label={t("Abrasion Hits")} value={hits(summary?.meanAbrasionHits)} />

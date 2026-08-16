@@ -5,7 +5,9 @@ export interface ParseSummary {
   meanTotalDamage: number
   meanDps: number
   bestTotalDamage: number
+  bestDps: number
   worstTotalDamage: number
+  worstDps: number
   rangeFraction: number
   meanAbrasionHits: number
   meanNormalHits: number
@@ -22,8 +24,8 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
   let normal = 0
   let critical = 0
   let affinity = 0
-  let best = runs[0].totalDamage
-  let worst = runs[0].totalDamage
+  let best = runs[0]
+  let worst = runs[0]
 
   for (const run of runs) {
     totalDamage += run.totalDamage
@@ -32,8 +34,8 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
     normal += run.normalHits
     critical += run.criticalHits
     affinity += run.affinityHits
-    if (run.totalDamage > best) best = run.totalDamage
-    if (run.totalDamage < worst) worst = run.totalDamage
+    if (run.totalDamage > best.totalDamage) best = run
+    if (run.totalDamage < worst.totalDamage) worst = run
   }
 
   const meanTotalDamage = totalDamage / runs.length
@@ -41,9 +43,12 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
     runCount: runs.length,
     meanTotalDamage,
     meanDps: dps / runs.length,
-    bestTotalDamage: best,
-    worstTotalDamage: worst,
-    rangeFraction: meanTotalDamage > 0 ? (best - worst) / meanTotalDamage : 0,
+    bestTotalDamage: best.totalDamage,
+    bestDps: best.dps,
+    worstTotalDamage: worst.totalDamage,
+    worstDps: worst.dps,
+    rangeFraction:
+      meanTotalDamage > 0 ? (best.totalDamage - worst.totalDamage) / meanTotalDamage : 0,
     meanAbrasionHits: abrasion / runs.length,
     meanNormalHits: normal / runs.length,
     meanCriticalHits: critical / runs.length,
@@ -51,6 +56,6 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
   }
 }
 
-export function sortedTotalDamage(runs: readonly ParseRun[]): number[] {
-  return runs.map((run) => run.totalDamage).sort((left, right) => left - right)
+export function sortedParses(runs: readonly ParseRun[]): ParseRun[] {
+  return [...runs].sort((left, right) => left.totalDamage - right.totalDamage)
 }

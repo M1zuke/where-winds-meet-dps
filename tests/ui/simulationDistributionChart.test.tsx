@@ -2,20 +2,34 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { SimulationDistributionPanel } from "../../src/ui/features/simulation/simulation-distribution-panel/SimulationDistributionPanel"
-import { damageHistogram } from "../../src/ui/features/simulation/simulation-distribution-panel/damageHistogram"
-import { compactDamage } from "../../src/ui/features/simulation/damageFormat"
+import { parseHistogram } from "../../src/ui/features/simulation/simulation-distribution-panel/parseHistogram"
+import { decimalNumber } from "../../src/ui/features/simulation/damageFormat"
+import type { ParseRun } from "../../src/engine/dpsWorker"
 
-const totals = Array.from({ length: 200 }, (_unused, index) => 371_000 + (index % 40) * 2100).sort(
-  (left, right) => left - right,
-)
+const DURATION = 60
 
-function renderChart(sortedTotals = totals, expectedTotalDamage = 410_000) {
+const runs: ParseRun[] = Array.from({ length: 200 }, (_unused, index) => {
+  const totalDamage = 371_000 + (index % 40) * 2100
+  return {
+    totalDamage,
+    dps: totalDamage / DURATION,
+    abrasionHits: 1,
+    normalHits: 5,
+    criticalHits: 3,
+    affinityHits: 1,
+  }
+}).sort((left, right) => left.totalDamage - right.totalDamage)
+
+const dpsValues = runs.map((entry) => entry.dps)
+
+function renderChart(sorted = runs, expectedDps = 410_000 / DURATION) {
   const { container } = render(
     <I18nProvider>
       <SimulationDistributionPanel
-        sortedTotals={sortedTotals}
-        meanTotalDamage={411_950}
-        expectedTotalDamage={expectedTotalDamage}
+        sorted={sorted}
+        meanDps={411_950 / DURATION}
+        expectedDps={expectedDps}
+        rotationDuration={DURATION}
       />
     </I18nProvider>,
   )
@@ -30,12 +44,12 @@ describe("SimulationDistributionPanel", () => {
   it("draws one bar per bin across the full plot width", () => {
     const container = renderChart()
     const bars = container.querySelectorAll("svg rect")
-    const bins = damageHistogram(totals).bins
+    const bins = parseHistogram(dpsValues).bins
 
     expect(bars).toHaveLength(bins.length + 1)
   })
 
-  it("runs the damage axis from the worst parse to the best without rounding outward", () => {
+  it("runs the DPS axis from the worst parse to the best without rounding outward", () => {
     const container = renderChart()
     const bars = [...container.querySelectorAll("svg rect")].slice(1)
     const first = bars[0]
@@ -43,8 +57,8 @@ describe("SimulationDistributionPanel", () => {
 
     expect(Number(first.getAttribute("x"))).toBeLessThan(1)
     expect(Number(last.getAttribute("x")) + Number(last.getAttribute("width"))).toBeGreaterThan(99)
-    expect(screen.getByText(compactDamage(totals[0]))).toBeInTheDocument()
-    expect(screen.getByText(compactDamage(totals[totals.length - 1]))).toBeInTheDocument()
+    expect(screen.getByText(decimalNumber(dpsValues[0], 0))).toBeInTheDocument()
+    expect(screen.getByText(decimalNumber(dpsValues[dpsValues.length - 1], 0))).toBeInTheDocument()
   })
 
   it("scales the tallest bar to the top of the plot without clipping", () => {
@@ -67,7 +81,7 @@ describe("SimulationDistributionPanel", () => {
   })
 
   it("leaves out the expectation line when it falls outside the sample", () => {
-    const container = renderChart(totals, 50)
+    const container = renderChart(runs, 50)
     const lines = [...container.querySelectorAll("svg line")].filter(
       (line) => line.getAttribute("x1") === line.getAttribute("x2"),
     )
@@ -83,7 +97,9 @@ describe("SimulationDistributionPanel", () => {
 
     fireEvent.mouseMove(target, { clientX: 100 })
 
-    expect(screen.getByText(/runs$/)).toBeInTheDocument()
+    expect(screen.getByText(/runs · /)).toBeInTheDocument()
+    expect(screen.getByText(/DPS$/)).toBeInTheDocument()
+    expect(screen.getByText(/dmg$/)).toBeInTheDocument()
   })
 
   it("drops the readout once the pointer leaves", () => {
@@ -94,7 +110,7 @@ describe("SimulationDistributionPanel", () => {
     fireEvent.mouseMove(target, { clientX: 100 })
     fireEvent.mouseLeave(target)
 
-    expect(screen.queryByText(/runs$/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/runs · /)).not.toBeInTheDocument()
   })
 
   it("says nothing at all without runs", () => {

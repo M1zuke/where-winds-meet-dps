@@ -17,9 +17,16 @@
   color: var(--color-text-dim);
 }
 
+.dps {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--color-accent-bright);
+}
+
 .damage {
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  color: var(--color-text-faint);
 }
 
 .delta {

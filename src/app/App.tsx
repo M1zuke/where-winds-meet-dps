@@ -353,11 +353,7 @@ function AppInner() {
           <Route
             path="/simulation"
             element={
-              <SimulationTab
-                inputs={inputs}
-                engineInputs={engineInputs}
-                expectedTotalDamage={result.totalDamage}
-              />
+              <SimulationTab inputs={inputs} engineInputs={engineInputs} expectedDps={result.dps} />
             }
           />
           <Route

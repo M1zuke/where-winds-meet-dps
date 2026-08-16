@@ -7,7 +7,7 @@ export interface HistogramBin {
   count: number
 }
 
-export interface DamageHistogram {
+export interface ParseHistogram {
   bins: HistogramBin[]
   min: number
   max: number
@@ -19,7 +19,7 @@ export function binCountFor(runCount: number): number {
   return Math.min(MAX_BINS, Math.max(MIN_BINS, Math.round(Math.sqrt(runCount))))
 }
 
-export function damageHistogram(sortedTotals: readonly number[]): DamageHistogram {
+export function parseHistogram(sortedTotals: readonly number[]): ParseHistogram {
   if (sortedTotals.length === 0) {
     return { bins: [], min: 0, max: 0, binWidth: 0, maxCount: 0 }
   }

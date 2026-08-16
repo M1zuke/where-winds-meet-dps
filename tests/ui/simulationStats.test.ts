@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import type { ParseRun } from "../../src/engine/dpsWorker"
 import {
   parseSummary,
-  sortedTotalDamage,
+  sortedParses,
 } from "../../src/ui/features/simulation/simulation-summary-bar/summaryStats"
 import {
   ladderAxisSpan,
@@ -12,8 +12,8 @@ import {
 } from "../../src/ui/features/simulation/simulation-parse-ladder-panel/parseLadder"
 import {
   binCountFor,
-  damageHistogram,
-} from "../../src/ui/features/simulation/simulation-distribution-panel/damageHistogram"
+  parseHistogram,
+} from "../../src/ui/features/simulation/simulation-distribution-panel/parseHistogram"
 import {
   outcomeMix,
   OUTCOME_ORDER,
@@ -60,6 +60,13 @@ describe("parseSummary", () => {
     expect(summary.worstTotalDamage).toBe(80)
   })
 
+  it("takes the best and worst DPS from the same runs as the best and worst damage", () => {
+    const summary = parseSummary(spread)!
+    expect(summary.bestDps).toBeCloseTo(130 / 60, 10)
+    expect(summary.worstDps).toBeCloseTo(80 / 60, 10)
+    expect(summary.meanDps).toBeCloseTo(summary.meanTotalDamage / 60, 10)
+  })
+
   it("states the range as best minus worst over the mean, in percent", () => {
     const summary = parseSummary([run(90), run(110)])!
     expect(summary.rangeFraction).toBeCloseTo(0.2, 10)
@@ -73,46 +80,52 @@ describe("parseSummary", () => {
     expect(parseSummary([run(100), run(100)])!.rangeFraction).toBe(0)
   })
 
-  it("sorts the totals ascending without touching the runs", () => {
-    const sorted = sortedTotalDamage(spread)
-    expect(sorted[0]).toBe(80)
-    expect(sorted[sorted.length - 1]).toBe(130)
+  it("sorts the runs ascending without touching the caller's array", () => {
+    const sorted = sortedParses(spread)
+    expect(sorted[0].totalDamage).toBe(80)
+    expect(sorted[sorted.length - 1].totalDamage).toBe(130)
     expect(spread[0].totalDamage).toBe(100)
   })
 })
 
 describe("parseLadder", () => {
-  const sorted = sortedTotalDamage(spread)
+  const sorted = sortedParses(spread)
 
   it("ranks max and min as the best and worst observed parse", () => {
-    expect(parseAtRank(sorted, 100)).toBe(130)
-    expect(parseAtRank(sorted, 0)).toBe(80)
+    expect(parseAtRank(sorted, 100)!.totalDamage).toBe(130)
+    expect(parseAtRank(sorted, 0)!.totalDamage).toBe(80)
+  })
+
+  it("reports both the DPS and the damage of the run at each rank", () => {
+    for (const row of parseLadder(sorted)) {
+      expect(row.dps).toBeCloseTo(row.totalDamage / 60, 10)
+    }
   })
 
   it("never invents a damage value between two observed runs", () => {
-    const observed = new Set(sorted)
+    const observed = new Set(sorted.map((entry) => entry.totalDamage))
     for (const row of parseLadder(sorted)) expect(observed.has(row.totalDamage)).toBe(true)
   })
 
   it("places a top-99 parse above ninety-nine percent of the runs", () => {
-    const many = sortedTotalDamage(Array.from({ length: 1000 }, (_unused, index) => run(index + 1)))
-    const value = parseAtRank(many, 99)
-    const beaten = many.filter((total) => total < value).length
+    const many = sortedParses(Array.from({ length: 1000 }, (_unused, index) => run(index + 1)))
+    const value = parseAtRank(many, 99)!.totalDamage
+    const beaten = many.filter((entry) => entry.totalDamage < value).length
     expect(beaten / many.length).toBeGreaterThanOrEqual(0.98)
     expect(value).toBe(990)
   })
 
   it("reports every rank as its own deviation from the median", () => {
     const rows = parseLadder(sorted)
-    const median = parseAtRank(sorted, 50)
+    const median = parseAtRank(sorted, 50)!.dps
     for (const row of rows) {
-      expect(row.deltaFromMedian).toBeCloseTo((row.totalDamage - median) / median, 10)
+      expect(row.deltaFromMedian).toBeCloseTo((row.dps - median) / median, 10)
     }
     expect(rows.find((row) => row.rank === 50)!.deltaFromMedian).toBe(0)
   })
 
   it("repeats one value across every rank when all runs are identical", () => {
-    const flat = sortedTotalDamage([run(500), run(500), run(500)])
+    const flat = sortedParses([run(500), run(500), run(500)])
     const rows = parseLadder(flat)
     expect(rows).toHaveLength(PARSE_RANKS.length)
     expect(rows.every((row) => row.totalDamage === 500)).toBe(true)
@@ -124,28 +137,28 @@ describe("parseLadder", () => {
   })
 })
 
-describe("damageHistogram", () => {
-  const sorted = sortedTotalDamage(spread)
+describe("parseHistogram", () => {
+  const sorted = sortedParses(spread).map((entry) => entry.totalDamage)
 
   it("spans the bins from the worst parse to the best", () => {
-    const histogram = damageHistogram(sorted)
+    const histogram = parseHistogram(sorted)
     expect(histogram.bins[0].start).toBe(80)
     expect(histogram.bins[histogram.bins.length - 1].end).toBeCloseTo(130, 10)
   })
 
   it("counts every run into exactly one bin", () => {
-    const histogram = damageHistogram(sorted)
+    const histogram = parseHistogram(sorted)
     const counted = histogram.bins.reduce((sum, bin) => sum + bin.count, 0)
     expect(counted).toBe(sorted.length)
   })
 
   it("puts the best parse in the last bin rather than past the end", () => {
-    const histogram = damageHistogram(sorted)
+    const histogram = parseHistogram(sorted)
     expect(histogram.bins[histogram.bins.length - 1].count).toBeGreaterThan(0)
   })
 
   it("falls back to a single bin when every parse is identical", () => {
-    const histogram = damageHistogram([42, 42, 42])
+    const histogram = parseHistogram([42, 42, 42])
     expect(histogram.bins).toHaveLength(1)
     expect(histogram.bins[0].count).toBe(3)
     expect(histogram.binWidth).toBe(0)

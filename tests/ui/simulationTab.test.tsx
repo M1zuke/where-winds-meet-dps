@@ -37,7 +37,7 @@ const umbra = applyBowSet(
 function renderTab() {
   render(
     <I18nProvider>
-      <SimulationTab inputs={umbra} engineInputs={umbra} expectedTotalDamage={100} />
+      <SimulationTab inputs={umbra} engineInputs={umbra} expectedDps={100} />
     </I18nProvider>,
   )
 }
@@ -86,7 +86,6 @@ describe("SimulationTab", () => {
     renderTab()
 
     expect(screen.getByText("not run yet")).toBeInTheDocument()
-    expect(screen.getByText("Avg Total Damage")).toBeInTheDocument()
     expect(screen.getByText("Avg DPS")).toBeInTheDocument()
     expect(screen.queryByText("Parse Ladder")).not.toBeInTheDocument()
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
@@ -139,10 +138,11 @@ describe("SimulationTab", () => {
     respond(completion(reqId, [80, 100, 120]))
 
     expect(screen.getByText("Parse Ladder")).toBeInTheDocument()
-    expect(screen.getByText("Damage Distribution")).toBeInTheDocument()
+    expect(screen.getByText("DPS Distribution")).toBeInTheDocument()
     expect(screen.getByText("Outcome Mix")).toBeInTheDocument()
     expect(screen.getByText(/^3 runs · /)).toBeInTheDocument()
-    expect(screen.getByText("1.67")).toBeInTheDocument()
+    expect(screen.getAllByText("1.67").length).toBeGreaterThan(0)
+    expect(screen.getByText("100 dmg")).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Run" })).not.toBeDisabled()
   })
 

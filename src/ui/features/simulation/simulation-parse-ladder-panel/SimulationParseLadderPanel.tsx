@@ -1,5 +1,6 @@
+import type { ParseRun } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { fixed, fullNumber, signedPercent } from "../damageFormat"
+import { decimalNumber, fixed, fullNumber, signedPercent } from "../damageFormat"
 import { ladderAxisSpan, MEDIAN_RANK, parseLadder, type ParseLadderRow } from "./parseLadder"
 import styles from "./SimulationParseLadderPanel.module.scss"
 
@@ -15,9 +16,9 @@ function signClassOf(delta: number): string {
   return "is-zero"
 }
 
-export function SimulationParseLadderPanel({ sortedTotals }: { sortedTotals: readonly number[] }) {
+export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseRun[] }) {
   const { t } = useI18n()
-  const rows = parseLadder(sortedTotals)
+  const rows = parseLadder(sorted)
   if (rows.length === 0) return <div className="empty-tab">{t("(none)")}</div>
 
   const axisSpan = ladderAxisSpan(rows) || 1
@@ -37,6 +38,7 @@ export function SimulationParseLadderPanel({ sortedTotals }: { sortedTotals: rea
         <thead>
           <tr>
             <th>{t("Rank")}</th>
+            <th>{t("DPS")}</th>
             <th>{t("Damage")}</th>
             <th className="bar-col">
               {t("vs Median")} (±{fixed(axisSpan * 100, 1)} %)
@@ -52,6 +54,7 @@ export function SimulationParseLadderPanel({ sortedTotals }: { sortedTotals: rea
                 <th scope="row" className={`${styles.rank} ${tierClassOf(row.rank)}`}>
                   {rankLabel(row.rank)}
                 </th>
+                <td className={styles.dps}>{decimalNumber(row.dps, 2)}</td>
                 <td className={styles.damage}>{fullNumber(row.totalDamage)}</td>
                 <td className="bar-col">
                   <div className="skill-bar-track">

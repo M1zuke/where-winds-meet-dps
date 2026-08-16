@@ -1,8 +1,9 @@
 import { useRef, useState } from "react"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { compactDamage, fixed, fullNumber } from "../damageFormat"
+import type { ParseRun } from "../../../../engine/dpsWorker"
+import { compactDamage, decimalNumber, fixed, fullNumber } from "../damageFormat"
 import { parseAtRank } from "../simulation-parse-ladder-panel/parseLadder"
-import { damageHistogram } from "./damageHistogram"
+import { parseHistogram } from "./parseHistogram"
 import styles from "./SimulationDistributionPanel.module.scss"
 
 const GRID_FRACTIONS = [1, 0.75, 0.5, 0.25, 0]
@@ -19,19 +20,21 @@ function niceCeiling(value: number): number {
 }
 
 export function SimulationDistributionPanel({
-  sortedTotals,
-  meanTotalDamage,
-  expectedTotalDamage,
+  sorted,
+  meanDps,
+  expectedDps,
+  rotationDuration,
 }: {
-  sortedTotals: readonly number[]
-  meanTotalDamage: number
-  expectedTotalDamage: number
+  sorted: readonly ParseRun[]
+  meanDps: number
+  expectedDps: number
+  rotationDuration: number
 }) {
   const { t } = useI18n()
   const plotRef = useRef<HTMLDivElement>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
-  const histogram = damageHistogram(sortedTotals)
+  const histogram = parseHistogram(sorted.map((run) => run.dps))
   if (histogram.bins.length === 0) return <div className="empty-tab">{t("(none)")}</div>
 
   const { bins, min, max, maxCount } = histogram
@@ -40,15 +43,15 @@ export function SimulationDistributionPanel({
   const binSpan = 100 / bins.length
   const barGap = binSpan * BAR_GAP_FRACTION
 
-  const median = parseAtRank(sortedTotals, 50)
-  const lowBand = parseAtRank(sortedTotals, 20)
-  const highBand = parseAtRank(sortedTotals, 80)
+  const median = parseAtRank(sorted, 50)!.dps
+  const lowBand = parseAtRank(sorted, 20)!.dps
+  const highBand = parseAtRank(sorted, 80)!.dps
 
-  const xOf = (damage: number) => (span > 0 ? ((damage - min) / span) * 100 : 50)
+  const xOf = (dps: number) => (span > 0 ? ((dps - min) / span) * 100 : 50)
   const yOf = (count: number) => 100 - (count / axisTop) * 100
+  const damageOf = (dps: number) => dps * rotationDuration
 
-  const showExpected =
-    Number.isFinite(expectedTotalDamage) && expectedTotalDamage >= min && expectedTotalDamage <= max
+  const showExpected = Number.isFinite(expectedDps) && expectedDps >= min && expectedDps <= max
 
   const hovered = hoveredIndex === null ? null : bins[hoveredIndex]
 
@@ -85,7 +88,7 @@ export function SimulationDistributionPanel({
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             role="img"
-            aria-label={`${t("Damage Distribution")} — ${t("median")} ${fullNumber(median)}, ${fullNumber(min)} ${t("to")} ${fullNumber(max)}`}
+            aria-label={`${t("DPS Distribution")} — ${t("median")} ${decimalNumber(median, 2)} ${t("DPS")}, ${decimalNumber(min, 2)} ${t("to")} ${decimalNumber(max, 2)}`}
           >
             {GRID_FRACTIONS.map((fraction) => (
               <line
@@ -117,19 +120,13 @@ export function SimulationDistributionPanel({
             {showExpected && (
               <line
                 className={styles.expectedLine}
-                x1={xOf(expectedTotalDamage)}
-                x2={xOf(expectedTotalDamage)}
+                x1={xOf(expectedDps)}
+                x2={xOf(expectedDps)}
                 y1="0"
                 y2="100"
               />
             )}
-            <line
-              className={styles.meanLine}
-              x1={xOf(meanTotalDamage)}
-              x2={xOf(meanTotalDamage)}
-              y1="0"
-              y2="100"
-            />
+            <line className={styles.meanLine} x1={xOf(meanDps)} x2={xOf(meanDps)} y1="0" y2="100" />
             <line className={styles.medianLine} x1={xOf(median)} x2={xOf(median)} y1="0" y2="100" />
           </svg>
           {hovered && (
@@ -145,14 +142,16 @@ export function SimulationDistributionPanel({
                 }
                 style={{ left: (hoveredIndex! + 0.5) * binSpan + "%" }}
               >
-                <div className={styles.hoverRange}>
-                  {compactDamage(hovered.start)} – {compactDamage(hovered.end)}
-                </div>
                 <div className={styles.hoverCount}>
-                  {fullNumber(hovered.count)} {t("runs")}
+                  {decimalNumber(hovered.start, 0)} – {decimalNumber(hovered.end, 0)} {t("DPS")}
+                </div>
+                <div className={styles.hoverRange}>
+                  {compactDamage(damageOf(hovered.start))} – {compactDamage(damageOf(hovered.end))}{" "}
+                  {t("dmg")}
                 </div>
                 <div className={styles.hoverShare}>
-                  {fixed((hovered.count / sortedTotals.length) * 100, 1)} %
+                  {fullNumber(hovered.count)} {t("runs")} ·{" "}
+                  {fixed((hovered.count / sorted.length) * 100, 1)} %
                 </div>
               </div>
             </>
@@ -174,7 +173,7 @@ export function SimulationDistributionPanel({
                 className={styles.xAxisTick + alignment}
                 style={{ left: fraction * 100 + "%" }}
               >
-                {compactDamage(min + span * fraction)}
+                {decimalNumber(min + span * fraction, 0)}
               </span>
             )
           })}
@@ -184,18 +183,18 @@ export function SimulationDistributionPanel({
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchMedian}`} />
           {t("Median")}
-          <span className={styles.legendValue}>{fullNumber(median)}</span>
+          <span className={styles.legendValue}>{decimalNumber(median, 2)}</span>
         </span>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchMean}`} />
           {t("Mean")}
-          <span className={styles.legendValue}>{fullNumber(meanTotalDamage)}</span>
+          <span className={styles.legendValue}>{decimalNumber(meanDps, 2)}</span>
         </span>
         {showExpected && (
           <span className={styles.legendItem}>
             <span className={`${styles.swatch} ${styles.swatchExpected}`} />
             {t("Expected")}
-            <span className={styles.legendValue}>{fullNumber(expectedTotalDamage)}</span>
+            <span className={styles.legendValue}>{decimalNumber(expectedDps, 2)}</span>
           </span>
         )}
         <span className={styles.legendItem}>
