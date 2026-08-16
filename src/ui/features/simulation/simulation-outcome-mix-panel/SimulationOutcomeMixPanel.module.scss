@@ -22,19 +22,19 @@
 }
 
 .critical {
-  background: var(--color-accent-bright);
+  background: #e8c84a;
 }
 
 .normal {
-  background: #6a9bd8;
+  background: var(--color-text);
 }
 
 .affinity {
-  background: var(--color-rarity-epic);
+  background: #e08a3c;
 }
 
 .abrasion {
-  background: var(--color-text-muted);
+  background: var(--color-text-faint);
 }
 
 .categoryCell {

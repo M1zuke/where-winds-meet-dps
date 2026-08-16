@@ -87,6 +87,7 @@ describe("SimulationTab", () => {
 
     expect(screen.getByText("not run yet")).toBeInTheDocument()
     expect(screen.getByText("Avg Total Damage")).toBeInTheDocument()
+    expect(screen.getByText("Avg DPS")).toBeInTheDocument()
     expect(screen.queryByText("Parse Ladder")).not.toBeInTheDocument()
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument()
   })
@@ -141,6 +142,7 @@ describe("SimulationTab", () => {
     expect(screen.getByText("Damage Distribution")).toBeInTheDocument()
     expect(screen.getByText("Outcome Mix")).toBeInTheDocument()
     expect(screen.getByText(/^3 runs · /)).toBeInTheDocument()
+    expect(screen.getByText("1.67")).toBeInTheDocument()
     expect(screen.getByRole("button", { name: "Run" })).not.toBeDisabled()
   })
 

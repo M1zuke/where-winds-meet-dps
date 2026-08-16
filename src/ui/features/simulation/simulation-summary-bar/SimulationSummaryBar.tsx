@@ -1,5 +1,5 @@
 import { useI18n } from "../../../../i18n/i18nContext"
-import { fixed, fullNumber } from "../damageFormat"
+import { decimalNumber, fixed, fullNumber } from "../damageFormat"
 import type { ParseSummary } from "./summaryStats"
 import styles from "./SimulationSummaryBar.module.scss"
 
@@ -39,6 +39,10 @@ export function SimulationSummaryBar({
       </div>
       <div className={styles.statStrip} style={{ opacity: isPending ? 0.6 : 1 }}>
         <Stat label={t("Avg Total Damage")} value={damage(summary?.meanTotalDamage)} lead />
+        <Stat
+          label={t("Avg DPS")}
+          value={summary ? decimalNumber(summary.meanDps, 2) : PLACEHOLDER}
+        />
         <Stat label={t("Best Parse")} value={damage(summary?.bestTotalDamage)} />
         <Stat label={t("Worst Parse")} value={damage(summary?.worstTotalDamage)} />
         <Stat

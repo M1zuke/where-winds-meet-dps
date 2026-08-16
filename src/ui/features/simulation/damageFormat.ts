@@ -15,6 +15,15 @@ export function fixed(value: number, digits: number): string {
   return Number.isFinite(value) ? value.toFixed(digits) : "—"
 }
 
+export function decimalNumber(value: number, digits: number): string {
+  return Number.isFinite(value)
+    ? value.toLocaleString("en-US", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      })
+    : "—"
+}
+
 export function signedPercent(fraction: number): string {
   if (!Number.isFinite(fraction)) return "—"
   const percent = fraction * 100
