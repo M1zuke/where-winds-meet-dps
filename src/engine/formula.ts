@@ -116,12 +116,26 @@ function setFormulaBonus(setId: string | null, field: keyof SetFormulaBonus): nu
   return typeof value === "number" ? value : 0
 }
 
+export type HitOutcome = "abrasion" | "normal" | "crit" | "affinity"
+
+export interface RolledHit {
+  outcome: HitOutcome
+  damage: number
+  chance: Record<HitOutcome, number>
+}
+
 interface SkillResult {
   expectedDamage: number
   cells: Record<string, number>
+  rolled?: RolledHit
 }
 
-export function computeSkillDamage(art: ArtRow, ctx: FormulaContext, count: number): SkillResult {
+export function computeSkillDamage(
+  art: ArtRow,
+  ctx: FormulaContext,
+  count: number,
+  rng?: () => number,
+): SkillResult {
   const num = (v: number | undefined) => v ?? 0
   const N = num(art.physMultiplier)
   const O = num(art.attributeMultiplier)
@@ -321,10 +335,38 @@ export function computeSkillDamage(art: ArtRow, ctx: FormulaContext, count: numb
   // Fixed-damage skills (e.g. Dragon Head) can trigger neither crit, affinity
   // nor abrasion — they always deal the normal row.
   const F_base = guaranteedNormal ? EF : guaranteedCrit ? EB : EH
-  const F = F_base * (1 + H_total) * count * I_corr * (1 + E_attuneBoost) * dotMult
+  // Written as a call rather than a precomputed factor so every branch below
+  // evaluates the identical expression tree: reassociating the product moves
+  // the last ULP, which `engineBaseline.fixture.json` hashes.
+  const withTail = (base: number) =>
+    base * (1 + H_total) * count * I_corr * (1 + E_attuneBoost) * dotMult
+  const F = withTail(F_base)
+
+  function rollHit(draw: () => number): RolledHit {
+    // Both draws are taken on every hit so the stream position never depends
+    // on which track won — otherwise adding a track reshuffles later hits.
+    const outcomeDraw = draw()
+    const magnitudeDraw = draw()
+    const between = (low: number, high: number) => low + magnitudeDraw * (high - low)
+    const chance: Record<HitOutcome, number> = guaranteedNormal
+      ? { abrasion: 0, normal: 1, crit: 0, affinity: 0 }
+      : guaranteedCrit
+        ? { abrasion: 0, normal: 0, crit: 1, affinity: 0 }
+        : { abrasion: AL, normal: AR, crit: AN, affinity: AP }
+    if (guaranteedNormal)
+      return { outcome: "normal", damage: withTail(between(normalMin, normalMax)), chance }
+    if (guaranteedCrit)
+      return { outcome: "crit", damage: withTail(between(critMin, critMax)), chance }
+    if (outcomeDraw < AL) return { outcome: "abrasion", damage: withTail(DZ), chance }
+    if (outcomeDraw < AL + AN)
+      return { outcome: "crit", damage: withTail(between(critMin, critMax)), chance }
+    if (outcomeDraw < AL + AN + AP) return { outcome: "affinity", damage: withTail(ED), chance }
+    return { outcome: "normal", damage: withTail(between(normalMin, normalMax)), chance }
+  }
 
   return {
     expectedDamage: F,
+    rolled: rng ? rollHit(rng) : undefined,
     cells: {
       X,
       Y,

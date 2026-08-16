@@ -1,0 +1,204 @@
+$y-axis-width: 40px;
+$axis-gap: 8px;
+$plot-height: 220px;
+
+.graphPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.plotRow {
+  display: grid;
+  grid-template-columns: $y-axis-width 1fr;
+  gap: $axis-gap;
+}
+
+.yAxis {
+  position: relative;
+  height: $plot-height;
+}
+
+.yAxisLabel {
+  position: absolute;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 0.7em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.plot {
+  position: relative;
+  height: $plot-height;
+  background: var(--color-bg);
+  border: 1px solid var(--color-surface-raised);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gridLine {
+  stroke: var(--color-surface-raised);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.band {
+  fill: rgba(192, 160, 96, 0.1);
+}
+
+.bar {
+  fill: rgba(192, 160, 96, 0.55);
+}
+
+.barHovered {
+  fill: var(--color-accent-bright);
+}
+
+.medianLine {
+  stroke: var(--color-accent-bright);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.meanLine {
+  stroke: #6a9bd8;
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.expectedLine {
+  stroke: #6ad8c4;
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.hoverGuide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-hover);
+  pointer-events: none;
+}
+
+.hoverTooltip {
+  position: absolute;
+  top: 12px;
+  transform: translateX(10px);
+  padding: 4px 8px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hoverTooltip.flipped {
+  transform: translateX(calc(-100% - 10px));
+}
+
+.hoverRange {
+  font-size: 0.7em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.hoverCount {
+  font-size: 0.78em;
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.hoverShare {
+  font-size: 0.7em;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.xAxis {
+  display: grid;
+  grid-template-columns: $y-axis-width 1fr;
+  gap: $axis-gap;
+}
+
+.xAxisTrack {
+  grid-column: 2;
+  position: relative;
+  height: 16px;
+}
+
+.xAxisTick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.7em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.alignStart {
+  transform: none;
+}
+
+.alignEnd {
+  transform: translateX(-100%);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-left: $y-axis-width + $axis-gap;
+  font-size: 0.75em;
+  color: var(--color-text-muted);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swatch {
+  width: 14px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
+}
+
+.swatchMedian {
+  border-top-color: var(--color-accent-bright);
+}
+
+.swatchMean {
+  border-top-width: 1px;
+  border-top-style: dashed;
+  border-top-color: #6a9bd8;
+}
+
+.swatchExpected {
+  border-top-width: 1px;
+  border-top-style: dotted;
+  border-top-color: #6ad8c4;
+}
+
+.swatchBand {
+  height: 10px;
+  border: none;
+  border-radius: 2px;
+  background: rgba(192, 160, 96, 0.28);
+}
+
+.legendValue {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}

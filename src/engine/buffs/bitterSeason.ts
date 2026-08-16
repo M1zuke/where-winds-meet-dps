@@ -1,4 +1,4 @@
-import { mulberry32 } from "./hawkwing"
+import { mulberry32 } from "../rng"
 
 const STEP_SEC = 0.05
 const SIM_RUNS = 500
@@ -35,6 +35,7 @@ export function bitterSeasonStackSchedule(
   hitTimesSec: readonly number[],
   procChance: number,
   rotationDurationSec: number,
+  runRng?: () => number,
 ): BitterSeasonStackSchedule {
   if (hitTimesSec.length === 0 || rotationDurationSec <= 0 || procChance <= 0) {
     return ZERO_STACK_SCHEDULE
@@ -43,9 +44,10 @@ export function bitterSeasonStackSchedule(
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const stackAccum = new Float64Array(steps)
   const maxStackAccum = new Float64Array(steps)
+  const simRuns = runRng ? 1 : SIM_RUNS
 
-  for (let sim = 0; sim < SIM_RUNS; sim++) {
-    const rng = mulberry32(STACK_SEED_OFFSET + sim)
+  for (let sim = 0; sim < simRuns; sim++) {
+    const rng = runRng ?? mulberry32(STACK_SEED_OFFSET + sim)
     let stacks = 0
     let windowEnd = -Infinity
     let hitIdx = 0
@@ -69,8 +71,8 @@ export function bitterSeasonStackSchedule(
   const expectedStacks = new Float64Array(steps)
   const maxStackProb = new Float64Array(steps)
   for (let step = 0; step < steps; step++) {
-    expectedStacks[step] = stackAccum[step] / SIM_RUNS
-    maxStackProb[step] = maxStackAccum[step] / SIM_RUNS
+    expectedStacks[step] = stackAccum[step] / simRuns
+    maxStackProb[step] = maxStackAccum[step] / simRuns
   }
 
   return {
@@ -106,6 +108,7 @@ export function bitterSeasonPoisonSchedule(
   // The ceiling an extension may leave on the REMAINING duration, from the
   // extending moment. `Infinity` when the build has no extension source.
   maxRemainingSec: number,
+  runRng?: () => number,
 ): BitterSeasonPoisonSchedule {
   if (
     hitTimesSec.length === 0 ||
@@ -124,9 +127,10 @@ export function bitterSeasonPoisonSchedule(
   // through a dense rotation), this decays to 0 the moment hits actually
   // stop landing — the number the "Remaining" display wants.
   const remainingAccum = new Float64Array(steps)
+  const simRuns = runRng ? 1 : SIM_RUNS
 
-  for (let sim = 0; sim < SIM_RUNS; sim++) {
-    const rng = mulberry32(POISON_SEED_OFFSET + sim)
+  for (let sim = 0; sim < simRuns; sim++) {
+    const rng = runRng ?? mulberry32(POISON_SEED_OFFSET + sim)
     let poisonEnd = -Infinity
     let hitIdx = 0
     let extIdx = 0
@@ -161,8 +165,8 @@ export function bitterSeasonPoisonSchedule(
   const activeProb = new Float64Array(steps)
   const expectedRemaining = new Float64Array(steps)
   for (let step = 0; step < steps; step++) {
-    activeProb[step] = accum[step] / SIM_RUNS
-    expectedRemaining[step] = remainingAccum[step] / SIM_RUNS
+    activeProb[step] = accum[step] / simRuns
+    expectedRemaining[step] = remainingAccum[step] / simRuns
   }
 
   const indexAt = (tSec: number): number =>

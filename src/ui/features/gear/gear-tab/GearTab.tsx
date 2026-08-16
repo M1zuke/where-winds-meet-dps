@@ -10,7 +10,10 @@ import { GEAR_SLOTS } from "../../../../engine/types"
 import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
+import { SubTabs } from "../../../components/sub-tabs/SubTabs"
+import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { GearSlotTiles } from "../gear-slot-tiles/GearSlotTiles"
+import { GearAnalysisPanel } from "../gear-analysis-panel/GearAnalysisPanel"
 import { GearDetailsPanel } from "../gear-details-panel/GearDetailsPanel"
 import { GearInventoryPanel } from "../gear-inventory-panel/GearInventoryPanel"
 import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
@@ -54,6 +57,7 @@ export function GearTab({
   const [showGlobal, setShowGlobal] = useState(false)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
+  const [sub, setSub] = useState<"analysis" | "inventory">("analysis")
 
   const inventory = inputs.inventory
   const equipped = inputs.equipped
@@ -212,6 +216,10 @@ export function GearTab({
           <button type="button" className="btn primary" onClick={() => setImportOpen(true)}>
             {t("Import gear")}
           </button>
+          <div className="spacer" />
+          <button type="button" className="btn primary" onClick={openCreateDialog}>
+            + {t("Create Gear")}
+          </button>
         </div>
         <GearSlotTiles
           inventory={inventory}
@@ -238,20 +246,34 @@ export function GearTab({
           wordMaxPending={wordMax.isPending || !wordMaxRowsMatch}
         />
 
-        <div className="panel">
-          <GearInventoryPanel
-            rows={visibleRows}
-            activeProfileId={activeProfileId}
-            selectedPieceId={liveSelectedPieceId}
-            showGlobal={showGlobal}
-            onToggleGlobal={() => setShowGlobal((prev) => !prev)}
-            onSelect={selectInventoryRow}
-            onCreate={openCreateDialog}
-            slotFilter={selectedSlot}
-            onClearSlotFilter={() => setSelectedSlot(null)}
-            dpsDeltas={dpsDeltas}
-            dpsDeltasPending={dpsDeltasPending}
+        <div>
+          <SubTabs
+            active={sub}
+            onSelect={setSub}
+            tabs={[
+              { key: "analysis", label: t("Analysis") },
+              { key: "inventory", label: t("Inventory") },
+            ]}
           />
+          <SubTabPanel>
+            {sub === "analysis" && (
+              <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
+            )}
+            {sub === "inventory" && (
+              <GearInventoryPanel
+                rows={visibleRows}
+                activeProfileId={activeProfileId}
+                selectedPieceId={liveSelectedPieceId}
+                showGlobal={showGlobal}
+                onToggleGlobal={() => setShowGlobal((prev) => !prev)}
+                onSelect={selectInventoryRow}
+                slotFilter={selectedSlot}
+                onClearSlotFilter={() => setSelectedSlot(null)}
+                dpsDeltas={dpsDeltas}
+                dpsDeltasPending={dpsDeltasPending}
+              />
+            )}
+          </SubTabPanel>
         </div>
       </div>
 

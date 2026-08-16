@@ -33791,7 +33791,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physBoost +20%"
+          "summary": "HP damage +20%"
         },
         {
           "id": "qiImbalance",
@@ -33813,7 +33813,7 @@
           "duration": 15,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Qi dmg +10%, and +10% damage taken while Exhausted"
+          "summary": "+10% HP damage and +10% Bellstrike damage taken while Exhausted"
         },
         {
           "id": "belowSixtyEndurance",
@@ -33866,7 +33866,7 @@
       ]
     },
     "dynamic": {
-      "digest": "20fd64a53b77646a2d28a0bb3b634dbe2497fbb76f4f3655b91ee4736be1f75f"
+      "digest": "d335957b6485c3bd91c6080b2be3d067e7099a305133f650b4097c3dd5f96143"
     }
   }
 }

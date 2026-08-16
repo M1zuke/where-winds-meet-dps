@@ -5,6 +5,7 @@ import {
   HAWKWING_STEP_SEC,
   hawkwingStacksSchedule,
 } from "../../src/engine/buffs/hawkwing"
+import { mulberry32 } from "../../src/engine/rng"
 
 function hitTrain(duration: number, interval = 0.3): number[] {
   const hits: number[] = []
@@ -73,5 +74,26 @@ describe("hawkwingStacksSchedule", () => {
     expect(
       averageBonus(hitTrain(rotationDurationSec, 0.05), 1, rotationDurationSec),
     ).toBeLessThanOrEqual(0.1)
+  })
+})
+
+describe("hawkwingStacksSchedule under a parse run", () => {
+  const hits = hitTrain(60.7)
+
+  it("averages 500 runs when given no rng", () => {
+    const schedule = hawkwingStacksSchedule(hits, 0.4, 60.7)
+    const fractional = Array.from({ length: 200 }, (_unused, step) =>
+      schedule.getExpectedStacksAtTime(step * HAWKWING_STEP_SEC),
+    ).filter((stacks) => !Number.isInteger(stacks))
+    expect(fractional.length).toBeGreaterThan(0)
+  })
+
+  it("runs a single trajectory when given an rng", () => {
+    const schedule = hawkwingStacksSchedule(hits, 0.4, 60.7, mulberry32(31))
+    for (let step = 0; step < 100; step++) {
+      const stacks = schedule.getExpectedStacksAtTime(step * HAWKWING_STEP_SEC)
+      expect(Number.isInteger(stacks)).toBe(true)
+      expect(stacks).toBeLessThanOrEqual(HAWKWING_MAX_STACKS)
+    }
   })
 })

@@ -113,13 +113,6 @@
       "maxBonus": 0.11,
       "scalesWith": "bellstrike.max",
       "scaleMax": 655
-    },
-    {
-      "skill": "Qi DMG Bonus",
-      "stat": "attributeDamage",
-      "maxBonus": 0.1,
-      "scalesWith": "momentum",
-      "scaleMax": 0
     }
   ],
   "stonesplitStrength": [

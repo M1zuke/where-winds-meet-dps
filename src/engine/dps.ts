@@ -1,4 +1,4 @@
-import type { Inputs, Result } from "./types"
+import type { EngineRunOptions, Inputs, Result } from "./types"
 import type { Rotation } from "./rotation"
 import { simulateTimeline } from "./timeline"
 import { defaultRotationForClass, builtinRotationsForClass } from "./builtinLibrary"
@@ -15,7 +15,7 @@ export function activeRotationForInputs(inputs: Inputs): Rotation | null {
   return defaultRotationForClass(inputs.classId)
 }
 
-export function runEngine(inputs: Inputs): Result {
+export function runEngine(inputs: Inputs, options?: EngineRunOptions): Result {
   const rotation = activeRotationForInputs(inputs)
   if (!rotation) {
     return {
@@ -28,5 +28,5 @@ export function runEngine(inputs: Inputs): Result {
       warnings: [`No default rotation for ${inputs.classId}.`],
     }
   }
-  return simulateTimeline({ ...inputs, activeCustomRotation: rotation })
+  return simulateTimeline({ ...inputs, activeCustomRotation: rotation }, options)
 }

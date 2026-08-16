@@ -1,0 +1,16 @@
+@use "breakpoints";
+
+.rotationField {
+  flex: 0 1 280px;
+  min-width: 0;
+}
+
+.runCountField {
+  flex: 0 0 96px;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .rotationField {
+    flex: 1 1 100%;
+  }
+}

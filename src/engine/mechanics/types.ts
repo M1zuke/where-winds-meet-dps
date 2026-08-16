@@ -31,6 +31,9 @@ export interface MechanicSetup {
   // once in `timeline.ts` — see CLAUDE.md § "White vs Yellow rates". A
   // mechanic reads this rather than re-deriving it from `inputs`.
   effectiveRates: { precision: number; critRate: number; affinityRate: number }
+  // A stochastic schedule that receives this must honour it — docs/CALCULATION.md
+  // § "Mechanic rules".
+  rng?: () => number
 }
 
 // Two of the formula's inputs are not `{statKey, amount}` deltas and so cannot

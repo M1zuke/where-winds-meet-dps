@@ -2,6 +2,7 @@ import type { GearWordId } from "../data/stats/statLines"
 import type { Rotation } from "./rotation"
 
 export type { GearWordId } from "../data/stats/statLines"
+import type { HitOutcome } from "./formula"
 import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
@@ -292,6 +293,13 @@ export interface StoredProfile {
   inputs: Inputs
 }
 
+export type OutcomeCounts = Record<HitOutcome, number>
+
+export interface EngineRunOptions {
+  seed?: number
+  collect?: "full" | "totals"
+}
+
 export interface Result {
   dps: number
   totalDamage: number
@@ -305,6 +313,10 @@ export interface Result {
   qiBreakWindow?: { startSec: number; endSec: number } | null
   lowQiWindow?: { startSec: number; endSec: number } | null
   casts?: RotationCast[]
+  // Optional so `JSON.stringify` drops the keys on an unseeded run and the
+  // locked baseline digest stays byte-identical.
+  outcomeCounts?: OutcomeCounts
+  expectedOutcomeShare?: OutcomeCounts
 }
 
 export interface CastBuffTag {

@@ -56,6 +56,7 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
           setup.weaponHitTimesSec,
           proc,
           setup.rotationDurationSec,
+          setup.rng,
         ),
         tier6: innerWayHasNode(insightfulStrike, tier, INNER_WAY_NODE.concentrationDotMultiplier),
       }

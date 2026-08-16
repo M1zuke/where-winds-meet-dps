@@ -26,11 +26,13 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    own pays a full module instantiation per mount — for a route-mounted tab, per
    visit.
 5. **Post through the client, never around it.** It debounces per kind with the
-   shared constant, keeps only the newest request, discards superseded responses,
-   and once a kind has no listeners left drops its queued request and voids the
-   ones already in flight, so the next mount is never handed the previous one's
-   result. Each post structured-clones the full inputs, gear inventory included,
-   on the main thread — a zero-delay timeout is not a debounce.
+   shared table, keeps only the newest request, discards superseded responses,
+   and once a kind has no listeners left drops its queued request and **aborts**
+   the ones already in flight, so the next mount is never handed the previous
+   one's result and no worker keeps computing for a tab that is gone. Each post
+   structured-clones the full inputs, gear inventory included, on the main thread
+   — a zero-delay timeout is not a debounce, so a kind that must fire at once
+   takes a zero entry in that table and posts synchronously.
 6. **Mount worker hooks where the results are consumed**, not in the app shell, so
    a tab that does not show the data does not pay for the sweep.
 7. **While a recompute is in flight, show last-known values** with a subtle
@@ -40,6 +42,13 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    into hook state.
 8. **Never serialize large state per render.** Memoize on the value that actually
    changed.
+9. **A kind that reports progress reports it on its own message kind**, routed
+   ahead of the response channel and never through it — that channel retires a
+   request id on first delivery, so progress sent down it swallows both the later
+   progress and the real result. Progress never clears the pending flag, and
+   progress for anything but the newest request id is dropped. A kind that can
+   run long must also be interruptible between chunks, and yield between them so
+   its cancel message can be read at all.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
 
