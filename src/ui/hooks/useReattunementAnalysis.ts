@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { Inputs } from "../../engine/types"
-import type { ReattunementOption } from "../../engine/dpsWorker"
-import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
+import type { ReattunementOption, ReattunementWorkerResponse } from "../../engine/dpsWorker"
+import { postToDpsWorker, retainedResponse, subscribeToDpsWorker } from "./dpsWorkerClient"
 import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export type ReattunementReason = "ok" | "no-piece" | "no-pool" | "no-selection"
@@ -31,18 +31,26 @@ interface ReceivedReattunement {
   pieceId: string
 }
 
+function receivedReattunement(
+  response: ReattunementWorkerResponse | null,
+): ReceivedReattunement | null {
+  if (!response) return null
+  const { options, reason, pieceId, probImproveOverall } = response
+  return { options, reason, pieceId, probImproveOverall }
+}
+
 export function useReattunementAnalysis(
   inputs: Inputs,
   selectedPieceId: string | null,
 ): ReattunementAnalysisResult {
-  const [received, setReceived] = useState<ReceivedReattunement | null>(null)
+  const [received, setReceived] = useState<ReceivedReattunement | null>(() =>
+    receivedReattunement(retainedResponse("reattunement")),
+  )
   const isPending = useDpsWorkerPending("reattunement")
 
   useEffect(() => {
-    return subscribeToDpsWorker(
-      "reattunement",
-      ({ options, reason, pieceId, probImproveOverall }) =>
-        setReceived({ options, reason, pieceId, probImproveOverall }),
+    return subscribeToDpsWorker("reattunement", (response) =>
+      setReceived(receivedReattunement(response)),
     )
   }, [])
 

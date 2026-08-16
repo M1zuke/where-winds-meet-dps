@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
-import { afterEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { WorkerResponse } from "../../src/engine/dpsWorker"
 
 const { created, MockWorker } = vi.hoisted(() => {
@@ -29,15 +29,25 @@ const { applyArmorSet, applyBowSet } = await import("../../src/engine/panel")
 const { I18nProvider } = await import("../../src/i18n/I18nProvider")
 const { SimulationTab } =
   await import("../../src/ui/features/simulation/simulation-tab/SimulationTab")
+const { useParseSimulation } = await import("../../src/ui/hooks/useParseSimulation")
+const { simulationViewState } = await import("../../src/ui/features/simulation/simulationViewState")
+const { DEFAULT_RUN_COUNT } = await import("../../src/ui/features/simulation/simulationRunSettings")
 
 const umbra = applyBowSet(
   applyArmorSet(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" })),
 )
 
+function OwnedSimulationTab() {
+  const simulation = useParseSimulation()
+  return (
+    <SimulationTab inputs={umbra} engineInputs={umbra} expectedDps={100} simulation={simulation} />
+  )
+}
+
 function renderTab() {
   render(
     <I18nProvider>
-      <SimulationTab inputs={umbra} engineInputs={umbra} expectedDps={100} />
+      <OwnedSimulationTab />
     </I18nProvider>,
   )
 }
@@ -76,6 +86,12 @@ function completion(
     ...overrides,
   }
 }
+
+beforeEach(() => {
+  simulationViewState.optionId = null
+  simulationViewState.runCount = DEFAULT_RUN_COUNT
+  simulationViewState.ranSignature = null
+})
 
 afterEach(() => {
   vi.restoreAllMocks()

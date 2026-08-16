@@ -3,10 +3,11 @@ import type { Inputs } from "../../../../engine/types"
 import type { Rotation } from "../../../../engine/rotation"
 import { loadCustomRotations } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { useParseSimulation } from "../../../hooks/useParseSimulation"
+import type { ParseSimulationState } from "../../../hooks/useParseSimulation"
 import { rotationOptions, selectedRotationOptionId } from "../../rotation/rotationOptions"
 import { fullNumber } from "../damageFormat"
-import { clampRunCount, DEFAULT_RUN_COUNT } from "../simulationRunSettings"
+import { clampRunCount } from "../simulationRunSettings"
+import { simulationViewState } from "../simulationViewState"
 import { SimulationControlsPanel } from "../simulation-controls-panel/SimulationControlsPanel"
 import { SimulationSummaryBar } from "../simulation-summary-bar/SimulationSummaryBar"
 import { parseSummary, sortedParses } from "../simulation-summary-bar/summaryStats"
@@ -19,19 +20,21 @@ export function SimulationTab({
   inputs,
   engineInputs,
   expectedDps,
+  simulation,
 }: {
   inputs: Inputs
   engineInputs: Inputs
   expectedDps: number
+  simulation: ParseSimulationState
 }) {
   const { t } = useI18n()
   const [saved] = useState<Rotation[]>(() => loadCustomRotations())
   const options = useMemo(() => rotationOptions(inputs.classId, saved), [inputs.classId, saved])
-  const [optionId, setOptionId] = useState(() => selectedRotationOptionId(inputs))
-  const [runCount, setRunCount] = useState(DEFAULT_RUN_COUNT)
-  const [ranSignature, setRanSignature] = useState<string | null>(null)
-
-  const simulation = useParseSimulation()
+  const [optionId, setOptionId] = useState(
+    () => simulationViewState.optionId ?? selectedRotationOptionId(inputs),
+  )
+  const [runCount, setRunCount] = useState(simulationViewState.runCount)
+  const [ranSignature, setRanSignature] = useState(() => simulationViewState.ranSignature)
 
   const signature = useMemo(
     () => JSON.stringify({ engineInputs, optionId }),
@@ -39,13 +42,24 @@ export function SimulationTab({
   )
   const isStale = ranSignature !== null && ranSignature !== signature
 
+  function selectOption(nextOptionId: string) {
+    simulationViewState.optionId = nextOptionId
+    setOptionId(nextOptionId)
+  }
+
+  function changeRunCount(nextRunCount: number) {
+    simulationViewState.runCount = nextRunCount
+    setRunCount(nextRunCount)
+  }
+
   const summary = useMemo(() => parseSummary(simulation.runs), [simulation.runs])
   const sorted = useMemo(() => sortedParses(simulation.runs), [simulation.runs])
 
   function run() {
     const option = options.find((candidate) => candidate.id === optionId)
     const clamped = clampRunCount(runCount)
-    setRunCount(clamped)
+    changeRunCount(clamped)
+    simulationViewState.ranSignature = signature
     setRanSignature(signature)
     simulation.start({
       inputs: engineInputs,
@@ -66,9 +80,9 @@ export function SimulationTab({
       <SimulationControlsPanel
         options={options}
         selectedOptionId={optionId}
-        onSelectOption={setOptionId}
+        onSelectOption={selectOption}
         runCount={runCount}
-        onRunCountChange={setRunCount}
+        onRunCountChange={changeRunCount}
         status={simulation.status}
         progress={simulation.progress}
         isStale={isStale}

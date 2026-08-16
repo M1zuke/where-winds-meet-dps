@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import type { WorkerRequest, WorkerResponse } from "../../src/engine/dpsWorker"
 import type { UnsentRequest } from "../../src/ui/hooks/dpsWorkerClient"
 import { defaultInputs } from "../../src/engine/defaults"
+import { CACHE_ENTRIES_PER_KIND } from "../../src/ui/hooks/workerResultCache"
 
 const { created, MockWorker } = vi.hoisted(() => {
   const instances: {
@@ -33,8 +34,8 @@ async function freshClient(cores = 8): Promise<Client> {
   return import("../../src/ui/hooks/dpsWorkerClient")
 }
 
-function rankingRequest(): UnsentRequest {
-  return { kind: "ranking", inputs: defaultInputs, baselineDps: 1000 }
+function rankingRequest(baselineDps = 1000): UnsentRequest {
+  return { kind: "ranking", inputs: defaultInputs, baselineDps }
 }
 
 function rankingResponse(reqId: number): WorkerResponse {
@@ -160,8 +161,8 @@ describe("dpsWorkerClient", () => {
     const client = await freshClient()
 
     const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
-    for (const _change of [0, 1, 2]) {
-      client.postToDpsWorker(rankingRequest())
+    for (const change of [1, 2, 3]) {
+      client.postToDpsWorker(rankingRequest(1000 + change))
       await vi.runAllTimersAsync()
       respond(0, rankingResponse(reqIdOfLastPost(0)))
     }
@@ -169,7 +170,7 @@ describe("dpsWorkerClient", () => {
 
     const seen: number[] = []
     client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
-    client.postToDpsWorker(rankingRequest())
+    client.postToDpsWorker(rankingRequest(2000))
     await vi.runAllTimersAsync()
     respond(0, rankingResponse(reqIdOfLastPost(0)))
 
@@ -315,5 +316,97 @@ describe("dpsWorkerClient", () => {
     stop()
 
     expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId })
+  })
+
+  it("answers a repeated request from the cache instead of the worker", async () => {
+    const client = await freshClient()
+    const seen: number[] = []
+    client.subscribeToDpsWorker("ranking", ({ reqId }) => seen.push(reqId))
+
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+    const computed = reqIdOfLastPost(0)
+    respond(0, rankingResponse(computed))
+
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+
+    expect(created[0].posted).toHaveLength(1)
+    expect(seen).toEqual([computed, computed + 1])
+  })
+
+  it("posts again when one field of the request differs", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("ranking", () => {})
+
+    client.postToDpsWorker(rankingRequest(1000))
+    await vi.runAllTimersAsync()
+    respond(0, rankingResponse(reqIdOfLastPost(0)))
+
+    client.postToDpsWorker(rankingRequest(1001))
+    await vi.runAllTimersAsync()
+
+    expect(created[0].posted).toHaveLength(2)
+  })
+
+  it("never answers a parse simulation from the cache", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+    respond(0, parseSimulationResponse(reqIdOfLastPost(0)))
+    client.postToDpsWorker(parseSimulationRequest())
+
+    expect(
+      created[0].posted.filter((post) => (post as WorkerRequest).kind === "parseSimulation"),
+    ).toHaveLength(2)
+  })
+
+  it("stays unpending through a cached answer", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("ranking", () => {})
+
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+    respond(0, rankingResponse(reqIdOfLastPost(0)))
+
+    client.postToDpsWorker(rankingRequest())
+    expect(client.isDpsWorkerPending("ranking")).toBe(false)
+  })
+
+  it("evicts the oldest signature once the per-kind cap is passed", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("ranking", () => {})
+
+    for (let entry = 0; entry <= CACHE_ENTRIES_PER_KIND; entry++) {
+      client.postToDpsWorker(rankingRequest(1000 + entry))
+      await vi.runAllTimersAsync()
+      respond(0, rankingResponse(reqIdOfLastPost(0)))
+    }
+    const postsBeforeReplay = created[0].posted.length
+
+    client.postToDpsWorker(rankingRequest(1000))
+    await vi.runAllTimersAsync()
+
+    expect(created[0].posted).toHaveLength(postsBeforeReplay + 1)
+  })
+
+  it("hands the last response to a listener that subscribes after it landed", async () => {
+    const client = await freshClient()
+    const firstVisit = client.subscribeToDpsWorker("ranking", () => {})
+
+    client.postToDpsWorker(rankingRequest())
+    await vi.runAllTimersAsync()
+    const reqId = reqIdOfLastPost(0)
+    respond(0, rankingResponse(reqId))
+    firstVisit()
+
+    expect(client.retainedResponse("ranking")?.reqId).toBe(reqId)
+  })
+
+  it("has nothing retained for a kind that never answered", async () => {
+    const client = await freshClient()
+
+    expect(client.retainedResponse("ranking")).toBeNull()
   })
 })

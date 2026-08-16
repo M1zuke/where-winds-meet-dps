@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
-import { HashRouter, NavLink, Navigate, Route, Routes } from "react-router-dom"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { HashRouter, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom"
 import { runEngine } from "../engine/dps"
 import { applyArmorSet, applyBowSet } from "../engine/panel"
 import { withDerivedStats } from "../engine/derivedInputs"
@@ -16,6 +16,8 @@ import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/
 import { SkillsTab } from "../ui/features/skills/skills-tab/SkillsTab"
 import { useDpsDeltas } from "../ui/hooks/useDpsDeltas"
 import { useGraduationRate } from "../ui/hooks/useGraduationRate"
+import { useParseSimulation, type ParseSimulationRequest } from "../ui/hooks/useParseSimulation"
+import { SimulationToast, SIMULATION_PATH } from "../ui/layout/simulation-toast/SimulationToast"
 import { GraduationBuildDialog } from "../ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/SetupWizard"
 import { useI18n } from "../i18n/i18nContext"
@@ -43,6 +45,26 @@ migrateSeededSkillIds()
 migrateDotStandinOverrides()
 
 function AppInner() {
+  const simulation = useParseSimulation()
+  const [startedRunCount, setStartedRunCount] = useState(0)
+  const [acknowledgedRunCount, setAcknowledgedRunCount] = useState(0)
+  const isSimulationRunning = simulation.status === "running"
+  const isOnSimulationTab = useLocation().pathname === SIMULATION_PATH
+  const areInputsLocked = isSimulationRunning && !isOnSimulationTab
+
+  const startParseSimulation = simulation.start
+  const startSimulation = useCallback(
+    (request: ParseSimulationRequest) => {
+      setStartedRunCount((count) => count + 1)
+      startParseSimulation(request)
+    },
+    [startParseSimulation],
+  )
+  const acknowledgeSimulation = useCallback(
+    () => setAcknowledgedRunCount(startedRunCount),
+    [startedRunCount],
+  )
+
   const initial = useState(() => loadProfiles())[0]
   const [committed, setCommitted] = useState<ProfilesState>({
     profiles: initial.profiles,
@@ -51,7 +73,11 @@ function AppInner() {
   const initialActive = committed.profiles.find((profile) => profile.id === committed.activeId)!
   const [activeDraft, setActiveDraft] = useState<Inputs>(initialActive.inputs)
   const inputs = activeDraft
-  const setInputs = setActiveDraft
+
+  function setInputs(next: Inputs) {
+    if (isSimulationRunning) return
+    setActiveDraft(next)
+  }
   const [lastSavedJson, setLastSavedJson] = useState(() => JSON.stringify(initialActive.inputs))
   const [savedAt, setSavedAt] = useState<number | null>(null)
   const [graduationDialogOpen, setGraduationDialogOpen] = useState(false)
@@ -64,6 +90,12 @@ function AppInner() {
   const isDirty = draftJson !== lastSavedJson
 
   const [customSkills, setCustomSkills] = useState<Skill[]>(() => loadCustomSkills())
+
+  function changeCustomSkills(next: Skill[]) {
+    if (isSimulationRunning) return
+    setCustomSkills(next)
+  }
+
   const [customBuffs] = useState<Buff[]>(() => loadCustomBuffs())
   const [customDebuffs] = useState<Debuff[]>(() => loadCustomDebuffs())
 
@@ -120,6 +152,7 @@ function AppInner() {
     setSavedAt(Date.now())
   }
   async function handleReset() {
+    if (isSimulationRunning) return
     if (!isDirty) return
     if (!(await confirm(t("Discard unsaved changes?")))) return
     const active = committed.profiles.find((profile) => profile.id === committed.activeId)
@@ -131,6 +164,7 @@ function AppInner() {
   }
 
   async function selectProfile(id: string) {
+    if (isSimulationRunning) return
     if (id === committed.activeId) return
     if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
     const target = committed.profiles.find((profile) => profile.id === id)
@@ -143,6 +177,7 @@ function AppInner() {
   }
 
   async function createProfile() {
+    if (isSimulationRunning) return
     if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
     setWizard({
       mode: "new-profile",
@@ -151,6 +186,7 @@ function AppInner() {
   }
 
   function handleWizardFinish(name: string, finishedInputs: Inputs) {
+    if (isSimulationRunning) return
     const profile: StoredProfile = {
       id: newProfileId(),
       name,
@@ -193,6 +229,7 @@ function AppInner() {
   }
 
   async function handleImportProfile(imported: StoredProfile) {
+    if (isSimulationRunning) return
     if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
     const next: ProfilesState = {
       profiles: [...committed.profiles, imported],
@@ -237,6 +274,14 @@ function AppInner() {
 
   return (
     <div className={styles.app}>
+      <SimulationToast
+        status={simulation.status}
+        done={simulation.progress.done}
+        total={simulation.progress.total}
+        hasUnacknowledgedRun={acknowledgedRunCount < startedRunCount}
+        onCancel={simulation.cancel}
+        onAcknowledge={acknowledgeSimulation}
+      />
       {wizard && (
         <SetupWizard
           mode={wizard.mode}
@@ -275,7 +320,7 @@ function AppInner() {
               type="button"
               className="reset-btn"
               onClick={handleReset}
-              disabled={!isDirty}
+              disabled={!isDirty || isSimulationRunning}
               aria-label={t("Discard changes")}
               title={t("Discard edits since the last save")}
             >
@@ -290,6 +335,7 @@ function AppInner() {
           graduationPending={graduation.isPending}
           theoreticalDps={graduation.theoreticalDps}
           onGraduationClick={() => setGraduationDialogOpen(true)}
+          graduationDisabled={isSimulationRunning}
         />
 
         <nav className={styles.tabs} role="tablist">
@@ -311,90 +357,97 @@ function AppInner() {
       </div>
       <div className={styles.tabPanel}>
         <WarningsList result={result} />
-        <Routes>
-          <Route path="/" element={<Navigate to="/overview" replace />} />
-          <Route
-            path="/overview"
-            element={
-              <OverviewTab
-                inputs={inputs}
-                engineInputs={engineInputs}
-                onChange={setInputs}
-                result={result}
-              />
-            }
-          />
-          <Route
-            path="/gear"
-            element={
-              <GearTab
-                inputs={inputs}
-                engineInputs={engineInputs}
-                onChange={setInputs}
-                profiles={committed.profiles}
-                activeProfileId={committed.activeId}
-                currentDps={result.dps}
-                dpsDeltas={dpsDeltas}
-                dpsDeltasPending={dpsDeltasPending}
-              />
-            }
-          />
-          <Route
-            path="/rotation"
-            element={
-              <RotationTab
-                inputs={inputs}
-                engineInputs={engineInputs}
-                onChange={setInputs}
-                result={result}
-              />
-            }
-          />
-          <Route
-            path="/simulation"
-            element={
-              <SimulationTab inputs={inputs} engineInputs={engineInputs} expectedDps={result.dps} />
-            }
-          />
-          <Route
-            path="/skills"
-            element={
-              <SkillsTab
-                inputs={inputs}
-                engineInputs={engineInputs}
-                customSkills={customSkills}
-                onCustomSkillsChange={setCustomSkills}
-                customBuffs={customBuffs}
-                customDebuffs={customDebuffs}
-              />
-            }
-          />
-          <Route path="/buffs" element={<Navigate to="/skills" replace />} />
-          <Route path="/debuffs" element={<Navigate to="/skills" replace />} />
-          <Route
-            path="/talents"
-            element={<TalentsOdditiesTab inputs={inputs} onChange={setInputs} />}
-          />
-          <Route path="/oddities" element={<Navigate to="/talents" replace />} />
-          <Route
-            path="/profile"
-            element={
-              <div className="panel">
-                <ProfilePanel
-                  profiles={committed.profiles}
-                  activeId={committed.activeId}
-                  onCreate={createProfile}
-                  onSelect={selectProfile}
-                  onRename={renameProfile}
-                  onDuplicate={duplicateProfile}
-                  onDelete={deleteProfile}
-                  onImport={handleImportProfile}
+        <fieldset className={styles.routeFields} disabled={areInputsLocked}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/overview" replace />} />
+            <Route
+              path="/overview"
+              element={
+                <OverviewTab
+                  inputs={inputs}
+                  engineInputs={engineInputs}
+                  onChange={setInputs}
+                  result={result}
                 />
-              </div>
-            }
-          />
-          <Route path="*" element={<Navigate to="/overview" replace />} />
-        </Routes>
+              }
+            />
+            <Route
+              path="/gear"
+              element={
+                <GearTab
+                  inputs={inputs}
+                  engineInputs={engineInputs}
+                  onChange={setInputs}
+                  profiles={committed.profiles}
+                  activeProfileId={committed.activeId}
+                  currentDps={result.dps}
+                  dpsDeltas={dpsDeltas}
+                  dpsDeltasPending={dpsDeltasPending}
+                />
+              }
+            />
+            <Route
+              path="/rotation"
+              element={
+                <RotationTab
+                  inputs={inputs}
+                  engineInputs={engineInputs}
+                  onChange={setInputs}
+                  result={result}
+                />
+              }
+            />
+            <Route
+              path="/simulation"
+              element={
+                <SimulationTab
+                  inputs={inputs}
+                  engineInputs={engineInputs}
+                  expectedDps={result.dps}
+                  simulation={{ ...simulation, start: startSimulation }}
+                />
+              }
+            />
+            <Route
+              path="/skills"
+              element={
+                <SkillsTab
+                  inputs={inputs}
+                  engineInputs={engineInputs}
+                  customSkills={customSkills}
+                  onCustomSkillsChange={changeCustomSkills}
+                  customBuffs={customBuffs}
+                  customDebuffs={customDebuffs}
+                />
+              }
+            />
+            <Route path="/buffs" element={<Navigate to="/skills" replace />} />
+            <Route path="/debuffs" element={<Navigate to="/skills" replace />} />
+            <Route
+              path="/talents"
+              element={<TalentsOdditiesTab inputs={inputs} onChange={setInputs} />}
+            />
+            <Route path="/oddities" element={<Navigate to="/talents" replace />} />
+            <Route
+              path="/profile"
+              element={
+                <div className="panel">
+                  <ProfilePanel
+                    profiles={committed.profiles}
+                    activeId={committed.activeId}
+                    onCreate={createProfile}
+                    onSelect={selectProfile}
+                    onRename={renameProfile}
+                    onDuplicate={duplicateProfile}
+                    onDelete={deleteProfile}
+                    onImport={handleImportProfile}
+                  />
+                </div>
+              }
+            />
+            <Route path="*" element={<Navigate to="/overview" replace />} />
+          </Routes>
+        </fieldset>
       </div>
     </div>
   )

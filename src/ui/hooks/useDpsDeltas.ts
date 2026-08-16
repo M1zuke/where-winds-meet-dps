@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { GearPiece, Inputs } from "../../engine/types"
 import type { DpsDelta } from "../../engine/dpsWorker"
-import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
+import { postToDpsWorker, retainedResponse, subscribeToDpsWorker } from "./dpsWorkerClient"
 import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export type DpsDeltaMap = Record<string, DpsDelta | undefined>
@@ -20,7 +20,9 @@ export function useDpsDeltas(
   baselineDps: number,
   extraCandidates: readonly GearPiece[] = NO_EXTRAS,
 ): DpsDeltasResult {
-  const [deltas, setDeltas] = useState<DpsDeltaMap>({})
+  const [deltas, setDeltas] = useState<DpsDeltaMap>(
+    () => retainedResponse("dpsDeltas")?.deltas ?? EMPTY_DELTAS,
+  )
   const isPending = useDpsWorkerPending("dpsDeltas")
 
   useEffect(() => {
