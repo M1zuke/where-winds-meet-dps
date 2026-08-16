@@ -29,7 +29,7 @@ const ENHANCEMENT_TIER = "95"
 // per-point are the user-provided ground-truth values: +0.076 % crit per
 // agility, +0.038 % affinity per momentum.
 const POWER_PER_POINT = {
-  minPhys: 0.225,
+  minPhys: 0.21,
   maxPhys: 1.36,
 } as const
 const AGILITY_PER_POINT = {
