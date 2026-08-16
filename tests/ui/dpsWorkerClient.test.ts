@@ -50,6 +50,28 @@ function reqIdOfLastPost(workerIndex: number): number {
   return (posted[posted.length - 1] as WorkerRequest).reqId
 }
 
+function parseSimulationRequest(): UnsentRequest {
+  return { kind: "parseSimulation", inputs: defaultInputs, rotation: null, runs: 10, seed: 1 }
+}
+
+function parseSimulationResponse(reqId: number): WorkerResponse {
+  return {
+    kind: "parseSimulation",
+    reqId,
+    runs: [],
+    expectedRates: null,
+    rotationDuration: 0,
+    requestedRuns: 10,
+    completedRuns: 10,
+    cancelled: false,
+    warnings: [],
+  }
+}
+
+function progressResponse(reqId: number, done: number): WorkerResponse {
+  return { kind: "parseSimulationProgress", reqId, done, total: 10 }
+}
+
 beforeEach(() => {
   vi.useFakeTimers()
 })
@@ -197,7 +219,7 @@ describe("dpsWorkerClient", () => {
 
   it("spreads every request kind over a pool bounded by the core count", async () => {
     const client = await freshClient(3)
-    const kinds: WorkerRequest["kind"][] = [
+    const kinds = [
       "dpsDeltas",
       "retunement",
       "reattunement",
@@ -205,7 +227,7 @@ describe("dpsWorkerClient", () => {
       "ranking",
       "setTiles",
       "graduation",
-    ]
+    ] as const
     for (const kind of kinds) {
       client.subscribeToDpsWorker(kind, () => {})
       client.postToDpsWorker({ ...rankingRequest(), kind } as UnsentRequest)
@@ -214,5 +236,84 @@ describe("dpsWorkerClient", () => {
 
     expect(created).toHaveLength(2)
     expect(created.every((worker) => worker.posted.length > 0)).toBe(true)
+  })
+
+  it("posts a parse simulation without waiting out the debounce", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+
+    expect(created[0].posted).toHaveLength(1)
+  })
+
+  it("routes progress without retiring the request", async () => {
+    const client = await freshClient()
+    const seen: number[] = []
+    client.subscribeToDpsWorker("parseSimulation", () => seen.push(-1))
+    client.subscribeToDpsWorkerProgress("parseSimulation", ({ done }) => seen.push(done))
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const reqId = reqIdOfLastPost(0)
+    respond(0, progressResponse(reqId, 3))
+    respond(0, progressResponse(reqId, 7))
+
+    expect(seen).toEqual([3, 7])
+    expect(client.isDpsWorkerPending("parseSimulation")).toBe(true)
+
+    respond(0, parseSimulationResponse(reqId))
+    expect(seen).toEqual([3, 7, -1])
+    expect(client.isDpsWorkerPending("parseSimulation")).toBe(false)
+  })
+
+  it("ignores progress from a superseded run", async () => {
+    const client = await freshClient()
+    const seen: number[] = []
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+    client.subscribeToDpsWorkerProgress("parseSimulation", ({ done }) => seen.push(done))
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const stale = reqIdOfLastPost(0)
+    client.postToDpsWorker(parseSimulationRequest())
+
+    respond(0, progressResponse(stale, 5))
+    expect(seen).toEqual([])
+  })
+
+  it("tells the worker to stop the run it is superseding", async () => {
+    const client = await freshClient()
+    client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const first = reqIdOfLastPost(0)
+    client.postToDpsWorker(parseSimulationRequest())
+
+    expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId: first })
+  })
+
+  it("keeps the partial result of a run the user cancelled", async () => {
+    const client = await freshClient()
+    const delivered: number[] = []
+    client.subscribeToDpsWorker("parseSimulation", (response) => delivered.push(response.reqId))
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const reqId = reqIdOfLastPost(0)
+    client.cancelDpsWorkerRequest("parseSimulation")
+
+    expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId })
+
+    respond(0, parseSimulationResponse(reqId))
+    expect(delivered).toEqual([reqId])
+  })
+
+  it("cancels the sweep when the last listener unsubscribes", async () => {
+    const client = await freshClient()
+    const stop = client.subscribeToDpsWorker("parseSimulation", () => {})
+
+    client.postToDpsWorker(parseSimulationRequest())
+    const reqId = reqIdOfLastPost(0)
+    stop()
+
+    expect(created[0].posted[1]).toEqual({ kind: "parseSimulationCancel", reqId })
   })
 })

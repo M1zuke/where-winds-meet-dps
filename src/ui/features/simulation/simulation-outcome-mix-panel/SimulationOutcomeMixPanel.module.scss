@@ -1,0 +1,55 @@
+.mixBar {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  margin-bottom: 12px;
+}
+
+.segment {
+  flex-grow: 0;
+  flex-shrink: 1;
+  min-width: 0;
+  border-radius: 3px;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 7px;
+  vertical-align: baseline;
+}
+
+.critical {
+  background: #e8c84a;
+}
+
+.normal {
+  background: var(--color-text);
+}
+
+.affinity {
+  background: #e08a3c;
+}
+
+.abrasion {
+  background: var(--color-text-faint);
+}
+
+.categoryCell {
+  text-align: left;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mixTable th.centered,
+.mixTable td.centered {
+  text-align: center;
+}

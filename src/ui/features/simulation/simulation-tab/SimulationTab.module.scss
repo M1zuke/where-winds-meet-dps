@@ -1,0 +1,27 @@
+@use "breakpoints";
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
+  align-items: start;
+  transition: opacity 120ms ease;
+}
+
+.spanColumns {
+  grid-column: 1 / -1;
+}
+
+.pending {
+  opacity: 0.6;
+}
+
+.stale {
+  opacity: 0.75;
+}
+
+@include breakpoints.below(breakpoints.$bp-1100) {
+  .resultsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

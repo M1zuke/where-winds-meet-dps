@@ -3,7 +3,7 @@
 // always-on once the inner way is selected — its `counterMechanic` is present
 // in the def's data but never actually evaluated at runtime in the extracted
 // bundle. Here it's modeled as a game-accurate 4-hit ramp/10s window.
-import { mulberry32 } from "./hawkwing"
+import { mulberry32 } from "../rng"
 
 const STEP_SEC = 0.05
 const WINDOW_SEC = 10
@@ -21,14 +21,16 @@ export function concentrationActiveProbSchedule(
   weaponHitTimesSec: readonly number[],
   p: number,
   rotationDurationSec: number,
+  runRng?: () => number,
 ): ConcentrationSchedule {
   if (weaponHitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return INACTIVE_SCHEDULE
 
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const accum = new Float64Array(steps)
+  const simRuns = runRng ? 1 : SIM_RUNS
 
-  for (let sim = 0; sim < SIM_RUNS; sim++) {
-    const rng = mulberry32(SEED_OFFSET + sim)
+  for (let sim = 0; sim < simRuns; sim++) {
+    const rng = runRng ?? mulberry32(SEED_OFFSET + sim)
     let counter = 0
     let active = false
     let lastAffinityHitTime = -Infinity
@@ -59,7 +61,7 @@ export function concentrationActiveProbSchedule(
   }
 
   const activeProb = new Float64Array(steps)
-  for (let step = 0; step < steps; step++) activeProb[step] = accum[step] / SIM_RUNS
+  for (let step = 0; step < steps; step++) activeProb[step] = accum[step] / simRuns
 
   return {
     getActiveProbAtTime(tSec: number): number {

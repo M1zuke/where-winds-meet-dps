@@ -22,7 +22,12 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
       if (setup.inputs.set !== setId) return null
       const proc = Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP)
       return {
-        schedule: hawkwingStacksSchedule(setup.hitTimesSec, proc, setup.rotationDurationSec),
+        schedule: hawkwingStacksSchedule(
+          setup.hitTimesSec,
+          proc,
+          setup.rotationDurationSec,
+          setup.rng,
+        ),
       }
     },
 

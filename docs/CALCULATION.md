@@ -143,7 +143,11 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.
 - **A stochastic effect is a seeded whole-rotation schedule**, not a buff def —
-  a def cannot express a per-hit roll. Say so in the module when you add one.
+  a def cannot express a per-hit roll. Say so in the module when you add one. It
+  must **accept the run's generator when the engine supplies one** and realise a
+  single trajectory instead of averaging its own fixed-seed sweep; without one it
+  averages as before. A schedule that ignores the generator keeps reporting an
+  expectation on a run that has none, and understates the spread.
 - **Only hits laid by the rotation roll a proc.** DoT ticks and
   trigger-enqueued hits do not. This is structural; do not work around it per
   mechanic.

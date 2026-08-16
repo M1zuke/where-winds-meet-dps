@@ -9,6 +9,7 @@ import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
 import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { RotationTab } from "../ui/features/rotation/rotation-tab/RotationTab"
+import { SimulationTab } from "../ui/features/simulation/simulation-tab/SimulationTab"
 import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
 import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
 import { TalentsOdditiesTab } from "../ui/features/talents/talents-oddities-tab/TalentsOdditiesTab"
@@ -228,6 +229,7 @@ function AppInner() {
     { path: "/overview", label: t("Overview") },
     { path: "/gear", label: t("Gear") },
     { path: "/rotation", label: t("Rotation") },
+    { path: "/simulation", label: t("Simulation") },
     { path: "/skills", label: t("Skill Editor") },
     { path: "/talents", label: t("Talents & Oddities") },
     { path: "/profile", label: t("Profiles"), align: "right" },
@@ -346,6 +348,12 @@ function AppInner() {
                 onChange={setInputs}
                 result={result}
               />
+            }
+          />
+          <Route
+            path="/simulation"
+            element={
+              <SimulationTab inputs={inputs} engineInputs={engineInputs} expectedDps={result.dps} />
             }
           />
           <Route
