@@ -33,44 +33,39 @@ export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseR
   }
 
   return (
-    <>
-      <table className="ranking-table skill-table">
-        <thead>
-          <tr>
-            <th>{t("Rank")}</th>
-            <th>{t("DPS")}</th>
-            <th>{t("Damage")}</th>
-            <th className="bar-col">
-              {t("vs Median")} (±{fixed(axisSpan * 100, 1)} %)
-            </th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => {
-            const sign = signClassOf(row.deltaFromMedian)
-            return (
-              <tr key={row.rank} className={row.rank === MEDIAN_RANK ? styles.medianRow : ""}>
-                <th scope="row" className={`${styles.rank} ${tierClassOf(row.rank)}`}>
-                  {rankLabel(row.rank)}
-                </th>
-                <td className={styles.dps}>{decimalNumber(row.dps, 2)}</td>
-                <td className={styles.damage}>{fullNumber(row.totalDamage)}</td>
-                <td className="bar-col">
-                  <div className="skill-bar-track">
-                    <div className={`${styles.divergingFill} ${sign}`} style={barFor(row)} />
-                    <div className={styles.centreTick} />
-                  </div>
-                </td>
-                <td className={`${styles.delta} ${sign}`}>{signedPercent(row.deltaFromMedian)}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-      <p className="hint">
-        {t("A Top-99 parse beats 99 % of the simulated runs. Every value is a run that happened.")}
-      </p>
-    </>
+    <table className="ranking-table skill-table">
+      <thead>
+        <tr>
+          <th>{t("Rank")}</th>
+          <th>{t("DPS")}</th>
+          <th>{t("Damage")}</th>
+          <th className="bar-col">
+            {t("vs Median")} (±{fixed(axisSpan * 100, 1)} %)
+          </th>
+          <th />
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => {
+          const sign = signClassOf(row.deltaFromMedian)
+          return (
+            <tr key={row.rank} className={row.rank === MEDIAN_RANK ? styles.medianRow : ""}>
+              <th scope="row" className={`${styles.rank} ${tierClassOf(row.rank)}`}>
+                {rankLabel(row.rank)}
+              </th>
+              <td className={styles.dps}>{decimalNumber(row.dps, 2)}</td>
+              <td className={styles.damage}>{fullNumber(row.totalDamage)}</td>
+              <td className="bar-col">
+                <div className="skill-bar-track">
+                  <div className={`${styles.divergingFill} ${sign}`} style={barFor(row)} />
+                  <div className={styles.centreTick} />
+                </div>
+              </td>
+              <td className={`${styles.delta} ${sign}`}>{signedPercent(row.deltaFromMedian)}</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }
