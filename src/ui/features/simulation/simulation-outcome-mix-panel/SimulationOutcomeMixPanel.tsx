@@ -39,14 +39,14 @@ export function SimulationOutcomeMixPanel({
           />
         ))}
       </div>
-      <table className="ranking-table ranking-table-spaced">
+      <table className={`ranking-table ranking-table-spaced ${styles.mixTable}`}>
         <thead>
           <tr>
             <th>{t("Outcome")}</th>
-            <th>{t("Hits")}</th>
-            <th>{t("Share")}</th>
-            <th>{t("Expected")}</th>
-            <th>{t("Gap (pp)")}</th>
+            <th className={styles.centered}>{t("Hits")}</th>
+            <th className={styles.centered}>{t("Share")}</th>
+            <th className={styles.centered}>{t("Expected")}</th>
+            <th className={styles.centered}>{t("Gap (pp)")}</th>
           </tr>
         </thead>
         <tbody>
@@ -56,12 +56,14 @@ export function SimulationOutcomeMixPanel({
                 <span className={`${styles.swatch} ${styles[row.category]}`} />
                 {t(CATEGORY_LABELS[row.category])}
               </th>
-              <td className={styles.numeric}>{fixed(row.meanHits, 2)}</td>
-              <td className={styles.numeric}>{fixed(row.observedShare * 100, 1)} %</td>
-              <td className={styles.numeric}>
+              <td className={`${styles.numeric} ${styles.centered}`}>{fixed(row.meanHits, 2)}</td>
+              <td className={`${styles.numeric} ${styles.centered}`}>
+                {fixed(row.observedShare * 100, 1)} %
+              </td>
+              <td className={`${styles.numeric} ${styles.centered}`}>
                 {row.expectedShare === null ? "—" : `${fixed(row.expectedShare * 100, 1)} %`}
               </td>
-              <td className={styles.numeric}>
+              <td className={`${styles.numeric} ${styles.centered}`}>
                 {row.deltaPoints === null ? "—" : fixed(row.deltaPoints, 2)}
               </td>
             </tr>

@@ -48,3 +48,8 @@
   text-align: right;
   white-space: nowrap;
 }
+
+.mixTable th.centered,
+.mixTable td.centered {
+  text-align: center;
+}

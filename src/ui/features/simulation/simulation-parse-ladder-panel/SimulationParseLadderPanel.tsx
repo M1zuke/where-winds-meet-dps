@@ -33,12 +33,12 @@ export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseR
   }
 
   return (
-    <table className="ranking-table skill-table">
+    <table className={`ranking-table skill-table ${styles.ladder}`}>
       <thead>
         <tr>
           <th>{t("Rank")}</th>
-          <th>{t("DPS")}</th>
-          <th>{t("Damage")}</th>
+          <th className={styles.centered}>{t("DPS")}</th>
+          <th className={styles.centered}>{t("Damage")}</th>
           <th className="bar-col">
             {t("vs Median")} (±{fixed(axisSpan * 100, 1)} %)
           </th>
@@ -53,8 +53,10 @@ export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseR
               <th scope="row" className={`${styles.rank} ${tierClassOf(row.rank)}`}>
                 {rankLabel(row.rank)}
               </th>
-              <td className={styles.dps}>{decimalNumber(row.dps, 2)}</td>
-              <td className={styles.damage}>{fullNumber(row.totalDamage)}</td>
+              <td className={`${styles.dps} ${styles.centered}`}>{decimalNumber(row.dps, 2)}</td>
+              <td className={`${styles.damage} ${styles.centered}`}>
+                {fullNumber(row.totalDamage)}
+              </td>
               <td className="bar-col">
                 <div className="skill-bar-track">
                   <div className={`${styles.divergingFill} ${sign}`} style={barFor(row)} />
