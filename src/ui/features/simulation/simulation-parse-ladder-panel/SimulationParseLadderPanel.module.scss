@@ -1,0 +1,77 @@
+.rank {
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.rank.tierHigh {
+  color: var(--color-rarity-legendary);
+}
+
+.rank.tierMid {
+  color: var(--color-rarity-epic);
+}
+
+.rank.tierBase {
+  color: var(--color-text-dim);
+}
+
+.damage {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.delta {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.delta:global(.is-positive) {
+  color: var(--color-positive);
+}
+
+.delta:global(.is-negative) {
+  color: var(--color-negative);
+}
+
+.delta:global(.is-zero) {
+  color: var(--color-text-muted);
+}
+
+.divergingFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: width 0.15s ease;
+}
+
+.divergingFill:global(.is-positive) {
+  background: var(--color-positive);
+}
+
+.divergingFill:global(.is-negative) {
+  background: var(--color-negative);
+}
+
+.divergingFill:global(.is-zero) {
+  background: transparent;
+}
+
+.centreTick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+
+.medianRow {
+  background: var(--color-surface-selected);
+}
+
+.medianRow .rank {
+  color: var(--color-text);
+}

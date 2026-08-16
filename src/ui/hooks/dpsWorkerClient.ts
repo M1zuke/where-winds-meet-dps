@@ -1,19 +1,32 @@
 import type { WorkerRequest, WorkerResponse } from "../../engine/dpsWorker"
 import DpsWorker from "../../engine/dpsWorker?worker"
-import { WORKER_DEBOUNCE_MS } from "./workerDebounce"
+import { debounceMsFor } from "./workerDebounce"
 
 type RequestKind = WorkerRequest["kind"]
-type ResponseOfKind<K extends RequestKind> = Extract<WorkerResponse, { kind: K }>
+type ResponseKind = WorkerResponse["kind"]
+type ResultKind = Extract<RequestKind, ResponseKind>
+type ResponseOfKind<K extends ResultKind> = Extract<WorkerResponse, { kind: K }>
 type ResponseListener = (response: WorkerResponse) => void
 
 type WithoutReqId<Request> = Request extends unknown ? Omit<Request, "reqId"> : never
 export type UnsentRequest = WithoutReqId<WorkerRequest>
 
+export type ProgressResponse = Extract<WorkerResponse, { kind: "parseSimulationProgress" }>
+type ProgressListener = (progress: ProgressResponse) => void
+
 const MAX_POOL_SIZE = 4
+
+const PROGRESS_OWNER_KIND: Partial<Record<ResponseKind, RequestKind>> = {
+  parseSimulationProgress: "parseSimulation",
+}
+const CANCEL_KIND_BY_KIND: Partial<Record<RequestKind, RequestKind>> = {
+  parseSimulation: "parseSimulationCancel",
+}
 
 interface KindState {
   responseListeners: Set<ResponseListener>
   pendingListeners: Set<() => void>
+  progressListeners: Set<ProgressListener>
   queued: WorkerRequest | null
   debounceHandle: ReturnType<typeof setTimeout> | null
   latestReqId: number
@@ -32,6 +45,7 @@ function stateFor(kind: RequestKind): KindState {
   const created: KindState = {
     responseListeners: new Set(),
     pendingListeners: new Set(),
+    progressListeners: new Set(),
     queued: null,
     debounceHandle: null,
     latestReqId: -1,
@@ -52,7 +66,7 @@ function workerFor(kind: RequestKind): Worker {
   if (assigned) return assigned
   if (pool.length < poolSize()) {
     const worker = new DpsWorker()
-    worker.onmessage = (event: MessageEvent<WorkerResponse>) => deliver(event.data)
+    worker.onmessage = (event: MessageEvent<WorkerResponse>) => receive(event.data)
     pool.push(worker)
   }
   const worker = pool[workerByKind.size % pool.length]
@@ -66,15 +80,35 @@ function setPending(state: KindState, isPending: boolean): void {
   for (const listener of state.pendingListeners) listener()
 }
 
+function receive(response: WorkerResponse): void {
+  const owner = PROGRESS_OWNER_KIND[response.kind]
+  if (owner) deliverProgress(owner, response as ProgressResponse)
+  else deliver(response)
+}
+
+function deliverProgress(kind: RequestKind, progress: ProgressResponse): void {
+  const state = stateFor(kind)
+  if (progress.reqId !== state.latestReqId) return
+  for (const listener of state.progressListeners) listener(progress)
+}
+
 function deliver(response: WorkerResponse): void {
-  const state = stateFor(response.kind)
+  const state = stateFor(response.kind as RequestKind)
   if (response.reqId === state.latestReqId) setPending(state, false)
   if (response.reqId <= state.lastDeliveredReqId) return
   state.lastDeliveredReqId = response.reqId
   for (const listener of state.responseListeners) listener(response)
 }
 
-function abandonRequests(state: KindState): void {
+function postCancel(kind: RequestKind, state: KindState): void {
+  const cancelKind = CANCEL_KIND_BY_KIND[kind]
+  if (!cancelKind) return
+  if (state.latestReqId <= state.lastDeliveredReqId) return
+  workerFor(kind).postMessage({ kind: cancelKind, reqId: state.latestReqId })
+}
+
+function abandonRequests(kind: RequestKind, state: KindState): void {
+  postCancel(kind, state)
   if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
   state.debounceHandle = null
   state.queued = null
@@ -85,19 +119,35 @@ function abandonRequests(state: KindState): void {
 export function postToDpsWorker(unsent: UnsentRequest): void {
   const request = { ...unsent, reqId: ++lastAssignedReqId } as WorkerRequest
   const state = stateFor(request.kind)
+  postCancel(request.kind, state)
   state.queued = request
   state.latestReqId = request.reqId
   setPending(state, true)
   if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
+  state.debounceHandle = null
+  const delayMs = debounceMsFor(request.kind)
+  if (delayMs <= 0) {
+    state.queued = null
+    workerFor(request.kind).postMessage(request)
+    return
+  }
   state.debounceHandle = setTimeout(() => {
     state.debounceHandle = null
     const queued = state.queued
     state.queued = null
     if (queued) workerFor(queued.kind).postMessage(queued)
-  }, WORKER_DEBOUNCE_MS)
+  }, delayMs)
 }
 
-export function subscribeToDpsWorker<K extends RequestKind>(
+export function cancelDpsWorkerRequest(kind: RequestKind): void {
+  const state = stateFor(kind)
+  if (state.debounceHandle !== null) clearTimeout(state.debounceHandle)
+  state.debounceHandle = null
+  state.queued = null
+  postCancel(kind, state)
+}
+
+export function subscribeToDpsWorker<K extends ResultKind>(
   kind: K,
   listener: (response: ResponseOfKind<K>) => void,
 ): () => void {
@@ -106,7 +156,18 @@ export function subscribeToDpsWorker<K extends RequestKind>(
   state.responseListeners.add(typedListener)
   return () => {
     state.responseListeners.delete(typedListener)
-    if (state.responseListeners.size === 0) abandonRequests(state)
+    if (state.responseListeners.size === 0) abandonRequests(kind, state)
+  }
+}
+
+export function subscribeToDpsWorkerProgress(
+  kind: RequestKind,
+  listener: ProgressListener,
+): () => void {
+  const state = stateFor(kind)
+  state.progressListeners.add(listener)
+  return () => {
+    state.progressListeners.delete(listener)
   }
 }
 

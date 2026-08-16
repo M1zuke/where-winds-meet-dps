@@ -1,6 +1,8 @@
 import type {
   BuffWindow,
+  EngineRunOptions,
   Inputs,
+  OutcomeCounts,
   Result,
   RotationCast,
   SkillTickResult,
@@ -27,7 +29,8 @@ import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "
 import { applyEffect, type EffectSink } from "./effects/apply"
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { buildContext, effectiveRates } from "./panel"
-import { computeSkillDamage } from "./formula"
+import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
+import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
@@ -42,6 +45,8 @@ import { innerWayTier } from "../definitions/innerWays/registry"
 import { PROP } from "../data/skills/ids"
 
 export const FPS = 60
+
+const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
 
 // Guards against a runaway cast-skill trigger chain.
 const EVENT_CAP = 100_000
@@ -109,7 +114,13 @@ class EventQueue {
   }
 }
 
-export function simulateTimeline(inputs: Inputs): Result {
+export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Result {
+  const collectDetail = options?.collect !== "totals"
+  const hitRng = options?.seed === undefined ? undefined : mulberry32(options.seed)
+  const mechanicRng =
+    options?.seed === undefined
+      ? undefined
+      : mulberry32((options.seed ^ MECHANIC_STREAM_OFFSET) | 0)
   const rotation = inputs.activeCustomRotation
   if (!rotation || rotation.classId !== inputs.classId) {
     return emptyResult(["Timeline rotation not available for this class."])
@@ -362,6 +373,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
     hasBuffEngine: !!buffEngine,
     effectiveRates: { precision, critRate, affinityRate },
+    rng: mechanicRng,
   }
   const mechanics = prepareMechanics(mechanicSetup)
 
@@ -517,6 +529,7 @@ export function simulateTimeline(inputs: Inputs): Result {
     damage: number,
     breakdownName: string,
   ): void {
+    if (!collectDetail) return
     const e = byName.get(name)
     if (e) {
       e.count += count
@@ -525,8 +538,17 @@ export function simulateTimeline(inputs: Inputs): Result {
   }
 
   const timeline: TimelineEvent[] = []
+  const pushEvent = (event: TimelineEvent): void => {
+    if (collectDetail) timeline.push(event)
+  }
 
   let totalDamage = 0
+  const outcomeTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  const expectedShareTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  const tallyRoll = (rolled: RolledHit): void => {
+    outcomeTally[rolled.outcome] += 1
+    for (const outcome of OUTCOME_KEYS) expectedShareTally[outcome] += rolled.chance[outcome]
+  }
   let processed = 0
   while (queue.size > 0) {
     if (processed >= EVENT_CAP) {
@@ -601,25 +623,21 @@ export function simulateTimeline(inputs: Inputs): Result {
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
     if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
     if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
-    const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
+    const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
+    const damage = rolled?.damage ?? expectedDamage
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
-      totalDamage += expectedDamage
-      add(
-        skill.name,
-        skill.skillType,
-        1,
-        expectedDamage,
-        breakdownNameOf(skill.breakdownName, skill.name),
-      )
+      totalDamage += damage
+      if (rolled) tallyRoll(rolled)
+      add(skill.name, skill.skillType, 1, damage, breakdownNameOf(skill.breakdownName, skill.name))
     }
-    timeline.push({
+    pushEvent({
       frame,
       timeSec: frame / FPS,
       skillName: skill.name,
       type: skill.skillType,
       kind: "hit",
-      damage: expectedDamage,
+      damage,
       inWindow: hitInWindow,
     })
 
@@ -724,65 +742,74 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   ledger.sortWindows()
 
-  const castsUnsorted: RotationCast[] = laidSteps.map((ls, i) => {
-    const lastHitFrame =
-      ls.performedHits.length > 0 ? Math.max(...ls.performedHits.map((h) => h.frame)) : 0
-    const queryFrame = Math.max(
-      ls.startFrame,
-      ls.startFrame + castLens[i] - 1,
-      ls.startFrame + lastHitFrame,
-    )
-    const queryTimeSec = queryFrame / FPS
-    const { buffs, seen: seenBuffIds } = collectCastBuffs({
-      frame: queryFrame,
-      timeSec: queryTimeSec,
-      fps: FPS,
-      ledger: ledger.throughOwner(ls.startFrame),
-      statusById,
-      buffEngine,
-      // Below the display threshold there's a real chance no poison has
-      // procced yet at all (e.g. right after the very first eligible hits),
-      // so the expected-remaining number alone would understate that and
-      // read as an oddly short "duration" — withhold it until more likely
-      // than not to be up, same convention as Concentration's own gate.
-      overrideRemainingSec: (id, timeSec) => {
-        for (const { mechanic, state } of mechanics) {
-          const override = mechanic.remainingSecAt?.(state, id, timeSec)
-          if (override) return override
+  function buildCasts(): RotationCast[] {
+    const castsUnsorted: RotationCast[] = laidSteps.map((ls, i) => {
+      const lastHitFrame =
+        ls.performedHits.length > 0 ? Math.max(...ls.performedHits.map((h) => h.frame)) : 0
+      const queryFrame = Math.max(
+        ls.startFrame,
+        ls.startFrame + castLens[i] - 1,
+        ls.startFrame + lastHitFrame,
+      )
+      const queryTimeSec = queryFrame / FPS
+      const { buffs, seen: seenBuffIds } = collectCastBuffs({
+        frame: queryFrame,
+        timeSec: queryTimeSec,
+        fps: FPS,
+        ledger: ledger.throughOwner(ls.startFrame),
+        statusById,
+        buffEngine,
+        // Below the display threshold there's a real chance no poison has
+        // procced yet at all (e.g. right after the very first eligible hits),
+        // so the expected-remaining number alone would understate that and
+        // read as an oddly short "duration" — withhold it until more likely
+        // than not to be up, same convention as Concentration's own gate.
+        overrideRemainingSec: (id, timeSec) => {
+          for (const { mechanic, state } of mechanics) {
+            const override = mechanic.remainingSecAt?.(state, id, timeSec)
+            if (override) return override
+          }
+          return null
+        },
+      })
+      for (const { mechanic, state } of mechanics) {
+        for (const chip of mechanic.display?.(state, queryTimeSec, ls.prePull, mechanicSetup) ??
+          []) {
+          if (seenBuffIds.has(chip.id)) continue
+          seenBuffIds.add(chip.id)
+          buffs.push(chip)
         }
-        return null
-      },
+      }
+
+      return {
+        index: 0,
+        stepId: ls.resolved.step.id,
+        stepIndex: i,
+        skillName: ls.resolved.skill.name,
+        timeSec: ls.startFrame / FPS,
+        inWindow: inWindow(ls.startFrame),
+        prePull: ls.prePull,
+        buffs,
+      }
     })
-    for (const { mechanic, state } of mechanics) {
-      for (const chip of mechanic.display?.(state, queryTimeSec, ls.prePull, mechanicSetup) ?? []) {
-        if (seenBuffIds.has(chip.id)) continue
-        seenBuffIds.add(chip.id)
-        buffs.push(chip)
+    castsUnsorted.sort((a, b) => a.timeSec - b.timeSec)
+    return castsUnsorted.map((c, i) => ({ ...c, index: i + 1 }))
+  }
+
+  function buildBuffWindows(): BuffWindow[] {
+    const windows: BuffWindow[] = []
+    for (const [id, arr] of ledger.entries()) {
+      const status = statusById.get(id)
+      if (!status) continue
+      for (const w of arr) {
+        windows.push({ id, name: status.name, startSec: w.start / FPS, endSec: w.end / FPS })
       }
     }
-
-    return {
-      index: 0,
-      stepId: ls.resolved.step.id,
-      stepIndex: i,
-      skillName: ls.resolved.skill.name,
-      timeSec: ls.startFrame / FPS,
-      inWindow: inWindow(ls.startFrame),
-      prePull: ls.prePull,
-      buffs,
-    }
-  })
-  castsUnsorted.sort((a, b) => a.timeSec - b.timeSec)
-  const casts: RotationCast[] = castsUnsorted.map((c, i) => ({ ...c, index: i + 1 }))
-
-  const buffWindows: BuffWindow[] = []
-  for (const [id, arr] of ledger.entries()) {
-    const status = statusById.get(id)
-    if (!status) continue
-    for (const w of arr) {
-      buffWindows.push({ id, name: status.name, startSec: w.start / FPS, endSec: w.end / FPS })
-    }
+    return windows
   }
+
+  const casts: RotationCast[] = collectDetail ? buildCasts() : []
+  const buffWindows: BuffWindow[] = collectDetail ? buildBuffWindows() : []
 
   interface DotTickEntry extends DotTickPlan {
     seq: number
@@ -857,13 +884,19 @@ export function simulateTimeline(inputs: Inputs): Result {
 
   for (const entry of dotTickEntries) {
     const st = resolveState(entry.frame, entry.dotSkill)
-    const damage =
-      dotTickDamage(entry.debuffForTick, st.ctx, computeSkillDamage, st.forceCrit, entry.shape) *
-      (entry.scale ?? 1) *
-      entry.weight
+    const tick = dotTickDamage(
+      entry.debuffForTick,
+      st.ctx,
+      computeSkillDamage,
+      st.forceCrit,
+      entry.shape,
+      hitRng,
+    )
+    const damage = tick.damage * (entry.scale ?? 1) * entry.weight
     totalDamage += damage
+    if (tick.rolled) tallyRoll(tick.rolled)
     add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName)
-    timeline.push({
+    pushEvent({
       frame: entry.frame,
       timeSec: entry.frame / FPS,
       skillName: entry.dotName,
@@ -879,22 +912,18 @@ export function simulateTimeline(inputs: Inputs): Result {
       const st = resolveState(event.frame, event.skill)
       const art = { ...event.art } as Parameters<typeof computeSkillDamage>[0]
       if (st.forceCrit) art.guaranteedCrit = 1
-      const { expectedDamage } = computeSkillDamage(art, st.ctx, 1)
-      totalDamage += expectedDamage
-      add(
-        event.name,
-        event.type,
-        1,
-        expectedDamage,
-        breakdownNameOf(event.skill.breakdownName, event.name),
-      )
-      timeline.push({
+      const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
+      const damage = rolled?.damage ?? expectedDamage
+      totalDamage += damage
+      if (rolled) tallyRoll(rolled)
+      add(event.name, event.type, 1, damage, breakdownNameOf(event.skill.breakdownName, event.name))
+      pushEvent({
         frame: event.frame,
         timeSec: event.frame / FPS,
         skillName: event.name,
         type: event.type,
         kind: "hit",
-        damage: expectedDamage,
+        damage,
         inWindow: true,
       })
     }
@@ -917,6 +946,18 @@ export function simulateTimeline(inputs: Inputs): Result {
   if (durationFrames <= 0)
     warnings.push("Timeline has no in-window skills — duration and DPS are 0.")
 
+  const rolledHits = OUTCOME_KEYS.reduce((sum, outcome) => sum + outcomeTally[outcome], 0)
+  const expectedOutcomeShare: OutcomeCounts = {
+    abrasion: 0,
+    normal: 0,
+    crit: 0,
+    affinity: 0,
+  }
+  if (rolledHits > 0) {
+    for (const outcome of OUTCOME_KEYS)
+      expectedOutcomeShare[outcome] = expectedShareTally[outcome] / rolledHits
+  }
+
   return {
     dps,
     totalDamage,
@@ -930,6 +971,8 @@ export function simulateTimeline(inputs: Inputs): Result {
     qiBreakWindow,
     lowQiWindow,
     casts,
+    outcomeCounts: hitRng ? outcomeTally : undefined,
+    expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
   }
 }
 

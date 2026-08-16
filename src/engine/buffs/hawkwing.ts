@@ -5,15 +5,7 @@
 // multiplier for the whole fight. This engine deliberately diverges: it
 // samples the same simulation's per-step expectation every frame instead
 // (`hawkwingStacksSchedule` below), rather than collapsing it to one average.
-export function mulberry32(seed: number): () => number {
-  let a = seed | 0
-  return function next(): number {
-    a = (a + 1831565813) | 0
-    let t = Math.imul(a ^ (a >>> 15), a | 1)
-    t = (t + Math.imul(t ^ (t >>> 7), t | 61)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
-}
+import { mulberry32 } from "../rng"
 
 const STEP_SEC = 0.05
 const DECAY_SEC = 5
@@ -35,14 +27,16 @@ export function hawkwingStacksSchedule(
   hitTimesSec: readonly number[],
   p: number,
   rotationDurationSec: number,
+  runRng?: () => number,
 ): HawkwingStacksSchedule {
   if (hitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return ZERO_HAWKWING_SCHEDULE
 
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const accum = new Float64Array(steps)
+  const simRuns = runRng ? 1 : SIM_RUNS
 
-  for (let sim = 0; sim < SIM_RUNS; sim++) {
-    const rng = mulberry32(314 + sim)
+  for (let sim = 0; sim < simRuns; sim++) {
+    const rng = runRng ?? mulberry32(314 + sim)
     let stacks = 0
     let lastStackTime = -Infinity
     let hitIdx = 0
@@ -63,7 +57,7 @@ export function hawkwingStacksSchedule(
   }
 
   const expected = new Float64Array(steps)
-  for (let step = 0; step < steps; step++) expected[step] = accum[step] / SIM_RUNS
+  for (let step = 0; step < steps; step++) expected[step] = accum[step] / simRuns
 
   return {
     getExpectedStacksAtTime(tSec: number): number {

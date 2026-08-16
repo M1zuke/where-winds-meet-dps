@@ -100,6 +100,7 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
           setup.hitTimesSec,
           tuning.procChance,
           setup.rotationDurationSec,
+          setup.rng,
         ),
         baseTargetDefense: getBreakthrough(setup.inputs.breakthrough).defense,
         suppressed: henZhiActive(setup.inputs),
@@ -133,6 +134,7 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
         setup.rotationDurationSec,
         extensionTimesSec,
         maxRemainingSec,
+        setup.rng,
       )
       for (const envelope of bitterSeasonEnvelopeWindows(
         setup.hitTimesSec,

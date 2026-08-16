@@ -1,0 +1,20 @@
+.progressRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.progressCount {
+  font-size: 0.78em;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.progressStatus {
+  margin: 4px 0 0;
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}

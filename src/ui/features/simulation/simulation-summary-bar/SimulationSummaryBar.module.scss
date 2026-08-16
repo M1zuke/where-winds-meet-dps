@@ -1,0 +1,70 @@
+@use "breakpoints";
+
+.summaryPanel {
+  transition: opacity 120ms ease;
+}
+
+.stale {
+  opacity: 0.75;
+}
+
+.statStrip {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(7, minmax(0, 1fr));
+  gap: 4px 20px;
+  align-items: end;
+  transition: opacity 120ms ease;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  font-size: 0.7em;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.value {
+  font-size: 1em;
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.lead .value {
+  font-size: 1.9em;
+  color: var(--color-accent);
+  line-height: 1.1;
+}
+
+.groupStart {
+  border-left: 1px solid var(--color-surface-raised);
+  padding-left: 20px;
+  min-width: 0;
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .statStrip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 16px;
+  }
+
+  .groupStart {
+    border-left: none;
+    padding-left: 0;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .statStrip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

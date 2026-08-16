@@ -8,6 +8,7 @@ import {
   BITTER_SEASON_MAX_STACKS,
 } from "../../src/engine/buffs/bitterSeason"
 import { bitterSeasonTuningAtTier } from "../../src/data/innerWays/bitterSeason"
+import { mulberry32 } from "../../src/engine/rng"
 import { ZENITH_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/innerWays/swordHorizonZenith"
 import { allowedInnerWaysForClass, getSchool } from "../../src/engine/panel"
 
@@ -473,5 +474,26 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
     const baseDot = base.perSkill.find((row) => row.name === DOT_ROW_NAME)!.expectedDamage
     const bumpedDot = bumped.perSkill.find((row) => row.name === DOT_ROW_NAME)!.expectedDamage
     expect(bumpedDot).toBeGreaterThan(baseDot)
+  })
+})
+
+describe("bitterSeasonStackSchedule under a parse run", () => {
+  const hits = Array.from({ length: 60 }, (_unused, index) => index * 0.3)
+
+  it("averages 500 runs when given no rng", () => {
+    const schedule = bitterSeasonStackSchedule(hits, 0.15, 18)
+    const fractional = Array.from({ length: 200 }, (_unused, step) =>
+      schedule.expectedStacksAtTime(step * 0.05),
+    ).filter((stacks) => !Number.isInteger(stacks))
+    expect(fractional.length).toBeGreaterThan(0)
+  })
+
+  it("runs a single trajectory when given an rng", () => {
+    const schedule = bitterSeasonStackSchedule(hits, 0.15, 18, mulberry32(404))
+    for (let step = 0; step < 200; step++) {
+      const stacks = schedule.expectedStacksAtTime(step * 0.05)
+      expect(Number.isInteger(stacks)).toBe(true)
+      expect(stacks).toBeLessThanOrEqual(BITTER_SEASON_MAX_STACKS)
+    }
   })
 })

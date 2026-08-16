@@ -10,6 +10,8 @@ import { withDerivedStats } from "./derivedInputs"
 import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "./panel"
 import { graduationInputs } from "./graduation"
 import type { Rotation } from "./rotation"
+import { RUN_SEED_STRIDE } from "./rng"
+import type { HitOutcome } from "./formula"
 import type {
   Arsenal,
   BowSet,
@@ -18,7 +20,10 @@ import type {
   GearWordId,
   Inputs,
   ItemRankingRow,
+  OutcomeCounts,
 } from "./types"
+
+const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
 
 export interface DpsDelta {
   current: number
@@ -411,6 +416,124 @@ function computeRotationDps(req: RotationDpsWorkerRequest): RotationDpsWorkerRes
   return { reqId: req.reqId, dpsByOptionId }
 }
 
+export const PARSE_RUN_CAP = 10_000
+const PARSE_TARGET_CHUNK_MS = 60
+const MAX_CHUNK_RUNS = 200
+
+export interface ParseRun {
+  totalDamage: number
+  dps: number
+  abrasionHits: number
+  normalHits: number
+  criticalHits: number
+  affinityHits: number
+}
+
+export type ExpectedOutcomeRates = OutcomeCounts
+
+export interface ParseSimulationWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  rotation: Rotation | null
+  runs: number
+  seed: number
+}
+
+export interface ParseSimulationWorkerResponse {
+  reqId: number
+  runs: ParseRun[]
+  expectedRates: ExpectedOutcomeRates | null
+  rotationDuration: number
+  requestedRuns: number
+  completedRuns: number
+  cancelled: boolean
+  warnings: string[]
+}
+
+export interface ParseSimulationProgressResponse {
+  reqId: number
+  done: number
+  total: number
+}
+
+export interface ParseSimulationCancelRequest {
+  reqId: number
+}
+
+const NO_OUTCOMES: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+
+async function computeParseSimulation(
+  req: ParseSimulationWorkerRequest,
+  onProgress?: (done: number, total: number) => void,
+  isCancelled?: () => boolean,
+): Promise<ParseSimulationWorkerResponse> {
+  const total = Math.max(1, Math.min(Math.round(req.runs), PARSE_RUN_CAP))
+  const runInputs: Inputs = {
+    ...req.inputs,
+    activeCustomRotation: req.rotation,
+    selectedBuiltinRotationId: null,
+  }
+
+  const runs: ParseRun[] = []
+  const shareTotals: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  let warnings: string[] = []
+  let rotationDuration = 0
+
+  const runOnce = (index: number): void => {
+    const result = runEngine(runInputs, {
+      seed: (req.seed + index * RUN_SEED_STRIDE) | 0,
+      collect: "totals",
+    })
+    const counts = result.outcomeCounts ?? NO_OUTCOMES
+    const share = result.expectedOutcomeShare ?? NO_OUTCOMES
+    for (const outcome of OUTCOME_KEYS) shareTotals[outcome] += share[outcome]
+    if (index === 0) {
+      warnings = result.warnings
+      rotationDuration = result.rotationDuration
+    }
+    runs.push({
+      totalDamage: result.totalDamage,
+      dps: result.dps,
+      abrasionHits: counts.abrasion,
+      normalHits: counts.normal,
+      criticalHits: counts.crit,
+      affinityHits: counts.affinity,
+    })
+  }
+
+  const startedAt = performance.now()
+  runOnce(0)
+  const msPerRun = Math.max(performance.now() - startedAt, 0.01)
+  const chunkRuns = Math.max(
+    1,
+    Math.min(Math.round(PARSE_TARGET_CHUNK_MS / msPerRun), MAX_CHUNK_RUNS),
+  )
+
+  while (runs.length < total) {
+    if (isCancelled?.()) break
+    const chunkEnd = Math.min(runs.length + chunkRuns, total)
+    for (let index = runs.length; index < chunkEnd; index++) runOnce(index)
+    onProgress?.(runs.length, total)
+    // A synchronous loop never lets `onmessage` fire, so without this yield no
+    // cancel is ever read.
+    if (runs.length < total) await new Promise((resolve) => setTimeout(resolve, 0))
+  }
+
+  const expectedRates: ExpectedOutcomeRates = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  for (const outcome of OUTCOME_KEYS) expectedRates[outcome] = shareTotals[outcome] / runs.length
+
+  return {
+    reqId: req.reqId,
+    runs,
+    expectedRates: runs.length > 0 ? expectedRates : null,
+    rotationDuration,
+    requestedRuns: total,
+    completedRuns: runs.length,
+    cancelled: runs.length < total,
+    warnings,
+  }
+}
+
 export interface GraduationWorkerRequest {
   reqId: number
   inputs: Inputs
@@ -484,6 +607,8 @@ export type WorkerRequest =
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerRequest)
   | ({ kind: "setTiles" } & SetTilesWorkerRequest)
   | ({ kind: "rotationDps" } & RotationDpsWorkerRequest)
+  | ({ kind: "parseSimulation" } & ParseSimulationWorkerRequest)
+  | ({ kind: "parseSimulationCancel" } & ParseSimulationCancelRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
 
 export type WorkerResponse =
@@ -495,7 +620,11 @@ export type WorkerResponse =
   | ({ kind: "gearAnalysis" } & GearAnalysisWorkerResponse)
   | ({ kind: "setTiles" } & SetTilesWorkerResponse)
   | ({ kind: "rotationDps" } & RotationDpsWorkerResponse)
+  | ({ kind: "parseSimulation" } & ParseSimulationWorkerResponse)
+  | ({ kind: "parseSimulationProgress" } & ParseSimulationProgressResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
+
+const cancelledReqIds = new Set<number>()
 
 self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   const req = e.data
@@ -523,6 +652,23 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "rotationDps") {
     const res = computeRotationDps(req)
     ;(self as unknown as Worker).postMessage({ kind: "rotationDps", ...res })
+  } else if (req.kind === "parseSimulationCancel") {
+    cancelledReqIds.add(req.reqId)
+  } else if (req.kind === "parseSimulation") {
+    void computeParseSimulation(
+      req,
+      (done, total) =>
+        (self as unknown as Worker).postMessage({
+          kind: "parseSimulationProgress",
+          reqId: req.reqId,
+          done,
+          total,
+        }),
+      () => cancelledReqIds.has(req.reqId),
+    ).then((res) => {
+      cancelledReqIds.delete(req.reqId)
+      ;(self as unknown as Worker).postMessage({ kind: "parseSimulation", ...res })
+    })
   } else {
     const res = computeGraduation(req)
     ;(self as unknown as Worker).postMessage({ kind: "graduation", ...res })
@@ -538,5 +684,6 @@ export {
   computeGearAnalysisRequest,
   computeSetTiles,
   computeRotationDps,
+  computeParseSimulation,
   computeGraduation,
 }
