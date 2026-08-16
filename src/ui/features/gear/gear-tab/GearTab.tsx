@@ -1,13 +1,6 @@
 import { useState } from "react"
-import type {
-  EquippedSlots,
-  GearPiece,
-  GearSlot,
-  Inputs,
-  StoredProfile,
-} from "../../../../engine/types"
+import type { EquippedSlots, GearPiece, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
-import { newGearPieceId } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -23,7 +16,8 @@ import { ImportGearDialog } from "../import-gear-dialog/ImportGearDialog"
 import { equippedFromImported } from "../import-gear-dialog/importedGearPieces"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
 import { ReattunementAnalyzerPanel } from "../reattunement-analyzer-panel/ReattunementAnalyzerPanel"
-import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
+import { useDpsDeltas } from "../../../hooks/useDpsDeltas"
+import { useEquippedDpsDeltas } from "../../../hooks/useEquippedDpsDeltas"
 import { useRetunementAnalysis } from "../../../hooks/useRetunementAnalysis"
 import { useReattunementAnalysis } from "../../../hooks/useReattunementAnalysis"
 import { useWordMaxAnalysis } from "../../../hooks/useWordMaxAnalysis"
@@ -33,28 +27,14 @@ interface Props {
   inputs: Inputs
   engineInputs: Inputs
   onChange(next: Inputs): void
-  profiles: StoredProfile[]
-  activeProfileId: string
   currentDps: number
-  dpsDeltas: DpsDeltaMap
-  dpsDeltasPending: boolean
 }
 
-export function GearTab({
-  inputs,
-  engineInputs,
-  onChange,
-  profiles,
-  activeProfileId,
-  currentDps,
-  dpsDeltas,
-  dpsDeltasPending,
-}: Props) {
+export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
   const [selectedPieceId, setSelectedPieceId] = useState<string | null>(null)
   const [selectedSlot, setSelectedSlot] = useState<GearSlot | null>(null)
-  const [showGlobal, setShowGlobal] = useState(false)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [sub, setSub] = useState<"analysis" | "inventory">("analysis")
@@ -62,31 +42,25 @@ export function GearTab({
   const inventory = inputs.inventory
   const equipped = inputs.equipped
 
-  const liveRows: InventoryRow[] = profiles.flatMap((profile) => {
-    const inv = profile.id === activeProfileId ? inputs.inventory : profile.inputs.inventory
-    const eq = profile.id === activeProfileId ? equipped : profile.inputs.equipped
-    return inv.map((piece) => ({
-      piece,
-      ownerProfileId: profile.id,
-      ownerProfileName: profile.name,
-      isEquipped: eq[piece.slot] === piece.id,
-    }))
-  })
-  const visibleRows = showGlobal
-    ? liveRows
-    : liveRows.filter((row) => row.ownerProfileId === activeProfileId)
+  const visibleRows: InventoryRow[] = inventory.map((piece) => ({
+    piece,
+    isEquipped: equipped[piece.slot] === piece.id,
+  }))
 
-  const selectedRow = selectedPieceId
-    ? (liveRows.find((row) => row.piece.id === selectedPieceId) ?? null)
+  const selectedPiece = selectedPieceId
+    ? (inventory.find((piece) => piece.id === selectedPieceId) ?? null)
     : null
-  const selectedPiece = selectedRow?.piece ?? null
-  const isForeign = selectedRow ? selectedRow.ownerProfileId !== activeProfileId : false
-  const liveSelectedPieceId = selectedRow ? selectedPieceId : null
+  const liveSelectedPieceId = selectedPiece ? selectedPieceId : null
 
-  const isEquipped =
-    !!selectedPiece && !isForeign && equipped[selectedPiece.slot] === selectedPiece.id
+  const isEquipped = !!selectedPiece && equipped[selectedPiece.slot] === selectedPiece.id
 
-  const retuneTargetId = selectedPiece && !isForeign ? selectedPiece.id : null
+  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps)
+  const inventoryDeltas = useDpsDeltas(engineInputs, currentDps)
+  const selectedDelta = selectedPiece
+    ? (inventoryDeltas.deltas[selectedPiece.id] ?? equippedDeltas.deltas[selectedPiece.id])
+    : undefined
+
+  const retuneTargetId = selectedPiece?.id ?? null
   const retunement = useRetunementAnalysis(engineInputs, retuneTargetId)
   const retuneRowsMatch = retunement.forPieceId === retuneTargetId
   const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId)
@@ -126,7 +100,7 @@ export function GearTab({
   }
 
   async function deletePiece(): Promise<void> {
-    if (!selectedPiece || isForeign) return
+    if (!selectedPiece) return
     if (!(await confirm(t("Delete this gear piece?")))) return
     const nextInventory = inventory.filter((piece) => piece.id !== selectedPiece.id)
     const nextEquipped: Record<GearSlot, string | null> = { ...equipped }
@@ -139,25 +113,18 @@ export function GearTab({
 
   function equipSelected(): void {
     if (!selectedPiece) return
-    if (isForeign) {
-      const copy: GearPiece = { ...selectedPiece, id: newGearPieceId() }
-      const nextInventory = [...inventory, copy]
-      commitGearChange(nextInventory, { ...equipped, [copy.slot]: copy.id })
-      setSelectedPieceId(copy.id)
-      return
-    }
     commitGearChange(inventory, { ...equipped, [selectedPiece.slot]: selectedPiece.id })
   }
 
   function unequipSelected(): void {
-    if (!selectedPiece || isForeign) return
+    if (!selectedPiece) return
     commitGearChange(inventory, { ...equipped, [selectedPiece.slot]: null })
   }
 
   function selectInventoryRow(row: InventoryRow): void {
     setSelectedPieceId(row.piece.id)
     setSelectedSlot(row.piece.slot)
-    if (row.ownerProfileId === activeProfileId && row.piece.isNew) {
+    if (row.piece.isNew) {
       onChange({
         ...inputs,
         inventory: inventory.map((piece) =>
@@ -227,58 +194,24 @@ export function GearTab({
           selectedPieceId={liveSelectedPieceId}
           selectedSlot={selectedSlot}
           onSelectSlot={selectSlot}
-          dpsDeltas={dpsDeltas}
-          dpsDeltasPending={dpsDeltasPending}
+          dpsDeltas={equippedDeltas.deltas}
+          dpsDeltasPending={equippedDeltas.isPending}
         />
       </div>
 
       <div className={styles.gearSplit}>
-        <GearDetailsPanel
-          piece={selectedPiece}
-          readOnly={isForeign}
-          isEquipped={isEquipped}
-          inputs={inputs}
-          onChange={updatePiece}
-          onEquip={equipSelected}
-          onUnequip={unequipSelected}
-          onDelete={deletePiece}
-          wordMaxRows={wordMaxRowsMatch ? wordMax.rows : []}
-          wordMaxPending={wordMax.isPending || !wordMaxRowsMatch}
-        />
-
-        <div>
-          <SubTabs
-            active={sub}
-            onSelect={setSub}
-            tabs={[
-              { key: "analysis", label: t("Analysis") },
-              { key: "inventory", label: t("Inventory") },
-            ]}
+        <div className={styles.gearColumn}>
+          <GearDetailsPanel
+            piece={selectedPiece}
+            isEquipped={isEquipped}
+            inputs={inputs}
+            onChange={updatePiece}
+            onEquip={equipSelected}
+            onUnequip={unequipSelected}
+            onDelete={deletePiece}
+            wordMaxRows={wordMaxRowsMatch ? wordMax.rows : []}
+            wordMaxPending={wordMax.isPending || !wordMaxRowsMatch}
           />
-          <SubTabPanel>
-            {sub === "analysis" && (
-              <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
-            )}
-            {sub === "inventory" && (
-              <GearInventoryPanel
-                rows={visibleRows}
-                activeProfileId={activeProfileId}
-                selectedPieceId={liveSelectedPieceId}
-                showGlobal={showGlobal}
-                onToggleGlobal={() => setShowGlobal((prev) => !prev)}
-                onSelect={selectInventoryRow}
-                slotFilter={selectedSlot}
-                onClearSlotFilter={() => setSelectedSlot(null)}
-                dpsDeltas={dpsDeltas}
-                dpsDeltasPending={dpsDeltasPending}
-              />
-            )}
-          </SubTabPanel>
-        </div>
-      </div>
-
-      <div className={styles.gearSplit}>
-        <div className={styles.gearAnalyzerStack}>
           <RetunementAnalyzerPanel
             piece={retuneTargetId ? selectedPiece : null}
             rows={retuneRowsMatch ? retunement.rows : []}
@@ -295,14 +228,44 @@ export function GearTab({
             isPending={reattunement.isPending || !reattuneOptsMatch}
           />
         </div>
-        <GearSwapPreviewPanel
-          inputs={engineInputs}
-          candidate={selectedPiece}
-          isEquipped={isEquipped}
-          currentDps={currentDps}
-          dpsDelta={selectedPiece ? dpsDeltas[selectedPiece.id] : undefined}
-          dpsDeltasPending={dpsDeltasPending}
-        />
+
+        <div className={styles.gearColumn}>
+          <div>
+            <SubTabs
+              active={sub}
+              onSelect={setSub}
+              tabs={[
+                { key: "analysis", label: t("Analysis") },
+                { key: "inventory", label: t("Inventory") },
+              ]}
+            />
+            <SubTabPanel>
+              {sub === "analysis" && (
+                <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
+              )}
+              {sub === "inventory" && (
+                <GearInventoryPanel
+                  rows={visibleRows}
+                  selectedPieceId={liveSelectedPieceId}
+                  onSelect={selectInventoryRow}
+                  slotFilter={selectedSlot}
+                  onClearSlotFilter={() => setSelectedSlot(null)}
+                  dpsDeltas={inventoryDeltas.deltas}
+                  dpsDeltasPending={inventoryDeltas.isPending}
+                />
+              )}
+            </SubTabPanel>
+          </div>
+
+          <GearSwapPreviewPanel
+            inputs={engineInputs}
+            candidate={selectedPiece}
+            isEquipped={isEquipped}
+            currentDps={currentDps}
+            dpsDelta={selectedDelta}
+            dpsDeltasPending={inventoryDeltas.isPending}
+          />
+        </div>
       </div>
 
       {newPieceOpen && (

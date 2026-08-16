@@ -9,6 +9,11 @@ import {
   gearWordIdForPath,
   statLineLabel,
 } from "../data/stats/statLines"
+import {
+  AGILITY_PER_POINT,
+  MOMENTUM_PER_POINT,
+  POWER_PER_POINT,
+} from "../definitions/baseStats/attributeConversion"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
 import { attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
@@ -71,17 +76,17 @@ function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
   const primaryWeapon = weapons[0] ?? schoolWeapons[0] ?? null
   const secondaryWeapon = weapons[1] ?? schoolWeapons[1] ?? null
   const specs: WordSpec<GearWordId>[] = [
-    wordSpec("power", (x) => {
-      x.phys.min += 11.115
-      x.phys.max += 67.184
+    wordSpec("power", (x, roll) => {
+      x.phys.min += roll * POWER_PER_POINT.minPhys
+      x.phys.max += roll * POWER_PER_POINT.maxPhys
     }),
     wordSpec("agility", (x, roll) => {
-      x.phys.min += 44.46
-      x.critRate += roll * 0.00076
+      x.phys.min += roll * AGILITY_PER_POINT.minPhys
+      x.critRate += roll * AGILITY_PER_POINT.critRate
     }),
     wordSpec("momentum", (x, roll) => {
-      x.phys.max += 44.46
-      x.affinityRate += roll * 0.00038
+      x.phys.max += roll * MOMENTUM_PER_POINT.maxPhys
+      x.affinityRate += roll * MOMENTUM_PER_POINT.affinityRate
     }),
     wordSpec("minPhys", (x, roll) => {
       x.phys.min += roll

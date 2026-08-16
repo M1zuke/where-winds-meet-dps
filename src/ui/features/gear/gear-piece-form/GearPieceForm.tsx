@@ -49,7 +49,6 @@ const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
 interface Props {
   piece: GearPiece
   inputs: Inputs
-  disabled: boolean
   onChange(piece: GearPiece): void
   wordMaxRows: WordMaxRow[]
   wordMaxPending: boolean
@@ -59,7 +58,6 @@ interface Props {
 export function GearPieceForm({
   piece,
   inputs,
-  disabled,
   onChange,
   wordMaxRows,
   wordMaxPending,
@@ -153,7 +151,7 @@ export function GearPieceForm({
   }
 
   return (
-    <fieldset disabled={disabled} className={styles.gearForm}>
+    <fieldset className={styles.gearForm}>
       <div className={styles.identityRow}>
         <Field label={t("Type")}>
           <Select

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import type { GearPiece, Inputs } from "../../engine/types"
-import type { WordMaxRow } from "../../engine/dpsWorker"
-import { postToDpsWorker, subscribeToDpsWorker } from "./dpsWorkerClient"
+import type { WordMaxRow, WordMaxWorkerResponse } from "../../engine/dpsWorker"
+import { postToDpsWorker, retainedResponse, subscribeToDpsWorker } from "./dpsWorkerClient"
 import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export interface WordMaxAnalysisResult {
@@ -18,12 +18,24 @@ const NO_SELECTION_RESULT: WordMaxAnalysisResult = {
   forPieceId: null,
 }
 
+interface ReceivedWordMax {
+  rows: WordMaxRow[]
+  pieceId: string
+}
+
+function receivedWordMax(response: WordMaxWorkerResponse | null): ReceivedWordMax | null {
+  if (!response) return null
+  return { rows: response.rows, pieceId: response.pieceId }
+}
+
 export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): WordMaxAnalysisResult {
-  const [received, setReceived] = useState<{ rows: WordMaxRow[]; pieceId: string } | null>(null)
+  const [received, setReceived] = useState<ReceivedWordMax | null>(() =>
+    receivedWordMax(retainedResponse("wordMax")),
+  )
   const isPending = useDpsWorkerPending("wordMax")
 
   useEffect(() => {
-    return subscribeToDpsWorker("wordMax", ({ rows, pieceId }) => setReceived({ rows, pieceId }))
+    return subscribeToDpsWorker("wordMax", (response) => setReceived(receivedWordMax(response)))
   }, [])
 
   useEffect(() => {

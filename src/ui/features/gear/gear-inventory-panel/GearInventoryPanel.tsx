@@ -20,10 +20,7 @@ const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
 
 interface Props {
   rows: InventoryRow[]
-  activeProfileId: string
   selectedPieceId: string | null
-  showGlobal: boolean
-  onToggleGlobal(): void
   onSelect(row: InventoryRow): void
   slotFilter: GearSlot | null
   onClearSlotFilter(): void
@@ -52,10 +49,7 @@ function signClass(delta: number): string {
 
 export function GearInventoryPanel({
   rows,
-  activeProfileId,
   selectedPieceId,
-  showGlobal,
-  onToggleGlobal,
   onSelect,
   slotFilter,
   onClearSlotFilter,
@@ -64,9 +58,7 @@ export function GearInventoryPanel({
 }: Props) {
   const { t } = useI18n()
 
-  const unequippedRows = rows.filter(
-    (row) => !(row.isEquipped && row.ownerProfileId === activeProfileId),
-  )
+  const unequippedRows = rows.filter((row) => !row.isEquipped)
   const filteredRows =
     slotFilter == null
       ? unequippedRows
@@ -76,7 +68,6 @@ export function GearInventoryPanel({
   function renderTile(row: InventoryRow) {
     const { piece } = row
     const isSelected = piece.id === selectedPieceId
-    const isForeign = row.ownerProfileId !== activeProfileId
     const delta: DpsDelta | undefined = dpsDeltas[piece.id]
     const slotLabel = t(SLOT_LABEL_KEYS[piece.slot])
     const rarityLabel = t(piece.rarity === "legendary" ? "Legendary" : "Epic")
@@ -87,12 +78,11 @@ export function GearInventoryPanel({
         className={
           styles.gearInvTile +
           ` ${RARITY[piece.rarity]}` +
-          (isSelected ? ` ${styles.isSelected}` : "") +
-          (isForeign ? ` ${styles.isForeign}` : "")
+          (isSelected ? ` ${styles.isSelected}` : "")
         }
         onClick={() => onSelect(row)}
       >
-        {piece.isNew && !isForeign && <span className={styles.gearInvTileNew}>{t("New")}</span>}
+        {piece.isNew && <span className={styles.gearInvTileNew}>{t("New")}</span>}
 
         <div className={styles.gearInvTileHead}>
           <span className={styles.gearInvTileSlot}>{slotLabel}</span>
@@ -101,7 +91,7 @@ export function GearInventoryPanel({
           </span>
         </div>
 
-        <div className={styles.gearInvTileStats}>
+        <div className={styles.gearInvTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
           <Stat
             label={t("Now")}
             hint={t(DELTA_HINTS.current)}
@@ -127,8 +117,6 @@ export function GearInventoryPanel({
             pending={dpsDeltasPending}
           />
         </div>
-
-        {isForeign && <div className={styles.gearInvTileOwner}>{row.ownerProfileName}</div>}
       </button>
     )
   }
@@ -150,11 +138,6 @@ export function GearInventoryPanel({
             </button>
           </span>
         )}
-        <div className="spacer" />
-        <label className={styles.gearToggle}>
-          <input type="checkbox" checked={showGlobal} onChange={onToggleGlobal} />
-          {t("Show global")}
-        </label>
       </div>
 
       {visibleRows.length === 0 ? (

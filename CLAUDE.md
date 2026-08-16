@@ -329,4 +329,4 @@ A `runEngine` pass is a full 60 fps timeline simulation. **At most ONE
 synchronous `runEngine` per input change** — the baseline pass in `App.tsx`'s
 `result` memo. Everything else goes through `src/engine/dpsWorker.ts`, debounced.
 
-→ All five rules, the hook pattern, and worker testing: **docs/UI.md**.
+→ Every rule, the hook pattern, and worker testing: **docs/UI.md**.
