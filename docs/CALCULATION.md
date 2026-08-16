@@ -30,6 +30,10 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
   nothing.
 - The base-stat row and the runtime level bonus must read the **same** level
   constant. Two sources drift silently.
+- A per-point attribute conversion is authored **once**, and every consumer
+  imports it. A gear-word delta is derived from the word's roll and that table —
+  a pre-multiplied literal is a second copy of the max roll, and goes stale the
+  moment either moves.
 - A selection is stored; the bonus it implies is added during the derive. Never
   store a bonus that a selection already implies.
 - **The food bonus is not a stat-layer add.** It is applied inside the kernel at
