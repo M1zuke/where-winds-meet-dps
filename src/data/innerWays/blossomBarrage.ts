@@ -9,7 +9,7 @@
 //   Tier 3: Spring Sorrow cast speed +30%, Combo duration 10s → 15s.
 //   Tier 4: In non-Arena modes, when Spring Away hits a target with Combo
 //           from you, its damage is +10% and max targets 3 → 5.
-//   Tier 5: Crit Damage Bonus +4.4%.
+//   Tier 5: Direct Crit Rate +4.6%.
 //   Tier 6: Spring Sorrow charges 2 → 3. Hitting an enemy with Combo from
 //           you reduces Spring Sorrow's cooldown by 5s and grants 25
 //           Blossoms. Once per skill cast.
@@ -28,7 +28,7 @@ export const BLOSSOM_BARRAGE_CAST_SPEED_T3 = 0.3
 export const BLOSSOM_BARRAGE_SPRING_AWAY_DAMAGE_T4 = 0.1
 export const BLOSSOM_BARRAGE_SPRING_AWAY_TARGETS_T4 = 5
 export const BLOSSOM_BARRAGE_SPRING_AWAY_TARGETS_BASE = 3
-export const BLOSSOM_BARRAGE_CRIT_DAMAGE_T5 = 0.044
+export const BLOSSOM_BARRAGE_DIRECT_CRIT_T5 = 0.046
 export const BLOSSOM_BARRAGE_BLOSSOMS_T6 = 25
 export const BLOSSOM_BARRAGE_COOLDOWN_REDUCTION_T6_SEC = 5
 export const BLOSSOM_BARRAGE_SPRING_SORROW_CHARGES_BASE = 2
@@ -43,7 +43,7 @@ export const blossomBarrage = defineInnerWay({
   // Tier 2: crit rate based on Solo Mode Level (1.7 per level baseline).
   // Tier 3: cast speed +30% on Spring Sorrow; Combo duration 10s → 15s.
   // Tier 4: Spring Away damage +10% on Combo'd targets; targets 3 → 5.
-  // Tier 5: crit damage +4.4%.
+  // Tier 5: direct crit rate +4.6%.
   // Tier 6: Spring Sorrow charges 2 → 3; on Combo'd hit, -5s CD + 25 Blossoms.
   tiers: {
     1: { nodes: [] },
@@ -52,7 +52,7 @@ export const blossomBarrage = defineInnerWay({
       nodes: [INNER_WAY_NODE.blossomBarrageLongerCombo],
     },
     4: { nodes: [INNER_WAY_NODE.blossomBarrageSpringAwayBoost] },
-    5: { panelStats: { critDamageBoost: BLOSSOM_BARRAGE_CRIT_DAMAGE_T5 } },
+    5: { panelStats: { directCritRate: BLOSSOM_BARRAGE_DIRECT_CRIT_T5 } },
     6: { nodes: [INNER_WAY_NODE.blossomBarrageSpringSorrowTripleCharge] },
   },
 })

@@ -39,13 +39,15 @@ export const INNER_WAY_NODE = {
   bitterSeasonStrongerDefenseReduction: "bitterSeasonStrongerDefenseReduction",
   bitterSeasonImprovedProcChance: "bitterSeasonImprovedProcChance",
   bitterSeasonMaxStackPenetration: "bitterSeasonMaxStackPenetration",
-  // Thunderous Bloom L1–T6 capability flags. Tier 1 shortens the distance
-  // threshold; tier 4 raises the heavy-attack charge cap; tier 5 raises the
-  // phys-boost; tier 6 makes 'restore a stack on hitting Exhausted / <30% Qi'
-  // available. Tier 2 is a Solo-Mode-Level-shaped phys multiplier and tier 3
-  // is a Qi-DMG-Bonus delivery — neither lives as a node, both ride the
-  // tiered scalr block.
-  thunderousBloomShortenedDistance: "thunderousBloomShortenedDistance",
+  // Thunderous Bloom L1–T6 capability flags. Tier 1 and tier 4 raise the
+  // number of Spring Thunder stacks granted per trigger (3 → 4 → 5);
+  // tier 3 extends the per-stack HP-Damage window; tier 6 makes 'restore a
+  // stack on hitting Exhausted / <30% Qi with a Heavy / Heavy Pursuit /
+  // Light / Ballistic skill' available. Tier 2 is a Solo-Mode-Level-shaped
+  // phys multiplier and tier 5 raises physBoost — neither lives as a node,
+  // both ride the tiered panelStats block.
+  thunderousBloomIncreasedStackGrant: "thunderousBloomIncreasedStackGrant",
+  thunderousBloomExtendedDamageWindow: "thunderousBloomExtendedDamageWindow",
   thunderousBloomRestoresStackOnExhausted: "thunderousBloomRestoresStackOnExhausted",
   // Blossom Barrage T3 widens the Combo window and gates Spring Sorrow's
   // cast-speed contribution; T4 awards Spring Away targets-5 and +damage;
