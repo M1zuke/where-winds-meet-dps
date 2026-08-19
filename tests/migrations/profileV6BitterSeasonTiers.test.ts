@@ -169,7 +169,7 @@ describe("Bitter Season inner way — widened allowlist round-trips (no version 
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.classId).toBe("bellstrikeUmbra")
+    expect(profiles[0].inputs.classId).toBe("silkbindJade")
     expect(profiles[0].inputs.mindMethods[0]).toEqual({
       id: "bitterSeason",
       name: "Bitter Season",

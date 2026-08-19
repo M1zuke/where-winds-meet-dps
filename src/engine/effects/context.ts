@@ -13,6 +13,18 @@ export interface BuildView {
 
 export interface TargetView {
   isTrainingDummy: boolean
+  // The target's current Qi phase. Same timeline-driven shape as `phase` on
+  // the context top-level (which is also the target's phase for our boss
+  // model — see `simulateTimeline`'s `qiBreakWindow` plumbing) but kept
+  // distinct so buffs that key on the *target's* phase don't have to know
+  // they're reading the same value as the cast's phase. Defaults to
+  // `"normal"` so a def can read it without checking optionality.
+  phase: QiPhase
+  // Whether the target is currently Airborne. Defaults to `false` so a def
+  // can read it without optionality; populated from `params.targetAirborne`
+  // for now (a single boolean), with a future `airborneWindow` mechanic
+  // likely replacing it once the in-game timing is captured.
+  airborne: boolean
 }
 
 export interface StatusView {
@@ -52,9 +64,11 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
   [PROP.hasLowQiDmgBoost]: "hasLowQiDmgBoost",
   [PROP.hasQiBreakDoubleDamage]: "hasQiBreakDoubleDamage",
   [PROP.hasQiBreakPhysPen]: "hasQiBreakPhysPen",
+  [PROP.isBallistic]: "isBallistic",
   [PROP.isCharged]: "isCharged",
   [PROP.isExecution]: "isExecution",
   [PROP.isMartialSkillQ]: "isMartialSkillQ",
+  [PROP.isPerfectDodge]: "isPerfectDodge",
   [PROP.shatteredRidgeBoost]: "shatteredRidgeBoost",
 }
 

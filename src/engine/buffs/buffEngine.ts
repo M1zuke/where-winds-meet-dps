@@ -181,7 +181,14 @@ export class BuffEngine {
       timeSec: time,
       phase: this.qiPhase(time),
       build,
-      target: { isTrainingDummy: !!this.params.isTrainingDummy },
+      target: {
+        isTrainingDummy: !!this.params.isTrainingDummy,
+        // Target phase matches the cast phase for the boss-only model — see
+        // `context.ts` `TargetView.phase`. `qiPhase(time)` is the same
+        // timeline-driven function that feeds the top-level `phase`.
+        phase: this.qiPhase(time),
+        airborne: !!this.params.targetAirborne,
+      },
       status: {
         isActive: (id) => this.isBuffActiveAtTime(id, time),
         stacks: (id) => this.getHistoricalBuffStacks(id, time),

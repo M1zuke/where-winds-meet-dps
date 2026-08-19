@@ -5,14 +5,18 @@
 export const INNER_WAY_ID = {
   battleAnthem: "battleAnthem",
   bitterSeason: "bitterSeason",
+  blossomBarrage: "blossomBarrage",
+  breakingPoint: "breakingPoint",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
+  starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
   swordMorph: "swordMorph",
   throatPierce: "throatPierce",
+  thunderousBloom: "thunderousBloom",
   wolfchasersArt: "wolfchasersArt",
 } as const
 
@@ -36,6 +40,38 @@ export const INNER_WAY_NODE = {
   bitterSeasonStrongerDefenseReduction: "bitterSeasonStrongerDefenseReduction",
   bitterSeasonImprovedProcChance: "bitterSeasonImprovedProcChance",
   bitterSeasonMaxStackPenetration: "bitterSeasonMaxStackPenetration",
+  // Thunderous Bloom L1–T6 capability flags. Tier 1 and tier 4 raise the
+  // number of Spring Thunder stacks granted per trigger (3 → 4 → 5);
+  // tier 3 extends the per-stack HP-Damage window; tier 6 makes 'restore a
+  // stack on hitting Exhausted / <30% Qi with a Heavy / Heavy Pursuit /
+  // Light / Ballistic skill' available. Tier 2 is a Solo-Mode-Level-shaped
+  // phys multiplier and tier 5 raises physBoost — neither lives as a node,
+  // both ride the tiered panelStats block.
+  thunderousBloomIncreasedStackGrant: "thunderousBloomIncreasedStackGrant",
+  thunderousBloomExtendedDamageWindow: "thunderousBloomExtendedDamageWindow",
+  thunderousBloomRestoresStackOnExhausted: "thunderousBloomRestoresStackOnExhausted",
+  // Blossom Barrage T3 widens the Combo window and gates Spring Sorrow's
+  // cast-speed contribution; T4 awards Spring Away targets-5 and +damage;
+  // T6 enables the charges-3 + per-cast-CD-reduction mechanic.
+  blossomBarrageLongerCombo: "blossomBarrageLongerCombo",
+  blossomBarrageSpringAwayBoost: "blossomBarrageSpringAwayBoost",
+  blossomBarrageSpringSorrowTripleCharge: "blossomBarrageSpringSorrowTripleCharge",
+  // Breaking Point T1 widens Disintegration duration; T4 raises the cap;
+  // T6 makes Perfect-Dodge a +5 trigger.
+  breakingPointExtendedDuration: "breakingPointExtendedDuration",
+  breakingPointHigherStackCap: "breakingPointHigherStackCap",
+  breakingPointPerfectDodgeTrigger: "breakingPointPerfectDodgeTrigger",
+  // Star Reacher T1 widens the Lingering Bone Mark bonus to airborne targets
+  // and gates the HP-conditional damage/heal split; T3 widens the bonus
+  // duration 8s → 12s; T4 grants +Phys Attack on Exhausted / <30% Qi
+  // targets; T6 raises the Lingering Bone / Airborne bonus magnitudes
+  // (5%/10% → 7.5%/15%). The Tier 1 HP-gate and Tier 4 phase-gate bonuses
+  // are not yet wired into the engine — flagged here as nodes so the test
+  // suite pins their ownership, with the magnitudes living on the def.
+  starReacherHpGatedLingeringBone: "starReacherHpGatedLingeringBone",
+  starReacherExtendedDuration: "starReacherExtendedDuration",
+  starReacherExhaustedBonus: "starReacherExhaustedBonus",
+  starReacherRaisedBaseBonuses: "starReacherRaisedBaseBonuses",
 } as const
 
 export type InnerWayNode = (typeof INNER_WAY_NODE)[keyof typeof INNER_WAY_NODE]

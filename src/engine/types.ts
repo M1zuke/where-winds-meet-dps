@@ -95,6 +95,7 @@ export interface Inputs {
   affinityDamageBoost: number
   attributeDamageBoost: number
   sustainDamageBoost: number
+  qiDamageBoost: number
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
 
@@ -111,6 +112,11 @@ export interface Inputs {
   bossBoost: number
   singleMysticBoost: number
   areaMysticBoost: number
+
+  // The breakdown level that unlocks breakthrough enhancements (wiki: TB2
+  // "Increases Physical attack based on Solo Mode Level"). Stored as 1–6; 0
+  // means "not engaged" and the inner-way's TB2 bonus resolves to zero.
+  soloModeLevel: number
 
   classSpecificAttunement: Record<string, number>
 

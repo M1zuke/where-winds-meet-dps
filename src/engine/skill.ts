@@ -64,6 +64,9 @@ export interface Skill {
   castTag?: string
   receives?: string[]
   triggersBuffs?: string[]
+  // Optional fields allowed by authored skill literals:
+  abilityTag?: string
+  universal?: boolean
   hits: SkillHit[]
   castFrames: number
   triggerable: boolean
@@ -71,6 +74,10 @@ export interface Skill {
   guaranteedPrecision?: boolean
   guaranteedNormal?: boolean
   prePull?: boolean
+  // Multiplicative on the skill's effective cast time. Authored on inner-way
+  // contributions (Blossom Barrage TB3 — 'Spring Sorrow cast speed +30%' is
+  // `castSpeed: 0.3`). 0 means "no bonus".
+  castSpeed?: number
   createdAt: string
   updatedAt: string
 }
@@ -261,6 +268,13 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.updatedAt !== "string") return false
   if (s.receives !== undefined && !isStringArray(s.receives)) return false
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
+  if (s.abilityTag !== undefined && typeof s.abilityTag !== "string") return false
+  if (s.universal !== undefined && typeof s.universal !== "boolean") return false
+  if (
+    s.castSpeed !== undefined &&
+    (typeof s.castSpeed !== "number" || !Number.isFinite(s.castSpeed))
+  )
+    return false
   return true
 }
 
@@ -307,6 +321,10 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
+    // Copy through newly-permitted optional fields so seeded copies preserve them:
+    abilityTag: src.abilityTag,
+    universal: src.universal,
+    castSpeed: src.castSpeed,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

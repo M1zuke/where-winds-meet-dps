@@ -91,6 +91,23 @@ export const CAST = {
   swordSpecial4Hit: "cast:swordSpecial4Hit",
   swordSpecialDeflect: "cast:swordSpecialDeflect",
   toadCancel: "cast:toadCancel",
+  fanQ: "cast:fanQ",
+  fanQCancel: "cast:fanQCancel",
+  fanQPrepull: "cast:fanQPrepull",
+  fanLightCharged: "cast:fanLightCharged",
+  fanSpecial: "cast:fanSpecial",
+  fanHeavyPursuit3Hit: "cast:fanHeavyPursuit3Hit",
+  umbQ: "cast:umbQ",
+  umbQPrepull: "cast:umbQPrepull",
+  umbLightCharge: "cast:umbLightCharge",
+  umbHeavyLight: "cast:umbHeavyLight",
+  umbDroneLaunch26hit: "cast:umbDroneLaunch26hit",
+  healerBuff: "cast:healerBuff",
+  springSorrow: "cast:springSorrow",
+  letSpringGo: "cast:letSpringGo",
+  everbloom: "cast:everbloom",
+  umbrellaLight: "cast:umbrellaLight",
+  springAway: "cast:springAway",
 } as const
 
 export const ROLE = {
@@ -133,6 +150,11 @@ export const ATTUNE = {
   swordCharged: "attune:swordCharged",
   swordQ: "attune:swordQ",
   swordSpecial: "attune:swordSpecial",
+  fanQ: "attune:fanQ",
+  fanCharged: "attune:fanCharged",
+  fanSpecial: "attune:fanSpecial",
+  umbQ: "attune:umbQ",
+  umbCharged: "attune:umbCharged",
 } as const
 
 // `context.ts` derives `SkillProperties`'s boolean keys from these values at
@@ -146,9 +168,11 @@ export const PROP = {
   hasLowQiDmgBoost: "prop:hasLowQiDmgBoost",
   hasQiBreakDoubleDamage: "prop:hasQiBreakDoubleDamage",
   hasQiBreakPhysPen: "prop:hasQiBreakPhysPen",
+  isBallistic: "prop:isBallistic",
   isCharged: "prop:isCharged",
   isExecution: "prop:isExecution",
   isMartialSkillQ: "prop:isMartialSkillQ",
+  isPerfectDodge: "prop:isPerfectDodge",
   shatteredRidgeBoost: "prop:shatteredRidgeBoost",
 } as const
 

@@ -28,7 +28,7 @@
 import { createHash } from "node:crypto"
 import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
-import { describe, expect, it } from "vitest"
+import { beforeAll, describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
@@ -38,7 +38,6 @@ import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 
 const FIXTURE_PATH = join(process.cwd(), "tests/engine/buffEngineEquivalence.fixture.json")
-const REGENERATE = process.env.UPDATE_BUFF_EQUIVALENCE === "1"
 
 // The tag combinations and time grid from the manual all-class dump that
 // caught the four regressions above — kept exactly, since narrowing them is
@@ -240,14 +239,25 @@ function currentSnapshot(): Snapshot {
   return out
 }
 
-if (REGENERATE) {
-  await writeFixture(FIXTURE_PATH, currentSnapshot())
+async function loadRecorded(): Promise<Snapshot | null> {
+  // cmd.exe's `set X=1 && cmd` chain on Windows appends a trailing space to
+  // the env value before it reaches the child process, so the literal
+  // `=== "1"` check fails with `"1 "`. Trim before comparing.
+  const raw = process.env.UPDATE_BUFF_EQUIVALENCE?.trim()
+  const regenerate = raw === "1"
+  if (regenerate) {
+    await writeFixture(FIXTURE_PATH, currentSnapshot())
+  }
+  return existsSync(FIXTURE_PATH)
+    ? (JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) as Snapshot)
+    : null
 }
 
 describe("buff engine equivalence — every registered class", () => {
-  const recorded = existsSync(FIXTURE_PATH)
-    ? (JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) as Snapshot)
-    : null
+  let recorded: Snapshot | null = null
+  beforeAll(async () => {
+    recorded = await loadRecorded()
+  })
 
   it("has a recorded fixture", () => {
     expect(

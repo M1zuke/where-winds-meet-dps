@@ -62,6 +62,7 @@ export const PARAM = {
   mountainsMight: "mountainsMight",
   revelryScript: "revelryScript",
   starsAlignActive: "starsAlignActive",
+  starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
   swordMorph: "swordMorph",

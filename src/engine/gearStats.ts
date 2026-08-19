@@ -47,6 +47,7 @@ const NUMERIC_PATHS = [
   "affinityDamageBoost",
   "attributeDamageBoost",
   "sustainDamageBoost",
+  "qiDamageBoost",
   "allMartialBoost",
   "swordBoost",
   "spearBoost",
