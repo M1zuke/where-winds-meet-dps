@@ -106,6 +106,14 @@ export const STAT_LINES = [
     category: "Damage Boosts",
   },
   {
+    id: "qiDamageBoost",
+    label: "Qi Damage Boost",
+    unit: "percent",
+    enginePath: "qiDamageBoost",
+    scope: "player",
+    category: "Damage Boosts",
+  },
+  {
     id: "allDamageBoost",
     label: "General Damage Boost",
     unit: "percent",

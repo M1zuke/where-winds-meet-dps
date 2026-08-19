@@ -95,6 +95,7 @@ export interface Inputs {
   affinityDamageBoost: number
   attributeDamageBoost: number
   sustainDamageBoost: number
+  qiDamageBoost: number
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
 

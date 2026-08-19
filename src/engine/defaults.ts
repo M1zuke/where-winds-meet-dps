@@ -30,6 +30,7 @@ export const defaultInputs: Inputs = {
   affinityDamageBoost: 0.35,
   attributeDamageBoost: 0.076,
   sustainDamageBoost: 0,
+  qiDamageBoost: 0,
   allDamageBoost: 0,
 
   allMartialBoost: 0,
@@ -99,6 +100,7 @@ export const blankInputs: Inputs = {
   affinityDamageBoost: 0,
   attributeDamageBoost: 0,
   sustainDamageBoost: 0,
+  qiDamageBoost: 0,
   allDamageBoost: 0,
 
   classSpecificAttunement: {},
