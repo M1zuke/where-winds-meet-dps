@@ -45,7 +45,14 @@ export const thunderousBloom = defineInnerWay({
   //         Pursuit / Light / Ballistic).
   tiers: {
     1: { nodes: [INNER_WAY_NODE.thunderousBloomIncreasedStackGrant] },
-    2: { panelStats: { "phys.min": 1.7, "phys.max": 3.4 } },
+    2: {
+      panelStats: { "phys.min": 1.7, "phys.max": 3.4 },
+      // The 1.7/3.4 phys min/max values above are PER-LEVEL coefficients,
+      // scaled by `Inputs.soloModeLevel` at resolution time (see
+      // `InnerWayTier.scaleBySoloModeLevel`). A player at Solo Mode Level 6
+      // picks up 10.2 phys min / 20.4 phys max from this tier.
+      scaleBySoloModeLevel: true,
+    },
     3: { nodes: [INNER_WAY_NODE.thunderousBloomExtendedDamageWindow] },
     4: { nodes: [INNER_WAY_NODE.thunderousBloomIncreasedStackGrant] },
     5: { panelStats: { physBoost: THUNDEROUS_BLOOM_PHYS_BOOST_T5 } },

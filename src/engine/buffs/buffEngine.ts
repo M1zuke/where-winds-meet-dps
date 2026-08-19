@@ -199,6 +199,14 @@ export class BuffEngine {
         stacks: selfStacks,
         reachesEvent:
           module !== undefined && event.kind === "damage" && reaches(event.tags, module),
+        // Player HP at hit time. Defaults to a "full HP" sentinel
+        // (`hpMax = 1`, `hp = hpMax`) when the params omit the field so a
+        // buff that does not read HP gets a no-op rather than `0 / 0` (which
+        // would silently engage every HP-gated branch). Star Reacher T1 is
+        // the first consumer; populate via `params.playerHp` / `params.playerHpMax`.
+        hp: typeof this.params.playerHp === "number" ? (this.params.playerHp as number) : 1,
+        hpMax:
+          typeof this.params.playerHpMax === "number" ? (this.params.playerHpMax as number) : 1,
       },
       event,
     }
@@ -348,6 +356,7 @@ export class BuffEngine {
       artBonus: () => {},
       damageMultiplier: () => {},
       setStatus: () => {},
+      heal: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -691,6 +700,12 @@ export class BuffEngine {
         damageFactor *= factor
       },
       setStatus: () => {},
+      // Heal output no-ops: the buff engine has no HP ledger today, so an
+      // emitted heal is dropped silently. The `kind: "heal"` effect type
+      // exists so Star Reacher T1 (and any future HP-gated buff) can author
+      // its heal branch without crashing on the no-op path; a heal-output
+      // lane can pick this up later without re-plumbing the Effect union.
+      heal: () => {},
     }
 
     for (const [id, module] of this.definitions) {

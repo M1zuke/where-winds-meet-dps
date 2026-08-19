@@ -1,6 +1,6 @@
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
-import { stat } from "../../engine/effects/effect"
+import { stat, heal, type Effect } from "../../engine/effects/effect"
 import type { EffectContext } from "../../engine/effects/context"
 import {
   innerWayHasNode,
@@ -9,6 +9,9 @@ import {
 import {
   STAR_REACHER_BELOW30_PHYS_BONUS_T4,
   STAR_REACHER_EXHAUSTED_PHYS_BONUS_T4,
+  STAR_REACHER_HP_GATE_DAMAGE_BONUS_T1,
+  STAR_REACHER_HP_GATE_HEAL_FRACTION_T1,
+  STAR_REACHER_HP_GATE_THRESHOLD,
 } from "./starReacher"
 import { INNER_WAY_NODE } from "./ids"
 import { starReacher } from "./starReacher"
@@ -27,11 +30,14 @@ import { starReacher } from "./starReacher"
 // battleAnthemBuffs.ts pattern (`allDamageBoost +10%, +15% from tier 4`).
 //
 // T1 (HP-gated 3% damage / 10%-of-damage heal on airborne targets with
-// your Lingering Bone) is still flagged on the def but cannot fire yet —
-// the engine does not expose player HP at hit time, and there is no
-// heal-output lane. The node ownership pins live in
-// `tests/data/innerWays.test.ts`; this module only resolves the values
-// the engine can already apply.
+// your Lingering Bone) is now wired: the HP-above-75% branch emits
+// `physBoost +3%` additively on top of the airborne-doubled bonus, and
+// the HP-below-or-equal-75% branch emits the heal FRACTION (0.1) via
+// the `heal` Effect kind. The heal output is a no-op in every sink
+// today (no HP ledger ships) — the kind exists so the def can model the
+// branch without crashing, and a future heal-output lane can resolve
+// the fraction against the rolled damage without re-plumbing the Effect
+// union.
 //
 // Hoisted factory, not a `const`: the module cycle (this file imports
 // `starReacher`, and `starReacher.ts` imports this file for its
@@ -87,7 +93,7 @@ export function starReacherLingeringBoneBuff() {
         : raised
           ? 0.075
           : 0.05
-      const out: ReturnType<typeof stat>[] = [stat("physBoost", lingAmount)]
+      const out: Effect[] = [stat("physBoost", lingAmount)]
       // T4: unconditional phase-gated bonus on top of the Lingering-Bone
       // amount. Reads `ctx.target.phase` (added to `EffectContext` alongside
       // `target.airborne`) so the bonus is conditional on the target's
@@ -102,6 +108,29 @@ export function starReacherLingeringBoneBuff() {
           out.push(stat("physBoost", STAR_REACHER_EXHAUSTED_PHYS_BONUS_T4))
         } else if (ctx.target.phase === "below30") {
           out.push(stat("physBoost", STAR_REACHER_BELOW30_PHYS_BONUS_T4))
+        }
+      }
+      // T1: airborne-only HP-conditional split. "+3% damage if HP > 75%;
+      // restore HP = 10% of damage done otherwise." Both branches require
+      // `target.airborne === true` per the in-game text. The damage branch
+      // is a real `physBoost` additively stacked on the airborne-doubled
+      // bonus above. The heal branch emits `heal()` with the FRACTION
+      // (`STAR_REACHER_HP_GATE_HEAL_FRACTION_T1 = 0.1`) — today's buff
+      // engine and timeline sinks both no-op the heal effect because no
+      // HP ledger ships, so the heal is a documented no-op rather than a
+      // thrown error. A future heal-output lane can resolve the fraction
+      // against the rolled damage without re-plumbing the Effect union.
+      const tier1HpGated = innerWayHasNode(
+        starReacher,
+        tier,
+        INNER_WAY_NODE.starReacherHpGatedLingeringBone,
+      )
+      if (tier1HpGated && ctx.target.airborne) {
+        const hpFraction = ctx.self.hpMax > 0 ? ctx.self.hp / ctx.self.hpMax : 1
+        if (hpFraction > STAR_REACHER_HP_GATE_THRESHOLD) {
+          out.push(stat("physBoost", STAR_REACHER_HP_GATE_DAMAGE_BONUS_T1))
+        } else {
+          out.push(heal(STAR_REACHER_HP_GATE_HEAL_FRACTION_T1))
         }
       }
       return out

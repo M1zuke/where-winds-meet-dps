@@ -17,6 +17,7 @@ export interface EffectSink {
     permanent: boolean | undefined,
     durationFrames: number | undefined,
   ): void
+  heal(amount: number): void
 }
 
 export function assertNever(value: never): never {
@@ -45,6 +46,9 @@ export function applyEffect(sink: EffectSink, effect: Effect): void {
       return
     case "setStatus":
       sink.setStatus(effect.id, effect.stacks, effect.permanent, effect.durationFrames)
+      return
+    case "heal":
+      sink.heal(effect.amount)
       return
     default:
       assertNever(effect)

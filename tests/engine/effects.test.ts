@@ -8,6 +8,7 @@ import {
   artBonus,
   damageMultiplier,
   setStatus,
+  heal,
   type Effect,
 } from "../../src/engine/effects/effect"
 
@@ -22,6 +23,7 @@ function recordingSink(): { sink: EffectSink; calls: unknown[][] } {
     damageMultiplier: (factor) => calls.push(["damageMultiplier", factor]),
     setStatus: (id, stacks, permanent, durationFrames) =>
       calls.push(["setStatus", id, stacks, permanent, durationFrames]),
+    heal: (amount) => calls.push(["heal", amount]),
   }
   return { sink, calls }
 }
@@ -37,6 +39,7 @@ describe("applyEffect", () => {
     applyEffect(sink, artBonus("extraCritRate", 0.3))
     applyEffect(sink, damageMultiplier(2))
     applyEffect(sink, setStatus("someStatus", { stacks: 1, permanent: true }))
+    applyEffect(sink, heal(42))
 
     expect(calls).toEqual([
       ["stat", "allDamageBoost", 0.1],
@@ -46,6 +49,7 @@ describe("applyEffect", () => {
       ["artBonus", "extraCritRate", 0.3],
       ["damageMultiplier", 2],
       ["setStatus", "someStatus", 1, true, undefined],
+      ["heal", 42],
     ])
   })
 

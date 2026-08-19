@@ -61,7 +61,14 @@ export const blossomBarrage = defineInnerWay({
   // Tier 6: Spring Sorrow charges 2 → 3; on Combo'd hit, -5s CD + 25 Blossoms
   //         (once per skill cast).
   tiers: {
-    2: { panelStats: { critRate: 0.014 } },
+    2: {
+      panelStats: { critRate: 0.014 },
+      // The 0.014 crit-rate value is a PER-LEVEL coefficient, scaled by
+      // `Inputs.soloModeLevel` at resolution time. A player at Solo Mode
+      // Level 6 picks up 8.4% crit rate from this tier (see
+      // `InnerWayTier.scaleBySoloModeLevel`).
+      scaleBySoloModeLevel: true,
+    },
     3: {
       nodes: [INNER_WAY_NODE.blossomBarrageLongerCombo],
     },

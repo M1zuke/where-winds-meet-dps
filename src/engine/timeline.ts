@@ -600,6 +600,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       consumeStacks: () => {},
       artBonus: () => {},
       damageMultiplier: () => {},
+      heal: () => {},
     }
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
@@ -630,6 +631,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damageMultiplier: (factor) => {
         art.correction = (art.correction ?? 1) * factor
       },
+      heal: () => {},
     }
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
     if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor

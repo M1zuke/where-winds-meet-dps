@@ -146,6 +146,16 @@ export interface Inputs {
 
   buffParams?: Record<string, unknown> | null
 
+  // Casting player's current and max HP, expressed as fractions 0–1
+  // (`hp / hpMax`). Both default to `1` (full HP) so a build that omits
+  // them gets the same no-op a fully-healed player would. Populated for
+  // HP-gated buff branches — Star Reacher T1 is the first consumer —
+  // and threaded through `paramsFromInputs` to `params.playerHp` /
+  // `params.playerHpMax`. The engine does not model HP loss today, so
+  // these are static inputs, not a ledger the timeline updates.
+  playerHp?: number | null
+  playerHpMax?: number | null
+
   combatSettings?: CombatSettings
 
   inventory: GearPiece[]

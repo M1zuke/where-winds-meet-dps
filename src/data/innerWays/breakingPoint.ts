@@ -39,7 +39,14 @@ export const breakingPoint = defineInnerWay({
   // Tier 6: Perfect-Dodge grant 5 stacks, ICD 15s.
   tiers: {
     1: { nodes: [INNER_WAY_NODE.breakingPointExtendedDuration] },
-    2: { panelStats: { precision: BREAKING_POINT_PRECISION_T2_PER_LEVEL } },
+    2: {
+      panelStats: { precision: BREAKING_POINT_PRECISION_T2_PER_LEVEL },
+      // The 0.014 precision value is a PER-LEVEL coefficient, scaled by
+      // `Inputs.soloModeLevel` at resolution time. A player at Solo Mode
+      // Level 6 picks up 8.4% precision rate from this tier (see
+      // `InnerWayTier.scaleBySoloModeLevel`).
+      scaleBySoloModeLevel: true,
+    },
     3: { nodes: [INNER_WAY_NODE.breakingPointExtendedDuration] },
     4: { nodes: [INNER_WAY_NODE.breakingPointHigherStackCap] },
     5: { panelStats: { directCritRate: BREAKING_POINT_DIRECT_CRIT_T5 } },

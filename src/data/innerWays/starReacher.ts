@@ -19,19 +19,23 @@
 //
 // Placeholder (validated: false). T2 (flat phys penetration) and T5
 // (Solo Mode Level phys-attack scaler) ride the per-tier `panelStats` block
-// the way Thunderous Bloom T2 does. T3 / T4 / T6 are gated by nodes and
+// the way Thunderous Bloom T2 does. T1 / T3 / T4 / T6 are gated by nodes and
 // consumed by `starReacherBuffs.ts`:
 //   - T3 (`starReacherExtendedDuration`) widens the buff duration 8s → 12s.
 //   - T6 (`starReacherRaisedBaseBonuses`) raises the bonus magnitudes from
 //     5%/10% to 7.5%/15%, AND the airborne-doubled variant (10% → 15%) is
-//     now reachable via `EffectContext.target.airborne`.
+//     reachable via `EffectContext.target.airborne`.
 //   - T4 (`starReacherExhaustedBonus`) adds +15% phys on Exhausted and
 //     +25% on <30% Qi via `EffectContext.target.phase`.
-//   - T1 (`starReacherHpGatedLingeringBone`) is still flagged but the
-//     engine does not yet expose player HP at hit time, and there is no
-//     heal-output lane — T1 needs a separate engine-work item before it
-//     can fire. The buff module reads its existence so the def round-trips
-//     cleanly with `innerWayHasNode`.
+//   - T1 (`starReacherHpGatedLingeringBone`) is now reachable: the
+//     HP-above-75% branch emits `physBoost +3%` against airborne targets
+//     via `EffectContext.self.hp` / `self.hpMax`, and the
+//     HP-below-or-equal-75% branch emits the heal FRACTION (0.1) via the
+//     `heal` Effect kind. The heal output is a no-op in every sink today
+//     (no HP ledger ships) — the kind exists so the def can model the
+//     branch without crashing, and a future heal-output lane can resolve
+//     the fraction against the rolled damage without re-plumbing the
+//     Effect union.
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { PARAM } from "../skills/buffs/ids"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
@@ -55,10 +59,13 @@ export const starReacher = defineInnerWay({
   name: "Star Reacher",
   legacyNames: [],
   buffParam: PARAM.starReacher,
-  // T1 is intentionally omitted from `selectableTiers` until the engine
-  // exposes player HP at hit time and ships a heal-output lane (see the
-  // header block above). Re-add `1` when the engine work lands.
-  selectableTiers: [6, 5, 4, 3, 2],
+  // T1 is now reachable: `EffectContext.self.hp` / `self.hpMax` land
+  // alongside the HP-gated damage branch, and the heal branch emits via
+  // the `heal` Effect kind — sinks no-op today because no HP ledger ships,
+  // so the heal is a documented no-op rather than a thrown error. See the
+  // header block above and `starReacherBuffs.ts` for the heal-fraction
+  // encoding.
+  selectableTiers: [6, 5, 4, 3, 2, 1],
   // Tier 2: flat 5.1% physical penetration (matches Insightful Strike's
   // panelStats convention for flat phys.penetration).
   // Tier 5: phys attack scales with Solo Mode Level, modelled the same way
@@ -71,7 +78,14 @@ export const starReacher = defineInnerWay({
     2: { panelStats: { "phys.penetration": STAR_REACHER_PHYS_PEN_T2 } },
     3: { nodes: [INNER_WAY_NODE.starReacherExtendedDuration] },
     4: { nodes: [INNER_WAY_NODE.starReacherExhaustedBonus] },
-    5: { panelStats: { "phys.min": 1.7, "phys.max": 3.4 } },
+    5: {
+      panelStats: { "phys.min": 1.7, "phys.max": 3.4 },
+      // The 1.7/3.4 phys min/max values above are PER-LEVEL coefficients,
+      // scaled by `Inputs.soloModeLevel` at resolution time (see
+      // `InnerWayTier.scaleBySoloModeLevel`). A player at Solo Mode Level 6
+      // picks up 10.2 phys min / 20.4 phys max from this tier.
+      scaleBySoloModeLevel: true,
+    },
     6: { nodes: [INNER_WAY_NODE.starReacherRaisedBaseBonuses] },
   },
   buffDefs: [starReacherLingeringBoneBuff()],

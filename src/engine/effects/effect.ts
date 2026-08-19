@@ -15,6 +15,15 @@ export type Effect =
   | { kind: "artBonus"; field: ArtBonusField; amount: number }
   | { kind: "damageMultiplier"; factor: number }
   | { kind: "setStatus"; id: string; stacks?: number; permanent?: boolean; durationFrames?: number }
+  // Heal applied to the casting player (the source of the hit). Amount is a
+  // flat HP value, not a percentage — fractional HP is allowed so a buff
+  // module can model "restore HP equal to 10% of damage done" by multiplying
+  // the hit's final damage by 0.1 and emitting the result here. Buff modules
+  // only emit this kind; the buff engine and timeline sinks both no-op it
+  // today (no HP ledger ships), which is why Star Reacher T1's heal branch
+  // stays a no-op rather than a thrown error — a future heal-output lane can
+  // pick it up without re-plumbing the Effect type.
+  | { kind: "heal"; amount: number }
 
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
@@ -70,4 +79,8 @@ export function setStatus(
   opts: { stacks?: number; permanent?: boolean; durationFrames?: number } = {},
 ): Extract<Effect, { kind: "setStatus" }> {
   return { kind: "setStatus", id, ...opts }
+}
+
+export function heal(amount: number): Extract<Effect, { kind: "heal" }> {
+  return { kind: "heal", amount }
 }

@@ -48,6 +48,8 @@ export const defaultInputs: Inputs = {
   areaMysticBoost: 0,
 
   soloModeLevel: 0,
+  playerHp: 1,
+  playerHpMax: 1,
 
   classSpecificAttunement: {},
 

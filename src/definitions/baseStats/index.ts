@@ -363,14 +363,22 @@ function applyPanelStats(
   out: Record<string, number>,
   primaryKey: string,
   stats: Readonly<Partial<Record<string, number>>> | undefined,
+  scaleBySoloModeLevel = false,
+  soloModeLevel = 0,
 ): void {
   if (!stats) return
+  // `scaleBySoloModeLevel` flips `panelStats` values into per-level
+  // coefficients: every contribution is multiplied by `soloModeLevel` (0–6).
+  // When `false` (the default), contributions are added verbatim so every
+  // existing tier (flat `5.1% phys.penetration`, etc.) is unchanged. Opted
+  // in by TB T2, BB T2, BP T2, SR T5 — see `InnerWayTier.scaleBySoloModeLevel`.
+  const multiplier = scaleBySoloModeLevel ? soloModeLevel : 1
   for (const [rawPath, amount] of Object.entries(stats)) {
     if (amount === undefined) continue
     const path = rawPath.startsWith("primaryAttr.")
       ? `${primaryKey}.${rawPath.slice("primaryAttr.".length)}`
       : rawPath
-    out[path] = (out[path] ?? 0) + amount
+    out[path] = (out[path] ?? 0) + amount * multiplier
   }
 }
 
@@ -391,7 +399,14 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
       .filter((tierNumber) => tierNumber <= tier)
       .sort((a, b) => a - b)
     for (const tierNumber of unlockedTiers) {
-      applyPanelStats(out, primaryKey, def.tiers[tierNumber]?.panelStats)
+      const tierDef = def.tiers[tierNumber]
+      applyPanelStats(
+        out,
+        primaryKey,
+        tierDef?.panelStats,
+        tierDef?.scaleBySoloModeLevel ?? false,
+        inputs.soloModeLevel,
+      )
     }
   })
   return out

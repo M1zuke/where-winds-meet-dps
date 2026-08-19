@@ -64,6 +64,18 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.combatSettings?.lowEndurance) params.lowEndurance = true
 
+  // Casting-player HP fractions, when the input deviates from the default
+  // (`1 / 1`). The engine has no HP ledger, so the value is static per
+  // simulation run — populated for HP-gated buff branches (Star Reacher
+  // T1) and only forwarded when it would change the buff context. The
+  // `??` chain keeps both 0 (dead) and 1 (full) as "not worth forwarding"
+  // when they match the buff engine's default sentinel, but the
+  // `typeof === "number"` guards a `null`/`undefined` input from
+  // overwriting it.
+  if (typeof inputs.playerHp === "number" && inputs.playerHp !== 1) params.playerHp = inputs.playerHp
+  if (typeof inputs.playerHpMax === "number" && inputs.playerHpMax !== 1)
+    params.playerHpMax = inputs.playerHpMax
+
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 
   return params

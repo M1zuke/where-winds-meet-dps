@@ -11,6 +11,17 @@ type PanelStats = Readonly<Partial<Record<PanelStatPath, number>>>
 
 export interface InnerWayTier {
   panelStats?: PanelStats
+  // When `true`, the resolver multiplies this tier's `panelStats` values by
+  // `Inputs.soloModeLevel` (an integer 0–6 sourced from the player's Solo
+  // Mode breakdown level). The values in `panelStats` are then treated as
+  // PER-LEVEL coefficients, not flat magnitudes. Used by the four inner
+  // ways whose in-game text reads "scales with Solo Mode Level" — TB T2,
+  // BB T2, BP T2, SR T5 — whose flat panelStats values (1.7/3.4 phys
+  // min/max, 0.014 crit rate / precision rate) are the per-level
+  // coefficients the engine multiplies once the input lands. The default
+  // `false` keeps every existing tier (flat `5.1% phys.penetration`, etc.)
+  // unchanged — additive semantics only fire when a tier opts in.
+  scaleBySoloModeLevel?: boolean
   nodes?: readonly InnerWayNode[]
 }
 

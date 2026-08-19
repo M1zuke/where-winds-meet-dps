@@ -86,6 +86,14 @@ export interface EffectContext {
   readonly build: BuildView
   readonly target: TargetView
   readonly status: StatusView
-  readonly self: { stacks: number; reachesEvent: boolean }
+  // `hp` / `hpMax` are the casting player's current and max HP at hit time.
+  // Both default to a "full HP, no HP-gated logic" sentinel (`hp = hpMax`)
+  // so a def that does not read either field gets a no-op and the buff
+  // engine can omit the params without every call site checking for
+  // optionality. Star Reacher T1 (`+3% damage if HP > 75%, else heal = 10%
+  // of damage done`) is the first consumer; future HP-gated buffs can read
+  // `hp / hpMax` without further plumbing. Populated from
+  // `params.playerHp` / `params.playerHpMax` — see `BuffEngine.buildContext`.
+  readonly self: { stacks: number; reachesEvent: boolean; hp: number; hpMax: number }
   readonly event: EffectEvent
 }

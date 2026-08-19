@@ -304,3 +304,72 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     }
   })
 })
+
+describe("getMindMethodContributions — Solo Mode Level per-tier scaling", () => {
+  // The four inner ways whose in-game text reads "scales with Solo Mode
+  // Level" opt into `scaleBySoloModeLevel: true` on the per-tier panel
+  // stats block. `getMindMethodContributions` multiplies the per-tier
+  // values by `Inputs.soloModeLevel` (0–6) only when the opt-in is set;
+  // every other tier's panelStats contribution is added verbatim, so the
+  // pre-existing flat-magnitude tiers (SR-T2 phys.penetration, BB-T5
+  // direct crit rate, etc.) are unaffected by `soloModeLevel`.
+
+  const slot = (id: string, tier: number, level: number) =>
+    getMindMethodContributions({
+      ...defaultInputs,
+      classId: "silkbindJade",
+      soloModeLevel: level,
+      mindMethods: [
+        { id, name: id, stacks: `tier ${tier}` },
+        emptyMindMethod,
+        emptyMindMethod,
+        emptyMindMethod,
+      ] as Inputs["mindMethods"],
+    })
+
+  it("Thunderous Bloom T2 — phys min/max scale by Solo Mode Level (per-level coefficients 1.7 / 3.4)", () => {
+    // Per-level coefficient × soloModeLevel. SR-T5 and TB-T2 share the same
+    // coefficients, so the assertion structure is identical.
+    const atLevel0 = slot(INNER_WAY_ID.thunderousBloom, 2, 0)
+    expect(atLevel0["phys.min"] ?? 0).toBeCloseTo(0, 10)
+    expect(atLevel0["phys.max"] ?? 0).toBeCloseTo(0, 10)
+    const atLevel6 = slot(INNER_WAY_ID.thunderousBloom, 2, 6)
+    expect(atLevel6["phys.min"]).toBeCloseTo(1.7 * 6, 10)
+    expect(atLevel6["phys.max"]).toBeCloseTo(3.4 * 6, 10)
+  })
+
+  it("Blossom Barrage T2 — crit rate scales by Solo Mode Level (per-level coefficient 0.014)", () => {
+    const atLevel0 = slot(INNER_WAY_ID.blossomBarrage, 2, 0)
+    expect(atLevel0.critRate ?? 0).toBeCloseTo(0, 10)
+    const atLevel6 = slot(INNER_WAY_ID.blossomBarrage, 2, 6)
+    expect(atLevel6.critRate).toBeCloseTo(0.014 * 6, 10)
+  })
+
+  it("Breaking Point T2 — precision rate scales by Solo Mode Level (per-level coefficient 0.014)", () => {
+    const atLevel0 = slot(INNER_WAY_ID.breakingPoint, 2, 0)
+    expect(atLevel0.precision ?? 0).toBeCloseTo(0, 10)
+    const atLevel6 = slot(INNER_WAY_ID.breakingPoint, 2, 6)
+    expect(atLevel6.precision).toBeCloseTo(0.014 * 6, 10)
+  })
+
+  it("Star Reacher T5 — phys min/max scale by Solo Mode Level (per-level coefficients 1.7 / 3.4)", () => {
+    const atLevel6 = slot(INNER_WAY_ID.starReacher, 5, 6)
+    expect(atLevel6["phys.min"]).toBeCloseTo(1.7 * 6, 10)
+    expect(atLevel6["phys.max"]).toBeCloseTo(3.4 * 6, 10)
+  })
+
+  it("Flat-magnitude tiers are unchanged by Solo Mode Level", () => {
+    // SR-T2 (5.1% phys.penetration) and BB-T5 (4.6% direct crit rate) are
+    // flat panelStats and must NOT scale. Asserting this keeps a future
+    // accidental opt-in (e.g. flagging the wrong tier) from regressing the
+    // shape.
+    const srT2AtLevel0 = slot(INNER_WAY_ID.starReacher, 2, 0)
+    const srT2AtLevel6 = slot(INNER_WAY_ID.starReacher, 2, 6)
+    expect(srT2AtLevel0["phys.penetration"]).toBeCloseTo(0.051, 10)
+    expect(srT2AtLevel6["phys.penetration"]).toBeCloseTo(0.051, 10)
+    const bbT5AtLevel0 = slot(INNER_WAY_ID.blossomBarrage, 5, 0)
+    const bbT5AtLevel6 = slot(INNER_WAY_ID.blossomBarrage, 5, 6)
+    expect(bbT5AtLevel0.directCritRate).toBeCloseTo(0.046, 10)
+    expect(bbT5AtLevel6.directCritRate).toBeCloseTo(0.046, 10)
+  })
+})
