@@ -109,6 +109,25 @@ describe("timeline — computed duration", () => {
     expect(r.dps).toBe(0)
     expect(r.warnings.length).toBeGreaterThan(0)
   })
+
+  it("castSpeed shrinks cast time multiplicatively (1 / (1 + speed))", () => {
+    const baseline = makeSkill(CLASS, { name: "Baseline", castFrames: 130, hits: [makeHit()] })
+    const speeded = makeSkill(CLASS, {
+      name: "Speeded",
+      castFrames: 130,
+      castSpeed: 0.3,
+      hits: [makeHit()],
+    })
+    const makeRotationFor = (skill: Skill) =>
+      makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] })
+    const base = simulateTimeline(timelineInputs(makeRotationFor(baseline), [baseline], []))
+    const sped = simulateTimeline(timelineInputs(makeRotationFor(speeded), [speeded], []))
+    // 130 frames * (1 / 1.3) ≈ 100 frames ⇒ 100/60 s. Rounded to whole frames
+    // by the timeline cursor.
+    expect(sped.rotationDuration).toBeCloseTo(100 / FPS, 10)
+    // Speed-adjusted rotation is shorter than baseline by exactly that factor.
+    expect(sped.rotationDuration).toBeCloseTo(base.rotationDuration / 1.3, 10)
+  })
 })
 
 describe("timeline — no-buff parity with the formula kernel", () => {

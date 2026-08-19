@@ -161,7 +161,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
     const performedHits = rs.skill.hits.slice(0, hitCount)
     const maxFrame = performedHits.length > 0 ? Math.max(...performedHits.map((h) => h.frame)) : -1
-    return rs.skill.castFrames || maxFrame + 1
+    const rawLens = rs.skill.castFrames || maxFrame + 1
+    // `castSpeed` is a multiplicative reduction on cast time (e.g. 0.3 ⇒
+    // cast takes 1/1.3 of its authored duration). Round so the timeline
+    // cursor still advances in whole frames.
+    const speed = rs.skill.castSpeed ?? 0
+    return speed > 0 ? Math.max(1, Math.round(rawLens / (1 + speed))) : rawLens
   })
 
   const prePullTotal = resolvedSteps.reduce(
@@ -252,7 +257,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   })
 
   const propsOfSkill = (skill: Skill, hitCount = skill.hits.length): SkillProperties => {
-    const props: SkillProperties = { hitCount, castTime: (skill.castFrames || 1) / FPS }
+    const rawCastTime = (skill.castFrames || 1) / FPS
+    // Apply `castSpeed` here so buff-engine call sites that key off
+    // `props.castTime` (per-hit windowing, `buffAppliesOnCastEnd` offsets)
+    // see the same shortened duration the timeline already used.
+    const speed = skill.castSpeed ?? 0
+    const castTime = speed > 0 ? rawCastTime / (1 + speed) : rawCastTime
+    const props: SkillProperties = { hitCount, castTime }
     for (const tag of skill.tags ?? []) {
       const propertyKey = PROP_TO_PROPERTY[tag as (typeof PROP)[keyof typeof PROP]]
       if (propertyKey) props[propertyKey] = true
