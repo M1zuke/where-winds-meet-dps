@@ -1,0 +1,42 @@
+{
+  "v": 12,
+  "profile": {
+    "id": "silkbind-jade-v12",
+    "name": "Silkbind Jade",
+    "inputs": {
+      "classId": "silkbindJade",
+      "breakthrough": 16,
+      "allDamageBoost": 0,
+      "mindMethods": [
+        { "name": "", "stacks": "" },
+        { "name": "Morale Chant", "stacks": "tier 6" },
+        { "name": "Insightful Strike", "stacks": "tier 6" },
+        { "name": "Bitter Season", "stacks": "tier 6" }
+      ],
+      "food": true,
+      "tianGongElement": "fire",
+      "set": "jadeware",
+      "shareDebuff5HenZhi": false,
+      "shareEasyHurt": false,
+      "bowSet": "crit",
+      "arsenal": "silkbind",
+      "dummyMode": true,
+      "rotation": null,
+      "activeCustomRotation": null,
+      "inventory": [],
+      "equipped": {},
+      "martialArtsTalents": [],
+      "oddities": {},
+      "combatSettings": {
+        "qiBreak": { "enabled": true, "startSec": 34, "durationSec": 10 },
+        "dragonsBreath": false,
+        "healerBuff": false,
+        "breakExtension": false,
+        "revelryScript": false,
+        "dragonHeadFullStacks": true,
+        "dragonHeadLowHpMaxBonus": true
+      },
+      "selectedBuiltinRotationId": "builtin-silkbindJade-default"
+    }
+  }
+}

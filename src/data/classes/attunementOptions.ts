@@ -2,6 +2,7 @@
 import type { AttunementOption } from "../../engine/attunements"
 import { GENERAL_SLOTS } from "./attunementSlots"
 import { BELLSTRIKE_UMBRA_ATTUNEMENTS } from "./bellstrike-umbra/attunements"
+import { SILKBIND_JADE_ATTUNEMENTS } from "./silkbind-jade/attunements"
 import { STONESPLIT_STRENGTH_ATTUNEMENTS } from "./stonesplit-strength/attunements"
 import { WEAPON_ART_ATTUNEMENTS } from "./weaponArtAttunements"
 
@@ -40,5 +41,6 @@ export const ATTUNEMENT_OPTIONS = [
   ...EVERY_CLASS_OPTIONS,
   ...WEAPON_ART_ATTUNEMENTS,
   ...BELLSTRIKE_UMBRA_ATTUNEMENTS,
+  ...SILKBIND_JADE_ATTUNEMENTS,
   ...STONESPLIT_STRENGTH_ATTUNEMENTS,
 ] as const satisfies readonly AttunementOption[]

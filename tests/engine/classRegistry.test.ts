@@ -16,7 +16,12 @@ import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
-    expect(CLASS_IDS()).toEqual(["bellstrikeUmbra", "stonesplitStrength", "bellstrikeSplendor"])
+    expect(CLASS_IDS()).toEqual([
+      "bellstrikeUmbra",
+      "stonesplitStrength",
+      "bellstrikeSplendor",
+      "silkbindJade",
+    ])
     expect(classDefinition("notAClass")).toBeNull()
   })
 

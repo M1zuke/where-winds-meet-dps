@@ -15,7 +15,14 @@ export const healerBuff = defineSkill({
   castFrames: 60,
   triggerable: true,
   hits: [
-    hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0, triggers: [] }),
+    hit(0, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [],
+    }),
   ],
   universal: true,
   createdAt: "2026-07-19T00:00:00.000Z",
