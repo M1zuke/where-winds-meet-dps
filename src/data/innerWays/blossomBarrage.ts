@@ -1,14 +1,20 @@
-// Blossom Barrage — Inner Way (Silkbind - Jade). Wiki spec:
-//   Base:  Vernal Umbrella's Martial Arts Skill Spring Sorrow can hold up to 2
-//          stacks. Hitting a target applies the Combo effect: increases
-//          damage taken from the caster's Ballistic Skills by 10% for 10s.
-//          Affected Ballistic Skills: Spring Sorrow, Let Spring Go, Everbloom,
-//          Umbrella - Light Attack, Spring Away (charged).
-//   Tier 1: Ballistic damage bonus from Combo 10% → 20%.
+// Blossom Barrage — Inner Way (Silkbind - Jade). In-game text (2026-08-19,
+// all tiers at T6). The wiki's "T1 Combo 10% → 20%" and "T3 Combo 10s → 15s /
+// +30% cast speed" raises were wiki misreads — the in-game Base Buff
+// paragraph at T6 already shows 20% / 15s / +30% cast speed / 2 charges as
+// the unconditional values when slotted. Players almost universally run
+// this at T6; lower-tier behavior is unmodeled and undocumented in the
+// in-game tooltips.
+//
+//   Base (when slotted): Spring Sorrow holds 2 charges, cast speed +30%.
+//          Hitting a target applies Combo: +20% damage taken from the
+//          caster's Projectile Skills for 15s. Affected Projectile Skills:
+//          Spring Sorrow, Let Spring Go, Everbloom, Umbrella Light, Spring
+//          Away (charged).
 //   Tier 2: Crit Rate based on Solo Mode Level.
-//   Tier 3: Spring Sorrow cast speed +30%, Combo duration 10s → 15s.
 //   Tier 4: In non-Arena modes, when Spring Away hits a target with Combo
-//           from you, its damage is +10% and max targets 3 → 5.
+//           from you, its damage is +5% (+10% if Exhausted) and max targets
+//           3 → 5.
 //   Tier 5: Direct Crit Rate +4.6%.
 //   Tier 6: Spring Sorrow charges 2 → 3. Hitting an enemy with Combo from
 //           you reduces Spring Sorrow's cooldown by 5s and grants 25
@@ -17,36 +23,44 @@
 // Placeholder (validated: false). The Combo debuff and the multi-hit gating
 // are gluing inner-way reads against the silkbindJade class's debuffs and
 // skills. The tier table only carries values that scale with the panel.
+// T1 was dropped because the in-game Base Buff paragraph already encodes
+// what the wiki described as T1 / T3 raises.
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 
-export const BLOSSOM_BARRAGE_COMBO_BOOST_BASE = 0.1
-export const BLOSSOM_BARRAGE_COMBO_BOOST_T1 = 0.2
-export const BLOSSOM_BARRAGE_COMBO_DURATION_BASE_SEC = 10
-export const BLOSSOM_BARRAGE_COMBO_DURATION_T3_SEC = 15
-export const BLOSSOM_BARRAGE_CAST_SPEED_T3 = 0.3
-export const BLOSSOM_BARRAGE_SPRING_AWAY_DAMAGE_T4 = 0.1
+// Unconditional values when Blossom Barrage is slotted (T6 in practice;
+// lower-tier behavior is unmodeled).
+export const BLOSSOM_BARRAGE_COMBO_BOOST = 0.2
+export const BLOSSOM_BARRAGE_COMBO_DURATION_SEC = 15
+export const BLOSSOM_BARRAGE_CAST_SPEED = 0.3
+export const BLOSSOM_BARRAGE_SPRING_SORROW_CHARGES = 3
+
+// Tier-gated values.
+export const BLOSSOM_BARRAGE_SPRING_AWAY_DAMAGE_T4 = 0.05
+export const BLOSSOM_BARRAGE_SPRING_AWAY_DAMAGE_EXHAUSTED_T4 = 0.1
 export const BLOSSOM_BARRAGE_SPRING_AWAY_TARGETS_T4 = 5
 export const BLOSSOM_BARRAGE_SPRING_AWAY_TARGETS_BASE = 3
 export const BLOSSOM_BARRAGE_DIRECT_CRIT_T5 = 0.046
 export const BLOSSOM_BARRAGE_BLOSSOMS_T6 = 25
 export const BLOSSOM_BARRAGE_COOLDOWN_REDUCTION_T6_SEC = 5
-export const BLOSSOM_BARRAGE_SPRING_SORROW_CHARGES_BASE = 2
-export const BLOSSOM_BARRAGE_SPRING_SORROW_CHARGES_T6 = 3
 
 export const blossomBarrage = defineInnerWay({
   id: INNER_WAY_ID.blossomBarrage,
   name: "Blossom Barrage",
   legacyNames: [],
-  selectableTiers: [6, 5, 4, 3, 2, 1],
-  // Tier 1: Combo damage-taken bonus 10% → 20%.
-  // Tier 2: crit rate based on Solo Mode Level (1.7 per level baseline).
-  // Tier 3: cast speed +30% on Spring Sorrow; Combo duration 10s → 15s.
-  // Tier 4: Spring Away damage +10% on Combo'd targets; targets 3 → 5.
+  // T1 omitted — see header block. Re-add if a future patch introduces a
+  // genuine T1 raise.
+  selectableTiers: [6, 5, 4, 3, 2],
+  // Tier 2: crit rate based on Solo Mode Level (per-level coefficient
+  //         currently encoded as a static 0.014 — see Star Reacher T5 for
+  //         the same caveat about per-level scaling not yet shipping).
+  // Tier 3: dropped (see header).
+  // Tier 4: Spring Away damage +5% (+10% on Exhausted) on Combo'd targets;
+  //         targets 3 → 5.
   // Tier 5: direct crit rate +4.6%.
-  // Tier 6: Spring Sorrow charges 2 → 3; on Combo'd hit, -5s CD + 25 Blossoms.
+  // Tier 6: Spring Sorrow charges 2 → 3; on Combo'd hit, -5s CD + 25 Blossoms
+  //         (once per skill cast).
   tiers: {
-    1: { nodes: [] },
     2: { panelStats: { critRate: 0.014 } },
     3: {
       nodes: [INNER_WAY_NODE.blossomBarrageLongerCombo],
