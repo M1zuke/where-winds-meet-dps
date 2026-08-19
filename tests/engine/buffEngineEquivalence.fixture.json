@@ -33872,7 +33872,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 38,
+        "count": 43,
         "ids": [
           "silkbindJade-bitter-season-tick",
           "silkbindJade-deflect-cancel",
@@ -33881,6 +33881,7 @@
           "silkbindJade-dragon-head",
           "silkbindJade-dragon-head-plus",
           "silkbindJade-drunkenpoet-prepull",
+          "silkbindJade-everbloom",
           "silkbindJade-fanheavypursuit-3-hit",
           "silkbindJade-fanlightcharged",
           "silkbindJade-fanq",
@@ -33897,6 +33898,7 @@
           "silkbindJade-golden-body-cancel",
           "silkbindJade-golden-body-deflect-cancel",
           "silkbindJade-healer-buff",
+          "silkbindJade-let-spring-go",
           "silkbindJade-perfect-dodge",
           "silkbindJade-perfect-dodge-full",
           "silkbindJade-poet-final-hit-cancel",
@@ -33906,19 +33908,30 @@
           "silkbindJade-poet4",
           "silkbindJade-soaring",
           "silkbindJade-soaring-1-hit",
+          "silkbindJade-spring-away",
+          "silkbindJade-spring-sorrow",
           "silkbindJade-toad-cancel",
           "silkbindJade-umb-heavylight",
           "silkbindJade-umbdronelaunch-26hit",
           "silkbindJade-umblightcharge",
           "silkbindJade-umbq",
-          "silkbindJade-umbq-prepull"
+          "silkbindJade-umbq-prepull",
+          "silkbindJade-umbrella-light"
         ],
-        "digest": "c774a3daaa6339023da013d5d16bb824fe0bced9f78a38329d95d0695a86b050"
+        "digest": "ac59d01c8a63a66a0c1df231091b552704548b0acec37b14cfc3ab2cf734266b"
       },
       "debuffs": {
-        "count": 2,
-        "ids": ["debuff-silkbindJade-bitter-season-tick", "debuff-silkbindJade-umbdrone-26hit"],
-        "digest": "aa6e081d84605a1c776a10d75c67a9a2067dea90c6616a87861f30f41a535724"
+        "count": 7,
+        "ids": [
+          "debuff-silkbindJade-bitter-season-tick",
+          "debuff-silkbindJade-collapse",
+          "debuff-silkbindJade-combo",
+          "debuff-silkbindJade-disintegration",
+          "debuff-silkbindJade-spirit-depletion",
+          "debuff-silkbindJade-spring-thunder",
+          "debuff-silkbindJade-umbdrone-26hit"
+        ],
+        "digest": "6ac2a4b18ab518182b52d56cad7ecc438de3d1b840bca8962b578686487c7224"
       },
       "buffs": [
         {

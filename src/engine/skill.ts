@@ -270,7 +270,10 @@ export function isSkill(x: unknown): x is Skill {
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
   if (s.abilityTag !== undefined && typeof s.abilityTag !== "string") return false
   if (s.universal !== undefined && typeof s.universal !== "boolean") return false
-  if (s.castSpeed !== undefined && (typeof s.castSpeed !== "number" || !Number.isFinite(s.castSpeed)))
+  if (
+    s.castSpeed !== undefined &&
+    (typeof s.castSpeed !== "number" || !Number.isFinite(s.castSpeed))
+  )
     return false
   return true
 }
