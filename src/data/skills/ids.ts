@@ -103,6 +103,11 @@ export const CAST = {
   umbHeavyLight: "cast:umbHeavyLight",
   umbDroneLaunch26hit: "cast:umbDroneLaunch26hit",
   healerBuff: "cast:healerBuff",
+  springSorrow: "cast:springSorrow",
+  letSpringGo: "cast:letSpringGo",
+  everbloom: "cast:everbloom",
+  umbrellaLight: "cast:umbrellaLight",
+  springAway: "cast:springAway",
 } as const
 
 export const ROLE = {
