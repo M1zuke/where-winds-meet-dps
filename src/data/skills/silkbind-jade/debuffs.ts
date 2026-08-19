@@ -45,17 +45,22 @@ export const bitterSeasonTick = defineDebuff({
   updatedAt: "2026-08-06T00:00:00.000Z",
 })
 
-// Blossom Barrage: "Hitting a target applies the Combo effect: Increases
-// Damage taken from the caster's Ballistic Skills by 10% for 10s." Tier 1
-// raises to 20%, Tier 3 extends to 15s. Placeholder amount reflects the base
-// 10% — tier-multiplication happens through the inner-way's `contributeAt`.
+// Blossom Barrage: "Hitting a target with Umbrella Martial applies the
+// Combo effect: Target takes 20% Projectile Damage for 15s." Per Mun's
+// Ultimate Umbrella Guide (Patch 2.0): the base values are 20% damage
+// and 15s duration — both unconditional when Blossom Barrage is slotted,
+// no tier raise. An earlier revision encoded 10% / 10s (a wiki misread).
+// Note: `BLOSSOM_BARRAGE_COMBO_DURATION_SEC` is exported from
+// `blossomBarrage.ts` but currently has no consumer; if a future patch
+// introduces a real tier raise this debuff's durationFrames will need
+// to be wired through `innerWayTier` rather than relying on the constant.
 export const combo = defineDebuff({
   id: DEBUFF.combo,
   classId: CLASS_ID,
   name: "Combo",
   activation: "triggered",
-  durationFrames: 600,
-  effects: [{ statKey: "target.generalDamageTaken", amount: 0.1 }],
+  durationFrames: 900,
+  effects: [{ statKey: "target.generalDamageTaken", amount: 0.2 }],
   dot: null,
   maxStacks: 1,
   stackScaling: "flat",
