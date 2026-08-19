@@ -64,6 +64,9 @@ export interface Skill {
   castTag?: string
   receives?: string[]
   triggersBuffs?: string[]
+  // Optional fields allowed by authored skill literals:
+  abilityTag?: string
+  universal?: boolean
   hits: SkillHit[]
   castFrames: number
   triggerable: boolean
@@ -261,6 +264,8 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.updatedAt !== "string") return false
   if (s.receives !== undefined && !isStringArray(s.receives)) return false
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
+  if (s.abilityTag !== undefined && typeof s.abilityTag !== "string") return false
+  if (s.universal !== undefined && typeof s.universal !== "boolean") return false
   return true
 }
 
@@ -307,6 +312,9 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
+    // Copy through newly-permitted optional fields so seeded copies preserve them:
+    abilityTag: src.abilityTag,
+    universal: src.universal,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),
