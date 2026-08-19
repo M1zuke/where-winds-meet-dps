@@ -23,6 +23,7 @@ export const silkbindJade = defineClass({
     INNER_WAY_ID.thunderousBloom,
     INNER_WAY_ID.blossomBarrage,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.starReacher,
   ],
   classSpecificAttunements: ["fanQ", "fanCharged", "fanSpecial", "umbQ", "umbCharged"],
   weapons: [MARTIAL_ART_ID.silkbindFan, MARTIAL_ART_ID.silkbindUmbrella],

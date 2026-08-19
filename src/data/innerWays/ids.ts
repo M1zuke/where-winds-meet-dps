@@ -11,6 +11,7 @@ export const INNER_WAY_ID = {
   insightfulStrike: "insightfulStrike",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
+  starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
   swordMorph: "swordMorph",
@@ -60,6 +61,17 @@ export const INNER_WAY_NODE = {
   breakingPointExtendedDuration: "breakingPointExtendedDuration",
   breakingPointHigherStackCap: "breakingPointHigherStackCap",
   breakingPointPerfectDodgeTrigger: "breakingPointPerfectDodgeTrigger",
+  // Star Reacher T1 widens the Lingering Bone Mark bonus to airborne targets
+  // and gates the HP-conditional damage/heal split; T3 widens the bonus
+  // duration 8s → 12s; T4 grants +Phys Attack on Exhausted / <30% Qi
+  // targets; T6 raises the Lingering Bone / Airborne bonus magnitudes
+  // (5%/10% → 7.5%/15%). The Tier 1 HP-gate and Tier 4 phase-gate bonuses
+  // are not yet wired into the engine — flagged here as nodes so the test
+  // suite pins their ownership, with the magnitudes living on the def.
+  starReacherHpGatedLingeringBone: "starReacherHpGatedLingeringBone",
+  starReacherExtendedDuration: "starReacherExtendedDuration",
+  starReacherExhaustedBonus: "starReacherExhaustedBonus",
+  starReacherRaisedBaseBonuses: "starReacherRaisedBaseBonuses",
 } as const
 
 export type InnerWayNode = (typeof INNER_WAY_NODE)[keyof typeof INNER_WAY_NODE]
