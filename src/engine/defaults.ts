@@ -47,6 +47,8 @@ export const defaultInputs: Inputs = {
   singleMysticBoost: 0,
   areaMysticBoost: 0,
 
+  soloModeLevel: 0,
+
   classSpecificAttunement: {},
 
   // Unslotted: no validated class allows four slottable inner ways.
