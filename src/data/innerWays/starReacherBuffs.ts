@@ -1,10 +1,15 @@
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
+import type { EffectContext } from "../../engine/effects/context"
 import {
   innerWayHasNode,
   requireInnerWayNodeTier,
 } from "../../definitions/innerWays/innerWayDef"
+import {
+  STAR_REACHER_BELOW30_PHYS_BONUS_T4,
+  STAR_REACHER_EXHAUSTED_PHYS_BONUS_T4,
+} from "./starReacher"
 import { INNER_WAY_NODE } from "./ids"
 import { starReacher } from "./starReacher"
 
@@ -12,6 +17,9 @@ import { starReacher } from "./starReacher"
 //
 //   Base: 5% Physical Attack bonus for 8s (10% if target is Airborne).
 //   T3:   duration 8s → 12s.
+//   T4:   +15% phys on Exhausted, +25% on <30% Qi (independent of Lingering
+//         Bone — applies for any Star Reacher hit on a phase-matching
+//         target).
 //   T6:   magnitudes 5%/10% → 7.5%/15%.
 //
 // The buff module reads `ctx.build.paramTier(PARAM.starReacher)` to pick
@@ -19,10 +27,9 @@ import { starReacher } from "./starReacher"
 // battleAnthemBuffs.ts pattern (`allDamageBoost +10%, +15% from tier 4`).
 //
 // T1 (HP-gated 3% damage / 10%-of-damage heal on airborne targets with
-// your Lingering Bone) and T4 (+15% Phys on Exhausted, +25% on <30% Qi)
-// are flagged on the def but cannot fire here — they need engine changes
-// (HP not exposed at hit time, phase-gated physBoost not modeled in
-// `applyBuffEffects`). The node ownership pins live in
+// your Lingering Bone) is still flagged on the def but cannot fire yet —
+// the engine does not expose player HP at hit time, and there is no
+// heal-output lane. The node ownership pins live in
 // `tests/data/innerWays.test.ts`; this module only resolves the values
 // the engine can already apply.
 //
@@ -62,25 +69,42 @@ export function starReacherLingeringBoneBuff() {
         : 8,
     rateLimit: { count: 1, window: 1 },
     affectsAll: true,
-    summary: "physBoost +5% (+10% airborne), +2.5%/+5% from tier 6",
-    effects: (ctx: {
-      build: { paramTier: (id: string) => number }
-      self: { reachesEvent: boolean }
-    }) => {
+    summary: "physBoost +5% (+10% airborne), +2.5%/+5% from tier 6; +15%/+25% on Exhausted/<30% Qi from tier 4",
+    effects: (ctx: EffectContext) => {
+      if (!ctx.self.reachesEvent) return []
       const tier = ctx.build.paramTier(PARAM.starReacher)
       const raised = innerWayHasNode(
         starReacher,
         tier,
         INNER_WAY_NODE.starReacherRaisedBaseBonuses,
       )
-      // Until the buff engine threads a target-airborne status flag through
-      // `EffectContext`, this module emits the LOWER of the two magnitudes
-      // (Lingering-Bone-only, not the doubled Airborne variant). The raised
-      // tier (T6) likewise only emits the raised Lingering-Bone amount.
-      // The engine work for the airborne-gated doubling is bundled with the
-      // T1 HP-gate work item flagged on the def.
-      const baseAmount = raised ? 0.075 : 0.05
-      return ctx.self.reachesEvent ? [stat("physBoost", baseAmount)] : []
+      // Lingering-Bone bonus: 5% (T6 → 7.5%) doubled to 10% (T6 → 15%) when
+      // the target is Airborne — `EffectContext.target.airborne` was added
+      // alongside this read so the doubled magnitude is now reachable.
+      const airborneBase = raised ? 0.15 : 0.1
+      const lingAmount = ctx.target.airborne
+        ? airborneBase
+        : raised
+          ? 0.075
+          : 0.05
+      const out: ReturnType<typeof stat>[] = [stat("physBoost", lingAmount)]
+      // T4: unconditional phase-gated bonus on top of the Lingering-Bone
+      // amount. Reads `ctx.target.phase` (added to `EffectContext` alongside
+      // `target.airborne`) so the bonus is conditional on the target's
+      // current Qi phase.
+      const tier4Exhausted = innerWayHasNode(
+        starReacher,
+        tier,
+        INNER_WAY_NODE.starReacherExhaustedBonus,
+      )
+      if (tier4Exhausted) {
+        if (ctx.target.phase === "exhausted") {
+          out.push(stat("physBoost", STAR_REACHER_EXHAUSTED_PHYS_BONUS_T4))
+        } else if (ctx.target.phase === "below30") {
+          out.push(stat("physBoost", STAR_REACHER_BELOW30_PHYS_BONUS_T4))
+        }
+      }
+      return out
     },
   })
 }

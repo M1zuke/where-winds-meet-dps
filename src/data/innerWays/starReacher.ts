@@ -19,16 +19,18 @@
 //
 // Placeholder (validated: false). T2 (flat phys penetration) and T5
 // (Solo Mode Level phys-attack scaler) ride the per-tier `panelStats` block
-// the way Thunderous Bloom T2 does. T1 / T3 / T4 / T6 are gated by nodes
-// and consumed by `starReacherBuffs.ts`:
+// the way Thunderous Bloom T2 does. T3 / T4 / T6 are gated by nodes and
+// consumed by `starReacherBuffs.ts`:
 //   - T3 (`starReacherExtendedDuration`) widens the buff duration 8s → 12s.
 //   - T6 (`starReacherRaisedBaseBonuses`) raises the bonus magnitudes from
-//     5%/10% to 7.5%/15%.
-//   - T1 (`starReacherHpGatedLingeringBone`) and T4
-//     (`starReacherExhaustedBonus`) are flagged but the engine does not yet
-//     expose player HP at hit time nor apply phase-gated physBoost through
-//     `applyBuffEffects` — both need separate engine work before they can
-//     fire. The buff module reads their existence so the def round-trips
+//     5%/10% to 7.5%/15%, AND the airborne-doubled variant (10% → 15%) is
+//     now reachable via `EffectContext.target.airborne`.
+//   - T4 (`starReacherExhaustedBonus`) adds +15% phys on Exhausted and
+//     +25% on <30% Qi via `EffectContext.target.phase`.
+//   - T1 (`starReacherHpGatedLingeringBone`) is still flagged but the
+//     engine does not yet expose player HP at hit time, and there is no
+//     heal-output lane — T1 needs a separate engine-work item before it
+//     can fire. The buff module reads its existence so the def round-trips
 //     cleanly with `innerWayHasNode`.
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { PARAM } from "../skills/buffs/ids"
@@ -53,7 +55,10 @@ export const starReacher = defineInnerWay({
   name: "Star Reacher",
   legacyNames: [],
   buffParam: PARAM.starReacher,
-  selectableTiers: [6, 5, 4, 3, 2, 1],
+  // T1 is intentionally omitted from `selectableTiers` until the engine
+  // exposes player HP at hit time and ships a heal-output lane (see the
+  // header block above). Re-add `1` when the engine work lands.
+  selectableTiers: [6, 5, 4, 3, 2],
   // Tier 2: flat 5.1% physical penetration (matches Insightful Strike's
   // panelStats convention for flat phys.penetration).
   // Tier 5: phys attack scales with Solo Mode Level, modelled the same way

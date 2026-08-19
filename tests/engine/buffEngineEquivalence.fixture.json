@@ -33918,7 +33918,7 @@
           "silkbindJade-umbq-prepull",
           "silkbindJade-umbrella-light"
         ],
-        "digest": "ac59d01c8a63a66a0c1df231091b552704548b0acec37b14cfc3ab2cf734266b"
+        "digest": "bad187e82be372c303eceb1ff1911d9eb721f18e2fda2f4021b6442a6458ee19"
       },
       "debuffs": {
         "count": 7,
@@ -33960,7 +33960,7 @@
           "duration": "[fn]",
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physBoost +5% (+10% airborne), +2.5%/+5% from tier 6"
+          "summary": "physBoost +5% (+10% airborne), +2.5%/+5% from tier 6; +15%/+25% on Exhausted/<30% Qi from tier 4"
         },
         {
           "id": "revelryScript",
