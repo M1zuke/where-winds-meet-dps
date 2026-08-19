@@ -50,10 +50,6 @@ export const bitterSeasonTick = defineDebuff({
 // Ultimate Umbrella Guide (Patch 2.0): the base values are 20% damage
 // and 15s duration — both unconditional when Blossom Barrage is slotted,
 // no tier raise. An earlier revision encoded 10% / 10s (a wiki misread).
-// Note: `BLOSSOM_BARRAGE_COMBO_DURATION_SEC` is exported from
-// `blossomBarrage.ts` but currently has no consumer; if a future patch
-// introduces a real tier raise this debuff's durationFrames will need
-// to be wired through `innerWayTier` rather than relying on the constant.
 export const combo = defineDebuff({
   id: DEBUFF.combo,
   classId: CLASS_ID,

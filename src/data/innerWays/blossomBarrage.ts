@@ -31,7 +31,6 @@ import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 // Unconditional values when Blossom Barrage is slotted (T6 in practice;
 // lower-tier behavior is unmodeled).
 export const BLOSSOM_BARRAGE_COMBO_BOOST = 0.2
-export const BLOSSOM_BARRAGE_COMBO_DURATION_SEC = 15
 export const BLOSSOM_BARRAGE_CAST_SPEED = 0.3
 export const BLOSSOM_BARRAGE_SPRING_SORROW_CHARGES = 3
 

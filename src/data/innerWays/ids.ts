@@ -50,11 +50,18 @@ export const INNER_WAY_NODE = {
   thunderousBloomIncreasedStackGrant: "thunderousBloomIncreasedStackGrant",
   thunderousBloomExtendedDamageWindow: "thunderousBloomExtendedDamageWindow",
   thunderousBloomRestoresStackOnExhausted: "thunderousBloomRestoresStackOnExhausted",
-  // Blossom Barrage T3 widens the Combo window and gates Spring Sorrow's
-  // cast-speed contribution; T4 awards Spring Away targets-5 and +damage;
-  // T6 enables the charges-3 + per-cast-CD-reduction mechanic.
+  // Blossom Barrage T3 carries no behavioral effect in the model — the
+  // Combo window is unconditional 15s per the in-game Base Buff paragraph at
+  // T6 (see `blossomBarrage.ts` header). The slot exists so the inner-way's
+  // selectable-tiers list reflects the in-game ladder; see follow-up to
+  // decide whether to drop T3 from `selectableTiers`.
   blossomBarrageLongerCombo: "blossomBarrageLongerCombo",
+  // T4 awards Spring Away targets-3→5 and +damage (+5%, +10% on Exhausted)
+  // when the target has Combo.
   blossomBarrageSpringAwayBoost: "blossomBarrageSpringAwayBoost",
+  // T6 enables the charges-2→3 + per-cast-CD-reduction mechanic on Spring
+  // Sorrow (Hitting an enemy with Combo from you: -5s CD, +25 Blossoms,
+  // once per skill cast).
   blossomBarrageSpringSorrowTripleCharge: "blossomBarrageSpringSorrowTripleCharge",
   // Breaking Point T1 widens Disintegration duration; T4 raises the cap;
   // T6 makes Perfect-Dodge a +5 trigger.
