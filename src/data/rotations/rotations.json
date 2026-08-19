@@ -3741,5 +3741,56 @@
       }
     ],
     "defaultRotationId": "builtin-bellstrikeSplendor-kaezuma-42vs-1db"
+  },
+  "silkbindJade": {
+    "rotations": [
+      {
+        "id": "builtin-silkbindJade-default",
+        "name": "Default",
+        "classId": "silkbindJade",
+        "steps": [
+          {
+            "skillId": "silkbindJade-fanq-prepull",
+            "hitCount": 1,
+            "prePull": true
+          },
+          {
+            "skillId": "silkbindJade-fanq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanspecial",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umblightcharge",
+            "hitCount": 1,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "createdAt": "2026-08-15T00:00:00.000Z",
+        "updatedAt": "2026-08-15T00:00:00.000Z",
+        "description": "Silkbind Jade placeholder rotation — Fan Q + Fan Charged + Fan Special, then Umb Q + Umb Charged."
+      }
+    ],
+    "defaultRotationId": "builtin-silkbindJade-default"
   }
 }

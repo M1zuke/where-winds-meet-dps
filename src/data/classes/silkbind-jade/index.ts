@@ -1,10 +1,12 @@
 import { defineClass } from "../../../definitions/classes/classDef"
-import { CLASS_ID as SKILL_CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
+import { CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
 import { DEBUFFS } from "../../skills/silkbind-jade/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
-
-export const CLASS_ID = SKILL_CLASS_ID
+import { INNER_WAY_ID } from "../../innerWays/ids"
+import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { SILKBIND_JADE_GATES } from "./gates"
+import { SILKBIND_JADE_GRADUATION_BUILD } from "./graduationBuild"
 
 export const silkbindJade = defineClass({
   id: CLASS_ID,
@@ -15,24 +17,19 @@ export const silkbindJade = defineClass({
   attributeMultiplier: 51.5,
   classMindGroup: "",
   allowedMindMethods: [
-    // keep empty or add innerWay ids later if needed, e.g. INNER_WAY_ID.moraleChant
+    INNER_WAY_ID.moraleChant,
+    INNER_WAY_ID.insightfulStrike,
+    INNER_WAY_ID.bitterSeason,
   ],
-  classSpecificAttunements: [],
-  weapons: [], // populate with MARTIAL_ART_ID.* entries if available later
+  classSpecificAttunements: ["fanQ", "fanCharged", "fanSpecial", "umbQ", "umbCharged"],
+  weapons: [MARTIAL_ART_ID.silkbindFan, MARTIAL_ART_ID.silkbindUmbrella],
   critBoostWeaponTypes: [],
-  // include the skill list, plus universal skills provided by the shared helper
   skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
-  defaultRotationId: null,
-  graduationBuild: {
-    gear: [],
-    set: null,
-    bowSet: null,
-    arsenal: "silkbind",
-  },
+  graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
   classBuffDefs: [],
-  gateBuffs: [],
+  gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

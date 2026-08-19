@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const fanqcancel = defineSkill({
@@ -12,6 +13,7 @@ export const fanqcancel = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQCancel,
+  triggersBuffs: [BUFF.jadeware],
   castFrames: 6,
   triggerable: true,
   hits: [

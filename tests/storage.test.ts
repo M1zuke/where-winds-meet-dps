@@ -1061,7 +1061,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
   }
 
   it("degrades a classId naming a class that no longer exists, and the result doesn't throw when deriving stats", () => {
-    writeProfileWithClassId("silkbindJade")
+    writeProfileWithClassId("stonesplitPower")
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.classId).toBe(defaultInputs.classId)
     expect(() => withDerivedStats(profiles[0].inputs)).not.toThrow()
@@ -1099,6 +1099,10 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
 
     kvStore.remove(PROFILES_KEY)
     writeProfileWithClassId("qianSiYu")
+    expect(loadProfiles().profiles[0].inputs.classId).toBe("silkbindJade")
+
+    kvStore.remove(PROFILES_KEY)
+    writeProfileWithClassId("lieShiWei")
     expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
   })
 
@@ -1125,8 +1129,8 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
             name: "Legacy",
             inputs: {
               ...defaultInputs,
-              classId: "silkbindJade",
-              selectedBuiltinRotationId: "builtin-silkbindJade-t5",
+              classId: "stonesplitPower",
+              selectedBuiltinRotationId: "builtin-stonesplitPower-t5",
             },
           },
         ],

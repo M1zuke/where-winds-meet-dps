@@ -12,10 +12,12 @@ export const SKILL = {
   umbHeavyLight: "silkbindJade-umb-heavylight",
   umbDroneLaunch26Hit: "silkbindJade-umbdronelaunch-26hit",
   healerBuff: "silkbindJade-healer-buff",
+  bitterSeasonTick: "silkbindJade-bitter-season-tick",
 } as const
 
 export const DEBUFF = {
   umbDrone26Hit: "debuff-silkbindJade-umbdrone-26hit",
+  bitterSeasonTick: "debuff-silkbindJade-bitter-season-tick",
 } as const
 
 // No timeline gate statuses known from the reference set; add if needed.

@@ -1,0 +1,1 @@
+$files = Get-ChildItem src/data/skills/silkbind-jade -Filter *.ts foreach ($f in $files) { $path = $f.FullName $txt = Get-Content -Raw -Encoding UTF8 $path if (-not $txt.EndsWith("`n")) { Add-Content -Path $path -Value "" Write-Host "Appended newline to $path" } else { Write-Host "Already has newline: $path" } }

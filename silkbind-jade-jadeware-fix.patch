@@ -1,0 +1,15 @@
+--- Begin patch --- *** Update File: src/data/skills/silkbind-jade/fanq.ts @@ -import { defineSkill, hit } from "../../../definitions/skills/skillDef" -import { ATTUNE, CAST, PROP, WEAPON } from "../ids" -import { SKILL } from "./ids" +import { defineSkill, hit } from "../../../definitions/skills/skillDef" +import { ATTUNE, CAST, PROP, WEAPON } from "../ids" +import { BUFF } from "../buffs/ids" +import { SKILL } from "./ids" @@ castTag: CAST.fanQ,
+
+triggersBuffs: [BUFF.jadeware], castFrames: 66, *** End patch for fanq.ts
+*** Begin patch for: src/data/skills/silkbind-jade/fanqcancel.ts @@ -import { defineSkill, hit } from "../../../definitions/skills/skillDef" -import { ATTUNE, CAST, PROP, WEAPON } from "../ids" -import { SKILL } from "./ids" +import { defineSkill, hit } from "../../../definitions/skills/skillDef" +import { ATTUNE, CAST, PROP, WEAPON } from "../ids" +import { BUFF } from "../buffs/ids" +import { SKILL } from "./ids" @@ castTag: CAST.fanQCancel,
+
+triggersBuffs: [BUFF.jadeware], castFrames: 6, *** End patch for fanqcancel.ts
+*** Begin patch for: src/data/skills/silkbind-jade/fanq-prepull.ts @@ -import { defineSkill, hit } from "../../../definitions/skills/skillDef" -import { ATTUNE, CAST, PROP, WEAPON } from "../ids" -import { SKILL } from "./ids" +import { defineSkill, hit } from "../../../definitions/skills/skillDef" +import { ATTUNE, CAST, PROP, WEAPON } from "../ids" +import { BUFF } from "../buffs/ids" +import { SKILL } from "./ids" @@ castTag: CAST.fanQPrepull,
+
+triggersBuffs: [BUFF.jadeware], castFrames: 0, *** End patch for fanq-prepull.ts
+*** Begin patch for: src/data/skills/silkbind-jade/umbq.ts @@ -import { defineSkill, hit } from "../../../definitions/skills/skillDef" -import { ATTUNE, CAST, PROP, WEAPON } from "../ids" -import { SKILL } from "./ids" +import { defineSkill, hit } from "../../../definitions/skills/skillDef" +import { ATTUNE, CAST, PROP, WEAPON } from "../ids" +import { BUFF } from "../buffs/ids" +import { SKILL } from "./ids" @@ castTag: CAST.umbQ,
+
+triggersBuffs: [BUFF.jadeware], castFrames: 75, *** End patch for umbq.ts
+*** Begin patch for: src/data/skills/silkbind-jade/umbq-prepull.ts @@ -import { defineSkill, hit } from "../../../definitions/skills/skillDef" -import { ATTUNE, CAST, PROP, WEAPON } from "../ids" -import { SKILL } from "./ids" +import { defineSkill, hit } from "../../../definitions/skills/skillDef" +import { ATTUNE, CAST, PROP, WEAPON } from "../ids" +import { BUFF } from "../buffs/ids" +import { SKILL } from "./ids" @@ castTag: CAST.umbQPrepull,
+
+triggersBuffs: [BUFF.jadeware], castFrames: 18, *** End patch for umbq-prepull.ts --- End patch ---
