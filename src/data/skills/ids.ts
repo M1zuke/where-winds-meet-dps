@@ -163,9 +163,11 @@ export const PROP = {
   hasLowQiDmgBoost: "prop:hasLowQiDmgBoost",
   hasQiBreakDoubleDamage: "prop:hasQiBreakDoubleDamage",
   hasQiBreakPhysPen: "prop:hasQiBreakPhysPen",
+  isBallistic: "prop:isBallistic",
   isCharged: "prop:isCharged",
   isExecution: "prop:isExecution",
   isMartialSkillQ: "prop:isMartialSkillQ",
+  isPerfectDodge: "prop:isPerfectDodge",
   shatteredRidgeBoost: "prop:shatteredRidgeBoost",
 } as const
 
