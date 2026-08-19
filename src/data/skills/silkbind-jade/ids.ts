@@ -23,6 +23,11 @@ export const SKILL = {
 export const DEBUFF = {
   umbDrone26Hit: "debuff-silkbindJade-umbdrone-26hit",
   bitterSeasonTick: "debuff-silkbindJade-bitter-season-tick",
+  combo: "debuff-silkbindJade-combo",
+  collapse: "debuff-silkbindJade-collapse",
+  disintegration: "debuff-silkbindJade-disintegration",
+  spiritDepletion: "debuff-silkbindJade-spirit-depletion",
+  springThunder: "debuff-silkbindJade-spring-thunder",
 } as const
 
 // No timeline gate statuses known from the reference set; add if needed.
