@@ -1,6 +1,8 @@
 import type { InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { battleAnthem } from "./battleAnthem"
 import { bitterSeason } from "./bitterSeason"
+import { blossomBarrage } from "./blossomBarrage"
+import { breakingPoint } from "./breakingPoint"
 import { frostCladNight } from "./frostCladNight"
 import { insightfulStrike } from "./insightfulStrike"
 import { moraleChant } from "./moraleChant"
@@ -8,6 +10,7 @@ import { mountainsMight } from "./mountainsMight"
 import { steadfastDevotion } from "./steadfastDevotion"
 import { swordHorizon } from "./swordHorizon"
 import { swordMorph } from "./swordMorph"
+import { thunderousBloom } from "./thunderousBloom"
 import { throatPierce } from "./throatPierce"
 import { wolfchasersArt } from "./wolfchasersArt"
 
@@ -17,6 +20,8 @@ import { wolfchasersArt } from "./wolfchasersArt"
 export const INNER_WAYS: readonly InnerWayDef[] = [
   battleAnthem,
   bitterSeason,
+  blossomBarrage,
+  breakingPoint,
   frostCladNight,
   insightfulStrike,
   moraleChant,
@@ -24,6 +29,7 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   steadfastDevotion,
   swordHorizon,
   swordMorph,
+  thunderousBloom,
   throatPierce,
   wolfchasersArt,
 ]
