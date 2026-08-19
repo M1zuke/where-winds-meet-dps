@@ -3,6 +3,7 @@
 // stacks (3 at TB6), grants the Combo debuff on hit, and has reduced CD via
 // the TB6 trigger. Multipliers authored when the reference data lands.
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { BUFF } from "../../skills/buffs/ids"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 
@@ -18,6 +19,7 @@ export const springSorrow = defineSkill({
   castTag: CAST.springSorrow,
   castFrames: 60,
   triggerable: true,
+  triggersBuffs: [BUFF.lingeringBone],
   hits: [
     hit(0, {
       frame: 0,
