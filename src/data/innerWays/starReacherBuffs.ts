@@ -1,6 +1,6 @@
 import { defineClassBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
-import { stat, heal, type Effect } from "../../engine/effects/effect"
+import { stat, healFraction, type Effect } from "../../engine/effects/effect"
 import type { EffectContext } from "../../engine/effects/context"
 import {
   innerWayHasNode,
@@ -32,12 +32,14 @@ import { starReacher } from "./starReacher"
 // T1 (HP-gated 3% damage / 10%-of-damage heal on airborne targets with
 // your Lingering Bone) is now wired: the HP-above-75% branch emits
 // `physBoost +3%` additively on top of the airborne-doubled bonus, and
-// the HP-below-or-equal-75% branch emits the heal FRACTION (0.1) via
-// the `heal` Effect kind. The heal output is a no-op in every sink
-// today (no HP ledger ships) — the kind exists so the def can model the
-// branch without crashing, and a future heal-output lane can resolve
-// the fraction against the rolled damage without re-plumbing the Effect
-// union.
+// the HP-below-or-equal-75% branch emits the FRACTION (0.1) via the
+// `healFraction` Effect kind. The timeline hit loop resolves
+// `healFraction` to a flat HP gain equal to `fraction * rolledDamage`,
+// post-formula, and applies it to the simulation-local HP ledger
+// (clamped to `[0, hpMax]`). Sinks that don't need the fraction
+// (buff engine, art-sink, hit-sink pre-formula) no-op it; only the
+// timeline's post-formula loop resolves it. See `timeline.ts`
+// `processHealEmissions`.
 //
 // Hoisted factory, not a `const`: the module cycle (this file imports
 // `starReacher`, and `starReacher.ts` imports this file for its
@@ -114,12 +116,11 @@ export function starReacherLingeringBoneBuff() {
       // restore HP = 10% of damage done otherwise." Both branches require
       // `target.airborne === true` per the in-game text. The damage branch
       // is a real `physBoost` additively stacked on the airborne-doubled
-      // bonus above. The heal branch emits `heal()` with the FRACTION
-      // (`STAR_REACHER_HP_GATE_HEAL_FRACTION_T1 = 0.1`) — today's buff
-      // engine and timeline sinks both no-op the heal effect because no
-      // HP ledger ships, so the heal is a documented no-op rather than a
-      // thrown error. A future heal-output lane can resolve the fraction
-      // against the rolled damage without re-plumbing the Effect union.
+      // bonus above. The heal branch emits `healFraction(0.1)`, which the
+      // timeline resolves post-formula against the rolled damage and
+      // applies to its simulation-local HP ledger (clamped). Buff engine,
+      // art-sink, and pre-formula hit-sink all no-op the kind — only the
+      // timeline's `processHealEmissions` reads it.
       const tier1HpGated = innerWayHasNode(
         starReacher,
         tier,
@@ -130,7 +131,7 @@ export function starReacherLingeringBoneBuff() {
         if (hpFraction > STAR_REACHER_HP_GATE_THRESHOLD) {
           out.push(stat("physBoost", STAR_REACHER_HP_GATE_DAMAGE_BONUS_T1))
         } else {
-          out.push(heal(STAR_REACHER_HP_GATE_HEAL_FRACTION_T1))
+          out.push(healFraction(STAR_REACHER_HP_GATE_HEAL_FRACTION_T1))
         }
       }
       return out

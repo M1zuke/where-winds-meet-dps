@@ -333,6 +333,14 @@ export interface Result {
   // locked baseline digest stays byte-identical.
   outcomeCounts?: OutcomeCounts
   expectedOutcomeShare?: OutcomeCounts
+  // Simulation-local HP ledger at the end of the rotation. `currentHp`
+  // starts at `inputs.playerHp * hpMax` (defaults both 1), is mutated by
+  // the timeline's `processHealEmissions` resolver post-formula, and is
+  // clamped to `[0, hpMax]`. Buff modules emit `heal` (flat) or
+  // `healFraction` (fraction-of-rolled-damage) effects; only Star Reacher
+  // T1's HP-below-75% branch fires today. Tests use this to assert a heal
+  // actually landed without depending on per-sink dispatching.
+  hpLedger?: { currentHp: number; hpMax: number }
 }
 
 export interface CastBuffTag {

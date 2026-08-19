@@ -136,6 +136,25 @@ function summarizeDamage(result: DamageEffectsResult) {
       .sort((effectA, effectB) =>
         effectA.statKey < effectB.statKey ? -1 : effectA.statKey > effectB.statKey ? 1 : 0,
       ),
+    // Heal emissions captured at damage-time. Today only Star Reacher T1's
+    // HP-below-75% branch emits, and only when the simulation context
+    // gates the buff to airborne + `hpFraction ≤ 0.75`. The buff
+    // engine's `calculateDamageEffects` probe here never installs that
+    // gate (the test engine has no `playerHp` / `targetAirborne` input),
+    // so this array is empty across every probed tag combo. Capturing
+    // it is still required — a future heal-emitting class landing
+    // here would change this array, and that's the regression the
+    // fixture should catch.
+    heals: result.heals
+      .map((emit): { kind: string; amount?: number; fraction?: number } => {
+        if (emit.kind === "heal") return { kind: emit.kind, amount: round(emit.amount) }
+        // The only other heal kind today is `healFraction`. Future
+        // heal kinds must extend the Effect union AND this mapping —
+        // the timeline signature mapper in `timeline.ts` carries the
+        // same discipline.
+        return { kind: emit.kind, fraction: round((emit as { fraction: number }).fraction) }
+      })
+      .sort((a, b) => (a.kind < b.kind ? -1 : a.kind > b.kind ? 1 : 0)),
     forceCrit: result.forceCrit,
     breakdown: Object.fromEntries(
       Object.entries(result.breakdown)

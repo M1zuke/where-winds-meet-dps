@@ -58,6 +58,15 @@ export interface DamageEffectsResult {
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
   breakdown: Record<string, number>
+  // Heal emissions the buff engine emitted at damage-time. The timeline
+  // hit loop reads this alongside the rolled damage and applies the heals
+  // to its HP ledger. Buff modules emit `{ kind: "heal"; amount }` and
+  // `{ kind: "healFraction"; fraction }`; today only Star Reacher T1's
+  // HP-below-75% branch fires `healFraction`. `healFraction` resolves
+  // post-formula (fraction × rolledDamage) inside the timeline; the
+  // buff engine never resolves it. Empty for any def that does not emit
+  // heal effects.
+  heals: Effect[]
 }
 
 const DEFAULT_DURATION = 15
@@ -357,6 +366,7 @@ export class BuffEngine {
       damageMultiplier: () => {},
       setStatus: () => {},
       heal: () => {},
+      healFraction: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -680,6 +690,7 @@ export class BuffEngine {
     const scopedBuffIds = new Set(castScopedBuffIds)
     const effects: { statKey: StatKey; amount: number }[] = []
     const breakdown: Record<string, number> = {}
+    const heals: Effect[] = []
     let forceCrit = false
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
@@ -700,12 +711,20 @@ export class BuffEngine {
         damageFactor *= factor
       },
       setStatus: () => {},
-      // Heal output no-ops: the buff engine has no HP ledger today, so an
-      // emitted heal is dropped silently. The `kind: "heal"` effect type
-      // exists so Star Reacher T1 (and any future HP-gated buff) can author
-      // its heal branch without crashing on the no-op path; a heal-output
-      // lane can pick this up later without re-plumbing the Effect union.
-      heal: () => {},
+      // Heal output at damage-time: the buff engine emits effects for the
+      // timeline to resolve, not for itself to apply. Both `heal` and
+      // `healFraction` are captured into `heals` here; the timeline hit
+      // loop reads `heals` alongside the rolled damage and applies them
+      // to its HP ledger (`healFraction` is multiplied by the rolled
+      // damage post-formula; `heal` is applied as-is). Capturing at the
+      // damage-time site keeps the buff engine free of timeline state.
+      // See `timeline.ts` `processHealEmissions` for the resolver.
+      heal(amount) {
+        heals.push({ kind: "heal", amount })
+      },
+      healFraction(fraction) {
+        heals.push({ kind: "healFraction", fraction })
+      },
     }
 
     for (const [id, module] of this.definitions) {
@@ -743,6 +762,6 @@ export class BuffEngine {
       breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow
     }
 
-    return { effects, forceCrit, damageFactor, conditionalFinalCrit, breakdown }
+    return { effects, forceCrit, damageFactor, conditionalFinalCrit, breakdown, heals }
   }
 }

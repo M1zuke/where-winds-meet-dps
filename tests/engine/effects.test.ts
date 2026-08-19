@@ -9,6 +9,7 @@ import {
   damageMultiplier,
   setStatus,
   heal,
+  healFraction,
   type Effect,
 } from "../../src/engine/effects/effect"
 
@@ -24,6 +25,7 @@ function recordingSink(): { sink: EffectSink; calls: unknown[][] } {
     setStatus: (id, stacks, permanent, durationFrames) =>
       calls.push(["setStatus", id, stacks, permanent, durationFrames]),
     heal: (amount) => calls.push(["heal", amount]),
+    healFraction: (fraction) => calls.push(["healFraction", fraction]),
   }
   return { sink, calls }
 }
@@ -40,6 +42,7 @@ describe("applyEffect", () => {
     applyEffect(sink, damageMultiplier(2))
     applyEffect(sink, setStatus("someStatus", { stacks: 1, permanent: true }))
     applyEffect(sink, heal(42))
+    applyEffect(sink, healFraction(0.1))
 
     expect(calls).toEqual([
       ["stat", "allDamageBoost", 0.1],
@@ -50,6 +53,7 @@ describe("applyEffect", () => {
       ["damageMultiplier", 2],
       ["setStatus", "someStatus", 1, true, undefined],
       ["heal", 42],
+      ["healFraction", 0.1],
     ])
   })
 

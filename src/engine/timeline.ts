@@ -27,6 +27,19 @@ import {
 } from "./dot"
 import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
+import type { Effect } from "./effects/effect"
+
+// Local `assertNever` for the heal-kinds signature mapper. `applyEffect`'s
+// helper is in `./effects/apply` but it widens to `never` against the full
+// `Effect` union — what we want here is "given that `kind` is already
+// `"heal" | "healFraction"`, anything else is unreachable." Reusing the
+// outer helper would be a stretch: today the only Effect kinds this
+// mapper ever sees are the two heal kinds, and a new heal kind added
+// without extending this switch is the regression to catch. Keep the
+// assertion narrow and local.
+function assertNeverHealKind(value: never): never {
+  throw new Error(`Unhandled heal kind in signature: ${JSON.stringify(value)}`)
+}
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
@@ -408,6 +421,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     forceCrit: boolean
     damageFactor: number
     conditionalFinalCrit: ConditionalFinalCrit | null
+    // Heal emissions the buff engine captured at damage-time for this hit.
+    // The hit loop reads this post-formula and applies it against the
+    // rolled damage (`processHealEmissions`). Threaded via `Resolved`
+    // rather than captured separately so the memoization keys line up —
+    // same `active + skill + frame` ⇒ same heal set.
+    heals: Effect[]
   } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
@@ -426,6 +445,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let forceCritFromBuff = false
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
+    const heals: Effect[] = []
     if (buffEngine && skill) {
       const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
       const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
@@ -441,6 +461,37 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (site.forceCrit) forceCritFromBuff = true
       damageFactor = site.damageFactor
       conditionalFinalCrit = site.conditionalFinalCrit
+      // Heal emissions are referenced by the signature too: same heal
+      // set ⇒ same memoization hit, so two hits at the same frame on
+      // the same skill land on identical heal plans.
+      if (site.heals.length > 0) {
+        for (const h of site.heals) heals.push(h)
+        // The buff engine contract restricts `site.heals` to the two
+        // heal kinds — `applyEffect`'s switch is the gate that keeps
+        // other Effect kinds from reaching `DamageEffectsResult.heals`.
+        // Cast (not a predicate) so the mapper below sees a narrow
+        // discriminated union; falls back to a defensive runtime
+        // guard for any future heal kind the buff engine adds before
+        // this signature mapper learns about it.
+        const healKinds = site.heals as readonly Extract<
+          Effect,
+          { kind: "heal" | "healFraction" }
+        >[]
+        const healSig = healKinds
+          .map((h): string => {
+            switch (h.kind) {
+              case "heal":
+                return `${h.kind}:${h.amount}`
+              case "healFraction":
+                return `${h.kind}:${h.fraction}`
+              default:
+                return assertNeverHealKind(h)
+            }
+          })
+          .sort()
+          .join(",")
+        sig += `~h${healSig}`
+      }
       if (damageFactor !== 1) sig += `~x${damageFactor}`
       if (conditionalFinalCrit)
         sig += `~cfc${conditionalFinalCrit.threshold}:${conditionalFinalCrit.bonusBelowThreshold}`
@@ -511,7 +562,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
-    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit }
+    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit, heals }
   }
 
   const queue = new EventQueue()
@@ -556,6 +607,34 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   let totalDamage = 0
   const outcomeTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
   const expectedShareTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  // Simulation-local HP ledger, in the same `[0, hpMax]` convention the
+  // buff engine already reads for `EffectContext.self.hp` / `self.hpMax`.
+  // Seeded from `inputs.playerHp` * `hpMax` (defaults both 1, so a default
+  // run starts at full HP). Mutated by `processHealEmissions` below, which
+  // resolves `heal` (flat) and `healFraction` (`fraction * rolledDamage`)
+  // effects emitted by buff modules against the hit's rolled damage.
+  // Returned on `Result.hpLedger` so callers (tests, downstream tooling)
+  // can verify a heal actually fired without depending on per-sink
+  // dispatching — the buff engine captures emissions into
+  // `DamageEffectsResult.heals`, the timeline applies them.
+  let currentHp = inputs.playerHp ?? 1
+  const hpMax = inputs.playerHpMax ?? 1
+  const clampHp = (value: number): number =>
+    hpMax > 0 ? Math.max(0, Math.min(hpMax, value)) : Math.max(0, value)
+  const processHealEmissions = (rolledDamage: number, emits: readonly Effect[]): void => {
+    if (emits.length === 0) return
+    for (const emit of emits) {
+      if (emit.kind === "heal") {
+        currentHp = clampHp(currentHp + emit.amount)
+      } else if (emit.kind === "healFraction") {
+        currentHp = clampHp(currentHp + emit.fraction * rolledDamage)
+      }
+      // All other Effect kinds are no-ops here: heal output is a
+      // dedicated channel. The pre-formula sinks and art-sink already
+      // no-op `heal`/`healFraction` so nothing else can sneak a heal
+      // through.
+    }
+  }
   const tallyRoll = (rolled: RolledHit): void => {
     outcomeTally[rolled.outcome] += 1
     for (const outcome of OUTCOME_KEYS) expectedShareTally[outcome] += rolled.chance[outcome]
@@ -601,6 +680,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       artBonus: () => {},
       damageMultiplier: () => {},
       heal: () => {},
+      // Pre-formula heal emit is a no-op — the hit's damage isn't rolled
+      // yet. The post-formula `processHealEmissions` loop is the only place
+      // that resolves `healFraction` against rolled damage and applies the
+      // result to the timeline's HP ledger.
+      healFraction: () => {},
     }
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
@@ -632,6 +716,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         art.correction = (art.correction ?? 1) * factor
       },
       heal: () => {},
+      healFraction: () => {},
     }
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
     if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
@@ -653,6 +738,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damage,
       inWindow: hitInWindow,
     })
+
+    // Post-formula heal resolver. Buff modules emit `{ kind: "heal" }`
+    // (flat) or `{ kind: "healFraction" }` (fraction-of-rolled-damage)
+    // at damage-time; the buff engine captures them into
+    // `site.heals`, which `resolveState` threads through as `st.heals`.
+    // `healFraction` resolves to `fraction * damage` here, `heal` applies
+    // flat; both clamp to `[0, hpMax]`. Runs after `pushEvent` so heal
+    // events appear on the timeline as separate events, not as damage
+    // markers (which keeps the timeline stream shape stable across runs
+    // — see `TimelineEvent.kind`).
+    processHealEmissions(damage, st.heals)
 
     for (const trigger of hit.triggers) {
       if (!triggerConditions(trigger).every((c) => conditionHolds(c, frame))) continue
@@ -918,6 +1014,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damage,
       inWindow: true,
     })
+    processHealEmissions(damage, st.heals)
   }
 
   for (const { mechanic, state } of mechanics) {
@@ -939,6 +1036,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         damage,
         inWindow: true,
       })
+      processHealEmissions(damage, st.heals)
     }
   }
 
@@ -986,6 +1084,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     casts,
     outcomeCounts: hitRng ? outcomeTally : undefined,
     expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
+    hpLedger: { currentHp, hpMax },
   }
 }
 
@@ -1003,5 +1102,6 @@ function emptyResult(warnings: string[]): Result {
     qiBreakWindow: null,
     lowQiWindow: null,
     casts: [],
+    hpLedger: { currentHp: 1, hpMax: 1 },
   }
 }

@@ -18,6 +18,7 @@ export interface EffectSink {
     durationFrames: number | undefined,
   ): void
   heal(amount: number): void
+  healFraction(fraction: number): void
 }
 
 export function assertNever(value: never): never {
@@ -49,6 +50,9 @@ export function applyEffect(sink: EffectSink, effect: Effect): void {
       return
     case "heal":
       sink.heal(effect.amount)
+      return
+    case "healFraction":
+      sink.healFraction(effect.fraction)
       return
     default:
       assertNever(effect)

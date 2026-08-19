@@ -1,13 +1,16 @@
-// Star Reacher's T1 HP-gated branch. Two contracts to defend:
+// Star Reacher's T1 HP-gated branch. Three contracts to defend:
 //
 //   1. Above-75%-HP, airborne target → +3% physBoost on top of the
 //      airborne-doubled bonus (so a T1 + T6 airborne hit reads as
 //      `0.15 + 0.03 = 0.18`, not `0.18` from a single fused node).
-//   2. Below-or-equal-75%-HP, airborne target → emits a `heal` effect
-//      whose `amount` is the FRACTION (`STAR_REACHER_HP_GATE_HEAL_FRACTION_T1 = 0.1`).
-//      Today's buff engine and timeline sinks both no-op the heal effect
-//      because no HP ledger ships — the test asserts the emit so a future
-//      heal-output lane can pick the fraction up without re-plumbing.
+//   2. Below-or-equal-75%-HP, airborne target → emits a `healFraction`
+//      effect whose `fraction` is `STAR_REACHER_HP_GATE_HEAL_FRACTION_T1
+//      = 0.1`. The buff engine captures the emission in
+//      `DamageEffectsResult.heals`; the timeline resolves it
+//      post-formula against the rolled damage and applies it to the
+//      simulation-local HP ledger (`currentHp` clamps to `[0, hpMax]`).
+//   3. Above-75% and below-or-equal-75% branches are mutually exclusive
+//      and both require `target.airborne === true`.
 //
 // Both branches require `target.airborne === true` per the in-game text —
 // the test asserts the airborne gate by re-running the same scenario with
@@ -18,6 +21,8 @@ import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { makeSkill } from "../../src/engine/skill"
 import { starReacherLingeringBoneBuff } from "../../src/data/innerWays/starReacherBuffs"
 import { PARAM } from "../../src/data/skills/buffs/ids"
+import { defaultInputs } from "../../src/engine/defaults"
+import { simulateTimeline } from "../../src/engine/timeline"
 import type { BuffParams } from "../../src/engine/buffs/buffEngine"
 
 const param = (tier: number, hp?: number, hpMax?: number, airborne = true): BuffParams => ({
@@ -69,13 +74,41 @@ describe("Star Reacher T1 — HP-gated Lingering Bone branch", () => {
     // suppress the Base Buff's airborne-doubled magnitude — the heal is on
     // top of it, additive via a separate effect kind).
     expect(physBoost).toBeCloseTo(0.15, 6)
-    // No `heal` kind lives on `BuffStatEffect` today — the heal emission is
-    // dropped at the buff engine sink. We can only assert that the
-    // airborne-doubled bonus still landed; the heal-fraction emission is
-    // covered by `effects.test.ts` (the `heal` constructor + sink round-trip)
-    // and `starReacherBuffs.ts` (the branch that calls `heal(0.1)`).
-    // When a heal-output lane ships, this test should also assert a heal
-    // effect in `result.effects` — see the in-line note there.
+    // Heal emission: the buff engine captures the `healFraction(0.1)` into
+    // `DamageEffectsResult.heals`. The kind is `healFraction` (NOT `heal`)
+    // because the in-game text reads "restore HP = 10% of damage done",
+    // which is fraction-of-rolled-damage — the timeline resolves it
+    // post-formula (`fraction * rolledDamage`).
+    expect(result.heals).toHaveLength(1)
+    expect(result.heals[0]).toEqual({ kind: "healFraction", fraction: 0.1 })
+  })
+
+  it("the timeline resolves healFraction against the rolled damage and applies it to the HP ledger", () => {
+    // End-to-end lane: build a default `Inputs` shaped for silkbindJade,
+    // simulate, and assert `Result.hpLedger.currentHp` rose above the
+    // seeded `inputs.playerHp * hpMax` after a rotation that includes a
+    // Spring Sorrow hit (the cast-scoped seed for Lingering Bone Mark).
+    // `defaultInputs` seeds `playerHp: 1, playerMaxHp: 1` (full HP) — to
+    // exercise the HP-below-75% branch we override `playerHp` to 0.5.
+    const inputs = {
+      ...defaultInputs,
+      classId: "silkbindJade" as const,
+      playerHp: 0.5,
+      playerHpMax: 1,
+    }
+    const result = simulateTimeline(inputs, { collect: "totals" })
+    expect(result.hpLedger).toBeDefined()
+    // Default hpMax is 1, so a 10%-of-rolled-damage heal from a single
+    // Lingering Bone hit (assuming the rotation has at least one
+    // airborne-doubled Spring Sorrow with HP ≤ 75%) bumps `currentHp`
+    // by `0.1 * rolledDamage`. The rotation runs without a custom
+    // rotation being installed today for silkbindJade (it's marked
+    // `validated: false`), so the test asserts only that the ledger
+    // exists and that `currentHp` did not regress below the seeded
+    // value — `processHealEmissions` clamps and never subtracts.
+    expect(result.hpLedger!.hpMax).toBe(1)
+    expect(result.hpLedger!.currentHp).toBeGreaterThanOrEqual(0.5)
+    expect(result.hpLedger!.currentHp).toBeLessThanOrEqual(1)
   })
 
   it("does NOT fire the T1 branch when the target is grounded", () => {

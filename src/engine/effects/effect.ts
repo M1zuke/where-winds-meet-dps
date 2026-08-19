@@ -15,15 +15,20 @@ export type Effect =
   | { kind: "artBonus"; field: ArtBonusField; amount: number }
   | { kind: "damageMultiplier"; factor: number }
   | { kind: "setStatus"; id: string; stacks?: number; permanent?: boolean; durationFrames?: number }
-  // Heal applied to the casting player (the source of the hit). Amount is a
-  // flat HP value, not a percentage — fractional HP is allowed so a buff
-  // module can model "restore HP equal to 10% of damage done" by multiplying
-  // the hit's final damage by 0.1 and emitting the result here. Buff modules
-  // only emit this kind; the buff engine and timeline sinks both no-op it
-  // today (no HP ledger ships), which is why Star Reacher T1's heal branch
-  // stays a no-op rather than a thrown error — a future heal-output lane can
-  // pick it up without re-plumbing the Effect type.
+  // Heal applied to the casting player (the source of the hit). `amount` is
+  // a flat HP value, not a percentage — fractional HP is allowed.
   | { kind: "heal"; amount: number }
+  // Fraction-of-damage heal. The timeline resolves this to a flat HP gain
+  // equal to `fraction * rolledDamage` post-formula, then applies the same
+  // `heal` accounting (clamped to `[0, hpMax]`). Used by Star Reacher T1's
+  // HP-below-75% branch: the in-game text reads "restore HP equal to 10% of
+  // the damage done," and a fraction-of-rolled-damage kind expresses that
+  // intent at emission time without the buff module needing to know the
+  // hit's damage in advance. Buff modules may emit this kind; sinks no-op
+  // it everywhere except the timeline's post-formula loop. See
+  // `timeline.ts` for the resolver and `starReacherBuffs.ts` for the
+  // canonical producer.
+  | { kind: "healFraction"; fraction: number }
 
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
@@ -83,4 +88,8 @@ export function setStatus(
 
 export function heal(amount: number): Extract<Effect, { kind: "heal" }> {
   return { kind: "heal", amount }
+}
+
+export function healFraction(fraction: number): Extract<Effect, { kind: "healFraction" }> {
+  return { kind: "healFraction", fraction }
 }
