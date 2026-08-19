@@ -49,11 +49,12 @@ export const blossomBarrage = defineInnerWay({
   legacyNames: [],
   // T1 omitted — see header block. Re-add if a future patch introduces a
   // genuine T1 raise.
-  selectableTiers: [6, 5, 4, 3, 2],
+  selectableTiers: [6, 5, 4, 2],
   // Tier 2: crit rate based on Solo Mode Level (per-level coefficient
   //         currently encoded as a static 0.014 — see Star Reacher T5 for
   //         the same caveat about per-level scaling not yet shipping).
-  // Tier 3: dropped (see header).
+  // Tier 3: dropped (see header) — Combo's 15s window is unconditional;
+  //         T3 has no behavioral effect in the model.
   // Tier 4: Spring Away damage +5% (+10% on Exhausted) on Combo'd targets;
   //         targets 3 → 5.
   // Tier 5: direct crit rate +4.6%.
@@ -67,9 +68,6 @@ export const blossomBarrage = defineInnerWay({
       // Level 6 picks up 8.4% crit rate from this tier (see
       // `InnerWayTier.scaleBySoloModeLevel`).
       scaleBySoloModeLevel: true,
-    },
-    3: {
-      nodes: [INNER_WAY_NODE.blossomBarrageLongerCombo],
     },
     4: { nodes: [INNER_WAY_NODE.blossomBarrageSpringAwayBoost] },
     5: { panelStats: { directCritRate: BLOSSOM_BARRAGE_DIRECT_CRIT_T5 } },
