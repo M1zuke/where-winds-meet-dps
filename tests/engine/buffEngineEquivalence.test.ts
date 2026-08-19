@@ -38,7 +38,6 @@ import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 
 const FIXTURE_PATH = join(process.cwd(), "tests/engine/buffEngineEquivalence.fixture.json")
-const REGENERATE = process.env.UPDATE_BUFF_EQUIVALENCE === "1"
 
 // The tag combinations and time grid from the manual all-class dump that
 // caught the four regressions above — kept exactly, since narrowing them is
@@ -241,11 +240,14 @@ function currentSnapshot(): Snapshot {
 }
 
 async function loadRecorded(): Promise<Snapshot | null> {
-  // The original top-level `if (REGENERATE) await writeFixture(...)` ran
-  // before the `describe` body captured `recorded`, so the freshly written
-  // file was never read on that run. Reading in a `beforeAll` instead makes
-  // the write await before the read.
-  if (REGENERATE) await writeFixture(FIXTURE_PATH, currentSnapshot())
+  // cmd.exe's `set X=1 && cmd` chain on Windows appends a trailing space to
+  // the env value before it reaches the child process, so the literal
+  // `=== "1"` check fails with `"1 "`. Trim before comparing.
+  const raw = process.env.UPDATE_BUFF_EQUIVALENCE?.trim()
+  const regenerate = raw === "1"
+  if (regenerate) {
+    await writeFixture(FIXTURE_PATH, currentSnapshot())
+  }
   return existsSync(FIXTURE_PATH)
     ? (JSON.parse(readFileSync(FIXTURE_PATH, "utf8")) as Snapshot)
     : null

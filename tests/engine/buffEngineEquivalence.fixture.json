@@ -33935,6 +33935,34 @@
       },
       "buffs": [
         {
+          "id": "lingeringBone",
+          "name": "Lingering Bone Mark (Star Reacher)",
+          "classBuff": true,
+          "requires": {
+            "param": "starReacher",
+            "minTier": 3
+          },
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": {
+            "count": 1,
+            "window": 1
+          },
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": "[fn]",
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "physBoost +5% (+10% airborne), +2.5%/+5% from tier 6"
+        },
+        {
           "id": "revelryScript",
           "name": "Revelry Script",
           "classBuff": false,
@@ -34223,7 +34251,7 @@
       ]
     },
     "dynamic": {
-      "digest": "f5cd42903694921a160841bd33615e5e17ebd1e778adf6331e6c9605ce7bfc49"
+      "digest": "add98a0bd2559447819cf9fb6cc23ba2a07bb78c1e089a63cd806121d265edb3"
     }
   }
 }

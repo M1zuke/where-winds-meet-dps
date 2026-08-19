@@ -133,6 +133,10 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction, 1],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 4],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonMaxStackPenetration, 6],
+    [INNER_WAY_ID.starReacher, INNER_WAY_NODE.starReacherHpGatedLingeringBone, 1],
+    [INNER_WAY_ID.starReacher, INNER_WAY_NODE.starReacherExtendedDuration, 3],
+    [INNER_WAY_ID.starReacher, INNER_WAY_NODE.starReacherExhaustedBonus, 4],
+    [INNER_WAY_ID.starReacher, INNER_WAY_NODE.starReacherRaisedBaseBonuses, 6],
   ])("%s.%s unlocks at tier %d", (id, node, tier) => {
     const def = defById(id)
     expect(innerWayNodeTier(def, node)).toBe(tier)

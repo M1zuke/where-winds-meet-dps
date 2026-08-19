@@ -7,6 +7,7 @@ import { frostCladNight } from "./frostCladNight"
 import { insightfulStrike } from "./insightfulStrike"
 import { moraleChant } from "./moraleChant"
 import { mountainsMight } from "./mountainsMight"
+import { starReacher } from "./starReacher"
 import { steadfastDevotion } from "./steadfastDevotion"
 import { swordHorizon } from "./swordHorizon"
 import { swordMorph } from "./swordMorph"
@@ -26,6 +27,7 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   insightfulStrike,
   moraleChant,
   mountainsMight,
+  starReacher,
   steadfastDevotion,
   swordHorizon,
   swordMorph,
