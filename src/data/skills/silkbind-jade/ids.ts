@@ -13,6 +13,11 @@ export const SKILL = {
   umbDroneLaunch26Hit: "silkbindJade-umbdronelaunch-26hit",
   healerBuff: "silkbindJade-healer-buff",
   bitterSeasonTick: "silkbindJade-bitter-season-tick",
+  springSorrow: "silkbindJade-spring-sorrow",
+  letSpringGo: "silkbindJade-let-spring-go",
+  everbloom: "silkbindJade-everbloom",
+  umbrellaLight: "silkbindJade-umbrella-light",
+  springAway: "silkbindJade-spring-away",
 } as const
 
 export const DEBUFF = {

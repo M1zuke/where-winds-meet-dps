@@ -11,6 +11,11 @@ import { umbLightCharge } from "./umblightcharge"
 import { umbHeavyLight } from "./umb-heavylight"
 import { umbDroneLaunch26Hit } from "./umbdronelaunch-26hit"
 import { healerBuff } from "./healer-buff"
+import { springSorrow } from "./spring-sorrow"
+import { letSpringGo } from "./let-spring-go"
+import { everbloom } from "./everbloom"
+import { umbrellaLight } from "./umbrella-light"
+import { springAway } from "./spring-away"
 
 export const CLASS_ID = "silkbindJade"
 
@@ -27,4 +32,9 @@ export const SKILLS: Skill[] = [
   umbHeavyLight,
   umbDroneLaunch26Hit,
   healerBuff,
+  springSorrow,
+  letSpringGo,
+  everbloom,
+  umbrellaLight,
+  springAway,
 ]
