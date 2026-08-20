@@ -1,4 +1,4 @@
-import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, SOURCE } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -21,14 +21,15 @@ export const bitterSeasonTick = defineSkill({
   elevatedAttributeMultiplier: false,
   castFrames: 0,
   triggerable: true,
-  hits: dotTicks({
-    count: 5,
-    everyFrames: 60,
-    physMultiplier: 0.15,
-    attributeMultiplier: 0.225,
-    physFixed: 0,
-    attributeFixed: 0,
-  }),
+  hits: [
+    hit(0, {
+      frame: 0,
+      physMultiplier: 0.15,
+      attributeMultiplier: 0.225,
+      physFixed: 0,
+      attributeFixed: 0,
+    }),
+  ],
   createdAt: "2026-08-06T00:00:00.000Z",
   updatedAt: "2026-08-06T00:00:00.000Z",
 })

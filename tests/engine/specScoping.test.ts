@@ -11,15 +11,19 @@ describe("spec-scoping — buffDefsForClass", () => {
     expect(specForClass("unknownClass")).toBeUndefined()
   })
 
-  it("bellstrikeUmbra's composed bucket DOES contain the once-mechanic-scoped defs, each still carrying the class-buff marker", () => {
+  it("bellstrikeUmbra's composed bucket DOES contain the once-mechanic-scoped defs — the class-owned pair marked, the inner-way-owned soulShaken unmarked", () => {
     const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((d) => d.id))
     expect(ids.has("soulShaken")).toBe(true)
     expect(ids.has("bellstrikeUmbraBleedPen")).toBe(true)
     expect(ids.has("bellstrikeUmbraBleedingDamage")).toBe(true)
-    for (const id of ["soulShaken", "bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]) {
+    for (const id of ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]) {
       const module = buffDefsForClass("bellstrikeUmbra").find((candidate) => candidate.id === id)!
       expect("classBuff" in module).toBe(true)
     }
+    const soulShaken = buffDefsForClass("bellstrikeUmbra").find(
+      (candidate) => candidate.id === "soulShaken",
+    )!
+    expect("classBuff" in soulShaken).toBe(false)
   })
 
   it("keeps the universal fluteBoost for a class whose spec bucket omits it", () => {

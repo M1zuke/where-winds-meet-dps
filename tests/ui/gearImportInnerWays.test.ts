@@ -215,6 +215,23 @@ describe("resolving against the build", () => {
       tierAssumed: false,
     })
   })
+
+  it("resolves Breaking Point's passive id", () => {
+    const captured = captureWith([[453, 6]])
+    const resolved = resolveInnerWays(
+      parseDashboardGearPayload(captured),
+      inputs,
+      PASSIVE_ID_TO_INNER_WAY,
+      PASSIVE_INNER_WAY_NAMES,
+    )
+    expect(resolved[0]!.resolution).toEqual({
+      kind: "resolved",
+      innerWayId: INNER_WAY_ID.breakingPoint,
+      name: "Breaking Point",
+      tier: 6,
+      tierAssumed: false,
+    })
+  })
 })
 
 describe("toMindMethods", () => {

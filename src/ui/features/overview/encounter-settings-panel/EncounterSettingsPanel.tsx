@@ -1,6 +1,8 @@
+import type { ReactNode } from "react"
 import type { Inputs } from "../../../../engine/types"
 import { defaultCombatSettings } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
 import styles from "./EncounterSettingsPanel.module.scss"
 
@@ -9,16 +11,58 @@ interface Props {
   onChange: (next: Inputs) => void
 }
 
-function ToggleChip({ label, on, onToggle }: { label: string; on: boolean; onToggle: () => void }) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <button
-      type="button"
-      className={styles.toggleChip + (on ? ` ${styles.isOn}` : "")}
-      aria-pressed={on}
-      onClick={onToggle}
-    >
-      {label}
-    </button>
+    <div className={styles.group}>
+      <div className="section-label">{title}</div>
+      {children}
+    </div>
+  )
+}
+
+function SwitchRow({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string
+  checked: boolean
+  onChange: (next: boolean) => void
+}) {
+  return (
+    <div className={styles.switchRow} title={label}>
+      <Switch checked={checked} label={label} onChange={onChange} />
+    </div>
+  )
+}
+
+function DivinecraftSegments({
+  value,
+  onChange,
+}: {
+  value: Inputs["tianGongElement"]
+  onChange: (next: Inputs["tianGongElement"]) => void
+}) {
+  const { t } = useI18n()
+  const options: { value: Inputs["tianGongElement"]; label: string }[] = [
+    { value: null, label: t("None") },
+    { value: "fire", label: t("Fire Oil") },
+    { value: "poison", label: t("Poison") },
+  ]
+  return (
+    <div className={styles.segmented}>
+      {options.map((option) => (
+        <button
+          key={String(option.value)}
+          type="button"
+          className={styles.segment + (value === option.value ? ` ${styles.segmentSelected}` : "")}
+          aria-pressed={value === option.value}
+          onClick={() => onChange(option.value)}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -33,130 +77,124 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
 
   return (
     <div className={styles.encounterSettings}>
-      <div className={styles.toggleChipGroup}>
-        <div className="section-label">{t("Consumables & Self")}</div>
-        <div className={styles.toggleChips}>
-          <ToggleChip
+      <div className={styles.dummyToggle}>
+        <Switch
+          checked={inputs.dummyMode}
+          label={t("Enable Dummy")}
+          onChange={(value) => set("dummyMode", value)}
+        />
+      </div>
+
+      <Section title={t("Consumables & Self")}>
+        <div className={styles.switchGrid}>
+          <SwitchRow
             label={t("Simmering Fish Slices (Food)")}
-            on={inputs.food}
-            onToggle={() => set("food", !inputs.food)}
+            checked={inputs.food}
+            onChange={(value) => set("food", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Revelry Script")}
-            on={settings.revelryScript}
-            onToggle={() => setCombat("revelryScript", !settings.revelryScript)}
+            checked={settings.revelryScript}
+            onChange={(value) => setCombat("revelryScript", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Max Low-HP Bonus (Dragon Head)")}
-            on={settings.dragonHeadLowHpMaxBonus}
-            onToggle={() => setCombat("dragonHeadLowHpMaxBonus", !settings.dragonHeadLowHpMaxBonus)}
+            checked={settings.dragonHeadLowHpMaxBonus}
+            onChange={(value) => setCombat("dragonHeadLowHpMaxBonus", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Below 60% Endurance")}
-            on={settings.lowEndurance}
-            onToggle={() => setCombat("lowEndurance", !settings.lowEndurance)}
+            checked={settings.lowEndurance}
+            onChange={(value) => setCombat("lowEndurance", value)}
           />
         </div>
-      </div>
+      </Section>
 
-      <div className={styles.toggleChipGroup}>
-        <div className="section-label">{t("Divinecraft")}</div>
-        <div className={styles.toggleChips}>
-          <ToggleChip
-            label={t("None")}
-            on={inputs.tianGongElement == null}
-            onToggle={() => set("tianGongElement", null)}
-          />
-          <ToggleChip
-            label={t("Fire Oil")}
-            on={inputs.tianGongElement === "fire"}
-            onToggle={() => set("tianGongElement", "fire")}
-          />
-          <ToggleChip
-            label={t("Poison")}
-            on={inputs.tianGongElement === "poison"}
-            onToggle={() => set("tianGongElement", "poison")}
-          />
-        </div>
-      </div>
+      <Section title={t("Divinecraft")}>
+        <DivinecraftSegments
+          value={inputs.tianGongElement}
+          onChange={(value) => set("tianGongElement", value)}
+        />
+      </Section>
 
-      <div className={styles.toggleChipGroup}>
-        <div className="section-label">{t("Shared Debuffs")}</div>
-        <div className={styles.toggleChips}>
-          <ToggleChip
+      <Section title={t("Shared Debuffs")}>
+        <div className={styles.switchGrid}>
+          <SwitchRow
             label={t("Bitter Season (from a teammate)")}
-            on={inputs.shareDebuff5HenZhi}
-            onToggle={() => set("shareDebuff5HenZhi", !inputs.shareDebuff5HenZhi)}
+            checked={inputs.shareDebuff5HenZhi}
+            onChange={(value) => set("shareDebuff5HenZhi", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Tank Spear Debuff (Vulnerability)")}
-            on={inputs.shareEasyHurt}
-            onToggle={() => set("shareEasyHurt", !inputs.shareEasyHurt)}
+            checked={inputs.shareEasyHurt}
+            onChange={(value) => set("shareEasyHurt", value)}
           />
         </div>
-      </div>
+      </Section>
 
-      <div className={styles.toggleChipGroup}>
-        <div className="section-label">{t("Teammate Buffs")}</div>
-        <div className={styles.toggleChips}>
-          <ToggleChip
+      <Section title={t("Teammate Buffs")}>
+        <div className={styles.switchGrid}>
+          <SwitchRow
             label={t("Dragon's Breath")}
-            on={settings.dragonsBreath}
-            onToggle={() => setCombat("dragonsBreath", !settings.dragonsBreath)}
+            checked={settings.dragonsBreath}
+            onChange={(value) => setCombat("dragonsBreath", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Healer Buff")}
-            on={settings.healerBuff}
-            onToggle={() => setCombat("healerBuff", !settings.healerBuff)}
+            checked={settings.healerBuff}
+            onChange={(value) => setCombat("healerBuff", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("Break Extension")}
-            on={settings.breakExtension}
-            onToggle={() => setCombat("breakExtension", !settings.breakExtension)}
+            checked={settings.breakExtension}
+            onChange={(value) => setCombat("breakExtension", value)}
           />
-          <ToggleChip
+          <SwitchRow
             label={t("40 Stacks (Dragon Head)")}
-            on={settings.dragonHeadFullStacks}
-            onToggle={() => setCombat("dragonHeadFullStacks", !settings.dragonHeadFullStacks)}
+            checked={settings.dragonHeadFullStacks}
+            onChange={(value) => setCombat("dragonHeadFullStacks", value)}
           />
         </div>
-      </div>
+      </Section>
 
-      <div className={styles.toggleChipGroup}>
-        <div className="section-label">{t("Qi Break")}</div>
-        <div className={styles.toggleChips}>
-          <ToggleChip
+      <Section title={t("Qi Break")}>
+        <div className={styles.switchGrid}>
+          <SwitchRow
             label={t("Qi Break Window")}
-            on={settings.qiBreak.enabled}
-            onToggle={() =>
-              setCombat("qiBreak", { ...settings.qiBreak, enabled: !settings.qiBreak.enabled })
-            }
+            checked={settings.qiBreak.enabled}
+            onChange={(value) => setCombat("qiBreak", { ...settings.qiBreak, enabled: value })}
           />
-          {settings.qiBreak.enabled && (
-            <span className={styles.toggleChipInline}>
-              <label>{t("Start (s)")}</label>
+        </div>
+        {settings.qiBreak.enabled && (
+          <div className={styles.qiBreakFields}>
+            <label className={styles.qiBreakField}>
+              {t("Start (s)")}
               <NumInput
                 value={settings.qiBreak.startSec}
                 onChange={(value) => setCombat("qiBreak", { ...settings.qiBreak, startSec: value })}
               />
-              <label>{t("Duration (s)")}</label>
+            </label>
+            <label className={styles.qiBreakField}>
+              {t("Duration (s)")}
               <NumInput
                 value={settings.qiBreak.durationSec}
                 onChange={(value) =>
                   setCombat("qiBreak", { ...settings.qiBreak, durationSec: value })
                 }
               />
-              <label>{t("Low Qi Lead (s)")}</label>
+            </label>
+            <label className={styles.qiBreakField}>
+              {t("Low Qi Lead (s)")}
               <NumInput
                 value={settings.qiBreak.lowQiLeadSec}
                 onChange={(value) =>
                   setCombat("qiBreak", { ...settings.qiBreak, lowQiLeadSec: value })
                 }
               />
-            </span>
-          )}
-        </div>
-      </div>
+            </label>
+          </div>
+        )}
+      </Section>
     </div>
   )
 }

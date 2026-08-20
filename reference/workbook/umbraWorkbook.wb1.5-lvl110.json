@@ -13,6 +13,7 @@
   "sheetCount": 5,
   "cellCount": 38519,
   "generatedBy": "scripts/extractUmbraWorkbook.mjs",
+  "generatorTracked": "No — scripts/ is gitignored, so the generator is not in the repo. Regenerating this extraction means writing it again from the local copy of the workbook.",
   "devOnly": "Contains Chinese verbatim — must never be imported from src/ or tests/ (CLAUDE.md: the app is English-only). The curated app-facing subset is umbraSkillCoefficients.wb1.5-lvl110.json."
  },
  "_translation": {

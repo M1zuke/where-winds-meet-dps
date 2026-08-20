@@ -1,47 +1,98 @@
-.encounterSettings .toggleChipGroup {
-  margin-bottom: 8px;
+@use "breakpoints";
+
+.encounterSettings .group {
+  margin-bottom: 16px;
 }
-.toggleChips {
+
+.encounterSettings .group:last-child {
+  margin-bottom: 0;
+}
+
+.dummyToggle {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.switchGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .switchGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.switchRow {
+  display: flex;
+  min-width: 0;
+}
+
+.switchRow > label {
+  flex: 1;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.switchRow > label > span:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.segment {
+  background: var(--color-surface-inset);
+  border: none;
+  border-right: 1px solid var(--color-border-strong);
+  color: var(--color-text-dim);
+  padding: 4px 14px;
+  font: inherit;
+  font-size: 0.82em;
+  cursor: pointer;
+}
+
+.segment:last-child {
+  border-right: none;
+}
+
+@include breakpoints.hoverable {
+  .segment:hover:not(.segmentSelected) {
+    background: var(--color-surface-inset-hover);
+    color: var(--color-text);
+  }
+}
+
+.segmentSelected {
+  background: var(--color-surface-selected);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.qiBreakFields {
   display: flex;
   flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 6px;
+}
+
+.qiBreakField {
+  display: flex;
+  align-items: center;
   gap: 6px;
-  align-items: center;
-}
-.toggleChip {
-  border: 1px solid #3a3a3a;
-  background: var(--color-bg);
-  color: var(--color-text-dim);
-  border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 0.8em;
-  cursor: pointer;
-  font: inherit;
-  white-space: nowrap;
-}
-.toggleChip:hover {
-  border-color: #5a5a5a;
-}
-.toggleChip.isOn {
-  border-color: var(--color-accent);
-  background: #2a2418;
-  color: var(--color-text);
-}
-.toggleChipInline {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.toggleChipInline label {
   font-size: 0.78em;
   color: var(--color-text-dim);
-  white-space: nowrap;
 }
-.toggleChipInline input {
-  width: 52px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border-strong);
-  border-radius: 4px;
-  color: var(--color-text);
-  padding: 2px 4px;
-  font-size: 0.82em;
+
+.qiBreakField input {
+  width: 60px;
 }

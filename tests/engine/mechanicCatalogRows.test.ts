@@ -34,7 +34,7 @@ function concentrationRow(inputs: Inputs) {
 
 describe("mechanic catalog rows", () => {
   it("lists Concentration for a class that can slot Insightful Strike", () => {
-    expect(concentrationRow(inputsWith("Insightful Strike"))!.name).toBe("Concentration (all)")
+    expect(concentrationRow(inputsWith("Insightful Strike"))!.name).toBe("Concentration")
   })
 
   it("marks it active only once the inner way is actually slotted", () => {

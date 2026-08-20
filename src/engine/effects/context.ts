@@ -53,6 +53,7 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
   [PROP.hasQiBreakDoubleDamage]: "hasQiBreakDoubleDamage",
   [PROP.hasQiBreakPhysPen]: "hasQiBreakPhysPen",
   [PROP.isCharged]: "isCharged",
+  [PROP.isDrone]: "isDrone",
   [PROP.isExecution]: "isExecution",
   [PROP.isMartialSkillQ]: "isMartialSkillQ",
   [PROP.shatteredRidgeBoost]: "shatteredRidgeBoost",

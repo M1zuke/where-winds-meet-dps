@@ -1,3 +1,5 @@
+@use "breakpoints";
+
 .statsOverview {
   display: flex;
   flex-direction: column;
@@ -9,7 +11,7 @@
   font-size: 0.72em;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
+  color: var(--color-accent);
   margin-bottom: 4px;
   padding-bottom: 2px;
   border-bottom: 1px solid var(--color-surface-raised);
@@ -20,6 +22,12 @@
   grid-template-columns: repeat(2, 1fr);
   column-gap: 12px;
   row-gap: 2px;
+}
+
+@include breakpoints.below(breakpoints.$bp-1100) {
+  .statsOverviewGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .statsOverviewRow {

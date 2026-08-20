@@ -72,12 +72,13 @@ guard, and it is directional.
    and every attribute track. ⚠️ This deliberately **inverts PDF §7** — the CN
    sources' worked examples go the other way, and the PDF-literal branch
    inflated the pen term about 2×. **Do not "fix" it back.**
-3. **DoT rows** get no flat damage and no elevated matching-path scaling (PDF
-   §1) — the non-matching multiplier applies to every attribute path. This is
-   gated per hit by `elevatedAttributeMultiplier`, which **defaults true**. Only
-   a genuine DoT tick sets it false. A burst that is `sustain`-tagged for buff
-   routing is not a DoT and keeps the default, retaining its flat damage and the
-   elevated multiplier.
+3. **DoT rows** lose the elevated matching-path scaling (PDF §1) — the
+   non-matching multiplier applies to every attribute path. This is gated per
+   hit by `elevatedAttributeMultiplier`, which **defaults true**. Only a genuine
+   DoT tick sets it false; a burst that is `sustain`-tagged for buff routing is
+   not a DoT and keeps the default. **Flat damage is never stripped.** A tick
+   deals the flat its own data authors — the data states the tick's shape, so
+   author zero to mean zero.
 4. **A skill's raw affinity-rate bonus** divides by `(1 + resistance)` and falls
    **inside** the cap (PDF §11), while **a skill's raw crit-rate bonus is flat**
    and added **after** the cap — so a charged hit can exceed the plain crit cap.

@@ -15,13 +15,11 @@ import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 const CLASS = "bellstrikeUmbra"
 
 describe("built-in skill coefficient split — coeffsAreTotal only", () => {
-  it("Bleed Tick (a DoT tick) carries the FULL per-hit coeff on every hit", () => {
+  it("Bleed Tick (a DoT tick) carries the FULL per-tick coeff on its one hit", () => {
     const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
-    expect(bleedTick.hits.length).toBeGreaterThan(1)
-    for (const hit of bleedTick.hits) {
-      expect(hit.physMultiplier).toBeCloseTo(0.06864, 10)
-      expect(hit.attributeMultiplier).toBeCloseTo(0.10296, 10)
-    }
+    expect(bleedTick.hits).toHaveLength(1)
+    expect(bleedTick.hits[0].physMultiplier).toBeCloseTo(0.06864, 10)
+    expect(bleedTick.hits[0].attributeMultiplier).toBeCloseTo(0.10296, 10)
   })
 })
 

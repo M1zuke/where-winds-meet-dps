@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../definitions/skills/buffDef"
+import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
 
@@ -6,7 +6,7 @@ import { stat } from "../../engine/effects/effect"
 // Charged Skills' damage against all enemies (including players with less than
 // 60% Endurance) by 15%" (in-game tier panel, 2026-08-15). Tier 0 states the
 // same effect at 10% against bosses, which is the target this engine simulates.
-export const battleAnthemChargedDamage = defineClassBuff({
+export const battleAnthemChargedDamage = defineBuff({
   id: BUFF.battleAnthemChargedDamage,
   name: "Battle Anthem (Charged Skills)",
   requires: { param: PARAM.battleAnthem },
@@ -23,7 +23,7 @@ export const battleAnthemChargedDamage = defineClassBuff({
 // you have consumed: 2% bonus damage for every 10 Endurance consumed, up to
 // 10%" (in-game tier panel, 2026-08-15). Carried at the cap, the way the
 // reference workbook's speed rotation runs it.
-export const battleAnthemEnduranceBoost = defineClassBuff({
+export const battleAnthemEnduranceBoost = defineBuff({
   id: BUFF.battleAnthemEnduranceBoost,
   name: "Battle Anthem (Endurance consumed)",
   requires: { param: PARAM.battleAnthem, minTier: 6 },

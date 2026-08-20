@@ -103,6 +103,16 @@ function equippedDeltasRequest(baselineDps = 1000): UnsentRequest {
   return { kind: "equippedDeltas", inputs: gearedInputs(), baselineDps }
 }
 
+function profileMetricsRequest(profileIds: string[]): UnsentRequest {
+  return {
+    kind: "profileMetrics",
+    profiles: profileIds.map((id) => ({ id, inputs: defaultInputs })),
+    customSkills: [],
+    customBuffs: [],
+    customDebuffs: [],
+  }
+}
+
 function allPostsOfKind(kind: string): WorkerRequest[] {
   return created
     .flatMap((worker) => worker.posted as WorkerRequest[])
@@ -619,6 +629,47 @@ describe("dpsWorkerClient", () => {
 
     respond(0, { kind: "equippedDeltas", reqId: shards[shards.length - 1].reqId, deltas: {} })
     expect(client.isDpsWorkerPending("equippedDeltas")).toBe(false)
+  })
+
+  it("fans a profile sweep out over the pool and covers every profile exactly once", async () => {
+    const client = await freshClient(5)
+    client.subscribeToDpsWorker("profileMetrics", () => {})
+
+    client.postToDpsWorker(profileMetricsRequest(["one", "two", "three", "four", "five"]))
+    await vi.runAllTimersAsync()
+
+    const shards = allPostsOfKind("profileMetrics")
+    expect(shards.length).toBeGreaterThan(1)
+    const coveredIds = shards.flatMap((shard) =>
+      shard.kind === "profileMetrics" ? shard.profiles.map((profile) => profile.id) : [],
+    )
+    expect(coveredIds.sort()).toEqual(["five", "four", "one", "three", "two"])
+  })
+
+  it("merges the profile shards into one metrics record under the request's own id", async () => {
+    const client = await freshClient(5)
+    const seen: Extract<WorkerResponse, { kind: "profileMetrics" }>[] = []
+    client.subscribeToDpsWorker("profileMetrics", (response) => seen.push(response))
+
+    client.postToDpsWorker(profileMetricsRequest(["one", "two", "three"]))
+    await vi.runAllTimersAsync()
+    const shards = allPostsOfKind("profileMetrics")
+    const requestReqId = Math.min(...shards.map((shard) => shard.reqId)) - 1
+
+    shards.forEach((shard) => {
+      const profiles = shard.kind === "profileMetrics" ? shard.profiles : []
+      respond(0, {
+        kind: "profileMetrics",
+        reqId: shard.reqId,
+        metricsByProfileId: Object.fromEntries(
+          profiles.map((profile) => [profile.id, { dps: 1, totalDamage: 2, rotationDuration: 3 }]),
+        ),
+      })
+    })
+
+    expect(seen).toHaveLength(1)
+    expect(seen[0].reqId).toBe(requestReqId)
+    expect(Object.keys(seen[0].metricsByProfileId).sort()).toEqual(["one", "three", "two"])
   })
 
   it("sends one message when the pool cannot hold a second worker", async () => {

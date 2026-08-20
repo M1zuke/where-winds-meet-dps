@@ -56,18 +56,22 @@ export function hit(index: number, spec: HitSpec): SkillHit {
   }
 }
 
-interface DotTicksSpec {
+interface EvenlySpacedHitsSpec {
   count: number
   everyFrames: number
   physMultiplier: number
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  extraCritDamage?: number
 }
 
-// Permitted only where every tick is provably identical apart from its frame
-// — the moment ticks differ, write them out with `hit()` instead.
-export function dotTicks(spec: DotTicksSpec): SkillHit[] {
+// Permitted only where every hit is provably identical apart from its frame —
+// the moment they differ, write them out with `hit()` instead. NOT for a DoT
+// tick source: a tick source authors its shape once, and the debuff that ticks
+// from it owns the cadence and the count (`resolveTickDot` reads `hits[0]` and
+// nothing else, so further hits would never fire).
+export function evenlySpacedHits(spec: EvenlySpacedHitsSpec): SkillHit[] {
   return Array.from({ length: spec.count }, (_, index) =>
     hit(index, {
       frame: index * spec.everyFrames,
@@ -75,6 +79,7 @@ export function dotTicks(spec: DotTicksSpec): SkillHit[] {
       attributeMultiplier: spec.attributeMultiplier,
       physFixed: spec.physFixed,
       attributeFixed: spec.attributeFixed,
+      extraCritDamage: spec.extraCritDamage,
     }),
   )
 }

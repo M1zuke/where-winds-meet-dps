@@ -204,7 +204,7 @@ describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflo
 })
 
 // PDF §1
-describe("DoT rules — elevatedAttributeMultiplier-gated (PDF §1)", () => {
+describe("DoT rules — the elevated multiplier only, flat damage is the data's (PDF §1)", () => {
   const bleed = BLEED_DOT
   const combustion = COMBUSTION_TICK
 
@@ -218,21 +218,16 @@ describe("DoT rules — elevatedAttributeMultiplier-gated (PDF §1)", () => {
     expect(demoted).toBeLessThan(eligible)
   })
 
-  it("combustion: AT > 0 when eligible, exactly 0 for the DoT variant", () => {
+  it("combustion: flat survives the demotion, and a non-matching path is untouched by it", () => {
     const eligible = computeSkillDamage(combustion, baseCtx, 1)
     const demoted = computeSkillDamage(
       { ...combustion, elevatedAttributeMultiplier: false },
       baseCtx,
       1,
     )
-    expect(eligible.cells.AT).toBeGreaterThan(0)
-    expect(demoted.cells.AT).toBe(0)
-    expect(demoted.expectedDamage).toBeLessThan(eligible.expectedDamage)
-  })
-
-  it("a row with the flag omitted keeps its flat damage (AT ≈ physFixed)", () => {
-    const cells = computeSkillDamage(combustion, baseCtx, 1).cells
-    expect(cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
+    expect(eligible.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
+    expect(demoted.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
+    expect(demoted.expectedDamage).toBeCloseTo(eligible.expectedDamage, 9)
   })
 })
 
@@ -275,11 +270,11 @@ describe("burst detonation is exempt from the DoT rule", () => {
       elevatedAttributeMultiplier: burst ? undefined : false,
     }) as unknown as Parameters<typeof computeSkillDamage>[0]
 
-  it("with the flag omitted (burst), AT keeps its flat damage and out-damages the demoted variant", () => {
+  it("with the flag omitted (burst), the elevated multiplier alone out-damages the demoted variant", () => {
     const burst = computeSkillDamage(mkArt(true), baseCtx, 1)
     const demoted = computeSkillDamage(mkArt(false), baseCtx, 1)
     expect(burst.cells.AT).toBeCloseTo(100, 9)
-    expect(demoted.cells.AT).toBe(0)
+    expect(demoted.cells.AT).toBeCloseTo(100, 9)
     expect(burst.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
   })
 })

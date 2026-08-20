@@ -102,9 +102,10 @@ Every step in `src/migrations/` ships with a test in `tests/migrations/`.
 Migrations are the one kind of code neither the type checker nor the rest of the
 suite can protect: a broken step corrupts real saved builds silently.
 
-1. **Test against a real captured profile**, named for the version it was captured
-   at, one test file per fixture. A hand-written literal contains only the fields
-   you remembered, so it cannot catch a step that drops the one you forgot.
+1. **Test against a real captured profile**, one test file per step, named for the
+   version the step produces and reading the fixture at the version the step
+   reads. A hand-written literal contains only the fields you remembered, so it
+   cannot catch a step that drops the one you forgot.
 2. **Assert the fixture is genuinely pre-change**, in its own test, before
    anything else. Fixtures drift; a repo-wide replace rewrites one without
    noticing and every other test keeps passing while covering nothing. The fixture
@@ -114,29 +115,29 @@ suite can protect: a broken step corrupts real saved builds silently.
    hydrator. Call the step **directly**, then separately pin that it is registered
    and that the chain reaches it. Verify by deleting the step from the registry and
    re-running: **if the test still passes, it is not testing the migration.**
-4. **Then test the full path end to end** — direct calls prove the transform, not
-   that it is wired in. Assert the upgraded blob was persisted at the latest
-   version, so the chain runs once rather than on every load.
-5. **Assert the user's build survived**, comparing against the fixture rather than
-   hardcoded constants: identity, gear inventory and equipped set, panel stats,
-   every selected inner way, and that the build still produces damage with no
-   missing-rotation warning. **A field your step does not claim to touch must come
+4. **Scope the test to its own hop.** Chain assertions pass the step's target as
+   `toVersion` and assert the step is exactly what was applied and the blob landed
+   at that version. A step's test never asserts the latest version or the latest
+   shape — that knowledge lives only in the central chain tests, so an older
+   step's test never needs editing when a new step lands.
+5. **Assert the user's build survived the hop**, comparing against the fixture
+   rather than hardcoded constants: identity, gear inventory and equipped set,
+   every selected inner way. **A field your step does not claim to touch must come
    out identical.**
 6. **Assert by kind of change**: a renamed field arrived at its new home _and_ the
    old key is gone; a renamed id **exists** among the built-ins (an unknown id is
    skipped silently and only shows up as quietly lower damage); a narrowed
    allowlist cleared the illegal value and left a legal neighbour alone; a changed
    unit converted the number rather than merely being present.
-7. **Never delete an old fixture.** Each exercises every hop from its own version
-   up, which is the only coverage proving a multi-step walk composes. Expectations
-   grow cumulatively — when a later step changes a field an older fixture asserts,
-   update the expectation, never the stored data.
-8. **Assert idempotency both directions** — load/save/load is identical, an
-   already-migrated blob passes through unchanged, and the step does not mutate its
-   input.
-9. **Chain behaviour is tested once, not per step** — old, missing, garbage and
-   future versions, a throwing step, a non-array store. Do not re-test them per
-   migration.
+7. **Never delete an old fixture.** Each is the input its step's test reads, and
+   the composition test walks every one of them to the latest version.
+8. **Assert idempotency both directions** — an already-migrated blob passes
+   through unchanged, and the step does not mutate its input.
+9. **The full walk is tested once, not per step.** One composition test walks
+   every captured fixture to the latest version and asserts the build survived,
+   was persisted once, and still produces damage with no missing-rotation
+   warning; the runner tests cover old, missing, garbage and future versions, a
+   throwing step and a non-array store. Do not re-test any of this per migration.
 
 ⚠️ **A test that constructs `Inputs` literals bypasses the hydrator** and will not
 catch a too-aggressive migration silently changing the default build.

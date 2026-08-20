@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest"
 import { DEFAULT_BEHAVIOR, buildBehaviors, registerSkillBehavior } from "../../src/engine/behavior"
 import { registerBuiltinBuffs, builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { registerDisplayGate, displayGateFor } from "../../src/engine/buffs/displayGates"
-import { MECHANIC_ORDER, prepareMechanics, registerMechanic } from "../../src/engine/mechanics"
+import { prepareMechanics, registerMechanic } from "../../src/engine/mechanics"
 import type { MechanicSetup, TimelineMechanic } from "../../src/engine/mechanics/types"
 import { makeSkill } from "../../src/engine/skill"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -41,7 +41,7 @@ const probeMechanic: TimelineMechanic<{ on: true }> = {
 }
 
 registerBuiltinBuffs(PROBE_CLASS, gates)
-registerMechanic(probeMechanic, MECHANIC_ORDER.hawkwing)
+registerMechanic(probeMechanic)
 registerSkillBehavior(PROBE_SKILL, (build) =>
   build.classId === PROBE_CLASS ? { ...DEFAULT_BEHAVIOR } : null,
 )

@@ -8,6 +8,9 @@ import { V10__renameFrostCladNight } from "./V10__renameFrostCladNight"
 import { V11__setIdsWithoutDisplayName } from "./V11__setIdsWithoutDisplayName"
 import { V12__gearWordIds } from "./V12__gearWordIds"
 import { V13__gearWordCurrentLabels } from "./V13__gearWordCurrentLabels"
+import { V14__dropUnimplementedArmorSets } from "./V14__dropUnimplementedArmorSets"
+import { V15__dropSwallowcallSet } from "./V15__dropSwallowcallSet"
+import { V16__mergeVernalUmbrellaAttunements } from "./V16__mergeVernalUmbrellaAttunements"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -18,6 +21,7 @@ export {
 export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
 export { migrateGearWordId } from "./V12__gearWordIds"
 export { migrateCurrentGearWordLabel } from "./V13__gearWordCurrentLabels"
+export { migrateAttunementId, migrateAttuneTag } from "./V16__mergeVernalUmbrellaAttunements"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -29,6 +33,9 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V11__setIdsWithoutDisplayName,
   V12__gearWordIds,
   V13__gearWordCurrentLabels,
+  V14__dropUnimplementedArmorSets,
+  V15__dropSwallowcallSet,
+  V16__mergeVernalUmbrellaAttunements,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4
@@ -38,26 +45,33 @@ export const LATEST_PROFILES_VERSION = PROFILE_MIGRATIONS.reduce(
   VERSION_BEFORE_THIS_FOLDER,
 )
 
-export function runProfileMigrations(input: unknown): MigrationRunResult | null {
+export function runProfileMigrations(
+  input: unknown,
+  options?: { toVersion?: number },
+): MigrationRunResult | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null
 
   const applied: string[] = []
   const notes: string[] = []
   const source = input as RawProfilesBlob
+  const targetVersion = Math.min(
+    options?.toVersion ?? LATEST_PROFILES_VERSION,
+    LATEST_PROFILES_VERSION,
+  )
 
   const rawVersion = typeof source.v === "number" && Number.isFinite(source.v) ? source.v : 0
   if (rawVersion !== source.v) notes.push(`missing/invalid version, treated as ${rawVersion}`)
 
   // A downgrade must not shred data a newer build wrote.
-  if (rawVersion > LATEST_PROFILES_VERSION) {
-    notes.push(`blob v${rawVersion} is newer than v${LATEST_PROFILES_VERSION} — left untouched`)
+  if (rawVersion > targetVersion) {
+    notes.push(`blob v${rawVersion} is newer than v${targetVersion} — left untouched`)
     return { blob: source, applied, notes }
   }
 
   const byTarget = new Map(PROFILE_MIGRATIONS.map((m) => [m.to, m]))
   let blob: RawProfilesBlob = source
 
-  for (let target = rawVersion + 1; target <= LATEST_PROFILES_VERSION; target++) {
+  for (let target = rawVersion + 1; target <= targetVersion; target++) {
     const step = byTarget.get(target)
     if (!step) {
       notes.push(`no migration to v${target} — passed through`)

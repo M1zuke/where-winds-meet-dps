@@ -3,7 +3,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
-import { HelpHint } from "../help-hint/HelpHint"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINTS } from "../help-hint/deltaHints"
 import styles from "./GearInventoryPanel.module.scss"
 

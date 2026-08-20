@@ -1,8 +1,14 @@
 import { GEAR_SLOTS } from "../../engine/types"
 import type { GearSlot } from "../../engine/types"
-import type { DpsDelta, WorkerRequest, WorkerResponse } from "../../engine/dpsWorker"
+import type {
+  DpsDelta,
+  ProfileMetrics,
+  WorkerRequest,
+  WorkerResponse,
+} from "../../engine/dpsWorker"
 
 type DeltaResponse = Extract<WorkerResponse, { kind: "dpsDeltas" | "equippedDeltas" }>
+type ProfileMetricsResponse = Extract<WorkerResponse, { kind: "profileMetrics" }>
 
 function slotGroups<Item>(
   items: readonly Item[],
@@ -41,10 +47,25 @@ export function shardRequest(request: WorkerRequest, shardCount: number): Worker
     if (groups.length < 2) return null
     return groups.map((pieceIds) => ({ ...request, pieceIds }))
   }
+  if (request.kind === "profileMetrics") {
+    if (request.profiles.length < 2) return null
+    const groups = Array.from(
+      { length: Math.min(shardCount, request.profiles.length) },
+      (): typeof request.profiles => [],
+    )
+    request.profiles.forEach((profile, index) => groups[index % groups.length].push(profile))
+    return groups.map((profiles) => ({ ...request, profiles }))
+  }
   return null
 }
 
 export function mergeShardResponses(parts: readonly WorkerResponse[]): WorkerResponse {
+  if (parts[0].kind === "profileMetrics") {
+    const metricsByProfileId: Record<string, ProfileMetrics> = {}
+    for (const part of parts)
+      Object.assign(metricsByProfileId, (part as ProfileMetricsResponse).metricsByProfileId)
+    return { ...(parts[0] as ProfileMetricsResponse), metricsByProfileId }
+  }
   const deltas: Record<string, DpsDelta> = {}
   for (const part of parts) Object.assign(deltas, (part as DeltaResponse).deltas)
   return { ...(parts[0] as DeltaResponse), deltas }

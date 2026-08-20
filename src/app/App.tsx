@@ -1,7 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { HashRouter, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import {
+  HashRouter,
+  NavLink,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom"
 import { runEngine } from "../engine/dps"
 import { applyArmorSet, applyBowSet } from "../engine/panel"
+import { withCustomContent } from "../engine/customContent"
 import { withDerivedStats } from "../engine/derivedInputs"
 import type { Inputs, StoredProfile } from "../engine/types"
 import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
@@ -20,6 +29,7 @@ import { SimulationToast, SIMULATION_PATH } from "../ui/layout/simulation-toast/
 import { DpsActivityToast } from "../ui/layout/dps-activity-toast/DpsActivityToast"
 import { GraduationBuildDialog } from "../ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/SetupWizard"
+import { activeRotationName } from "../ui/features/rotation/rotationOptions"
 import { useI18n } from "../i18n/i18nContext"
 import { I18nProvider } from "../i18n/I18nProvider"
 import { ConfirmProvider } from "../ui/components/confirm-dialog/ConfirmDialog"
@@ -49,8 +59,10 @@ function AppInner() {
   const [startedRunCount, setStartedRunCount] = useState(0)
   const [acknowledgedRunCount, setAcknowledgedRunCount] = useState(0)
   const isSimulationRunning = simulation.status === "running"
-  const isOnSimulationTab = useLocation().pathname === SIMULATION_PATH
+  const pathname = useLocation().pathname
+  const isOnSimulationTab = pathname === SIMULATION_PATH
   const areInputsLocked = isSimulationRunning && !isOnSimulationTab
+  const navigate = useNavigate()
 
   const startParseSimulation = simulation.start
   const startSimulation = useCallback(
@@ -99,14 +111,10 @@ function AppInner() {
   const [customBuffs] = useState<Buff[]>(() => loadCustomBuffs())
   const [customDebuffs] = useState<Debuff[]>(() => loadCustomDebuffs())
 
-  const configuredInputs = useMemo(() => {
-    const classSkills = customSkills.filter((skill) => skill.classId === inputs.classId)
-    const classBuffs = customBuffs.filter((buff) => buff.classId === inputs.classId)
-    const classDebuffs = customDebuffs.filter((debuff) => debuff.classId === inputs.classId)
-    const withSkills = classSkills.length ? { ...inputs, customSkills: classSkills } : inputs
-    const withBuffs = classBuffs.length ? { ...withSkills, customBuffs: classBuffs } : withSkills
-    return classDebuffs.length ? { ...withBuffs, customDebuffs: classDebuffs } : withBuffs
-  }, [inputs, customSkills, customBuffs, customDebuffs])
+  const configuredInputs = useMemo(
+    () => withCustomContent(inputs, customSkills, customBuffs, customDebuffs),
+    [inputs, customSkills, customBuffs, customDebuffs],
+  )
 
   const engineInputs = useMemo(() => {
     const derived = withDerivedStats(configuredInputs)
@@ -119,6 +127,9 @@ function AppInner() {
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
   )
+
+  const rotationName = useMemo(() => activeRotationName(inputs), [inputs])
+  const goToRotationTab = useCallback(() => navigate("/rotation"), [navigate])
 
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -250,6 +261,11 @@ function AppInner() {
     return () => clearTimeout(id)
   }, [savedAt])
 
+  const tabRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
+  useEffect(() => {
+    tabRefs.current[pathname]?.scrollIntoView({ block: "nearest", inline: "nearest" })
+  }, [pathname])
+
   const TABS: { path: string; label: string; align?: "right" }[] = [
     { path: "/overview", label: t("Overview") },
     { path: "/gear", label: t("Gear") },
@@ -259,6 +275,8 @@ function AppInner() {
     { path: "/talents", label: t("Talents & Oddities") },
     { path: "/profile", label: t("Profiles"), align: "right" },
   ]
+
+  const saveLabel = savedAt && !isDirty ? t("Saved ✓") : isDirty ? t("Save") : t("Saved")
 
   return (
     <div className={styles.app}>
@@ -303,7 +321,7 @@ function AppInner() {
               disabled={!isDirty}
               aria-label={t("Save")}
             >
-              {savedAt && !isDirty ? t("Saved ✓") : isDirty ? t("Save") : t("Saved")}
+              {saveLabel}
             </button>
             <button
               type="button"
@@ -325,6 +343,8 @@ function AppInner() {
           theoreticalDps={graduation.theoreticalDps}
           onGraduationClick={() => setGraduationDialogOpen(true)}
           graduationDisabled={isSimulationRunning}
+          rotationName={rotationName}
+          onRotationClick={goToRotationTab}
         />
 
         <nav className={styles.tabs} role="tablist">
@@ -333,6 +353,9 @@ function AppInner() {
               key={tab.path}
               to={tab.path}
               role="tab"
+              ref={(node) => {
+                tabRefs.current[tab.path] = node
+              }}
               className={({ isActive }) =>
                 styles.tab +
                 (isActive ? ` ${styles.active}` : "") +
@@ -420,6 +443,9 @@ function AppInner() {
                   <ProfilePanel
                     profiles={committed.profiles}
                     activeId={committed.activeId}
+                    customSkills={customSkills}
+                    customBuffs={customBuffs}
+                    customDebuffs={customDebuffs}
                     onCreate={createProfile}
                     onSelect={selectProfile}
                     onRename={renameProfile}

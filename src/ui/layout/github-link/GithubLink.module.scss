@@ -1,3 +1,5 @@
+@use "breakpoints";
+
 .contributeNote {
   display: inline-flex;
   align-items: center;
@@ -15,8 +17,16 @@
   transition: color 0.1s;
 }
 
-.githubLink:hover {
-  color: var(--color-text);
+@include breakpoints.hoverable {
+  .githubLink:hover {
+    color: var(--color-text);
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .noteText {
+    display: none;
+  }
 }
 
 .githubLink svg {

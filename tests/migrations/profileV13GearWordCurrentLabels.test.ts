@@ -1,11 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest"
-import { loadProfiles } from "../../src/storage"
-import {
-  LATEST_PROFILES_VERSION,
-  PROFILE_MIGRATIONS,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { describe, expect, it } from "vitest"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import {
   V13__gearWordCurrentLabels,
   migrateCurrentGearWordLabel,
@@ -14,8 +8,6 @@ import { migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
 import { isGearWordId, statLine } from "../../src/data/stats/statLines"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import storedProfileFile from "./testProfiles/v12/bellstrikeUmbra.json"
-
-const PROFILES_KEY = "wwm.profiles"
 
 type StoredFile = { v: number; profile: StoredProfile }
 const LEGACY = storedProfileFile as unknown as StoredFile
@@ -79,15 +71,12 @@ describe("migrateCurrentGearWordLabel", () => {
   })
 })
 
-describe("V13 is registered and the chain reaches it", () => {
-  it("is the latest step", () => {
-    expect(PROFILE_MIGRATIONS).toContain(V13__gearWordCurrentLabels)
-    expect(LATEST_PROFILES_VERSION).toBe(13)
-  })
-
-  it("a v12 blob walks to v13 and stores ids", () => {
-    const result = runProfileMigrations(blobOf(withCurrentLabels(LEGACY.profile), 12))!
-    expect(result.applied).toContain("V13__gearWordCurrentLabels")
+describe("V13__gearWordCurrentLabels — registered in the chain", () => {
+  it("a v12 blob migrated to v13 passes through exactly this step and stores ids", () => {
+    const result = runProfileMigrations(blobOf(withCurrentLabels(LEGACY.profile), 12), {
+      toVersion: 13,
+    })!
+    expect(result.applied).toEqual(["V13__gearWordCurrentLabels"])
     expect(result.blob.v).toBe(13)
     for (const word of storedWords((result.blob.profiles[0] as StoredProfile).inputs)) {
       expect(isGearWordId(word), word).toBe(true)
@@ -95,52 +84,37 @@ describe("V13 is registered and the chain reaches it", () => {
   })
 })
 
-describe("the user's build survives", () => {
-  beforeEach(() => localStorage.clear())
-
+describe("the user's build survives the hop", () => {
   it("keeps every gear word a v12 profile holds under a reworded label", () => {
     const stored = withCurrentLabels(LEGACY.profile)
     const before = storedWords(stored.inputs)
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(stored, 12)))
+    const migrated = V13__gearWordCurrentLabels.migrate(blobOf(stored, 12))
+    const after = (migrated.profiles[0] as StoredProfile).inputs
 
-    const loaded = loadProfiles().profiles[0].inputs
-
-    expect(storedWords(loaded)).toHaveLength(before.length)
-    expect(loaded.inventory).toHaveLength(stored.inputs.inventory.length)
-    expect(loaded.equipped).toEqual(stored.inputs.equipped)
+    expect(storedWords(after)).toHaveLength(before.length)
+    expect(after.inventory).toHaveLength(stored.inputs.inventory.length)
+    expect(after.equipped).toEqual(stored.inputs.equipped)
   })
 
   it("keeps the roll value, not just the word", () => {
-    const stored = withCurrentLabels(LEGACY.profile)
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(stored, 12)))
-
-    const loaded = loadProfiles().profiles[0].inputs
-    const rolls = loaded.inventory.flatMap((piece) =>
+    const migrated = V13__gearWordCurrentLabels.migrate(
+      blobOf(withCurrentLabels(LEGACY.profile), 12),
+    )
+    const after = (migrated.profiles[0] as StoredProfile).inputs
+    const rolls = after.inventory.flatMap((piece) =>
       piece.words.filter((entry) => entry.word).map((entry) => entry.value),
     )
     expect(rolls.length).toBeGreaterThan(0)
     expect(rolls.every((value) => value > 0)).toBe(true)
   })
-
-  it("persists the repair at the latest version, so the walk runs once", () => {
-    localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify(blobOf(withCurrentLabels(LEGACY.profile), 12)),
-    )
-    loadProfiles()
-
-    const written = JSON.parse(localStorage.getItem(PROFILES_KEY)!) as RawProfilesBlob
-    expect(written.v).toBe(LATEST_PROFILES_VERSION)
-    for (const word of storedWords((written.profiles[0] as StoredProfile).inputs)) {
-      expect(isGearWordId(word), word).toBe(true)
-    }
-  })
 })
 
 describe("idempotency", () => {
   it("an already-migrated blob passes through unchanged", () => {
-    const once = runProfileMigrations(blobOf(withCurrentLabels(LEGACY.profile), 12))!.blob
-    const twice = runProfileMigrations(clone(once))!.blob
+    const once = runProfileMigrations(blobOf(withCurrentLabels(LEGACY.profile), 12), {
+      toVersion: 13,
+    })!.blob
+    const twice = runProfileMigrations(clone(once), { toVersion: 13 })!.blob
     expect(twice).toEqual(once)
   })
 

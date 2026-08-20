@@ -33,6 +33,7 @@ import {
 } from "../src/engine/derivedInputs"
 import { LATEST_PROFILES_VERSION } from "../src/migrations"
 import { SET_ID } from "../src/data/sets/ids"
+import { SET_DEFS } from "../src/data/sets"
 import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
@@ -87,9 +88,9 @@ describe("storage", () => {
   })
 
   it("initialInputs returns the saved blob when present", () => {
-    const next: Inputs = { ...defaultInputs, set: SET_ID.swallowcall }
+    const next: Inputs = { ...defaultInputs, set: SET_ID.jadeware }
     saveInputs(next)
-    expect(initialInputs().set).toBe(SET_ID.swallowcall)
+    expect(initialInputs().set).toBe(SET_ID.jadeware)
   })
 
   it("loadInputs is null when the saved blob is malformed", () => {
@@ -918,6 +919,38 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
     expect(healed.receives).toEqual(expectedReceives)
   })
 
+  it("gives a drone debuff seeded before Lingering Bone its extension and its doubling back", () => {
+    const seeded = {
+      ...builtinDebuffsForClass("silkbindJade").find(
+        (debuff) => debuff.id === "debuff-silkbindJade-umbdrone-20hit",
+      )!,
+      receives: ["soulShaken"],
+      triggersBuffs: undefined,
+    }
+    saveCustomDebuff(seeded)
+    const healed = loadCustomDebuffsForClass("silkbindJade").find(
+      (debuff) => debuff.id === seeded.id,
+    )!
+    expect(healed.receives).toEqual(["soulShaken", "lingeringBone"])
+    expect(healed.triggersBuffs).toEqual(["lingeringBone"])
+  })
+
+  it("leaves a drone debuff the user has actually edited alone", () => {
+    const edited = {
+      ...builtinDebuffsForClass("silkbindJade").find(
+        (debuff) => debuff.id === "debuff-silkbindJade-umbdrone-23hit",
+      )!,
+      receives: [],
+      triggersBuffs: undefined,
+    }
+    saveCustomDebuff(edited)
+    const reloaded = loadCustomDebuffsForClass("silkbindJade").find(
+      (debuff) => debuff.id === edited.id,
+    )!
+    expect(reloaded.receives).toEqual([])
+    expect(reloaded.triggersBuffs).toBeUndefined()
+  })
+
   it("leaves an already-authored debuff's receives alone, including an explicit empty one", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
       (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
@@ -1028,6 +1061,15 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.set).toBe("jadeware")
   })
+
+  it.each([...SET_DEFS.map((set) => set.id)])(
+    "keeps %s, including a set registered after the legacy name table was frozen",
+    (setId) => {
+      saveInputs({ ...defaultInputs, set: setId })
+      const { profiles } = loadProfiles()
+      expect(profiles[0].inputs.set).toBe(setId)
+    },
+  )
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
@@ -1061,7 +1103,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
   }
 
   it("degrades a classId naming a class that no longer exists, and the result doesn't throw when deriving stats", () => {
-    writeProfileWithClassId("silkbindJade")
+    writeProfileWithClassId("stonesplitPower")
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.classId).toBe(defaultInputs.classId)
     expect(() => withDerivedStats(profiles[0].inputs)).not.toThrow()
@@ -1098,7 +1140,7 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     expect(loadProfiles().profiles[0].inputs.classId).toBe("bellstrikeUmbra")
 
     kvStore.remove(PROFILES_KEY)
-    writeProfileWithClassId("qianSiYu")
+    writeProfileWithClassId("mingJinHong")
     expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
   })
 
@@ -1125,8 +1167,8 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
             name: "Legacy",
             inputs: {
               ...defaultInputs,
-              classId: "silkbindJade",
-              selectedBuiltinRotationId: "builtin-silkbindJade-t5",
+              classId: "stonesplitPower",
+              selectedBuiltinRotationId: "builtin-stonesplitPower-t5",
             },
           },
         ],

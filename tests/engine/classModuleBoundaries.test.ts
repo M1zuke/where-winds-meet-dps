@@ -2,12 +2,14 @@
 // mechanically enforced: a class module never reaches the panel/registry
 // layer (the cycle criterion 11 exists to foreclose), and `defineClassBuff`
 // is not a second buff system — its marker is inert everywhere `src/engine`
-// looks, and every module carrying it is actually owned by a class.
+// looks, and it appears exactly on the modules a class's own `classBuffDefs`
+// lists, never on an inner way's `buffDefs` or a global/group list.
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
-import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
+import { CLASS_DEFS } from "../../src/definitions/classes/registry"
 import { GLOBAL_BUFF_DEFS, GROUP_BUFF_DEFS } from "../../src/data/skills/buffs"
+import { INNER_WAYS } from "../../src/data/innerWays"
 
 const ROOT = process.cwd()
 
@@ -82,14 +84,24 @@ describe("no class module imports the panel/registry layer", () => {
 })
 
 describe("defineClassBuff is not a second buff system", () => {
-  it("every buffModules entry (a class's own + every slottable inner way's) carries the marker", () => {
+  it("every classBuffDefs entry — the class's own — carries the marker", () => {
     const unmarked: string[] = []
     for (const classDef of CLASS_DEFS()) {
-      for (const module of classDefinition(classDef.id)?.buffModules ?? []) {
+      for (const module of classDef.classBuffDefs) {
         if (!("classBuff" in module)) unmarked.push(`${classDef.id}/${module.id}`)
       }
     }
     expect(unmarked).toEqual([])
+  })
+
+  it("no inner-way buffDefs entry carries the marker", () => {
+    const marked: string[] = []
+    for (const innerWay of INNER_WAYS) {
+      for (const module of innerWay.buffDefs ?? []) {
+        if ("classBuff" in module) marked.push(`${innerWay.id}/${module.id}`)
+      }
+    }
+    expect(marked).toEqual([])
   })
 
   it("no GLOBAL_BUFF_DEFS or GROUP_BUFF_DEFS entry carries the marker", () => {
@@ -99,11 +111,9 @@ describe("defineClassBuff is not a second buff system", () => {
     expect(marked).toEqual([])
   })
 
-  it("every declared class or inner-way buff is listed by at least one class", async () => {
+  it("every declared class buff is listed by at least one class's classBuffDefs", async () => {
     const listedIds = new Set(
-      CLASS_DEFS().flatMap(
-        (classDef) => classDefinition(classDef.id)?.buffModules.map((module) => module.id) ?? [],
-      ),
+      CLASS_DEFS().flatMap((classDef) => classDef.classBuffDefs.map((module) => module.id)),
     )
     const orphaned: string[] = []
     for (const dir of buffFolders()) {
@@ -130,14 +140,24 @@ describe("defineClassBuff is not a second buff system", () => {
 
 describe("src/data/skills/*/buffs/*.ts uses defineClassBuff only", () => {
   it("no per-class buffs folder declares a bare defineBuff(", () => {
+    const exempt = new Set([join(ROOT, "src/data/skills/buffs"), join(ROOT, "src/data/innerWays")])
     const offenders: string[] = []
     for (const dir of buffFolders()) {
-      if (dir === join(ROOT, "src/data/skills/buffs")) continue
+      if (exempt.has(dir)) continue
       for (const file of readdirSync(dir).filter((entry) => entry.endsWith(".ts"))) {
         const path = join(dir, file)
         if (/\bdefineBuff\(/.test(readFileSync(path, "utf8"))) offenders.push(repoRelative(path))
       }
     }
+    expect(offenders).toEqual([])
+  })
+})
+
+describe("src/data/innerWays uses defineBuff only", () => {
+  it("no inner-way module declares a defineClassBuff(", () => {
+    const offenders = tsFiles(join(ROOT, "src/data/innerWays"))
+      .filter((path) => /\bdefineClassBuff\b/.test(readFileSync(path, "utf8")))
+      .map(repoRelative)
     expect(offenders).toEqual([])
   })
 })

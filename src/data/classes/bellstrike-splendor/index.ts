@@ -27,6 +27,7 @@ export const bellstrikeSplendor = defineClass({
     INNER_WAY_ID.moraleChant,
     INNER_WAY_ID.insightfulStrike,
     INNER_WAY_ID.bitterSeason,
+    INNER_WAY_ID.breakingPoint,
   ],
   classSpecificAttunements: [
     "swordQ",

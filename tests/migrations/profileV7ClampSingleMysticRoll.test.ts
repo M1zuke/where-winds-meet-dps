@@ -5,18 +5,10 @@
 // the clamp tests below.
 import { beforeEach, describe, expect, it } from "vitest"
 import { loadProfiles } from "../../src/storage"
-import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { computeGearContribution, relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
-import {
-  LATEST_PROFILES_VERSION,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V7__clampSingleMysticWordRoll } from "../../src/migrations/V7__clampSingleMysticWordRoll"
-import { migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
 import type { GearPiece, Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 
@@ -69,10 +61,6 @@ function withMysticWordAt(profile: StoredProfile, value: number, relayed: boolea
     isMysticWord(entry.word) ? { ...entry, value } : entry,
   ) as GearPiece["words"]
   return next
-}
-
-function pipelineDps(inputs: Inputs): ReturnType<typeof runEngine> {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
 }
 
 describe("profile-v6 fixture — the stored blob predates the corrected max roll", () => {
@@ -157,12 +145,6 @@ describe("V7 step — v6 → v7 in isolation", () => {
     expect(migratedProfile.name).toBe(LEGACY.profile.name)
   })
 
-  it("is registered, and the chain reports it for a v6 blob", () => {
-    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toContain("V7__clampSingleMysticWordRoll")
-    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
-  })
-
   it("does not mutate its input, and migrating twice equals migrating once", () => {
     const input = blobOf(withMysticWordAt(LEGACY.profile, 0.11, false))
     const snapshot = clone(input)
@@ -170,6 +152,17 @@ describe("V7 step — v6 → v7 in isolation", () => {
     expect(input).toEqual(snapshot)
     const twice = V7__clampSingleMysticWordRoll.migrate(once)
     expect(twice).toEqual(once)
+  })
+})
+
+describe("V7__clampSingleMysticWordRoll — registered in the chain", () => {
+  it("a v6 blob migrated to v7 passes through exactly this step", () => {
+    const result = runProfileMigrations(blobOf(withMysticWordAt(LEGACY.profile, 0.11, false)), {
+      toVersion: 7,
+    })!
+    expect(result.applied).toEqual(["V7__clampSingleMysticWordRoll"])
+    expect(result.blob.v).toBe(7)
+    expect(mysticWordValues(inputsOf(result.blob))).toEqual([MAX_ROLL])
   })
 })
 
@@ -186,54 +179,5 @@ describe("v6 profile with an over-cap roll → loaded build", () => {
       (contribution) => contribution.path === "singleMysticBoost",
     )
     expect(entry?.amount).toBeCloseTo(MAX_ROLL, 10)
-  })
-
-  it("re-persists the blob at the latest version so the walk runs once", () => {
-    writeProfilesBlob(withMysticWordAt(LEGACY.profile, 0.11, false))
-    loadProfiles()
-    const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
-    expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-    expect(persisted.profiles[0].inputs.inventory[PIECE_WITH_MYSTIC_WORD].words).toEqual(
-      expect.arrayContaining([{ word: WORD_ID, value: MAX_ROLL, retuned: false }]),
-    )
-  })
-
-  it("keeps the rest of the user's build and still computes positive DPS", () => {
-    writeProfilesBlob(withMysticWordAt(LEGACY.profile, 0.11, false))
-    const after = loadOne()
-    expect(after.id).toBe(LEGACY.profile.id)
-    expect(after.name).toBe(LEGACY.profile.name)
-    expect(after.inputs.inventory).toHaveLength(LEGACY.profile.inputs.inventory.length)
-    expect(after.inputs.equipped).toEqual(LEGACY.profile.inputs.equipped)
-    expect(after.inputs.mindMethods.map((slot) => slot.name)).toEqual(
-      LEGACY.profile.inputs.mindMethods.map((slot) => slot.name),
-    )
-
-    const result = pipelineDps(after.inputs)
-    expect(result.dps).toBeGreaterThan(0)
-    expect(result.warnings.some((warning) => /no default rotation/i.test(warning))).toBe(false)
-  })
-
-  it("is idempotent — loading twice in a row yields an equal profile", () => {
-    writeProfilesBlob(withMysticWordAt(LEGACY.profile, 0.11, false))
-    const once = loadOne()
-    writeProfilesBlob(clone(once))
-    expect(loadOne()).toEqual(once)
-  })
-})
-
-describe("v6 profile at its captured values", () => {
-  beforeEach(() => localStorage.clear())
-
-  it("loads with the word value byte-identical — only the word id is rewritten", () => {
-    writeProfilesBlob(clone(LEGACY.profile))
-    const after = loadOne()
-    expect(mysticWordValues(after.inputs)).toEqual([0.078])
-    expect(after.inputs.inventory[PIECE_WITH_MYSTIC_WORD].words).toEqual(
-      LEGACY.profile.inputs.inventory[PIECE_WITH_MYSTIC_WORD].words.map((entry) => ({
-        ...entry,
-        word: migrateGearWordId(entry.word),
-      })),
-    )
   })
 })

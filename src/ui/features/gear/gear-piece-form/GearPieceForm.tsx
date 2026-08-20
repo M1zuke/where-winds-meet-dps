@@ -19,7 +19,7 @@ import { Combobox, type ComboboxOption } from "../../../components/combobox/Comb
 import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
-import { HelpHint } from "../help-hint/HelpHint"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
 import styles from "./GearPieceForm.module.scss"
 
 function fmtDpsDelta(deltaDps: number): string {

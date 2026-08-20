@@ -1,3 +1,5 @@
+@use "breakpoints";
+
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   color-scheme: light dark;
@@ -29,10 +31,19 @@
 
 body {
   margin: 0;
-  padding: 16px 24px;
+  padding: calc(16px + env(safe-area-inset-top)) calc(24px + env(safe-area-inset-right))
+    calc(16px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
   height: 100vh;
+  height: 100dvh;
   box-sizing: border-box;
   overflow: hidden;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  body {
+    padding: calc(8px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right))
+      calc(8px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+  }
 }
 
 /* Without an explicit height, #root collapses to its content size, which

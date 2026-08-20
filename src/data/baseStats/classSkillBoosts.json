@@ -172,5 +172,63 @@
       "scalesWith": "stonesplit.min",
       "scaleMax": 328
     }
+  ],
+  "silkbindJade": [
+    {
+      "skill": "Critical Rate UP",
+      "stat": "critRate",
+      "maxBonus": 0.085,
+      "scalesWith": "agility",
+      "scaleMax": 280
+    },
+    {
+      "skill": "Physical Attack UP",
+      "stat": "minPhys",
+      "maxBonus": 73.9,
+      "scalesWith": "agility",
+      "scaleMax": 280
+    },
+    {
+      "skill": "Umbrella Silkbind Attack Min",
+      "stat": "minSilkbind",
+      "maxBonus": 98,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Umbrella Silkbind Attack Max",
+      "stat": "maxSilkbind",
+      "maxBonus": 196,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Fan Silkbind Attack Min",
+      "stat": "minSilkbind",
+      "maxBonus": 98,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Fan Silkbind Attack Max",
+      "stat": "maxSilkbind",
+      "maxBonus": 196,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Silkbind Penetration Scale",
+      "stat": "silkbindPenetration",
+      "maxBonus": 0.22,
+      "scalesWith": "silkbind.min",
+      "scaleMax": 328
+    },
+    {
+      "skill": "Attribute Damage Scale",
+      "stat": "attributeDamage",
+      "maxBonus": 0.11,
+      "scalesWith": "silkbind.min",
+      "scaleMax": 328
+    }
   ]
 }

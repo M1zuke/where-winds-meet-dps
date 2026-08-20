@@ -14,6 +14,7 @@ export const spearheavy1Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy1Hit,
   triggersBuffs: [BUFF.soulShaken],
+  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
   castFrames: 60,
   triggerable: true,
   hits: [

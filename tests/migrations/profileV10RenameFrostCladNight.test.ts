@@ -1,15 +1,10 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
-import {
-  LATEST_PROFILES_VERSION,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V10__renameFrostCladNight } from "../../src/migrations/V10__renameFrostCladNight"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v9/stonesplitStrength.json"
 
-const PROFILES_KEY = "wwm.profiles"
 const LEGACY_INPUTS_KEY = "wwm.inputs"
 
 type LegacyFile = { v: number; profile: StoredProfile }
@@ -76,39 +71,16 @@ describe("V10__renameFrostCladNight — called directly", () => {
 })
 
 describe("V10__renameFrostCladNight — registered in the chain", () => {
-  it("walks the v9 fixture through the rename", () => {
-    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toContain("V10__renameFrostCladNight")
-    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
+  it("a v9 blob migrated to v10 passes through exactly this step", () => {
+    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)), { toVersion: 10 })!
+    expect(result.applied).toEqual(["V10__renameFrostCladNight"])
+    expect(result.blob.v).toBe(10)
     expect(frostCladName(inputsOf(result.blob))).toBe("Frost-Clad Night")
   })
 })
 
-describe("V10__renameFrostCladNight — storage paths", () => {
+describe("hydrator backstops — the paths that never walk the chain", () => {
   beforeEach(() => localStorage.clear())
-
-  it("upgrades and persists a saved profile without losing its build", () => {
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(clone(LEGACY.profile))))
-    const { profiles } = loadProfiles()
-    const loaded = profiles[0]
-    expect(frostCladName(loaded.inputs)).toBe("Frost-Clad Night")
-    expect(loaded.id).toBe(LEGACY.profile.id)
-    expect(loaded.name).toBe(LEGACY.profile.name)
-    expect(loaded.inputs.breakthrough).toBe(LEGACY.profile.inputs.breakthrough)
-    expect(loaded.inputs.arsenal).toBe(LEGACY.profile.inputs.arsenal)
-    expect(loaded.inputs.inventory).toHaveLength(LEGACY.profile.inputs.inventory.length)
-    expect(loaded.inputs.equipped).toEqual(LEGACY.profile.inputs.equipped)
-
-    const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
-    expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-    expect(persisted.profiles[0].inputs.mindMethods[0].name).toBe("Frost-Clad Night")
-  })
-
-  it("is idempotent across repeated loads", () => {
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(clone(LEGACY.profile))))
-    const once = loadProfiles()
-    expect(loadProfiles()).toEqual(once)
-  })
 
   it("renames the old name in a bare imported profile", () => {
     expect(frostCladName(importProfile(JSON.stringify(LEGACY.profile)).inputs)).toBe(

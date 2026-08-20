@@ -16,7 +16,7 @@ import { hitToArtRow, selectHitVariant } from "./skill"
 import type { StatusView } from "./ledger"
 import type { computeSkillDamage } from "./formula"
 import { WEAPON_TAG } from "./buffs/tags"
-import { stat, artBonus, damageMultiplier, type ArtEffect, type HitEffect } from "./effects/effect"
+import { damageMultiplier, type ArtEffect, type HitEffect } from "./effects/effect"
 
 export type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -67,20 +67,6 @@ export interface SkillBehavior {
   onHit?(input: HitInput): HitEffect[]
 }
 
-// Per-ability qi flags (`.tmp/site/deobfuscated.js` ~L42150-42174). Tag-driven
-// and class-agnostic, so they belong to the default behaviour rather than to
-// any one skill: QI_LOW_CRIT / QI_LOW_DMG add crit rate / all-damage while in
-// low qi (below-30 or qi-break); QI_BREAK_PEN adds phys pen UNCONDITIONALLY,
-// plus more during qi-break or Lingering Bone.
-const QI_LOW_CRIT_TAG = "prop:hasLowQiCritBoost"
-const QI_LOW_DMG_TAG = "prop:hasLowQiDmgBoost"
-const QI_BREAK_PEN_TAG = "prop:hasQiBreakPhysPen"
-const QI_LOW_CRIT_BOOST = 0.3
-const QI_LOW_DMG_BOOST = 0.08
-const QI_BREAK_PEN_BASE = 5
-const QI_BREAK_PEN_BONUS = 15
-const LINGERING_BONE_BUFF = "lingeringBone"
-
 // "If the skill hits a non-player target without Qi or with depleted Qi, the
 // damage dealt is doubled" (Dragon Head - Plus, official text in
 // `reference/locale/zhToEnOfficial.json`). Depleted Qi is the qi-break window;
@@ -99,20 +85,26 @@ const QI_BREAK_DAMAGE_MULTIPLIER = 2
 // `floor(min(minPhys, 750) / 50) * 0.024`, capped at +0.36. Resolved here,
 // not as a `patchArt` effect: it REPLACES the hit's own coefficient, it does
 // not add to it.
-const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
+export const MIN_PHYS_CRIT_BONUS_SENTINEL = 1
 const MIN_PHYS_CRIT_CAP = 750
 const MIN_PHYS_CRIT_STEP = 50
 const MIN_PHYS_CRIT_PER_STEP = 0.024
+
+// The real term the sentinel stands for. Exported because a DoT tick resolves
+// it too, and the two paths must not drift.
+export function minPhysCritBonus(smallPhys: number): number {
+  return (
+    Math.floor(Math.min(Math.max(0, smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP) *
+    MIN_PHYS_CRIT_PER_STEP
+  )
+}
 
 export const DEFAULT_BEHAVIOR: SkillBehavior = {
   chooseVariant(input) {
     return selectHitVariant(input.hit, input.holds)
   },
 
-  claimStatEffects(input, phase) {
-    const tags = input.skill.tags
-    if (phase !== "normal" && tags?.includes(QI_LOW_DMG_TAG))
-      return [stat("allDamageBoost", QI_LOW_DMG_BOOST)]
+  claimStatEffects() {
     return []
   },
 
@@ -121,16 +113,6 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
     if (!tags || tags.length === 0) return []
     const effects: ArtEffect[] = []
 
-    if (context.phase !== "normal" && tags.includes(QI_LOW_CRIT_TAG)) {
-      effects.push(artBonus("extraCritRate", QI_LOW_CRIT_BOOST))
-    }
-    if (tags.includes(QI_BREAK_PEN_TAG)) {
-      const boosted =
-        context.phase === "exhausted" || context.isEngineBuffActive(LINGERING_BONE_BUFF)
-      effects.push(
-        artBonus("extraPhysPenetration", QI_BREAK_PEN_BASE + (boosted ? QI_BREAK_PEN_BONUS : 0)),
-      )
-    }
     if (
       context.phase === "exhausted" &&
       context.qiBreakEnabled &&
@@ -156,9 +138,7 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
     if (tags && tags.length > 0 && input.hit.extraCritDamage === MIN_PHYS_CRIT_BONUS_SENTINEL) {
       const weaponType = tags.find((tag) => tag.startsWith(WEAPON_TAG))?.slice(WEAPON_TAG.length)
       art.extraCritDamage = input.build.grantsMinPhysCritBoost(weaponType)
-        ? Math.floor(
-            Math.min(Math.max(0, context.smallPhys), MIN_PHYS_CRIT_CAP) / MIN_PHYS_CRIT_STEP,
-          ) * MIN_PHYS_CRIT_PER_STEP
+        ? minPhysCritBonus(context.smallPhys)
         : 0
     }
     return art

@@ -21,6 +21,8 @@ export const snowpartingvcPrepull = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
   receives: [
+    BUFF.mistwillowLightBuff,
+    BUFF.mistwillowBuff,
     BUFF.frostCladSnowbreak,
     BUFF.frostCladSnowbreakIPConsume,
     BUFF.frostCladSnowbreakT6,

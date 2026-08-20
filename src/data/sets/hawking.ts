@@ -1,6 +1,6 @@
 import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
-import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
+import { declareMechanic } from "../../engine/mechanics"
 import { hawkwingMechanic } from "./hawkwingMechanic"
 
 const DISPLAY_NAME = "Hawking"
@@ -14,7 +14,5 @@ export const hawking = defineSet({
   // scheduler didn't run.
   formulaBonus: { physBoost: 0.1 },
   panelBonus: { stat: "affinityRate", value: 0.045 },
-  mechanics: [
-    declareMechanic(hawkwingMechanic(SET_ID.hawking, DISPLAY_NAME), MECHANIC_ORDER.hawkwing),
-  ],
+  mechanics: [declareMechanic(hawkwingMechanic(SET_ID.hawking, DISPLAY_NAME))],
 })

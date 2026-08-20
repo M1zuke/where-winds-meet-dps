@@ -14,6 +14,7 @@ export const spearheavy1HitPrepull = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy1HitPrepull,
   triggersBuffs: [BUFF.soulShaken],
+  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
   castFrames: 0,
   triggerable: true,
   hits: [

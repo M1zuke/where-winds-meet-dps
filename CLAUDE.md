@@ -276,10 +276,10 @@ display wrapper that duplicates an engine constant. One source of truth.
 Four rules apply unconditionally, from the external sources (Midasione PDF + CN
 community sources): graze rate `(1−precision)(1−affinity)`; net-pen `÷100`
 deficit / `÷200` overflow (deliberately inverts PDF §7 — **do not "fix" it
-back**); DoT (`sustain`) rows lose flat damage and elevated matching-path
-scaling; a skill's raw affinity-rate bonus is `÷(1+r)` and falls inside the cap,
-while its raw crit-rate bonus is flat and added after the cap. Penetration
-resistance is **zero for every target**.
+back**); DoT (`sustain`) rows lose elevated matching-path scaling but keep
+the flat damage their own data authors; a skill's raw affinity-rate bonus is
+`÷(1+r)` and falls inside the cap, while its raw crit-rate bonus is flat and
+added after the cap. Penetration resistance is **zero for every target**.
 
 These have no cached anchor — only the directional `damageRules.test.ts`.
 

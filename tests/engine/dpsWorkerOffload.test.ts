@@ -6,6 +6,7 @@ import {
   computeEquippedDeltas,
   computeGearAnalysisRequest,
   computeParseSimulation,
+  computeProfileMetrics,
   computeRankingRequest,
   computeRotationDps,
   computeSetTiles,
@@ -17,8 +18,16 @@ import { computeGearAnalysis } from "../../src/engine/gearAnalysis"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { computeRanking } from "../../src/engine/itemRanking"
 import { runEngine } from "../../src/engine/dps"
+import { withCustomContent } from "../../src/engine/customContent"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS, swapArsenal } from "../../src/engine/panel"
+import type { Skill } from "../../src/engine/skill"
+import {
+  applyArmorSet,
+  applyBowSet,
+  ARMOR_SET_OPTIONS,
+  defaultArsenalForClass,
+  swapArsenal,
+} from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 import { GEAR_SLOTS } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
@@ -86,9 +95,26 @@ describe("computeSetTiles", () => {
     expect(res.bowDpsByChoice.none).toBe(dpsFor({ ...umbraInputs, bowSet: null }))
   })
 
-  it("arsenalDpsByChoice matches the reference pipeline for two choices", () => {
+  it("arsenalDpsByChoice contains exactly general, the class default and the active choice", () => {
+    const classDefault = defaultArsenalForClass(umbraInputs.classId)
+    expect(Object.keys(res.arsenalDpsByChoice).sort()).toEqual(
+      [...new Set(["general", classDefault, umbraInputs.arsenal])].sort(),
+    )
+  })
+
+  it("arsenalDpsByChoice matches the reference pipeline for general and the class default", () => {
+    const classDefault = defaultArsenalForClass(umbraInputs.classId)
     expect(res.arsenalDpsByChoice.general).toBe(dpsFor(swapArsenal(umbraInputs, "general")))
-    expect(res.arsenalDpsByChoice.bellstrike).toBe(dpsFor(swapArsenal(umbraInputs, "bellstrike")))
+    expect(res.arsenalDpsByChoice[classDefault]).toBe(
+      dpsFor(swapArsenal(umbraInputs, classDefault)),
+    )
+  })
+
+  it("arsenalDpsByChoice matches the reference pipeline for the active off-attribute choice", () => {
+    expect(defaultArsenalForClass(umbraInputs.classId)).not.toBe(umbraInputs.arsenal)
+    expect(res.arsenalDpsByChoice[umbraInputs.arsenal]).toBe(
+      dpsFor(swapArsenal(umbraInputs, umbraInputs.arsenal)),
+    )
   })
 })
 
@@ -151,6 +177,70 @@ describe("computeRotationDps", () => {
     expect(res.dpsByOptionId[builtin.id]).toBe(
       runEngine({ ...umbraInputs, activeCustomRotation: builtin }).dps,
     )
+  })
+})
+
+describe("computeProfileMetrics", () => {
+  const profiles = [
+    { id: "profile-a", inputs: umbraInputs },
+    { id: "profile-b", inputs: { ...umbraInputs, dummyMode: !umbraInputs.dummyMode } },
+    { id: "profile-c", inputs: { ...umbraInputs, set: null } },
+  ]
+  const noCustomContent = { customSkills: [], customBuffs: [], customDebuffs: [] }
+
+  it("echoes reqId", () => {
+    expect(computeProfileMetrics({ reqId: 9, profiles, ...noCustomContent }).reqId).toBe(9)
+  })
+
+  it("matches the app's configured baseline pipeline for every profile", () => {
+    const res = computeProfileMetrics({ reqId: 1, profiles, ...noCustomContent })
+
+    for (const { id, inputs } of profiles) {
+      const configured = withCustomContent(inputs, [], [], [])
+      const expected = runEngine(applyBowSet(applyArmorSet(withDerivedStats(configured))))
+      expect(res.metricsByProfileId[id]).toEqual({
+        dps: expected.dps,
+        totalDamage: expected.totalDamage,
+        rotationDuration: expected.rotationDuration,
+      })
+    }
+  })
+
+  it("leaves a profile untouched by custom content authored for another class", () => {
+    const otherClassSkill: Skill = {
+      id: "fictional-skill",
+      classId: "fictionalClass",
+      name: "Fictional Skill",
+      skillType: "weapon",
+      weaponOrAttribute: "Sword",
+      attributeAttack: "Bellstrike",
+      hits: [],
+      castFrames: 0,
+      triggerable: false,
+      createdAt: "2026-08-20",
+      updatedAt: "2026-08-20",
+    }
+    const withOtherClassSkill = computeProfileMetrics({
+      reqId: 1,
+      profiles,
+      customSkills: [otherClassSkill],
+      customBuffs: [],
+      customDebuffs: [],
+    })
+    const withoutCustomContent = computeProfileMetrics({ reqId: 1, profiles, ...noCustomContent })
+
+    expect(withOtherClassSkill.metricsByProfileId).toEqual(withoutCustomContent.metricsByProfileId)
+  })
+
+  it("answers the same per profile subset as it does for the whole set", () => {
+    const whole = computeProfileMetrics({ reqId: 1, profiles, ...noCustomContent })
+    const shards = profiles.map(
+      (profile) =>
+        computeProfileMetrics({ reqId: 1, profiles: [profile], ...noCustomContent })
+          .metricsByProfileId,
+    )
+
+    expect(Object.assign({}, ...shards)).toEqual(whole.metricsByProfileId)
   })
 })
 

@@ -1,8 +1,8 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 import { stat } from "../../../engine/effects/effect"
 
-export const mountainSplitter = defineClassBuff({
+export const mountainSplitter = defineBuff({
   id: BUFF.mountainSplitter,
   name: "Mountain Splitter",
   requires: { param: PARAM.steadfastDevotion, minTier: 3 },

@@ -98,10 +98,8 @@ function withStepAfterPrePull(raw: Inputs, skillId: string): Inputs {
 const ARMOUR_SETS: readonly [label: string, id: string][] = [
   ["Jadeware", SET_ID.jadeware],
   ["Mistwillow", SET_ID.mistwillow],
-  ["StarsAlign", SET_ID.starsAlign],
+  ["Rainwhisper", SET_ID.rainwhisper],
   ["ShatteredRidge", SET_ID.shatteredRidge],
-  ["Swallowcall", SET_ID.swallowcall],
-  ["SwayingHeights", SET_ID.swayingHeights],
 ]
 
 const CASES: { name: string; build: () => Inputs }[] = [
@@ -211,25 +209,30 @@ function round(value: number, places: number): number {
   return Number.isFinite(value) ? Number(value.toFixed(places)) : value
 }
 
+// Ten decimal places still hashed a result's last bits at these magnitudes, so
+// the comparison moved whenever the same contributions were summed in a
+// different sequence. Any real change to output is far larger than this.
+const PLACES = 2
+
 function digestOf(result: Result): string {
   const canonical = JSON.stringify(result, (_key, value) =>
-    typeof value === "number" ? round(value, 10) : value,
+    typeof value === "number" ? round(value, PLACES) : value,
   )
   return createHash("sha256").update(canonical).digest("hex")
 }
 
 function summarize(result: Result) {
   return {
-    dps: round(result.dps, 6),
-    totalDamage: round(result.totalDamage, 6),
-    rotationDuration: round(result.rotationDuration, 6),
+    dps: round(result.dps, PLACES),
+    totalDamage: round(result.totalDamage, PLACES),
+    rotationDuration: round(result.rotationDuration, PLACES),
     warnings: result.warnings,
     perSkill: result.perSkill.map((row) => ({
       name: row.name,
       breakdownName: row.breakdownName,
       type: row.type,
       count: row.count,
-      expectedDamage: round(row.expectedDamage, 6),
+      expectedDamage: round(row.expectedDamage, PLACES),
       castCount: row.castCount ?? 0,
     })),
     counts: {
@@ -284,8 +287,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(74643.54)
-    expect(round(result.totalDamage, 2)).toBe(4300711.88)
+    expect(round(result.dps, 2)).toBe(75079.84)
+    expect(round(result.totalDamage, 2)).toBe(4325850.03)
     expect(round(result.rotationDuration, 4)).toBe(57.6167)
     expect(result.warnings).toEqual([])
   })
@@ -300,8 +303,8 @@ describe("engine baseline — profile-v7 anchor", () => {
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(380923.33)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(88020.04)
+    expect(damageOf("Smolder (DoT)")).toBe(400921.56)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(93159.96)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.

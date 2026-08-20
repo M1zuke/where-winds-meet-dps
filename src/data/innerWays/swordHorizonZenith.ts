@@ -20,7 +20,7 @@ import {
   defineInnerWayGateBuff,
   type InnerWayGateBuff,
 } from "../../definitions/innerWays/innerWayDef"
-import { defineClassBuff } from "../../definitions/skills/buffDef"
+import { defineBuff } from "../../definitions/skills/buffDef"
 import { PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
 
@@ -73,7 +73,7 @@ export const SWORD_HORIZON_GATES: readonly InnerWayGateBuff[] = [
   }),
 ]
 
-export const zenithBar = defineClassBuff({
+export const zenithBar = defineBuff({
   id: ZENITH_BAR_BUFF_ID,
   name: "Zenith Bar",
   requires: { param: PARAM.swordHorizon },

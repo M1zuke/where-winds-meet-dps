@@ -18,6 +18,8 @@ export const swordHeavyChargedPrepull = defineSkill({
   castTag: CAST.swordHeavyChargedPrepull,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
+    BUFF.mistwillowLightBuff,
+    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,

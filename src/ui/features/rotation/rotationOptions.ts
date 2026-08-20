@@ -53,6 +53,15 @@ export function selectedRotationOptionId(inputs: Inputs): string {
   return defaultRotationForClass(inputs.classId)?.id ?? NO_ROTATION_OPTION_ID
 }
 
+export function activeRotationName(inputs: Inputs): string | null {
+  if (usesCustomRotation(inputs)) return inputs.activeCustomRotation!.name
+  const selectedBuiltin = builtinRotationsForClass(inputs.classId).find(
+    (rotation) => rotation.id === inputs.selectedBuiltinRotationId,
+  )
+  if (selectedBuiltin) return selectedBuiltin.name
+  return defaultRotationForClass(inputs.classId)?.name ?? null
+}
+
 function withCurrentHitCounts(rotation: Rotation, classId: string): Rotation {
   const hitCounts = new Map<string, number>()
   for (const skill of builtinSkillsForClass(classId)) hitCounts.set(skill.id, skill.hits.length)

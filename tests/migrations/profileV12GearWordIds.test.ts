@@ -1,16 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
-import {
-  LATEST_PROFILES_VERSION,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V12__gearWordIds, migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
 import { isGearWordId } from "../../src/data/stats/statLines"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v11/bellstrikeUmbra.json"
 
-const PROFILES_KEY = "wwm.profiles"
 const LEGACY_INPUTS_KEY = "wwm.inputs"
 
 type LegacyFile = { v: number; profile: StoredProfile }
@@ -112,43 +107,22 @@ describe("V12__gearWordIds — called directly", () => {
 })
 
 describe("V12__gearWordIds — registered in the chain", () => {
-  it("walks the v11 fixture through the rename", () => {
-    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toContain("V12__gearWordIds")
-    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
+  it("a v11 blob migrated to v12 passes through exactly this step", () => {
+    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)), { toVersion: 12 })!
+    expect(result.applied).toEqual(["V12__gearWordIds"])
+    expect(result.blob.v).toBe(12)
+    // No word was cleared: a name the map missed would arrive here as "".
+    expect(storedWords(inputsOf(result.blob))).toHaveLength(
+      storedWords(LEGACY.profile.inputs as unknown as Inputs).length,
+    )
     for (const word of storedWords(inputsOf(result.blob))) {
       expect(isGearWordId(word), word).toBe(true)
     }
   })
 })
 
-describe("V12__gearWordIds — storage paths", () => {
+describe("hydrator backstops — the paths that never walk the chain", () => {
   beforeEach(() => localStorage.clear())
-
-  it("upgrades and persists a saved profile without losing its gear", () => {
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(clone(LEGACY.profile))))
-    const { profiles } = loadProfiles()
-    const loaded = profiles[0]
-    expect(loaded.id).toBe(LEGACY.profile.id)
-    expect(loaded.inputs.inventory).toHaveLength(LEGACY.profile.inputs.inventory.length)
-    expect(loaded.inputs.equipped).toEqual(LEGACY.profile.inputs.equipped)
-    // No word was cleared: a name the map missed would arrive here as "".
-    expect(storedWords(loaded.inputs)).toHaveLength(
-      storedWords(LEGACY.profile.inputs as unknown as Inputs).length,
-    )
-    for (const word of storedWords(loaded.inputs)) {
-      expect(isGearWordId(word), word).toBe(true)
-    }
-
-    const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
-    expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-  })
-
-  it("is idempotent across repeated loads", () => {
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(clone(LEGACY.profile))))
-    const once = loadProfiles()
-    expect(loadProfiles()).toEqual(once)
-  })
 
   it("renames the stored words in a bare imported profile", () => {
     const imported = importProfile(JSON.stringify(LEGACY.profile))

@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../definitions/skills/buffDef"
+import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
@@ -13,7 +13,7 @@ import { wolfchasersArt } from "./wolfchasersArt"
 // `const`, and nothing at this module's top level may read `wolfchasersArt`
 // (only a call made once loading has finished, e.g. inside a getter, may).
 export function potentRiverFlowBuffDef() {
-  return defineClassBuff({
+  return defineBuff({
     id: BUFF.potentRiverFlow,
     name: "Potent River Flow",
     requires: { param: PARAM.wolfchasersArt },
@@ -25,7 +25,7 @@ export function potentRiverFlowBuffDef() {
 }
 
 export function wineGuBuffDef() {
-  return defineClassBuff({
+  return defineBuff({
     id: BUFF.wineGu,
     name: "Wine Gu",
     requires: { param: PARAM.wolfchasersArt, minTier: 6 },
@@ -47,7 +47,7 @@ let soulShakenMinTier: number | undefined
 // (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
 // Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way.
 export function soulShakenBuffDef(): BuffModule {
-  return defineClassBuff({
+  return defineBuff({
     id: BUFF.soulShaken,
     name: "Soul Shaken",
     requires: {

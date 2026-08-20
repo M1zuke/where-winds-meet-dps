@@ -1,8 +1,8 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 import { stat } from "../../../engine/effects/effect"
 
-export const frostCladSnowbreakT6 = defineClassBuff({
+export const frostCladSnowbreakT6 = defineBuff({
   id: BUFF.frostCladSnowbreakT6,
   name: "Frost-Clad Night T6 (Snowbreak)",
   requires: { param: PARAM.frostCladNight, minTier: 6 },

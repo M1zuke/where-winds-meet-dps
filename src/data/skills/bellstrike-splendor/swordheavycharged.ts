@@ -15,6 +15,8 @@ export const swordHeavyCharged = defineSkill({
   castTag: CAST.swordHeavyCharged,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
+    BUFF.mistwillowLightBuff,
+    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,

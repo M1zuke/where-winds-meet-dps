@@ -1,14 +1,23 @@
 import { useRef, useState } from "react"
 import type { StoredProfile } from "../../../../engine/types"
+import type { Skill } from "../../../../engine/skill"
+import type { Buff } from "../../../../engine/buff"
+import type { Debuff } from "../../../../engine/debuff"
 import { exportProfile, importProfile } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { classDefinition } from "../../../../definitions/classes/registry"
+import { activeRotationName } from "../../rotation/rotationOptions"
+import { useProfileMetrics } from "../../../hooks/useProfileMetrics"
+import { formatCompactDamage, formatNumber } from "../../../utils/numberFormatting"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./ProfilePanel.module.scss"
 
 interface Props {
   profiles: StoredProfile[]
   activeId: string
+  customSkills: Skill[]
+  customBuffs: Buff[]
+  customDebuffs: Debuff[]
   onCreate: () => void
   onSelect: (id: string) => void
   onRename: (id: string, name: string) => void
@@ -20,6 +29,9 @@ interface Props {
 export function ProfilePanel({
   profiles,
   activeId,
+  customSkills,
+  customBuffs,
+  customDebuffs,
   onCreate,
   onSelect,
   onRename,
@@ -31,6 +43,12 @@ export function ProfilePanel({
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftName, setDraftName] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const { metricsByProfileId, isPending } = useProfileMetrics(
+    profiles,
+    customSkills,
+    customBuffs,
+    customDebuffs,
+  )
 
   function startRename(profile: StoredProfile) {
     setEditingId(profile.id)
@@ -53,6 +71,10 @@ export function ProfilePanel({
     const definition = classDefinition(classId)
     if (!definition) return classId
     return t(definition.displayName)
+  }
+
+  function classIcon(classId: string): string | undefined {
+    return classDefinition(classId)?.martialArts.find((martialArt) => martialArt.icon)?.icon
   }
 
   function handleExport(profile: StoredProfile) {
@@ -107,16 +129,23 @@ export function ProfilePanel({
         />
       </div>
 
-      <div className={styles.profileList}>
+      <div className={styles.cardGrid}>
         {profiles.map((profile) => {
           const isActive = profile.id === activeId
           const isEditing = editingId === profile.id
+          const icon = classIcon(profile.inputs.classId)
+          const metrics = metricsByProfileId?.[profile.id]
+          const rotationName = activeRotationName(profile.inputs)
           return (
-            <div
-              key={profile.id}
-              className={styles.profileRow + (isActive ? ` ${styles.isActive}` : "")}
-            >
-              <div className={styles.profileName}>
+            <div key={profile.id} className={styles.card + (isActive ? ` ${styles.isActive}` : "")}>
+              {icon && <img className={styles.watermark} src={icon} alt="" />}
+
+              <div className={styles.cardHeader}>
+                {icon ? (
+                  <img className={styles.classIcon} src={icon} alt="" />
+                ) : (
+                  <div className={styles.classIcon} />
+                )}
                 {isEditing ? (
                   <TextInput
                     autoFocus
@@ -137,12 +166,38 @@ export function ProfilePanel({
                     {profile.name || t("(unnamed)")}
                   </span>
                 )}
-                {isActive && <span className={styles.profileActiveBadge}>{t("Active")}</span>}
+                {isActive && <span className={styles.activeBadge}>{t("Active")}</span>}
+                <span className={styles.classLabel}>{classLabel(profile.inputs.classId)}</span>
               </div>
 
-              <div className={styles.profileClass}>{classLabel(profile.inputs.classId)}</div>
+              <div className={styles.stats} style={{ opacity: isPending ? 0.6 : 1 }}>
+                <div className={styles.stat}>
+                  <span className={styles.statLabel}>{t("DPS")}</span>
+                  <span className={styles.dpsValue}>
+                    {metrics ? formatNumber(metrics.dps, 0) : "—"}
+                  </span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statLabel}>{t("Total damage")}</span>
+                  <span className={styles.statValue}>
+                    {metrics ? formatCompactDamage(metrics.totalDamage) : "—"}
+                  </span>
+                </div>
+                <div className={`${styles.stat} ${styles.rotationStat}`}>
+                  <span className={styles.statLabel}>{t("Rotation")}</span>
+                  <span className={styles.rotationValue} title={rotationName ?? undefined}>
+                    {rotationName ?? "—"}
+                    {metrics && (
+                      <span className={styles.rotationDuration}>
+                        {" "}
+                        · {formatNumber(metrics.rotationDuration, 0)}s
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
 
-              <div className={styles.profileActions}>
+              <div className={styles.cardActions}>
                 <button
                   type="button"
                   className="btn"
@@ -165,6 +220,7 @@ export function ProfilePanel({
                 <button type="button" className="btn" onClick={() => handleExport(profile)}>
                   {t("Export")}
                 </button>
+                <div className={styles.actionsSpacer} />
                 <button
                   type="button"
                   className="btn danger"
@@ -178,12 +234,6 @@ export function ProfilePanel({
             </div>
           )
         })}
-      </div>
-
-      <div className="hint">
-        {t(
-          "Each profile stores the entire input set. Custom rotations are shared globally but only those matching the active profile's class are shown.",
-        )}
       </div>
     </div>
   )

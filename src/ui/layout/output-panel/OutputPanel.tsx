@@ -1,13 +1,9 @@
 import type { Result } from "../../../engine/types"
 import { useI18n } from "../../../i18n/i18nContext"
 import { groupByBreakdownName } from "../../utils/skillBreakdown"
+import { formatCompactDamage, formatNumber } from "../../utils/numberFormatting"
 import { GraduationFire } from "./graduation-fire/GraduationFire"
 import styles from "./OutputPanel.module.scss"
-
-const fmt = (n: number, digits = 2) =>
-  Number.isFinite(n)
-    ? n.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits })
-    : "—"
 
 interface MetricsCardProps {
   result: Result
@@ -16,6 +12,8 @@ interface MetricsCardProps {
   theoreticalDps?: number | null
   onGraduationClick?: () => void
   graduationDisabled?: boolean
+  rotationName?: string | null
+  onRotationClick?: () => void
 }
 
 function OpenIcon() {
@@ -47,6 +45,8 @@ export function MetricsCard({
   theoreticalDps = null,
   onGraduationClick,
   graduationDisabled = false,
+  rotationName = null,
+  onRotationClick,
 }: MetricsCardProps) {
   const { t } = useI18n()
   const graduationText =
@@ -54,25 +54,49 @@ export function MetricsCard({
       ? graduationPending
         ? "…"
         : "—"
-      : fmt(result.graduationRate * 100, 1) + "%"
+      : formatNumber(result.graduationRate * 100, 1) + "%"
   const graduationTitle =
     theoreticalDps === null
       ? t("Current DPS divided by the theoretical class maximum")
-      : `${t("Current DPS divided by the theoretical class maximum")}: ${fmt(theoreticalDps, 2)} DPS`
+      : `${t("Current DPS divided by the theoretical class maximum")}: ${formatNumber(theoreticalDps, 2)} DPS`
+  const durationText = `${formatNumber(result.rotationDuration, 0)}s`
   return (
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
         <span className={styles.label}>{t("DPS")}</span>
-        <span className={styles.value}>{fmt(result.dps, 2)}</span>
+        <span className={styles.value}>{formatNumber(result.dps, 2)}</span>
+        <span className={styles.subline}>
+          {formatCompactDamage(result.totalDamage)} · {durationText}
+          {rotationName ? ` · ${rotationName}` : ""}
+        </span>
       </div>
       <div className={styles.stat}>
         <span className={styles.label}>{t("Total Damage")}</span>
-        <span className={styles.value}>{fmt(result.totalDamage, 0)}</span>
+        <span className={styles.value}>{formatNumber(result.totalDamage, 0)}</span>
       </div>
-      <div className={styles.stat}>
-        <span className={styles.label}>{t("Duration")}</span>
-        <span className={styles.value}>{fmt(result.rotationDuration, 0)}s</span>
-      </div>
+      {rotationName ? (
+        <button
+          type="button"
+          className={styles.rotationChip}
+          onClick={onRotationClick}
+          title={rotationName}
+        >
+          <span className={styles.stat}>
+            <span className={styles.label}>{t("Duration")}</span>
+            <span className={styles.value}>{durationText}</span>
+          </span>
+          <span className={`${styles.stat} ${styles.rotationStat}`}>
+            <span className={styles.label}>{t("Rotation")}</span>
+            <span className={styles.value}>{rotationName}</span>
+          </span>
+          <OpenIcon />
+        </button>
+      ) : (
+        <div className={styles.stat}>
+          <span className={styles.label}>{t("Duration")}</span>
+          <span className={styles.value}>{durationText}</span>
+        </div>
+      )}
       <button
         type="button"
         className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
@@ -131,7 +155,7 @@ export function PerSkillTable({ result }: { result: Result }) {
             <tr key={row.name}>
               <td>{t(row.name)}</td>
               <td>{row.count}</td>
-              <td>{fmt(row.expectedDamage, 0)}</td>
+              <td>{formatNumber(row.expectedDamage, 0)}</td>
               <td>{(row.percentOfTotal * 100).toFixed(1)} %</td>
               <td className="bar-col">
                 <div className="skill-bar-track">

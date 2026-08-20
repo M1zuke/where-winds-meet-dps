@@ -12,3 +12,4 @@ tsconfig.tsbuildinfo
 # Dev-only reference material, not imported by the app or the tests.
 excels
 reference
+scripts

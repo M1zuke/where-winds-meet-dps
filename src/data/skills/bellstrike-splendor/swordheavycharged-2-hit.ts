@@ -15,6 +15,8 @@ export const swordHeavyCharged2Hit = defineSkill({
   castTag: CAST.swordHeavyCharged2Hit,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
+    BUFF.mistwillowLightBuff,
+    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,

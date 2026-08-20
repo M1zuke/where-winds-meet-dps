@@ -1,9 +1,9 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 
 // A stack pool the Snowparting casts spend, not a damage modifier of its own —
 // `effects` is empty and the magnitude lives with whichever def consumes it.
-export const innerPassion = defineClassBuff({
+export const innerPassion = defineBuff({
   id: BUFF.innerPassion,
   name: "Inner Passion",
   affectsAll: true,

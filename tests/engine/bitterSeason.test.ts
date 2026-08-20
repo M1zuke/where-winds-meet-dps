@@ -275,13 +275,13 @@ function withBitterSeasonAt(tier: "tier 5" | "tier 6"): Inputs["mindMethods"] {
 const DOT_ROW_NAME = "Bitter Season Tick (DoT)"
 
 describe("Bitter Season — Bellstrike Umbra engine integration", () => {
-  it("the built-in stand-in skill carries the source:innerWayDot tag, five hits, and elevatedAttributeMultiplier === false", () => {
+  it("the built-in stand-in skill carries the source:innerWayDot tag, one hit, and elevatedAttributeMultiplier === false", () => {
     const skill = builtinSkillsForClass("bellstrikeUmbra").find(
       (skill) => skill.id === "bellstrikeUmbra-bitter-season-tick",
     )
     expect(skill).toBeTruthy()
     expect(skill!.tags).toContain("source:innerWayDot")
-    expect(skill!.hits).toHaveLength(5)
+    expect(skill!.hits).toHaveLength(1)
     expect(skill!.elevatedAttributeMultiplier).toBe(false)
   })
 

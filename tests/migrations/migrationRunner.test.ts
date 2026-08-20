@@ -66,6 +66,33 @@ describe("runProfileMigrations — sequential upgrade", () => {
   })
 })
 
+describe("runProfileMigrations — scoped to a target version", () => {
+  it("stops at the requested version and applies only the steps up to it", () => {
+    const result = runProfileMigrations(blobAt(4), { toVersion: 5 })!
+    expect(result.blob.v).toBe(5)
+    expect(result.applied).toEqual(["V5__englishIdsWithoutSitePrefix"])
+  })
+
+  it("applies nothing to a blob already at the target version", () => {
+    const migrated = runProfileMigrations(blobAt(4), { toVersion: 5 })!.blob
+    const again = runProfileMigrations(clone(migrated), { toVersion: 5 })!
+    expect(again.applied).toEqual([])
+    expect(again.blob).toEqual(migrated)
+  })
+
+  it("clamps a target above the latest version to the latest", () => {
+    const result = runProfileMigrations(blobAt(4), { toVersion: LATEST_PROFILES_VERSION + 5 })!
+    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
+  })
+
+  it("leaves a blob newer than the target untouched", () => {
+    const newer = blobAt(6)
+    const result = runProfileMigrations(clone(newer), { toVersion: 5 })!
+    expect(result.blob).toEqual(newer)
+    expect(result.applied).toEqual([])
+  })
+})
+
 describe("runProfileMigrations — never deletes", () => {
   it("keeps profiles from versions older than the chain (no step registered)", () => {
     for (const v of [1, 2, 3]) {

@@ -3,6 +3,7 @@ import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import type { BuffModule } from "../../src/engine/buffs/buffModule"
 import { stat } from "../../src/engine/effects/effect"
 import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
+import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
 import { makeSkill } from "../../src/engine/skill"
 
 function taggedSkill(name: string, tags: string[] = []) {
@@ -214,11 +215,11 @@ describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () =
   })
 
   it("does not grant the Mistwillow stance — only the declared-buff path runs", () => {
-    const viaCast = new BuffEngine({ armorSet: "mistwillow" }, [])
+    const viaCast = new BuffEngine({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
     viaCast.processSkillCast("cast:probe", 0, { attackType: "heavy" })
     expect(viaCast.isBuffActiveAtTime("mistwillowHeavyBuff", 0)).toBe(true)
 
-    const viaTick = new BuffEngine({ armorSet: "mistwillow" }, [])
+    const viaTick = new BuffEngine({ armorSet: "mistwillow" }, GLOBAL_BUFF_DEFS)
     viaTick.triggerDeclaredBuffs([], "dot:probe", 0, { attackType: "heavy" })
     expect(viaTick.isBuffActiveAtTime("mistwillowHeavyBuff", 0)).toBe(false)
   })

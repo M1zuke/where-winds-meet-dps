@@ -122,7 +122,8 @@ Follow the nearest existing worker hook rather than inventing a new shape.
   updating the list.**
 - Palette tokens and the element baseline live in the global base stylesheet.
   Breakpoints go through the shared mixin, never a hardcoded media query.
-  Repeated form-control declarations go through the shared field mixins.
+  Repeated form-control declarations go through the shared field mixins. Hover
+  styles go through the shared hover mixin, never a bare `:hover`.
 - Bare element selectors inside a module are not hashed and keep working through
   ancestor scoping. That is what lets a class-less shared input stay styled by
   whichever module renders it — **never add a class to it**.

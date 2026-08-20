@@ -19,6 +19,13 @@ export interface ConditionalFinalCrit {
   bonusBelowThreshold: number
 }
 
+// A damaging hit from a skill that reaches this def, while its window is
+// down, spends one stack of `from` and opens the window at that hit; hits
+// while it is live neither spend nor extend it.
+export interface PerHitConsume {
+  from: string
+}
+
 // A cast that spends a stack of another buff. `from` is the fallback pool;
 // `preferredFrom` is drained first where both are live. `grants` names buffs
 // the successful consume attaches to that cast — `propagate` extends them to
@@ -51,6 +58,19 @@ export interface BuffMeta {
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
   stackOnDamage?: boolean
+  // Restricts `stackOnDamage` to the listed Qi phases; a damaging hit outside
+  // them grants no stack. Independent of `triggerPhase`, which gates the cast
+  // route only.
+  stackOnDamagePhase?: QiPhase | readonly QiPhase[]
+  // Restricts `stackOnDamage` to hits from skills that reach this def — the
+  // same `reaches` predicate the damage query uses.
+  stackOnDamageScoped?: boolean
+  // `stackOnDamage` only tops up a live window, preserving its expiry — it
+  // never opens or refreshes one.
+  stackOnDamageOnlyWhileActive?: boolean
+  // Caps the `stackOnDamage` route alone; `stackRateLimit` still caps the
+  // triggered route.
+  stackOnDamageRateLimit?: { count: number; window: number }
   // A generated (`castSkill`-triggered) attack reaches only the defs that opt
   // in; every other def still sees rotation casts alone.
   triggersFromGeneratedSkills?: boolean
@@ -62,9 +82,14 @@ export interface BuffMeta {
   requiresBuffActive?: string
   // Read at trigger time against the live window, not at damage time.
   requiresActiveBuffOnTrigger?: string
+  // A `PROP.*` tag naming triggers that may only EXTEND an already-open
+  // window, never open one. A trigger without the property is unaffected, so
+  // one def can have both an opening source and an extending source.
+  extendedOnlyByProperty?: string
   activeAfterBuffEnds?: ActiveAfterBuffEnds
   conditionalFinalCrit?: ConditionalFinalCrit
   perCastConsume?: PerCastConsume
+  perHitConsume?: PerHitConsume
   stacks?: (ctx: EffectContext) => number
   duration: number | ((ctx: EffectContext) => number)
 }

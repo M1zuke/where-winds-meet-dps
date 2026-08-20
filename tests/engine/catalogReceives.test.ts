@@ -93,17 +93,6 @@ describe("catalog receives — Vulnerability (Teammate) follows the Tank Spear D
   })
 })
 
-describe("catalog receives — Mirage Bonus surfaces its cast condition", () => {
-  it("triggeredBy names the triggering skill and the Mirage prerequisite", () => {
-    const swordQ = builtinSkill(CLASS, SKILL.swordq)
-    const rows = receivesForSkill(swordQ, CLASS, { ...defaultInputs, classId: CLASS })
-    const row = rows.find((r) => r.id === "mirageBonus")
-    expect(row).toBeTruthy()
-    expect(row!.triggeredBy).toMatch(/Perfect Dodge/)
-    expect(row!.triggeredBy).toMatch(/Mirage/)
-  })
-})
-
 describe("catalog receives — gear-stat boost rows follow the skill's typing", () => {
   const inputs: Inputs = {
     ...defaultInputs,

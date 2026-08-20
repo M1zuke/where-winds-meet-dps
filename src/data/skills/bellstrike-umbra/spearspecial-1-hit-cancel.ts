@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
 
 export const spearspecial1HitCancel = defineSkill({
@@ -13,6 +14,7 @@ export const spearspecial1HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial1HitCancel,
+  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
   castFrames: 59,
   triggerable: true,
   hits: [

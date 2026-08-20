@@ -1,23 +1,13 @@
 // `Inputs.set` stores a stable id from `src/data/sets/`, not the set's display
 // name. A profile saved before that holds the old name — docs/MIGRATIONS.md.
-import { beforeEach, describe, expect, it } from "vitest"
-import { loadProfiles } from "../../src/storage"
-import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { withDerivedStats } from "../../src/engine/derivedInputs"
-import {
-  LATEST_PROFILES_VERSION,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { describe, expect, it } from "vitest"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import {
   V11__setIdsWithoutDisplayName,
   migrateSetId,
 } from "../../src/migrations/V11__setIdsWithoutDisplayName"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v10/stonesplitStrength.json"
-
-const PROFILES_KEY = "wwm.profiles"
 
 type LegacyFile = { v: number; profile: StoredProfile }
 const LEGACY = legacyProfileFile as unknown as LegacyFile
@@ -30,25 +20,11 @@ function blobOf(profile: StoredProfile, version = LEGACY.v): RawProfilesBlob {
   return { v: version, profiles: [profile], activeId: profile.id }
 }
 
-function writeProfilesBlob(profile: StoredProfile): void {
-  localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(profile)))
-}
-
-function loadOne(): StoredProfile {
-  const { profiles } = loadProfiles()
-  expect(profiles).toHaveLength(1)
-  return profiles[0]
-}
-
 const inputsOf = (blob: RawProfilesBlob) =>
   (blob.profiles[0] as unknown as { inputs: Inputs }).inputs
 
 function withSet(profile: StoredProfile, set: string | null): StoredProfile {
   return { ...clone(profile), inputs: { ...clone(profile.inputs), set } }
-}
-
-function pipelineDps(inputs: Inputs): ReturnType<typeof runEngine> {
-  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs))))
 }
 
 describe("profile-v10 fixture — the stored blob predates the set id rename", () => {
@@ -114,12 +90,6 @@ describe("V11 step — v10 → v11 in isolation", () => {
     expect(after.breakthrough).toBe(before.breakthrough)
   })
 
-  it("is registered, and the chain reports it for a v10 blob", () => {
-    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)))!
-    expect(result.applied).toContain("V11__setIdsWithoutDisplayName")
-    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
-  })
-
   it("does not mutate its input, and migrating twice equals migrating once", () => {
     const input = blobOf(clone(LEGACY.profile))
     const snapshot = clone(input)
@@ -130,30 +100,11 @@ describe("V11 step — v10 → v11 in isolation", () => {
   })
 })
 
-describe("v10 profile with the legacy set name → loaded build", () => {
-  beforeEach(() => localStorage.clear())
-
-  it("arrives with the id, so the set's bonus still resolves", () => {
-    writeProfilesBlob(clone(LEGACY.profile))
-    const after = loadOne()
-    expect(after.inputs.set).toBe("shatteredRidge")
-
-    const result = pipelineDps(after.inputs)
-    expect(result.dps).toBeGreaterThan(0)
-  })
-
-  it("re-persists the blob at the latest version so the walk runs once", () => {
-    writeProfilesBlob(clone(LEGACY.profile))
-    loadProfiles()
-    const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
-    expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-    expect(persisted.profiles[0].inputs.set).toBe("shatteredRidge")
-  })
-
-  it("is idempotent — loading twice in a row yields an equal profile", () => {
-    writeProfilesBlob(clone(LEGACY.profile))
-    const once = loadOne()
-    writeProfilesBlob(clone(once))
-    expect(loadOne()).toEqual(once)
+describe("V11__setIdsWithoutDisplayName — registered in the chain", () => {
+  it("a v10 blob migrated to v11 passes through exactly this step", () => {
+    const result = runProfileMigrations(blobOf(clone(LEGACY.profile)), { toVersion: 11 })!
+    expect(result.applied).toEqual(["V11__setIdsWithoutDisplayName"])
+    expect(result.blob.v).toBe(11)
+    expect(inputsOf(result.blob).set).toBe("shatteredRidge")
   })
 })

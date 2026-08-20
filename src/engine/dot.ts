@@ -2,6 +2,7 @@ import type { Debuff, DebuffDotSpec, DotStackShape } from "./debuff"
 import type { Skill } from "./skill"
 import type { StatusWindow } from "./ledger"
 import type { computeSkillDamage, FormulaContext, RolledHit } from "./formula"
+import type { ArtBonusField } from "./effects/effect"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
@@ -29,6 +30,7 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
     physFixed: sourceHit.physFixed,
     attributeMultiplier: sourceHit.attributeMultiplier,
     attributeFixed: sourceHit.attributeFixed,
+    extraCritDamage: sourceHit.extraCritDamage,
     attributeAttack: (tickSkill.attributeAttack ||
       base.attributeAttack) as DebuffDotSpec["attributeAttack"],
     weaponOrAttribute: tickSkill.weaponOrAttribute || null,
@@ -37,6 +39,17 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
   }
 }
 
+// How many ticks one uninterrupted window emits, counted the way
+// `planDotTicks` walks it: the first lands one interval in, and a window that
+// is an exact multiple of the interval emits one fewer than the division
+// suggests. The editor shows this beside a tick source's single authored hit.
+export function dotTicksPerWindow(debuff: Pick<Debuff, "dot" | "durationFrames">): number {
+  const interval = debuff.dot?.tickIntervalFrames ?? 0
+  if (interval <= 0) return 0
+  let ticks = 0
+  for (let frame = interval; frame < debuff.durationFrames; frame += interval) ticks++
+  return ticks
+}
 export function dotRowName(debuff: Pick<Debuff, "name">): string {
   return `${debuff.name} (DoT)`
 }
@@ -75,6 +88,7 @@ function tickArt(
     attributeMultiplier: shape.attributeMultiplier,
     attributeFixed: shape.attributeFixed,
     attributeAttack: dot.attributeAttack || undefined,
+    extraCritDamage: dot.extraCritDamage,
     skillType: dot.skillType || "sustain",
     specialTag: "sustain",
     elevatedAttributeMultiplier: false,
@@ -92,6 +106,10 @@ export function dotTickDamage(
   forceCrit = false,
   shape?: DotStackShape,
   rng?: () => number,
+  // Summed per-hit art fields the active defs contribute, added onto the row
+  // the way `timeline.ts` adds them to a regular hit's — a def reaching a tick
+  // must land the same bonus a def reaching a cast does.
+  artBonuses: Partial<Record<ArtBonusField, number>> = {},
 ): { damage: number; rolled?: RolledHit } {
   const dot = debuff.dot
   if (!dot) return { damage: 0 }
@@ -102,6 +120,10 @@ export function dotTickDamage(
     attributeFixed: dot.attributeFixed,
   }
   const art = tickArt(dot, debuff.name, resolved, forceCrit)
+  for (const [field, amount] of Object.entries(artBonuses)) {
+    const key = field as ArtBonusField
+    art[key] = ((art[key] as number | undefined) ?? 0) + amount
+  }
   const { expectedDamage, rolled } = compute(art, ctx, Math.max(1, dot.count), rng)
   return { damage: rolled?.damage ?? expectedDamage, rolled }
 }

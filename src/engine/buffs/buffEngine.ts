@@ -26,9 +26,10 @@ import type {
   QiPhase,
   SkillProperties,
 } from "../effects/context"
-import type { Effect } from "../effects/effect"
+import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramOnOf, paramTierOf } from "./params"
+import { BUFF } from "../../data/skills/buffs/ids"
 
 export type BuffParams = Record<string, unknown>
 
@@ -54,6 +55,10 @@ export interface DamageEffectsResult {
   // stat sum — 1 when no active def contributes one.
   damageFactor: number
   conditionalFinalCrit: ConditionalFinalCrit | null
+  // Per-hit art fields a def contributes, summed across active defs. Applied
+  // onto the art row rather than into the stat sum, which is why they travel
+  // separately from `effects`.
+  artBonuses: Partial<Record<ArtBonusField, number>>
   // Per-source attribution, keyed by def id — read directly by
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
@@ -65,15 +70,9 @@ const DEFAULT_DURATION = 15
 // default parameter, whose absent `castTime` must read back as `?? 1`, not `0`.
 const EMPTY_PROPS: SkillProperties = {}
 
-const DISPLAY_NAME_FALLBACK: Record<string, string> = {
-  mistwillowHeavyBuff: "Mistwillow (Heavy)",
-  mistwillowLightBuff: "Mistwillow (Light)",
-}
-
-const MISTWILLOW_HEAVY_BUFF = "mistwillowHeavyBuff"
-const MISTWILLOW_LIGHT_BUFF = "mistwillowLightBuff"
-const MISTWILLOW_BUFF_DURATION = 15
-const MISTWILLOW_BONUS = 0.1
+const MISTWILLOW_HEAVY_BUFF = BUFF.mistwillowHeavyBuff
+const MISTWILLOW_LIGHT_BUFF = BUFF.mistwillowLightBuff
+const MISTWILLOW_MERGED_BUFF = BUFF.mistwillowBuff
 
 // Bare, not `debuff-<classId>-…`: whichever class inflicts it names this id,
 // so the engine learns no class (docs/CLASSES.md § "One definition per class").
@@ -206,6 +205,16 @@ export class BuffEngine {
     return module.duration(this.buildContext(time, event, 0, module))
   }
 
+  // What is left of the window the caller is standing in, never the def's own
+  // `duration`: an extension moves `expiresAt` and this has to follow it, and
+  // an `alwaysActive` def's duration is a stand-in for "on for the fight"
+  // rather than a countdown, so it reports none at all.
+  private displayRemainingSec(module: BuffModule | undefined, id: string, time: number) {
+    if (module?.alwaysActive) return undefined
+    const window = this.historicalApplyAt(id, time)
+    return window ? window.expiresAt - time : undefined
+  }
+
   activeBuffsForDisplay(time: number): {
     id: string
     name: string
@@ -213,6 +222,7 @@ export class BuffEngine {
     maxStacks: number
     effects: { statKey: StatKey; amount: number }[]
     requires?: string
+    remainingSec?: number
   }[] {
     const out: {
       id: string
@@ -221,6 +231,7 @@ export class BuffEngine {
       maxStacks: number
       effects: { statKey: StatKey; amount: number }[]
       requires?: string
+      remainingSec?: number
     }[] = []
     const seen = new Set<string>()
     const push = (id: string, module: BuffModule | undefined, stacks: number) => {
@@ -234,11 +245,12 @@ export class BuffEngine {
         : []
       out.push({
         id,
-        name: module?.name ?? DISPLAY_NAME_FALLBACK[id] ?? id,
+        name: module?.name ?? id,
         stacks: Math.max(1, stacks),
         maxStacks: module?.maxStacks ?? 1,
         effects,
         requires: module?.requires?.set ?? module?.requires?.param,
+        remainingSec: this.displayRemainingSec(module, id, time),
       })
     }
     const appliedIds = new Set(this.buffHistory.map((historyEntry) => historyEntry.buffType))
@@ -370,31 +382,30 @@ export class BuffEngine {
   isBuffActiveAtTime(id: string, time: number): boolean {
     return this.historicalApplyAt(id, time) !== null
   }
-  private historicalApplyAt(id: string, time: number): { time: number; expiresAt: number } | null {
-    for (let i = this.buffHistory.length - 1; i >= 0; i--) {
-      const historyEntry = this.buffHistory[i]
-      if (
-        historyEntry.buffType === id &&
-        historyEntry.action === "apply" &&
-        historyEntry.time <= time
-      )
-        return time < historyEntry.expiresAt
-          ? { time: historyEntry.time, expiresAt: historyEntry.expiresAt }
-          : null
+  // The latest apply at or before `time`, chosen by timestamp and NOT by array
+  // position: `buffHistory` is not in chronological order. The DoT-tick pass
+  // runs after the cast walk and appends applies stamped earlier than entries
+  // already recorded, so a backwards walk stops at whichever apply happens to
+  // sit last and reads a live window as expired.
+  private latestApplyAt(id: string, time: number): HistoryEntry | null {
+    let latest: HistoryEntry | null = null
+    for (const historyEntry of this.buffHistory) {
+      if (historyEntry.buffType !== id || historyEntry.action !== "apply") continue
+      if (historyEntry.time > time) continue
+      if (!latest || historyEntry.time >= latest.time) latest = historyEntry
     }
-    return null
+    return latest
+  }
+
+  private historicalApplyAt(id: string, time: number): { time: number; expiresAt: number } | null {
+    const latest = this.latestApplyAt(id, time)
+    return latest && time < latest.expiresAt
+      ? { time: latest.time, expiresAt: latest.expiresAt }
+      : null
   }
   getHistoricalBuffStacks(id: string, time: number): number {
-    for (let i = this.buffHistory.length - 1; i >= 0; i--) {
-      const historyEntry = this.buffHistory[i]
-      if (
-        historyEntry.buffType === id &&
-        historyEntry.action === "apply" &&
-        historyEntry.time <= time
-      )
-        return time < historyEntry.expiresAt ? (historyEntry.stacks ?? 1) : 0
-    }
-    return 0
+    const latest = this.latestApplyAt(id, time)
+    return latest && time < latest.expiresAt ? (latest.stacks ?? 1) : 0
   }
   private isActiveAfterBuffEndsActive(module: BuffModule, time: number): boolean {
     const rule = module.activeAfterBuffEnds
@@ -440,7 +451,7 @@ export class BuffEngine {
         this.refreshBuff(id, time)
       }
     }
-    if (this.params.armorSet === "mistwillow") this.processMistwillowBuffGrant(time, props)
+    if (this.definitions.has(MISTWILLOW_MERGED_BUFF)) this.processMistwillowBuffGrant(time, props)
     return result
   }
 
@@ -460,6 +471,13 @@ export class BuffEngine {
     }
   }
 
+  private triggerOnlyExtends(module: BuffModule, props: SkillProperties): boolean {
+    const tag = module.extendedOnlyByProperty
+    if (!tag) return false
+    const property = tag.startsWith(PROP_TAG) ? tag.slice(PROP_TAG.length) : tag
+    return !!props[property as keyof SkillProperties]
+  }
+
   private applyTriggeredModule(
     module: BuffModule,
     castTag: string,
@@ -475,6 +493,7 @@ export class BuffEngine {
       !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
     )
       return
+    if (this.triggerOnlyExtends(module, props) && !this.isBuffActiveAtTime(module.id, time)) return
     if (module.cooldown) {
       const last = this.activeBuffs.get(module.id)
       if (last && time - last.appliedAt < module.cooldown) return
@@ -515,6 +534,7 @@ export class BuffEngine {
     const perCast = module.stacks
       ? module.stacks(this.buildContext(applyTime, castEvent, 0, module))
       : 1
+    if (!module.stackRateLimit && perCast <= 0) return
     if (module.stackRateLimit) {
       let granted = 0
       for (let i = 0; i < perCast; i++) if (this.canGrantStack(module, applyTime)) granted++
@@ -526,14 +546,91 @@ export class BuffEngine {
   }
 
   // Every damaging hit stacks these, wherever the hit came from — the scope on
-  // such a def says who RECEIVES its bonus, never what grants it a stack. The
-  // timeline drives this over the prepass's sorted damage frames, so the stack
-  // history is complete before the first damage query reads it.
-  processDamageHit(time: number): void {
+  // such a def says who RECEIVES its bonus, never what grants it a stack, and
+  // a def that wants the hit's origin to matter opts in via
+  // `stackOnDamageScoped` / `perHitConsume`, both of which go through the same
+  // `reaches` the damage query uses. The timeline drives this over the
+  // prepass's sorted damage frames, so the stack history is complete before
+  // the first damage query reads it — which is also why every read and write
+  // here is history-indexed rather than against the live map: the cast walk
+  // has already run in full, so the live map holds only each id's last window.
+  processDamageHit(time: number, skill?: Skill): void {
+    const tagSet = skill ? skillTagsOf(skill) : undefined
     for (const [id, module] of this.definitions) {
-      if (!module.stackOnDamage || !this.gateOk(module)) continue
-      this.applyBuff(id, time, null, 1)
+      if (!this.gateOk(module)) continue
+      if (module.perHitConsume) this.processPerHitConsume(module, time, tagSet)
+      if (!module.stackOnDamage) continue
+      if (!this.stackOnDamagePhaseHolds(module, time)) continue
+      if (module.stackOnDamageScoped && !(tagSet && reaches(tagSet, module))) continue
+      if (module.stackOnDamageOnlyWhileActive) this.restoreStackIntoWindow(module, time)
+      else if (this.canGrantDamageStack(module, time)) this.applyBuff(id, time, null, 1)
     }
+  }
+
+  private stackOnDamagePhaseHolds(module: BuffModule, time: number): boolean {
+    const phase = module.stackOnDamagePhase
+    if (!phase) return true
+    const current = this.qiPhase(time)
+    return Array.isArray(phase) ? phase.includes(current) : phase === current
+  }
+
+  private canGrantDamageStack(module: BuffModule, time: number): boolean {
+    if (!module.stackOnDamageRateLimit) return true
+    const { count, window } = module.stackOnDamageRateLimit
+    const key = "damageStack:" + module.id
+    let times = this.grantTimes.get(key)
+    if (!times) {
+      times = []
+      this.grantTimes.set(key, times)
+    }
+    const cutoff = time - window
+    while (times.length > 0 && times[0] <= cutoff) times.shift()
+    if (times.length >= count) return false
+    times.push(time)
+    return true
+  }
+
+  // A stack buff whose last stack was spent counts as ended, not as an empty
+  // live window — so a top-up needs a surviving stack, exactly like a spend.
+  private restoreStackIntoWindow(module: BuffModule, time: number): void {
+    const window = this.latestApplyAt(module.id, time)
+    if (!window || time >= window.expiresAt) return
+    const before = window.stacks ?? 1
+    if (before <= 0 || before >= (module.maxStacks ?? 1)) return
+    if (!this.canGrantDamageStack(module, time)) return
+    this.buffHistory.push({
+      time,
+      buffType: module.id,
+      action: "apply",
+      expiresAt: window.expiresAt,
+      stacks: before + 1,
+    })
+  }
+
+  private processPerHitConsume(
+    module: BuffModule,
+    time: number,
+    tagSet: ReadonlySet<string> | undefined,
+  ): void {
+    if (!tagSet || !reaches(tagSet, module)) return
+    if (this.isBuffActiveAtTime(module.id, time)) return
+    if (!this.spendStackInWindow(module.perHitConsume!.from, time)) return
+    this.applyBuff(module.id, time, null, 1)
+  }
+
+  private spendStackInWindow(id: string, time: number): boolean {
+    const window = this.latestApplyAt(id, time)
+    if (!window || time >= window.expiresAt) return false
+    const before = window.stacks ?? 1
+    if (before <= 0) return false
+    this.buffHistory.push({
+      time,
+      buffType: id,
+      action: "apply",
+      expiresAt: window.expiresAt,
+      stacks: before - 1,
+    })
+    return true
   }
 
   // Resolves one cast's consumption against the live pools and spends them.
@@ -607,51 +704,40 @@ export class BuffEngine {
     if (attackType === "mixed") return "both"
     return null
   }
-  // Deliberately INVERTED from the grant category (site's `Nl`) — the
-  // cross-stance synergy: a light hit reads the HEAVY buff's bonus and vice
-  // versa. Do not "fix" this to mirror mistwillowGrantCategory.
-  private mistwillowBonusCategory(attackType: string, isExecution: boolean): string | null {
-    if (attackType === "light") return MISTWILLOW_HEAVY_BUFF
-    if (attackType === "heavy" || isExecution) return MISTWILLOW_LIGHT_BUFF
-    if (attackType === "mixed") return "both"
-    return null
-  }
   processMistwillowBuffGrant(time: number, props: SkillProperties): void {
     const attackType = props.attackType ?? "none"
     const isExecution = !!props.isExecution
     const category = this.mistwillowGrantCategory(attackType, isExecution)
     if (!category) return
+    if (this.isBuffActive(MISTWILLOW_MERGED_BUFF, time)) {
+      this.refreshMistwillowThrottled(MISTWILLOW_MERGED_BUFF, time)
+      return
+    }
     const heavyActive = this.isBuffActive(MISTWILLOW_HEAVY_BUFF, time)
     const lightActive = this.isBuffActive(MISTWILLOW_LIGHT_BUFF, time)
-    if (category === "both" || (heavyActive && lightActive)) {
-      this.applyBuff(MISTWILLOW_HEAVY_BUFF, time, MISTWILLOW_BUFF_DURATION)
-      this.applyBuff(MISTWILLOW_LIGHT_BUFF, time, MISTWILLOW_BUFF_DURATION)
+    const upgradesToMerged =
+      category === "both" ||
+      (category === MISTWILLOW_HEAVY_BUFF && lightActive) ||
+      (category === MISTWILLOW_LIGHT_BUFF && heavyActive)
+    if (upgradesToMerged) {
+      if (heavyActive) this.endMistwillowStance(MISTWILLOW_HEAVY_BUFF, time)
+      if (lightActive) this.endMistwillowStance(MISTWILLOW_LIGHT_BUFF, time)
+      this.applyBuff(MISTWILLOW_MERGED_BUFF, time)
+    } else if (this.isBuffActive(category, time)) {
+      this.refreshMistwillowThrottled(category, time)
     } else {
-      this.applyBuff(category, time, MISTWILLOW_BUFF_DURATION)
+      this.applyBuff(category, time)
     }
   }
-  private mistwillowBonusValue(time: number, tagSet: Set<string>): number {
-    if (this.params.armorSet !== "mistwillow") return 0
-    let attackType = "none"
-    for (const tag of tagSet)
-      if (tag.startsWith("attack:")) {
-        attackType = tag.slice(7)
-        break
-      }
-    const isExecution = tagSet.has("prop:isExecution")
-    const category = this.mistwillowBonusCategory(attackType, isExecution)
-    if (!category) return 0
-    const heavyActive = this.isBuffActiveAtTime(MISTWILLOW_HEAVY_BUFF, time)
-    const lightActive = this.isBuffActiveAtTime(MISTWILLOW_LIGHT_BUFF, time)
-    if (category === "both") {
-      let bonus = 0
-      if (heavyActive) bonus += MISTWILLOW_BONUS * 0.5
-      if (lightActive) bonus += MISTWILLOW_BONUS * 0.5
-      return bonus
-    }
-    if (category === MISTWILLOW_HEAVY_BUFF && heavyActive) return MISTWILLOW_BONUS
-    if (category === MISTWILLOW_LIGHT_BUFF && lightActive) return MISTWILLOW_BONUS
-    return 0
+  private refreshMistwillowThrottled(id: string, time: number): void {
+    const active = this.activeBuffs.get(id)
+    if (!active || time < active.appliedAt || time >= active.expiresAt) return
+    const cooldown = this.definitions.get(id)?.cooldown ?? 0
+    if (time - active.appliedAt < cooldown) return
+    this.applyBuff(id, time)
+  }
+  private endMistwillowStance(id: string, time: number): void {
+    this.applyBuff(id, time, 0)
   }
 
   calculateDamageEffects(
@@ -667,6 +753,7 @@ export class BuffEngine {
     let forceCrit = false
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
+    const artBonuses: Partial<Record<ArtBonusField, number>> = {}
     let currentId = ""
 
     const sink: EffectSink = {
@@ -679,7 +766,9 @@ export class BuffEngine {
       },
       applyBuff: () => {},
       consumeStacks: () => {},
-      artBonus: () => {},
+      artBonus(field, amount) {
+        artBonuses[field] = (artBonuses[field] ?? 0) + amount
+      },
       damageMultiplier(factor) {
         damageFactor *= factor
       },
@@ -715,12 +804,6 @@ export class BuffEngine {
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
-    const mistwillow = this.mistwillowBonusValue(time, tagSet)
-    if (mistwillow > 0) {
-      effects.push({ statKey: "allDamageBoost", amount: mistwillow })
-      breakdown.mistwillow = (breakdown.mistwillow ?? 0) + mistwillow
-    }
-
-    return { effects, forceCrit, damageFactor, conditionalFinalCrit, breakdown }
+    return { effects, forceCrit, damageFactor, conditionalFinalCrit, artBonuses, breakdown }
   }
 }

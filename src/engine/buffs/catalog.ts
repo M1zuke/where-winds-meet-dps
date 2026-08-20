@@ -24,16 +24,6 @@ import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/c
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
 
-function moduleAffectsSummary(module: BuffModule, skills: readonly Skill[]): string {
-  if (module.affectsAll) return "all"
-  const names = [
-    ...new Set(
-      skills.filter((skill) => skill.receives?.includes(module.id)).map((skill) => skill.name),
-    ),
-  ]
-  return names.length > 0 ? names.join("/") : "nothing"
-}
-
 function skillsInScope(classId: string | undefined, inputs: Inputs | undefined): Skill[] {
   return [...builtinSkillsForClass(classId ?? ""), ...(inputs?.customSkills ?? [])]
 }
@@ -91,7 +81,6 @@ export function requiresLabel(module: BuffModule): string | null {
   if (!requires?.param) return null
   const innerWayName = innerWayForBuffParam(requires.param)?.name
   if (innerWayName) return innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
-  if (requires.param === "starsAlignActive") return "Stars Align"
   return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
 }
 
@@ -133,27 +122,6 @@ const DISPLAY_REQUIRES: Record<string, string> = {
   vulnerabilityTeammate: "Encounter Settings: Tank Spear Debuff",
 }
 
-function triggeredByNote(
-  module: BuffModule,
-  skills: readonly Skill[],
-  defsById: Map<string, BuffModule>,
-): string | null {
-  if (module.alwaysActive) return null
-  const names = [
-    ...new Set(
-      skills.filter((skill) => skill.triggersBuffs?.includes(module.id)).map((skill) => skill.name),
-    ),
-  ]
-  if (names.length === 0) return null
-  let note = `on cast: ${names.join("/")}`
-  const upgradeFrom = module.requiresBuffActive
-  if (upgradeFrom) {
-    const src = defsById.get(upgradeFrom)
-    note += ` · requires ${src?.name ?? upgradeFrom} active`
-  }
-  return note
-}
-
 export interface ReceivesRow {
   id: string
   name: string
@@ -161,14 +129,13 @@ export interface ReceivesRow {
   requires: string | null
   isSpecMechanic: boolean
   active: boolean
-  triggeredBy: string | null
 }
 
 // A mechanic's Receives row, derived from the very `effects` it applies so the
 // card cannot drift from the engine, and labelled with the inner way that
 // declares it. A mechanic is never one of the class's own defs, so it never
-// counts as a spec mechanic and nothing triggers it. Every mechanic that
-// carries a catalog row reaches every skill — there is no scoped one.
+// counts as a spec mechanic. Every mechanic that carries a catalog row reaches
+// every skill — there is no scoped one.
 function mechanicRows(classId?: string, inputs?: Inputs): ReceivesRow[] {
   const definition = classId ? classDefinition(classId) : undefined
   const rows: ReceivesRow[] = []
@@ -178,12 +145,11 @@ function mechanicRows(classId?: string, inputs?: Inputs): ReceivesRow[] {
       if (!row) continue
       rows.push({
         id: mechanic.id,
-        name: `${row.name} (all)`,
+        name: row.name,
         effect: summaryFromMechanicEffects(row.effects()),
         requires: owner.name,
         isSpecMechanic: false,
         active: inputs ? row.available(inputs) : true,
-        triggeredBy: null,
       })
     }
   }
@@ -200,32 +166,24 @@ function summaryFromMechanicEffects(effects: readonly BuffStatEffect[]): string 
     .join(", ")
 }
 
-function gearStatRow(key: StatKey, affects: string, inputs?: Inputs): ReceivesRow {
+function gearStatRow(key: StatKey, inputs?: Inputs): ReceivesRow {
   const label = STAT_DEF_BY_KEY[key]?.label ?? key
   const value = inputs ? ((inputs as unknown as Record<string, number>)[key] ?? 0) : null
   return {
     id: `stat:${key}`,
-    name: `${label} (${affects})`,
+    name: label,
     effect: value !== null ? `+${(value * 100).toFixed(1)}% damage` : "panel stat",
     requires: null,
     isSpecMechanic: false,
     active: true,
-    triggeredBy: null,
   }
 }
 
-export function receivesForSkill(
-  skill: Skill,
-  classId?: string,
-  inputs?: Inputs,
-  skills?: readonly Skill[],
-): ReceivesRow[] {
+export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs): ReceivesRow[] {
   const tagSet = skillTagsOf(skill)
   const specIds = specMechanicIds(classId)
   const params = inputs ? paramsFromInputs(inputs) : null
-  const scopeSkills = skills ?? skillsInScope(classId, inputs)
   const defs = catalogBuffDefs(classId)
-  const defsById = new Map(defs.map((d) => [d.id, d] as const))
   const rows: ReceivesRow[] = []
   for (const module of defs) {
     const { applies, text } = moduleContribution(module, tagSet)
@@ -236,7 +194,7 @@ export function receivesForSkill(
 
     rows.push({
       id: module.id,
-      name: `${module.name} (${moduleAffectsSummary(module, scopeSkills)})`,
+      name: module.name,
       effect: text,
       requires: DISPLAY_REQUIRES[module.id] ?? requiresLabel(module),
       isSpecMechanic: specIds.has(module.id),
@@ -246,20 +204,19 @@ export function receivesForSkill(
           : params
             ? buffGateSatisfied(module, params)
             : true,
-      triggeredBy: triggeredByNote(module, scopeSkills, defsById),
     })
   }
   rows.push(...mechanicRows(classId, inputs))
 
   const weaponBoostKey = WEAPON_BOOST_STAT_KEY[skill.weaponOrAttribute ?? ""]
   if (weaponBoostKey) {
-    rows.push(gearStatRow(weaponBoostKey, `${skill.weaponOrAttribute} skills`, inputs))
-    rows.push(gearStatRow("allMartialBoost", "all weapon-typed skills", inputs))
+    rows.push(gearStatRow(weaponBoostKey, inputs))
+    rows.push(gearStatRow("allMartialBoost", inputs))
   }
   const mysticCategory = mysticCategoryOf(skill)
   const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
   if (mysticBoostKey) {
-    rows.push(gearStatRow(mysticBoostKey, `mystic: ${mysticCategory}`, inputs))
+    rows.push(gearStatRow(mysticBoostKey, inputs))
   }
   const attuneTag = attuneTagOf(skill)
   const attunement = attuneTag
@@ -270,12 +227,11 @@ export function receivesForSkill(
     const forThisClass = !attunement.classIds || !classId || attunement.classIds.includes(classId)
     rows.push({
       id: `attunement:${attunement.id}`,
-      name: `${attunement.label} (${attuneTag})`,
+      name: attunement.label,
       effect: inputs ? `+${(rolled * 100).toFixed(1)}% damage` : "gear attunement",
       requires: `${attunement.slots.join("/")} attunement`,
       isSpecMechanic: false,
       active: forThisClass && rolled > 0,
-      triggeredBy: null,
     })
   }
 
@@ -292,14 +248,13 @@ export function receivesForSkill(
       const baseline = det.retainStacks ?? 0
       rows.push({
         id: `dotRetention:${d.id}`,
-        name: `${innerWayLabel} (${d.name})`,
+        name: innerWayLabel,
         effect: `retains ${retained} ${d.name} stacks after detonation (${baseline} without it)`,
         requires: `${innerWayLabel} tier ${minTier}+`,
         isSpecMechanic: false,
         active: params
           ? paramOnOf(params, det.retainParam) && paramTierOf(params, det.retainParam) >= minTier
           : true,
-        triggeredBy: null,
       })
     }
   }
@@ -314,13 +269,8 @@ export interface AppliesRow {
   requires: string | null
 }
 
-export function appliesForSkill(
-  skill: Skill,
-  classId?: string,
-  skills?: readonly Skill[],
-): AppliesRow[] {
+export function appliesForSkill(skill: Skill, classId?: string): AppliesRow[] {
   if (!skill.triggersBuffs || skill.triggersBuffs.length === 0) return []
-  const scopeSkills = skills ?? skillsInScope(classId, undefined)
   const defsById = new Map(catalogBuffDefs(classId).map((module) => [module.id, module] as const))
   const rows: AppliesRow[] = []
   for (const buffId of new Set(skill.triggersBuffs)) {
@@ -337,7 +287,7 @@ export function appliesForSkill(
 
     rows.push({
       id: module.id,
-      name: `${module.name} (${moduleAffectsSummary(module, scopeSkills)})`,
+      name: module.name,
       effect: parts.join(", "),
       requires: requiresLabel(module),
     })
@@ -349,7 +299,6 @@ export interface ClassBuffRow {
   id: string
   name: string
   effect: string
-  affects: string
   requires: string | null
 }
 
@@ -392,7 +341,6 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
       id: module.id,
       name: module.name,
       effect: parts.join(", "),
-      affects: moduleAffectsSummary(module, skills),
       requires: requiresLabel(module),
     })
   }

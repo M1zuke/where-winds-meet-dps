@@ -1,0 +1,658 @@
+{
+  "v": 14,
+  "profile": {
+    "id": "pr-mslb9g5g-srm8ds-3",
+    "name": "Main",
+    "inputs": {
+      "classId": "stonesplitStrength",
+      "breakthrough": 16,
+      "allDamageBoost": 0,
+      "mindMethods": [
+        {
+          "name": "Frost-Clad Night",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Morale Chant",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Steadfast Devotion",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Throat-Pierce",
+          "stacks": "tier 6"
+        }
+      ],
+      "food": true,
+      "tianGongElement": "fire",
+      "set": "shatteredRidge",
+      "shareDebuff5HenZhi": false,
+      "shareEasyHurt": false,
+      "bowSet": "precision",
+      "arsenal": "stonesplit",
+      "dummyMode": true,
+      "rotation": null,
+      "activeCustomRotation": null,
+      "inventory": [
+        {
+          "id": "gp-mslb8evi-ropvur-1",
+          "slot": "leftWeapon",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 65,
+          "maxPhys": 151,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 61.1,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.085,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 45,
+              "retuned": false
+            },
+            {
+              "word": "modaoBoost",
+              "value": 0.058,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 77.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.106,
+          "relayed": false
+        },
+        {
+          "id": "gp-mslbhhoj-4aip6u-1",
+          "slot": "rightWeapon",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 65,
+          "maxPhys": 151,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 67.9,
+              "retuned": false
+            },
+            {
+              "word": "maxVoidAttack",
+              "value": 42.3,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.088,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 48.9,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 77.8,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.105,
+          "relayed": false
+        },
+        {
+          "id": "gp-mslbi9o9-24g4ye-3",
+          "slot": "disc",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 78,
+          "maxPhys": 0,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 73,
+              "retuned": false
+            },
+            {
+              "word": "minSilkbind",
+              "value": 39.6,
+              "retuned": false
+            },
+            {
+              "word": "maxStonesplit",
+              "value": 40.8,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.8,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 73,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.106,
+          "relayed": false
+        },
+        {
+          "id": "gp-mslbj0yb-d3btk3-5",
+          "slot": "pendant",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 129,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "minBamboocut",
+              "value": 34,
+              "retuned": false
+            },
+            {
+              "word": "maxStonesplit",
+              "value": 34,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.103,
+          "relayed": true
+        },
+        {
+          "id": "gp-mslbjugq-q27ckx-7",
+          "slot": "helm",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4614,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "precision",
+              "value": 0.055,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 72.8,
+              "retuned": false
+            },
+            {
+              "word": "minBamboocut",
+              "value": 39.8,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.8,
+              "retuned": false
+            },
+            {
+              "word": "precision",
+              "value": 0.06,
+              "retuned": false
+            }
+          ],
+          "attunement": "phalanxChargeDamage",
+          "attunementValue": 0.055,
+          "relayed": false
+        },
+        {
+          "id": "gp-mslbknrf-b3na4z-9",
+          "slot": "armor",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 9227,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.07,
+              "retuned": false
+            },
+            {
+              "word": "maxStonesplit",
+              "value": 40,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "minSilkbind",
+              "value": 40,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "phalanxChargeDamage",
+          "attunementValue": 0.055,
+          "relayed": true
+        },
+        {
+          "id": "gp-mslbln7j-nphdkg-b",
+          "slot": "greaves",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 32,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.082,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 73.1,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 45.9,
+              "retuned": false
+            },
+            {
+              "word": "minStonesplit",
+              "value": 40.1,
+              "retuned": false
+            },
+            {
+              "word": "damageVsBoss",
+              "value": 0.03,
+              "retuned": false
+            }
+          ],
+          "attunement": "phalanxChargeDamage",
+          "attunementValue": 0.055,
+          "relayed": true
+        },
+        {
+          "id": "gp-mslbmfpc-ya9uct-d",
+          "slot": "bracer",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 16,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.078,
+              "retuned": false
+            },
+            {
+              "word": "minSilkbind",
+              "value": 36.2,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 70.8,
+              "retuned": false
+            },
+            {
+              "word": "damageVsBoss",
+              "value": 0.029,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.068,
+              "retuned": false
+            }
+          ],
+          "attunement": "phalanxChargeDamage",
+          "attunementValue": 0.055,
+          "relayed": true
+        }
+      ],
+      "equipped": {
+        "leftWeapon": "gp-mslb8evi-ropvur-1",
+        "rightWeapon": "gp-mslbhhoj-4aip6u-1",
+        "disc": "gp-mslbi9o9-24g4ye-3",
+        "pendant": "gp-mslbj0yb-d3btk3-5",
+        "helm": "gp-mslbjugq-q27ckx-7",
+        "armor": "gp-mslbknrf-b3na4z-9",
+        "greaves": "gp-mslbln7j-nphdkg-b",
+        "bracer": "gp-mslbmfpc-ya9uct-d"
+      },
+      "martialArtsTalents": [
+        {
+          "id": "default-stonesplitStrength-0",
+          "name": "Critical Rate UP",
+          "enabled": true,
+          "stat": "critRate",
+          "maxBonus": 0.085,
+          "scalesWith": "agility",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-stonesplitStrength-1",
+          "name": "Physical Attack UP",
+          "enabled": true,
+          "stat": "minPhys",
+          "maxBonus": 73.9,
+          "scalesWith": "agility",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-stonesplitStrength-2",
+          "name": "Mo Blade Stonesplit Attack Min",
+          "enabled": true,
+          "stat": "minStonesplit",
+          "maxBonus": 98,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-stonesplitStrength-3",
+          "name": "Mo Blade Stonesplit Attack Max",
+          "enabled": true,
+          "stat": "maxStonesplit",
+          "maxBonus": 196,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-stonesplitStrength-4",
+          "name": "Heng Blade Stonesplit Attack Min",
+          "enabled": true,
+          "stat": "minStonesplit",
+          "maxBonus": 98,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-stonesplitStrength-5",
+          "name": "Heng Blade Stonesplit Attack Max",
+          "enabled": true,
+          "stat": "maxStonesplit",
+          "maxBonus": 196,
+          "scalesWith": "power",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-stonesplitStrength-6",
+          "name": "Stonesplit Penetration Scale",
+          "enabled": true,
+          "stat": "stonesplitPenetration",
+          "maxBonus": 0.22,
+          "scalesWith": "stonesplit.min",
+          "scaleMax": 328
+        },
+        {
+          "id": "default-stonesplitStrength-7",
+          "name": "Attribute Damage Scale",
+          "enabled": true,
+          "stat": "attributeDamage",
+          "maxBonus": 0.11,
+          "scalesWith": "stonesplit.min",
+          "scaleMax": 328
+        }
+      ],
+      "oddities": {
+        "Qinghe": [
+          {
+            "id": 1,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 7,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 8,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 9,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 10,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hexi": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng Palace": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hidden Mountain: Suixiang": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ]
+      },
+      "combatSettings": {
+        "qiBreak": {
+          "enabled": true,
+          "startSec": 29,
+          "durationSec": 10
+        },
+        "dragonsBreath": false,
+        "healerBuff": false,
+        "breakExtension": false,
+        "revelryScript": false,
+        "dragonHeadFullStacks": false,
+        "dragonHeadLowHpMaxBonus": false
+      },
+      "selectedBuiltinRotationId": "builtin-stonesplitStrength-windsfromcn-switch-no-toad"
+    }
+  }
+}

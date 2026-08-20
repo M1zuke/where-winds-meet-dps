@@ -2,7 +2,7 @@ import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
-import { HelpHint } from "../help-hint/HelpHint"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINTS } from "../help-hint/deltaHints"
 import styles from "./GearSlotTiles.module.scss"
 

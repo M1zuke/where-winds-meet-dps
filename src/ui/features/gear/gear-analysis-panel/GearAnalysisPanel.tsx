@@ -3,7 +3,7 @@ import type { GearSlotAnalysisRow } from "../../../../engine/gearAnalysis"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useGearAnalysis } from "../../../hooks/useGearAnalysis"
 import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
-import { HelpHint } from "../help-hint/HelpHint"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
 import styles from "./GearAnalysisPanel.module.scss"
 
 interface Props {

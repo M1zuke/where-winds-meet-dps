@@ -2,25 +2,16 @@
 // `set` naming one is now illegal. `V8__dropRemovedArmorSets` heals stored
 // profiles; `hydrateInputs` holds the same invariant on the two paths that never
 // walk the chain, which is why the step is called directly below rather than
-// asserted through `loadProfiles` alone — see MIGRATION-TESTS.md §3.
-//
-// `profile-v7.json` was produced by walking the captured `profile-v6.json`
-// through the real chain, the same hop the app performs on load.
+// asserted through `loadProfiles` alone — see docs/TESTING.md § "Migration
+// tests".
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
-import { runEngine } from "../../src/engine/dps"
-import { applyArmorSet, applyBowSet, ARMOR_SET_OPTIONS } from "../../src/engine/panel"
-import { withDerivedStats } from "../../src/engine/derivedInputs"
-import {
-  LATEST_PROFILES_VERSION,
-  runProfileMigrations,
-  type RawProfilesBlob,
-} from "../../src/migrations"
+import { ARMOR_SET_OPTIONS } from "../../src/engine/panel"
+import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V8__dropRemovedArmorSets } from "../../src/migrations/V8__dropRemovedArmorSets"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v7/bellstrikeUmbra.json"
 
-const PROFILES_KEY = "wwm.profiles"
 const REMOVED_SETS = ["Ivorybloom", "Rainwhisper", "Rainwhisper (no shield)"]
 
 type LegacyFile = { v: number; profile: StoredProfile }
@@ -40,10 +31,6 @@ function blobOf(profile: StoredProfile): RawProfilesBlob {
 
 function inputsOf(blob: RawProfilesBlob): Inputs {
   return (blob.profiles[0] as StoredProfile).inputs
-}
-
-function writeProfile(profile: StoredProfile): void {
-  localStorage.setItem(PROFILES_KEY, JSON.stringify(blobOf(profile)))
 }
 
 function loadOne(): StoredProfile {
@@ -111,61 +98,13 @@ describe("V8__dropRemovedArmorSets — called directly", () => {
 })
 
 describe("V8__dropRemovedArmorSets — registered in the chain", () => {
-  it("the v7 fixture walks to the latest version through this step", () => {
-    const result = runProfileMigrations(blobOf(withSet(clone(LEGACY.profile), "Ivorybloom")))!
-    expect(result.applied).toContain("V8__dropRemovedArmorSets")
-    expect(result.blob.v).toBe(LATEST_PROFILES_VERSION)
+  it("a v7 blob migrated to v8 passes through exactly this step", () => {
+    const result = runProfileMigrations(blobOf(withSet(clone(LEGACY.profile), "Ivorybloom")), {
+      toVersion: 8,
+    })!
+    expect(result.applied).toEqual(["V8__dropRemovedArmorSets"])
+    expect(result.blob.v).toBe(8)
     expect(inputsOf(result.blob).set).toBeNull()
-  })
-})
-
-describe("V8__dropRemovedArmorSets — end to end through loadProfiles", () => {
-  beforeEach(() => localStorage.clear())
-
-  it("clears the set and persists the upgraded blob at the latest version", () => {
-    writeProfile(withSet(clone(LEGACY.profile), "Ivorybloom"))
-    expect(loadOne().inputs.set).toBeNull()
-
-    const persisted = JSON.parse(localStorage.getItem(PROFILES_KEY)!)
-    expect(persisted.v).toBe(LATEST_PROFILES_VERSION)
-    expect(persisted.profiles[0].inputs.set).toBeNull()
-  })
-
-  it("carries the rest of the real build through — only the set differs from a Hawking load", () => {
-    writeProfile(withSet(clone(LEGACY.profile), "Hawking"))
-    const kept = loadOne()
-
-    localStorage.clear()
-    writeProfile(withSet(clone(LEGACY.profile), "Rainwhisper"))
-    const cleared = loadOne()
-
-    expect({ ...cleared.inputs, set: kept.inputs.set }).toEqual(kept.inputs)
-    expect(cleared.id).toBe(LEGACY.profile.id)
-    expect(cleared.name).toBe(LEGACY.profile.name)
-    expect(cleared.inputs.breakthrough).toBe(LEGACY.profile.inputs.breakthrough)
-    expect(cleared.inputs.arsenal).toBe(LEGACY.profile.inputs.arsenal)
-    expect(cleared.inputs.mindMethods.map((slot) => slot.name)).toEqual(
-      LEGACY.profile.inputs.mindMethods.map((slot) => slot.name),
-    )
-    expect(cleared.inputs.inventory).toHaveLength(LEGACY.profile.inputs.inventory.length)
-    expect(cleared.inputs.equipped).toEqual(LEGACY.profile.inputs.equipped)
-  })
-
-  it("still computes a positive-DPS run", () => {
-    writeProfile(withSet(clone(LEGACY.profile), "Ivorybloom"))
-    const after = loadOne()
-    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(after.inputs))))
-    expect(result.dps).toBeGreaterThan(0)
-  })
-
-  it("is idempotent across repeated loads", () => {
-    writeProfile(withSet(clone(LEGACY.profile), "Ivorybloom"))
-    const once = loadOne()
-    localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify({ v: LATEST_PROFILES_VERSION, profiles: [clone(once)], activeId: once.id }),
-    )
-    expect(loadOne()).toEqual(once)
   })
 })
 

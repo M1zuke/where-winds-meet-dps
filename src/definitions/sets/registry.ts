@@ -5,7 +5,7 @@ import { registerMechanic } from "../../engine/mechanics"
 export { SET_DEFS }
 
 for (const set of SET_DEFS) {
-  for (const { mechanic, order } of set.mechanics ?? []) registerMechanic(mechanic, order)
+  for (const { mechanic } of set.mechanics ?? []) registerMechanic(mechanic)
 }
 
 export const SET_BY_ID: Readonly<Record<string, SetDef>> = Object.fromEntries(

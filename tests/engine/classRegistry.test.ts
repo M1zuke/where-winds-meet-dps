@@ -16,7 +16,12 @@ import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 describe("class registry — one call answers what a class is made of", () => {
   it("knows every class, and nothing else", () => {
-    expect(CLASS_IDS()).toEqual(["bellstrikeUmbra", "stonesplitStrength", "bellstrikeSplendor"])
+    expect(CLASS_IDS()).toEqual([
+      "bellstrikeUmbra",
+      "stonesplitStrength",
+      "bellstrikeSplendor",
+      "silkbindJade",
+    ])
     expect(classDefinition("notAClass")).toBeNull()
   })
 
@@ -75,6 +80,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "insightfulStrike",
       "moraleChant",
       "bitterSeason",
+      "breakingPoint",
     ])
     expect(umbra.innerWays).toEqual([
       "swordHorizon",
@@ -82,6 +88,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "insightfulStrike",
       "moraleChant",
       "bitterSeason",
+      "breakingPoint",
     ])
   })
 
@@ -98,27 +105,37 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "potentRiverFlow",
       "wineGu",
       "soulShaken",
+      "disintegration",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 16-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 25-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "potentRiverFlow",
       "wineGu",
       "soulShaken",
+      "disintegration",
       "revelryScript",
       "fluteBoost",
       "vulnerabilityTeammate",
       "jadeware",
       "mirage",
       "mirageBonus",
+      "rainwhisperCritDamage",
       "rainwhisperShield",
       "resistanceResolve",
       "surgingWaves",
       "dragonHeadLowHp",
+      "windWall",
+      "windWallPursuit",
+      "pursuitChargedBoost",
+      "lingeringBone",
+      "mistwillowBuff",
+      "mistwillowHeavyBuff",
+      "mistwillowLightBuff",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
     ])

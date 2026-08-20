@@ -1,4 +1,4 @@
-import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
+import { declareMechanic } from "../../engine/mechanics"
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
@@ -17,5 +17,5 @@ export const moraleChant = defineInnerWay({
   tiers: {
     6: { nodes: [INNER_WAY_NODE.yiRiver] },
   },
-  mechanics: [declareMechanic(moraleChantMechanic(), MECHANIC_ORDER.morale)],
+  mechanics: [declareMechanic(moraleChantMechanic())],
 })

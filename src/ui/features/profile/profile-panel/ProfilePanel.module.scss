@@ -6,49 +6,72 @@
   gap: 12px;
 }
 
-.profileList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
-.profileRow {
-  display: grid;
-  grid-template-columns: 1fr 140px auto;
-  align-items: center;
+.card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  padding: 8px 12px;
-  background: #1d1d1d;
+  padding: 14px 16px;
+  background: var(--color-surface-inset);
   border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 
-.profileRow.isActive {
+.card.isActive {
   border-color: var(--color-accent);
   background: #221e15;
 }
 
-.profileName {
+.watermark {
+  position: absolute;
+  right: -18px;
+  bottom: -18px;
+  width: 140px;
+  height: 140px;
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.card.isActive .watermark {
+  opacity: 0.07;
+}
+
+.cardHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
+}
+
+.classIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .profileNameText {
   color: var(--color-text);
-  font-size: 0.95em;
+  font-size: 1em;
   cursor: text;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
-.profileName input[type="text"] {
+.cardHeader input[type="text"] {
   max-width: 260px;
 }
 
-.profileActiveBadge {
+.activeBadge {
   font-size: 0.7em;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -57,27 +80,104 @@
   padding: 2px 6px;
   border-radius: 3px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
-.profileClass {
+.classLabel {
+  margin-left: auto;
   color: var(--color-text-muted);
   font-size: 0.82em;
   letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
-.profileActions {
+.stats {
   display: flex;
-  gap: 6px;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 10px 24px;
 }
 
-@include breakpoints.below(breakpoints.$bp-720) {
-  .profileRow {
-    grid-template-columns: 1fr;
-    gap: 6px;
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 0.66em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.dpsValue {
+  font-size: 1.75em;
+  line-height: 1.1;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.card.isActive .dpsValue {
+  color: var(--color-accent-bright);
+}
+
+.statValue {
+  font-size: 1em;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+  padding-bottom: 2px;
+}
+
+.card.isActive .statValue {
+  color: var(--color-text);
+}
+
+.rotationStat {
+  min-width: 0;
+}
+
+.rotationValue {
+  font-size: 0.82em;
+  color: var(--color-text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-bottom: 2px;
+}
+
+.rotationDuration {
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  border-top: 1px solid var(--color-surface-raised);
+  padding-top: 10px;
+}
+
+.card.isActive .cardActions {
+  border-top-color: #3a3426;
+}
+
+.actionsSpacer {
+  flex: 1;
+}
+
+@include breakpoints.below(breakpoints.$bp-980) {
+  .cardGrid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
-  .profileActions {
-    justify-content: flex-start;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .classLabel {
+    flex-basis: 100%;
+    margin-left: 0;
   }
 }

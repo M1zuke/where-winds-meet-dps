@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../definitions/skills/buffDef"
+import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { applyBuff, stat } from "../../engine/effects/effect"
 
@@ -6,7 +6,7 @@ import { applyBuff, stat } from "../../engine/effects/effect"
 // (client localization, 2026-08-15). The engine simulates a boss target, so the
 // two are carried as one 3% figure — the same value the reference site's own
 // def and the workbook both hold.
-export const mountainsMightBuff = defineClassBuff({
+export const mountainsMightBuff = defineBuff({
   id: BUFF.mountainsMight,
   name: "Mountain's Might",
   requires: { param: PARAM.mountainsMight },
@@ -21,7 +21,7 @@ export const mountainsMightBuff = defineClassBuff({
 // gates rather than declared on the skill, which carries no gate of its own.
 // The spear applies it from the Nameless Spear talent and stays ungated.
 // Slotting at all satisfies the rule, tier 1 being the lowest selectable.
-export const mountainsMightPathQiImbalance = defineClassBuff({
+export const mountainsMightPathQiImbalance = defineBuff({
   id: BUFF.mountainsMightQiImbalance,
   name: "Qi Imbalance (Splendor path)",
   requires: { param: PARAM.mountainsMight },

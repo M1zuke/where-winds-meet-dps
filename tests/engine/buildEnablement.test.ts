@@ -66,13 +66,6 @@ describe("paramsFromInputs — build derivation", () => {
     expect(params.insightfulStrikeTier).toBeUndefined()
   })
 
-  it("Stars Align enables starsAlignActive", () => {
-    const inputs: Inputs = { ...base, set: SET_ID.starsAlign }
-    const params = paramsFromInputs(inputs)
-    expect(params.starsAlignActive).toBe(true)
-    expect(params.armorSet).toBe("starsAlign")
-  })
-
   it("a class-signature inner way is enabled only when selected in a slot (no auto-enable)", () => {
     const unselected = paramsFromInputs({ ...base, classId: "bellstrikeUmbra" })
     expect(unselected.swordHorizon).toBeUndefined()

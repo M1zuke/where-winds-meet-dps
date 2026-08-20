@@ -1,4 +1,4 @@
-import { declareMechanic, MECHANIC_ORDER } from "../../engine/mechanics"
+import { declareMechanic } from "../../engine/mechanics"
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { insightfulStrikeMechanic } from "./insightfulStrikeMechanic"
@@ -24,5 +24,5 @@ export const insightfulStrike = defineInnerWay({
       nodes: [INNER_WAY_NODE.concentrationDotMultiplier, INNER_WAY_NODE.concentrationSustainPair],
     },
   },
-  mechanics: [declareMechanic(insightfulStrikeMechanic(), MECHANIC_ORDER.concentration)],
+  mechanics: [declareMechanic(insightfulStrikeMechanic())],
 })

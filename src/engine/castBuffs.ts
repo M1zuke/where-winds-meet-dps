@@ -93,6 +93,7 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
         maxStacks: engineBuff.maxStacks,
         effects: engineBuff.effects,
         requires: engineBuff.requires,
+        remainingSec: engineBuff.remainingSec,
       })
     }
   }

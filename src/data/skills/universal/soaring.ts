@@ -1,4 +1,4 @@
-import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
+import { defineSkill, evenlySpacedHits } from "../../../definitions/skills/skillDef"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL } from "./ids"
 
@@ -13,7 +13,7 @@ export const soaring = defineSkill({
   castTag: CAST.soaring,
   castFrames: 120,
   triggerable: true,
-  hits: dotTicks({
+  hits: evenlySpacedHits({
     count: 2,
     everyFrames: 60,
     physMultiplier: 3.5537,

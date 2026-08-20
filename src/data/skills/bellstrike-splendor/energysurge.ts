@@ -15,6 +15,8 @@ export const energySurge = defineSkill({
   castTag: CAST.energySurge,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
+    BUFF.mistwillowLightBuff,
+    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,

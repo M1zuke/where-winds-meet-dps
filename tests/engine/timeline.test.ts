@@ -170,8 +170,6 @@ function makeBleed(patch: Partial<Debuff> = {}): Debuff {
     effects: [],
     maxStacks: 10,
     stackScaling: "flat",
-    // Runtime DoT ticks are demoted (elevatedAttributeMultiplier: false),
-    // which zeroes flat damage — use a multiplier-carrying shape instead.
     dot: {
       tickIntervalFrames: 100,
       physMultiplier: 1,
@@ -309,8 +307,6 @@ describe("timeline — triggerable is an authoring filter only", () => {
 })
 
 function makeBleedTable(maxStacks: number, tableLength: number): Debuff {
-  // Runtime DoT ticks are demoted (elevatedAttributeMultiplier: false), which
-  // zeroes flat damage — scale by physMultiplier to keep rows distinct.
   const perStackShapes: DotStackShape[] = Array.from({ length: tableLength }, (_, i) => ({
     physMultiplier: 0.1 * (i + 1),
     physFixed: 0,

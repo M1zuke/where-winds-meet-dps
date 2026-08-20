@@ -30,6 +30,7 @@ const soulShaken = soulShakenBuffDef()
 describe("INNER_WAYS — ids and display names are pinned", () => {
   it.each([
     [INNER_WAY_ID.bitterSeason, "Bitter Season"],
+    [INNER_WAY_ID.breakingPoint, "Breaking Point"],
     [INNER_WAY_ID.frostCladNight, "Frost-Clad Night"],
     [INNER_WAY_ID.insightfulStrike, "Insightful Strike"],
     [INNER_WAY_ID.moraleChant, "Morale Chant"],
@@ -59,6 +60,7 @@ describe("INNER_WAYS — selectable tiers", () => {
     [INNER_WAY_ID.steadfastDevotion, [6, 5]],
     [INNER_WAY_ID.throatPierce, [6, 5]],
     [INNER_WAY_ID.bitterSeason, [6, 5, 4, 3, 2, 1]],
+    [INNER_WAY_ID.breakingPoint, [6, 5]],
   ])("%s offers %j", (id, tiers) => {
     const def = INNER_WAYS.find((candidate) => candidate.id === id)
     expect(def?.selectableTiers).toEqual(tiers)
@@ -133,6 +135,7 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction, 1],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 4],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonMaxStackPenetration, 6],
+    [INNER_WAY_ID.breakingPoint, INNER_WAY_NODE.breakingPointPerfectDodgeStacks, 6],
   ])("%s.%s unlocks at tier %d", (id, node, tier) => {
     const def = defById(id)
     expect(innerWayNodeTier(def, node)).toBe(tier)
@@ -275,6 +278,7 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
     [INNER_WAY_ID.moraleChant, []],
     [INNER_WAY_ID.bitterSeason, []],
+    [INNER_WAY_ID.breakingPoint, ["disintegration"]],
   ])("%s declares buffDefs %j", (id, ids) => {
     const def = innerWayDefinition(id)!
     expect((def.buffDefs ?? []).map((module) => module.id)).toEqual(ids)

@@ -4,6 +4,7 @@ import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS } from "./definitions/classes/registry"
+import { SET_BY_ID } from "./definitions/sets/registry"
 import {
   innerWayIdForName,
   innerWayName,
@@ -39,6 +40,8 @@ import {
   migrateGearWordId,
   migrateCurrentGearWordLabel,
   migrateSetId,
+  migrateAttunementId,
+  migrateAttuneTag,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -156,6 +159,18 @@ function repairGearWord(entry: unknown): unknown {
   return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
 }
 
+// The live registry is the allowlist, never `migrateSetId`'s table: that table
+// is frozen at the display names V11 knew, so it recognises neither a set
+// retired since nor one added since, and run alone it clears a legitimate
+// selection on every load. It survives here only as the pre-V11 display-name
+// hop for the two paths that never walk the chain — a bare imported profile
+// and the legacy `wwm.inputs` blob.
+function selectableSetId(stored: string | null): string | null {
+  if (stored !== null && SET_BY_ID[stored] !== undefined) return stored
+  const migrated = migrateSetId(stored)
+  return migrated !== null && SET_BY_ID[migrated] !== undefined ? migrated : null
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
@@ -170,10 +185,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
   next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
-  // Value-level repair for the legacy `wwm.inputs` blob, which has no version
-  // chain of its own (V8 covers `wwm.profiles`) — idempotent, so re-running it
-  // on an already-migrated id is a no-op.
-  next.set = migrateSetId(next.set)
+  next.set = selectableSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)
   }
@@ -231,7 +243,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
       ...(rest as unknown as typeof piece),
       ...(words !== undefined ? { words: words as typeof piece.words } : {}),
       relayed: typeof p.relayed === "boolean" ? p.relayed : false,
-      attunement: typeof p.attunement === "string" ? p.attunement : "",
+      attunement: typeof p.attunement === "string" ? migrateAttunementId(p.attunement) : "",
       attunementValue: typeof p.attunementValue === "number" ? p.attunementValue : 0,
       ...(isNew ? { isNew: true } : {}),
     }
@@ -576,10 +588,13 @@ function builtinTagsFor(id: string): string[] {
 }
 
 function healSkillTags(id: string, tags: string[]): string[] {
-  const healed = new Set(tags)
+  const renamed = tags.map(migrateAttuneTag)
+  const healed = new Set(renamed)
   for (const tag of builtinTagsFor(id)) healed.add(tag)
   if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
-  return healed.size === tags.length ? tags : [...healed]
+  const unchanged =
+    healed.size === tags.length && renamed.every((tag, index) => tag === tags[index])
+  return unchanged ? tags : [...healed]
 }
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". Before
@@ -1286,6 +1301,30 @@ interface CustomDebuffsBlob {
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The reach each Umbrella Drone debuff carried while its ticks neither extended
+// the Lingering Bone mark nor doubled under it. A copy seeded then keeps
+// scoring unenhanced projectiles and lets the mark lapse mid-window, with no
+// editor surface showing the gap. Only a list still identical to what was
+// seeded is rewritten: `receives` is user-editable, so a copy that differs may
+// differ on purpose.
+const DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE = ["soulShaken"]
+const DRONE_DEBUFF_ID = /^debuff-silkbindJade-umbdrone-\d+hit$/
+
+function healDroneDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
+  const receives = healDebuffReceives(d)
+  if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs: d.triggersBuffs }
+  const seeded =
+    receives.length === DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.length &&
+    DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.every((id, index) => receives[index] === id)
+  if (!seeded) return { receives, triggersBuffs: d.triggersBuffs }
+  return {
+    receives: [...receives, "lingeringBone"],
+    triggersBuffs: d.triggersBuffs?.length ? d.triggersBuffs : ["lingeringBone"],
+  }
+}
+
 function hydrateDebuff(d: Debuff): Debuff {
   const dot: DebuffDotSpec | null = d.dot
     ? {
@@ -1313,7 +1352,7 @@ function hydrateDebuff(d: Debuff): Debuff {
     stackScaling: d.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof d.maxStacks === "number" && d.maxStacks > 0 ? d.maxStacks : 1,
     detonation,
-    receives: healDebuffReceives(d),
+    ...healDroneDebuffReach(d),
   }
 }
 

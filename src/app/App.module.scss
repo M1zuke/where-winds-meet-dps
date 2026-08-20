@@ -1,3 +1,5 @@
+@use "breakpoints";
+
 .app {
   width: 100%;
   height: 100%;
@@ -7,8 +9,8 @@
   min-height: 0;
 }
 
-/* Negative margins offset body's 16px/24px padding so the sticky background
- * covers the full width as content scrolls underneath. */
+/* Negative margins offset body's padding so the sticky background covers the
+ * full width as content scrolls underneath. */
 .appHeader {
   position: sticky;
   top: 0;
@@ -16,6 +18,13 @@
   background: var(--color-bg);
   margin: -16px -24px 0;
   padding: 12px 24px 0;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .appHeader {
+    margin: -8px -10px 0;
+    padding: 8px 10px 0;
+  }
 }
 
 .appHeader > .tabs {
@@ -37,6 +46,8 @@
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
   padding: 12px;
+  display: flex;
+  flex-direction: column;
 }
 
 .routeFields {
@@ -44,6 +55,10 @@
   margin: 0;
   padding: 0;
   min-width: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .routeFields:disabled {
@@ -80,6 +95,19 @@
   gap: 2px;
   border-bottom: 1px solid var(--color-border);
   margin: 0 0 12px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+@include breakpoints.below(breakpoints.$bp-980) {
+  .tabs {
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+    mask-image: linear-gradient(to right, black calc(100% - 24px), transparent 100%);
+  }
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tab {
@@ -101,12 +129,16 @@
   top: 1px;
   text-decoration: none;
   display: inline-block;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.tab:hover {
-  color: var(--color-text);
-  background: var(--color-surface-raised);
-  border-color: var(--color-border-hover);
+@include breakpoints.hoverable {
+  .tab:hover {
+    color: var(--color-text);
+    background: var(--color-surface-raised);
+    border-color: var(--color-border-hover);
+  }
 }
 
 .tab.active {
@@ -118,4 +150,13 @@
 
 .tabRight {
   margin-left: auto;
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .tab {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 16px;
+  }
 }

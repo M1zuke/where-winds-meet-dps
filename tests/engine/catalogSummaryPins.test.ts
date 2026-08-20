@@ -154,28 +154,21 @@ describe("Class Buffs column — class ownership and scope decide membership", (
   })
 })
 
-describe("reverse index — affectsSummary reads the injected skill list, never the deleted affects array", () => {
-  it('Receives row on Bleed Tick names the skills bellstrikeUmbraBleedPen actually reaches, not "all"', () => {
+describe("catalog rows carry the plain module name — no affects or trigger lists appended", () => {
+  it("a Receives row on Bleed Tick is the bare def name", () => {
     const rows = receivesForSkill(
       builtinSkill(CLASS, SKILL.bleedTick),
       CLASS,
       inputsWithSwordHorizon("tier 6"),
     )
     expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.name).toBe(
-      "Bleed penetration Enhancement (Bleed Tick/Blood Burst)",
+      "Bleed penetration Enhancement",
     )
   })
 
-  it("a Class Buffs row carries the same skill names in affects", () => {
-    const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
-    expect(rows.find((row) => row.id === "bellstrikeUmbraBleedPen")!.affects).toBe(
-      "Bleed Tick/Blood Burst",
-    )
-  })
-
-  it('names "nothing" for a scoped module no skill lists in receives, rather than falling back to "all"', () => {
+  it("an Applies row is the bare def name", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.ghostlySteps), CLASS)
-    expect(rows.find((row) => row.id === "mirage")!.name).toBe("Mirage (nothing)")
+    expect(rows.find((row) => row.id === "mirage")!.name).toBe("Mirage")
   })
 })
 

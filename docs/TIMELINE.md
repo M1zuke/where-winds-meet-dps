@@ -128,11 +128,13 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   `requiresActiveBuffOnTrigger`, `requires`) gates a tick exactly as it gates a
   cast, so a def that should fire once per application still needs that gate
   authored on the module, not assumed from the trigger site.
-- ⚠️ **A buff a debuff's tick applies can reach only the tick that applied it
-  and every later tick (of the same or a different debuff), or a mechanic's own
-  extra event — never a regular hit, and never a cast's displayed buff list.**
-  Do not declare `triggersBuffs` on a debuff expecting it to reach either of
-  those.
+- ⚠️ **A buff a debuff's tick applies reaches the tick that applied it, every
+  later tick (of the same or a different debuff), a mechanic's own extra event,
+  and the chips of any cast resolving after it — but never a regular hit.** That
+  last one is an ordering limit, not a scope one: the main hit-damage pass runs
+  before the tick pass, so a regular hit is scored before any tick has applied
+  anything, and even an `affectsAll` def is skipped there. Do not declare
+  `triggersBuffs` on a debuff expecting it to boost a regular hit.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this

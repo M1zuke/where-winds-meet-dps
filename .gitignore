@@ -10,4 +10,5 @@ tsconfig.tsbuildinfo
 .claude/
 .plans/
 .idea/
+scripts/
 

@@ -9,7 +9,7 @@ import { setInnerWayDefs } from "./defStore"
 export { INNER_WAYS }
 
 for (const def of INNER_WAYS) {
-  for (const { mechanic, order } of def.mechanics ?? []) registerMechanic(mechanic, order)
+  for (const { mechanic } of def.mechanics ?? []) registerMechanic(mechanic)
   for (const { defId, predicate } of def.displayGates ?? []) registerDisplayGate(defId, predicate)
   for (const { skillId, factory } of def.skillBehaviors ?? [])
     registerSkillBehavior(skillId, factory)

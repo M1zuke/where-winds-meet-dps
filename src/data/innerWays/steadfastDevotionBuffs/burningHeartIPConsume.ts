@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 import { PROP } from "../../skills/ids"
 import { damageMultiplier } from "../../../engine/effects/effect"
@@ -7,7 +7,7 @@ import { damageMultiplier } from "../../../engine/effects/effect"
 // Enhancement route attaches Mountain Splitter, and only to this cast and the
 // Anxi chain it generates — it never opens or resets Mountain Splitter's own
 // tier-3 window or its cooldown.
-export const burningHeartIPConsume = defineClassBuff({
+export const burningHeartIPConsume = defineBuff({
   id: BUFF.burningHeartIPConsume,
   name: "Burning Heart (IP Consume)",
   requires: { param: PARAM.steadfastDevotion, minTier: 4 },

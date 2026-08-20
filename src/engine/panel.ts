@@ -96,28 +96,34 @@ export const BOW_SET_BONUS = {
 export interface ArmorSetOption {
   name: string
   setKey: string
-  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
-  value: number
+  // Absent for a set whose whole effect is a 4-piece mechanic or a gated buff
+  // rather than a 2-piece panel stat. Such a set is still selectable — it has
+  // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
+  stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
+  value?: number
 }
-export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.filter(
-  (set) => set.panelBonus,
-).map((set) => ({ name: set.name, setKey: set.id, ...set.panelBonus! }))
+export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
+  name: set.name,
+  setKey: set.id,
+  ...set.panelBonus,
+}))
 
 export function applyArmorSet(inputs: Inputs): Inputs {
   if (!inputs.set) return inputs
   const opt = ARMOR_SET_OPTIONS.find((o) => o.setKey === inputs.set)
-  if (!opt) return inputs
+  if (!opt || opt.stat === undefined || opt.value === undefined) return inputs
+  const { value } = opt
   switch (opt.stat) {
     case "affinityRate":
-      return { ...inputs, affinityRate: inputs.affinityRate + opt.value }
+      return { ...inputs, affinityRate: inputs.affinityRate + value }
     case "critRate":
-      return { ...inputs, critRate: inputs.critRate + opt.value }
+      return { ...inputs, critRate: inputs.critRate + value }
     case "precisionRate":
-      return { ...inputs, precision: inputs.precision + opt.value }
+      return { ...inputs, precision: inputs.precision + value }
     case "maxPhys":
-      return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + opt.value } }
+      return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + value } }
     case "minPhys":
-      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + opt.value } }
+      return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + value } }
   }
 }
 

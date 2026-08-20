@@ -14,6 +14,7 @@ export interface DebuffDotSpec {
   physFixed: number
   attributeMultiplier: number
   attributeFixed: number
+  extraCritDamage?: number
   attributeAttack: AttributeKey | ""
   skillType: string
   weaponOrAttribute?: string | null

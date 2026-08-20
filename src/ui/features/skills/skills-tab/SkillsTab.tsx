@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
@@ -36,8 +36,11 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
+import { SubTabs } from "../../../components/sub-tabs/SubTabs"
 import { FPS } from "../../../../engine/timeline"
-import { formatConditions, statusTooltip } from "../statusText"
+import { dotTicksPerWindow, tickSourceSkillId } from "../../../../engine/dot"
+import { formatConditions } from "../statusText"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./SkillsTab.module.scss"
 
@@ -75,9 +78,19 @@ const ATTUNEMENTS = [
   "swordCharged",
   "swordQ",
   "swordSpecial",
-  "umbCharged",
+  "umbFrequentProjectile",
+  "umbLightHeavyVariedCombo",
   "umbQ",
   "umbrellaQ",
+]
+
+type HitNumericField = "physMultiplier" | "physFixed" | "attributeMultiplier" | "attributeFixed"
+
+const HIT_NUMERIC_COLUMNS: { field: HitNumericField; isPercent: boolean; label: string }[] = [
+  { field: "physMultiplier", isPercent: true, label: "Phys %" },
+  { field: "physFixed", isPercent: false, label: "Flat Phys" },
+  { field: "attributeMultiplier", isPercent: true, label: "Attr %" },
+  { field: "attributeFixed", isPercent: false, label: "Flat Attr" },
 ]
 
 interface Props {
@@ -92,6 +105,22 @@ interface Props {
 function fmtDmg(value: number): string {
   if (!Number.isFinite(value)) return "—"
   return value >= 1000 ? Math.round(value).toLocaleString() : value.toFixed(2)
+}
+
+function stableStringify(value: unknown): string {
+  return JSON.stringify(value, (_key, val) =>
+    val && typeof val === "object" && !Array.isArray(val)
+      ? Object.fromEntries(
+          Object.keys(val as Record<string, unknown>)
+            .sort()
+            .map((key) => [key, (val as Record<string, unknown>)[key]]),
+        )
+      : val,
+  )
+}
+
+function skillsEqual(a: Skill, b: Skill): boolean {
+  return stableStringify(a) === stableStringify(b)
 }
 
 function effectsSummary(effects: BuffStatEffect[], t: (text: string) => string): string {
@@ -183,6 +212,13 @@ function typeBadge(skill: Skill, t: (text: string) => string): string {
   return `${skill.hits.length} ${t("hits")}`
 }
 
+function typePillText(skill: Skill, t: (text: string) => string): string {
+  return [skill.skillType, skill.weaponOrAttribute, skill.attributeAttack]
+    .filter(Boolean)
+    .map((value) => t(value))
+    .join(" · ")
+}
+
 export function SkillsTab({
   inputs,
   engineInputs,
@@ -247,9 +283,8 @@ export function SkillsTab({
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [draft, setDraft] = useState<Skill | null>(null)
-  const [activeHitIndex, setActiveHitIndex] = useState(0)
-  const [activeVariantId, setActiveVariantId] = useState<string | null>(null)
-  const [effectsOpen, setEffectsOpen] = useState(true)
+  const [loadedSnapshot, setLoadedSnapshot] = useState<Skill | null>(null)
+  const [activeHitTab, setActiveHitTab] = useState<string>("normal")
   const [showInactiveReceives, setShowInactiveReceives] = useState(false)
 
   function loadDraft(skill: Skill) {
@@ -270,8 +305,8 @@ export function SkillsTab({
       })),
     }
     setDraft(cloned)
-    setActiveHitIndex(0)
-    setActiveVariantId(null)
+    setLoadedSnapshot(cloned)
+    setActiveHitTab("normal")
   }
 
   function selectSkill(skill: Skill) {
@@ -294,6 +329,14 @@ export function SkillsTab({
     const seeded = seedSkillFromBuiltin(classId, skill)
     setSelectedKey(`builtin:${skill.id}`)
     loadDraft(seeded)
+  }
+
+  if (!draft) {
+    const firstListedSkill = filteredClassSkills[0] ?? filteredBuiltins[0]
+    if (firstListedSkill) {
+      if (filteredClassSkills[0]) selectSkill(firstListedSkill)
+      else seedFromBuiltin(firstListedSkill)
+    }
   }
 
   function patchDraft(patch: Partial<Skill>) {
@@ -350,6 +393,17 @@ export function SkillsTab({
       return { ...prev, hits }
     })
   }
+  function patchHitField(idx: number, field: HitNumericField, value: number) {
+    patchHit(idx, { [field]: value } as Partial<SkillHit>)
+  }
+  function patchVariantField(
+    idx: number,
+    variantId: string,
+    field: HitNumericField,
+    value: number,
+  ) {
+    patchHitVariant(idx, variantId, { [field]: value } as Partial<HitVariant>)
+  }
   function addHit() {
     setDraft((prev) => {
       if (!prev) return prev
@@ -357,7 +411,6 @@ export function SkillsTab({
         ...prev.hits,
         makeHit({ frame: prev.hits.length > 0 ? prev.hits[prev.hits.length - 1].frame + 15 : 0 }),
       ]
-      setActiveHitIndex(hits.length - 1)
       return { ...prev, hits }
     })
   }
@@ -367,7 +420,6 @@ export function SkillsTab({
       const hits = prev.hits.filter((_, hitIdx) => hitIdx !== idx)
       return { ...prev, hits: hits.length > 0 ? hits : [makeHit()] }
     })
-    setActiveHitIndex((prev) => Math.max(0, prev > idx ? prev - 1 : prev === idx ? 0 : prev))
   }
 
   async function handleSave() {
@@ -431,42 +483,68 @@ export function SkillsTab({
     }
   }
 
-  const effectiveHitIndex = draft && activeHitIndex < draft.hits.length ? activeHitIndex : 0
-  const effectiveHit = draft?.hits[effectiveHitIndex]
-  const effectiveVariantId =
-    activeVariantId && effectiveHit?.variants?.some((variant) => variant.id === activeVariantId)
-      ? activeVariantId
-      : null
+  // A tick source authors ONE hit: the shape. How often it lands and how many
+  // times belong to the debuff that ticks from it, so the count is read back
+  // from there rather than restated as extra hits nothing fires.
+  const tickSourceNote = useMemo(() => {
+    if (!draft) return null
+    const ticksFrom = (debuff: Debuff) =>
+      debuff.dot != null && tickSourceSkillId(debuff) === draft.id
+    // A user copy shadows the built-in it was seeded from, so it is asked first.
+    const owner = classDebuffs.find(ticksFrom) ?? builtinDebuffs.find(ticksFrom)
+    if (!owner?.dot) return null
+    const ticks = dotTicksPerWindow(owner)
+    if (ticks <= 1) return null
+    return { ticks, everySec: owner.dot.tickIntervalFrames / FPS, debuffName: owner.name }
+  }, [draft, classDebuffs, builtinDebuffs])
+
+  const isDirty = draft != null && loadedSnapshot != null && !skillsEqual(draft, loadedSnapshot)
 
   const preview = useMemo(() => {
     if (!draft || !draft.name.trim()) return null
-
-    const hit = draft.hits[effectiveHitIndex]
-    if (!hit) return null
-    const variant = effectiveVariantId
-      ? hit.variants?.find((candidate) => candidate.id === effectiveVariantId)
-      : undefined
-    const livePatch: ArtPatch = {
-      name: draft.name.trim(),
-      physMultiplier: variant ? variant.physMultiplier : hit.physMultiplier,
-      physFixed: variant ? variant.physFixed : hit.physFixed,
-      attributeMultiplier: variant ? variant.attributeMultiplier : hit.attributeMultiplier,
-      attributeFixed: variant ? variant.attributeFixed : hit.attributeFixed,
-      extraCritDamage: hit.extraCritDamage,
-    }
-    if (draft.skillType) livePatch.skillType = draft.skillType
-    if (draft.weaponOrAttribute) livePatch.weaponOrAttribute = draft.weaponOrAttribute
-    if (draft.attributeAttack) livePatch.attributeAttack = draft.attributeAttack
+    const name = draft.name.trim()
     const mysticFlag =
       (draft.tags ?? []).find((tag) => tag.startsWith("mystic:"))?.slice("mystic:".length) ?? ""
-    if (mysticFlag) livePatch.mysticCategory = mysticFlag
-    const computed = computeSkillPreview(draft.name.trim(), engineInputs, livePatch)
-    if (!computed) return null
+    const basePatch: ArtPatch = {}
+    if (draft.skillType) basePatch.skillType = draft.skillType
+    if (draft.weaponOrAttribute) basePatch.weaponOrAttribute = draft.weaponOrAttribute
+    if (draft.attributeAttack) basePatch.attributeAttack = draft.attributeAttack
+    if (mysticFlag) basePatch.mysticCategory = mysticFlag
+
+    let abrasion = 0
+    let normalMin = 0
+    let normalMax = 0
+    let critMin = 0
+    let critMax = 0
+    let affinity = 0
+    for (const hit of draft.hits) {
+      const computed = computeSkillPreview(name, engineInputs, {
+        ...basePatch,
+        physMultiplier: hit.physMultiplier,
+        physFixed: hit.physFixed,
+        attributeMultiplier: hit.attributeMultiplier,
+        attributeFixed: hit.attributeFixed,
+        extraCritDamage: hit.extraCritDamage,
+      })
+      if (!computed) return null
+      abrasion += computed.abrasion
+      normalMin += computed.normal.min
+      normalMax += computed.normal.max
+      critMin += computed.crit.min
+      critMax += computed.crit.max
+      affinity += computed.affinity
+    }
+    const summed = {
+      abrasion,
+      normal: { min: normalMin, max: normalMax },
+      crit: { min: critMin, max: critMax },
+      affinity,
+    }
     if (draft.guaranteedNormal)
-      return { ...computed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
-    if (draft.guaranteedPrecision) return { ...computed, abrasion: 0 }
-    return computed
-  }, [draft, effectiveHitIndex, effectiveVariantId, engineInputs])
+      return { ...summed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
+    if (draft.guaranteedPrecision) return { ...summed, abrasion: 0 }
+    return summed
+  }, [draft, engineInputs])
 
   const opts = (vals: string[], labelFn?: (value: string) => string): ComboboxOption[] =>
     vals.map((value) => ({
@@ -563,16 +641,7 @@ export function SkillsTab({
     [draft],
   )
 
-  const scopeSkills = useMemo(
-    () => [...builtinSkills, ...classSkills],
-    [builtinSkills, classSkills],
-  )
-
   const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
-  const buffNameById = useMemo(
-    () => new Map(reachableBuffModules.map((module) => [module.id, module.name] as const)),
-    [reachableBuffModules],
-  )
   const receivableBuffModules = useMemo(
     () => reachableBuffModules.filter(declaresOwnReach),
     [reachableBuffModules],
@@ -587,13 +656,13 @@ export function SkillsTab({
   )
 
   const appliesRows = useMemo<AppliesRow[]>(
-    () => (draft ? appliesForSkill(draft, classId, scopeSkills) : []),
-    [draft, classId, scopeSkills],
+    () => (draft ? appliesForSkill(draft, classId) : []),
+    [draft, classId],
   )
 
   const receivesRows = useMemo<ReceivesRow[]>(
-    () => (draft ? receivesForSkill(draft, classId, inputs, scopeSkills) : []),
-    [draft, classId, inputs, scopeSkills],
+    () => (draft ? receivesForSkill(draft, classId, engineInputs) : []),
+    [draft, classId, engineInputs],
   )
   const specMechanicRows = useMemo(
     () => receivesRows.filter((row) => row.isSpecMechanic),
@@ -612,42 +681,15 @@ export function SkillsTab({
     [buffReceiveRows],
   )
 
-  const flagsSummary = useMemo(() => {
-    if (!draft) return ""
-    const tags = draft.tags ?? []
-    const parts: string[] = []
-    const weaponTags = tags.filter((tag) => tag.startsWith("weapon:"))
-    if (weaponTags.length > 0) {
-      for (const tag of weaponTags) parts.push(`${tag.slice(7)} (${t("Weapon Type")})`)
-    } else if (draft.weaponOrAttribute) {
-      parts.push(`${draft.weaponOrAttribute} (${t("Weapon Type")})`)
-    }
-    for (const tag of tags) {
-      if (tag.startsWith("weapon:")) continue
-      if (tag.startsWith("attune:")) parts.push(`${t("Attunement")}: ${tag.slice(7)}`)
-      else if (tag.startsWith("prop:") || tag.startsWith("mystic:") || tag.startsWith("attack:"))
-        parts.push(tag)
-    }
-    return parts.join(" · ")
-  }, [draft, t])
+  const readonlyTagHints = (draft?.tags ?? []).filter(
+    (tag) => tag.startsWith("weapon:") || tag.startsWith("prop:") || tag.startsWith("attack:"),
+  )
 
-  const currentWeaponFlag =
-    (draft?.tags ?? []).find((tag) => tag.startsWith("weapon:"))?.slice("weapon:".length) ?? ""
   const currentAttuneFlag =
     (draft?.tags ?? []).find((tag) => tag.startsWith("attune:"))?.slice("attune:".length) ?? ""
   const currentMysticFlag =
     (draft?.tags ?? []).find((tag) => tag.startsWith("mystic:"))?.slice("mystic:".length) ?? ""
-  const otherTags = (draft?.tags ?? []).filter(
-    (tag) => !tag.startsWith("weapon:") && !tag.startsWith("attune:") && !tag.startsWith("mystic:"),
-  )
 
-  function setWeaponFlag(weapon: string) {
-    setDraft((prev) => {
-      if (!prev) return prev
-      const rest = (prev.tags ?? []).filter((tag) => !tag.startsWith("weapon:"))
-      return { ...prev, tags: weapon ? [...rest, `weapon:${weapon}`] : rest }
-    })
-  }
   function setAttuneFlag(attune: string) {
     setDraft((prev) => {
       if (!prev) return prev
@@ -663,11 +705,6 @@ export function SkillsTab({
     })
   }
 
-  const weaponFlagOptions = opts(
-    currentWeaponFlag && !WEAPONS.includes(currentWeaponFlag)
-      ? ["", ...WEAPONS, currentWeaponFlag]
-      : ["", ...WEAPONS],
-  )
   const attuneFlagOptions = opts(
     currentAttuneFlag && !ATTUNEMENTS.includes(currentAttuneFlag)
       ? ["", ...ATTUNEMENTS, currentAttuneFlag]
@@ -679,11 +716,81 @@ export function SkillsTab({
       : ["", ...MYSTIC_CATEGORIES],
   )
 
+  const variantLabels = useMemo(() => {
+    if (!draft) return []
+    const labels: string[] = []
+    for (const hit of draft.hits) {
+      for (const variant of hit.variants ?? []) {
+        if (!labels.includes(variant.label)) labels.push(variant.label)
+      }
+    }
+    return labels
+  }, [draft])
+
+  const effectiveHitTab =
+    draft && (activeHitTab === "normal" || variantLabels.includes(activeHitTab))
+      ? activeHitTab
+      : "normal"
+  const isNormalTab = effectiveHitTab === "normal"
+
+  interface HitRowData {
+    hit: SkillHit
+    variant?: HitVariant
+    dimmed: boolean
+  }
+  const hitRows: HitRowData[] = (draft?.hits ?? []).map((hit) => {
+    if (isNormalTab) return { hit, dimmed: false }
+    const variant = (hit.variants ?? []).find((candidate) => candidate.label === effectiveHitTab)
+    return { hit, variant, dimmed: !variant }
+  })
+
+  function variantConditionTexts(label: string): string[] {
+    if (!draft) return []
+    const texts = new Set<string>()
+    for (const hit of draft.hits) {
+      const variant = (hit.variants ?? []).find((candidate) => candidate.label === label)
+      if (variant) texts.add(formatConditions(variant.conditions, (id) => resolveStatus(id)?.name))
+    }
+    return Array.from(texts)
+  }
+
+  function renderHitFieldCell(
+    row: HitRowData,
+    idx: number,
+    field: HitNumericField,
+    isPercent: boolean,
+  ) {
+    const InputComponent = isPercent ? PercentInput : NumInput
+    if (isNormalTab) {
+      return (
+        <InputComponent
+          className={styles.cellInput}
+          value={row.hit[field]}
+          onChange={(value) => patchHitField(idx, field, value)}
+        />
+      )
+    }
+    if (row.variant) {
+      const variant = row.variant
+      const changed = variant[field] !== row.hit[field]
+      return (
+        <InputComponent
+          className={styles.cellInput + (changed ? ` ${styles.changedValue}` : "")}
+          value={variant[field]}
+          onChange={(value) => patchVariantField(idx, variant.id, field, value)}
+        />
+      )
+    }
+    const value = row.hit[field]
+    const formatted = isPercent ? `${+(value * 100).toFixed(2)}%` : `${+value.toFixed(2)}`
+    return <span className={styles.cellReadonly}>{formatted}</span>
+  }
+
   return (
-    <div className="panel">
-      <div className={styles.skillsLayout}>
-        <div className={styles.skillsListPanel}>
-          <div className={styles.skillsListHead}>
+    <div className={styles.skillsLayout}>
+      <div className={styles.listPanel}>
+        <div className={styles.listTop}>
+          <div className={styles.listHead}>
             <h3>
               {t("Skill")} ({t(getSchool(classId).displayName)})
             </h3>
@@ -692,50 +799,48 @@ export function SkillsTab({
             </button>
           </div>
           <TextInput
-            className={styles.skillsSearch}
             placeholder={t("Search skills…")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <ul className={styles.skillsList}>
+        </div>
+        <div className={styles.listScroll}>
+          <ul className={styles.listCard}>
             {filteredClassSkills.length > 0 && (
-              <li className={styles.skillsListGroup}>{t("My Skills")}</li>
+              <li className={styles.listGroup}>{t("My Skills")}</li>
             )}
             {filteredClassSkills.map((skill) => (
               <li
                 key={`user:${skill.id}`}
                 className={
-                  styles.skillsListItem +
-                  (selectedKey === `user:${skill.id}` ? ` ${styles.active}` : "")
+                  styles.listItem + (selectedKey === `user:${skill.id}` ? ` ${styles.active}` : "")
                 }
                 onClick={() => selectSkill(skill)}
               >
-                <span className={styles.skillsListName}>{skill.name || t("Unnamed")}</span>
-                <span className={`${styles.skillsTag} ${styles.isNew}`}>{typeBadge(skill, t)}</span>
+                <span className={styles.listItemName}>{skill.name || t("Unnamed")}</span>
+                <span className={`${styles.tag} ${styles.tagAccent}`}>{typeBadge(skill, t)}</span>
               </li>
             ))}
-            {filteredBuiltins.length > 0 && (
-              <li className={styles.skillsListGroup}>{t("Built-in")}</li>
-            )}
+            {filteredBuiltins.length > 0 && <li className={styles.listGroup}>{t("Built-in")}</li>}
             {filteredBuiltins.map((skill) => (
               <li
                 key={`builtin:${skill.id}`}
                 className={
-                  styles.skillsListItem +
+                  styles.listItem +
                   (selectedKey === `builtin:${skill.id}` ? ` ${styles.active}` : "")
                 }
                 onClick={() => seedFromBuiltin(skill)}
               >
-                <span className={styles.skillsListName}>{t(skill.name)}</span>
+                <span className={styles.listItemName}>{t(skill.name)}</span>
                 {adoptedBuiltinIds.has(skill.id) ? (
-                  <span className={`${styles.skillsTag} ${styles.isEdit}`}>{t("Adopted")}</span>
+                  <span className={`${styles.tag} ${styles.tagPositive}`}>{t("Adopted")}</span>
                 ) : (
-                  <span className={styles.skillsTag}>{typeBadge(skill, t)}</span>
+                  <span className={styles.tag}>{typeBadge(skill, t)}</span>
                 )}
               </li>
             ))}
             {filteredClassSkills.length === 0 && filteredBuiltins.length === 0 && (
-              <li className={styles.skillsEmpty}>
+              <li className={styles.empty}>
                 {searchLower
                   ? t("No skills match your search")
                   : t("No skills yet — click New Skill")}
@@ -743,604 +848,33 @@ export function SkillsTab({
             )}
           </ul>
         </div>
+      </div>
 
-        <div className={styles.skillsDetailPanel}>
-          {!draft ? (
-            <div className={styles.skillsEmpty}>
-              {t("Select a skill on the left, or create one")}
-            </div>
-          ) : (
-            <>
-              <div className={styles.skillsPreview}>
-                <div className={styles.skillsPreviewHead}>
-                  {t("Damage Preview (per hit)")} — {t("Slot ")} {effectiveHitIndex + 1} {t("hits")}
-                </div>
-                <div className={styles.skillsPreviewGrid}>
-                  <PreviewCard
-                    label={t("Abrasion")}
-                    valueClassName={styles.isZero}
-                    value={preview ? fmtDmg(preview.abrasion) : "—"}
-                  />
-                  <PreviewCard
-                    label={t("Normal")}
-                    valueClassName=""
-                    value={
-                      preview
-                        ? `${fmtDmg(preview.normal.min)} – ${fmtDmg(preview.normal.max)}`
-                        : "—"
-                    }
-                  />
-                  <PreviewCard
-                    label={t("Crit")}
-                    valueClassName={styles.isPositive}
-                    value={
-                      preview ? `${fmtDmg(preview.crit.min)} – ${fmtDmg(preview.crit.max)}` : "—"
-                    }
-                  />
-                  <PreviewCard
-                    label={t("Affinity")}
-                    valueClassName={styles.isAffinity}
-                    value={preview ? fmtDmg(preview.affinity) : "—"}
-                  />
-                </div>
-              </div>
-
-              <Section title={t("Skill")}>
-                <Field label={t("Skill Name")}>
-                  <TextInput
-                    value={draft.name}
-                    onChange={(e) => patchDraft({ name: e.target.value })}
-                  />
-                </Field>
-                <Field label={t("Breakdown Name")}>
-                  <TextInput
-                    value={draft.breakdownName ?? ""}
-                    placeholder={draft.name}
-                    onChange={(e) => patchDraft({ breakdownName: e.target.value })}
-                  />
-                </Field>
-                <div className={styles.skillsHint}>
-                  {t(
-                    "The in-game skill name this reports under in the DPS breakdown. Every skill sharing one breakdown name is summed into a single row. Leave empty to use the skill name.",
-                  )}
-                </div>
-                <Field label={t("Type")}>
-                  <Combobox
-                    className={styles.fieldCombobox}
-                    value={draft.skillType}
-                    options={opts(SKILL_TYPES)}
-                    onChange={(value) => patchDraft({ skillType: value })}
-                  />
-                </Field>
-                {draft.skillType === "sustain" && (
-                  <div className={styles.skillsHint}>
-                    {t(
-                      "Type 'sustain' only tags sustain-damage scaling; it does not generate ticks. For a DoT, use a debuff with a DoT.",
-                    )}
-                  </div>
-                )}
-                <Field label={t("weapon")}>
-                  <Combobox
-                    className={styles.fieldCombobox}
-                    value={draft.weaponOrAttribute}
-                    options={opts(["", ...WEAPONS])}
-                    onChange={(value) => patchDraft({ weaponOrAttribute: value })}
-                  />
-                </Field>
-                <Field label={t("Stat")}>
-                  <Combobox
-                    className={styles.fieldCombobox}
-                    value={draft.attributeAttack}
-                    options={opts(ATTRIBUTES)}
-                    onChange={(value) => patchDraft({ attributeAttack: value })}
-                  />
-                </Field>
-                <Field
-                  label={t("Cast Time")}
-                  unit={`${t("frames")} (${(draft.castFrames / FPS).toFixed(2)}s)`}
-                >
-                  <NumInput
-                    value={draft.castFrames}
-                    onChange={(value) => patchDraft({ castFrames: value })}
-                  />
-                </Field>
-                <label className={styles.skillsCheck}>
-                  <input
-                    type="checkbox"
-                    checked={draft.triggerable}
-                    onChange={(e) => patchDraft({ triggerable: e.target.checked })}
-                  />
-                  <span>{t("Triggerable")}</span>
-                </label>
-                <div className={styles.skillsHint}>
-                  {t("Can be the target of a cast-skill trigger (e.g. an auto-proc)")}
-                </div>
-                <label className={styles.skillsCheck}>
-                  <input
-                    type="checkbox"
-                    checked={draft.prePull ?? false}
-                    onChange={(e) => patchDraft({ prePull: e.target.checked })}
-                  />
-                  <span>{t("Pre-pull Skill")}</span>
-                </label>
-                <div className={styles.skillsHint}>
-                  {t(
-                    'A pre-pull skill is cast before the pull — it lands at negative frames and is excluded from the rotation duration. Leave unchecked to auto-detect from a name containing "Prepull".',
-                  )}
-                </div>
-                <label className={styles.skillsCheck}>
-                  <input
-                    type="checkbox"
-                    checked={draft.guaranteedPrecision ?? false}
-                    onChange={(e) => patchDraft({ guaranteedPrecision: e.target.checked })}
-                  />
-                  <span>{t("Guaranteed Precision")}</span>
-                </label>
-                <div className={styles.skillsHint}>
-                  {t(
-                    "Never abrades — precision counts as 100% for this skill (e.g. Dragon Head - Plus)",
-                  )}
-                </div>
-                <label className={styles.skillsCheck}>
-                  <input
-                    type="checkbox"
-                    checked={draft.guaranteedNormal ?? false}
-                    onChange={(e) => patchDraft({ guaranteedNormal: e.target.checked })}
-                  />
-                  <span>{t("Fixed Damage")}</span>
-                </label>
-                <div className={styles.skillsHint}>
-                  {t(
-                    "Always deals the normal row — cannot trigger crit, affinity, or abrasion (e.g. Dragon Head)",
-                  )}
-                </div>
-              </Section>
-
-              <Section title={t("Hit Table")}>
-                {draft.hits.map((hit, idx) => (
-                  <div
-                    key={hit.id}
-                    className={
-                      styles.skillsHit + (idx === effectiveHitIndex ? ` ${styles.active}` : "")
-                    }
-                    onClick={() => {
-                      setActiveHitIndex(idx)
-                      setActiveVariantId(null)
-                    }}
-                  >
-                    <div className={styles.skillsHitHead}>
-                      <span className={styles.skillsHitIndex}>#{idx + 1}</span>
-                      <label className={styles.skillsHitFrame} title={t("Frame Offset")}>
-                        <NumInput
-                          value={hit.frame}
-                          onChange={(value) => patchHit(idx, { frame: value })}
-                        />
-                        <span className={styles.skillsFieldUnit}>
-                          {t("frames")} ({(hit.frame / FPS).toFixed(2)}s)
-                        </span>
-                      </label>
-                      {draft.hits.length > 1 && (
-                        <button
-                          type="button"
-                          className={`reset-btn ${styles.skillsHitDel}`}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            removeHit(idx)
-                          }}
-                        >
-                          {t("Delete")}
-                        </button>
-                      )}
-                    </div>
-                    <div className={styles.skillsHitFields}>
-                      <Field label={t("Phys Coeff")} unit="%">
-                        <PercentInput
-                          value={hit.physMultiplier}
-                          onChange={(value) => patchHit(idx, { physMultiplier: value })}
-                        />
-                      </Field>
-                      <Field label={t("Flat Phys")}>
-                        <NumInput
-                          value={hit.physFixed}
-                          onChange={(value) => patchHit(idx, { physFixed: value })}
-                        />
-                      </Field>
-                      <Field label={t("Attr Coeff")} unit="%">
-                        <PercentInput
-                          value={hit.attributeMultiplier}
-                          onChange={(value) => patchHit(idx, { attributeMultiplier: value })}
-                        />
-                      </Field>
-                      <Field label={t("Flat Attr")}>
-                        <NumInput
-                          value={hit.attributeFixed}
-                          onChange={(value) => patchHit(idx, { attributeFixed: value })}
-                        />
-                      </Field>
-                      <Field label={t("Crit Boost")} unit="%">
-                        <PercentInput
-                          value={hit.extraCritDamage}
-                          onChange={(value) => patchHit(idx, { extraCritDamage: value })}
-                        />
-                      </Field>
-                    </div>
-                    {(hit.variants ?? []).map((variant) => {
-                      const gateStatus = variant.conditions[0]
-                        ? resolveStatus(variant.conditions[0].buffId)
-                        : undefined
-                      const isActive =
-                        idx === effectiveHitIndex && effectiveVariantId === variant.id
-                      return (
-                        <div
-                          key={variant.id}
-                          className={
-                            styles.skillsHitVariant + (isActive ? ` ${styles.active}` : "")
-                          }
-                          title={
-                            `${gateStatus ? statusTooltip(gateStatus.name, gateStatus.durationFrames) : variant.label}` +
-                            ` — ${t("replaces the base row above while active")}`
-                          }
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setActiveHitIndex(idx)
-                            setActiveVariantId(variant.id)
-                          }}
-                        >
-                          <div className={styles.skillsHitVariantHead}>
-                            <span className={styles.skillsHitVariantName}>
-                              {t("Variant")}: {variant.label}
-                            </span>
-                            <span className={styles.skillsHitVariantCond}>
-                              {t("when")}{" "}
-                              {formatConditions(
-                                variant.conditions,
-                                (id) => resolveStatus(id)?.name,
-                              )}
-                            </span>
-                          </div>
-                          <div className={styles.skillsHitFields}>
-                            <Field label={t("Phys Coeff")} unit="%">
-                              <PercentInput
-                                value={variant.physMultiplier}
-                                onChange={(value) =>
-                                  patchHitVariant(idx, variant.id, { physMultiplier: value })
-                                }
-                              />
-                            </Field>
-                            <Field label={t("Flat Phys")}>
-                              <NumInput
-                                value={variant.physFixed}
-                                onChange={(value) =>
-                                  patchHitVariant(idx, variant.id, { physFixed: value })
-                                }
-                              />
-                            </Field>
-                            <Field label={t("Attr Coeff")} unit="%">
-                              <PercentInput
-                                value={variant.attributeMultiplier}
-                                onChange={(value) =>
-                                  patchHitVariant(idx, variant.id, { attributeMultiplier: value })
-                                }
-                              />
-                            </Field>
-                            <Field label={t("Flat Attr")}>
-                              <NumInput
-                                value={variant.attributeFixed}
-                                onChange={(value) =>
-                                  patchHitVariant(idx, variant.id, { attributeFixed: value })
-                                }
-                              />
-                            </Field>
-                          </div>
-                          <div className={styles.skillsHint}>
-                            {t("The base row above applies while no variant's condition holds")}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                ))}
-                <button type="button" className={styles.skillsAddHit} onClick={addHit}>
-                  + {t("Add Hit")}
-                </button>
-              </Section>
-
-              <div className={`${styles.skillsSection} ${styles.skillsEffectsSection}`}>
+      <div className={styles.detailPanel}>
+        {!draft ? (
+          <div className={styles.empty}>{t("Select a skill on the left, or create one")}</div>
+        ) : (
+          <>
+            <div className={styles.detailHeadWrap}>
+              <div className={styles.detailHead}>
+                <TextInput
+                  className={styles.nameInput}
+                  value={draft.name}
+                  onChange={(e) => patchDraft({ name: e.target.value })}
+                />
+                <span className={styles.typeBadge}>{typePillText(draft, t)}</span>
+                <span className={styles.grow} />
+                {isDirty && <span className={styles.dirtyDot}>● {t("unsaved")}</span>}
                 <button
                   type="button"
-                  className={styles.skillsEffectsToggle}
-                  onClick={() => setEffectsOpen((prev) => !prev)}
+                  className={"save-btn" + (isDirty ? " dirty" : "")}
+                  disabled={!isDirty}
+                  onClick={handleSave}
                 >
-                  <span className={styles.skillsSectionTitle}>{t("Effects")}</span>
-                  <span className={styles.skillsEffectsCaret}>{effectsOpen ? "▾" : "▸"}</span>
-                </button>
-                <div className={styles.skillsHint}>
-                  {t("Which buffs/debuffs/mechanics apply to this skill")}
-                </div>
-                {effectsOpen && (
-                  <>
-                    <div className={`${styles.skillsFields} ${styles.skillsEffectsTags}`}>
-                      <Field label={t("Weapon Type")}>
-                        <Combobox
-                          className={styles.fieldCombobox}
-                          value={currentWeaponFlag}
-                          options={weaponFlagOptions}
-                          onChange={setWeaponFlag}
-                        />
-                      </Field>
-                      <Field label={t("Attunement")}>
-                        <Combobox
-                          className={styles.fieldCombobox}
-                          value={currentAttuneFlag}
-                          options={attuneFlagOptions}
-                          onChange={setAttuneFlag}
-                        />
-                      </Field>
-                      <Field label={t("Mystic Category")}>
-                        <Combobox
-                          className={styles.fieldCombobox}
-                          value={currentMysticFlag}
-                          options={mysticFlagOptions}
-                          onChange={setMysticFlag}
-                        />
-                      </Field>
-                      <FieldGroup label={t("Buffs Received")}>
-                        <div className={styles.skillsFieldStack}>
-                          <div className={styles.skillsChips}>
-                            {(draft.receives ?? []).map((buffId) => (
-                              <span className={styles.skillsChip} key={buffId}>
-                                {buffNameById.get(buffId) ?? buffId}
-                                <button
-                                  type="button"
-                                  aria-label={t("Remove")}
-                                  onClick={() => removeReceivesBuff(buffId)}
-                                >
-                                  ×
-                                </button>
-                              </span>
-                            ))}
-                          </div>
-                          <Combobox
-                            className={styles.fieldCombobox}
-                            value=""
-                            options={receivesAddOptions}
-                            placeholder={t("Add buff…")}
-                            aria-label={t("Add received buff")}
-                            onChange={addReceivesBuff}
-                          />
-                        </div>
-                      </FieldGroup>
-                      <FieldGroup label={t("Buffs Triggered")}>
-                        <div className={styles.skillsFieldStack}>
-                          <div className={styles.skillsChips}>
-                            {(draft.triggersBuffs ?? []).map((buffId) => (
-                              <span className={styles.skillsChip} key={buffId}>
-                                {buffNameById.get(buffId) ?? buffId}
-                                <button
-                                  type="button"
-                                  aria-label={t("Remove")}
-                                  onClick={() => removeTriggersBuff(buffId)}
-                                >
-                                  ×
-                                </button>
-                              </span>
-                            ))}
-                          </div>
-                          <Combobox
-                            className={styles.fieldCombobox}
-                            value=""
-                            options={triggersAddOptions}
-                            placeholder={t("Add buff…")}
-                            aria-label={t("Add triggered buff")}
-                            onChange={addTriggersBuff}
-                          />
-                        </div>
-                      </FieldGroup>
-                      <div className={styles.skillsHint}>
-                        {t(
-                          "Weapon Type, Attunement and Mystic Category feed gear-boost matching. A scoped buff reaches this skill only if it is listed under Buffs Received — a buff that applies to your whole build applies regardless — and Buffs Triggered names the buffs this skill's cast applies. All fields are optional.",
-                        )}
-                      </div>
-                      {otherTags.length > 0 && (
-                        <>
-                          <Field label={t("Other Tags")}>
-                            <div className={styles.skillsChips}>
-                              {otherTags.map((tag) => (
-                                <span
-                                  className={`${styles.skillsChip} ${styles.isReadonly}`}
-                                  key={tag}
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          </Field>
-                          <div className={styles.skillsHint}>
-                            {t(
-                              "Read-only — still used for mechanic scope, attunement reach and a couple of magnitude-picking guards, but no longer for which buffs reach this skill.",
-                            )}
-                          </div>
-                        </>
-                      )}
-                      <div className={`${styles.skillsHint} ${styles.skillsEffectsFlags}`}>
-                        <strong>{t("Skill Flags")}:</strong>
-                        {flagsSummary || "—"}
-                      </div>
-                    </div>
-
-                    <div className={styles.skillsEffects}>
-                      <div className={styles.skillsEffectsCol}>
-                        <div className={styles.skillsEffectsColHead}>
-                          {t("Triggers (this skill applies)")}
-                        </div>
-                        {triggerRows.length === 0 ? (
-                          <div className={styles.skillsEffectsEmpty}>—</div>
-                        ) : (
-                          triggerRows.map((trigger, triggerIndex) => {
-                            const effKind = effectiveTriggerKind(trigger)
-                            const summary = summarizeTriggerDraft(trigger)
-                            const scopeNote =
-                              typeof trigger.hitScope === "number" && draft.hits.length > 1
-                                ? ` · ${t("hit")} #${trigger.hitScope + 1}`
-                                : ""
-                            const targetStatus =
-                              effKind === "castSkill" ? undefined : resolveStatus(trigger.targetId)
-                            const tooltip =
-                              effKind === "castSkill"
-                                ? resolveSkillTarget(trigger.targetId)
-                                  ? statusTooltip(resolveSkillTarget(trigger.targetId)!.name)
-                                  : undefined
-                                : targetStatus
-                                  ? statusTooltip(targetStatus.name, targetStatus.durationFrames)
-                                  : undefined
-                            return (
-                              <div
-                                className={`${styles.skillsEffectsRow} ${kindClass(effKind)}`}
-                                key={triggerIndex}
-                                title={tooltip}
-                              >
-                                <span className={styles.skillsEffectsRowName}>{summary.label}</span>
-                                {(summary.effect || scopeNote) && (
-                                  <span className={styles.skillsEffectsRowDetail}>
-                                    {summary.effect}
-                                    {scopeNote}
-                                  </span>
-                                )}
-                              </div>
-                            )
-                          })
-                        )}
-                        {appliesRows.length > 0 && (
-                          <>
-                            <div className={styles.skillsEffectsSubhead}>
-                              {t("Site buffs this skill applies")}
-                            </div>
-                            {appliesRows.map((row) => (
-                              <div
-                                className={`${styles.skillsEffectsRow} ${styles.isSite}`}
-                                key={`site:${row.id}`}
-                              >
-                                <span className={styles.skillsEffectsRowName}>{row.name}</span>
-                                {row.effect && (
-                                  <span className={styles.skillsEffectsRowDetail}>
-                                    {row.effect}
-                                  </span>
-                                )}
-                                {row.requires && (
-                                  <span className={styles.skillsEffectsRowRequires}>
-                                    ({t("requires")} {row.requires})
-                                  </span>
-                                )}
-                              </div>
-                            ))}
-                          </>
-                        )}
-                      </div>
-
-                      <div className={styles.skillsEffectsCol}>
-                        <div className={styles.skillsEffectsColHead}>
-                          {t("Receives (buffs affecting this skill)")}
-                        </div>
-                        {activeReceiveRows.length === 0 && inactiveReceiveRows.length === 0 ? (
-                          <div className={styles.skillsEffectsEmpty}>—</div>
-                        ) : (
-                          <>
-                            {activeReceiveRows.map((row) => (
-                              <div
-                                className={`${styles.skillsEffectsRow} ${styles.isSite}`}
-                                key={row.id}
-                              >
-                                <span className={styles.skillsEffectsRowName}>{row.name}</span>
-                                {row.effect && (
-                                  <span className={styles.skillsEffectsRowDetail}>
-                                    {row.effect}
-                                  </span>
-                                )}
-                                {row.triggeredBy && (
-                                  <span className={styles.skillsEffectsRowTriggered}>
-                                    ({row.triggeredBy})
-                                  </span>
-                                )}
-                              </div>
-                            ))}
-                            {inactiveReceiveRows.length > 0 && (
-                              <>
-                                <button
-                                  type="button"
-                                  className={styles.skillsEffectsMore}
-                                  onClick={() => setShowInactiveReceives((prev) => !prev)}
-                                >
-                                  {t("Not in your current build")} ({inactiveReceiveRows.length})
-                                </button>
-                                {showInactiveReceives &&
-                                  inactiveReceiveRows.map((row) => (
-                                    <div
-                                      className={`${styles.skillsEffectsRow} ${styles.isSite} ${styles.isOff}`}
-                                      key={row.id}
-                                    >
-                                      <span className={styles.skillsEffectsRowName}>
-                                        {row.name}
-                                      </span>
-                                      {row.effect && (
-                                        <span className={styles.skillsEffectsRowDetail}>
-                                          {row.effect}
-                                        </span>
-                                      )}
-                                      {row.requires && (
-                                        <span className={styles.skillsEffectsRowRequires}>
-                                          ({t("requires")} {row.requires})
-                                        </span>
-                                      )}
-                                      {row.triggeredBy && (
-                                        <span className={styles.skillsEffectsRowTriggered}>
-                                          ({row.triggeredBy})
-                                        </span>
-                                      )}
-                                    </div>
-                                  ))}
-                              </>
-                            )}
-                          </>
-                        )}
-                      </div>
-
-                      <div className={styles.skillsEffectsCol}>
-                        <div className={styles.skillsEffectsColHead}>{t("Spec Mechanics")}</div>
-                        {specMechanicRows.length === 0 ? (
-                          <div className={styles.skillsEffectsEmpty}>—</div>
-                        ) : (
-                          specMechanicRows.map((row) => (
-                            <div
-                              className={`${styles.skillsEffectsRow} ${styles.isSpec}`}
-                              key={row.id}
-                            >
-                              <span className={styles.skillsEffectsRowName}>{row.name}</span>
-                              {row.effect && (
-                                <span className={styles.skillsEffectsRowDetail}>{row.effect}</span>
-                              )}
-                              {!row.active && row.requires && (
-                                <span className={styles.skillsEffectsRowRequires}>
-                                  ({t("requires")} {row.requires})
-                                </span>
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className={styles.skillsActions}>
-                <button type="button" className="save-btn" onClick={handleSave}>
                   {t("Save")}
                 </button>
                 <button type="button" className="reset-btn" onClick={handleReset}>
                   {t("Reset")}
-                </button>
-                <button type="button" className="reset-btn" onClick={handleDelete}>
-                  {t("Delete")}
                 </button>
                 <button type="button" className="reset-btn" onClick={handleExport}>
                   {t("Export")}
@@ -1351,6 +885,9 @@ export function SkillsTab({
                   onClick={() => fileRef.current?.click()}
                 >
                   {t("Import")}
+                </button>
+                <button type="button" className="reset-btn" onClick={handleDelete}>
+                  {t("Delete")}
                 </button>
                 <input
                   ref={fileRef}
@@ -1364,72 +901,485 @@ export function SkillsTab({
                   }}
                 />
               </div>
-            </>
-          )}
-        </div>
+            </div>
+
+            <div className={styles.detail}>
+              <div className={styles.previewStrip}>
+                <div className={`${styles.previewCell} ${styles.previewCellCtx}`}>
+                  <span className={styles.previewLabel}>{t("Damage Preview")}</span>
+                  <span className={styles.previewValue}>{t("per cast")}</span>
+                </div>
+                <div className={styles.previewCell}>
+                  <span className={styles.previewLabel}>{t("Abrasion")}</span>
+                  <span className={`${styles.previewValue} ${styles.dimmedValue}`}>
+                    {preview ? fmtDmg(preview.abrasion) : "—"}
+                  </span>
+                </div>
+                <div className={styles.previewCell}>
+                  <span className={styles.previewLabel}>{t("Normal")}</span>
+                  <span className={styles.previewValue}>
+                    {preview
+                      ? `${fmtDmg(preview.normal.min)} – ${fmtDmg(preview.normal.max)}`
+                      : "—"}
+                  </span>
+                </div>
+                <div className={styles.previewCell}>
+                  <span className={styles.previewLabel}>{t("Crit")}</span>
+                  <span className={`${styles.previewValue} ${styles.critValue}`}>
+                    {preview ? `${fmtDmg(preview.crit.min)} – ${fmtDmg(preview.crit.max)}` : "—"}
+                  </span>
+                </div>
+                <div className={styles.previewCell}>
+                  <span className={styles.previewLabel}>{t("Affinity")}</span>
+                  <span className={`${styles.previewValue} ${styles.affinityValue}`}>
+                    {preview ? fmtDmg(preview.affinity) : "—"}
+                  </span>
+                </div>
+                <div className={styles.previewCell}>
+                  <span className={styles.previewLabel}>{t("Hits")}</span>
+                  <span className={styles.previewValue}>
+                    × {tickSourceNote ? tickSourceNote.ticks : draft.hits.length}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.bodyCols}>
+                <div className={styles.card}>
+                  <h4 className={styles.cardHead}>{t("Skill")}</h4>
+                  <PropRow
+                    label={t("Breakdown Name")}
+                    help={t(
+                      "The in-game skill name this reports under in the DPS breakdown. Every skill sharing one breakdown name is summed into a single row. Leave empty to use the skill name.",
+                    )}
+                  >
+                    <TextInput
+                      value={draft.breakdownName ?? ""}
+                      placeholder={draft.name}
+                      onChange={(e) => patchDraft({ breakdownName: e.target.value })}
+                    />
+                  </PropRow>
+                  <PropRow
+                    label={t("Type")}
+                    help={
+                      draft.skillType === "sustain"
+                        ? t(
+                            "Type 'sustain' only tags sustain-damage scaling; it does not generate ticks. For a DoT, use a debuff with a DoT.",
+                          )
+                        : undefined
+                    }
+                  >
+                    <Combobox
+                      className={styles.fieldCombobox}
+                      value={draft.skillType}
+                      options={opts(SKILL_TYPES)}
+                      onChange={(value) => patchDraft({ skillType: value })}
+                    />
+                  </PropRow>
+                  <PropRow label={t("Weapon")}>
+                    <Combobox
+                      className={styles.fieldCombobox}
+                      value={draft.weaponOrAttribute}
+                      options={opts(["", ...WEAPONS])}
+                      onChange={(value) => patchDraft({ weaponOrAttribute: value })}
+                    />
+                  </PropRow>
+                  <PropRow label={t("Stat")}>
+                    <Combobox
+                      className={styles.fieldCombobox}
+                      value={draft.attributeAttack}
+                      options={opts(ATTRIBUTES)}
+                      onChange={(value) => patchDraft({ attributeAttack: value })}
+                    />
+                  </PropRow>
+                  <PropRow
+                    label={t("Attunement")}
+                    help={t(
+                      "Feeds gear-boost matching — which attunement affixes reach this skill",
+                    )}
+                  >
+                    <Combobox
+                      className={styles.fieldCombobox}
+                      value={currentAttuneFlag}
+                      options={attuneFlagOptions}
+                      onChange={setAttuneFlag}
+                    />
+                  </PropRow>
+                  <PropRow
+                    label={t("Cast Time")}
+                    unit={`${t("frames")} · ${(draft.castFrames / FPS).toFixed(2)}s`}
+                  >
+                    <NumInput
+                      className={styles.castField}
+                      value={draft.castFrames}
+                      onChange={(value) => patchDraft({ castFrames: value })}
+                    />
+                  </PropRow>
+                  {draft.skillType === "mystic" && (
+                    <PropRow label={t("Mystic Category")}>
+                      <Combobox
+                        className={styles.fieldCombobox}
+                        value={currentMysticFlag}
+                        options={mysticFlagOptions}
+                        onChange={setMysticFlag}
+                      />
+                    </PropRow>
+                  )}
+                  <div className={styles.pills}>
+                    <button
+                      type="button"
+                      className={styles.pill + (draft.triggerable ? ` ${styles.on}` : "")}
+                      title={t("Can be the target of a cast-skill trigger (e.g. an auto-proc)")}
+                      onClick={() => patchDraft({ triggerable: !draft.triggerable })}
+                    >
+                      {t("Triggerable")}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.pill + (draft.prePull ? ` ${styles.on}` : "")}
+                      title={t(
+                        'A pre-pull skill is cast before the pull — it lands at negative frames and is excluded from the rotation duration. Leave unchecked to auto-detect from a name containing "Prepull".',
+                      )}
+                      onClick={() => patchDraft({ prePull: !(draft.prePull ?? false) })}
+                    >
+                      {t("Pre-pull")}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.pill + (draft.guaranteedPrecision ? ` ${styles.on}` : "")}
+                      title={t(
+                        "Never abrades — precision counts as 100% for this skill (e.g. Dragon Head - Plus)",
+                      )}
+                      onClick={() =>
+                        patchDraft({ guaranteedPrecision: !(draft.guaranteedPrecision ?? false) })
+                      }
+                    >
+                      {t("Guaranteed Precision")}
+                    </button>
+                    <button
+                      type="button"
+                      className={styles.pill + (draft.guaranteedNormal ? ` ${styles.on}` : "")}
+                      title={t(
+                        "Always deals the normal row — cannot trigger crit, affinity, or abrasion (e.g. Dragon Head)",
+                      )}
+                      onClick={() =>
+                        patchDraft({ guaranteedNormal: !(draft.guaranteedNormal ?? false) })
+                      }
+                    >
+                      {t("Fixed Damage")}
+                    </button>
+                  </div>
+                  {readonlyTagHints.length > 0 && (
+                    <div className={styles.tagHint}>
+                      {t("Tags")}: {readonlyTagHints.join(", ")}
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.card}>
+                  <h4 className={styles.cardHead}>{t("Hit Table")}</h4>
+                  {variantLabels.length > 0 && (
+                    <SubTabs
+                      tabs={[
+                        { key: "normal", label: t("Normal") },
+                        ...variantLabels.map((label) => ({ key: label, label })),
+                      ]}
+                      active={effectiveHitTab}
+                      onSelect={setActiveHitTab}
+                    />
+                  )}
+                  {!isNormalTab &&
+                    variantConditionTexts(effectiveHitTab).map((text) => (
+                      <div key={text} className={styles.variantBanner}>
+                        {t("Active when")} <b>{text}</b> —{" "}
+                        {t("these rows replace the Normal rows while the condition holds")}
+                      </div>
+                    ))}
+                  <div className={styles.hitTableWrap}>
+                    <table className={styles.hitTable}>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>{t("Frame")}</th>
+                          {HIT_NUMERIC_COLUMNS.map(({ field, label }) => (
+                            <th key={field}>{t(label)}</th>
+                          ))}
+                          <th>{t("Crit +%")}</th>
+                          {isNormalTab && draft.hits.length > 1 && <th></th>}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {hitRows.map((row, idx) => (
+                          <tr
+                            key={row.hit.id}
+                            className={row.dimmed ? styles.dimmedRow : undefined}
+                          >
+                            <td className={styles.hitNo}>{idx + 1}</td>
+                            <td>
+                              {isNormalTab ? (
+                                <>
+                                  <NumInput
+                                    className={styles.cellInput}
+                                    value={row.hit.frame}
+                                    onChange={(value) => patchHit(idx, { frame: value })}
+                                  />
+                                  <span className={styles.cellSub}>
+                                    {(row.hit.frame / FPS).toFixed(2)}s
+                                  </span>
+                                </>
+                              ) : (
+                                <span className={styles.cellReadonly}>
+                                  {row.hit.frame}{" "}
+                                  <span className={styles.cellSub}>
+                                    {(row.hit.frame / FPS).toFixed(2)}s
+                                  </span>
+                                </span>
+                              )}
+                            </td>
+                            {HIT_NUMERIC_COLUMNS.map(({ field, isPercent }) => (
+                              <td key={field}>{renderHitFieldCell(row, idx, field, isPercent)}</td>
+                            ))}
+                            <td>
+                              {isNormalTab ? (
+                                <PercentInput
+                                  className={styles.cellInput}
+                                  value={row.hit.extraCritDamage}
+                                  onChange={(value) => patchHit(idx, { extraCritDamage: value })}
+                                />
+                              ) : (
+                                <span className={styles.cellReadonly}>
+                                  {+(row.hit.extraCritDamage * 100).toFixed(2)}%
+                                </span>
+                              )}
+                            </td>
+                            {isNormalTab && draft.hits.length > 1 && (
+                              <td>
+                                <button
+                                  type="button"
+                                  className={styles.rowDelete}
+                                  title={t("Delete hit")}
+                                  onClick={() => removeHit(idx)}
+                                >
+                                  ×
+                                </button>
+                              </td>
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {!isNormalTab && hitRows.some((row) => row.dimmed) && (
+                    <div className={styles.variantNote}>
+                      {t("Dimmed hits have no")} {effectiveHitTab}{" "}
+                      {t("variant — they keep their Normal row.")}
+                    </div>
+                  )}
+                  {isNormalTab && (
+                    <button type="button" className={styles.addHitBtn} onClick={addHit}>
+                      + {t("Add Hit")}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className={styles.card}>
+                <h4 className={styles.cardHead}>{t("Effects")}</h4>
+                <div className={styles.effectsCols}>
+                  <div className={styles.effectsCol}>
+                    <div className={styles.effectsColHead}>
+                      {t("Triggers (this skill applies)")}
+                    </div>
+                    {triggerRows.length === 0 && appliesRows.length === 0 ? (
+                      <div className={styles.effectsEmpty}>—</div>
+                    ) : (
+                      <>
+                        {triggerRows.map((trigger, triggerIndex) => {
+                          const effKind = effectiveTriggerKind(trigger)
+                          const summary = summarizeTriggerDraft(trigger)
+                          const scopeNote =
+                            typeof trigger.hitScope === "number" && draft.hits.length > 1
+                              ? ` · ${t("hit")} #${trigger.hitScope + 1}`
+                              : ""
+                          return (
+                            <div
+                              className={`${styles.effectsRow} ${kindClass(effKind)}`}
+                              key={triggerIndex}
+                            >
+                              <span className={styles.effectsRowName}>{summary.label}</span>
+                              {(summary.effect || scopeNote) && (
+                                <span className={styles.effectsRowDetail}>
+                                  {summary.effect}
+                                  {scopeNote}
+                                </span>
+                              )}
+                            </div>
+                          )
+                        })}
+                        {appliesRows.map((row) => (
+                          <div
+                            className={`${styles.effectsRow} ${styles.isSite}`}
+                            key={`site:${row.id}`}
+                          >
+                            {draft.triggersBuffs?.includes(row.id) && (
+                              <button
+                                type="button"
+                                className={styles.effectsRemove}
+                                aria-label={t("Remove")}
+                                onClick={() => removeTriggersBuff(row.id)}
+                              >
+                                ×
+                              </button>
+                            )}
+                            <span className={styles.effectsRowName}>{row.name}</span>
+                            {row.effect && (
+                              <span className={styles.effectsRowDetail}>{row.effect}</span>
+                            )}
+                            {row.requires && (
+                              <span className={styles.effectsRowRequires}>
+                                ({t("requires")} {row.requires})
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    <Combobox
+                      className={`${styles.fieldCombobox} ${styles.effectsAddCombobox}`}
+                      value=""
+                      options={triggersAddOptions}
+                      placeholder={t("Add triggered buff…")}
+                      aria-label={t("Add triggered buff")}
+                      onChange={addTriggersBuff}
+                    />
+                  </div>
+
+                  <div className={styles.effectsCol}>
+                    <div className={styles.effectsColHead}>
+                      {t("Receives (buffs affecting this skill)")}
+                    </div>
+                    {activeReceiveRows.length === 0 && inactiveReceiveRows.length === 0 ? (
+                      <div className={styles.effectsEmpty}>—</div>
+                    ) : (
+                      <>
+                        {activeReceiveRows.map((row) => (
+                          <div className={`${styles.effectsRow} ${styles.isSite}`} key={row.id}>
+                            {draft.receives?.includes(row.id) && (
+                              <button
+                                type="button"
+                                className={styles.effectsRemove}
+                                aria-label={t("Remove")}
+                                onClick={() => removeReceivesBuff(row.id)}
+                              >
+                                ×
+                              </button>
+                            )}
+                            <span className={styles.effectsRowName}>{row.name}</span>
+                            {row.effect && (
+                              <span className={styles.effectsRowDetail}>{row.effect}</span>
+                            )}
+                          </div>
+                        ))}
+                        {inactiveReceiveRows.length > 0 && (
+                          <>
+                            <button
+                              type="button"
+                              className={styles.effectsMore}
+                              onClick={() => setShowInactiveReceives((prev) => !prev)}
+                            >
+                              {t("Not in your current build")} ({inactiveReceiveRows.length})
+                            </button>
+                            {showInactiveReceives &&
+                              inactiveReceiveRows.map((row) => (
+                                <div
+                                  className={`${styles.effectsRow} ${styles.isSite} ${styles.isOff}`}
+                                  key={row.id}
+                                >
+                                  {draft.receives?.includes(row.id) && (
+                                    <button
+                                      type="button"
+                                      className={styles.effectsRemove}
+                                      aria-label={t("Remove")}
+                                      onClick={() => removeReceivesBuff(row.id)}
+                                    >
+                                      ×
+                                    </button>
+                                  )}
+                                  <span className={styles.effectsRowName}>{row.name}</span>
+                                  {row.effect && (
+                                    <span className={styles.effectsRowDetail}>{row.effect}</span>
+                                  )}
+                                  {row.requires && (
+                                    <span className={styles.effectsRowRequires}>
+                                      ({t("requires")} {row.requires})
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                          </>
+                        )}
+                      </>
+                    )}
+                    <Combobox
+                      className={`${styles.fieldCombobox} ${styles.effectsAddCombobox}`}
+                      value=""
+                      options={receivesAddOptions}
+                      placeholder={t("Add received buff…")}
+                      aria-label={t("Add received buff")}
+                      onChange={addReceivesBuff}
+                    />
+                  </div>
+
+                  <div className={styles.effectsCol}>
+                    <div className={styles.effectsColHead}>{t("Spec Mechanics")}</div>
+                    {specMechanicRows.length === 0 ? (
+                      <div className={styles.effectsEmpty}>—</div>
+                    ) : (
+                      specMechanicRows.map((row) => (
+                        <div className={`${styles.effectsRow} ${styles.isSpec}`} key={row.id}>
+                          <span className={styles.effectsRowName}>{row.name}</span>
+                          {row.effect && (
+                            <span className={styles.effectsRowDetail}>{row.effect}</span>
+                          )}
+                          {!row.active && row.requires && (
+                            <span className={styles.effectsRowRequires}>
+                              ({t("requires")} {row.requires})
+                            </span>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
 }
 
-function PreviewCard({
+function PropRow({
   label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: string
-  valueClassName: string
-}) {
-  return (
-    <div className={styles.skillsPreviewCard}>
-      <div className={styles.skillsPreviewLabel}>{label}</div>
-      <div className={`${styles.skillsPreviewValue} ${valueClassName}`}>{value}</div>
-    </div>
-  )
-}
-
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className={styles.skillsSection}>
-      <div className={styles.skillsSectionTitle}>{title}</div>
-      <div className={styles.skillsFields}>{children}</div>
-    </div>
-  )
-}
-
-function Field({
-  label,
+  help,
   unit,
   children,
 }: {
   label: string
+  help?: string
   unit?: string
   children: React.ReactNode
 }) {
   return (
-    <label className={styles.skillsField}>
-      <span className={styles.skillsFieldLabel}>{label}</span>
-      <span className={styles.skillsFieldInput}>
-        {children}
-        {unit && <span className={styles.skillsFieldUnit}>{unit}</span>}
-      </span>
-    </label>
-  )
-}
-
-function FieldGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  const labelId = useId()
-  return (
-    <div
-      className={`${styles.skillsField} ${styles.skillsFieldWide}`}
-      role="group"
-      aria-labelledby={labelId}
-    >
-      <span id={labelId} className={styles.skillsFieldLabel}>
+    <div className={styles.propRow}>
+      <span className={styles.propLabel}>
         {label}
+        {help && <HelpHint text={help} />}
       </span>
-      <span className={styles.skillsFieldInput}>{children}</span>
+      <span className={styles.propControl}>
+        {children}
+        {unit && <span className={styles.propUnit}>{unit}</span>}
+      </span>
     </div>
   )
 }

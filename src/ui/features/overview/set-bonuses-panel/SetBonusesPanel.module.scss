@@ -1,0 +1,110 @@
+@use "breakpoints";
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82em;
+}
+
+.table th,
+.table td {
+  padding: 3px 8px;
+  text-align: left;
+}
+
+.table th:not(:first-child),
+.table td:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table thead th {
+  color: var(--color-text-muted);
+  font-weight: normal;
+  border-bottom: 1px solid var(--color-surface-raised);
+}
+
+.groupHeader {
+  padding-top: 8px;
+  font-size: 0.72em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.table tbody tr:first-child .groupHeader {
+  padding-top: 3px;
+}
+
+.row {
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-surface-raised);
+}
+
+@include breakpoints.hoverable {
+  .row:hover {
+    background: var(--color-surface-inset-hover);
+  }
+}
+
+.rowSelected {
+  background: var(--color-surface-selected);
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.radioInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-strong);
+  background: transparent;
+}
+
+.dotSelected {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.radioInput:focus-visible + .dot {
+  box-shadow: 0 0 0 2px rgba(192, 160, 96, 0.35);
+}
+
+.nameSelected {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.bonusCell {
+  color: var(--color-text-muted);
+}
+
+.deltaCell {
+  font-variant-numeric: tabular-nums;
+}
+
+.deltaPositive {
+  color: var(--color-positive);
+}
+
+.deltaNegative {
+  color: var(--color-negative);
+}
+
+.deltaActive {
+  color: var(--color-accent);
+}

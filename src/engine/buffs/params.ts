@@ -29,10 +29,7 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
   }
 
   const armorSetKey = inputs.set ? SET_BY_ID[inputs.set]?.siteKey : undefined
-  if (armorSetKey) {
-    params.armorSet = armorSetKey
-    if (armorSetKey === "starsAlign") params.starsAlignActive = true
-  }
+  if (armorSetKey) params.armorSet = armorSetKey
 
   const tierByInnerWayId = new Map<string, number>()
   for (const slot of inputs.mindMethods) {

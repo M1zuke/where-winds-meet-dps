@@ -53,7 +53,7 @@ for (const classDef of CLASSES) {
       gateBuffs.push({ ...gate, classId: classDef.id })
   }
   registerBuiltinBuffs(classDef.id, gateBuffs)
-  for (const { mechanic, order } of classDef.mechanics) registerMechanic(mechanic, order)
+  for (const { mechanic } of classDef.mechanics) registerMechanic(mechanic)
   for (const { skillId, factory } of classDef.skillBehaviors)
     registerSkillBehavior(skillId, factory)
   for (const { defId, predicate } of classDef.displayGates) registerDisplayGate(defId, predicate)

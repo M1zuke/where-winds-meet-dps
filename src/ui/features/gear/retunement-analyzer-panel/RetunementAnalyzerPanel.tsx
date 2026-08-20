@@ -3,7 +3,7 @@ import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
 import { statLineLabel } from "../../../../data/stats/statLines"
-import { HelpHint } from "../help-hint/HelpHint"
+import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
 import retunement from "../shared/retunement.module.scss"
 

@@ -1,4 +1,4 @@
-import { defineSkill, dotTicks } from "../../../definitions/skills/skillDef"
+import { defineSkill, evenlySpacedHits } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -14,9 +14,10 @@ export const spearheavy = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy,
   triggersBuffs: [BUFF.soulShaken],
+  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
   castFrames: 90,
   triggerable: true,
-  hits: dotTicks({
+  hits: evenlySpacedHits({
     count: 5,
     everyFrames: 18,
     physMultiplier: 0.30346,

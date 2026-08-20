@@ -8,7 +8,7 @@ export function GithubLink() {
   const { t } = useI18n()
   return (
     <span className={styles.contributeNote}>
-      {t("Want to contribute? Click here →")}
+      <span className={styles.noteText}>{t("Want to contribute? Click here →")}</span>
       <a
         className={styles.githubLink}
         href={GITHUB_REPO_URL}

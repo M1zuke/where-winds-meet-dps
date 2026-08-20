@@ -25,8 +25,16 @@ import {
   tickSourceSkillId,
   type DotTickPlan,
 } from "./dot"
-import { buildBehaviors, type BuildView, type HitContext, type HitInput } from "./behavior"
+import {
+  buildBehaviors,
+  minPhysCritBonus,
+  MIN_PHYS_CRIT_BONUS_SENTINEL,
+  type BuildView,
+  type HitContext,
+  type HitInput,
+} from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
+import type { ArtBonusField } from "./effects/effect"
 import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
@@ -39,7 +47,7 @@ import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramsFromInputs } from "./buffs/params"
-import { castTagOf } from "./buffs/tags"
+import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import { PROP } from "../data/skills/ids"
@@ -296,7 +304,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         generated: false,
         inheritedBuffIds: [],
       }))
-      const damageFrames: number[] = []
+      const damageHits: { frame: number; skill: Skill }[] = []
 
       let processed = 0
       while (pending.length > 0 && processed < EVENT_CAP) {
@@ -320,7 +328,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         for (const hit of cast.skill.hits) {
           const hitFrame = cast.frame + hit.frame
-          if (hitDealsDamage(hit)) damageFrames.push(hitFrame)
+          if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
             if (!triggerConditions(trigger).every((c) => conditionHolds(c, hitFrame))) continue
@@ -338,8 +346,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
       }
 
-      damageFrames.sort((left, right) => left - right)
-      for (const frame of damageFrames) engine.processDamageHit(frame / FPS)
+      damageHits.sort((left, right) => left.frame - right.frame)
+      for (const { frame, skill } of damageHits) engine.processDamageHit(frame / FPS, skill)
       return engine
     } catch {
       return null
@@ -397,6 +405,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     forceCrit: boolean
     damageFactor: number
     conditionalFinalCrit: ConditionalFinalCrit | null
+    artBonuses: Partial<Record<ArtBonusField, number>>
   } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
@@ -415,6 +424,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let forceCritFromBuff = false
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
+    let artBonuses: Partial<Record<ArtBonusField, number>> = {}
     if (buffEngine && skill) {
       const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
       const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
@@ -430,6 +440,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (site.forceCrit) forceCritFromBuff = true
       damageFactor = site.damageFactor
       conditionalFinalCrit = site.conditionalFinalCrit
+      artBonuses = site.artBonuses
+      for (const [field, amount] of Object.entries(artBonuses)) sig += `~${field}:${amount}`
       if (damageFactor !== 1) sig += `~x${damageFactor}`
       if (conditionalFinalCrit)
         sig += `~cfc${conditionalFinalCrit.threshold}:${conditionalFinalCrit.bonusBelowThreshold}`
@@ -500,7 +512,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
-    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit }
+    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit, artBonuses }
   }
 
   const queue = new EventQueue()
@@ -621,6 +633,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       },
     }
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
+    for (const [field, amount] of Object.entries(st.artBonuses)) {
+      const key = field as ArtBonusField
+      art[key] = (art[key] ?? 0) + amount
+    }
     if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
     if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
     const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
@@ -808,9 +824,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return windows
   }
 
-  const casts: RotationCast[] = collectDetail ? buildCasts() : []
-  const buffWindows: BuffWindow[] = collectDetail ? buildBuffWindows() : []
-
   interface DotTickEntry extends DotTickPlan {
     seq: number
     debuff: Debuff
@@ -830,8 +843,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const tickSkill = skillsById.get(tickSourceSkillId(status) ?? "")
     const dot = resolveTickDot(status, tickSkill)
     if (!dot) continue
-    const debuffForTick: Debuff = { ...status, dot }
     const dotSkill = dotTickSkill(status, tickSkill)
+    const debuffForTick: Debuff = { ...status, dot }
     const dotName = dotRowName(status)
     const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
     const dotType = dot.skillType || "sustain"
@@ -882,17 +895,40 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  // After the tick pass, never before it: a cast chip reports what is live once
+  // the cast resolves, and a buff a tick applies or extends only reaches
+  // `buffHistory` once every tick has been walked.
+  const casts: RotationCast[] = collectDetail ? buildCasts() : []
+  const buffWindows: BuffWindow[] = collectDetail ? buildBuffWindows() : []
+
+  // A tick carries the same `extraCritDamage` sentinel a regular hit does, but
+  // never reaches `buildArt`, where a hit's is resolved. Resolved here against
+  // the same weapon-type gate and the same per-state min phys, so the two
+  // paths cannot drift.
+  function tickWithResolvedMinPhysCrit(entry: DotTickEntry, smallPhys: number): Debuff {
+    const dot = entry.debuffForTick.dot
+    if (!dot || dot.extraCritDamage !== MIN_PHYS_CRIT_BONUS_SENTINEL) return entry.debuffForTick
+    const weaponType = (entry.dotSkill.tags ?? [])
+      .find((tag) => tag.startsWith(WEAPON_TAG))
+      ?.slice(WEAPON_TAG.length)
+    const resolved = buildView.grantsMinPhysCritBoost(weaponType) ? minPhysCritBonus(smallPhys) : 0
+    return { ...entry.debuffForTick, dot: { ...dot, extraCritDamage: resolved } }
+  }
+
   for (const entry of dotTickEntries) {
     const st = resolveState(entry.frame, entry.dotSkill)
     const tick = dotTickDamage(
-      entry.debuffForTick,
+      tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
       st.ctx,
       computeSkillDamage,
       st.forceCrit,
       entry.shape,
       hitRng,
+      st.artBonuses,
     )
-    const damage = tick.damage * (entry.scale ?? 1) * entry.weight
+    // `damageFactor` is post-formula, so a tick takes it on its finished
+    // number the way a regular hit takes it on its art `correction`.
+    const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
     totalDamage += damage
     if (tick.rolled) tallyRoll(tick.rolled)
     add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName)

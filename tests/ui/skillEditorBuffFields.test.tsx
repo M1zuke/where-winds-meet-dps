@@ -8,8 +8,12 @@ import { loadCustomSkillsForClass } from "../../src/storage"
 
 const CLASS_ID = "stonesplitStrength"
 
-function fieldNamed(label: string): HTMLElement {
-  return screen.getByText(label).closest("label, [role='group']")!
+function columnNamed(heading: string): HTMLElement {
+  return screen.getByText(heading).parentElement!
+}
+
+function openInactiveReceives(receivesColumn: HTMLElement) {
+  fireEvent.click(within(receivesColumn).getByText(/^Not in your current build/))
 }
 
 function renderSkillsTab() {
@@ -37,46 +41,72 @@ function savedAnxiSoldierMoDown() {
   return loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.name === "AnxiSoldierMoDown")!
 }
 
-describe("Skill Editor — Buffs Received / Buffs Triggered", () => {
+describe("Skill Editor — Effects: Triggers / Receives columns", () => {
   beforeEach(() => localStorage.clear())
   afterEach(() => localStorage.clear())
 
-  it("shows a built-in's existing receives/triggersBuffs as chips by buff name, not id", () => {
+  it("shows a built-in's existing receives/triggersBuffs by buff name, not id", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const receivesField = fieldNamed("Buffs Received")
-    expect(within(receivesField).getByText("Mountain Splitter")).toBeInTheDocument()
-    expect(within(receivesField).getByText("Shattered Ridge (Max Stacks)")).toBeInTheDocument()
-    expect(within(receivesField).queryByText("mountainSplitter")).not.toBeInTheDocument()
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    openInactiveReceives(receivesColumn)
+    expect(within(receivesColumn).getByText("Mountain Splitter")).toBeInTheDocument()
+    expect(within(receivesColumn).queryByText("mountainSplitter")).not.toBeInTheDocument()
 
-    const triggersField = fieldNamed("Buffs Triggered")
-    expect(within(triggersField).getByText("Throat-Pierced")).toBeInTheDocument()
-    expect(within(triggersField).getByText("Mountain Splitter")).toBeInTheDocument()
+    const triggersColumn = columnNamed("Triggers (this skill applies)")
+    expect(within(triggersColumn).getByText("Throat-Pierced")).toBeInTheDocument()
+    expect(within(triggersColumn).getByText("Mountain Splitter")).toBeInTheDocument()
   })
 
-  it("does not remove a chip when the field caption is clicked", () => {
+  it("renders a received buff the class itself owns under Spec Mechanics, not Receives", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const receivesField = fieldNamed("Buffs Received")
-    fireEvent.click(within(receivesField).getByText("Buffs Received"))
-
-    expect(within(receivesField).getByText("Mountain Splitter")).toBeInTheDocument()
-    expect(within(receivesField).getByText("Shattered Ridge (Max Stacks)")).toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole("button", { name: "Save" }))
-    expect(savedAnxiSoldierMoDown().receives).toEqual(
-      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect"]),
-    )
+    const specColumn = columnNamed("Spec Mechanics")
+    expect(within(specColumn).getByText("Shattered Ridge (Max Stacks)")).toBeInTheDocument()
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    openInactiveReceives(receivesColumn)
+    expect(
+      within(receivesColumn).queryByText("Shattered Ridge (Max Stacks)"),
+    ).not.toBeInTheDocument()
   })
 
-  it("offers only buffs with their own reach statement to add to Buffs Received", () => {
+  it("does not remove a row when its name or the column heading is clicked", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const receivesField = fieldNamed("Buffs Received")
-    fireEvent.focus(within(receivesField).getByPlaceholderText("Add buff…"))
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    fireEvent.click(within(receivesColumn).getByText("Receives (buffs affecting this skill)"))
+    openInactiveReceives(receivesColumn)
+    fireEvent.click(within(receivesColumn).getByText("Mountain Splitter"))
+
+    expect(within(receivesColumn).getByText("Mountain Splitter")).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled()
+  })
+
+  it("keeps Save disabled and unmarked until the draft actually changes", () => {
+    renderSkillsTab()
+    selectAnxiSoldierMoDown()
+
+    expect(screen.getByRole("button", { name: "Save" })).toBeDisabled()
+    expect(screen.queryByText(/unsaved/)).not.toBeInTheDocument()
+
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    openInactiveReceives(receivesColumn)
+    const row = within(receivesColumn).getByText("Mountain Splitter").closest("div")!
+    fireEvent.click(within(row).getByRole("button", { name: "Remove" }))
+
+    expect(screen.getByRole("button", { name: "Save" })).toBeEnabled()
+    expect(screen.getByText(/unsaved/)).toBeInTheDocument()
+  })
+
+  it("offers only buffs with their own reach statement to add to Receives", () => {
+    renderSkillsTab()
+    selectAnxiSoldierMoDown()
+
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    fireEvent.focus(within(receivesColumn).getByPlaceholderText("Add received buff…"))
     expect(screen.getByRole("option", { name: "Frost-Clad Night (Snowbreak)" })).toBeInTheDocument()
     expect(screen.queryByRole("option", { name: "Iron Guards" })).not.toBeInTheDocument()
   })
@@ -85,10 +115,11 @@ describe("Skill Editor — Buffs Received / Buffs Triggered", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const receivesField = fieldNamed("Buffs Received")
-    fireEvent.focus(within(receivesField).getByPlaceholderText("Add buff…"))
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    fireEvent.focus(within(receivesColumn).getByPlaceholderText("Add received buff…"))
     fireEvent.mouseDown(screen.getByRole("option", { name: "Frost-Clad Night (Snowbreak)" }))
-    expect(within(receivesField).getByText("Frost-Clad Night (Snowbreak)")).toBeInTheDocument()
+    openInactiveReceives(receivesColumn)
+    expect(within(receivesColumn).getByText("Frost-Clad Night (Snowbreak)")).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
     expect(savedAnxiSoldierMoDown().receives).toEqual(
@@ -96,31 +127,30 @@ describe("Skill Editor — Buffs Received / Buffs Triggered", () => {
     )
   })
 
-  it("removes a chip and writes the shortened list through to the saved skill", () => {
+  it("removes a row and writes the shortened list through to the saved skill", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const triggersField = fieldNamed("Buffs Triggered")
-    const chip = within(triggersField).getByText("Throat-Pierced")
-    fireEvent.click(within(chip).getByRole("button", { name: "Remove" }))
-    expect(within(triggersField).queryByText("Throat-Pierced")).not.toBeInTheDocument()
+    const triggersColumn = columnNamed("Triggers (this skill applies)")
+    const row = within(triggersColumn).getByText("Throat-Pierced").closest("div")!
+    fireEvent.click(within(row).getByRole("button", { name: "Remove" }))
+    expect(within(triggersColumn).queryByText("Throat-Pierced")).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
     expect(savedAnxiSoldierMoDown().triggersBuffs).toEqual(["mountainSplitter"])
   })
 
-  it("keeps an explicitly emptied list empty rather than re-populating it from legacy tags on reload", () => {
+  it("keeps an explicitly removed entry gone rather than re-populating it from legacy tags on reload", () => {
     renderSkillsTab()
     selectAnxiSoldierMoDown()
 
-    const receivesField = fieldNamed("Buffs Received")
-    for (const name of ["Mountain Splitter", "Shattered Ridge (Max Stacks)"]) {
-      const chip = within(receivesField).getByText(name)
-      fireEvent.click(within(chip).getByRole("button", { name: "Remove" }))
-    }
-    expect(within(receivesField).queryByRole("button", { name: "Remove" })).not.toBeInTheDocument()
+    const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
+    openInactiveReceives(receivesColumn)
+    const row = within(receivesColumn).getByText("Mountain Splitter").closest("div")!
+    fireEvent.click(within(row).getByRole("button", { name: "Remove" }))
+    expect(within(receivesColumn).queryByText("Mountain Splitter")).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
-    expect(savedAnxiSoldierMoDown().receives).toEqual([])
+    expect(savedAnxiSoldierMoDown().receives).toEqual(["shatteredRidgeDeflect"])
   })
 })

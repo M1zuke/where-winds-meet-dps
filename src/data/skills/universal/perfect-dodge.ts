@@ -12,7 +12,7 @@ export const perfectDodge = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.perfectDodge,
-  triggersBuffs: [BUFF.mirageBonus],
+  triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 0,
   triggerable: true,
   hits: [hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0 })],

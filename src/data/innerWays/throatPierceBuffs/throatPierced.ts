@@ -1,4 +1,4 @@
-import { defineClassBuff } from "../../../definitions/skills/buffDef"
+import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
 import { ROLE } from "../../skills/ids"
 import { stat } from "../../../engine/effects/effect"
@@ -14,7 +14,7 @@ const MATCHED = [
   ROLE.phalanxQ,
 ]
 
-export const throatPierced = defineClassBuff({
+export const throatPierced = defineBuff({
   id: BUFF.throatPierced,
   name: "Throat-Pierced",
   requires: { param: PARAM.throatPierced },

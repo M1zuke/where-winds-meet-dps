@@ -52,14 +52,14 @@ describe("bleed per-stack ladder — data", () => {
     })
   })
 
-  it("the skill's per-tick hits all carry the same unit as the debuff's base shape", () => {
+  // A tick source authors the shape once — the debuff owns how often it lands,
+  // so a second hit here would be a copy nothing fires.
+  it("the skill authors exactly one hit, carrying the debuff's base unit", () => {
     const skill = bleedTickSkill()
     const dot = bleedTickDebuff().dot!
-    expect(skill.hits.length).toBeGreaterThan(1)
-    for (const h of skill.hits) {
-      expect(h.physMultiplier).toBe(dot.physMultiplier)
-      expect(h.attributeMultiplier).toBe(dot.attributeMultiplier)
-    }
+    expect(skill.hits).toHaveLength(1)
+    expect(skill.hits[0].physMultiplier).toBe(dot.physMultiplier)
+    expect(skill.hits[0].attributeMultiplier).toBe(dot.attributeMultiplier)
   })
 })
 

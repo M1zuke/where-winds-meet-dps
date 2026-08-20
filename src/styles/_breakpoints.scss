@@ -1,5 +1,6 @@
 $bp-1500: 1500px;
 $bp-1100: 1100px;
+$bp-980: 980px;
 $bp-900: 900px;
 $bp-760: 760px;
 $bp-720: 720px;
@@ -8,6 +9,12 @@ $bp-560: 560px;
 
 @mixin below($px) {
   @media (max-width: $px) {
+    @content;
+  }
+}
+
+@mixin hoverable {
+  @media (hover: hover) {
     @content;
   }
 }
