@@ -97,6 +97,7 @@ export const CAST = {
   fanLightCharged: "cast:fanLightCharged",
   fanSpecial: "cast:fanSpecial",
   fanHeavyPursuit3Hit: "cast:fanHeavyPursuit3Hit",
+  fanHeavyPursuit5Hit: "cast:fanHeavyPursuit5Hit",
   umbQ: "cast:umbQ",
   umbQPrepull: "cast:umbQPrepull",
   umbLightCharge: "cast:umbLightCharge",

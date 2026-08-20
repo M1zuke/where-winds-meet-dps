@@ -2,6 +2,7 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
 import { DEBUFFS } from "../../skills/silkbind-jade/debuffs"
 import { jadebreak } from "../../skills/silkbind-jade/buffs/jadebreak"
+import { startlingSpring } from "../../skills/silkbind-jade/buffs/startlingSpring"
 import { windrider } from "../../skills/silkbind-jade/buffs/windrider"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
@@ -34,16 +35,23 @@ export const silkbindJade = defineClass({
   //     mechanic on Silkbind Jade; left empty to avoid a fabricated
   //     interaction.
   //
-  // `classBuffDefs` carries the two fan-side buffs captured in the 2026-08-19
+  // `classBuffDefs` carries the three fan-side buffs captured in the 2026-08-19
   // in-game tooltip pass:
   //   * Jadebreak — fan-granted, umbrella-side ribbon (+30% umbrellaBoost,
   //     +10% Boss damage on Projectile/Heavy Pursuit hit) for 15s. The Boss
   //     filter is gated by `!ctx.target.isTrainingDummy` as a proxy for
   //     `target.isBoss` (engine has no native `isBoss` field yet).
   //   * Windrider — fan-granted, "enhances the next Pursuit Skill" for 3s.
-  //     Magnitude captured as 0 + comment; the in-game tooltip localizes
-  //     "enhances" without a number, so the multiplier is pending another
-  //     in-game capture.
+  //     Magnitude encoded as additive flat stats (physBoost +0.42,
+  //     attributeDamageBoost +0.42, allDamageBoost +1.41) extracted from the
+  //     3-hit → 5-hit Moon Shatter Spring per-hit ratio. FLAGGED FOR REVIEW —
+  //     this is one interpretation of an in-game tooltip that localizes
+  //     "enhances" without a numeric value.
+  //   * Startling Spring — granted by Moon Shatter Spring 3-hit and 5-hit
+  //     on hit; +45% all damage flat, +4% attributeDamageBoost per stack,
+  //     max 5 stacks, 15s. The +45% is verbatim from the tooltip; the +4%/stack
+  //     is the implementation choice confirmed at "encode and flag for
+  //     review" time and is pending an in-game capture.
   //
   // Lingering Bone is a global buff (in `reference/classes/buffs/`) not
   // listed here — it's owned elsewhere. The 2026-08-19 capture surfaced a
@@ -75,7 +83,7 @@ export const silkbindJade = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
-  classBuffDefs: [jadebreak, windrider],
+  classBuffDefs: [jadebreak, windrider, startlingSpring],
   gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],
   skillBehaviors: [],

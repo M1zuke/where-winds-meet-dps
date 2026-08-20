@@ -35076,7 +35076,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 43,
+        "count": 44,
         "ids": [
           "silkbindJade-bitter-season-tick",
           "silkbindJade-deflect-cancel",
@@ -35087,6 +35087,7 @@
           "silkbindJade-drunkenpoet-prepull",
           "silkbindJade-everbloom",
           "silkbindJade-fanheavypursuit-3-hit",
+          "silkbindJade-fanheavypursuit-5-hit",
           "silkbindJade-fanlightcharged",
           "silkbindJade-fanq",
           "silkbindJade-fanq-prepull",
@@ -35122,7 +35123,7 @@
           "silkbindJade-umbq-prepull",
           "silkbindJade-umbrella-light"
         ],
-        "digest": "3326e507147f2d983cf2185c1472a30e6455b10415ef90904c73d5f73a88ddb4"
+        "digest": "8a81faeb6ea16ec0c00d37163bd5494cd1a362b1fcda26971f3a795ada7aceaa"
       },
       "debuffs": {
         "count": 7,
@@ -35470,7 +35471,29 @@
           "duration": 3,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "Pursuit Skill +0% (pending magnitude capture)"
+          "summary": "Pursuit Skill physBoost +42%, attributeDamageBoost +42%, allDamageBoost +141% (FLAGGED FOR REVIEW)"
+        },
+        {
+          "id": "startlingSpring",
+          "name": "Startling Spring",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": true,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": 5,
+          "effects": "[fn]",
+          "summary": "+45% all damage; +4% per stack"
         }
       ],
       "group": [
@@ -35499,7 +35522,7 @@
       ]
     },
     "dynamic": {
-      "digest": "9034e9ea5609d7bd20729f6ee1bfa62beaac2b8a50aab25ed76bd2928d52a1c4"
+      "digest": "8c71d7364d4defe1e21da8615a85c01c27f0cbaf3393445c0dd5253f8607f212"
     }
   }
 }

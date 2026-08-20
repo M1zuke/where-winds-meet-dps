@@ -5,6 +5,7 @@ import { fanqPrepull } from "./fanq-prepull"
 import { fanLightCharged } from "./fanlightcharged"
 import { fanSpecial } from "./fanspecial"
 import { fanHeavyPursuit3Hit } from "./fanheavypursuit-3-hit"
+import { fanHeavyPursuit5Hit } from "./fanheavypursuit-5-hit"
 import { umbq } from "./umbq"
 import { umbqPrepull } from "./umbq-prepull"
 import { umbLightCharge } from "./umblightcharge"
@@ -26,6 +27,7 @@ export const SKILLS: Skill[] = [
   fanLightCharged,
   fanSpecial,
   fanHeavyPursuit3Hit,
+  fanHeavyPursuit5Hit,
   umbq,
   umbqPrepull,
   umbLightCharge,

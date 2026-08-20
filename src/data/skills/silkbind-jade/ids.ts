@@ -6,6 +6,7 @@ export const SKILL = {
   fanLightCharged: "silkbindJade-fanlightcharged",
   fanSpecial: "silkbindJade-fanspecial",
   fanHeavyPursuit3Hit: "silkbindJade-fanheavypursuit-3-hit",
+  fanHeavyPursuit5Hit: "silkbindJade-fanheavypursuit-5-hit",
   umbq: "silkbindJade-umbq",
   umbqPrepull: "silkbindJade-umbq-prepull",
   umbLightCharge: "silkbindJade-umblightcharge",

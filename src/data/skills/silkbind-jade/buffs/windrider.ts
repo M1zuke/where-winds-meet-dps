@@ -31,9 +31,26 @@ export const windrider = defineClassBuff({
   id: BUFF.windrider,
   name: "Windrider",
   duration: 3,
-  // PENDING: capture the numerical enhancement value from the in-game
-  // tooltip. The multiplier slot below is `0` until the value is captured.
-  // Search for `stat("physBoost", 0)` in this file to find the marker.
-  summary: "Pursuit Skill +0% (pending magnitude capture)",
-  effects: () => [stat("physBoost", 0)],
+  // ─── FLAGGED FOR REVIEW ────────────────────────────────────────────────
+  // The in-game tooltip localizes "enhances the next Pursuit Skill" without
+  // a numeric value. The magnitude below is extracted from the Moon Shatter
+  // Spring 3-hit → 5-hit per-hit ratio (5-hit ÷ 3-hit = ~2.42× on both phys
+  // and attr coeff AND fixed), interpreted as additive flat stats on the
+  // buffed skill's base stats. The 1.41 figure corresponds to the +141%
+  // additive flat interpretation confirmed at "encode and flag for review"
+  // time.
+  //
+  // To verify: capture the in-game damage number for an enhanced Moon
+  // Shatter Spring 5-hit and an unenhanced 3-hit against the same target;
+  // a ratio of ~2.42× confirms this extraction, a different ratio means a
+  // different interpretation is needed (multiplicative on coefficients,
+  // fixed bonus, etc.).
+  //
+  // Search for `physBoost +0.42` in this file to find the marker.
+  summary: "Pursuit Skill physBoost +42%, attributeDamageBoost +42%, allDamageBoost +141% (FLAGGED FOR REVIEW)",
+  effects: () => [
+    stat("physBoost", 0.42),
+    stat("attributeDamageBoost", 0.42),
+    stat("allDamageBoost", 1.41),
+  ],
 })
