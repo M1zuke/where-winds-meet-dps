@@ -19,6 +19,7 @@ export const SKILL = {
   everbloom: "silkbindJade-everbloom",
   umbrellaLight: "silkbindJade-umbrella-light",
   springAway: "silkbindJade-spring-away",
+  unfadingFlower: "silkbindJade-unfading-flower",
 } as const
 
 export const DEBUFF = {

@@ -109,6 +109,7 @@ export const CAST = {
   everbloom: "cast:everbloom",
   umbrellaLight: "cast:umbrellaLight",
   springAway: "cast:springAway",
+  unfadingFlower: "cast:unfadingFlower",
 } as const
 
 export const ROLE = {

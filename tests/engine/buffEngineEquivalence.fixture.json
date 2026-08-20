@@ -35076,7 +35076,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 44,
+        "count": 45,
         "ids": [
           "silkbindJade-bitter-season-tick",
           "silkbindJade-deflect-cancel",
@@ -35121,9 +35121,10 @@
           "silkbindJade-umblightcharge",
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull",
-          "silkbindJade-umbrella-light"
+          "silkbindJade-umbrella-light",
+          "silkbindJade-unfading-flower"
         ],
-        "digest": "a6f8896db278b65b28533995280b7442057fc08981be1b010c22711a33d845ea"
+        "digest": "b15658f86037a45e47974c5daff46d6f53f6a2e4534e3dbc031682d9b1289227"
       },
       "debuffs": {
         "count": 7,

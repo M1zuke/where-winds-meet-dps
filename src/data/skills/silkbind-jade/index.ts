@@ -17,6 +17,7 @@ import { letSpringGo } from "./let-spring-go"
 import { everbloom } from "./everbloom"
 import { umbrellaLight } from "./umbrella-light"
 import { springAway } from "./spring-away"
+import { unfadingFlower } from "./unfadingFlower"
 
 export const CLASS_ID = "silkbindJade"
 
@@ -39,4 +40,5 @@ export const SKILLS: Skill[] = [
   everbloom,
   umbrellaLight,
   springAway,
+  unfadingFlower,
 ]
