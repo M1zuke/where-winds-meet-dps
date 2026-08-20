@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 
 export const fanSpecial = defineSkill({
@@ -12,6 +13,10 @@ export const fanSpecial = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanSpecial,
+  // Emerald Barrier (in-game capture, 2026-08-19): grants Jadebreak on release
+  // and Windrider at the end of the cast. Both buffs are fan-granted,
+  // umbrella-side payload — see `classBuffDefs` in `silkbind-jade/index.ts`.
+  triggersBuffs: [BUFF.jadebreak, BUFF.windrider],
   castFrames: 72,
   triggerable: true,
   hits: [

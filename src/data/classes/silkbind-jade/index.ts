@@ -1,6 +1,8 @@
 import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
 import { DEBUFFS } from "../../skills/silkbind-jade/debuffs"
+import { jadebreak } from "../../skills/silkbind-jade/buffs/jadebreak"
+import { windrider } from "../../skills/silkbind-jade/buffs/windrider"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { INNER_WAY_ID } from "../../innerWays/ids"
@@ -18,13 +20,8 @@ export const silkbindJade = defineClass({
   // buff-equivalence fixtures (graduation.test.ts exercises this build
   // directly). The UI removes the WIP badge on this flag.
   //
-  // Four arrays stay empty by design — same shape as `stonesplit-strength`,
-  // which is `validated: true` with all four arrays empty:
-  //   * `classBuffDefs` — no standalone buff files exist for Silkbind Jade;
-  //     Mun's doc names umbrella-path actions descriptively (Umbrella Q,
-  //     HeavyLight, Light Charged, Pursuit 3-hit/5-hit) but doesn't carry
-  //     named class buff tooltips. Authoring multipliers from descriptive
-  //     paraphrase would be fabrication; gated on in-game tooltips.
+  // Three arrays stay empty by design — same shape as `stonesplit-strength`,
+  // which is `validated: true` with those three arrays empty:
   //   * `mechanics` — no mechanic file exists that would wrap a Silkbind
   //     feature in `declareMechanic(...)`. There's no level-attribute bonus
   //     mechanic for Silkbind (Bellstrike Umbra has one; Stonesplit / Bellstrike
@@ -36,6 +33,22 @@ export const silkbindJade = defineClass({
   //     extending a Bitter Season poison). No doc evidence for an equivalent
   //     mechanic on Silkbind Jade; left empty to avoid a fabricated
   //     interaction.
+  //
+  // `classBuffDefs` carries the two fan-side buffs captured in the 2026-08-19
+  // in-game tooltip pass:
+  //   * Jadebreak — fan-granted, umbrella-side ribbon (+30% umbrellaBoost,
+  //     +10% Boss damage on Projectile/Heavy Pursuit hit) for 15s. The Boss
+  //     filter is gated by `!ctx.target.isTrainingDummy` as a proxy for
+  //     `target.isBoss` (engine has no native `isBoss` field yet).
+  //   * Windrider — fan-granted, "enhances the next Pursuit Skill" for 3s.
+  //     Magnitude captured as 0 + comment; the in-game tooltip localizes
+  //     "enhances" without a number, so the multiplier is pending another
+  //     in-game capture.
+  //
+  // Lingering Bone is a global buff (in `reference/classes/buffs/`) not
+  // listed here — it's owned elsewhere. The 2026-08-19 capture surfaced a
+  // duration split (0.8s non-boss / 2s boss) that the JSON currently does
+  // not model; that's a separate change outside the silkbind-jade sprint.
   //
   // Five skill-def placeholders (umbrella-light, spring-sorrow, spring-away,
   // let-spring-go, everbloom) carry zero multipliers and explicit
@@ -62,7 +75,7 @@ export const silkbindJade = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
-  classBuffDefs: [],
+  classBuffDefs: [jadebreak, windrider],
   gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],
   skillBehaviors: [],

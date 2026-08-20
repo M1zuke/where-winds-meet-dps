@@ -35122,7 +35122,7 @@
           "silkbindJade-umbq-prepull",
           "silkbindJade-umbrella-light"
         ],
-        "digest": "bad187e82be372c303eceb1ff1911d9eb721f18e2fda2f4021b6442a6458ee19"
+        "digest": "3326e507147f2d983cf2185c1472a30e6455b10415ef90904c73d5f73a88ddb4"
       },
       "debuffs": {
         "count": 7,
@@ -35427,6 +35427,50 @@
             }
           ],
           "summary": null
+        },
+        {
+          "id": "jadebreak",
+          "name": "Jadebreak",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 15,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "umbrellaBoost +30%, +10% Boss damage on Projectile/Heavy Pursuit hit"
+        },
+        {
+          "id": "windrider",
+          "name": "Windrider",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 3,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "Pursuit Skill +0% (pending magnitude capture)"
         }
       ],
       "group": [
@@ -35455,7 +35499,7 @@
       ]
     },
     "dynamic": {
-      "digest": "036da58f6f20f0bf10da98cbd67ba3248ac68208ac55085d3e43a6b64d32c7e0"
+      "digest": "9034e9ea5609d7bd20729f6ee1bfa62beaac2b8a50aab25ed76bd2928d52a1c4"
     }
   }
 }

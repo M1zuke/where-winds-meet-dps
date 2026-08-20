@@ -26,6 +26,21 @@ function receivedBuffIds(): Set<string> {
   return ids
 }
 
+// `triggersBuffs` is the other half of the reach graph: a skill or debuff can
+// reach a buff by triggering it on cast / hit (no `receives` involved). The
+// orphan check has to count those too, otherwise a scoped module that exists
+// purely to be triggered (Jadebreak, Windrider) looks orphan.
+function triggeredBuffIds(): Set<string> {
+  const ids = new Set<string>()
+  for (const classId of CLASS_IDS()) {
+    for (const skill of builtinSkillsForClass(classId))
+      for (const id of skill.triggersBuffs ?? []) ids.add(id)
+    for (const debuff of builtinDebuffsForClass(classId))
+      for (const id of debuff.triggersBuffs ?? []) ids.add(id)
+  }
+  return ids
+}
+
 // Pure state markers: no stat effects of their own, so nothing needs to
 // `receive` them — `mirageBonus`/`resistanceResolve` read their windows via
 // `requiresBuffActive`/`activeAfterBuffEnds` instead.
@@ -80,7 +95,7 @@ describe("no buff module a skill or debuff lists in receives may also claim affe
 
 describe("a scoped module a skill or debuff could list in receives isn't orphaned", () => {
   it("every non-affectsAll module is named by at least one skill or debuff, or is a listed exception", () => {
-    const namedIds = receivedBuffIds()
+    const namedIds = new Set([...receivedBuffIds(), ...triggeredBuffIds()])
     const orphans = DEFINED_MODULES.filter(
       (module) =>
         !module.affectsAll &&
