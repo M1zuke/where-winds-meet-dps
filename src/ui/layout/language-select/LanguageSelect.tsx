@@ -6,13 +6,14 @@ import styles from "./LanguageSelect.module.scss"
 export function LanguageSelect() {
   const { locale, setLocale, t } = useI18n()
   return (
-    <Select<Locale>
-      className={styles.languageSelect}
-      compact
-      ariaLabel={t("Language")}
-      value={locale}
-      options={LOCALES.map((option) => ({ value: option, label: LOCALE_LABELS[option] }))}
-      onChange={setLocale}
-    />
+    <span className={styles.languageSelect}>
+      <Select<Locale>
+        compact
+        ariaLabel={t("Language")}
+        value={locale}
+        options={LOCALES.map((option) => ({ value: option, label: LOCALE_LABELS[option] }))}
+        onChange={setLocale}
+      />
+    </span>
   )
 }
