@@ -147,9 +147,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((attunementId) => {
     const option = getAttunement(attunementId)
     return row(
-      option
-        ? t(attunementLabelKey(option, school.id), attunementLabel(option, school.id))
-        : attunementId,
+      option ? t(attunementLabelKey(option, null), attunementLabel(option, null)) : attunementId,
       withSets.classSpecificAttunement[attunementId] ?? 0,
       true,
     )
