@@ -55,7 +55,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
           </p>
           <div className={styles.confirmButtons}>
             <button type="button" className="btn" onClick={() => close(false)}>
-              {t("Cancel")}
+              {t("common.cancel")}
             </button>
             <button
               type="button"
@@ -63,7 +63,7 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
               className="btn primary"
               onClick={() => close(true)}
             >
-              {t("Confirm")}
+              {t("components.confirmDialog.confirm")}
             </button>
           </div>
         </Dialog>

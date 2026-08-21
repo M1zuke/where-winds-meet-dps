@@ -1,0 +1,25 @@
+import type { TalentStat } from "../../../../engine/types"
+
+export const TALENT_STAT_KEYS: Readonly<Record<TalentStat, string>> = {
+  minPhys: "common.minPhys",
+  maxPhys: "common.maxPhys",
+  physPenetration: "talents.stat.physPenetration",
+  minBellstrike: "talents.stat.minBellstrike",
+  maxBellstrike: "talents.stat.maxBellstrike",
+  bellstrikePenetration: "content.statLine.bellstrikePenetration",
+  minStonesplit: "talents.stat.minStonesplit",
+  maxStonesplit: "talents.stat.maxStonesplit",
+  stonesplitPenetration: "content.statLine.stonesplitPenetration",
+  minSilkbind: "talents.stat.minSilkbind",
+  maxSilkbind: "talents.stat.maxSilkbind",
+  silkbindPenetration: "content.statLine.silkbindPenetration",
+  minBamboocut: "talents.stat.minBamboocut",
+  maxBamboocut: "talents.stat.maxBamboocut",
+  bamboocutPenetration: "content.statLine.bamboocutPenetration",
+  precisionRate: "content.statLine.precision",
+  critRate: "talents.stat.critRate",
+  affinityRate: "content.statLine.affinity",
+  critDamage: "talents.stat.critDamage",
+  affinityDamage: "talents.stat.affinityDamage",
+  attributeDamage: "talents.stat.attributeDamage",
+}

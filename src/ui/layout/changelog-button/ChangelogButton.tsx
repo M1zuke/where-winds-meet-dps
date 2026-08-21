@@ -30,17 +30,17 @@ export function ChangelogButton() {
         className={styles.versionControl}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        title={t("View the changelog")}
+        title={t("layout.changelogButton.viewTheChangelog")}
         onClick={handleClick}
       >
         {`v${APP_VERSION}`}
-        {hasUnseenVersion && <span className={styles.marker}>{t("New")}</span>}
+        {hasUnseenVersion && <span className={styles.marker}>{t("common.new")}</span>}
       </button>
       {isOpen && (
         <Suspense
           fallback={
             <div className={styles.loadingOverlay}>
-              <span>{t("Loading…")}</span>
+              <span>{t("layout.changelogButton.loading")}</span>
             </div>
           }
         >

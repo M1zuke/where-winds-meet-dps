@@ -26,23 +26,23 @@ export function GearImportInstructions({ pasted, onPasteChange, parseError, noti
     <>
       <ol className={styles.steps}>
         <li>
-          {t("Drag this to your bookmarks bar:")}{" "}
+          {t("gear.importGearDialog.dragThisToYourBookmarks")}{" "}
           <a
             ref={attachBookmarklet}
             className={styles.bookmarklet}
             onClick={(event) => event.preventDefault()}
           >
-            {t("Import WWM Gear")}
+            {t("gear.importGearDialog.importWwmGear")}
           </a>
         </li>
         <li>
-          {t("Open the")}{" "}
+          {t("gear.importGearDialog.openThe")}{" "}
           <a href={DASHBOARD_URL} target="_blank" rel="noreferrer">
-            {t("official WWM dashboard")}
+            {t("gear.importGearDialog.officialWwmDashboard")}
           </a>{" "}
-          {t("and sign in, then click the bookmark.")}
+          {t("gear.importGearDialog.andSignInThenClick")}
         </li>
-        <li>{t("Paste what it copied below.")}</li>
+        <li>{t("gear.importGearDialog.pasteWhatItCopiedBelow")}</li>
       </ol>
 
       {notice && <div className="hint">{notice}</div>}
@@ -51,7 +51,7 @@ export function GearImportInstructions({ pasted, onPasteChange, parseError, noti
         className={styles.paste}
         value={pasted}
         spellCheck={false}
-        placeholder={t("Paste the copied gear JSON here")}
+        placeholder={t("gear.importGearDialog.pasteTheCopiedGearJson")}
         onChange={(event) => onPasteChange(event.target.value)}
       />
 

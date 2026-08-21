@@ -1,20 +1,11 @@
-import type { GearPiece, GearSlot } from "../../../../engine/types"
+import type { GearPiece } from "../../../../engine/types"
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { rarityKey } from "../../../../i18n/contentKeys"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import styles from "./GearDetailsPanel.module.scss"
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
-}
 
 const RARITY: Record<GearPiece["rarity"], string> = {
   legendary: styles.rarityLegendary,
@@ -50,9 +41,9 @@ export function GearDetailsPanel({
     return (
       <div className="panel">
         <div className="toolbar">
-          <span className="toolbar-label">{t("Gear details")}</span>
+          <span className="toolbar-label">{t("gear.details.gearDetails")}</span>
         </div>
-        <div className="empty-tab">{t("Select a gear piece to view details")}</div>
+        <div className="empty-tab">{t("gear.details.selectAGearPieceTo")}</div>
       </div>
     )
   }
@@ -60,29 +51,29 @@ export function GearDetailsPanel({
   return (
     <div className={`panel ${styles.gearDetails}`}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Gear details")}</span>
+        <span className="toolbar-label">{t("gear.details.gearDetails")}</span>
         <div className="spacer" />
         {isEquipped ? (
           <button type="button" className="btn" onClick={onUnequip}>
-            {t("Unequip")}
+            {t("gear.details.unequip")}
           </button>
         ) : (
           <button type="button" className="btn primary" onClick={onEquip}>
-            {t("Equip")}
+            {t("gear.details.equip")}
           </button>
         )}
         <button type="button" className="btn danger" onClick={onDelete}>
-          {t("Delete")}
+          {t("common.delete")}
         </button>
       </div>
 
       <div className={`${styles.identity} ${RARITY[piece.rarity]}`}>
-        <span className={styles.identitySlot}>{t(SLOT_LABEL_KEYS[piece.slot])}</span>
+        <span className={styles.identitySlot}>{t(GEAR_SLOT_KEYS[piece.slot])}</span>
         <span className={styles.identityMeta}>
-          lv{piece.level} · {t(piece.rarity === "legendary" ? "Legendary" : "Epic")}
-          {piece.relayed ? ` · ${t("Relayed")}` : ""}
+          lv{piece.level} · {t(rarityKey(piece.rarity), piece.rarity)}
+          {piece.relayed ? ` · ${t("gear.details.relayed")}` : ""}
         </span>
-        {isEquipped && <span className={styles.identityBadge}>{t("Equipped")}</span>}
+        {isEquipped && <span className={styles.identityBadge}>{t("gear.details.equipped")}</span>}
       </div>
 
       <GearPieceForm

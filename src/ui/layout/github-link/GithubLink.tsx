@@ -8,14 +8,14 @@ export function GithubLink() {
   const { t } = useI18n()
   return (
     <span className={styles.contributeNote}>
-      <span className={styles.noteText}>{t("Want to contribute? Click here →")}</span>
+      <span className={styles.noteText}>{t("layout.githubLink.wantToContributeClickHere")}</span>
       <a
         className={styles.githubLink}
         href={GITHUB_REPO_URL}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={t("Contribute on GitHub")}
-        title={t("Open the GitHub repository")}
+        aria-label={t("layout.githubLink.contributeOnGithub")}
+        title={t("layout.githubLink.openTheGithubRepository")}
       >
         <GithubIcon />
       </a>

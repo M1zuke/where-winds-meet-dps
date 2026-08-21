@@ -43,7 +43,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
   return (
     <Dialog labelledBy={titleId} onClose={onCancel} initialFocusRef={equipButtonRef}>
       <DialogHeader>
-        <h2 id={titleId}>{t("New gear piece")}</h2>
+        <h2 id={titleId}>{t("gear.newGearPieceDialog.newGearPiece")}</h2>
       </DialogHeader>
       <DialogBody>
         <GearPieceForm
@@ -57,10 +57,10 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
       </DialogBody>
       <DialogFooter>
         <button type="button" className="btn" onClick={onCancel}>
-          {t("Cancel")}
+          {t("common.cancel")}
         </button>
         <button type="button" className="btn" onClick={() => onSave(draft, "store")}>
-          {t("Save & Store")}
+          {t("gear.newGearPieceDialog.saveStore")}
         </button>
         <button
           type="button"
@@ -68,7 +68,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
           className="btn primary"
           onClick={() => onSave(draft, "equip")}
         >
-          {t("Save & Equip")}
+          {t("gear.newGearPieceDialog.saveEquip")}
         </button>
       </DialogFooter>
     </Dialog>

@@ -39,45 +39,54 @@ export function SimulationSummaryBar({
   const { t } = useI18n()
   const dps = (value: number | undefined) => (summary ? decimalNumber(value ?? 0, 2) : PLACEHOLDER)
   const damage = (value: number | undefined) =>
-    summary ? `${fullNumber(value ?? 0)} ${t("dmg")}` : PLACEHOLDER
+    summary ? `${fullNumber(value ?? 0)} ${t("simulation.summaryBar.dmg")}` : PLACEHOLDER
   const hits = (value: number | undefined) => (summary ? fixed(value ?? 0, 2) : PLACEHOLDER)
 
   return (
     <div className={`panel ${styles.summaryPanel}${isStale ? ` ${styles.stale}` : ""}`}>
       <div className="panel-head">
-        <h2>{t("Simulation Summary")}</h2>
+        <h2>{t("simulation.summaryBar.simulationSummary")}</h2>
         <span className="panel-head-meta">
           <span className="panel-head-meta-value">{contextLabel}</span>
         </span>
       </div>
       <div className={styles.statStrip} style={{ opacity: isPending ? 0.6 : 1 }}>
         <Stat
-          label={t("Avg DPS")}
+          label={t("simulation.summaryBar.avgDps")}
           value={dps(summary?.meanDps)}
           sub={damage(summary?.meanTotalDamage)}
           lead
         />
         <Stat
-          label={t("Best Parse")}
+          label={t("simulation.summaryBar.bestParse")}
           value={dps(summary?.bestDps)}
           sub={damage(summary?.bestTotalDamage)}
         />
         <Stat
-          label={t("Worst Parse")}
+          label={t("simulation.summaryBar.worstParse")}
           value={dps(summary?.worstDps)}
           sub={damage(summary?.worstTotalDamage)}
         />
         <Stat
-          label={t("DPS Range")}
+          label={t("simulation.summaryBar.dpsRange")}
           value={summary ? `${fixed(summary.rangeFraction * 100, 1)} %` : PLACEHOLDER}
-          sub={summary ? `${t("best over worst")}` : PLACEHOLDER}
+          sub={summary ? `${t("simulation.summaryBar.bestOverWorst")}` : PLACEHOLDER}
         />
         <div className={styles.groupStart}>
-          <Stat label={t("Abrasion Hits")} value={hits(summary?.meanAbrasionHits)} />
+          <Stat
+            label={t("simulation.summaryBar.abrasionHits")}
+            value={hits(summary?.meanAbrasionHits)}
+          />
         </div>
-        <Stat label={t("Normal Hits")} value={hits(summary?.meanNormalHits)} />
-        <Stat label={t("Critical Hits")} value={hits(summary?.meanCriticalHits)} />
-        <Stat label={t("Affinity Hits")} value={hits(summary?.meanAffinityHits)} />
+        <Stat label={t("simulation.summaryBar.normalHits")} value={hits(summary?.meanNormalHits)} />
+        <Stat
+          label={t("simulation.summaryBar.criticalHits")}
+          value={hits(summary?.meanCriticalHits)}
+        />
+        <Stat
+          label={t("simulation.summaryBar.affinityHits")}
+          value={hits(summary?.meanAffinityHits)}
+        />
       </div>
     </div>
   )

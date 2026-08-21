@@ -4,7 +4,7 @@ import { computeRanking, getWordSpecs } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
-import { attunementsFor } from "./attunements"
+import { attunementsFor, attunementLabelKey } from "./attunements"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withCustomContent } from "./customContent"
 import { withDerivedStats } from "./derivedInputs"
@@ -255,6 +255,7 @@ export interface ReattunementWorkerRequest {
 export interface ReattunementOption {
   optionId: string
   label: string
+  labelKey: string
   min: number
   max: number
   deltaDpsAtMax: number
@@ -325,6 +326,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     return {
       optionId: opt.id,
       label: opt.label,
+      labelKey: attunementLabelKey(opt, inputs.classId),
       min: opt.min,
       max: opt.max,
       deltaDpsAtMax: dpsAtMax - equipDps,

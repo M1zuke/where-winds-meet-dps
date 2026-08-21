@@ -5,15 +5,23 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { getAttunement } from "../../../../engine/attunements"
 import { useI18n } from "../../../../i18n/i18nContext"
+import {
+  attunementKey,
+  innerWayKey,
+  innerWayTierKey,
+  rarityKey,
+  statLineKey,
+} from "../../../../i18n/contentKeys"
 import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import previewStyles from "../shared/gearPreview.module.scss"
-import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import { unsupportedInnerWayNames } from "./importedInnerWays"
 import {
   innerWaysAbsentFromCapture,
   targetKey,
   targetLabel,
+  targetLabelKey,
   type AffixTarget,
   type ImportedAffix,
   type ImportedInnerWay,
@@ -23,10 +31,10 @@ import { effectiveIdentity, type IdentityOverrides } from "./importedGearPieces"
 import type { GearImportDraft } from "./useGearImportDraft"
 import styles from "./gearImport.module.scss"
 
-const LEVEL_OPTIONS: ComboboxOption[] = [
-  { value: "86", label: "lv86" },
-  { value: "91", label: "lv91" },
-  { value: "96", label: "lv96" },
+const LEVEL_OPTIONS: { value: string; labelKey: string }[] = [
+  { value: "86", labelKey: "gear.level.86" },
+  { value: "91", labelKey: "gear.level.91" },
+  { value: "96", labelKey: "gear.level.96" },
 ]
 
 // An unmapped line's units are unknown, and two decimals alone would render both
@@ -85,15 +93,17 @@ export function GearImportPreview({
     <>
       <div className={styles.summary}>
         <span>
-          {result.roleName ?? t("Unnamed character")}
-          {result.characterLevel !== null ? ` · ${t("Level")} ${result.characterLevel}` : ""}
+          {result.roleName ?? t("gear.importGearDialog.unnamedCharacter")}
+          {result.characterLevel !== null
+            ? ` · ${t("gear.importGearDialog.level")} ${result.characterLevel}`
+            : ""}
         </span>
         <span className="hint">
-          {`${summary.mappedPieceCount}/${summary.pieceCount} ${t("pieces matched")} · ${summary.resolvedAffixCount} ${t("stats read")}${summary.unmappedAffixCount ? ` · ${summary.unmappedAffixCount} ${t("unmapped")}` : ""}${summary.clampedCount ? ` · ${summary.clampedCount} ${t("clamped")}` : ""}`}
+          {`${summary.mappedPieceCount}/${summary.pieceCount} ${t("gear.importGearDialog.piecesMatched")} · ${summary.resolvedAffixCount} ${t("gear.importGearDialog.statsRead")}${summary.unmappedAffixCount ? ` · ${summary.unmappedAffixCount} ${t("gear.importGearDialog.unmapped")}` : ""}${summary.clampedCount ? ` · ${summary.clampedCount} ${t("gear.importGearDialog.clamped")}` : ""}`}
         </span>
         {onClearPaste && (
           <button type="button" className="btn" onClick={onClearPaste}>
-            {t("Paste a different capture")}
+            {t("gear.importGearDialog.pasteADifferentCapture")}
           </button>
         )}
       </div>
@@ -101,9 +111,9 @@ export function GearImportPreview({
       {innerWays.length > 0 && (
         <>
           <div className={styles.toolRow}>
-            <span className="section-label">{t("Inner ways")}</span>
+            <span className="section-label">{t("gear.importGearDialog.innerWays")}</span>
             <span className="hint">
-              {`${summary.resolvedInnerWayCount}/${summary.innerWayCount} ${t("matched")}`}
+              {`${summary.resolvedInnerWayCount}/${summary.innerWayCount} ${t("gear.importGearDialog.matched")}`}
             </span>
           </div>
           <div className={styles.innerWayGrid}>
@@ -116,65 +126,52 @@ export function GearImportPreview({
 
       {unsupportedInnerWays.length > 0 && (
         <div className="warnings">
-          ⚠ {t("This app does not model")} {unsupportedInnerWays.map(t).join(", ")} —{" "}
-          {t(
-            "they are left out of the import and out of the calculation, so your real damage will differ.",
-          )}
+          ⚠ {t("gear.importGearDialog.thisAppDoesNotModel")} {unsupportedInnerWays.join(", ")} —{" "}
+          {t("gear.importGearDialog.theyAreLeftHint")}
         </div>
       )}
 
       {innerWaysAbsentFromCapture(result) && (
-        <div className="warnings">
-          ⚠{" "}
-          {t(
-            "This capture carries no inner ways — re-drag the bookmarklet from this dialog and run it again.",
-          )}
-        </div>
+        <div className="warnings">⚠ {t("gear.importGearDialog.thisCaptureCarriesHint")}</div>
       )}
 
       {warnAboutDisplacedSlots && emptiedMindMethods > 0 && (
         <div className="warnings">
-          ⚠ {emptiedMindMethods}{" "}
-          {t("of your inner-way slots aren't in this capture and will be emptied.")}
+          ⚠ {emptiedMindMethods} {t("gear.importGearDialog.ofYourInnerHint")}
         </div>
       )}
 
       {summary.notInThisBuildCount > 0 && (
         <div className="warnings">
-          ⚠ {summary.notInThisBuildCount}{" "}
-          {t(
-            "stat lines are known but belong to another class, so they cannot be imported. Attunements are class-specific — each names the weapon art it boosts, so only the classes that wield that art can roll it. Penetration and resistance attunements are weapon-side only, the class-specific ones armour-side.",
-          )}
+          ⚠ {summary.notInThisBuildCount} {t("gear.importGearDialog.statLinesAreHint")}
         </div>
       )}
 
       {summary.unmappedAffixCount - summary.notInThisBuildCount > 0 && (
         <div className="warnings">
           ⚠ {summary.unmappedAffixCount - summary.notInThisBuildCount}{" "}
-          {t(
-            "stat lines have no mapping yet. Pick the stat each one is — a ✓ marks the ones whose max roll fits, and every choice is remembered for next time.",
-          )}{" "}
+          {t("gear.importGearDialog.statLinesHaveHint")}{" "}
           <button type="button" className="btn" onClick={copyDiagnostics}>
-            {t("Copy diagnostics")}
+            {t("gear.importGearDialog.copyDiagnostics")}
           </button>
         </div>
       )}
 
       <div className={styles.toolRow}>
-        <span className="section-label">{t("Stat-line mappings")}</span>
+        <span className="section-label">{t("gear.importGearDialog.statLineMappings")}</span>
         <button
           type="button"
           className="btn"
           disabled={!Object.keys(choices).length}
           onClick={exportMappings}
         >
-          {t("Export as JSON")}
+          {t("gear.importGearDialog.exportAsJson")}
         </button>
         <button type="button" className="btn" onClick={() => mappingFileRef.current?.click()}>
-          {t("Import JSON")}
+          {t("gear.importGearDialog.importJson")}
         </button>
         <span className="hint">
-          {Object.keys(choices).length} {t("mapped by you")}
+          {Object.keys(choices).length} {t("gear.importGearDialog.mappedByYou")}
         </span>
         <input
           ref={mappingFileRef}
@@ -188,7 +185,7 @@ export function GearImportPreview({
       {copyNotice && <div className="hint">{copyNotice}</div>}
 
       {!shown.length && (
-        <div className="warnings">⚠ {t("This capture holds no gear this app can import.")}</div>
+        <div className="warnings">⚠ {t("gear.importGearDialog.thisCaptureHoldsNoGear")}</div>
       )}
 
       <div className={previewStyles.pieceList}>
@@ -206,30 +203,28 @@ export function GearImportPreview({
 
       {assumedIdentitySlots.length > 0 && (
         <div className="warnings">
-          ⚠{" "}
-          {t(
-            "These pieces report base stats this app has no tier for, so their level and rarity are a guess — set them yourself",
-          )}
-          : {assumedIdentitySlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}.{" "}
-          {t("On armor this only changes the HP and defense shown, never the DPS.")}
+          ⚠ {t("gear.importGearDialog.thesePiecesReportHint")}:{" "}
+          {assumedIdentitySlots.map((slot) => t(GEAR_SLOT_KEYS[slot])).join(", ")}.{" "}
+          {t("gear.importGearDialog.onArmorThisHint")}
         </div>
       )}
 
       {warnAboutDisplacedSlots && emptiedSlots.length > 0 && (
         <div className="warnings">
-          ⚠ {emptiedSlots.length} {t("slots aren't in this payload and will be emptied")}:{" "}
-          {emptiedSlots.map((slot) => t(GEAR_SLOT_LABELS[slot])).join(", ")}
+          ⚠ {emptiedSlots.length} {t("gear.importGearDialog.slotsArenTInThis")}:{" "}
+          {emptiedSlots.map((slot) => t(GEAR_SLOT_KEYS[slot])).join(", ")}
         </div>
       )}
     </>
   )
 }
 
-function identityHint(piece: ImportedPiece): string {
-  if (piece.identity?.level && piece.identity.rarity) return "read from this piece's base stats"
-  if (piece.identity?.rarity) return "rarity read from base stats; level assumed"
-  if (piece.observedBaseStats) return "base stats match no known tier — assumed"
-  return "no base stats in the payload — assumed"
+function identityHintKey(piece: ImportedPiece): string {
+  if (piece.identity?.level && piece.identity.rarity)
+    return "gear.importGearDialog.identityFromBaseStats"
+  if (piece.identity?.rarity) return "gear.importGearDialog.identityRarityFromBaseStats"
+  if (piece.observedBaseStats) return "gear.importGearDialog.identityFromUnknownTier"
+  return "gear.importGearDialog.identityAssumed"
 }
 
 function PiecePreview({
@@ -247,8 +242,8 @@ function PiecePreview({
 }) {
   const { t } = useI18n()
   const rarityOptions: ComboboxOption[] = [
-    { value: "legendary", label: t("Legendary") },
-    { value: "epic", label: t("Epic") },
+    { value: "legendary", label: t(rarityKey("legendary")) },
+    { value: "epic", label: t(rarityKey("epic")) },
   ]
 
   if (piece.slot.kind !== "mapped") {
@@ -256,9 +251,9 @@ function PiecePreview({
       <div className={`${previewStyles.piece} ${previewStyles.skipped}`}>
         <div className={previewStyles.pieceHead}>
           <span className={previewStyles.pieceSlot}>
-            {t("Game slot")} {piece.gameSlotId}
+            {t("gear.importGearDialog.gameSlot")} {piece.gameSlotId}
           </span>
-          <span className="hint">{t("unknown slot — skipped")}</span>
+          <span className="hint">{t("gear.importGearDialog.unknownSlotSkipped")}</span>
         </div>
       </div>
     )
@@ -271,11 +266,11 @@ function PiecePreview({
   return (
     <div className={previewStyles.piece}>
       <div className={previewStyles.pieceHead}>
-        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
+        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_KEYS[slot])}</span>
         <span className="hint">
           {isWeaponSlot(slot)
-            ? `${t("Min Phys")} ${base.minPhys} · ${t("Max Phys")} ${base.maxPhys}`
-            : `${t("HP")} ${base.hp} · ${t("Phys Defense")} ${base.physDef}`}
+            ? `${t("common.minPhys")} ${base.minPhys} · ${t("common.maxPhys")} ${base.maxPhys}`
+            : `${t("content.statLine.hp")} ${base.hp} · ${t("content.statLine.physDef")} ${base.physDef}`}
         </span>
       </div>
 
@@ -283,7 +278,7 @@ function PiecePreview({
         <Combobox
           className={previewStyles.identityPicker}
           value={String(identity.level)}
-          options={LEVEL_OPTIONS}
+          options={LEVEL_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }))}
           onChange={(value) => onOverride(piece.gameSlotId, { level: Number(value) as GearLevel })}
         />
         <Combobox
@@ -292,7 +287,7 @@ function PiecePreview({
           options={rarityOptions}
           onChange={(value) => onOverride(piece.gameSlotId, { rarity: value as GearRarity })}
         />
-        <span className="hint">{t(identityHint(piece))}</span>
+        <span className="hint">{t(identityHintKey(piece))}</span>
       </div>
 
       <div className={previewStyles.affixList}>
@@ -306,7 +301,7 @@ function PiecePreview({
 
       {piece.overflowAffixes.length > 0 && (
         <div className={previewStyles.overflow}>
-          <span className="hint">{t("Beyond the 5 tunement rows — not imported")}</span>
+          <span className="hint">{t("gear.importGearDialog.beyondThe5TunementRows")}</span>
           {piece.overflowAffixes.map((affix, index) => (
             <AffixRow key={index} affix={affix} onChooseTarget={onChooseTarget} />
           ))}
@@ -316,23 +311,41 @@ function PiecePreview({
   )
 }
 
-function statLineName(mappedTo: string, t: (key: string) => string): string {
+function statLineName(mappedTo: string, t: (key: string, fallback?: string) => string): string {
   const separator = mappedTo.indexOf(":")
   const name = mappedTo.slice(separator + 1)
-  if (mappedTo.slice(0, separator) !== "attunement") return t(statLineLabel(name))
-  return t(getAttunement(name)?.label ?? name)
+  if (mappedTo.slice(0, separator) !== "attunement")
+    return t(statLineKey(name), statLineLabel(name))
+  const attunement = getAttunement(name)
+  return attunement ? t(attunementKey(attunement.id), attunement.label) : name
 }
 
-function innerWayNote(innerWay: ImportedInnerWay): string {
+function innerWayNoteKey(innerWay: ImportedInnerWay): string {
   switch (innerWay.resolution.kind) {
     case "resolved":
-      return innerWay.resolution.tierAssumed ? "tier assumed" : ""
+      return innerWay.resolution.tierAssumed ? "gear.importGearDialog.tierAssumed" : ""
     case "notForThisClass":
-      return "this class cannot slot it — left out"
+      return "gear.importGearDialog.innerWayNotForThisClass"
     case "unsupported":
-      return "not modelled yet — left out"
+      return "gear.importGearDialog.innerWayUnsupported"
     case "unmapped":
-      return "no mapping yet — left out"
+      return "gear.importGearDialog.innerWayUnmapped"
+  }
+}
+
+function innerWayLabel(
+  innerWay: ImportedInnerWay,
+  t: (key: string, fallback?: string) => string,
+): string {
+  const resolution = innerWay.resolution
+  switch (resolution.kind) {
+    case "resolved":
+    case "notForThisClass":
+      return t(innerWayKey(resolution.innerWayId), resolution.name)
+    case "unsupported":
+      return resolution.name
+    case "unmapped":
+      return `#${innerWay.passiveId}`
   }
 }
 
@@ -340,7 +353,7 @@ function InnerWayCard({ innerWay }: { innerWay: ImportedInnerWay }) {
   const { t } = useI18n()
   const resolution = innerWay.resolution
   const tier = resolution.kind === "resolved" ? resolution.tier : innerWay.reportedTier
-  const note = innerWayNote(innerWay)
+  const tierText = tier === null ? null : `tier ${tier}`
 
   return (
     <div
@@ -351,12 +364,10 @@ function InnerWayCard({ innerWay }: { innerWay: ImportedInnerWay }) {
       }
     >
       <span className={styles.innerWayTier}>
-        {tier !== null ? t(`tier ${tier}`) : t("no tier")}
+        {tierText ? t(innerWayTierKey(tierText), tierText) : t("gear.importGearDialog.noTier")}
       </span>
-      <span className={styles.innerWayName}>
-        {resolution.kind === "unmapped" ? `#${innerWay.passiveId}` : t(resolution.name)}
-      </span>
-      {note && <span className="hint">{t(note)}</span>}
+      <span className={styles.innerWayName}>{innerWayLabel(innerWay, t)}</span>
+      {innerWayNoteKey(innerWay) && <span className="hint">{t(innerWayNoteKey(innerWay))}</span>}
     </div>
   )
 }
@@ -364,15 +375,15 @@ function InnerWayCard({ innerWay }: { innerWay: ImportedInnerWay }) {
 function targetOptions(
   suggestions: readonly AffixTarget[],
   choosable: readonly AffixTarget[],
-  t: (key: string) => string,
+  t: (key: string, fallback?: string) => string,
 ): ComboboxOption[] {
   const suggested = new Set(suggestions.map(targetKey))
   const rest = choosable.filter((target) => !suggested.has(targetKey(target)))
   return [...suggestions, ...rest].map((target) => ({
     value: targetKey(target),
     label: suggested.has(targetKey(target))
-      ? `${t(targetLabel(target))} ✓`
-      : t(targetLabel(target)),
+      ? `${t(targetLabelKey(target), targetLabel(target))} ✓`
+      : t(targetLabelKey(target), targetLabel(target)),
   }))
 }
 
@@ -399,17 +410,17 @@ function AffixRow({
           options={options}
           placeholder={
             known ??
-            `#${affix.affixId}${affix.derivedMax !== null ? ` · ${t("max")} ${fmtUnmapped(affix.derivedMax)}` : ""}`
+            `#${affix.affixId}${affix.derivedMax !== null ? ` · ${t("common.max")} ${fmtUnmapped(affix.derivedMax)}` : ""}`
           }
           onChange={(value) => onChooseTarget(affix.affixId, value)}
         />
         <span className={previewStyles.affixValue}>{fmtUnmapped(affix.rawValue)}</span>
         <span className="hint">
           {known
-            ? t("not on this class")
+            ? t("gear.importGearDialog.notOnThisClass")
             : isAttunement
-              ? t("attunement — pick one")
-              : t("pick one")}
+              ? t("gear.importGearDialog.attunementPickOne")
+              : t("gear.importGearDialog.pickOne")}
         </span>
       </div>
     )
@@ -429,7 +440,7 @@ function AffixRow({
       <span className={previewStyles.affixValue}>{fmt(resolution.value, isPercent)}</span>
       {resolution.clampedFrom !== null ? (
         <span className={`${previewStyles.affixNote} is-negative`}>
-          {`${fmt(resolution.clampedFrom, isPercent)} → ${t("in range")}`}
+          {`${fmt(resolution.clampedFrom, isPercent)} → ${t("gear.importGearDialog.inRange")}`}
         </span>
       ) : (
         <span />

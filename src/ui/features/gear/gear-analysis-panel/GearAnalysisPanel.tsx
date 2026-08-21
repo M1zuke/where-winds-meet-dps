@@ -2,7 +2,7 @@ import type { GearSlot, Inputs } from "../../../../engine/types"
 import type { GearSlotAnalysisRow } from "../../../../engine/gearAnalysis"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useGearAnalysis } from "../../../hooks/useGearAnalysis"
-import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import styles from "./GearAnalysisPanel.module.scss"
 
@@ -13,15 +13,11 @@ interface Props {
 
 type GainKey = "retuneGain" | "reattuneGain" | "relayGain"
 
-const COLUMN_HINTS: Record<GainKey | "unequipLoss", string> = {
-  retuneGain:
-    "DPS this slot gains from its best legal tunement reroll. Rank 1 is the slot worth retuning first.",
-  reattuneGain:
-    "DPS this slot gains from its best attunement rolled to its maximum. Rank 1 is the slot worth re-attuning first.",
-  relayGain:
-    "DPS this slot gains once every tunement on the piece is relayed to its cap — 94 % of the maximum roll.",
-  unequipLoss:
-    "DPS the build loses if this slot is emptied, and that loss as a share of total DPS.",
+const COLUMN_HINT_KEYS: Record<GainKey | "unequipLoss", string> = {
+  retuneGain: "gear.analysis.retuneGainHint",
+  reattuneGain: "gear.analysis.reattuneGainHint",
+  relayGain: "gear.analysis.relayGainHint",
+  unequipLoss: "gear.analysis.unequipLossHint",
 }
 
 const GAIN_EPSILON = 0.5
@@ -77,12 +73,16 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
   const { rows, isPending } = useGearAnalysis(engineInputs, currentDps)
 
   if (rows.length === 0) {
-    return <div className="empty-tab">{isPending ? t("Computing…") : t("No analysis yet")}</div>
+    return (
+      <div className="empty-tab">
+        {isPending ? t("gear.analysis.computing") : t("gear.analysis.noAnalysisYet")}
+      </div>
+    )
   }
 
   const equippedRows = rows.filter((row) => row.pieceId !== null)
   if (equippedRows.length === 0) {
-    return <div className="empty-tab">{t("Equip gear to see where an upgrade pays off")}</div>
+    return <div className="empty-tab">{t("gear.analysis.equipGearToSeeWhere")}</div>
   }
 
   const retuneRanks = ranksBySlot(equippedRows, "retuneGain")
@@ -96,29 +96,29 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
       <table className={`ranking-table ${styles.analysisTable}`}>
         <thead>
           <tr>
-            <th>{t("Slot")}</th>
+            <th>{t("gear.analysis.slot")}</th>
             <th className={styles.rankHead}>
-              {t("Retune")}
-              <HelpHint text={t(COLUMN_HINTS.retuneGain)} />
+              {t("gear.analysis.retune")}
+              <HelpHint text={t(COLUMN_HINT_KEYS.retuneGain)} />
             </th>
             <th className={styles.rankHead}>
-              {t("Re-Attune")}
-              <HelpHint text={t(COLUMN_HINTS.reattuneGain)} />
+              {t("gear.analysis.reAttune")}
+              <HelpHint text={t(COLUMN_HINT_KEYS.reattuneGain)} />
             </th>
             <th className={styles.rankHead}>
-              {t("Relay")}
-              <HelpHint text={t(COLUMN_HINTS.relayGain)} />
+              {t("gear.analysis.relay")}
+              <HelpHint text={t(COLUMN_HINT_KEYS.relayGain)} />
             </th>
             <th className={styles.lossHead}>
-              {t("Tuned Stats")}
-              <HelpHint text={t(COLUMN_HINTS.unequipLoss)} />
+              {t("gear.analysis.tunedStats")}
+              <HelpHint text={t(COLUMN_HINT_KEYS.unequipLoss)} />
             </th>
           </tr>
         </thead>
         <tbody>
           {sorted.map((row) => (
             <tr key={row.slot}>
-              <td>{t(GEAR_SLOT_LABELS[row.slot])}</td>
+              <td>{t(GEAR_SLOT_KEYS[row.slot])}</td>
               <RankCell gain={row.retuneGain} rank={retuneRanks.get(row.slot)} />
               <RankCell gain={row.reattuneGain} rank={reattuneRanks.get(row.slot)} />
               <RankCell gain={row.relayGain} rank={relayRanks.get(row.slot)} />
@@ -131,7 +131,7 @@ export function GearAnalysisPanel({ engineInputs, currentDps }: Props) {
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4}>{t("Total tuned-stat DPS contribution")}</td>
+            <td colSpan={4}>{t("gear.analysis.totalTunedStatDpsContribution")}</td>
             <td className={`${styles.loss} ${lossSignClass(totalLoss)}`}>
               {fmtLoss(totalLoss)}
               <span className={styles.share}>({fmtShare(totalLoss, currentDps)})</span>

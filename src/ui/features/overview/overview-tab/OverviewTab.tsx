@@ -33,7 +33,7 @@ export function OverviewTab({
     <div className={styles.overviewGrid}>
       <div className={styles.slots}>
         <div className="panel">
-          <h2>{t("Class & Breakthrough")}</h2>
+          <h2>{t("overview.classBreakthrough")}</h2>
           <ClassSelect
             value={inputs.classId}
             onChange={(classId) => onChange(syncClassPermanent(inputs, classId))}
@@ -45,7 +45,7 @@ export function OverviewTab({
         </div>
         <div className="panel">
           <div className="panel-head">
-            <h2>{t("Inner Ways")}</h2>
+            <h2>{t("overview.innerWays")}</h2>
             <span className="panel-head-meta">
               <span className="panel-head-meta-value">{slottedInnerWays}</span> /{" "}
               {inputs.mindMethods.length}
@@ -54,14 +54,14 @@ export function OverviewTab({
           <MindMethodsPanel inputs={inputs} onChange={onChange} />
         </div>
         <div className="panel">
-          <h2>{t("Encounter Settings")}</h2>
+          <h2>{t("overview.encounterSettings")}</h2>
           <EncounterSettingsPanel inputs={inputs} onChange={onChange} />
         </div>
       </div>
 
       <div className={styles.sets}>
         <div className="panel">
-          <h2>{t("Set Bonuses")}</h2>
+          <h2>{t("overview.setBonuses")}</h2>
           <SetBonusesPanel
             inputs={inputs}
             onChange={onChange}
@@ -76,9 +76,9 @@ export function OverviewTab({
       <div className={styles.stats}>
         <div className="panel">
           <div className="panel-head">
-            <h2>{t("Panel Stats")}</h2>
+            <h2>{t("common.panelStats")}</h2>
             <span className="panel-head-meta">
-              {t("Resistance")}:{" "}
+              {t("common.resistance")}:{" "}
               <span className="panel-head-meta-value">{resistanceForInputs(inputs)}%</span>
             </span>
           </div>
@@ -89,7 +89,7 @@ export function OverviewTab({
       <div className={styles.lift}>
         <div className="panel">
           <div className="panel-head">
-            <h2>{t("Gear-Stat Lift")}</h2>
+            <h2>{t("overview.gearStatLift")}</h2>
             <span className="panel-head-meta">{rankingRows.length}</span>
           </div>
           <div style={{ opacity: rankingPending ? 0.6 : 1 }}>

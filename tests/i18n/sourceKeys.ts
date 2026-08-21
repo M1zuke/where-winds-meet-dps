@@ -10,14 +10,20 @@ const DISPLAY_PROPERTIES = new Set([
   "displayName",
   "hint",
   "label",
+  "labelKey",
   "meta",
   "name",
+  "nameKey",
   "note",
+  "noteKey",
   "placeholder",
   "subNote",
+  "subNoteKey",
   "text",
+  "textKey",
   "title",
   "weapon",
+  "weaponKey",
 ])
 
 type Seed = { kind: "binding" | "function"; name: string }
@@ -173,13 +179,6 @@ function readModule(path: string): Module {
       node.arguments.length > 0
     ) {
       module.seeds.push(...seedsOf(node.arguments[0], module.directKeys))
-    }
-    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(sourceFile) === "T") {
-      for (const child of node.children) {
-        if (ts.isJsxText(child) && child.text.trim()) module.directKeys.push(child.text.trim())
-        if (ts.isJsxExpression(child) && child.expression && isStringNode(child.expression))
-          module.directKeys.push(child.expression.text)
-      }
     }
     if (
       isUiFile &&

@@ -98,7 +98,7 @@ export function useGearImportDraft(inputs: Inputs) {
     try {
       const loaded = parseAffixChoicesFile(await file.text())
       commitChoices({ ...choices, ...loaded })
-      setCopyNotice(`${Object.keys(loaded).length} ${t("mappings loaded.")}`)
+      setCopyNotice(`${Object.keys(loaded).length} ${t("gear.importGearDialog.mappingsLoaded")}`)
     } catch (failure) {
       setCopyNotice(failure instanceof Error ? failure.message : String(failure))
     }
@@ -108,9 +108,9 @@ export function useGearImportDraft(inputs: Inputs) {
     if (!result) return
     try {
       await navigator.clipboard.writeText(buildImportDiagnostics(result))
-      setCopyNotice(t("Diagnostics copied — they contain no account details."))
+      setCopyNotice(t("gear.importGearDialog.diagnosticsCopiedTheyContainNo"))
     } catch {
-      setCopyNotice(t("Copying failed — select the text and copy it manually."))
+      setCopyNotice(t("gear.importGearDialog.copyingFailedSelectTheText"))
     }
   }
 

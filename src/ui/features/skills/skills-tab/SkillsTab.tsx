@@ -33,6 +33,13 @@ import {
   importCustomSkill,
 } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
+import {
+  attributeAttackKey,
+  classKey,
+  skillKey,
+  skillTypeKey,
+  weaponKey,
+} from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
@@ -86,11 +93,15 @@ const ATTUNEMENTS = [
 
 type HitNumericField = "physMultiplier" | "physFixed" | "attributeMultiplier" | "attributeFixed"
 
-const HIT_NUMERIC_COLUMNS: { field: HitNumericField; isPercent: boolean; label: string }[] = [
-  { field: "physMultiplier", isPercent: true, label: "Phys %" },
-  { field: "physFixed", isPercent: false, label: "Flat Phys" },
-  { field: "attributeMultiplier", isPercent: true, label: "Attr %" },
-  { field: "attributeFixed", isPercent: false, label: "Flat Attr" },
+const HIT_NUMERIC_COLUMNS: { field: HitNumericField; isPercent: boolean; labelKey: string }[] = [
+  { field: "physMultiplier", isPercent: true, labelKey: "skills.hitColumn.physMultiplier" },
+  { field: "physFixed", isPercent: false, labelKey: "skills.hitColumn.physFixed" },
+  {
+    field: "attributeMultiplier",
+    isPercent: true,
+    labelKey: "skills.hitColumn.attributeMultiplier",
+  },
+  { field: "attributeFixed", isPercent: false, labelKey: "skills.hitColumn.attributeFixed" },
 ]
 
 interface Props {
@@ -123,12 +134,15 @@ function skillsEqual(a: Skill, b: Skill): boolean {
   return stableStringify(a) === stableStringify(b)
 }
 
-function effectsSummary(effects: BuffStatEffect[], t: (text: string) => string): string {
+function effectsSummary(
+  effects: BuffStatEffect[],
+  t: (key: string, fallback?: string) => string,
+): string {
   return effects
     .filter((effect) => effect.amount !== 0)
     .map((effect) => {
       const def = STAT_DEF_BY_KEY[effect.statKey]
-      const label = def ? t(def.label) : effect.statKey
+      const label = def ? t(def.labelKey, def.label) : effect.statKey
       const sign = effect.amount >= 0 ? "+" : ""
       const value =
         def?.unit === "fraction"
@@ -204,18 +218,22 @@ function buffAddOptions(
 
 const INNER_WAY_DOT_TAG = "source:innerWayDot"
 
-function typeBadge(skill: Skill, t: (text: string) => string): string {
-  if (skill.tags?.includes(INNER_WAY_DOT_TAG)) return t("Inner Way - DoT")
-  if (skill.skillType === "mystic") return t("Mystic Skill")
-  if (skill.attributeAttack) return t(skill.attributeAttack)
-  if (skill.skillType) return t(skill.skillType)
-  return `${skill.hits.length} ${t("hits")}`
+function typeBadge(skill: Skill, t: (key: string, fallback?: string) => string): string {
+  if (skill.tags?.includes(INNER_WAY_DOT_TAG)) return t("skills.innerWayDot")
+  if (skill.skillType === "mystic") return t("skills.mysticSkill")
+  if (skill.attributeAttack)
+    return t(attributeAttackKey(skill.attributeAttack), skill.attributeAttack)
+  if (skill.skillType) return t(skillTypeKey(skill.skillType), skill.skillType)
+  return `${skill.hits.length} ${t("common.hits")}`
 }
 
-function typePillText(skill: Skill, t: (text: string) => string): string {
-  return [skill.skillType, skill.weaponOrAttribute, skill.attributeAttack]
+function typePillText(skill: Skill, t: (key: string, fallback?: string) => string): string {
+  return [
+    skill.skillType && t(skillTypeKey(skill.skillType), skill.skillType),
+    skill.weaponOrAttribute && t(weaponKey(skill.weaponOrAttribute), skill.weaponOrAttribute),
+    skill.attributeAttack && t(attributeAttackKey(skill.attributeAttack), skill.attributeAttack),
+  ]
     .filter(Boolean)
-    .map((value) => t(value))
     .join(" · ")
 }
 
@@ -276,8 +294,10 @@ export function SkillsTab({
   const filteredBuiltins = useMemo(
     () =>
       builtinSkills
-        .filter((skill) => t(skill.name).toLowerCase().includes(searchLower))
-        .sort((skillA, skillB) => t(skillA.name).localeCompare(t(skillB.name))),
+        .filter((skill) => t(skillKey(skill), skill.name).toLowerCase().includes(searchLower))
+        .sort((skillA, skillB) =>
+          t(skillKey(skillA), skillA.name).localeCompare(t(skillKey(skillB), skillB.name)),
+        ),
     [builtinSkills, searchLower, t],
   )
 
@@ -426,7 +446,7 @@ export function SkillsTab({
     if (!draft) return
     const name = draft.name.trim()
     if (!name) {
-      await confirm(t("Please enter a skill name first"))
+      await confirm(t("skills.pleaseEnterASkillName"))
       return
     }
     const normalized: Skill = { ...draft, name }
@@ -446,7 +466,7 @@ export function SkillsTab({
       setSelectedKey(null)
       return
     }
-    if (!(await confirm(t("Delete this skill?")))) return
+    if (!(await confirm(t("skills.deleteThisSkill")))) return
     const list = deleteCustomSkill(draft.id)
     onCustomSkillsChange(list)
     setDraft(null)
@@ -479,7 +499,7 @@ export function SkillsTab({
       setSelectedKey(`user:${fresh.id}`)
       loadDraft(fresh)
     } catch (err) {
-      await confirm(`${t("Import failed")}: ${(err as Error).message}`)
+      await confirm(`${t("common.importFailed")}: ${(err as Error).message}`)
     }
   }
 
@@ -546,10 +566,10 @@ export function SkillsTab({
     return summed
   }, [draft, engineInputs])
 
-  const opts = (vals: string[], labelFn?: (value: string) => string): ComboboxOption[] =>
-    vals.map((value) => ({
+  const opts = (values: string[], keyOf?: (value: string) => string): ComboboxOption[] =>
+    values.map((value) => ({
       value,
-      label: value === "" ? t("None") : labelFn ? labelFn(value) : t(value),
+      label: value === "" ? t("common.none2") : keyOf ? t(keyOf(value), value) : value,
     }))
 
   const adoptedBuiltinIds = useMemo(
@@ -575,7 +595,7 @@ export function SkillsTab({
   function conditionsClause(trigger: TriggerDraft): string {
     const conds = triggerConditions(trigger)
     if (conds.length === 0) return ""
-    return `${t("when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name)}`
+    return `${t("skills.when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name)}`
   }
 
   function summarizeTriggerDraft(trigger: TriggerDraft): { label: string; effect: string } {
@@ -584,55 +604,57 @@ export function SkillsTab({
     if (kind === "applyDot") {
       const status = resolveStatus(trigger.targetId)
       if (!status || !("dot" in status) || !status.dot)
-        return { label: t("Select a target…"), effect: "" }
+        return { label: t("skills.selectATarget"), effect: "" }
       const name = dotDisplayName(status)
       const durationSec = (status.durationFrames / FPS).toFixed(1)
-      let effect = `+1 ${t("stack")} (${t("max")} ${status.maxStacks}) · ${t("refreshes")} ${durationSec}s ${t("duration")}`
+      let effect = `+1 ${t("skills.stack")} (${t("common.max")} ${status.maxStacks}) · ${t("skills.refreshes")} ${durationSec}s ${t("skills.duration")}`
       const ladder = status.dot.perStackMultipliers
       if (ladder && ladder.length > 0) {
-        effect += ` · ${t("per-tick damage")} ×${ladder.join(" / ×")} ${t("at")} ${ladder.map((_, index) => index + 1).join("/")} ${t("stacks")}`
+        effect += ` · ${t("skills.perTickDamage")} ×${ladder.join(" / ×")} ${t("skills.at")} ${ladder.map((_, index) => index + 1).join("/")} ${t("skills.stacks")}`
       }
       if (gate) effect += ` · ${gate}`
-      return { label: `${t("Applies")} ${name}`, effect }
+      return { label: `${t("skills.applies")} ${name}`, effect }
     }
     if (kind === "detonateDot") {
       const status = resolveStatus(trigger.targetId)
       if (!status || !("dot" in status) || !status.detonation)
-        return { label: t("Select a target…"), effect: "" }
+        return { label: t("skills.selectATarget"), effect: "" }
       const det = status.detonation
       const name = dotDisplayName(status)
       const detonateSkill = resolveSkillTarget(det.skillId)
-      const label = `${t("Causes")} ${detonateSkill?.name ?? name}`
-      let effect = `${t("on reaching")} ${status.maxStacks} ${t("stacks: consumes them and auto-casts")} ${detonateSkill?.name ?? det.skillId}`
+      const label = `${t("skills.causes")} ${detonateSkill?.name ?? name}`
+      let effect = `${t("skills.onReaching")} ${status.maxStacks} ${t("skills.stacksConsumesThemAndAuto")} ${detonateSkill?.name ?? det.skillId}`
       if (det.retainParam) {
         const paramName = innerWayName(det.retainParam)
         const retained = det.retainParamStacks ?? det.retainStacks ?? 0
-        effect += ` · ${t("retains")} ${retained} ${t("at")} ${paramName} ${t("tier")} ${det.retainMinTier ?? 6}`
+        effect += ` · ${t("skills.retains")} ${retained} ${t("skills.at")} ${paramName} ${t("common.tier")} ${det.retainMinTier ?? 6}`
       }
       if (gate) effect += ` · ${gate}`
       return { label, effect }
     }
     if (kind === "applyDebuff" || kind === "applyBuff") {
       const status = resolveStatus(trigger.targetId)
-      if (!status) return { label: t("Select a target…"), effect: "" }
+      if (!status) return { label: t("skills.selectATarget"), effect: "" }
       const parts: string[] = []
       if ("dot" in status && status.dot) {
         parts.push(
-          `${t("DoT")} · ${t("every")} ${(status.dot.tickIntervalFrames / FPS).toFixed(1)}s`,
+          `${t("common.dot")} · ${t("common.every")} ${(status.dot.tickIntervalFrames / FPS).toFixed(1)}s`,
         )
       }
       const eff = effectsSummary(status.effects, t)
       if (eff) parts.push(eff)
       parts.push(
         trigger.hitScope === "all" && (draft?.hits.length ?? 1) > 1
-          ? `+${trigger.stacks} ${t("stacks/hit")}`
-          : `+${trigger.stacks} ${t("stacks")}`,
+          ? `+${trigger.stacks} ${t("skills.stacksHit")}`
+          : `+${trigger.stacks} ${t("skills.stacks")}`,
       )
       if (gate) parts.push(gate)
-      return { label: status.name || t("Unnamed"), effect: parts.join(" · ") }
+      return { label: status.name || t("common.unnamed2"), effect: parts.join(" · ") }
     }
     const target = resolveSkillTarget(trigger.targetId)
-    const label = target ? `${t("Casts")} ${target.name || t("Unnamed")}` : t("Select a target…")
+    const label = target
+      ? `${t("skills.casts")} ${target.name || t("common.unnamed2")}`
+      : t("skills.selectATarget")
     return { label, effect: gate }
   }
 
@@ -792,14 +814,14 @@ export function SkillsTab({
         <div className={styles.listTop}>
           <div className={styles.listHead}>
             <h3>
-              {t("Skill")} ({t(getSchool(classId).displayName)})
+              {t("common.skill")} ({t(classKey(classId), getSchool(classId).displayName)})
             </h3>
             <button type="button" className="save-btn" onClick={createNew}>
-              {t("New Skill")}
+              {t("skills.newSkill")}
             </button>
           </div>
           <TextInput
-            placeholder={t("Search skills…")}
+            placeholder={t("skills.searchSkills")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -807,7 +829,7 @@ export function SkillsTab({
         <div className={styles.listScroll}>
           <ul className={styles.listCard}>
             {filteredClassSkills.length > 0 && (
-              <li className={styles.listGroup}>{t("My Skills")}</li>
+              <li className={styles.listGroup}>{t("skills.mySkills")}</li>
             )}
             {filteredClassSkills.map((skill) => (
               <li
@@ -817,11 +839,13 @@ export function SkillsTab({
                 }
                 onClick={() => selectSkill(skill)}
               >
-                <span className={styles.listItemName}>{skill.name || t("Unnamed")}</span>
+                <span className={styles.listItemName}>{skill.name || t("common.unnamed2")}</span>
                 <span className={`${styles.tag} ${styles.tagAccent}`}>{typeBadge(skill, t)}</span>
               </li>
             ))}
-            {filteredBuiltins.length > 0 && <li className={styles.listGroup}>{t("Built-in")}</li>}
+            {filteredBuiltins.length > 0 && (
+              <li className={styles.listGroup}>{t("skills.builtIn")}</li>
+            )}
             {filteredBuiltins.map((skill) => (
               <li
                 key={`builtin:${skill.id}`}
@@ -831,9 +855,11 @@ export function SkillsTab({
                 }
                 onClick={() => seedFromBuiltin(skill)}
               >
-                <span className={styles.listItemName}>{t(skill.name)}</span>
+                <span className={styles.listItemName}>{t(skillKey(skill), skill.name)}</span>
                 {adoptedBuiltinIds.has(skill.id) ? (
-                  <span className={`${styles.tag} ${styles.tagPositive}`}>{t("Adopted")}</span>
+                  <span className={`${styles.tag} ${styles.tagPositive}`}>
+                    {t("skills.adopted")}
+                  </span>
                 ) : (
                   <span className={styles.tag}>{typeBadge(skill, t)}</span>
                 )}
@@ -842,8 +868,8 @@ export function SkillsTab({
             {filteredClassSkills.length === 0 && filteredBuiltins.length === 0 && (
               <li className={styles.empty}>
                 {searchLower
-                  ? t("No skills match your search")
-                  : t("No skills yet — click New Skill")}
+                  ? t("skills.noSkillsMatchYourSearch")
+                  : t("skills.noSkillsYetClickNew")}
               </li>
             )}
           </ul>
@@ -852,7 +878,7 @@ export function SkillsTab({
 
       <div className={styles.detailPanel}>
         {!draft ? (
-          <div className={styles.empty}>{t("Select a skill on the left, or create one")}</div>
+          <div className={styles.empty}>{t("skills.selectASkillOnThe")}</div>
         ) : (
           <>
             <div className={styles.detailHeadWrap}>
@@ -864,30 +890,30 @@ export function SkillsTab({
                 />
                 <span className={styles.typeBadge}>{typePillText(draft, t)}</span>
                 <span className={styles.grow} />
-                {isDirty && <span className={styles.dirtyDot}>● {t("unsaved")}</span>}
+                {isDirty && <span className={styles.dirtyDot}>● {t("skills.unsaved")}</span>}
                 <button
                   type="button"
                   className={"save-btn" + (isDirty ? " dirty" : "")}
                   disabled={!isDirty}
                   onClick={handleSave}
                 >
-                  {t("Save")}
+                  {t("common.save")}
                 </button>
                 <button type="button" className="reset-btn" onClick={handleReset}>
-                  {t("Reset")}
+                  {t("skills.reset")}
                 </button>
                 <button type="button" className="reset-btn" onClick={handleExport}>
-                  {t("Export")}
+                  {t("common.export")}
                 </button>
                 <button
                   type="button"
                   className="reset-btn"
                   onClick={() => fileRef.current?.click()}
                 >
-                  {t("Import")}
+                  {t("common.import")}
                 </button>
                 <button type="button" className="reset-btn" onClick={handleDelete}>
-                  {t("Delete")}
+                  {t("common.delete")}
                 </button>
                 <input
                   ref={fileRef}
@@ -906,17 +932,17 @@ export function SkillsTab({
             <div className={styles.detail}>
               <div className={styles.previewStrip}>
                 <div className={`${styles.previewCell} ${styles.previewCellCtx}`}>
-                  <span className={styles.previewLabel}>{t("Damage Preview")}</span>
-                  <span className={styles.previewValue}>{t("per cast")}</span>
+                  <span className={styles.previewLabel}>{t("skills.damagePreview")}</span>
+                  <span className={styles.previewValue}>{t("skills.perCast")}</span>
                 </div>
                 <div className={styles.previewCell}>
-                  <span className={styles.previewLabel}>{t("Abrasion")}</span>
+                  <span className={styles.previewLabel}>{t("common.abrasion")}</span>
                   <span className={`${styles.previewValue} ${styles.dimmedValue}`}>
                     {preview ? fmtDmg(preview.abrasion) : "—"}
                   </span>
                 </div>
                 <div className={styles.previewCell}>
-                  <span className={styles.previewLabel}>{t("Normal")}</span>
+                  <span className={styles.previewLabel}>{t("common.normal")}</span>
                   <span className={styles.previewValue}>
                     {preview
                       ? `${fmtDmg(preview.normal.min)} – ${fmtDmg(preview.normal.max)}`
@@ -924,19 +950,19 @@ export function SkillsTab({
                   </span>
                 </div>
                 <div className={styles.previewCell}>
-                  <span className={styles.previewLabel}>{t("Crit")}</span>
+                  <span className={styles.previewLabel}>{t("common.crit")}</span>
                   <span className={`${styles.previewValue} ${styles.critValue}`}>
                     {preview ? `${fmtDmg(preview.crit.min)} – ${fmtDmg(preview.crit.max)}` : "—"}
                   </span>
                 </div>
                 <div className={styles.previewCell}>
-                  <span className={styles.previewLabel}>{t("Affinity")}</span>
+                  <span className={styles.previewLabel}>{t("common.affinity")}</span>
                   <span className={`${styles.previewValue} ${styles.affinityValue}`}>
                     {preview ? fmtDmg(preview.affinity) : "—"}
                   </span>
                 </div>
                 <div className={styles.previewCell}>
-                  <span className={styles.previewLabel}>{t("Hits")}</span>
+                  <span className={styles.previewLabel}>{t("common.hits2")}</span>
                   <span className={styles.previewValue}>
                     × {tickSourceNote ? tickSourceNote.ticks : draft.hits.length}
                   </span>
@@ -945,13 +971,8 @@ export function SkillsTab({
 
               <div className={styles.bodyCols}>
                 <div className={styles.card}>
-                  <h4 className={styles.cardHead}>{t("Skill")}</h4>
-                  <PropRow
-                    label={t("Breakdown Name")}
-                    help={t(
-                      "The in-game skill name this reports under in the DPS breakdown. Every skill sharing one breakdown name is summed into a single row. Leave empty to use the skill name.",
-                    )}
-                  >
+                  <h4 className={styles.cardHead}>{t("common.skill")}</h4>
+                  <PropRow label={t("skills.breakdownName")} help={t("skills.theInGameHint")}>
                     <TextInput
                       value={draft.breakdownName ?? ""}
                       placeholder={draft.name}
@@ -959,44 +980,35 @@ export function SkillsTab({
                     />
                   </PropRow>
                   <PropRow
-                    label={t("Type")}
+                    label={t("common.type")}
                     help={
-                      draft.skillType === "sustain"
-                        ? t(
-                            "Type 'sustain' only tags sustain-damage scaling; it does not generate ticks. For a DoT, use a debuff with a DoT.",
-                          )
-                        : undefined
+                      draft.skillType === "sustain" ? t("skills.typeSustainOnlyHint") : undefined
                     }
                   >
                     <Combobox
                       className={styles.fieldCombobox}
                       value={draft.skillType}
-                      options={opts(SKILL_TYPES)}
+                      options={opts(SKILL_TYPES, skillTypeKey)}
                       onChange={(value) => patchDraft({ skillType: value })}
                     />
                   </PropRow>
-                  <PropRow label={t("Weapon")}>
+                  <PropRow label={t("common.weapon")}>
                     <Combobox
                       className={styles.fieldCombobox}
                       value={draft.weaponOrAttribute}
-                      options={opts(["", ...WEAPONS])}
+                      options={opts(["", ...WEAPONS], weaponKey)}
                       onChange={(value) => patchDraft({ weaponOrAttribute: value })}
                     />
                   </PropRow>
-                  <PropRow label={t("Stat")}>
+                  <PropRow label={t("common.stat")}>
                     <Combobox
                       className={styles.fieldCombobox}
                       value={draft.attributeAttack}
-                      options={opts(ATTRIBUTES)}
+                      options={opts(ATTRIBUTES, attributeAttackKey)}
                       onChange={(value) => patchDraft({ attributeAttack: value })}
                     />
                   </PropRow>
-                  <PropRow
-                    label={t("Attunement")}
-                    help={t(
-                      "Feeds gear-boost matching — which attunement affixes reach this skill",
-                    )}
-                  >
+                  <PropRow label={t("common.attunement")} help={t("skills.feedsGearBoostHint")}>
                     <Combobox
                       className={styles.fieldCombobox}
                       value={currentAttuneFlag}
@@ -1005,8 +1017,8 @@ export function SkillsTab({
                     />
                   </PropRow>
                   <PropRow
-                    label={t("Cast Time")}
-                    unit={`${t("frames")} · ${(draft.castFrames / FPS).toFixed(2)}s`}
+                    label={t("skills.castTime")}
+                    unit={`${t("skills.frames")} · ${(draft.castFrames / FPS).toFixed(2)}s`}
                   >
                     <NumInput
                       className={styles.castField}
@@ -1015,7 +1027,7 @@ export function SkillsTab({
                     />
                   </PropRow>
                   {draft.skillType === "mystic" && (
-                    <PropRow label={t("Mystic Category")}>
+                    <PropRow label={t("skills.mysticCategory")}>
                       <Combobox
                         className={styles.fieldCombobox}
                         value={currentMysticFlag}
@@ -1028,59 +1040,53 @@ export function SkillsTab({
                     <button
                       type="button"
                       className={styles.pill + (draft.triggerable ? ` ${styles.on}` : "")}
-                      title={t("Can be the target of a cast-skill trigger (e.g. an auto-proc)")}
+                      title={t("skills.canBeTheHint")}
                       onClick={() => patchDraft({ triggerable: !draft.triggerable })}
                     >
-                      {t("Triggerable")}
+                      {t("skills.triggerable")}
                     </button>
                     <button
                       type="button"
                       className={styles.pill + (draft.prePull ? ` ${styles.on}` : "")}
-                      title={t(
-                        'A pre-pull skill is cast before the pull — it lands at negative frames and is excluded from the rotation duration. Leave unchecked to auto-detect from a name containing "Prepull".',
-                      )}
+                      title={t("skills.aPrePullHint")}
                       onClick={() => patchDraft({ prePull: !(draft.prePull ?? false) })}
                     >
-                      {t("Pre-pull")}
+                      {t("common.prePull")}
                     </button>
                     <button
                       type="button"
                       className={styles.pill + (draft.guaranteedPrecision ? ` ${styles.on}` : "")}
-                      title={t(
-                        "Never abrades — precision counts as 100% for this skill (e.g. Dragon Head - Plus)",
-                      )}
+                      title={t("skills.neverAbradesPrecisionHint")}
                       onClick={() =>
                         patchDraft({ guaranteedPrecision: !(draft.guaranteedPrecision ?? false) })
                       }
                     >
-                      {t("Guaranteed Precision")}
+                      {t("skills.guaranteedPrecision")}
                     </button>
                     <button
                       type="button"
                       className={styles.pill + (draft.guaranteedNormal ? ` ${styles.on}` : "")}
-                      title={t(
-                        "Always deals the normal row — cannot trigger crit, affinity, or abrasion (e.g. Dragon Head)",
-                      )}
+                      title={t("skills.alwaysDealsTheHint")}
                       onClick={() =>
                         patchDraft({ guaranteedNormal: !(draft.guaranteedNormal ?? false) })
                       }
                     >
-                      {t("Fixed Damage")}
+                      {t("skills.fixedDamage")}
                     </button>
                   </div>
                   {readonlyTagHints.length > 0 && (
                     <div className={styles.tagHint}>
-                      {t("Tags")}: {readonlyTagHints.join(", ")}
+                      {t("skills.tags")}: {readonlyTagHints.join(", ")}
                     </div>
                   )}
                 </div>
 
                 <div className={styles.card}>
-                  <h4 className={styles.cardHead}>{t("Hit Table")}</h4>
+                  <h4 className={styles.cardHead}>{t("skills.hitTable")}</h4>
                   {variantLabels.length > 0 && (
                     <SubTabs
                       tabs={[
-                        { key: "normal", label: t("Normal") },
+                        { key: "normal", label: t("common.normal") },
                         ...variantLabels.map((label) => ({ key: label, label })),
                       ]}
                       active={effectiveHitTab}
@@ -1090,8 +1096,8 @@ export function SkillsTab({
                   {!isNormalTab &&
                     variantConditionTexts(effectiveHitTab).map((text) => (
                       <div key={text} className={styles.variantBanner}>
-                        {t("Active when")} <b>{text}</b> —{" "}
-                        {t("these rows replace the Normal rows while the condition holds")}
+                        {t("skills.activeWhen")} <b>{text}</b> —{" "}
+                        {t("skills.theseRowsReplaceTheNormal")}
                       </div>
                     ))}
                   <div className={styles.hitTableWrap}>
@@ -1099,11 +1105,11 @@ export function SkillsTab({
                       <thead>
                         <tr>
                           <th>#</th>
-                          <th>{t("Frame")}</th>
-                          {HIT_NUMERIC_COLUMNS.map(({ field, label }) => (
-                            <th key={field}>{t(label)}</th>
+                          <th>{t("skills.frame")}</th>
+                          {HIT_NUMERIC_COLUMNS.map(({ field, labelKey }) => (
+                            <th key={field}>{t(labelKey)}</th>
                           ))}
-                          <th>{t("Crit +%")}</th>
+                          <th>{t("skills.crit2")}</th>
                           {isNormalTab && draft.hits.length > 1 && <th></th>}
                         </tr>
                       </thead>
@@ -1156,7 +1162,7 @@ export function SkillsTab({
                                 <button
                                   type="button"
                                   className={styles.rowDelete}
-                                  title={t("Delete hit")}
+                                  title={t("skills.deleteHit")}
                                   onClick={() => removeHit(idx)}
                                 >
                                   ×
@@ -1170,24 +1176,24 @@ export function SkillsTab({
                   </div>
                   {!isNormalTab && hitRows.some((row) => row.dimmed) && (
                     <div className={styles.variantNote}>
-                      {t("Dimmed hits have no")} {effectiveHitTab}{" "}
-                      {t("variant — they keep their Normal row.")}
+                      {t("skills.dimmedHitsHaveNo")} {effectiveHitTab}{" "}
+                      {t("skills.variantTheyKeepTheirNormal")}
                     </div>
                   )}
                   {isNormalTab && (
                     <button type="button" className={styles.addHitBtn} onClick={addHit}>
-                      + {t("Add Hit")}
+                      + {t("skills.addHit")}
                     </button>
                   )}
                 </div>
               </div>
 
               <div className={styles.card}>
-                <h4 className={styles.cardHead}>{t("Effects")}</h4>
+                <h4 className={styles.cardHead}>{t("skills.effects")}</h4>
                 <div className={styles.effectsCols}>
                   <div className={styles.effectsCol}>
                     <div className={styles.effectsColHead}>
-                      {t("Triggers (this skill applies)")}
+                      {t("skills.triggersThisSkillApplies")}
                     </div>
                     {triggerRows.length === 0 && appliesRows.length === 0 ? (
                       <div className={styles.effectsEmpty}>—</div>
@@ -1198,7 +1204,7 @@ export function SkillsTab({
                           const summary = summarizeTriggerDraft(trigger)
                           const scopeNote =
                             typeof trigger.hitScope === "number" && draft.hits.length > 1
-                              ? ` · ${t("hit")} #${trigger.hitScope + 1}`
+                              ? ` · ${t("skills.hit")} #${trigger.hitScope + 1}`
                               : ""
                           return (
                             <div
@@ -1224,7 +1230,7 @@ export function SkillsTab({
                               <button
                                 type="button"
                                 className={styles.effectsRemove}
-                                aria-label={t("Remove")}
+                                aria-label={t("skills.remove")}
                                 onClick={() => removeTriggersBuff(row.id)}
                               >
                                 ×
@@ -1236,7 +1242,7 @@ export function SkillsTab({
                             )}
                             {row.requires && (
                               <span className={styles.effectsRowRequires}>
-                                ({t("requires")} {row.requires})
+                                ({t("common.requires")} {row.requires})
                               </span>
                             )}
                           </div>
@@ -1247,15 +1253,15 @@ export function SkillsTab({
                       className={`${styles.fieldCombobox} ${styles.effectsAddCombobox}`}
                       value=""
                       options={triggersAddOptions}
-                      placeholder={t("Add triggered buff…")}
-                      aria-label={t("Add triggered buff")}
+                      placeholder={t("skills.addTriggeredBuff")}
+                      aria-label={t("skills.addTriggeredBuff2")}
                       onChange={addTriggersBuff}
                     />
                   </div>
 
                   <div className={styles.effectsCol}>
                     <div className={styles.effectsColHead}>
-                      {t("Receives (buffs affecting this skill)")}
+                      {t("skills.receivesBuffsAffectingThisSkill")}
                     </div>
                     {activeReceiveRows.length === 0 && inactiveReceiveRows.length === 0 ? (
                       <div className={styles.effectsEmpty}>—</div>
@@ -1267,7 +1273,7 @@ export function SkillsTab({
                               <button
                                 type="button"
                                 className={styles.effectsRemove}
-                                aria-label={t("Remove")}
+                                aria-label={t("skills.remove")}
                                 onClick={() => removeReceivesBuff(row.id)}
                               >
                                 ×
@@ -1286,7 +1292,7 @@ export function SkillsTab({
                               className={styles.effectsMore}
                               onClick={() => setShowInactiveReceives((prev) => !prev)}
                             >
-                              {t("Not in your current build")} ({inactiveReceiveRows.length})
+                              {t("skills.notInYourCurrentBuild")} ({inactiveReceiveRows.length})
                             </button>
                             {showInactiveReceives &&
                               inactiveReceiveRows.map((row) => (
@@ -1298,7 +1304,7 @@ export function SkillsTab({
                                     <button
                                       type="button"
                                       className={styles.effectsRemove}
-                                      aria-label={t("Remove")}
+                                      aria-label={t("skills.remove")}
                                       onClick={() => removeReceivesBuff(row.id)}
                                     >
                                       ×
@@ -1310,7 +1316,7 @@ export function SkillsTab({
                                   )}
                                   {row.requires && (
                                     <span className={styles.effectsRowRequires}>
-                                      ({t("requires")} {row.requires})
+                                      ({t("common.requires")} {row.requires})
                                     </span>
                                   )}
                                 </div>
@@ -1323,14 +1329,14 @@ export function SkillsTab({
                       className={`${styles.fieldCombobox} ${styles.effectsAddCombobox}`}
                       value=""
                       options={receivesAddOptions}
-                      placeholder={t("Add received buff…")}
-                      aria-label={t("Add received buff")}
+                      placeholder={t("skills.addReceivedBuff")}
+                      aria-label={t("skills.addReceivedBuff2")}
                       onChange={addReceivesBuff}
                     />
                   </div>
 
                   <div className={styles.effectsCol}>
-                    <div className={styles.effectsColHead}>{t("Spec Mechanics")}</div>
+                    <div className={styles.effectsColHead}>{t("skills.specMechanics")}</div>
                     {specMechanicRows.length === 0 ? (
                       <div className={styles.effectsEmpty}>—</div>
                     ) : (
@@ -1342,7 +1348,7 @@ export function SkillsTab({
                           )}
                           {!row.active && row.requires && (
                             <span className={styles.effectsRowRequires}>
-                              ({t("requires")} {row.requires})
+                              ({t("common.requires")} {row.requires})
                             </span>
                           )}
                         </div>

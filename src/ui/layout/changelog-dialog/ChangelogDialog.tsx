@@ -52,7 +52,7 @@ export function ChangelogDialog({ onClose }: { onClose: () => void }) {
       initialFocusRef={closeButtonRef}
     >
       <DialogHeader>
-        <h2 id={titleId}>{t("Changelog")}</h2>
+        <h2 id={titleId}>{t("layout.changelogDialog.changelog")}</h2>
       </DialogHeader>
       <div className={styles.content}>
         <div className={styles.sidebar}>
@@ -93,7 +93,7 @@ export function ChangelogDialog({ onClose }: { onClose: () => void }) {
       </div>
       <DialogFooter>
         <button type="button" ref={closeButtonRef} className="btn" onClick={onClose}>
-          {t("Close")}
+          {t("common.close")}
         </button>
       </DialogFooter>
     </Dialog>

@@ -11,15 +11,17 @@ import { isGearWordId } from "../../../../data/stats/statLines"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
-import { attunementsFor, getAttunement } from "../../../../engine/attunements"
+import { attunementsFor, attunementLabelKey, getAttunement } from "../../../../engine/attunements"
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { attunementHintKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import styles from "./GearPieceForm.module.scss"
 
 function fmtDpsDelta(deltaDps: number): string {
@@ -33,17 +35,6 @@ function deltaSignClass(deltaDps: number): string {
   if (deltaDps > 0.5) return "is-positive"
   if (deltaDps < -0.5) return "is-negative"
   return "is-zero"
-}
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
 }
 
 interface Props {
@@ -66,28 +57,31 @@ export function GearPieceForm({
   const { t } = useI18n()
 
   const slotOptions: ComboboxOption[] = useMemo(
-    () => GEAR_SLOTS.map((slot) => ({ value: slot, label: t(SLOT_LABEL_KEYS[slot]) })),
+    () => GEAR_SLOTS.map((slot) => ({ value: slot, label: t(GEAR_SLOT_KEYS[slot]) })),
     [t],
   )
   const levelOptions: ComboboxOption[] = useMemo(
     () => [
-      { value: "86", label: "lv86" },
-      { value: "91", label: "lv91" },
-      { value: "96", label: "lv96" },
+      { value: "86", label: t("gear.level.86") },
+      { value: "91", label: t("gear.level.91") },
+      { value: "96", label: t("gear.level.96") },
     ],
-    [],
+    [t],
   )
   const rarityOptions: ComboboxOption[] = useMemo(
     () => [
-      { value: "legendary", label: t("Legendary") },
-      { value: "epic", label: t("Epic") },
+      { value: "legendary", label: t(rarityKey("legendary")) },
+      { value: "epic", label: t(rarityKey("epic")) },
     ],
     [t],
   )
   const wordSpecs = useMemo(() => getWordSpecs(inputs), [inputs])
   const wordOptions: ComboboxOption[] = useMemo(() => {
-    const list = wordSpecs.map((spec) => ({ value: spec.word, label: t(spec.label) }))
-    return [{ value: "", label: t("(none)") }, ...list]
+    const list = wordSpecs.map((spec) => ({
+      value: spec.word,
+      label: t(statLineKey(spec.word), spec.label),
+    }))
+    return [{ value: "", label: t("common.none") }, ...list]
   }, [wordSpecs, t])
   const attunementCatalog = useMemo(
     () => attunementsFor(piece.slot, inputs.classId),
@@ -95,10 +89,13 @@ export function GearPieceForm({
   )
   const attunementOptions: ComboboxOption[] = useMemo(
     () => [
-      { value: "", label: t("(none)") },
-      ...attunementCatalog.map((opt) => ({ value: opt.id, label: t(opt.label) })),
+      { value: "", label: t("common.none") },
+      ...attunementCatalog.map((option) => ({
+        value: option.id,
+        label: t(attunementLabelKey(option, inputs.classId), option.label),
+      })),
     ],
-    [attunementCatalog, t],
+    [attunementCatalog, inputs.classId, t],
   )
 
   const weaponSide = isWeaponSlot(piece.slot)
@@ -153,25 +150,25 @@ export function GearPieceForm({
   return (
     <fieldset className={styles.gearForm}>
       <div className={styles.identityRow}>
-        <Field label={t("Type")}>
+        <Field label={t("common.type")}>
           <Select
-            ariaLabel={t("Type")}
+            ariaLabel={t("common.type")}
             value={piece.slot}
             options={slotOptions}
             onChange={(value) => patchBase({ slot: value as GearSlot })}
           />
         </Field>
-        <Field label={t("Level")}>
+        <Field label={t("gear.pieceForm.level")}>
           <Select
-            ariaLabel={t("Level")}
+            ariaLabel={t("gear.pieceForm.level")}
             value={String(piece.level)}
             options={levelOptions}
             onChange={(value) => patchBase({ level: Number(value) as GearLevel })}
           />
         </Field>
-        <Field label={t("Rarity")}>
+        <Field label={t("gear.pieceForm.rarity")}>
           <Select
-            ariaLabel={t("Rarity")}
+            ariaLabel={t("gear.pieceForm.rarity")}
             value={piece.rarity}
             options={rarityOptions}
             onChange={(value) => patchBase({ rarity: value as GearRarity })}
@@ -182,13 +179,13 @@ export function GearPieceForm({
       <div className={styles.baseStats}>
         {weaponSide ? (
           <>
-            <BaseStat label={t("Min Phys")} value={base.minPhys} />
-            <BaseStat label={t("Max Phys")} value={base.maxPhys} />
+            <BaseStat label={t("common.minPhys")} value={base.minPhys} />
+            <BaseStat label={t("common.maxPhys")} value={base.maxPhys} />
           </>
         ) : (
           <>
-            <BaseStat label={t("HP")} value={base.hp} />
-            <BaseStat label={t("Phys Defense")} value={base.physDef} />
+            <BaseStat label={t("content.statLine.hp")} value={base.hp} />
+            <BaseStat label={t("content.statLine.physDef")} value={base.physDef} />
           </>
         )}
       </div>
@@ -204,21 +201,27 @@ export function GearPieceForm({
           <span className={styles.relayedCell}>
             <Switch
               checked={piece.relayed}
-              label={t("Relayed")}
+              label={t("gear.pieceForm.relayed")}
               onChange={(relayed) => setRelayed(relayed)}
             />
-            <HelpHint
-              text={t("Relayed caps every tunement value below at 94 % of its max roll.")}
-            />
+            <HelpHint text={t("gear.pieceForm.relayedCapsEveryHint")} />
           </span>
 
-          <span className={`${styles.colHead} ${styles.sectionTitle}`}>{t("Tunements")}</span>
-          <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("Value")}</span>
+          <span className={`${styles.colHead} ${styles.sectionTitle}`}>
+            {t("gear.pieceForm.tunements")}
+          </span>
+          <span className={`${styles.colHead} ${styles.colHeadRight}`}>
+            {t("gear.pieceForm.value")}
+          </span>
           <span className={styles.colHead} />
           {showWordMax && (
             <>
-              <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("At 94%")}</span>
-              <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("Δ DPS")}</span>
+              <span className={`${styles.colHead} ${styles.colHeadRight}`}>
+                {t("gear.pieceForm.at94")}
+              </span>
+              <span className={`${styles.colHead} ${styles.colHeadRight}`}>
+                {t("gear.pieceForm.dps")}
+              </span>
             </>
           )}
           {piece.words.map((word, idx) => {
@@ -240,7 +243,7 @@ export function GearPieceForm({
                   : wm.capValue.toFixed(2)
               deltaText = fmtDpsDelta(wm.deltaDps)
               deltaSign = deltaSignClass(wm.deltaDps)
-              deltaTitle = `${t("Full-cast 94%")}: ${maxValueText} → ${deltaText} DPS`
+              deltaTitle = `${t("gear.pieceForm.fullCast94")}: ${maxValueText} → ${deltaText} DPS`
             } else {
               maxValueText = wordMaxPending ? "…" : "—"
             }
@@ -251,19 +254,19 @@ export function GearPieceForm({
                   value={word.word}
                   options={wordOptions}
                   onChange={(value) => patchWord(idx, { word: isGearWordId(value) ? value : "" })}
-                  placeholder={t("(none)")}
+                  placeholder={t("common.none")}
                 />
                 <ValueInput
                   value={word.value}
                   onChange={(value) => patchWord(idx, { value })}
                   min={0}
-                  title={maxDisplay ? `${t("Max")}: ${maxDisplay}` : undefined}
+                  title={maxDisplay ? `${t("gear.pieceForm.max")}: ${maxDisplay}` : undefined}
                 />
                 <button
                   type="button"
                   className={"btn" + (word.retuned ? " is-on" : "")}
                   onClick={() => patchWord(idx, { retuned: !word.retuned })}
-                  title={t("Retune")}
+                  title={t("gear.pieceForm.retune")}
                 >
                   R
                 </button>
@@ -292,7 +295,7 @@ export function GearPieceForm({
         const min = selected?.min ?? 0
         const max = selected?.max ?? 0
         const rangeHint = selected
-          ? `${(min * 100).toFixed(1)}–${(max * 100).toFixed(1)} %${selected.hint ? " " + t(selected.hint) : ""}`
+          ? `${(min * 100).toFixed(1)}–${(max * 100).toFixed(1)} %${selected.hint ? " " + t(attunementHintKey(selected.id), selected.hint) : ""}`
           : ""
         function clampValue(value: number): number {
           if (!selected || !Number.isFinite(value)) return value
@@ -300,13 +303,15 @@ export function GearPieceForm({
         }
         return (
           <div className={styles.attunementSection}>
-            <span className={`${styles.colHead} ${styles.sectionTitle}`}>{t("Attunement")}</span>
-            <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("Amount")}</span>
+            <span className={`${styles.colHead} ${styles.sectionTitle}`}>
+              {t("common.attunement")}
+            </span>
+            <span className={`${styles.colHead} ${styles.colHeadRight}`}>{t("common.amount")}</span>
             <Combobox
               value={selected?.id ?? ""}
               options={attunementOptions}
               onChange={(value) => patch({ attunement: value, attunementValue: 0 })}
-              placeholder={t("(none)")}
+              placeholder={t("common.none")}
             />
             <ValueInput
               value={piece.attunementValue}

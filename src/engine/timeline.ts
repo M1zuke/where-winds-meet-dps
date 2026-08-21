@@ -12,6 +12,7 @@ import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
 import type { Skill, SkillHit, TriggerCondition } from "./skill"
 import { breakdownNameOf, isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
+import { debuffBreakdownKey, debuffKey, skillBreakdownKey, skillKey } from "../i18n/contentKeys"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, UNOWNED } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
@@ -530,9 +531,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const skillBreakdownRowKey = (skill: Skill): string =>
+    skill.breakdownName ? skillBreakdownKey(skill) : skillKey(skill)
+
   const byName = new Map<
     string,
-    { breakdownName: string; type: string; count: number; damage: number }
+    { breakdownName: string; breakdownKey: string; type: string; count: number; damage: number }
   >()
   function add(
     name: string,
@@ -540,13 +544,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     count: number,
     damage: number,
     breakdownName: string,
+    breakdownKey: string,
   ): void {
     if (!collectDetail) return
-    const e = byName.get(name)
-    if (e) {
-      e.count += count
-      e.damage += damage
-    } else byName.set(name, { breakdownName, type, count, damage })
+    const tallied = byName.get(name)
+    if (tallied) {
+      tallied.count += count
+      tallied.damage += damage
+    } else byName.set(name, { breakdownName, breakdownKey, type, count, damage })
   }
 
   const timeline: TimelineEvent[] = []
@@ -645,7 +650,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (hitInWindow) {
       totalDamage += damage
       if (rolled) tallyRoll(rolled)
-      add(skill.name, skill.skillType, 1, damage, breakdownNameOf(skill.breakdownName, skill.name))
+      add(
+        skill.name,
+        skill.skillType,
+        1,
+        damage,
+        breakdownNameOf(skill.breakdownName, skill.name),
+        skillBreakdownRowKey(skill),
+      )
     }
     pushEvent({
       frame,
@@ -831,6 +843,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     dotSkill: Skill
     dotName: string
     dotBreakdownName: string
+    dotBreakdownKey: string
     dotType: string
   }
 
@@ -847,6 +860,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const debuffForTick: Debuff = { ...status, dot }
     const dotName = dotRowName(status)
     const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
+    const dotBreakdownKey = status.breakdownName
+      ? debuffBreakdownKey(status.id)
+      : debuffKey(status.id)
     const dotType = dot.skillType || "sustain"
 
     for (const plan of planDotTicks({
@@ -868,6 +884,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         seq: dotTickSeq++,
         debuff: status,
         debuffForTick,
+        dotBreakdownKey,
         dotSkill,
         dotName,
         dotBreakdownName,
@@ -931,7 +948,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
     totalDamage += damage
     if (tick.rolled) tallyRoll(tick.rolled)
-    add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName)
+    add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
     pushEvent({
       frame: entry.frame,
       timeSec: entry.frame / FPS,
@@ -952,7 +969,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const damage = rolled?.damage ?? expectedDamage
       totalDamage += damage
       if (rolled) tallyRoll(rolled)
-      add(event.name, event.type, 1, damage, breakdownNameOf(event.skill.breakdownName, event.name))
+      add(
+        event.name,
+        event.type,
+        1,
+        damage,
+        breakdownNameOf(event.skill.breakdownName, event.name),
+        skillBreakdownRowKey(event.skill),
+      )
       pushEvent({
         frame: event.frame,
         timeSec: event.frame / FPS,
@@ -967,13 +991,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   timeline.sort((a, b) => a.frame - b.frame || (a.kind === b.kind ? 0 : a.kind === "hit" ? -1 : 1))
 
-  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, e]) => ({
+  const perSkill: SkillTickResult[] = [...byName.entries()].map(([name, tallied]) => ({
     name,
-    breakdownName: e.breakdownName,
-    type: e.type,
-    count: e.count,
-    expectedDamage: e.damage,
-    percentOfTotal: totalDamage > 0 ? e.damage / totalDamage : 0,
+    breakdownName: tallied.breakdownName,
+    breakdownKey: tallied.breakdownKey,
+    type: tallied.type,
+    count: tallied.count,
+    expectedDamage: tallied.damage,
+    percentOfTotal: totalDamage > 0 ? tallied.damage / totalDamage : 0,
     castCount: castCounts.get(name) ?? 0,
   }))
 

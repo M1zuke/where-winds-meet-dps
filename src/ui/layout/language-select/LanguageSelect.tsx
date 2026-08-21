@@ -9,7 +9,7 @@ export function LanguageSelect() {
     <span className={styles.languageSelect}>
       <Select<Locale>
         compact
-        ariaLabel={t("Language")}
+        ariaLabel={t("layout.languageSelect.language")}
         value={locale}
         options={LOCALES.map((option) => ({ value: option, label: LOCALE_LABELS[option] }))}
         onChange={setLocale}

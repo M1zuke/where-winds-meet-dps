@@ -14,15 +14,15 @@ export function BreakthroughSelect({ value, onChange }: Props) {
   return (
     <>
       <div className="row">
-        <label>{t("Breakthrough")}</label>
+        <label>{t("overview.breakthroughSelect.breakthrough")}</label>
         <Select
-          ariaLabel={t("Breakthrough")}
+          ariaLabel={t("overview.breakthroughSelect.breakthrough")}
           value={String(value)}
           onChange={(next) => onChange(Number(next))}
           options={BREAKTHROUGH_TIERS.map((tier) => ({
             value: String(tier.breakthrough),
-            label: `${t("Lv.")} ${tier.breakthrough}${tier.name ? ` · ${tier.name}` : ""}`,
-            meta: `${t("Lv.")} ${tier.levelRange} · ${t("def")} ${tier.defense} · ${t("res")} ${tier.resistance}%`,
+            label: `${t("overview.breakthroughSelect.lv")} ${tier.breakthrough}${tier.name ? ` · ${tier.name}` : ""}`,
+            meta: `${t("overview.breakthroughSelect.lv")} ${tier.levelRange} · ${t("overview.breakthroughSelect.def")} ${tier.defense} · ${t("overview.breakthroughSelect.res")} ${tier.resistance}%`,
           }))}
         />
       </div>
@@ -31,13 +31,13 @@ export function BreakthroughSelect({ value, onChange }: Props) {
           <span />
           <div className={styles.summary}>
             <span>
-              {t("Lv.")} {selected.levelRange}
+              {t("overview.breakthroughSelect.lv")} {selected.levelRange}
             </span>
             <span>
-              {t("def")} {selected.defense}
+              {t("overview.breakthroughSelect.def")} {selected.defense}
             </span>
             <span>
-              {t("res")} {selected.resistance}%
+              {t("overview.breakthroughSelect.res")} {selected.resistance}%
             </span>
           </div>
         </div>

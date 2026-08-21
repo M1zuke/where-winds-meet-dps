@@ -35,7 +35,7 @@ export function SimulationDistributionPanel({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const histogram = parseHistogram(sorted.map((run) => run.dps))
-  if (histogram.bins.length === 0) return <div className="empty-tab">{t("(none)")}</div>
+  if (histogram.bins.length === 0) return <div className="empty-tab">{t("common.none")}</div>
 
   const { bins, min, max, maxCount } = histogram
   const span = max - min
@@ -88,7 +88,7 @@ export function SimulationDistributionPanel({
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             role="img"
-            aria-label={`${t("DPS Distribution")} — ${t("median")} ${decimalNumber(median, 2)} ${t("DPS")}, ${decimalNumber(min, 2)} ${t("to")} ${decimalNumber(max, 2)}`}
+            aria-label={`${t("simulation.distribution.dpsDistribution")} — ${t("simulation.distribution.median")} ${decimalNumber(median, 2)} ${t("common.dps")}, ${decimalNumber(min, 2)} ${t("simulation.distribution.to")} ${decimalNumber(max, 2)}`}
           >
             {GRID_FRACTIONS.map((fraction) => (
               <line
@@ -143,14 +143,15 @@ export function SimulationDistributionPanel({
                 style={{ left: (hoveredIndex! + 0.5) * binSpan + "%" }}
               >
                 <div className={styles.hoverCount}>
-                  {decimalNumber(hovered.start, 0)} – {decimalNumber(hovered.end, 0)} {t("DPS")}
+                  {decimalNumber(hovered.start, 0)} – {decimalNumber(hovered.end, 0)}{" "}
+                  {t("common.dps")}
                 </div>
                 <div className={styles.hoverRange}>
                   {compactDamage(damageOf(hovered.start))} – {compactDamage(damageOf(hovered.end))}{" "}
-                  {t("dmg")}
+                  {t("simulation.distribution.dmg")}
                 </div>
                 <div className={styles.hoverShare}>
-                  {fullNumber(hovered.count)} {t("runs")} ·{" "}
+                  {fullNumber(hovered.count)} {t("common.runs")} ·{" "}
                   {fixed((hovered.count / sorted.length) * 100, 1)} %
                 </div>
               </div>
@@ -182,24 +183,24 @@ export function SimulationDistributionPanel({
       <div className={styles.legend}>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchMedian}`} />
-          {t("Median")}
+          {t("simulation.distribution.median2")}
           <span className={styles.legendValue}>{decimalNumber(median, 2)}</span>
         </span>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchMean}`} />
-          {t("Mean")}
+          {t("simulation.distribution.mean")}
           <span className={styles.legendValue}>{decimalNumber(meanDps, 2)}</span>
         </span>
         {showExpected && (
           <span className={styles.legendItem}>
             <span className={`${styles.swatch} ${styles.swatchExpected}`} />
-            {t("Expected")}
+            {t("simulation.distribution.expected")}
             <span className={styles.legendValue}>{decimalNumber(expectedDps, 2)}</span>
           </span>
         )}
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchBand}`} />
-          {t("p20–p80")}
+          {t("simulation.distribution.p20P80")}
         </span>
       </div>
     </div>

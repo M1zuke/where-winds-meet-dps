@@ -57,13 +57,13 @@ export function MetricsCard({
       : formatNumber(result.graduationRate * 100, 1) + "%"
   const graduationTitle =
     theoreticalDps === null
-      ? t("Current DPS divided by the theoretical class maximum")
-      : `${t("Current DPS divided by the theoretical class maximum")}: ${formatNumber(theoreticalDps, 2)} DPS`
+      ? t("layout.outputPanel.currentDpsDividedByThe")
+      : `${t("layout.outputPanel.currentDpsDividedByThe")}: ${formatNumber(theoreticalDps, 2)} DPS`
   const durationText = `${formatNumber(result.rotationDuration, 0)}s`
   return (
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
-        <span className={styles.label}>{t("DPS")}</span>
+        <span className={styles.label}>{t("common.dps")}</span>
         <span className={styles.value}>{formatNumber(result.dps, 2)}</span>
         <span className={styles.subline}>
           {formatCompactDamage(result.totalDamage)} · {durationText}
@@ -71,7 +71,7 @@ export function MetricsCard({
         </span>
       </div>
       <div className={styles.stat}>
-        <span className={styles.label}>{t("Total Damage")}</span>
+        <span className={styles.label}>{t("common.totalDamage")}</span>
         <span className={styles.value}>{formatNumber(result.totalDamage, 0)}</span>
       </div>
       {rotationName ? (
@@ -82,18 +82,18 @@ export function MetricsCard({
           title={rotationName}
         >
           <span className={styles.stat}>
-            <span className={styles.label}>{t("Duration")}</span>
+            <span className={styles.label}>{t("layout.outputPanel.duration")}</span>
             <span className={styles.value}>{durationText}</span>
           </span>
           <span className={`${styles.stat} ${styles.rotationStat}`}>
-            <span className={styles.label}>{t("Rotation")}</span>
+            <span className={styles.label}>{t("common.rotation")}</span>
             <span className={styles.value}>{rotationName}</span>
           </span>
           <OpenIcon />
         </button>
       ) : (
         <div className={styles.stat}>
-          <span className={styles.label}>{t("Duration")}</span>
+          <span className={styles.label}>{t("layout.outputPanel.duration")}</span>
           <span className={styles.value}>{durationText}</span>
         </div>
       )}
@@ -101,7 +101,7 @@ export function MetricsCard({
         type="button"
         className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
         title={graduationTitle}
-        aria-label={`${t("Graduation")}: ${graduationText}`}
+        aria-label={`${t("layout.outputPanel.graduation")}: ${graduationText}`}
         aria-live="polite"
         onClick={onGraduationClick}
         disabled={graduationDisabled}
@@ -110,7 +110,7 @@ export function MetricsCard({
           <GraduationFire rate={result.graduationRate} />
         )}
         <span className={styles.stat}>
-          <span className={styles.label}>{t("Graduation")}</span>
+          <span className={styles.label}>{t("layout.outputPanel.graduation")}</span>
           <span className={styles.value}>{graduationText}</span>
         </span>
         <OpenIcon />
@@ -133,7 +133,7 @@ export function WarningsList({ result }: { result: Result }) {
 export function PerSkillTable({ result }: { result: Result }) {
   const { t } = useI18n()
   if (!result.perSkill.length) {
-    return <div className="empty-tab">{t("(none)")}</div>
+    return <div className="empty-tab">{t("common.none")}</div>
   }
   const rows = groupByBreakdownName(result.perSkill)
   const maxDmg = rows[0]?.expectedDamage || 1
@@ -141,10 +141,10 @@ export function PerSkillTable({ result }: { result: Result }) {
     <table className="ranking-table skill-table">
       <thead>
         <tr>
-          <th>{t("Skill")}</th>
-          <th>{t("Count")}</th>
-          <th>{t("Damage")}</th>
-          <th>{t("Share")}</th>
+          <th>{t("common.skill")}</th>
+          <th>{t("layout.outputPanel.count")}</th>
+          <th>{t("common.damage")}</th>
+          <th>{t("common.share")}</th>
           <th className="bar-col" />
         </tr>
       </thead>
@@ -153,7 +153,7 @@ export function PerSkillTable({ result }: { result: Result }) {
           const ratio = row.expectedDamage / maxDmg
           return (
             <tr key={row.name}>
-              <td>{t(row.name)}</td>
+              <td>{t(row.nameKey, row.name)}</td>
               <td>{row.count}</td>
               <td>{formatNumber(row.expectedDamage, 0)}</td>
               <td>{(row.percentOfTotal * 100).toFixed(1)} %</td>

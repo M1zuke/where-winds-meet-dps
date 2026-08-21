@@ -18,10 +18,10 @@ export function SimulationProgressBar({
   const percent = total > 0 ? Math.min(100, (done / total) * 100) : 0
   const statusText =
     status === "running"
-      ? `${t("Simulating")} ${fullNumber(total)} ${t("runs")}…`
+      ? `${t("simulation.progressBar.simulating")} ${fullNumber(total)} ${t("common.runs")}…`
       : status === "cancelled"
-        ? `${t("Simulation cancelled at")} ${fullNumber(done)} ${t("runs")}`
-        : `${t("Simulation complete")} — ${fullNumber(done)} ${t("runs")}`
+        ? `${t("simulation.progressBar.simulationCancelledAt")} ${fullNumber(done)} ${t("common.runs")}`
+        : `${t("common.simulationComplete")} — ${fullNumber(done)} ${t("common.runs")}`
 
   return (
     <>
@@ -32,7 +32,7 @@ export function SimulationProgressBar({
           aria-valuemin={0}
           aria-valuemax={total}
           aria-valuenow={done}
-          aria-valuetext={`${fullNumber(done)} ${t("of")} ${fullNumber(total)} ${t("runs")}`}
+          aria-valuetext={`${fullNumber(done)} ${t("common.of")} ${fullNumber(total)} ${t("common.runs")}`}
         >
           <div className="skill-bar-fill" style={{ width: percent.toFixed(2) + "%" }} />
         </div>

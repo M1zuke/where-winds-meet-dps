@@ -1,39 +1,34 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { isLocale, translate } from "../../src/i18n/translations"
-import catalogue from "../../src/i18n/locales/ko.json"
+
+vi.mock("../../src/i18n/locales/ko.json", () => ({
+  default: { "common.save": "translated", "common.cancel": "" },
+}))
 
 describe("translate", () => {
-  it("falls back to the input when no translation exists (en)", () => {
-    expect(translate("Phys", "en")).toBe("Phys")
-    expect(translate("DPS", "en")).toBe("DPS")
-    expect(translate("Graduation %", "en")).toBe("Graduation %")
-    expect(translate("__unknown__", "en")).toBe("__unknown__")
+  it("renders the English catalogue entry for the English locale", () => {
+    expect(translate("common.save", "en")).toBe("Save")
   })
 
-  it("passes already-English built-in skill names through unchanged", async () => {
-    const { builtinSkillsForClass } = await import("../../src/engine/builtinLibrary")
-    const skills = builtinSkillsForClass("bellstrikeUmbra")
-    expect(skills.length).toBeGreaterThan(0)
-    for (const skill of skills) {
-      expect(translate(skill.name, "en")).toBe(skill.name)
-    }
+  it("renders a locale's own entry once it carries one", () => {
+    expect(translate("common.save", "ko")).toBe("translated")
   })
 
-  it("shows the English source for every catalogue entry nobody has filled in yet", () => {
-    const untranslated = Object.entries(catalogue as Record<string, string>)
-      .filter(([, translation]) => translation === "")
-      .map(([key]) => key)
-    for (const key of untranslated) expect(translate(key, "ko")).toBe(key)
+  it("falls through to English while a locale's entry is empty", () => {
+    expect(translate("common.cancel", "ko")).toBe("Cancel")
   })
 
-  it("uses the catalogue entry once it carries a translation", () => {
-    const translated = Object.entries(catalogue as Record<string, string>).find(
-      ([, translation]) => translation !== "",
-    )
-    if (translated) expect(translate(translated[0], "ko")).toBe(translated[1])
+  it("renders the caller's fallback for a key no catalogue carries", () => {
+    expect(translate("content.skill.authored-by-a-user", "ko", "My Skill")).toBe("My Skill")
+    expect(translate("content.skill.authored-by-a-user", "en", "My Skill")).toBe("My Skill")
   })
 
-  it("accepts only the locales the app ships a dictionary for", () => {
+  it("renders the key itself when nothing else answers", () => {
+    expect(translate("nowhere.at.all", "en")).toBe("nowhere.at.all")
+    expect(translate("nowhere.at.all", "ko")).toBe("nowhere.at.all")
+  })
+
+  it("accepts only the locales the app ships a catalogue for", () => {
     expect(isLocale("en")).toBe(true)
     expect(isLocale("ko")).toBe(true)
     expect(isLocale("zh")).toBe(false)

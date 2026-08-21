@@ -1,20 +1,21 @@
 import { useId, useMemo, useRef, useState } from "react"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
-import { getAttunement } from "../../../../engine/attunements"
+import { attunementLabel, attunementLabelKey, getAttunement } from "../../../../engine/attunements"
 import { RELAYED_FACTOR } from "../../../../engine/gearStats"
 import { graduationBuild, graduationInputs } from "../../../../engine/graduation"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Arsenal, BowSet, GearPiece, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { statLineLabel } from "../../../../data/stats/statLines"
+import { classKey, rarityKey, setKey, statLineKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
 import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import dialogChrome from "../shared/gearDialog.module.scss"
-import { GEAR_SLOT_LABELS } from "../shared/gearLabels"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import previewStyles from "../shared/gearPreview.module.scss"
 import styles from "./GraduationBuildDialog.module.scss"
 
@@ -25,18 +26,18 @@ interface Props {
   onClose(): void
 }
 
-const BOW_SET_LABELS: Readonly<Record<Exclude<BowSet, null>, string>> = {
-  affinity: "Affinity",
-  crit: "Crit",
-  precision: "Precision",
+const BOW_SET_KEYS: Readonly<Record<Exclude<BowSet, null>, string>> = {
+  affinity: "common.affinity",
+  crit: "common.crit",
+  precision: "common.precision",
 }
 
-const ARSENAL_LABELS: Readonly<Record<Arsenal, string>> = {
-  general: "General Arsenal",
-  bellstrike: "Bellstrike Arsenal",
-  stonesplit: "Stonesplit Arsenal",
-  silkbind: "Silkbind Arsenal",
-  bamboocut: "Bamboocut Arsenal",
+const ARSENAL_KEYS: Readonly<Record<Arsenal, string>> = {
+  general: "common.generalArsenal",
+  bellstrike: "common.bellstrikeArsenal",
+  stonesplit: "common.stonesplitArsenal",
+  silkbind: "common.silkbindArsenal",
+  bamboocut: "common.bamboocutArsenal",
 }
 
 const RELAYED_PERCENT = Math.round(RELAYED_FACTOR * 100)
@@ -52,10 +53,10 @@ function formatGearValue(value: number): string {
   return value.toLocaleString("en-US", { maximumFractionDigits: 2 })
 }
 
-function baseStatsLabel(piece: GearPiece, t: (text: string) => string): string {
+function baseStatsLabel(piece: GearPiece, t: (key: string, fallback?: string) => string): string {
   return isWeaponSlot(piece.slot)
-    ? `${t("Min Phys")} ${piece.minPhys} · ${t("Max Phys")} ${piece.maxPhys}`
-    : `${t("HP")} ${piece.hp.toLocaleString()} · ${t("Phys Defense")} ${piece.physDef}`
+    ? `${t("common.minPhys")} ${piece.minPhys} · ${t("common.maxPhys")} ${piece.maxPhys}`
+    : `${t("content.statLine.hp")} ${piece.hp.toLocaleString()} · ${t("content.statLine.physDef")} ${piece.physDef}`
 }
 
 export function GraduationBuildDialog({
@@ -77,8 +78,7 @@ export function GraduationBuildDialog({
 
   if (!classDef || !build || !benchmarkInputs) return null
   const piecesBySlot = new Map(build.gear.map((piece) => [piece.slot, piece]))
-  const armorSet = build.set ? SET_BY_ID[build.set]?.name : null
-  const bowSet = build.bowSet ? BOW_SET_LABELS[build.bowSet] : "(unselected)"
+  const armorSet = build.set ? SET_BY_ID[build.set] : null
 
   return (
     <Dialog
@@ -89,22 +89,23 @@ export function GraduationBuildDialog({
       initialFocusRef={closeButtonRef}
     >
       <DialogHeader>
-        <h2 id={titleId}>{t("Graduation build")}</h2>
+        <h2 id={titleId}>{t("gear.graduationBuildDialog.graduationBuild")}</h2>
       </DialogHeader>
 
       <DialogBody>
         <div className={styles.intro} id={descriptionId}>
-          <span>{t(classDef.displayName)}</span>
+          <span>{t(classKey(classDef.id), classDef.displayName)}</span>
           <label className={styles.relayedToggle}>
             <input
               type="checkbox"
               checked={relayed}
               onChange={(event) => setRelayed(event.target.checked)}
             />
-            {t("Relayed words")} ({RELAYED_PERCENT}% {t("of max roll")})
+            {t("gear.graduationBuildDialog.relayedWords")} ({RELAYED_PERCENT}%{" "}
+            {t("gear.graduationBuildDialog.ofMaxRoll")})
           </label>
           <span className={styles.theoreticalDps}>
-            {t("DPS")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
+            {t("common.dps")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
           </span>
         </div>
 
@@ -112,8 +113,8 @@ export function GraduationBuildDialog({
           active={tab}
           onSelect={setTab}
           tabs={[
-            { key: "build", label: t("Build") },
-            { key: "stats", label: t("Panel Stats") },
+            { key: "build", label: t("gear.graduationBuildDialog.build") },
+            { key: "stats", label: t("common.panelStats") },
           ]}
         />
 
@@ -121,10 +122,19 @@ export function GraduationBuildDialog({
           {tab === "build" && (
             <>
               <div className={styles.buildSummary}>
-                <SummaryItem label={t("Armor Set")} value={t(armorSet ?? "(unselected)")} />
-                <SummaryItem label={t("Bow Set")} value={t(bowSet)} />
-                <SummaryItem label={t("Arsenal")} value={t(ARSENAL_LABELS[build.arsenal])} />
-                <SummaryItem label={t("Talents & Oddities")} value={t("All enabled")} />
+                <SummaryItem
+                  label={t("common.armorSet")}
+                  value={armorSet ? t(setKey(armorSet.id), armorSet.name) : t("common.unselected")}
+                />
+                <SummaryItem
+                  label={t("common.bowSet")}
+                  value={build.bowSet ? t(BOW_SET_KEYS[build.bowSet]) : t("common.unselected")}
+                />
+                <SummaryItem label={t("common.arsenal")} value={t(ARSENAL_KEYS[build.arsenal])} />
+                <SummaryItem
+                  label={t("common.talentsOddities")}
+                  value={t("gear.graduationBuildDialog.allEnabled")}
+                />
               </div>
 
               <div className={previewStyles.pieceList}>
@@ -136,23 +146,25 @@ export function GraduationBuildDialog({
                     <article
                       className={previewStyles.piece}
                       key={slot}
-                      aria-label={t(GEAR_SLOT_LABELS[slot])}
+                      aria-label={t(GEAR_SLOT_KEYS[slot])}
                     >
                       <div className={previewStyles.pieceHead}>
-                        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_LABELS[slot])}</span>
+                        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_KEYS[slot])}</span>
                         <span className="hint">{baseStatsLabel(piece, t)}</span>
                       </div>
                       <div className={previewStyles.identityRow}>
                         <span className={styles.identityBadge}>
-                          {t("Level")} {piece.level}
+                          {t("gear.graduationBuildDialog.level")} {piece.level}
                         </span>
-                        <span className={styles.identityBadge}>{t(piece.rarity)}</span>
+                        <span className={styles.identityBadge}>
+                          {t(rarityKey(piece.rarity), piece.rarity)}
+                        </span>
                       </div>
                       <div className={previewStyles.affixList}>
                         {piece.words.map((word, index) => (
                           <div className={previewStyles.affix} key={`${word.word}-${index}`}>
                             <span className={previewStyles.affixName}>
-                              {t(statLineLabel(word.word))}
+                              {t(statLineKey(word.word), statLineLabel(word.word))}
                             </span>
                             <span className={previewStyles.affixValue}>
                               {formatGearValue(word.value)}
@@ -162,12 +174,17 @@ export function GraduationBuildDialog({
                         ))}
                         <div className={`${previewStyles.affix} ${styles.attunement}`}>
                           <span className={previewStyles.affixName}>
-                            {t(attunement?.label ?? piece.attunement)}
+                            {attunement
+                              ? t(
+                                  attunementLabelKey(attunement, null),
+                                  attunementLabel(attunement, null),
+                                )
+                              : piece.attunement}
                           </span>
                           <span className={previewStyles.affixValue}>
                             {formatGearValue(piece.attunementValue)}
                           </span>
-                          <span className={styles.attunementLabel}>{t("Attunement")}</span>
+                          <span className={styles.attunementLabel}>{t("common.attunement")}</span>
                         </div>
                       </div>
                     </article>
@@ -180,7 +197,7 @@ export function GraduationBuildDialog({
           {tab === "stats" && (
             <div className={styles.statsPane}>
               <div className={styles.statsMeta}>
-                {t("Resistance")}:{" "}
+                {t("common.resistance")}:{" "}
                 <span className={styles.statsMetaValue}>
                   {resistanceForInputs(benchmarkInputs)}%
                 </span>
@@ -193,7 +210,7 @@ export function GraduationBuildDialog({
 
       <DialogFooter>
         <button ref={closeButtonRef} type="button" className="btn primary" onClick={onClose}>
-          {t("Close")}
+          {t("common.close")}
         </button>
       </DialogFooter>
     </Dialog>

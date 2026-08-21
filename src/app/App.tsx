@@ -154,7 +154,7 @@ function AppInner() {
   async function handleReset() {
     if (isSimulationRunning) return
     if (!isDirty) return
-    if (!(await confirm(t("Discard unsaved changes?")))) return
+    if (!(await confirm(t("app.discardUnsavedChanges")))) return
     const active = committed.profiles.find((profile) => profile.id === committed.activeId)
     if (!active) return
     const restored = JSON.parse(JSON.stringify(active.inputs)) as Inputs
@@ -166,7 +166,7 @@ function AppInner() {
   async function selectProfile(id: string) {
     if (isSimulationRunning) return
     if (id === committed.activeId) return
-    if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
+    if (isDirty && !(await confirm(t("app.youHaveUnsavedChangesSwitch")))) return
     const target = committed.profiles.find((profile) => profile.id === id)
     if (!target) return
     const next: ProfilesState = { ...committed, activeId: id }
@@ -178,10 +178,10 @@ function AppInner() {
 
   async function createProfile() {
     if (isSimulationRunning) return
-    if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
+    if (isDirty && !(await confirm(t("app.youHaveUnsavedChangesSwitch")))) return
     setWizard({
       mode: "new-profile",
-      defaultName: `${t("New profile")} ${committed.profiles.length + 1}`,
+      defaultName: `${t("common.newProfile")} ${committed.profiles.length + 1}`,
     })
   }
 
@@ -218,7 +218,7 @@ function AppInner() {
     if (!sourceProfile) return
     const copy: StoredProfile = {
       id: newProfileId(),
-      name: `${sourceProfile.name} ${t("Copy")}`,
+      name: `${sourceProfile.name} ${t("app.copy")}`,
       inputs: sourceProfile.inputs,
     }
     const next: ProfilesState = {
@@ -230,7 +230,7 @@ function AppInner() {
 
   async function handleImportProfile(imported: StoredProfile) {
     if (isSimulationRunning) return
-    if (isDirty && !(await confirm(t("You have unsaved changes — switch profiles anyway?")))) return
+    if (isDirty && !(await confirm(t("app.youHaveUnsavedChangesSwitch")))) return
     const next: ProfilesState = {
       profiles: [...committed.profiles, imported],
       activeId: imported.id,
@@ -243,7 +243,7 @@ function AppInner() {
 
   async function deleteProfile(id: string) {
     if (committed.profiles.length <= 1) return
-    if (!(await confirm(t("Delete this profile?")))) return
+    if (!(await confirm(t("app.deleteThisProfile")))) return
     const remaining = committed.profiles.filter((profile) => profile.id !== id)
     let nextActive = committed.activeId
     if (id === committed.activeId) {
@@ -268,16 +268,17 @@ function AppInner() {
   }, [pathname])
 
   const TABS: { path: string; label: string; align?: "right" }[] = [
-    { path: "/overview", label: t("Overview") },
-    { path: "/gear", label: t("Gear") },
-    { path: "/rotation", label: t("Rotation") },
-    { path: "/simulation", label: t("Simulation") },
-    { path: "/skills", label: t("Skill Editor") },
-    { path: "/talents", label: t("Talents & Oddities") },
-    { path: "/profile", label: t("Profiles"), align: "right" },
+    { path: "/overview", label: t("common.overview") },
+    { path: "/gear", label: t("app.gear") },
+    { path: "/rotation", label: t("common.rotation") },
+    { path: "/simulation", label: t("app.simulation") },
+    { path: "/skills", label: t("app.skillEditor") },
+    { path: "/talents", label: t("common.talentsOddities") },
+    { path: "/profile", label: t("common.profiles"), align: "right" },
   ]
 
-  const saveLabel = savedAt && !isDirty ? t("Saved ✓") : isDirty ? t("Save") : t("Saved")
+  const saveLabel =
+    savedAt && !isDirty ? t("app.saved") : isDirty ? t("common.save") : t("app.saved2")
 
   return (
     <div className={styles.app}>
@@ -310,7 +311,7 @@ function AppInner() {
       <div className={styles.appHeader}>
         <header className={styles.appTitlebar}>
           <div className={styles.appTitle}>
-            <h1>{t("Where Winds Meet DPS")}</h1>
+            <h1>{t("app.whereWindsMeetDps")}</h1>
             <ChangelogButton />
           </div>
           <div className={styles.appTitlebarActions}>
@@ -321,7 +322,7 @@ function AppInner() {
               className={"save-btn" + (isDirty ? " dirty" : "")}
               onClick={handleSave}
               disabled={!isDirty}
-              aria-label={t("Save")}
+              aria-label={t("common.save")}
             >
               {saveLabel}
             </button>
@@ -330,10 +331,10 @@ function AppInner() {
               className="reset-btn"
               onClick={handleReset}
               disabled={!isDirty || isSimulationRunning}
-              aria-label={t("Discard changes")}
-              title={t("Discard edits since the last save")}
+              aria-label={t("app.discardChanges")}
+              title={t("app.discardEditsSinceTheLast")}
             >
-              {t("Discard changes")}
+              {t("app.discardChanges")}
             </button>
           </div>
         </header>

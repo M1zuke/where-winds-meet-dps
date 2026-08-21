@@ -2,10 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { Inputs, OddityNode, OddityRegions, TalentStat } from "../../../../engine/types"
 import { DEFAULT_ODDITIES } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { oddityRegionKey } from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
-import { TALENT_STAT_LABELS } from "../shared/talentStatLabels"
+import { TALENT_STAT_KEYS } from "../shared/talentStatKeys"
 import styles from "./OdditiesTab.module.scss"
 
 interface Props {
@@ -87,7 +88,7 @@ function glyphFor(node: OddityNode): string {
   return node.icon ?? STAT_GLYPH[node.stat] ?? "◆"
 }
 
-function nodeSummary(node: OddityNode, t: (text: string) => string): string {
+function nodeSummary(node: OddityNode, t: (key: string, fallback?: string) => string): string {
   const isRate = RATE_STATS.has(node.stat)
   const isPen = PENETRATION_STATS.has(node.stat)
   const sign = node.value >= 0 ? "+" : ""
@@ -96,11 +97,7 @@ function nodeSummary(node: OddityNode, t: (text: string) => string): string {
     : isRate
       ? `${(node.value * 100).toFixed(2)}%`
       : `${node.value}`
-  return `${sign}${num} ${t(TALENT_STAT_LABELS[node.stat] ?? node.stat)}`
-}
-
-function regionLabel(region: string): string {
-  return region
+  return `${sign}${num} ${t(TALENT_STAT_KEYS[node.stat], node.stat)}`
 }
 
 function deepCloneRegions(regions: OddityRegions): OddityRegions {
@@ -234,7 +231,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
         ctx.fillText(glyphFor(node), cx, cy)
       })
 
-      const label = t(regionLabel(region))
+      const label = t(oddityRegionKey(region), region)
       ctx.font = "13px sans-serif"
       const textWidth = ctx.measureText(label).width
       ctx.fillStyle = "rgba(20, 20, 20, 0.85)"
@@ -392,7 +389,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
   }
 
   async function resetAll() {
-    if (!(await confirm(t("Reset all oddities to default?")))) return
+    if (!(await confirm(t("talents.oddities.resetAllOdditiesToDefault")))) return
     onChange({ ...inputs, oddities: deepCloneRegions(DEFAULT_ODDITIES) })
     setSelected(null)
   }
@@ -407,9 +404,9 @@ export function OdditiesTab({ inputs, onChange }: Props) {
   return (
     <div>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Oddities")}</span>
+        <span className="toolbar-label">{t("talents.oddities.oddities")}</span>
         <button type="button" className={`btn ${styles.btnDanger}`} onClick={resetAll}>
-          {t("Reset to default")}
+          {t("talents.oddities.resetToDefault")}
         </button>
       </div>
 
@@ -439,7 +436,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
               >
                 <div className={styles.oddityTooltipTitle}>{nodeSummary(hoveredNode, t)}</div>
                 <div className={styles.oddityTooltipState}>
-                  {hoveredNode.enabled ? t("On") : t("Off")}
+                  {hoveredNode.enabled ? t("talents.oddities.on") : t("talents.oddities.off")}
                 </div>
               </div>
             )
@@ -461,7 +458,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                     setContextMenu(null)
                   }}
                 >
-                  {t("Add node")}
+                  {t("talents.oddities.addNode")}
                 </button>
                 {custom && (
                   <button
@@ -471,7 +468,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                       setContextMenu(null)
                     }}
                   >
-                    {t("Edit")}
+                    {t("talents.oddities.edit")}
                   </button>
                 )}
                 {custom && (
@@ -483,7 +480,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
                       setContextMenu(null)
                     }}
                   >
-                    {t("Delete node")}
+                    {t("talents.oddities.deleteNode")}
                   </button>
                 )}
               </div>
@@ -518,21 +515,21 @@ function NodeEditor({
 
   return (
     <div className={`panel ${styles.oddityEditor}`}>
-      <h3>{t("Edit oddity node")}</h3>
+      <h3>{t("talents.oddities.editOddityNode")}</h3>
       <div className={styles.talentsCell}>
-        <label>{t("Stat")}</label>
+        <label>{t("common.stat")}</label>
         <Select
-          ariaLabel={t("Stat")}
+          ariaLabel={t("common.stat")}
           value={node.stat}
           onChange={(stat) => onPatch({ stat: stat as TalentStat })}
           options={STAT_OPTIONS.map((stat) => ({
             value: stat,
-            label: t(TALENT_STAT_LABELS[stat]),
+            label: t(TALENT_STAT_KEYS[stat]),
           }))}
         />
       </div>
       <div className={styles.talentsCell}>
-        <label>{t("Amount")}</label>
+        <label>{t("common.amount")}</label>
         <NumInput
           step={isRate ? 0.1 : 1}
           value={Number.isFinite(displayValue) ? displayValue : 0}
