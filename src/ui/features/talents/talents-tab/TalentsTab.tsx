@@ -4,6 +4,7 @@ import { alwaysActiveClassBuffs, type ClassBuffRow } from "../../../../engine/bu
 import { useI18n } from "../../../../i18n/i18nContext"
 import { buildScalingSources } from "../../../../definitions/baseStats"
 import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
+import { TALENT_STAT_LABELS } from "../shared/talentStatLabels"
 import styles from "./TalentsTab.module.scss"
 
 interface Props {
@@ -39,30 +40,6 @@ const PENETRATION_STATS = new Set<TalentStat>([
   "silkbindPenetration",
   "bamboocutPenetration",
 ])
-
-const STAT_LABEL: Record<TalentStat, string> = {
-  minPhys: "Min Phys",
-  maxPhys: "Max Phys",
-  physPenetration: "Phys Penetration",
-  minBellstrike: "Min Bellstrike",
-  maxBellstrike: "Max Bellstrike",
-  bellstrikePenetration: "Bellstrike Penetration",
-  minStonesplit: "Min Stonesplit",
-  maxStonesplit: "Max Stonesplit",
-  stonesplitPenetration: "Stonesplit Penetration",
-  minSilkbind: "Min Silkbind",
-  maxSilkbind: "Max Silkbind",
-  silkbindPenetration: "Silkbind Penetration",
-  minBamboocut: "Min Bamboocut",
-  maxBamboocut: "Max Bamboocut",
-  bamboocutPenetration: "Bamboocut Penetration",
-  precisionRate: "Precision Rate",
-  critRate: "Crit Rate",
-  affinityRate: "Affinity Rate",
-  critDamage: "Crit Damage",
-  affinityDamage: "Affinity Damage",
-  attributeDamage: "Attribute Damage",
-}
 
 const SOURCE_LABEL: Record<ScalingSource, string> = {
   power: "Power",
@@ -441,7 +418,7 @@ export function TalentsTab({ inputs }: Props) {
         <div className={styles.classBuffHead}>
           {line.label && <span className={styles.classBuffName}>{t(line.label)}</span>}
           <span className={styles.classBuffEffect}>
-            {formatStatValue(row.stat, row.maxBonus)} {t(STAT_LABEL[row.stat])}
+            {formatStatValue(row.stat, row.maxBonus)} {t(TALENT_STAT_LABELS[row.stat] ?? row.stat)}
           </span>
           <span className={styles.classBuffCurrent}>
             {t("Current")}: {formatStatValue(row.stat, current)}
@@ -558,9 +535,10 @@ export function TalentsTab({ inputs }: Props) {
                   return (
                     <div key={row.id} className={styles.classBuffRow}>
                       <div className={styles.classBuffHead}>
-                        <span className={styles.classBuffName}>{row.name}</span>
+                        <span className={styles.classBuffName}>{t(row.name)}</span>
                         <span className={styles.classBuffEffect}>
-                          {formatStatValue(row.stat, row.maxBonus)} {STAT_LABEL[row.stat]}
+                          {formatStatValue(row.stat, row.maxBonus)}{" "}
+                          {t(TALENT_STAT_LABELS[row.stat] ?? row.stat)}
                         </span>
                         <span className={styles.classBuffCurrent}>
                           {t("Current")}: {formatStatValue(row.stat, current)}

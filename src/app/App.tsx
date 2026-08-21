@@ -17,6 +17,7 @@ import { OverviewTab } from "../ui/features/overview/overview-tab/OverviewTab"
 import { MetricsCard, WarningsList } from "../ui/layout/output-panel/OutputPanel"
 import { GithubLink } from "../ui/layout/github-link/GithubLink"
 import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
+import { LanguageSelect } from "../ui/layout/language-select/LanguageSelect"
 import { RotationTab } from "../ui/features/rotation/rotation-tab/RotationTab"
 import { SimulationTab } from "../ui/features/simulation/simulation-tab/SimulationTab"
 import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
@@ -313,6 +314,7 @@ function AppInner() {
             <ChangelogButton />
           </div>
           <div className={styles.appTitlebarActions}>
+            <LanguageSelect />
             <GithubLink />
             <button
               type="button"

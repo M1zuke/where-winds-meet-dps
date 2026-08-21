@@ -101,7 +101,7 @@ export function GraduationBuildDialog({
               checked={relayed}
               onChange={(event) => setRelayed(event.target.checked)}
             />
-            {t(`Relayed words (${RELAYED_PERCENT}% of max roll)`)}
+            {t("Relayed words")} ({RELAYED_PERCENT}% {t("of max roll")})
           </label>
           <span className={styles.theoreticalDps}>
             {t("DPS")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
@@ -143,7 +143,9 @@ export function GraduationBuildDialog({
                         <span className="hint">{baseStatsLabel(piece, t)}</span>
                       </div>
                       <div className={previewStyles.identityRow}>
-                        <span className={styles.identityBadge}>{t(`Level ${piece.level}`)}</span>
+                        <span className={styles.identityBadge}>
+                          {t("Level")} {piece.level}
+                        </span>
                         <span className={styles.identityBadge}>{t(piece.rarity)}</span>
                       </div>
                       <div className={previewStyles.affixList}>

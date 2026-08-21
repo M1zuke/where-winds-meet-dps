@@ -5,6 +5,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { TALENT_STAT_LABELS } from "../shared/talentStatLabels"
 import styles from "./OdditiesTab.module.scss"
 
 interface Props {
@@ -95,7 +96,7 @@ function nodeSummary(node: OddityNode, t: (text: string) => string): string {
     : isRate
       ? `${(node.value * 100).toFixed(2)}%`
       : `${node.value}`
-  return `${sign}${num} ${t(`stat.${node.stat}`)}`
+  return `${sign}${num} ${t(TALENT_STAT_LABELS[node.stat] ?? node.stat)}`
 }
 
 function regionLabel(region: string): string {
@@ -524,7 +525,10 @@ function NodeEditor({
           ariaLabel={t("Stat")}
           value={node.stat}
           onChange={(stat) => onPatch({ stat: stat as TalentStat })}
-          options={STAT_OPTIONS.map((stat) => ({ value: stat, label: t(`stat.${stat}`) }))}
+          options={STAT_OPTIONS.map((stat) => ({
+            value: stat,
+            label: t(TALENT_STAT_LABELS[stat]),
+          }))}
         />
       </div>
       <div className={styles.talentsCell}>
