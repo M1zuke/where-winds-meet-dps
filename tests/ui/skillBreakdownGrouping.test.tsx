@@ -10,6 +10,7 @@ function row(patch: Partial<SkillTickResult>): SkillTickResult {
   return {
     name: "Variant",
     breakdownName: "Variant",
+    breakdownKey: "content.skill.variant.breakdown",
     type: "weapon",
     count: 1,
     expectedDamage: 100,

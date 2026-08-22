@@ -35,6 +35,7 @@ import {
   loadCustomDebuffsForClass,
 } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { buffKey, rotationKey, skillKey } from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
@@ -54,12 +55,15 @@ function stepCastFrames(step: RotationStep, skill: Skill | undefined): number {
   return skill.castFrames || maxFrame + 1
 }
 
-function effectsSummary(effects: BuffStatEffect[], t: (text: string) => string): string {
+function effectsSummary(
+  effects: BuffStatEffect[],
+  t: (key: string, fallback?: string) => string,
+): string {
   return effects
     .filter((effect) => effect.amount !== 0)
     .map((effect) => {
       const def = STAT_DEF_BY_KEY[effect.statKey]
-      const label = def ? t(def.label) : effect.statKey
+      const label = def ? t(def.labelKey, def.label) : effect.statKey
       const sign = effect.amount >= 0 ? "+" : ""
       const value =
         def?.unit === "fraction"
@@ -72,33 +76,34 @@ function effectsSummary(effects: BuffStatEffect[], t: (text: string) => string):
 
 function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
   const { t } = useI18n()
-  const label = tag.maxStacks > 1 ? `${t(tag.name)} ${tag.stacks}/${tag.maxStacks}` : t(tag.name)
+  const name = t(buffKey(tag.id), tag.name)
+  const label = tag.maxStacks > 1 ? `${name} ${tag.stacks}/${tag.maxStacks}` : name
   const eff = effectsSummary(tag.effects, t)
   const style = { "--buff-hue": buffChipHue(tag.name, tag.id) } as React.CSSProperties
   return (
     <span className={styles.castBuffTag} style={style}>
       {label}
       <span className={styles.castBuffTooltip}>
-        <div>{t(tag.name)}</div>
+        <div>{name}</div>
         {tag.maxStacks > 1 && (
           <div>
-            {t("Stacks")}: {tag.stacks} / {tag.maxStacks}
+            {t("rotation.editor.stacks")}: {tag.stacks} / {tag.maxStacks}
           </div>
         )}
         {tag.remainingSec != null && (
           <div>
-            {t("Remaining")}: {tag.remainingSec.toFixed(1)}s
+            {t("rotation.editor.remaining")}: {tag.remainingSec.toFixed(1)}s
           </div>
         )}
         {tag.dotIntervalSec != null && (
           <div>
-            {t("DoT")} · {t("every")} {tag.dotIntervalSec.toFixed(1)}s
+            {t("common.dot")} · {t("common.every")} {tag.dotIntervalSec.toFixed(1)}s
           </div>
         )}
         {eff && <div>{eff}</div>}
         {tag.requires && (
           <div>
-            {t("requires")} {tag.requires}
+            {t("common.requires")} {tag.requires}
           </div>
         )}
         {tag.description && <div>{tag.description}</div>}
@@ -136,7 +141,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     [classSkills],
   )
   const skillOpts: ComboboxOption[] = useMemo(
-    () => classSkills.map((skill) => ({ value: skill.id, label: skill.name || t("Unnamed") })),
+    () =>
+      classSkills.map((skill) => ({ value: skill.id, label: skill.name || t("common.unnamed2") })),
     [classSkills, t],
   )
 
@@ -291,7 +297,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function handleSave() {
     if (!activeRotation || !isCustom) return
     if (!effectiveName.trim()) {
-      alert(t("Please enter a name"))
+      alert(t("rotation.editor.pleaseEnterAName"))
       return
     }
     const persisted = saveCustomRotation({ ...activeRotation, name: effectiveName })
@@ -302,7 +308,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function handleSaveAs() {
     if (!activeRotation || !isCustom) return
     if (!effectiveName.trim()) {
-      alert(t("Please enter a name"))
+      alert(t("rotation.editor.pleaseEnterAName"))
       return
     }
     const id = newRotationId()
@@ -313,7 +319,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
 
   async function handleDelete() {
     if (!activeRotation || !isCustom || !isPersisted) return
-    if (!(await confirm(t("Delete this custom rotation?")))) return
+    if (!(await confirm(t("rotation.editor.deleteThisCustomRotation")))) return
     deleteCustomRotation(activeRotation.id)
     setSaved(loadCustomRotations())
     onChange({ ...inputs, activeCustomRotation: null })
@@ -355,7 +361,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       onChange({ ...inputs, activeCustomRotation: persisted, selectedBuiltinRotationId: null })
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
-      alert(`${t("Import failed")}: ${msg}`)
+      alert(`${t("common.importFailed")}: ${msg}`)
     }
   }
 
@@ -364,10 +370,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   return (
     <div className={styles.customRotationPanel}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Rotation Editor")}</span>
+        <span className="toolbar-label">{t("rotation.editor.rotationEditor")}</span>
         <Select
           className={styles.activeSelect + (isCustom ? ` ${styles.isActive}` : "")}
-          ariaLabel={t("Rotation")}
+          ariaLabel={t("common.rotation")}
           value={selectedRotationValue}
           onChange={selectRotation}
           options={[
@@ -376,16 +382,16 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               .map((option) => ({
                 value: option.id,
                 label:
-                  (t(option.name) || t("(unnamed)")) +
-                  (option.isClassDefault ? t(" (default)") : ""),
-                group: t("Built-in rotations"),
+                  (option.name ? t(rotationKey(option.id), option.name) : t("common.unnamed")) +
+                  (option.isClassDefault ? t("rotation.editor.default") : ""),
+                group: t("common.builtInRotations"),
               })),
             ...options
               .filter((option) => option.group === "custom")
               .map((option) => ({
                 value: option.id,
-                label: t(option.name) || t("(unnamed)"),
-                group: t("Custom Rotation"),
+                label: option.name ? t(rotationKey(option.id), option.name) : t("common.unnamed"),
+                group: t("common.customRotation"),
               })),
           ]}
         />
@@ -394,7 +400,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         )}
         <div className="spacer" />
         <button type="button" className="btn" onClick={handleNew}>
-          + {t("New")}
+          + {t("common.new")}
         </button>
         <input
           ref={fileInputRef}
@@ -409,10 +415,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         <div className={styles.editor}>
           <div className={styles.meta}>
             <label className={styles.field}>
-              <span>{t("Name")}</span>
+              <span>{t("rotation.editor.name")}</span>
               <TextInput
                 value={isCustom ? effectiveName : activeRotation.name}
-                placeholder={t("(unnamed)")}
+                placeholder={t("common.unnamed")}
                 disabled={!isCustom}
                 onChange={(e) =>
                   setNameDraft({ rotationId: activeRotationId, value: e.target.value })
@@ -420,23 +426,23 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               />
             </label>
             <label className={styles.field}>
-              <span>{t("Duration (computed)")}</span>
+              <span>{t("rotation.editor.durationComputed")}</span>
               <span className={styles.durationDisplay}>{computedDurationSec.toFixed(2)} s</span>
             </label>
             <div className={styles.actions}>
               {isCustom ? (
                 <>
                   <button type="button" className="btn primary" onClick={handleSave}>
-                    {t("Save")}
+                    {t("common.save")}
                   </button>
                   <button type="button" className="btn" onClick={handleSaveAs}>
-                    {t("Save as")}
+                    {t("rotation.editor.saveAs")}
                   </button>
                   <button type="button" className="btn" onClick={handleExport}>
-                    {t("Export")}
+                    {t("common.export")}
                   </button>
                   <button type="button" className="btn" onClick={handleImportClick}>
-                    {t("Import")}
+                    {t("common.import")}
                   </button>
                   <button
                     type="button"
@@ -444,19 +450,19 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                     onClick={handleDelete}
                     disabled={!isPersisted}
                   >
-                    {t("Delete")}
+                    {t("common.delete")}
                   </button>
                 </>
               ) : (
                 <>
                   <button type="button" className="btn primary" onClick={forkToCustom}>
-                    {t("Fork to Custom")}
+                    {t("rotation.editor.forkToCustom")}
                   </button>
                   <button type="button" className="btn" onClick={handleExport}>
-                    {t("Export")}
+                    {t("common.export")}
                   </button>
                   <button type="button" className="btn" onClick={handleImportClick}>
-                    {t("Import")}
+                    {t("common.import")}
                   </button>
                 </>
               )}
@@ -488,16 +494,21 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                         const nextSkill = skillsById.get(skillId)
                         updateStep(idx, { skillId, hitCount: nextSkill?.hits.length ?? 1 })
                       }}
-                      placeholder={t("Select skill…")}
+                      placeholder={t("rotation.editor.selectSkill")}
                     />
                   ) : (
-                    <span className={styles.skillStatic}>{t(skill?.name ?? step.skillId)}</span>
+                    <span className={styles.skillStatic}>
+                      {skill ? t(skillKey(skill), skill.name) : step.skillId}
+                    </span>
                   )}
                   <span className={styles.castReadonly}>
-                    {maxHits} {t("hits")}
+                    {maxHits} {t("common.hits")}
                   </span>
-                  <span className={styles.prepull} title={t("Pre-pull (excluded from duration)")}>
-                    {skill && isPrePullSkill(skill) ? t("Pre-pull") : ""}
+                  <span
+                    className={styles.prepull}
+                    title={t("rotation.editor.prePullExcludedFromDuration")}
+                  >
+                    {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
                   </span>
                   <div className={styles.buffsCell}>
                     {shownBuffs.length === 0 ? (
@@ -512,7 +523,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                         type="button"
                         className="btn icon"
                         onClick={() => addStepAfter(idx)}
-                        title={t("Add skill after this line")}
+                        title={t("rotation.editor.addSkillAfterThisLine")}
                         aria-label="add after"
                       >
                         +
@@ -548,7 +559,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 </div>
               )
             })}
-            {steps.length === 0 && <div className={styles.entriesEmpty}>{t("(none)")}</div>}
+            {steps.length === 0 && <div className={styles.entriesEmpty}>{t("common.none")}</div>}
           </div>
 
           {isCustom && (
@@ -558,21 +569,23 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               onClick={addStep}
               disabled={classSkills.length === 0}
             >
-              + {t("Add skill")}
+              + {t("rotation.editor.addSkill")}
             </button>
           )}
 
           {isCustom ? (
             <div className={styles.permanentBuffs}>
-              <span className={styles.permanentLabel}>{t("Permanent Buffs/Debuffs")}</span>
+              <span className={styles.permanentLabel}>
+                {t("rotation.editor.permanentBuffsDebuffs")}
+              </span>
               <BuffMultiSelect
-                label={t("Permanent buffs")}
+                label={t("rotation.editor.permanentBuffs")}
                 buffs={classBuffs}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
               />
               <BuffMultiSelect
-                label={t("Permanent Debuffs")}
+                label={t("rotation.editor.permanentDebuffs")}
                 buffs={classDebuffs}
                 selected={activeRotation.permanentBuffIds}
                 onChange={setPermanentBuffIds}
@@ -581,7 +594,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           ) : (
             activeRotation.permanentBuffIds.length > 0 && (
               <div className={styles.permanentBuffs}>
-                <span className={styles.permanentLabel}>{t("Permanent Buffs/Debuffs")}</span>
+                <span className={styles.permanentLabel}>
+                  {t("rotation.editor.permanentBuffsDebuffs")}
+                </span>
                 <span>
                   {activeRotation.permanentBuffIds
                     .map((id) =>
@@ -602,11 +617,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               ))}
             </div>
           )}
-          <div className="hint">
-            {t(
-              "Each step picks a saved skill; hit-triggered buffs/skills land at the hit's frame offset. The Buffs column shows what's still active once that cast fully resolves, chips are ordered by when each buff first appears in the rotation, and always-on spec passives are listed in the Class Talents tab instead.",
-            )}
-          </div>
+          <div className="hint">{t("rotation.editor.eachStepPicksHint")}</div>
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import type { Inputs } from "./types"
 import type { TargetOverride } from "./panel"
 import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { STAT_PATH_LINES, type StatPathKey } from "../data/stats/statLines"
+import { statLineKey } from "../i18n/contentKeys"
 
 export type StatScope = "player" | "target"
 export type StatUnit = "fraction" | "flat"
@@ -16,6 +17,7 @@ export type StatKey = StatPathKey
 export interface StatDef {
   key: StatKey
   label: string
+  labelKey: string
   scope: StatScope
   unit: StatUnit
   category: string
@@ -24,6 +26,7 @@ export interface StatDef {
 export const STAT_DEFS: readonly StatDef[] = STAT_PATH_LINES.map((line) => ({
   key: line.enginePath as StatKey,
   label: line.label,
+  labelKey: statLineKey(line.id),
   scope: line.scope,
   unit: line.unit === "raw" ? "flat" : "fraction",
   category: line.category,

@@ -2,8 +2,10 @@ import { useMemo } from "react"
 import type { Inputs, MartialArtsTalent, ScalingSource, TalentStat } from "../../../../engine/types"
 import { alwaysActiveClassBuffs, type ClassBuffRow } from "../../../../engine/buffs/catalog"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { buffKey, talentKey } from "../../../../i18n/contentKeys"
 import { buildScalingSources } from "../../../../definitions/baseStats"
 import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
+import { TALENT_STAT_KEYS } from "../shared/talentStatKeys"
 import styles from "./TalentsTab.module.scss"
 
 interface Props {
@@ -40,49 +42,25 @@ const PENETRATION_STATS = new Set<TalentStat>([
   "bamboocutPenetration",
 ])
 
-const STAT_LABEL: Record<TalentStat, string> = {
-  minPhys: "Min Phys",
-  maxPhys: "Max Phys",
-  physPenetration: "Phys Penetration",
-  minBellstrike: "Min Bellstrike",
-  maxBellstrike: "Max Bellstrike",
-  bellstrikePenetration: "Bellstrike Penetration",
-  minStonesplit: "Min Stonesplit",
-  maxStonesplit: "Max Stonesplit",
-  stonesplitPenetration: "Stonesplit Penetration",
-  minSilkbind: "Min Silkbind",
-  maxSilkbind: "Max Silkbind",
-  silkbindPenetration: "Silkbind Penetration",
-  minBamboocut: "Min Bamboocut",
-  maxBamboocut: "Max Bamboocut",
-  bamboocutPenetration: "Bamboocut Penetration",
-  precisionRate: "Precision Rate",
-  critRate: "Crit Rate",
-  affinityRate: "Affinity Rate",
-  critDamage: "Crit Damage",
-  affinityDamage: "Affinity Damage",
-  attributeDamage: "Attribute Damage",
-}
-
-const SOURCE_LABEL: Record<ScalingSource, string> = {
-  power: "Power",
-  agility: "Agility",
-  momentum: "Momentum",
-  "phys.min": "Min Phys",
-  "phys.max": "Max Phys",
-  "phys.penetration": "Phys Penetration",
-  "bellstrike.min": "Min Bellstrike",
-  "bellstrike.max": "Max Bellstrike",
-  "bellstrike.penetration": "Bellstrike Penetration",
-  "stonesplit.min": "Min Stonesplit",
-  "stonesplit.max": "Max Stonesplit",
-  "stonesplit.penetration": "Stonesplit Penetration",
-  "silkbind.min": "Min Silkbind",
-  "silkbind.max": "Max Silkbind",
-  "silkbind.penetration": "Silkbind Penetration",
-  "bamboocut.min": "Min Bamboocut",
-  "bamboocut.max": "Max Bamboocut",
-  "bamboocut.penetration": "Bamboocut Penetration",
+const SOURCE_KEYS: Record<ScalingSource, string> = {
+  power: "content.statLine.power",
+  agility: "content.statLine.agility",
+  momentum: "content.statLine.momentum",
+  "phys.min": TALENT_STAT_KEYS.minPhys,
+  "phys.max": TALENT_STAT_KEYS.maxPhys,
+  "phys.penetration": TALENT_STAT_KEYS.physPenetration,
+  "bellstrike.min": TALENT_STAT_KEYS.minBellstrike,
+  "bellstrike.max": TALENT_STAT_KEYS.maxBellstrike,
+  "bellstrike.penetration": TALENT_STAT_KEYS.bellstrikePenetration,
+  "stonesplit.min": TALENT_STAT_KEYS.minStonesplit,
+  "stonesplit.max": TALENT_STAT_KEYS.maxStonesplit,
+  "stonesplit.penetration": TALENT_STAT_KEYS.stonesplitPenetration,
+  "silkbind.min": TALENT_STAT_KEYS.minSilkbind,
+  "silkbind.max": TALENT_STAT_KEYS.maxSilkbind,
+  "silkbind.penetration": TALENT_STAT_KEYS.silkbindPenetration,
+  "bamboocut.min": TALENT_STAT_KEYS.minBamboocut,
+  "bamboocut.max": TALENT_STAT_KEYS.maxBamboocut,
+  "bamboocut.penetration": TALENT_STAT_KEYS.bamboocutPenetration,
 }
 
 function formatStatValue(stat: TalentStat, value: number): string {
@@ -99,90 +77,93 @@ function talentCurrent(row: MartialArtsTalent, sources: Record<ScalingSource, nu
 }
 
 type TalentEffectLine =
-  | { kind: "talent"; skill: string; label?: string }
-  | { kind: "talentFlatText"; skills: string[]; text: string }
-  | { kind: "mechanic"; id: string; note?: string }
-  | { kind: "static"; text: string; subNote?: string }
+  | { kind: "talent"; skill: string; labelKey?: string }
+  | { kind: "talentFlatText"; skills: string[]; textKey: string }
+  | { kind: "mechanic"; id: string; noteKey?: string }
+  | { kind: "static"; textKey: string; subNoteKey?: string }
 
 interface TalentCardConfig {
-  name: string
+  nameKey: string
   lines: TalentEffectLine[]
 }
 
 interface WeaponColumnConfig {
-  weapon: string
+  weaponKey: string
   cards: TalentCardConfig[]
 }
 
 const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
   bellstrikeUmbra: [
     {
-      weapon: "Strategic Sword",
+      weaponKey: "content.martialArt.strategicSword",
       cards: [
         {
-          name: "Affinity Rate UP",
+          nameKey: "talents.card.affinityRateUp",
           lines: [{ kind: "talent", skill: "Affinity Rate UP" }],
         },
         {
-          name: "Bleed penetration Enhancement",
+          nameKey: "talents.card.bleedPenetrationEnhancement",
           lines: [
             {
               kind: "mechanic",
               id: "bellstrikeUmbraBleedPen",
-              note: "Scales with Max Phys (full at 1500)",
+              noteKey: "talents.note.scalesWithMaxPhysFullAt1500",
             },
           ],
         },
         {
-          name: "Bellstrike Attribute UP",
+          nameKey: "talents.card.bellstrikeAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"],
-              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+              textKey: "talents.effect.98Min196MaxBellstrike",
             },
             { kind: "talent", skill: "Bellstrike Penetration Scale" },
           ],
         },
         {
-          name: "Attr. Attack DMG UP",
+          nameKey: "talents.card.attrAttackDmgUp",
           lines: [
             {
               kind: "static",
-              text: "Bellstrike Attack deals 50% bonus damage.",
-              subNote:
-                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+              textKey: "talents.effect.bellstrikeAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
         },
       ],
     },
     {
-      weapon: "Heavenquaker Spear",
+      weaponKey: "content.martialArt.heavenquakerSpear",
       cards: [
         {
-          name: "Physical Attack UP",
+          nameKey: "talents.card.physicalAttackUp",
           lines: [{ kind: "talent", skill: "Physical Attack UP" }],
         },
         {
-          name: "Damage Over Time",
+          nameKey: "talents.card.damageOverTime",
           lines: [
             {
               kind: "mechanic",
               id: "bellstrikeUmbraBleedingDamage",
-              note: "Affinity DMG 18% on 1500 Max Physical",
+              noteKey: "talents.note.affinityDmg18On1500",
             },
           ],
         },
         {
-          name: "Bellstrike Attribute UP",
+          nameKey: "talents.card.bellstrikeAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Spear Bellstrike Attack Min", "Spear Bellstrike Attack Max"],
-              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+              textKey: "talents.effect.98Min196MaxBellstrike",
             },
-            { kind: "talent", skill: "Attribute Damage Scale", label: "Attribute Damage Boost" },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "content.statLine.attributeDamageBoost",
+            },
           ],
         },
       ],
@@ -190,106 +171,104 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
   ],
   silkbindJade: [
     {
-      weapon: "Vernal Umbrella",
+      weaponKey: "content.martialArt.vernalUmbrella",
       cards: [
         {
-          name: "Trajectory Skill Enhancement",
+          nameKey: "talents.card.trajectorySkillEnhancement",
           lines: [
             {
               kind: "static",
-              text: "Ballistic skills ignore 5 Physical Resistance, and 15 more during Qi break or Lingering Bone.",
-              subNote:
-                "Modelled as the trajectorySkill class buff — see it in the Skill Editor on the ballistic skills that receive it. Not a stat this tab contributes.",
+              textKey: "talents.effect.ballisticSkillsIgnoreHint",
+              subNoteKey: "talents.note.modelledAsTheTrajectoryskillHint",
             },
           ],
         },
         {
-          name: "Critical Rate UP",
+          nameKey: "talents.card.criticalRateUp",
           lines: [{ kind: "talent", skill: "Critical Rate UP" }],
         },
         {
-          name: "Trajectory Calculation Enhancement",
+          nameKey: "talents.card.trajectoryCalculationEnhancement",
           lines: [
             {
               kind: "static",
-              text: "Ballistic skills gain 2.4% Crit DMG per 50 Min Physical, up to 36% at 750.",
-              subNote:
-                "Already applied in the damage formula — needs the weapon to grant the min-phys crit bonus.",
+              textKey: "talents.effect.ballisticSkillsGainHint",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaNeedsHint",
             },
           ],
         },
         {
-          name: "Silkbind Attribute UP",
+          nameKey: "talents.card.silkbindAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Umbrella Silkbind Attack Min", "Umbrella Silkbind Attack Max"],
-              text: "+98 Min / +196 Max Silkbind Attack (always)",
+              textKey: "talents.effect.98Min196MaxSilkbind",
             },
             { kind: "talent", skill: "Silkbind Penetration Scale" },
           ],
         },
         {
-          name: "Attr. Attack DMG UP",
+          nameKey: "talents.card.attrAttackDmgUp",
           lines: [
             {
               kind: "static",
-              text: "Silkbind Attack deals 50% bonus damage.",
-              subNote:
-                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+              textKey: "talents.effect.silkbindAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
         },
       ],
     },
     {
-      weapon: "Inkwell Fan",
+      weaponKey: "content.martialArt.inkwellFan",
       cards: [
         {
-          name: "Low Qi Follow-up Enhancement",
+          nameKey: "talents.card.lowQiFollowUpEnhancement",
           lines: [
             {
               kind: "static",
-              text: "Against targets below 30% Qi, Moon Shatter Spring gains 30% Critical Rate and 8% damage.",
-              subNote:
-                "Modelled as the lowQiFollowUp class buff — see it in the Skill Editor on the pursuit skills that receive it. Not a stat this tab contributes.",
+              textKey: "talents.effect.againstTargetsBelowHint",
+              subNoteKey: "talents.note.modelledAsTheLowqifollowupHint",
             },
           ],
         },
         {
-          name: "Physical Attack UP",
+          nameKey: "talents.card.physicalAttackUp",
           lines: [{ kind: "talent", skill: "Physical Attack UP" }],
         },
         {
-          name: "Heavy Attack Pursuit Enhancement",
+          nameKey: "talents.card.heavyAttackPursuitEnhancement",
           lines: [
             {
               kind: "static",
-              text: "Moon Shatter Spring gains 2.4% Crit DMG per 50 Min Physical, up to 36% at 750.",
-              subNote:
-                "Already applied in the damage formula — needs the weapon to grant the min-phys crit bonus.",
+              textKey: "talents.effect.moonShatterSpringHint",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaNeedsHint",
             },
           ],
         },
         {
-          name: "Silkbind Attribute UP",
+          nameKey: "talents.card.silkbindAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Fan Silkbind Attack Min", "Fan Silkbind Attack Max"],
-              text: "+98 Min / +196 Max Silkbind Attack (always)",
+              textKey: "talents.effect.98Min196MaxSilkbind",
             },
-            { kind: "talent", skill: "Attribute Damage Scale", label: "Silkbind DMG Bonus" },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "talents.line.silkbindDmgBonus",
+            },
           ],
         },
         {
-          name: "Attr. Attack DMG UP",
+          nameKey: "talents.card.attrAttackDmgUp",
           lines: [
             {
               kind: "static",
-              text: "Silkbind Attack deals 50% bonus damage.",
-              subNote:
-                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+              textKey: "talents.effect.silkbindAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
         },
@@ -298,110 +277,109 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
   ],
   bellstrikeSplendor: [
     {
-      weapon: "Nameless Sword",
+      weaponKey: "content.martialArt.namelessSword",
       cards: [
         {
-          name: "Qi Struggle Enhancement",
+          nameKey: "talents.card.qiStruggleEnhancement",
           lines: [
             {
               kind: "static",
-              text: "+10% Qi DMG.",
-              subNote:
-                "Qi damage drains the target's Qi bar rather than its HP, so this contributes nothing to damage.",
+              textKey: "talents.effect.10QiDmg",
+              subNoteKey: "talents.note.qiDamageDrainsHint",
             },
             {
               kind: "mechanic",
               id: "swordEnergyHpDamage",
-              note: "Scales with Max Phys (full at 1000)",
+              noteKey: "talents.note.scalesWithMaxPhysFullAt1000",
             },
           ],
         },
         {
-          name: "Physical Attack UP",
+          nameKey: "talents.card.physicalAttackUp",
           lines: [{ kind: "talent", skill: "Physical Attack UP" }],
         },
         {
-          name: "Sword Qi Affinity",
+          nameKey: "talents.card.swordQiAffinity",
           lines: [
             {
               kind: "mechanic",
               id: "swordEnergyEnhancement",
-              note: "Scales with Max Phys (full at 1500)",
+              noteKey: "talents.note.scalesWithMaxPhysFullAt1500",
             },
           ],
         },
         {
-          name: "Bellstrike Attribute UP",
+          nameKey: "talents.card.bellstrikeAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"],
-              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+              textKey: "talents.effect.98Min196MaxBellstrike",
             },
             { kind: "talent", skill: "Bellstrike Penetration Scale" },
           ],
         },
         {
-          name: "Attr. Attack DMG UP",
+          nameKey: "talents.card.attrAttackDmgUp",
           lines: [
             {
               kind: "static",
-              text: "Bellstrike Attack deals 50% bonus damage.",
-              subNote:
-                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+              textKey: "talents.effect.bellstrikeAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
         },
       ],
     },
     {
-      weapon: "Nameless Spear",
+      weaponKey: "content.martialArt.namelessSpear",
       cards: [
         {
-          name: "Max Endurance UP",
+          nameKey: "talents.card.maxEnduranceUp",
           lines: [
             {
               kind: "static",
-              text: "+10 Max Endurance, and up to +10 more from Affinity Rate.",
-              subNote:
-                "The engine runs no endurance economy, so this contributes nothing to damage.",
+              textKey: "talents.effect.10MaxEnduranceAndUp",
+              subNoteKey: "talents.note.theEngineRunsHint",
             },
           ],
         },
         {
-          name: "Affinity Rate UP",
+          nameKey: "talents.card.affinityRateUp",
           lines: [{ kind: "talent", skill: "Affinity Rate UP" }],
         },
         {
-          name: "Affinity DMG UP",
+          nameKey: "talents.card.affinityDmgUp",
           lines: [
             {
               kind: "static",
-              text: "+18% Affinity DMG while Endless Gale is up or Endurance is below 60%.",
-              subNote:
-                "One bonus behind two conditions: Endless Gale is the timed window, and the Endurance half is a combat-setting toggle that stands in for the whole rotation.",
+              textKey: "talents.effect.18AffinityDmgHint",
+              subNoteKey: "talents.note.oneBonusBehindHint",
             },
           ],
         },
         {
-          name: "Bellstrike Attribute UP",
+          nameKey: "talents.card.bellstrikeAttributeUp",
           lines: [
             {
               kind: "talentFlatText",
               skills: ["Spear Bellstrike Attack Min", "Spear Bellstrike Attack Max"],
-              text: "+98 Min / +196 Max Bellstrike Attack (always)",
+              textKey: "talents.effect.98Min196MaxBellstrike",
             },
-            { kind: "talent", skill: "Attribute Damage Scale", label: "Attribute Damage Boost" },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "content.statLine.attributeDamageBoost",
+            },
           ],
         },
         {
-          name: "Attr. Attack DMG UP",
+          nameKey: "talents.card.attrAttackDmgUp",
           lines: [
             {
               kind: "static",
-              text: "Bellstrike Attack deals 50% bonus damage.",
-              subNote:
-                "Already applied in the damage formula (elevated attribute multiplier) — not a stat this tab contributes.",
+              textKey: "talents.effect.bellstrikeAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
         },
@@ -439,17 +417,17 @@ export function TalentsTab({ inputs }: Props) {
     return (
       <div className={styles.classBuffLine} key={`talent:${line.skill}`}>
         <div className={styles.classBuffHead}>
-          {line.label && <span className={styles.classBuffName}>{t(line.label)}</span>}
+          {line.labelKey && <span className={styles.classBuffName}>{t(line.labelKey)}</span>}
           <span className={styles.classBuffEffect}>
-            {formatStatValue(row.stat, row.maxBonus)} {t(STAT_LABEL[row.stat])}
+            {formatStatValue(row.stat, row.maxBonus)} {t(TALENT_STAT_KEYS[row.stat], row.stat)}
           </span>
           <span className={styles.classBuffCurrent}>
-            {t("Current")}: {formatStatValue(row.stat, current)}
+            {t("talents.current")}: {formatStatValue(row.stat, current)}
           </span>
         </div>
         <div className={styles.classBuffNote}>
-          {t("Scales With")}: {t(SOURCE_LABEL[row.scalesWith])}
-          {row.scaleMax > 0 ? ` (${t("Cap")}: ${capDisplay})` : ""}
+          {t("talents.scalesWith")}: {t(SOURCE_KEYS[row.scalesWith])}
+          {row.scaleMax > 0 ? ` (${t("talents.cap")}: ${capDisplay})` : ""}
         </div>
       </div>
     )
@@ -461,7 +439,7 @@ export function TalentsTab({ inputs }: Props) {
     return (
       <div className={styles.classBuffLine} key={`flat:${line.skills.join("+")}`}>
         <div className={styles.classBuffHead}>
-          <span className={styles.classBuffEffect}>{t(line.text)}</span>
+          <span className={styles.classBuffEffect}>{t(line.textKey)}</span>
         </div>
       </div>
     )
@@ -476,18 +454,18 @@ export function TalentsTab({ inputs }: Props) {
         <div className={styles.classBuffHead}>
           <span className={styles.classBuffEffect}>{buff.effect}</span>
         </div>
-        {line.note && <div className={styles.classBuffNote}>{t(line.note)}</div>}
+        {line.noteKey && <div className={styles.classBuffNote}>{t(line.noteKey)}</div>}
       </div>
     )
   }
 
   function renderStaticLine(line: Extract<TalentEffectLine, { kind: "static" }>) {
     return (
-      <div className={styles.classBuffLine} key={`static:${line.text}`}>
+      <div className={styles.classBuffLine} key={`static:${line.textKey}`}>
         <div className={styles.classBuffHead}>
-          <span className={styles.classBuffEffect}>{t(line.text)}</span>
+          <span className={styles.classBuffEffect}>{t(line.textKey)}</span>
         </div>
-        {line.subNote && <div className={styles.classBuffNote}>{t(line.subNote)}</div>}
+        {line.subNoteKey && <div className={styles.classBuffNote}>{t(line.subNoteKey)}</div>}
       </div>
     )
   }
@@ -511,9 +489,9 @@ export function TalentsTab({ inputs }: Props) {
     const lines = card.lines.map(renderLine).filter((line) => line !== null)
     if (lines.length === 0) return null
     return (
-      <div className={styles.classBuffRow} key={card.name}>
+      <div className={styles.classBuffRow} key={card.nameKey}>
         <div className={styles.classBuffHead}>
-          <span className={styles.classBuffName}>{t(card.name)}</span>
+          <span className={styles.classBuffName}>{t(card.nameKey)}</span>
         </div>
         {lines}
       </div>
@@ -522,8 +500,8 @@ export function TalentsTab({ inputs }: Props) {
 
   function renderColumn(col: WeaponColumnConfig) {
     return (
-      <div className={styles.classBuffsColumn} key={col.weapon}>
-        <div className={styles.classBuffsColumnHead}>{t(col.weapon)}</div>
+      <div className={styles.classBuffsColumn} key={col.weaponKey}>
+        <div className={styles.classBuffsColumnHead}>{t(col.weaponKey)}</div>
         <div className={styles.classBuffsList}>{col.cards.map(renderCard)}</div>
       </div>
     )
@@ -533,8 +511,8 @@ export function TalentsTab({ inputs }: Props) {
     <div>
       <div>
         <div className="toolbar">
-          <span className="toolbar-label">{t("Stat Buffs")}</span>
-          <span className={styles.classBuffsNote}>{t("Always on (class-tied)")}</span>
+          <span className="toolbar-label">{t("talents.statBuffs")}</span>
+          <span className={styles.classBuffsNote}>{t("talents.alwaysOnClassTied")}</span>
         </div>
 
         {columns ? (
@@ -546,7 +524,7 @@ export function TalentsTab({ inputs }: Props) {
           </div>
         ) : (
           <>
-            {talents.length === 0 && <div>{t("No stat buffs for this class yet.")}</div>}
+            {talents.length === 0 && <div>{t("talents.noStatBuffsForThis")}</div>}
 
             {talents.length > 0 && (
               <div className={styles.classBuffsList}>
@@ -558,17 +536,18 @@ export function TalentsTab({ inputs }: Props) {
                   return (
                     <div key={row.id} className={styles.classBuffRow}>
                       <div className={styles.classBuffHead}>
-                        <span className={styles.classBuffName}>{row.name}</span>
+                        <span className={styles.classBuffName}>{t(talentKey(row), row.name)}</span>
                         <span className={styles.classBuffEffect}>
-                          {formatStatValue(row.stat, row.maxBonus)} {STAT_LABEL[row.stat]}
+                          {formatStatValue(row.stat, row.maxBonus)}{" "}
+                          {t(TALENT_STAT_KEYS[row.stat], row.stat)}
                         </span>
                         <span className={styles.classBuffCurrent}>
-                          {t("Current")}: {formatStatValue(row.stat, current)}
+                          {t("talents.current")}: {formatStatValue(row.stat, current)}
                         </span>
                       </div>
                       <div className={styles.classBuffNote}>
-                        {t("Scales With")}: {SOURCE_LABEL[row.scalesWith]}
-                        {row.scaleMax > 0 ? ` (${t("Cap")}: ${capDisplay})` : ""}
+                        {t("talents.scalesWith")}: {t(SOURCE_KEYS[row.scalesWith])}
+                        {row.scaleMax > 0 ? ` (${t("talents.cap")}: ${capDisplay})` : ""}
                       </div>
                     </div>
                   )
@@ -579,14 +558,16 @@ export function TalentsTab({ inputs }: Props) {
             {classBuffs.length > 0 && (
               <div className={styles.classBuffs}>
                 <div className="toolbar">
-                  <span className="toolbar-label">{t("Class Buffs")}</span>
-                  <span className={styles.classBuffsNote}>{t("Always on (class-tied)")}</span>
+                  <span className="toolbar-label">{t("common.classBuffs")}</span>
+                  <span className={styles.classBuffsNote}>{t("talents.alwaysOnClassTied")}</span>
                 </div>
                 <div className={styles.classBuffsList}>
                   {classBuffs.map((buff) => (
                     <div key={buff.id} className={styles.classBuffRow}>
                       <div className={styles.classBuffHead}>
-                        <span className={styles.classBuffName}>{t(buff.name)}</span>
+                        <span className={styles.classBuffName}>
+                          {t(buffKey(buff.id), buff.name)}
+                        </span>
                         <span className={styles.classBuffEffect}>{buff.effect}</span>
                       </div>
                     </div>

@@ -3,6 +3,7 @@ import type { SkillTickResult } from "../../engine/types"
 
 export interface BreakdownRow {
   name: string
+  nameKey: string
   count: number
   expectedDamage: number
   percentOfTotal: number
@@ -20,6 +21,7 @@ export function groupByBreakdownName(rows: SkillTickResult[]): BreakdownRow[] {
     } else {
       grouped.set(name, {
         name,
+        nameKey: row.breakdownKey,
         count: row.count,
         expectedDamage: row.expectedDamage,
         percentOfTotal: row.percentOfTotal,

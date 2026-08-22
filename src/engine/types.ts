@@ -234,7 +234,8 @@ export function isWeaponSlot(slot: GearSlot): boolean {
 }
 
 export type GearLevel = 86 | 91 | 96
-export type GearRarity = "legendary" | "epic"
+export const GEAR_RARITIES = ["legendary", "epic"] as const
+export type GearRarity = (typeof GEAR_RARITIES)[number]
 
 export interface GearWordEntry {
   word: GearWordId | ""
@@ -345,6 +346,7 @@ export interface RotationCast {
 export interface SkillTickResult {
   name: string
   breakdownName: string
+  breakdownKey: string
   type: "weapon" | "mindMethod" | "mystic" | "sustain" | "settlement" | "weaponMystic" | string
   count: number
   expectedDamage: number

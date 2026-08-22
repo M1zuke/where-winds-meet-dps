@@ -6,6 +6,7 @@ import {
 } from "../../../../definitions/innerWays/registry"
 import { allowedInnerWaysForClass } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { innerWayKey, innerWayTierKey } from "../../../../i18n/contentKeys"
 import { Select, type SelectOption } from "../../../components/select/Select"
 import styles from "./MindMethodsPanel.module.scss"
 
@@ -44,30 +45,34 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
         const isTaken = (id: string) => id !== "" && id !== currentId && takenElsewhere.has(id)
         const innerWayOptions: SelectOption<string>[] = allowedIds.map((id) => ({
           value: id,
-          label: id ? t(innerWayName(id)) : t("(unselected)"),
+          label: id ? t(innerWayKey(id), innerWayName(id)) : t("common.unselected"),
           disabled: isTaken(id),
         }))
         if (currentId && !allowedIds.includes(currentId)) {
           innerWayOptions.push({
             value: currentId,
-            label: t(innerWayName(currentId)),
-            group: t("No longer available"),
+            label: t(innerWayKey(currentId), innerWayName(currentId)),
+            group: t("overview.mindMethods.noLongerAvailable"),
           })
         }
 
         const tierOptions = tierOptionsFor(currentId)
         const tierSelectOptions: SelectOption<string>[] = tierOptions.map((tier) => ({
           value: tier,
-          label: t(tier),
+          label: t(innerWayTierKey(tier), tier),
         }))
         if (slot.stacks && !tierOptions.includes(slot.stacks)) {
-          tierSelectOptions.push({ value: slot.stacks, label: t(slot.stacks), disabled: true })
+          tierSelectOptions.push({
+            value: slot.stacks,
+            label: t(innerWayTierKey(slot.stacks), slot.stacks),
+            disabled: true,
+          })
         }
 
         return (
           <div key={idx} className={styles.mindSlot}>
             <Select
-              ariaLabel={`${t("Inner Way")} ${idx + 1}`}
+              ariaLabel={`${t("overview.mindMethods.innerWay")} ${idx + 1}`}
               value={currentId}
               onChange={(innerWayId) => {
                 // Both are stored: the id is the identity, the name keeps an
@@ -84,11 +89,11 @@ export function MindMethodsPanel({ inputs, onChange }: Props) {
                 updateSlot(idx, patch)
               }}
               options={innerWayOptions}
-              placeholder={t("(unselected)")}
+              placeholder={t("common.unselected")}
             />
             <Select
               compact
-              ariaLabel={`${t("Inner Way")} ${idx + 1} ${t("tier")}`}
+              ariaLabel={`${t("overview.mindMethods.innerWay")} ${idx + 1} ${t("common.tier")}`}
               value={slot.stacks || "tier 6"}
               disabled={!currentId}
               onChange={(stacks) => updateSlot(idx, { stacks })}

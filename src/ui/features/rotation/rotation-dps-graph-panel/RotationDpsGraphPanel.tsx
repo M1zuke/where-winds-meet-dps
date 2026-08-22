@@ -31,7 +31,7 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   if (perSecond.length < 2) {
-    return <div className="empty-tab">{t("(none)")}</div>
+    return <div className="empty-tab">{t("common.none")}</div>
   }
 
   const duration = result.rotationDuration
@@ -94,7 +94,7 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             role="img"
-            aria-label={`${t("DPS Graph")} — ${fullNumber(result.dps)} ${t("DPS")}`}
+            aria-label={`${t("rotation.dpsGraph.dpsGraph")} — ${fullNumber(result.dps)} ${t("common.dps")}`}
           >
             {GRID_FRACTIONS.map((fraction) => (
               <line
@@ -127,11 +127,11 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
               >
                 <div className={styles.hoverTime}>{hovered.timeSec.toFixed(2)}s</div>
                 <div className={styles.hoverDps}>
-                  {fullNumber(hovered.dps)} {t("DPS")}
+                  {fullNumber(hovered.dps)} {t("common.dps")}
                 </div>
                 {hoveredCumulative && (
                   <div className={styles.hoverCumulative}>
-                    {fullNumber(hoveredCumulative.dps)} {t("DPS so far")}
+                    {fullNumber(hoveredCumulative.dps)} {t("rotation.dpsGraph.dpsSoFar")}
                   </div>
                 )}
               </div>
@@ -163,19 +163,19 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
       <div className={styles.legend}>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchLine}`} />
-          {t("DPS Over Time")}
+          {t("rotation.dpsGraph.dpsOverTime")}
         </span>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchCumulative}`} />
-          {t("DPS so far")}
+          {t("rotation.dpsGraph.dpsSoFar")}
         </span>
         <span className={styles.legendItem}>
           <span className={`${styles.swatch} ${styles.swatchAverage}`} />
-          {t("Rotation DPS")}
+          {t("rotation.dpsGraph.rotationDps")}
           <span className={styles.legendValue}>{fullNumber(result.dps)}</span>
         </span>
         <span className={styles.legendItem}>
-          {t("Peak")}
+          {t("rotation.dpsGraph.peak")}
           <span className={styles.legendValue}>{fullNumber(peakDps)}</span>
         </span>
       </div>

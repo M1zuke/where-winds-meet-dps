@@ -23,7 +23,7 @@ export function ChangelogContributors() {
 
   return (
     <div className={styles.contributors}>
-      <div className={styles.label}>{t("Contributors")}</div>
+      <div className={styles.label}>{t("layout.changelogContributors.contributors")}</div>
       <ul className={styles.avatars}>
         {contributors.map((contributor) => (
           <li key={contributor.login}>

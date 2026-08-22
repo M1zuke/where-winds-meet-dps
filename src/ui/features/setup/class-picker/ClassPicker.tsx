@@ -1,5 +1,6 @@
 import { CLASS_DEFS, classDefinition } from "../../../../definitions/classes/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { classKey, martialArtKey } from "../../../../i18n/contentKeys"
 import { GITHUB_REPO_URL } from "../../../layout/github-link/GithubLink"
 import { GithubIcon } from "../../../components/github-icon/GithubIcon"
 import optionTiles from "../../../components/option-tile/OptionTile.module.scss"
@@ -7,7 +8,7 @@ import styles from "./ClassPicker.module.scss"
 
 const WIKI_URL = `${GITHUB_REPO_URL}/wiki`
 
-const UNVALIDATED_HINT = "Numbers are sourced but not yet checked against a measured build."
+const UNVALIDATED_HINT_KEY = "setup.classPicker.unvalidatedHint"
 
 interface Props {
   value: string
@@ -39,19 +40,23 @@ export function ClassPicker({ value, onChange }: Props) {
               )}
               <div className={styles.info}>
                 <div className={styles.nameRow}>
-                  <span className={styles.name}>{t(classDef.displayName)}</span>
+                  <span className={styles.name}>
+                    {t(classKey(classDef.id), classDef.displayName)}
+                  </span>
                   {classDef.validated ? null : (
-                    <span className={styles.wip} title={t(UNVALIDATED_HINT)}>
-                      {t("WIP")}
+                    <span className={styles.wip} title={t(UNVALIDATED_HINT_KEY)}>
+                      {t("setup.classPicker.wip")}
                     </span>
                   )}
                 </div>
                 {martialArts.map((martialArt, index) => (
                   <div key={martialArt.id} className={styles.weaponRow}>
                     <span className={styles.weaponLabel}>
-                      {t("Weapon")} {index + 1}
+                      {t("common.weapon")} {index + 1}
                     </span>
-                    <span className={styles.weaponValue}>{t(martialArt.name)}</span>
+                    <span className={styles.weaponValue}>
+                      {t(martialArtKey(martialArt.id), martialArt.name)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -63,7 +68,7 @@ export function ClassPicker({ value, onChange }: Props) {
         <span className={styles.helpIcon}>
           <GithubIcon />
         </span>
-        {t("Missing your class? Help implement it.")}
+        {t("setup.classPicker.missingYourClassHelpImplement")}
       </a>
     </div>
   )

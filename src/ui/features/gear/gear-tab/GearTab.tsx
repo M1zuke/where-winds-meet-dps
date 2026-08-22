@@ -101,7 +101,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
 
   async function deletePiece(): Promise<void> {
     if (!selectedPiece) return
-    if (!(await confirm(t("Delete this gear piece?")))) return
+    if (!(await confirm(t("gear.deleteThisGearPiece")))) return
     const nextInventory = inventory.filter((piece) => piece.id !== selectedPiece.id)
     const nextEquipped: Record<GearSlot, string | null> = { ...equipped }
     for (const slot of GEAR_SLOTS) {
@@ -149,7 +149,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
     if (
       emptiedCount > 0 &&
       !(await confirm(
-        `${t("This import has nothing for")} ${emptiedCount} ${t("of your equipped slots. Empty them?")}`,
+        `${t("gear.thisImportHasNothingFor")} ${emptiedCount} ${t("gear.ofYourEquippedSlotsEmpty")}`,
       ))
     ) {
       return
@@ -179,13 +179,13 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
     <>
       <div className="panel">
         <div className="panel-head">
-          <h2>{t("Equipped")}</h2>
+          <h2>{t("gear.equipped")}</h2>
           <button type="button" className="btn primary" onClick={() => setImportOpen(true)}>
-            {t("Import gear")}
+            {t("gear.importGear")}
           </button>
           <div className="spacer" />
           <button type="button" className="btn primary" onClick={openCreateDialog}>
-            + {t("Create Gear")}
+            + {t("gear.createGear")}
           </button>
         </div>
         <GearSlotTiles
@@ -235,8 +235,8 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
               active={sub}
               onSelect={setSub}
               tabs={[
-                { key: "analysis", label: t("Analysis") },
-                { key: "inventory", label: t("Inventory") },
+                { key: "analysis", label: t("gear.analysis") },
+                { key: "inventory", label: t("common.inventory") },
               ]}
             />
             <SubTabPanel>

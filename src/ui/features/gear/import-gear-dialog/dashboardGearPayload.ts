@@ -1,5 +1,6 @@
 import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
 import { statLineLabel } from "../../../../data/stats/statLines"
+import { statLineKey } from "../../../../i18n/contentKeys"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
 import { GEAR_SLOTS, type GearSlot, type GearWordId } from "../../../../engine/types"
 import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
@@ -11,7 +12,14 @@ export class GearImportError extends Error {}
 
 export type AffixTarget =
   | { kind: "word"; word: GearWordId; unit: "raw" | "percent"; cap: number }
-  | { kind: "attunement"; attunementId: string; label: string; min: number; max: number }
+  | {
+      kind: "attunement"
+      attunementId: string
+      label: string
+      labelKey: string
+      min: number
+      max: number
+    }
 
 export type AffixResolution =
   | {
@@ -314,6 +322,10 @@ export function targetKey(target: AffixTarget): string {
 
 export function targetLabel(target: AffixTarget): string {
   return target.kind === "word" ? statLineLabel(target.word) : target.label
+}
+
+export function targetLabelKey(target: AffixTarget): string {
+  return target.kind === "word" ? statLineKey(target.word) : target.labelKey
 }
 
 export interface GearImportSummary {

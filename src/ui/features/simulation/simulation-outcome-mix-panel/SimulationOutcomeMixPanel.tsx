@@ -5,11 +5,11 @@ import type { ParseSummary } from "../simulation-summary-bar/summaryStats"
 import { outcomeMix, totalMeanHits, type OutcomeCategory } from "./outcomeMix"
 import styles from "./SimulationOutcomeMixPanel.module.scss"
 
-const CATEGORY_LABELS: Record<OutcomeCategory, string> = {
-  critical: "Critical",
-  normal: "Normal",
-  affinity: "Affinity",
-  abrasion: "Abrasion",
+const CATEGORY_KEYS: Record<OutcomeCategory, string> = {
+  critical: "simulation.outcomeMix.category.critical",
+  normal: "common.normal",
+  affinity: "common.affinity",
+  abrasion: "common.abrasion",
 }
 
 export function SimulationOutcomeMixPanel({
@@ -22,15 +22,19 @@ export function SimulationOutcomeMixPanel({
   const { t } = useI18n()
   const rows = outcomeMix(summary, expectedRates)
   const total = totalMeanHits(summary)
-  if (total <= 0) return <div className="empty-tab">{t("(none)")}</div>
+  if (total <= 0) return <div className="empty-tab">{t("common.none")}</div>
 
   const mixLabel = rows
-    .map((row) => `${t(CATEGORY_LABELS[row.category])} ${fixed(row.observedShare * 100, 1)} %`)
+    .map((row) => `${t(CATEGORY_KEYS[row.category])} ${fixed(row.observedShare * 100, 1)} %`)
     .join(", ")
 
   return (
     <>
-      <div className={styles.mixBar} role="img" aria-label={`${t("Outcome Mix")} — ${mixLabel}`}>
+      <div
+        className={styles.mixBar}
+        role="img"
+        aria-label={`${t("simulation.outcomeMix.outcomeMix")} — ${mixLabel}`}
+      >
         {rows.map((row) => (
           <div
             key={row.category}
@@ -42,11 +46,11 @@ export function SimulationOutcomeMixPanel({
       <table className={`ranking-table ranking-table-spaced ${styles.mixTable}`}>
         <thead>
           <tr>
-            <th>{t("Outcome")}</th>
-            <th className={styles.centered}>{t("Hits")}</th>
-            <th className={styles.centered}>{t("Share")}</th>
-            <th className={styles.centered}>{t("Expected")}</th>
-            <th className={styles.centered}>{t("Gap (pp)")}</th>
+            <th>{t("simulation.outcomeMix.outcome")}</th>
+            <th className={styles.centered}>{t("common.hits2")}</th>
+            <th className={styles.centered}>{t("common.share")}</th>
+            <th className={styles.centered}>{t("simulation.outcomeMix.expected")}</th>
+            <th className={styles.centered}>{t("simulation.outcomeMix.gapPp")}</th>
           </tr>
         </thead>
         <tbody>
@@ -54,7 +58,7 @@ export function SimulationOutcomeMixPanel({
             <tr key={row.category}>
               <th scope="row" className={styles.categoryCell}>
                 <span className={`${styles.swatch} ${styles[row.category]}`} />
-                {t(CATEGORY_LABELS[row.category])}
+                {t(CATEGORY_KEYS[row.category])}
               </th>
               <td className={`${styles.numeric} ${styles.centered}`}>{fixed(row.meanHits, 2)}</td>
               <td className={`${styles.numeric} ${styles.centered}`}>
@@ -70,9 +74,7 @@ export function SimulationOutcomeMixPanel({
           ))}
         </tbody>
       </table>
-      <p className="hint">
-        {t("Observed share should track the expected rate — a wide gap means too few runs.")}
-      </p>
+      <p className="hint">{t("simulation.outcomeMix.observedShareShouldHint")}</p>
     </>
   )
 }

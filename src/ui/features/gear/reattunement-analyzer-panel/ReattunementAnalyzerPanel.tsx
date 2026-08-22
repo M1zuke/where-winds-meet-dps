@@ -57,9 +57,9 @@ export function ReattunementAnalyzerPanel({
     return (
       <div className={`panel ${retunement.panel}`}>
         <div className="toolbar">
-          <span className="toolbar-label">{t("Reattunement")}</span>
+          <span className="toolbar-label">{t("common.reattunement")}</span>
         </div>
-        <div className="hint">{t("Select a gear piece to analyze attunement gains")}</div>
+        <div className="hint">{t("gear.reattunementAnalyzer.selectAGearPieceTo")}</div>
       </div>
     )
   }
@@ -68,9 +68,9 @@ export function ReattunementAnalyzerPanel({
     return (
       <div className={`panel ${retunement.panel}`}>
         <div className="toolbar">
-          <span className="toolbar-label">{t("Reattunement")}</span>
+          <span className="toolbar-label">{t("common.reattunement")}</span>
         </div>
-        <div className="hint">{t("No attunement options available for this slot/class")}</div>
+        <div className="hint">{t("gear.reattunementAnalyzer.noAttunementOptionsAvailableFor")}</div>
       </div>
     )
   }
@@ -78,25 +78,29 @@ export function ReattunementAnalyzerPanel({
   return (
     <div className={`panel ${retunement.panel}`}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Reattunement")}</span>
-        {isPending && <span className="hint">{t("Computing…")}</span>}
+        <span className="toolbar-label">{t("common.reattunement")}</span>
+        {isPending && <span className="hint">{t("gear.reattunementAnalyzer.computing")}</span>}
       </div>
 
-      {sorted.length === 0 && isPending && <div className="hint">{t("Computing…")}</div>}
+      {sorted.length === 0 && isPending && (
+        <div className="hint">{t("gear.reattunementAnalyzer.computing")}</div>
+      )}
 
       {best && (
         <div className={retunement.best}>
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>
-              {recommended ? t("Best attunement") : t("Least loss")}
+              {recommended
+                ? t("gear.reattunementAnalyzer.bestAttunement")
+                : t("gear.reattunementAnalyzer.leastLoss")}
             </span>
             <span className={retunement.bestSlot}>
-              <strong>{t(best.label)}</strong>
+              <strong>{t(best.labelKey, best.label)}</strong>
               {" @ "}
               {(best.max * 100).toFixed(1)} %
               {best.isCurrent && (
                 <span className={retunement.tag} style={{ marginLeft: 6 }}>
-                  {t("Active")}
+                  {t("common.active")}
                 </span>
               )}
             </span>
@@ -105,33 +109,39 @@ export function ReattunementAnalyzerPanel({
             </span>
           </div>
           <div className={retunement.bestRow}>
-            <span className={retunement.bestLabel}>{t("Improve chance")}</span>
+            <span className={retunement.bestLabel}>
+              {t("gear.reattunementAnalyzer.improveChance")}
+            </span>
             <span>
               {fmtPct(probImproveOverall)}
               <span className="hint" style={{ marginLeft: 6 }}>
-                {t("(across the whole pool)")}
+                {t("gear.reattunementAnalyzer.acrossTheWholePool")}
               </span>
             </span>
           </div>
           {!recommended && (
-            <div className={retunement.warn}>{t("Not recommended to re-attune this piece")}</div>
+            <div className={retunement.warn}>
+              {t("gear.reattunementAnalyzer.notRecommendedToReAttune")}
+            </div>
           )}
         </div>
       )}
 
       {sorted.length > 0 && (
         <div className={retunement.reattunementTable}>
-          <div className={retunement.th}>{t("Attunement")}</div>
-          <div className={retunement.th}>{t("Range")}</div>
-          <div className={retunement.th}>{t("Δ")}</div>
+          <div className={retunement.th}>{t("common.attunement")}</div>
+          <div className={retunement.th}>{t("gear.reattunementAnalyzer.range")}</div>
+          <div className={retunement.th}>{t("gear.reattunementAnalyzer.symbol")}</div>
           {sorted.map((option) => {
             const sign = deltaSignClass(option.deltaDpsAtMax)
             return (
               <div key={option.optionId} style={{ display: "contents" }}>
                 <div className={retunement.cell}>
-                  {t(option.label)}
-                  {option.isCurrent && <span className={retunement.tag}>{t("Active")}</span>}
-                  {option.inert && <span className={retunement.tag}>{t("Inert")}</span>}
+                  {t(option.labelKey, option.label)}
+                  {option.isCurrent && <span className={retunement.tag}>{t("common.active")}</span>}
+                  {option.inert && (
+                    <span className={retunement.tag}>{t("gear.reattunementAnalyzer.inert")}</span>
+                  )}
                 </div>
                 <div className={retunement.cell}>{fmtRange(option.min, option.max)}</div>
                 <div className={`${retunement.cell} ${sign}`}>

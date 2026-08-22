@@ -29,15 +29,15 @@ export function RotationTab({
         active={sub}
         onSelect={setSub}
         tabs={[
-          { key: "overview", label: t("Overview") },
-          { key: "editor", label: t("Rotation Editor") },
+          { key: "overview", label: t("common.overview") },
+          { key: "editor", label: t("rotation.rotationEditor") },
         ]}
       />
       <SubTabPanel>
         {sub === "overview" && (
           <div className={styles.overviewLayout}>
             <div className={`panel ${styles.optionsPanel}`}>
-              <h2>{t("Rotations")}</h2>
+              <h2>{t("common.rotations")}</h2>
               <RotationOptionsPanel
                 inputs={inputs}
                 engineInputs={engineInputs}
@@ -47,15 +47,15 @@ export function RotationTab({
             </div>
             <div className={styles.outputGrid}>
               <div className="panel">
-                <h2>{t("DPS Breakdown")}</h2>
+                <h2>{t("rotation.dpsBreakdown")}</h2>
                 <RotationBreakdownPanel result={result} />
               </div>
               <div className="panel">
-                <h2>{t("DPS Graph")}</h2>
+                <h2>{t("rotation.dpsGraph")}</h2>
                 <RotationDpsGraphPanel result={result} />
               </div>
               <div className={`panel ${styles.spanColumns}`}>
-                <h2>{t("Cast Timeline")}</h2>
+                <h2>{t("rotation.castTimeline")}</h2>
                 <RotationTimelinePanel result={result} />
               </div>
             </div>

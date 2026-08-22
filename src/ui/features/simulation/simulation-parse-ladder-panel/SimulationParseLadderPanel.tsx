@@ -19,11 +19,17 @@ function signClassOf(delta: number): string {
 export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseRun[] }) {
   const { t } = useI18n()
   const rows = parseLadder(sorted)
-  if (rows.length === 0) return <div className="empty-tab">{t("(none)")}</div>
+  if (rows.length === 0) return <div className="empty-tab">{t("common.none")}</div>
 
   const axisSpan = ladderAxisSpan(rows) || 1
   const rankLabel = (rank: number) =>
-    rank === 100 ? t("MAX") : rank === 0 ? t("MIN") : rank === MEDIAN_RANK ? t("MEDIAN") : `${rank}`
+    rank === 100
+      ? t("simulation.parseLadder.max")
+      : rank === 0
+        ? t("simulation.parseLadder.min")
+        : rank === MEDIAN_RANK
+          ? t("simulation.parseLadder.median")
+          : `${rank}`
 
   const barFor = (row: ParseLadderRow) => {
     const halfWidth = Math.min(50, (Math.abs(row.deltaFromMedian) / axisSpan) * 50)
@@ -36,11 +42,11 @@ export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseR
     <table className={`ranking-table skill-table ${styles.ladder}`}>
       <thead>
         <tr>
-          <th>{t("Rank")}</th>
-          <th className={styles.centered}>{t("DPS")}</th>
-          <th className={styles.centered}>{t("Damage")}</th>
+          <th>{t("simulation.parseLadder.rank")}</th>
+          <th className={styles.centered}>{t("common.dps")}</th>
+          <th className={styles.centered}>{t("common.damage")}</th>
           <th className="bar-col">
-            {t("vs Median")} (±{fixed(axisSpan * 100, 1)} %)
+            {t("simulation.parseLadder.vsMedian")} (±{fixed(axisSpan * 100, 1)} %)
           </th>
           <th />
         </tr>

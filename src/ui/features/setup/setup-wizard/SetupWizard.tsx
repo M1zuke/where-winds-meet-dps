@@ -34,7 +34,8 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
 
   const totalSteps = manual ? 3 : 2
   const trimmedName = name.trim()
-  const finishLabel = mode === "first-run" ? t("Finish setup") : t("Create profile")
+  const finishLabel =
+    mode === "first-run" ? t("setup.wizard.finishSetup") : t("setup.wizard.createProfile")
 
   function goToImportStep(): void {
     setStep(2)
@@ -60,7 +61,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
       mindMethods: importDraft.mindMethods ?? draft.mindMethods,
     }
     const capturedName = importDraft.result.roleName?.trim()
-    const finalName = capturedName || initialName.trim() || t("New profile")
+    const finalName = capturedName || initialName.trim() || t("common.newProfile")
     onFinish(finalName, finishedInputs)
   }
 
@@ -71,22 +72,20 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
 
   const heading =
     step === 1
-      ? t("Choose your class")
+      ? t("setup.wizard.chooseYourClass")
       : step === 2
-        ? t("Import your gear")
-        : t("Name your profile")
+        ? t("setup.wizard.importYourGear")
+        : t("setup.wizard.nameYourProfile")
 
   const instruction =
     step === 1
-      ? t("Pick the class you play — everything after this is filtered to it.")
+      ? t("setup.wizard.pickTheClassHint")
       : step === 2
-        ? t(
-            "Paste a capture from the official dashboard, or tell us you'd rather set your gear up yourself.",
-          )
-        : t("Give this profile a name — your character name works well.")
+        ? t("setup.wizard.pasteACaptureHint")
+        : t("setup.wizard.giveThisProfileAName")
 
   const canGoBack = step > 1 || !!onCancel
-  const backLabel = step === 1 && onCancel ? t("Cancel") : t("Back")
+  const backLabel = step === 1 && onCancel ? t("common.cancel") : t("common.back")
 
   function back(): void {
     if (step === 3) backToImportStep()
@@ -111,7 +110,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
     >
       <div className={styles.wizardHeader}>
         <div className={styles.wizardStepIndicator}>
-          {t("Step {n}").replace("{n}", `${step} / ${totalSteps}`)}
+          {t("setup.wizard.stepN").replace("{n}", `${step} / ${totalSteps}`)}
         </div>
         <h2 id={headingId}>{heading}</h2>
         <p className={styles.wizardInstruction}>{instruction}</p>
@@ -145,7 +144,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
               )}
             </div>
             <div className={styles.wizardManualDivider}>
-              <span className={styles.wizardManualDividerLabel}>{t("OR")}</span>
+              <span className={styles.wizardManualDividerLabel}>{t("setup.wizard.or")}</span>
             </div>
             <div className={styles.wizardManualArea}>
               <button
@@ -153,20 +152,16 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
                 className={`btn ${styles.wizardManualButton}`}
                 onClick={goManual}
               >
-                {t("I'd rather do it manually")}
+                {t("setup.wizard.iDRatherDoIt")}
               </button>
-              <p className={styles.wizardManualNote}>
-                {t(
-                  "Enter your gear yourself later — you can import from the Gear tab at any time.",
-                )}
-              </p>
+              <p className={styles.wizardManualNote}>{t("setup.wizard.enterYourGearHint")}</p>
             </div>
           </div>
         )}
 
         {step === 3 && (
           <div className={`row ${styles.wizardNameRow}`}>
-            <label htmlFor="wizard-name">{t("Profile name")}</label>
+            <label htmlFor="wizard-name">{t("setup.wizard.profileName")}</label>
             <TextInput
               id="wizard-name"
               autoFocus
@@ -175,7 +170,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
               onKeyDown={(event) => {
                 if (event.key === "Enter") finishManualPath()
               }}
-              placeholder={t("e.g. my character name")}
+              placeholder={t("setup.wizard.eGMyCharacterName")}
             />
           </div>
         )}
@@ -206,7 +201,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           onClick={primaryAction}
           disabled={primaryDisabled}
         >
-          {step === 1 ? t("Next") : finishLabel}
+          {step === 1 ? t("setup.wizard.next") : finishLabel}
         </button>
       </div>
     </Dialog>

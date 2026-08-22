@@ -1,3 +1,4 @@
+import { attunementKey } from "../i18n/contentKeys"
 import type { GearSlot } from "./types"
 import { ATTUNEMENT_OPTIONS as OPTIONS } from "../data/classes/attunementOptions"
 
@@ -26,6 +27,10 @@ export type AttunementId = (typeof OPTIONS)[number]["id"]
 
 export function attunementLabel(option: AttunementOption, classId: string | null): string {
   return (classId && option.labelByClass?.[classId]) || option.label
+}
+
+export function attunementLabelKey(option: AttunementOption, classId: string | null): string {
+  return attunementKey(option.id, classId && option.labelByClass?.[classId] ? classId : null)
 }
 
 export function attunementsForClass(classId: string): AttunementOption[] {
