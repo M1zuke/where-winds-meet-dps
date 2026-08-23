@@ -10,7 +10,7 @@ export const snowpartingvc = defineSkill({
   name: "SnowpartingVC",
   tags: [
     PROP.consumesInnerPassion,
-    PROP.shatteredRidgeBoost,
+    PROP.cleftpeakBoost,
     WEAPON.hengBlade,
     ATTACK.heavy,
     ATTUNE.snowpartingVariedCombo,
@@ -26,7 +26,7 @@ export const snowpartingvc = defineSkill({
     BUFF.frostCladSnowbreak,
     BUFF.frostCladSnowbreakIPConsume,
     BUFF.frostCladSnowbreakT6,
-    BUFF.shatteredRidgeDeflect,
+    BUFF.cleftpeakDeflect,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.forgetfulness],
   castFrames: 52,

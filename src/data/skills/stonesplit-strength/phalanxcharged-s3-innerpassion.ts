@@ -10,7 +10,7 @@ export const phalanxchargedS3Innerpassion = defineSkill({
   name: "PhalanxCharged-S3[InnerPassion]",
   tags: [
     PROP.isCharged,
-    PROP.shatteredRidgeBoost,
+    PROP.cleftpeakBoost,
     PROP.consumesInnerPassionBurningHeart,
     WEAPON.moBlade,
     ATTACK.charge,
@@ -21,7 +21,7 @@ export const phalanxchargedS3Innerpassion = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3InnerPassion,
-  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 138,
   triggerable: true,

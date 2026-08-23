@@ -3,5 +3,5 @@ export const SET_ID = {
   jadeware: "jadeware",
   mistwillow: "mistwillow",
   rainwhisper: "rainwhisper",
-  shatteredRidge: "shatteredRidge",
+  cleftpeak: "cleftpeak",
 } as const

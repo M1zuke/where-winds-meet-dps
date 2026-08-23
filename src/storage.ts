@@ -42,6 +42,9 @@ import {
   migrateSetId,
   migrateAttunementId,
   migrateAttuneTag,
+  migrateCleftpeakBuffId,
+  migrateCleftpeakSetId,
+  migrateCleftpeakTag,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -143,7 +146,9 @@ function migrateRotationIds<T>(rotation: T): T {
     )
   }
   if (Array.isArray(r.permanentBuffIds)) {
-    next.permanentBuffIds = r.permanentBuffIds.map((b) => migrateEntityId(b))
+    next.permanentBuffIds = r.permanentBuffIds.map((buffId) =>
+      migrateCleftpeakBuffId(migrateEntityId(buffId)),
+    )
   }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
@@ -166,9 +171,10 @@ function repairGearWord(entry: unknown): unknown {
 // hop for the two paths that never walk the chain — a bare imported profile
 // and the legacy `wwm.inputs` blob.
 function selectableSetId(stored: string | null): string | null {
-  if (stored !== null && SET_BY_ID[stored] !== undefined) return stored
-  const migrated = migrateSetId(stored)
-  return migrated !== null && SET_BY_ID[migrated] !== undefined ? migrated : null
+  const renamed = migrateCleftpeakSetId(stored)
+  if (typeof renamed === "string" && SET_BY_ID[renamed] !== undefined) return renamed
+  const migrated = migrateCleftpeakSetId(migrateSetId(stored))
+  return typeof migrated === "string" && SET_BY_ID[migrated] !== undefined ? migrated : null
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -588,7 +594,7 @@ function builtinTagsFor(id: string): string[] {
 }
 
 function healSkillTags(id: string, tags: string[]): string[] {
-  const renamed = tags.map(migrateAttuneTag)
+  const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
   const healed = new Set(renamed)
   for (const tag of builtinTagsFor(id)) healed.add(tag)
   if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
@@ -685,8 +691,17 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
   "cast:umbrellaQPerfectCatch": ["jadeware"],
 }
 
+const MIGRATED_LEGACY_AFFECTS = new Map(
+  Object.entries(LEGACY_AFFECTS).map(([tag, buffIds]) => [
+    migrateCleftpeakTag(tag),
+    buffIds.map(migrateCleftpeakBuffId),
+  ]),
+)
+
 function legacyReceives(tags: readonly string[]): string[] {
-  return [...new Set(tags.flatMap((tag) => LEGACY_AFFECTS[tag] ?? []))]
+  return [
+    ...new Set(tags.flatMap((tag) => MIGRATED_LEGACY_AFFECTS.get(migrateCleftpeakTag(tag)) ?? [])),
+  ]
 }
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
@@ -722,11 +737,14 @@ function healSkillReach(
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
-  return { receives, triggersBuffs: healJadewareTrigger(id, triggersBuffs) }
+  return {
+    receives: receives.map(migrateCleftpeakBuffId),
+    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateCleftpeakBuffId),
+  }
 }
 
 function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
-  if (Array.isArray(debuff.receives)) return debuff.receives
+  if (Array.isArray(debuff.receives)) return debuff.receives.map(migrateCleftpeakBuffId)
   const tags = debuff.tags ?? []
   const legacyTags = debuff.dot ? [...tags, `type:${debuff.dot.skillType || "sustain"}`] : tags
   return legacyReceives(legacyTags)
@@ -779,6 +797,7 @@ function hydrateSkill(s: Skill): Skill {
   const id = migrateEntityId(s.id)
   const tags = Array.isArray(s.tags) ? s.tags.filter((t): t is string => typeof t === "string") : []
   const healedTags = healSkillTags(id, tags)
+  const reachTags = [...new Set([...tags, ...healedTags])]
   return {
     ...rest,
     id,
@@ -791,7 +810,7 @@ function hydrateSkill(s: Skill): Skill {
           s.hits.map((h) => hydrateSkillHit(h)),
         )
       : s.hits,
-    ...healSkillReach(id, s, healedTags),
+    ...healSkillReach(id, s, reachTags),
   }
 }
 
@@ -799,9 +818,10 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   if (!h || typeof h !== "object") return h
   const hit: SkillHit = { ...h }
   if (Array.isArray(h.variants)) {
-    hit.variants = h.variants
-      .filter(isHitVariant)
-      .map((v) => ({ ...v, conditions: v.conditions.filter(isTriggerCondition) }))
+    hit.variants = h.variants.filter(isHitVariant).map((v) => ({
+      ...v,
+      conditions: v.conditions.filter(isTriggerCondition).map(migrateTriggerCondition),
+    }))
   } else {
     delete hit.variants
   }
@@ -811,11 +831,19 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   return hit
 }
 
+function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
+  return { ...condition, buffId: migrateCleftpeakBuffId(condition.buffId) }
+}
+
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
-  const trigger: HitTrigger = { ...tr, targetId: migrateEntityId(tr.targetId) }
+  const trigger: HitTrigger = {
+    ...tr,
+    targetId: migrateCleftpeakBuffId(migrateEntityId(tr.targetId)),
+    condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
+  }
   if (Array.isArray(tr.conditions)) {
-    trigger.conditions = tr.conditions.filter(isTriggerCondition)
+    trigger.conditions = tr.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
   } else {
     delete trigger.conditions
   }
@@ -1314,14 +1342,15 @@ const DRONE_DEBUFF_ID = /^debuff-silkbindJade-umbdrone-\d+hit$/
 
 function healDroneDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
   const receives = healDebuffReceives(d)
-  if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs: d.triggersBuffs }
+  const triggersBuffs = d.triggersBuffs?.map(migrateCleftpeakBuffId)
+  if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs }
   const seeded =
     receives.length === DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.length &&
     DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.every((id, index) => receives[index] === id)
-  if (!seeded) return { receives, triggersBuffs: d.triggersBuffs }
+  if (!seeded) return { receives, triggersBuffs }
   return {
     receives: [...receives, "lingeringBone"],
-    triggersBuffs: d.triggersBuffs?.length ? d.triggersBuffs : ["lingeringBone"],
+    triggersBuffs: triggersBuffs?.length ? triggersBuffs : ["lingeringBone"],
   }
 }
 

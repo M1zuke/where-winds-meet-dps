@@ -55,7 +55,7 @@ export const STONESPLIT_STRENGTH_GRADUATION_BUILD: GraduationBuild = {
       attunement: "phalanxChargeDamage",
     }),
   ],
-  set: SET_ID.shatteredRidge,
+  set: SET_ID.cleftpeak,
   bowSet: "crit",
   arsenal: "stonesplit",
 }

@@ -42,12 +42,12 @@ describe("paramsFromInputs — build derivation", () => {
         { ...emptyMindMethod },
         { ...emptyMindMethod },
       ],
-      set: SET_ID.shatteredRidge,
+      set: SET_ID.cleftpeak,
     }
     const params = paramsFromInputs(inputs)
     expect(params.wolfchasersArt).toBe(true)
     expect(params.wolfchasersArtTier).toBe(6)
-    expect(params.armorSet).toBe("shatteredridge")
+    expect(params.armorSet).toBe("cleftpeak")
   })
 
   it("Insightful Strike is a documented overlap gap — it never enables insightfulStrike", () => {

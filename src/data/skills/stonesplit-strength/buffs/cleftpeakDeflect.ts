@@ -1,14 +1,14 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
-import { shatteredRidge } from "../../../sets/shatteredRidge"
+import { cleftpeak } from "../../../sets/cleftpeak"
 import { stat } from "../../../../engine/effects/effect"
 
 const FULL_STACKS = 5
 
-export const shatteredRidgeDeflect = defineClassBuff({
-  id: BUFF.shatteredRidgeDeflect,
-  name: "Shattered Ridge (Max Stacks)",
-  requires: { set: shatteredRidge.siteKey },
+export const cleftpeakDeflect = defineClassBuff({
+  id: BUFF.cleftpeakDeflect,
+  name: "Cleftpeak (Max Stacks)",
+  requires: { set: cleftpeak.siteKey },
   stackOnDamage: true,
   duration: 5,
   maxStacks: FULL_STACKS,
