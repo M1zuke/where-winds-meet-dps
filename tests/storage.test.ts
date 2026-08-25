@@ -834,7 +834,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
     const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
     expect(healed.receives).toEqual(
-      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect"]),
+      expect.arrayContaining(["mountainSplitter", "cleftpeakDeflect"]),
     )
     expect(healed.triggersBuffs).toEqual(
       expect.arrayContaining(["throatPierced", "mountainSplitter"]),
@@ -852,7 +852,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
     const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
     expect(healed.receives).toEqual(
-      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect"]),
+      expect.arrayContaining(["mountainSplitter", "cleftpeakDeflect"]),
     )
     expect(healed.triggersBuffs).toEqual(
       expect.arrayContaining(["throatPierced", "mountainSplitter"]),

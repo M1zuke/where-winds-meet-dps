@@ -11,6 +11,7 @@ import { V13__gearWordCurrentLabels } from "./V13__gearWordCurrentLabels"
 import { V14__dropUnimplementedArmorSets } from "./V14__dropUnimplementedArmorSets"
 import { V15__dropSwallowcallSet } from "./V15__dropSwallowcallSet"
 import { V16__mergeVernalUmbrellaAttunements } from "./V16__mergeVernalUmbrellaAttunements"
+import { V17__renameCleftpeak } from "./V17__renameCleftpeak"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -22,6 +23,11 @@ export { migrateSetId } from "./V11__setIdsWithoutDisplayName"
 export { migrateGearWordId } from "./V12__gearWordIds"
 export { migrateCurrentGearWordLabel } from "./V13__gearWordCurrentLabels"
 export { migrateAttunementId, migrateAttuneTag } from "./V16__mergeVernalUmbrellaAttunements"
+export {
+  migrateCleftpeakBuffId,
+  migrateCleftpeakSetId,
+  migrateCleftpeakTag,
+} from "./V17__renameCleftpeak"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -36,6 +42,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V14__dropUnimplementedArmorSets,
   V15__dropSwallowcallSet,
   V16__mergeVernalUmbrellaAttunements,
+  V17__renameCleftpeak,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4
