@@ -9,13 +9,14 @@ import {
   gearWordIdForPath,
   statLineLabel,
 } from "../data/stats/statLines"
+import { statLineKey } from "../i18n/contentKeys"
 import {
   AGILITY_PER_POINT,
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
-import { attunementsForClass } from "./attunements"
+import { attunementLabelKey, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
 import { resolveRotation } from "./rotation"
@@ -23,6 +24,7 @@ import { resolveRotation } from "./rotation"
 export interface WordSpec<TName extends string = string> {
   word: TName
   label: string
+  labelKey: string
   amount: number
   unit: "raw" | "percent"
   apply(inputs: Inputs): Inputs
@@ -63,6 +65,7 @@ function wordSpec(
   return {
     word,
     label: statLineLabel(word),
+    labelKey: statLineKey(word),
     amount: roll,
     unit: GEAR_WORD_UNIT[word],
     apply: (inputs) => clone(inputs, (next) => apply(next, roll)),
@@ -160,6 +163,7 @@ function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
     .map((opt) => ({
       word: opt.id,
       label: opt.label,
+      labelKey: attunementLabelKey(opt, inputs.classId),
       amount: opt.max,
       unit: "percent" as const,
       apply: (i: Inputs) =>
@@ -214,6 +218,7 @@ export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[
       rows.push({
         statLineId: spec.word,
         label: spec.label,
+        labelKey: spec.labelKey,
         source,
         amount: spec.amount,
         unit: spec.unit,

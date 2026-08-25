@@ -374,6 +374,7 @@ export interface BuffWindow {
 export interface ItemRankingRow {
   statLineId: string
   label: string
+  labelKey: string
   source: "tunement" | "attunement"
   amount: number
   unit: "raw" | "percent"
