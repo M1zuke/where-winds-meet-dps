@@ -1,6 +1,5 @@
 import type { ItemRankingRow } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { statLineKey } from "../../../../i18n/contentKeys"
 import styles from "./ItemRankingTable.module.scss"
 
 interface Props {
@@ -48,7 +47,7 @@ export function ItemRankingTable({ rows }: Props) {
       <tbody>
         {sorted.map((row, index) => (
           <tr key={row.statLineId + index}>
-            <td>{t(statLineKey(row.statLineId), row.label)}</td>
+            <td>{t(row.labelKey, row.label)}</td>
             <td>{row.unit === "percent" ? fmt(row.amount * 100, 2) + " %" : fmt(row.amount, 2)}</td>
             <td
               className={`${styles.dpsDelta} ${deltaSignClass(row.dpsDelta)}`}
