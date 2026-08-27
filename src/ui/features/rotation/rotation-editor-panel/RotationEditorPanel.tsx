@@ -415,7 +415,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         <div className={styles.editor}>
           <div className={styles.meta}>
             <label className={styles.field}>
-              <span>{t("rotation.editor.name")}</span>
+              <span>{t("common.name")}</span>
               <TextInput
                 value={isCustom ? effectiveName : activeRotation.name}
                 placeholder={t("common.unnamed")}

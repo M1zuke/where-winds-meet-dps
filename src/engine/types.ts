@@ -257,6 +257,8 @@ export interface GearPiece {
   attunementValue: number
   relayed: boolean
   isNew?: boolean
+  label?: string
+  note?: string
 }
 
 export type EquippedSlots = Record<GearSlot, string | null>
