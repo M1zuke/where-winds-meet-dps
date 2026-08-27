@@ -11,6 +11,7 @@ const CONTRAST_AMPLIFICATION = 1.6
 
 let workerPromise: Promise<TesseractWorker> | null = null
 let currentProgressHandler: ((progress: number) => void) | null = null
+let recognitionQueue: Promise<unknown> = Promise.resolve()
 
 async function getWorker(): Promise<TesseractWorker> {
   if (!workerPromise) {
@@ -89,14 +90,18 @@ export async function recognizeGearScreenshot(
   image: HTMLCanvasElement,
   onProgress?: (progress: number) => void,
 ): Promise<string> {
-  const worker = await getWorker()
-  currentProgressHandler = onProgress ?? null
-  try {
-    const {
-      data: { text },
-    } = await worker.recognize(image)
-    return text
-  } finally {
-    currentProgressHandler = null
-  }
+  const recognition = recognitionQueue.then(async () => {
+    const worker = await getWorker()
+    currentProgressHandler = onProgress ?? null
+    try {
+      const {
+        data: { text },
+      } = await worker.recognize(image)
+      return text
+    } finally {
+      currentProgressHandler = null
+    }
+  })
+  recognitionQueue = recognition.catch(() => undefined)
+  return recognition
 }
