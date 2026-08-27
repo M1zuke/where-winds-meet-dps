@@ -50,16 +50,14 @@ export async function decodeGearScreenshot(source: File | Blob): Promise<ImageBi
 }
 
 export function preprocessGearScreenshot(bitmap: ImageBitmap): HTMLCanvasElement {
-  const canvas = document.createElement("canvas")
-  canvas.width = bitmap.width * UPSCALE
-  canvas.height = bitmap.height * UPSCALE
-  const context = canvas.getContext("2d")
-  if (!context) return canvas
+  const source = document.createElement("canvas")
+  source.width = bitmap.width
+  source.height = bitmap.height
+  const sourceContext = source.getContext("2d")
+  if (!sourceContext) return source
+  sourceContext.drawImage(bitmap, 0, 0)
 
-  context.imageSmoothingEnabled = true
-  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
-
-  const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+  const imageData = sourceContext.getImageData(0, 0, source.width, source.height)
   const pixels = imageData.data
   const factor = (259 * (CONTRAST + 255)) / (255 * (259 - CONTRAST))
   for (let index = 0; index < pixels.length; index += 4) {
@@ -70,7 +68,19 @@ export function preprocessGearScreenshot(bitmap: ImageBitmap): HTMLCanvasElement
     pixels[index + 1] = adjusted
     pixels[index + 2] = adjusted
   }
-  context.putImageData(imageData, 0, 0)
+  sourceContext.putImageData(imageData, 0, 0)
+
+  // Upscale AFTER tone-mapping, with smoothing off: a smoothed upscale done
+  // first blurs glyph edges, and contrast then amplifies the blurred midtones
+  // instead of the hard edges tesseract needs — measured to read digits worse
+  // (an extra spurious digit, more junk lines) on the sample screenshots.
+  const canvas = document.createElement("canvas")
+  canvas.width = source.width * UPSCALE
+  canvas.height = source.height * UPSCALE
+  const context = canvas.getContext("2d")
+  if (!context) return canvas
+  context.imageSmoothingEnabled = false
+  context.drawImage(source, 0, 0, canvas.width, canvas.height)
   return canvas
 }
 
