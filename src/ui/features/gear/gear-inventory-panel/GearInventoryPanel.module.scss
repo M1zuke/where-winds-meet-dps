@@ -87,6 +87,30 @@
   z-index: 1;
 }
 
+.gearInvTileNoteMarker {
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  font-size: 0.6em;
+  line-height: 1;
+  padding: 2px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--color-bg);
+  z-index: 1;
+}
+
+.gearInvTileLabel {
+  font-size: 0.82em;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
 .gearInvTile:hover {
   background: var(--color-surface-inset-hover);
   border-color: var(--color-border-hover);

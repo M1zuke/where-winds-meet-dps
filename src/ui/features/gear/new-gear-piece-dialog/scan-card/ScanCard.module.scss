@@ -1,0 +1,356 @@
+@use "breakpoints";
+
+.card {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.pill {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-strong);
+  font-size: 0.66em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pill::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.busy {
+  color: var(--color-accent-bright);
+  border-color: var(--color-accent);
+}
+
+.ok {
+  color: var(--color-positive);
+  border-color: var(--color-positive);
+}
+
+.check {
+  color: var(--color-accent-bright);
+  border-color: var(--color-accent);
+}
+
+.bad {
+  color: var(--color-negative);
+  border-color: var(--color-negative);
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tab {
+  background: transparent;
+  border: none;
+  padding: 5px 0;
+  font: inherit;
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.tabOn {
+  background: var(--color-surface-selected);
+  color: var(--color-accent-bright);
+  font-weight: 600;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.hiddenFileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 22px 14px;
+  border: 1px dashed var(--color-border-hover);
+  border-radius: 6px;
+  background: var(--color-surface-inset);
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropzone svg {
+  color: var(--color-accent);
+}
+
+.armed {
+  border-color: var(--color-accent);
+  background: var(--color-surface-selected);
+}
+
+.dropPrimary {
+  font-size: 0.9em;
+  color: var(--color-text);
+}
+
+.dropSecondary {
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.steps {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-text-dim);
+  font-size: 0.8em;
+  line-height: 1.6;
+}
+
+.example {
+  width: 100%;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+}
+
+.shot {
+  position: relative;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shot img {
+  display: block;
+  width: 100%;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 18px;
+  background: rgba(15, 15, 15, 0.66);
+  font-size: 0.82em;
+  color: var(--color-text);
+}
+
+.scrim > :global(.skill-bar-track) {
+  width: 70%;
+}
+
+.readout {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.readout > li {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 9px;
+  font-size: 0.78em;
+  background: var(--color-surface-inset);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.readout > li:last-child {
+  border-bottom: none;
+}
+
+.readout > li > :global(.btn) {
+  grid-column: 3;
+  padding: 1px 8px;
+  font-size: 0.9em;
+}
+
+.rowMark {
+  width: 14px;
+  height: 3px;
+  border-radius: 1px;
+  background: var(--color-border-hover);
+}
+
+.rowLabel {
+  color: var(--color-text-dim);
+}
+
+.rowDetail {
+  color: var(--color-text-muted);
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowRead .rowMark {
+  background: var(--color-positive);
+}
+
+.rowGuessed .rowMark {
+  background: var(--color-accent-bright);
+}
+
+.rowGuessed .rowLabel,
+.rowUnresolved .rowLabel {
+  color: var(--color-text);
+}
+
+.rowUnresolved .rowMark {
+  background: var(--color-negative);
+}
+
+.rowUnresolved .rowDetail {
+  color: var(--color-negative);
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-surface-inset);
+}
+
+.legendTitle {
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.legendRow {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.legendChip {
+  height: 18px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: bottom;
+  background-clip: padding-box;
+}
+
+.legendGuessed {
+  background-image: linear-gradient(var(--color-accent-bright), var(--color-accent-bright));
+}
+
+.legendUnresolved {
+  background-image: linear-gradient(var(--color-negative), var(--color-negative));
+}
+
+.failure {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-negative);
+  border-left-width: 3px;
+  border-radius: 4px;
+  background: var(--color-surface-inset);
+}
+
+.failureWhat {
+  font-size: 0.88em;
+  color: var(--color-text);
+}
+
+.failureFix {
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+.actions > * {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.diagnostics {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.diagnosticsCount {
+  margin-left: 6px;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.diagnosticsBody {
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 4px;
+  background: var(--color-surface-inset);
+  font-family: monospace;
+  white-space: pre-wrap;
+  color: var(--color-text);
+}
+
+.diagnosticsLine {
+  color: var(--color-text-dim);
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .dropzone {
+    padding: 16px 12px;
+  }
+
+  .dropSecondary {
+    display: none;
+  }
+}

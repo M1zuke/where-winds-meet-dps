@@ -69,7 +69,17 @@ export function GearSlotTiles({
             }
             onClick={() => onSelectSlot(slot, piece?.id ?? null)}
           >
+            {piece?.note && (
+              <span
+                className={styles.gearTileNoteMarker}
+                title={t("common.hasNote")}
+                aria-label={t("common.hasNote")}
+              >
+                ✎
+              </span>
+            )}
             <div className={styles.gearTileSlot}>{t(GEAR_SLOT_KEYS[slot])}</div>
+            {piece?.label && <div className={styles.gearTileLabel}>{piece.label}</div>}
             <div className={styles.gearTilePiece}>
               {piece
                 ? `lv${piece.level} · ${t(rarityKey(piece.rarity), piece.rarity)}`

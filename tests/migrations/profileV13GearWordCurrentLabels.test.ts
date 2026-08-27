@@ -3,9 +3,10 @@ import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations
 import {
   V13__gearWordCurrentLabels,
   migrateCurrentGearWordLabel,
+  CURRENT_LABEL_TO_ID,
 } from "../../src/migrations/V13__gearWordCurrentLabels"
 import { migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
-import { isGearWordId, statLine } from "../../src/data/stats/statLines"
+import { isGearWordId } from "../../src/data/stats/statLines"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import storedProfileFile from "./testProfiles/v12/bellstrikeUmbra.json"
 
@@ -20,13 +21,17 @@ function storedWords(inputs: Inputs): string[] {
   return inputs.inventory.flatMap((piece) => piece.words.map((entry) => entry.word)).filter(Boolean)
 }
 
+const ID_TO_LABEL_AT_V13: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(CURRENT_LABEL_TO_ID).map(([label, id]) => [id, label]),
+)
+
 // No forward walk can produce this shape, so the fixture cannot carry it.
 function withCurrentLabels(profile: StoredProfile): StoredProfile {
   const next = clone(profile)
   for (const piece of next.inputs.inventory) {
     for (const entry of piece.words) {
       if (!entry.word) continue
-      const label = statLine(migrateGearWordId(entry.word))?.label
+      const label = ID_TO_LABEL_AT_V13[migrateGearWordId(entry.word)]
       if (label) entry.word = label as typeof entry.word
     }
   }

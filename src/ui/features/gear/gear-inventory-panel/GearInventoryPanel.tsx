@@ -74,6 +74,15 @@ export function GearInventoryPanel({
         onClick={() => onSelect(row)}
       >
         {piece.isNew && <span className={styles.gearInvTileNew}>{t("common.new")}</span>}
+        {piece.note && (
+          <span
+            className={styles.gearInvTileNoteMarker}
+            title={t("common.hasNote")}
+            aria-label={t("common.hasNote")}
+          >
+            ✎
+          </span>
+        )}
 
         <div className={styles.gearInvTileHead}>
           <span className={styles.gearInvTileSlot}>{slotLabel}</span>
@@ -81,6 +90,7 @@ export function GearInventoryPanel({
             lv{piece.level} · {rarityLabel}
           </span>
         </div>
+        {piece.label && <div className={styles.gearInvTileLabel}>{piece.label}</div>}
 
         <div className={styles.gearInvTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
           <Stat

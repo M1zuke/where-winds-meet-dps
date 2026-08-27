@@ -92,6 +92,11 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
     progress for anything but the newest request id is dropped. A kind that can
     run long must also be interruptible between chunks, and yield between them so
     its cancel message can be read at all.
+13. **The DPS worker client carries engine passes only.** Off-main-thread work
+    that is not a `runEngine` pass owns its own module-scope worker and never
+    takes a request kind on the shared client — routing it through the client
+    would apply rules 3 and 5 to a request the client's cache and abort
+    contracts were never designed for.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
 

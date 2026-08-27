@@ -764,6 +764,92 @@ describe("GearPiece.isNew hydration (additive, no version bump)", () => {
   })
 })
 
+describe("GearPiece.label / GearPiece.note hydration (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+  const PROFILES_VERSION = 4
+
+  beforeEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+  afterEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+
+  function makePiece(id: string, extra: Record<string, unknown> = {}): GearPiece {
+    return {
+      id,
+      slot: "helm",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+      ...extra,
+    } as GearPiece
+  }
+
+  it("heals an illegal stored label/note to absent, leaving every other field identical", () => {
+    const inventory = [makePiece("bad-label", { label: 42, note: {} })]
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs: { ...defaultInputs, inventory } }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    const piece = profiles[0].inputs.inventory[0]
+    expect(piece.label).toBeUndefined()
+    expect(piece.note).toBeUndefined()
+    expect({ ...piece, label: undefined, note: undefined }).toEqual({
+      ...makePiece("bad-label"),
+      label: undefined,
+      note: undefined,
+    })
+  })
+
+  it("keeps a legal label and note across two hydrations", () => {
+    const inventory = [makePiece("named-piece", { label: "Retune slot 3", note: "Keep this one" })]
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs: { ...defaultInputs, inventory } }],
+        activeId: "p1",
+      }),
+    )
+
+    const first = loadProfiles()
+    expect(first.profiles[0].inputs.inventory[0].label).toBe("Retune slot 3")
+    expect(first.profiles[0].inputs.inventory[0].note).toBe("Keep this one")
+
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({ v: PROFILES_VERSION, profiles: first.profiles, activeId: first.activeId }),
+    )
+    const second = loadProfiles()
+    expect(second.profiles[0].inputs.inventory[0].label).toBe("Retune slot 3")
+    expect(second.profiles[0].inputs.inventory[0].note).toBe("Keep this one")
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
 describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () => {
   const CLASS_ID = "bellstrikeUmbra"

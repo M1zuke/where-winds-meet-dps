@@ -116,6 +116,12 @@ export function newGearPieceId(): string {
   return `gp-${t}-${r}-${gearCounter.toString(36)}`
 }
 
+export function sanitizeGearPieceText(value: unknown, maxLength: number): string | undefined {
+  if (typeof value !== "string") return undefined
+  const trimmed = value.trim().slice(0, maxLength)
+  return trimmed || undefined
+}
+
 function isStoredProfile(x: unknown): x is StoredProfile {
   if (!x || typeof x !== "object") return false
   const p = x as Record<string, unknown>
@@ -239,10 +245,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (!Array.isArray(next.inventory)) next.inventory = []
   next.inventory = next.inventory.map((piece) => {
     const p = piece as Partial<typeof piece> & Record<string, unknown>
-    const { name: _legacyName, isNew: _rawIsNew, ...rest } = p
+    const { name: _legacyName, isNew: _rawIsNew, label: _rawLabel, note: _rawNote, ...rest } = p
     void _legacyName
     void _rawIsNew
+    void _rawLabel
+    void _rawNote
     const isNew = p.isNew === true
+    const label = sanitizeGearPieceText(p.label, 40)
+    const note = sanitizeGearPieceText(p.note, 500)
     const rawWords = (rest as unknown as { words?: unknown }).words
     const words = Array.isArray(rawWords) ? rawWords.map(repairGearWord) : rawWords
     return {
@@ -252,6 +262,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
       attunement: typeof p.attunement === "string" ? migrateAttunementId(p.attunement) : "",
       attunementValue: typeof p.attunementValue === "number" ? p.attunementValue : 0,
       ...(isNew ? { isNew: true } : {}),
+      ...(label ? { label } : {}),
+      ...(note ? { note } : {}),
     }
   })
   if (!next.equipped || typeof next.equipped !== "object") {

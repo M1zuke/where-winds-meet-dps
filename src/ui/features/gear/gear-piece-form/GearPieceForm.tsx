@@ -22,7 +22,20 @@ import { NumInput, PercentInput } from "../../../components/number-inputs/Number
 import { Switch } from "../../../components/switch/Switch"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import type { GearScreenshotRowSlot } from "../screenshot-ocr/ocrGearPiece"
 import styles from "./GearPieceForm.module.scss"
+
+export type ScanMarkField = "slot" | "level" | GearScreenshotRowSlot
+
+export interface ScanFieldMark {
+  level: "guessed" | "unresolved"
+  name: boolean
+  value: boolean
+}
+
+export type ScanMarks = Readonly<Partial<Record<ScanMarkField, ScanFieldMark>>>
+
+type ScanFieldHalf = "name" | "value"
 
 function fmtDpsDelta(deltaDps: number): string {
   const rounded = Math.round(deltaDps)
@@ -44,6 +57,8 @@ interface Props {
   wordMaxRows: WordMaxRow[]
   wordMaxPending: boolean
   showWordMax?: boolean
+  scanMarks?: ScanMarks
+  onScanMarkCleared?(field: ScanMarkField): void
 }
 
 export function GearPieceForm({
@@ -53,8 +68,17 @@ export function GearPieceForm({
   wordMaxRows,
   wordMaxPending,
   showWordMax = true,
+  scanMarks,
+  onScanMarkCleared,
 }: Props) {
   const { t } = useI18n()
+
+  function markClassName(field: ScanMarkField, half: ScanFieldHalf): string | undefined {
+    const mark = scanMarks?.[field]
+    if (!mark) return undefined
+    if (half === "name" ? !mark.name : !mark.value) return undefined
+    return mark.level === "unresolved" ? styles.markUnresolved : styles.markGuessed
+  }
 
   const slotOptions: ComboboxOption[] = useMemo(
     () => GEAR_SLOTS.map((slot) => ({ value: slot, label: t(GEAR_SLOT_KEYS[slot]) })),
@@ -155,7 +179,11 @@ export function GearPieceForm({
             ariaLabel={t("common.type")}
             value={piece.slot}
             options={slotOptions}
-            onChange={(value) => patchBase({ slot: value as GearSlot })}
+            className={markClassName("slot", "name")}
+            onChange={(value) => {
+              onScanMarkCleared?.("slot")
+              patchBase({ slot: value as GearSlot })
+            }}
           />
         </Field>
         <Field label={t("gear.pieceForm.level")}>
@@ -163,7 +191,11 @@ export function GearPieceForm({
             ariaLabel={t("gear.pieceForm.level")}
             value={String(piece.level)}
             options={levelOptions}
-            onChange={(value) => patchBase({ level: Number(value) as GearLevel })}
+            className={markClassName("level", "name")}
+            onChange={(value) => {
+              onScanMarkCleared?.("level")
+              patchBase({ level: Number(value) as GearLevel })
+            }}
           />
         </Field>
         <Field label={t("gear.pieceForm.rarity")}>
@@ -247,18 +279,29 @@ export function GearPieceForm({
             } else {
               maxValueText = wordMaxPending ? "…" : "—"
             }
+            const wordField = `word${idx}` as ScanMarkField
             return (
               <div key={idx} className={styles.wordRow}>
                 <Combobox
-                  className={styles.wordCombobox}
+                  className={
+                    styles.wordCombobox +
+                    (markClassName(wordField, "name") ? ` ${markClassName(wordField, "name")}` : "")
+                  }
                   value={word.word}
                   options={wordOptions}
-                  onChange={(value) => patchWord(idx, { word: isGearWordId(value) ? value : "" })}
+                  onChange={(value) => {
+                    onScanMarkCleared?.(wordField)
+                    patchWord(idx, { word: isGearWordId(value) ? value : "" })
+                  }}
                   placeholder={t("common.none")}
                 />
                 <ValueInput
+                  className={markClassName(wordField, "value")}
                   value={word.value}
-                  onChange={(value) => patchWord(idx, { value })}
+                  onChange={(value) => {
+                    onScanMarkCleared?.(wordField)
+                    patchWord(idx, { value })
+                  }}
                   min={0}
                   title={maxDisplay ? `${t("gear.pieceForm.max")}: ${maxDisplay}` : undefined}
                 />
@@ -310,12 +353,20 @@ export function GearPieceForm({
             <Combobox
               value={selected?.id ?? ""}
               options={attunementOptions}
-              onChange={(value) => patch({ attunement: value, attunementValue: 0 })}
+              className={markClassName("attunement", "name")}
+              onChange={(value) => {
+                onScanMarkCleared?.("attunement")
+                patch({ attunement: value, attunementValue: 0 })
+              }}
               placeholder={t("common.none")}
             />
             <ValueInput
+              className={markClassName("attunement", "value")}
               value={piece.attunementValue}
-              onChange={(value) => patch({ attunementValue: clampValue(value) })}
+              onChange={(value) => {
+                onScanMarkCleared?.("attunement")
+                patch({ attunementValue: clampValue(value) })
+              }}
               min={0}
               title={rangeHint || undefined}
             />

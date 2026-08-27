@@ -116,7 +116,7 @@ export const STAT_LINES = [
   },
   {
     id: "allMartialBoost",
-    label: "All Martial Boost",
+    label: "All Martial Arts Boost",
     unit: "percent",
     enginePath: "allMartialBoost",
     maxRoll: 0.032,
@@ -353,8 +353,8 @@ export const STAT_LINES = [
     scope: "player",
     category: "Bamboocut",
   },
-  { id: "minVoidAttack", label: "Min Void Attack", unit: "raw", maxRoll: 44.2 },
-  { id: "maxVoidAttack", label: "Max Void Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "minVoidAttack", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "maxVoidAttack", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
   {
     id: "formlessPenetration",
     label: "Formless Penetration",
