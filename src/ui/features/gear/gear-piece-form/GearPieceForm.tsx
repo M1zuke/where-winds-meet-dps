@@ -44,6 +44,7 @@ interface Props {
   wordMaxRows: WordMaxRow[]
   wordMaxPending: boolean
   showWordMax?: boolean
+  unreadFields?: { level: boolean; relayed: boolean }
 }
 
 export function GearPieceForm({
@@ -53,6 +54,7 @@ export function GearPieceForm({
   wordMaxRows,
   wordMaxPending,
   showWordMax = true,
+  unreadFields,
 }: Props) {
   const { t } = useI18n()
 
@@ -165,6 +167,7 @@ export function GearPieceForm({
             options={levelOptions}
             onChange={(value) => patchBase({ level: Number(value) as GearLevel })}
           />
+          {unreadFields?.level && <HelpHint text={t("gear.screenshotImport.levelGuessed")} />}
         </Field>
         <Field label={t("gear.pieceForm.rarity")}>
           <Select
@@ -205,6 +208,7 @@ export function GearPieceForm({
               onChange={(relayed) => setRelayed(relayed)}
             />
             <HelpHint text={t("gear.pieceForm.relayedCapsEveryHint")} />
+            {unreadFields?.relayed && <HelpHint text={t("gear.screenshotImport.relayedGuessed")} />}
           </span>
 
           <span className={`${styles.colHead} ${styles.sectionTitle}`}>

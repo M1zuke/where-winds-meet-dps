@@ -8,10 +8,8 @@
   },
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "predev": "node scripts/copyOcrAssets.mjs",
-    "dev": "vite",
-    "prebuild": "node scripts/copyOcrAssets.mjs",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/copyOcrAssets.mjs && vite",
+    "build": "node scripts/copyOcrAssets.mjs && tsc -b && vite build",
     "preview": "vite preview",
     "deploy": "pnpm run build && wrangler pages deploy",
     "test": "vitest run",

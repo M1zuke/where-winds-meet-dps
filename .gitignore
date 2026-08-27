@@ -13,4 +13,5 @@ tsconfig.tsbuildinfo
 scripts/*
 !scripts/copyOcrAssets.mjs
 public/ocr/
+eng.traineddata
 

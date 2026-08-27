@@ -6,8 +6,13 @@ const LANG_PATH = "/ocr/lang"
 
 const CHAR_WHITELIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-.%[]·&/ "
 
-const UPSCALE_FACTOR = 2
-const CONTRAST_AMPLIFICATION = 1.6
+// Inverted (the panel is light-on-dark, tesseract wants dark-on-light) and
+// contrast-pushed — measured to make the italic value digits legible. CONTRAST
+// is on the -255..255 scale of the standard
+// `factor = (259*(c+255))/(255*(259-c))` formula.
+const CONTRAST = 71
+const BRIGHTNESS = 5
+const UPSCALE = 2
 
 let workerPromise: Promise<TesseractWorker> | null = null
 let currentProgressHandler: ((progress: number) => void) | null = null
@@ -44,44 +49,27 @@ export async function decodeGearScreenshot(source: File | Blob): Promise<ImageBi
   return createImageBitmap(source)
 }
 
-export function preprocessGearScreenshot(source: ImageBitmap): HTMLCanvasElement {
+export function preprocessGearScreenshot(bitmap: ImageBitmap): HTMLCanvasElement {
   const canvas = document.createElement("canvas")
-  canvas.width = source.width * UPSCALE_FACTOR
-  canvas.height = source.height * UPSCALE_FACTOR
-
+  canvas.width = bitmap.width * UPSCALE
+  canvas.height = bitmap.height * UPSCALE
   const context = canvas.getContext("2d")
   if (!context) return canvas
+
   context.imageSmoothingEnabled = true
-  context.drawImage(source, 0, 0, canvas.width, canvas.height)
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
 
   const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
   const pixels = imageData.data
-
-  let minIntensity = 255
-  let maxIntensity = 0
-  for (let pixelIndex = 0; pixelIndex < pixels.length; pixelIndex += 4) {
-    const intensity =
-      0.299 * pixels[pixelIndex]! +
-      0.587 * pixels[pixelIndex + 1]! +
-      0.114 * pixels[pixelIndex + 2]!
-    pixels[pixelIndex] = intensity
-    pixels[pixelIndex + 1] = intensity
-    pixels[pixelIndex + 2] = intensity
-    if (intensity < minIntensity) minIntensity = intensity
-    if (intensity > maxIntensity) maxIntensity = intensity
+  const factor = (259 * (CONTRAST + 255)) / (255 * (259 - CONTRAST))
+  for (let index = 0; index < pixels.length; index += 4) {
+    const inverted = [255 - pixels[index]!, 255 - pixels[index + 1]!, 255 - pixels[index + 2]!]
+    const grey = 0.299 * inverted[0]! + 0.587 * inverted[1]! + 0.114 * inverted[2]!
+    const adjusted = Math.min(255, Math.max(0, factor * (grey - 128) + 128 + BRIGHTNESS))
+    pixels[index] = adjusted
+    pixels[index + 1] = adjusted
+    pixels[index + 2] = adjusted
   }
-
-  const range = Math.max(maxIntensity - minIntensity, 1)
-  for (let pixelIndex = 0; pixelIndex < pixels.length; pixelIndex += 4) {
-    const normalized = (pixels[pixelIndex]! - minIntensity) / range
-    const amplified = (normalized - 0.5) * CONTRAST_AMPLIFICATION + 0.5
-    const clamped = Math.min(1, Math.max(0, amplified))
-    const inverted = 255 * (1 - clamped)
-    pixels[pixelIndex] = inverted
-    pixels[pixelIndex + 1] = inverted
-    pixels[pixelIndex + 2] = inverted
-  }
-
   context.putImageData(imageData, 0, 0)
   return canvas
 }
