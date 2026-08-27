@@ -13,6 +13,7 @@ import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
 import { GearSwapPreviewPanel } from "../gear-swap-preview-panel/GearSwapPreviewPanel"
 import { NewGearPieceDialog } from "../new-gear-piece-dialog/NewGearPieceDialog"
 import { ImportGearDialog } from "../import-gear-dialog/ImportGearDialog"
+import { ScreenshotGearDialog } from "../screenshot-gear-dialog/ScreenshotGearDialog"
 import { EquippedBuildDialog } from "../equipped-build-dialog/EquippedBuildDialog"
 import { equippedFromImported } from "../import-gear-dialog/importedGearPieces"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
@@ -38,6 +39,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
   const [selectedSlot, setSelectedSlot] = useState<GearSlot | null>(null)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
+  const [screenshotImportOpen, setScreenshotImportOpen] = useState(false)
   const [summaryOpen, setSummaryOpen] = useState(false)
   const [sub, setSub] = useState<"analysis" | "inventory">("analysis")
 
@@ -172,6 +174,15 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
     }
   }
 
+  function importScreenshotPieces(pieces: GearPiece[]): void {
+    setScreenshotImportOpen(false)
+    if (!pieces.length) return
+    onChange({ ...inputs, inventory: [...inventory, ...pieces] })
+    const first = pieces[0]!
+    setSelectedSlot(first.slot)
+    setSelectedPieceId(first.id)
+  }
+
   function selectSlot(slot: GearSlot, pieceId: string | null): void {
     setSelectedSlot(slot)
     setSelectedPieceId(pieceId)
@@ -184,6 +195,13 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
           <h2>{t("gear.equipped")}</h2>
           <button type="button" className="btn primary" onClick={() => setImportOpen(true)}>
             {t("gear.importGear")}
+          </button>
+          <button
+            type="button"
+            className="btn primary"
+            onClick={() => setScreenshotImportOpen(true)}
+          >
+            {t("gear.screenshotImport.button")}
           </button>
           <div className="spacer" />
           <button
@@ -291,6 +309,15 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
           inputs={inputs}
           onCancel={() => setImportOpen(false)}
           onImport={importGear}
+        />
+      )}
+
+      {screenshotImportOpen && (
+        <ScreenshotGearDialog
+          inputs={inputs}
+          fallbackSlot={selectedSlot ?? "leftWeapon"}
+          onCancel={() => setScreenshotImportOpen(false)}
+          onImport={importScreenshotPieces}
         />
       )}
 

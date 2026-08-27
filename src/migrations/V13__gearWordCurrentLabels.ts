@@ -11,7 +11,7 @@
 // deriving these would silently re-point this one.
 import type { Migration, RawProfilesBlob } from "./types"
 
-const CURRENT_LABEL_TO_ID: Readonly<Record<string, string>> = {
+export const CURRENT_LABEL_TO_ID: Readonly<Record<string, string>> = {
   Power: "power",
   Agility: "agility",
   Momentum: "momentum",
