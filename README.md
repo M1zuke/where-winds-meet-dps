@@ -11,7 +11,7 @@ A DPS calculator and rotation simulator for the game **Where Winds Meet**. Model
 
 ## Getting started
 
-Prerequisites: [Node.js](https://nodejs.org/) **≥ 22**, [pnpm](https://pnpm.io/) (Node 22 ships Corepack, so `corepack enable pnpm` picks up the pinned version; a global install with `npm i -g pnpm` also works), and Git.
+Prerequisites: [Node.js](https://nodejs.org/) **≥ 26**, [pnpm](https://pnpm.io/) (Node no longer ships Corepack, so install it globally with `npm i -g pnpm`, matching the version pinned in `package.json`'s `packageManager` field), and Git.
 
 ```bash
 git clone https://github.com/M1zuke/where-winds-meet-dps.git
