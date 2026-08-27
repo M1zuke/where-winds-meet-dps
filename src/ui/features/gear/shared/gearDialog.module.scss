@@ -1,3 +1,36 @@
 .wide {
   width: min(95vw, 940px);
 }
+
+.intro {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  color: var(--color-text);
+}
+
+.introDps {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.statsPane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statsMeta {
+  color: var(--color-text-muted);
+  font-size: 0.75em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.statsMetaValue {
+  color: var(--color-accent-bright);
+  font-variant-numeric: tabular-nums;
+}
