@@ -187,7 +187,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "fe4f603f88c37089047f6157f69353da0d80d9bff876400f25e151992ee0cccf"
+    "digest": "84bbd33e69e158f10a95da5d95a3e6f36ae5dc7a2646b1ed377da762cc9f83ce"
   },
   "anchor:noAttunement": {
     "dps": 67483.3,
@@ -377,7 +377,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "664fc99a64ff2aa4656a4f385bdc15f8d4614a6ac75c68ea4b0f77ddc0e0b979"
+    "digest": "9e42bc91db56b01ccf46ec29f20ccdf2ce1f6a920f413b6e5dc07aba1c7d9bd6"
   },
   "anchor:dummyOff": {
     "dps": 80270.37,
@@ -567,7 +567,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "1d076462ef1277addeef9bce46d2eab0bb997203dc5b3c7421f87b7599c38e19"
+    "digest": "584a7e9aa6ece91fa020f9e505f431948ec4b9fa4f45314a263de4791a991723"
   },
   "anchor:noQiBreak": {
     "dps": 68185.21,
@@ -757,7 +757,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "a71509322cd180e99173e2003b5c56b6404a61478fdfe805babda67345aac78b"
+    "digest": "5387f71c673f402c451b07a30c5640eced890dc0e0e1ee08b85efccacedf0a39"
   },
   "anchor:healerBuff": {
     "dps": 82400.85,
@@ -947,7 +947,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "3b0cf22748f737b48121bec1a34796758e6f7bb2f05cae2c6fd4b05b66d61762"
+    "digest": "883363efe7a53da875c7b35fbfb017da0e2464ef5ea9255f582eac5534b6d64a"
   },
   "anchor:revelryScript": {
     "dps": 85460.91,
@@ -1137,7 +1137,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "26633099e615ce2ac914534ca9b93be078cf79ca1b1d8e7012987c407a83bfa8"
+    "digest": "9ea50f291891f4cd1ee249dec28aeb603f5c782ff6e4dc8b4dcfffb55d63a3f9"
   },
   "anchor:breakExtension": {
     "dps": 76193.37,
@@ -1327,7 +1327,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "ed0da1febee6cda4923a1352bb43b3907c3cd40311636e15512024042bd192b7"
+    "digest": "5d7305833403dbc76efd4666ee16916b9438304a7fb97201b613d332ce4f2713"
   },
   "anchor:swordHorizonT1": {
     "dps": 52729.07,
@@ -1517,7 +1517,7 @@
       "buffWindows": 126,
       "casts": 69
     },
-    "digest": "760fb00d9dc286e84e5a86ecc7d6c6b81d391611e8fa5635f0c1d8b84d958d33"
+    "digest": "f9cd29b14c733046f8ecbfdf9e448e250ed324d62341aba237a3e4a6a9ad77da"
   },
   "anchor:noSwordHorizon": {
     "dps": 45927.04,
@@ -1707,7 +1707,7 @@
       "buffWindows": 122,
       "casts": 69
     },
-    "digest": "6d6f729e5f5cbc547063a7c2db9f61d68c998deab14fd54696d5d741b8a61abb"
+    "digest": "18ba7053a8dca625fa43f9e7bc0a333cf807aaa464c7d00f61049659f2fb1ea2"
   },
   "anchor:noInsightfulStrike": {
     "dps": 64204.82,
@@ -1897,7 +1897,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "7dd542d445f3dae484afabd8379174e3cdad2039c543dfef9e039631e67865fc"
+    "digest": "2cf3b9cc03f7bab41b7a06a636d4787c18ca2112519af40bcfadd6940784c36a"
   },
   "anchor:noMoraleChant": {
     "dps": 68758.1,
@@ -2079,7 +2079,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "0e9143535c233eecb80b764b6fbddc47a43450c6703c293d948cffaae16023e0"
+    "digest": "198f061502ab71988c1ce306cd4fc6d9c0b3a7f4c7939bde8e14c36d84228c29"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 43616.94,
@@ -2277,7 +2277,7 @@
       "buffWindows": 145,
       "casts": 80
     },
-    "digest": "086617095a407f47bba99c3604b96826ba1974c705db4615f7439913f03c2a91"
+    "digest": "351ebead616b9bf08a013affaab19c6947ac543e5097c7db91bc53854bd61e49"
   },
   "anchor:bitterSeasonT6": {
     "dps": 54566.25,
@@ -2475,7 +2475,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "5be17883df6662f8b25886b3372fd4bfa258fd2d9e8a63a8f5a116c865e203f8"
+    "digest": "a6124aab6f0e78a12405a39a564fe071ac65a44c5951dba5510057e46e24ddde"
   },
   "anchor:bitterSeasonT4": {
     "dps": 53545.89,
@@ -2673,7 +2673,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "83568d04d7e559ee41e969fe6b0774ec9f11273b10035a7d38b11ab2b2990ef6"
+    "digest": "3e7f3e67fb1b9a3aca27664262ef4d3501aa8d223fc03dae578ea68121bd48af"
   },
   "anchor:bitterSeasonT1": {
     "dps": 53089.6,
@@ -2871,7 +2871,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "5298a0b5ddf5d222ad2112c93df07909243839957d4a1375f6529d027343f315"
+    "digest": "899657b405a4dff83ee8c93e470028b3d433cb72d8ed63a0a2a1e79724f21e2f"
   },
   "anchor:noSet": {
     "dps": 68638.26,
@@ -3061,7 +3061,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "fdc26704214ede028e237acd9f4ed2fbc135cf3ef889828173a4257a0aabf109"
+    "digest": "28be95bd7c6a4771d3d1afee226bd59e515146ccc530c5e0a6a29aeb6cd01ebf"
   },
   "anchor:set-Jadeware": {
     "dps": 70926.29,
@@ -3251,7 +3251,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "61add13a678d2ad3ecd225a93186d2cb50dee610b76dcef1d8a046b8ec9bf248"
+    "digest": "c449f03c9e4867b4c1d9315df5771f4e5d564ad1c1088c8d8dffae717d9d3019"
   },
   "anchor:set-Mistwillow": {
     "dps": 69245.95,
@@ -3441,7 +3441,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "c63c88c0fcaaa699fa372be8032e577e3eec724ec3ebf8d08c93c7bc4fb153e0"
+    "digest": "eb88ef7e1fe246ee07accec4c79a4d7c0a871cdea1236c59e9b946b5a91cfc92"
   },
   "anchor:set-Rainwhisper": {
     "dps": 70235.63,
@@ -3631,9 +3631,9 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "fb8dd82b18125bb4195b0592a1d647bebeb14df8bf327b51d1b32e8ab81fe9ae"
+    "digest": "5818d9158aa8946cda69221f4459bfa4cb0e64b8ecd7bc52f52dbbda13388eb4"
   },
-  "anchor:set-ShatteredRidge": {
+  "anchor:set-Cleftpeak": {
     "dps": 70581.5,
     "totalDamage": 4066670.91,
     "rotationDuration": 57.62,
@@ -3821,7 +3821,7 @@
       "buffWindows": 129,
       "casts": 69
     },
-    "digest": "2723e28bec65737c406da408728220251e9bb9f520a16b3d4c1319a3a02423c2"
+    "digest": "0b65d996364198b64f54ccddf3f31c8bcc51590b39eaae80f9d364dadd72436f"
   },
   "defaults:umbra": {
     "dps": 11256.79,
@@ -4003,6 +4003,6 @@
       "buffWindows": 137,
       "casts": 79
     },
-    "digest": "e473bd73eff96d8ca14ca1c90f7c1889964da7844f98a3083e5c8edb0d9329b5"
+    "digest": "ae492d011e79702fafd3d848e64ad7fc6a9283f8df68f8f6d35b5cebf91f914d"
   }
 }

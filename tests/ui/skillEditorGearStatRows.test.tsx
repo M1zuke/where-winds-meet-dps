@@ -35,7 +35,7 @@ describe("Skill Editor — gear-stat Receives rows show the gear-derived value",
 
     const modaoRow = screen.getByText("Art of Modao DMG Boost").parentElement!
     expect(modaoRow.textContent).toContain("+7.0% damage")
-    const allMartialRow = screen.getByText("All Martial Boost").parentElement!
+    const allMartialRow = screen.getByText("All Martial Arts Boost").parentElement!
     expect(allMartialRow.textContent).toContain("+3.2% damage")
   })
 })

@@ -37,27 +37,27 @@ export function ItemRankingTable({ rows }: Props) {
     <table className={`ranking-table ranking-table-spaced ${styles.rankingTable}`}>
       <thead>
         <tr>
-          <th>{t("Stat Line")}</th>
-          <th>{t("Amount")}</th>
-          <th>{t("DPS Δ")}</th>
-          <th>{t("Lift")}</th>
-          <th>{t("Lead")}</th>
+          <th>{t("overview.itemRankingTable.statLine")}</th>
+          <th>{t("common.amount")}</th>
+          <th>{t("overview.itemRankingTable.dps")}</th>
+          <th>{t("overview.itemRankingTable.lift")}</th>
+          <th>{t("overview.itemRankingTable.lead")}</th>
         </tr>
       </thead>
       <tbody>
         {sorted.map((row, index) => (
           <tr key={row.statLineId + index}>
-            <td>{t(row.label)}</td>
+            <td>{t(row.labelKey, row.label)}</td>
             <td>{row.unit === "percent" ? fmt(row.amount * 100, 2) + " %" : fmt(row.amount, 2)}</td>
             <td
               className={`${styles.dpsDelta} ${deltaSignClass(row.dpsDelta)}`}
-              title={`${t("Expected DPS")}: ${fmt(row.expectedDps, 2)}`}
+              title={`${t("overview.itemRankingTable.expectedDps")}: ${fmt(row.expectedDps, 2)}`}
             >
               {fmtDpsDelta(row.dpsDelta)}
             </td>
             <td>{(row.liftPercent * 100).toFixed(2) + " %"}</td>
             <td style={{ color: row.leadVsMin === "(none)" ? "#666" : "#d8b070" }}>
-              {typeof row.leadVsMin === "number" ? row.leadVsMin.toFixed(2) : t(row.leadVsMin)}
+              {typeof row.leadVsMin === "number" ? row.leadVsMin.toFixed(2) : t("common.none")}
             </td>
           </tr>
         ))}

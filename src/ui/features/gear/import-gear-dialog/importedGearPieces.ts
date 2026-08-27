@@ -1,4 +1,4 @@
-import { attunementsFor } from "../../../../engine/attunements"
+import { attunementsFor, attunementLabelKey } from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
@@ -60,6 +60,7 @@ function legalTargets(affix: ImportedAffix, slot: GearSlot | null, inputs: Input
       kind: "attunement",
       attunementId: option.id,
       label: option.label,
+      labelKey: attunementLabelKey(option, inputs.classId),
       min: option.min,
       max: option.max,
     }))

@@ -32,7 +32,7 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
   const rows = useMemo(() => groupByBreakdownName(result.perSkill), [result.perSkill])
 
   if (rows.length === 0) {
-    return <div className="empty-tab">{t("(none)")}</div>
+    return <div className="empty-tab">{t("common.none")}</div>
   }
 
   const maxDmg = rows[0]?.expectedDamage || 1
@@ -43,12 +43,12 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
     <table className="ranking-table skill-table">
       <thead>
         <tr>
-          <th>{t("Skill")}</th>
+          <th>{t("common.skill")}</th>
           <th className="bar-col" />
-          <th>{t("Hit Count")}</th>
-          <th>{t("Share")}</th>
-          <th>{t("DPS")}</th>
-          <th>{t("Total Damage")}</th>
+          <th>{t("rotation.breakdown.hitCount")}</th>
+          <th>{t("common.share")}</th>
+          <th>{t("common.dps")}</th>
+          <th>{t("common.totalDamage")}</th>
         </tr>
       </thead>
       <tbody>
@@ -56,7 +56,7 @@ export function RotationBreakdownPanel({ result }: { result: Result }) {
           const ratio = row.expectedDamage / maxDmg
           return (
             <tr key={row.name}>
-              <td>{t(row.name)}</td>
+              <td>{t(row.nameKey, row.name)}</td>
               <td className="bar-col">
                 <div className="skill-bar-track">
                   <div

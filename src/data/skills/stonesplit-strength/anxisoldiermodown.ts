@@ -10,7 +10,7 @@ export const anxisoldiermodown = defineSkill({
   name: "AnxiSoldierMoDown",
   tags: [
     WEAPON.moBlade,
-    PROP.shatteredRidgeBoost,
+    PROP.cleftpeakBoost,
     ATTUNE.phalanxbaneCharged,
     ROLE.anxiSoldier,
     ROLE.anxiSoldierMoDown,
@@ -19,7 +19,7 @@ export const anxisoldiermodown = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierMoDown,
-  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect],
   triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
   castFrames: 0,
   triggerable: true,

@@ -92,14 +92,11 @@ function withStepAfterPrePull(raw: Inputs, skillId: string): Inputs {
   return { ...raw, activeCustomRotation: { ...rotation, steps } }
 }
 
-// The case-name suffix is the pre-migration display name, kept exactly as the
-// recorded fixture keys it — only the `set` value building each case's
-// `Inputs` moved from the name to the id.
 const ARMOUR_SETS: readonly [label: string, id: string][] = [
   ["Jadeware", SET_ID.jadeware],
   ["Mistwillow", SET_ID.mistwillow],
   ["Rainwhisper", SET_ID.rainwhisper],
-  ["ShatteredRidge", SET_ID.shatteredRidge],
+  ["Cleftpeak", SET_ID.cleftpeak],
 ]
 
 const CASES: { name: string; build: () => Inputs }[] = [

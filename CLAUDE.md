@@ -55,6 +55,7 @@ Every section should read like a checklist: imperative, checkable, no story.
 | writing a localStorage migration                                   | `docs/MIGRATIONS.md`     |
 | adding or changing tests                                           | `docs/TESTING.md`        |
 | dev-only reference material outside `src/`                         | `docs/REFERENCE-DATA.md` |
+| user-visible text, a locale or the translation catalogue           | `docs/I18N.md`           |
 
 ## Adding something new — start from the wiki how-to
 
@@ -199,11 +200,14 @@ official ZH↔EN pairs in `reference/locale/zhToEnOfficial.json`, and the four C
 source citations in `docs/CALCULATION.md` § "Sources of truth". None is
 imported by the app or the tests.
 
-The i18n system is retained (`Locale = "en"`, extensible union in
-`src/i18n/translations.ts`) so a future language is just a new dictionary — but
-there is **no `zh` locale and no language toggle**.
+The UI renders **keys**, not English: a locale is a catalogue under
+`src/i18n/locales/` keyed by path and a member of the `Locale` union in
+`src/i18n/translations.ts` — nothing else branches on it. `en.json` is the
+English catalogue and the fallback every locale falls through to. There is still
+**no `zh` locale**.
 
 → Naming a new domain term: **docs/CLASSES.md** § "Naming a new domain term".
+→ Translatable text, and what makes a string reachable: **docs/I18N.md**.
 
 ## White vs Yellow rates — DO NOT FLIP THIS
 

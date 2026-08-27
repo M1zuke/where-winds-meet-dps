@@ -9,22 +9,26 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   const duration = result.rotationDuration
   const events = result.timeline ?? []
 
-  const eventsByLane = useMemo(() => {
+  const lanes = useMemo(() => {
     const laneOf = new Map(
-      result.perSkill.map((row) => [row.name, breakdownNameOf(row.breakdownName, row.name)]),
+      result.perSkill.map((row) => [
+        row.name,
+        { name: breakdownNameOf(row.breakdownName, row.name), key: row.breakdownKey },
+      ]),
     )
-    const map = new Map<string, TimelineEvent[]>()
+    const byName = new Map<string, { key: string; events: TimelineEvent[] }>()
     for (const event of result.timeline ?? []) {
-      const lane = laneOf.get(event.skillName) ?? event.skillName
-      const existing = map.get(lane)
-      if (existing) existing.push(event)
-      else map.set(lane, [event])
+      const lane = laneOf.get(event.skillName)
+      const name = lane?.name ?? event.skillName
+      const existing = byName.get(name)
+      if (existing) existing.events.push(event)
+      else byName.set(name, { key: lane?.key ?? name, events: [event] })
     }
-    return map
+    return byName
   }, [result.timeline, result.perSkill])
 
   if (events.length === 0 || duration <= 0) {
-    return <div className="empty-tab">{t("(none)")}</div>
+    return <div className="empty-tab">{t("common.none")}</div>
   }
 
   const minTime = Math.min(0, ...events.map((event) => event.timeSec))
@@ -49,7 +53,9 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
         <div className={styles.timelineTrack}>
           {showLowQi && (
             <div className={styles.timelineBuffGroup}>
-              <span className={styles.timelineBuffGroupLabel}>{t("Low Qi Window")}</span>
+              <span className={styles.timelineBuffGroupLabel}>
+                {t("rotation.timeline.lowQiWindow")}
+              </span>
               <div className={styles.timelineBuffLane}>
                 <div
                   className={`${styles.timelineBuffSpan} ${styles.timelineLowQi}`}
@@ -57,16 +63,18 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
                     left: pct(lowQiStart) + "%",
                     width: Math.max(pct(lowQiEnd) - pct(lowQiStart), 0.3) + "%",
                   }}
-                  title={`${t("Low Qi Window")} — ${lowQiStart.toFixed(2)}s – ${lowQiEnd.toFixed(2)}s`}
+                  title={`${t("rotation.timeline.lowQiWindow")} — ${lowQiStart.toFixed(2)}s – ${lowQiEnd.toFixed(2)}s`}
                 >
-                  <span className={styles.timelineBuffLabel}>{t("Low Qi Window")}</span>
+                  <span className={styles.timelineBuffLabel}>
+                    {t("rotation.timeline.lowQiWindow")}
+                  </span>
                 </div>
               </div>
             </div>
           )}
           {showQi && (
             <div className={styles.timelineBuffGroup}>
-              <span className={styles.timelineBuffGroupLabel}>{t("Qi Break Window")}</span>
+              <span className={styles.timelineBuffGroupLabel}>{t("common.qiBreakWindow")}</span>
               <div className={styles.timelineBuffLane}>
                 <div
                   className={`${styles.timelineBuffSpan} ${styles.timelineQiBreak}`}
@@ -74,18 +82,18 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
                     left: pct(qiStart) + "%",
                     width: Math.max(pct(qiEnd) - pct(qiStart), 0.3) + "%",
                   }}
-                  title={`${t("Qi Break Window")} — ${qiStart.toFixed(2)}s – ${qiEnd.toFixed(2)}s`}
+                  title={`${t("common.qiBreakWindow")} — ${qiStart.toFixed(2)}s – ${qiEnd.toFixed(2)}s`}
                 >
-                  <span className={styles.timelineBuffLabel}>{t("Qi Break Window")}</span>
+                  <span className={styles.timelineBuffLabel}>{t("common.qiBreakWindow")}</span>
                 </div>
               </div>
             </div>
           )}
-          {[...eventsByLane.entries()].map(([name, laneEvents]) => (
+          {[...lanes.entries()].map(([name, lane]) => (
             <div key={name} className={styles.timelineLane}>
-              <span className={styles.timelineLaneLabel}>{t(name)}</span>
+              <span className={styles.timelineLaneLabel}>{t(lane.key, name)}</span>
               <div className={styles.timelineLaneTrack}>
-                {laneEvents.map((event, index) => (
+                {lane.events.map((event, index) => (
                   <div
                     key={index}
                     className={

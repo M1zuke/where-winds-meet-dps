@@ -10,7 +10,7 @@ export const phalanxchargedS3 = defineSkill({
   name: "PhalanxCharged-S3",
   tags: [
     PROP.isCharged,
-    PROP.shatteredRidgeBoost,
+    PROP.cleftpeakBoost,
     WEAPON.moBlade,
     ATTACK.charge,
     ATTUNE.phalanxbaneCharged,
@@ -20,7 +20,7 @@ export const phalanxchargedS3 = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3,
-  receives: [BUFF.mountainSplitter, BUFF.shatteredRidgeDeflect],
+  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 188,
   triggerable: true,

@@ -5,10 +5,10 @@ import { effectiveRates } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
 import {
-  PATH_LABELS,
   PERCENT_PATHS,
   PENETRATION_PATHS,
   readPath,
+  statPathLabel,
 } from "../../../utils/statFormatting"
 import styles from "./GearSwapPreviewPanel.module.scss"
 
@@ -97,16 +97,16 @@ export function GearSwapPreviewPanel({
   return (
     <div className={`panel ${styles.gearSwapPreview}`}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("If equipped — stat preview")}</span>
+        <span className="toolbar-label">{t("gear.swapPreview.ifEquippedStatPreview")}</span>
       </div>
 
       <div className={styles.gearSwapDps}>
         <div className={styles.gearSwapDpsCell}>
-          <div className={styles.label}>{t("Current DPS")}</div>
+          <div className={styles.label}>{t("gear.swapPreview.currentDps")}</div>
           <div className={styles.value}>{Math.round(currentDps).toLocaleString()}</div>
         </div>
         <div className={styles.gearSwapDpsCell}>
-          <div className={styles.label}>{t("After-equip DPS")}</div>
+          <div className={styles.label}>{t("gear.swapPreview.afterEquipDps")}</div>
           <div className={styles.value}>
             {afterDps !== null
               ? Math.round(afterDps).toLocaleString()
@@ -116,7 +116,7 @@ export function GearSwapPreviewPanel({
           </div>
         </div>
         <div className={styles.gearSwapDpsCell}>
-          <div className={styles.label}>{t("Δ")}</div>
+          <div className={styles.label}>{t("gear.swapPreview.symbol")}</div>
           <div
             className={`${styles.value} ${dpsDelta ? deltaSignClass(dpsDelta.current) : "is-zero"}`}
           >
@@ -126,20 +126,20 @@ export function GearSwapPreviewPanel({
       </div>
 
       {rows.length === 0 ? (
-        <div className="hint">{t("Equipping this piece would not change any panel stats.")}</div>
+        <div className="hint">{t("gear.swapPreview.equippingThisPieceWouldNot")}</div>
       ) : (
         <div className={styles.gearSwapTable}>
-          <div className={styles.gearBaseTh}>{t("Stat")}</div>
-          <div className={styles.gearBaseTh}>{t("Active")}</div>
-          <div className={styles.gearBaseTh}>{t("After")}</div>
-          <div className={styles.gearBaseTh}>{t("Δ")}</div>
+          <div className={styles.gearBaseTh}>{t("common.stat")}</div>
+          <div className={styles.gearBaseTh}>{t("common.active")}</div>
+          <div className={styles.gearBaseTh}>{t("gear.swapPreview.after")}</div>
+          <div className={styles.gearBaseTh}>{t("gear.swapPreview.symbol")}</div>
           {rows.map((row) => {
             const isPct = PERCENT_PATHS.has(row.path)
             const isPen = PENETRATION_PATHS.has(row.path)
             return (
               <Row
                 key={row.path}
-                label={t(PATH_LABELS[row.path] ?? row.path)}
+                label={statPathLabel(row.path, t)}
                 cur={fmtVal(row.cur, isPct, isPen)}
                 next={fmtVal(row.next, isPct, isPen)}
                 delta={fmtDelta(row.delta, isPct, isPen)}

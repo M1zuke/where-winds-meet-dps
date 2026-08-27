@@ -10,5 +10,8 @@ tsconfig.tsbuildinfo
 .claude/
 .plans/
 .idea/
-scripts/
+scripts/*
+!scripts/copyOcrAssets.mjs
+public/ocr/
+eng.traineddata
 

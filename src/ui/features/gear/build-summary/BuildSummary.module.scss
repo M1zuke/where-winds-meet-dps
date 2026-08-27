@@ -1,0 +1,37 @@
+@use "breakpoints";
+
+.buildSummary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-bg);
+}
+
+.summaryLabel {
+  color: var(--color-text-muted);
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.summaryValue {
+  color: var(--color-accent-bright);
+  font-size: 0.86em;
+}
+
+@include breakpoints.below(breakpoints.$bp-760) {
+  .buildSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

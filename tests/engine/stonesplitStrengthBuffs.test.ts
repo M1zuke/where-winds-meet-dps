@@ -11,7 +11,7 @@ import {
   DREAD_DURATION_FRAMES,
   FEARFUL_BLADE_DURATION_FRAMES,
 } from "../../src/data/classes/stonesplit-strength/gates"
-import { shatteredRidge } from "../../src/data/sets/shatteredRidge"
+import { cleftpeak } from "../../src/data/sets/cleftpeak"
 
 const CLASS = "stonesplitStrength"
 
@@ -105,39 +105,39 @@ describe("Throat-Pierced", () => {
   })
 })
 
-describe("Shattered Ridge", () => {
+describe("Cleftpeak", () => {
   const boosted = () =>
-    skill("SnowpartingVC", [WEAPON.hengBlade, PROP.shatteredRidgeBoost], CAST.snowpartingVC, [
-      BUFF.shatteredRidgeDeflect,
+    skill("SnowpartingVC", [WEAPON.hengBlade, PROP.cleftpeakBoost], CAST.snowpartingVC, [
+      BUFF.cleftpeakDeflect,
     ])
   const plain = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
   it("registers only while the set is equipped", () => {
-    expect(
-      engine({ armorSet: shatteredRidge.siteKey }).definitions.has(BUFF.shatteredRidgeDeflect),
-    ).toBe(true)
-    expect(engine({ armorSet: "jadeware" }).definitions.has(BUFF.shatteredRidgeDeflect)).toBe(false)
+    expect(engine({ armorSet: cleftpeak.siteKey }).definitions.has(BUFF.cleftpeakDeflect)).toBe(
+      true,
+    )
+    expect(engine({ armorSet: "jadeware" }).definitions.has(BUFF.cleftpeakDeflect)).toBe(false)
   })
 
   it("pays out at five damage stacks and not before", () => {
-    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    const ridged = engine({ armorSet: cleftpeak.siteKey })
     for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, boosted(), 0.5, BUFF.shatteredRidgeDeflect)).toBe(0)
+    expect(share(ridged, boosted(), 0.5, BUFF.cleftpeakDeflect)).toBe(0)
 
     ridged.processDamageHit(0.4)
-    expect(share(ridged, boosted(), 0.5, BUFF.shatteredRidgeDeflect)).toBeCloseTo(0.08, 9)
+    expect(share(ridged, boosted(), 0.5, BUFF.cleftpeakDeflect)).toBeCloseTo(0.08, 9)
   })
 
   it("stacks on any damaging hit, but reaches only the skills that carry the property", () => {
-    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    const ridged = engine({ armorSet: cleftpeak.siteKey })
     for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, plain(), 0.5, BUFF.shatteredRidgeDeflect)).toBe(0)
+    expect(share(ridged, plain(), 0.5, BUFF.cleftpeakDeflect)).toBe(0)
   })
 
   it("lets its five-second window lapse", () => {
-    const ridged = engine({ armorSet: shatteredRidge.siteKey })
+    const ridged = engine({ armorSet: cleftpeak.siteKey })
     for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, boosted(), 6, BUFF.shatteredRidgeDeflect)).toBe(0)
+    expect(share(ridged, boosted(), 6, BUFF.cleftpeakDeflect)).toBe(0)
   })
 })
 

@@ -1,5 +1,9 @@
 @use "breakpoints";
 
+.summaryButton {
+  margin-right: 8px;
+}
+
 .gearSplit {
   display: grid;
   grid-template-columns: 1fr 1fr;

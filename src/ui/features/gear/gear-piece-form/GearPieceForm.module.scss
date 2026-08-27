@@ -170,3 +170,23 @@
     grid-template-columns: 1fr;
   }
 }
+
+@mixin scan-mark($color) {
+  background-image: linear-gradient($color, $color);
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: bottom;
+  background-clip: padding-box;
+}
+
+input.markGuessed,
+button.markGuessed,
+.markGuessed input {
+  @include scan-mark(var(--color-accent-bright));
+}
+
+input.markUnresolved,
+button.markUnresolved,
+.markUnresolved input {
+  @include scan-mark(var(--color-negative));
+}

@@ -1,12 +1,30 @@
+@use "mixins";
+
 .identity {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  flex-direction: column;
+  gap: 2px;
   margin: 2px 0 10px;
   padding: 6px 10px;
   background: var(--color-surface-inset);
   border-left: 3px solid var(--color-border-strong);
   border-radius: 3px;
+}
+
+.identityLabel {
+  font-size: 0.95em;
+  font-weight: 600;
+  color: var(--color-rarity-legendary);
+}
+
+.identity.rarityEpic .identityLabel {
+  color: var(--color-rarity-epic);
+}
+
+.identityRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
 .identity.rarityLegendary {
@@ -44,4 +62,32 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.pieceTextFields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pieceTextField {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pieceTextFieldLabel {
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.pieceNoteInput {
+  @include mixins.field-input;
+  @include mixins.field-states;
+  min-height: 64px;
+  resize: vertical;
+  font-family: inherit;
 }

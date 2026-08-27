@@ -9,6 +9,7 @@ import { attunementsForClass, getAttunement } from "../../src/engine/attunements
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { GearPiece } from "../../src/engine/types"
+import english from "../../src/i18n/locales/en.json"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -28,6 +29,13 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
       "Heavenquaker Spear Charged Skill DMG Boost",
       "Strategic Sword - Bleeding DMG Boost",
     ])
+  })
+
+  it("names every row by a key the translation catalogue carries", () => {
+    const uncatalogued = rows
+      .map((row) => row.labelKey)
+      .filter((labelKey) => !(labelKey in (english as Record<string, string>)))
+    expect(uncatalogued).toEqual([])
   })
 
   it("includes the default rotation's resolved weapons (Sword + Spear)", () => {

@@ -186,7 +186,7 @@ export const PROP = {
   isDrone: "prop:isDrone",
   isExecution: "prop:isExecution",
   isMartialSkillQ: "prop:isMartialSkillQ",
-  shatteredRidgeBoost: "prop:shatteredRidgeBoost",
+  cleftpeakBoost: "prop:cleftpeakBoost",
 } as const
 
 export const ATTACK = {

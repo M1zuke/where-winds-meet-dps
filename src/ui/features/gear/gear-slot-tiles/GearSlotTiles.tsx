@@ -1,21 +1,12 @@
 import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { rarityKey } from "../../../../i18n/contentKeys"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
-import { DELTA_HINTS } from "../help-hint/deltaHints"
+import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import styles from "./GearSlotTiles.module.scss"
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
-}
 
 interface Props {
   inventory: GearPiece[]
@@ -78,23 +69,33 @@ export function GearSlotTiles({
             }
             onClick={() => onSelectSlot(slot, piece?.id ?? null)}
           >
-            <div className={styles.gearTileSlot}>{t(SLOT_LABEL_KEYS[slot])}</div>
+            {piece?.note && (
+              <span
+                className={styles.gearTileNoteMarker}
+                title={t("common.hasNote")}
+                aria-label={t("common.hasNote")}
+              >
+                ✎
+              </span>
+            )}
+            <div className={styles.gearTileSlot}>{t(GEAR_SLOT_KEYS[slot])}</div>
+            {piece?.label && <div className={styles.gearTileLabel}>{piece.label}</div>}
             <div className={styles.gearTilePiece}>
               {piece
-                ? `lv${piece.level} · ${t(piece.rarity === "legendary" ? "Legendary" : "Epic")}`
-                : t("Empty")}
+                ? `lv${piece.level} · ${t(rarityKey(piece.rarity), piece.rarity)}`
+                : t("gear.slotTiles.empty")}
             </div>
             {piece && (
               <div className={styles.gearTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
                 <SlotStat
-                  label={t("Max (94%)")}
-                  hint={t(DELTA_HINTS.upgraded)}
+                  label={t("gear.slotTiles.max94")}
+                  hint={t(DELTA_HINT_KEYS.upgraded)}
                   delta={delta?.upgraded}
                   pending={dpsDeltasPending}
                 />
                 <SlotStat
                   label="FP"
-                  hint={t(DELTA_HINTS.fullPotential)}
+                  hint={t(DELTA_HINT_KEYS.fullPotential)}
                   delta={delta?.fullPotential}
                   pending={dpsDeltasPending}
                 />

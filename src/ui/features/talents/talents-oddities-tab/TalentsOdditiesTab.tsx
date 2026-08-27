@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { classKey } from "../../../../i18n/contentKeys"
 import { getSchool } from "../../../../engine/panel"
 import type { Inputs } from "../../../../engine/types"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -16,15 +17,16 @@ export function TalentsOdditiesTab({
 }) {
   const { t } = useI18n()
   const [sub, setSub] = useState<"talents" | "oddities">("talents")
-  const className = t(getSchool(inputs.classId).displayName)
+  const school = getSchool(inputs.classId)
+  const className = t(classKey(school.id), school.displayName)
   return (
     <>
       <SubTabs
         active={sub}
         onSelect={setSub}
         tabs={[
-          { key: "talents", label: `${t("Class Talents")} (${className})` },
-          { key: "oddities", label: t("Oddities") },
+          { key: "talents", label: `${t("talents.oddities.classTalents")} (${className})` },
+          { key: "oddities", label: t("talents.oddities.oddities") },
         ]}
       />
       <SubTabPanel>

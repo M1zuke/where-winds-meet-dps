@@ -70,10 +70,10 @@ export function SimulationTab({
 
   const rotationName = options.find((candidate) => candidate.id === optionId)?.name ?? ""
   const contextLabel = !summary
-    ? t("not run yet")
+    ? t("simulation.notRunYet")
     : simulation.cancelled
-      ? `${fullNumber(simulation.completedRuns)} ${t("of")} ${fullNumber(simulation.requestedRuns)} ${t("runs")} · ${t("cancelled")}`
-      : `${fullNumber(summary.runCount)} ${t("runs")} · ${rotationName}`
+      ? `${fullNumber(simulation.completedRuns)} ${t("common.of")} ${fullNumber(simulation.requestedRuns)} ${t("common.runs")} · ${t("simulation.cancelled")}`
+      : `${fullNumber(summary.runCount)} ${t("common.runs")} · ${rotationName}`
 
   return (
     <>
@@ -104,7 +104,7 @@ export function SimulationTab({
           }
         >
           <div className={`panel ${styles.spanColumns}`}>
-            <h2>{t("DPS Distribution")}</h2>
+            <h2>{t("simulation.dpsDistribution")}</h2>
             <SimulationDistributionPanel
               sorted={sorted}
               meanDps={summary.meanDps}
@@ -113,18 +113,16 @@ export function SimulationTab({
             />
           </div>
           <div className="panel">
-            <h2>{t("Parse Ladder")}</h2>
+            <h2>{t("simulation.parseLadder")}</h2>
             <SimulationParseLadderPanel sorted={sorted} />
           </div>
           <div className="panel">
-            <h2>{t("Outcome Mix")}</h2>
+            <h2>{t("simulation.outcomeMix")}</h2>
             <SimulationOutcomeMixPanel summary={summary} expectedRates={simulation.expectedRates} />
           </div>
         </div>
       ) : (
-        <div className="empty-tab">
-          {t("Pick a rotation and a run count, then Run to simulate parses.")}
-        </div>
+        <div className="empty-tab">{t("simulation.pickARotationHint")}</div>
       )}
     </>
   )

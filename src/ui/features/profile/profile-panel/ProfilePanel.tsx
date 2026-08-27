@@ -5,6 +5,7 @@ import type { Buff } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
 import { exportProfile, importProfile } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { classKey } from "../../../../i18n/contentKeys"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import { activeRotationName } from "../../rotation/rotationOptions"
 import { useProfileMetrics } from "../../../hooks/useProfileMetrics"
@@ -70,7 +71,7 @@ export function ProfilePanel({
   function classLabel(classId: string): string {
     const definition = classDefinition(classId)
     if (!definition) return classId
-    return t(definition.displayName)
+    return t(classKey(definition.id), definition.displayName)
   }
 
   function classIcon(classId: string): string | undefined {
@@ -105,20 +106,20 @@ export function ProfilePanel({
       onImport(imported)
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err)
-      alert(`${t("Import failed")}: ${msg}`)
+      alert(`${t("common.importFailed")}: ${msg}`)
     }
   }
 
   return (
     <div className={styles.profilePanel}>
       <div className="toolbar">
-        <span className="toolbar-label">{t("Profiles")}</span>
+        <span className="toolbar-label">{t("common.profiles")}</span>
         <div className="spacer" />
         <button type="button" className="btn" onClick={handleImportClick}>
-          {t("Import")}
+          {t("common.import")}
         </button>
         <button type="button" className="btn primary" onClick={onCreate}>
-          + {t("New profile")}
+          + {t("common.newProfile")}
         </button>
         <input
           ref={fileInputRef}
@@ -161,30 +162,30 @@ export function ProfilePanel({
                   <span
                     className={styles.profileNameText}
                     onDoubleClick={() => startRename(profile)}
-                    title={t("Rename")}
+                    title={t("profile.rename")}
                   >
-                    {profile.name || t("(unnamed)")}
+                    {profile.name || t("common.unnamed")}
                   </span>
                 )}
-                {isActive && <span className={styles.activeBadge}>{t("Active")}</span>}
+                {isActive && <span className={styles.activeBadge}>{t("common.active")}</span>}
                 <span className={styles.classLabel}>{classLabel(profile.inputs.classId)}</span>
               </div>
 
               <div className={styles.stats} style={{ opacity: isPending ? 0.6 : 1 }}>
                 <div className={styles.stat}>
-                  <span className={styles.statLabel}>{t("DPS")}</span>
+                  <span className={styles.statLabel}>{t("common.dps")}</span>
                   <span className={styles.dpsValue}>
                     {metrics ? formatNumber(metrics.dps, 0) : "—"}
                   </span>
                 </div>
                 <div className={styles.stat}>
-                  <span className={styles.statLabel}>{t("Total damage")}</span>
+                  <span className={styles.statLabel}>{t("profile.totalDamage")}</span>
                   <span className={styles.statValue}>
                     {metrics ? formatCompactDamage(metrics.totalDamage) : "—"}
                   </span>
                 </div>
                 <div className={`${styles.stat} ${styles.rotationStat}`}>
-                  <span className={styles.statLabel}>{t("Rotation")}</span>
+                  <span className={styles.statLabel}>{t("common.rotation")}</span>
                   <span className={styles.rotationValue} title={rotationName ?? undefined}>
                     {rotationName ?? "—"}
                     {metrics && (
@@ -204,7 +205,7 @@ export function ProfilePanel({
                   onClick={() => onSelect(profile.id)}
                   disabled={isActive}
                 >
-                  {t("Select")}
+                  {t("profile.select")}
                 </button>
                 <button
                   type="button"
@@ -212,13 +213,13 @@ export function ProfilePanel({
                   onClick={() => startRename(profile)}
                   disabled={isEditing}
                 >
-                  {t("Rename")}
+                  {t("profile.rename")}
                 </button>
                 <button type="button" className="btn" onClick={() => onDuplicate(profile.id)}>
-                  {t("Duplicate")}
+                  {t("profile.duplicate")}
                 </button>
                 <button type="button" className="btn" onClick={() => handleExport(profile)}>
-                  {t("Export")}
+                  {t("common.export")}
                 </button>
                 <div className={styles.actionsSpacer} />
                 <button
@@ -226,9 +227,9 @@ export function ProfilePanel({
                   className="btn danger"
                   onClick={() => onDelete(profile.id)}
                   disabled={profiles.length <= 1}
-                  title={profiles.length <= 1 ? "" : t("Delete")}
+                  title={profiles.length <= 1 ? "" : t("common.delete")}
                 >
-                  {t("Delete")}
+                  {t("common.delete")}
                 </button>
               </div>
             </div>

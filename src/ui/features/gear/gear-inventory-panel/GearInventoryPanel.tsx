@@ -1,22 +1,13 @@
 import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { rarityKey } from "../../../../i18n/contentKeys"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
-import { DELTA_HINTS } from "../help-hint/deltaHints"
+import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
+import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
 import styles from "./GearInventoryPanel.module.scss"
-
-const SLOT_LABEL_KEYS: Record<GearSlot, string> = {
-  leftWeapon: "Left Weapon",
-  rightWeapon: "Right Weapon",
-  disc: "Disc",
-  pendant: "Pendant",
-  helm: "Helm",
-  armor: "Armor",
-  greaves: "Greaves",
-  bracer: "Bracer",
-}
 
 interface Props {
   rows: InventoryRow[]
@@ -69,8 +60,8 @@ export function GearInventoryPanel({
     const { piece } = row
     const isSelected = piece.id === selectedPieceId
     const delta: DpsDelta | undefined = dpsDeltas[piece.id]
-    const slotLabel = t(SLOT_LABEL_KEYS[piece.slot])
-    const rarityLabel = t(piece.rarity === "legendary" ? "Legendary" : "Epic")
+    const slotLabel = t(GEAR_SLOT_KEYS[piece.slot])
+    const rarityLabel = t(rarityKey(piece.rarity), piece.rarity)
     return (
       <button
         type="button"
@@ -82,7 +73,16 @@ export function GearInventoryPanel({
         }
         onClick={() => onSelect(row)}
       >
-        {piece.isNew && <span className={styles.gearInvTileNew}>{t("New")}</span>}
+        {piece.isNew && <span className={styles.gearInvTileNew}>{t("common.new")}</span>}
+        {piece.note && (
+          <span
+            className={styles.gearInvTileNoteMarker}
+            title={t("common.hasNote")}
+            aria-label={t("common.hasNote")}
+          >
+            ✎
+          </span>
+        )}
 
         <div className={styles.gearInvTileHead}>
           <span className={styles.gearInvTileSlot}>{slotLabel}</span>
@@ -90,29 +90,30 @@ export function GearInventoryPanel({
             lv{piece.level} · {rarityLabel}
           </span>
         </div>
+        {piece.label && <div className={styles.gearInvTileLabel}>{piece.label}</div>}
 
         <div className={styles.gearInvTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
           <Stat
-            label={t("Now")}
-            hint={t(DELTA_HINTS.current)}
+            label={t("gear.inventory.now")}
+            hint={t(DELTA_HINT_KEYS.current)}
             delta={delta?.current}
             pending={dpsDeltasPending}
           />
           <Stat
-            label={t("Max (94%)")}
-            hint={t(DELTA_HINTS.upgraded)}
+            label={t("gear.inventory.max94")}
+            hint={t(DELTA_HINT_KEYS.upgraded)}
             delta={delta?.upgraded}
             pending={dpsDeltasPending}
           />
           <Stat
             label="FP"
-            hint={t(DELTA_HINTS.fullPotential)}
+            hint={t(DELTA_HINT_KEYS.fullPotential)}
             delta={delta?.fullPotential}
             pending={dpsDeltasPending}
           />
           <Stat
             label="FP(E)"
-            hint={t(DELTA_HINTS.fullPotentialE)}
+            hint={t(DELTA_HINT_KEYS.fullPotentialE)}
             delta={delta?.fullPotentialE}
             pending={dpsDeltasPending}
           />
@@ -126,13 +127,13 @@ export function GearInventoryPanel({
       <div className="toolbar">
         {slotFilter != null && (
           <span className={styles.gearInvFilter}>
-            {t(SLOT_LABEL_KEYS[slotFilter])}
+            {t(GEAR_SLOT_KEYS[slotFilter])}
             <button
               type="button"
               className={styles.gearInvFilterClear}
               onClick={onClearSlotFilter}
-              title={t("Show all slots")}
-              aria-label={t("Show all slots")}
+              title={t("gear.inventory.showAllSlots")}
+              aria-label={t("gear.inventory.showAllSlots")}
             >
               ×
             </button>
@@ -143,10 +144,10 @@ export function GearInventoryPanel({
       {visibleRows.length === 0 ? (
         <div className="empty-tab">
           {slotFilter != null
-            ? t("No pieces of this type — click 'Create Gear' to add one")
+            ? t("gear.inventory.noPiecesOfThisType")
             : rows.length === 0
-              ? t("No gear yet — click 'Create Gear' to add one")
-              : t("Equipped pieces are shown above")}
+              ? t("gear.inventory.noGearYetClickCreate")
+              : t("gear.inventory.equippedPiecesAreShownAbove")}
         </div>
       ) : (
         <div className={styles.gearInvGrid}>{visibleRows.map(renderTile)}</div>

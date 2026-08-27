@@ -1,0 +1,23 @@
+@use "breakpoints";
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 12px;
+  align-items: start;
+}
+
+.gearCard {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gearCard {
+    order: 1;
+  }
+}

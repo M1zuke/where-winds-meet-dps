@@ -234,7 +234,8 @@ export function isWeaponSlot(slot: GearSlot): boolean {
 }
 
 export type GearLevel = 86 | 91 | 96
-export type GearRarity = "legendary" | "epic"
+export const GEAR_RARITIES = ["legendary", "epic"] as const
+export type GearRarity = (typeof GEAR_RARITIES)[number]
 
 export interface GearWordEntry {
   word: GearWordId | ""
@@ -256,6 +257,8 @@ export interface GearPiece {
   attunementValue: number
   relayed: boolean
   isNew?: boolean
+  label?: string
+  note?: string
 }
 
 export type EquippedSlots = Record<GearSlot, string | null>
@@ -345,6 +348,7 @@ export interface RotationCast {
 export interface SkillTickResult {
   name: string
   breakdownName: string
+  breakdownKey: string
   type: "weapon" | "mindMethod" | "mystic" | "sustain" | "settlement" | "weaponMystic" | string
   count: number
   expectedDamage: number
@@ -372,6 +376,7 @@ export interface BuffWindow {
 export interface ItemRankingRow {
   statLineId: string
   label: string
+  labelKey: string
   source: "tunement" | "attunement"
   amount: number
   unit: "raw" | "percent"

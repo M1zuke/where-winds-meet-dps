@@ -37,7 +37,7 @@ export function SimulationToast({
     const percent = total > 0 ? Math.min(100, (done / total) * 100) : 0
     return (
       <div className={styles.toast} role="status" aria-live="polite">
-        <span className={styles.title}>{t("Simulating…")}</span>
+        <span className={styles.title}>{t("layout.simulationToast.simulating")}</span>
         <div className={styles.progress}>
           <div
             className="skill-bar-track"
@@ -45,13 +45,13 @@ export function SimulationToast({
             aria-valuemin={0}
             aria-valuemax={total}
             aria-valuenow={done}
-            aria-valuetext={`${fullNumber(done)} ${t("of")} ${fullNumber(total)} ${t("runs")}`}
+            aria-valuetext={`${fullNumber(done)} ${t("common.of")} ${fullNumber(total)} ${t("common.runs")}`}
           >
             <div className="skill-bar-fill" style={{ width: percent.toFixed(2) + "%" }} />
           </div>
         </div>
         <span className={styles.counts}>
-          {`${fullNumber(done)} / ${fullNumber(total)} ${t("runs")}`}
+          {`${fullNumber(done)} / ${fullNumber(total)} ${t("common.runs")}`}
         </span>
         <button
           type="button"
@@ -61,7 +61,7 @@ export function SimulationToast({
             onAcknowledge()
           }}
         >
-          {t("Cancel")}
+          {t("common.cancel")}
         </button>
       </div>
     )
@@ -71,8 +71,8 @@ export function SimulationToast({
 
   return (
     <div className={styles.toast} role="status" aria-live="polite">
-      <span className={styles.title}>{t("Simulation complete")}</span>
-      <span className={styles.counts}>{`${fullNumber(done)} ${t("runs")}`}</span>
+      <span className={styles.title}>{t("common.simulationComplete")}</span>
+      <span className={styles.counts}>{`${fullNumber(done)} ${t("common.runs")}`}</span>
       <button
         type="button"
         className={styles.checkoutButton}
@@ -81,7 +81,7 @@ export function SimulationToast({
           navigate(SIMULATION_PATH)
         }}
       >
-        {t("Checkout results")}
+        {t("layout.simulationToast.checkoutResults")}
       </button>
     </div>
   )

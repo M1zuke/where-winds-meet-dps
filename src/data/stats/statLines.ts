@@ -4,6 +4,7 @@
 // A line with no `enginePath` lifts more than one field, or resolves against the
 // class's primary attribute rather than a fixed block.
 import { getAttunement } from "../../engine/attunements"
+import { statLineKey } from "../../i18n/contentKeys"
 
 export type StatLineUnit = "raw" | "percent"
 export type StatLineScope = "player" | "target"
@@ -115,7 +116,7 @@ export const STAT_LINES = [
   },
   {
     id: "allMartialBoost",
-    label: "All Martial Boost",
+    label: "All Martial Arts Boost",
     unit: "percent",
     enginePath: "allMartialBoost",
     maxRoll: 0.032,
@@ -352,8 +353,8 @@ export const STAT_LINES = [
     scope: "player",
     category: "Bamboocut",
   },
-  { id: "minVoidAttack", label: "Min Void Attack", unit: "raw", maxRoll: 44.2 },
-  { id: "maxVoidAttack", label: "Max Void Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "minVoidAttack", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "maxVoidAttack", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
   {
     id: "formlessPenetration",
     label: "Formless Penetration",
@@ -461,6 +462,10 @@ const PLAYER_PATHED_LINES = STAT_LINE_DEFS.filter(
 
 export const PATH_LABELS: Readonly<Record<string, string>> = Object.fromEntries(
   PLAYER_PATHED_LINES.map((line) => [line.enginePath, line.label]),
+)
+
+export const PATH_STAT_LINE_KEYS: Readonly<Record<string, string>> = Object.fromEntries(
+  PLAYER_PATHED_LINES.map((line) => [line.enginePath, statLineKey(line.id)]),
 )
 
 // Penetration paths are percent-valued but render through `fmtPenetration`, so

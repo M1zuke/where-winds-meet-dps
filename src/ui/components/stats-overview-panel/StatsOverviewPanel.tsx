@@ -2,10 +2,10 @@ import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import { totalPlayerAttributes } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
-import { getAttunement } from "../../../engine/attunements"
+import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
 import { useI18n } from "../../../i18n/i18nContext"
-import { fmt, PATH_LABELS, PERCENT_PATHS, readPath } from "../../utils/statFormatting"
+import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
 import { finalCritAffinityRates } from "./finalCritAffinityRates"
 import styles from "./StatsOverviewPanel.module.scss"
 
@@ -78,32 +78,32 @@ export function StatsOverviewPanel({ inputs }: Props) {
 
   const attrs = totalPlayerAttributes(inputs.breakthrough, equippedPiecesFor(inputs))
   const attributeRows: RowEntry[] = [
-    row(t("Power"), attrs.power, false),
-    row(t("Agility"), attrs.agility, false),
-    row(t("Momentum"), attrs.momentum, false),
+    row(t("content.statLine.power"), attrs.power, false),
+    row(t("content.statLine.agility"), attrs.agility, false),
+    row(t("content.statLine.momentum"), attrs.momentum, false),
   ]
 
   const rateRows: RowEntry[] = [
-    row(t(PATH_LABELS.precision), withSets.precision, true, eff.precision),
-    row(t(PATH_LABELS.critRate), withSets.critRate, true, eff.critRate),
-    row(t(PATH_LABELS.affinityRate), withSets.affinityRate, true, eff.affinityRate),
-    row(t(PATH_LABELS.directCritRate), withSets.directCritRate, true),
-    row(t(PATH_LABELS.directAffinityRate), withSets.directAffinityRate, true),
-    row(t("Final Crit"), finalRates.critRate, true),
-    row(t("Final Affinity"), finalRates.affinityRate, true),
+    row(statPathLabel("precision", t), withSets.precision, true, eff.precision),
+    row(statPathLabel("critRate", t), withSets.critRate, true, eff.critRate),
+    row(statPathLabel("affinityRate", t), withSets.affinityRate, true, eff.affinityRate),
+    row(statPathLabel("directCritRate", t), withSets.directCritRate, true),
+    row(statPathLabel("directAffinityRate", t), withSets.directAffinityRate, true),
+    row(t("components.statsOverviewPanel.finalCrit"), finalRates.critRate, true),
+    row(t("components.statsOverviewPanel.finalAffinity"), finalRates.affinityRate, true),
   ]
 
   const physMin = readPath(withSets, "phys.min")
   const physMax = readPath(withSets, "phys.max")
   const attackRows: RowEntry[] = [
     row(
-      t(PATH_LABELS["phys.min"]),
+      statPathLabel("phys.min", t),
       physMin,
       false,
       withSets.food ? physMin + FOOD_MIN_PHYS_BONUS : undefined,
     ),
     row(
-      t(PATH_LABELS["phys.max"]),
+      statPathLabel("phys.max", t),
       physMax,
       false,
       withSets.food ? physMax + FOOD_MAX_PHYS_BONUS : undefined,
@@ -111,7 +111,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   ]
   const penetrationRows: RowEntry[] = [
     row(
-      t(PATH_LABELS["phys.penetration"]),
+      statPathLabel("phys.penetration", t),
       readPath(withSets, "phys.penetration"),
       false,
       undefined,
@@ -124,44 +124,48 @@ export function StatsOverviewPanel({ inputs }: Props) {
     const pen = readPath(withSets, `${key}.penetration`)
     if (min !== 0 || max !== 0) {
       attackRows.push(
-        row(t(PATH_LABELS[`${key}.min`]), min, false),
-        row(t(PATH_LABELS[`${key}.max`]), max, false),
+        row(statPathLabel(`${key}.min`, t), min, false),
+        row(statPathLabel(`${key}.max`, t), max, false),
       )
     }
     if (pen !== 0) {
-      penetrationRows.push(row(t(PATH_LABELS[`${key}.penetration`]), pen, false, undefined, true))
+      penetrationRows.push(row(statPathLabel(`${key}.penetration`, t), pen, false, undefined, true))
     }
   }
 
   const damageBoostRows: RowEntry[] = DAMAGE_BOOST_PATHS.map((path) =>
-    row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
+    row(statPathLabel(path, t), readPath(withSets, path), PERCENT_PATHS.has(path)),
   )
 
   const martialBoostRows: RowEntry[] = MARTIAL_BOOST_PATHS.map((path) =>
-    row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
+    row(statPathLabel(path, t), readPath(withSets, path), PERCENT_PATHS.has(path)),
   ).filter((entry) => entry.value !== 0)
   const targetBoostRows: RowEntry[] = TARGET_BOOST_PATHS.map((path) =>
-    row(t(PATH_LABELS[path] ?? path), readPath(withSets, path), PERCENT_PATHS.has(path)),
+    row(statPathLabel(path, t), readPath(withSets, path), PERCENT_PATHS.has(path)),
   ).filter((entry) => entry.value !== 0)
 
-  const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((attunementId) =>
-    row(
-      t(getAttunement(attunementId)?.label ?? attunementId),
+  const classBuffRows: RowEntry[] = school.classSpecificAttunements.map((attunementId) => {
+    const option = getAttunement(attunementId)
+    return row(
+      option ? t(attunementLabelKey(option, null), attunementLabel(option, null)) : attunementId,
       withSets.classSpecificAttunement[attunementId] ?? 0,
       true,
-    ),
-  )
+    )
+  })
 
   return (
     <div className={styles.statsOverview}>
-      <Section title={t("Attributes")} rows={attributeRows} />
-      <Section title={t("Three Rates")} rows={rateRows} />
-      <Section title={t("Attack & Penetration")} rows={[...attackRows, ...penetrationRows]} />
+      <Section title={t("components.statsOverviewPanel.attributes")} rows={attributeRows} />
+      <Section title={t("components.statsOverviewPanel.threeRates")} rows={rateRows} />
       <Section
-        title={t("Damage Boosts")}
+        title={t("components.statsOverviewPanel.attackPenetration")}
+        rows={[...attackRows, ...penetrationRows]}
+      />
+      <Section
+        title={t("components.statsOverviewPanel.damageBoosts")}
         rows={[...damageBoostRows, ...martialBoostRows, ...targetBoostRows]}
       />
-      {classBuffRows.length > 0 && <Section title={t("Class Buffs")} rows={classBuffRows} />}
+      {classBuffRows.length > 0 && <Section title={t("common.classBuffs")} rows={classBuffRows} />}
     </div>
   )
 }

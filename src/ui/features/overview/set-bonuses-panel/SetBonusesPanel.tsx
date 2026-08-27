@@ -7,6 +7,7 @@ import {
   swapArsenal,
 } from "../../../../engine/panel"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { setKey } from "../../../../i18n/contentKeys"
 import { deltaTone, type OptionTileTone } from "../../../components/option-tile/optionTileTone"
 import styles from "./SetBonusesPanel.module.scss"
 
@@ -28,27 +29,35 @@ interface OptionRow {
   onSelect: () => void
 }
 
-const STAT_TO_I18N_KEY: Readonly<Record<string, string>> = {
-  affinityRate: "Affinity",
-  critRate: "Crit",
-  precisionRate: "Precision",
-  maxPhys: "Max Phys",
-  minPhys: "Min Phys",
+const PANEL_STAT_KEYS: Readonly<Record<string, string>> = {
+  affinityRate: "common.affinity",
+  critRate: "common.crit",
+  precisionRate: "common.precision",
+  maxPhys: "common.maxPhys",
+  minPhys: "common.minPhys",
 }
 
-const BOW_TILES: { choice: BowSet; label: string; bonusValue: number }[] = [
-  { choice: "affinity", label: "Affinity", bonusValue: BOW_SET_BONUS.affinity },
-  { choice: "crit", label: "Crit", bonusValue: BOW_SET_BONUS.crit },
-  { choice: "precision", label: "Precision", bonusValue: BOW_SET_BONUS.precision },
-  { choice: null, label: "(unselected)", bonusValue: 0 },
+const BOW_TILES: { choice: BowSet; labelKey: string; bonusValue: number }[] = [
+  {
+    choice: "affinity",
+    labelKey: "common.affinity",
+    bonusValue: BOW_SET_BONUS.affinity,
+  },
+  { choice: "crit", labelKey: "common.crit", bonusValue: BOW_SET_BONUS.crit },
+  {
+    choice: "precision",
+    labelKey: "common.precision",
+    bonusValue: BOW_SET_BONUS.precision,
+  },
+  { choice: null, labelKey: "common.unselected", bonusValue: 0 },
 ]
 
-const ARSENAL_TILES: { choice: Arsenal; label: string; statKey: string }[] = [
-  { choice: "general", label: "General Arsenal", statKey: "Phys" },
-  { choice: "bellstrike", label: "Bellstrike Arsenal", statKey: "Bellstrike" },
-  { choice: "stonesplit", label: "Stonesplit Arsenal", statKey: "Stonesplit" },
-  { choice: "silkbind", label: "Silkbind Arsenal", statKey: "Silkbind" },
-  { choice: "bamboocut", label: "Bamboocut Arsenal", statKey: "Bamboocut" },
+const ARSENAL_TILES: { choice: Arsenal; labelKey: string; statKey: string }[] = [
+  { choice: "general", labelKey: "common.generalArsenal", statKey: "Phys" },
+  { choice: "bellstrike", labelKey: "common.bellstrikeArsenal", statKey: "Bellstrike" },
+  { choice: "stonesplit", labelKey: "common.stonesplitArsenal", statKey: "Stonesplit" },
+  { choice: "silkbind", labelKey: "common.silkbindArsenal", statKey: "Silkbind" },
+  { choice: "bamboocut", labelKey: "common.bamboocutArsenal", statKey: "Bamboocut" },
 ]
 
 const TONE_CLASS: Record<OptionTileTone, string> = {
@@ -69,14 +78,9 @@ function bonusValueLabel(value: number, isFlat: boolean): string {
   return isFlat ? `+${value}` : `+${(value * 100).toFixed(1)}%`
 }
 
-function bonusWithStatLabel(
-  t: (text: string) => string,
-  statKey: string,
-  value: number,
-  isFlat: boolean,
-): string {
-  if (!statKey || value === 0) return ""
-  return `${bonusValueLabel(value, isFlat)} ${t(statKey)}`
+function bonusWithStatLabel(statLabel: string, value: number, isFlat: boolean): string {
+  if (!statLabel || value === 0) return ""
+  return `${bonusValueLabel(value, isFlat)} ${statLabel}`
 }
 
 function sortByDeltaDesc(rows: OptionRow[]): OptionRow[] {
@@ -90,7 +94,7 @@ function buildArmorRows(
   inputs: Inputs,
   armorDpsByKey: Record<string, number> | undefined,
   onChange: (next: Inputs) => void,
-  t: (text: string) => string,
+  t: (key: string, fallback?: string) => string,
 ): OptionRow[] {
   const armorSelectedKey = ARMOR_SET_OPTIONS.some((opt) => opt.setKey === inputs.set)
     ? inputs.set
@@ -101,13 +105,13 @@ function buildArmorRows(
       : (armorDpsByKey?.__none ?? Number.NaN)
 
   const rows: OptionRow[] = ARMOR_SET_OPTIONS.map((opt) => {
-    const statKey = opt.stat ? (STAT_TO_I18N_KEY[opt.stat] ?? opt.stat) : ""
+    const statLabel = opt.stat ? t(PANEL_STAT_KEYS[opt.stat] ?? opt.stat) : ""
     const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys"
     const dps = armorDpsByKey?.[opt.setKey] ?? Number.NaN
     return {
       key: opt.setKey,
-      label: t(opt.name),
-      bonus: bonusWithStatLabel(t, statKey, opt.value ?? 0, isFlat),
+      label: t(setKey(opt.setKey), opt.name),
+      bonus: bonusWithStatLabel(statLabel, opt.value ?? 0, isFlat),
       delta: dps - currentDps,
       selected: armorSelectedKey === opt.setKey,
       onSelect: () => onChange({ ...inputs, set: opt.setKey }),
@@ -117,7 +121,7 @@ function buildArmorRows(
   const noneDps = armorDpsByKey?.__none ?? Number.NaN
   rows.push({
     key: "__none",
-    label: t("(unselected)"),
+    label: t("common.unselected"),
     bonus: "",
     delta: noneDps - currentDps,
     selected: armorSelectedKey === null,
@@ -148,14 +152,14 @@ function buildBowRows(
   inputs: Inputs,
   bowDpsByChoice: { affinity: number; crit: number; precision: number; none: number } | undefined,
   onChange: (next: Inputs) => void,
-  t: (text: string) => string,
+  t: (key: string, fallback?: string) => string,
 ): OptionRow[] {
   const currentDps = bowDps(inputs.bowSet, bowDpsByChoice)
   return BOW_TILES.map((tile) => {
     const dps = bowDps(tile.choice, bowDpsByChoice)
     return {
       key: tile.choice ?? "none",
-      label: t(tile.label),
+      label: t(tile.labelKey),
       bonus: bonusValueLabel(tile.bonusValue, false),
       delta: dps - currentDps,
       selected: inputs.bowSet === tile.choice,
@@ -168,7 +172,7 @@ function buildArsenalRows(
   inputs: Inputs,
   arsenalDpsByChoice: Record<string, number> | undefined,
   onChange: (next: Inputs) => void,
-  t: (text: string) => string,
+  t: (key: string, fallback?: string) => string,
 ): OptionRow[] {
   const currentDps = arsenalDpsByChoice?.[inputs.arsenal] ?? Number.NaN
   const visibleChoices = new Set<Arsenal>([
@@ -180,7 +184,7 @@ function buildArsenalRows(
     const dps = arsenalDpsByChoice?.[tile.choice] ?? Number.NaN
     return {
       key: tile.choice,
-      label: t(tile.label),
+      label: t(tile.labelKey),
       bonus: `+${ARSENAL_BONUS.min} / +${ARSENAL_BONUS.max} ${tile.statKey}`,
       delta: dps - currentDps,
       selected: inputs.arsenal === tile.choice,
@@ -208,15 +212,19 @@ export function SetBonusesPanel({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>{t("Option")}</th>
-            <th>{t("Bonus")}</th>
-            <th>{t("DPS Δ")}</th>
+            <th>{t("overview.setBonuses.option")}</th>
+            <th>{t("overview.setBonuses.bonus")}</th>
+            <th>{t("overview.setBonuses.dps")}</th>
           </tr>
         </thead>
         <tbody>
-          <OptionGroup title={t("Armor Set")} rows={armorRows} groupName="setBonusesArmor" />
-          <OptionGroup title={t("Bow Set")} rows={bowRows} groupName="setBonusesBow" />
-          <OptionGroup title={t("Arsenal")} rows={arsenalRows} groupName="setBonusesArsenal" />
+          <OptionGroup title={t("common.armorSet")} rows={armorRows} groupName="setBonusesArmor" />
+          <OptionGroup title={t("common.bowSet")} rows={bowRows} groupName="setBonusesBow" />
+          <OptionGroup
+            title={t("common.arsenal")}
+            rows={arsenalRows}
+            groupName="setBonusesArsenal"
+          />
         </tbody>
       </table>
     </div>
@@ -269,7 +277,7 @@ function OptionRowView({ row, groupName }: { row: OptionRow; groupName: string }
       </td>
       <td className={styles.bonusCell}>{row.bonus}</td>
       <td className={`${styles.deltaCell} ${toneClass}`}>
-        {row.selected ? t("Active") : fmtDelta(row.delta)}
+        {row.selected ? t("common.active") : fmtDelta(row.delta)}
       </td>
     </tr>
   )

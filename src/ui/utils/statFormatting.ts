@@ -1,4 +1,10 @@
-export { PATH_LABELS, PENETRATION_PATHS, PERCENT_PATHS } from "../../data/stats/statLines"
+import { PATH_LABELS, PATH_STAT_LINE_KEYS } from "../../data/stats/statLines"
+
+export { PENETRATION_PATHS, PERCENT_PATHS } from "../../data/stats/statLines"
+
+export function statPathLabel(path: string, t: (key: string, fallback?: string) => string): string {
+  return t(PATH_STAT_LINE_KEYS[path] ?? path, PATH_LABELS[path] ?? path)
+}
 
 export function fmtPenetration(value: number): string {
   if (!Number.isFinite(value)) return "—"

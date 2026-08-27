@@ -18,7 +18,15 @@ function event(skillName: string, timeSec: number): TimelineEvent {
 }
 
 function skill(name: string, breakdownName: string): SkillTickResult {
-  return { name, breakdownName, type: "weapon", count: 1, expectedDamage: 100, percentOfTotal: 1 }
+  return {
+    name,
+    breakdownName,
+    breakdownKey: `content.skill.${name}.breakdown`,
+    type: "weapon",
+    count: 1,
+    expectedDamage: 100,
+    percentOfTotal: 1,
+  }
 }
 
 function resultWith(perSkill: SkillTickResult[], timeline: TimelineEvent[]): Result {

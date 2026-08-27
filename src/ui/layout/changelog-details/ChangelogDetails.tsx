@@ -32,8 +32,10 @@ export function ChangelogDetails({
         <span className={styles.date}>{entry.date}</span>
       </div>
       <h3 className={styles.headline}>{entry.headline}</h3>
-      {isLoading && <p className={styles.status}>{t("Loading…")}</p>}
-      {hasFailed && <p className={styles.status}>{t("Failed to load this entry.")}</p>}
+      {isLoading && <p className={styles.status}>{t("layout.changelogDetails.loading")}</p>}
+      {hasFailed && (
+        <p className={styles.status}>{t("layout.changelogDetails.failedToLoadThisEntry")}</p>
+      )}
       {details?.sections.map((section) => (
         <section key={section.label} className={`${styles.section} ${SECTION_TONE[section.label]}`}>
           <div className={styles.sectionLabel}>{section.label}</div>
@@ -43,7 +45,9 @@ export function ChangelogDetails({
                 <span className={styles.changeText}>{item.text}</span>
                 {item.authors.length > 0 && (
                   <span className={styles.credit}>
-                    <span className={styles.creditLabel}>{t("done by")}</span>
+                    <span className={styles.creditLabel}>
+                      {t("layout.changelogDetails.doneBy")}
+                    </span>
                     {item.authors.map((author) => (
                       <a
                         key={author}

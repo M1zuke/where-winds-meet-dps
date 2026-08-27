@@ -64,12 +64,10 @@ describe("Skill Editor — Effects: Triggers / Receives columns", () => {
     selectAnxiSoldierMoDown()
 
     const specColumn = columnNamed("Spec Mechanics")
-    expect(within(specColumn).getByText("Shattered Ridge (Max Stacks)")).toBeInTheDocument()
+    expect(within(specColumn).getByText("Cleftpeak (Max Stacks)")).toBeInTheDocument()
     const receivesColumn = columnNamed("Receives (buffs affecting this skill)")
     openInactiveReceives(receivesColumn)
-    expect(
-      within(receivesColumn).queryByText("Shattered Ridge (Max Stacks)"),
-    ).not.toBeInTheDocument()
+    expect(within(receivesColumn).queryByText("Cleftpeak (Max Stacks)")).not.toBeInTheDocument()
   })
 
   it("does not remove a row when its name or the column heading is clicked", () => {
@@ -123,7 +121,7 @@ describe("Skill Editor — Effects: Triggers / Receives columns", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
     expect(savedAnxiSoldierMoDown().receives).toEqual(
-      expect.arrayContaining(["mountainSplitter", "shatteredRidgeDeflect", "frostCladSnowbreak"]),
+      expect.arrayContaining(["mountainSplitter", "cleftpeakDeflect", "frostCladSnowbreak"]),
     )
   })
 
@@ -151,6 +149,6 @@ describe("Skill Editor — Effects: Triggers / Receives columns", () => {
     expect(within(receivesColumn).queryByText("Mountain Splitter")).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
-    expect(savedAnxiSoldierMoDown().receives).toEqual(["shatteredRidgeDeflect"])
+    expect(savedAnxiSoldierMoDown().receives).toEqual(["cleftpeakDeflect"])
   })
 })
