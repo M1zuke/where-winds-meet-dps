@@ -54,6 +54,10 @@ describe("storage", () => {
     localStorage.clear()
   })
 
+  it("reads the jsdom Storage, not the built-in web storage Node exposes globally", () => {
+    expect(localStorage).toBeInstanceOf(window.Storage)
+  })
+
   it("loadInputs returns null when nothing is saved", () => {
     expect(loadInputs()).toBeNull()
   })
