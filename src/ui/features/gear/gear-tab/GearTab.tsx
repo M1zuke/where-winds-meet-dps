@@ -13,6 +13,7 @@ import type { InventoryRow } from "../gear-inventory-panel/inventoryRows"
 import { GearSwapPreviewPanel } from "../gear-swap-preview-panel/GearSwapPreviewPanel"
 import { NewGearPieceDialog } from "../new-gear-piece-dialog/NewGearPieceDialog"
 import { ImportGearDialog } from "../import-gear-dialog/ImportGearDialog"
+import { EquippedBuildDialog } from "../equipped-build-dialog/EquippedBuildDialog"
 import { equippedFromImported } from "../import-gear-dialog/importedGearPieces"
 import { RetunementAnalyzerPanel } from "../retunement-analyzer-panel/RetunementAnalyzerPanel"
 import { ReattunementAnalyzerPanel } from "../reattunement-analyzer-panel/ReattunementAnalyzerPanel"
@@ -37,6 +38,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
   const [selectedSlot, setSelectedSlot] = useState<GearSlot | null>(null)
   const [newPieceOpen, setNewPieceOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
+  const [summaryOpen, setSummaryOpen] = useState(false)
   const [sub, setSub] = useState<"analysis" | "inventory">("analysis")
 
   const inventory = inputs.inventory
@@ -184,6 +186,13 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
             {t("gear.importGear")}
           </button>
           <div className="spacer" />
+          <button
+            type="button"
+            className={`btn secondary ${styles.summaryButton}`}
+            onClick={() => setSummaryOpen(true)}
+          >
+            {t("gear.buildSummary")}
+          </button>
           <button type="button" className="btn primary" onClick={openCreateDialog}>
             + {t("gear.createGear")}
           </button>
@@ -282,6 +291,14 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
           inputs={inputs}
           onCancel={() => setImportOpen(false)}
           onImport={importGear}
+        />
+      )}
+
+      {summaryOpen && (
+        <EquippedBuildDialog
+          inputs={inputs}
+          currentDps={currentDps}
+          onClose={() => setSummaryOpen(false)}
         />
       )}
     </>

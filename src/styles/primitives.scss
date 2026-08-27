@@ -128,6 +128,19 @@
   color: var(--color-bg);
 }
 
+.btn.secondary {
+  background: var(--color-surface-selected);
+  border-color: var(--color-accent);
+  color: var(--color-accent-bright);
+  font-weight: 600;
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
 .btn.danger {
   border-color: #553030;
   color: #c87878;

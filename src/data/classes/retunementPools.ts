@@ -8,4 +8,5 @@ import type { AttributeKey } from "../../engine/types"
 export const RETUNEMENT_POOLS: Partial<Record<AttributeKey, RetunementPool>> = {
   Bellstrike: { stats: ["affinity", "maxPhys", "momentum", "maxBellstrike", "power", "crit"] },
   Stonesplit: { stats: ["minPhys", "maxPhys", "maxStonesplit", "crit", "power", "agility"] },
+  Silkbind: { stats: ["minPhys", "maxPhys", "maxSilkbind", "crit", "power", "agility"] },
 }
