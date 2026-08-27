@@ -78,13 +78,17 @@ const VALID_LEVELS: readonly GearLevel[] = [86, 91, 96]
 const FALLBACK_LEVEL: GearLevel = 96
 const FALLBACK_RARITY: GearPiece["rarity"] = "legendary"
 
+// "Charm" and "Ward" are the in-game nouns the piece titles actually use for
+// the Disc and Pendant slots.
 const SLOT_NAME_TO_ID: Readonly<Record<string, GearSlot>> = {
   helm: "helm",
   armor: "armor",
   greaves: "greaves",
   bracer: "bracer",
   disc: "disc",
+  charm: "disc",
   pendant: "pendant",
+  ward: "pendant",
 }
 
 const RETUNE_BRACKET_WORDS: ReadonlySet<string> = new Set([
@@ -96,7 +100,6 @@ const RETUNE_BRACKET_WORDS: ReadonlySet<string> = new Set([
   "retuned",
 ])
 
-const MAX_LEADING_NOISE_TOKENS = 3
 const NAME_DISTANCE_MIN = 2
 const NAME_DISTANCE_SCALE = 0.25
 
@@ -151,25 +154,25 @@ function nameDistanceThreshold(normalizedLabel: string): number {
   return Math.max(NAME_DISTANCE_MIN, Math.round(normalizedLabel.length * NAME_DISTANCE_SCALE))
 }
 
-// The OCR icon column often leaves a short prefix (a stray glyph, a misread
-// digit) in front of the real stat name — measured across the sample screenshots.
+// OCR wraps the stat name in junk on both sides, so the name is looked for in
+// every window of the row's tokens rather than at a fixed offset. The length
+// gap is a lower bound on the distance, so skipping on it changes no match.
 function resolveByName<T>(name: string, index: readonly NormalizedNameEntry<T>[]): T | null {
   const tokens = normalizeStatName(name).split(" ").filter(Boolean)
   if (tokens.length === 0) return null
 
   let nearest: { value: T; distance: number } | null = null
-  const maxStrip = Math.min(MAX_LEADING_NOISE_TOKENS, tokens.length - 1)
-  for (let strip = 0; strip <= maxStrip; strip += 1) {
-    const candidate = tokens.slice(strip).join(" ")
-    if (!candidate) continue
-    for (const entry of index) {
-      if (candidate === entry.normalized) return entry.value
-      const distance = levenshteinDistance(candidate, entry.normalized)
-      if (
-        distance <= nameDistanceThreshold(entry.normalized) &&
-        (!nearest || distance < nearest.distance)
-      ) {
-        nearest = { value: entry.value, distance }
+  for (let start = 0; start < tokens.length; start += 1) {
+    for (let end = tokens.length; end > start; end -= 1) {
+      const candidate = tokens.slice(start, end).join(" ")
+      for (const entry of index) {
+        if (candidate === entry.normalized) return entry.value
+        const threshold = nameDistanceThreshold(entry.normalized)
+        if (Math.abs(candidate.length - entry.normalized.length) > threshold) continue
+        const distance = levenshteinDistance(candidate, entry.normalized)
+        if (distance <= threshold && (!nearest || distance < nearest.distance)) {
+          nearest = { value: entry.value, distance }
+        }
       }
     }
   }
@@ -220,7 +223,7 @@ function isSplitPair(first: NumberToken, second: NumberToken, text: string): boo
 // value on its own — a stray digit in OCR noise, not a stat. OCR also
 // sometimes drops a value's decimal run onto its own token, e.g. "+7 3.1"
 // for 73.1 — measured on mirageSentinel.png.
-function matchStatRow(text: string): { name: string; value: StatRowValue } | null {
+function matchStatRow(text: string): { name: string; value: StatRowValue | null } | null {
   const tokens = findNumberTokens(text)
   for (let index = tokens.length - 1; index >= 0; index -= 1) {
     const token = tokens[index]!
@@ -235,7 +238,11 @@ function matchStatRow(text: string): { name: string; value: StatRowValue } | nul
 
     return { name: text.slice(0, token.start).trim(), value: { magnitude, isPercent: percent } }
   }
-  return null
+  // Unsigned digits still mark where the name ends, even though they are not
+  // trusted as its value.
+  const nameEnd = tokens[0] ? tokens[0].start : text.length
+  const nameOnly = text.slice(0, nameEnd).trim()
+  return nameOnly ? { name: nameOnly, value: null } : null
 }
 
 function stripRetuneBracket(row: string): {
@@ -278,7 +285,7 @@ function selectRows(lines: readonly string[]): {
   for (const line of lines) {
     const text = pending.text ? `${pending.text} ${line}` : line
     const sourceLines = [...pending.sourceLines, line]
-    if (matchStatRow(text)) {
+    if (matchStatRow(text)?.value) {
       rows.push({ text, sourceLines })
       pending = { text: "", sourceLines: [] }
     } else {
@@ -297,12 +304,17 @@ function roundAttunementValue(value: number): number {
 }
 
 function guessSlot(titleLine: string, fallbackSlot: GearSlot): { slot: GearSlot; read: boolean } {
-  const words = titleLine.trim().split(/\s+/)
-  const lastWord = words[words.length - 1]?.toLowerCase() ?? ""
-  const matched =
-    SLOT_NAME_TO_ID[lastWord] ??
-    (lastWord.endsWith("s") ? SLOT_NAME_TO_ID[lastWord.slice(0, -1)] : undefined)
-  return matched ? { slot: matched, read: true } : { slot: fallbackSlot, read: false }
+  const words = titleLine
+    .toLowerCase()
+    .split(/[^a-z]+/)
+    .filter(Boolean)
+  for (let index = words.length - 1; index >= 0; index -= 1) {
+    const word = words[index]!
+    const matched =
+      SLOT_NAME_TO_ID[word] ?? (word.endsWith("s") ? SLOT_NAME_TO_ID[word.slice(0, -1)] : undefined)
+    if (matched) return { slot: matched, read: true }
+  }
+  return { slot: fallbackSlot, read: false }
 }
 
 function parseLevel(headerLine: string): { level: GearLevel; read: boolean } {
@@ -387,7 +399,7 @@ function parseWordCandidate(rowText: string | undefined): ParsedWordCandidate | 
   const bracket = stripRetuneBracket(rowText)
   const matched = matchStatRow(bracket.remaining)
   const wordId = matched ? resolveByName(matched.name, GEAR_WORD_NAME_INDEX) : null
-  const magnitude = matched
+  const magnitude = matched?.value
     ? matched.value.isPercent
       ? matched.value.magnitude / 100
       : matched.value.magnitude
@@ -407,7 +419,7 @@ function parseWordCandidate(rowText: string | undefined): ParsedWordCandidate | 
     retuneBracketRecognized: bracket.recognized,
     rawText: rowText,
     nameAfterNoiseStrip: matched?.name ?? "",
-    rawNumber: matched ? displayNumber(matched.value) : "",
+    rawNumber: matched?.value ? displayNumber(matched.value) : "",
     provesNotRelayed,
   }
 }
@@ -464,6 +476,7 @@ function finalizeWordRow(
   const cap = GEAR_WORD_MAX_ROLL[candidate.wordId]
   const unit = GEAR_WORD_UNIT[candidate.wordId]
   const ceiling = relayed ? relayedCapValue(cap, unit) : cap
+
   const withinCeiling = candidate.magnitude <= ceiling
   const value = roundGearWordValue(Math.max(candidate.magnitude, 0), unit === "percent")
 
@@ -513,34 +526,21 @@ function resolveAttunementRow(
     slot: "attunement" as const,
     rawText: rowText,
     nameAfterNoiseStrip: matched?.name ?? "",
-    rawNumber: matched ? displayNumber(matched.value) : "",
+    rawNumber: matched?.value ? displayNumber(matched.value) : "",
   }
 
-  if (!matched) {
-    // No numeric value at all: this is an attuning-affix slot that has not
-    // been rolled yet, a normal state, not a failed read.
-    return {
-      attunement: "",
-      attunementValue: 0,
-      report: { confidence: "read", rawText: rowText },
-      diagnostic: {
-        ...baseDiagnostic,
-        resolvedTo: null,
-        convertedValue: null,
-        cap: null,
-        legalForClass: null,
-        exceededCap: false,
-      },
-      matchedSlots: null,
-    }
-  }
-
-  const option = resolveByName(matched.name, ATTUNEMENT_NAME_INDEX)
+  const rowValue = matched?.value ?? null
+  const option = matched ? resolveByName(matched.name, ATTUNEMENT_NAME_INDEX) : null
   if (!option) {
+    // An unnamed row with no value is an attuning-affix slot that has not been
+    // rolled yet, a normal state, not a failed read.
     return {
       attunement: "",
       attunementValue: 0,
-      report: { confidence: "unresolved", rawText: rowText },
+      report: {
+        confidence: rowValue ? "unresolved" : "read",
+        rawText: rowText,
+      },
       diagnostic: {
         ...baseDiagnostic,
         resolvedTo: null,
@@ -554,7 +554,24 @@ function resolveAttunementRow(
   }
 
   const legalForClass = !option.classIds || option.classIds.includes(classId)
-  const magnitude = matched.value.magnitude
+
+  if (!rowValue) {
+    return {
+      attunement: legalForClass ? option.id : "",
+      attunementValue: 0,
+      report: { confidence: "unresolved", rawText: rowText },
+      diagnostic: {
+        ...baseDiagnostic,
+        resolvedTo: option.id,
+        convertedValue: null,
+        cap: option.max,
+        legalForClass,
+        exceededCap: false,
+      },
+      matchedSlots: option.slots,
+    }
+  }
+  const magnitude = rowValue.magnitude
   const candidates = [magnitude, magnitude / 100, magnitude / 1000]
   const inRange = candidates.find((candidate) => candidate >= option.min && candidate <= option.max)
   const attunementValue = roundAttunementValue(inRange ?? magnitude)

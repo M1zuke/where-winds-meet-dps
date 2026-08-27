@@ -23,6 +23,13 @@ vi.mock("../../src/ui/features/gear/screenshot-ocr/ocrEngine", () => ({
   terminateOcrWorker: vi.fn(async () => {}),
 }))
 
+const TRANSCRIPT_UNRESOLVED = `
+Mirage Sentinel
+Relaying · Tier 96
+Max Physical Attack +73.1
+Qzzxwv Rrtt +5.1%
+`
+
 const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
 
 function renderDialog(onCancel = vi.fn(), onSave = vi.fn()) {
@@ -41,7 +48,7 @@ function renderDialog(onCancel = vi.fn(), onSave = vi.fn()) {
 
 function addScreenshot(): void {
   const file = new File(["fake"], "shot.png", { type: "image/png" })
-  fireEvent.change(screen.getByLabelText("Choose file"), { target: { files: [file] } })
+  fireEvent.change(screen.getByLabelText("Choose a screenshot"), { target: { files: [file] } })
 }
 
 describe("NewGearPieceDialog screenshot import", () => {
@@ -111,23 +118,34 @@ describe("NewGearPieceDialog screenshot import", () => {
     expect(onSave).not.toHaveBeenCalled()
   })
 
-  it("shows the example screenshot and its numbered steps before any paste", () => {
+  it("shows the numbered steps and the drop target before any paste", () => {
     renderDialog()
 
-    expect(screen.getByAltText("Example of a cropped gear panel screenshot")).toBeInTheDocument()
     expect(screen.getByText("Press “Tune” or “Develop”.")).toBeInTheDocument()
+    expect(screen.getByLabelText("Choose a screenshot")).toBeInTheDocument()
+    expect(screen.queryByAltText("Your pasted gear screenshot")).toBeNull()
   })
 
-  it("swaps the example for the user's own screenshot once one is added, with a way back", async () => {
+  it("keeps the example screenshot on the how-to tab", () => {
+    renderDialog()
+
+    expect(screen.queryByAltText("Example of a cropped gear panel screenshot")).toBeNull()
+
+    fireEvent.click(screen.getByRole("tab", { name: "How to" }))
+
+    expect(screen.getByAltText("Example of a cropped gear panel screenshot")).toBeInTheDocument()
+  })
+
+  it("swaps the drop target for the scanned screenshot, with the how-to still reachable", async () => {
     renderDialog()
 
     addScreenshot()
     await screen.findAllByDisplayValue("Max Physical Attack")
 
     expect(screen.getByAltText("Your pasted gear screenshot")).toBeInTheDocument()
-    expect(screen.queryByAltText("Example of a cropped gear panel screenshot")).toBeNull()
+    expect(screen.queryByLabelText("Choose a screenshot")).toBeNull()
 
-    fireEvent.click(screen.getByRole("button", { name: "Back to instructions" }))
+    fireEvent.click(screen.getByRole("tab", { name: "How to" }))
 
     expect(screen.getByAltText("Example of a cropped gear panel screenshot")).toBeInTheDocument()
   })
@@ -158,5 +176,46 @@ describe("NewGearPieceDialog screenshot import", () => {
 
     await vi.waitFor(() => expect(writeText).toHaveBeenCalledTimes(1))
     expect(writeText.mock.calls[0]![0]).toContain("maxPhys")
+  })
+
+  it("underlines a stat line the scan could not resolve, and clears it once corrected", async () => {
+    const { recognizeGearScreenshot } =
+      await import("../../src/ui/features/gear/screenshot-ocr/ocrEngine")
+    vi.mocked(recognizeGearScreenshot).mockResolvedValueOnce(TRANSCRIPT_UNRESOLVED)
+
+    renderDialog()
+    addScreenshot()
+    await screen.findAllByDisplayValue("Max Physical Attack")
+
+    const marked = document.querySelectorAll("[class*=markUnresolved]")
+    expect(marked.length).toBeGreaterThan(0)
+
+    const unresolved = [...screen.getAllByRole("combobox")].find(
+      (element) =>
+        element.tagName === "INPUT" && element.closest("[class*=markUnresolved]") !== null,
+    ) as HTMLInputElement | undefined
+    expect(unresolved).toBeDefined()
+
+    fireEvent.focus(unresolved!)
+    fireEvent.change(unresolved!, { target: { value: "Momentum" } })
+    fireEvent.keyDown(unresolved!, { key: "Enter" })
+
+    expect(unresolved!.value).toBe("Momentum")
+    expect(document.querySelectorAll("[class*=markUnresolved]").length).toBe(0)
+  })
+
+  it("explains the two line colours only once a scan has flagged something", async () => {
+    renderDialog()
+
+    expect(screen.queryByText("What the lines mean")).toBeNull()
+
+    addScreenshot()
+    await screen.findAllByDisplayValue("Max Physical Attack")
+
+    expect(screen.getByText("What the lines mean")).toBeInTheDocument()
+    expect(
+      screen.getByText("Yellow — filled in, but the scan was not sure. Check it."),
+    ).toBeInTheDocument()
+    expect(screen.getByText("Red — the scan could not read this. Type it in.")).toBeInTheDocument()
   })
 })

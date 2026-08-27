@@ -5,6 +5,7 @@ import {
   decodeGearScreenshot,
   preprocessGearScreenshot,
   recognizeGearScreenshot,
+  terminateOcrWorker,
 } from "../screenshot-ocr/ocrEngine"
 import {
   buildScreenshotDiagnosticsText,
@@ -44,6 +45,7 @@ export function useScreenshotImport(
   const [state, setState] = useState<ScreenshotImportState>(IDLE_STATE)
   const [copyNotice, setCopyNotice] = useState("")
   const imageUrlRef = useRef<string | null>(null)
+  const runRef = useRef(0)
 
   useEffect(() => {
     return () => {
@@ -51,10 +53,30 @@ export function useScreenshotImport(
     }
   }, [])
 
-  async function importImage(source: File | Blob): Promise<void> {
+  function releaseImage(): void {
     if (imageUrlRef.current) URL.revokeObjectURL(imageUrlRef.current)
+    imageUrlRef.current = null
+  }
+
+  function reset(): void {
+    runRef.current += 1
+    releaseImage()
+    setCopyNotice("")
+    setState(IDLE_STATE)
+  }
+
+  function cancel(): void {
+    reset()
+    void terminateOcrWorker()
+  }
+
+  async function importImage(source: File | Blob): Promise<void> {
+    releaseImage()
     const imageUrl = URL.createObjectURL(source)
     imageUrlRef.current = imageUrl
+    runRef.current += 1
+    const run = runRef.current
+    setCopyNotice("")
     setState({
       status: "recognizing",
       progress: 0,
@@ -67,8 +89,9 @@ export function useScreenshotImport(
       const bitmap = await decodeGearScreenshot(source)
       const canvas = preprocessGearScreenshot(bitmap)
       const text = await recognizeGearScreenshot(canvas, (progress) =>
-        setState((previous) => ({ ...previous, progress })),
+        setState((previous) => (runRef.current === run ? { ...previous, progress } : previous)),
       )
+      if (runRef.current !== run) return
       const parsed = parseGearScreenshot(text, inputs, fallbackSlot)
       if (parsed.error) {
         setState({
@@ -91,6 +114,7 @@ export function useScreenshotImport(
       })
       onParsed(parsed.piece, parsed.fields)
     } catch {
+      if (runRef.current !== run) return
       setState({
         status: "error",
         progress: 1,
@@ -112,5 +136,5 @@ export function useScreenshotImport(
     }
   }
 
-  return { ...state, importImage, copyNotice, copyDiagnostics }
+  return { ...state, importImage, cancel, reset, copyNotice, copyDiagnostics }
 }

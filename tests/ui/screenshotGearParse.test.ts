@@ -42,6 +42,36 @@ Strategic Sword - Bleeding DMG
 Boost +5.8%
 `
 
+const TRANSCRIPT_ALL_MARTIAL = `
+Vanguard Ward
+Relaying Tier 96
+Max Physical Attack +73.1
+Momentum +45.5
+A All Martial Arts Boost +3.0%
+Physical Penetration +10.9
+`
+
+const TRANSCRIPT_ATTUNEMENT_NO_SIGN = `
+l Vanguard Ward
+I FQ Relaying - Tier 96
+VJ Max Physical Attack +7 3.1
+Momentum +45.5
+oA All Martial Arts Boost +3.0%
+Ly Physical Penetration 0.9. a i
+`
+
+const TRANSCRIPT_NOISE_BOTH_SIDES = `
+Nightfarer Bracers
+aa . -
+I FQ Relaying Tier
+w Power +46.4
+nn
+Critical Rate +8.2%
+YEE SSC SRRY SCRE
+Strategic Sword - Bleeding DMG
+Qi BooSLESBY CU CT ame
+`
+
 describe("parseGearScreenshot", () => {
   it("reads transcript A into five words, a retuned fifth, and the attunement", () => {
     const { piece, error } = parseGearScreenshot(TRANSCRIPT_A, inputs, FALLBACK_SLOT)
@@ -105,6 +135,21 @@ describe("parseGearScreenshot", () => {
 
     expect(piece.attunement).toBe("bleedingDamage")
     expect(piece.attunementValue).toBe(0.058)
+  })
+
+  it("reads Charm as the Disc slot and Ward as the Pendant slot, past trailing OCR junk", () => {
+    function titled(title: string) {
+      return parseGearScreenshot(
+        [title, "Relaying · Tier 96", "Max Physical Attack +73.1"].join("\n"),
+        inputs,
+        FALLBACK_SLOT,
+      )
+    }
+
+    expect(titled("Mirage Charm").piece.slot).toBe("disc")
+    expect(titled("l Vanguard Ward -").piece.slot).toBe("pendant")
+    expect(titled("l Vanguard Ward -").fields.slot).toBe("read")
+    expect(titled("Mirage Sentinel").piece.slot).toBe(FALLBACK_SLOT)
   })
 
   it("reads the slot from the title where the title names one, and falls back otherwise", () => {
@@ -266,6 +311,36 @@ Randomly unlocks one Universal Attuning Affix.
     expect(piece.attunementValue).toBe(0)
     expect(fields.attunement.confidence).toBe("read")
     expect(fields.attunement.rawText).toContain("Randomly unlocks")
+  })
+
+  it("keeps an attunement whose name read but whose value lost its sign, flagging only the value", () => {
+    const { piece, fields, diagnostics } = parseGearScreenshot(
+      TRANSCRIPT_ATTUNEMENT_NO_SIGN,
+      inputs,
+      FALLBACK_SLOT,
+    )
+
+    expect(piece.attunement).toBe("physPen")
+    expect(piece.attunementValue).toBe(0)
+    expect(fields.attunement.confidence).toBe("unresolved")
+
+    const row = diagnostics.rows.find((candidate) => candidate.slot === "attunement")
+    expect(row).toMatchObject({ resolvedTo: "physPen", convertedValue: null, rawNumber: "" })
+  })
+
+  it("finds a stat name buried in junk on both sides, at any offset", () => {
+    const { piece, fields, diagnostics } = parseGearScreenshot(
+      TRANSCRIPT_NOISE_BOTH_SIDES,
+      inputs,
+      FALLBACK_SLOT,
+    )
+
+    expect(piece.attunement).toBe("bleedingDamage")
+    expect(piece.attunementValue).toBe(0)
+    expect(fields.attunement.confidence).toBe("unresolved")
+
+    const row = diagnostics.rows.find((candidate) => candidate.slot === "attunement")
+    expect(row).toMatchObject({ resolvedTo: "bleedingDamage", convertedValue: null })
   })
 })
 
@@ -500,5 +575,13 @@ Max Physical Attack +7 3.1
     expect(piece.words).toHaveLength(5)
     expect(fields.words).toHaveLength(5)
     expect(piece.words.every((word) => word.word === "")).toBe(true)
+  })
+
+  it("resolves the all-martial gear word under its full in-game name, past a stray icon glyph", () => {
+    const { piece, fields } = parseGearScreenshot(TRANSCRIPT_ALL_MARTIAL, inputs, FALLBACK_SLOT)
+
+    const allMartial = piece.words.find((word) => word.word === "allMartialBoost")
+    expect(allMartial).toMatchObject({ word: "allMartialBoost", value: 0.03 })
+    expect(fields.words[2].confidence).not.toBe("unresolved")
   })
 })

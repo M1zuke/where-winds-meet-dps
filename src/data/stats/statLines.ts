@@ -116,7 +116,7 @@ export const STAT_LINES = [
   },
   {
     id: "allMartialBoost",
-    label: "All Martial Boost",
+    label: "All Martial Arts Boost",
     unit: "percent",
     enginePath: "allMartialBoost",
     maxRoll: 0.032,
