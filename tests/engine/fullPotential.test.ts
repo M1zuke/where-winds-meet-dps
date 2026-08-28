@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest"
 import { getFTPiece, ftDpsWhenEquipped } from "../../src/engine/fullPotential"
 import { computeDpsDeltas } from "../../src/engine/dpsWorker"
 import { runEngine } from "../../src/engine/dps"
-import { applyPieceContribution, relayedCapValue } from "../../src/engine/gearStats"
+import {
+  applyPieceContribution,
+  maxRelayedClone,
+  relayedCapValue,
+} from "../../src/engine/gearStats"
+import { attunementsFor } from "../../src/engine/attunements"
+import { withDerivedStats } from "../../src/engine/derivedInputs"
+import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
@@ -316,5 +323,132 @@ describe("computeDpsDeltas → fullPotential field", () => {
       pieceIds: [P.id],
     })
     expect(res.deltas[P.id].fullPotentialE).toBeLessThanOrEqual(0)
+  })
+})
+
+describe("FT variant selection", () => {
+  function derivedInputs(equipped: GearPiece[], inventory: GearPiece[]): Inputs {
+    const equippedIds = Object.fromEntries(equipped.map((p) => [p.slot, p.id]))
+    return applyBowSet(
+      applyArmorSet(
+        withDerivedStats({
+          ...umbraInputs,
+          inventory: [...equipped, ...inventory],
+          equipped: { ...umbraInputs.equipped, ...equippedIds },
+        }),
+      ),
+    )
+  }
+
+  function bestReachableDps(candidate: GearPiece, inputs: Inputs): number {
+    const equippedId = inputs.equipped[candidate.slot]
+    const equipped = equippedId ? (inputs.inventory.find((p) => p.id === equippedId) ?? null) : null
+    const slotEmpty = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
+    const specs = getWordSpecs(inputs)
+    const pool = poolForClass(inputs.classId)
+    const attunements = attunementsFor(candidate.slot, inputs.classId).filter(
+      (option) => option.enginePath !== null,
+    )
+
+    const retuneVariants: GearPiece[] = [candidate]
+    if (pool && !candidate.relayed) {
+      for (const slotIndex of rerollableSlots(candidate)) {
+        for (const { word, legal, isCurrent } of annotatePoolForSlot(candidate, slotIndex, pool)) {
+          if (!legal || isCurrent) continue
+          const spec = specs.find((s) => s.word === word)
+          if (!spec) continue
+          retuneVariants.push({
+            ...candidate,
+            words: candidate.words.map((existing, index) =>
+              index === slotIndex ? { word, value: spec.amount, retuned: true } : existing,
+            ) as GearPiece["words"],
+          })
+        }
+      }
+    }
+
+    let best = -Infinity
+    for (const variant of retuneVariants) {
+      for (const relayed of [false, true]) {
+        const built = relayed ? maxRelayedClone(variant, inputs) : variant
+        for (const attunement of [null, ...attunements]) {
+          const reachable: GearPiece = attunement
+            ? { ...built, attunement: attunement.id, attunementValue: attunement.max }
+            : built
+          best = Math.max(best, runEngine(applyPieceContribution(slotEmpty, reachable, +1)).dps)
+        }
+      }
+    }
+    return best
+  }
+
+  const WEAPON_BASE: Partial<GearPiece> = {
+    level: 96,
+    minPhys: 65,
+    maxPhys: 151,
+    attunement: "physPen",
+    attunementValue: 0.11,
+  }
+
+  const relayedHelm = piece(
+    [
+      w("maxPhys", 73.13),
+      w("power", 46),
+      w("agility", 46),
+      w("momentum", 46),
+      w("maxVoidAttack", 41.55),
+    ],
+    {
+      id: "helm-piece",
+      slot: "helm",
+      level: 96,
+      minPhys: 0,
+      maxPhys: 0,
+      relayed: true,
+      attunement: "physPen",
+      attunementValue: 0.11,
+    },
+  )
+
+  it("scores an unequipped candidate against its own slot emptied, not against a build still holding the equipped piece", () => {
+    const equippedWeapon = piece(
+      [
+        w("maxVoidAttack", 41.28),
+        w("maxVoidAttack", 41.19),
+        w("swordBoost", 0.0583),
+        w("maxPhys", 73.13),
+        w("momentum", 45.57),
+      ],
+      { ...WEAPON_BASE, id: "equipped-weapon", relayed: true },
+    )
+    const candidate = piece(
+      [
+        w("maxPhys", 64.7),
+        w("maxVoidAttack", 43.9),
+        w("momentum", 45.1),
+        w("swordBoost", 0.049),
+        w("affinity", 0.044),
+      ],
+      { ...WEAPON_BASE, id: "candidate-weapon" },
+    )
+    const inputs = derivedInputs([equippedWeapon, relayedHelm], [candidate])
+
+    expect(ftDpsWhenEquipped(candidate, inputs)).toBeCloseTo(bestReachableDps(candidate, inputs), 6)
+  })
+
+  it("picks the retune at the value the word carries once the piece is relayed, not at its unrelayed roll", () => {
+    const candidate = piece(
+      [
+        w("maxPhys", 5),
+        w("maxVoidAttack", 43.9),
+        w("momentum", 45.1),
+        w("swordBoost", 0.049),
+        w("affinity", 0.01),
+      ],
+      { ...WEAPON_BASE, id: "candidate-weapon" },
+    )
+    const inputs = derivedInputs([candidate, relayedHelm], [])
+
+    expect(ftDpsWhenEquipped(candidate, inputs)).toBeCloseTo(bestReachableDps(candidate, inputs), 6)
   })
 })
