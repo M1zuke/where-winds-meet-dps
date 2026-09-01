@@ -271,3 +271,63 @@
   padding: 4px;
   font-size: 0.85em;
 }
+.openingRow {
+  background: var(--color-surface-selected);
+  border-color: rgba(192, 160, 96, 0.28);
+}
+.openingRowReadonly .pip,
+.openingRowReadonly .pipCount {
+  opacity: 0.45;
+}
+.openingBadge {
+  font-size: 0.7em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.pips {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.pip {
+  width: 22px;
+  height: 15px;
+  padding: 0;
+  border-radius: 2px;
+  border: 1px solid hsla(var(--buff-hue), 40%, 50%, 0.4);
+  background: hsla(var(--buff-hue), 40%, 40%, 0.12);
+  cursor: pointer;
+  transition:
+    background 0.1s,
+    border-color 0.1s;
+}
+.pip:disabled {
+  cursor: default;
+}
+@include breakpoints.hoverable {
+  .pip:hover:not(:disabled) {
+    border-color: hsla(var(--buff-hue), 60%, 65%, 0.9);
+  }
+}
+.pipOn {
+  background: hsla(var(--buff-hue), 52%, 46%, 0.85);
+  border-color: hsl(var(--buff-hue), 60%, 66%);
+}
+.pipEmpty {
+  width: 17px;
+  border-style: dashed;
+  border-color: var(--color-border-strong);
+  background: transparent;
+}
+.pipEmpty.pipOn {
+  background: var(--color-surface-selected);
+  border-color: var(--color-accent);
+  border-style: solid;
+}
+.pipCount {
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--buff-hue), 55%, 72%);
+  min-width: 34px;
+}

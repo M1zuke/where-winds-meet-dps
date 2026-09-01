@@ -228,6 +228,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (statusById.has(id)) openPermanent(id)
   }
 
+  for (const [id, stacks] of Object.entries(rotation.openingStacks ?? {})) {
+    const status = statusById.get(id)
+    if (!status || stacks <= 0) continue
+    openPermanent(status.id)
+    recordStack(status.id, spanStart, Math.min(stacks, status.maxStacks))
+  }
+
   function activeBuffsAt(frame: number): (Buff | Debuff)[] {
     const out: (Buff | Debuff)[] = []
     for (const id of ledger.activeIdsAt(frame)) {
@@ -247,6 +254,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
     grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
+    openingStacks: (buffId) => rotation.openingStacks?.[buffId] ?? 0,
   }
 
   const behaviorFor = buildBehaviors(buildView)

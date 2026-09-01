@@ -11,6 +11,7 @@ const build = {
   innerWayTier: () => null,
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,
+  openingStacks: () => 0,
 }
 
 const context: HitContext = {

@@ -881,6 +881,8 @@
   "rotation.editor.durationComputed": "지속 시간(계산값)",
   "rotation.editor.eachStepPicksHint": "각 단계에서 저장된 스킬을 선택합니다. 적중으로 발동하는 버프와 스킬은 해당 타격의 프레임 오프셋에 적용됩니다. 버프 열에는 시전이 완전히 끝난 뒤에도 활성인 효과가 표시되며, 칩은 로테이션에 처음 등장한 순서로 정렬됩니다. 상시 유파 패시브는 유파 천부 탭에 표시됩니다.",
   "rotation.editor.forkToCustom": "사용자 지정으로 복제",
+  "rotation.editor.opening": "시작",
+  "rotation.editor.openingReadonly": "시작 중첩을 변경하려면 사용자 지정으로 복제하세요",
   "rotation.editor.permanentBuffs": "상시 버프",
   "rotation.editor.permanentBuffsDebuffs": "상시 버프/디버프",
   "rotation.editor.permanentDebuffs": "상시 디버프",

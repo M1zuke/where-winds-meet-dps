@@ -96,6 +96,16 @@ export function hasInnerWay(slots: readonly SlottedInnerWay[], innerWayId: strin
   return slots.some((slot) => slotInnerWayId(slot) === innerWayId)
 }
 
+export function openingStackBuffIds(slots: readonly SlottedInnerWay[]): string[] {
+  const out: string[] = []
+  for (const def of INNER_WAYS) {
+    if (!def.openingStackBuffIds?.length) continue
+    if (!slots.some((slot) => slotInnerWayId(slot) === def.id)) continue
+    for (const buffId of def.openingStackBuffIds) if (!out.includes(buffId)) out.push(buffId)
+  }
+  return out
+}
+
 export function innerWayTier(slots: readonly SlottedInnerWay[], innerWayId: string): number | null {
   const slot = slots.find((candidate) => slotInnerWayId(candidate) === innerWayId)
   return slot ? tierFromStacks(slot.stacks) : null

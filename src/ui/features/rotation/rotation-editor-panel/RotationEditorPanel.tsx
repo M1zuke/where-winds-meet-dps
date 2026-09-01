@@ -15,6 +15,8 @@ import { Combobox, type ComboboxOption } from "../../../components/combobox/Comb
 import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
+import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
+import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import { buffChipHue, castBuffDisplayOrder, visibleCastBuffs } from "../buffChips"
@@ -136,6 +138,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     () => loadCustomDebuffsForClass(inputs.classId),
     [inputs.classId],
   )
+  const openingStackBuffs = useMemo<Buff[]>(() => {
+    const openable = openingStackBuffIds(inputs.mindMethods)
+    if (openable.length === 0) return []
+    const byId = new Map(builtinBuffsForClass(inputs.classId).map((buff) => [buff.id, buff]))
+    return openable
+      .map((buffId) => byId.get(buffId))
+      .filter((buff): buff is Buff => !!buff && buff.maxStacks > 1)
+  }, [inputs.classId, inputs.mindMethods])
   const skillsById = useMemo(
     () => new Map(classSkills.map((skill) => [skill.id, skill] as const)),
     [classSkills],
@@ -276,6 +286,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
+  function setOpeningStacks(buffId: string, stacks: number) {
+    commitRotation((rotation) => {
+      const next = { ...rotation.openingStacks }
+      if (stacks > 0) next[buffId] = stacks
+      else delete next[buffId]
+      return { ...rotation, openingStacks: next }
+    })
+  }
   function handleNew() {
     const empty = makeRotation(inputs.classId)
     onChange({ ...inputs, activeCustomRotation: empty, selectedBuiltinRotationId: null })
@@ -290,6 +308,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
         return { ...step, id: newStepId(), hitCount: skill ? skill.hits.length : step.hitCount }
       }),
       permanentBuffIds: [...activeRotation.permanentBuffIds],
+      openingStacks: { ...activeRotation.openingStacks },
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -472,6 +491,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
+            {openingStackBuffs.map((buff) => (
+              <OpeningStackRow
+                key={buff.id}
+                buff={buff}
+                value={activeRotation.openingStacks?.[buff.id] ?? 0}
+                onChange={isCustom ? (stacks) => setOpeningStacks(buff.id, stacks) : null}
+              />
+            ))}
             {steps.map((step, idx) => {
               const skill = skillsById.get(step.skillId)
               const maxHits = Math.max(1, skill?.hits.length ?? 1)
@@ -620,6 +647,63 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className="hint">{t("rotation.editor.eachStepPicksHint")}</div>
         </div>
       )}
+    </div>
+  )
+}
+
+function OpeningStackRow({
+  buff,
+  value,
+  onChange,
+}: {
+  buff: Buff
+  value: number
+  onChange: ((stacks: number) => void) | null
+}) {
+  const { t } = useI18n()
+  const max = buff.maxStacks
+  const clamped = Math.max(0, Math.min(max, value))
+  const charges = Array.from({ length: max + 1 }, (_, charge) => charge)
+  const pipClassName = (charge: number): string => {
+    const filled = charge === 0 ? clamped === 0 : charge <= clamped
+    return [styles.pip, charge === 0 ? styles.pipEmpty : "", filled ? styles.pipOn : ""]
+      .filter(Boolean)
+      .join(" ")
+  }
+  const style = { "--buff-hue": buffChipHue(buff.name, buff.id) } as React.CSSProperties
+  const rowClassName = [styles.entry, styles.openingRow, onChange ? "" : styles.openingRowReadonly]
+    .filter(Boolean)
+    .join(" ")
+  return (
+    <div
+      className={rowClassName}
+      style={style}
+      title={onChange ? undefined : t("rotation.editor.openingReadonly")}
+    >
+      <div className={styles.idx}>—</div>
+      <span className={styles.openingBadge}>{t("rotation.editor.opening")}</span>
+      <span className={styles.skillStatic}>{t(buffKey(buff.id), buff.name)}</span>
+      <span className={styles.castReadonly} />
+      <span className={styles.prepull} />
+      <div className={styles.buffsCell}>
+        <span className={styles.pips}>
+          {charges.map((charge) => (
+            <button
+              key={charge}
+              type="button"
+              className={pipClassName(charge)}
+              aria-pressed={charge === clamped}
+              aria-label={`${charge} / ${max}`}
+              disabled={!onChange}
+              onClick={() => onChange?.(charge)}
+              title={`${charge} / ${max}`}
+            />
+          ))}
+        </span>
+        <span className={styles.pipCount}>
+          {clamped} / {max}
+        </span>
+      </div>
     </div>
   )
 }

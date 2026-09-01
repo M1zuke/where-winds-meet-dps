@@ -881,6 +881,8 @@
   "rotation.editor.durationComputed": "Duration (computed)",
   "rotation.editor.eachStepPicksHint": "Each step picks a saved skill; hit-triggered buffs/skills land at the hit's frame offset. The Buffs column shows what's still active once that cast fully resolves, chips are ordered by when each buff first appears in the rotation, and always-on spec passives are listed in the Class Talents tab instead.",
   "rotation.editor.forkToCustom": "Fork to Custom",
+  "rotation.editor.opening": "Opening",
+  "rotation.editor.openingReadonly": "Fork to Custom to change the opening stacks",
   "rotation.editor.permanentBuffs": "Permanent buffs",
   "rotation.editor.permanentBuffsDebuffs": "Permanent Buffs/Debuffs",
   "rotation.editor.permanentDebuffs": "Permanent Debuffs",

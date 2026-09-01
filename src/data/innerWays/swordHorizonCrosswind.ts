@@ -26,6 +26,7 @@ export function crosswindBehavior(build: BuildView): SkillBehavior | null {
   const tracker = new CrosswindTracker({
     maxCharges: ZENITH_BAR_MAX_CHARGES,
     retainOnMax: innerWayHasNode(swordHorizon, tier, INNER_WAY_NODE.crosswindChargeRetention),
+    initialCharges: build.openingStacks(ZENITH_BAR_BUFF_ID),
   })
 
   return {
