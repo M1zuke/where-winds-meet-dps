@@ -124,6 +124,7 @@
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "multiplier": 1.65,
+    "release": "2026-09-03T03:30:00Z",
     "attributes": [
       {
         "id": 1,
