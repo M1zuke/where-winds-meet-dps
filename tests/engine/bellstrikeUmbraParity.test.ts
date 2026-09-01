@@ -146,21 +146,24 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(48860)
-    expect(result.dps).toBeLessThan(49030)
-    expect(result.totalDamage).toBeGreaterThan(2964000)
-    expect(result.totalDamage).toBeLessThan(2979000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1592000)
-    expect(detonation?.expectedDamage).toBeLessThan(1606000)
+    expect(result.dps).toBeGreaterThan(49220)
+    expect(result.dps).toBeLessThan(49390)
+    expect(result.totalDamage).toBeGreaterThan(2986000)
+    expect(result.totalDamage).toBeLessThan(3001000)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1614000)
+    expect(detonation?.expectedDamage).toBeLessThan(1628000)
 
-    // The engine sits ~1.2 % ABOVE the cached target, from two sources the
+    // The engine sits ~1.9 % ABOVE the cached target, from three sources the
     // cached run predates: bleed ticks and Bleed Detonation take all-martial
-    // (and ticks sword boost) per the lvl-110 workbook's Sword typing, and a
-    // DoT tick now keeps the flat damage its own data authors.
+    // (and ticks sword boost) per the lvl-110 workbook's Sword typing, a
+    // DoT tick now keeps the flat damage its own data authors, and the
+    // built-in rotations open on a full Zenith bar, which lands the bar's
+    // damage bonus on detonations the cached run scored from empty — the
+    // detonation row alone therefore runs ~2.7 % over.
     expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.999)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(1.02)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(1.025)
     expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.999)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.02)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(1.018)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.025)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(1.03)
   })
 })
