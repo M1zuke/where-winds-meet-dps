@@ -57,7 +57,8 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
     seen.add(id)
 
     const tracked = ledger.stacksAt(id, frame)
-    const stacks = tracked > 0 ? tracked : ledger.hasStackHistory(id) ? tracked : 1
+    const countsStacks = (status.maxStacks ?? 1) > 1
+    const stacks = tracked > 0 || countsStacks || ledger.hasStackHistory(id) ? tracked : 1
     const dotIntervalSec =
       hasDot(status) && status.dot && status.dot.tickIntervalFrames > 0
         ? status.dot.tickIntervalFrames / fps
