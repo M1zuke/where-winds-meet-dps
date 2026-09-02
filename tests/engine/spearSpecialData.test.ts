@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import {
-  RIVER_FLOW_BUFF_ID,
-  SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   RIVER_FLOW_DURATION_FRAMES,
+  SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_FRAMES,
-} from "../../src/data/classes/bellstrike-umbra/gates"
+} from "../../src/data/innerWays/wolfchasersArtGates"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_DETONATION_FRAMES,
@@ -76,7 +76,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       expect(applyBuffs[0].targetId).toBe(SPEAR_SPECIAL_COOLDOWN_BUFF_ID)
       expect(triggers[triggers.length - 1]).toBe(applyBuffs[0])
       for (const t of triggers) {
-        expect(t.condition).toEqual({ buffId: RIVER_FLOW_BUFF_ID, op: "gte", stacks: 1 })
+        expect(t.condition).toEqual({ buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 })
         expect(t.conditions).toEqual([
           { buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 },
         ])
@@ -120,7 +120,7 @@ describe("built-in data — SpearQ's River Flow trigger", () => {
       expect(skill).toBeTruthy()
       skill.hits.forEach((hit, i) => {
         const hasRiverFlow = hit.triggers.some(
-          (t) => t.kind === "applyBuff" && t.targetId === RIVER_FLOW_BUFF_ID,
+          (t) => t.kind === "applyBuff" && t.targetId === BUFF.potentRiverFlow,
         )
         expect(hasRiverFlow).toBe(i === 4)
       })
@@ -165,7 +165,7 @@ describe("builtinBuffsForClass", () => {
   it("bellstrikeUmbra carries River Flow, Spear Special Cooldown, Zenith Bar and Zenith Detonation, all effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
     expect(buffs).toHaveLength(4)
-    const riverFlow = buffs.find((b) => b.id === RIVER_FLOW_BUFF_ID)!
+    const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
     const cooldown = buffs.find((b) => b.id === SPEAR_SPECIAL_COOLDOWN_BUFF_ID)!
     const zenith = buffs.find((b) => b.id === ZENITH_DETONATION_BUFF_ID)!
     expect(riverFlow).toBeTruthy()

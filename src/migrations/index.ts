@@ -12,6 +12,9 @@ import { V14__dropUnimplementedArmorSets } from "./V14__dropUnimplementedArmorSe
 import { V15__dropSwallowcallSet } from "./V15__dropSwallowcallSet"
 import { V16__mergeVernalUmbrellaAttunements } from "./V16__mergeVernalUmbrellaAttunements"
 import { V17__renameCleftpeak } from "./V17__renameCleftpeak"
+import { V18__followNewUmbraDefaultRotation } from "./V18__followNewUmbraDefaultRotation"
+import { V19__qiBreakOverride } from "./V19__qiBreakOverride"
+import { V20__mergeRiverFlowIntoWolfchasersArt } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -28,6 +31,9 @@ export {
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
 } from "./V17__renameCleftpeak"
+export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
+export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
+export { migrateRiverFlowBuffId } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -43,6 +49,9 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V15__dropSwallowcallSet,
   V16__mergeVernalUmbrellaAttunements,
   V17__renameCleftpeak,
+  V18__followNewUmbraDefaultRotation,
+  V19__qiBreakOverride,
+  V20__mergeRiverFlowIntoWolfchasersArt,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

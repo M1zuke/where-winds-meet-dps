@@ -21,6 +21,7 @@ const buildAt = (tier: number | null): BuildView => ({
   innerWayTier: (name) => (name === swordMorph.id ? tier : null),
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,
+  openingStacks: () => 0,
 })
 
 const hitInput = (skill: Skill, index: number): HitInput =>
@@ -28,7 +29,6 @@ const hitInput = (skill: Skill, index: number): HitInput =>
 
 const contextAt = (phase: QiPhase): HitContext => ({
   phase,
-  qiBreakEnabled: true,
   smallPhys: 0,
   isEngineBuffActive: () => false,
 })

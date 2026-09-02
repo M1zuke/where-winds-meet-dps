@@ -43,7 +43,7 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
       return [
         {
           id: "hawkwing",
-          name: "Hawkwing (4-pc)",
+          name: "Hawkwing",
           stacks,
           maxStacks: HAWKWING_MAX_STACKS,
           effects: [],

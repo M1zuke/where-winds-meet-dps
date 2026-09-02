@@ -87,7 +87,6 @@ const ctx: FormulaContext = {
   silkbind: { min: 0, max: 0, pen: 0 },
   bamboocut: { min: 0, max: 0, pen: 0 },
   primaryAttribute: "Bellstrike",
-  attributePrimaryBonus: 34,
   precisionPanel: 0.9,
   critPanel: 0.5,
   affinityPanel: 0.2,
@@ -339,16 +338,16 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
 })
 
 describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
-  const qiBreak = (enabled: boolean, startSec: number): Partial<Inputs> => ({
+  const qiBreak = (startSec: number, durationSec = 10): Partial<Inputs> => ({
     combatSettings: {
       ...defaultCombatSettings(),
-      qiBreak: { enabled, startSec, durationSec: 10, lowQiLeadSec: 0 },
+      qiBreakOverride: { startSec, durationSec, lowQiLeadSec: 0 },
     },
   })
 
   // the cast is 246 frames, so a break opening at 0 s still covers the hit
-  const insideBreak = qiBreak(true, 0)
-  const outsideBreak = qiBreak(true, 60)
+  const insideBreak = qiBreak(0)
+  const outsideBreak = qiBreak(60)
 
   it("carries the tag on Bellstrike Umbra's built-in Plus, and never on the base version", () => {
     const plus = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHeadPlus)
@@ -399,9 +398,9 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
     expect(tagged).toBeCloseTo(untagged, 6)
   })
 
-  it("does not double when the Qi Break Window toggle is off", () => {
+  it("does not double when the break window has no length", () => {
     const off = skillDamage(
-      simulate([UNIVERSAL_SKILL.dragonHeadPlus], qiBreak(false, 0)),
+      simulate([UNIVERSAL_SKILL.dragonHeadPlus], qiBreak(0, 0)),
       UNIVERSAL_SKILL.dragonHeadPlus,
     )
     const outside = skillDamage(

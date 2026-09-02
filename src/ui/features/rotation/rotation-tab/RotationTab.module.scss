@@ -1,6 +1,6 @@
 @use "breakpoints";
 
-.overviewLayout {
+.rotationLayout {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -8,11 +8,19 @@
 
 .optionsPanel {
   flex: 0 0 220px;
+  position: sticky;
+  top: 0;
+  max-height: calc(100dvh - 280px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.mainColumn {
+  flex: 1;
+  min-width: 0;
 }
 
 .outputGrid {
-  flex: 1;
-  min-width: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
@@ -30,7 +38,13 @@
 }
 
 @include breakpoints.below(breakpoints.$bp-1100) {
-  .overviewLayout {
+  .rotationLayout {
     display: block;
+  }
+
+  .optionsPanel {
+    position: static;
+    max-height: none;
+    overflow: visible;
   }
 }

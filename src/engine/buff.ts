@@ -20,6 +20,7 @@ export interface Buff {
   effects: BuffStatEffect[]
   maxStacks: number
   stackScaling: StackScaling
+  requiresParam?: string
   createdAt: string
   updatedAt: string
 }

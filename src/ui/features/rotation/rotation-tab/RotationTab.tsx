@@ -24,27 +24,27 @@ export function RotationTab({
   const { t } = useI18n()
   const [sub, setSub] = useState<"overview" | "editor">("overview")
   return (
-    <>
-      <SubTabs
-        active={sub}
-        onSelect={setSub}
-        tabs={[
-          { key: "overview", label: t("common.overview") },
-          { key: "editor", label: t("rotation.rotationEditor") },
-        ]}
-      />
-      <SubTabPanel>
-        {sub === "overview" && (
-          <div className={styles.overviewLayout}>
-            <div className={`panel ${styles.optionsPanel}`}>
-              <h2>{t("common.rotations")}</h2>
-              <RotationOptionsPanel
-                inputs={inputs}
-                engineInputs={engineInputs}
-                onChange={onChange}
-                currentDps={result.dps}
-              />
-            </div>
+    <div className={styles.rotationLayout}>
+      <div className={`panel ${styles.optionsPanel}`}>
+        <h2>{t("common.rotations")}</h2>
+        <RotationOptionsPanel
+          inputs={inputs}
+          engineInputs={engineInputs}
+          onChange={onChange}
+          currentDps={result.dps}
+        />
+      </div>
+      <div className={styles.mainColumn}>
+        <SubTabs
+          active={sub}
+          onSelect={setSub}
+          tabs={[
+            { key: "overview", label: t("common.overview") },
+            { key: "editor", label: t("rotation.rotationEditor") },
+          ]}
+        />
+        <SubTabPanel>
+          {sub === "overview" && (
             <div className={styles.outputGrid}>
               <div className="panel">
                 <h2>{t("rotation.dpsBreakdown")}</h2>
@@ -59,12 +59,12 @@ export function RotationTab({
                 <RotationTimelinePanel result={result} />
               </div>
             </div>
-          </div>
-        )}
-        {sub === "editor" && (
-          <RotationEditorPanel inputs={inputs} onChange={onChange} result={result} />
-        )}
-      </SubTabPanel>
-    </>
+          )}
+          {sub === "editor" && (
+            <RotationEditorPanel inputs={inputs} onChange={onChange} result={result} />
+          )}
+        </SubTabPanel>
+      </div>
+    </div>
   )
 }

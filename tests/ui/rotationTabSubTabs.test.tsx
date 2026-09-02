@@ -52,6 +52,16 @@ describe("RotationTab subtabs", () => {
     expect(screen.queryByText("Cast Timeline")).not.toBeInTheDocument()
   })
 
+  it("keeps the rotation list beside both subtabs", () => {
+    renderTab()
+    const listedOnOverview = optionButtons().length
+
+    fireEvent.click(screen.getByRole("tab", { name: "Rotation Editor" }))
+
+    expect(screen.getByText("Rotations")).toBeInTheDocument()
+    expect(optionButtons()).toHaveLength(listedOnOverview)
+  })
+
   it("lists every rotation the class offers and nothing else", () => {
     renderTab()
 

@@ -36,12 +36,3 @@ export const DEBUFF = {
   bitterSeasonTick: "debuff-bellstrikeUmbra-bitter-season-tick",
   defenseDown: "debuff-bellstrikeUmbra-defense-down",
 } as const
-
-// The two gate buffs `classes/bellstrike-umbra/gates.ts` registers — consumed by the
-// timeline (`HitVariant` swaps, trigger conditions), never carrying stat
-// effects of their own. Sword Horizon's two Zenith gates are declared by
-// `data/innerWays/swordHorizonZenith.ts` instead.
-export const STATUS = {
-  riverFlow: "buff-bellstrikeUmbra-river-flow",
-  spearSpecialCooldown: "buff-bellstrikeUmbra-spear-special-cooldown",
-} as const

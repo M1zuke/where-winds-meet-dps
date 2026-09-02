@@ -38,9 +38,9 @@ export interface AttackBlock {
   penetration: number
 }
 
-export interface QiBreakSettings {
-  enabled: boolean
+export interface QiBreakWindow {
   startSec: number
+  /** A window of zero length leaves the pull with no exhausted phase at all. */
   durationSec: number
   lowQiLeadSec: number
 }
@@ -50,7 +50,8 @@ export interface QiBreakSettings {
 // (`Inputs.tianGongElement`), Vulnerability is the tank spear debuff
 // (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
-  qiBreak: QiBreakSettings
+  /** `null` leaves each rotation running the break window it carries itself. */
+  qiBreakOverride: QiBreakWindow | null
   dragonsBreath: boolean
   healerBuff: boolean
   breakExtension: boolean
@@ -62,7 +63,7 @@ export interface CombatSettings {
 
 export function defaultCombatSettings(): CombatSettings {
   return {
-    qiBreak: { enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 5 },
+    qiBreakOverride: null,
     dragonsBreath: false,
     healerBuff: false,
     breakExtension: false,
@@ -78,6 +79,7 @@ export function defaultCombatSettings(): CombatSettings {
 export interface Inputs {
   classId: string
   breakthrough: number
+  followedBreakthroughRelease?: number
 
   phys: AttackBlock
   bellstrike: AttackBlock

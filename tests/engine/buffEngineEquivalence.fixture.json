@@ -55,7 +55,7 @@
           "bellstrikeUmbra-swordspecial-4-hit",
           "bellstrikeUmbra-toad-cancel"
         ],
-        "digest": "fa3b8b2237b6a6372410553181cedb96d6c49dfb4f4c3d5592d78086ec7fb5f5"
+        "digest": "30fc77ac7a2775f1c2ba9681dadce5f7cdb2aacf913cc27e5b83691feb0f3ac6"
       },
       "debuffs": {
         "count": 7,
@@ -103,7 +103,7 @@
         },
         {
           "id": "potentRiverFlow",
-          "name": "Potent River Flow",
+          "name": "River Flow",
           "classBuff": false,
           "requires": {
             "param": "wolfchasersArt"

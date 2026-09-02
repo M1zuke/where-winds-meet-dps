@@ -7,6 +7,7 @@ export const throatPierce = defineInnerWay({
   id: INNER_WAY_ID.throatPierce,
   name: "Throat-Pierce",
   selectableTiers: [6, 5],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.throatPierced,
   panelStats: {
     "primaryAttr.max": 25.3,

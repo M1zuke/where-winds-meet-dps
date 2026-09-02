@@ -2,7 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL, STATUS } from "./ids"
+import { SKILL } from "./ids"
 
 export const spearq5HitCancel = defineSkill({
   id: SKILL.spearq5HitCancel,
@@ -28,7 +28,7 @@ export const spearq5HitCancel = defineSkill({
       attributeMultiplier: 0.4814,
       physFixed: 74,
       attributeFixed: 41,
-      triggers: [applyBuff({ target: STATUS.riverFlow })],
+      triggers: [applyBuff({ target: BUFF.potentRiverFlow })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

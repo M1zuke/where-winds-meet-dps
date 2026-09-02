@@ -12,6 +12,11 @@ import {
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
+import {
+  defaultBreakthrough,
+  newestBreakthroughRelease,
+  releasedBreakthroughs,
+} from "./definitions/baseStats/breakthroughs"
 import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation } from "./engine/rotation"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
@@ -43,11 +48,19 @@ import {
   migrateAttunementId,
   migrateAttuneTag,
   migrateCleftpeakBuffId,
+  migrateRiverFlowBuffId,
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
+  dropRetiredRotationId,
+  qiBreakOverrideFrom,
+  rotationWindowOf,
+  readQiBreakWindow,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
+
+const migrateBuffId = (buffId: string): string =>
+  migrateRiverFlowBuffId(migrateCleftpeakBuffId(buffId))
 
 const KEY = "wwm.inputs"
 const VERSION = 5
@@ -153,11 +166,29 @@ function migrateRotationIds<T>(rotation: T): T {
   }
   if (Array.isArray(r.permanentBuffIds)) {
     next.permanentBuffIds = r.permanentBuffIds.map((buffId) =>
-      migrateCleftpeakBuffId(migrateEntityId(buffId)),
+      migrateBuffId(migrateEntityId(buffId)),
     )
+  }
+  if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
+  if (r.qiBreak !== undefined) {
+    const window = readQiBreakWindow(r.qiBreak)
+    if (window) next.qiBreak = window
+    else delete next.qiBreak
   }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
+}
+
+// additive — see CLAUDE.md → "localStorage migrations"
+function sanitizeOpeningStacks(stored: unknown): Record<string, number> {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return {}
+  const healed: Record<string, number> = {}
+  for (const [buffId, stacks] of Object.entries(stored as Record<string, unknown>)) {
+    if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) continue
+    const whole = Math.floor(stacks)
+    if (whole > 0) healed[migrateBuffId(migrateEntityId(buffId))] = whole
+  }
+  return healed
 }
 
 // A word outside the catalogue already scores nothing, so clearing the row costs
@@ -196,7 +227,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // build's class rather than reaching `getSchool()`, which throws on an
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
-  next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
+  next.selectedBuiltinRotationId = dropRetiredRotationId(
+    migrateEntityId(next.selectedBuiltinRotationId),
+  )
   next.set = selectableSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)
@@ -212,7 +245,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.breakthrough !== "number" || !VALID_BREAKTHROUGHS.has(next.breakthrough)) {
     const trial =
       typeof legacyTargetId === "string" ? (legacyTargetId.match(/^(\d+)/)?.[1] ?? "") : ""
-    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? 16
+    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? defaultBreakthrough()
   }
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
@@ -345,19 +378,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
-    const qbRaw =
-      r.qiBreak && typeof r.qiBreak === "object" ? (r.qiBreak as Record<string, unknown>) : {}
     if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     next.combatSettings = {
-      qiBreak: {
-        enabled: typeof qbRaw.enabled === "boolean" ? qbRaw.enabled : def.qiBreak.enabled,
-        startSec: typeof qbRaw.startSec === "number" ? qbRaw.startSec : def.qiBreak.startSec,
-        durationSec:
-          typeof qbRaw.durationSec === "number" ? qbRaw.durationSec : def.qiBreak.durationSec,
-        lowQiLeadSec:
-          typeof qbRaw.lowQiLeadSec === "number" ? qbRaw.lowQiLeadSec : def.qiBreak.lowQiLeadSec,
-      },
+      qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
@@ -380,22 +404,47 @@ function makeDefaultProfile(name: string, inputs: Inputs): StoredProfile {
   return { id: newProfileId(), name, inputs: hydrateInputs(inputs) }
 }
 
+function followBreakthroughReleases(inputs: Inputs, now: number): Inputs {
+  const newestRelease = newestBreakthroughRelease(now)
+  const followedRelease =
+    typeof inputs.followedBreakthroughRelease === "number" ? inputs.followedBreakthroughRelease : 0
+  if (followedRelease === newestRelease) return inputs
+  let breakthrough = inputs.breakthrough
+  for (const release of releasedBreakthroughs(now)) {
+    if (release.breakthrough <= followedRelease) continue
+    const supersededDefault = defaultBreakthrough(release.at - 1)
+    if (breakthrough === supersededDefault) breakthrough = release.breakthrough
+  }
+  return { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+}
+
 export function loadProfiles(): ProfilesState & { firstRun: boolean } {
+  const now = Date.now()
   try {
     const raw = kvStore.get(PROFILES_KEY)
     if (raw) {
       const result = runProfileMigrations(JSON.parse(raw))
       const migrated = result?.blob as ProfilesBlob | undefined
       if (migrated && Array.isArray(migrated.profiles)) {
-        const profiles = migrated.profiles
+        const hydrated = migrated.profiles
           .filter(isStoredProfile)
-          .map((p) => ({ ...p, inputs: hydrateInputs(p.inputs) }))
+          .map((stored) => ({ ...stored, inputs: hydrateInputs(stored.inputs) }))
+        const profiles = hydrated.map((profile) => ({
+          ...profile,
+          inputs: followBreakthroughReleases(profile.inputs, now),
+        }))
+        const releaseFollowed = profiles.some(
+          (profile, index) => profile.inputs !== hydrated[index].inputs,
+        )
         if (profiles.length > 0) {
           const activeId = profiles.some((p) => p.id === migrated.activeId)
             ? migrated.activeId
             : profiles[0].id
           // Persist the upgraded blob so the chain is walked once, not per load.
-          if (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION)) {
+          if (
+            releaseFollowed ||
+            (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION))
+          ) {
             saveProfiles({ profiles, activeId })
           }
           return { profiles, activeId, firstRun: false }
@@ -406,7 +455,11 @@ export function loadProfiles(): ProfilesState & { firstRun: boolean } {
 
   const legacy = loadInputs()
   if (legacy) {
-    const profile = makeDefaultProfile("Default", legacy)
+    const legacyProfile = makeDefaultProfile("Default", legacy)
+    const profile = {
+      ...legacyProfile,
+      inputs: followBreakthroughReleases(legacyProfile.inputs, now),
+    }
     const state: ProfilesState = { profiles: [profile], activeId: profile.id }
     saveProfiles(state)
     try {
@@ -566,9 +619,12 @@ export function importCustomRotation(text: string): Rotation {
     permanentBuffIds: Array.isArray(candidate.permanentBuffIds)
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
+    openingStacks: sanitizeOpeningStacks(candidate.openingStacks),
     createdAt: now,
     updatedAt: now,
   }
+  const importedQiBreak = readQiBreakWindow(candidate.qiBreak)
+  if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
   }
@@ -706,7 +762,7 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
 const MIGRATED_LEGACY_AFFECTS = new Map(
   Object.entries(LEGACY_AFFECTS).map(([tag, buffIds]) => [
     migrateCleftpeakTag(tag),
-    buffIds.map(migrateCleftpeakBuffId),
+    buffIds.map(migrateBuffId),
   ]),
 )
 
@@ -750,13 +806,13 @@ function healSkillReach(
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
   return {
-    receives: receives.map(migrateCleftpeakBuffId),
-    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateCleftpeakBuffId),
+    receives: receives.map(migrateBuffId),
+    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateBuffId),
   }
 }
 
 function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
-  if (Array.isArray(debuff.receives)) return debuff.receives.map(migrateCleftpeakBuffId)
+  if (Array.isArray(debuff.receives)) return debuff.receives.map(migrateBuffId)
   const tags = debuff.tags ?? []
   const legacyTags = debuff.dot ? [...tags, `type:${debuff.dot.skillType || "sustain"}`] : tags
   return legacyReceives(legacyTags)
@@ -844,14 +900,14 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
 }
 
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
-  return { ...condition, buffId: migrateCleftpeakBuffId(condition.buffId) }
+  return { ...condition, buffId: migrateBuffId(condition.buffId) }
 }
 
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
   const trigger: HitTrigger = {
     ...tr,
-    targetId: migrateCleftpeakBuffId(migrateEntityId(tr.targetId)),
+    targetId: migrateBuffId(migrateEntityId(tr.targetId)),
     condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
   }
   if (Array.isArray(tr.conditions)) {
@@ -1354,7 +1410,7 @@ const DRONE_DEBUFF_ID = /^debuff-silkbindJade-umbdrone-\d+hit$/
 
 function healDroneDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
   const receives = healDebuffReceives(d)
-  const triggersBuffs = d.triggersBuffs?.map(migrateCleftpeakBuffId)
+  const triggersBuffs = d.triggersBuffs?.map(migrateBuffId)
   if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs }
   const seeded =
     receives.length === DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.length &&

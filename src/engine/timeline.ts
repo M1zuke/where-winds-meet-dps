@@ -47,7 +47,7 @@ import { BuffEngine } from "./buffs/buffEngine"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
-import { paramsFromInputs } from "./buffs/params"
+import { paramOnOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
@@ -139,10 +139,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
   for (const s of inputs.customSkills ?? []) skillsMap.set(s.id, s)
   const skills = [...skillsMap.values()]
+  const buffParams = paramsFromInputs(inputs, rotation.qiBreak)
   const buffsMap = new Map<string, Buff>()
   for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
   for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)
-  const buffs = [...buffsMap.values()]
+  const buffs = [...buffsMap.values()].filter(
+    (b) => !b.requiresParam || paramOnOf(buffParams, b.requiresParam),
+  )
   const debuffsMap = new Map<string, Debuff>()
   for (const d of builtinDebuffsForClass(inputs.classId)) debuffsMap.set(d.id, d)
   for (const d of inputs.customDebuffs ?? []) debuffsMap.set(d.id, d)
@@ -228,6 +231,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (statusById.has(id)) openPermanent(id)
   }
 
+  for (const [id, stacks] of Object.entries(rotation.openingStacks ?? {})) {
+    const status = statusById.get(id)
+    if (!status || stacks <= 0) continue
+    openPermanent(status.id)
+    recordStack(status.id, spanStart, Math.min(stacks, status.maxStacks))
+  }
+
   function activeBuffsAt(frame: number): (Buff | Debuff)[] {
     const out: (Buff | Debuff)[] = []
     for (const id of ledger.activeIdsAt(frame)) {
@@ -247,6 +257,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
     grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
+    openingStacks: (buffId) => rotation.openingStacks?.[buffId] ?? 0,
   }
 
   const behaviorFor = buildBehaviors(buildView)
@@ -291,11 +302,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // ledger are both complete before the damage loop asks anything of them.
   const buffEngine: BuffEngine | null = (() => {
     try {
-      const engine = new BuffEngine(
-        paramsFromInputs(inputs),
-        buffDefsForClass(inputs.classId),
-        groupBuffDefs(),
-      )
+      const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
       let sequence = 0
       const pending: PendingCast[] = laidSteps.map((ls) => ({
         frame: ls.startFrame,
@@ -385,8 +392,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     rng: mechanicRng,
   }
   const mechanics = prepareMechanics(mechanicSetup)
-
-  const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
 
   interface Resolved {
     inputs: Inputs
@@ -482,7 +487,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
     if (buffEngine) {
       const qiPhaseHere = buffEngine.qiPhase(frame / FPS)
-      if (combat?.qiBreak?.enabled && qiPhaseHere === "exhausted") {
+      if (qiPhaseHere === "exhausted") {
         effects.push({ statKey: "allDamageBoost", amount: 0.1 })
         sig += "~qiBreakBoost"
       }
@@ -617,7 +622,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const st = resolveState(frame, skill, resolveOverride, castFrame)
     const hitContext: HitContext = {
       phase: qiPhase,
-      qiBreakEnabled,
       smallPhys: st.ctx.smallPhys,
       isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
     }

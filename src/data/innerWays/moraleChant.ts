@@ -8,6 +8,7 @@ export const moraleChant = defineInnerWay({
   id: INNER_WAY_ID.moraleChant,
   name: "Morale Chant",
   selectableTiers: [6, 5],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.moraleChant,
   panelStats: {
     "phys.max": 49.6,

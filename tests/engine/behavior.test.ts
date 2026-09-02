@@ -11,11 +11,11 @@ const build = {
   innerWayTier: () => null,
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,
+  openingStacks: () => 0,
 }
 
 const context: HitContext = {
   phase: "normal",
-  qiBreakEnabled: true,
   smallPhys: 0,
   isEngineBuffActive: () => false,
 }

@@ -40,21 +40,16 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     expect(profiles[0].inputs.combatSettings).toEqual(defaultCombatSettings())
   })
 
-  it("has the Qi Break window ON by default", () => {
-    expect(defaultCombatSettings().qiBreak).toEqual({
-      enabled: true,
-      startSec: 25,
-      durationSec: 10,
-      lowQiLeadSec: 5,
-    })
+  it("leaves the Qi Break override OFF by default, so the rotation's own window runs", () => {
+    expect(defaultCombatSettings().qiBreakOverride).toBeNull()
     writeProfilesBlob({})
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreak.enabled).toBe(true)
+    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toBeNull()
   })
 
   it("preserves a custom `combatSettings` object already on the blob (idempotent)", () => {
     const custom = {
-      qiBreak: { enabled: false, startSec: 30, durationSec: 12, lowQiLeadSec: 3 },
+      qiBreakOverride: { startSec: 30, durationSec: 12, lowQiLeadSec: 3 },
       dragonsBreath: false,
       healerBuff: true,
       breakExtension: false,
@@ -83,18 +78,55 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     })
   })
 
-  it("backfills the low-Qi lead onto a `qiBreak` saved before it existed", () => {
+  it("backfills the low-Qi lead onto a legacy `qiBreak` saved before it existed", () => {
     writeProfilesBlob({
       combatSettings: {
-        ...defaultCombatSettings(),
         qiBreak: { enabled: true, startSec: 30, durationSec: 12 },
       } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreak).toEqual({
-      enabled: true,
+    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
       startSec: 30,
       durationSec: 12,
+      lowQiLeadSec: 5,
+    })
+  })
+
+  it("carries a hand-tuned legacy `qiBreak` over as an active override", () => {
+    writeProfilesBlob({
+      combatSettings: {
+        qiBreak: { enabled: true, startSec: 30, durationSec: 12, lowQiLeadSec: 3 },
+      } as unknown as Inputs["combatSettings"],
+    })
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
+      startSec: 30,
+      durationSec: 12,
+      lowQiLeadSec: 3,
+    })
+    expect("qiBreak" in profiles[0].inputs.combatSettings!).toBe(false)
+  })
+
+  it("leaves an untouched legacy `qiBreak` as no override at all", () => {
+    writeProfilesBlob({
+      combatSettings: {
+        qiBreak: { enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 5 },
+      } as unknown as Inputs["combatSettings"],
+    })
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toBeNull()
+  })
+
+  it("turns a legacy `enabled: false` into an active zero-length override", () => {
+    writeProfilesBlob({
+      combatSettings: {
+        qiBreak: { enabled: false, startSec: 25, durationSec: 10, lowQiLeadSec: 5 },
+      } as unknown as Inputs["combatSettings"],
+    })
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
+      startSec: 25,
+      durationSec: 0,
       lowQiLeadSec: 5,
     })
   })

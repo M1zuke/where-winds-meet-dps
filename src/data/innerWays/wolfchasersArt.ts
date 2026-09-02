@@ -1,7 +1,8 @@
 import { defineInnerWay, type InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
-import { potentRiverFlowBuffDef, soulShakenBuffDef, wineGuBuffDef } from "./wolfchasersArtBuffs"
+import { riverFlowBuffDef, soulShakenBuffDef, wineGuBuffDef } from "./wolfchasersArtBuffs"
+import { WOLFCHASERS_ART_GATES } from "./wolfchasersArtGates"
 
 // Annotated, not left to inference: `soulShakenBuffDef()`'s `minTier` getter
 // reads this binding, so without an explicit type here TypeScript tries to
@@ -10,6 +11,7 @@ export const wolfchasersArt: InnerWayDef = defineInnerWay({
   id: INNER_WAY_ID.wolfchasersArt,
   name: "Wolfchaser's Art",
   selectableTiers: [6, 5],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.wolfchasersArt,
   panelStats: {
     affinityRate: 0.039,
@@ -18,7 +20,8 @@ export const wolfchasersArt: InnerWayDef = defineInnerWay({
   tiers: {
     6: { nodes: [INNER_WAY_NODE.soulShaken] },
   },
-  // Wine Gu's `allDamageBoost` sums after Potent River Flow's and Soul
-  // Shaken's after both, exactly as before the three moved here together.
-  buffDefs: [potentRiverFlowBuffDef(), wineGuBuffDef(), soulShakenBuffDef()],
+  // Wine Gu's `allDamageBoost` sums after River Flow's and Soul Shaken's after
+  // both, exactly as before the three moved here together.
+  buffDefs: [riverFlowBuffDef(), wineGuBuffDef(), soulShakenBuffDef()],
+  gateBuffs: WOLFCHASERS_ART_GATES,
 })

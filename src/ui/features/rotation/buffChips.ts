@@ -23,6 +23,15 @@ export function buffChipHue(name: string, id?: string): number {
   return FALLBACK_BUFF_HUES[(h >>> 0) % FALLBACK_BUFF_HUES.length]
 }
 
+export function buffChipAbbreviation(name: string): string {
+  const initials = name
+    .split(/[\s\-–—]+/)
+    .filter((word) => word.length > 0)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("")
+  return initials || name
+}
+
 export function castBuffDisplayOrder(
   casts: readonly RotationCast[] | undefined,
   hiddenIds: ReadonlySet<string>,
