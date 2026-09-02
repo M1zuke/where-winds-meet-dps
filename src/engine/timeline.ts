@@ -47,7 +47,7 @@ import { BuffEngine } from "./buffs/buffEngine"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
-import { paramsFromInputs } from "./buffs/params"
+import { paramOnOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
@@ -139,10 +139,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
   for (const s of inputs.customSkills ?? []) skillsMap.set(s.id, s)
   const skills = [...skillsMap.values()]
+  const buffParams = paramsFromInputs(inputs, rotation.qiBreak)
   const buffsMap = new Map<string, Buff>()
   for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
   for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)
-  const buffs = [...buffsMap.values()]
+  const buffs = [...buffsMap.values()].filter(
+    (b) => !b.requiresParam || paramOnOf(buffParams, b.requiresParam),
+  )
   const debuffsMap = new Map<string, Debuff>()
   for (const d of builtinDebuffsForClass(inputs.classId)) debuffsMap.set(d.id, d)
   for (const d of inputs.customDebuffs ?? []) debuffsMap.set(d.id, d)
@@ -299,11 +302,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // ledger are both complete before the damage loop asks anything of them.
   const buffEngine: BuffEngine | null = (() => {
     try {
-      const engine = new BuffEngine(
-        paramsFromInputs(inputs, rotation.qiBreak),
-        buffDefsForClass(inputs.classId),
-        groupBuffDefs(),
-      )
+      const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
       let sequence = 0
       const pending: PendingCast[] = laidSteps.map((ls) => ({
         frame: ls.startFrame,

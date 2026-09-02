@@ -4,13 +4,21 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { applyBuffEffects } from "../../src/engine/statRegistry"
 import { getBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import {
-  RIVER_FLOW_BUFF_ID,
-  SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
-} from "../../src/data/classes/bellstrike-umbra/gates"
+import { SPEAR_SPECIAL_COOLDOWN_BUFF_ID } from "../../src/data/innerWays/wolfchasersArtGates"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
+import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
+
+const riverFlowBuild = (): Inputs => ({
+  ...defaultInputs,
+  classId: CLASS,
+  mindMethods: [
+    { name: "wolfchasersArt", stacks: "tier 5" },
+    ...defaultInputs.mindMethods.slice(1),
+  ] as Inputs["mindMethods"],
+})
 const SPEAR_SPECIAL_IDS = [
   "bellstrikeUmbra-spearspecial",
   "bellstrikeUmbra-spearspecial-1-hit-cancel",
@@ -68,7 +76,7 @@ describe("Defense Down — the Spear Special's target defense reduction", () => 
         )
         expect(applied).toHaveLength(1)
         expect(applied[0].condition).toEqual({
-          buffId: RIVER_FLOW_BUFF_ID,
+          buffId: BUFF.potentRiverFlow,
           op: "gte",
           stacks: 1,
         })
@@ -89,7 +97,7 @@ describe("Defense Down — the Spear Special's target defense reduction", () => 
   })
 
   it("opens windows on the default rotation, none of them before the first Spear Special", () => {
-    const result = runEngine({ ...defaultInputs, classId: CLASS })
+    const result = runEngine(riverFlowBuild())
     const windows = result.buffWindows!.filter((w) => w.id === DEBUFF.defenseDown)
     expect(windows.length).toBeGreaterThan(0)
     for (const window of windows) {
@@ -102,10 +110,9 @@ describe("Defense Down — the Spear Special's target defense reduction", () => 
   })
 
   it("raises the rotation's damage — the reduction reaches the damage kernel", () => {
-    const withDebuff = runEngine({ ...defaultInputs, classId: CLASS })
+    const withDebuff = runEngine(riverFlowBuild())
     const withoutDebuff = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
+      ...riverFlowBuild(),
       customDebuffs: [{ ...debuff, effects: [] }],
     })
     expect(withDebuff.totalDamage).toBeGreaterThan(withoutDebuff.totalDamage)

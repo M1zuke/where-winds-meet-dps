@@ -107,6 +107,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   variant or a trigger condition reads must still exist as a real buff, so it is
   visible in the Skill Editor and tracked on the cast timeline — never a bare
   engine constant.
+- **A state marker that only exists for some builds declares `requiresParam`.**
+  The timeline drops the buff entirely when that param is off, so a condition on
+  it never holds and the state cannot be reached. Use it instead of gating each
+  trigger site; the requirement belongs on the entity, once.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`
@@ -143,6 +147,11 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
 - Where a def's effects cannot be read without executing them, it must carry an
   author-written summary — the catalog and the display gates read the
   declarative fields without running anything.
+- **One id declared as both a ledger gate and a module is one entity in two
+  projections.** The gate side carries no effects, so a cast chip takes its
+  effects from the module side; only the module may author a magnitude, and the
+  gate's `requiresParam` must match the module's own requirement or the state
+  opens for a build the module never reaches.
 
 ## Procedural behaviour
 

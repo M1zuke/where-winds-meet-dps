@@ -143,18 +143,15 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
 
   it("gateBuffs are registered under this class id", () => {
     expect(builtinBuffsForClass("bellstrikeUmbra").map((buff) => buff.name)).toEqual([
-      "River Flow",
-      "Spear Special Cooldown",
       "Zenith Bar",
       "Zenith Detonation",
+      "River Flow",
+      "Spear Special Cooldown",
     ])
   })
 
-  it("Umbra's own declared gateBuffs holds only its two class gates", () => {
-    expect(umbra.gateBuffs.map((buff) => buff.name)).toEqual([
-      "River Flow",
-      "Spear Special Cooldown",
-    ])
+  it("Umbra declares no gate buffs of its own — every one it shows is an inner way's", () => {
+    expect(umbra.gateBuffs).toEqual([])
   })
 
   it("mechanics are registered for this class", () => {

@@ -51,6 +51,13 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
   const buffs: CastBuffTag[] = []
   const seen = new Set<string>()
 
+  // One id declared as both a ledger gate and a buff module is one entity in
+  // two projections, and only the module side carries effects — without this
+  // the gate wins the id here and the chip renders with no effect at all.
+  const engineDisplayById = new Map(
+    (buffEngine?.activeBuffsForDisplay(timeSec) ?? []).map((buff) => [buff.id, buff] as const),
+  )
+
   for (const id of ledger.activeIdsAt(frame)) {
     const status = statusById.get(id)
     if (!status || seen.has(id)) continue
@@ -72,19 +79,21 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
     const overridden = query.overrideRemainingSec?.(id, timeSec)
     if (overridden) remainingSec = overridden.seconds
 
+    const projection = status.effects.length === 0 ? engineDisplayById.get(id) : undefined
     buffs.push({
       id,
       name: status.name,
       stacks,
       maxStacks: status.maxStacks ?? 1,
-      effects: status.effects,
+      effects: projection?.effects ?? status.effects,
+      ...(projection?.requires ? { requires: projection.requires } : {}),
       dotIntervalSec,
       remainingSec,
     })
   }
 
   if (buffEngine) {
-    for (const engineBuff of buffEngine.activeBuffsForDisplay(timeSec)) {
+    for (const engineBuff of engineDisplayById.values()) {
       if (seen.has(engineBuff.id)) continue
       seen.add(engineBuff.id)
       buffs.push({

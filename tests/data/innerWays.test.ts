@@ -215,10 +215,10 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
   it("builtinBuffsForClass('bellstrikeUmbra') returns the four gates in pinned order, each carrying its class id", () => {
     const buffs = builtinBuffsForClass("bellstrikeUmbra")
     expect(buffs.map((buff) => buff.name)).toEqual([
-      "River Flow",
-      "Spear Special Cooldown",
       "Zenith Bar",
       "Zenith Detonation",
+      "River Flow",
+      "Spear Special Cooldown",
     ])
     for (const buff of buffs) expect(buff.classId).toBe("bellstrikeUmbra")
   })
