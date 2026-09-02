@@ -48,6 +48,7 @@ import {
   migrateAttunementId,
   migrateAttuneTag,
   migrateCleftpeakBuffId,
+  migrateRiverFlowBuffId,
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
   dropRetiredRotationId,
@@ -57,6 +58,9 @@ import {
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
+
+const migrateBuffId = (buffId: string): string =>
+  migrateRiverFlowBuffId(migrateCleftpeakBuffId(buffId))
 
 const KEY = "wwm.inputs"
 const VERSION = 5
@@ -162,7 +166,7 @@ function migrateRotationIds<T>(rotation: T): T {
   }
   if (Array.isArray(r.permanentBuffIds)) {
     next.permanentBuffIds = r.permanentBuffIds.map((buffId) =>
-      migrateCleftpeakBuffId(migrateEntityId(buffId)),
+      migrateBuffId(migrateEntityId(buffId)),
     )
   }
   if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
@@ -182,7 +186,7 @@ function sanitizeOpeningStacks(stored: unknown): Record<string, number> {
   for (const [buffId, stacks] of Object.entries(stored as Record<string, unknown>)) {
     if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) continue
     const whole = Math.floor(stacks)
-    if (whole > 0) healed[migrateCleftpeakBuffId(migrateEntityId(buffId))] = whole
+    if (whole > 0) healed[migrateBuffId(migrateEntityId(buffId))] = whole
   }
   return healed
 }
@@ -758,7 +762,7 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
 const MIGRATED_LEGACY_AFFECTS = new Map(
   Object.entries(LEGACY_AFFECTS).map(([tag, buffIds]) => [
     migrateCleftpeakTag(tag),
-    buffIds.map(migrateCleftpeakBuffId),
+    buffIds.map(migrateBuffId),
   ]),
 )
 
@@ -802,13 +806,13 @@ function healSkillReach(
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
   return {
-    receives: receives.map(migrateCleftpeakBuffId),
-    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateCleftpeakBuffId),
+    receives: receives.map(migrateBuffId),
+    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateBuffId),
   }
 }
 
 function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): string[] {
-  if (Array.isArray(debuff.receives)) return debuff.receives.map(migrateCleftpeakBuffId)
+  if (Array.isArray(debuff.receives)) return debuff.receives.map(migrateBuffId)
   const tags = debuff.tags ?? []
   const legacyTags = debuff.dot ? [...tags, `type:${debuff.dot.skillType || "sustain"}`] : tags
   return legacyReceives(legacyTags)
@@ -896,14 +900,14 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
 }
 
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
-  return { ...condition, buffId: migrateCleftpeakBuffId(condition.buffId) }
+  return { ...condition, buffId: migrateBuffId(condition.buffId) }
 }
 
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
   const trigger: HitTrigger = {
     ...tr,
-    targetId: migrateCleftpeakBuffId(migrateEntityId(tr.targetId)),
+    targetId: migrateBuffId(migrateEntityId(tr.targetId)),
     condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
   }
   if (Array.isArray(tr.conditions)) {
@@ -1406,7 +1410,7 @@ const DRONE_DEBUFF_ID = /^debuff-silkbindJade-umbdrone-\d+hit$/
 
 function healDroneDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
   const receives = healDebuffReceives(d)
-  const triggersBuffs = d.triggersBuffs?.map(migrateCleftpeakBuffId)
+  const triggersBuffs = d.triggersBuffs?.map(migrateBuffId)
   if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs }
   const seeded =
     receives.length === DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE.length &&

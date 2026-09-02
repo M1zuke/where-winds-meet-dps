@@ -8,14 +8,15 @@ import { wolfchasersArt } from "./wolfchasersArt"
 
 // This module and `wolfchasersArt.ts` import each other — it for these
 // factories' `buffDefs` entry, this module for `soulShakenBuffDef`'s tier
-// lookup — and `wolfchasersArt.ts` calls the factories while its own `const`
-// is still in TDZ. So every export below is a hoisted function, never a
-// `const`, and nothing at this module's top level may read `wolfchasersArt`
-// (only a call made once loading has finished, e.g. inside a getter, may).
-export function potentRiverFlowBuffDef() {
+// lookup — and `wolfchasersArt.ts` calls the
+// factories while its own `const` is still in TDZ. So every export that builds
+// a def below is a hoisted function, never a `const`, and nothing at this
+// module's top level may read `wolfchasersArt` (only a call made once loading
+// has finished, e.g. inside a getter, may).
+export function riverFlowBuffDef() {
   return defineBuff({
     id: BUFF.potentRiverFlow,
-    name: "Potent River Flow",
+    name: "River Flow",
     requires: { param: PARAM.wolfchasersArt },
     affectsAll: true,
     duration: 15,

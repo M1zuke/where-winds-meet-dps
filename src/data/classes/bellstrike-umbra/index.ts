@@ -6,7 +6,6 @@ import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { declareMechanic } from "../../../engine/mechanics"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
-import { BELLSTRIKE_UMBRA_GATES } from "./gates"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
@@ -38,7 +37,7 @@ export const bellstrikeUmbra = defineClass({
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
   classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
-  gateBuffs: BELLSTRIKE_UMBRA_GATES,
+  gateBuffs: [],
   mechanics: [declareMechanic(levelAttributeBonusMechanic)],
   skillBehaviors: [],
   displayGates: [],

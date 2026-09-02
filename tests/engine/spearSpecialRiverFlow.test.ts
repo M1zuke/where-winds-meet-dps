@@ -4,11 +4,12 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeSkill, makeHit, type Skill } from "../../src/engine/skill"
-import { RIVER_FLOW_DURATION_FRAMES } from "../../src/data/classes/bellstrike-umbra/gates"
+import { RIVER_FLOW_DURATION_FRAMES } from "../../src/data/innerWays/wolfchasersArtGates"
 import type { Inputs, Result } from "../../src/engine/types"
 import { builtinSkill, dotRow } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { retiredRotation } from "./retiredRotations"
+import { BUFF } from "../../src/data/skills/buffs/ids"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -21,11 +22,16 @@ function makeFiller(frames: number): Skill {
 function runSteps(
   steps: { skillId: string; hitCount: number }[],
   extraSkills: Skill[] = [],
+  mindMethods: Inputs["mindMethods"] = [
+    WOLFCHASERS_ART_SLOT,
+    ...defaultInputs.mindMethods.slice(1),
+  ] as Inputs["mindMethods"],
 ): Result {
   const rotation = makeRotation(CLASS, { steps: steps.map((s) => makeStep(s)) })
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
+    mindMethods,
     activeCustomRotation: rotation,
     customSkills: extraSkills,
   }
@@ -45,6 +51,8 @@ const spearSpecialId = SKILL.spearspecial
 const swordSpecial3Id = SKILL.swordspecial3Hit
 
 const SPEARQ_CAST_FRAMES = 120
+
+const WOLFCHASERS_ART_SLOT = { name: "wolfchasersArt", stacks: "tier 5" }
 
 describe("Spear Special — no River Flow", () => {
   it("deals base coefficients with no bleed payload or detonation", () => {
@@ -146,6 +154,39 @@ describe("Spear Special Cooldown — suppresses a second payload", () => {
     expect(row.count).toBe(2)
     expect(row.expectedDamage).toBeGreaterThan(singleCast * 1.9)
     expect(row.expectedDamage).toBeLessThan(singleCast * 2.1)
+  })
+})
+
+describe("River Flow — the cast tag shows the buff its module carries", () => {
+  it("keeps its effects even though the gate projection sharing its id has none", () => {
+    const r = runSteps([
+      { skillId: spearQId, hitCount: 6 },
+      { skillId: spearSpecialId, hitCount: 1 },
+    ])
+    const spearSpecialCast = r.casts!.find((cast) => cast.skillName === "Spear Special")!
+    const tag = spearSpecialCast.buffs.find((b) => b.id === BUFF.potentRiverFlow)!
+    expect(tag).toBeTruthy()
+    expect(tag.name).toBe("River Flow")
+    expect(tag.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.25 }])
+  })
+})
+
+describe("River Flow — only exists while Wolfchaser's Art is slotted", () => {
+  it("leaves SpearQ + Spear Special at base damage with no payload when it is not", () => {
+    const steps = [
+      { skillId: spearQId, hitCount: 6 },
+      { skillId: spearSpecialId, hitCount: 1 },
+    ]
+    const r = runSteps(steps, [], defaultInputs.mindMethods)
+    const trueSkill = skillOf(SKILL.spearspecial)
+    const strippedToBase: Skill = {
+      ...trueSkill,
+      hits: [{ ...trueSkill.hits[0], variants: undefined }],
+    }
+    const control = runSteps(steps, [strippedToBase], defaultInputs.mindMethods)
+    expect(damageOf(r, "Spear Special")).toBeCloseTo(damageOf(control, "Spear Special"), 6)
+    expect(detonationEvents(r)).toHaveLength(0)
+    expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(false)
   })
 })
 

@@ -2,7 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL, STATUS } from "./ids"
+import { SKILL } from "./ids"
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -52,7 +52,7 @@ export const spearq = defineSkill({
       attributeMultiplier: 0.5350166666666667,
       physFixed: 98,
       attributeFixed: 53.333333333333336,
-      triggers: [applyBuff({ target: STATUS.riverFlow })],
+      triggers: [applyBuff({ target: BUFF.potentRiverFlow })],
     }),
     hit(5, {
       frame: 100,
