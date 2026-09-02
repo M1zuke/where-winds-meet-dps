@@ -1,9 +1,10 @@
-import type { Inputs } from "../types"
+import type { Inputs, QiBreakWindow } from "../types"
 import type { BuffParams } from "./buffEngine"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
 import { specForClass } from "./data"
+import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
 
 // The one place `Inputs.buffParams`' `<param>Tier` wire-key convention is
 // written — every reader goes through `paramOnOf`/`paramTierOf` instead of
@@ -21,7 +22,8 @@ export function paramTierOf(params: BuffParams, param: string): number {
   return typeof tier === "number" ? tier : 0
 }
 
-export function paramsFromInputs(inputs: Inputs): BuffParams {
+export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow): BuffParams {
+  const qiBreak = resolveQiBreakWindow(inputs.combatSettings, rotationQiBreak)
   const params: BuffParams = {
     isTrainingDummy: !!inputs.dummyMode,
     classId: inputs.classId,
@@ -44,16 +46,12 @@ export function paramsFromInputs(inputs: Inputs): BuffParams {
     params[tierKey(def.buffParam)] = tier
   }
 
-  const qiBreak = inputs.combatSettings?.qiBreak
   const breakExtensionBonus = inputs.combatSettings?.breakExtension ? 12 : 0
-  if (
-    qiBreak &&
-    (qiBreak.startSec !== 25 || qiBreak.durationSec !== 10 || breakExtensionBonus !== 0)
-  ) {
+  if (!sameQiBreakWindow(qiBreak, DEFAULT_QI_BREAK_WINDOW) || breakExtensionBonus !== 0) {
     params.qiBreakTime = qiBreak.startSec
     params.bossBreakDuration = qiBreak.durationSec + breakExtensionBonus
   }
-  if (qiBreak && qiBreak.lowQiLeadSec > 0) {
+  if (qiBreak.lowQiLeadSec > 0 && qiBreak.durationSec > 0) {
     params.belowQiTime = Math.max(0, qiBreak.startSec - qiBreak.lowQiLeadSec)
   }
 

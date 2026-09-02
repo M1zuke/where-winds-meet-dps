@@ -16,7 +16,6 @@ const build = {
 
 const context: HitContext = {
   phase: "normal",
-  qiBreakEnabled: true,
   smallPhys: 0,
   isEngineBuffActive: () => false,
 }

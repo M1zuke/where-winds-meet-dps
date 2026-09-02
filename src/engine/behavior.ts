@@ -44,7 +44,6 @@ export type QiPhase = "normal" | "below30" | "exhausted"
 // What is true of the fight at this hit, as opposed to of the build.
 export interface HitContext {
   phase: QiPhase
-  qiBreakEnabled: boolean
   // The food-free base min phys, read off the RESOLVED context — which is why
   // `buildArt`/`patchArt` run after it is built and stat claims run before.
   smallPhys: number
@@ -114,11 +113,7 @@ export const DEFAULT_BEHAVIOR: SkillBehavior = {
     if (!tags || tags.length === 0) return []
     const effects: ArtEffect[] = []
 
-    if (
-      context.phase === "exhausted" &&
-      context.qiBreakEnabled &&
-      tags.includes(QI_BREAK_DOUBLE_TAG)
-    ) {
+    if (context.phase === "exhausted" && tags.includes(QI_BREAK_DOUBLE_TAG)) {
       effects.push(damageMultiplier(QI_BREAK_DAMAGE_MULTIPLIER))
     }
     return effects

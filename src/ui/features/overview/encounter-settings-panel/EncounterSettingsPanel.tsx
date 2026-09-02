@@ -4,6 +4,7 @@ import { defaultCombatSettings } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
 import styles from "./EncounterSettingsPanel.module.scss"
 
 interface Props {
@@ -74,6 +75,7 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
   const settings = inputs.combatSettings ?? defaultCombatSettings()
   const setCombat = <K extends keyof typeof settings>(key: K, value: (typeof settings)[K]) =>
     onChange({ ...inputs, combatSettings: { ...settings, [key]: value } })
+  const override = settings.qiBreakOverride
 
   return (
     <div className={styles.encounterSettings}>
@@ -157,42 +159,48 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
         </div>
       </Section>
 
-      <Section title={t("overview.encounterSettings.qiBreak")}>
+      <Section title={t("overview.encounterSettings.qiBreakOverride")}>
         <div className={styles.switchGrid}>
           <SwitchRow
-            label={t("common.qiBreakWindow")}
-            checked={settings.qiBreak.enabled}
-            onChange={(value) => setCombat("qiBreak", { ...settings.qiBreak, enabled: value })}
+            label={t("overview.encounterSettings.overrideTheRotation")}
+            checked={override !== null}
+            onChange={(value) =>
+              setCombat("qiBreakOverride", value ? DEFAULT_QI_BREAK_WINDOW : null)
+            }
           />
         </div>
-        {settings.qiBreak.enabled && (
+        {override ? (
           <div className={styles.qiBreakFields}>
             <label className={styles.qiBreakField}>
-              {t("overview.encounterSettings.startS")}
+              {t("common.startS")}
               <NumInput
-                value={settings.qiBreak.startSec}
-                onChange={(value) => setCombat("qiBreak", { ...settings.qiBreak, startSec: value })}
+                value={override.startSec}
+                onChange={(value) => setCombat("qiBreakOverride", { ...override, startSec: value })}
               />
             </label>
             <label className={styles.qiBreakField}>
-              {t("overview.encounterSettings.durationS")}
+              {t("common.durationS")}
               <NumInput
-                value={settings.qiBreak.durationSec}
+                value={override.durationSec}
                 onChange={(value) =>
-                  setCombat("qiBreak", { ...settings.qiBreak, durationSec: value })
+                  setCombat("qiBreakOverride", { ...override, durationSec: value })
                 }
               />
             </label>
             <label className={styles.qiBreakField}>
-              {t("overview.encounterSettings.lowQiLeadS")}
+              {t("common.lowQiLeadS")}
               <NumInput
-                value={settings.qiBreak.lowQiLeadSec}
+                value={override.lowQiLeadSec}
                 onChange={(value) =>
-                  setCombat("qiBreak", { ...settings.qiBreak, lowQiLeadSec: value })
+                  setCombat("qiBreakOverride", { ...override, lowQiLeadSec: value })
                 }
               />
             </label>
           </div>
+        ) : (
+          <p className={styles.qiBreakHint}>
+            {t("overview.encounterSettings.eachRotationRunsItsOwnBreakWindow")}
+          </p>
         )}
       </Section>
     </div>

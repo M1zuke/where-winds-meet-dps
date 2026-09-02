@@ -300,7 +300,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const buffEngine: BuffEngine | null = (() => {
     try {
       const engine = new BuffEngine(
-        paramsFromInputs(inputs),
+        paramsFromInputs(inputs, rotation.qiBreak),
         buffDefsForClass(inputs.classId),
         groupBuffDefs(),
       )
@@ -393,8 +393,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     rng: mechanicRng,
   }
   const mechanics = prepareMechanics(mechanicSetup)
-
-  const qiBreakEnabled = inputs.combatSettings?.qiBreak?.enabled ?? true
 
   interface Resolved {
     inputs: Inputs
@@ -490,7 +488,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
     if (buffEngine) {
       const qiPhaseHere = buffEngine.qiPhase(frame / FPS)
-      if (combat?.qiBreak?.enabled && qiPhaseHere === "exhausted") {
+      if (qiPhaseHere === "exhausted") {
         effects.push({ statKey: "allDamageBoost", amount: 0.1 })
         sig += "~qiBreakBoost"
       }
@@ -625,7 +623,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const st = resolveState(frame, skill, resolveOverride, castFrame)
     const hitContext: HitContext = {
       phase: qiPhase,
-      qiBreakEnabled,
       smallPhys: st.ctx.smallPhys,
       isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
     }

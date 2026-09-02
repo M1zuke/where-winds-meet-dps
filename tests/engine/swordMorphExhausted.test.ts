@@ -29,7 +29,6 @@ const hitInput = (skill: Skill, index: number): HitInput =>
 
 const contextAt = (phase: QiPhase): HitContext => ({
   phase,
-  qiBreakEnabled: true,
   smallPhys: 0,
   isEngineBuffActive: () => false,
 })

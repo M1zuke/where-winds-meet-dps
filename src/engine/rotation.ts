@@ -1,4 +1,5 @@
 import type { Skill } from "./skill"
+import type { QiBreakWindow } from "./types"
 
 export interface RotationStep {
   id: string
@@ -15,6 +16,7 @@ export interface Rotation {
   steps: RotationStep[]
   permanentBuffIds: string[]
   openingStacks?: Record<string, number>
+  qiBreak?: QiBreakWindow
   createdAt: string
   updatedAt: string
   description?: string
@@ -89,8 +91,19 @@ export function isRotation(x: unknown): x is Rotation {
       if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) return false
     }
   }
+  if (r.qiBreak !== undefined && !isQiBreakWindow(r.qiBreak)) return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
+  return true
+}
+
+export function isQiBreakWindow(x: unknown): x is QiBreakWindow {
+  if (!x || typeof x !== "object" || Array.isArray(x)) return false
+  const w = x as Record<string, unknown>
+  for (const key of ["startSec", "durationSec", "lowQiLeadSec"] as const) {
+    const value = w[key]
+    if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return false
+  }
   return true
 }
 

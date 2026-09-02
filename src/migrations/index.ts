@@ -13,6 +13,7 @@ import { V15__dropSwallowcallSet } from "./V15__dropSwallowcallSet"
 import { V16__mergeVernalUmbrellaAttunements } from "./V16__mergeVernalUmbrellaAttunements"
 import { V17__renameCleftpeak } from "./V17__renameCleftpeak"
 import { V18__followNewUmbraDefaultRotation } from "./V18__followNewUmbraDefaultRotation"
+import { V19__qiBreakOverride } from "./V19__qiBreakOverride"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -30,6 +31,7 @@ export {
   migrateCleftpeakTag,
 } from "./V17__renameCleftpeak"
 export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
+export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -46,6 +48,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V16__mergeVernalUmbrellaAttunements,
   V17__renameCleftpeak,
   V18__followNewUmbraDefaultRotation,
+  V19__qiBreakOverride,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

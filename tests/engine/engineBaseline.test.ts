@@ -13,6 +13,7 @@ import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
@@ -117,12 +118,12 @@ const CASES: { name: string; build: () => Inputs }[] = [
   { name: "anchor:dummyOff", build: () => toEngineInputs({ ...anchorInputs(), dummyMode: false }) },
   {
     name: "anchor:noQiBreak",
-    build: () => {
-      const raw = anchorInputs()
-      return toEngineInputs(
-        withCombat(raw, { qiBreak: { ...raw.combatSettings!.qiBreak, enabled: false } }),
-      )
-    },
+    build: () =>
+      toEngineInputs(
+        withCombat(anchorInputs(), {
+          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 },
+        }),
+      ),
   },
   {
     name: "anchor:healerBuff",
@@ -291,28 +292,28 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(75548.12)
-    expect(round(result.totalDamage, 2)).toBe(4352830.94)
-    expect(round(result.rotationDuration, 4)).toBe(57.6167)
+    expect(round(result.dps, 2)).toBe(74028.66)
+    expect(round(result.totalDamage, 2)).toBe(4426913.74)
+    expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2185123.53)
-    expect(damageOf("Bleeding (DoT)")).toBe(278117.22)
+    expect(damageOf("Blood Burst")).toBe(2198159.58)
+    expect(damageOf("Bleeding (DoT)")).toBe(292871.63)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(400921.56)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(93159.96)
+    expect(damageOf("Smolder (DoT)")).toBe(418923.02)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(90347.25)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(49263.94)
+    expect(damageOf("Yi River")).toBe(59130.32)
   })
 })

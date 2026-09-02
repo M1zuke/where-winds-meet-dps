@@ -11,6 +11,9 @@ import {
   type RotationStep,
 } from "../../../../engine/rotation"
 import { activeRotationForInputs } from "../../../../engine/dps"
+import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engine/qiBreak"
+import type { QiBreakWindow } from "../../../../engine/types"
+import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
@@ -286,6 +289,12 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
+  function setQiBreak(patch: Partial<typeof DEFAULT_QI_BREAK_WINDOW>) {
+    commitRotation((rotation) => ({
+      ...rotation,
+      qiBreak: { ...(rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW), ...patch },
+    }))
+  }
   function setOpeningStacks(buffId: string, stacks: number) {
     commitRotation((rotation) => {
       const next = { ...rotation.openingStacks }
@@ -309,6 +318,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       }),
       permanentBuffIds: [...activeRotation.permanentBuffIds],
       openingStacks: { ...activeRotation.openingStacks },
+      qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -491,6 +501,11 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
+            <QiBreakRow
+              window={resolveQiBreakWindow(inputs.combatSettings, activeRotation.qiBreak)}
+              overridden={!!inputs.combatSettings?.qiBreakOverride}
+              onChange={isCustom ? setQiBreak : null}
+            />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
                 key={buff.id}
@@ -651,6 +666,63 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 }
 
+function QiBreakRow({
+  window,
+  overridden,
+  onChange,
+}: {
+  window: QiBreakWindow
+  overridden: boolean
+  onChange: ((patch: Partial<QiBreakWindow>) => void) | null
+}) {
+  const { t } = useI18n()
+  const editable = onChange !== null && !overridden
+  const rowClassName = [styles.entry, styles.qiBreakRow, editable ? "" : styles.qiBreakRowLocked]
+    .filter(Boolean)
+    .join(" ")
+  const note = overridden
+    ? t("rotation.editor.overridden")
+    : window.durationSec === 0
+      ? t("rotation.editor.noExhaustedPhase")
+      : ""
+  const field = (label: string, value: number, patch: (next: number) => Partial<QiBreakWindow>) => (
+    <span className={styles.headField}>
+      <span className={styles.headCap}>{label}</span>
+      <NumInput value={value} onChange={(next) => onChange?.(patch(next))} disabled={!editable} />
+    </span>
+  )
+  return (
+    <div
+      className={rowClassName}
+      title={
+        overridden
+          ? t("rotation.editor.overriddenFromEncounterSettings")
+          : onChange
+            ? undefined
+            : t("rotation.editor.qiBreakReadonly")
+      }
+    >
+      <div className={styles.idx}>—</div>
+      <span className={styles.openingBadge}>{t("common.qiBreak")}</span>
+      <span className={styles.skillStatic}>{t("common.qiBreakWindow")}</span>
+      {note ? (
+        <span className={overridden ? styles.overrideFlag : styles.rowNote}>{note}</span>
+      ) : (
+        <>
+          <span />
+          <span />
+        </>
+      )}
+      <div className={styles.headControls}>
+        {field(t("common.startS"), window.startSec, (next) => ({ startSec: next }))}
+        {field(t("common.durationS"), window.durationSec, (next) => ({ durationSec: next }))}
+        {field(t("common.lowQiLeadS"), window.lowQiLeadSec, (next) => ({ lowQiLeadSec: next }))}
+      </div>
+      <div className={styles.rowActions} />
+    </div>
+  )
+}
+
 function OpeningStackRow({
   buff,
   value,
@@ -685,23 +757,26 @@ function OpeningStackRow({
       <span className={styles.skillStatic}>{t(buffKey(buff.id), buff.name)}</span>
       <span className={styles.castReadonly} />
       <span className={styles.prepull} />
-      <div className={styles.buffsCell}>
-        <span className={styles.pips}>
-          {charges.map((charge) => (
-            <button
-              key={charge}
-              type="button"
-              className={pipClassName(charge)}
-              aria-pressed={charge === clamped}
-              aria-label={`${charge} / ${max}`}
-              disabled={!onChange}
-              onClick={() => onChange?.(charge)}
-              title={`${charge} / ${max}`}
-            />
-          ))}
-        </span>
-        <span className={styles.pipCount}>
-          {clamped} / {max}
+      <div className={styles.headControls}>
+        <span className={styles.headField}>
+          <span className={styles.headCap}>{t("rotation.editor.charges")}</span>
+          <span className={styles.pips}>
+            {charges.map((charge) => (
+              <button
+                key={charge}
+                type="button"
+                className={pipClassName(charge)}
+                aria-pressed={charge === clamped}
+                aria-label={`${charge} / ${max}`}
+                disabled={!onChange}
+                onClick={() => onChange?.(charge)}
+                title={`${charge} / ${max}`}
+              />
+            ))}
+          </span>
+          <span className={styles.pipCount}>
+            {clamped} / {max}
+          </span>
         </span>
       </div>
     </div>

@@ -51,6 +51,9 @@ import {
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
   dropRetiredRotationId,
+  qiBreakOverrideFrom,
+  rotationWindowOf,
+  readQiBreakWindow,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -163,6 +166,11 @@ function migrateRotationIds<T>(rotation: T): T {
     )
   }
   if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
+  if (r.qiBreak !== undefined) {
+    const window = readQiBreakWindow(r.qiBreak)
+    if (window) next.qiBreak = window
+    else delete next.qiBreak
+  }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
 }
@@ -366,19 +374,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
-    const qbRaw =
-      r.qiBreak && typeof r.qiBreak === "object" ? (r.qiBreak as Record<string, unknown>) : {}
     if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     next.combatSettings = {
-      qiBreak: {
-        enabled: typeof qbRaw.enabled === "boolean" ? qbRaw.enabled : def.qiBreak.enabled,
-        startSec: typeof qbRaw.startSec === "number" ? qbRaw.startSec : def.qiBreak.startSec,
-        durationSec:
-          typeof qbRaw.durationSec === "number" ? qbRaw.durationSec : def.qiBreak.durationSec,
-        lowQiLeadSec:
-          typeof qbRaw.lowQiLeadSec === "number" ? qbRaw.lowQiLeadSec : def.qiBreak.lowQiLeadSec,
-      },
+      qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
@@ -620,6 +619,8 @@ export function importCustomRotation(text: string): Rotation {
     createdAt: now,
     updatedAt: now,
   }
+  const importedQiBreak = readQiBreakWindow(candidate.qiBreak)
+  if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
   }

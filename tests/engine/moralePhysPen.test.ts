@@ -72,7 +72,7 @@ describe("Morale Chant phys-penetration term", () => {
       const inQiBreak = tSec >= 25 && tSec < 35
       const stacks = moraleStacksAtTime(tSec, inQiBreak)
       expect(stacks).toBeLessThanOrEqual(5)
-      const qiBreakBonus = inQiBreak && inputs.combatSettings?.qiBreak.enabled ? 0.1 : 0
+      const qiBreakBonus = inQiBreak ? 0.1 : 0
       const expected = computeSkillDamage(
         art("Test Weapon Hit") as never,
         buildContext({
