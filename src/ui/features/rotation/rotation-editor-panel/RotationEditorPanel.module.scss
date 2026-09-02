@@ -344,25 +344,24 @@
   flex-wrap: wrap;
 }
 
-.qiBreakField {
+.headField {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-.qiBreakField input {
+.headField input {
   width: 52px;
 }
 
-.qiBreakCap,
-.qiBreakUnit {
+.headCap {
   font-size: 0.78em;
   color: var(--color-text-faint);
   white-space: nowrap;
 }
 
-.qiBreakRowLocked .qiBreakCap,
-.qiBreakRowLocked .qiBreakUnit {
+.qiBreakRowLocked .headCap,
+.openingRowReadonly .headCap {
   opacity: 0.55;
 }
 

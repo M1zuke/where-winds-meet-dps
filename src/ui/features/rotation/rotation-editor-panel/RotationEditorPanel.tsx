@@ -686,8 +686,8 @@ function QiBreakRow({
       ? t("rotation.editor.noExhaustedPhase")
       : ""
   const field = (label: string, value: number, patch: (next: number) => Partial<QiBreakWindow>) => (
-    <span className={styles.qiBreakField}>
-      <span className={styles.qiBreakCap}>{label}</span>
+    <span className={styles.headField}>
+      <span className={styles.headCap}>{label}</span>
       <NumInput value={value} onChange={(next) => onChange?.(patch(next))} disabled={!editable} />
     </span>
   )
@@ -757,23 +757,26 @@ function OpeningStackRow({
       <span className={styles.skillStatic}>{t(buffKey(buff.id), buff.name)}</span>
       <span className={styles.castReadonly} />
       <span className={styles.prepull} />
-      <div className={styles.buffsCell}>
-        <span className={styles.pips}>
-          {charges.map((charge) => (
-            <button
-              key={charge}
-              type="button"
-              className={pipClassName(charge)}
-              aria-pressed={charge === clamped}
-              aria-label={`${charge} / ${max}`}
-              disabled={!onChange}
-              onClick={() => onChange?.(charge)}
-              title={`${charge} / ${max}`}
-            />
-          ))}
-        </span>
-        <span className={styles.pipCount}>
-          {clamped} / {max}
+      <div className={styles.headControls}>
+        <span className={styles.headField}>
+          <span className={styles.headCap}>{t("rotation.editor.charges")}</span>
+          <span className={styles.pips}>
+            {charges.map((charge) => (
+              <button
+                key={charge}
+                type="button"
+                className={pipClassName(charge)}
+                aria-pressed={charge === clamped}
+                aria-label={`${charge} / ${max}`}
+                disabled={!onChange}
+                onClick={() => onChange?.(charge)}
+                title={`${charge} / ${max}`}
+              />
+            ))}
+          </span>
+          <span className={styles.pipCount}>
+            {clamped} / {max}
+          </span>
         </span>
       </div>
     </div>

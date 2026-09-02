@@ -876,6 +876,7 @@
   "rotation.dpsGraph.rotationDps": "Rotation DPS",
   "rotation.editor.addSkill": "Add skill",
   "rotation.editor.addSkillAfterThisLine": "Add skill after this line",
+  "rotation.editor.charges": "Charges",
   "rotation.editor.default": " (default)",
   "rotation.editor.deleteThisCustomRotation": "Delete this custom rotation?",
   "rotation.editor.durationComputed": "Duration (computed)",

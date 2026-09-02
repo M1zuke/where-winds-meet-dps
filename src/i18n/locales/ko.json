@@ -876,6 +876,7 @@
   "rotation.dpsGraph.rotationDps": "로테이션 DPS",
   "rotation.editor.addSkill": "스킬 추가",
   "rotation.editor.addSkillAfterThisLine": "이 줄 뒤에 스킬 추가",
+  "rotation.editor.charges": "",
   "rotation.editor.default": " (기본값)",
   "rotation.editor.deleteThisCustomRotation": "이 사용자 지정 로테이션을 삭제할까요?",
   "rotation.editor.durationComputed": "지속 시간(계산값)",
