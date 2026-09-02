@@ -45,6 +45,8 @@ export interface InnerWayDef {
   // rename migrations, covering the two paths that never walk the chain.
   legacyNames?: readonly string[]
   selectableTiers: readonly number[]
+  // As-of marker for the in-game "Based on Breakthrough" stat increases.
+  confirmedBreakthrough: number
   // The reference site's param this inner way turns on when selected —
   // undefined for one that is deliberately never mapped (see
   // `insightfulStrike.ts`).

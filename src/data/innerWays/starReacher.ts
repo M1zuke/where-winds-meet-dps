@@ -11,6 +11,7 @@ export const starReacher = defineInnerWay({
   id: INNER_WAY_ID.starReacher,
   name: "Star Reacher",
   selectableTiers: [6, 5, 2],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.starReacher,
   tiers: {
     2: { panelStats: { "phys.min": 22.3, "phys.max": 44.7 } },

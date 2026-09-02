@@ -10,6 +10,7 @@ export const steadfastDevotion = defineInnerWay({
   name: "Steadfast Devotion",
   legacyNames: ["Lone Loyalty"],
   selectableTiers: [6, 5],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.steadfastDevotion,
   panelStats: {
     critRate: 0.077,

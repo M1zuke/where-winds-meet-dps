@@ -18,6 +18,7 @@ export const swordMorph = defineInnerWay({
   id: INNER_WAY_ID.swordMorph,
   name: "Sword Morph",
   selectableTiers: [6, 5, 3],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.swordMorph,
   panelStats: {
     "phys.max": 74.4,

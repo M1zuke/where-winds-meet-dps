@@ -13,6 +13,7 @@ export const mountainsMight = defineInnerWay({
   id: INNER_WAY_ID.mountainsMight,
   name: "Mountain's Might",
   selectableTiers: [6, 5, 1],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.mountainsMight,
   panelStats: {
     "primaryAttr.min": 12.7,
