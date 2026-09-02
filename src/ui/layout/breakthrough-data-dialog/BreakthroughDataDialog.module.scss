@@ -1,0 +1,152 @@
+@use "breakpoints";
+
+.surface {
+  width: min(95vw, 880px);
+}
+
+.columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.body p {
+  margin: 0 0 8px;
+  font-size: 0.86em;
+  color: var(--color-text-dim);
+  line-height: 1.5;
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+.emphasis {
+  color: var(--color-text);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.fact {
+  flex: 1 1 120px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+}
+
+.fact dt {
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.fact dd {
+  margin: 2px 0 0;
+  font-size: 1.05em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+}
+
+.live {
+  color: var(--color-accent-bright);
+}
+
+.stale {
+  color: var(--color-negative);
+  font-variant-numeric: tabular-nums;
+}
+
+.listTitle {
+  margin: 12px 0 6px;
+  font-size: 0.7em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.innerWays {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.innerWay {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--color-surface-inset);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.86em;
+  color: var(--color-text);
+}
+
+.example {
+  flex: 0 0 320px;
+  margin: 0;
+}
+
+.example img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.example figcaption {
+  margin-top: 6px;
+  font-size: 0.78em;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.link {
+  color: var(--color-accent);
+}
+
+.hold {
+  margin-right: auto;
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-faint);
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .columns {
+    flex-direction: column;
+  }
+
+  .example {
+    flex: 0 0 auto;
+    align-self: stretch;
+  }
+
+  .example img {
+    max-height: 260px;
+    object-fit: contain;
+    object-position: left;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .fact {
+    flex-basis: 100%;
+  }
+}

@@ -12,6 +12,7 @@ export const battleAnthem = defineInnerWay({
   id: INNER_WAY_ID.battleAnthem,
   name: "Battle Anthem",
   selectableTiers: [6, 5, 4, 3, 2, 1],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.battleAnthem,
   tiers: {
     2: { panelStats: { affinityRate: 0.0385 } },

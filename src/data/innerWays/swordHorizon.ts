@@ -9,6 +9,7 @@ export const swordHorizon = defineInnerWay({
   id: INNER_WAY_ID.swordHorizon,
   name: "Sword Horizon",
   selectableTiers: [6, 5],
+  confirmedBreakthrough: 16,
   buffParam: PARAM.swordHorizon,
   panelStats: {
     "phys.max": 74.4,

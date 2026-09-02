@@ -8,6 +8,7 @@ export const bitterSeason = defineInnerWay({
   id: INNER_WAY_ID.bitterSeason,
   name: "Bitter Season",
   selectableTiers: [6, 5, 4, 3, 2, 1],
+  confirmedBreakthrough: 16,
   tiers: {
     1: { nodes: [INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction] },
     2: { panelStats: { precision: 0.069 } },
