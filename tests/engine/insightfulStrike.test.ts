@@ -89,7 +89,6 @@ describe("Insightful Strike — DoT +10%", () => {
       silkbind: { min: 0, max: 0, pen: 0 },
       bamboocut: { min: 0, max: 0, pen: 0 },
       primaryAttribute: "Bellstrike",
-      attributePrimaryBonus: 51.5,
       precisionPanel: 1,
       critPanel: 0.5,
       affinityPanel: 0.1,

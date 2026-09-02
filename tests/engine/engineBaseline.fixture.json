@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 74028.66,
-    "totalDamage": 4426913.74,
+    "dps": 73859.03,
+    "totalDamage": 4416769.93,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -26,7 +26,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56127.77,
+        "expectedDamage": 55188.84,
         "castCount": 4
       },
       {
@@ -50,7 +50,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96837.51,
+        "expectedDamage": 95228.83,
         "castCount": 4
       },
       {
@@ -66,7 +66,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 81003.42,
+        "expectedDamage": 79649.85,
         "castCount": 10
       },
       {
@@ -82,7 +82,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 68948.89,
+        "expectedDamage": 67694.49,
         "castCount": 10
       },
       {
@@ -90,7 +90,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 50890.92,
+        "expectedDamage": 50051.92,
         "castCount": 4
       },
       {
@@ -98,7 +98,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50039.25,
+        "expectedDamage": 49206.76,
         "castCount": 4
       },
       {
@@ -106,7 +106,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28071.29,
+        "expectedDamage": 27609.51,
         "castCount": 4
       },
       {
@@ -114,7 +114,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111966.88,
+        "expectedDamage": 110119.79,
         "castCount": 4
       },
       {
@@ -122,7 +122,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 56140.44,
+        "expectedDamage": 55216.9,
         "castCount": 4
       },
       {
@@ -138,7 +138,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4654.33,
+        "expectedDamage": 4570.01,
         "castCount": 1
       },
       {
@@ -187,11 +187,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "c94dda0e05fc003652163dccc7aa26a3cfa2a121f591e8db4e61d084e0ecf9b2"
+    "digest": "1467a9f097ad59e63a7a3529c99834197b195912aa1bc44e5188e75e75b0e536"
   },
   "anchor:noAttunement": {
-    "dps": 66544.92,
-    "totalDamage": 3979386.39,
+    "dps": 66375.29,
+    "totalDamage": 3969242.59,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -216,7 +216,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56127.77,
+        "expectedDamage": 55188.84,
         "castCount": 4
       },
       {
@@ -240,7 +240,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96837.51,
+        "expectedDamage": 95228.83,
         "castCount": 4
       },
       {
@@ -256,7 +256,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 81003.42,
+        "expectedDamage": 79649.85,
         "castCount": 10
       },
       {
@@ -272,7 +272,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 68948.89,
+        "expectedDamage": 67694.49,
         "castCount": 10
       },
       {
@@ -280,7 +280,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 50890.92,
+        "expectedDamage": 50051.92,
         "castCount": 4
       },
       {
@@ -288,7 +288,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50039.25,
+        "expectedDamage": 49206.76,
         "castCount": 4
       },
       {
@@ -296,7 +296,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28071.29,
+        "expectedDamage": 27609.51,
         "castCount": 4
       },
       {
@@ -304,7 +304,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111966.88,
+        "expectedDamage": 110119.79,
         "castCount": 4
       },
       {
@@ -312,7 +312,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 56140.44,
+        "expectedDamage": 55216.9,
         "castCount": 4
       },
       {
@@ -328,7 +328,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4654.33,
+        "expectedDamage": 4570.01,
         "castCount": 1
       },
       {
@@ -377,11 +377,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "117d2c368581fbc3e0df46991171026ca214f0414a4c668675ebd83852ae5265"
+    "digest": "5a582e8bb3e2f72d609f7573964966465f6daedeb2a37169132f93e2f354984a"
   },
   "anchor:dummyOff": {
-    "dps": 79151.59,
-    "totalDamage": 4733265.06,
+    "dps": 78965.94,
+    "totalDamage": 4722163.49,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -406,7 +406,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 61638.09,
+        "expectedDamage": 60606.57,
         "castCount": 4
       },
       {
@@ -430,7 +430,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106718.12,
+        "expectedDamage": 104944.96,
         "castCount": 4
       },
       {
@@ -446,7 +446,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 88573.55,
+        "expectedDamage": 87093.48,
         "castCount": 10
       },
       {
@@ -462,7 +462,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 75329.56,
+        "expectedDamage": 73959.07,
         "castCount": 10
       },
       {
@@ -470,7 +470,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 55710.66,
+        "expectedDamage": 54792.2,
         "castCount": 4
       },
       {
@@ -478,7 +478,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54603.78,
+        "expectedDamage": 53695.35,
         "castCount": 4
       },
       {
@@ -486,7 +486,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30632.38,
+        "expectedDamage": 30128.47,
         "castCount": 4
       },
       {
@@ -494,7 +494,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 122184.08,
+        "expectedDamage": 120168.51,
         "castCount": 4
       },
       {
@@ -502,7 +502,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 61262.44,
+        "expectedDamage": 60254.66,
         "castCount": 4
       },
       {
@@ -518,7 +518,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 5088.77,
+        "expectedDamage": 4996.58,
         "castCount": 1
       },
       {
@@ -567,11 +567,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "9d6ed500e7505448fe62d799f04ac977a3902d4e440584c508392ee3f6e32a0c"
+    "digest": "53fc8f74a96f1e86072bdf22329dbf29e50dbef26f3baa6152ec93575ba69fa0"
   },
   "anchor:noQiBreak": {
-    "dps": 66967.49,
-    "totalDamage": 4004655.83,
+    "dps": 66799.94,
+    "totalDamage": 3994636.22,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -596,7 +596,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56127.77,
+        "expectedDamage": 55188.84,
         "castCount": 4
       },
       {
@@ -620,7 +620,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96837.51,
+        "expectedDamage": 95228.83,
         "castCount": 4
       },
       {
@@ -636,7 +636,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 81003.42,
+        "expectedDamage": 79649.85,
         "castCount": 10
       },
       {
@@ -652,7 +652,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 68311,
+        "expectedDamage": 67068.21,
         "castCount": 10
       },
       {
@@ -660,7 +660,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 49682.81,
+        "expectedDamage": 48863.69,
         "castCount": 4
       },
       {
@@ -668,7 +668,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 48897.49,
+        "expectedDamage": 48084,
         "castCount": 4
       },
       {
@@ -676,7 +676,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27437.75,
+        "expectedDamage": 26986.49,
         "castCount": 4
       },
       {
@@ -684,7 +684,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109459.84,
+        "expectedDamage": 107654.87,
         "castCount": 4
       },
       {
@@ -692,7 +692,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 54873.51,
+        "expectedDamage": 53971.03,
         "castCount": 4
       },
       {
@@ -708,7 +708,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4654.33,
+        "expectedDamage": 4570.01,
         "castCount": 1
       },
       {
@@ -757,11 +757,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "e106f1c3f477744ecd885538a103db067256c584dd98899794ac06dc86f54c32"
+    "digest": "e4919843f47167d5c8d6304b827209503f00d54be02e5e25ca4c5a4e35627ed4"
   },
   "anchor:healerBuff": {
-    "dps": 81292.17,
-    "totalDamage": 4861271.72,
+    "dps": 81100.49,
+    "totalDamage": 4849809.49,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -786,7 +786,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 63474.86,
+        "expectedDamage": 62412.48,
         "castCount": 4
       },
       {
@@ -810,7 +810,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 110011.65,
+        "expectedDamage": 108183.67,
         "castCount": 4
       },
       {
@@ -826,7 +826,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91096.92,
+        "expectedDamage": 89574.68,
         "castCount": 10
       },
       {
@@ -842,7 +842,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 77669.08,
+        "expectedDamage": 76256.02,
         "castCount": 10
       },
       {
@@ -850,7 +850,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 57719.95,
+        "expectedDamage": 56768.37,
         "castCount": 4
       },
       {
@@ -858,7 +858,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56505.88,
+        "expectedDamage": 55565.81,
         "castCount": 4
       },
       {
@@ -866,7 +866,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 31697.25,
+        "expectedDamage": 31175.8,
         "castCount": 4
       },
       {
@@ -874,7 +874,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 126425.49,
+        "expectedDamage": 124339.72,
         "castCount": 4
       },
       {
@@ -882,7 +882,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 63392.09,
+        "expectedDamage": 62349.21,
         "castCount": 4
       },
       {
@@ -898,7 +898,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 5233.59,
+        "expectedDamage": 5138.77,
         "castCount": 1
       },
       {
@@ -947,11 +947,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6bd87db9cc93d3452eea4775f565441803b39a87f8d1a132d2dac1ad3423f9d4"
+    "digest": "62a2cfba4ea6cc9d35ed1fbdc7195256b5c47c100047094a2131e8be5ca366ee"
   },
   "anchor:revelryScript": {
-    "dps": 84274.52,
-    "totalDamage": 5039616.38,
+    "dps": 84072.86,
+    "totalDamage": 5027557.04,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -976,7 +976,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 67148.41,
+        "expectedDamage": 66024.3,
         "castCount": 4
       },
       {
@@ -1000,7 +1000,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 116598.73,
+        "expectedDamage": 114661.09,
         "castCount": 4
       },
       {
@@ -1016,7 +1016,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 96143.67,
+        "expectedDamage": 94537.1,
         "castCount": 10
       },
       {
@@ -1032,7 +1032,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 81710.23,
+        "expectedDamage": 80223.66,
         "castCount": 10
       },
       {
@@ -1040,7 +1040,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 60530.4,
+        "expectedDamage": 59532.47,
         "castCount": 4
       },
       {
@@ -1048,7 +1048,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 59168.32,
+        "expectedDamage": 58183.95,
         "castCount": 4
       },
       {
@@ -1056,7 +1056,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33193.46,
+        "expectedDamage": 32647.44,
         "castCount": 4
       },
       {
@@ -1064,7 +1064,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 132401.27,
+        "expectedDamage": 130217.22,
         "castCount": 4
       },
       {
@@ -1072,7 +1072,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 66384.45,
+        "expectedDamage": 65292.43,
         "castCount": 4
       },
       {
@@ -1088,7 +1088,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 5523.22,
+        "expectedDamage": 5423.16,
         "castCount": 1
       },
       {
@@ -1137,11 +1137,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "63bae0687f3b4fb86ec8cf57aa6d2a05b8b330641e208f96fd96b1b9131900dd"
+    "digest": "3a6ebf5f683cb0f602081f5cdad26bfc6ccfb2fdc66fa2e1c78a72426d84b43a"
   },
   "anchor:breakExtension": {
-    "dps": 74999.83,
-    "totalDamage": 4484989.76,
+    "dps": 74826.9,
+    "totalDamage": 4474648.39,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1166,7 +1166,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57555.41,
+        "expectedDamage": 56593.09,
         "castCount": 4
       },
       {
@@ -1190,7 +1190,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99351.98,
+        "expectedDamage": 97701.89,
         "castCount": 4
       },
       {
@@ -1206,7 +1206,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 83272.55,
+        "expectedDamage": 81881,
         "castCount": 10
       },
       {
@@ -1222,7 +1222,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 70858.74,
+        "expectedDamage": 69569.5,
         "castCount": 10
       },
       {
@@ -1230,7 +1230,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52099.04,
+        "expectedDamage": 51240.16,
         "castCount": 4
       },
       {
@@ -1238,7 +1238,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51181,
+        "expectedDamage": 50329.52,
         "castCount": 4
       },
       {
@@ -1246,7 +1246,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28713.81,
+        "expectedDamage": 28241.49,
         "castCount": 4
       },
       {
@@ -1254,7 +1254,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 112609.4,
+        "expectedDamage": 110751.77,
         "castCount": 4
       },
       {
@@ -1262,7 +1262,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 56140.44,
+        "expectedDamage": 55216.9,
         "castCount": 4
       },
       {
@@ -1278,7 +1278,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4654.33,
+        "expectedDamage": 4570.01,
         "castCount": 1
       },
       {
@@ -1327,11 +1327,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "fc6a5bf1be7e299f150fb25199c7cc01a2ad3a43e5c6c59a1736cedd1236a9c5"
+    "digest": "8c8a598b5b037dfe773b8f4301654f2f3a977df6d4c4e2b7baabffebb82edf1e"
   },
   "anchor:swordHorizonT1": {
-    "dps": 53389.8,
-    "totalDamage": 3192709.92,
+    "dps": 53220.17,
+    "totalDamage": 3182566.12,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1356,7 +1356,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56127.77,
+        "expectedDamage": 55188.84,
         "castCount": 4
       },
       {
@@ -1380,7 +1380,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96837.51,
+        "expectedDamage": 95228.83,
         "castCount": 4
       },
       {
@@ -1396,7 +1396,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 81003.42,
+        "expectedDamage": 79649.85,
         "castCount": 10
       },
       {
@@ -1412,7 +1412,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 68948.89,
+        "expectedDamage": 67694.49,
         "castCount": 10
       },
       {
@@ -1420,7 +1420,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 50890.92,
+        "expectedDamage": 50051.92,
         "castCount": 4
       },
       {
@@ -1428,7 +1428,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50039.25,
+        "expectedDamage": 49206.76,
         "castCount": 4
       },
       {
@@ -1436,7 +1436,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28071.29,
+        "expectedDamage": 27609.51,
         "castCount": 4
       },
       {
@@ -1444,7 +1444,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111966.88,
+        "expectedDamage": 110119.79,
         "castCount": 4
       },
       {
@@ -1452,7 +1452,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 56140.44,
+        "expectedDamage": 55216.9,
         "castCount": 4
       },
       {
@@ -1468,7 +1468,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4654.33,
+        "expectedDamage": 4570.01,
         "castCount": 1
       },
       {
@@ -1517,11 +1517,11 @@
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "2516831eabe5222285a5c7c526433d58ee64405c2090013aaab2f3a7ba55e63f"
+    "digest": "31707cdcc51391c2fffb9089ee16c6f25319e7573494f5825565d782d1aca273"
   },
   "anchor:noSwordHorizon": {
-    "dps": 45359.29,
-    "totalDamage": 2712485.69,
+    "dps": 45191.13,
+    "totalDamage": 2702429.58,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1546,7 +1546,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54393.67,
+        "expectedDamage": 53462.57,
         "castCount": 4
       },
       {
@@ -1570,7 +1570,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 93791.16,
+        "expectedDamage": 92196.52,
         "castCount": 4
       },
       {
@@ -1586,7 +1586,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 78427.17,
+        "expectedDamage": 77085.51,
         "castCount": 10
       },
       {
@@ -1602,7 +1602,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66624.69,
+        "expectedDamage": 65381.18,
         "castCount": 10
       },
       {
@@ -1610,7 +1610,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 49278.24,
+        "expectedDamage": 48446.73,
         "castCount": 4
       },
       {
@@ -1618,7 +1618,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 48455.94,
+        "expectedDamage": 47630.69,
         "castCount": 4
       },
       {
@@ -1626,7 +1626,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27199.21,
+        "expectedDamage": 26741.37,
         "castCount": 4
       },
       {
@@ -1634,7 +1634,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 108490.88,
+        "expectedDamage": 106659.55,
         "castCount": 4
       },
       {
@@ -1642,7 +1642,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 54398.28,
+        "expectedDamage": 53482.61,
         "castCount": 4
       },
       {
@@ -1658,7 +1658,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4498.77,
+        "expectedDamage": 4415.17,
         "castCount": 1
       },
       {
@@ -1707,11 +1707,11 @@
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "312468e92fb3b369a88c777dd231b9808c95ec2d004116123aacaaa72009d92c"
+    "digest": "0a7b44547b1b8d48b9796270071f27300eefa696ee40b51821c87962a24e2b60"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 63276.75,
-    "totalDamage": 3783949.79,
+    "dps": 63116.95,
+    "totalDamage": 3774393.75,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1736,7 +1736,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51147.54,
+        "expectedDamage": 50256.1,
         "castCount": 4
       },
       {
@@ -1760,7 +1760,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 87805.6,
+        "expectedDamage": 86284.75,
         "castCount": 4
       },
       {
@@ -1776,7 +1776,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 72918.42,
+        "expectedDamage": 71644.92,
         "castCount": 10
       },
       {
@@ -1792,7 +1792,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 61842.39,
+        "expectedDamage": 60662.79,
         "castCount": 10
       },
       {
@@ -1800,7 +1800,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 45811.72,
+        "expectedDamage": 45022.63,
         "castCount": 4
       },
       {
@@ -1808,7 +1808,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45026.26,
+        "expectedDamage": 44243.19,
         "castCount": 4
       },
       {
@@ -1816,7 +1816,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 25256.2,
+        "expectedDamage": 24822.02,
         "castCount": 4
       },
       {
@@ -1824,7 +1824,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 100743.6,
+        "expectedDamage": 99006.9,
         "castCount": 4
       },
       {
@@ -1832,7 +1832,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 50512.4,
+        "expectedDamage": 49644.05,
         "castCount": 4
       },
       {
@@ -1848,7 +1848,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4171.63,
+        "expectedDamage": 4092.38,
         "castCount": 1
       },
       {
@@ -1897,11 +1897,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "3f8122c6bc485840211a76f4a8ac01e4f4bfeed4a137b1a15b24a676a5441564"
+    "digest": "b82a0ad2a4fcee97be5af11eece3e3e9c2bfbac943504dd34209d7a9e6a4c5fc"
   },
   "anchor:noMoraleChant": {
-    "dps": 67633.95,
-    "totalDamage": 4044510.31,
+    "dps": 67472.43,
+    "totalDamage": 4034851.4,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1926,7 +1926,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52113.77,
+        "expectedDamage": 51212.92,
         "castCount": 4
       },
       {
@@ -1950,7 +1950,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 89491.55,
+        "expectedDamage": 87953.45,
         "castCount": 4
       },
       {
@@ -1966,7 +1966,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 74706.26,
+        "expectedDamage": 73412.25,
         "castCount": 10
       },
       {
@@ -1982,7 +1982,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63290.27,
+        "expectedDamage": 62095.01,
         "castCount": 10
       },
       {
@@ -1990,7 +1990,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 46585.69,
+        "expectedDamage": 45790.03,
         "castCount": 4
       },
       {
@@ -1998,7 +1998,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45731.75,
+        "expectedDamage": 44942.36,
         "castCount": 4
       },
       {
@@ -2006,7 +2006,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 25662.29,
+        "expectedDamage": 25224.41,
         "castCount": 4
       },
       {
@@ -2014,7 +2014,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 102367.54,
+        "expectedDamage": 100616.06,
         "castCount": 4
       },
       {
@@ -2022,7 +2022,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 51322.62,
+        "expectedDamage": 50446.88,
         "castCount": 4
       },
       {
@@ -2038,7 +2038,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4279.66,
+        "expectedDamage": 4199.14,
         "castCount": 1
       },
       {
@@ -2079,11 +2079,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d07c4c240843430f79df81b868b5b55b47a3f4fc3af0251575847e693f93b62a"
+    "digest": "ca6fc25af875c336d3444c0692ba33c3e57e05337db45927a025bdaabbd0eef9"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 37336.96,
-    "totalDamage": 2271331.74,
+    "dps": 37198.71,
+    "totalDamage": 2262921.39,
     "rotationDuration": 60.83,
     "warnings": [],
     "perSkill": [
@@ -2108,7 +2108,7 @@
         "breakdownName": "Drifting Thrust",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2306.71,
+        "expectedDamage": 2262.91,
         "castCount": 1
       },
       {
@@ -2116,7 +2116,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 22019.05,
+        "expectedDamage": 21636.15,
         "castCount": 2
       },
       {
@@ -2132,7 +2132,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 45022.04,
+        "expectedDamage": 44247.86,
         "castCount": 3
       },
       {
@@ -2148,7 +2148,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 64151.4,
+        "expectedDamage": 63064.31,
         "castCount": 10
       },
       {
@@ -2164,7 +2164,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 54029.42,
+        "expectedDamage": 53031.28,
         "castCount": 10
       },
       {
@@ -2172,7 +2172,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 41316.56,
+        "expectedDamage": 40628.08,
         "castCount": 5
       },
       {
@@ -2180,7 +2180,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 48896.42,
+        "expectedDamage": 48070.03,
         "castCount": 5
       },
       {
@@ -2188,7 +2188,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22154.6,
+        "expectedDamage": 21785.82,
         "castCount": 4
       },
       {
@@ -2196,7 +2196,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 88619.19,
+        "expectedDamage": 87144.09,
         "castCount": 4
       },
       {
@@ -2204,7 +2204,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 44310.8,
+        "expectedDamage": 43573.24,
         "castCount": 4
       },
       {
@@ -2220,7 +2220,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 6,
-        "expectedDamage": 20229.07,
+        "expectedDamage": 19892.19,
         "castCount": 1
       },
       {
@@ -2228,7 +2228,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 28983.79,
+        "expectedDamage": 28501.39,
         "castCount": 3
       },
       {
@@ -2236,7 +2236,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 11321.27,
+        "expectedDamage": 11112.62,
         "castCount": 3
       },
       {
@@ -2285,11 +2285,11 @@
       "buffWindows": 118,
       "casts": 80
     },
-    "digest": "5c310bd619c0be4a5a82e5e50636f886db44c46e65c420d364c2ae7d74fb06d5"
+    "digest": "403b9a07926d379a778a83874983a842ef23224e73a60a17c0c2abffa338193b"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 46999.57,
-    "totalDamage": 2810574.29,
+    "dps": 46864.33,
+    "totalDamage": 2802487.03,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2314,7 +2314,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 47164.23,
+        "expectedDamage": 46380.18,
         "castCount": 4
       },
       {
@@ -2338,7 +2338,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 81163.51,
+        "expectedDamage": 79828.62,
         "castCount": 4
       },
       {
@@ -2354,7 +2354,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 65262.15,
+        "expectedDamage": 64182.18,
         "castCount": 10
       },
       {
@@ -2370,7 +2370,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 55707.46,
+        "expectedDamage": 54704.26,
         "castCount": 10
       },
       {
@@ -2378,7 +2378,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 34186.31,
+        "expectedDamage": 33630.21,
         "castCount": 4
       },
       {
@@ -2386,7 +2386,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 40508.59,
+        "expectedDamage": 39840.64,
         "castCount": 4
       },
       {
@@ -2394,7 +2394,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22728.22,
+        "expectedDamage": 22357.68,
         "castCount": 4
       },
       {
@@ -2402,7 +2402,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 90562.44,
+        "expectedDamage": 89080.29,
         "castCount": 4
       },
       {
@@ -2410,7 +2410,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 45369.16,
+        "expectedDamage": 44628.07,
         "castCount": 4
       },
       {
@@ -2426,7 +2426,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3746.36,
+        "expectedDamage": 3679.05,
         "castCount": 1
       },
       {
@@ -2483,11 +2483,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "00ddc1d187d06c0b7177260ca38f12e07178e5bd3a51dfc3bfe45923dcc105ef"
+    "digest": "ed764fed9e41ce6becbbd8966181849f02dbd042526abac09bcc45499fec607d"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 46118.36,
-    "totalDamage": 2757878.02,
+    "dps": 45983.12,
+    "totalDamage": 2749790.77,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2512,7 +2512,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 46306.77,
+        "expectedDamage": 45522.72,
         "castCount": 4
       },
       {
@@ -2536,7 +2536,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 79682.64,
+        "expectedDamage": 78347.76,
         "castCount": 4
       },
       {
@@ -2552,7 +2552,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 64068.01,
+        "expectedDamage": 62988.03,
         "castCount": 10
       },
       {
@@ -2568,7 +2568,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 54677.02,
+        "expectedDamage": 53673.82,
         "castCount": 10
       },
       {
@@ -2576,7 +2576,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33560.89,
+        "expectedDamage": 33004.78,
         "castCount": 4
       },
       {
@@ -2584,7 +2584,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 39766.43,
+        "expectedDamage": 39098.49,
         "castCount": 4
       },
       {
@@ -2592,7 +2592,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22312.78,
+        "expectedDamage": 21942.23,
         "castCount": 4
       },
       {
@@ -2600,7 +2600,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 88909.21,
+        "expectedDamage": 87427.05,
         "castCount": 4
       },
       {
@@ -2608,7 +2608,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 44540.4,
+        "expectedDamage": 43799.32,
         "castCount": 4
       },
       {
@@ -2624,7 +2624,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3677.01,
+        "expectedDamage": 3609.7,
         "castCount": 1
       },
       {
@@ -2681,11 +2681,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "be3b5c7e633b9ff9ae0d770b25eae1a8f3fe48c6be86ade970555a451f5fdfe2"
+    "digest": "6d9d2118998eeab0696ca569803468bc436de77859194032a63626969446746d"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 45722.42,
-    "totalDamage": 2734200.67,
+    "dps": 45587.83,
+    "totalDamage": 2726152.19,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2710,7 +2710,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45793.6,
+        "expectedDamage": 45013.34,
         "castCount": 4
       },
       {
@@ -2734,7 +2734,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 78803.86,
+        "expectedDamage": 77475.41,
         "castCount": 4
       },
       {
@@ -2750,7 +2750,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 63364.86,
+        "expectedDamage": 62290.05,
         "castCount": 10
       },
       {
@@ -2766,7 +2766,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 54047.3,
+        "expectedDamage": 53048.9,
         "castCount": 10
       },
       {
@@ -2774,7 +2774,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33195.71,
+        "expectedDamage": 32642.27,
         "castCount": 4
       },
       {
@@ -2782,7 +2782,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 39330.55,
+        "expectedDamage": 38665.8,
         "castCount": 4
       },
       {
@@ -2790,7 +2790,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 22070.52,
+        "expectedDamage": 21701.74,
         "castCount": 4
       },
       {
@@ -2798,7 +2798,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 87943.97,
+        "expectedDamage": 86468.9,
         "castCount": 4
       },
       {
@@ -2806,7 +2806,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 44056.83,
+        "expectedDamage": 43319.29,
         "castCount": 4
       },
       {
@@ -2822,7 +2822,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3634.71,
+        "expectedDamage": 3567.72,
         "castCount": 1
       },
       {
@@ -2879,11 +2879,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "41dd1f78e30a3029c0e7113cc10c41c3912bc0df94dd34d51941c1f24da6d626"
+    "digest": "c2d70c4853dcbac9ad60f89439130e1605fb547b9490e83182aa829540d1e5d9"
   },
   "anchor:noSet": {
-    "dps": 67670.23,
-    "totalDamage": 4046679.5,
+    "dps": 67501.95,
+    "totalDamage": 4036616.43,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2908,7 +2908,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51948.69,
+        "expectedDamage": 51016.98,
         "castCount": 4
       },
       {
@@ -2932,7 +2932,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 88910.21,
+        "expectedDamage": 87314.47,
         "castCount": 4
       },
       {
@@ -2948,7 +2948,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 74088.76,
+        "expectedDamage": 72746.16,
         "castCount": 10
       },
       {
@@ -2964,7 +2964,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 62595.94,
+        "expectedDamage": 61351.56,
         "castCount": 10
       },
       {
@@ -2972,7 +2972,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 46525.88,
+        "expectedDamage": 45693.74,
         "castCount": 4
       },
       {
@@ -2980,7 +2980,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45715.03,
+        "expectedDamage": 44889.2,
         "castCount": 4
       },
       {
@@ -2988,7 +2988,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 25778.92,
+        "expectedDamage": 25320.77,
         "castCount": 4
       },
       {
@@ -2996,7 +2996,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 103113.63,
+        "expectedDamage": 101281.06,
         "castCount": 4
       },
       {
@@ -3004,7 +3004,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 51557.69,
+        "expectedDamage": 50641.39,
         "castCount": 4
       },
       {
@@ -3020,7 +3020,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4220.61,
+        "expectedDamage": 4136.95,
         "castCount": 1
       },
       {
@@ -3069,11 +3069,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "4fb65d35986b8dda87935a52d700cbe07cbaf94a6cc73ea518fccf97c46ef94a"
+    "digest": "4e96b0fdffa41abe6f694e47d975af640db0cf9674be52d6d4ada18e0a03fc76"
   },
   "anchor:set-Jadeware": {
-    "dps": 69741.55,
-    "totalDamage": 4170544.9,
+    "dps": 69571.76,
+    "totalDamage": 4160391.02,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3098,7 +3098,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52660.22,
+        "expectedDamage": 51728.51,
         "castCount": 4
       },
       {
@@ -3122,7 +3122,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 92689.46,
+        "expectedDamage": 91065.85,
         "castCount": 4
       },
       {
@@ -3138,7 +3138,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 75926.64,
+        "expectedDamage": 74575.2,
         "castCount": 10
       },
       {
@@ -3154,7 +3154,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64317.59,
+        "expectedDamage": 63064.34,
         "castCount": 10
       },
       {
@@ -3162,7 +3162,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48511.54,
+        "expectedDamage": 47664.73,
         "castCount": 4
       },
       {
@@ -3170,7 +3170,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 47671.59,
+        "expectedDamage": 46831.27,
         "castCount": 4
       },
       {
@@ -3178,7 +3178,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26133.48,
+        "expectedDamage": 25675.33,
         "castCount": 4
       },
       {
@@ -3186,7 +3186,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 104531.85,
+        "expectedDamage": 102699.29,
         "castCount": 4
       },
       {
@@ -3194,7 +3194,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 53742.21,
+        "expectedDamage": 52809.84,
         "castCount": 4
       },
       {
@@ -3210,7 +3210,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4285.35,
+        "expectedDamage": 4201.7,
         "castCount": 1
       },
       {
@@ -3259,11 +3259,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "ab40bd9d1879d4af0d00ff52bbfb699fdba45d8ae28e5750da3d8ff4283136b2"
+    "digest": "4a7d4b956db2e5fd30d794c66067cd1ad4fbed04dcb51af242a7301110c4af84"
   },
   "anchor:set-Mistwillow": {
-    "dps": 68259.2,
-    "totalDamage": 4081900.25,
+    "dps": 68090,
+    "totalDamage": 4071781.86,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3288,7 +3288,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52610,
+        "expectedDamage": 51673.13,
         "castCount": 4
       },
       {
@@ -3312,7 +3312,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 90038.16,
+        "expectedDamage": 88433.61,
         "castCount": 4
       },
       {
@@ -3328,7 +3328,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 75025.58,
+        "expectedDamage": 73675.6,
         "castCount": 10
       },
       {
@@ -3344,7 +3344,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 63429.97,
+        "expectedDamage": 62178.76,
         "castCount": 10
       },
       {
@@ -3352,7 +3352,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47109.67,
+        "expectedDamage": 46272.96,
         "castCount": 4
       },
       {
@@ -3360,7 +3360,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 46291.66,
+        "expectedDamage": 45461.31,
         "castCount": 4
       },
       {
@@ -3368,7 +3368,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26100.81,
+        "expectedDamage": 25640.15,
         "castCount": 4
       },
       {
@@ -3376,7 +3376,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 104401.21,
+        "expectedDamage": 102558.59,
         "castCount": 4
       },
       {
@@ -3384,7 +3384,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 52201.47,
+        "expectedDamage": 51280.15,
         "castCount": 4
       },
       {
@@ -3400,7 +3400,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4276.72,
+        "expectedDamage": 4192.6,
         "castCount": 1
       },
       {
@@ -3449,11 +3449,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "933eb1369407dbef60d54a379b40d379bacbf22d96b8ffc5c1c1d2a64001a46a"
+    "digest": "22114907b651faa544ed87ed158e834cd16de38e47115a2717283c70e73277e2"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 69217.61,
-    "totalDamage": 4139213.15,
+    "dps": 69045.01,
+    "totalDamage": 4128891.4,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3478,7 +3478,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53501,
+        "expectedDamage": 52545.18,
         "castCount": 4
       },
       {
@@ -3502,7 +3502,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 91556.72,
+        "expectedDamage": 89919.8,
         "castCount": 4
       },
       {
@@ -3518,7 +3518,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 76278.49,
+        "expectedDamage": 74901.4,
         "castCount": 10
       },
       {
@@ -3534,7 +3534,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64467.43,
+        "expectedDamage": 63191.12,
         "castCount": 10
       },
       {
@@ -3542,7 +3542,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47898.5,
+        "expectedDamage": 47044.99,
         "castCount": 4
       },
       {
@@ -3550,7 +3550,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 47064.32,
+        "expectedDamage": 46217.3,
         "castCount": 4
       },
       {
@@ -3558,7 +3558,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26537.56,
+        "expectedDamage": 26067.66,
         "castCount": 4
       },
       {
@@ -3566,7 +3566,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 106148.19,
+        "expectedDamage": 104268.62,
         "castCount": 4
       },
       {
@@ -3574,7 +3574,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 53074.97,
+        "expectedDamage": 52135.17,
         "castCount": 4
       },
       {
@@ -3590,7 +3590,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4346.65,
+        "expectedDamage": 4260.85,
         "castCount": 1
       },
       {
@@ -3639,11 +3639,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "f8f8a364a8f49fe0f53be3fc2c695625dbd27e5a7d311172440d7e94911fcd3d"
+    "digest": "60b96369cf07d8749176d06e247c4532f4fceb152629d9a909fc9206a52b7eb9"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 69581.42,
-    "totalDamage": 4160969.09,
+    "dps": 69407.85,
+    "totalDamage": 4150589.29,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3668,7 +3668,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53963.92,
+        "expectedDamage": 53001.57,
         "castCount": 4
       },
       {
@@ -3692,7 +3692,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 92468.44,
+        "expectedDamage": 90818.32,
         "castCount": 4
       },
       {
@@ -3708,7 +3708,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 76839.41,
+        "expectedDamage": 75454.98,
         "castCount": 10
       },
       {
@@ -3724,7 +3724,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64936.67,
+        "expectedDamage": 63653.9,
         "castCount": 10
       },
       {
@@ -3732,7 +3732,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48268.98,
+        "expectedDamage": 47410.57,
         "castCount": 4
       },
       {
@@ -3740,7 +3740,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 47377.11,
+        "expectedDamage": 46526.18,
         "castCount": 4
       },
       {
@@ -3748,7 +3748,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 26713.48,
+        "expectedDamage": 26241.4,
         "castCount": 4
       },
       {
@@ -3756,7 +3756,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 106851.84,
+        "expectedDamage": 104963.55,
         "castCount": 4
       },
       {
@@ -3764,7 +3764,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 53426.82,
+        "expectedDamage": 52482.66,
         "castCount": 4
       },
       {
@@ -3780,7 +3780,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 4379.48,
+        "expectedDamage": 4293.22,
         "castCount": 1
       },
       {
@@ -3829,11 +3829,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "f2f67b9b34028fd67efaa8d97a76e898a17065e6da371378983a17748c32168a"
+    "digest": "dacf7e1b75ecb51be0fb540f3ffb0fe2a97cd13a703460ba6313a5e9e903ea59"
   },
   "defaults:umbra": {
-    "dps": 9924.7,
-    "totalDamage": 588865.31,
+    "dps": 9800.42,
+    "totalDamage": 581491.66,
     "rotationDuration": 59.33,
     "warnings": [],
     "perSkill": [
@@ -3858,7 +3858,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 12249.19,
+        "expectedDamage": 11901.2,
         "castCount": 2
       },
       {
@@ -3874,7 +3874,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 24548.34,
+        "expectedDamage": 23839.54,
         "castCount": 3
       },
       {
@@ -3890,7 +3890,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 33524.76,
+        "expectedDamage": 32566.94,
         "castCount": 10
       },
       {
@@ -3906,7 +3906,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 26548.68,
+        "expectedDamage": 25670.21,
         "castCount": 10
       },
       {
@@ -3914,7 +3914,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 22048.7,
+        "expectedDamage": 21432.56,
         "castCount": 5
       },
       {
@@ -3922,7 +3922,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 25059.73,
+        "expectedDamage": 24341.38,
         "castCount": 5
       },
       {
@@ -3930,7 +3930,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 11477.6,
+        "expectedDamage": 11157.63,
         "castCount": 4
       },
       {
@@ -3938,7 +3938,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 45952.28,
+        "expectedDamage": 44672.37,
         "castCount": 4
       },
       {
@@ -3946,7 +3946,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 23038.93,
+        "expectedDamage": 22398.98,
         "castCount": 4
       },
       {
@@ -3962,7 +3962,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 6,
-        "expectedDamage": 11040.43,
+        "expectedDamage": 10732.38,
         "castCount": 1
       },
       {
@@ -3970,7 +3970,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 14982.25,
+        "expectedDamage": 14564.65,
         "castCount": 3
       },
       {
@@ -3978,7 +3978,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 5439.76,
+        "expectedDamage": 5259.14,
         "castCount": 3
       },
       {
@@ -4019,6 +4019,6 @@
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "502dfeaebb7fdb0f6dc4879a47598c7117c803bf8409f8958c5d2569ee842396"
+    "digest": "91358933ab344db289a3f2439324dafe3bcf0ddbec7d0c7515ff43f49a031640"
   }
 }

@@ -15,7 +15,6 @@ export const silkbindJade = defineClass({
   validated: false,
   spec: "silkbind_jade",
   primaryAttribute: "Silkbind",
-  attributeMultiplier: 50,
   classMindGroup: INNER_WAY_ID.blossomBarrage,
   allowedMindMethods: [
     INNER_WAY_ID.moraleChant,

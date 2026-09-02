@@ -20,7 +20,6 @@ export const bellstrikeUmbra = defineClass({
   validated: true,
   spec: "bellstrike_umbra",
   primaryAttribute: "Bellstrike",
-  attributeMultiplier: 51.5,
   classMindGroup: "swordHorizon",
   allowedMindMethods: [
     "wolfchasersArt",

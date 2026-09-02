@@ -38,7 +38,6 @@ export interface ClassDef {
   validated: boolean
   spec: string
   primaryAttribute: AttributeKey
-  attributeMultiplier: number
   generalDamageBoost?: number
   classMindGroup: InnerWayId | ""
   allowedMindMethods: readonly InnerWayId[]
