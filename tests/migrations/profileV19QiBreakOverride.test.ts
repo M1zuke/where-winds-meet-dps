@@ -63,9 +63,22 @@ function combatQiBreak(): unknown {
   return legacyCombat(LEGACY.profile).qiBreak
 }
 
+// What `builtin-bellstrikeUmbra-nox-1m-dh` — the rotation the captured profile
+// selects — declares for itself.
+const ROTATION_WINDOW = { startSec: 35, durationSec: 10, lowQiLeadSec: 5 }
+
 describe("V19__qiBreakOverride — called directly", () => {
   it("leaves no override when the stored window is what the profile's rotation now runs", () => {
-    expect(legacyCombat(migrated(combatQiBreak())).qiBreakOverride).toBeNull()
+    const combat = legacyCombat(migrated({ enabled: true, ...ROTATION_WINDOW }))
+    expect(combat.qiBreakOverride).toBeNull()
+  })
+
+  it("keeps a window the profile's rotation does not run", () => {
+    expect(legacyCombat(migrated(combatQiBreak())).qiBreakOverride).toEqual({
+      startSec: 34,
+      durationSec: 10,
+      lowQiLeadSec: 5,
+    })
   })
 
   it("drops the old key rather than leaving both shapes on the blob", () => {
@@ -124,9 +137,10 @@ describe("V19__qiBreakOverride — called directly", () => {
 
 describe("V19__qiBreakOverride — registered in the chain", () => {
   it("a v18 blob migrated to v19 passes through exactly this step", () => {
-    const result = runProfileMigrations(blobOf(profileWithQiBreak(combatQiBreak())), {
-      toVersion: 19,
-    })!
+    const result = runProfileMigrations(
+      blobOf(profileWithQiBreak({ enabled: true, ...ROTATION_WINDOW })),
+      { toVersion: 19 },
+    )!
     expect(result.applied).toEqual(["V19__qiBreakOverride"])
     expect(result.blob.v).toBe(19)
     expect(legacyCombat(profileOf(result.blob)).qiBreakOverride).toBeNull()
@@ -169,7 +183,9 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
   beforeEach(() => localStorage.clear())
 
   it("still converts a legacy window on an imported profile", () => {
-    const imported = importProfile(JSON.stringify(profileWithQiBreak(combatQiBreak())))
+    const imported = importProfile(
+      JSON.stringify(profileWithQiBreak({ enabled: true, ...ROTATION_WINDOW })),
+    )
     expect(imported.inputs.combatSettings!.qiBreakOverride).toBeNull()
     expect("qiBreak" in imported.inputs.combatSettings!).toBe(false)
   })

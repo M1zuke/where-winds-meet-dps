@@ -46,7 +46,7 @@ const PREVIOUS_DEFAULT: QiBreakWindowBlob = { startSec: 25, durationSec: 10, low
 const BUILTIN_ROTATION_WINDOWS: Readonly<Record<string, QiBreakWindowBlob>> = {
   "builtin-bellstrikeUmbra-36-bbs": { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   "builtin-bellstrikeUmbra-38-bbs": { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
-  "builtin-bellstrikeUmbra-nox-1m-dh": { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
+  "builtin-bellstrikeUmbra-nox-1m-dh": { startSec: 35, durationSec: 10, lowQiLeadSec: 5 },
   "builtin-bellstrikeUmbra-nox-30s-dh": { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   "builtin-stonesplitStrength-tilla-dummy-rotation": {
     startSec: 29,
