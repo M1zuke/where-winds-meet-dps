@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  buffChipAbbreviation,
   buffChipHue,
   castBuffDisplayOrder,
   visibleCastBuffs,
@@ -79,6 +80,29 @@ describe("buffChipHue", () => {
     for (const name of names) {
       expect(pinned.has(buffChipHue(name))).toBe(false)
     }
+  })
+})
+
+describe("buffChipAbbreviation", () => {
+  it("keeps the first letter of every word", () => {
+    expect(buffChipAbbreviation("River Flow")).toBe("RF")
+    expect(buffChipAbbreviation("Bleeding")).toBe("B")
+    expect(buffChipAbbreviation("Morale Chant")).toBe("MC")
+    expect(buffChipAbbreviation("Bitter Season Poison")).toBe("BSP")
+  })
+
+  it("splits on hyphens and collapsed whitespace as well as spaces", () => {
+    expect(buffChipAbbreviation("Ever-Bright  Vow")).toBe("EBV")
+  })
+
+  it("uppercases a lowercase word and keeps a leading digit", () => {
+    expect(buffChipAbbreviation("way of the blade")).toBe("WOTB")
+    expect(buffChipAbbreviation("7 Star Step")).toBe("7SS")
+  })
+
+  it("falls back to the name when it holds no words", () => {
+    expect(buffChipAbbreviation("   ")).toBe("   ")
+    expect(buffChipAbbreviation("")).toBe("")
   })
 })
 

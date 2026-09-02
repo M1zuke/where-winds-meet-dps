@@ -73,7 +73,6 @@ export interface FormulaContext {
   silkbind: AttackBlock
   bamboocut: AttackBlock
   primaryAttribute: Attribute
-  attributePrimaryBonus: number
 
   precisionPanel: number
   critPanel: number
@@ -322,12 +321,8 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const isScalingAttribute = scalingAttribute === attribute && isWeapon
-    const minAttack = block.min + (isScalingAttribute ? ctx.attributePrimaryBonus : 0)
-    const maxAttack = Math.max(
-      block.max + (isScalingAttribute ? ctx.attributePrimaryBonus : 0),
-      minAttack,
-    )
+    const minAttack = block.min
+    const maxAttack = Math.max(block.max, minAttack)
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0

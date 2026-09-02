@@ -34,7 +34,6 @@ const HEN_ZHI_DEFENSE_MULTIPLIER = 0.94
 export interface DerivedStats {
   classId: string
   primaryAttribute: AttributeKey
-  attributeMultiplier: number
   defense: number
   effectiveDefense: number
   generalDamageTaken: number
@@ -199,7 +198,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
   return {
     classId: school.id,
     primaryAttribute: school.primaryAttribute,
-    attributeMultiplier: school.attributeMultiplier,
     defense: target.defense,
     effectiveDefense,
     generalDamageTaken: targetGeneralDamageTaken,
@@ -296,7 +294,6 @@ export function buildContext(
       pen: pct(inputs.bamboocut.penetration),
     },
     primaryAttribute: school.primaryAttribute,
-    attributePrimaryBonus: school.attributeMultiplier,
 
     precisionPanel: eff.precision,
     critPanel: eff.critRate,

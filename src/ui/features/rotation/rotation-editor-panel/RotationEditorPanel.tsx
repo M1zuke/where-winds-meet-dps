@@ -22,7 +22,12 @@ import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
-import { buffChipHue, castBuffDisplayOrder, visibleCastBuffs } from "../buffChips"
+import {
+  buffChipAbbreviation,
+  buffChipHue,
+  castBuffDisplayOrder,
+  visibleCastBuffs,
+} from "../buffChips"
 import {
   inputsWithRotationOption,
   rotationOptions,
@@ -82,7 +87,8 @@ function effectsSummary(
 function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
   const { t } = useI18n()
   const name = t(buffKey(tag.id), tag.name)
-  const label = tag.maxStacks > 1 ? `${name} ${tag.stacks}/${tag.maxStacks}` : name
+  const short = buffChipAbbreviation(name)
+  const label = tag.maxStacks > 1 ? `${short} ${tag.stacks}/${tag.maxStacks}` : short
   const eff = effectsSummary(tag.effects, t)
   const style = { "--buff-hue": buffChipHue(tag.name, tag.id) } as React.CSSProperties
   return (

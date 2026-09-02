@@ -147,14 +147,14 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(49220)
-    expect(result.dps).toBeLessThan(49390)
-    expect(result.totalDamage).toBeGreaterThan(2986000)
-    expect(result.totalDamage).toBeLessThan(3001000)
+    expect(result.dps).toBeGreaterThan(49070)
+    expect(result.dps).toBeLessThan(49230)
+    expect(result.totalDamage).toBeGreaterThan(2977000)
+    expect(result.totalDamage).toBeLessThan(2992000)
     expect(detonation?.expectedDamage).toBeGreaterThan(1614000)
     expect(detonation?.expectedDamage).toBeLessThan(1628000)
 
-    // The engine sits ~1.9 % ABOVE the cached target, from three sources the
+    // The engine sits ~1.6 % ABOVE the cached target, from three sources the
     // cached run predates: bleed ticks and Bleed Detonation take all-martial
     // (and ticks sword boost) per the lvl-110 workbook's Sword typing, a
     // DoT tick now keeps the flat damage its own data authors, and the

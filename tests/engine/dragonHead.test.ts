@@ -87,7 +87,6 @@ const ctx: FormulaContext = {
   silkbind: { min: 0, max: 0, pen: 0 },
   bamboocut: { min: 0, max: 0, pen: 0 },
   primaryAttribute: "Bellstrike",
-  attributePrimaryBonus: 34,
   precisionPanel: 0.9,
   critPanel: 0.5,
   affinityPanel: 0.2,
