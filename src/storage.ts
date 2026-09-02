@@ -12,6 +12,11 @@ import {
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
+import {
+  defaultBreakthrough,
+  newestBreakthroughRelease,
+  releasedBreakthroughs,
+} from "./definitions/baseStats/breakthroughs"
 import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation } from "./engine/rotation"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
@@ -212,7 +217,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.breakthrough !== "number" || !VALID_BREAKTHROUGHS.has(next.breakthrough)) {
     const trial =
       typeof legacyTargetId === "string" ? (legacyTargetId.match(/^(\d+)/)?.[1] ?? "") : ""
-    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? 16
+    next.breakthrough = LEGACY_TARGET_TO_BREAKTHROUGH[trial] ?? defaultBreakthrough()
   }
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
@@ -380,22 +385,47 @@ function makeDefaultProfile(name: string, inputs: Inputs): StoredProfile {
   return { id: newProfileId(), name, inputs: hydrateInputs(inputs) }
 }
 
+function followBreakthroughReleases(inputs: Inputs, now: number): Inputs {
+  const newestRelease = newestBreakthroughRelease(now)
+  const followedRelease =
+    typeof inputs.followedBreakthroughRelease === "number" ? inputs.followedBreakthroughRelease : 0
+  if (followedRelease === newestRelease) return inputs
+  let breakthrough = inputs.breakthrough
+  for (const release of releasedBreakthroughs(now)) {
+    if (release.breakthrough <= followedRelease) continue
+    const supersededDefault = defaultBreakthrough(release.at - 1)
+    if (breakthrough === supersededDefault) breakthrough = release.breakthrough
+  }
+  return { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+}
+
 export function loadProfiles(): ProfilesState & { firstRun: boolean } {
+  const now = Date.now()
   try {
     const raw = kvStore.get(PROFILES_KEY)
     if (raw) {
       const result = runProfileMigrations(JSON.parse(raw))
       const migrated = result?.blob as ProfilesBlob | undefined
       if (migrated && Array.isArray(migrated.profiles)) {
-        const profiles = migrated.profiles
+        const hydrated = migrated.profiles
           .filter(isStoredProfile)
-          .map((p) => ({ ...p, inputs: hydrateInputs(p.inputs) }))
+          .map((stored) => ({ ...stored, inputs: hydrateInputs(stored.inputs) }))
+        const profiles = hydrated.map((profile) => ({
+          ...profile,
+          inputs: followBreakthroughReleases(profile.inputs, now),
+        }))
+        const releaseFollowed = profiles.some(
+          (profile, index) => profile.inputs !== hydrated[index].inputs,
+        )
         if (profiles.length > 0) {
           const activeId = profiles.some((p) => p.id === migrated.activeId)
             ? migrated.activeId
             : profiles[0].id
           // Persist the upgraded blob so the chain is walked once, not per load.
-          if (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION)) {
+          if (
+            releaseFollowed ||
+            (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION))
+          ) {
             saveProfiles({ profiles, activeId })
           }
           return { profiles, activeId, firstRun: false }
@@ -406,7 +436,11 @@ export function loadProfiles(): ProfilesState & { firstRun: boolean } {
 
   const legacy = loadInputs()
   if (legacy) {
-    const profile = makeDefaultProfile("Default", legacy)
+    const legacyProfile = makeDefaultProfile("Default", legacy)
+    const profile = {
+      ...legacyProfile,
+      inputs: followBreakthroughReleases(legacyProfile.inputs, now),
+    }
     const state: ProfilesState = { profiles: [profile], activeId: profile.id }
     saveProfiles(state)
     try {

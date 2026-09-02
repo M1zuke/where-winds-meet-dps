@@ -1,6 +1,10 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
 import { DEFAULT_ODDITIES } from "../definitions/baseStats"
+import {
+  defaultBreakthrough,
+  newestBreakthroughRelease,
+} from "../definitions/baseStats/breakthroughs"
 import { SET_ID } from "../data/sets/ids"
 
 export const emptyMindMethod = { name: "", stacks: "" } as const
@@ -8,6 +12,7 @@ export const emptyMindMethod = { name: "", stacks: "" } as const
 export const defaultInputs: Inputs = {
   classId: "bellstrikeUmbra",
   breakthrough: 13,
+  followedBreakthroughRelease: newestBreakthroughRelease(),
 
   phys: { min: 1043.0, max: 2006.0, penetration: 0.292 },
   bellstrike: { min: 57.0, max: 0, penetration: 0 },
@@ -82,7 +87,7 @@ export const defaultInputs: Inputs = {
 export const blankInputs: Inputs = {
   ...defaultInputs,
   classId: "bellstrikeUmbra",
-  breakthrough: 16,
+  breakthrough: defaultBreakthrough(),
   phys: { min: 0, max: 0, penetration: 0 },
   bellstrike: { min: 0, max: 0, penetration: 0 },
   stonesplit: { min: 0, max: 0, penetration: 0 },

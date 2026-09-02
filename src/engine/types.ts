@@ -78,6 +78,7 @@ export function defaultCombatSettings(): CombatSettings {
 export interface Inputs {
   classId: string
   breakthrough: number
+  followedBreakthroughRelease?: number
 
   phys: AttackBlock
   bellstrike: AttackBlock

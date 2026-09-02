@@ -15,6 +15,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
+import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { SET_ID } from "../../src/data/sets/ids"
 import type { Inputs, Result } from "../../src/engine/types"
@@ -36,13 +37,19 @@ const ANCHOR_FILE = anchorProfileFile as unknown as ProfileFile
 // `inputs` cannot be handed to the engine directly — this is App.tsx's pipeline.
 function anchorInputs(): Inputs {
   localStorage.clear()
+  // Stamped as having followed every breakthrough release: unstamped, the
+  // anchor's stored breakthrough follows the next one and moves every figure
+  // below on a release date rather than on a commit.
+  const profile = {
+    ...ANCHOR_FILE.profile,
+    inputs: {
+      ...ANCHOR_FILE.profile.inputs,
+      followedBreakthroughRelease: newestBreakthroughRelease(Number.MAX_SAFE_INTEGER),
+    },
+  }
   localStorage.setItem(
     PROFILES_KEY,
-    JSON.stringify({
-      v: ANCHOR_FILE.v,
-      profiles: [ANCHOR_FILE.profile],
-      activeId: ANCHOR_FILE.profile.id,
-    }),
+    JSON.stringify({ v: ANCHOR_FILE.v, profiles: [profile], activeId: profile.id }),
   )
   return loadProfiles().profiles[0].inputs
 }
