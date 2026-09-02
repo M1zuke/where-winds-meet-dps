@@ -2082,9 +2082,9 @@
     "digest": "6ea859db0a7a7013714fc3d3e33351e0b92b59e9c26b16210287e03e3bc7c6fd"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 43921.99,
-    "totalDamage": 2668260.61,
-    "rotationDuration": 60.75,
+    "dps": 44799.02,
+    "totalDamage": 2725273.69,
+    "rotationDuration": 60.83,
     "warnings": [],
     "perSkill": [
       {
@@ -2120,20 +2120,20 @@
         "castCount": 2
       },
       {
-        "name": "Dragon's Breath: Smolder 2 Hits",
+        "name": "Dragon's Breath: Smolder 1 Hit",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 3,
-        "expectedDamage": 33889.69,
+        "count": 1,
+        "expectedDamage": 10772.14,
         "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 60404.11,
-        "castCount": 4
+        "count": 15,
+        "expectedDamage": 45166.01,
+        "castCount": 3
       },
       {
         "name": "Deflect Cancel",
@@ -2148,15 +2148,15 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 64421.28,
+        "expectedDamage": 64299.53,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "sustain",
-        "count": 36,
-        "expectedDamage": 1511899.59,
+        "count": 38,
+        "expectedDamage": 1586171.09,
         "castCount": 0
       },
       {
@@ -2164,7 +2164,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 54219.69,
+        "expectedDamage": 54138.72,
         "castCount": 10
       },
       {
@@ -2172,24 +2172,24 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 49710.84,
+        "expectedDamage": 49579.73,
         "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 39509.22,
-        "castCount": 4
+        "count": 20,
+        "expectedDamage": 49118.53,
+        "castCount": 5
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 27662.17,
-        "castCount": 5
+        "count": 4,
+        "expectedDamage": 22253.72,
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
@@ -2213,6 +2213,14 @@
         "type": "weapon",
         "count": 1,
         "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "SpearQ",
+        "breakdownName": "Sober Sorrow",
+        "type": "weapon",
+        "count": 6,
+        "expectedDamage": 20319.62,
         "castCount": 1
       },
       {
@@ -2244,7 +2252,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 10,
-        "expectedDamage": 127407.23,
+        "expectedDamage": 126559.62,
         "castCount": 0
       },
       {
@@ -2252,7 +2260,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 189385.83,
+        "expectedDamage": 186746.51,
         "castCount": 0
       },
       {
@@ -2260,7 +2268,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 114,
-        "expectedDamage": 265536.39,
+        "expectedDamage": 265911.9,
         "castCount": 0
       },
       {
@@ -2268,16 +2276,16 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 45819.85,
+        "expectedDamage": 45841.84,
         "castCount": 0
       }
     ],
     "counts": {
-      "timeline": 383,
-      "buffWindows": 146,
+      "timeline": 387,
+      "buffWindows": 149,
       "casts": 80
     },
-    "digest": "147cc87ff95a10d65654c2d9647d1e1061dd41a33a04f4b3b98d2319b93681c9"
+    "digest": "7b7e5e4da95550c7468d9789d962a6df31dd7a7f73c4e14cefce42930e57bc3b"
   },
   "anchor:bitterSeasonT6": {
     "dps": 54905.94,
@@ -3824,9 +3832,9 @@
     "digest": "5834548a80b2b4b82c2c9043abaaa591943fb615c4cad8b527aa698969a53f12"
   },
   "defaults:umbra": {
-    "dps": 11256.79,
-    "totalDamage": 666965.06,
-    "rotationDuration": 59.25,
+    "dps": 11011.09,
+    "totalDamage": 653324.62,
+    "rotationDuration": 59.33,
     "warnings": [],
     "perSkill": [
       {
@@ -3854,20 +3862,20 @@
         "castCount": 2
       },
       {
-        "name": "Dragon's Breath: Smolder 2 Hits",
+        "name": "Dragon's Breath: Smolder 1 Hit",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
-        "count": 3,
-        "expectedDamage": 17624.99,
+        "count": 1,
+        "expectedDamage": 5681.84,
         "castCount": 1
       },
       {
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 32516.49,
-        "castCount": 4
+        "count": 15,
+        "expectedDamage": 24510.36,
+        "castCount": 3
       },
       {
         "name": "Deflect Cancel",
@@ -3882,15 +3890,15 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 33589.85,
+        "expectedDamage": 33620.75,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "sustain",
-        "count": 22,
-        "expectedDamage": 247411.34,
+        "count": 23,
+        "expectedDamage": 258719.4,
         "castCount": 0
       },
       {
@@ -3898,7 +3906,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 26526.05,
+        "expectedDamage": 26614.73,
         "castCount": 10
       },
       {
@@ -3906,31 +3914,31 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 26986.67,
+        "expectedDamage": 26913.89,
         "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 19831.92,
-        "castCount": 4
+        "count": 20,
+        "expectedDamage": 24785.56,
+        "castCount": 5
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 14371.29,
-        "castCount": 5
+        "count": 4,
+        "expectedDamage": 11302.99,
+        "castCount": 4
       },
       {
         "name": "Sword Martial QQ",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 46182.18,
+        "expectedDamage": 46220.73,
         "castCount": 4
       },
       {
@@ -3938,7 +3946,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 23210.06,
+        "expectedDamage": 23168.19,
         "castCount": 4
       },
       {
@@ -3947,6 +3955,14 @@
         "type": "weapon",
         "count": 1,
         "expectedDamage": 0,
+        "castCount": 1
+      },
+      {
+        "name": "SpearQ",
+        "breakdownName": "Sober Sorrow",
+        "type": "weapon",
+        "count": 6,
+        "expectedDamage": 11105.83,
         "castCount": 1
       },
       {
@@ -3978,7 +3994,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 10,
-        "expectedDamage": 67626.49,
+        "expectedDamage": 68096.96,
         "castCount": 0
       },
       {
@@ -3986,23 +4002,23 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 48,
-        "expectedDamage": 54495.47,
+        "expectedDamage": 53023.24,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 23,
-        "expectedDamage": 24328.68,
+        "count": 7,
+        "expectedDamage": 7296.6,
         "castCount": 0
       }
     ],
     "counts": {
-      "timeline": 260,
-      "buffWindows": 138,
+      "timeline": 247,
+      "buffWindows": 141,
       "casts": 79
     },
-    "digest": "09f5a8ceb75ece741ccf529902ada3a253dd34ebb9cd1bf464929b0d87dc0d84"
+    "digest": "734f37f72c24bb0b3604d25bb7aa00f18608b08a1e0722eed15390a5df2d0aa3"
   }
 }
