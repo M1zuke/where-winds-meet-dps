@@ -7,12 +7,13 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
-import { builtinDebuffsForClass, builtinRotationsForClass } from "../../src/engine/builtinLibrary"
+import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { builtinSkill, dotRow } from "../builtins"
 import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
+import { retiredRotation } from "./retiredRotations"
 
 function rotationOf(classId: string, skillIds: string[]) {
   const steps = skillIds.map((skillId) => {
@@ -103,10 +104,8 @@ describe("Dragon's Breath → Combustion DoT", () => {
     expect(combustionDamage(after)).toBeGreaterThan(combustionDamage(before))
   })
 
-  it("Soul Shaken (Wolfchaser's Art tier 6) scales Combustion tick damage on bellstrikeUmbra's Eazy-T6 Wolf rotation (casts SpearHeavy + Dragon's Breath)", () => {
-    const rotation = builtinRotationsForClass("bellstrikeUmbra").find(
-      (r) => r.id === "builtin-bellstrikeUmbra-eazy-t6-wolf",
-    )!
+  it("Soul Shaken (Wolfchaser's Art tier 6) scales Combustion tick damage across a full rotation casting SpearHeavy + Dragon's Breath", () => {
+    const rotation = retiredRotation("builtin-bellstrikeUmbra-eazy-t6-wolf")
     const withoutWolf: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",

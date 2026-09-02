@@ -50,6 +50,7 @@ import {
   migrateCleftpeakBuffId,
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
+  dropRetiredRotationId,
 } from "./migrations"
 
 export { migrateClassId, migrateEntityId } from "./migrations"
@@ -214,7 +215,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // build's class rather than reaching `getSchool()`, which throws on an
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
-  next.selectedBuiltinRotationId = migrateEntityId(next.selectedBuiltinRotationId)
+  next.selectedBuiltinRotationId = dropRetiredRotationId(
+    migrateEntityId(next.selectedBuiltinRotationId),
+  )
   next.set = selectableSetId(next.set)
   if (next.activeCustomRotation != null) {
     next.activeCustomRotation = migrateRotationIds(next.activeCustomRotation)

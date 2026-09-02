@@ -8,6 +8,7 @@ import { RIVER_FLOW_DURATION_FRAMES } from "../../src/data/classes/bellstrike-um
 import type { Inputs, Result } from "../../src/engine/types"
 import { builtinSkill, dotRow } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { retiredRotation } from "./retiredRotations"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -209,11 +210,11 @@ describe("Spear Special Cooldown — window expiry", () => {
 })
 
 describe("Spear Special — no collateral damage elsewhere", () => {
-  it("a built-in rotation without Spear Special (Eazy-T6 Wolf) is unaffected — no Spear Special row appears", () => {
+  it("a rotation without Spear Special is unaffected — no Spear Special row appears", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: CLASS,
-      selectedBuiltinRotationId: "builtin-bellstrikeUmbra-eazy-t6-wolf",
+      activeCustomRotation: retiredRotation("builtin-bellstrikeUmbra-eazy-t6-wolf"),
     })
     expect(result.dps).toBeGreaterThan(0)
     expect(result.perSkill.some((p) => p.name === skillOf(SKILL.spearspecial).name)).toBe(false)

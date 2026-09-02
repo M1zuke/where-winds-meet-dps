@@ -14,6 +14,7 @@ import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
 import { skillRow } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { retiredRotation } from "./retiredRotations"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -89,12 +90,12 @@ const inputs: Inputs = {
   areaMysticBoost: 0,
   dummyMode: false,
   rotation: null,
-  activeCustomRotation: null,
   martialArtsTalents: [],
   equipped: { ...EMPTY_EQUIPPED },
   inventory: [],
   oddities: {},
-  selectedBuiltinRotationId: "builtin-bellstrikeUmbra-t6-bili",
+  activeCustomRotation: retiredRotation("builtin-bellstrikeUmbra-t6-bili"),
+  selectedBuiltinRotationId: null,
 }
 
 describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference site", () => {
