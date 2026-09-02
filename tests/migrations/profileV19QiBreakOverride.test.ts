@@ -51,8 +51,11 @@ describe("the captured profile is genuinely pre-change", () => {
     expect("qiBreakOverride" in combat).toBe(false)
   })
 
-  it("carries a hand-tuned window, so the interesting branch is exercised", () => {
+  it("carries a window the old app default never produced, so the match branch is real", () => {
     expect((combatQiBreak() as Record<string, unknown>).startSec).toBe(34)
+    expect(LEGACY.profile.inputs.selectedBuiltinRotationId).toBe(
+      "builtin-bellstrikeUmbra-nox-1m-dh",
+    )
   })
 })
 
@@ -61,20 +64,26 @@ function combatQiBreak(): unknown {
 }
 
 describe("V19__qiBreakOverride — called directly", () => {
-  it("carries the captured profile's hand-tuned window over as an active override", () => {
-    const combat = legacyCombat(migrated(combatQiBreak()))
-    expect(combat.qiBreakOverride).toEqual({ startSec: 34, durationSec: 10, lowQiLeadSec: 5 })
+  it("leaves no override when the stored window is what the profile's rotation now runs", () => {
+    expect(legacyCombat(migrated(combatQiBreak())).qiBreakOverride).toBeNull()
   })
 
   it("drops the old key rather than leaving both shapes on the blob", () => {
     expect("qiBreak" in legacyCombat(migrated(combatQiBreak()))).toBe(false)
   })
 
-  it("leaves a profile that never changed the window with no override at all", () => {
+  it("leaves no override on a profile that never edited the window", () => {
     const combat = legacyCombat(
       migrated({ enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 5 }),
     )
     expect(combat.qiBreakOverride).toBeNull()
+  })
+
+  it("keeps a window that matches neither the old default nor the rotation", () => {
+    const combat = legacyCombat(
+      migrated({ enabled: true, startSec: 20, durationSec: 8, lowQiLeadSec: 2 }),
+    )
+    expect(combat.qiBreakOverride).toEqual({ startSec: 20, durationSec: 8, lowQiLeadSec: 2 })
   })
 
   it("turns `enabled: false` into a zero-length override, honouring it everywhere", () => {
@@ -120,11 +129,8 @@ describe("V19__qiBreakOverride — registered in the chain", () => {
     })!
     expect(result.applied).toEqual(["V19__qiBreakOverride"])
     expect(result.blob.v).toBe(19)
-    expect(legacyCombat(profileOf(result.blob)).qiBreakOverride).toEqual({
-      startSec: 34,
-      durationSec: 10,
-      lowQiLeadSec: 5,
-    })
+    expect(legacyCombat(profileOf(result.blob)).qiBreakOverride).toBeNull()
+    expect("qiBreak" in legacyCombat(profileOf(result.blob))).toBe(false)
   })
 })
 
@@ -164,12 +170,21 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
 
   it("still converts a legacy window on an imported profile", () => {
     const imported = importProfile(JSON.stringify(profileWithQiBreak(combatQiBreak())))
-    expect(imported.inputs.combatSettings!.qiBreakOverride).toEqual({
-      startSec: 34,
-      durationSec: 10,
-      lowQiLeadSec: 5,
-    })
+    expect(imported.inputs.combatSettings!.qiBreakOverride).toBeNull()
     expect("qiBreak" in imported.inputs.combatSettings!).toBe(false)
+  })
+
+  it("keeps a genuinely deliberate window on an imported profile", () => {
+    const imported = importProfile(
+      JSON.stringify(
+        profileWithQiBreak({ enabled: true, startSec: 20, durationSec: 8, lowQiLeadSec: 2 }),
+      ),
+    )
+    expect(imported.inputs.combatSettings!.qiBreakOverride).toEqual({
+      startSec: 20,
+      durationSec: 8,
+      lowQiLeadSec: 2,
+    })
   })
 
   it("leaves an untouched legacy window as no override", () => {

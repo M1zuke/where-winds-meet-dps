@@ -31,7 +31,7 @@ export {
   migrateCleftpeakTag,
 } from "./V17__renameCleftpeak"
 export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
-export { qiBreakOverrideFrom, readQiBreakWindow } from "./V19__qiBreakOverride"
+export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,

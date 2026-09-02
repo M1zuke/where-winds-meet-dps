@@ -52,6 +52,7 @@ import {
   migrateCleftpeakTag,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
+  rotationWindowOf,
   readQiBreakWindow,
 } from "./migrations"
 
@@ -376,7 +377,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     next.combatSettings = {
-      qiBreakOverride: qiBreakOverrideFrom(r),
+      qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,

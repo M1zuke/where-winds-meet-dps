@@ -396,6 +396,11 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-08-01T00:00:00.000Z",
         "updatedAt": "2026-09-02T00:00:00.000Z",
         "description": "36 Bleed Bursts"
@@ -805,6 +810,11 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-09-02T00:00:00.000Z",
         "updatedAt": "2026-09-02T00:00:00.000Z",
         "description": "38 Bleed Bursts"
@@ -1164,6 +1174,11 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
         "description": "1-minute Dragon Head rotation from Nox"
@@ -1322,6 +1337,11 @@
         "permanentBuffIds": [],
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
+        },
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
         },
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
@@ -1634,6 +1654,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 29,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Pure Hengdao rotation by Tilla from WSR Discord"
@@ -1850,6 +1875,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 29,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "https://www.youtube.com/watch?v=gG4_DvJFcig"
@@ -2066,6 +2096,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 29,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Use vc to replace toad"
@@ -2202,6 +2237,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Bellstrike Splendor 42 Vagrant Sword + 1 Dragon Breath rotation (requires T6 Sword Morph + T6 Mountain's Might). Source: Kaezuma."
@@ -2343,6 +2383,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Bellstrike Splendor 44 Vagrant Sword rotation, no Dragon Breath. Source: Crylis."
@@ -2559,6 +2604,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "createdAt": "2026-08-15T00:00:00.000Z",
         "updatedAt": "2026-08-15T00:00:00.000Z",
         "description": "Bellstrike Splendor 60-second rotation: 78 waves, 2 Flute of the Tides, 1 toad."
@@ -2800,6 +2850,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "prePullHitsCount": false,
         "createdAt": "2026-08-17T00:00:00.000Z",
         "updatedAt": "2026-08-17T00:00:00.000Z",
@@ -3102,6 +3157,11 @@
           }
         ],
         "permanentBuffIds": [],
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
         "prePullHitsCount": false,
         "createdAt": "2026-08-17T00:00:00.000Z",
         "updatedAt": "2026-08-17T00:00:00.000Z",
