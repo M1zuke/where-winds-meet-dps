@@ -161,8 +161,21 @@ function migrateRotationIds<T>(rotation: T): T {
       migrateCleftpeakBuffId(migrateEntityId(buffId)),
     )
   }
+  if (r.openingStacks !== undefined) next.openingStacks = sanitizeOpeningStacks(r.openingStacks)
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return next as unknown as T
+}
+
+// additive — see CLAUDE.md → "localStorage migrations"
+function sanitizeOpeningStacks(stored: unknown): Record<string, number> {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return {}
+  const healed: Record<string, number> = {}
+  for (const [buffId, stacks] of Object.entries(stored as Record<string, unknown>)) {
+    if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) continue
+    const whole = Math.floor(stacks)
+    if (whole > 0) healed[migrateCleftpeakBuffId(migrateEntityId(buffId))] = whole
+  }
+  return healed
 }
 
 // A word outside the catalogue already scores nothing, so clearing the row costs
@@ -600,6 +613,7 @@ export function importCustomRotation(text: string): Rotation {
     permanentBuffIds: Array.isArray(candidate.permanentBuffIds)
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
+    openingStacks: sanitizeOpeningStacks(candidate.openingStacks),
     createdAt: now,
     updatedAt: now,
   }

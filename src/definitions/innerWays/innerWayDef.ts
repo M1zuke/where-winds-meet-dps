@@ -59,6 +59,9 @@ export interface InnerWayDef {
   // Folded into every slotting class by the class registry; the two below
   // register directly instead — CLASSES.md § "One definition per class".
   gateBuffs?: readonly InnerWayGateBuff[]
+  // Authored, never derived from `maxStacks`: a gate buff is pre-settable only
+  // once something actually seeds a simulation from its opening count.
+  openingStackBuffIds?: readonly string[]
   buffDefs?: readonly BuffModule[]
   displayGates?: readonly DisplayGateRegistration[]
   skillBehaviors?: readonly SkillBehaviorRegistration[]

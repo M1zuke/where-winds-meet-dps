@@ -69,6 +69,7 @@ const buildFor = (classId: string) => ({
   innerWayTier: () => null,
   classSpecificAttunement: () => 0,
   grantsMinPhysCritBoost: () => false,
+  openingStacks: () => 0,
 })
 
 describe("a class can be wired from outside the engine", () => {

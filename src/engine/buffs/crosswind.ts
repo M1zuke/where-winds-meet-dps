@@ -12,12 +12,16 @@ export interface CrosswindOutcome {
 export interface CrosswindTrackerOptions {
   maxCharges: number
   retainOnMax: boolean
+  initialCharges?: number
 }
 
 export class CrosswindTracker {
-  private charges = 0
+  private charges: number
 
-  constructor(private readonly options: CrosswindTrackerOptions) {}
+  constructor(private readonly options: CrosswindTrackerOptions) {
+    const opening = Math.floor(options.initialCharges ?? 0)
+    this.charges = Math.max(0, Math.min(options.maxCharges, Number.isFinite(opening) ? opening : 0))
+  }
 
   get charge(): number {
     return this.charges

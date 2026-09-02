@@ -373,6 +373,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Eazy's T5 Wolf Rotation"
@@ -764,6 +767,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "Tier 6 Wolf rotation from Eazy"
@@ -1130,6 +1136,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": ""
@@ -1581,6 +1590,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-07-19T00:00:00.000Z",
         "updatedAt": "2026-07-19T00:00:00.000Z",
         "description": "T6 rotation from Bilibili, 29 Blood bursts"
@@ -1987,6 +1999,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-08-01T00:00:00.000Z",
         "updatedAt": "2026-08-01T00:00:00.000Z",
         "description": "36 Bleed Bursts"
@@ -2343,6 +2358,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
         "description": "1-minute Dragon Head rotation from Nox"
@@ -2499,6 +2517,9 @@
           }
         ],
         "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-08-08T00:00:00.000Z",
         "description": "30-second Dragon Head rotation from Nox"

@@ -14,6 +14,7 @@ export interface Rotation {
   classId: string
   steps: RotationStep[]
   permanentBuffIds: string[]
+  openingStacks?: Record<string, number>
   createdAt: string
   updatedAt: string
   description?: string
@@ -80,6 +81,13 @@ export function isRotation(x: unknown): x is Rotation {
   if (!Array.isArray(r.permanentBuffIds)) return false
   for (const id of r.permanentBuffIds) {
     if (typeof id !== "string") return false
+  }
+  if (r.openingStacks !== undefined) {
+    if (!r.openingStacks || typeof r.openingStacks !== "object" || Array.isArray(r.openingStacks))
+      return false
+    for (const stacks of Object.values(r.openingStacks as Record<string, unknown>)) {
+      if (typeof stacks !== "number" || !Number.isFinite(stacks) || stacks < 0) return false
+    }
   }
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false

@@ -291,8 +291,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(75079.84)
-    expect(round(result.totalDamage, 2)).toBe(4325850.03)
+    expect(round(result.dps, 2)).toBe(75548.12)
+    expect(round(result.totalDamage, 2)).toBe(4352830.94)
     expect(round(result.rotationDuration, 4)).toBe(57.6167)
     expect(result.warnings).toEqual([])
   })
@@ -300,7 +300,7 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2158142.62)
+    expect(damageOf("Blood Burst")).toBe(2185123.53)
     expect(damageOf("Bleeding (DoT)")).toBe(278117.22)
   })
 

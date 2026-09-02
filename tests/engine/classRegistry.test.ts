@@ -183,6 +183,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       innerWayTier: (name) => (name === "swordHorizon" ? 1 : null),
       classSpecificAttunement: () => 0,
       grantsMinPhysCritBoost: () => false,
+      openingStacks: () => 0,
     }
     expect(buildBehaviors(build)(bleedDetonation)).not.toBe(DEFAULT_BEHAVIOR)
     const noSwordHorizon: BuildView = { ...build, innerWayTier: () => null }

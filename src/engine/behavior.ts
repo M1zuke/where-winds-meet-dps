@@ -27,6 +27,7 @@ export interface BuildView {
   innerWayTier(name: string): number | null
   classSpecificAttunement(attunementId: string): number
   grantsMinPhysCritBoost(weaponType: string | undefined): boolean
+  openingStacks(buffId: string): number
 }
 
 export interface HitInput {

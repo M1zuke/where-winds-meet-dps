@@ -40,6 +40,17 @@ describe("isRotation — validation", () => {
     const r = makeRotation(CLASS, { permanentBuffIds: [1 as unknown as string] })
     expect(isRotation(r)).toBe(false)
   })
+
+  it("accepts a rotation carrying no openingStacks at all", () => {
+    expect(isRotation(makeRotation(CLASS))).toBe(true)
+  })
+
+  it("rejects openingStacks holding a negative or non-numeric count", () => {
+    expect(isRotation(makeRotation(CLASS, { openingStacks: { "buff-a": -1 } }))).toBe(false)
+    expect(
+      isRotation(makeRotation(CLASS, { openingStacks: { "buff-a": "3" as unknown as number } })),
+    ).toBe(false)
+  })
 })
 
 describe("resolveRotation — binding + diagnostics", () => {
@@ -118,6 +129,34 @@ describe("storage round-trip", () => {
     saveCustomRotation(stale)
     const loaded = loadCustomRotations().find((x) => x.id === stale.id)!
     expect("prePullHitsCount" in loaded).toBe(false)
+  })
+
+  it("save → load preserves openingStacks", () => {
+    const r = makeRotation(CLASS, { name: "Opener", openingStacks: { "buff-a": 3 } })
+    saveCustomRotation(r)
+    const loaded = loadCustomRotations().find((x) => x.id === r.id)!
+    expect(loaded.openingStacks).toEqual({ "buff-a": 3 })
+  })
+
+  it("heals an unreadable openingStacks entry instead of dropping the rotation", () => {
+    const corrupt = {
+      ...makeRotation(CLASS, { name: "Corrupt" }),
+      openingStacks: { "buff-a": "3", "buff-b": 2, "buff-c": -4 },
+    }
+    saveCustomRotation(corrupt as never)
+    const loaded = loadCustomRotations().find((x) => x.id === corrupt.id)!
+    expect(loaded.openingStacks).toEqual({ "buff-b": 2 })
+  })
+
+  it("export → import carries openingStacks across", () => {
+    const r = makeRotation(CLASS, { name: "x", openingStacks: { "buff-a": 4 } })
+    expect(importCustomRotation(exportCustomRotation(r)).openingStacks).toEqual({ "buff-a": 4 })
+  })
+
+  it("imports a rotation exported before openingStacks existed", () => {
+    const legacy = makeRotation(CLASS, { name: "legacy" }) as unknown as Record<string, unknown>
+    delete legacy.openingStacks
+    expect(importCustomRotation(JSON.stringify(legacy)).openingStacks).toEqual({})
   })
 
   it("export → import regenerates rotation + step ids", () => {
