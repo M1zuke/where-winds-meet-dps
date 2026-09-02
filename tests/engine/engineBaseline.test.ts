@@ -13,6 +13,7 @@ import { writeFixture } from "../writeFixture"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
@@ -117,12 +118,12 @@ const CASES: { name: string; build: () => Inputs }[] = [
   { name: "anchor:dummyOff", build: () => toEngineInputs({ ...anchorInputs(), dummyMode: false }) },
   {
     name: "anchor:noQiBreak",
-    build: () => {
-      const raw = anchorInputs()
-      return toEngineInputs(
-        withCombat(raw, { qiBreak: { ...raw.combatSettings!.qiBreak, enabled: false } }),
-      )
-    },
+    build: () =>
+      toEngineInputs(
+        withCombat(anchorInputs(), {
+          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 },
+        }),
+      ),
   },
   {
     name: "anchor:healerBuff",

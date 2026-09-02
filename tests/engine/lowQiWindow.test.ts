@@ -12,7 +12,7 @@ const inputsWithLead = (lowQiLeadSec: number, startSec = 25): Inputs => ({
   ...defaultInputs,
   combatSettings: {
     ...defaultCombatSettings(),
-    qiBreak: { enabled: true, startSec, durationSec: 10, lowQiLeadSec },
+    qiBreakOverride: { startSec, durationSec: 10, lowQiLeadSec },
   },
 })
 

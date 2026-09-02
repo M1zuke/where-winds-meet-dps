@@ -79,7 +79,7 @@
 
 .entry {
   display: grid;
-  grid-template-columns: 28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr) auto;
+  grid-template-columns: 28px 64px minmax(96px, 0.8fr) 70px 70px minmax(160px, 1.8fr) 92px;
   gap: 10px;
   align-items: center;
   padding: 5px 8px;
@@ -330,4 +330,61 @@
   font-variant-numeric: tabular-nums;
   color: hsl(var(--buff-hue), 55%, 72%);
   min-width: 34px;
+}
+
+.qiBreakRow {
+  background: var(--color-surface-selected);
+  border-color: rgba(192, 160, 96, 0.28);
+}
+
+.headControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.qiBreakField {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.qiBreakField input {
+  width: 52px;
+}
+
+.qiBreakCap,
+.qiBreakUnit {
+  font-size: 0.78em;
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+.qiBreakRowLocked .qiBreakCap,
+.qiBreakRowLocked .qiBreakUnit {
+  opacity: 0.55;
+}
+
+.rowNote,
+.overrideFlag {
+  grid-column: 4 / 6;
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.rowNote {
+  font-size: 0.76em;
+  color: var(--color-text-faint);
+}
+
+.overrideFlag {
+  font-size: 0.7em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent-bright);
+  border: 1px solid rgba(192, 160, 96, 0.5);
+  background: rgba(192, 160, 96, 0.1);
+  border-radius: 3px;
+  padding: 1px 6px;
 }

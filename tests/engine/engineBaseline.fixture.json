@@ -570,8 +570,8 @@
     "digest": "1be1548cde75ee666aece757463509fd221bd2e91e2cd1a2d3598480ec92cec6"
   },
   "anchor:noQiBreak": {
-    "dps": 68653.49,
-    "totalDamage": 3955585.31,
+    "dps": 68366.51,
+    "totalDamage": 3939050.31,
     "rotationDuration": 57.62,
     "warnings": [],
     "perSkill": [
@@ -628,7 +628,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 27,
-        "expectedDamage": 72938.26,
+        "expectedDamage": 72688.16,
         "castCount": 9
       },
       {
@@ -636,7 +636,7 @@
         "breakdownName": "Blood Burst",
         "type": "sustain",
         "count": 33,
-        "expectedDamage": 2175976.2,
+        "expectedDamage": 2171402.54,
         "castCount": 0
       },
       {
@@ -644,7 +644,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 61533.16,
+        "expectedDamage": 61322.81,
         "castCount": 9
       },
       {
@@ -660,7 +660,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 49170.4,
+        "expectedDamage": 48884.96,
         "castCount": 4
       },
       {
@@ -684,7 +684,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27648.93,
+        "expectedDamage": 27437.75,
         "castCount": 4
       },
       {
@@ -692,7 +692,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110199.5,
+        "expectedDamage": 109366.73,
         "castCount": 4
       },
       {
@@ -700,7 +700,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 55297.86,
+        "expectedDamage": 54875.49,
         "castCount": 4
       },
       {
@@ -708,7 +708,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 78378.9,
+        "expectedDamage": 78099.5,
         "castCount": 3
       },
       {
@@ -716,7 +716,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 351118.05,
+        "expectedDamage": 344589.26,
         "castCount": 1
       },
       {
@@ -732,7 +732,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 276041.32,
+        "expectedDamage": 275003.37,
         "castCount": 0
       },
       {
@@ -740,7 +740,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 397750.26,
+        "expectedDamage": 396164.61,
         "castCount": 0
       },
       {
@@ -748,7 +748,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 5,
-        "expectedDamage": 48629.25,
+        "expectedDamage": 48311.9,
         "castCount": 0
       }
     ],
@@ -757,7 +757,7 @@
       "buffWindows": 130,
       "casts": 69
     },
-    "digest": "9705880bb1d4c92e9484dbcb21beb13c50c39fc5a9496a46d99c19c63ad51166"
+    "digest": "ea1fa9b0b3f55a6a5d1dc626efa5270a0857008d89d0a022259102bb811596e3"
   },
   "anchor:healerBuff": {
     "dps": 82905.37,
