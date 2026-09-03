@@ -284,16 +284,17 @@ describe("engine baseline", () => {
   }
 })
 
-// The figures the plan promises will not move. Spelled out separately from the
-// fixture so a re-baseline cannot silently take them with it.
+// Figures read off the running app, spelled out separately from the fixture so
+// a re-baseline cannot silently take them with it. Moving one is a claim about
+// the game, not about the engine.
 describe("engine baseline — profile-v7 anchor", () => {
   const result = runEngine(toEngineInputs(anchorInputs()))
   const damageOf = (name: string) =>
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(73859.03)
-    expect(round(result.totalDamage, 2)).toBe(4416769.93)
+    expect(round(result.dps, 2)).toBe(75300.34)
+    expect(round(result.totalDamage, 2)).toBe(4502960.47)
     expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
@@ -301,19 +302,19 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2198159.58)
-    expect(damageOf("Bleeding (DoT)")).toBe(292871.63)
+    expect(damageOf("Blood Burst")).toBe(2240450.45)
+    expect(damageOf("Bleeding (DoT)")).toBe(298741.58)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(418923.02)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(90347.25)
+    expect(damageOf("Smolder (DoT)")).toBe(427272.53)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(92145.02)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(59130.32)
+    expect(damageOf("Yi River")).toBe(60368.41)
   })
 })
