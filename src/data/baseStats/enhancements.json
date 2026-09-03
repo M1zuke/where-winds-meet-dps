@@ -13,22 +13,22 @@
     {
       "id": 3,
       "stat": "maxPhys",
-      "value": 72
+      "value": 80
     },
     {
       "id": 4,
       "stat": "minPhys",
-      "value": 108
+      "value": 120
     },
     {
       "id": 5,
       "stat": "maxPhys",
-      "value": 72
+      "value": 80
     },
     {
       "id": 6,
       "stat": "minPhys",
-      "value": 108
+      "value": 120
     }
   ]
 }
