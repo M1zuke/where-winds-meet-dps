@@ -134,7 +134,10 @@ still drop on version mismatch.
   recognise is kept exactly as written, and scores nothing. Repair renames and
   clamps; it never empties a field to make an unknown value go away. A profile
   written by a newer build and opened by an older one is the ordinary case, and
-  there every unrecognised value is one the user still owns.
+  there every unrecognised value is one the user still owns. The one thing that
+  is still cleared is a value this build **does** define but the current
+  selection forbids: that one would be scored, and a build the selection cannot
+  hold is the invisible wrong number an allowlist exists to stop.
 - **Checked against the default build** — the hydrator runs on the default profile,
   so a too-aggressive migration can silently change the app's default build.
 

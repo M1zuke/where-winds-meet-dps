@@ -38,9 +38,9 @@ import { kvStore } from "../src/kvStore"
 import { EMPTY_EQUIPPED } from "../src/engine/types"
 import type { GearPiece, Inputs, StoredProfile } from "../src/engine/types"
 import { CLASS_IDS } from "../src/definitions/classes/registry"
-import { getDefaultTalentsForClass } from "../src/definitions/baseStats"
+import { getDefaultTalentsForClass, getMindMethodContributions } from "../src/definitions/baseStats"
 import { runEngine } from "../src/engine/dps"
-import { applyArmorSet, applyBowSet } from "../src/engine/panel"
+import { allowedInnerWaysForClass, applyArmorSet, applyBowSet } from "../src/engine/panel"
 
 type StoredGearPiece = Omit<GearPiece, "words"> & {
   words: readonly { word: string; value: number; retuned: boolean }[]
@@ -1234,10 +1234,12 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
     expect(profiles[0].inputs.set).toBe("hawking")
   })
 
-  it("degrades an unrecognised legacy set to no set instead of leaving it dangling", () => {
-    saveInputs({ ...defaultInputs, set: "A Removed Set" })
+  it("keeps an unrecognised set stored and grants nothing for it", () => {
+    saveInputs({ ...defaultInputs, set: "A Set From Another Build" })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.set).toBeNull()
+    const stored = profiles[0].inputs
+    expect(stored.set).toBe("A Set From Another Build")
+    expect(applyArmorSet(stored)).toEqual(stored)
   })
 
   it("round-trips an already-migrated id unchanged", () => {
@@ -1326,6 +1328,73 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     kvStore.remove(PROFILES_KEY)
     writeProfileWithClassId("mingJinHong")
     expect(loadProfiles().profiles[0].inputs.classId).toBe(defaultInputs.classId)
+  })
+
+  it("keeps a slotted inner way this build has no definition for", () => {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "From another build",
+            inputs: {
+              ...defaultInputs,
+              mindMethods: [
+                { id: "innerWayFromAnotherBuild", name: "From Another Build", stacks: "tier 6" },
+                { name: "", stacks: "" },
+                { name: "", stacks: "" },
+                { name: "", stacks: "" },
+              ],
+            },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    const loaded = loadProfiles().profiles[0].inputs
+    expect(loaded.mindMethods[0].id).toBe("innerWayFromAnotherBuild")
+    expect(getMindMethodContributions(loaded)).toEqual({})
+  })
+
+  // The one thing hydration still takes off a profile, and why: this build has a
+  // definition for it, so leaving it slotted would score a build the class
+  // cannot hold.
+  it("clears a slotted inner way the class may not hold", () => {
+    const notForThisClass = allowedInnerWaysForClass("stonesplitStrength").find(
+      (innerWayId) => !allowedInnerWaysForClass("bellstrikeUmbra").includes(innerWayId),
+    )!
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Wrong class",
+            inputs: {
+              ...defaultInputs,
+              classId: "bellstrikeUmbra",
+              mindMethods: [
+                { id: notForThisClass, name: "", stacks: "tier 6" },
+                { name: "", stacks: "" },
+                { name: "", stacks: "" },
+                { name: "", stacks: "" },
+              ],
+            },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.mindMethods[0]).toEqual({
+      id: undefined,
+      name: "",
+      stacks: "",
+    })
   })
 
   it("the default build's own class id is a member of CLASS_IDS, so the degrade is a no-op on it", () => {

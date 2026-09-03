@@ -132,6 +132,29 @@ describe("runProfileMigrations — never deletes", () => {
     return blob
   }
 
+  it("loads a FUTURE-version blob without dropping the selections it cannot resolve", () => {
+    const blob = futureBlobHoldingWordsThisBuildLacks()
+    const profile = blob.profiles[0] as { inputs: Record<string, unknown> }
+    profile.inputs.set = "setFromALaterBuild"
+    profile.inputs.arsenal = "arsenalFromALaterBuild"
+    profile.inputs.bowSet = "bowSetFromALaterBuild"
+    profile.inputs.mindMethods = [
+      { id: "innerWayFromALaterBuild", name: "Inner Way From A Later Build", stacks: "tier 6" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+      { name: "", stacks: "" },
+    ]
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(blob))
+
+    const loaded = loadProfiles().profiles[0].inputs
+
+    expect(loaded.set).toBe("setFromALaterBuild")
+    expect(loaded.arsenal).toBe("arsenalFromALaterBuild")
+    expect(loaded.bowSet).toBe("bowSetFromALaterBuild")
+    expect(loaded.mindMethods[0].id).toBe("innerWayFromALaterBuild")
+    expect(loaded.mindMethods[0].stacks).toBe("tier 6")
+  })
+
   it("loads a FUTURE-version blob without dropping the words it cannot resolve", () => {
     localStorage.setItem(PROFILES_KEY, JSON.stringify(futureBlobHoldingWordsThisBuildLacks()))
 
