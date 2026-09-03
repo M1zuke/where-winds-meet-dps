@@ -192,14 +192,16 @@ function sanitizeOpeningStacks(stored: unknown): Record<string, number> {
   return healed
 }
 
-// A word outside the catalogue already scores nothing, so clearing the row costs
-// the user no contribution.
+// A word this build cannot resolve is kept exactly as stored, roll included. It
+// scores nothing — every consumer skips a word with no spec — and clearing it
+// would destroy a roll the build that wrote it understood, which is what a
+// profile saved by a newer build and opened by an older one looks like.
 function repairGearWord(entry: unknown): unknown {
   if (!entry || typeof entry !== "object") return entry
   const stored = (entry as { word?: unknown }).word
   if (typeof stored !== "string") return entry
   const renamed = migrateFormlessWordId(migrateCurrentGearWordLabel(migrateGearWordId(stored)))
-  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
+  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: stored }
 }
 
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
@@ -442,9 +444,14 @@ export function loadProfiles(): ProfilesState & { firstRun: boolean } {
             ? migrated.activeId
             : profiles[0].id
           // Persist the upgraded blob so the chain is walked once, not per load.
+          // Never for a blob a newer build wrote: the walk left it alone, and
+          // writing it back would stamp it at this build's version and hand it
+          // whatever this build made of the fields it does not know.
+          const storedByNewerBuild = typeof migrated.v === "number" && migrated.v > PROFILES_VERSION
           if (
-            releaseFollowed ||
-            (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION))
+            !storedByNewerBuild &&
+            (releaseFollowed ||
+              (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION)))
           ) {
             saveProfiles({ profiles, activeId })
           }

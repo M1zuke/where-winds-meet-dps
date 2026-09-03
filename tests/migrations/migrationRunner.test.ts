@@ -118,6 +118,38 @@ describe("runProfileMigrations — never deletes", () => {
     expect(result.notes.join(" ")).toMatch(/newer than/)
   })
 
+  // The shape of a downgrade: a build that shipped a later step wrote ids this
+  // build has no line for. The runner leaves such a blob alone, and nothing
+  // after it — hydration included — may undo that.
+  function futureBlobHoldingWordsThisBuildLacks(): RawProfilesBlob {
+    const blob = blobAt(LATEST_PROFILES_VERSION + 1)
+    const profile = blob.profiles[0] as { inputs: { inventory: unknown[] } }
+    const piece = profile.inputs.inventory[0] as {
+      words: { word: string; value: number; retuned: boolean }[]
+    }
+    piece.words[0] = { word: "maxWordFromALaterBuild", value: 41.3, retuned: false }
+    piece.words[1] = { word: "maxWordFromALaterBuild", value: 39.2, retuned: false }
+    return blob
+  }
+
+  it("loads a FUTURE-version blob without dropping the words it cannot resolve", () => {
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(futureBlobHoldingWordsThisBuildLacks()))
+
+    const piece = loadProfiles().profiles[0].inputs.inventory[0]
+
+    expect(piece.words[0]).toEqual({ word: "maxWordFromALaterBuild", value: 41.3, retuned: false })
+    expect(piece.words[1]).toEqual({ word: "maxWordFromALaterBuild", value: 39.2, retuned: false })
+  })
+
+  it("does not write a FUTURE-version blob back at this build's version", () => {
+    const future = futureBlobHoldingWordsThisBuildLacks()
+    localStorage.setItem(PROFILES_KEY, JSON.stringify(future))
+
+    loadProfiles()
+
+    expect(JSON.parse(localStorage.getItem(PROFILES_KEY)!)).toEqual(future)
+  })
+
   it("survives a step that throws — the pre-step blob carries forward", () => {
     const exploding: Migration = {
       to: LATEST_PROFILES_VERSION,

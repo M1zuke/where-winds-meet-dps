@@ -438,6 +438,12 @@ export function isGearWordId(value: unknown): value is GearWordId {
   return typeof value === "string" && GEAR_WORD_ID_SET.has(value)
 }
 
+// A word a profile holds that this build has no line for — a roll another build
+// wrote and this one must keep without showing or scoring it.
+export function isUnknownGearWord(value: unknown): boolean {
+  return typeof value === "string" && value !== "" && !GEAR_WORD_ID_SET.has(value)
+}
+
 export const GEAR_WORD_MAX_ROLL: Readonly<Record<GearWordId, number>> = Object.fromEntries(
   GEAR_WORD_LINES.map((line) => [line.id, line.maxRoll]),
 ) as Record<GearWordId, number>

@@ -130,6 +130,11 @@ still drop on version mismatch.
 - **Tested** — TESTING.md § "Migration tests".
 - **Conservative about deleting** — clear the one field that is now illegal; do not
   discard neighbouring user data to be safe.
+- **Silent about what it cannot resolve** — a stored value this build does not
+  recognise is kept exactly as written, and scores nothing. Repair renames and
+  clamps; it never empties a field to make an unknown value go away. A profile
+  written by a newer build and opened by an older one is the ordinary case, and
+  there every unrecognised value is one the user still owns.
 - **Checked against the default build** — the hydrator runs on the default profile,
   so a too-aggressive migration can silently change the app's default build.
 

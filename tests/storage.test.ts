@@ -486,7 +486,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     }
   })
 
-  it("clears a stored word the catalogue no longer offers and leaves its neighbours alone", () => {
+  it("keeps a stored word the catalogue no longer offers, roll and all", () => {
     const strandedPiece: StoredGearPiece = {
       id: "test-stranded-piece",
       slot: "helm",
@@ -519,8 +519,98 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
 
     const { profiles } = loadProfiles()
     const piece = profiles[0].inputs.inventory[0]
-    expect(piece.words[0]).toEqual({ word: "", value: 0, retuned: false })
+    expect(piece.words[0]).toEqual({ word: "Retired Word", value: 0.09, retuned: false })
     expect(piece.words[1]).toEqual({ word: "crit", value: 0.09, retuned: true })
+  })
+
+  it("scores nothing for a word the catalogue no longer offers", () => {
+    const strandedPiece: StoredGearPiece = {
+      id: "test-stranded-scoring",
+      slot: "helm",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "Retired Word", value: 0.09, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Legacy",
+            inputs: { ...defaultInputs, inventory: [strandedPiece] },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    const hydratedInputs = profiles[0].inputs
+    const contribution = computeGearContribution(hydratedInputs.inventory[0], hydratedInputs)
+    const fromWords = contribution.filter((row) => row.path !== "hp" && row.path !== "physDef")
+    expect(fromWords).toEqual([])
+  })
+
+  it("hands a profile saved by a newer build its unknown words back unchanged", () => {
+    const fromNewerBuild: StoredGearPiece = {
+      id: "test-newer-build-piece",
+      slot: "leftWeapon",
+      level: 91,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "maxWordThisBuildHasNeverHeardOf", value: 41.3, retuned: false },
+        { word: "maxWordThisBuildHasNeverHeardOf", value: 39.2, retuned: false },
+        { word: "maxPhys", value: 73.1, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: PROFILES_VERSION + 1,
+        profiles: [
+          {
+            id: "p1",
+            name: "From tomorrow",
+            inputs: { ...defaultInputs, inventory: [fromNewerBuild] },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+
+    const piece = loadProfiles().profiles[0].inputs.inventory[0]
+    expect(piece.words.map((entry) => entry.word)).toEqual([
+      "maxWordThisBuildHasNeverHeardOf",
+      "maxWordThisBuildHasNeverHeardOf",
+      "maxPhys",
+      "",
+      "",
+    ])
+    expect(piece.words.map((entry) => entry.value)).toEqual([41.3, 39.2, 73.1, 0, 0])
   })
 
   it("renames a legacy word rather than clearing it as unknown", () => {
