@@ -2,31 +2,37 @@
   "95": [
     {
       "id": 1,
+      "slot": "disc",
       "stat": "maxPhys",
       "value": 160
     },
     {
       "id": 2,
+      "slot": "pendant",
       "stat": "maxPhys",
       "value": 160
     },
     {
       "id": 3,
+      "slot": "leftWeapon",
       "stat": "maxPhys",
       "value": 80
     },
     {
       "id": 4,
+      "slot": "leftWeapon",
       "stat": "minPhys",
       "value": 120
     },
     {
       "id": 5,
+      "slot": "rightWeapon",
       "stat": "maxPhys",
       "value": 80
     },
     {
       "id": 6,
+      "slot": "rightWeapon",
       "stat": "minPhys",
       "value": 120
     }

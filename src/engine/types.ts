@@ -150,6 +150,8 @@ export interface Inputs {
   martialArtsTalents: MartialArtsTalent[]
 
   oddities: OddityRegions
+
+  enhancements: EnhancementNode[]
 }
 
 export type TalentStat =
@@ -214,6 +216,22 @@ export interface OddityNode {
 }
 
 export type OddityRegions = Record<string, OddityNode[]>
+
+export const ENHANCEMENT_SLOTS = [
+  "leftWeapon",
+  "rightWeapon",
+  "disc",
+  "pendant",
+] as const satisfies readonly GearSlot[]
+
+export type EnhancementSlot = (typeof ENHANCEMENT_SLOTS)[number]
+
+export interface EnhancementNode {
+  id: number
+  slot: EnhancementSlot
+  stat: TalentStat
+  value: number
+}
 
 export type GearSlot =
   "leftWeapon" | "rightWeapon" | "disc" | "pendant" | "helm" | "armor" | "greaves" | "bracer"

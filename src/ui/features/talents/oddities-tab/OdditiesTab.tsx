@@ -406,7 +406,7 @@ export function OdditiesTab({ inputs, onChange }: Props) {
       <div className="toolbar">
         <span className="toolbar-label">{t("talents.oddities.oddities")}</span>
         <button type="button" className={`btn ${styles.btnDanger}`} onClick={resetAll}>
-          {t("talents.oddities.resetToDefault")}
+          {t("common.resetToDefault")}
         </button>
       </div>
 

@@ -1,4 +1,8 @@
-import { DEFAULT_ODDITIES, getDefaultTalentsForClass } from "../definitions/baseStats"
+import {
+  DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+  getDefaultTalentsForClass,
+} from "../definitions/baseStats"
 import { classDefinition } from "../definitions/classes/registry"
 import type { GraduationBuild } from "../definitions/classes/classDef"
 import { relayGraduationGearPiece } from "../data/classes/graduationGear"
@@ -60,5 +64,6 @@ export function graduationInputs(
       enabled: true,
     })),
     oddities: allOddities(),
+    enhancements: DEFAULT_ENHANCEMENTS.map((node) => ({ ...node })),
   }
 }
