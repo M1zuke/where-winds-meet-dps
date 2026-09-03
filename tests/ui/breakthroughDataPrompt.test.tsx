@@ -1,16 +1,29 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-const { MockWorker } = vi.hoisted(() => {
+const { MockWorker, STALE_INNER_WAY } = vi.hoisted(() => {
   class Mock {
     onmessage: ((event: { data: unknown }) => void) | null = null
     postMessage() {}
     terminate() {}
   }
-  return { MockWorker: Mock }
+  return { MockWorker: Mock, STALE_INNER_WAY: "frostCladNight" }
 })
 
 vi.mock("../../src/engine/dpsWorker?worker", () => ({ default: MockWorker }))
+
+vi.mock("../../src/definitions/innerWays/registry", async (importOriginal) => {
+  const registry = await importOriginal<typeof import("../../src/definitions/innerWays/registry")>()
+  return {
+    ...registry,
+    innerWayDefinition: (id: string) => {
+      const definition = registry.innerWayDefinition(id)
+      return definition?.id === STALE_INNER_WAY
+        ? { ...definition, confirmedBreakthrough: definition.confirmedBreakthrough - 1 }
+        : definition
+    },
+  }
+})
 
 const { defaultInputs } = await import("../../src/engine/defaults")
 const { saveProfiles } = await import("../../src/storage")

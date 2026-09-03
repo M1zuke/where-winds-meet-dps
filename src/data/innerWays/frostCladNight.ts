@@ -12,10 +12,10 @@ export const frostCladNight = defineInnerWay({
   name: "Frost-Clad Night",
   legacyNames: ["Frostwhite Night"],
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 16,
+  confirmedBreakthrough: 17,
   buffParam: PARAM.frostCladNight,
   panelStats: {
-    "phys.min": 74.4,
+    "phys.min": 77.9,
     directCritRate: 0.046,
   },
   buffDefs: [
