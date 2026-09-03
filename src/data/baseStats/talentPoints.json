@@ -389,5 +389,77 @@
       "stat": "critRate",
       "value": 0.04
     }
+  ],
+  "100.2": [
+    {
+      "id": 1,
+      "stat": "agility",
+      "value": 1
+    },
+    {
+      "id": 2,
+      "stat": "power",
+      "value": 1
+    },
+    {
+      "id": 3,
+      "stat": "momentum",
+      "value": 1
+    },
+    {
+      "id": 4,
+      "stat": "agility",
+      "value": 1
+    },
+    {
+      "id": 5,
+      "stat": "power",
+      "value": 1
+    },
+    {
+      "id": 6,
+      "stat": "momentum",
+      "value": 1
+    },
+    {
+      "id": 7,
+      "stat": "agility",
+      "value": 1
+    },
+    {
+      "id": 8,
+      "stat": "power",
+      "value": 1
+    },
+    {
+      "id": 9,
+      "stat": "momentum",
+      "value": 1
+    },
+    {
+      "id": 10,
+      "stat": "agility",
+      "value": 1
+    },
+    {
+      "id": 11,
+      "stat": "power",
+      "value": 1
+    },
+    {
+      "id": 12,
+      "stat": "momentum",
+      "value": 1
+    },
+    {
+      "id": 13,
+      "stat": "maxFormless",
+      "value": 13.2
+    },
+    {
+      "id": 14,
+      "stat": "minFormless",
+      "value": 13.2
+    }
   ]
 }
