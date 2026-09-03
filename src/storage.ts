@@ -50,6 +50,18 @@ import type { Debuff, DebuffDotSpec, DotDetonationSpec, DotStackShape } from "./
 import { isDebuff, makeDebuff } from "./engine/debuff"
 import { kvStore } from "./kvStore"
 import {
+  LATEST_CUSTOM_SKILLS_VERSION,
+  OLDEST_MIGRATABLE_CUSTOM_SKILLS_VERSION,
+  runCustomSkillMigrations,
+  type RawCustomSkillsBlob,
+} from "./migrations/customSkills"
+import {
+  LATEST_CUSTOM_DEBUFFS_VERSION,
+  OLDEST_MIGRATABLE_CUSTOM_DEBUFFS_VERSION,
+  runCustomDebuffMigrations,
+  type RawCustomDebuffsBlob,
+} from "./migrations/customDebuffs"
+import {
   LATEST_PROFILES_VERSION,
   runProfileMigrations,
   migrateClassId,
@@ -689,7 +701,6 @@ export function importCustomRotation(text: string): Rotation {
 }
 
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
-const CUSTOM_SKILLS_VERSION = 3
 
 interface CustomSkillsBlob {
   v: number
@@ -875,45 +886,6 @@ function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): 
   return legacyReceives(legacyTags)
 }
 
-// These coefficients were replaced wholesale, so a stored copy carrying the
-// superseded workbook numbers scores ~69x low. Only
-// an untouched copy is rewritten — a hit the user actually edited is left
-// alone, since we cannot tell a stale value from a deliberate one once it
-// differs.
-const SUPERSEDED_DRAGON_HEAD_HITS: Record<
-  string,
-  { from: [number, number, number]; to: [number, number, number] }
-> = {
-  "-dragon-head-plus": {
-    from: [25.200406, 4695.46, 37.800609],
-    to: [17.3793, 3237, 26.0689],
-  },
-  "-dragon-head": {
-    from: [36.00058, 6707.8, 54.00087],
-    to: [24.827571, 4624.285714, 37.241286],
-  },
-}
-
-function healDragonHeadCoefficients(id: string, hits: SkillHit[]): SkillHit[] {
-  const suffix = id.endsWith("-dragon-head-plus") ? "-dragon-head-plus" : "-dragon-head"
-  if (!id.endsWith(suffix)) return hits
-  const swap = SUPERSEDED_DRAGON_HEAD_HITS[suffix]
-  if (!swap) return hits
-  return hits.map((hit) => {
-    const untouched =
-      hit.physMultiplier === swap.from[0] &&
-      hit.physFixed === swap.from[1] &&
-      hit.attributeMultiplier === swap.from[2]
-    if (!untouched) return hit
-    return {
-      ...hit,
-      physMultiplier: swap.to[0],
-      physFixed: swap.to[1],
-      attributeMultiplier: swap.to[2],
-    }
-  })
-}
-
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateSkill(s: Skill): Skill {
   if (!s || typeof s !== "object") return s
@@ -929,12 +901,7 @@ function hydrateSkill(s: Skill): Skill {
     classId: migrateClassId(s.classId),
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
     tags: healedTags,
-    hits: Array.isArray(s.hits)
-      ? healDragonHeadCoefficients(
-          id,
-          s.hits.map((h) => hydrateSkillHit(h)),
-        )
-      : s.hits,
+    hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     ...healSkillReach(id, s, reachTags),
   }
 }
@@ -979,10 +946,17 @@ export function loadCustomSkills(): Skill[] {
   try {
     const raw = kvStore.get(CUSTOM_SKILLS_KEY)
     if (!raw) return []
-    const parsed = JSON.parse(raw) as CustomSkillsBlob
-    if (parsed.v !== CUSTOM_SKILLS_VERSION) return []
-    if (!Array.isArray(parsed.skills)) return []
-    return parsed.skills.map(hydrateSkill).filter(isSkill)
+    const parsed = JSON.parse(raw) as RawCustomSkillsBlob
+    if (typeof parsed.v !== "number" || parsed.v < OLDEST_MIGRATABLE_CUSTOM_SKILLS_VERSION)
+      return []
+    const result = runCustomSkillMigrations(parsed)
+    if (!result || !Array.isArray(result.blob.skills)) return []
+    const skills = result.blob.skills.map((skill) => hydrateSkill(skill as Skill)).filter(isSkill)
+    const storedByNewerBuild = result.blob.v > LATEST_CUSTOM_SKILLS_VERSION
+    if (!storedByNewerBuild && (result.applied.length > 0 || parsed.v !== result.blob.v)) {
+      writeCustomSkills(skills)
+    }
+    return skills
   } catch {
     return []
   }
@@ -994,7 +968,7 @@ export function loadCustomSkillsForClass(classId: string): Skill[] {
 
 function writeCustomSkills(skills: Skill[]): void {
   try {
-    const blob: CustomSkillsBlob = { v: CUSTOM_SKILLS_VERSION, skills }
+    const blob: CustomSkillsBlob = { v: LATEST_CUSTOM_SKILLS_VERSION, skills }
     kvStore.set(CUSTOM_SKILLS_KEY, JSON.stringify(blob))
   } catch {}
 }
@@ -1363,13 +1337,7 @@ function migrateStatusStoresIfNeeded(): void {
 
     let existingDebuffs: Debuff[] = []
     try {
-      const existingRaw = kvStore.get(CUSTOM_DEBUFFS_KEY)
-      if (existingRaw) {
-        const parsedD = JSON.parse(existingRaw) as { v?: number; debuffs?: unknown[] }
-        if (parsedD.v === CUSTOM_DEBUFFS_VERSION && Array.isArray(parsedD.debuffs)) {
-          existingDebuffs = parsedD.debuffs.filter(isDebuff)
-        }
-      }
+      existingDebuffs = readStoredDebuffs().debuffs
     } catch {}
     writeCustomDebuffs([...existingDebuffs, ...debuffs])
   } catch {}
@@ -1446,7 +1414,6 @@ export function importCustomBuff(text: string, targetClassId: string): Buff {
 }
 
 const CUSTOM_DEBUFFS_KEY = "wwm.customDebuffs"
-const CUSTOM_DEBUFFS_VERSION = 2
 
 interface CustomDebuffsBlob {
   v: number
@@ -1510,15 +1477,28 @@ function hydrateDebuff(d: Debuff): Debuff {
   }
 }
 
+function readStoredDebuffs(): { debuffs: Debuff[]; persist: boolean } {
+  const raw = kvStore.get(CUSTOM_DEBUFFS_KEY)
+  if (!raw) return { debuffs: [], persist: false }
+  const parsed = JSON.parse(raw) as RawCustomDebuffsBlob
+  if (typeof parsed.v !== "number" || parsed.v < OLDEST_MIGRATABLE_CUSTOM_DEBUFFS_VERSION) {
+    return { debuffs: [], persist: false }
+  }
+  const result = runCustomDebuffMigrations(parsed)
+  if (!result || !Array.isArray(result.blob.debuffs)) return { debuffs: [], persist: false }
+  const storedByNewerBuild = result.blob.v > LATEST_CUSTOM_DEBUFFS_VERSION
+  return {
+    debuffs: result.blob.debuffs.filter(isDebuff).map(hydrateDebuff),
+    persist: !storedByNewerBuild && (result.applied.length > 0 || parsed.v !== result.blob.v),
+  }
+}
+
 export function loadCustomDebuffs(): Debuff[] {
   migrateStatusStoresIfNeeded()
   try {
-    const raw = kvStore.get(CUSTOM_DEBUFFS_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as CustomDebuffsBlob
-    if (parsed.v !== CUSTOM_DEBUFFS_VERSION) return []
-    if (!Array.isArray(parsed.debuffs)) return []
-    return parsed.debuffs.filter(isDebuff).map(hydrateDebuff)
+    const { debuffs, persist } = readStoredDebuffs()
+    if (persist) writeCustomDebuffs(debuffs)
+    return debuffs
   } catch {
     return []
   }
@@ -1530,7 +1510,7 @@ export function loadCustomDebuffsForClass(classId: string): Debuff[] {
 
 function writeCustomDebuffs(debuffs: Debuff[]): void {
   try {
-    const blob: CustomDebuffsBlob = { v: CUSTOM_DEBUFFS_VERSION, debuffs }
+    const blob: CustomDebuffsBlob = { v: LATEST_CUSTOM_DEBUFFS_VERSION, debuffs }
     kvStore.set(CUSTOM_DEBUFFS_KEY, JSON.stringify(blob))
   } catch {}
 }

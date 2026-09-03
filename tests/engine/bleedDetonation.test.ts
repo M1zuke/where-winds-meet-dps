@@ -181,25 +181,27 @@ describe("Sword R Charge follow-up", () => {
   const total = (name: string, field: "physMultiplier" | "attributeMultiplier" | "physFixed") =>
     skillOf(name).hits.reduce((a, h) => a + h[field], 0)
 
-  it("carries the workbook's Crisscross - Second Track coefficients, split across 2 hits", () => {
-    expect(skillOf(FULL).hits).toHaveLength(2)
-    expect(total(FULL, "physMultiplier")).toBeCloseTo(0.8133, 10)
-    expect(total(FULL, "attributeMultiplier")).toBeCloseTo(1.21995, 10)
+  it("carries the Crisscross - Second Track coefficients as a 0.4 / 0.6 split across 2 hits with no flat damage", () => {
+    const hits = skillOf(FULL).hits
+    expect(hits).toHaveLength(2)
+    expect(total(FULL, "physMultiplier")).toBeCloseTo(0.814002, 10)
+    expect(total(FULL, "attributeMultiplier")).toBeCloseTo(1.221003, 10)
     expect(total(FULL, "physFixed")).toBe(0)
-    for (const hit of skillOf(FULL).hits) {
-      expect(hit.physMultiplier).toBeCloseTo(0.8133 / 2, 10)
-      expect(hit.attributeMultiplier).toBeCloseTo(1.21995 / 2, 10)
-    }
+    expect(hits.reduce((sum, hit) => sum + hit.attributeFixed, 0)).toBe(0)
+    expect(hits[0].physMultiplier).toBeCloseTo(0.325601, 10)
+    expect(hits[1].physMultiplier).toBeCloseTo(0.488401, 10)
+    expect(hits[0].attributeMultiplier).toBeCloseTo(0.488401, 10)
+    expect(hits[1].attributeMultiplier).toBeCloseTo(0.732602, 10)
   })
 
-  it("the 1-hit cancel is exactly half the full follow-up", () => {
+  it("the 1-hit cancel is exactly the full follow-up's first hit", () => {
     expect(skillOf(CANCEL).hits).toHaveLength(1)
-    expect(total(CANCEL, "physMultiplier")).toBeCloseTo(total(FULL, "physMultiplier") / 2, 10)
-    expect(total(CANCEL, "attributeMultiplier")).toBeCloseTo(
-      total(FULL, "attributeMultiplier") / 2,
-      10,
-    )
-    expect(total(CANCEL, "physFixed")).toBe(0)
+    const [first] = skillOf(FULL).hits
+    const [cancel] = skillOf(CANCEL).hits
+    expect(cancel.physMultiplier).toBe(first.physMultiplier)
+    expect(cancel.attributeMultiplier).toBe(first.attributeMultiplier)
+    expect(cancel.physFixed).toBe(0)
+    expect(cancel.attributeFixed).toBe(0)
   })
 
   it("both apply bleed and can detonate it, like the Crosswind Blade follow-up they mirror", () => {
@@ -232,15 +234,18 @@ describe("Sword R Charge follow-up", () => {
 describe("Sword Charge Stage 1, 3-Hit", () => {
   const NAME = SKILL.swordChargeStage13Hit
 
-  it("carries the workbook's first-3-hits row, split across 3 hits", () => {
+  it("carries the charge's first three hits, the opener heavier than the two that follow", () => {
     const s = skillOf(NAME)
     expect(s.hits).toHaveLength(3)
     const sum = (f: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed") =>
       s.hits.reduce((a, h) => a + h[f], 0)
-    expect(sum("physMultiplier")).toBeCloseTo(0.94015, 10)
-    expect(sum("attributeMultiplier")).toBeCloseTo(1.41025, 10)
-    expect(sum("physFixed")).toBeCloseTo(260, 10)
-    expect(sum("attributeFixed")).toBeCloseTo(141.5, 10)
+    expect(sum("physMultiplier")).toBeCloseTo(0.940156, 10)
+    expect(sum("attributeMultiplier")).toBeCloseTo(1.410234, 10)
+    expect(sum("physFixed")).toBeCloseTo(260.4, 10)
+    expect(sum("attributeFixed")).toBeCloseTo(141.75, 10)
+    expect(s.hits[0].physMultiplier).toBeCloseTo(0.402924, 10)
+    expect(s.hits[1].physMultiplier).toBeCloseTo(0.268616, 10)
+    expect(s.hits[2].physMultiplier).toBeCloseTo(0.268616, 10)
   })
 
   it("sits below the 4-hit and 5-hit cancels it shares a charge with", () => {

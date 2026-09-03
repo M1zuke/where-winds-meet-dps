@@ -18,8 +18,8 @@ describe("built-in skill coefficient split — coeffsAreTotal only", () => {
   it("Bleed Tick (a DoT tick) carries the FULL per-tick coeff on its one hit", () => {
     const bleedTick = builtinSkill(CLASS, SKILL.bleedTick)
     expect(bleedTick.hits).toHaveLength(1)
-    expect(bleedTick.hits[0].physMultiplier).toBeCloseTo(0.06864, 10)
-    expect(bleedTick.hits[0].attributeMultiplier).toBeCloseTo(0.10296, 10)
+    expect(bleedTick.hits[0].physMultiplier).toBeCloseTo(0.066, 10)
+    expect(bleedTick.hits[0].attributeMultiplier).toBeCloseTo(0.099, 10)
   })
 })
 

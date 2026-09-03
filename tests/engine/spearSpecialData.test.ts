@@ -28,30 +28,30 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancel).toHaveLength(1)
   })
 
-  it("base + River Flow variant coefficients match the workbook values; the cancel's base row is exactly half of Spear Special's", () => {
+  it("base + River Flow variant coefficients; the cancel's rows are the first 0.4 of Spear Special's two-hit total", () => {
     const hit = spearSpecial[0].hits[0]
-    expect(hit.physMultiplier).toBeCloseTo(1.7122, 10)
-    expect(hit.attributeMultiplier).toBeCloseTo(2.5683, 10)
-    expect(hit.physFixed).toBeCloseTo(474, 10)
-    expect(hit.attributeFixed).toBeCloseTo(258, 10)
+    expect(hit.physMultiplier).toBeCloseTo(1.712176, 10)
+    expect(hit.attributeMultiplier).toBeCloseTo(2.568264, 10)
+    expect(hit.physFixed).toBeCloseTo(474.4, 10)
+    expect(hit.attributeFixed).toBeCloseTo(258.4, 10)
 
     const variant = hit.variants![0]
-    expect(variant.physMultiplier).toBeCloseTo(2.5683, 10)
-    expect(variant.attributeMultiplier).toBeCloseTo(3.8524, 10)
-    expect(variant.physFixed).toBeCloseTo(711, 10)
-    expect(variant.attributeFixed).toBeCloseTo(387, 10)
+    expect(variant.physMultiplier).toBeCloseTo(2.568264, 10)
+    expect(variant.attributeMultiplier).toBeCloseTo(3.852396, 10)
+    expect(variant.physFixed).toBeCloseTo(711.6, 10)
+    expect(variant.attributeFixed).toBeCloseTo(387.6, 10)
 
     const cancelHit = cancel[0].hits[0]
-    expect(cancelHit.physMultiplier).toBeCloseTo(hit.physMultiplier / 2, 10)
-    expect(cancelHit.attributeMultiplier).toBeCloseTo(hit.attributeMultiplier / 2, 10)
-    expect(cancelHit.physFixed).toBeCloseTo(hit.physFixed / 2, 10)
-    expect(cancelHit.attributeFixed).toBeCloseTo(hit.attributeFixed / 2, 10)
+    expect(cancelHit.physMultiplier).toBeCloseTo(hit.physMultiplier * 0.4, 6)
+    expect(cancelHit.attributeMultiplier).toBeCloseTo(hit.attributeMultiplier * 0.4, 6)
+    expect(cancelHit.physFixed).toBeCloseTo(hit.physFixed * 0.4, 6)
+    expect(cancelHit.attributeFixed).toBeCloseTo(hit.attributeFixed * 0.4, 6)
 
     const cancelVariant = cancelHit.variants![0]
-    expect(cancelVariant.physMultiplier).toBeCloseTo(1.02732, 10)
-    expect(cancelVariant.attributeMultiplier).toBeCloseTo(1.54096, 10)
-    expect(cancelVariant.physFixed).toBeCloseTo(284.4, 10)
-    expect(cancelVariant.attributeFixed).toBeCloseTo(154.8, 10)
+    expect(cancelVariant.physMultiplier).toBeCloseTo(variant.physMultiplier * 0.4, 6)
+    expect(cancelVariant.attributeMultiplier).toBeCloseTo(variant.attributeMultiplier * 0.4, 6)
+    expect(cancelVariant.physFixed).toBeCloseTo(variant.physFixed * 0.4, 6)
+    expect(cancelVariant.attributeFixed).toBeCloseTo(variant.attributeFixed * 0.4, 6)
   })
 
   it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Blood Burst), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
