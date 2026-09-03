@@ -179,8 +179,8 @@ Power +46.4
   it("keeps duplicate words, each with its own value", () => {
     const { piece } = parseGearScreenshot(TRANSCRIPT_B, inputs, FALLBACK_SLOT)
 
-    expect(piece.words[0]).toEqual({ word: "maxVoidAttack", value: 41.3, retuned: false })
-    expect(piece.words[1]).toEqual({ word: "maxVoidAttack", value: 41.2, retuned: false })
+    expect(piece.words[0]).toEqual({ word: "maxFormless", value: 41.3, retuned: false })
+    expect(piece.words[1]).toEqual({ word: "maxFormless", value: 41.2, retuned: false })
   })
 
   it("leaves an unreadable stat name unresolved and names the row in the report, never resolving to the nearest label", () => {
@@ -292,7 +292,7 @@ Relaying · Tier 96
 `
     const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT)
 
-    expect(piece.words[0]).toEqual({ word: "maxVoidAttack", value: 41.3, retuned: false })
+    expect(piece.words[0]).toEqual({ word: "maxFormless", value: 41.3, retuned: false })
   })
 
   it("treats an attunement row with no numeric value as an unrolled attunement, not a failure", () => {
@@ -468,8 +468,8 @@ Boost +5.8% epic
   it("flags two misread values above their word's cap instead of clamping them, on mirageVeilbright.png", () => {
     const { piece, fields } = parseGearScreenshot(REAL_MIRAGE_VEILBRIGHT, inputs, FALLBACK_SLOT)
 
-    expect(piece.words[0]).toEqual({ word: "maxVoidAttack", value: 417.3, retuned: false })
-    expect(piece.words[1]).toEqual({ word: "maxVoidAttack", value: 417.2, retuned: false })
+    expect(piece.words[0]).toEqual({ word: "maxFormless", value: 417.3, retuned: false })
+    expect(piece.words[1]).toEqual({ word: "maxFormless", value: 417.2, retuned: false })
     expect(fields.words[0].confidence).toBe("guessed")
     expect(fields.words[1].confidence).toBe("guessed")
   })

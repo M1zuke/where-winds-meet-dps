@@ -353,8 +353,8 @@ export const STAT_LINES = [
     scope: "player",
     category: "Bamboocut",
   },
-  { id: "minVoidAttack", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
-  { id: "maxVoidAttack", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "minFormless", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "maxFormless", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
   {
     id: "formlessPenetration",
     label: "Formless Penetration",

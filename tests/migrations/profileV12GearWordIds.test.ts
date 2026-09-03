@@ -1,12 +1,18 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
-import { V12__gearWordIds, migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
+import {
+  V12__gearWordIds,
+  migrateGearWordId,
+  LEGACY_GEAR_WORD_TO_ID,
+} from "../../src/migrations/V12__gearWordIds"
 import { isGearWordId } from "../../src/data/stats/statLines"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v11/bellstrikeUmbra.json"
 
 const LEGACY_INPUTS_KEY = "wwm.inputs"
+// This hop's own output, not the live table, which a later rename moves.
+const IDS_AT_V12 = new Set(Object.values(LEGACY_GEAR_WORD_TO_ID))
 
 type LegacyFile = { v: number; profile: StoredProfile }
 const LEGACY = legacyProfileFile as unknown as LegacyFile
@@ -38,9 +44,9 @@ describe("profile-v11 fixture", () => {
 })
 
 describe("migrateGearWordId", () => {
-  it("maps every display name a profile can hold to a live gear word id", () => {
+  it("maps every display name a profile can hold to a gear word id", () => {
     for (const name of storedWords(LEGACY.profile.inputs)) {
-      expect(isGearWordId(migrateGearWordId(name)), name).toBe(true)
+      expect(IDS_AT_V12.has(migrateGearWordId(name)), name).toBe(true)
     }
   })
 
@@ -65,7 +71,7 @@ describe("V12__gearWordIds — called directly", () => {
     const migrated = V12__gearWordIds.migrate(clone(before))
     expect(migrated.v).toBe(V12__gearWordIds.to)
     for (const word of storedWords(inputsOf(migrated))) {
-      expect(isGearWordId(word), word).toBe(true)
+      expect(IDS_AT_V12.has(word), word).toBe(true)
     }
     const valuesBefore = inputsOf(before).inventory.flatMap((piece) =>
       piece.words.map((entry) => entry.value),
@@ -116,7 +122,7 @@ describe("V12__gearWordIds — registered in the chain", () => {
       storedWords(LEGACY.profile.inputs as unknown as Inputs).length,
     )
     for (const word of storedWords(inputsOf(result.blob))) {
-      expect(isGearWordId(word), word).toBe(true)
+      expect(IDS_AT_V12.has(word), word).toBe(true)
     }
   })
 })

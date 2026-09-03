@@ -391,9 +391,9 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     }
   })
 
-  it("renames a stored piece's Formless words to Void Attack and keeps the primary-attribute contribution", () => {
-    const voidPiece: StoredGearPiece = {
-      id: "test-void-piece",
+  it("renames a stored piece's Formless labels to their stat-line ids and keeps the primary-attribute contribution", () => {
+    const formlessPiece: StoredGearPiece = {
+      id: "test-formless-piece",
       slot: "helm",
       level: 91,
       rarity: "legendary",
@@ -412,7 +412,11 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
       attunementValue: 0,
       relayed: false,
     }
-    const legacyInputs = { ...defaultInputs, classId: "bellstrikeUmbra", inventory: [voidPiece] }
+    const legacyInputs = {
+      ...defaultInputs,
+      classId: "bellstrikeUmbra",
+      inventory: [formlessPiece],
+    }
     kvStore.set(
       PROFILES_KEY,
       JSON.stringify({
@@ -425,8 +429,8 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
     const { profiles } = loadProfiles()
     const hydratedInputs = profiles[0].inputs
     const piece = hydratedInputs.inventory[0]
-    expect(piece.words[0].word).toBe("maxVoidAttack")
-    expect(piece.words[1].word).toBe("minVoidAttack")
+    expect(piece.words[0].word).toBe("maxFormless")
+    expect(piece.words[1].word).toBe("minFormless")
     const contribution = computeGearContribution(piece, hydratedInputs)
     expect(contribution.find((row) => row.path === "bellstrike.max")?.amount).toBeCloseTo(44.2, 10)
     expect(contribution.find((row) => row.path === "bellstrike.min")?.amount).toBeCloseTo(22.1, 10)

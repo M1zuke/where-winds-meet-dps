@@ -396,7 +396,7 @@ describe("FT variant selection", () => {
       w("power", 46),
       w("agility", 46),
       w("momentum", 46),
-      w("maxVoidAttack", 41.55),
+      w("maxFormless", 41.55),
     ],
     {
       id: "helm-piece",
@@ -413,8 +413,8 @@ describe("FT variant selection", () => {
   it("scores an unequipped candidate against its own slot emptied, not against a build still holding the equipped piece", () => {
     const equippedWeapon = piece(
       [
-        w("maxVoidAttack", 41.28),
-        w("maxVoidAttack", 41.19),
+        w("maxFormless", 41.28),
+        w("maxFormless", 41.19),
         w("swordBoost", 0.0583),
         w("maxPhys", 73.13),
         w("momentum", 45.57),
@@ -424,7 +424,7 @@ describe("FT variant selection", () => {
     const candidate = piece(
       [
         w("maxPhys", 64.7),
-        w("maxVoidAttack", 43.9),
+        w("maxFormless", 43.9),
         w("momentum", 45.1),
         w("swordBoost", 0.049),
         w("affinity", 0.044),
@@ -440,7 +440,7 @@ describe("FT variant selection", () => {
     const candidate = piece(
       [
         w("maxPhys", 5),
-        w("maxVoidAttack", 43.9),
+        w("maxFormless", 43.9),
         w("momentum", 45.1),
         w("swordBoost", 0.049),
         w("affinity", 0.01),

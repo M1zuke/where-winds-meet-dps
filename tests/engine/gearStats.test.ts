@@ -196,10 +196,10 @@ describe("formless penetration routes to the class primary attribute", () => {
   })
 })
 
-describe("void attack words route to the class primary attribute attack", () => {
-  function voidAttackPiece(word: GearWordId, value: number): GearPiece {
+describe("formless attack words route to the class primary attribute attack", () => {
+  function formlessAttackPiece(word: GearWordId, value: number): GearPiece {
     return {
-      id: "void-attack-piece",
+      id: "formless-attack-piece",
       slot: "helm",
       level: 91,
       rarity: "legendary",
@@ -220,18 +220,18 @@ describe("void attack words route to the class primary attribute attack", () => 
     }
   }
 
-  it("for bellstrikeUmbra (primary = Bellstrike), Min Void Attack bumps bellstrike.min only", () => {
+  it("for bellstrikeUmbra (primary = Bellstrike), Min Formless Attack bumps bellstrike.min only", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("minVoidAttack", 30), +1)
+    const after = applyPieceContribution(inputs, formlessAttackPiece("minFormless", 30), +1)
     expect(after.bellstrike.min).toBeCloseTo(inputs.bellstrike.min + 30, 9)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max, 9)
     expect(after.bamboocut.min).toBeCloseTo(inputs.bamboocut.min, 9)
     expect(after.phys.min).toBeCloseTo(inputs.phys.min, 9)
   })
 
-  it("for bellstrikeUmbra (primary = Bellstrike), Max Void Attack bumps bellstrike.max only", () => {
+  it("for bellstrikeUmbra (primary = Bellstrike), Max Formless Attack bumps bellstrike.max only", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("maxVoidAttack", 36.2), +1)
+    const after = applyPieceContribution(inputs, formlessAttackPiece("maxFormless", 36.2), +1)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max + 36.2, 9)
     expect(after.bellstrike.min).toBeCloseTo(inputs.bellstrike.min, 9)
     expect(after.bamboocut.max).toBeCloseTo(inputs.bamboocut.max, 9)
@@ -239,7 +239,7 @@ describe("void attack words route to the class primary attribute attack", () => 
 
   it("the word value scales linearly (value / spec.amount)", () => {
     const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-    const after = applyPieceContribution(inputs, voidAttackPiece("maxVoidAttack", 18.1), +1)
+    const after = applyPieceContribution(inputs, formlessAttackPiece("maxFormless", 18.1), +1)
     expect(after.bellstrike.max).toBeCloseTo(inputs.bellstrike.max + 18.1, 9)
   })
 })
