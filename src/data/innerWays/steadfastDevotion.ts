@@ -13,7 +13,7 @@ export const steadfastDevotion = defineInnerWay({
   confirmedBreakthrough: 17,
   buffParam: PARAM.steadfastDevotion,
   panelStats: {
-    critRate: 0.08,
+    critRate: 0.081,
     critDamageBoost: 0.04,
   },
   buffDefs: [mountainSplitter, chargeEnhancement, burningHeartIPConsume],
