@@ -119,7 +119,9 @@ An inner way can reshape the calculation in three places. The buckets are
 1. **Flat tier stats** — the module's own always-on and per-tier `panelStats`,
    folded in during the derive. Always-on stat adds, invisible to the Skill
    Editor. Tiers that are individually selectable carry their stats on the tier
-   rather than unconditionally.
+   rather than unconditionally. A tier stat that moves with the character
+   breakthrough is a `ladder`, resolved against the build's breakthrough at
+   derive time; a breakthrough outside the ladder takes its nearest row.
 2. **Context scalars** — the module's `scalars` block, summed across slotted
    inner ways. `minTier` gates the whole block. No engine file may name an inner
    way to read one.

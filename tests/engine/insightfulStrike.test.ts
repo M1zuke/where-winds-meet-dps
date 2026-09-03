@@ -47,6 +47,7 @@ const DRAGONS_BREATH = art_({
 const mingInputs = (mm: Inputs["mindMethods"]): Inputs => ({
   ...defaultInputs,
   classId: "bellstrikeUmbra",
+  breakthrough: 17,
   mindMethods: mm,
 })
 

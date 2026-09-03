@@ -1,0 +1,2919 @@
+{
+  "_meta": {
+    "description": "Every inner way the game offers, with the panel line each Inner Way Breakthrough rank (the app's tier) unlocks and the value that line has at each character breakthrough. DEV-ONLY reference data: never import this from src/ or tests/ (see docs/REFERENCE-DATA.md). Copy values into src/data/innerWays/ by hand.",
+    "source": "Where Winds Meet oversea client, LocalData/Patch/HD/oversea bin tables xinfa, xinfa_uprank_info, xinfa_uprank_world_lv and xinfa_uprank_attr, plus translate_words_map_en for the names, as installed 2026-09-03.",
+    "generator": "reference-inner-ways.js in the sibling wwm-data workspace folder (D:/Projects/wwm/wwm-data/tools), which is not part of this repo. If that folder is gone, regenerating means decoding the client tables again; the container format is described in that folder's README.",
+    "howToRead": [
+      "id is the game's inner way id, the same number the dashboard passive ids in src/data/innerWays/passiveIds.ts use.",
+      "lines lists every panel line the inner way grants, each with the Inner Way Breakthrough rank (tier N in the app) that unlocks it: byBreakthrough is a line that scales with the character breakthrough, fixed is a line that never changes.",
+      "byBreakthrough is keyed by the app's breakthrough number, which is the game's world level. The client resolves each world level to a table row (world levels 10 and 11 share one); the values here are already resolved per breakthrough.",
+      "Keys are the app's panel-stat paths where one exists (phys.max, precision, critRate, affinityRate, physBoost, directCritRate, directAffinityRate, affinityDamageBoost, critDamageBoost, attributeDamageBoost, <attribute>.min/max/penetration). Attribute blocks: bellstrike, stonesplit, silkbind, bamboocut; a class's own block is what the app writes as primaryAttr.",
+      "Rates and boosts are fractions (0.072 = 7.2 %). Penetration is already divided by 100 to the app's unit (the game shows 5.1 points, the app stores 0.051).",
+      "Lines with a game column name (HP_MAX, W_DEF, W_DEF_SCALE, W_HEAL_SCALE, HEAL_CRI_UP, W_ATK_PEN_RDC, ACTIVE_PRO_ATK, ACTIVE_PRO_PEN) have no app stat yet and keep the game's name and unit.",
+      "school is the class whose inner-way pool the game files this under; 'any' is the shared pool. Unlisted liupai ids are classes the app does not model.",
+      "greyLines appears only where the client's __grey tables (the staged rollout variant a server flag switches on) differ from the normal tables; check in game which variant is live before copying either."
+    ],
+    "breakthroughs": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21
+    ]
+  },
+  "innerWays": [
+    {
+      "id": 1,
+      "name": "Wind Beneath Wings",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1429
+            },
+            "13": {
+              "HP_MAX": 1667
+            },
+            "14": {
+              "HP_MAX": 1941
+            },
+            "15": {
+              "HP_MAX": 2154
+            },
+            "16": {
+              "HP_MAX": 2261
+            },
+            "17": {
+              "HP_MAX": 2367
+            },
+            "18": {
+              "HP_MAX": 2553
+            },
+            "19": {
+              "HP_MAX": 2755
+            },
+            "20": {
+              "HP_MAX": 2973
+            },
+            "21": {
+              "HP_MAX": 3207
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.022
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Evening Snow",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1429
+            },
+            "13": {
+              "HP_MAX": 1667
+            },
+            "14": {
+              "HP_MAX": 1941
+            },
+            "15": {
+              "HP_MAX": 2154
+            },
+            "16": {
+              "HP_MAX": 2261
+            },
+            "17": {
+              "HP_MAX": 2367
+            },
+            "18": {
+              "HP_MAX": 2553
+            },
+            "19": {
+              "HP_MAX": 2755
+            },
+            "20": {
+              "HP_MAX": 2973
+            },
+            "21": {
+              "HP_MAX": 3207
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_ATK_PEN_RDC": 0.045
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Steadfast Stance",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "byBreakthrough": {
+            "12": {
+              "W_DEF": 18.8
+            },
+            "13": {
+              "W_DEF": 21.9
+            },
+            "14": {
+              "W_DEF": 25.5
+            },
+            "15": {
+              "W_DEF": 28.3
+            },
+            "16": {
+              "W_DEF": 29.7
+            },
+            "17": {
+              "W_DEF": 31.2
+            },
+            "18": {
+              "W_DEF": 33.6
+            },
+            "19": {
+              "W_DEF": 36.2
+            },
+            "20": {
+              "W_DEF": 39.1
+            },
+            "21": {
+              "W_DEF": 42.2
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_ATK_PEN_RDC": 0.045
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Shadow Assault",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 37.6
+            },
+            "13": {
+              "phys.min": 43.9
+            },
+            "14": {
+              "phys.min": 51.1
+            },
+            "15": {
+              "phys.min": 56.7
+            },
+            "16": {
+              "phys.min": 59.5
+            },
+            "17": {
+              "phys.min": 62.3
+            },
+            "18": {
+              "phys.min": 67.2
+            },
+            "19": {
+              "phys.min": 72.5
+            },
+            "20": {
+              "phys.min": 78.2
+            },
+            "21": {
+              "phys.min": 84.4
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.022
+          }
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Fivefold Bleed",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 37.6
+            },
+            "13": {
+              "phys.max": 43.9
+            },
+            "14": {
+              "phys.max": 51.1
+            },
+            "15": {
+              "phys.max": 56.7
+            },
+            "16": {
+              "phys.max": 59.5
+            },
+            "17": {
+              "phys.max": 62.3
+            },
+            "18": {
+              "phys.max": 67.2
+            },
+            "19": {
+              "phys.max": 72.5
+            },
+            "20": {
+              "phys.max": 78.2
+            },
+            "21": {
+              "phys.max": 84.4
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.035
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Sandswirl Tail",
+      "star": 3,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "W_DEF": 18.8
+            },
+            "13": {
+              "W_DEF": 21.9
+            },
+            "14": {
+              "W_DEF": 25.5
+            },
+            "15": {
+              "W_DEF": 28.3
+            },
+            "16": {
+              "W_DEF": 29.7
+            },
+            "17": {
+              "W_DEF": 31.2
+            },
+            "18": {
+              "W_DEF": 33.6
+            },
+            "19": {
+              "W_DEF": 36.2
+            },
+            "20": {
+              "W_DEF": 39.1
+            },
+            "21": {
+              "W_DEF": 42.2
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.022
+          }
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Envigorated Warrior",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 42.3
+            },
+            "13": {
+              "phys.min": 49.3
+            },
+            "14": {
+              "phys.min": 57.5
+            },
+            "15": {
+              "phys.min": 63.8
+            },
+            "16": {
+              "phys.min": 66.9
+            },
+            "17": {
+              "phys.min": 70.1
+            },
+            "18": {
+              "phys.min": 75.6
+            },
+            "19": {
+              "phys.min": 81.6
+            },
+            "20": {
+              "phys.min": 88
+            },
+            "21": {
+              "phys.min": 95
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Bitter Seasons",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "precision": 0.043
+            },
+            "13": {
+              "precision": 0.051
+            },
+            "14": {
+              "precision": 0.059
+            },
+            "15": {
+              "precision": 0.065
+            },
+            "16": {
+              "precision": 0.069
+            },
+            "17": {
+              "precision": 0.072
+            },
+            "18": {
+              "precision": 0.078
+            },
+            "19": {
+              "precision": 0.084
+            },
+            "20": {
+              "precision": 0.09
+            },
+            "21": {
+              "precision": 0.098
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Vital Leech",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1608
+            },
+            "13": {
+              "HP_MAX": 1875
+            },
+            "14": {
+              "HP_MAX": 2184
+            },
+            "15": {
+              "HP_MAX": 2423
+            },
+            "16": {
+              "HP_MAX": 2543
+            },
+            "17": {
+              "HP_MAX": 2663
+            },
+            "18": {
+              "HP_MAX": 2872
+            },
+            "19": {
+              "HP_MAX": 3099
+            },
+            "20": {
+              "HP_MAX": 3344
+            },
+            "21": {
+              "HP_MAX": 3608
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Fury Harvest",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "W_DEF": 21.2
+            },
+            "13": {
+              "W_DEF": 24.7
+            },
+            "14": {
+              "W_DEF": 28.7
+            },
+            "15": {
+              "W_DEF": 31.9
+            },
+            "16": {
+              "W_DEF": 33.5
+            },
+            "17": {
+              "W_DEF": 35
+            },
+            "18": {
+              "W_DEF": 37.8
+            },
+            "19": {
+              "W_DEF": 40.8
+            },
+            "20": {
+              "W_DEF": 44
+            },
+            "21": {
+              "W_DEF": 47.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_ATK_PEN_RDC": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Divine Roulette",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 42.3
+            },
+            "13": {
+              "phys.max": 49.3
+            },
+            "14": {
+              "phys.max": 57.5
+            },
+            "15": {
+              "phys.max": 63.8
+            },
+            "16": {
+              "phys.max": 66.9
+            },
+            "17": {
+              "phys.max": 70.1
+            },
+            "18": {
+              "phys.max": 75.6
+            },
+            "19": {
+              "phys.max": 81.6
+            },
+            "20": {
+              "phys.max": 88
+            },
+            "21": {
+              "phys.max": 95
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Evasive Charge",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "precision": 0.043
+            },
+            "13": {
+              "precision": 0.051
+            },
+            "14": {
+              "precision": 0.059
+            },
+            "15": {
+              "precision": 0.065
+            },
+            "16": {
+              "precision": 0.069
+            },
+            "17": {
+              "precision": 0.072
+            },
+            "18": {
+              "precision": 0.078
+            },
+            "19": {
+              "precision": 0.084
+            },
+            "20": {
+              "precision": 0.09
+            },
+            "21": {
+              "precision": 0.098
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Light and Shadow Alike",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Heart of Fire",
+      "star": 4,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1608
+            },
+            "13": {
+              "HP_MAX": 1875
+            },
+            "14": {
+              "HP_MAX": 2184
+            },
+            "15": {
+              "HP_MAX": 2423
+            },
+            "16": {
+              "HP_MAX": 2543
+            },
+            "17": {
+              "HP_MAX": 2663
+            },
+            "18": {
+              "HP_MAX": 2872
+            },
+            "19": {
+              "HP_MAX": 3099
+            },
+            "20": {
+              "HP_MAX": 3344
+            },
+            "21": {
+              "HP_MAX": 3608
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "name": "Morale Chant",
+      "star": 5,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 31.3,
+              "phys.min": 15.7
+            },
+            "13": {
+              "phys.max": 36.5,
+              "phys.min": 18.3
+            },
+            "14": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "15": {
+              "phys.max": 47.2,
+              "phys.min": 23.6
+            },
+            "16": {
+              "phys.max": 49.6,
+              "phys.min": 24.8
+            },
+            "17": {
+              "phys.max": 51.9,
+              "phys.min": 25.9
+            },
+            "18": {
+              "phys.max": 56,
+              "phys.min": 28
+            },
+            "19": {
+              "phys.max": 60.4,
+              "phys.min": 30.2
+            },
+            "20": {
+              "phys.max": 65.2,
+              "phys.min": 32.6
+            },
+            "21": {
+              "phys.max": 70.4,
+              "phys.min": 35.2
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "name": "Seasonal Edge",
+      "star": 5,
+      "school": "any",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 31.3,
+              "phys.min": 15.7
+            },
+            "13": {
+              "phys.max": 36.5,
+              "phys.min": 18.3
+            },
+            "14": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "15": {
+              "phys.max": 47.2,
+              "phys.min": 23.6
+            },
+            "16": {
+              "phys.max": 49.6,
+              "phys.min": 24.8
+            },
+            "17": {
+              "phys.max": 51.9,
+              "phys.min": 25.9
+            },
+            "18": {
+              "phys.max": 56,
+              "phys.min": 28
+            },
+            "19": {
+              "phys.max": 60.4,
+              "phys.min": 30.2
+            },
+            "20": {
+              "phys.max": 65.2,
+              "phys.min": 32.6
+            },
+            "21": {
+              "phys.max": 70.4,
+              "phys.min": 35.2
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.028
+          }
+        }
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Mountain's Might",
+      "star": 4,
+      "school": "Bellstrike Splendor",
+      "lines": [
+        {
+          "unlockedAtRank": 3,
+          "requiresWorldLevel": 6,
+          "byBreakthrough": {
+            "12": {
+              "bellstrike.max": 16,
+              "bellstrike.min": 8
+            },
+            "13": {
+              "bellstrike.max": 18.7,
+              "bellstrike.min": 9.3
+            },
+            "14": {
+              "bellstrike.max": 21.7,
+              "bellstrike.min": 10.9
+            },
+            "15": {
+              "bellstrike.max": 24.1,
+              "bellstrike.min": 12.1
+            },
+            "16": {
+              "bellstrike.max": 25.3,
+              "bellstrike.min": 12.7
+            },
+            "17": {
+              "bellstrike.max": 26.5,
+              "bellstrike.min": 13.3
+            },
+            "18": {
+              "bellstrike.max": 28.5,
+              "bellstrike.min": 14.3
+            },
+            "19": {
+              "bellstrike.max": 30.8,
+              "bellstrike.min": 15.4
+            },
+            "20": {
+              "bellstrike.max": 33.3,
+              "bellstrike.min": 16.7
+            },
+            "21": {
+              "bellstrike.max": 35.9,
+              "bellstrike.min": 17.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "bellstrike.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Wildfire Spark",
+      "star": 4,
+      "school": "Bellstrike Splendor",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Battle Anthem",
+      "star": 4,
+      "school": "Bellstrike Splendor",
+      "lines": [
+        {
+          "unlockedAtRank": 3,
+          "requiresWorldLevel": 6,
+          "byBreakthrough": {
+            "12": {
+              "affinityRate": 0.024
+            },
+            "13": {
+              "affinityRate": 0.028
+            },
+            "14": {
+              "affinityRate": 0.033
+            },
+            "15": {
+              "affinityRate": 0.037
+            },
+            "16": {
+              "affinityRate": 0.039
+            },
+            "17": {
+              "affinityRate": 0.04
+            },
+            "18": {
+              "affinityRate": 0.044
+            },
+            "19": {
+              "affinityRate": 0.047
+            },
+            "20": {
+              "affinityRate": 0.051
+            },
+            "21": {
+              "affinityRate": 0.055
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "affinityDamageBoost": 0.052
+          }
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Sword Morph",
+      "star": 5,
+      "school": "Bellstrike Splendor",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 47
+            },
+            "13": {
+              "phys.max": 54.8
+            },
+            "14": {
+              "phys.max": 63.9
+            },
+            "15": {
+              "phys.max": 70.9
+            },
+            "16": {
+              "phys.max": 74.4
+            },
+            "17": {
+              "phys.max": 77.9
+            },
+            "18": {
+              "phys.max": 84
+            },
+            "19": {
+              "phys.max": 90.6
+            },
+            "20": {
+              "phys.max": 97.8
+            },
+            "21": {
+              "phys.max": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directAffinityRate": 0.023
+          }
+        }
+      ]
+    },
+    {
+      "id": 151,
+      "name": "Wolfchaser's Art",
+      "star": 4,
+      "school": "Bellstrike Umbra",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "affinityRate": 0.024
+            },
+            "13": {
+              "affinityRate": 0.028
+            },
+            "14": {
+              "affinityRate": 0.033
+            },
+            "15": {
+              "affinityRate": 0.037
+            },
+            "16": {
+              "affinityRate": 0.039
+            },
+            "17": {
+              "affinityRate": 0.04
+            },
+            "18": {
+              "affinityRate": 0.044
+            },
+            "19": {
+              "affinityRate": 0.047
+            },
+            "20": {
+              "affinityRate": 0.051
+            },
+            "21": {
+              "affinityRate": 0.055
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "affinityDamageBoost": 0.052
+          }
+        }
+      ]
+    },
+    {
+      "id": 152,
+      "name": "Adaptive Steel",
+      "star": 4,
+      "school": "Bellstrike Umbra",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "bellstrike.max": 24
+            },
+            "13": {
+              "bellstrike.max": 28
+            },
+            "14": {
+              "bellstrike.max": 32.6
+            },
+            "15": {
+              "bellstrike.max": 36.2
+            },
+            "16": {
+              "bellstrike.max": 38
+            },
+            "17": {
+              "bellstrike.max": 39.8
+            },
+            "18": {
+              "bellstrike.max": 42.9
+            },
+            "19": {
+              "bellstrike.max": 46.3
+            },
+            "20": {
+              "bellstrike.max": 49.9
+            },
+            "21": {
+              "bellstrike.max": 53.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "attributeDamageBoost": 0.03
+          }
+        }
+      ]
+    },
+    {
+      "id": 153,
+      "name": "Insightful Strike",
+      "star": 4,
+      "school": "Bellstrike Umbra",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 154,
+      "name": "Sword Horizon",
+      "star": 5,
+      "school": "Bellstrike Umbra",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 47
+            },
+            "13": {
+              "phys.max": 54.8
+            },
+            "14": {
+              "phys.max": 63.9
+            },
+            "15": {
+              "phys.max": 70.9
+            },
+            "16": {
+              "phys.max": 74.4
+            },
+            "17": {
+              "phys.max": 77.9
+            },
+            "18": {
+              "phys.max": 84
+            },
+            "19": {
+              "phys.max": 90.6
+            },
+            "20": {
+              "phys.max": 97.8
+            },
+            "21": {
+              "phys.max": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directAffinityRate": 0.023
+          }
+        }
+      ]
+    },
+    {
+      "id": 301,
+      "name": "Gourd Toss",
+      "star": 4,
+      "school": "Silkbind Jade",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "precision": 0.043
+            },
+            "13": {
+              "precision": 0.051
+            },
+            "14": {
+              "precision": 0.059
+            },
+            "15": {
+              "precision": 0.065
+            },
+            "16": {
+              "precision": 0.069
+            },
+            "17": {
+              "precision": 0.072
+            },
+            "18": {
+              "precision": 0.078
+            },
+            "19": {
+              "precision": 0.084
+            },
+            "20": {
+              "precision": 0.09
+            },
+            "21": {
+              "precision": 0.098
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "silkbind.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 302,
+      "name": "Thunderous Bloom",
+      "star": 4,
+      "school": "Silkbind Jade",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 303,
+      "name": "Star Reacher",
+      "star": 4,
+      "school": "Silkbind Jade",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 304,
+      "name": "Blossom Barrage",
+      "star": 5,
+      "school": "Silkbind Jade",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.054
+            },
+            "13": {
+              "critRate": 0.063
+            },
+            "14": {
+              "critRate": 0.074
+            },
+            "15": {
+              "critRate": 0.082
+            },
+            "16": {
+              "critRate": 0.086
+            },
+            "17": {
+              "critRate": 0.09
+            },
+            "18": {
+              "critRate": 0.097
+            },
+            "19": {
+              "critRate": 0.104
+            },
+            "20": {
+              "critRate": 0.113
+            },
+            "21": {
+              "critRate": 0.121
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.044
+          }
+        }
+      ],
+      "greyLines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 351,
+      "name": "Royal Remedy",
+      "star": 5,
+      "school": "liupai 8",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.054
+            },
+            "13": {
+              "critRate": 0.063
+            },
+            "14": {
+              "critRate": 0.074
+            },
+            "15": {
+              "critRate": 0.082
+            },
+            "16": {
+              "critRate": 0.086
+            },
+            "17": {
+              "critRate": 0.09
+            },
+            "18": {
+              "critRate": 0.097
+            },
+            "19": {
+              "critRate": 0.104
+            },
+            "20": {
+              "critRate": 0.113
+            },
+            "21": {
+              "critRate": 0.121
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 352,
+      "name": "Restoring Blossom",
+      "star": 4,
+      "school": "liupai 8",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "silkbind.min": 24
+            },
+            "13": {
+              "silkbind.min": 28
+            },
+            "14": {
+              "silkbind.min": 32.6
+            },
+            "15": {
+              "silkbind.min": 36.2
+            },
+            "16": {
+              "silkbind.min": 38
+            },
+            "17": {
+              "silkbind.min": 39.8
+            },
+            "18": {
+              "silkbind.min": 42.9
+            },
+            "19": {
+              "silkbind.min": 46.3
+            },
+            "20": {
+              "silkbind.min": 49.9
+            },
+            "21": {
+              "silkbind.min": 53.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "HEAL_CRI_UP": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 353,
+      "name": "Esoteric Revival",
+      "star": 4,
+      "school": "liupai 8",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.049
+            },
+            "13": {
+              "critRate": 0.057
+            },
+            "14": {
+              "critRate": 0.066
+            },
+            "15": {
+              "critRate": 0.073
+            },
+            "16": {
+              "critRate": 0.077
+            },
+            "17": {
+              "critRate": 0.081
+            },
+            "18": {
+              "critRate": 0.087
+            },
+            "19": {
+              "critRate": 0.094
+            },
+            "20": {
+              "critRate": 0.101
+            },
+            "21": {
+              "critRate": 0.109
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "HEAL_CRI_UP": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 354,
+      "name": "Mending Loom",
+      "star": 4,
+      "school": "liupai 8",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_HEAL_SCALE": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 401,
+      "name": "Exquisite Scenery",
+      "star": 5,
+      "school": "liupai 7",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.054
+            },
+            "13": {
+              "critRate": 0.063
+            },
+            "14": {
+              "critRate": 0.074
+            },
+            "15": {
+              "critRate": 0.082
+            },
+            "16": {
+              "critRate": 0.086
+            },
+            "17": {
+              "critRate": 0.09
+            },
+            "18": {
+              "critRate": 0.097
+            },
+            "19": {
+              "critRate": 0.104
+            },
+            "20": {
+              "critRate": 0.113
+            },
+            "21": {
+              "critRate": 0.121
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.044
+          }
+        }
+      ]
+    },
+    {
+      "id": 402,
+      "name": "Trapped Beast",
+      "star": 4,
+      "school": "liupai 7",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1608
+            },
+            "13": {
+              "HP_MAX": 1875
+            },
+            "14": {
+              "HP_MAX": 2184
+            },
+            "15": {
+              "HP_MAX": 2423
+            },
+            "16": {
+              "HP_MAX": 2543
+            },
+            "17": {
+              "HP_MAX": 2663
+            },
+            "18": {
+              "HP_MAX": 2872
+            },
+            "19": {
+              "HP_MAX": 3099
+            },
+            "20": {
+              "HP_MAX": 3344
+            },
+            "21": {
+              "HP_MAX": 3608
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_ATK_PEN_RDC": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 403,
+      "name": "Art of Resistance",
+      "star": 4,
+      "school": "liupai 7",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "stonesplit.max": 16,
+              "stonesplit.min": 8
+            },
+            "13": {
+              "stonesplit.max": 18.7,
+              "stonesplit.min": 9.3
+            },
+            "14": {
+              "stonesplit.max": 21.7,
+              "stonesplit.min": 10.9
+            },
+            "15": {
+              "stonesplit.max": 24.1,
+              "stonesplit.min": 12.1
+            },
+            "16": {
+              "stonesplit.max": 25.3,
+              "stonesplit.min": 12.7
+            },
+            "17": {
+              "stonesplit.max": 26.5,
+              "stonesplit.min": 13.3
+            },
+            "18": {
+              "stonesplit.max": 28.5,
+              "stonesplit.min": 14.3
+            },
+            "19": {
+              "stonesplit.max": 30.8,
+              "stonesplit.min": 15.4
+            },
+            "20": {
+              "stonesplit.max": 33.3,
+              "stonesplit.min": 16.7
+            },
+            "21": {
+              "stonesplit.max": 35.9,
+              "stonesplit.min": 17.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "stonesplit.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 404,
+      "name": "Rock Solid",
+      "star": 4,
+      "school": "liupai 7",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "HP_MAX": 1608
+            },
+            "13": {
+              "HP_MAX": 1875
+            },
+            "14": {
+              "HP_MAX": 2184
+            },
+            "15": {
+              "HP_MAX": 2423
+            },
+            "16": {
+              "HP_MAX": 2543
+            },
+            "17": {
+              "HP_MAX": 2663
+            },
+            "18": {
+              "HP_MAX": 2872
+            },
+            "19": {
+              "HP_MAX": 3099
+            },
+            "20": {
+              "HP_MAX": 3344
+            },
+            "21": {
+              "HP_MAX": 3608
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "W_DEF_SCALE": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 451,
+      "name": "Echoes of Oblivion",
+      "star": 5,
+      "school": "liupai 5",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.054
+            },
+            "13": {
+              "critRate": 0.063
+            },
+            "14": {
+              "critRate": 0.074
+            },
+            "15": {
+              "critRate": 0.082
+            },
+            "16": {
+              "critRate": 0.086
+            },
+            "17": {
+              "critRate": 0.09
+            },
+            "18": {
+              "critRate": 0.097
+            },
+            "19": {
+              "critRate": 0.104
+            },
+            "20": {
+              "critRate": 0.113
+            },
+            "21": {
+              "critRate": 0.121
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.044
+          }
+        }
+      ]
+    },
+    {
+      "id": 452,
+      "name": "Vendetta",
+      "star": 4,
+      "school": "liupai 5",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 42.3
+            },
+            "13": {
+              "phys.min": 49.3
+            },
+            "14": {
+              "phys.min": 57.5
+            },
+            "15": {
+              "phys.min": 63.8
+            },
+            "16": {
+              "phys.min": 66.9
+            },
+            "17": {
+              "phys.min": 70.1
+            },
+            "18": {
+              "phys.min": 75.6
+            },
+            "19": {
+              "phys.min": 81.6
+            },
+            "20": {
+              "phys.min": 88
+            },
+            "21": {
+              "phys.min": 95
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 453,
+      "name": "Breaking Point",
+      "star": 4,
+      "school": "liupai 5",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "precision": 0.043
+            },
+            "13": {
+              "precision": 0.051
+            },
+            "14": {
+              "precision": 0.059
+            },
+            "15": {
+              "precision": 0.065
+            },
+            "16": {
+              "precision": 0.069
+            },
+            "17": {
+              "precision": 0.072
+            },
+            "18": {
+              "precision": 0.078
+            },
+            "19": {
+              "precision": 0.084
+            },
+            "20": {
+              "precision": 0.09
+            },
+            "21": {
+              "precision": 0.098
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.041
+          }
+        }
+      ]
+    },
+    {
+      "id": 454,
+      "name": "Riptide Reflex",
+      "star": 4,
+      "school": "liupai 5",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "bamboocut.min": 24
+            },
+            "13": {
+              "bamboocut.min": 28
+            },
+            "14": {
+              "bamboocut.min": 32.6
+            },
+            "15": {
+              "bamboocut.min": 36.2
+            },
+            "16": {
+              "bamboocut.min": 38
+            },
+            "17": {
+              "bamboocut.min": 39.8
+            },
+            "18": {
+              "bamboocut.min": 42.9
+            },
+            "19": {
+              "bamboocut.min": 46.3
+            },
+            "20": {
+              "bamboocut.min": 49.9
+            },
+            "21": {
+              "bamboocut.min": 53.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "bamboocut.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 501,
+      "name": "Phantom Rally",
+      "star": 5,
+      "school": "liupai 10",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.054
+            },
+            "13": {
+              "critRate": 0.063
+            },
+            "14": {
+              "critRate": 0.074
+            },
+            "15": {
+              "critRate": 0.082
+            },
+            "16": {
+              "critRate": 0.086
+            },
+            "17": {
+              "critRate": 0.09
+            },
+            "18": {
+              "critRate": 0.097
+            },
+            "19": {
+              "critRate": 0.104
+            },
+            "20": {
+              "critRate": 0.113
+            },
+            "21": {
+              "critRate": 0.121
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.028
+          }
+        }
+      ]
+    },
+    {
+      "id": 502,
+      "name": "Towline Sweep",
+      "star": 4,
+      "school": "liupai 10",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 42.3
+            },
+            "13": {
+              "phys.min": 49.3
+            },
+            "14": {
+              "phys.min": 57.5
+            },
+            "15": {
+              "phys.min": 63.8
+            },
+            "16": {
+              "phys.min": 66.9
+            },
+            "17": {
+              "phys.min": 70.1
+            },
+            "18": {
+              "phys.min": 75.6
+            },
+            "19": {
+              "phys.min": 81.6
+            },
+            "20": {
+              "phys.min": 88
+            },
+            "21": {
+              "phys.min": 95
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "phys.penetration": 0.051
+          }
+        }
+      ]
+    },
+    {
+      "id": 503,
+      "name": "Light Anew",
+      "star": 4,
+      "school": "liupai 10",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "bamboocut.min": 24
+            },
+            "13": {
+              "bamboocut.min": 28
+            },
+            "14": {
+              "bamboocut.min": 32.6
+            },
+            "15": {
+              "bamboocut.min": 36.2
+            },
+            "16": {
+              "bamboocut.min": 38
+            },
+            "17": {
+              "bamboocut.min": 39.8
+            },
+            "18": {
+              "bamboocut.min": 42.9
+            },
+            "19": {
+              "bamboocut.min": 46.3
+            },
+            "20": {
+              "bamboocut.min": 49.9
+            },
+            "21": {
+              "bamboocut.min": 53.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "bamboocut.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 504,
+      "name": "Song of Tang",
+      "star": 4,
+      "school": "liupai 10",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "precision": 0.043
+            },
+            "13": {
+              "precision": 0.051
+            },
+            "14": {
+              "precision": 0.059
+            },
+            "15": {
+              "precision": 0.065
+            },
+            "16": {
+              "precision": 0.069
+            },
+            "17": {
+              "precision": 0.072
+            },
+            "18": {
+              "precision": 0.078
+            },
+            "19": {
+              "precision": 0.084
+            },
+            "20": {
+              "precision": 0.09
+            },
+            "21": {
+              "precision": 0.098
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 551,
+      "name": "Frost-Clad Night",
+      "star": 5,
+      "school": "Stonesplit Strength",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 552,
+      "name": "Steadfast Devotion",
+      "star": 4,
+      "school": "Stonesplit Strength",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.049
+            },
+            "13": {
+              "critRate": 0.057
+            },
+            "14": {
+              "critRate": 0.066
+            },
+            "15": {
+              "critRate": 0.073
+            },
+            "16": {
+              "critRate": 0.077
+            },
+            "17": {
+              "critRate": 0.081
+            },
+            "18": {
+              "critRate": 0.087
+            },
+            "19": {
+              "critRate": 0.094
+            },
+            "20": {
+              "critRate": 0.101
+            },
+            "21": {
+              "critRate": 0.109
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 553,
+      "name": "Throat-Piercing Art",
+      "star": 4,
+      "school": "Stonesplit Strength",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "stonesplit.max": 16,
+              "stonesplit.min": 8
+            },
+            "13": {
+              "stonesplit.max": 18.7,
+              "stonesplit.min": 9.3
+            },
+            "14": {
+              "stonesplit.max": 21.7,
+              "stonesplit.min": 10.9
+            },
+            "15": {
+              "stonesplit.max": 24.1,
+              "stonesplit.min": 12.1
+            },
+            "16": {
+              "stonesplit.max": 25.3,
+              "stonesplit.min": 12.7
+            },
+            "17": {
+              "stonesplit.max": 26.5,
+              "stonesplit.min": 13.3
+            },
+            "18": {
+              "stonesplit.max": 28.5,
+              "stonesplit.min": 14.3
+            },
+            "19": {
+              "stonesplit.max": 30.8,
+              "stonesplit.min": 15.4
+            },
+            "20": {
+              "stonesplit.max": 33.3,
+              "stonesplit.min": 16.7
+            },
+            "21": {
+              "stonesplit.max": 35.9,
+              "stonesplit.min": 17.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "stonesplit.penetration": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 554,
+      "name": "Wildfire Surge",
+      "star": 4,
+      "school": "Stonesplit Strength",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 601,
+      "name": "Soaring High",
+      "star": 5,
+      "school": "liupai 12",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    },
+    {
+      "id": 602,
+      "name": "Sky Gripped",
+      "star": 4,
+      "school": "liupai 12",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "critRate": 0.049
+            },
+            "13": {
+              "critRate": 0.057
+            },
+            "14": {
+              "critRate": 0.066
+            },
+            "15": {
+              "critRate": 0.073
+            },
+            "16": {
+              "critRate": 0.077
+            },
+            "17": {
+              "critRate": 0.081
+            },
+            "18": {
+              "critRate": 0.087
+            },
+            "19": {
+              "critRate": 0.094
+            },
+            "20": {
+              "critRate": 0.101
+            },
+            "21": {
+              "critRate": 0.109
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "critDamageBoost": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": 603,
+      "name": "Empirical Edge",
+      "star": 4,
+      "school": "liupai 12",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "phys.max": 28.3,
+              "phys.min": 14.1
+            },
+            "13": {
+              "phys.max": 32.9,
+              "phys.min": 16.5
+            },
+            "14": {
+              "phys.max": 38.3,
+              "phys.min": 19.1
+            },
+            "15": {
+              "phys.max": 42.5,
+              "phys.min": 21.3
+            },
+            "16": {
+              "phys.max": 44.7,
+              "phys.min": 22.3
+            },
+            "17": {
+              "phys.max": 46.7,
+              "phys.min": 23.3
+            },
+            "18": {
+              "phys.max": 50.4,
+              "phys.min": 25.2
+            },
+            "19": {
+              "phys.max": 54.4,
+              "phys.min": 27.2
+            },
+            "20": {
+              "phys.max": 58.7,
+              "phys.min": 29.3
+            },
+            "21": {
+              "phys.max": 63.3,
+              "phys.min": 31.7
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "physBoost": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": 604,
+      "name": "Celestial Vigor",
+      "star": 4,
+      "school": "liupai 12",
+      "lines": [
+        {
+          "unlockedAtRank": 2,
+          "requiresWorldLevel": 5,
+          "byBreakthrough": {
+            "12": {
+              "MAX_ACTIVE_PRO_ATK": 17.7,
+              "MIN_ACTIVE_PRO_ATK": 8.9
+            },
+            "13": {
+              "MAX_ACTIVE_PRO_ATK": 20.7,
+              "MIN_ACTIVE_PRO_ATK": 10.3
+            },
+            "14": {
+              "MAX_ACTIVE_PRO_ATK": 24.1,
+              "MIN_ACTIVE_PRO_ATK": 12.1
+            },
+            "15": {
+              "MAX_ACTIVE_PRO_ATK": 26.8,
+              "MIN_ACTIVE_PRO_ATK": 13.4
+            },
+            "16": {
+              "MAX_ACTIVE_PRO_ATK": 28.1,
+              "MIN_ACTIVE_PRO_ATK": 14.1
+            },
+            "17": {
+              "MAX_ACTIVE_PRO_ATK": 29.5,
+              "MIN_ACTIVE_PRO_ATK": 14.7
+            },
+            "18": {
+              "MAX_ACTIVE_PRO_ATK": 31.7,
+              "MIN_ACTIVE_PRO_ATK": 15.9
+            },
+            "19": {
+              "MAX_ACTIVE_PRO_ATK": 34.3,
+              "MIN_ACTIVE_PRO_ATK": 17.1
+            },
+            "20": {
+              "MAX_ACTIVE_PRO_ATK": 36.9,
+              "MIN_ACTIVE_PRO_ATK": 18.5
+            },
+            "21": {
+              "MAX_ACTIVE_PRO_ATK": 39.9,
+              "MIN_ACTIVE_PRO_ATK": 19.9
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 5,
+          "requiresWorldLevel": 8,
+          "fixed": {
+            "ACTIVE_PRO_PEN": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": 651,
+      "name": "Song of Harmony",
+      "star": 5,
+      "school": "liupai 13",
+      "lines": [
+        {
+          "unlockedAtRank": 6,
+          "requiresWorldLevel": 10,
+          "byBreakthrough": {
+            "12": {
+              "phys.min": 47
+            },
+            "13": {
+              "phys.min": 54.8
+            },
+            "14": {
+              "phys.min": 63.9
+            },
+            "15": {
+              "phys.min": 70.9
+            },
+            "16": {
+              "phys.min": 74.4
+            },
+            "17": {
+              "phys.min": 77.9
+            },
+            "18": {
+              "phys.min": 84
+            },
+            "19": {
+              "phys.min": 90.6
+            },
+            "20": {
+              "phys.min": 97.8
+            },
+            "21": {
+              "phys.min": 105.5
+            }
+          }
+        },
+        {
+          "unlockedAtRank": 6,
+          "requiresWorldLevel": 10,
+          "fixed": {
+            "directCritRate": 0.046
+          }
+        }
+      ]
+    }
+  ]
+}

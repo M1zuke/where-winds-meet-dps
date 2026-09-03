@@ -1,5 +1,6 @@
 import type { InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { battleAnthem } from "./battleAnthem"
+export { INNER_WAY_LADDERS } from "./breakthroughLadders"
 import { bitterSeason } from "./bitterSeason"
 import { frostCladNight } from "./frostCladNight"
 import { insightfulStrike } from "./insightfulStrike"

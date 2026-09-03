@@ -1,5 +1,5 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { swordMorphEnduranceBoost } from "./swordMorphBuffs"
 import { swordMorphExhaustedBehavior } from "./swordMorphExhausted"
@@ -9,23 +9,16 @@ import { SKILL } from "../skills/bellstrike-splendor/ids"
 // multiple sword energy attacks never Abrade an Exhausted unit and the third
 // is a guaranteed Affinity hit against one; Tier 6 grants Energy Surge, which
 // releases them again without charging.
-//
-// The in-game panel reads 63.9 max physical at solo mode level 14 (2026-05).
-// Every shipped inner way sits a level above that — Morale Chant's panel 42.5
-// is stored as 49.6 — and this pair matches Sword Horizon's exactly, which is
-// where the stored figure comes from. Percentages do not move with the level.
 export const swordMorph = defineInnerWay({
   id: INNER_WAY_ID.swordMorph,
   name: "Sword Morph",
   selectableTiers: [6, 5, 3],
   confirmedBreakthrough: 17,
   buffParam: PARAM.swordMorph,
-  panelStats: {
-    "phys.max": 77.9,
-    directAffinityRate: 0.023,
-  },
   tiers: {
+    2: { ladder: INNER_WAY_LADDER.weaponAttackMaxFiveStar },
     3: { nodes: [INNER_WAY_NODE.exhaustedSwordEnergyOutcome] },
+    5: { panelStats: { directAffinityRate: 0.023 } },
     6: { nodes: [INNER_WAY_NODE.energySurge] },
   },
   buffDefs: [swordMorphEnduranceBoost],
