@@ -1,5 +1,5 @@
 import { PARAM } from "../../data/skills/buffs/ids"
-import type { InnerWayNode } from "../../data/innerWays/ids"
+import type { InnerWayLadderId, InnerWayNode } from "../../data/innerWays/ids"
 import type { PanelStatPath } from "../../engine/gearStats"
 import type { MechanicRegistration } from "../../engine/mechanics"
 import type { Buff } from "../../engine/buff"
@@ -7,10 +7,11 @@ import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 import type { SkillBehaviorRegistration } from "../../engine/behavior"
 
-type PanelStats = Readonly<Partial<Record<PanelStatPath, number>>>
+export type PanelStats = Readonly<Partial<Record<PanelStatPath, number>>>
 
 export interface InnerWayTier {
   panelStats?: PanelStats
+  ladder?: InnerWayLadderId
   nodes?: readonly InnerWayNode[]
 }
 

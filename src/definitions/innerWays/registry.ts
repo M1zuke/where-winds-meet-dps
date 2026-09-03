@@ -1,6 +1,7 @@
 import type { Inputs } from "../../engine/types"
-import { tierFromStacks, type InnerWayDef } from "./innerWayDef"
-import { INNER_WAYS } from "../../data/innerWays"
+import { tierFromStacks, type InnerWayDef, type PanelStats } from "./innerWayDef"
+import type { InnerWayLadderId } from "../../data/innerWays/ids"
+import { INNER_WAYS, INNER_WAY_LADDERS } from "../../data/innerWays"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
 import { registerSkillBehavior } from "../../engine/behavior"
@@ -19,6 +20,20 @@ setInnerWayDefs(INNER_WAYS)
 
 export function innerWayDefinition(id: string): InnerWayDef | undefined {
   return INNER_WAYS.find((def) => def.id === id)
+}
+
+export function innerWayLadderStats(ladder: InnerWayLadderId, breakthrough: number): PanelStats {
+  const rows = INNER_WAY_LADDERS[ladder]
+  let nearest: number | undefined
+  for (const key of Object.keys(rows)) {
+    const candidate = Number(key)
+    if (
+      nearest === undefined ||
+      Math.abs(candidate - breakthrough) < Math.abs(nearest - breakthrough)
+    )
+      nearest = candidate
+  }
+  return nearest === undefined ? {} : rows[nearest]
 }
 
 // Ids are stable identifiers, NOT translation keys: the UI renders

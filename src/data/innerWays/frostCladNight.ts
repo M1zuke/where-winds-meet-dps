@@ -1,5 +1,5 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { forgetfulness } from "./frostCladNightBuffs/forgetfulness"
 import { frostCladSnowbreak } from "./frostCladNightBuffs/frostCladSnowbreak"
@@ -14,9 +14,9 @@ export const frostCladNight = defineInnerWay({
   selectableTiers: [6, 5],
   confirmedBreakthrough: 17,
   buffParam: PARAM.frostCladNight,
-  panelStats: {
-    "phys.min": 77.9,
-    directCritRate: 0.046,
+  tiers: {
+    2: { ladder: INNER_WAY_LADDER.weaponAttackMinFiveStar },
+    5: { panelStats: { directCritRate: 0.046 } },
   },
   buffDefs: [
     innerPassion,

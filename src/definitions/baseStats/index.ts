@@ -2,7 +2,7 @@ import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
 import { formlessWordTotals, gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
-import { innerWayDefinition, slotInnerWayId } from "../innerWays/registry"
+import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../innerWays/registry"
 import type {
   AttributeKey,
   EnhancementNode,
@@ -466,7 +466,10 @@ export function getMindMethodContributions(inputs: Inputs): Record<string, numbe
       .filter((tierNumber) => tierNumber <= tier)
       .sort((a, b) => a - b)
     for (const tierNumber of unlockedTiers) {
-      applyPanelStats(out, primaryKey, def.tiers[tierNumber]?.panelStats)
+      const tier = def.tiers[tierNumber]
+      applyPanelStats(out, primaryKey, tier?.panelStats)
+      if (tier?.ladder)
+        applyPanelStats(out, primaryKey, innerWayLadderStats(tier.ladder, inputs.breakthrough))
     }
   })
   return out

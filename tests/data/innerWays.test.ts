@@ -96,6 +96,7 @@ describe("getMindMethodContributions — panel stats are tier-invariant for four
     getMindMethodContributions({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
+      breakthrough: 17,
       mindMethods: [
         { name: id, stacks },
         emptyMindMethod,
