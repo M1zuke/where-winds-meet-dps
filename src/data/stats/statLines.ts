@@ -353,8 +353,8 @@ export const STAT_LINES = [
     scope: "player",
     category: "Bamboocut",
   },
-  { id: "minVoidAttack", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
-  { id: "maxVoidAttack", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "minFormless", label: "Min Formless Attack", unit: "raw", maxRoll: 44.2 },
+  { id: "maxFormless", label: "Max Formless Attack", unit: "raw", maxRoll: 44.2 },
   {
     id: "formlessPenetration",
     label: "Formless Penetration",
@@ -436,6 +436,12 @@ export function gearWordIdForPath(enginePath: string | undefined): GearWordId | 
 
 export function isGearWordId(value: unknown): value is GearWordId {
   return typeof value === "string" && GEAR_WORD_ID_SET.has(value)
+}
+
+// A word a profile holds that this build has no line for — a roll another build
+// wrote and this one must keep without showing or scoring it.
+export function isUnknownGearWord(value: unknown): boolean {
+  return typeof value === "string" && value !== "" && !GEAR_WORD_ID_SET.has(value)
 }
 
 export const GEAR_WORD_MAX_ROLL: Readonly<Record<GearWordId, number>> = Object.fromEntries(

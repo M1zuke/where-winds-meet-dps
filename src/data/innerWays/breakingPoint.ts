@@ -10,10 +10,10 @@ export const breakingPoint: InnerWayDef = defineInnerWay({
   id: INNER_WAY_ID.breakingPoint,
   name: "Breaking Point",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 16,
+  confirmedBreakthrough: 17,
   buffParam: PARAM.breakingPoint,
   tiers: {
-    2: { panelStats: { precision: 0.069 } },
+    2: { panelStats: { precision: 0.072 } },
     5: { panelStats: { directCritRate: 0.041 } },
     6: { nodes: [INNER_WAY_NODE.breakingPointPerfectDodgeStacks] },
   },

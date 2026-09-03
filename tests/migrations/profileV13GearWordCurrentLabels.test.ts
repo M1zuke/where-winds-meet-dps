@@ -6,7 +6,6 @@ import {
   CURRENT_LABEL_TO_ID,
 } from "../../src/migrations/V13__gearWordCurrentLabels"
 import { migrateGearWordId } from "../../src/migrations/V12__gearWordIds"
-import { isGearWordId } from "../../src/data/stats/statLines"
 import type { Inputs, StoredProfile } from "../../src/engine/types"
 import storedProfileFile from "./testProfiles/v12/bellstrikeUmbra.json"
 
@@ -24,6 +23,9 @@ function storedWords(inputs: Inputs): string[] {
 const ID_TO_LABEL_AT_V13: Readonly<Record<string, string>> = Object.fromEntries(
   Object.entries(CURRENT_LABEL_TO_ID).map(([label, id]) => [id, label]),
 )
+
+// This hop's own output, not the live table, which a later rename moves.
+const IDS_AT_V13 = new Set(Object.values(CURRENT_LABEL_TO_ID))
 
 // No forward walk can produce this shape, so the fixture cannot carry it.
 function withCurrentLabels(profile: StoredProfile): StoredProfile {
@@ -48,25 +50,25 @@ describe("the v12 fixture", () => {
     expect(LEGACY.v).toBe(V13__gearWordCurrentLabels.to - 1)
     const words = storedWords(LEGACY.profile.inputs)
     expect(words.length).toBeGreaterThan(0)
-    for (const word of words) expect(isGearWordId(word), word).toBe(true)
+    for (const word of words) expect(IDS_AT_V13.has(word), word).toBe(true)
   })
 })
 
 describe("a label is what V12 cannot translate", () => {
   it("V12 alone leaves one unresolvable, which is what clears the roll", () => {
     const unresolved = storedWords(withCurrentLabels(LEGACY.profile).inputs).filter(
-      (word) => !isGearWordId(migrateGearWordId(word)),
+      (word) => !IDS_AT_V13.has(migrateGearWordId(word)),
     )
     expect(unresolved.length).toBeGreaterThan(0)
   })
 })
 
 describe("migrateCurrentGearWordLabel", () => {
-  it("resolves every reworded label to a live gear word", () => {
+  it("resolves every reworded label to a gear word id", () => {
     const words = storedWords(withCurrentLabels(LEGACY.profile).inputs)
     expect(words.length).toBeGreaterThan(0)
     for (const word of words) {
-      expect(isGearWordId(migrateCurrentGearWordLabel(migrateGearWordId(word))), word).toBe(true)
+      expect(IDS_AT_V13.has(migrateCurrentGearWordLabel(migrateGearWordId(word))), word).toBe(true)
     }
   })
 
@@ -84,7 +86,7 @@ describe("V13__gearWordCurrentLabels — registered in the chain", () => {
     expect(result.applied).toEqual(["V13__gearWordCurrentLabels"])
     expect(result.blob.v).toBe(13)
     for (const word of storedWords((result.blob.profiles[0] as StoredProfile).inputs)) {
-      expect(isGearWordId(word), word).toBe(true)
+      expect(IDS_AT_V13.has(word), word).toBe(true)
     }
   })
 })

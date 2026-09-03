@@ -1,16 +1,29 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-const { MockWorker } = vi.hoisted(() => {
+const { MockWorker, STALE_INNER_WAY } = vi.hoisted(() => {
   class Mock {
     onmessage: ((event: { data: unknown }) => void) | null = null
     postMessage() {}
     terminate() {}
   }
-  return { MockWorker: Mock }
+  return { MockWorker: Mock, STALE_INNER_WAY: "frostCladNight" }
 })
 
 vi.mock("../../src/engine/dpsWorker?worker", () => ({ default: MockWorker }))
+
+vi.mock("../../src/definitions/innerWays/registry", async (importOriginal) => {
+  const registry = await importOriginal<typeof import("../../src/definitions/innerWays/registry")>()
+  return {
+    ...registry,
+    innerWayDefinition: (id: string) => {
+      const definition = registry.innerWayDefinition(id)
+      return definition?.id === STALE_INNER_WAY
+        ? { ...definition, confirmedBreakthrough: definition.confirmedBreakthrough - 1 }
+        : definition
+    },
+  }
+})
 
 const { defaultInputs } = await import("../../src/engine/defaults")
 const { saveProfiles } = await import("../../src/storage")
@@ -18,6 +31,9 @@ const { BREAKTHROUGH_RELEASES } = await import("../../src/definitions/baseStats/
 const { App } = await import("../../src/app/App")
 
 const AFTER_EVERY_RELEASE = BREAKTHROUGH_RELEASES[BREAKTHROUGH_RELEASES.length - 1].at
+
+const ASKED_CLASS = "Stonesplit Strength"
+const CONFIRMED_CLASS = "Bellstrike Umbra"
 
 function dismissDialog(): void {
   act(() => {
@@ -44,7 +60,7 @@ beforeEach(() => {
   vi.spyOn(document, "hasFocus").mockReturnValue(true)
   saveProfiles({
     profiles: [
-      { id: "only", name: "Only", inputs: { ...defaultInputs, classId: "bellstrikeUmbra" } },
+      { id: "only", name: "Only", inputs: { ...defaultInputs, classId: "stonesplitStrength" } },
     ],
     activeId: "only",
   })
@@ -58,35 +74,34 @@ afterEach(() => {
 describe("asking for breakthrough data as the active class changes", () => {
   it("asks about the class the app opens on", () => {
     render(<App />)
-    expect(askedClassName()).toBe("Bellstrike Umbra")
+    expect(askedClassName()).toBe(ASKED_CLASS)
   })
 
-  it("asks again when the profile moves to another unconfirmed class", () => {
+  it("holds the close for fifteen seconds", () => {
     render(<App />)
-    dismissDialog()
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
-
-    chooseClass("Silkbind Jade")
-
-    expect(askedClassName()).toBe("Silkbind Jade")
-  })
-
-  it("gives each class its own fifteen seconds rather than carrying the hold over", () => {
-    render(<App />)
-    dismissDialog()
-
-    chooseClass("Silkbind Jade")
 
     expect(screen.getByRole("button", { name: "Close" })).toBeDisabled()
+    act(() => {
+      vi.advanceTimersByTime(15_000)
+    })
+    expect(screen.getByRole("button", { name: "Close" })).toBeEnabled()
+  })
+
+  it("asks nothing when the profile moves to a class whose inner ways are confirmed", () => {
+    render(<App />)
+    dismissDialog()
+
+    chooseClass(CONFIRMED_CLASS)
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
   })
 
   it("does not ask twice about a class already dismissed this session", () => {
     render(<App />)
     dismissDialog()
-    chooseClass("Silkbind Jade")
-    dismissDialog()
+    chooseClass(CONFIRMED_CLASS)
 
-    chooseClass("Bellstrike Umbra")
+    chooseClass(ASKED_CLASS)
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
   })

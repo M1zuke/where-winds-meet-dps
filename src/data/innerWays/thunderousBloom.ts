@@ -7,9 +7,9 @@ export const thunderousBloom = defineInnerWay({
   id: INNER_WAY_ID.thunderousBloom,
   name: "Thunderous Bloom",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 16,
+  confirmedBreakthrough: 17,
   tiers: {
-    2: { panelStats: { "phys.min": 22.3, "phys.max": 44.7 } },
+    2: { panelStats: { "phys.min": 23.3, "phys.max": 46.7 } },
     5: { panelStats: { physBoost: 0.025 } },
   },
   buffParam: PARAM.thunderousBloom,

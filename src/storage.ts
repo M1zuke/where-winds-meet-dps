@@ -1,4 +1,11 @@
-import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
+import type {
+  EnhancementSlot,
+  Inputs,
+  OddityNode,
+  OddityRegions,
+  StoredProfile,
+  TalentStat,
+} from "./engine/types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
@@ -11,7 +18,12 @@ import {
   resolveInnerWayId,
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
-import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
+import {
+  clampEnhancementValue,
+  getDefaultTalentsForClass,
+  DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+} from "./definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -44,6 +56,7 @@ import {
   migrateEntityId,
   migrateGearWordId,
   migrateCurrentGearWordLabel,
+  migrateFormlessWordId,
   migrateSetId,
   migrateAttunementId,
   migrateAttuneTag,
@@ -191,14 +204,16 @@ function sanitizeOpeningStacks(stored: unknown): Record<string, number> {
   return healed
 }
 
-// A word outside the catalogue already scores nothing, so clearing the row costs
-// the user no contribution.
+// A word this build cannot resolve is kept exactly as stored, roll included. It
+// scores nothing — every consumer skips a word with no spec — and clearing it
+// would destroy a roll the build that wrote it understood, which is what a
+// profile saved by a newer build and opened by an older one looks like.
 function repairGearWord(entry: unknown): unknown {
   if (!entry || typeof entry !== "object") return entry
   const stored = (entry as { word?: unknown }).word
   if (typeof stored !== "string") return entry
-  const renamed = migrateCurrentGearWordLabel(migrateGearWordId(stored))
-  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: "", value: 0 }
+  const renamed = migrateFormlessWordId(migrateCurrentGearWordLabel(migrateGearWordId(stored)))
+  return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: stored }
 }
 
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
@@ -207,11 +222,15 @@ function repairGearWord(entry: unknown): unknown {
 // selection on every load. It survives here only as the pre-V11 display-name
 // hop for the two paths that never walk the chain — a bare imported profile
 // and the legacy `wwm.inputs` blob.
+//
+// A set id neither table nor registry knows is one this build has no option
+// for, and is handed back as stored rather than cleared.
 function selectableSetId(stored: string | null): string | null {
   const renamed = migrateCleftpeakSetId(stored)
   if (typeof renamed === "string" && SET_BY_ID[renamed] !== undefined) return renamed
   const migrated = migrateCleftpeakSetId(migrateSetId(stored))
-  return typeof migrated === "string" && SET_BY_ID[migrated] !== undefined ? migrated : null
+  if (typeof migrated === "string" && SET_BY_ID[migrated] !== undefined) return migrated
+  return typeof stored === "string" && stored !== "" ? stored : null
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -263,16 +282,13 @@ function hydrateInputs(inputs: Inputs): Inputs {
   }
   if (typeof next.selectedBuiltinRotationId !== "string") next.selectedBuiltinRotationId = null
   delete (next as unknown as Record<string, unknown>).calcMode
-  if (next.bowSet !== "affinity" && next.bowSet !== "crit" && next.bowSet !== "precision") {
-    next.bowSet = null
-  }
-  if (
-    next.arsenal !== "general" &&
-    next.arsenal !== "bellstrike" &&
-    next.arsenal !== "stonesplit" &&
-    next.arsenal !== "silkbind" &&
-    next.arsenal !== "bamboocut"
-  ) {
+  // A selection this build has no option for is another build's, kept as
+  // stored: it matches no bonus here, and the panel that offers the choices
+  // shows none of them selected. Only a missing or non-string value falls back.
+  const storedBowSet = (next as unknown as Record<string, unknown>).bowSet
+  if (typeof storedBowSet !== "string" || storedBowSet === "") next.bowSet = null
+  const storedArsenal = (next as unknown as Record<string, unknown>).arsenal
+  if (typeof storedArsenal !== "string" || storedArsenal === "") {
     next.arsenal = defaultArsenalForClass(next.classId)
   }
   if (!Array.isArray(next.inventory)) next.inventory = []
@@ -307,9 +323,13 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // additive value-level repair — see CLAUDE.md → "localStorage migrations"
   //
   // A slot used to be identified by its display name. It now carries a stable
-  // `id`, healed here from whatever the profile stored. A slot naming an inner
-  // way that no longer exists resolves to nothing the class allows and is
-  // cleared, which is the same path an already-disallowed slot takes.
+  // `id`, healed here from whatever the profile stored.
+  //
+  // A slot naming an inner way this build has no definition for is kept as
+  // stored — it resolves to no definition, so it reaches no panel stat and no
+  // mechanic. A slot naming one this build knows but the class may not hold is
+  // cleared instead: that one would be scored, and scoring a build the class
+  // cannot have is the invisible wrong number the allowlist exists to stop.
   if (Array.isArray(next.mindMethods)) {
     const allowed = new Set(allowedInnerWaysForClass(next.classId))
     const seen = new Set<string>()
@@ -320,7 +340,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
       const disallowed = !!innerWayId && allowed.size > 0 && !allowed.has(innerWayId)
       const duplicate = !!innerWayId && seen.has(innerWayId)
       if (!innerWayId) return { ...slot, id: undefined, name: "", stacks: "" }
-      if (!known || disallowed || duplicate) return { id: undefined, name: "", stacks: "" }
+      if (!known) return { ...slot, id: innerWayId, stacks: slot.stacks || "tier 6" }
+      if (disallowed || duplicate) return { id: undefined, name: "", stacks: "" }
       seen.add(innerWayId)
       return {
         ...slot,
@@ -373,6 +394,37 @@ function hydrateInputs(inputs: Inputs): Inputs {
       if (!healed[region]) healed[region] = defNodes.map((n) => ({ ...n }))
     }
     next.oddities = healed
+  }
+  {
+    const stored = Array.isArray(next.enhancements) ? (next.enhancements as unknown[]) : []
+    const healed = stored
+      .filter((node): node is Record<string, unknown> => !!node && typeof node === "object")
+      .map((node, index) => {
+        const id = typeof node.id === "number" ? node.id : index + 1
+        const fallback = DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)
+        return {
+          id,
+          slot:
+            typeof node.slot === "string"
+              ? (node.slot as EnhancementSlot)
+              : (fallback?.slot ?? "disc"),
+          stat:
+            typeof node.stat === "string"
+              ? (node.stat as TalentStat)
+              : (fallback?.stat ?? "maxPhys"),
+          value: clampEnhancementValue(
+            id,
+            typeof node.value === "number" ? node.value : (fallback?.value ?? 0),
+          ),
+        }
+      })
+    const storedIds = new Set(healed.map((node) => node.id))
+    next.enhancements = [
+      ...healed,
+      ...DEFAULT_ENHANCEMENTS.filter((entry) => !storedIds.has(entry.id)).map((entry) => ({
+        ...entry,
+      })),
+    ]
   }
   {
     const def = defaultCombatSettings()
@@ -441,9 +493,14 @@ export function loadProfiles(): ProfilesState & { firstRun: boolean } {
             ? migrated.activeId
             : profiles[0].id
           // Persist the upgraded blob so the chain is walked once, not per load.
+          // Never for a blob a newer build wrote: the walk left it alone, and
+          // writing it back would stamp it at this build's version and hand it
+          // whatever this build made of the fields it does not know.
+          const storedByNewerBuild = typeof migrated.v === "number" && migrated.v > PROFILES_VERSION
           if (
-            releaseFollowed ||
-            (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION))
+            !storedByNewerBuild &&
+            (releaseFollowed ||
+              (result && (result.applied.length > 0 || migrated.v !== PROFILES_VERSION)))
           ) {
             saveProfiles({ profiles, activeId })
           }

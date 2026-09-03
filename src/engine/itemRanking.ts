@@ -139,10 +139,10 @@ function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
         applyAttrAttack(x, attribute, "max", roll)
       }),
     ]),
-    wordSpec("minVoidAttack", (x, roll) => {
+    wordSpec("minFormless", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "min", roll)
     }),
-    wordSpec("maxVoidAttack", (x, roll) => {
+    wordSpec("maxFormless", (x, roll) => {
       applyAttrAttack(x, school.primaryAttribute, "max", roll)
     }),
     wordSpec("physicalPenetration", (x, roll) => {

@@ -7,6 +7,8 @@ import { addStatDelta, resolveEnginePath } from "./statPaths"
 
 export const RELAYED_FACTOR = 0.94
 
+const FORMLESS_ATTACK_WORDS: ReadonlySet<string> = new Set(["minFormless", "maxFormless"])
+
 // Kept to the precision the UI shows — two decimals, which for a percent word
 // means four on the stored fraction.
 export function relayedCapValue(amount: number, unit: "raw" | "percent"): number {
@@ -87,6 +89,44 @@ function diffNumeric(before: Inputs, after: Inputs): GearContribution {
   return out
 }
 
+function wordContribution(
+  piece: GearPiece,
+  ctx: Inputs,
+  accepts: (word: string) => boolean,
+): GearContribution {
+  const out: GearContribution = []
+  const specs = getWordSpecs(ctx)
+  for (const w of piece.words) {
+    if (!w.word || !accepts(w.word)) continue
+    const spec = specs.find((s) => s.word === w.word)
+    if (!spec || !spec.amount) continue
+    const scale = w.value / spec.amount
+    if (!scale) continue
+    const after = spec.apply(ctx)
+    for (const d of diffNumeric(ctx, after)) {
+      out.push({ path: d.path, amount: d.amount * scale })
+    }
+  }
+  return out
+}
+
+// A Formless word lands on the same paths an attribute word does, so the word
+// it came from is the only thing that tells the two apart.
+export function formlessWordTotals(
+  pieces: readonly GearPiece[],
+  ctx: Inputs,
+): { min: number; max: number } {
+  let min = 0
+  let max = 0
+  for (const piece of pieces) {
+    for (const entry of wordContribution(piece, ctx, (word) => FORMLESS_ATTACK_WORDS.has(word))) {
+      if (entry.path.endsWith(".min")) min += entry.amount
+      if (entry.path.endsWith(".max")) max += entry.amount
+    }
+  }
+  return { min, max }
+}
+
 export function computeGearContribution(piece: GearPiece, ctx: Inputs): GearContribution {
   const out: GearContribution = []
 
@@ -99,18 +139,7 @@ export function computeGearContribution(piece: GearPiece, ctx: Inputs): GearCont
     if (base.physDef) out.push({ path: "physDef", amount: base.physDef })
   }
 
-  const specs = getWordSpecs(ctx)
-  for (const w of piece.words) {
-    if (!w.word) continue
-    const spec = specs.find((s) => s.word === w.word)
-    if (!spec || !spec.amount) continue
-    const scale = w.value / spec.amount
-    if (!scale) continue
-    const after = spec.apply(ctx)
-    for (const d of diffNumeric(ctx, after)) {
-      out.push({ path: d.path, amount: d.amount * scale })
-    }
-  }
+  out.push(...wordContribution(piece, ctx, () => true))
 
   if (piece.attunement && piece.attunementValue) {
     const opt = getAttunement(piece.attunement)

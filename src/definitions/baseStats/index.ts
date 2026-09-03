@@ -1,10 +1,12 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
-import { gearAttributeTotals } from "../../engine/gearStats"
+import { formlessWordTotals, gearAttributeTotals } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, slotInnerWayId } from "../innerWays/registry"
 import type {
   AttributeKey,
+  EnhancementNode,
+  EnhancementSlot,
   GearPiece,
   Inputs,
   MartialArtsTalent,
@@ -22,7 +24,7 @@ import { breakthroughAttributes } from "./breakthroughs"
 import { AGILITY_PER_POINT, MOMENTUM_PER_POINT, POWER_PER_POINT } from "./attributeConversion"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-const TALENT_TIERS = ["95.1", "95.2", "100.1"] as const
+const TALENT_TIERS = ["95.1", "95.2", "100.1", "100.2"] as const
 const ENHANCEMENT_TIER = "95"
 
 type BaseStatsByLevel = Record<string, Record<string, number>>
@@ -35,6 +37,12 @@ interface BaseEntry {
 
 type TieredEntries = Record<string, BaseEntry[]>
 
+interface EnhancementEntry extends BaseEntry {
+  slot: string
+}
+
+type TieredEnhancements = Record<string, EnhancementEntry[]>
+
 interface BaseAccumulator {
   minPhys: number
   maxPhys: number
@@ -43,6 +51,8 @@ interface BaseAccumulator {
   affinityRate: number
   critDamageBoost: number
   affinityDamageBoost: number
+  minFormless: number
+  maxFormless: number
   power: number
   agility: number
   momentum: number
@@ -60,6 +70,8 @@ function readBaseLevel(): BaseAccumulator {
     affinityRate: get("BASH_PROB"),
     critDamageBoost: get("W_ATK_CRI_UP"),
     affinityDamageBoost: get("BASH_UP"),
+    minFormless: 0,
+    maxFormless: 0,
     power: 0,
     agility: 0,
     momentum: 0,
@@ -89,6 +101,12 @@ function applyEntry(acc: BaseAccumulator, entry: BaseEntry): void {
     case "affinityDamage":
       acc.affinityDamageBoost += entry.value
       break
+    case "minFormless":
+      acc.minFormless += entry.value
+      break
+    case "maxFormless":
+      acc.maxFormless += entry.value
+      break
     case "power":
       acc.power += entry.value
       break
@@ -111,7 +129,6 @@ function buildAccumulator(breakthrough: number): BaseAccumulator {
   for (const tier of TALENT_TIERS) {
     applyAll(acc, (talentPointsJson as TieredEntries)[tier])
   }
-  applyAll(acc, (enhancementsJson as TieredEntries)[ENHANCEMENT_TIER])
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
 }
@@ -141,6 +158,27 @@ export function playerAttributes(breakthrough: number): Readonly<PlayerAttribute
   const attributes = { power: acc.power, agility: acc.agility, momentum: acc.momentum }
   ATTRIBUTES_BY_BREAKTHROUGH.set(breakthrough, attributes)
   return attributes
+}
+
+export interface FormlessAttack {
+  min: number
+  max: number
+}
+
+export function formlessAttack(breakthrough: number): Readonly<FormlessAttack> {
+  const acc = accumulatorFor(breakthrough)
+  return { min: acc.minFormless, max: acc.maxFormless }
+}
+
+// A readout, not an engine path: the damage math keeps Formless attack inside
+// the primary attribute block and never subtracts this back out.
+export function totalFormlessAttack(
+  inputs: Inputs,
+  equippedPieces: readonly GearPiece[],
+): Readonly<FormlessAttack> {
+  const fromTalents = formlessAttack(inputs.breakthrough)
+  const fromGear = formlessWordTotals(equippedPieces, inputs)
+  return { min: fromTalents.min + fromGear.min, max: fromTalents.max + fromGear.max }
 }
 
 export function globalBase(breakthrough: number): Readonly<Record<string, number>> {
@@ -178,6 +216,15 @@ export const DEFAULT_ODDITIES: OddityRegions = (() => {
   }
   return out
 })()
+
+export const DEFAULT_ENHANCEMENTS: EnhancementNode[] = (
+  (enhancementsJson as TieredEnhancements)[ENHANCEMENT_TIER] ?? []
+).map((entry) => ({
+  id: entry.id,
+  slot: entry.slot as EnhancementSlot,
+  stat: entry.stat as TalentStat,
+  value: entry.value,
+}))
 
 export const CLASS_PRIMARY_BASE = {
   min: 0,
@@ -281,6 +328,29 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
   return out
 }
 
+export function enhancementCap(id: number): number | undefined {
+  return DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)?.value
+}
+
+export function clampEnhancementValue(id: number, value: number): number {
+  if (!Number.isFinite(value)) return 0
+  const cap = enhancementCap(id)
+  if (cap === undefined) return value
+  return Math.min(Math.max(value, 0), cap)
+}
+
+export function enhancementContributions(
+  enhancements: readonly EnhancementNode[],
+): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const node of enhancements) {
+    if (!node.value) continue
+    const path = STAT_TO_PATH[node.stat] ?? node.stat
+    out[path] = (out[path] ?? 0) + node.value
+  }
+  return out
+}
+
 export function buildScalingSources(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[] = [],
@@ -313,10 +383,11 @@ export function getConfiguredBase(
   equippedPieces: readonly GearPiece[] = [],
 ): Readonly<Record<string, number>> {
   const key = primaryAttackKey(inputs.classId)
+  const formless = formlessAttack(inputs.breakthrough)
   const base: Record<string, number> = {
     ...globalBase(inputs.breakthrough),
-    [`${key}.min`]: CLASS_PRIMARY_BASE.min,
-    [`${key}.max`]: CLASS_PRIMARY_BASE.max,
+    [`${key}.min`]: CLASS_PRIMARY_BASE.min + formless.min,
+    [`${key}.max`]: CLASS_PRIMARY_BASE.max + formless.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,
   }
   const arsenal = arsenalContribution(inputs.arsenal)
@@ -332,6 +403,10 @@ export function getConfiguredBase(
   }
   const oddities = inputs.oddities ?? DEFAULT_ODDITIES
   for (const [path, amount] of Object.entries(oddityContributions(oddities))) {
+    base[path] = (base[path] ?? 0) + amount
+  }
+  const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS
+  for (const [path, amount] of Object.entries(enhancementContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }
   return base

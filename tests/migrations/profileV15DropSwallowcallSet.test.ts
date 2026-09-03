@@ -98,12 +98,12 @@ describe("V15__dropSwallowcallSet — registered in the chain", () => {
   })
 })
 
-describe("hydrateInputs backstop — swallowcall on a bare import, never walking the chain", () => {
+describe("hydrateInputs — swallowcall on a bare import, never walking the chain", () => {
   beforeEach(() => localStorage.clear())
 
-  it("clears it", () => {
+  it("keeps it stored, for the step to drop when the profile walks the chain", () => {
     const bare = withSet(clone(LEGACY.profile), RETIRED_SET_ID)
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBeNull()
+    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe(RETIRED_SET_ID)
   })
 
   it("keeps a set that is still offered", () => {

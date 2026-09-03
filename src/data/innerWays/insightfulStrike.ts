@@ -10,10 +10,10 @@ export const insightfulStrike = defineInnerWay({
   id: INNER_WAY_ID.insightfulStrike,
   name: "Insightful Strike",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 16,
+  confirmedBreakthrough: 17,
   panelStats: {
-    "phys.min": 22.3,
-    "phys.max": 44.7,
+    "phys.min": 23.3,
+    "phys.max": 46.7,
     "phys.penetration": 0.051,
   },
   scalars: {

@@ -1,7 +1,6 @@
-// The acceptance anchor for the Stonesplit Strength port: a captured build whose
-// figures were measured before the class moved onto the define* factories. Both
-// numbers are exact — a change that moves either one has changed the engine's
-// answer, not just its shape.
+// The acceptance anchor for Stonesplit Strength: a captured build, asserted
+// exactly. A change that moves either number has changed the engine's answer,
+// not just its shape.
 import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -13,8 +12,8 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(57238.4211110209)
-    expect(result.totalDamage).toBe(3405686.0561057436)
+    expect(result.dps).toBe(58151.196778170466)
+    expect(result.totalDamage).toBe(3459996.208301143)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

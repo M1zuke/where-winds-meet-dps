@@ -105,12 +105,12 @@ describe("getMindMethodContributions — panel stats are tier-invariant for four
     })
 
   it.each([
-    [INNER_WAY_ID.swordHorizon, { "phys.max": 74.4, directAffinityRate: 0.023 }],
-    [INNER_WAY_ID.wolfchasersArt, { affinityRate: 0.039, affinityDamageBoost: 0.052 }],
-    [INNER_WAY_ID.moraleChant, { "phys.max": 49.6, "phys.min": 24.8, directCritRate: 0.046 }],
+    [INNER_WAY_ID.swordHorizon, { "phys.max": 77.9, directAffinityRate: 0.023 }],
+    [INNER_WAY_ID.wolfchasersArt, { affinityRate: 0.04, affinityDamageBoost: 0.052 }],
+    [INNER_WAY_ID.moraleChant, { "phys.max": 51.9, "phys.min": 25.9, directCritRate: 0.046 }],
     [
       INNER_WAY_ID.insightfulStrike,
-      { "phys.min": 22.3, "phys.max": 44.7, "phys.penetration": 0.051 },
+      { "phys.min": 23.3, "phys.max": 46.7, "phys.penetration": 0.051 },
     ],
   ])("%s grants the same block at tier 6 and tier 5", (id, expected) => {
     const atTier6 = contributionsFor(id, "tier 6")
