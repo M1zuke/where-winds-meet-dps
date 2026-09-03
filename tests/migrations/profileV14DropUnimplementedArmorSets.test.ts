@@ -105,13 +105,13 @@ describe("V14__dropUnimplementedArmorSets — registered in the chain", () => {
 
 // The chain never runs on a bare imported profile, so only the live-registry
 // check in `hydrateInputs` stands between it and an illegal stored set.
-describe("hydrateInputs backstop — a retired set on a bare import", () => {
+describe("hydrateInputs — a retired set on a bare import", () => {
   beforeEach(() => localStorage.clear())
 
   for (const retired of RETIRED_SET_IDS) {
-    it(`clears ${retired}`, () => {
+    it(`keeps ${retired} stored, for the step to drop when the profile walks the chain`, () => {
       const bare = withSet(clone(LEGACY.profile), retired)
-      expect(importProfile(JSON.stringify(bare)).inputs.set).toBeNull()
+      expect(importProfile(JSON.stringify(bare)).inputs.set).toBe(retired)
     })
   }
 

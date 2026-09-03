@@ -108,14 +108,15 @@ describe("V8__dropRemovedArmorSets — registered in the chain", () => {
   })
 })
 
-// The chain never runs on these two, so only the `hydrateInputs` allowlist pass
-// stands between them and an illegal stored set.
-describe("hydrateInputs backstop — the paths that bypass the chain", () => {
+// The chain never runs on these two, so a removed set reaches `hydrateInputs`
+// with no step having seen it. It is kept rather than cleared — it matches no
+// option, so it scores nothing while it sits there.
+describe("hydrateInputs — the paths that bypass the chain", () => {
   beforeEach(() => localStorage.clear())
 
-  it("clears a removed set on a bare imported profile", () => {
+  it("keeps a removed set on a bare imported profile", () => {
     const bare = withSet(clone(LEGACY.profile), "Ivorybloom")
-    expect(importProfile(JSON.stringify(bare)).inputs.set).toBeNull()
+    expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("Ivorybloom")
   })
 
   it("keeps a surviving set on a bare imported profile, healed to its id", () => {
@@ -123,11 +124,11 @@ describe("hydrateInputs backstop — the paths that bypass the chain", () => {
     expect(importProfile(JSON.stringify(bare)).inputs.set).toBe("jadeware")
   })
 
-  it("clears a removed set on the legacy wwm.inputs blob rolled into a profile", () => {
+  it("keeps a removed set on the legacy wwm.inputs blob rolled into a profile", () => {
     localStorage.setItem(
       "wwm.inputs",
       JSON.stringify({ v: 5, inputs: withSet(clone(LEGACY.profile), "Rainwhisper").inputs }),
     )
-    expect(loadOne().inputs.set).toBeNull()
+    expect(loadOne().inputs.set).toBe("Rainwhisper")
   })
 })

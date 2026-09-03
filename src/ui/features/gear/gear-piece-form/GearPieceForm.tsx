@@ -7,7 +7,7 @@ import type {
   GearWordEntry,
 } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
-import { isGearWordId } from "../../../../data/stats/statLines"
+import { isGearWordId, isUnknownGearWord } from "../../../../data/stats/statLines"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
@@ -156,9 +156,16 @@ export function GearPieceForm({
     const cap = relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
     return roundToShownPrecision(Math.min(Math.max(value, 0), cap), spec.unit === "percent")
   }
+  // A row the form shows as empty is empty as far as an edit is concerned: the
+  // word the profile is holding for another build goes only when the user
+  // writes over the row it sits on.
   function patchWord(idx: number, patchedFields: Partial<GearWordEntry>): void {
     const next = [...piece.words] as GearPiece["words"]
-    const merged = { ...next[idx], ...patchedFields }
+    const current = next[idx]
+    const base = isUnknownGearWord(current.word)
+      ? { ...current, word: "" as const, value: 0 }
+      : current
+    const merged = { ...base, ...patchedFields }
     merged.value = clampAndRound(merged.value, merged.word, piece.relayed)
     next[idx] = merged
     onChange({ ...piece, words: next })
@@ -256,7 +263,10 @@ export function GearPieceForm({
               </span>
             </>
           )}
-          {piece.words.map((word, idx) => {
+          {piece.words.map((stored, idx) => {
+            const word = isUnknownGearWord(stored.word)
+              ? { ...stored, word: "" as const, value: 0 }
+              : stored
             const spec = wordSpecs.find((candidate) => candidate.word === word.word)
             const isPercent = spec?.unit === "percent"
             const ValueInput = isPercent ? PercentInput : NumInput
