@@ -285,7 +285,7 @@ function AppInner() {
     { path: "/rotation", label: t("common.rotation") },
     { path: "/simulation", label: t("app.simulation") },
     { path: "/skills", label: t("app.skillEditor") },
-    { path: "/talents", label: t("common.talentsOddities") },
+    { path: "/talents", label: t("common.enhancementOdditiesTalents") },
     { path: "/profile", label: t("common.profiles"), align: "right" },
   ]
 

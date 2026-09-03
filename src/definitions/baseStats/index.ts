@@ -5,6 +5,8 @@ import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, slotInnerWayId } from "../innerWays/registry"
 import type {
   AttributeKey,
+  EnhancementNode,
+  EnhancementSlot,
   GearPiece,
   Inputs,
   MartialArtsTalent,
@@ -34,6 +36,12 @@ interface BaseEntry {
 }
 
 type TieredEntries = Record<string, BaseEntry[]>
+
+interface EnhancementEntry extends BaseEntry {
+  slot: string
+}
+
+type TieredEnhancements = Record<string, EnhancementEntry[]>
 
 interface BaseAccumulator {
   minPhys: number
@@ -121,7 +129,6 @@ function buildAccumulator(breakthrough: number): BaseAccumulator {
   for (const tier of TALENT_TIERS) {
     applyAll(acc, (talentPointsJson as TieredEntries)[tier])
   }
-  applyAll(acc, (enhancementsJson as TieredEntries)[ENHANCEMENT_TIER])
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
 }
@@ -209,6 +216,15 @@ export const DEFAULT_ODDITIES: OddityRegions = (() => {
   }
   return out
 })()
+
+export const DEFAULT_ENHANCEMENTS: EnhancementNode[] = (
+  (enhancementsJson as TieredEnhancements)[ENHANCEMENT_TIER] ?? []
+).map((entry) => ({
+  id: entry.id,
+  slot: entry.slot as EnhancementSlot,
+  stat: entry.stat as TalentStat,
+  value: entry.value,
+}))
 
 export const CLASS_PRIMARY_BASE = {
   min: 0,
@@ -312,6 +328,29 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
   return out
 }
 
+export function enhancementCap(id: number): number | undefined {
+  return DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)?.value
+}
+
+export function clampEnhancementValue(id: number, value: number): number {
+  if (!Number.isFinite(value)) return 0
+  const cap = enhancementCap(id)
+  if (cap === undefined) return value
+  return Math.min(Math.max(value, 0), cap)
+}
+
+export function enhancementContributions(
+  enhancements: readonly EnhancementNode[],
+): Record<string, number> {
+  const out: Record<string, number> = {}
+  for (const node of enhancements) {
+    if (!node.value) continue
+    const path = STAT_TO_PATH[node.stat] ?? node.stat
+    out[path] = (out[path] ?? 0) + node.value
+  }
+  return out
+}
+
 export function buildScalingSources(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[] = [],
@@ -364,6 +403,10 @@ export function getConfiguredBase(
   }
   const oddities = inputs.oddities ?? DEFAULT_ODDITIES
   for (const [path, amount] of Object.entries(oddityContributions(oddities))) {
+    base[path] = (base[path] ?? 0) + amount
+  }
+  const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS
+  for (const [path, amount] of Object.entries(enhancementContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }
   return base

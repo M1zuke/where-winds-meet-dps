@@ -1,4 +1,11 @@
-import type { Inputs, OddityNode, OddityRegions, StoredProfile } from "./engine/types"
+import type {
+  EnhancementSlot,
+  Inputs,
+  OddityNode,
+  OddityRegions,
+  StoredProfile,
+  TalentStat,
+} from "./engine/types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
@@ -11,7 +18,12 @@ import {
   resolveInnerWayId,
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
-import { getDefaultTalentsForClass, DEFAULT_ODDITIES } from "./definitions/baseStats"
+import {
+  clampEnhancementValue,
+  getDefaultTalentsForClass,
+  DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+} from "./definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -382,6 +394,37 @@ function hydrateInputs(inputs: Inputs): Inputs {
       if (!healed[region]) healed[region] = defNodes.map((n) => ({ ...n }))
     }
     next.oddities = healed
+  }
+  {
+    const stored = Array.isArray(next.enhancements) ? (next.enhancements as unknown[]) : []
+    const healed = stored
+      .filter((node): node is Record<string, unknown> => !!node && typeof node === "object")
+      .map((node, index) => {
+        const id = typeof node.id === "number" ? node.id : index + 1
+        const fallback = DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)
+        return {
+          id,
+          slot:
+            typeof node.slot === "string"
+              ? (node.slot as EnhancementSlot)
+              : (fallback?.slot ?? "disc"),
+          stat:
+            typeof node.stat === "string"
+              ? (node.stat as TalentStat)
+              : (fallback?.stat ?? "maxPhys"),
+          value: clampEnhancementValue(
+            id,
+            typeof node.value === "number" ? node.value : (fallback?.value ?? 0),
+          ),
+        }
+      })
+    const storedIds = new Set(healed.map((node) => node.id))
+    next.enhancements = [
+      ...healed,
+      ...DEFAULT_ENHANCEMENTS.filter((entry) => !storedIds.has(entry.id)).map((entry) => ({
+        ...entry,
+      })),
+    ]
   }
   {
     const def = defaultCombatSettings()

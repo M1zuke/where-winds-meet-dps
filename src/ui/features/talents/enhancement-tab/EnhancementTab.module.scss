@@ -1,0 +1,43 @@
+@use "breakpoints";
+
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.slotCard {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.statRow > span:first-child {
+  flex: 1;
+  color: var(--color-text-dim);
+  font-size: 0.85em;
+}
+
+.statRow input {
+  width: 90px;
+}
+
+.cap {
+  min-width: 42px;
+  color: var(--color-text-muted);
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+}
+
+@include breakpoints.below(breakpoints.$bp-720) {
+  .slotGrid {
+    grid-template-columns: 1fr;
+  }
+}
