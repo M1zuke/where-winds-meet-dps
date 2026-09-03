@@ -3,32 +3,32 @@
     {
       "id": 1,
       "stat": "maxPhys",
-      "value": 144
+      "value": 160
     },
     {
       "id": 2,
       "stat": "maxPhys",
-      "value": 144
+      "value": 160
     },
     {
       "id": 3,
       "stat": "maxPhys",
-      "value": 72
+      "value": 80
     },
     {
       "id": 4,
       "stat": "minPhys",
-      "value": 108
+      "value": 120
     },
     {
       "id": 5,
       "stat": "maxPhys",
-      "value": 72
+      "value": 80
     },
     {
       "id": 6,
       "stat": "minPhys",
-      "value": 108
+      "value": 120
     }
   ]
 }

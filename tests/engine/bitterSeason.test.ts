@@ -210,14 +210,14 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
 
   it("grants precision from tier 2, but not physBoost yet", () => {
     const atTier2 = contributionsAt("tier 2")
-    expect(atTier2.precision).toBeCloseTo(0.069, 10)
+    expect(atTier2.precision).toBeCloseTo(0.072, 10)
     expect(atTier2.physBoost ?? 0).toBe(0)
   })
 
   it("grants both precision and physBoost from tier 5 onward", () => {
     for (const stacks of ["tier 5", "tier 6"]) {
       const contributions = contributionsAt(stacks)
-      expect(contributions.precision).toBeCloseTo(0.069, 10)
+      expect(contributions.precision).toBeCloseTo(0.072, 10)
       expect(contributions.physBoost).toBeCloseTo(0.025, 10)
     }
   })

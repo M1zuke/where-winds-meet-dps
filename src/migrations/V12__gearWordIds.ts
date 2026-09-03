@@ -10,7 +10,7 @@
 // rename needs its own step.
 import type { Migration, RawProfilesBlob } from "./types"
 
-const LEGACY_GEAR_WORD_TO_ID: Readonly<Record<string, string>> = {
+export const LEGACY_GEAR_WORD_TO_ID: Readonly<Record<string, string>> = {
   Power: "power",
   Agility: "agility",
   Momentum: "momentum",

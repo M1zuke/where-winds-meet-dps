@@ -1,9 +1,10 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
-import { totalPlayerAttributes } from "../../../definitions/baseStats"
+import { totalFormlessAttack, totalPlayerAttributes } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
+import { resolveEnginePath } from "../../../engine/statPaths"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
 import { finalCritAffinityRates } from "./finalCritAffinityRates"
@@ -76,7 +77,8 @@ export function StatsOverviewPanel({ inputs }: Props) {
     directAffinityRate: withSets.directAffinityRate,
   })
 
-  const attrs = totalPlayerAttributes(inputs.breakthrough, equippedPiecesFor(inputs))
+  const equippedPieces = equippedPiecesFor(inputs)
+  const attrs = totalPlayerAttributes(inputs.breakthrough, equippedPieces)
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
     row(t("content.statLine.agility"), attrs.agility, false),
@@ -118,20 +120,29 @@ export function StatsOverviewPanel({ inputs }: Props) {
       true,
     ),
   ]
+  const formless = totalFormlessAttack(inputs, equippedPieces)
+  const primaryMinPath = resolveEnginePath("primaryAttr.min", inputs)
+  const primaryMaxPath = resolveEnginePath("primaryAttr.max", inputs)
   for (const key of ATTRIBUTE_BLOCKS) {
-    const min = readPath(withSets, `${key}.min`)
-    const max = readPath(withSets, `${key}.max`)
+    const ownMin =
+      readPath(withSets, `${key}.min`) - (`${key}.min` === primaryMinPath ? formless.min : 0)
+    const ownMax =
+      readPath(withSets, `${key}.max`) - (`${key}.max` === primaryMaxPath ? formless.max : 0)
     const pen = readPath(withSets, `${key}.penetration`)
-    if (min !== 0 || max !== 0) {
+    if (ownMin !== 0 || ownMax !== 0) {
       attackRows.push(
-        row(statPathLabel(`${key}.min`, t), min, false),
-        row(statPathLabel(`${key}.max`, t), max, false),
+        row(statPathLabel(`${key}.min`, t), ownMin, false),
+        row(statPathLabel(`${key}.max`, t), ownMax, false),
       )
     }
     if (pen !== 0) {
       penetrationRows.push(row(statPathLabel(`${key}.penetration`, t), pen, false, undefined, true))
     }
   }
+  attackRows.push(
+    row(t("content.statLine.minFormless"), formless.min, false),
+    row(t("content.statLine.maxFormless"), formless.max, false),
+  )
 
   const damageBoostRows: RowEntry[] = DAMAGE_BOOST_PATHS.map((path) =>
     row(statPathLabel(path, t), readPath(withSets, path), PERCENT_PATHS.has(path)),

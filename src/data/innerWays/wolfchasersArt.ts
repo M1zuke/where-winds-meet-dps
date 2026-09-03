@@ -11,10 +11,10 @@ export const wolfchasersArt: InnerWayDef = defineInnerWay({
   id: INNER_WAY_ID.wolfchasersArt,
   name: "Wolfchaser's Art",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 16,
+  confirmedBreakthrough: 17,
   buffParam: PARAM.wolfchasersArt,
   panelStats: {
-    affinityRate: 0.039,
+    affinityRate: 0.04,
     affinityDamageBoost: 0.052,
   },
   tiers: {
