@@ -18,13 +18,13 @@ export const crosswindBlade = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.6,
-      attributeMultiplier: 0.9,
+      physMultiplier: 0.625421,
+      attributeMultiplier: 0.938132,
       physFixed: 0,
       attributeFixed: 0,
       triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-03T00:00:00.000Z",
 })

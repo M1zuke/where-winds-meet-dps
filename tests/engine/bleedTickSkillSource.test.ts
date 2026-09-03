@@ -55,8 +55,8 @@ describe("Bleed Tick sources its per-tick damage from the skill", () => {
     expect(skill.attributeAttack).toBe("Bellstrike")
     expect(skill.weaponOrAttribute).toBe(debuff.dot!.weaponOrAttribute)
     expect(skill.weaponOrAttribute).toBe("Sword")
-    expect(hit.physMultiplier).toBe(0.06864)
-    expect(hit.attributeMultiplier).toBe(0.10296)
+    expect(hit.physMultiplier).toBe(0.066)
+    expect(hit.attributeMultiplier).toBe(0.099)
   })
 
   it("a no-op custom skill override reproduces the built-in output exactly", () => {
@@ -131,8 +131,8 @@ describe("Bleed Tick sources its per-tick damage from the skill", () => {
     const migratedSkill = migratedSkills.find((s) => s.id === "bellstrikeUmbra-bleed-tick")
     expect(migratedSkill).toBeTruthy()
     for (const hit of migratedSkill!.hits) {
-      expect(hit.physMultiplier).toBeCloseTo(0.20592, 10)
-      expect(hit.attributeMultiplier).toBeCloseTo(0.30888, 10)
+      expect(hit.physMultiplier).toBeCloseTo(0.198, 10)
+      expect(hit.attributeMultiplier).toBeCloseTo(0.297, 10)
     }
 
     const base = runEngine({ ...defaultInputs, classId: "bellstrikeUmbra" })
@@ -169,8 +169,8 @@ describe("Bleed Tick sources its per-tick damage from the skill", () => {
     )
     expect(repaired).toBeTruthy()
     for (const hit of repaired!.hits) {
-      expect(hit.physMultiplier).toBe(0.06864)
-      expect(hit.attributeMultiplier).toBe(0.10296)
+      expect(hit.physMultiplier).toBe(0.066)
+      expect(hit.attributeMultiplier).toBe(0.099)
     }
   })
 })

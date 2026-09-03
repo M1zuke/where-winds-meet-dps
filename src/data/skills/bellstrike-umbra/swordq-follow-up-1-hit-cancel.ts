@@ -20,13 +20,13 @@ export const swordqFollowUp1HitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.5441,
-      attributeMultiplier: 0.8161,
-      physFixed: 150,
+      physMultiplier: 0.544068,
+      attributeMultiplier: 0.816102,
+      physFixed: 150.6,
       attributeFixed: 82,
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-03T00:00:00.000Z",
 })

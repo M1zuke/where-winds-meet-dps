@@ -1,0 +1,328 @@
+{
+  "v": 4,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-swordqfollowup",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 16,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 32,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-4",
+          "frame": 48,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 66,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "castTag": "cast:swordMartialQQ",
+      "breakdownName": "Inner Track Slash",
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-swordq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial Q",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.6,
+          "attributeMultiplier": 0.9,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 30,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "castTag": "cast:swordMartialQ",
+      "breakdownName": "Inner Track Slash",
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-spearspecial",
+      "classId": "bellstrikeUmbra",
+      "name": "Spear Special",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Spear", "attack:heavy", "attune:spearSpecial"],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 25,
+          "physMultiplier": 1.7122,
+          "attributeMultiplier": 2.5683,
+          "physFixed": 474,
+          "attributeFixed": 258,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "castSkill",
+              "targetId": "bellstrikeUmbra-bleed-detonation",
+              "stacks": 0,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-defense-down",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            },
+            {
+              "kind": "applyBuff",
+              "targetId": "buff-bellstrikeUmbra-spear-special-cooldown",
+              "stacks": 1,
+              "condition": {
+                "buffId": "potentRiverFlow",
+                "op": "gte",
+                "stacks": 1
+              },
+              "conditions": [
+                {
+                  "buffId": "buff-bellstrikeUmbra-spear-special-cooldown",
+                  "op": "eq",
+                  "stacks": 0
+                }
+              ]
+            }
+          ],
+          "variants": [
+            {
+              "id": "variant-1",
+              "label": "River Flow",
+              "conditions": [
+                {
+                  "buffId": "potentRiverFlow",
+                  "op": "gte",
+                  "stacks": 1
+                }
+              ],
+              "physMultiplier": 2.5683,
+              "attributeMultiplier": 3.8524,
+              "physFixed": 711,
+              "attributeFixed": 387
+            }
+          ]
+        }
+      ],
+      "castFrames": 60,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "castTag": "cast:spearSpecial",
+      "breakdownName": "Sweep All",
+      "receives": ["mistwillowLightBuff", "mistwillowBuff"]
+    },
+    {
+      "id": "bellstrikeUmbra-dragon-head-plus",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head - Plus",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bellstrike",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 246,
+          "physMultiplier": 17.3793,
+          "attributeMultiplier": 26.0689,
+          "physFixed": 3237,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 246,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "guaranteedPrecision": true,
+      "castTag": "cast:dragonHeadPlus",
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"]
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 30,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    }
+  ]
+}
