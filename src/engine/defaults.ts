@@ -81,6 +81,8 @@ export const defaultInputs: Inputs = {
 
   oddities: DEFAULT_ODDITIES,
 
+  disabledTalentPoints: {},
+
   enhancements: DEFAULT_ENHANCEMENTS,
 
   combatSettings: defaultCombatSettings(),

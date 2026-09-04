@@ -1,4 +1,5 @@
 import type {
+  DisabledTalentPoints,
   EnhancementSlot,
   Inputs,
   OddityNode,
@@ -406,6 +407,20 @@ function hydrateInputs(inputs: Inputs): Inputs {
       if (!healed[region]) healed[region] = defNodes.map((n) => ({ ...n }))
     }
     next.oddities = healed
+  }
+  {
+    const stored = next.disabledTalentPoints as unknown
+    const healed: DisabledTalentPoints = {}
+    if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+      for (const [tier, ids] of Object.entries(stored as Record<string, unknown>)) {
+        if (!Array.isArray(ids)) continue
+        const numeric = [...new Set(ids.filter((id): id is number => typeof id === "number"))].sort(
+          (left, right) => left - right,
+        )
+        if (numeric.length > 0) healed[tier] = numeric
+      }
+    }
+    next.disabledTalentPoints = healed
   }
   {
     const stored = Array.isArray(next.enhancements) ? (next.enhancements as unknown[]) : []

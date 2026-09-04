@@ -1,0 +1,116 @@
+@use "breakpoints";
+
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.groupCard {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 0;
+  min-width: 0;
+  align-content: start;
+}
+
+.groupHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.glyph {
+  color: var(--color-accent);
+  flex: none;
+}
+
+.groupName {
+  color: var(--color-text);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+.groupControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepButton {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  line-height: 1;
+  background: var(--color-surface);
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-border-strong);
+  cursor: pointer;
+}
+
+.stepButton:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.stepButton:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.count {
+  min-width: 52px;
+  text-align: center;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-dim);
+}
+
+.count b {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.groupTotal {
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-positive);
+  overflow-wrap: anywhere;
+}
+
+.groupTotal[data-zero] {
+  color: var(--color-text-faint);
+}
+
+.meter {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+}
+
+.meter .pip {
+  flex: 1;
+  min-width: 4px;
+  padding: 0;
+  border: none;
+  background: var(--color-border);
+  cursor: pointer;
+}
+
+.meter .pip[data-on] {
+  background: var(--color-accent);
+}
+
+.meter .pip:hover {
+  background: var(--color-accent-bright);
+}
+
+@include breakpoints.below(breakpoints.$bp-720) {
+  .groupGrid {
+    grid-template-columns: 1fr;
+  }
+}
