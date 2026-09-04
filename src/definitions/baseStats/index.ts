@@ -16,15 +16,15 @@ import type {
   TalentStat,
 } from "../../engine/types"
 import baseStatsJson from "../../data/baseStats/baseStats.json"
-import talentPointsJson from "../../data/baseStats/talentPoints.json"
+import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
 import odditiesJson from "../../data/baseStats/oddities.json"
 import enhancementsJson from "../../data/baseStats/enhancements.json"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
+import type { TalentPointDef } from "./talentPointDef"
 import { breakthroughAttributes } from "./breakthroughs"
 import { AGILITY_PER_POINT, MOMENTUM_PER_POINT, POWER_PER_POINT } from "./attributeConversion"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-const TALENT_TIERS = ["95.1", "95.2", "100.1", "100.2"] as const
 const ENHANCEMENT_TIER = "95"
 
 type BaseStatsByLevel = Record<string, Record<string, number>>
@@ -121,13 +121,21 @@ function applyEntry(acc: BaseAccumulator, entry: BaseEntry): void {
 
 function applyAll(acc: BaseAccumulator, entries: readonly BaseEntry[] | undefined): void {
   if (!entries) return
-  for (const e of entries) applyEntry(acc, e)
+  for (const entry of entries) applyEntry(acc, entry)
+}
+
+function applyTalentPoints(acc: BaseAccumulator, points: readonly TalentPointDef[]): void {
+  for (const point of points) {
+    for (const [stat, value] of Object.entries(point.effects)) {
+      applyEntry(acc, { id: point.id, stat, value })
+    }
+  }
 }
 
 function buildAccumulator(breakthrough: number): BaseAccumulator {
   const acc = readBaseLevel()
-  for (const tier of TALENT_TIERS) {
-    applyAll(acc, (talentPointsJson as TieredEntries)[tier])
+  for (const tier of TALENT_POINT_TIERS) {
+    applyTalentPoints(acc, TALENT_POINTS[tier])
   }
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
