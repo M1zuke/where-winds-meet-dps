@@ -111,8 +111,3 @@ export function groupTotals(
   }
   return totals
 }
-
-export function stepValues(member: TalentPointMember): number[] {
-  const values = talentPointStats(member.effects).map((stat) => member.effects[stat] ?? 0)
-  return values.every((value) => value === values[0]) ? [values[0]] : values
-}

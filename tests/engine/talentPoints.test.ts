@@ -6,7 +6,6 @@ import {
   groupTotals,
   isTalentPointEnabled,
   playerAttributes,
-  stepValues,
   withTalentPointEnabled,
 } from "../../src/definitions/baseStats"
 import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../src/data/baseStats"
@@ -83,12 +82,6 @@ describe("talent point grouping", () => {
       const values = group.members.map((member) => member.effects[stat] ?? 0)
       expect(values).toEqual([...values].sort((left, right) => right - left))
     }
-  })
-
-  it("collapses a step label to one number when every stat of the point is equal", () => {
-    const attributes = groupFor("power")
-    expect(stepValues(attributes.members[0])).toEqual([1])
-    expect(stepValues(groupFor("minPhys").members[0])).toHaveLength(1)
   })
 
   it("sums only the steps left on", () => {

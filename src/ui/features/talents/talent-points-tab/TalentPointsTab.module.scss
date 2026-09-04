@@ -2,7 +2,7 @@
 
 .groupGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 10px;
   margin-top: 8px;
 }
@@ -33,12 +33,39 @@
   overflow-wrap: anywhere;
 }
 
-.count {
-  margin-left: auto;
+.groupControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepButton {
+  width: 24px;
+  height: 24px;
   flex: none;
-  font-size: 0.8em;
+  line-height: 1;
+  background: var(--color-surface);
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-border-strong);
+  cursor: pointer;
+}
+
+.stepButton:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.stepButton:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.count {
+  min-width: 52px;
+  text-align: center;
+  font-size: 0.85em;
   font-variant-numeric: tabular-nums;
-  color: var(--color-text-muted);
+  color: var(--color-text-dim);
 }
 
 .count b {
@@ -47,7 +74,9 @@
 }
 
 .groupTotal {
-  font-size: 0.85em;
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.8em;
   font-variant-numeric: tabular-nums;
   color: var(--color-positive);
   overflow-wrap: anywhere;
@@ -57,34 +86,27 @@
   color: var(--color-text-faint);
 }
 
-.steps {
+.meter {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  gap: 2px;
+  height: 8px;
 }
 
-.step {
-  font: inherit;
-  font-size: 0.78em;
-  font-variant-numeric: tabular-nums;
-  padding: 2px 7px;
-  background: var(--color-surface-inset);
-  color: var(--color-text-faint);
-  border: 1px dashed var(--color-border);
+.meter .pip {
+  flex: 1;
+  min-width: 4px;
+  padding: 0;
+  border: none;
+  background: var(--color-border);
   cursor: pointer;
-  white-space: nowrap;
 }
 
-.step[data-on] {
-  background: var(--color-surface-selected);
-  color: var(--color-accent);
-  border-style: solid;
-  border-color: var(--color-accent);
+.meter .pip[data-on] {
+  background: var(--color-accent);
 }
 
-.step:hover {
-  border-color: var(--color-accent-bright);
-  color: var(--color-accent-bright);
+.meter .pip:hover {
+  background: var(--color-accent-bright);
 }
 
 @include breakpoints.below(breakpoints.$bp-720) {

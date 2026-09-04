@@ -1,12 +1,11 @@
 import { useMemo } from "react"
 import type { Inputs } from "../../../../engine/types"
-import type { TalentPointMember, TalentPointStat } from "../../../../definitions/baseStats"
+import type { TalentPointGroup, TalentPointStat } from "../../../../definitions/baseStats"
 import {
   TALENT_POINT_GROUPS,
   enabledMembers,
   groupTotals,
   isTalentPointEnabled,
-  stepValues,
   withTalentPointEnabled,
 } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -61,12 +60,6 @@ function formatValue(stat: TalentPointStat, value: number): string {
   return `+${Math.round(value * 10) / 10}`
 }
 
-function stepLabel(member: TalentPointMember, stats: readonly TalentPointStat[]): string {
-  return stepValues(member)
-    .map((value, index) => formatValue(stats[index] ?? stats[0], value))
-    .join(" · ")
-}
-
 export function TalentPointsTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -77,10 +70,27 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
     [disabled],
   )
 
-  function toggle(member: TalentPointMember, enabled: boolean) {
+  function toggleAt(group: TalentPointGroup, index: number) {
+    const member = group.members[index]
+    const enabled = isTalentPointEnabled(disabled, member.tier, member.id)
     onChange({
       ...inputs,
-      disabledTalentPoints: withTalentPointEnabled(disabled, member, enabled),
+      disabledTalentPoints: withTalentPointEnabled(disabled, member, !enabled),
+    })
+  }
+
+  function step(group: TalentPointGroup, delta: number) {
+    const on = enabledMembers(group, disabled)
+    const member =
+      delta < 0
+        ? on[on.length - 1]
+        : group.members.find(
+            (candidate) => !isTalentPointEnabled(disabled, candidate.tier, candidate.id),
+          )
+    if (!member) return
+    onChange({
+      ...inputs,
+      disabledTalentPoints: withTalentPointEnabled(disabled, member, delta > 0),
     })
   }
 
@@ -114,31 +124,48 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
                 <span className={styles.groupName}>
                   {group.stats.map((stat) => t(STAT_KEYS[stat])).join(" · ")}
                 </span>
+              </div>
+
+              <div className={styles.groupControl}>
+                <button
+                  type="button"
+                  className={styles.stepButton}
+                  aria-label={t("talents.talentPoints.disableOne")}
+                  disabled={onCount === 0}
+                  onClick={() => step(group, -1)}
+                >
+                  −
+                </button>
                 <span className={styles.count}>
                   <b>{onCount}</b> / {group.members.length}
                 </span>
+                <button
+                  type="button"
+                  className={styles.stepButton}
+                  aria-label={t("talents.talentPoints.enableOne")}
+                  disabled={onCount === group.members.length}
+                  onClick={() => step(group, 1)}
+                >
+                  +
+                </button>
+                <span className={styles.groupTotal} data-zero={onCount === 0 || undefined}>
+                  {group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0)).join(" · ")}
+                </span>
               </div>
 
-              <div className={styles.groupTotal} data-zero={onCount === 0 || undefined}>
-                {group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0)).join(" · ")}
-              </div>
-
-              <div className={styles.steps}>
-                {group.members.map((member) => {
+              <div className={styles.meter}>
+                {group.members.map((member, index) => {
                   const on = isTalentPointEnabled(disabled, member.tier, member.id)
-                  const label = stepLabel(member, group.stats)
                   return (
                     <button
                       type="button"
                       key={`${member.tier}-${member.id}`}
-                      className={styles.step}
+                      className={styles.pip}
                       data-on={on || undefined}
                       aria-pressed={on}
-                      aria-label={`${member.tier} ${label}`}
-                      onClick={() => toggle(member, !on)}
-                    >
-                      {label}
-                    </button>
+                      aria-label={`${t("talents.talentPoints.talentPoint")} ${index + 1}`}
+                      onClick={() => toggleAt(group, index)}
+                    />
                   )
                 })}
               </div>

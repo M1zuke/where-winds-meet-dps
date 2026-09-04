@@ -9,7 +9,7 @@ import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmD
 import { TalentPointsTab } from "../../src/ui/features/talents/talent-points-tab/TalentPointsTab"
 
 const PHYS = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "minPhys")!
-const ATTRIBUTES = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "power")!
+const MAX_PHYS = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "maxPhys")!
 
 function renderTab(inputs: Inputs, onChange = vi.fn()) {
   render(
@@ -26,7 +26,7 @@ function cardFor(group: TalentPointGroup): HTMLElement {
   return document.querySelectorAll("div.panel")[TALENT_POINT_GROUPS.indexOf(group)] as HTMLElement
 }
 
-function stepsIn(card: HTMLElement): HTMLElement[] {
+function pipsIn(card: HTMLElement): HTMLElement[] {
   return within(card)
     .getAllByRole("button")
     .filter((button) => button.hasAttribute("aria-pressed"))
@@ -47,34 +47,27 @@ describe("TalentPointsTab", () => {
   it("gives every talent point of a group its own step", () => {
     renderTab(defaultInputs)
     for (const group of TALENT_POINT_GROUPS) {
-      expect(stepsIn(cardFor(group))).toHaveLength(group.members.length)
+      expect(pipsIn(cardFor(group))).toHaveLength(group.members.length)
     }
-  })
-
-  it("labels each step with what that one point grants", () => {
-    renderTab(defaultInputs)
-    const labels = stepsIn(cardFor(PHYS)).map((step) => step.textContent)
-    expect(labels).toEqual(PHYS.members.map((member) => `+${member.effects.minPhys}`))
   })
 
   it("keeps min and max phys on separate cards", () => {
     renderTab(defaultInputs)
-    const minCard = cardFor(PHYS)
-    const maxCard = cardFor(TALENT_POINT_GROUPS.find((group) => group.stats[0] === "maxPhys")!)
-    expect(minCard).not.toBe(maxCard)
+    expect(cardFor(PHYS)).not.toBe(cardFor(MAX_PHYS))
   })
 
   it("opens with every step on", () => {
     renderTab(defaultInputs)
-    for (const step of stepsIn(cardFor(ATTRIBUTES))) {
-      expect(step).toHaveAttribute("aria-pressed", "true")
+    for (const pip of pipsIn(cardFor(PHYS))) {
+      expect(pip).toHaveAttribute("aria-pressed", "true")
     }
+    expect(within(cardFor(PHYS)).getByText(String(PHYS.members.length))).toBeTruthy()
   })
 
   it("switches the clicked point off and leaves its neighbours alone", () => {
     const onChange = renderTab(defaultInputs)
     const target = PHYS.members[1]
-    fireEvent.click(stepsIn(cardFor(PHYS))[1])
+    fireEvent.click(pipsIn(cardFor(PHYS))[1])
     expect(onChange).toHaveBeenCalledWith(
       expect.objectContaining({ disabledTalentPoints: { [target.tier]: [target.id] } }),
     )
@@ -86,8 +79,24 @@ describe("TalentPointsTab", () => {
       ...defaultInputs,
       disabledTalentPoints: { [member.tier]: [member.id] },
     })
-    fireEvent.click(stepsIn(cardFor(PHYS))[0])
+    fireEvent.click(pipsIn(cardFor(PHYS))[0])
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ disabledTalentPoints: {} }))
+  })
+
+  it("takes the last point still on when the minus button is used", () => {
+    const onChange = renderTab(defaultInputs)
+    const last = PHYS.members[PHYS.members.length - 1]
+    fireEvent.click(within(cardFor(PHYS)).getByLabelText("Disable one"))
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ disabledTalentPoints: { [last.tier]: [last.id] } }),
+    )
+  })
+
+  it("stops the steppers at the ends of a group", () => {
+    renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
+    const card = cardFor(PHYS)
+    expect(within(card).getByLabelText("Disable one")).toBeDisabled()
+    expect(within(card).getByLabelText("Enable one more")).not.toBeDisabled()
   })
 
   it("sums only the steps left on", () => {
@@ -100,6 +109,6 @@ describe("TalentPointsTab", () => {
     renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
     const card = cardFor(PHYS)
     expect(within(card).getByText("+0")).toBeTruthy()
-    for (const step of stepsIn(card)) expect(step).toHaveAttribute("aria-pressed", "false")
+    for (const pip of pipsIn(card)) expect(pip).toHaveAttribute("aria-pressed", "false")
   })
 })
