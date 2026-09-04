@@ -60,6 +60,14 @@ function formatValue(stat: TalentPointStat, value: number): string {
   return `+${Math.round(value * 10) / 10}`
 }
 
+function formatTotal(
+  group: TalentPointGroup,
+  totals: Readonly<Partial<Record<TalentPointStat, number>>>,
+): string {
+  const values = group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0))
+  return values.every((value) => value === values[0]) ? values[0] : values.join(" · ")
+}
+
 export function TalentPointsTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -149,7 +157,7 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
                   +
                 </button>
                 <span className={styles.groupTotal} data-zero={onCount === 0 || undefined}>
-                  {group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0)).join(" · ")}
+                  {formatTotal(group, totals)}
                 </span>
               </div>
 

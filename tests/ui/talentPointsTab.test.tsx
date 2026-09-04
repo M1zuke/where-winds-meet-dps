@@ -105,6 +105,13 @@ describe("TalentPointsTab", () => {
     expect(within(cardFor(PHYS)).getByText(`+${Math.round(full * 10) / 10}`)).toBeTruthy()
   })
 
+  it("states a shared total once instead of repeating it per stat", () => {
+    const attributes = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "power")!
+    renderTab(defaultInputs)
+    const card = cardFor(attributes)
+    expect(within(card).getByText(`+${attributes.members.length}`)).toBeTruthy()
+  })
+
   it("reads zero once every step of a group is off", () => {
     renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
     const card = cardFor(PHYS)
