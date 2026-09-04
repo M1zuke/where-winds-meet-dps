@@ -10,11 +10,18 @@ import type {
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
-import type { Skill, SkillHit, TriggerCondition } from "./skill"
-import { breakdownNameOf, isPrePullSkill, hitDealsDamage, triggerConditions } from "./skill"
+import type { HitTrigger, Skill, SkillHit, TriggerCondition } from "./skill"
+import {
+  breakdownNameOf,
+  conditionSatisfiedByStacks,
+  isPrePullSkill,
+  hitDealsDamage,
+  selectHitVariant,
+  triggerConditions,
+} from "./skill"
 import { debuffBreakdownKey, debuffKey, skillBreakdownKey, skillKey } from "../i18n/contentKeys"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import { StatusLedger, UNOWNED } from "./ledger"
+import { StatusLedger, UNOWNED, type StatusWindow } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
 import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
 import {
@@ -166,36 +173,250 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     resolved: ResolvedStep
     prePull: boolean
     startFrame: number
+    castLen: number
     performedHits: SkillHit[]
   }
 
-  const castLens: number[] = resolvedSteps.map((rs) => {
+  const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
+  const openingStatusIds = new Set(Object.keys(rotation.openingStacks ?? {}))
+  for (const b of buffs) if (b.defaultOpeningStacks !== undefined) openingStatusIds.add(b.id)
+  const openingStacksOf = (id: string): number =>
+    rotation.openingStacks?.[id] ?? openingBuffsById.get(id)?.defaultOpeningStacks ?? 0
+
+  interface StatusWriter {
+    openPermanent(id: string): void
+    processExpiries(upToFrame: number): void
+    onDamagingHit(frame: number, owner: number): void
+    applyTrigger(trigger: HitTrigger, frame: number, owner: number): void
+    seedStack(status: Buff | Debuff, frame: number, stacks: number): void
+  }
+
+  function statusWriter(
+    target: StatusLedger,
+    holds: (condition: TriggerCondition, frame: number) => boolean,
+  ): StatusWriter {
+    const expiring = buffs.filter((b) => b.onExpire && b.activation !== "permanent")
+    const stackingOnDamage = buffs.filter((b) => b.stacksPerDamagingHit)
+    const expired = new WeakSet<StatusWindow>()
+    const lastDamageStackFrame = new Map<string, number>()
+
+    const capOf = (status: Buff | Debuff): number => Math.max(1, status.maxStacks)
+
+    const openWindow = (status: Buff | Debuff, frame: number, owner: number): void => {
+      if (status.activation === "permanent") target.openPermanent(status.id)
+      else target.pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), owner)
+    }
+
+    const write = (
+      status: Buff | Debuff,
+      frame: number,
+      next: number,
+      owner: number,
+      timedWindow: boolean,
+      fireMaxStacks: boolean,
+    ): void => {
+      const before = target.stacksAt(status.id, frame)
+      target.recordStack(status.id, frame, next, owner)
+      if (timedWindow || status.activation === "permanent") openWindow(status, frame, owner)
+      if (!fireMaxStacks || isDebuffStatus(status) || !status.onMaxStacks) return
+      if (before >= capOf(status) || next < capOf(status)) return
+      for (const trigger of status.onMaxStacks) applyTrigger(trigger, frame, owner, false)
+    }
+
+    const grant = (
+      status: Buff | Debuff,
+      frame: number,
+      stacks: number,
+      owner: number,
+      fireMaxStacks: boolean,
+    ): void => {
+      const next = clamp(target.stacksAt(status.id, frame) + stacks, 0, capOf(status))
+      write(status, frame, next, owner, true, fireMaxStacks)
+    }
+
+    function applyTrigger(
+      trigger: HitTrigger,
+      frame: number,
+      owner: number,
+      fireMaxStacks: boolean,
+    ): void {
+      if (trigger.kind !== "applyBuff" && trigger.kind !== "applyDebuff") return
+      if (!triggerConditions(trigger).every((c) => holds(c, frame))) return
+      const status = statusById.get(trigger.targetId)
+      if (!status) return
+      if (trigger.extendFrames != null) {
+        const activeWindow = target.longestActiveWindow(status.id, frame)
+        if (activeWindow) {
+          const cap = trigger.maxExtendedDurationFrames
+          const rawEnd = activeWindow.end + trigger.extendFrames
+          const nextEnd = cap ? Math.max(activeWindow.end, Math.min(rawEnd, frame + cap)) : rawEnd
+          const applied = nextEnd - activeWindow.end
+          activeWindow.end = nextEnd
+          if (applied > 0) (activeWindow.extensions ??= []).push({ frame, amount: applied })
+        } else if (!trigger.extendOnly) grant(status, frame, trigger.stacks, owner, fireMaxStacks)
+        return
+      }
+      grant(status, frame, trigger.stacks, owner, fireMaxStacks)
+    }
+
+    return {
+      openPermanent: (id) => target.openPermanent(id),
+      processExpiries(upToFrame) {
+        for (const status of expiring) {
+          const windows = target.windowsOf(status.id)
+          const lapsed = windows
+            .filter((window) => !expired.has(window) && window.end <= upToFrame)
+            .sort((left, right) => left.end - right.end)
+          for (const window of lapsed) {
+            expired.add(window)
+            const refreshed = windows.some(
+              (other) => other !== window && other.start <= window.end && window.end < other.end,
+            )
+            if (refreshed) continue
+            const reset = status.onExpire!
+            const resetTarget = statusById.get(reset.targetId)
+            if (!resetTarget) continue
+            const next = clamp(reset.stacks, 0, capOf(resetTarget))
+            write(resetTarget, window.end, next, UNOWNED, false, true)
+          }
+        }
+      },
+      onDamagingHit(frame, owner) {
+        for (const status of stackingOnDamage) {
+          const last = lastDamageStackFrame.get(status.id)
+          if (last !== undefined && frame - last < status.stacksPerDamagingHit!.cooldownFrames)
+            continue
+          lastDamageStackFrame.set(status.id, frame)
+          grant(status, frame, 1, owner, true)
+        }
+      },
+      applyTrigger: (trigger, frame, owner) => applyTrigger(trigger, frame, owner, true),
+      seedStack(status, frame, stacks) {
+        target.openPermanent(status.id)
+        write(status, frame, Math.min(stacks, status.maxStacks), UNOWNED, false, true)
+      },
+    }
+  }
+
+  const seedOpeningState = (writer: StatusWriter, atFrame: number): void => {
+    for (const id of rotation.permanentBuffIds) if (statusById.has(id)) writer.openPermanent(id)
+    for (const id of openingStatusIds) {
+      const status = statusById.get(id)
+      if (!status) continue
+      const stacks = openingStacksOf(id)
+      if (stacks <= 0) continue
+      writer.seedStack(status, atFrame, stacks)
+    }
+  }
+
+  // The largest cast length any of a step's hit variants could select.
+  function upperBoundCastFrames(rs: ResolvedStep): number {
     const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
     const performedHits = rs.skill.hits.slice(0, hitCount)
-    const maxFrame = performedHits.length > 0 ? Math.max(...performedHits.map((h) => h.frame)) : -1
-    return rs.skill.castFrames || maxFrame + 1
-  })
+    const naturalMaxFrame =
+      performedHits.length > 0 ? Math.max(...performedHits.map((h) => h.frame)) : -1
+    let bound = rs.skill.castFrames || naturalMaxFrame + 1
+    for (const skillHit of performedHits) {
+      for (const variant of skillHit.variants ?? []) {
+        if (variant.castFrames !== undefined && variant.castFrames > 0)
+          bound = Math.max(bound, variant.castFrames)
+      }
+    }
+    return bound
+  }
 
-  const prePullTotal = resolvedSteps.reduce(
-    (sum, rs, i) => (isPrePullSkill(rs.skill) ? sum + castLens[i] : sum),
+  // A cast's length can't be resolved from the live status ledger, because
+  // that ledger needs every cast's length to size itself first. This
+  // throwaway ledger breaks the cycle: sized against the worst case up front,
+  // then filled incrementally as each step is laid out, so a later step's
+  // conditions see every earlier step's triggers but never its own. Prepull
+  // casts take the upper bound as their real length outright — none
+  // currently gate a hit or a variant's cast length on a condition.
+  const prePullBound = resolvedSteps.reduce(
+    (sum, rs) => (isPrePullSkill(rs.skill) ? sum + upperBoundCastFrames(rs) : sum),
     0,
   )
+  const activeUpperBound = resolvedSteps.reduce(
+    (sum, rs) => (isPrePullSkill(rs.skill) ? sum : sum + upperBoundCastFrames(rs)),
+    0,
+  )
+  const layoutLedger = new StatusLedger(Math.min(0, -prePullBound), activeUpperBound)
+  const layoutHolds = (condition: TriggerCondition, frame: number): boolean =>
+    conditionSatisfiedByStacks(condition, layoutLedger.conditionStacksAt(condition.buffId, frame))
+  const layoutWriter = statusWriter(layoutLedger, layoutHolds)
+  seedOpeningState(layoutWriter, Math.min(0, -prePullBound))
+
+  const activeVariantCastFrames = (
+    hits: readonly SkillHit[],
+    holds: (condition: TriggerCondition) => boolean,
+  ): number | null => {
+    for (const skillHit of hits) {
+      const variant = selectHitVariant(skillHit, holds)
+      if (variant?.castFrames !== undefined && variant.castFrames > 0) return variant.castFrames
+    }
+    return null
+  }
+
+  // `castSkill` and a DoT's detonation are skipped here and left to the real
+  // event loop below — chasing a generated sub-cast would need the buff
+  // engine, which itself can only be built once the whole layout is known.
+  function seedStepTriggers(hits: readonly SkillHit[], stepStart: number): void {
+    for (const skillHit of hits) {
+      const hitFrame = stepStart + skillHit.frame
+      layoutWriter.processExpiries(hitFrame)
+      if (hitDealsDamage(skillHit)) layoutWriter.onDamagingHit(hitFrame, stepStart)
+      for (const trigger of skillHit.triggers) {
+        if (trigger.kind === "castSkill" || trigger.kind === "detonateDot") continue
+        if (trigger.kind === "applyDot") {
+          if (!triggerConditions(trigger).every((c) => layoutHolds(c, hitFrame))) continue
+          const status = statusById.get(trigger.targetId)
+          if (!status || !isDebuffStatus(status)) continue
+          const maxStacks = Math.max(1, status.maxStacks)
+          const next = clamp(layoutLedger.stacksAt(status.id, hitFrame) + 1, 0, maxStacks)
+          layoutLedger.recordStack(status.id, hitFrame, next, stepStart)
+          if (status.activation === "permanent") layoutLedger.openPermanent(status.id)
+          else
+            layoutLedger.pushWindow(
+              status.id,
+              hitFrame,
+              hitFrame + Math.max(1, status.durationFrames),
+              stepStart,
+            )
+          continue
+        }
+        layoutWriter.applyTrigger(trigger, hitFrame, stepStart)
+      }
+    }
+  }
 
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
-  let preCursor = -prePullTotal
-  for (let i = 0; i < resolvedSteps.length; i++) {
-    const rs = resolvedSteps[i]
+  let preCursor = -prePullBound
+  for (const rs of resolvedSteps) {
     const prePull = isPrePullSkill(rs.skill)
+    const startFrame = prePull ? preCursor : activeCursor
+    layoutWriter.processExpiries(startFrame)
+    const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
     const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
     const performedHits = rs.skill.hits.slice(0, hitCount)
-    const startFrame = prePull ? preCursor : activeCursor
-    if (prePull) preCursor += castLens[i]
-    else activeCursor += castLens[i]
-    laidSteps.push({ resolved: rs, prePull, startFrame, performedHits })
+    const occurringHits = performedHits.filter((h) => (h.conditions ?? []).every(holdsHere))
+    const castLen = prePull
+      ? upperBoundCastFrames(rs)
+      : (() => {
+          const maxFrame =
+            occurringHits.length > 0 ? Math.max(...occurringHits.map((h) => h.frame)) : -1
+          return (
+            activeVariantCastFrames(occurringHits, holdsHere) ??
+            (rs.skill.castFrames || maxFrame + 1)
+          )
+        })()
+    if (prePull) preCursor += castLen
+    else activeCursor += castLen
+    seedStepTriggers(occurringHits, startFrame)
+    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: occurringHits })
   }
   const durationFrames = activeCursor
-  const spanStart = Math.min(0, -prePullTotal)
+  const spanStart = Math.min(0, -prePullBound)
   const rotationDurationSec = durationFrames / FPS
 
   const damagingHitTimesSec: number[] = []
@@ -226,17 +447,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const pushWindow = (id: string, start: number, end: number, owner = UNOWNED) =>
     ledger.pushWindow(id, start, end, owner)
   const openPermanent = (id: string) => ledger.openPermanent(id)
-
-  for (const id of rotation.permanentBuffIds) {
-    if (statusById.has(id)) openPermanent(id)
-  }
-
-  for (const [id, stacks] of Object.entries(rotation.openingStacks ?? {})) {
-    const status = statusById.get(id)
-    if (!status || stacks <= 0) continue
-    openPermanent(status.id)
-    recordStack(status.id, spanStart, Math.min(stacks, status.maxStacks))
-  }
+  const conditionHolds = (c: TriggerCondition, frame: number): boolean =>
+    conditionSatisfiedByStacks(c, ledger.conditionStacksAt(c.buffId, frame))
+  const liveWriter = statusWriter(ledger, conditionHolds)
+  seedOpeningState(liveWriter, spanStart)
 
   function activeBuffsAt(frame: number): (Buff | Debuff)[] {
     const out: (Buff | Debuff)[] = []
@@ -247,17 +461,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return out
   }
 
-  const conditionHolds = (c: TriggerCondition, frame: number): boolean => {
-    const cur = ledger.conditionStacksAt(c.buffId, frame)
-    return c.op === "gte" ? cur >= c.stacks : c.op === "gt" ? cur > c.stacks : cur === c.stacks
-  }
-
   const buildView: BuildView = {
     classId: inputs.classId,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
     classSpecificAttunement: (attunementId) => inputs.classSpecificAttunement[attunementId] ?? 0,
     grantsMinPhysCritBoost: grantsMinPhysCritBoostFor(inputs.classId),
-    openingStacks: (buffId) => rotation.openingStacks?.[buffId] ?? 0,
+    openingStacks: openingStacksOf,
   }
 
   const behaviorFor = buildBehaviors(buildView)
@@ -582,6 +791,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const ev = queue.pop()!
     processed++
     const { frame, skill, hit, castFrame, stepStart } = ev
+    liveWriter.processExpiries(frame)
 
     const behavior = behaviorFor(skill)
     const hitInput = hitInputAt(skill, hit, frame)
@@ -673,6 +883,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       inWindow: hitInWindow,
     })
 
+    if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
     for (const trigger of hit.triggers) {
       if (!triggerConditions(trigger).every((c) => conditionHolds(c, frame))) continue
       if (trigger.kind === "detonateDot") continue
@@ -712,34 +923,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         continue
       }
       if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
-        const status = statusById.get(trigger.targetId)
-        if (!status) continue
-        if (trigger.extendFrames != null) {
-          const w = ledger.longestActiveWindow(status.id, frame)
-          if (w) {
-            const cap = trigger.maxExtendedDurationFrames
-            const rawEnd = w.end + trigger.extendFrames
-            const nextEnd = cap ? Math.max(w.end, Math.min(rawEnd, frame + cap)) : rawEnd
-            const appliedAmount = nextEnd - w.end
-            w.end = nextEnd
-            if (appliedAmount > 0) (w.extensions ??= []).push({ frame, amount: appliedAmount })
-          } else if (!trigger.extendOnly) {
-            const next = clamp(
-              stacksAt(status.id, frame) + trigger.stacks,
-              0,
-              Math.max(1, status.maxStacks),
-            )
-            recordStack(status.id, frame, next, stepStart)
-            if (status.activation === "permanent") openPermanent(status.id)
-            else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
-          }
-          continue
-        }
-        const cur = stacksAt(status.id, frame)
-        const next = clamp(cur + trigger.stacks, 0, Math.max(1, status.maxStacks))
-        recordStack(status.id, frame, next, stepStart)
-        if (status.activation === "permanent") openPermanent(status.id)
-        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
+        liveWriter.applyTrigger(trigger, frame, stepStart)
       } else {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
@@ -756,6 +940,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
   }
+
+  liveWriter.processExpiries(durationFrames)
 
   // Zenith extension events only exist for a Sword Horizon build (the only
   // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
@@ -780,7 +966,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         ls.performedHits.length > 0 ? Math.max(...ls.performedHits.map((h) => h.frame)) : 0
       const queryFrame = Math.max(
         ls.startFrame,
-        ls.startFrame + castLens[i] - 1,
+        ls.startFrame + ls.castLen - 1,
         ls.startFrame + lastHitFrame,
       )
       const queryTimeSec = queryFrame / FPS

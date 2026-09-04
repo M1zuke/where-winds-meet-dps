@@ -18,6 +18,12 @@ import { rainwhisperShield } from "./rainwhisperShield"
 import { resistanceResolve } from "./resistanceResolve"
 import { surgingWaves } from "./surgingWaves"
 import { dragonHeadLowHp } from "./dragonHeadLowHp"
+import { tiltrimStack } from "./tiltrimStack"
+import { inebriateCritDamage } from "./inebriateCritDamage"
+import { cloudvault } from "./cloudvault"
+import { clashToastDamage } from "./clashToastDamage"
+import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
+import { perfectQuickDrink } from "./perfectQuickDrink"
 
 // Order is load-bearing (float addition is not associative): `fluteBoost` must
 // stay ahead of the other five globals that emit `allDamageBoost`, so append
@@ -41,6 +47,13 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   mistwillowBuff,
   mistwillowHeavyBuff,
   mistwillowLightBuff,
+  tiltrimStack,
+  inebriateCritDamage,
+  cloudvault,
+  clashToastDamage,
+  nonPlayerBaseDamage40,
+  nonPlayerBaseDamage50,
+  perfectQuickDrink,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

@@ -47,6 +47,7 @@ export const WEAPON_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
   "Twin Blades": "dualKnivesBoost",
   "Rope Dart": "ropeDartBoost",
   Hengdao: "hengDaoBoost",
+  Gauntlets: "gauntletsBoost",
 }
 
 export const MYSTIC_TYPE_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {

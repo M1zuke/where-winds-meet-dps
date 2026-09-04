@@ -60,6 +60,7 @@ export interface ClassDef {
   // stat effects of their own, so they stay the `Buff` type rather than
   // folding into `classBuffDefs`.
   gateBuffs: readonly Buff[]
+  openingStackBuffIds?: readonly string[]
   mechanics: readonly MechanicRegistration[]
   skillBehaviors: readonly SkillBehaviorRegistration[]
   displayGates: readonly DisplayGateRegistration[]

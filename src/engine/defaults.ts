@@ -46,6 +46,7 @@ export const defaultInputs: Inputs = {
   dualKnivesBoost: 0,
   ropeDartBoost: 0,
   hengDaoBoost: 0,
+  gauntletsBoost: 0,
 
   bossBoost: 0,
   singleMysticBoost: 0,

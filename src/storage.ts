@@ -283,6 +283,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
+  if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
   delete (next as unknown as Record<string, unknown>).singleBurstBoost
   delete (next as unknown as Record<string, unknown>).singleControlBoost
   delete (next as unknown as Record<string, unknown>).groupAnomalyBoost
@@ -935,6 +936,11 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   if (Array.isArray(h.triggers)) {
     hit.triggers = h.triggers.map((tr) => hydrateHitTrigger(tr))
   }
+  if (Array.isArray(h.conditions)) {
+    hit.conditions = h.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
+  } else {
+    delete hit.conditions
+  }
   return hit
 }
 
@@ -1157,6 +1163,10 @@ function importedHit(h: unknown): SkillHit {
   if (Array.isArray(c.variants)) {
     const variants = c.variants.map(importedVariant).filter((v): v is HitVariant => v !== null)
     if (variants.length > 0) hit.variants = variants
+  }
+  if (Array.isArray(c.conditions)) {
+    const conditions = c.conditions.filter(isTriggerCondition)
+    if (conditions.length > 0) hit.conditions = conditions
   }
   return hit
 }

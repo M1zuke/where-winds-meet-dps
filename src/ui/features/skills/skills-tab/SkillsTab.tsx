@@ -60,6 +60,7 @@ const WEAPONS = [
   "Twin Blades",
   "Rope Dart",
   "Hengdao",
+  "Gauntlets",
 ]
 const SKILL_TYPES = ["weapon", "mindMethod", "mystic", "sustain", "Heavenwork"]
 const MYSTIC_CATEGORIES = ["control", "burst", "area-debuff", "area-damage", "area"]
@@ -322,6 +323,7 @@ export function SkillsTab({
           ...variant,
           conditions: variant.conditions.map((condition) => ({ ...condition })),
         })),
+        conditions: hit.conditions?.map((condition) => ({ ...condition })),
       })),
     }
     setDraft(cloned)

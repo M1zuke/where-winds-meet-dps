@@ -15,6 +15,10 @@ import { blossomBarrage } from "./blossomBarrage"
 import { starReacher } from "./starReacher"
 import { thunderousBloom } from "./thunderousBloom"
 import { breakingPoint } from "./breakingPoint"
+import { eonpour } from "./eonpour"
+import { skyspeak } from "./skyspeak"
+import { mistwing } from "./mistwing"
+import { volutefit } from "./volutefit"
 
 // Order is load-bearing: the context-scalar sum and
 // `innerWayTargetDefenseMultiplier`'s first-match both iterate this array,
@@ -35,4 +39,8 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   starReacher,
   thunderousBloom,
   breakingPoint,
+  eonpour,
+  skyspeak,
+  mistwing,
+  volutefit,
 ]

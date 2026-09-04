@@ -20,6 +20,7 @@ export interface HitVariant {
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  castFrames?: number
 }
 
 export interface HitTrigger {
@@ -46,6 +47,7 @@ export interface SkillHit {
   attributeFixed: number
   extraCritDamage: number
   variants?: HitVariant[]
+  conditions?: TriggerCondition[]
   triggers: HitTrigger[]
 }
 
@@ -144,6 +146,14 @@ export function isTriggerCondition(x: unknown): x is TriggerCondition {
   return true
 }
 
+export function conditionSatisfiedByStacks(condition: TriggerCondition, stacks: number): boolean {
+  return condition.op === "gte"
+    ? stacks >= condition.stacks
+    : condition.op === "gt"
+      ? stacks > condition.stacks
+      : stacks === condition.stacks
+}
+
 export function isHitTrigger(x: unknown): x is HitTrigger {
   if (!x || typeof x !== "object") return false
   const t = x as Record<string, unknown>
@@ -179,6 +189,9 @@ export function isHitVariant(x: unknown): x is HitVariant {
   for (const k of ["physMultiplier", "attributeMultiplier", "physFixed", "attributeFixed"]) {
     if (typeof v[k] !== "number" || !Number.isFinite(v[k] as number)) return false
   }
+  if (v.castFrames !== undefined) {
+    if (typeof v.castFrames !== "number" || !Number.isFinite(v.castFrames)) return false
+  }
   return true
 }
 
@@ -204,6 +217,12 @@ export function isSkillHit(x: unknown): x is SkillHit {
     if (!Array.isArray(h.variants)) return false
     for (const v of h.variants) {
       if (!isHitVariant(v)) return false
+    }
+  }
+  if (h.conditions !== undefined) {
+    if (!Array.isArray(h.conditions)) return false
+    for (const c of h.conditions) {
+      if (!isTriggerCondition(c)) return false
     }
   }
   return true
@@ -315,6 +334,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
         id: newVariantId(),
         conditions: v.conditions.map((c) => ({ ...c })),
       })),
+      conditions: h.conditions?.map((c) => ({ ...c })),
       triggers: h.triggers.map((tr) => ({
         ...tr,
         conditions: tr.conditions ? tr.conditions.map((c) => ({ ...c })) : undefined,

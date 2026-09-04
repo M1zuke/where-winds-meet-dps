@@ -36,6 +36,29 @@ conditions all hold replaces the hit's four coefficients; nothing else is
 affected, and no match leaves the hit's own row untouched. **This is how an
 empowered form is authored** — never with a per-skill branch in the timeline.
 
+A variant may also carry its own cast length, for an empowered form that
+genuinely runs longer or shorter than the skill's own. Every cast's length is
+resolved incrementally, in rotation order, against the ledger state built from
+every cast laid out before it — never only the rotation's declared opening
+state — so a condition only a mid-fight trigger satisfies can still activate a
+cast-length override. A cast's own triggers can never affect its own length or
+hit set; only what came before it can. Where a skill's several hits each
+select an active variant with an override, the first hit in authoring order
+decides. Leaving the override unset, or giving it the same placeholder value
+`castFrames` itself uses for "not yet measured", both mean no override — never
+a value that could move the cast cursor backwards.
+
+### Conditional hits
+
+A hit may carry its own ANDed conditions, gating whether it occurs at all —
+unmet, it deals no damage and fires no triggers, exactly as if it were absent
+from the cast. This resolves at the same point, and against the same ledger
+state, as the cast's own length, so a skill whose real hit count only grows
+past some threshold is authored as one hit per real hit, each gated on that
+threshold, rather than as a separate module per hit count. A cast's length
+must be derived only from the hits that actually occur, never from every hit
+the skill could ever land.
+
 ## Identity and tags
 
 - **Ids are matched, names are not.** A buff reaches or is triggered by a skill
@@ -111,6 +134,28 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   The timeline drops the buff entirely when that param is off, so a condition on
   it never holds and the state cannot be reached. Use it instead of gating each
   trigger site; the requirement belongs on the entity, once.
+- **A buff a rotation may open the fight already holding some of can declare
+  its own starting count**, read only when the rotation carries no explicit
+  opening entry of its own. Never written back into stored rotation data — a
+  rotation saved before the counter existed still opens on the declared
+  default, not on zero.
+- **A timed buff may clear or reset another status when it lapses**
+  (`onExpire`): at the frame a window ends with no other window of the same
+  buff covering that frame, the target's stack count is set to the declared
+  value. A refresh never fires it, an extension moves the frame it fires at,
+  a permanent-activation buff never fires it, and each window fires at most
+  once. The reset lands in the layout pass and the event loop alike, so a hit
+  variant or cast length gated on the target sees it from that frame on.
+- **A buff may count damaging hits** (`stacksPerDamagingHit`): every damaging
+  hit from any skill grants one stack, at most once per its cooldown, clamped
+  to `maxStacks` and opening the buff's own window. The granting hit's own
+  triggers run after the grant.
+- **A buff may fire triggers on reaching its cap** (`onMaxStacks`): the stack
+  write that takes it from below `maxStacks` to `maxStacks` runs the listed
+  `applyBuff`/`applyDebuff` triggers at that frame, conditions and
+  extensions honoured, other trigger kinds ignored. A trigger fired this way
+  never fires another buff's `onMaxStacks`, and may lower the firing buff
+  itself.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`

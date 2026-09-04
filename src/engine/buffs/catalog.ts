@@ -111,6 +111,7 @@ export function hiddenTimelineBuffIds(classId?: string): Set<string> {
 
 export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {
   const requires = module.requires
+  if (requires?.classId && requires.classId !== params.classId) return false
   if (requires?.set && requires.set !== params.armorSet) return false
   if (requires?.param && !paramOnOf(params, requires.param)) return false
   if (requires?.minTier && requires.param && paramTierOf(params, requires.param) < requires.minTier)

@@ -20,6 +20,7 @@ export const WEAPON_NAMES = [
   "Twin Blades",
   "Rope Dart",
   "Hengdao",
+  "Gauntlets",
 ] as const
 
 export type WeaponName = (typeof WEAPON_NAMES)[number]
@@ -109,6 +110,7 @@ export interface Inputs {
   dualKnivesBoost: number
   ropeDartBoost: number
   hengDaoBoost: number
+  gauntletsBoost: number
 
   bossBoost: number
   singleMysticBoost: number

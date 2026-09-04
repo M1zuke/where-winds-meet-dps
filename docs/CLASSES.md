@@ -20,8 +20,9 @@ Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — 
 holds a measured build exactly. Rely on nothing either reports beyond what its
 anchor pins.
 
-**Bellstrike Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) and
-Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) are registered and not
+**Bellstrike Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`),
+Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Draught
+(`bamboocutDraught`, spec `bamboocut_draught`) are registered and not
 validated** — selectable, and carrying nothing an anchor defends.
 
 The remaining classes — the other Stonesplit and Bamboocut specs — are **not
@@ -75,13 +76,14 @@ is allowlisted as content rather than logic.
 Whatever a class does beyond data reaches the engine through registrations
 declared as fields on its own definition, which one registry loop reads:
 
-| the class needs                      | it declares       |
-| ------------------------------------ | ----------------- |
-| state markers the timeline reads     | gate buffs        |
-| a stochastic or stateful mechanic    | mechanics         |
-| procedural behaviour on one skill    | skill behaviours  |
-| a Skill Editor "is this active" gate | display gates     |
-| a poison/DoT extension window        | poison extensions |
+| the class needs                          | it declares            |
+| ----------------------------------------- | ----------------------- |
+| state markers the timeline reads         | gate buffs              |
+| a counter the rotation editor opens with | opening-stack buff ids  |
+| a stochastic or stateful mechanic        | mechanics               |
+| procedural behaviour on one skill        | skill behaviours        |
+| a Skill Editor "is this active" gate     | display gates           |
+| a poison/DoT extension window            | poison extensions       |
 
 An inner way or a gear set declares mechanics the same way, read by its own
 registry. `declareMechanic` is the one contract all three owners use, and it
@@ -113,7 +115,9 @@ id, so this crosses no new line.
 - A **weapon-art talent** goes on the class's own list.
 - A buff a **skill triggers** is a normal buff and goes on the global list. Being
   reachable by one class only does **not** make it a class buff — what decides is
-  whether a skill triggers it or the talent panel grants it.
+  whether a skill triggers it or the talent panel grants it. A normal buff only
+  one class can produce declares that class in `requires.classId`, so it exists
+  in no other class's build.
 - A def an **inner way gates** goes on that inner way.
 - A def gated on a global toggle goes on the global or group list.
 

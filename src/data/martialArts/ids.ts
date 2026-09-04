@@ -7,6 +7,8 @@ export const MARTIAL_ART_ID = {
   namelessSpear: "namelessSpear",
   vernalUmbrella: "vernalUmbrella",
   inkwellFan: "inkwellFan",
+  skystrikeGauntlets: "skystrikeGauntlets",
+  rivenTwinblades: "rivenTwinblades",
 } as const
 
 export type MartialArtId = (typeof MARTIAL_ART_ID)[keyof typeof MARTIAL_ART_ID]

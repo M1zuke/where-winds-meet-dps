@@ -183,7 +183,7 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     "Twin Blades": inputs.dualKnivesBoost,
     "Rope Dart": inputs.ropeDartBoost,
     Hengdao: inputs.hengDaoBoost,
-    Knuckles: 0,
+    Gauntlets: inputs.gauntletsBoost,
   }
 
   const typeBoosts: Record<string, number> = {

@@ -4,4 +4,6 @@ export const SET_ID = {
   mistwillow: "mistwillow",
   rainwhisper: "rainwhisper",
   cleftpeak: "cleftpeak",
+  tiltrim: "tiltrim",
+  brimflow: "brimflow",
 } as const

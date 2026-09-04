@@ -20,6 +20,7 @@ import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
+import { classDefinition } from "../../../../definitions/classes/registry"
 import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
@@ -56,6 +57,8 @@ interface Props {
   onChange: (next: Inputs) => void
   result: Result
 }
+
+const OPENING_STACK_PIP_LIMIT = 12
 
 function stepCastFrames(step: RotationStep, skill: Skill | undefined): number {
   if (!skill) return 0
@@ -148,7 +151,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     [inputs.classId],
   )
   const openingStackBuffs = useMemo<Buff[]>(() => {
-    const openable = openingStackBuffIds(inputs.mindMethods)
+    const fromClass = classDefinition(inputs.classId)?.openingStackBuffIds ?? []
+    const openable = [...new Set([...openingStackBuffIds(inputs.mindMethods), ...fromClass])]
     if (openable.length === 0) return []
     const byId = new Map(builtinBuffsForClass(inputs.classId).map((buff) => [buff.id, buff]))
     return openable
@@ -516,7 +520,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               <OpeningStackRow
                 key={buff.id}
                 buff={buff}
-                value={activeRotation.openingStacks?.[buff.id] ?? 0}
+                value={activeRotation.openingStacks?.[buff.id] ?? buff.defaultOpeningStacks ?? 0}
                 onChange={isCustom ? (stacks) => setOpeningStacks(buff.id, stacks) : null}
               />
             ))}
@@ -741,13 +745,6 @@ function OpeningStackRow({
   const { t } = useI18n()
   const max = buff.maxStacks
   const clamped = Math.max(0, Math.min(max, value))
-  const charges = Array.from({ length: max + 1 }, (_, charge) => charge)
-  const pipClassName = (charge: number): string => {
-    const filled = charge === 0 ? clamped === 0 : charge <= clamped
-    return [styles.pip, charge === 0 ? styles.pipEmpty : "", filled ? styles.pipOn : ""]
-      .filter(Boolean)
-      .join(" ")
-  }
   const style = { "--buff-hue": buffChipHue(buff.name, buff.id) } as React.CSSProperties
   const rowClassName = [styles.entry, styles.openingRow, onChange ? "" : styles.openingRowReadonly]
     .filter(Boolean)
@@ -766,26 +763,55 @@ function OpeningStackRow({
       <div className={styles.headControls}>
         <span className={styles.headField}>
           <span className={styles.headCap}>{t("rotation.editor.charges")}</span>
-          <span className={styles.pips}>
-            {charges.map((charge) => (
-              <button
-                key={charge}
-                type="button"
-                className={pipClassName(charge)}
-                aria-pressed={charge === clamped}
-                aria-label={`${charge} / ${max}`}
-                disabled={!onChange}
-                onClick={() => onChange?.(charge)}
-                title={`${charge} / ${max}`}
-              />
-            ))}
-          </span>
+          {max <= OPENING_STACK_PIP_LIMIT ? (
+            <OpeningStackPips max={max} clamped={clamped} onChange={onChange} />
+          ) : (
+            <NumInput
+              value={clamped}
+              onChange={(next) => onChange?.(Math.max(0, Math.min(max, Math.round(next))))}
+              disabled={!onChange}
+            />
+          )}
           <span className={styles.pipCount}>
             {clamped} / {max}
           </span>
         </span>
       </div>
     </div>
+  )
+}
+
+function OpeningStackPips({
+  max,
+  clamped,
+  onChange,
+}: {
+  max: number
+  clamped: number
+  onChange: ((stacks: number) => void) | null
+}) {
+  const charges = Array.from({ length: max + 1 }, (_, charge) => charge)
+  const pipClassName = (charge: number): string => {
+    const filled = charge === 0 ? clamped === 0 : charge <= clamped
+    return [styles.pip, charge === 0 ? styles.pipEmpty : "", filled ? styles.pipOn : ""]
+      .filter(Boolean)
+      .join(" ")
+  }
+  return (
+    <span className={styles.pips}>
+      {charges.map((charge) => (
+        <button
+          key={charge}
+          type="button"
+          className={pipClassName(charge)}
+          aria-pressed={charge === clamped}
+          aria-label={`${charge} / ${max}`}
+          disabled={!onChange}
+          onClick={() => onChange?.(charge)}
+          title={`${charge} / ${max}`}
+        />
+      ))}
+    </span>
   )
 }
 

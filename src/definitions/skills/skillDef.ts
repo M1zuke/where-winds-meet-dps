@@ -36,6 +36,7 @@ interface HitSpec {
   extraCritDamage?: number
   triggers?: SkillHit["triggers"]
   variants?: HitVariant[]
+  conditions?: SkillHit["conditions"]
 }
 
 // The array POSITION is the id (`hit-0`, `hit-1`, …) — verified safe: every
@@ -53,6 +54,7 @@ export function hit(index: number, spec: HitSpec): SkillHit {
     extraCritDamage: spec.extraCritDamage ?? 0,
     triggers: spec.triggers ?? [],
     ...(spec.variants ? { variants: spec.variants } : {}),
+    ...(spec.conditions ? { conditions: spec.conditions } : {}),
   }
 }
 
