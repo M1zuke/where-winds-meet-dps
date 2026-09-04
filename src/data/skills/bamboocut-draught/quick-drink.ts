@@ -4,19 +4,19 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
-// Whaledraft as the chain link after Castlink, Tipsylay or Primepick: 25 Binge
-// Points, 50 during Carouse, and a perfect drink unleashes Falcon's Pursuit
-// (client locale text, 2026-09-04). The drink itself deals nothing.
-export const whaledraft = defineSkill({
-  id: SKILL.whaledraft,
+// Whaledraft straight after a light attack: every Binge Mark becomes a Binge
+// Point one for one, and a perfect drink unleashes Falcon's Pursuit (client
+// locale text, 2026-09-04). The drink itself deals nothing.
+export const quickDrink = defineSkill({
+  id: SKILL.quickDrink,
   classId: "bamboocutDraught",
-  name: "Gauntlet Heavy Attack",
+  name: "Gauntlet Heavy Attack - Quick Drink",
   breakdownName: "Whaledraft",
   tags: [WEAPON.gauntlets],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
-  castTag: CAST.whaledraft,
+  castTag: CAST.quickDrink,
   receives: CLASS_RECEIVES,
   triggerable: false,
   castFrames: 60,
@@ -28,12 +28,7 @@ export const whaledraft = defineSkill({
       physFixed: 0,
       attributeFixed: 0,
       triggers: [
-        applyBuff({
-          target: STATUS.bingePoints,
-          stacks: 25,
-          conditions: [{ buffId: STATUS.carouse, op: "gte", stacks: 1 }],
-        }),
-        applyBuff({ target: STATUS.bingePoints, stacks: 25 }),
+        applyBuff({ target: STATUS.bingePoints, transferFrom: STATUS.bingeMarks }),
         applyBuff({
           target: STATUS.inebriateDeepdaze,
           stacks: 1,
@@ -43,6 +38,6 @@ export const whaledraft = defineSkill({
       ],
     }),
   ],
-  createdAt: "2026-09-03T00:00:00.000Z",
+  createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",
 })

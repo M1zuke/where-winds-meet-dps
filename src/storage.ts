@@ -39,6 +39,7 @@ import {
   newVariantId,
   isSkill,
   isHitVariant,
+  isQiPhase,
   isTriggerCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
@@ -1140,6 +1141,14 @@ function importedTrigger(t: unknown): HitTrigger {
   if (Array.isArray(c.conditions)) {
     trigger.conditions = c.conditions.filter(isTriggerCondition)
   }
+  if (typeof c.transferFrom === "string" && c.transferFrom) trigger.transferFrom = c.transferFrom
+  if (isQiPhase(c.phase)) trigger.phase = c.phase
+  if (
+    typeof c.cooldownFrames === "number" &&
+    Number.isFinite(c.cooldownFrames) &&
+    c.cooldownFrames >= 0
+  )
+    trigger.cooldownFrames = c.cooldownFrames
   return trigger
 }
 

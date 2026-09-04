@@ -115,6 +115,19 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
           </div>
         )}
         {eff && <div>{eff}</div>}
+        {tag.extras?.map((extra, index) => (
+          <div key={index}>
+            {extra.kind === "damageMultiplier"
+              ? `${t("common.damage")} ×${extra.factor}`
+              : extra.kind === "forceOutcome"
+                ? `${t("rotation.editor.effectGuaranteed")} ${extra.outcome}`
+                : extra.kind === "artBonus"
+                  ? `${extra.field} ${extra.amount >= 0 ? "+" : ""}${extra.amount}`
+                  : extra.kind === "applyBuff"
+                    ? `${t("skills.applies")} ${t(buffKey(extra.id), extra.id)}`
+                    : null}
+          </div>
+        ))}
         {tag.requires && (
           <div>
             {t("common.requires")} {tag.requires}

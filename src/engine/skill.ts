@@ -1,4 +1,5 @@
 import type { computeSkillDamage } from "./formula"
+import type { QiPhase } from "./effects/context"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
@@ -36,6 +37,9 @@ export interface HitTrigger {
   // the window. An extension always adds its full amount; if the window is
   // already longer than the ceiling it is left alone, never truncated down.
   maxExtendedDurationFrames?: number
+  transferFrom?: string
+  phase?: QiPhase
+  cooldownFrames?: number
 }
 
 export interface SkillHit {
@@ -174,7 +178,23 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       if (!isTriggerCondition(c)) return false
     }
   }
+  if (t.transferFrom !== undefined) {
+    if (typeof t.transferFrom !== "string" || !t.transferFrom) return false
+    if (t.extendFrames !== undefined) return false
+  }
+  if (t.phase !== undefined && !isQiPhase(t.phase)) return false
+  if (
+    t.cooldownFrames !== undefined &&
+    (typeof t.cooldownFrames !== "number" ||
+      !Number.isFinite(t.cooldownFrames) ||
+      t.cooldownFrames < 0)
+  )
+    return false
   return true
+}
+
+export function isQiPhase(x: unknown): x is QiPhase {
+  return x === "normal" || x === "below30" || x === "exhausted"
 }
 
 export function isHitVariant(x: unknown): x is HitVariant {

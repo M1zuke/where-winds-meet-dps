@@ -54,7 +54,7 @@ import { BuffEngine } from "./buffs/buffEngine"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
-import { paramOnOf, paramsFromInputs } from "./buffs/params"
+import { clockQiPhase, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
@@ -151,7 +151,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
   for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)
   const buffs = [...buffsMap.values()].filter(
-    (b) => !b.requiresParam || paramOnOf(buffParams, b.requiresParam),
+    (b) =>
+      !b.requiresParam ||
+      (paramOnOf(buffParams, b.requiresParam) &&
+        paramTierOf(buffParams, b.requiresParam) >= (b.requiresMinTier ?? 0)),
   )
   const debuffsMap = new Map<string, Debuff>()
   for (const d of builtinDebuffsForClass(inputs.classId)) debuffsMap.set(d.id, d)
@@ -187,14 +190,32 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     openPermanent(id: string): void
     processExpiries(upToFrame: number): void
     onDamagingHit(frame: number, owner: number): void
+    fires(trigger: HitTrigger, frame: number): boolean
     applyTrigger(trigger: HitTrigger, frame: number, owner: number): void
     seedStack(status: Buff | Debuff, frame: number, stacks: number): void
+  }
+
+  function triggerGate(
+    holds: (condition: TriggerCondition, frame: number) => boolean,
+  ): (trigger: HitTrigger, frame: number) => boolean {
+    const lastFiredFrame = new Map<HitTrigger, number>()
+    return (trigger, frame) => {
+      if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
+      if (trigger.phase !== undefined && clockQiPhase(buffParams, frame / FPS) !== trigger.phase)
+        return false
+      if (trigger.cooldownFrames === undefined) return true
+      const lastFired = lastFiredFrame.get(trigger)
+      if (lastFired !== undefined && frame - lastFired < trigger.cooldownFrames) return false
+      lastFiredFrame.set(trigger, frame)
+      return true
+    }
   }
 
   function statusWriter(
     target: StatusLedger,
     holds: (condition: TriggerCondition, frame: number) => boolean,
   ): StatusWriter {
+    const fires = triggerGate(holds)
     const expiring = buffs.filter((b) => b.onExpire && b.activation !== "permanent")
     const stackingOnDamage = buffs.filter((b) => b.stacksPerDamagingHit)
     const expired = new WeakSet<StatusWindow>()
@@ -241,9 +262,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       fireMaxStacks: boolean,
     ): void {
       if (trigger.kind !== "applyBuff" && trigger.kind !== "applyDebuff") return
-      if (!triggerConditions(trigger).every((c) => holds(c, frame))) return
+      if (!fires(trigger, frame)) return
       const status = statusById.get(trigger.targetId)
       if (!status) return
+      if (trigger.transferFrom !== undefined) {
+        const source = statusById.get(trigger.transferFrom)
+        if (!source) return
+        const moved = target.conditionStacksAt(source.id, frame)
+        target.recordStack(source.id, frame, 0, owner)
+        grant(status, frame, moved, owner, fireMaxStacks)
+        return
+      }
       if (trigger.extendFrames != null) {
         const activeWindow = target.longestActiveWindow(status.id, frame)
         if (activeWindow) {
@@ -290,6 +319,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           grant(status, frame, 1, owner, true)
         }
       },
+      fires,
       applyTrigger: (trigger, frame, owner) => applyTrigger(trigger, frame, owner, true),
       seedStack(status, frame, stacks) {
         target.openPermanent(status.id)
@@ -368,7 +398,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       for (const trigger of skillHit.triggers) {
         if (trigger.kind === "castSkill" || trigger.kind === "detonateDot") continue
         if (trigger.kind === "applyDot") {
-          if (!triggerConditions(trigger).every((c) => layoutHolds(c, hitFrame))) continue
+          if (!layoutWriter.fires(trigger, hitFrame)) continue
           const status = statusById.get(trigger.targetId)
           if (!status || !isDebuffStatus(status)) continue
           const maxStacks = Math.max(1, status.maxStacks)
@@ -512,6 +542,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const buffEngine: BuffEngine | null = (() => {
     try {
       const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
+      engine.attachStatuses({ view: ledger, fps: FPS })
+      const castTriggerFires = triggerGate(conditionHolds)
       let sequence = 0
       const pending: PendingCast[] = laidSteps.map((ls) => ({
         frame: ls.startFrame,
@@ -548,7 +580,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
-            if (!triggerConditions(trigger).every((c) => conditionHolds(c, hitFrame))) continue
+            if (!castTriggerFires(trigger, hitFrame)) continue
             const generatedSkill = skillsById.get(trigger.targetId)
             if (!generatedSkill) continue
             pending.push({
@@ -885,8 +917,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
     for (const trigger of hit.triggers) {
-      if (!triggerConditions(trigger).every((c) => conditionHolds(c, frame))) continue
       if (trigger.kind === "detonateDot") continue
+      if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
+        liveWriter.applyTrigger(trigger, frame, stepStart)
+        continue
+      }
+      if (!liveWriter.fires(trigger, frame)) continue
       if (trigger.kind === "applyDot") {
         const status = statusById.get(trigger.targetId)
         if (!status || !isDebuffStatus(status)) continue
@@ -922,21 +958,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         continue
       }
-      if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
-        liveWriter.applyTrigger(trigger, frame, stepStart)
-      } else {
-        const sub = skillsById.get(trigger.targetId)
-        if (!sub) continue
-        for (const subHit of sub.hits) {
-          queue.push({
-            frame: frame + subHit.frame,
-            seq: seq++,
-            skill: sub,
-            hit: subHit,
-            castFrame: frame,
-            stepStart,
-          })
-        }
+      const sub = skillsById.get(trigger.targetId)
+      if (!sub) continue
+      for (const subHit of sub.hits) {
+        queue.push({
+          frame: frame + subHit.frame,
+          seq: seq++,
+          skill: sub,
+          hit: subHit,
+          castFrame: frame,
+          stepStart,
+        })
       }
     }
   }

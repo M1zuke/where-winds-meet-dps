@@ -20,12 +20,12 @@ export const THUNDER_ENLIGHTENMENT_DEEPDAZE_EXTENSION_FRAMES = 300
 // from 100, Deepdaze from 200 for 5 s (10 s with the always-on talent) and
 // clear the counter when it lapses, the Three Stars path passive refunding
 // 60. Binge Marks (client buff 200264) hold 50 for 10 s. Carouse lasts 20 s
-// at the talent's top rank. Clash-toast lasts 15 s at
-// ultimate rank 5. Cloudvault holds 2 stacks until Hero's Blood - Inebriate
-// ends. Draught stacks once per 3 s of direct damage to 12, which grants
-// Thunder Enlightenment - Draught for 15 s, refills Binge Points and extends
-// an active Deepdaze by 5 s (client buff rows 1730115, 1730116, 1730123);
-// Build Momentum opens the fight with up to 9 stacks.
+// at the talent's top rank. Clash-toast lasts 15 s at ultimate rank 5.
+// Cloudvault holds 2 stacks until Hero's Blood - Inebriate ends. Draught
+// stacks once per 3 s of direct damage to 12, which grants Thunder
+// Enlightenment - Draught for 15 s, refills Binge Points and extends an
+// active Deepdaze by 5 s (client buff rows 1730115, 1730116, 1730123); Build
+// Momentum opens the fight with up to 9 stacks.
 export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
   defineGateBuff({
     id: STATUS.bingePoints,

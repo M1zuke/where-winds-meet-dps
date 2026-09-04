@@ -106,6 +106,21 @@ Rules:
 - A trigger that enqueues another skill's hits must not form an unbounded chain.
 - Extending an already-active window is a distinct operation from opening a
   fresh one. Do not emulate one with the other.
+- **A trigger may move one status's stacks onto another** (`transferFrom`): the
+  target gains as many stacks as the source holds at that frame, window-aware
+  and clamped to the target's cap, and the source is set to 0 at the same frame
+  with its windows untouched. Such a trigger ignores its own stack delta and
+  never extends; the target write fires the cap payout like any other write,
+  and both passes resolve it against the same ledger state.
+- **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
+  clock-driven phase at its frame — the rotation's Qi-break window and its
+  low-Qi lead, never a status — is the named one. A stagger or control state
+  the source material gates on is expressed as the `exhausted` phase.
+- **A trigger may carry its own cooldown** (`cooldownFrames`): once it fires,
+  the same trigger fires again only after that many frames. The first firing
+  is never held back, a firing blocked by its conditions or phase does not
+  start the cooldown, and every pass counts on its own, so the layout pass
+  and the event loop agree.
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared
@@ -134,6 +149,9 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   The timeline drops the buff entirely when that param is off, so a condition on
   it never holds and the state cannot be reached. Use it instead of gating each
   trigger site; the requirement belongs on the entity, once.
+- **A state marker that only exists from some tier of that param declares
+  `requiresMinTier`** next to `requiresParam`, and is dropped below that tier
+  exactly as it is when the param is off. It is invalid without `requiresParam`.
 - **A buff a rotation may open the fight already holding some of can declare
   its own starting count**, read only when the rotation carries no explicit
   opening entry of its own. Never written back into stored rotation data — a

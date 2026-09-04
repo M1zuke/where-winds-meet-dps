@@ -86,6 +86,7 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
       stacks,
       maxStacks: status.maxStacks ?? 1,
       effects: projection?.effects ?? status.effects,
+      ...(projection?.extras.length ? { extras: projection.extras } : {}),
       ...(projection?.requires ? { requires: projection.requires } : {}),
       dotIntervalSec,
       remainingSec,
@@ -102,6 +103,7 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
         stacks: engineBuff.stacks,
         maxStacks: engineBuff.maxStacks,
         effects: engineBuff.effects,
+        ...(engineBuff.extras.length ? { extras: engineBuff.extras } : {}),
         requires: engineBuff.requires,
         remainingSec: engineBuff.remainingSec,
       })

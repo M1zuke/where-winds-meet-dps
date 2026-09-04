@@ -1,20 +1,31 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL, STATUS } from "./ids"
+import { DEBUFF, SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
+
+const EONPOUR_EXHAUSTED = {
+  conditions: [{ buffId: BUFF.eonpourExhaustedPeakfall, op: "gte" as const, stacks: 1 }],
+  phase: "exhausted" as const,
+  cooldownFrames: 3600,
+}
 
 // Coefficients: client skill_numerical_config at skill level 100 (patch
 // container, 2026-09-04) — Peakfall 20902101 (0.91934 / 255 / 139) as one
 // hit, Peakfall - Jadeflush 20902103 (1.57564 / 437 / 238) over the client
 // hit table's 2 hits, split evenly as a provisional per-hit share; attribute
-// side × 1.5.
+// side × 1.5. With Eonpour at tier 6, hitting an Exhausted target — read as
+// the Qi-break window — inflicts Wildstride, Strayhunt and Drunkslay and
+// extends Deepdaze by 6 s or enters it, once per 60 s (client locale text,
+// 2026-09-04).
 export const peakfall = defineSkill({
   id: SKILL.peakfall,
   classId: "bamboocutDraught",
-  name: "Peakfall",
+  name: "Gauntlet Q",
+  breakdownName: "Peakfall",
   tags: [WEAPON.gauntlets, ATTUNE.gauntletsMartialArt, PROP.isMartialSkillQ],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
@@ -23,29 +34,40 @@ export const peakfall = defineSkill({
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.91934,
       attributeMultiplier: 1.37901,
       physFixed: 255,
       attributeFixed: 139,
+      triggers: [
+        applyDebuff({ target: DEBUFF.wildstride, stacks: 1, ...EONPOUR_EXHAUSTED }),
+        applyDebuff({ target: DEBUFF.strayhunt, stacks: 1, ...EONPOUR_EXHAUSTED }),
+        applyDebuff({ target: DEBUFF.drunkslay, stacks: 1, ...EONPOUR_EXHAUSTED }),
+        applyBuff({
+          target: STATUS.inebriateDeepdaze,
+          stacks: 1,
+          extendFrames: 360,
+          ...EONPOUR_EXHAUSTED,
+        }),
+      ],
       variants: [
         {
           id: "hv-peakfall-jadeflush",
-          label: "Jadeflush",
+          label: "Gauntlet Q - Jadeflush",
           conditions: JADEFLUSH,
           physMultiplier: 0.78782,
           attributeMultiplier: 1.18173,
           physFixed: 218.5,
           attributeFixed: 119,
-          castFrames: -1,
+          castFrames: 60,
         },
       ],
     }),
     hit(1, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.78782,
       attributeMultiplier: 1.18173,
       physFixed: 218.5,

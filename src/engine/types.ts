@@ -6,6 +6,7 @@ import type { HitOutcome } from "./formula"
 import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
+import type { Effect } from "./effects/effect"
 
 export const ATTRIBUTE_KEYS = ["Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"] as const
 
@@ -354,6 +355,7 @@ export interface CastBuffTag {
   stacks: number
   maxStacks: number
   effects: BuffStatEffect[]
+  extras?: Effect[]
   dotIntervalSec?: number
   requires?: string
   description?: string

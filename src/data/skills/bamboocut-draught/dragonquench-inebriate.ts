@@ -9,7 +9,7 @@ const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", s
 
 const stage = (index: number, physMultiplier: number, physFixed: number, attributeFixed: number) =>
   hit(index, {
-    frame: -1,
+    frame: 60,
     physMultiplier,
     attributeMultiplier: physMultiplier * 1.5,
     physFixed,
@@ -32,7 +32,7 @@ export const dragonquenchInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     stage(0, 0.68814, 191, 104),
     stage(1, 0.66144, 184, 100),

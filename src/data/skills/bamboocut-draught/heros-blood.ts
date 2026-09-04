@@ -12,7 +12,8 @@ import { CLASS_RECEIVES } from "./receives"
 export const herosBlood = defineSkill({
   id: SKILL.herosBlood,
   classId: "bamboocutDraught",
-  name: "Hero's Blood",
+  name: "Twinblade Special",
+  breakdownName: "Hero's Blood",
   tags: [WEAPON.twinBlades],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
@@ -20,16 +21,16 @@ export const herosBlood = defineSkill({
   castTag: CAST.herosBlood,
   receives: CLASS_RECEIVES,
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.65873,
       attributeMultiplier: 0.988095,
       physFixed: 183,
       attributeFixed: 100,
       triggers: [
-        applyBuff({ target: STATUS.bingePoints, stacks: 20 }),
+        applyBuff({ target: STATUS.bingePoints, stacks: 40 }),
         applyBuff({ target: STATUS.carouse, stacks: 1 }),
         applyDebuff({ target: DEBUFF.drunkslay, stacks: 1 }),
         applyBuff({

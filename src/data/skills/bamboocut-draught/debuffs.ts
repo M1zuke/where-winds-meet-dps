@@ -35,6 +35,41 @@ export const strayhunt = defineDebuff({
   updatedAt: "2026-09-04T00:00:00.000Z",
 })
 
+// Inflicted by Primepick's guard-breaking jab; together with Strayhunt the
+// target takes +20% repeated damage, which Skyspeak tier 6 makes Drunkslay
+// count as (client locale text, 2026-09-04). The client states no duration;
+// 20 s is provisional.
+export const wildstride = defineDebuff({
+  id: DEBUFF.wildstride,
+  classId: CLASS_ID,
+  name: "Wildstride",
+  activation: "triggered",
+  durationFrames: 1200,
+  effects: [],
+  dot: null,
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-04T00:00:00.000Z",
+})
+
+// "+10% damage taken for 10 s" when Tri-strike or Grounddrift lands during
+// the target's stagger, which this model reads as the Qi-break window (client
+// locale text, 2026-09-04).
+export const nightwickExposure = defineDebuff({
+  id: DEBUFF.nightwickExposure,
+  classId: CLASS_ID,
+  name: "Nightwick Exposure",
+  activation: "triggered",
+  durationFrames: 600,
+  effects: [{ statKey: "target.generalDamageTaken", amount: 0.1 }],
+  dot: null,
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-04T00:00:00.000Z",
+})
+
 export const bitterSeasonTick = defineDebuff({
   id: DEBUFF.bitterSeasonTick,
   classId: CLASS_ID,
@@ -63,4 +98,10 @@ export const bitterSeasonTick = defineDebuff({
   receives: [BUFF.soulShaken],
 })
 
-export const DEBUFFS: readonly Debuff[] = [drunkslay, strayhunt, bitterSeasonTick]
+export const DEBUFFS: readonly Debuff[] = [
+  drunkslay,
+  strayhunt,
+  wildstride,
+  nightwickExposure,
+  bitterSeasonTick,
+]

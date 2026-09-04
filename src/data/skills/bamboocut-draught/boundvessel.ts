@@ -10,7 +10,7 @@ const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", 
 
 const rapidSlash = (index: number) =>
   hit(index, {
-    frame: -1,
+    frame: 60,
     physMultiplier: 0.158668,
     attributeMultiplier: 0.238001,
     physFixed: 43.953,
@@ -27,18 +27,23 @@ const rapidSlash = (index: number) =>
 export const boundvessel = defineSkill({
   id: SKILL.boundvessel,
   classId: "bamboocutDraught",
-  name: "Boundvessel",
+  name: "Twinblade Heavy Attack",
+  breakdownName: "Boundvessel",
   tags: [WEAPON.twinBlades],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.boundvessel,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage50],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    BUFF.nonPlayerBaseDamage50,
+    BUFF.boundvesselStaggerDamage,
+  ],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.60053,
       attributeMultiplier: 0.900795,
       physFixed: 167,
@@ -57,7 +62,7 @@ export const boundvessel = defineSkill({
     rapidSlash(10),
     rapidSlash(11),
     hit(12, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.5772,
       attributeMultiplier: 0.8658,
       physFixed: 161,

@@ -1,6 +1,9 @@
 export const SKILL = {
   lightAttack: "bamboocutDraught-light-attack",
+  falconsPursuit: "bamboocutDraught-falcons-pursuit",
+  falconsPursuitPerfect: "bamboocutDraught-falcons-pursuit-perfect",
   whaledraft: "bamboocutDraught-whaledraft",
+  quickDrink: "bamboocutDraught-quick-drink",
   nightwickPrimepick: "bamboocutDraught-nightwick-primepick",
   nightwickTipsylay: "bamboocutDraught-nightwick-tipsylay",
   nightwickGrounddrift: "bamboocutDraught-nightwick-grounddrift",
@@ -18,6 +21,8 @@ export const SKILL = {
 export const DEBUFF = {
   drunkslay: "debuff-bamboocutDraught-drunkslay",
   strayhunt: "debuff-bamboocutDraught-strayhunt",
+  wildstride: "debuff-bamboocutDraught-wildstride",
+  nightwickExposure: "debuff-bamboocutDraught-nightwick-exposure",
   bitterSeasonTick: "debuff-bamboocutDraught-bitter-season-tick",
 } as const
 

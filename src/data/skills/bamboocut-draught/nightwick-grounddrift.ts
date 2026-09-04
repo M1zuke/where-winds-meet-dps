@@ -1,16 +1,18 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL } from "./ids"
+import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const pursuit = (index: number) =>
   hit(index, {
-    frame: -1,
+    frame: 60,
     physMultiplier: 0.57198,
     attributeMultiplier: 0.85797,
     physFixed: 158.25,
     attributeFixed: 86.25,
+    triggers: [applyDebuff({ target: DEBUFF.nightwickExposure, stacks: 1, phase: "exhausted" })],
   })
 
 // Client skill_numerical_config row 20902109 (2.28792 / 633 / 345 at skill
@@ -27,7 +29,7 @@ export const nightwickGrounddrift = defineSkill({
   castTag: CAST.nightwickGrounddrift,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [pursuit(0), pursuit(1), pursuit(2), pursuit(3)],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",

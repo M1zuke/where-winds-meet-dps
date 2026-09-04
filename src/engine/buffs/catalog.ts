@@ -1,4 +1,5 @@
 import { catalogBuffDefs } from "./data"
+import { builtinBuffsForClass } from "../builtinBuffs"
 import { attuneTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { reaches } from "../scope"
 import { displayGateFor } from "./displayGates"
@@ -100,13 +101,25 @@ export function specMechanicIds(classId?: string): Set<string> {
 }
 
 // The rotation editor's per-cast chip suppression: narrower than the column
-// above, the `alwaysActive` subset only.
+// above, the `alwaysActive` subset only, plus the always-active normal buffs
+// `requires.classId` scopes to this class — always on for it, never a chip —
+// and the gates a build opens the whole fight with as a bare unlock marker.
 export function hiddenTimelineBuffIds(classId?: string): Set<string> {
-  return new Set(
-    ownBuffDefsFor(classId)
+  const classScoped = classId
+    ? catalogBuffDefs(classId).filter((module) => module.requires?.classId === classId)
+    : []
+  const unlockMarkers = classId
+    ? builtinBuffsForClass(classId).filter(
+        (gate) =>
+          gate.effects.length === 0 && gate.maxStacks === 1 && gate.defaultOpeningStacks === 1,
+      )
+    : []
+  return new Set([
+    ...[...ownBuffDefsFor(classId), ...classScoped]
       .filter((module) => module.alwaysActive)
       .map((module) => module.id),
-  )
+    ...unlockMarkers.map((gate) => gate.id),
+  ])
 }
 
 export function buffGateSatisfied(module: BuffModule, params: BuffParams): boolean {

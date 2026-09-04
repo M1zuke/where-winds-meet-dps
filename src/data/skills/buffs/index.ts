@@ -24,6 +24,7 @@ import { cloudvault } from "./cloudvault"
 import { clashToastDamage } from "./clashToastDamage"
 import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
 import { perfectQuickDrink } from "./perfectQuickDrink"
+import { boundvesselStaggerDamage } from "./boundvesselStaggerDamage"
 
 // Order is load-bearing (float addition is not associative): `fluteBoost` must
 // stay ahead of the other five globals that emit `allDamageBoost`, so append
@@ -54,6 +55,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
   perfectQuickDrink,
+  boundvesselStaggerDamage,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

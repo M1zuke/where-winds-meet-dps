@@ -114,7 +114,7 @@ describe("BuffEngine — targeting & triggers", () => {
     })
   })
 
-  it("hands a module reachesEvent: false on a non-damage event, true on a damage event its scope matches", () => {
+  it("hands a module reachesEvent: true for display and on a damage event its scope matches", () => {
     const modules: BuffModule[] = [
       {
         id: "reachesEventProbe",
@@ -128,7 +128,7 @@ describe("BuffEngine — targeting & triggers", () => {
     ]
     const engine = new BuffEngine({}, modules)
     const [displayed] = engine.activeBuffsForDisplay(1)
-    expect(displayed.effects).toHaveLength(0)
+    expect(displayed.effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.1 })
     expect(engine.calculateDamageEffects(taggedSkill("Anything"), 1).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.1,

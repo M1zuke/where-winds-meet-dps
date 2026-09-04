@@ -22,6 +22,7 @@ export interface Buff {
   maxStacks: number
   stackScaling: StackScaling
   requiresParam?: string
+  requiresMinTier?: number
   defaultOpeningStacks?: number
   onExpire?: { targetId: string; stacks: number }
   stacksPerDamagingHit?: { cooldownFrames: number }
@@ -58,6 +59,10 @@ export function isBuff(x: unknown): x is Buff {
     (typeof b.defaultOpeningStacks !== "number" || !Number.isFinite(b.defaultOpeningStacks))
   )
     return false
+  if (b.requiresMinTier !== undefined) {
+    if (typeof b.requiresMinTier !== "number" || !Number.isFinite(b.requiresMinTier)) return false
+    if (typeof b.requiresParam !== "string" || !b.requiresParam) return false
+  }
   if (b.onExpire !== undefined) {
     const onExpire = b.onExpire as Record<string, unknown> | null
     if (!onExpire || typeof onExpire !== "object") return false

@@ -18,10 +18,10 @@ export const realmplay = defineSkill({
   castTag: CAST.realmplay,
   receives: CLASS_RECEIVES,
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.804,
       attributeMultiplier: 1.206,
       physFixed: 223,

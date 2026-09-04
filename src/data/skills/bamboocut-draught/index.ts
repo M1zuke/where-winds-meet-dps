@@ -1,6 +1,9 @@
 import type { Skill } from "../../../engine/skill"
 import { lightAttack } from "./light-attack"
+import { falconsPursuit } from "./falcons-pursuit"
+import { falconsPursuitPerfect } from "./falcons-pursuit-perfect"
 import { whaledraft } from "./whaledraft"
+import { quickDrink } from "./quick-drink"
 import { nightwickPrimepick } from "./nightwick-primepick"
 import { nightwickTipsylay } from "./nightwick-tipsylay"
 import { nightwickGrounddrift } from "./nightwick-grounddrift"
@@ -18,7 +21,10 @@ export const CLASS_ID = "bamboocutDraught"
 
 export const SKILLS: Skill[] = [
   lightAttack,
+  falconsPursuit,
+  falconsPursuitPerfect,
   whaledraft,
+  quickDrink,
   nightwickPrimepick,
   nightwickTipsylay,
   nightwickGrounddrift,

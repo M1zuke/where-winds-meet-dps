@@ -10,7 +10,7 @@ const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.skyspeakUnlock, op: "gte", 
 
 const aerialSlash = (index: number) =>
   hit(index, {
-    frame: -1,
+    frame: 60,
     physMultiplier: 0.3399,
     attributeMultiplier: 0.50985,
     physFixed: 94,
@@ -19,7 +19,7 @@ const aerialSlash = (index: number) =>
   })
 
 const launchOrDash = {
-  frame: -1,
+  frame: 60,
   physMultiplier: 2.0394,
   attributeMultiplier: 3.0591,
   physFixed: 564,
@@ -35,7 +35,8 @@ const launchOrDash = {
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
-  name: "Hero's Blood - Inebriate",
+  name: "Twinblade Special - Inebriate",
+  breakdownName: "Hero's Blood - Inebriate",
   tags: [WEAPON.twinBlades, ATTUNE.driftcleaveDeepdaze],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
@@ -44,7 +45,7 @@ export const herosBloodInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.cloudvault, BUFF.nonPlayerBaseDamage50],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, launchOrDash),
     aerialSlash(1),

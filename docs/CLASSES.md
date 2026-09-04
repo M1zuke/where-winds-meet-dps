@@ -117,7 +117,8 @@ id, so this crosses no new line.
   reachable by one class only does **not** make it a class buff — what decides is
   whether a skill triggers it or the talent panel grants it. A normal buff only
   one class can produce declares that class in `requires.classId`, so it exists
-  in no other class's build.
+  in no other class's build; when always active, the rotation editor suppresses
+  its chip for that class exactly as it does the class's own.
 - A def an **inner way gates** goes on that inner way.
 - A def gated on a global toggle goes on the global or group list.
 

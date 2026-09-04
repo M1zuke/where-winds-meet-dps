@@ -11,6 +11,6 @@ export const perfectQuickDrink = defineBuff({
   requires: { classId: "bamboocutDraught" },
   alwaysActive: true,
   duration: 9999,
-  summary: "allDamageBoost +60% on Whaledraft's falcon",
+  summary: "allDamageBoost +60% on the falcon a perfect drink unleashes",
   effects: (ctx) => (ctx.self.reachesEvent ? [stat("allDamageBoost", 0.6)] : []),
 })

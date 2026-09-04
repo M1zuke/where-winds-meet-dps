@@ -32,18 +32,18 @@ export const castlink = defineSkill({
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: -1,
+  castFrames: 60,
   hits: [
     hit(0, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
       attributeFixed: 93,
-      variants: [{ ...jadeflushKick, castFrames: -1 }],
+      variants: [{ ...jadeflushKick, castFrames: 60 }],
     }),
     hit(1, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
@@ -51,7 +51,7 @@ export const castlink = defineSkill({
       variants: [jadeflushKick],
     }),
     hit(2, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,
@@ -59,7 +59,7 @@ export const castlink = defineSkill({
       conditions: JADEFLUSH,
     }),
     hit(3, {
-      frame: -1,
+      frame: 60,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,
