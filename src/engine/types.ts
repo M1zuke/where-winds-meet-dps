@@ -151,6 +151,8 @@ export interface Inputs {
 
   oddities: OddityRegions
 
+  disabledTalentPoints: DisabledTalentPoints
+
   enhancements: EnhancementNode[]
 }
 
@@ -216,6 +218,8 @@ export interface OddityNode {
 }
 
 export type OddityRegions = Record<string, OddityNode[]>
+
+export type DisabledTalentPoints = Record<string, number[]>
 
 export const ENHANCEMENT_SLOTS = [
   "leftWeapon",

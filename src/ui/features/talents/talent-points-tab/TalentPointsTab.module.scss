@@ -1,0 +1,114 @@
+@use "breakpoints";
+
+.groupGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.groupCard {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 0;
+  min-width: 0;
+  align-content: start;
+}
+
+.groupHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.glyph {
+  color: var(--color-accent);
+  flex: none;
+}
+
+.groupName {
+  color: var(--color-text);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+.perPoint {
+  color: var(--color-text-muted);
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+}
+
+.groupControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step {
+  width: 24px;
+  height: 24px;
+  flex: none;
+  line-height: 1;
+  background: var(--color-surface);
+  color: var(--color-text-dim);
+  border: 1px solid var(--color-border-strong);
+  cursor: pointer;
+}
+
+.step:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.count {
+  min-width: 52px;
+  text-align: center;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-dim);
+}
+
+.count b {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.groupTotal {
+  margin-left: auto;
+  text-align: right;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-positive);
+  overflow-wrap: anywhere;
+}
+
+.groupTotal[data-zero] {
+  color: var(--color-text-faint);
+}
+
+.meter {
+  display: flex;
+  gap: 2px;
+  height: 3px;
+}
+
+.meter i {
+  flex: 1;
+  background: var(--color-border);
+}
+
+.meter i[data-on] {
+  background: var(--color-accent);
+}
+
+@include breakpoints.below(breakpoints.$bp-720) {
+  .groupGrid {
+    grid-template-columns: 1fr;
+  }
+}

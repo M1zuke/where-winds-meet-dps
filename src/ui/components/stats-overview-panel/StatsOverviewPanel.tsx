@@ -78,7 +78,11 @@ export function StatsOverviewPanel({ inputs }: Props) {
   })
 
   const equippedPieces = equippedPiecesFor(inputs)
-  const attrs = totalPlayerAttributes(inputs.breakthrough, equippedPieces)
+  const attrs = totalPlayerAttributes(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+  )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
     row(t("content.statLine.agility"), attrs.agility, false),

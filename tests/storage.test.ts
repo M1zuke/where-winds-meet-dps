@@ -1437,3 +1437,52 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
     expect(result.warnings.some((warning) => /error|exception/i.test(warning))).toBe(false)
   })
 })
+
+describe("disabledTalentPoints hydration (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+  afterEach(() => {
+    try {
+      kvStore.remove(PROFILES_KEY)
+    } catch {}
+  })
+
+  function loadFirstWith(inputs: Record<string, unknown>): Inputs {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Profile", inputs }],
+      }),
+    )
+    return loadProfiles().profiles[0].inputs
+  }
+
+  it("gives a profile saved before the field every talent point on", () => {
+    const legacy = { ...defaultInputs } as Record<string, unknown>
+    delete legacy.disabledTalentPoints
+    expect(loadFirstWith(legacy).disabledTalentPoints).toEqual({})
+  })
+
+  it("keeps a stored selection, sorted and deduplicated", () => {
+    const stored = { ...defaultInputs, disabledTalentPoints: { "95.1": [3, 1, 3] } }
+    expect(
+      loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentPoints,
+    ).toEqual({ "95.1": [1, 3] })
+  })
+
+  it("drops a tier whose stored ids are unusable rather than failing the load", () => {
+    const stored = {
+      ...defaultInputs,
+      disabledTalentPoints: { "95.1": ["1"], "95.2": null, "100.1": [2] },
+    }
+    expect(
+      loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentPoints,
+    ).toEqual({ "100.1": [2] })
+  })
+})
