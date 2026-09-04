@@ -8,9 +8,9 @@ import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.skyspeakUnlock, op: "gte", stacks: 1 }]
 
-const aerialSlash = (index: number) =>
+const aerialSlash = (index: number, frame: number) =>
   hit(index, {
-    frame: 60,
+    frame,
     physMultiplier: 0.3399,
     attributeMultiplier: 0.50985,
     physFixed: 94,
@@ -19,7 +19,6 @@ const aerialSlash = (index: number) =>
   })
 
 const launchOrDash = {
-  frame: 60,
   physMultiplier: 2.0394,
   attributeMultiplier: 3.0591,
   physFixed: 564,
@@ -27,11 +26,9 @@ const launchOrDash = {
   conditions: UNLOCKED,
 }
 
-// Coefficients: client skill_numerical_config row 20503106 at skill level
-// 100 (patch container, 2026-09-04): 6.798 / 1880 / 1025, split by the
-// client tooltip's ratios — launch 0.3, eight aerial slashes of 0.05, dash
-// 0.3; attribute side × 1.5. Forced precision per the talent "Increased
-// Binge Point Gain" rank 2. The dash ends the cast and with it Cloudvault.
+// Forced precision per the talent "Increased Binge Point Gain" rank 2. The
+// dash ends the cast and with it Cloudvault. Cast length: community
+// speed-rotation workbook v2.0, 2026-09-04, 3.0 s; hit spacing provisional.
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
@@ -45,19 +42,20 @@ export const herosBloodInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.cloudvault, BUFF.nonPlayerBaseDamage50],
   triggerable: false,
-  castFrames: 60,
+  castFrames: 180,
   hits: [
-    hit(0, launchOrDash),
-    aerialSlash(1),
-    aerialSlash(2),
-    aerialSlash(3),
-    aerialSlash(4),
-    aerialSlash(5),
-    aerialSlash(6),
-    aerialSlash(7),
-    aerialSlash(8),
+    hit(0, { ...launchOrDash, frame: 0 }),
+    aerialSlash(1, 18),
+    aerialSlash(2, 36),
+    aerialSlash(3, 54),
+    aerialSlash(4, 72),
+    aerialSlash(5, 90),
+    aerialSlash(6, 108),
+    aerialSlash(7, 126),
+    aerialSlash(8, 144),
     hit(9, {
       ...launchOrDash,
+      frame: 162,
       triggers: [applyBuff({ target: STATUS.cloudvault, stacks: -2 })],
     }),
   ],

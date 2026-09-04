@@ -16,10 +16,8 @@ const jadeflushKick = {
   attributeFixed: 95.75,
 }
 
-// Coefficients: client skill_numerical_config at skill level 100 (patch
-// container, 2026-09-04) — Castlink 20902102 (1.23233 / 342 / 186) as two
-// kicks of the tooltip's 0.5, Castlink - Jadeflush 20902104
-// (2.54142 / 704 / 383) as four kicks of 0.25; attribute side × 1.5.
+// Cast length: community speed-rotation workbook v2.0, 2026-09-04 — 0.8 s
+// plain, 1.5 s Jadeflush; hit spacing provisional.
 export const castlink = defineSkill({
   id: SKILL.castlink,
   classId: "bamboocutDraught",
@@ -32,18 +30,18 @@ export const castlink = defineSkill({
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 60,
+  castFrames: 48,
   hits: [
     hit(0, {
-      frame: 60,
+      frame: 0,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
       attributeFixed: 93,
-      variants: [{ ...jadeflushKick, castFrames: 60 }],
+      variants: [{ ...jadeflushKick, castFrames: 90 }],
     }),
     hit(1, {
-      frame: 60,
+      frame: 24,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
@@ -51,7 +49,7 @@ export const castlink = defineSkill({
       variants: [jadeflushKick],
     }),
     hit(2, {
-      frame: 60,
+      frame: 45,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,
@@ -59,7 +57,7 @@ export const castlink = defineSkill({
       conditions: JADEFLUSH,
     }),
     hit(3, {
-      frame: 60,
+      frame: 67,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,

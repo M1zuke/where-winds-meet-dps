@@ -84880,7 +84880,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 43,
+        "count": 47,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-boundvessel",
@@ -84891,6 +84891,7 @@
           "bamboocutDraught-dragon-head",
           "bamboocutDraught-dragon-head-plus",
           "bamboocutDraught-dragonquench-inebriate",
+          "bamboocutDraught-dragonquench-inebriate-cancel",
           "bamboocutDraught-drunkenpoet-prepull",
           "bamboocutDraught-falcons-pursuit",
           "bamboocutDraught-falcons-pursuit-perfect",
@@ -84908,8 +84909,10 @@
           "bamboocutDraught-light-attack",
           "bamboocutDraught-nightwick-grounddrift",
           "bamboocutDraught-nightwick-primepick",
+          "bamboocutDraught-nightwick-primepick-follow-up",
           "bamboocutDraught-nightwick-tipsylay",
           "bamboocutDraught-peakfall",
+          "bamboocutDraught-peakfall-prepull",
           "bamboocutDraught-perfect-dodge",
           "bamboocutDraught-perfect-dodge-full",
           "bamboocutDraught-poet-final-hit-cancel",
@@ -84924,9 +84927,10 @@
           "bamboocutDraught-soaring",
           "bamboocutDraught-soaring-1-hit",
           "bamboocutDraught-toad-cancel",
-          "bamboocutDraught-whaledraft"
+          "bamboocutDraught-whaledraft",
+          "bamboocutDraught-whaledraft-cancel"
         ],
-        "digest": "b2d31b23bb6c18922042120568b9f4657d89f59f1fe62293fd287ba469124538"
+        "digest": "63aad8acf144ff705b1231a83e135dab380e258fa6adebde67dbf4b96758c3c0"
       },
       "debuffs": {
         "count": 5,

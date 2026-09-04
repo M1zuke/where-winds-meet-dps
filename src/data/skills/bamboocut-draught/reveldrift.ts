@@ -5,12 +5,9 @@ import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
-// Coefficients: client skill_numerical_config row 20503101 at skill level
-// 100 (patch container, 2026-09-04): 1.05605 / 293 / 160 over the client
-// hit table's 2 hits, split evenly as a provisional per-hit share; attribute
-// side × 1.5. Hitting inflicts Strayhunt, and a staggered target — read as
-// the Qi-break window — grants 50 Binge Points once per 3 s (client locale
-// text, 2026-09-04).
+// A staggered target — read as the Qi-break window — grants 50 Binge Points
+// once per 3 s. Cast length: community speed-rotation workbook v2.0,
+// 2026-09-04, 0.7 s; hit spacing provisional.
 export const reveldrift = defineSkill({
   id: SKILL.reveldrift,
   classId: "bamboocutDraught",
@@ -24,10 +21,10 @@ export const reveldrift = defineSkill({
   receives: CLASS_RECEIVES,
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 60,
+  castFrames: 42,
   hits: [
     hit(0, {
-      frame: 60,
+      frame: 0,
       physMultiplier: 0.528025,
       attributeMultiplier: 0.7920375,
       physFixed: 146.5,
@@ -43,7 +40,7 @@ export const reveldrift = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 60,
+      frame: 21,
       physMultiplier: 0.528025,
       attributeMultiplier: 0.7920375,
       physFixed: 146.5,

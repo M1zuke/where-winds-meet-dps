@@ -7,9 +7,15 @@ import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", stacks: 1 }]
 
-const stage = (index: number, physMultiplier: number, physFixed: number, attributeFixed: number) =>
+const stage = (
+  index: number,
+  frame: number,
+  physMultiplier: number,
+  physFixed: number,
+  attributeFixed: number,
+) =>
   hit(index, {
-    frame: 60,
+    frame,
     physMultiplier,
     attributeMultiplier: physMultiplier * 1.5,
     physFixed,
@@ -17,9 +23,16 @@ const stage = (index: number, physMultiplier: number, physFixed: number, attribu
     conditions: UNLOCKED,
   })
 
-// Coefficients: client skill_numerical_config rows 20902206-20902209 at skill
-// level 100 (patch container, 2026-09-04), one hit per stage; attribute side
-// × 1.5. Forced precision per the talent "Increased Binge Point Gain" rank 2.
+export const dragonquenchStages = [
+  stage(0, 0, 0.68814, 191, 104),
+  stage(1, 30, 0.66144, 184, 100),
+  stage(2, 60, 0.80698, 224, 122),
+  stage(3, 90, 1.82136, 505, 275),
+]
+
+// Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
+// length: community speed-rotation workbook v2.0, 2026-09-04, 2.5 s; hit
+// spacing provisional.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
   classId: "bamboocutDraught",
@@ -32,13 +45,8 @@ export const dragonquenchInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: 60,
-  hits: [
-    stage(0, 0.68814, 191, 104),
-    stage(1, 0.66144, 184, 100),
-    stage(2, 0.80698, 224, 122),
-    stage(3, 1.82136, 505, 275),
-  ],
+  castFrames: 150,
+  hits: dragonquenchStages,
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",
 })

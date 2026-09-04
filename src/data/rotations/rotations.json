@@ -3189,5 +3189,328 @@
       }
     ],
     "defaultRotationId": "builtin-silkbindJade-standardized-1-7"
+  },
+  "bamboocutDraught": {
+    "rotations": [
+      {
+        "id": "builtin-bamboocutDraught-dummy-rotation",
+        "name": "Dummy Rotation",
+        "classId": "bamboocutDraught",
+        "steps": [
+          {
+            "skillId": "bamboocutDraught-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-peakfall-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-reveldrift",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-castlink",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick-follow-up",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood-inebriate",
+            "hitCount": 10,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-peakfall",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-castlink",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick-follow-up",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood-inebriate",
+            "hitCount": 10,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-flute-of-the-tides-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-peakfall",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood-inebriate",
+            "hitCount": 10,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-reveldrift",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-peakfall",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-castlink",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-nightwick-primepick-follow-up",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood-inebriate",
+            "hitCount": 10,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-heros-blood",
+            "hitCount": 1,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "qiBreak": { "startSec": 26, "durationSec": 10, "lowQiLeadSec": 5 },
+        "prePullHitsCount": false,
+        "createdAt": "2026-09-04T00:00:00.000Z",
+        "updatedAt": "2026-09-04T00:00:00.000Z",
+        "description": "Training-dummy rotation as played in game (2026-09-04). Cast lengths follow the community speed-rotation workbook v2.0; every Parry Cancel ends a recovery, none cuts a hit. Cooldowns are not enforced. Deepdaze entry depends on the simulated Binge Points — check the timeline before relying on the Inebriate forms."
+      }
+    ],
+    "defaultRotationId": "builtin-bamboocutDraught-dummy-rotation"
   }
 }

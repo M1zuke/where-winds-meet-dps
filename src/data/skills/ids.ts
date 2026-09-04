@@ -20,6 +20,7 @@ export const CAST = {
   castlink: "cast:castlink",
   crosswindBlade: "cast:crosswindBlade",
   dragonquenchInebriate: "cast:dragonquenchInebriate",
+  dragonquenchInebriateCancel: "cast:dragonquenchInebriateCancel",
   deflect: "cast:deflect",
   deflectCancel: "cast:deflectCancel",
   deflectCancelPrepull: "cast:deflectCancelPrepull",
@@ -55,8 +56,10 @@ export const CAST = {
   lightAttack: "cast:lightAttack",
   nightwickGrounddrift: "cast:nightwickGrounddrift",
   nightwickPrimepick: "cast:nightwickPrimepick",
+  nightwickPrimepickFollowUp: "cast:nightwickPrimepickFollowUp",
   nightwickTipsylay: "cast:nightwickTipsylay",
   peakfall: "cast:peakfall",
+  peakfallPrepull: "cast:peakfallPrepull",
   perfectDodge: "cast:perfectDodge",
   perfectDodgeFull: "cast:perfectDodgeFull",
   phalanxChargedS3: "cast:phalanxChargedS3",
@@ -131,6 +134,7 @@ export const CAST = {
   umbQ: "cast:umbQ",
   umbQPrepull: "cast:umbQPrepull",
   whaledraft: "cast:whaledraft",
+  whaledraftCancel: "cast:whaledraftCancel",
 } as const
 
 export const ROLE = {
