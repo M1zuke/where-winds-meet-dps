@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, within } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import type { DisabledTalentPoints, Inputs } from "../../src/engine/types"
@@ -8,8 +8,8 @@ import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmDialog"
 import { TalentPointsTab } from "../../src/ui/features/talents/talent-points-tab/TalentPointsTab"
 
-const MULTI_MEMBER_INDEX = TALENT_POINT_GROUPS.findIndex((group) => group.members.length > 1)
-const MULTI_MEMBER = TALENT_POINT_GROUPS[MULTI_MEMBER_INDEX]
+const PHYS = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "minPhys")!
+const ATTRIBUTES = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "power")!
 
 function renderTab(inputs: Inputs, onChange = vi.fn()) {
   render(
@@ -22,8 +22,14 @@ function renderTab(inputs: Inputs, onChange = vi.fn()) {
   return onChange
 }
 
-function cardFor(index: number): HTMLElement {
-  return screen.getAllByLabelText("Disable one")[index].closest("div.panel") as HTMLElement
+function cardFor(group: TalentPointGroup): HTMLElement {
+  return document.querySelectorAll("div.panel")[TALENT_POINT_GROUPS.indexOf(group)] as HTMLElement
+}
+
+function stepsIn(card: HTMLElement): HTMLElement[] {
+  return within(card)
+    .getAllByRole("button")
+    .filter((button) => button.hasAttribute("aria-pressed"))
 }
 
 function allDisabled(group: TalentPointGroup): DisabledTalentPoints {
@@ -35,48 +41,65 @@ function allDisabled(group: TalentPointGroup): DisabledTalentPoints {
 describe("TalentPointsTab", () => {
   it("renders one card per derived group rather than a hand-written list", () => {
     renderTab(defaultInputs)
-    expect(screen.getAllByLabelText("Disable one")).toHaveLength(TALENT_POINT_GROUPS.length)
+    expect(document.querySelectorAll("div.panel")).toHaveLength(TALENT_POINT_GROUPS.length)
   })
 
-  it("opens with every point of every group on", () => {
+  it("gives every talent point of a group its own step", () => {
     renderTab(defaultInputs)
-    for (const [index, group] of TALENT_POINT_GROUPS.entries()) {
-      expect(within(cardFor(index)).getByText(String(group.members.length))).toBeTruthy()
+    for (const group of TALENT_POINT_GROUPS) {
+      expect(stepsIn(cardFor(group))).toHaveLength(group.members.length)
     }
   })
 
-  it("switches the last point of a group off", () => {
+  it("labels each step with what that one point grants", () => {
+    renderTab(defaultInputs)
+    const labels = stepsIn(cardFor(PHYS)).map((step) => step.textContent)
+    expect(labels).toEqual(PHYS.members.map((member) => `+${member.effects.minPhys}`))
+  })
+
+  it("keeps min and max phys on separate cards", () => {
+    renderTab(defaultInputs)
+    const minCard = cardFor(PHYS)
+    const maxCard = cardFor(TALENT_POINT_GROUPS.find((group) => group.stats[0] === "maxPhys")!)
+    expect(minCard).not.toBe(maxCard)
+  })
+
+  it("opens with every step on", () => {
+    renderTab(defaultInputs)
+    for (const step of stepsIn(cardFor(ATTRIBUTES))) {
+      expect(step).toHaveAttribute("aria-pressed", "true")
+    }
+  })
+
+  it("switches the clicked point off and leaves its neighbours alone", () => {
     const onChange = renderTab(defaultInputs)
-    const last = MULTI_MEMBER.members[MULTI_MEMBER.members.length - 1]
-    fireEvent.click(within(cardFor(MULTI_MEMBER_INDEX)).getByLabelText("Disable one"))
+    const target = PHYS.members[1]
+    fireEvent.click(stepsIn(cardFor(PHYS))[1])
     expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ disabledTalentPoints: { [last.tier]: [last.id] } }),
+      expect.objectContaining({ disabledTalentPoints: { [target.tier]: [target.id] } }),
     )
   })
 
   it("switches a point back on", () => {
-    const member = MULTI_MEMBER.members[0]
+    const member = PHYS.members[0]
     const onChange = renderTab({
       ...defaultInputs,
       disabledTalentPoints: { [member.tier]: [member.id] },
     })
-    fireEvent.click(within(cardFor(MULTI_MEMBER_INDEX)).getByLabelText("Enable one more"))
+    fireEvent.click(stepsIn(cardFor(PHYS))[0])
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ disabledTalentPoints: {} }))
   })
 
-  it("stops the steppers at the ends of a group", () => {
-    renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(MULTI_MEMBER) })
-    const card = cardFor(MULTI_MEMBER_INDEX)
-    expect(within(card).getByLabelText("Disable one")).toBeDisabled()
-    expect(within(card).getByLabelText("Enable one more")).not.toBeDisabled()
-    expect(within(card).getByText("0")).toBeTruthy()
+  it("sums only the steps left on", () => {
+    const full = PHYS.members.reduce((sum, member) => sum + (member.effects.minPhys ?? 0), 0)
+    renderTab(defaultInputs)
+    expect(within(cardFor(PHYS)).getByText(`+${Math.round(full * 10) / 10}`)).toBeTruthy()
   })
 
-  it("scales the group total with the number of points left on", () => {
-    const index = TALENT_POINT_GROUPS.findIndex((group) => group.stats[0] === "critRate")
-    const group = TALENT_POINT_GROUPS[index]
-    const perPoint = Math.round((group.effects.critRate ?? 0) * 1000) / 10
-    renderTab(defaultInputs)
-    expect(within(cardFor(index)).getByText(`+${perPoint * group.members.length}%`)).toBeTruthy()
+  it("reads zero once every step of a group is off", () => {
+    renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
+    const card = cardFor(PHYS)
+    expect(within(card).getByText("+0")).toBeTruthy()
+    for (const step of stepsIn(card)) expect(step).toHaveAttribute("aria-pressed", "false")
   })
 })

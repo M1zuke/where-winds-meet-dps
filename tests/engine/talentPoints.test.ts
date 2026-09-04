@@ -6,6 +6,7 @@ import {
   groupTotals,
   isTalentPointEnabled,
   playerAttributes,
+  stepValues,
   withTalentPointEnabled,
 } from "../../src/definitions/baseStats"
 import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../src/data/baseStats"
@@ -16,9 +17,33 @@ const ALL_POINTS = TALENT_POINT_TIERS.flatMap((tier) =>
   TALENT_POINTS[tier].map((point) => ({ tier, point })),
 )
 
+const ATTRIBUTE_STATS = ["power", "agility", "momentum"]
+
 function withDisabled(disabled: DisabledTalentPoints): Inputs {
   return { ...defaultInputs, disabledTalentPoints: disabled }
 }
+
+function groupFor(stat: string) {
+  return TALENT_POINT_GROUPS.find((group) => group.stats[0] === stat)!
+}
+
+describe("talent point authoring", () => {
+  it("merges only the primary-attribute triple into one point", () => {
+    for (const { point } of ALL_POINTS) {
+      const stats = Object.keys(point.effects)
+      if (stats.length === 1) continue
+      expect(stats.sort()).toEqual([...ATTRIBUTE_STATS].sort())
+    }
+  })
+
+  it("keeps a min/max attack pair as two separate points", () => {
+    for (const { point } of ALL_POINTS) {
+      const stats = Object.keys(point.effects)
+      expect(stats.includes("minPhys") && stats.includes("maxPhys")).toBe(false)
+      expect(stats.includes("minFormless") && stats.includes("maxFormless")).toBe(false)
+    }
+  })
+})
 
 describe("talent point grouping", () => {
   it("places every talent point in exactly one group", () => {
@@ -33,31 +58,48 @@ describe("talent point grouping", () => {
     expect(seen.size).toBe(ALL_POINTS.length)
   })
 
-  it("gives every member of a group the same effects as the group", () => {
-    for (const group of TALENT_POINT_GROUPS) {
-      for (const member of group.members) {
-        const point = TALENT_POINTS[member.tier as (typeof TALENT_POINT_TIERS)[number]].find(
-          (candidate) => candidate.id === member.id,
-        )
-        expect(point?.effects).toEqual(group.effects)
-      }
-    }
-  })
-
-  it("groups a point by its effects, so a newly authored point needs no group list", () => {
-    const attributeGroups = TALENT_POINT_GROUPS.filter((group) => group.stats.includes("power"))
-    expect(attributeGroups).toHaveLength(1)
-    expect(attributeGroups[0].stats).toEqual(["power", "agility", "momentum"])
-    expect(attributeGroups[0].members.length).toBe(
-      ALL_POINTS.filter(({ point }) => "power" in point.effects).length,
+  it("gives a stat one group regardless of how much each of its points grants", () => {
+    const phys = groupFor("minPhys")
+    expect(phys.stats).toEqual(["minPhys"])
+    expect(new Set(phys.members.map((member) => member.effects.minPhys)).size).toBeGreaterThan(1)
+    expect(phys.members.length).toBe(
+      ALL_POINTS.filter(({ point }) => "minPhys" in point.effects).length,
     )
   })
 
-  it("scales a group's totals by the number of points left on", () => {
-    const group = TALENT_POINT_GROUPS.find((candidate) => candidate.stats.length === 1)!
-    const stat = group.stats[0]
-    expect(groupTotals(group, 0)[stat]).toBe(0)
-    expect(groupTotals(group, 3)[stat]).toBeCloseTo((group.effects[stat] ?? 0) * 3, 9)
+  it("groups a point by its stats, so a newly authored point needs no group list", () => {
+    for (const { tier, point } of ALL_POINTS) {
+      const stats = Object.keys(point.effects).sort().join("|")
+      const group = TALENT_POINT_GROUPS.find((candidate) =>
+        candidate.members.some((member) => member.tier === tier && member.id === point.id),
+      )
+      expect([...group!.stats].sort().join("|")).toBe(stats)
+    }
+  })
+
+  it("orders a group's steps richest first", () => {
+    for (const group of TALENT_POINT_GROUPS) {
+      const stat = group.stats[0]
+      const values = group.members.map((member) => member.effects[stat] ?? 0)
+      expect(values).toEqual([...values].sort((left, right) => right - left))
+    }
+  })
+
+  it("collapses a step label to one number when every stat of the point is equal", () => {
+    const attributes = groupFor("power")
+    expect(stepValues(attributes.members[0])).toEqual([1])
+    expect(stepValues(groupFor("minPhys").members[0])).toHaveLength(1)
+  })
+
+  it("sums only the steps left on", () => {
+    const phys = groupFor("minPhys")
+    const full = phys.members.reduce((sum, member) => sum + (member.effects.minPhys ?? 0), 0)
+    expect(groupTotals(phys, {}).minPhys).toBeCloseTo(full, 9)
+    const first = phys.members[0]
+    expect(groupTotals(phys, { [first.tier]: [first.id] }).minPhys).toBeCloseTo(
+      full - (first.effects.minPhys ?? 0),
+      9,
+    )
   })
 })
 
@@ -73,16 +115,23 @@ describe("switching a talent point off", () => {
   })
 
   it("lowers a rate on the configured base", () => {
-    const group = TALENT_POINT_GROUPS.find((candidate) => candidate.stats[0] === "critRate")!
+    const group = groupFor("critRate")
     const member = group.members[0]
     const before = getConfiguredBase(withDisabled({}), [])
     const after = getConfiguredBase(withDisabled({ [member.tier]: [member.id] }), [])
-    expect(after.critRate).toBeCloseTo(before.critRate - (group.effects.critRate ?? 0), 9)
+    expect(after.critRate).toBeCloseTo(before.critRate - (member.effects.critRate ?? 0), 9)
+  })
+
+  it("takes only the min side down when a min-phys step goes off", () => {
+    const member = groupFor("minPhys").members[0]
+    const before = getConfiguredBase(withDisabled({}), [])
+    const after = getConfiguredBase(withDisabled({ [member.tier]: [member.id] }), [])
+    expect(before["phys.min"] - after["phys.min"]).toBeCloseTo(member.effects.minPhys ?? 0, 9)
+    expect(after["phys.max"]).toBeCloseTo(before["phys.max"], 9)
   })
 
   it("carries an attribute point through the attribute conversion", () => {
-    const group = TALENT_POINT_GROUPS.find((candidate) => candidate.stats.includes("power"))!
-    const member = group.members[0]
+    const member = groupFor("power").members[0]
     const disabled = { [member.tier]: [member.id] }
     expect(playerAttributes(defaultInputs.breakthrough, disabled).power).toBe(
       playerAttributes(defaultInputs.breakthrough).power - 1,
@@ -100,7 +149,8 @@ describe("switching a talent point off", () => {
 })
 
 describe("withTalentPointEnabled", () => {
-  const member = { tier: "95.1", id: 1 }
+  const member = { tier: "95.1", id: 1, effects: { critRate: 0.04 } }
+  const other = { tier: "95.1", id: 2, effects: { critDamage: 0.05 } }
 
   it("returns a new record and never mutates the old one", () => {
     const before: DisabledTalentPoints = {}
@@ -118,16 +168,9 @@ describe("withTalentPointEnabled", () => {
   })
 
   it("drops a tier once its last disabled id comes back on", () => {
-    const off = withTalentPointEnabled(
-      withTalentPointEnabled({}, member, false),
-      {
-        tier: "95.1",
-        id: 2,
-      },
-      false,
-    )
+    const off = withTalentPointEnabled(withTalentPointEnabled({}, member, false), other, false)
     expect(off).toEqual({ "95.1": [1, 2] })
-    expect(withTalentPointEnabled(off, { tier: "95.1", id: 1 }, true)).toEqual({ "95.1": [2] })
+    expect(withTalentPointEnabled(off, member, true)).toEqual({ "95.1": [2] })
   })
 
   it("reports the group's remaining members after a toggle", () => {

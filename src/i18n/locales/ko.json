@@ -1109,9 +1109,6 @@
   "talents.stat.minStonesplit": "최소 열석 공격",
   "talents.stat.physPenetration": "외공 관통",
   "talents.statBuffs": "속성 버프",
-  "talents.talentPoints.disableOne": "",
-  "talents.talentPoints.enableOne": "",
-  "talents.talentPoints.perPoint": "",
   "talents.talentPoints.resetAllTalentPointsToDefault": "",
   "talents.talentPoints.talentPoints": ""
 }

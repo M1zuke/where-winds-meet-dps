@@ -1,10 +1,12 @@
 import { useMemo } from "react"
-import type { DisabledTalentPoints, Inputs } from "../../../../engine/types"
-import type { TalentPointGroup, TalentPointStat } from "../../../../definitions/baseStats"
+import type { Inputs } from "../../../../engine/types"
+import type { TalentPointMember, TalentPointStat } from "../../../../definitions/baseStats"
 import {
   TALENT_POINT_GROUPS,
   enabledMembers,
   groupTotals,
+  isTalentPointEnabled,
+  stepValues,
   withTalentPointEnabled,
 } from "../../../../definitions/baseStats"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -59,34 +61,27 @@ function formatValue(stat: TalentPointStat, value: number): string {
   return `+${Math.round(value * 10) / 10}`
 }
 
+function stepLabel(member: TalentPointMember, stats: readonly TalentPointStat[]): string {
+  return stepValues(member)
+    .map((value, index) => formatValue(stats[index] ?? stats[0], value))
+    .join(" · ")
+}
+
 export function TalentPointsTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
   const disabled = inputs.disabledTalentPoints
-
-  const enabledByGroup = useMemo(
-    () => new Map(TALENT_POINT_GROUPS.map((group) => [group.key, enabledMembers(group, disabled)])),
-    [disabled],
-  )
 
   const disabledCount = useMemo(
     () => Object.values(disabled ?? {}).reduce((sum, ids) => sum + ids.length, 0),
     [disabled],
   )
 
-  function setEnabled(group: TalentPointGroup, count: number) {
-    const enabled = enabledByGroup.get(group.key) ?? []
-    let next: DisabledTalentPoints = disabled
-    if (count < enabled.length) {
-      next = withTalentPointEnabled(next, enabled[enabled.length - 1], false)
-    } else {
-      const off = group.members.find(
-        (member) => !enabled.some((on) => on.tier === member.tier && on.id === member.id),
-      )
-      if (!off) return
-      next = withTalentPointEnabled(next, off, true)
-    }
-    onChange({ ...inputs, disabledTalentPoints: next })
+  function toggle(member: TalentPointMember, enabled: boolean) {
+    onChange({
+      ...inputs,
+      disabledTalentPoints: withTalentPointEnabled(disabled, member, enabled),
+    })
   }
 
   async function resetAll() {
@@ -110,8 +105,8 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
 
       <div className={styles.groupGrid}>
         {TALENT_POINT_GROUPS.map((group) => {
-          const enabled = enabledByGroup.get(group.key) ?? []
-          const totals = groupTotals(group, enabled.length)
+          const totals = groupTotals(group, disabled)
+          const onCount = enabledMembers(group, disabled).length
           return (
             <div className={`panel ${styles.groupCard}`} key={group.key}>
               <div className={styles.groupHead}>
@@ -119,50 +114,33 @@ export function TalentPointsTab({ inputs, onChange }: Props) {
                 <span className={styles.groupName}>
                   {group.stats.map((stat) => t(STAT_KEYS[stat])).join(" · ")}
                 </span>
-              </div>
-
-              <div className={styles.perPoint}>
-                {group.stats.map((stat) => formatValue(stat, group.effects[stat] ?? 0)).join(" · ")}{" "}
-                {t("talents.talentPoints.perPoint")}
-              </div>
-
-              <div className={styles.groupControl}>
-                <button
-                  type="button"
-                  className={styles.step}
-                  aria-label={t("talents.talentPoints.disableOne")}
-                  disabled={enabled.length === 0}
-                  onClick={() => setEnabled(group, enabled.length - 1)}
-                >
-                  −
-                </button>
                 <span className={styles.count}>
-                  <b>{enabled.length}</b> / {group.members.length}
-                </span>
-                <button
-                  type="button"
-                  className={styles.step}
-                  aria-label={t("talents.talentPoints.enableOne")}
-                  disabled={enabled.length === group.members.length}
-                  onClick={() => setEnabled(group, enabled.length + 1)}
-                >
-                  +
-                </button>
-                <span className={styles.groupTotal} data-zero={enabled.length === 0 || undefined}>
-                  {group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0)).join(" · ")}
+                  <b>{onCount}</b> / {group.members.length}
                 </span>
               </div>
 
-              <div className={styles.meter}>
-                {group.members.map((member) => (
-                  <i
-                    key={`${member.tier}-${member.id}`}
-                    data-on={
-                      enabled.some((on) => on.tier === member.tier && on.id === member.id) ||
-                      undefined
-                    }
-                  />
-                ))}
+              <div className={styles.groupTotal} data-zero={onCount === 0 || undefined}>
+                {group.stats.map((stat) => formatValue(stat, totals[stat] ?? 0)).join(" · ")}
+              </div>
+
+              <div className={styles.steps}>
+                {group.members.map((member) => {
+                  const on = isTalentPointEnabled(disabled, member.tier, member.id)
+                  const label = stepLabel(member, group.stats)
+                  return (
+                    <button
+                      type="button"
+                      key={`${member.tier}-${member.id}`}
+                      className={styles.step}
+                      data-on={on || undefined}
+                      aria-pressed={on}
+                      aria-label={`${member.tier} ${label}`}
+                      onClick={() => toggle(member, !on)}
+                    >
+                      {label}
+                    </button>
+                  )
+                })}
               </div>
             </div>
           )

@@ -2,7 +2,7 @@
 
 .groupGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 10px;
   margin-top: 8px;
 }
@@ -33,45 +33,12 @@
   overflow-wrap: anywhere;
 }
 
-.perPoint {
-  color: var(--color-text-muted);
-  font-size: 0.78em;
-  font-variant-numeric: tabular-nums;
-}
-
-.groupControl {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.step {
-  width: 24px;
-  height: 24px;
-  flex: none;
-  line-height: 1;
-  background: var(--color-surface);
-  color: var(--color-text-dim);
-  border: 1px solid var(--color-border-strong);
-  cursor: pointer;
-}
-
-.step:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.step:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
 .count {
-  min-width: 52px;
-  text-align: center;
-  font-size: 0.85em;
+  margin-left: auto;
+  flex: none;
+  font-size: 0.8em;
   font-variant-numeric: tabular-nums;
-  color: var(--color-text-dim);
+  color: var(--color-text-muted);
 }
 
 .count b {
@@ -80,9 +47,7 @@
 }
 
 .groupTotal {
-  margin-left: auto;
-  text-align: right;
-  font-size: 0.8em;
+  font-size: 0.85em;
   font-variant-numeric: tabular-nums;
   color: var(--color-positive);
   overflow-wrap: anywhere;
@@ -92,19 +57,34 @@
   color: var(--color-text-faint);
 }
 
-.meter {
+.steps {
   display: flex;
-  gap: 2px;
-  height: 3px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
-.meter i {
-  flex: 1;
-  background: var(--color-border);
+.step {
+  font: inherit;
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  padding: 2px 7px;
+  background: var(--color-surface-inset);
+  color: var(--color-text-faint);
+  border: 1px dashed var(--color-border);
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-.meter i[data-on] {
-  background: var(--color-accent);
+.step[data-on] {
+  background: var(--color-surface-selected);
+  color: var(--color-accent);
+  border-style: solid;
+  border-color: var(--color-accent);
+}
+
+.step:hover {
+  border-color: var(--color-accent-bright);
+  color: var(--color-accent-bright);
 }
 
 @include breakpoints.below(breakpoints.$bp-720) {

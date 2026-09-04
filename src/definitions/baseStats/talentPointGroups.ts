@@ -5,11 +5,11 @@ import type { TalentPointEffects, TalentPointStat } from "./talentPointDef"
 export interface TalentPointMember {
   tier: string
   id: number
+  effects: TalentPointEffects
 }
 
 export interface TalentPointGroup {
   key: string
-  effects: TalentPointEffects
   stats: readonly TalentPointStat[]
   members: readonly TalentPointMember[]
 }
@@ -35,37 +35,37 @@ export function talentPointStats(effects: TalentPointEffects): TalentPointStat[]
   )
 }
 
-function talentPointGroupKey(effects: TalentPointEffects): string {
-  return talentPointStats(effects)
-    .map((stat) => `${stat}:${effects[stat]}`)
-    .join("|")
+function byRichestStepFirst(left: TalentPointMember, right: TalentPointMember): number {
+  const stat = talentPointStats(left.effects)[0]
+  const byValue = (right.effects[stat] ?? 0) - (left.effects[stat] ?? 0)
+  if (byValue !== 0) return byValue
+  if (left.tier !== right.tier) return left.tier < right.tier ? -1 : 1
+  return left.id - right.id
 }
 
-function byLeadingStatThenValue(left: TalentPointGroup, right: TalentPointGroup): number {
+function byLeadingStat(left: TalentPointGroup, right: TalentPointGroup): number {
   const byStat = STAT_ORDER[left.stats[0]] - STAT_ORDER[right.stats[0]]
   if (byStat !== 0) return byStat
-  return (right.effects[right.stats[0]] ?? 0) - (left.effects[left.stats[0]] ?? 0)
+  return left.stats.length - right.stats.length
 }
 
 export const TALENT_POINT_GROUPS: readonly TalentPointGroup[] = (() => {
   const byKey = new Map<string, TalentPointGroup & { members: TalentPointMember[] }>()
   for (const tier of TALENT_POINT_TIERS) {
     for (const point of TALENT_POINTS[tier]) {
-      const key = talentPointGroupKey(point.effects)
+      const stats = talentPointStats(point.effects)
+      const key = stats.join("|")
+      const member = { tier, id: point.id, effects: point.effects }
       const group = byKey.get(key)
       if (group) {
-        group.members.push({ tier, id: point.id })
+        group.members.push(member)
         continue
       }
-      byKey.set(key, {
-        key,
-        effects: point.effects,
-        stats: talentPointStats(point.effects),
-        members: [{ tier, id: point.id }],
-      })
+      byKey.set(key, { key, stats, members: [member] })
     }
   }
-  return [...byKey.values()].sort(byLeadingStatThenValue)
+  for (const group of byKey.values()) group.members.sort(byRichestStepFirst)
+  return [...byKey.values()].sort(byLeadingStat)
 })()
 
 export function isTalentPointEnabled(
@@ -102,9 +102,17 @@ export function enabledMembers(
 
 export function groupTotals(
   group: TalentPointGroup,
-  enabledCount: number,
+  disabled: DisabledTalentPoints | undefined,
 ): Readonly<Partial<Record<TalentPointStat, number>>> {
   const totals: Partial<Record<TalentPointStat, number>> = {}
-  for (const stat of group.stats) totals[stat] = (group.effects[stat] ?? 0) * enabledCount
+  for (const stat of group.stats) totals[stat] = 0
+  for (const member of enabledMembers(group, disabled)) {
+    for (const stat of group.stats) totals[stat] = (totals[stat] ?? 0) + (member.effects[stat] ?? 0)
+  }
   return totals
+}
+
+export function stepValues(member: TalentPointMember): number[] {
+  const values = talentPointStats(member.effects).map((stat) => member.effects[stat] ?? 0)
+  return values.every((value) => value === values[0]) ? [values[0]] : values
 }

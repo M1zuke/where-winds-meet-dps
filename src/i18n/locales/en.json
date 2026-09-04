@@ -1109,9 +1109,6 @@
   "talents.stat.minStonesplit": "Min Stonesplit",
   "talents.stat.physPenetration": "Phys Penetration",
   "talents.statBuffs": "Stat Buffs",
-  "talents.talentPoints.disableOne": "Disable one",
-  "talents.talentPoints.enableOne": "Enable one more",
-  "talents.talentPoints.perPoint": "per point",
   "talents.talentPoints.resetAllTalentPointsToDefault": "Enable all talent points again?",
   "talents.talentPoints.talentPoints": "Talent Points"
 }
