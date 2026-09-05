@@ -73,8 +73,10 @@ export const CAST = {
   poet4: "cast:poet4",
   poetFinalHitCancel: "cast:poetFinalHitCancel",
   quickDrink: "cast:quickDrink",
+  quickDrinkCancel: "cast:quickDrinkCancel",
   realmplay: "cast:realmplay",
   reveldrift: "cast:reveldrift",
+  reveldriftCancel: "cast:reveldriftCancel",
   skystrikeGauntletsEx: "cast:skystrikeGauntletsEx",
   snowpartingCharged: "cast:snowpartingCharged",
   snowpartingChargedForgetfulness: "cast:snowpartingChargedForgetfulness",
@@ -134,7 +136,6 @@ export const CAST = {
   umbQ: "cast:umbQ",
   umbQPrepull: "cast:umbQPrepull",
   whaledraft: "cast:whaledraft",
-  whaledraftCancel: "cast:whaledraftCancel",
 } as const
 
 export const ROLE = {

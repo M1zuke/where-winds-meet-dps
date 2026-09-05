@@ -16,8 +16,8 @@ const jadeflushKick = {
   attributeFixed: 95.75,
 }
 
-// Cast length: community speed-rotation workbook v2.0, 2026-09-04 — 0.8 s
-// plain, 1.5 s Jadeflush; hit spacing provisional.
+// Cast length to the earliest next input and hit frames: in-game animation,
+// 2026-09-05.
 export const castlink = defineSkill({
   id: SKILL.castlink,
   classId: "bamboocutDraught",
@@ -30,18 +30,18 @@ export const castlink = defineSkill({
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 48,
+  castFrames: 49,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 14,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
       attributeFixed: 93,
-      variants: [{ ...jadeflushKick, castFrames: 90 }],
+      variants: [{ ...jadeflushKick, castFrames: 89 }],
     }),
     hit(1, {
-      frame: 24,
+      frame: 28,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
@@ -49,7 +49,7 @@ export const castlink = defineSkill({
       variants: [jadeflushKick],
     }),
     hit(2, {
-      frame: 45,
+      frame: 41,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,
@@ -57,7 +57,7 @@ export const castlink = defineSkill({
       conditions: JADEFLUSH,
     }),
     hit(3, {
-      frame: 67,
+      frame: 74,
       physMultiplier: 0.635355,
       attributeMultiplier: 0.9530325,
       physFixed: 176,

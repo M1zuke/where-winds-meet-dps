@@ -1,16 +1,29 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
+import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
-import { SKILL, STATUS } from "./ids"
+import { SKILL } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
+import { drinkGrants } from "./whaledraft"
 
-// Whaledraft straight after a light attack: every Binge Mark becomes a Binge
-// Point one for one, and a perfect drink unleashes Falcon's Pursuit (client
-// locale text, 2026-09-04). The drink itself deals nothing.
+// The drink at the perfect moment after a skill: the same grants, and it
+// unleashes Falcon's Pursuit (in-game skill text, 2026-09-05).
+export const perfectQuickDrinkTriggers = [...drinkGrants, castSkill({ target: SKILL.falconsPursuitPerfect })]
+
+// The falcon launches 0.3 s in; cast length to the earliest next input
+// (in-game animation, 2026-09-05).
+export const perfectQuickDrinkHit = hit(0, {
+  frame: 18,
+  physMultiplier: 0,
+  attributeMultiplier: 0,
+  physFixed: 0,
+  attributeFixed: 0,
+  triggers: perfectQuickDrinkTriggers,
+})
+
 export const quickDrink = defineSkill({
   id: SKILL.quickDrink,
   classId: "bamboocutDraught",
-  name: "Gauntlet Heavy Attack - Quick Drink",
+  name: "Gauntlet - Perfect Quick Drink",
   breakdownName: "Whaledraft",
   tags: [WEAPON.gauntlets],
   skillType: "weapon",
@@ -19,25 +32,8 @@ export const quickDrink = defineSkill({
   castTag: CAST.quickDrink,
   receives: CLASS_RECEIVES,
   triggerable: false,
-  castFrames: 60,
-  hits: [
-    hit(0, {
-      frame: 60,
-      physMultiplier: 0,
-      attributeMultiplier: 0,
-      physFixed: 0,
-      attributeFixed: 0,
-      triggers: [
-        applyBuff({ target: STATUS.bingePoints, transferFrom: STATUS.bingeMarks }),
-        applyBuff({
-          target: STATUS.inebriateDeepdaze,
-          stacks: 1,
-          conditions: [{ buffId: STATUS.bingePoints, op: "gte", stacks: 200 }],
-        }),
-        castSkill({ target: SKILL.falconsPursuitPerfect }),
-      ],
-    }),
-  ],
+  castFrames: 41,
+  hits: [perfectQuickDrinkHit],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

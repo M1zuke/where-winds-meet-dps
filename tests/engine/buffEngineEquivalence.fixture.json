@@ -84888,7 +84888,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 49,
+        "count": 50,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-boundvessel",
@@ -84915,11 +84915,12 @@
           "bamboocutDraught-perfect-dodge",
           "bamboocutDraught-perfect-dodge-full",
           "bamboocutDraught-quick-drink",
+          "bamboocutDraught-quick-drink-cancel",
           "bamboocutDraught-realmplay",
           "bamboocutDraught-reveldrift",
+          "bamboocutDraught-reveldrift-cancel",
           "bamboocutDraught-skystrike-gauntlets-ex",
           "bamboocutDraught-whaledraft",
-          "bamboocutDraught-whaledraft-cancel",
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
           "mystic-dragon-head",
@@ -84940,7 +84941,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "bea8fde26d738130c8193936a4edbe2bc75da44f35a4e4aba69b38296463e59f"
+        "digest": "4e2f73d8e53d1c685e522b8096805422b2d2d3dc7c38c2ddd0cc96b084a91692"
       },
       "debuffs": {
         "count": 9,

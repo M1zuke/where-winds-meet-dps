@@ -6,6 +6,7 @@ import { SKILL, STATUS } from "./ids"
 // The ultimate deals no damage of its own: a big drink that enters Deepdaze
 // outright and grants Clash-toast for 15 s at rank 5 (client skill
 // descriptions 30616-30620, 2026-09-04). Deepdaze needs the counter at its cap.
+// Cast length: in-game animation, 2026-09-05.
 export const skystrikeGauntletsEx = defineSkill({
   id: SKILL.skystrikeGauntletsEx,
   classId: "bamboocutDraught",
@@ -17,10 +18,10 @@ export const skystrikeGauntletsEx = defineSkill({
   castTag: CAST.skystrikeGauntletsEx,
   receives: [],
   triggerable: false,
-  castFrames: 60,
+  castFrames: 48,
   hits: [
     hit(0, {
-      frame: 60,
+      frame: 0,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,

@@ -27,8 +27,8 @@ const launchOrDash = {
 }
 
 // Forced precision per the talent "Increased Binge Point Gain" rank 2. The
-// dash ends the cast and with it Cloudvault. Cast length: community
-// speed-rotation workbook v2.0, 2026-09-04, 3.0 s; hit spacing provisional.
+// dash ends the cast and with it Cloudvault. Cast length to the earliest next
+// input and hit frames: in-game animation, 2026-09-05.
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
@@ -42,20 +42,20 @@ export const herosBloodInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.cloudvault, BUFF.nonPlayerBaseDamage50],
   triggerable: false,
-  castFrames: 180,
+  castFrames: 177,
   hits: [
-    hit(0, { ...launchOrDash, frame: 0 }),
-    aerialSlash(1, 18),
-    aerialSlash(2, 36),
-    aerialSlash(3, 54),
-    aerialSlash(4, 72),
-    aerialSlash(5, 90),
-    aerialSlash(6, 108),
-    aerialSlash(7, 126),
-    aerialSlash(8, 144),
+    hit(0, { ...launchOrDash, frame: 57 }),
+    aerialSlash(1, 83),
+    aerialSlash(2, 88),
+    aerialSlash(3, 96),
+    aerialSlash(4, 100),
+    aerialSlash(5, 107),
+    aerialSlash(6, 115),
+    aerialSlash(7, 122),
+    aerialSlash(8, 126),
     hit(9, {
       ...launchOrDash,
-      frame: 162,
+      frame: 155,
       triggers: [applyBuff({ target: STATUS.cloudvault, stacks: -2 })],
     }),
   ],

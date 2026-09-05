@@ -6,7 +6,7 @@ import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const kick = (index: number) =>
   hit(index, {
-    frame: 60,
+    frame: 20,
     physMultiplier: 0.9444,
     attributeMultiplier: 1.4166,
     physFixed: 262,
@@ -15,7 +15,8 @@ const kick = (index: number) =>
 
 // Four consecutive kicks, each the tooltip's full ratio of client
 // skill_numerical_config row 20902108 (0.9444 / 262 / 143 at skill level
-// 100, patch container 2026-09-04); attribute side × 1.5.
+// 100, patch container 2026-09-04); attribute side × 1.5. Cast length and hit
+// frame: in-game animation, 2026-09-05, which carries a single collider.
 export const nightwickTipsylay = defineSkill({
   id: SKILL.nightwickTipsylay,
   classId: "bamboocutDraught",
@@ -28,7 +29,7 @@ export const nightwickTipsylay = defineSkill({
   castTag: CAST.nightwickTipsylay,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: 60,
+  castFrames: 39,
   hits: [kick(0), kick(1), kick(2), kick(3)],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",

@@ -3,8 +3,8 @@ import { lightAttack } from "./light-attack"
 import { falconsPursuit } from "./falcons-pursuit"
 import { falconsPursuitPerfect } from "./falcons-pursuit-perfect"
 import { whaledraft } from "./whaledraft"
-import { whaledraftCancel } from "./whaledraft-cancel"
 import { quickDrink } from "./quick-drink"
+import { quickDrinkCancel } from "./quick-drink-cancel"
 import { nightwickPrimepick } from "./nightwick-primepick"
 import { nightwickPrimepickFollowUp } from "./nightwick-primepick-follow-up"
 import { nightwickTipsylay } from "./nightwick-tipsylay"
@@ -17,6 +17,7 @@ import { dragonquenchInebriateCancel } from "./dragonquench-inebriate-cancel"
 import { herosBlood } from "./heros-blood"
 import { herosBloodInebriate } from "./heros-blood-inebriate"
 import { reveldrift } from "./reveldrift"
+import { reveldriftCancel } from "./reveldrift-cancel"
 import { realmplay } from "./realmplay"
 import { boundvessel } from "./boundvessel"
 import { skystrikeGauntletsEx } from "./skystrike-gauntlets-ex"
@@ -28,8 +29,8 @@ export const SKILLS: Skill[] = [
   falconsPursuit,
   falconsPursuitPerfect,
   whaledraft,
-  whaledraftCancel,
   quickDrink,
+  quickDrinkCancel,
   nightwickPrimepick,
   nightwickPrimepickFollowUp,
   nightwickTipsylay,
@@ -42,6 +43,7 @@ export const SKILLS: Skill[] = [
   herosBlood,
   herosBloodInebriate,
   reveldrift,
+  reveldriftCancel,
   realmplay,
   boundvessel,
   skystrikeGauntletsEx,

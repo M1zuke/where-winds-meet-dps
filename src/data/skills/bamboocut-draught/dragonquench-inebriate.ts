@@ -24,15 +24,15 @@ const stage = (
   })
 
 export const dragonquenchStages = [
-  stage(0, 0, 0.68814, 191, 104),
-  stage(1, 30, 0.66144, 184, 100),
-  stage(2, 60, 0.80698, 224, 122),
-  stage(3, 90, 1.82136, 505, 275),
+  stage(0, 18, 0.68814, 191, 104),
+  stage(1, 41, 0.66144, 184, 100),
+  stage(2, 69, 0.80698, 224, 122),
+  stage(3, 91, 1.82136, 505, 275),
 ]
 
 // Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
-// length: community speed-rotation workbook v2.0, 2026-09-04, 2.5 s; hit
-// spacing provisional.
+// length (the four stages to their earliest next input) and hit frames:
+// in-game animation, 2026-09-05.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
   classId: "bamboocutDraught",
@@ -45,7 +45,7 @@ export const dragonquenchInebriate = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: 150,
+  castFrames: 143,
   hits: dragonquenchStages,
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",

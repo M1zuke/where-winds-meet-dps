@@ -6,8 +6,34 @@ import { DEBUFF, SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
 // A staggered target — read as the Qi-break window — grants 50 Binge Points
-// once per 3 s. Cast length: community speed-rotation workbook v2.0,
-// 2026-09-04, 0.7 s; hit spacing provisional.
+// once per 3 s. Hit frames: in-game animation colliders, 2026-09-05.
+export const reveldriftHits = [
+  hit(0, {
+    frame: 19,
+    physMultiplier: 0.528025,
+    attributeMultiplier: 0.7920375,
+    physFixed: 146.5,
+    attributeFixed: 80,
+    triggers: [
+      applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 }),
+      applyBuff({
+        target: STATUS.bingePoints,
+        stacks: 50,
+        phase: "exhausted",
+        cooldownFrames: 180,
+      }),
+    ],
+  }),
+  hit(1, {
+    frame: 24,
+    physMultiplier: 0.528025,
+    attributeMultiplier: 0.7920375,
+    physFixed: 146.5,
+    attributeFixed: 80,
+  }),
+]
+
+// Cast length: in-game animation, 2026-09-05.
 export const reveldrift = defineSkill({
   id: SKILL.reveldrift,
   classId: "bamboocutDraught",
@@ -21,32 +47,8 @@ export const reveldrift = defineSkill({
   receives: CLASS_RECEIVES,
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 42,
-  hits: [
-    hit(0, {
-      frame: 0,
-      physMultiplier: 0.528025,
-      attributeMultiplier: 0.7920375,
-      physFixed: 146.5,
-      attributeFixed: 80,
-      triggers: [
-        applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 }),
-        applyBuff({
-          target: STATUS.bingePoints,
-          stacks: 50,
-          phase: "exhausted",
-          cooldownFrames: 180,
-        }),
-      ],
-    }),
-    hit(1, {
-      frame: 21,
-      physMultiplier: 0.528025,
-      attributeMultiplier: 0.7920375,
-      physFixed: 146.5,
-      attributeFixed: 80,
-    }),
-  ],
+  castFrames: 66,
+  hits: reveldriftHits,
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

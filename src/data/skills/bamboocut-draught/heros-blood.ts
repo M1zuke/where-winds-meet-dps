@@ -5,8 +5,8 @@ import { SKILL, DEBUFF, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
 // The Binge Points grant must run before the Deepdaze threshold check on the
-// same hit. Cast length: community speed-rotation workbook v2.0, 2026-09-04,
-// 0.8 s.
+// same hit. Cast length to the earliest next input and hit frame: in-game
+// animation, 2026-09-05.
 export const herosBlood = defineSkill({
   id: SKILL.herosBlood,
   classId: "bamboocutDraught",
@@ -19,10 +19,10 @@ export const herosBlood = defineSkill({
   castTag: CAST.herosBlood,
   receives: CLASS_RECEIVES,
   triggerable: false,
-  castFrames: 48,
+  castFrames: 46,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 22,
       physMultiplier: 0.65873,
       attributeMultiplier: 0.988095,
       physFixed: 183,

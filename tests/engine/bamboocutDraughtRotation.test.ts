@@ -10,7 +10,10 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { dragonquenchInebriate } from "../../src/data/skills/bamboocut-draught/dragonquench-inebriate"
 import { dragonquenchInebriateCancel } from "../../src/data/skills/bamboocut-draught/dragonquench-inebriate-cancel"
 import { whaledraft } from "../../src/data/skills/bamboocut-draught/whaledraft"
-import { whaledraftCancel } from "../../src/data/skills/bamboocut-draught/whaledraft-cancel"
+import { quickDrink } from "../../src/data/skills/bamboocut-draught/quick-drink"
+import { quickDrinkCancel } from "../../src/data/skills/bamboocut-draught/quick-drink-cancel"
+import { reveldrift } from "../../src/data/skills/bamboocut-draught/reveldrift"
+import { reveldriftCancel } from "../../src/data/skills/bamboocut-draught/reveldrift-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 
@@ -63,10 +66,30 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
     expect(dragonquenchInebriateCancel.breakdownName).toBe(dragonquenchInebriate.name)
   })
 
-  it("Gauntlet Heavy Attack [cancel] shares the full form's triggers and breakdown name", () => {
-    expect(whaledraftCancel.hits[0].triggers).toBe(whaledraft.hits[0].triggers)
-    expect(whaledraftCancel.castFrames).toBeLessThan(whaledraft.castFrames)
-    expect(whaledraftCancel.breakdownName).toBe(whaledraft.breakdownName)
+})
+
+describe("Twinblade Q [1-hit cancel]", () => {
+  it("lands only the first Reveldrift hit over a shorter cast", () => {
+    expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0]])
+    expect(reveldriftCancel.castFrames).toBeLessThan(reveldrift.castFrames)
+    expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
+  })
+})
+
+describe("the Perfect Quick Drink", () => {
+  it("adds the perfect falcon to the drink's grants, which run before the Deepdaze check, over a shorter cast", () => {
+    const drinkTargets = whaledraft.hits[0].triggers.map((trigger) => trigger.targetId)
+    const perfectTargets = quickDrink.hits[0].triggers.map((trigger) => trigger.targetId)
+    expect(drinkTargets.indexOf(STATUS.bingePoints)).toBeLessThan(drinkTargets.indexOf(STATUS.inebriateDeepdaze))
+    expect(drinkTargets).not.toContain(SKILL.falconsPursuitPerfect)
+    expect(perfectTargets).toEqual([...drinkTargets, SKILL.falconsPursuitPerfect])
+    expect(quickDrink.breakdownName).toBe(whaledraft.breakdownName)
+  })
+
+  it("has a cancel form with the same triggers over a shorter cast", () => {
+    expect(quickDrinkCancel.hits[0].triggers).toBe(quickDrink.hits[0].triggers)
+    expect(quickDrinkCancel.castFrames).toBeLessThan(quickDrink.castFrames)
+    expect(quickDrinkCancel.breakdownName).toBe(quickDrink.breakdownName)
   })
 })
 

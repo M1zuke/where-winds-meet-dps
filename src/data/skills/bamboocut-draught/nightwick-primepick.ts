@@ -4,7 +4,8 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
-// Cast length: community speed-rotation workbook v2.0, 2026-09-04, 0.9 s.
+// Cast length to the earliest next input and hit frame: in-game animation,
+// 2026-09-05.
 export const nightwickPrimepick = defineSkill({
   id: SKILL.nightwickPrimepick,
   classId: "bamboocutDraught",
@@ -17,10 +18,10 @@ export const nightwickPrimepick = defineSkill({
   castTag: CAST.nightwickPrimepick,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: 54,
+  castFrames: 51,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 14,
       physMultiplier: 0.9444,
       attributeMultiplier: 1.4166,
       physFixed: 262,

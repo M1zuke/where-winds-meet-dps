@@ -3218,8 +3218,8 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-reveldrift",
-            "hitCount": 2,
+            "skillId": "bamboocutDraught-reveldrift-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3233,7 +3233,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3253,7 +3253,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3308,7 +3308,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3328,7 +3328,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3418,8 +3418,8 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-reveldrift",
-            "hitCount": 2,
+            "skillId": "bamboocutDraught-reveldrift-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3438,7 +3438,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3458,7 +3458,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-whaledraft-cancel",
+            "skillId": "bamboocutDraught-quick-drink-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -3504,7 +3504,7 @@
           }
         ],
         "permanentBuffIds": [],
-        "qiBreak": { "startSec": 26, "durationSec": 10, "lowQiLeadSec": 5 },
+        "qiBreak": { "startSec": 24, "durationSec": 10, "lowQiLeadSec": 5 },
         "prePullHitsCount": false,
         "createdAt": "2026-09-04T00:00:00.000Z",
         "updatedAt": "2026-09-04T00:00:00.000Z",

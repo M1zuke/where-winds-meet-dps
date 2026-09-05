@@ -16,8 +16,8 @@ const EONPOUR_EXHAUSTED = {
 // With Eonpour at tier 6, hitting an Exhausted target — read as the Qi-break
 // window — inflicts Wildstride, Strayhunt and Drunkslay and extends Deepdaze
 // by 6 s or enters it, once per 60 s.
-// Cast length: community speed-rotation workbook v2.0, 2026-09-04 — 0.7 s
-// plain, 0.9 s Jadeflush; hit spacing provisional.
+// Cast length to the earliest next input and hit frames: in-game animation,
+// 2026-09-05.
 export const peakfall = defineSkill({
   id: SKILL.peakfall,
   classId: "bamboocutDraught",
@@ -31,10 +31,10 @@ export const peakfall = defineSkill({
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 42,
+  castFrames: 38,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 20,
       physMultiplier: 0.91934,
       attributeMultiplier: 1.37901,
       physFixed: 255,
@@ -59,12 +59,12 @@ export const peakfall = defineSkill({
           attributeMultiplier: 1.18173,
           physFixed: 218.5,
           attributeFixed: 119,
-          castFrames: 54,
+          castFrames: 52,
         },
       ],
     }),
     hit(1, {
-      frame: 27,
+      frame: 35,
       physMultiplier: 0.78782,
       attributeMultiplier: 1.18173,
       physFixed: 218.5,

@@ -6,7 +6,8 @@ import { CLASS_RECEIVES } from "./receives"
 // The airborne follow-up of Reveldrift. Coefficients: client
 // skill_numerical_config row 20503102 at skill level 100 (patch container,
 // 2026-09-04): 0.804 / 223 / 122 at the tooltip's full ratio as one hit;
-// attribute side × 1.5.
+// attribute side × 1.5. Cast length and hit frame: in-game animation,
+// 2026-09-05.
 export const realmplay = defineSkill({
   id: SKILL.realmplay,
   classId: "bamboocutDraught",
@@ -18,10 +19,10 @@ export const realmplay = defineSkill({
   castTag: CAST.realmplay,
   receives: CLASS_RECEIVES,
   triggerable: false,
-  castFrames: 60,
+  castFrames: 28,
   hits: [
     hit(0, {
-      frame: 60,
+      frame: 10,
       physMultiplier: 0.804,
       attributeMultiplier: 1.206,
       physFixed: 223,
