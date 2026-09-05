@@ -35,8 +35,9 @@ const dashHalf = {
 }
 
 // Forced precision per the talent "Increased Binge Point Gain" rank 2. The
-// dash ends the cast and with it Cloudvault. Cast length to the earliest next
-// input and hit frames: in-game animation, 2026-09-05.
+// launch refreshes Carouse (in-game skill text, 2026-09-05); the dash ends the
+// cast and with it Cloudvault. Cast length to the earliest next input and hit
+// frames: in-game animation, 2026-09-05.
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
@@ -52,7 +53,7 @@ export const herosBloodInebriate = defineSkill({
   triggerable: false,
   castFrames: 177,
   hits: [
-    hit(0, { ...launch, frame: 57 }),
+    hit(0, { ...launch, frame: 57, triggers: [applyBuff({ target: STATUS.carouse, stacks: 1 })] }),
     aerialSlash(1, 83),
     aerialSlash(2, 88),
     aerialSlash(3, 96),

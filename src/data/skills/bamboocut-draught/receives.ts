@@ -5,6 +5,7 @@ export const CLASS_RECEIVES = [
   BUFF.inebriateDamageScaling,
   BUFF.eonpourInebriateDamage,
   BUFF.clashToastDamage,
+  BUFF.mistwingInebriatePenetration,
 ]
 
 export const INEBRIATE_ENHANCED_RECEIVES = [

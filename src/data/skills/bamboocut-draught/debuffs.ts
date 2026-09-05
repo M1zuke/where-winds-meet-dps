@@ -23,8 +23,7 @@ export const drunkslay = defineDebuff({
   updatedAt: "2026-09-05T00:00:00.000Z",
 })
 
-// +2% damage taken of every type (client locale text, 2026-09-04). The client
-// states no duration; 20 s is provisional.
+// +2% damage taken of every type for 20 s (in-game state text, 2026-09-05).
 export const strayhunt = defineDebuff({
   id: DEBUFF.strayhunt,
   classId: CLASS_ID,
@@ -39,10 +38,9 @@ export const strayhunt = defineDebuff({
   updatedAt: "2026-09-04T00:00:00.000Z",
 })
 
-// Inflicted by Primepick's guard-breaking jab; together with Strayhunt the
-// target takes +20% repeated damage, which Skyspeak tier 6 makes Drunkslay
-// count as (client locale text, 2026-09-04). The client states no duration;
-// 20 s is provisional.
+// Inflicted by Primepick's guard-breaking jab for 20 s; together with
+// Strayhunt the target takes +20% repeated damage, which Skyspeak tier 6
+// makes Drunkslay count as (in-game state text, 2026-09-05).
 export const wildstride = defineDebuff({
   id: DEBUFF.wildstride,
   classId: CLASS_ID,

@@ -1,7 +1,6 @@
 export const SKILL = {
   lightAttack: "bamboocutDraught-light-attack",
   falconsPursuit: "bamboocutDraught-falcons-pursuit",
-  falconsPursuitPerfect: "bamboocutDraught-falcons-pursuit-perfect",
   whaledraft: "bamboocutDraught-whaledraft",
   quickDrink: "bamboocutDraught-quick-drink",
   quickDrinkCancel: "bamboocutDraught-quick-drink-cancel",
@@ -15,6 +14,10 @@ export const SKILL = {
   castlink: "bamboocutDraught-castlink",
   dragonquenchInebriate: "bamboocutDraught-dragonquench-inebriate",
   dragonquenchInebriateCancel: "bamboocutDraught-dragonquench-inebriate-cancel",
+  dragonquenchInebriateSecond: "bamboocutDraught-dragonquench-inebriate-second",
+  dragonquenchInebriateSecondCancel: "bamboocutDraught-dragonquench-inebriate-second-cancel",
+  dragonquenchInebriateThird: "bamboocutDraught-dragonquench-inebriate-third",
+  dragonquenchInebriateThirdCancel: "bamboocutDraught-dragonquench-inebriate-third-cancel",
   herosBlood: "bamboocutDraught-heros-blood",
   herosBloodInebriate: "bamboocutDraught-heros-blood-inebriate",
   reveldrift: "bamboocutDraught-reveldrift",
@@ -39,7 +42,5 @@ export const STATUS = {
   carouse: "buff-bamboocutDraught-carouse",
   clashToast: "buff-bamboocutDraught-clash-toast",
   cloudvault: "buff-bamboocutDraught-cloudvault",
-  draught: "buff-bamboocutDraught-draught",
-  thunderEnlightenment: "buff-bamboocutDraught-thunder-enlightenment",
   eonpourPeakfallCooldown: "buff-bamboocutDraught-eonpour-peakfall-cooldown",
 } as const

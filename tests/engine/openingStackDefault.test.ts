@@ -32,11 +32,8 @@ function fillerRotationResult(openingStacks?: Record<string, number>) {
 }
 
 describe("bamboocutDraught — Binge Points opening-stack default", () => {
-  it("declares Binge Points and Draught as its opening-stack counters", () => {
-    expect(classDefinition(CLASS)!.openingStackBuffIds).toEqual([
-      STATUS.bingePoints,
-      STATUS.draught,
-    ])
+  it("declares Binge Points as its opening-stack counter", () => {
+    expect(classDefinition(CLASS)!.openingStackBuffIds).toEqual([STATUS.bingePoints])
   })
 
   it("seeds the default when the rotation carries no explicit entry, and shows it on the first cast's chip", () => {

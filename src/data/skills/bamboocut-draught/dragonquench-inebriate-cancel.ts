@@ -1,9 +1,7 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { CAST } from "../ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
-import { dragonquenchStages } from "./dragonquench-inebriate"
+import { DRAGONQUENCH_RECEIVES, DRAGONQUENCH_TAGS, dragonquenchStages } from "./dragonquench-inebriate"
 
 // A cancel form ends one frame after its last landed collider — the
 // finisher's third strike, 29 frames into the stage (in-game animation,
@@ -13,13 +11,13 @@ export const dragonquenchInebriateCancel = defineSkill({
   classId: "bamboocutDraught",
   name: "Dragonquench - Inebriate [cancel]",
   breakdownName: "Dragonquench - Inebriate",
-  tags: [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze],
+  tags: DRAGONQUENCH_TAGS,
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateCancel,
   guaranteedPrecision: true,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 106,
   hits: dragonquenchStages,

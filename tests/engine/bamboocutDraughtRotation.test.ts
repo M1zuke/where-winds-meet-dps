@@ -59,13 +59,13 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
     })
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
     expect(echoRow.count).toBe(3)
-    const herosBloodFrames = result
-      .timeline!.filter((event) => event.skillName === "Twinblade Special")
-      .map((event) => event.frame)
+    const herosBloodFirstStrikeFrames = result
+      .casts!.filter((cast) => cast.skillName === "Twinblade Special")
+      .map((cast) => Math.round(cast.timeSec * 60) + 22)
     const echoFrames = result
       .timeline!.filter((event) => event.skillName === "Drunkslay State")
       .map((event) => event.frame)
-    expect(echoFrames).toEqual(herosBloodFrames.slice(1))
+    expect(echoFrames).toEqual(herosBloodFirstStrikeFrames.slice(1))
   })
 
   it("every hit of a rotation module lands inside its cast", () => {
@@ -116,8 +116,8 @@ describe("the Perfect Quick Drink", () => {
     const drinkTargets = whaledraft.hits[0].triggers.map((trigger) => trigger.targetId)
     const perfectTargets = quickDrink.hits[0].triggers.map((trigger) => trigger.targetId)
     expect(drinkTargets.indexOf(STATUS.bingePoints)).toBeLessThan(drinkTargets.indexOf(STATUS.inebriateDeepdaze))
-    expect(drinkTargets).not.toContain(SKILL.falconsPursuitPerfect)
-    expect(perfectTargets).toEqual([...drinkTargets, SKILL.falconsPursuitPerfect])
+    expect(drinkTargets).not.toContain(SKILL.falconsPursuit)
+    expect(perfectTargets).toEqual([...drinkTargets, SKILL.falconsPursuit])
     expect(quickDrink.breakdownName).toBe(whaledraft.breakdownName)
   })
 

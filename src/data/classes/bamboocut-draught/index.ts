@@ -44,7 +44,7 @@ export const bamboocutDraught = defineClass({
   retunementPool: null,
   classBuffDefs: [inebriateSkillCritDamage, inebriateDamageScaling],
   gateBuffs: BAMBOOCUT_DRAUGHT_GATES,
-  openingStackBuffIds: [STATUS.bingePoints, STATUS.draught],
+  openingStackBuffIds: [STATUS.bingePoints],
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

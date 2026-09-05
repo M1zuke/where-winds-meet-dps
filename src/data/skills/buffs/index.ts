@@ -23,7 +23,6 @@ import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
 import { clashToastDamage } from "./clashToastDamage"
 import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
-import { perfectQuickDrink } from "./perfectQuickDrink"
 import { boundvesselStaggerDamage } from "./boundvesselStaggerDamage"
 
 // Order is load-bearing (float addition is not associative): `fluteBoost` must
@@ -54,7 +53,6 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   clashToastDamage,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
-  perfectQuickDrink,
   boundvesselStaggerDamage,
 ]
 

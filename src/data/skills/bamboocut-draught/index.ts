@@ -1,7 +1,6 @@
 import type { Skill } from "../../../engine/skill"
 import { lightAttack } from "./light-attack"
 import { falconsPursuit } from "./falcons-pursuit"
-import { falconsPursuitPerfect } from "./falcons-pursuit-perfect"
 import { whaledraft } from "./whaledraft"
 import { quickDrink } from "./quick-drink"
 import { quickDrinkCancel } from "./quick-drink-cancel"
@@ -15,6 +14,10 @@ import { peakfallPrepull } from "./peakfall-prepull"
 import { castlink } from "./castlink"
 import { dragonquenchInebriate } from "./dragonquench-inebriate"
 import { dragonquenchInebriateCancel } from "./dragonquench-inebriate-cancel"
+import { dragonquenchInebriateSecond } from "./dragonquench-inebriate-second"
+import { dragonquenchInebriateSecondCancel } from "./dragonquench-inebriate-second-cancel"
+import { dragonquenchInebriateThird } from "./dragonquench-inebriate-third"
+import { dragonquenchInebriateThirdCancel } from "./dragonquench-inebriate-third-cancel"
 import { herosBlood } from "./heros-blood"
 import { herosBloodInebriate } from "./heros-blood-inebriate"
 import { reveldrift } from "./reveldrift"
@@ -28,7 +31,6 @@ export const CLASS_ID = "bamboocutDraught"
 export const SKILLS: Skill[] = [
   lightAttack,
   falconsPursuit,
-  falconsPursuitPerfect,
   whaledraft,
   quickDrink,
   quickDrinkCancel,
@@ -42,6 +44,10 @@ export const SKILLS: Skill[] = [
   castlink,
   dragonquenchInebriate,
   dragonquenchInebriateCancel,
+  dragonquenchInebriateSecond,
+  dragonquenchInebriateSecondCancel,
+  dragonquenchInebriateThird,
+  dragonquenchInebriateThirdCancel,
   herosBlood,
   herosBloodInebriate,
   reveldrift,

@@ -18,14 +18,14 @@ const rapidSlash = (index: number, frame: number) =>
     conditions: INEBRIATE,
   })
 
-// Coefficients: client skill_numerical_config at skill level 100 (hotfix
-// 2026-09-01) — first heavy 20503206 (0.60053 / 167 / 91), rapid slash
-// 2050320701 (1.7436 / 483 / 263) at the tooltip's 0.091 per hit, finishing
-// slash 20503207 (0.5772 / 161 / 87); attribute side × 1.5. Eleven rapid
-// slashes fill the 1.5 s hold (11 × 0.091 ≈ 1), a provisional count. The
-// completed hold grants Cloudvault (client locale text, 2026-09-04). Cast
-// length and the first and finishing hit frames: in-game animation,
-// 2026-09-05; the rapid slashes divide the hold evenly.
+// Coefficients at skill level 100 (in-game damage tooltip, 2026-09-04): first
+// heavy 0.60053 / 167 / 91, rapid slash 1.7436 / 483 / 263 at 0.091 per hit,
+// the two finishing slashes 0.5772 / 161 / 87 at a fifth and at the full
+// share; attribute side × 1.5. Eleven rapid slashes fill the 1.5 s hold
+// (11 × 0.091 ≈ 1), a provisional count. The completed hold grants Cloudvault
+// (in-game skill text, 2026-09-04). Cast length and the first and finishing
+// hit frames: in-game animation, 2026-09-05; the rapid slashes divide the
+// hold evenly.
 export const boundvessel = defineSkill({
   id: SKILL.boundvessel,
   classId: "bamboocutDraught",
@@ -64,6 +64,14 @@ export const boundvessel = defineSkill({
     rapidSlash(10, 108),
     rapidSlash(11, 116),
     hit(12, {
+      frame: 124,
+      physMultiplier: 0.11544,
+      attributeMultiplier: 0.17316,
+      physFixed: 32.2,
+      attributeFixed: 17.4,
+      conditions: INEBRIATE,
+    }),
+    hit(13, {
       frame: 140,
       physMultiplier: 0.5772,
       attributeMultiplier: 0.8658,

@@ -3214,7 +3214,7 @@
           },
           {
             "skillId": "bamboocutDraught-heros-blood",
-            "hitCount": 1,
+            "hitCount": 2,
             "prePull": false
           },
           {
@@ -3294,7 +3294,7 @@
           },
           {
             "skillId": "bamboocutDraught-heros-blood",
-            "hitCount": 1,
+            "hitCount": 2,
             "prePull": false
           },
           {
@@ -3414,7 +3414,7 @@
           },
           {
             "skillId": "bamboocutDraught-heros-blood",
-            "hitCount": 1,
+            "hitCount": 2,
             "prePull": false
           },
           {
@@ -3499,7 +3499,7 @@
           },
           {
             "skillId": "bamboocutDraught-heros-blood",
-            "hitCount": 1,
+            "hitCount": 2,
             "prePull": false
           }
         ],
