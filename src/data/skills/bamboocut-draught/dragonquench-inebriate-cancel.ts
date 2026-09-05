@@ -6,7 +6,7 @@ import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 import { dragonquenchStages } from "./dragonquench-inebriate"
 
 // A cancel form ends one frame after its last landed collider — the
-// finisher's fourth collider, 40.5 frames into the stage (in-game animation,
+// finisher's third strike, 29 frames into the stage (in-game animation,
 // 2026-09-05); the parry that ends it is the next rotation step.
 export const dragonquenchInebriateCancel = defineSkill({
   id: SKILL.dragonquenchInebriateCancel,
@@ -21,7 +21,7 @@ export const dragonquenchInebriateCancel = defineSkill({
   guaranteedPrecision: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
   triggerable: false,
-  castFrames: 117,
+  castFrames: 106,
   hits: dragonquenchStages,
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

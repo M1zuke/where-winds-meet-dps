@@ -18,11 +18,19 @@ const aerialSlash = (index: number, frame: number) =>
     conditions: UNLOCKED,
   })
 
-const launchOrDash = {
+const launch = {
   physMultiplier: 2.0394,
   attributeMultiplier: 3.0591,
   physFixed: 564,
   attributeFixed: 307.5,
+  conditions: UNLOCKED,
+}
+
+const dashHalf = {
+  physMultiplier: 1.0197,
+  attributeMultiplier: 1.52955,
+  physFixed: 282,
+  attributeFixed: 153.75,
   conditions: UNLOCKED,
 }
 
@@ -44,7 +52,7 @@ export const herosBloodInebriate = defineSkill({
   triggerable: false,
   castFrames: 177,
   hits: [
-    hit(0, { ...launchOrDash, frame: 57 }),
+    hit(0, { ...launch, frame: 57 }),
     aerialSlash(1, 83),
     aerialSlash(2, 88),
     aerialSlash(3, 96),
@@ -53,8 +61,9 @@ export const herosBloodInebriate = defineSkill({
     aerialSlash(6, 115),
     aerialSlash(7, 122),
     aerialSlash(8, 126),
-    hit(9, {
-      ...launchOrDash,
+    hit(9, { ...dashHalf, frame: 155 }),
+    hit(10, {
+      ...dashHalf,
       frame: 155,
       triggers: [applyBuff({ target: STATUS.cloudvault, stacks: -2 })],
     }),

@@ -23,16 +23,22 @@ const stage = (
     conditions: UNLOCKED,
   })
 
+const finisherThird = (index: number, frame: number) =>
+  stage(index, frame, 1.82136 / 3, 505 / 3, 275 / 3)
+
 export const dragonquenchStages = [
   stage(0, 18, 0.68814, 191, 104),
   stage(1, 41, 0.66144, 184, 100),
   stage(2, 69, 0.80698, 224, 122),
-  stage(3, 91, 1.82136, 505, 275),
+  finisherThird(3, 91),
+  finisherThird(4, 98),
+  finisherThird(5, 105),
 ]
 
 // Forced precision per the talent "Increased Binge Point Gain" rank 2. Cast
 // length (the four stages to their earliest next input) and hit frames:
-// in-game animation, 2026-09-05.
+// in-game animation, 2026-09-05. The finisher lands three strikes that share
+// its stage total; their split is not published, equal thirds are assumed.
 export const dragonquenchInebriate = defineSkill({
   id: SKILL.dragonquenchInebriate,
   classId: "bamboocutDraught",
