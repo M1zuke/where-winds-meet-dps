@@ -41,4 +41,5 @@ export const STATUS = {
   cloudvault: "buff-bamboocutDraught-cloudvault",
   draught: "buff-bamboocutDraught-draught",
   thunderEnlightenment: "buff-bamboocutDraught-thunder-enlightenment",
+  eonpourPeakfallCooldown: "buff-bamboocutDraught-eonpour-peakfall-cooldown",
 } as const

@@ -18,6 +18,8 @@ import { nightwickPrimepickFollowUp } from "../../src/data/skills/bamboocut-drau
 import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
+import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bamboocutDraught"
 
@@ -144,6 +146,74 @@ describe("the Primepick follow-up", () => {
     for (const result of [withDeepdaze, withoutDeepdaze]) {
       expect(result.buffWindows!.some((window) => window.id === DEBUFF.wildstride)).toBe(true)
     }
+  })
+})
+
+describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
+  const eonpourTier6: Inputs["mindMethods"] = [
+    { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+    { name: "", stacks: "" },
+    { name: "", stacks: "" },
+    { name: "", stacks: "" },
+  ]
+  const grantDeepdaze = makeSkill(CLASS, {
+    name: "Test Deepdaze Granter",
+    castFrames: 12,
+    hits: [
+      makeHit({
+        frame: 0,
+        triggers: [makeTrigger({ kind: "applyBuff", targetId: STATUS.inebriateDeepdaze, stacks: 1 })],
+      }),
+    ],
+  })
+
+  function runPeakfall(withEonpour: boolean, alreadyInDeepdaze: boolean, peakfalls = 1) {
+    const steps = [
+      ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id, hitCount: 1 })] : []),
+      ...Array.from({ length: peakfalls }, () => makeStep({ skillId: SKILL.peakfall, hitCount: 2 })),
+    ]
+    return runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: [grantDeepdaze],
+      mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
+      activeCustomRotation: makeRotation(CLASS, {
+        steps,
+        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+      }),
+      set: null,
+    })
+  }
+
+  const deepdazeWindows = (result: ReturnType<typeof runEngine>) =>
+    result.buffWindows!.filter((window) => window.id === STATUS.inebriateDeepdaze)
+
+  it("fills Binge Points to 200 and enters Deepdaze through the threshold", () => {
+    const result = runPeakfall(true, false)
+    const peakfallCast = result.casts!.find((cast) => cast.skillName === "Gauntlet Q")!
+    expect(peakfallCast.buffs.find((buff) => buff.id === STATUS.bingePoints)?.stacks).toBe(200)
+    expect(deepdazeWindows(result)).toHaveLength(1)
+  })
+
+  it("extends a running Deepdaze by 6 s instead of opening a second one", () => {
+    const result = runPeakfall(true, true)
+    const windows = deepdazeWindows(result)
+    expect(windows).toHaveLength(1)
+    expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(16, 1)
+  })
+
+  it("does nothing without Eonpour", () => {
+    expect(deepdazeWindows(runPeakfall(false, false))).toHaveLength(0)
+  })
+
+  it("shows its 60 s cooldown on the cast and blocks a second Peakfall inside it", () => {
+    const result = runPeakfall(true, false, 2)
+    const [first, second] = result.casts!.filter((cast) => cast.skillName === "Gauntlet Q")
+    const cooldown = first.buffs.find((buff) => buff.id === STATUS.eonpourPeakfallCooldown)
+    expect(cooldown?.remainingSec).toBeCloseTo(60, 0)
+    expect(second.buffs.some((buff) => buff.id === STATUS.eonpourPeakfallCooldown)).toBe(true)
+    expect(deepdazeWindows(result)).toHaveLength(1)
+    expect(result.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt)).toHaveLength(1)
   })
 })
 

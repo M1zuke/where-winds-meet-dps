@@ -15,7 +15,6 @@ import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engin
 import type { QiBreakWindow } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
-import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
@@ -51,6 +50,7 @@ import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
+import { rotationDurationSec } from "./rotationDuration"
 
 interface Props {
   inputs: Inputs
@@ -59,14 +59,6 @@ interface Props {
 }
 
 const OPENING_STACK_PIP_LIMIT = 12
-
-function stepCastFrames(step: RotationStep, skill: Skill | undefined): number {
-  if (!skill) return 0
-  const hitCount = Math.max(0, Math.min(step.hitCount, skill.hits.length))
-  const performed = skill.hits.slice(0, hitCount)
-  const maxFrame = performed.length > 0 ? Math.max(...performed.map((hit) => hit.frame)) : -1
-  return skill.castFrames || maxFrame + 1
-}
 
 function effectsSummary(
   effects: BuffStatEffect[],
@@ -214,16 +206,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRotation?.id, skillsById])
 
-  const computedDurationSec = useMemo(() => {
-    if (!activeRotation) return 0
-    const frames = activeRotation.steps
-      .filter((step) => {
-        const skill = skillsById.get(step.skillId)
-        return !skill || !isPrePullSkill(skill)
-      })
-      .reduce((sum, step) => sum + stepCastFrames(step, skillsById.get(step.skillId)), 0)
-    return frames / FPS
-  }, [activeRotation, skillsById])
+  const computedDurationSec = useMemo(
+    () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
+    [activeRotation, skillsById, result],
+  )
 
   const diagnostics = useMemo(() => {
     if (!isCustom || !activeRotation) return []

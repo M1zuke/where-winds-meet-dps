@@ -191,7 +191,7 @@ export function ProfilePanel({
                     {metrics && (
                       <span className={styles.rotationDuration}>
                         {" "}
-                        · {formatNumber(metrics.rotationDuration, 0)}s
+                        · {formatNumber(metrics.rotationDuration, 2)}s
                       </span>
                     )}
                   </span>

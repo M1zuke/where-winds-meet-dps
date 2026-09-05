@@ -8,14 +8,19 @@ import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 
 const EONPOUR_EXHAUSTED = {
-  conditions: [{ buffId: BUFF.eonpourExhaustedPeakfall, op: "gte" as const, stacks: 1 }],
+  conditions: [
+    { buffId: BUFF.eonpourExhaustedPeakfall, op: "gte" as const, stacks: 1 },
+    { buffId: STATUS.eonpourPeakfallCooldown, op: "eq" as const, stacks: 0 },
+  ],
   phase: "exhausted" as const,
-  cooldownFrames: 3600,
 }
 
 // With Eonpour at tier 6, hitting an Exhausted target — read as the Qi-break
 // window — inflicts Wildstride, Strayhunt and Drunkslay and extends Deepdaze
-// by 6 s or enters it, once per 60 s.
+// by 6 s, or fills Binge Points to 200 and enters it through the threshold
+// (in game, 2026-09-05), once per 60 s. The extension runs before the fill
+// so the threshold entry only fires outside Deepdaze, and the cooldown status
+// is granted last so the same hit's other triggers still see it clear.
 // Cast length to the earliest next input and hit frames: in-game animation,
 // 2026-09-05.
 export const peakfall = defineSkill({
@@ -47,8 +52,21 @@ export const peakfall = defineSkill({
           target: STATUS.inebriateDeepdaze,
           stacks: 1,
           extendFrames: 360,
+          extendOnly: true,
           ...EONPOUR_EXHAUSTED,
         }),
+        applyBuff({ target: STATUS.bingePoints, stacks: 200, ...EONPOUR_EXHAUSTED }),
+        applyBuff({
+          target: STATUS.inebriateDeepdaze,
+          stacks: 1,
+          ...EONPOUR_EXHAUSTED,
+          conditions: [
+            ...EONPOUR_EXHAUSTED.conditions,
+            { buffId: STATUS.inebriateDeepdaze, op: "eq" as const, stacks: 0 },
+            { buffId: STATUS.bingePoints, op: "gte" as const, stacks: 200 },
+          ],
+        }),
+        applyBuff({ target: STATUS.eonpourPeakfallCooldown, stacks: 1, ...EONPOUR_EXHAUSTED }),
       ],
       variants: [
         {

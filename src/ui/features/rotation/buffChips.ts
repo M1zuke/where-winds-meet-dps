@@ -12,9 +12,12 @@ export const FALLBACK_BUFF_HUES: readonly number[] = [
   70, 95, 120, 145, 165, 250, 270, 290, 310, 330,
 ]
 
+export const COOLDOWN_BUFF_HUE = 45
+
 export function buffChipHue(name: string, id?: string): number {
   const pinned = PINNED_BUFF_HUES[name]
   if (pinned !== undefined) return pinned
+  if (/cooldown$/i.test(name)) return COOLDOWN_BUFF_HUE
   const key = name || id || ""
   let h = 5381
   for (let i = 0; i < key.length; i++) {

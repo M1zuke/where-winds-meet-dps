@@ -15,6 +15,7 @@ export const DRAUGHT_DURATION_FRAMES = 36000
 export const DRAUGHT_STACK_COOLDOWN_FRAMES = 180
 export const THUNDER_ENLIGHTENMENT_DURATION_FRAMES = 900
 export const THUNDER_ENLIGHTENMENT_DEEPDAZE_EXTENSION_FRAMES = 300
+export const EONPOUR_PEAKFALL_COOLDOWN_FRAMES = 3600
 
 // Client locale text (2026-09-04): Binge Points start at 60, cap 200, Tipsy
 // from 100, Deepdaze from 200 for 5 s (10 s with the always-on talent) and
@@ -67,6 +68,19 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     onExpire: { targetId: STATUS.bingePoints, stacks: 60 },
     createdAt: "2026-09-03T00:00:00.000Z",
     updatedAt: "2026-09-04T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.eonpourPeakfallCooldown,
+    classId: CLASS_ID,
+    name: "Eonpour - Peakfall Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: EONPOUR_PEAKFALL_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-05T00:00:00.000Z",
+    updatedAt: "2026-09-05T00:00:00.000Z",
   }),
   defineGateBuff({
     id: STATUS.carouse,
