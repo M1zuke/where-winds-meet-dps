@@ -57,6 +57,7 @@ export const CAST = {
   nightwickGrounddrift: "cast:nightwickGrounddrift",
   nightwickPrimepick: "cast:nightwickPrimepick",
   nightwickPrimepickFollowUp: "cast:nightwickPrimepickFollowUp",
+  nightwickPrimepickFollowUpCancel: "cast:nightwickPrimepickFollowUpCancel",
   nightwickTipsylay: "cast:nightwickTipsylay",
   peakfall: "cast:peakfall",
   peakfallPrepull: "cast:peakfallPrepull",

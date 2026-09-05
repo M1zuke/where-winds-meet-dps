@@ -14,6 +14,8 @@ import { quickDrink } from "../../src/data/skills/bamboocut-draught/quick-drink"
 import { quickDrinkCancel } from "../../src/data/skills/bamboocut-draught/quick-drink-cancel"
 import { reveldrift } from "../../src/data/skills/bamboocut-draught/reveldrift"
 import { reveldriftCancel } from "../../src/data/skills/bamboocut-draught/reveldrift-cancel"
+import { nightwickPrimepickFollowUp } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up"
+import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocut-draught/nightwick-primepick-follow-up-cancel"
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 
@@ -68,11 +70,17 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
 
 })
 
-describe("Twinblade Q [1-hit cancel]", () => {
-  it("lands only the first Reveldrift hit over a shorter cast", () => {
+describe("a 1-hit cancel form", () => {
+  it("Twinblade Q lands only the first Reveldrift hit over a shorter cast", () => {
     expect(reveldriftCancel.hits).toEqual([reveldrift.hits[0]])
     expect(reveldriftCancel.castFrames).toBeLessThan(reveldrift.castFrames)
     expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
+  })
+
+  it("Primepick Follow-up lands only the thrust over a shorter cast", () => {
+    expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
+    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(nightwickPrimepickFollowUp.castFrames)
+    expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(nightwickPrimepickFollowUp.breakdownName)
   })
 })
 

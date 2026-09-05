@@ -7,6 +7,7 @@ export const SKILL = {
   quickDrinkCancel: "bamboocutDraught-quick-drink-cancel",
   nightwickPrimepick: "bamboocutDraught-nightwick-primepick",
   nightwickPrimepickFollowUp: "bamboocutDraught-nightwick-primepick-follow-up",
+  nightwickPrimepickFollowUpCancel: "bamboocutDraught-nightwick-primepick-follow-up-cancel",
   nightwickTipsylay: "bamboocutDraught-nightwick-tipsylay",
   nightwickGrounddrift: "bamboocutDraught-nightwick-grounddrift",
   peakfall: "bamboocutDraught-peakfall",
