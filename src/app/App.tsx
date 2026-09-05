@@ -19,6 +19,7 @@ import { GithubLink } from "../ui/layout/github-link/GithubLink"
 import { ChangelogButton } from "../ui/layout/changelog-button/ChangelogButton"
 import { LanguageSelect } from "../ui/layout/language-select/LanguageSelect"
 import { RotationTab } from "../ui/features/rotation/rotation-tab/RotationTab"
+import { RotationEditorPanel } from "../ui/features/rotation/rotation-editor-panel/RotationEditorPanel"
 import { SimulationTab } from "../ui/features/simulation/simulation-tab/SimulationTab"
 import { ProfilePanel } from "../ui/features/profile/profile-panel/ProfilePanel"
 import { GearTab } from "../ui/features/gear/gear-tab/GearTab"
@@ -279,14 +280,15 @@ function AppInner() {
     tabRefs.current[pathname]?.scrollIntoView({ block: "nearest", inline: "nearest" })
   }, [pathname])
 
-  const TABS: { path: string; label: string; align?: "right" }[] = [
+  const TABS: { path: string; label: string; align?: "right"; gapBefore?: true }[] = [
     { path: "/overview", label: t("common.overview") },
     { path: "/gear", label: t("app.gear") },
     { path: "/rotation", label: t("common.rotation") },
+    { path: "/rotation-editor", label: t("rotation.rotationEditor") },
     { path: "/simulation", label: t("app.simulation") },
     { path: "/skills", label: t("app.skillEditor") },
-    { path: "/talents", label: t("common.enhancementOdditiesTalents") },
-    { path: "/profile", label: t("common.profiles"), align: "right" },
+    { path: "/talents", label: t("common.enhancementOdditiesTalents"), align: "right" },
+    { path: "/profile", label: t("common.profiles"), gapBefore: true },
   ]
 
   const saveLabel =
@@ -382,7 +384,8 @@ function AppInner() {
               className={({ isActive }) =>
                 styles.tab +
                 (isActive ? ` ${styles.active}` : "") +
-                (tab.align === "right" ? ` ${styles.tabRight}` : "")
+                (tab.align === "right" ? ` ${styles.tabRight}` : "") +
+                (tab.gapBefore ? ` ${styles.tabGapBefore}` : "")
               }
             >
               {tab.label}
@@ -427,6 +430,10 @@ function AppInner() {
                   result={result}
                 />
               }
+            />
+            <Route
+              path="/rotation-editor"
+              element={<RotationEditorPanel inputs={inputs} onChange={setInputs} result={result} />}
             />
             <Route
               path="/simulation"
