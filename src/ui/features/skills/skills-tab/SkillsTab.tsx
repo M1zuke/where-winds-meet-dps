@@ -37,6 +37,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import {
   attributeAttackKey,
   classKey,
+  debuffEchoKey,
   skillKey,
   skillTypeKey,
   weaponKey,
@@ -195,7 +196,8 @@ function deriveTriggerDrafts(skill: Skill): TriggerDraft[] {
 
 function kindClass(kind: TriggerKind): string {
   if (kind === "applyBuff") return styles.isBuff
-  if (kind === "applyDebuff" || kind === "applyDot") return styles.isDebuff
+  if (kind === "applyDebuff" || kind === "applyDot" || kind === "releaseEcho")
+    return styles.isDebuff
   return styles.isCast
 }
 
@@ -635,6 +637,14 @@ export function SkillsTab({
       if (gate) effect += ` · ${gate}`
       return { label, effect }
     }
+    if (kind === "releaseEcho") {
+      const status = resolveStatus(trigger.targetId)
+      if (!status || !("dot" in status) || !status.echo)
+        return { label: t("skills.selectATarget"), effect: "" }
+      const label = `${t("skills.releases")} ${t(debuffEchoKey(status.id), status.echo.breakdownName)}`
+      const effect = `${t("skills.echo")} ${status.name}${gate ? ` · ${gate}` : ""}`
+      return { label, effect }
+    }
     if (kind === "applyDebuff" || kind === "applyBuff") {
       const status = resolveStatus(trigger.targetId)
       if (!status) return { label: t("skills.selectATarget"), effect: "" }
@@ -642,6 +652,11 @@ export function SkillsTab({
       if ("dot" in status && status.dot) {
         parts.push(
           `${t("common.dot")} · ${t("common.every")} ${(status.dot.tickIntervalFrames / FPS).toFixed(1)}s`,
+        )
+      }
+      if ("dot" in status && status.echo) {
+        parts.push(
+          `${t("skills.echo")} ${Math.round(status.echo.share * 100)}% → ${t(debuffEchoKey(status.id), status.echo.breakdownName)}`,
         )
       }
       const eff = effectsSummary(status.effects, t)

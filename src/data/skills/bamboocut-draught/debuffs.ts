@@ -5,6 +5,9 @@ import { DEBUFF } from "./ids"
 
 const CLASS_ID = "bamboocutDraught"
 
+// 20% of the damage the marked target takes from Inebriate-enhanced skills is
+// banked and dealt again as one strike when Hero's Blood hits it again or the
+// mark lapses (in-game skill text, 2026-09-05).
 export const drunkslay = defineDebuff({
   id: DEBUFF.drunkslay,
   classId: CLASS_ID,
@@ -13,10 +16,11 @@ export const drunkslay = defineDebuff({
   durationFrames: 1200,
   effects: [],
   dot: null,
+  echo: { share: 0.2, breakdownName: "Drunkslay State", skillType: "mindMethod" },
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })
 
 // +2% damage taken of every type (client locale text, 2026-09-04). The client

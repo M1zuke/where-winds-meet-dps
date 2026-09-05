@@ -35,6 +35,10 @@ export function debuffBreakdownKey(debuffId: string): string {
   return `content.debuff.${debuffId}.breakdown`
 }
 
+export function debuffEchoKey(debuffId: string): string {
+  return `content.debuff.${debuffId}.echo`
+}
+
 export function rotationKey(rotationId: string): string {
   return `content.rotation.${rotationId}`
 }

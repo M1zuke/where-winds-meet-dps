@@ -121,6 +121,13 @@ Rules:
   is never held back, a firing blocked by its conditions or phase does not
   start the cooldown, and every pass counts on its own, so the layout pass
   and the event loop agree.
+- **A trigger may release a debuff's echo** (`releaseEcho`): everything the
+  target debuff has banked since its last release is dealt at that hit's frame
+  as one event on the echo's own row. It carries no share and no name — both
+  live on the debuff — and an empty pot deals nothing. A re-application
+  without it refreshes the mark and keeps banking; a pot no trigger releases
+  is dealt when the debuff's coverage lapses, and never after the rotation
+  ends.
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared
@@ -174,6 +181,13 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   extensions honoured, other trigger kinds ignored. A trigger fired this way
   never fires another buff's `onMaxStacks`, and may lower the firing buff
   itself.
+- **A debuff may bank an echo** (`echo`): while one of its windows is active,
+  every scored damage event a def feeds into it — a regular hit, a DoT tick or
+  a mechanic's extra event — banks `share` of its realised damage, scaled by
+  the feeding effect's factor. A release deals the banked sum as it stands:
+  never re-run through the formula, never rolled, reported under the echo's
+  own `breakdownName` and `skillType`, and only from events inside the
+  rotation window.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`
@@ -202,6 +216,10 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   before the tick pass, so a regular hit is scored before any tick has applied
   anything, and even an `affectsAll` def is skipped there. Do not declare
   `triggersBuffs` on a debuff expecting it to boost a regular hit.
+- **An `echo` effect is a feed, not a magnitude.** A def returning one names
+  the debuff whose echo the event it reaches feeds, and a factor on that
+  debuff's banked share; it changes nothing about the event itself. The share
+  and the row are the debuff's — never author them on the def.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this

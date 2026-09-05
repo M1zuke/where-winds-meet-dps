@@ -43,6 +43,31 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
     expect(classDef.rotations.some((r) => r.id === classDef.defaultRotationId)).toBe(true)
   })
 
+  it("pays the Drunkslay echo out on the second, third and fourth Hero's Blood", () => {
+    const rotation = classDef.rotations.find((r) => r.id === classDef.defaultRotationId)!
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods: [
+        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+      ],
+      activeCustomRotation: rotation,
+      set: null,
+    })
+    const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
+    expect(echoRow.count).toBe(3)
+    const herosBloodFrames = result
+      .timeline!.filter((event) => event.skillName === "Twinblade Special")
+      .map((event) => event.frame)
+    const echoFrames = result
+      .timeline!.filter((event) => event.skillName === "Drunkslay State")
+      .map((event) => event.frame)
+    expect(echoFrames).toEqual(herosBloodFrames.slice(1))
+  })
+
   it("every hit of a rotation module lands inside its cast", () => {
     const rotation = classDef.rotations.find((r) => r.id === classDef.defaultRotationId)!
     const skillById = new Map(classDef.skills.map((skill) => [skill.id, skill] as const))

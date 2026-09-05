@@ -36,6 +36,12 @@ export interface DotDetonationSpec {
   retainParamStacks?: number
 }
 
+export interface DebuffEchoSpec {
+  share: number
+  breakdownName: string
+  skillType: string
+}
+
 export interface Debuff {
   id: string
   classId: string
@@ -54,6 +60,7 @@ export interface Debuff {
   maxStacks: number
   stackScaling: StackScaling
   detonation?: DotDetonationSpec | null
+  echo?: DebuffEchoSpec | null
   createdAt: string
   updatedAt: string
 }
@@ -79,6 +86,7 @@ export function makeDebuff(classId: string, patch: Partial<Debuff> = {}): Debuff
     maxStacks: 1,
     stackScaling: "flat",
     detonation: null,
+    echo: null,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -110,6 +118,7 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
     maxStacks: src.maxStacks,
     stackScaling: src.stackScaling,
     detonation: src.detonation ? { ...src.detonation } : (src.detonation ?? null),
+    echo: src.echo ? { ...src.echo } : (src.echo ?? null),
   })
 }
 
@@ -139,7 +148,19 @@ export function isDebuff(x: unknown): x is Debuff {
     if (!ef || typeof ef.statKey !== "string") return false
     if (typeof ef.amount !== "number" || !Number.isFinite(ef.amount)) return false
   }
+  if (d.echo !== undefined && d.echo !== null && !isDebuffEchoSpec(d.echo)) return false
   if (typeof d.createdAt !== "string") return false
   if (typeof d.updatedAt !== "string") return false
   return true
+}
+
+function isDebuffEchoSpec(x: unknown): x is DebuffEchoSpec {
+  if (!x || typeof x !== "object") return false
+  const echo = x as Record<string, unknown>
+  return (
+    typeof echo.share === "number" &&
+    Number.isFinite(echo.share) &&
+    typeof echo.breakdownName === "string" &&
+    typeof echo.skillType === "string"
+  )
 }

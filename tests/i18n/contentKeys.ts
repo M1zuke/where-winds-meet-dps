@@ -13,6 +13,7 @@ import {
   buffKey,
   classKey,
   debuffBreakdownKey,
+  debuffEchoKey,
   debuffKey,
   hitVariantKey,
   innerWayKey,
@@ -70,6 +71,7 @@ export function collectContentKeys(): Record<string, string> {
     for (const debuff of definition.debuffs) {
       add(debuffKey(debuff.id), debuff.name)
       add(debuffBreakdownKey(debuff.id), debuff.breakdownName)
+      add(debuffEchoKey(debuff.id), debuff.echo?.breakdownName)
     }
     for (const buff of definition.buffs) add(buffKey(buff.id), buff.name)
     for (const module of definition.buffModules) add(buffKey(module.id), module.name)

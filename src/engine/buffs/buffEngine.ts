@@ -71,6 +71,7 @@ export interface DamageEffectsResult {
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
   breakdown: Record<string, number>
+  echoFeeds: { debuffId: string; factor: number }[]
 }
 
 const DEFAULT_DURATION = 15
@@ -249,7 +250,8 @@ export class BuffEngine {
         : effect.kind === "damageMultiplier" ||
           effect.kind === "forceOutcome" ||
           effect.kind === "artBonus" ||
-          effect.kind === "applyBuff",
+          effect.kind === "applyBuff" ||
+          effect.kind === "echo",
     )
   }
 
@@ -409,6 +411,7 @@ export class BuffEngine {
       artBonus: () => {},
       damageMultiplier: () => {},
       setStatus: () => {},
+      echo: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -810,6 +813,7 @@ export class BuffEngine {
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
+    const echoFeeds: { debuffId: string; factor: number }[] = []
     let currentId = ""
 
     const sink: EffectSink = {
@@ -829,6 +833,9 @@ export class BuffEngine {
         damageFactor *= factor
       },
       setStatus: () => {},
+      echo(debuffId, factor) {
+        echoFeeds.push({ debuffId, factor })
+      },
     }
 
     for (const [id, module] of this.definitions) {
@@ -860,6 +867,14 @@ export class BuffEngine {
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
-    return { effects, forceCrit, damageFactor, conditionalFinalCrit, artBonuses, breakdown }
+    return {
+      effects,
+      forceCrit,
+      damageFactor,
+      conditionalFinalCrit,
+      artBonuses,
+      breakdown,
+      echoFeeds,
+    }
   }
 }

@@ -4,7 +4,13 @@ import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
-export type TriggerKind = "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot"
+export type TriggerKind =
+  | "applyBuff"
+  | "applyDebuff"
+  | "castSkill"
+  | "applyDot"
+  | "detonateDot"
+  | "releaseEcho"
 export type TriggerOp = "gte" | "gt" | "eq"
 
 export interface TriggerCondition {
@@ -172,7 +178,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "applyDebuff" &&
     t.kind !== "castSkill" &&
     t.kind !== "applyDot" &&
-    t.kind !== "detonateDot"
+    t.kind !== "detonateDot" &&
+    t.kind !== "releaseEcho"
   )
     return false
   if (typeof t.targetId !== "string") return false

@@ -84942,7 +84942,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "2f58548fc4ea56a004886ce84b700c5b41daf7f2c0c4c72b040db05fa929c277"
+        "digest": "8e8c8a9c88b06bcd84351c7fdac3bba90a087cccc7514ebe86cfb345dc7bf4d0"
       },
       "debuffs": {
         "count": 9,
@@ -84957,7 +84957,7 @@
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison"
         ],
-        "digest": "ff7b7267d609f2960e4b667a4b97093a7f5dcc8c49455cfb4f7c86e337431c2f"
+        "digest": "f1041a9d2610b544fa319c9081f0a0500e7346e9fc9616d530477618393dedb0"
       },
       "buffs": [
         {
@@ -85034,7 +85034,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +20% on Inebriate-enhanced skills while Drunkslay marks the target, +24% at tier 6 with Wildstride and Strayhunt on it"
+          "summary": "Inebriate-enhanced skill damage feeds the Drunkslay echo while the mark is on the target, ×1.2 at tier 6 with Wildstride and Strayhunt on it"
         },
         {
           "id": "volutefitWineboundDamage",

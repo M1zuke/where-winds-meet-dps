@@ -19,7 +19,13 @@ import {
   selectHitVariant,
   triggerConditions,
 } from "./skill"
-import { debuffBreakdownKey, debuffKey, skillBreakdownKey, skillKey } from "../i18n/contentKeys"
+import {
+  debuffBreakdownKey,
+  debuffEchoKey,
+  debuffKey,
+  skillBreakdownKey,
+  skillKey,
+} from "../i18n/contentKeys"
 import { resolveRotation, type ResolvedStep } from "./rotation"
 import { StatusLedger, UNOWNED, type StatusWindow } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
@@ -50,7 +56,7 @@ import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
-import { BuffEngine } from "./buffs/buffEngine"
+import { BuffEngine, type DamageEffectsResult } from "./buffs/buffEngine"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
@@ -68,6 +74,7 @@ const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affi
 const EVENT_CAP = 100_000
 
 type Ctx = ReturnType<typeof buildContext>
+type EchoFeed = DamageEffectsResult["echoFeeds"][number]
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
@@ -653,6 +660,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     damageFactor: number
     conditionalFinalCrit: ConditionalFinalCrit | null
     artBonuses: Partial<Record<ArtBonusField, number>>
+    echoFeeds: readonly EchoFeed[]
   } {
     const active = activeBuffsAt(frame)
     const sigParts: string[] = []
@@ -672,6 +680,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     let artBonuses: Partial<Record<ArtBonusField, number>> = {}
+    let echoFeeds: readonly EchoFeed[] = []
     if (buffEngine && skill) {
       const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
       const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
@@ -688,6 +697,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damageFactor = site.damageFactor
       conditionalFinalCrit = site.conditionalFinalCrit
       artBonuses = site.artBonuses
+      echoFeeds = site.echoFeeds
       for (const [field, amount] of Object.entries(artBonuses)) sig += `~${field}:${amount}`
       if (damageFactor !== 1) sig += `~x${damageFactor}`
       if (conditionalFinalCrit)
@@ -759,7 +769,45 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       r = { inputs: effInputs, ctx }
       stateMemo.set(sig, r)
     }
-    return { ...r, forceCrit: forceCritFromBuff, damageFactor, conditionalFinalCrit, artBonuses }
+    return {
+      ...r,
+      forceCrit: forceCritFromBuff,
+      damageFactor,
+      conditionalFinalCrit,
+      artBonuses,
+      echoFeeds,
+    }
+  }
+
+  interface EchoBank {
+    frame: number
+    seq: number
+    debuffId: string
+    amount: number
+  }
+  interface EchoRelease {
+    frame: number
+    seq: number
+    debuffId: string
+  }
+  const echoBanks: EchoBank[] = []
+  const echoReleases: EchoRelease[] = []
+  let echoSeq = 0
+  const echoOf = (debuffId: string) => {
+    const status = statusById.get(debuffId)
+    return status && isDebuffStatus(status) ? (status.echo ?? null) : null
+  }
+  const bankEcho = (frame: number, feeds: readonly EchoFeed[], damage: number): void => {
+    for (const feed of feeds) {
+      const echo = echoOf(feed.debuffId)
+      if (!echo || !ledger.isActiveAt(feed.debuffId, frame)) continue
+      echoBanks.push({
+        frame,
+        seq: echoSeq++,
+        debuffId: feed.debuffId,
+        amount: damage * echo.share * feed.factor,
+      })
+    }
   }
 
   const queue = new EventQueue()
@@ -853,6 +901,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       consumeStacks: () => {},
       artBonus: () => {},
       damageMultiplier: () => {},
+      echo: () => {},
     }
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
@@ -882,6 +931,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damageMultiplier: (factor) => {
         art.correction = (art.correction ?? 1) * factor
       },
+      echo: () => {},
     }
     for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
     for (const [field, amount] of Object.entries(st.artBonuses)) {
@@ -904,6 +954,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         breakdownNameOf(skill.breakdownName, skill.name),
         skillBreakdownRowKey(skill),
       )
+      bankEcho(frame, st.echoFeeds, damage)
     }
     pushEvent({
       frame,
@@ -918,6 +969,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
     for (const trigger of hit.triggers) {
       if (trigger.kind === "detonateDot") continue
+      if (trigger.kind === "releaseEcho") {
+        if (hitInWindow && liveWriter.fires(trigger, frame))
+          echoReleases.push({ frame, seq: echoSeq++, debuffId: trigger.targetId })
+        continue
+      }
       if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
         liveWriter.applyTrigger(trigger, frame, stepStart)
         continue
@@ -1171,6 +1227,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     totalDamage += damage
     if (tick.rolled) tallyRoll(tick.rolled)
     add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
+    bankEcho(entry.frame, st.echoFeeds, damage)
     pushEvent({
       frame: entry.frame,
       timeSec: entry.frame / FPS,
@@ -1199,6 +1256,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         breakdownNameOf(event.skill.breakdownName, event.name),
         skillBreakdownRowKey(event.skill),
       )
+      bankEcho(event.frame, st.echoFeeds, damage)
       pushEvent({
         frame: event.frame,
         timeSec: event.frame / FPS,
@@ -1206,6 +1264,56 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         type: event.type,
         kind: "hit",
         damage,
+        inWindow: true,
+      })
+    }
+  }
+
+  const byFrameThenSeq = (
+    left: { frame: number; seq: number },
+    right: { frame: number; seq: number },
+  ): number => left.frame - right.frame || left.seq - right.seq
+
+  function coverageEnds(windows: readonly StatusWindow[]): number[] {
+    const ends: number[] = []
+    let coveredUntil: number | null = null
+    for (const window of [...windows].sort((left, right) => left.start - right.start)) {
+      if (coveredUntil !== null && window.start > coveredUntil) {
+        ends.push(coveredUntil)
+        coveredUntil = null
+      }
+      coveredUntil = coveredUntil === null ? window.end : Math.max(coveredUntil, window.end)
+    }
+    if (coveredUntil !== null) ends.push(coveredUntil)
+    return ends
+  }
+
+  for (const debuffId of new Set(echoBanks.map((bank) => bank.debuffId))) {
+    const echo = echoOf(debuffId)!
+    const releases = [
+      ...echoReleases.filter((release) => release.debuffId === debuffId),
+      ...coverageEnds(ledger.windowsOf(debuffId))
+        .filter((end) => end <= durationFrames)
+        .map((end) => ({ frame: end, seq: Number.MAX_SAFE_INTEGER })),
+    ].sort(byFrameThenSeq)
+    const banks = echoBanks.filter((bank) => bank.debuffId === debuffId).sort(byFrameThenSeq)
+    let nextBank = 0
+    for (const release of releases) {
+      let pot = 0
+      while (nextBank < banks.length && byFrameThenSeq(banks[nextBank], release) < 0) {
+        pot += banks[nextBank].amount
+        nextBank++
+      }
+      if (pot <= 0) continue
+      totalDamage += pot
+      add(echo.breakdownName, echo.skillType, 1, pot, echo.breakdownName, debuffEchoKey(debuffId))
+      pushEvent({
+        frame: release.frame,
+        timeSec: release.frame / FPS,
+        skillName: echo.breakdownName,
+        type: echo.skillType,
+        kind: "hit",
+        damage: pot,
         inWindow: true,
       })
     }

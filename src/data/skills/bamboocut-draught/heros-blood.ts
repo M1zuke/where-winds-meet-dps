@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff, releaseEcho } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
@@ -30,6 +30,7 @@ export const herosBlood = defineSkill({
       triggers: [
         applyBuff({ target: STATUS.bingePoints, stacks: 40 }),
         applyBuff({ target: STATUS.carouse, stacks: 1 }),
+        releaseEcho({ target: DEBUFF.drunkslay }),
         applyDebuff({ target: DEBUFF.drunkslay, stacks: 1 }),
         applyBuff({
           target: STATUS.inebriateDeepdaze,
