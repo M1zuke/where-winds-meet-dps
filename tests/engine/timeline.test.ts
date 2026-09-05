@@ -78,7 +78,7 @@ describe("timeline — computed duration", () => {
     expect(r.rotationDuration).toBeCloseTo((120 + 60) / FPS, 10)
   })
 
-  it("a pre-pull cast's damage counts toward the total its frames are excluded from", () => {
+  it("a pre-pull cast with real coefficients lands neither damage nor a breakdown row", () => {
     const pre = makeSkill(CLASS, {
       name: "Pre Prepull",
       castFrames: 90,
@@ -89,17 +89,21 @@ describe("timeline — computed duration", () => {
       castFrames: 60,
       hits: [makeHit({ frame: 0, physMultiplier: 2, physFixed: 50 })],
     })
-    const rotation = makeRotation(CLASS, {
+    const withPrePull = makeRotation(CLASS, {
       steps: [
         makeStep({ skillId: pre.id, hitCount: 1 }),
         makeStep({ skillId: main.id, hitCount: 1 }),
       ],
     })
-    const r = simulateTimeline(timelineInputs(rotation, [pre, main], []))
+    const mainOnly = makeRotation(CLASS, {
+      steps: [makeStep({ skillId: main.id, hitCount: 1 })],
+    })
+    const r = simulateTimeline(timelineInputs(withPrePull, [pre, main], []))
+    const baseline = simulateTimeline(timelineInputs(mainOnly, [main], []))
 
-    const prePullRow = r.perSkill.find((s) => s.name === "Pre Prepull")!
-    expect(prePullRow.castCount).toBe(1)
-    expect(prePullRow.expectedDamage).toBeGreaterThan(0)
+    expect(r.perSkill.find((s) => s.name === "Pre Prepull")).toBeUndefined()
+    expect((r.timeline ?? []).some((e) => e.skillName === "Pre Prepull" && e.frame < 0)).toBe(true)
+    expect(r.totalDamage).toBe(baseline.totalDamage)
     expect(r.rotationDuration).toBeCloseTo(60 / FPS, 10)
   })
 

@@ -943,17 +943,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
     const damage = rolled?.damage ?? expectedDamage
     const hitInWindow = inWindow(frame)
-    if (hitInWindow) {
+    const landsInFight = hitInWindow && !isPrePullSkill(skill)
+    if (landsInFight) {
       totalDamage += damage
       if (rolled) tallyRoll(rolled)
-      add(
-        skill.name,
-        skill.skillType,
-        1,
-        damage,
-        breakdownNameOf(skill.breakdownName, skill.name),
-        skillBreakdownRowKey(skill),
-      )
+      if (hitDealsDamage(hit))
+        add(
+          skill.name,
+          skill.skillType,
+          1,
+          damage,
+          breakdownNameOf(skill.breakdownName, skill.name),
+          skillBreakdownRowKey(skill),
+        )
       bankEcho(frame, st.echoFeeds, damage)
     }
     pushEvent({
@@ -963,7 +965,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       type: skill.skillType,
       kind: "hit",
       damage,
-      inWindow: hitInWindow,
+      inWindow: landsInFight,
     })
 
     if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)

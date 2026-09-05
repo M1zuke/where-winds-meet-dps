@@ -7,7 +7,10 @@ import { perfectDrinkGrants } from "./whaledraft"
 
 // The drink at the perfect moment after a skill also unleashes Falcon's
 // Pursuit (in-game skill text, 2026-09-05).
-export const perfectQuickDrinkTriggers = [...perfectDrinkGrants, castSkill({ target: SKILL.falconsPursuit })]
+export const perfectQuickDrinkTriggers = [
+  ...perfectDrinkGrants,
+  castSkill({ target: SKILL.falconsPursuit }),
+]
 
 // The falcon launches 0.3 s in; cast length to the earliest next input
 // (in-game animation, 2026-09-05).
@@ -24,7 +27,7 @@ export const quickDrink = defineSkill({
   id: SKILL.quickDrink,
   classId: "bamboocutDraught",
   name: "Gauntlet - Perfect Quick Drink",
-  breakdownName: "Whaledraft",
+  breakdownName: "Whaledraft (Drink)",
   tags: [WEAPON.gauntlets],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",

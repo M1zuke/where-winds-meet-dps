@@ -10,7 +10,7 @@ export const quickDrinkCancel = defineSkill({
   id: SKILL.quickDrinkCancel,
   classId: "bamboocutDraught",
   name: "Gauntlet - Perfect Quick Drink [cancel]",
-  breakdownName: "Whaledraft",
+  breakdownName: "Whaledraft (Drink)",
   tags: [WEAPON.gauntlets],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",

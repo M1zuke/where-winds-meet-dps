@@ -76,6 +76,14 @@ the skill could ever land.
   engine-level variants of one in-game skill read as a single row; absent or
   blank falls back to the skill's own `name`. It is display text only — nothing
   matches on it, and it changes neither damage nor a cast's own timeline row.
+- **Only a hit that deals damage reports into the breakdown.** A hit whose
+  coefficients and flat adds are all zero exists to carry triggers; it still
+  fires them and still lands on the cast timeline, but it adds neither a count
+  nor a row, so a grant-only cast has no breakdown row at all.
+- **A pre-pull cast sets up; it never lands.** Its hits fire their `triggers`
+  and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
+  negative frames — but it adds nothing to the total, the breakdown or an echo
+  bank, whatever its coefficients say, and its frames stay out of the duration.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the

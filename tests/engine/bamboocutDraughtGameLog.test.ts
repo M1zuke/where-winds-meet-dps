@@ -1,8 +1,7 @@
 // Scoped to Bamboocut Draught's built-in dummy rotation (docs/TESTING.md
 // § "Class scoping"): the hit counts of a 60 s training-dummy run read from
-// the in-game damage log (2026-09-05), one row per breakdown name. The log
-// opens with the pull, so pre-pull hits are left out. Damage is not asserted
-// — the class carries no validated anchor.
+// the in-game damage log (2026-09-05), one row per breakdown name. Damage is
+// not asserted — the class carries no validated anchor.
 import { describe, expect, it } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"
@@ -42,10 +41,13 @@ function runDummyRotation() {
   })
 }
 
-function loggedHitsByRow(result: ReturnType<typeof runEngine>): Record<string, number> {
+function loggedHitsByRow(
+  result: ReturnType<typeof runEngine>,
+  { damagingOnly }: { damagingOnly: boolean },
+): Record<string, number> {
   const counts: Record<string, number> = {}
   for (const row of result.perSkill) {
-    if (row.expectedDamage <= 0 || row.name.endsWith("Prepull")) continue
+    if (damagingOnly && row.expectedDamage <= 0) continue
     const name = row.breakdownName ?? row.name
     counts[name] = (counts[name] ?? 0) + row.count
   }
@@ -54,11 +56,19 @@ function loggedHitsByRow(result: ReturnType<typeof runEngine>): Record<string, n
 
 describe("the dummy rotation against the in-game damage log", () => {
   const result = runDummyRotation()
-  const hits = loggedHitsByRow(result)
+  const hits = loggedHitsByRow(result, { damagingOnly: true })
+  const rowsAsTheOverviewSumsThem = loggedHitsByRow(result, { damagingOnly: false })
 
   it("lands every hit the log books, row for row", () => {
     for (const [row, expected] of Object.entries(IN_GAME_HITS)) {
       expect(hits[row], row).toBe(expected)
+    }
+  })
+
+  it("keeps grant-only casts out of the logged rows, so the overview shows the same counts", () => {
+    for (const [row, expected] of Object.entries(IN_GAME_HITS)) {
+      if (row === "Flute Chanting a Thousand Waves") continue
+      expect(rowsAsTheOverviewSumsThem[row], row).toBe(expected)
     }
   })
 

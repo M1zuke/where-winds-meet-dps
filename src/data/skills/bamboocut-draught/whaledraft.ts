@@ -28,7 +28,7 @@ export const whaledraft = defineSkill({
   id: SKILL.whaledraft,
   classId: "bamboocutDraught",
   name: "Gauntlet - Drink",
-  breakdownName: "Whaledraft",
+  breakdownName: "Whaledraft (Drink)",
   tags: [WEAPON.gauntlets],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
