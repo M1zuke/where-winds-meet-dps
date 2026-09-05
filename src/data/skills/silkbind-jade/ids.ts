@@ -27,9 +27,6 @@ export const SKILL = {
 } as const
 
 export const DEBUFF = {
-  toadPoison: "debuff-silkbindJade-toad-poison",
-  combustion: "debuff-silkbindJade-combustion",
-  fluteRipple: "debuff-silkbindJade-flute-ripple",
   umbdrone12Hit: "debuff-silkbindJade-umbdrone-12hit",
   umbdrone16Hit: "debuff-silkbindJade-umbdrone-16hit",
   umbdrone20Hit: "debuff-silkbindJade-umbdrone-20hit",

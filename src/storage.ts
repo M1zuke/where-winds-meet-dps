@@ -43,7 +43,7 @@ import {
   isTriggerCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
-import { seedSkillFromBuiltin } from "./engine/skill"
+import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
 import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -68,6 +68,8 @@ import {
   runProfileMigrations,
   migrateClassId,
   migrateEntityId,
+  migrateMysticId,
+  migrateRotationMysticIds,
   migrateGearWordId,
   migrateCurrentGearWordLabel,
   migrateFormlessWordId,
@@ -203,7 +205,7 @@ function migrateRotationIds<T>(rotation: T): T {
     else delete next.qiBreak
   }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
-  return next as unknown as T
+  return migrateRotationMysticIds(next) as unknown as T
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -946,14 +948,14 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
 }
 
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
-  return { ...condition, buffId: migrateBuffId(condition.buffId) }
+  return { ...condition, buffId: migrateMysticId(migrateBuffId(condition.buffId)) }
 }
 
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
   const trigger: HitTrigger = {
     ...tr,
-    targetId: migrateBuffId(migrateEntityId(tr.targetId)),
+    targetId: migrateMysticId(migrateBuffId(migrateEntityId(tr.targetId))),
     condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
   }
   if (Array.isArray(tr.conditions)) {
@@ -985,7 +987,7 @@ export function loadCustomSkills(): Skill[] {
 }
 
 export function loadCustomSkillsForClass(classId: string): Skill[] {
-  return loadCustomSkills().filter((s) => s.classId === classId)
+  return loadCustomSkills().filter((s) => belongsToClass(s, classId))
 }
 
 function writeCustomSkills(skills: Skill[]): void {
@@ -1278,13 +1280,17 @@ function hydrateBuff(b: Buff): Buff {
   const { dot: _drop, ...rest0 } = b as Buff & { dot?: unknown }
   void _drop
   const rest = { ...rest0, id: migrateEntityId(b.id), classId: migrateClassId(b.classId) }
-  return {
+  const hydrated: Buff = {
     ...(rest as Buff),
     scope: b.scope === "team" ? "team" : "player",
     stackScaling: b.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof b.maxStacks === "number" && b.maxStacks > 0 ? b.maxStacks : 1,
     effects: withRenamedStatKeys(b.effects),
   }
+  if (b.onExpire)
+    hydrated.onExpire = { ...b.onExpire, targetId: migrateMysticId(b.onExpire.targetId) }
+  if (Array.isArray(b.onMaxStacks)) hydrated.onMaxStacks = b.onMaxStacks.map(hydrateHitTrigger)
+  return hydrated
 }
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
@@ -1539,7 +1545,7 @@ export function loadCustomDebuffs(): Debuff[] {
 }
 
 export function loadCustomDebuffsForClass(classId: string): Debuff[] {
-  return loadCustomDebuffs().filter((d) => d.classId === classId)
+  return loadCustomDebuffs().filter((d) => belongsToClass(d, classId))
 }
 
 function writeCustomDebuffs(debuffs: Debuff[]): void {

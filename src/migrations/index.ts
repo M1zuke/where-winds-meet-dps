@@ -17,6 +17,7 @@ import { V18__followNewUmbraDefaultRotation } from "./V18__followNewUmbraDefault
 import { V19__qiBreakOverride } from "./V19__qiBreakOverride"
 import { V20__mergeRiverFlowIntoWolfchasersArt } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 import { V21__formlessAttackWordIds } from "./V21__formlessAttackWordIds"
+import { V22__mysticArtIds } from "./V22__mysticArtIds"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -37,6 +38,7 @@ export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
 export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
 export { migrateRiverFlowBuffId } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 export { migrateFormlessWordId } from "./V21__formlessAttackWordIds"
+export { migrateMysticId, migrateRotationMysticIds } from "./V22__mysticArtIds"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -56,6 +58,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V19__qiBreakOverride,
   V20__mergeRiverFlowIntoWolfchasersArt,
   V21__formlessAttackWordIds,
+  V22__mysticArtIds,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

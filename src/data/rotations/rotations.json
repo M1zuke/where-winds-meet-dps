@@ -7,12 +7,12 @@
         "classId": "bellstrikeUmbra",
         "steps": [
           {
-            "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
+            "skillId": "mystic-drunkenpoet-prepull",
             "hitCount": 1,
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -22,7 +22,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-fire-smolder-1-hit",
+            "skillId": "mystic-dragon-fire-smolder-1-hit",
             "hitCount": 1,
             "prePull": false
           },
@@ -411,12 +411,12 @@
         "classId": "bellstrikeUmbra",
         "steps": [
           {
-            "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
+            "skillId": "mystic-drunkenpoet-prepull",
             "hitCount": 1,
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -426,7 +426,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-fire-smolder-1-hit",
+            "skillId": "mystic-dragon-fire-smolder-1-hit",
             "hitCount": 1,
             "prePull": false
           },
@@ -596,7 +596,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-flute-of-the-tides-cancel",
+            "skillId": "mystic-flute-of-the-tides-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -825,12 +825,12 @@
         "classId": "bellstrikeUmbra",
         "steps": [
           {
-            "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
+            "skillId": "mystic-drunkenpoet-prepull",
             "hitCount": 1,
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -845,7 +845,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
+            "skillId": "mystic-dragon-fire-smolder-2-hits",
             "hitCount": 3,
             "prePull": false
           },
@@ -1070,7 +1070,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-head-plus",
+            "skillId": "mystic-dragon-head-plus",
             "hitCount": 1,
             "prePull": false
           },
@@ -1209,7 +1209,7 @@
         "classId": "bellstrikeUmbra",
         "steps": [
           {
-            "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
+            "skillId": "mystic-drunkenpoet-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -1219,7 +1219,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
+            "skillId": "mystic-dragon-fire-smolder-2-hits",
             "hitCount": 3,
             "prePull": false
           },
@@ -1344,7 +1344,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeUmbra-dragon-head-plus",
+            "skillId": "mystic-dragon-head-plus",
             "hitCount": 1,
             "prePull": false
           },
@@ -1378,7 +1378,7 @@
         "classId": "stonesplitStrength",
         "steps": [
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -1448,7 +1448,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
@@ -1473,7 +1473,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -1578,7 +1578,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "skillId": "mystic-flute-of-the-tides-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -1668,7 +1668,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           }
@@ -1694,7 +1694,7 @@
             "prePull": true
           },
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -1719,7 +1719,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -1769,7 +1769,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -1829,7 +1829,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "skillId": "mystic-flute-of-the-tides-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -1915,7 +1915,7 @@
             "prePull": true
           },
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -2055,7 +2055,7 @@
             "prePull": false
           },
           {
-            "skillId": "stonesplitStrength-flute-of-the-tides-cancel",
+            "skillId": "mystic-flute-of-the-tides-cancel",
             "hitCount": 1,
             "prePull": false
           },
@@ -2136,7 +2136,7 @@
         "classId": "bellstrikeSplendor",
         "steps": [
           {
-            "skillId": "bellstrikeSplendor-drunkenpoet-prepull",
+            "skillId": "mystic-drunkenpoet-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -2146,7 +2146,7 @@
             "prePull": true
           },
           {
-            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -2196,7 +2196,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeSplendor-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
@@ -2206,7 +2206,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeSplendor-fire-breath-1-hit",
+            "skillId": "mystic-fire-breath-1-hit",
             "hitCount": 1,
             "prePull": false
           },
@@ -2277,7 +2277,7 @@
             "prePull": true
           },
           {
-            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": true
           },
@@ -2428,7 +2428,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeSplendor-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -2528,7 +2528,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeSplendor-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -2568,7 +2568,7 @@
             "prePull": false
           },
           {
-            "skillId": "bellstrikeSplendor-flute-of-the-tides-full",
+            "skillId": "mystic-flute-of-the-tides-full",
             "hitCount": 2,
             "prePull": false
           },
@@ -2684,67 +2684,12 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
-            "hitCount": 2,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-fanqcancel",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-fanheavypursuit-3-hit",
-            "hitCount": 3,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umbq",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umblightcharge",
-            "hitCount": 6,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umblightcharge",
-            "hitCount": 6,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umblightcharge",
-            "hitCount": 6,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umblightcharge",
-            "hitCount": 6,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-umbdronelaunch-20hit",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-fanspecial",
-            "hitCount": 2,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-soaring",
-            "hitCount": 2,
-            "prePull": false
-          },
-          {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -2794,12 +2739,12 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -2849,12 +2794,67 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umblightcharge",
+            "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umblightcharge",
+            "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umblightcharge",
+            "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umblightcharge",
+            "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch-20hit",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanspecial",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-soaring",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -2916,12 +2916,12 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -2961,7 +2961,7 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -3001,7 +3001,7 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
@@ -3036,7 +3036,7 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-toad-cancel",
+            "skillId": "mystic-toad-cancel",
             "hitCount": 2,
             "prePull": false
           },
@@ -3066,7 +3066,7 @@
             "prePull": false
           },
           {
-            "skillId": "silkbindJade-soaring",
+            "skillId": "mystic-soaring",
             "hitCount": 2,
             "prePull": false
           },
@@ -3198,7 +3198,7 @@
         "classId": "bamboocutDraught",
         "steps": [
           {
-            "skillId": "bamboocutDraught-flute-of-the-tides-prepull",
+            "skillId": "mystic-flute-of-the-tides-prepull",
             "hitCount": 1,
             "prePull": false
           },
@@ -3368,7 +3368,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-flute-of-the-tides-cancel",
+            "skillId": "mystic-flute-of-the-tides-cancel",
             "hitCount": 1,
             "prePull": false
           },

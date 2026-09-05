@@ -1,17 +1,18 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
 export const dragonFireSmolder2Hits = defineSkill({
   id: SKILL.dragonFireSmolder2Hits,
-  classId: "bellstrikeUmbra",
+  classId: MYSTIC_ARTS_CLASS_ID,
   name: "Dragon's Breath: Smolder 2 Hits",
   breakdownName: "Dragon's Breath",
   tags: [MYSTIC.burst],
   skillType: "mystic",
   weaponOrAttribute: "",
-  attributeAttack: "Bellstrike",
+  attributeAttack: "",
   castTag: CAST.dragonSBreathSmolder2Hits,
   castFrames: 100,
   triggerable: true,
@@ -22,7 +23,7 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
+      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(1, {
       frame: 70,
@@ -30,7 +31,7 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
+      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(2, {
       frame: 100,
@@ -38,9 +39,9 @@ export const dragonFireSmolder2Hits = defineSkill({
       attributeMultiplier: 1.99275,
       physFixed: 249.66666666666666,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
+      triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-07-30T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

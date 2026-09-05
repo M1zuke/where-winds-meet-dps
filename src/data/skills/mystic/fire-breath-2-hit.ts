@@ -1,11 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
 export const fireBreath2Hit = defineSkill({
   id: SKILL.fireBreath2Hit,
-  classId: "universal",
+  classId: MYSTIC_ARTS_CLASS_ID,
   name: "Dragon's Breath 2 Hits",
   tags: [MYSTIC.burst],
   skillType: "mystic",
@@ -53,5 +54,5 @@ export const fireBreath2Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

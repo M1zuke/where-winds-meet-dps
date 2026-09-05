@@ -14,12 +14,16 @@ import storeV3File from "./testCustomSkills/v3/store.json"
 
 const CLASS = "bellstrikeUmbra"
 const DRAGON_HEAD_PLUS = `${CLASS}-dragon-head-plus`
+const BUILTIN_DRAGON_HEAD_PLUS = "mystic-dragon-head-plus"
 const STORE = storeV3File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
+
+const builtinDragonHeadPlus = (): Skill =>
+  builtinSkillsForClass(CLASS).find((skill) => skill.id === BUILTIN_DRAGON_HEAD_PLUS)!
 
 describe("custom-skills v3 fixture", () => {
   it("is v3 and still stores the superseded Dragon Head - Plus rows", () => {
@@ -31,14 +35,13 @@ describe("custom-skills v3 fixture", () => {
   })
 
   it("stores rows the built-in no longer carries", () => {
-    const builtin = builtinSkillsForClass(CLASS).find((skill) => skill.id === DRAGON_HEAD_PLUS)!
-    expect(builtin.hits[0].physMultiplier).not.toBe(25.200406)
+    expect(builtinDragonHeadPlus().hits[0].physMultiplier).not.toBe(25.200406)
   })
 })
 
 describe("migrateDragonHeadHits", () => {
   it("rewrites an untouched superseded row to the built-in's current row", () => {
-    const builtin = builtinSkillsForClass(CLASS).find((skill) => skill.id === DRAGON_HEAD_PLUS)!
+    const builtin = builtinDragonHeadPlus()
     const [healed] = migrateDragonHeadHits(
       DRAGON_HEAD_PLUS,
       clone(skillIn(STORE, DRAGON_HEAD_PLUS).hits),

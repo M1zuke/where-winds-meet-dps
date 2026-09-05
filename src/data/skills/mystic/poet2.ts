@@ -1,18 +1,19 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
-export const poet3 = defineSkill({
-  id: SKILL.poet3,
-  classId: "universal",
-  name: "Poet3",
+export const poet2 = defineSkill({
+  id: SKILL.poet2,
+  classId: MYSTIC_ARTS_CLASS_ID,
+  name: "Poet2",
   tags: [MYSTIC.burst],
   skillType: "mystic",
   weaponOrAttribute: "",
   attributeAttack: "",
-  castTag: CAST.poet3,
-  castFrames: 36,
+  castTag: CAST.poet2,
+  castFrames: 33,
   triggerable: true,
   hits: [
     hit(0, {
@@ -32,5 +33,5 @@ export const poet3 = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

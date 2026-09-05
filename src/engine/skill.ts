@@ -81,6 +81,12 @@ export interface Skill {
   updatedAt: string
 }
 
+export const MYSTIC_ARTS_CLASS_ID = "mystic"
+
+export function belongsToClass(entity: { classId: string }, classId: string): boolean {
+  return entity.classId === classId || entity.classId === MYSTIC_ARTS_CLASS_ID
+}
+
 let counter = 0
 function nextId(prefix: string): string {
   counter = (counter + 1) | 0

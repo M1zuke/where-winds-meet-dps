@@ -1,25 +1,26 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
-export const poetFinalHitCancel = defineSkill({
-  id: SKILL.poetFinalHitCancel,
-  classId: "universal",
-  name: "Poet Final Hit[Cancel]",
+export const poet1 = defineSkill({
+  id: SKILL.poet1,
+  classId: MYSTIC_ARTS_CLASS_ID,
+  name: "Poet1",
   tags: [MYSTIC.burst],
   skillType: "mystic",
   weaponOrAttribute: "",
   attributeAttack: "",
-  castTag: CAST.poetFinalHitCancel,
-  castFrames: 47,
+  castTag: CAST.poet1,
+  castFrames: 29,
   triggerable: true,
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.7063,
-      attributeMultiplier: 2.55945,
-      physFixed: 315,
+      physMultiplier: 1.0238,
+      attributeMultiplier: 1.5357,
+      physFixed: 189,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -32,5 +33,5 @@ export const poetFinalHitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

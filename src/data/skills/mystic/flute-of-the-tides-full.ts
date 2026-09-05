@@ -1,12 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 
 export const fluteOfTheTidesFull = defineSkill({
   id: SKILL.fluteOfTheTidesFull,
-  classId: "universal",
+  classId: MYSTIC_ARTS_CLASS_ID,
   name: "Flute of the Tides Full",
   breakdownName: "Flute Chanting a Thousand Waves",
   tags: [MYSTIC.area],
@@ -35,5 +36,5 @@ export const fluteOfTheTidesFull = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

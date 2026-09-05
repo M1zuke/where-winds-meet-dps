@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
+  belongsToClass,
   makeSkill,
   makeHit,
   seedSkillFromBuiltin,
@@ -252,7 +253,7 @@ export function SkillsTab({
   const fileRef = useRef<HTMLInputElement>(null)
 
   const classSkills = useMemo(
-    () => customSkills.filter((skill) => skill.classId === classId),
+    () => customSkills.filter((skill) => belongsToClass(skill, classId)),
     [customSkills, classId],
   )
   const classBuffs = useMemo(
@@ -260,7 +261,7 @@ export function SkillsTab({
     [customBuffs, classId],
   )
   const classDebuffs = useMemo(
-    () => customDebuffs.filter((debuff) => debuff.classId === classId),
+    () => customDebuffs.filter((debuff) => belongsToClass(debuff, classId)),
     [customDebuffs, classId],
   )
 
@@ -348,7 +349,7 @@ export function SkillsTab({
       selectSkill(existing)
       return
     }
-    const seeded = seedSkillFromBuiltin(classId, skill)
+    const seeded = seedSkillFromBuiltin(skill.classId, skill)
     setSelectedKey(`builtin:${skill.id}`)
     loadDraft(seeded)
   }

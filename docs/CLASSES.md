@@ -48,6 +48,8 @@ Test-suite consequences are in TESTING.md § "Class scoping".
 - **A class's own modules live in one folder per class**, whose barrel exports the
   `defineClass` call. A module only one class uses belongs there, not beside the
   barrel.
+- **A mystic art lives in the shared mystic folder**, never in a class folder —
+  § "Mystic arts".
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
   ways, martial arts, classes. There is no JSON authoring format: the only JSON
@@ -130,12 +132,31 @@ a buff the skill applies, not a property of the class. The class or inner way
 that lists a module is the **only** statement of its scope; the marker on the
 module itself is inert everywhere else.
 
+## Mystic arts — one source, shared by every class
+
+A mystic art belongs to no class. It is authored **once** in the shared mystic
+folder, with `mystic` as its class id and its id segment, and every class's
+composed definition carries it and the debuffs it applies exactly as authored —
+nothing is instantiated, stamped or copied.
+
+- **A `mystic`-typed skill never lives in a class folder**, and a class never
+  re-declares a debuff a mystic art applies.
+- A mystic art and its debuffs carry no attribute path of their own: a
+  non-`weapon` hit elevates the casting class's primary attribute, so the same
+  module is right for every class.
+- Nothing a mystic art or its debuff references may name a class.
+- An entity whose class id is the shared one belongs to **every** class. A user
+  copy is filtered by `belongsToClass`, never by class-id equality, and a copy
+  seeded from a mystic art keeps the shared class id.
+- Mechanically guarded (TESTING.md § "The architecture guards").
+
 ## Universal skills — one source, instantiated per class
 
-A skill every class can equip lives **once**, with `universal` as its id segment,
-and is instantiated per class: the `universal` segment in the skill id, and in
-every id a trigger's target or a condition's buff names, becomes the class id,
-and the attribute path becomes the instantiating class's primary attribute.
+A class-neutral skill that is not a mystic art lives **once**, with `universal`
+as its id segment, and is instantiated per class: the `universal` segment in the
+skill id, and in every id a trigger's target or a condition's buff names,
+becomes the class id, and the attribute path becomes the instantiating class's
+primary attribute.
 
 - **Never duplicate a universal skill into a class folder.**
 - The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved
@@ -147,7 +168,8 @@ and the attribute path becomes the instantiating class's primary attribute.
 - **Class ids are English camelCase.** Never pinyin. Spec ids keep snake_case —
   a different namespace.
 - **Entity ids carry no vendor namespace**: skills are `<classId>-<slug>`, buffs
-  `buff-<classId>-<slug>`, debuffs `debuff-<classId>-<slug>`.
+  `buff-<classId>-<slug>`, debuffs `debuff-<classId>-<slug>`. A mystic art and
+  the debuffs it applies take `mystic` as the class segment.
 - The `buff-` / `debuff-` prefixes are **load-bearing** — a DoT's tick-skill id
   is derived by stripping the debuff prefix when the debuff names none.
   Authoring the source skill id explicitly overrides that.

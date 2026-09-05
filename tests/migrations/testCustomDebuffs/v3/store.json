@@ -1,0 +1,173 @@
+{
+  "v": 3,
+  "debuffs": [
+    {
+      "id": "debuff-bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleeding",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.066,
+        "physFixed": 0,
+        "attributeMultiplier": 0.099,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 5,
+      "stackScaling": "perStack",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 0,
+        "retainParam": "swordHorizon",
+        "retainMinTier": 6,
+        "retainParamStacks": 2
+      },
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "tags": ["role:bleedTick"],
+      "receives": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage", "soulShaken"]
+    },
+    {
+      "id": "db-user-authored-poison",
+      "classId": "bellstrikeUmbra",
+      "name": "My Poison",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.06864,
+        "physFixed": 0,
+        "attributeMultiplier": 0.10296,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-combustion",
+      "classId": "bellstrikeUmbra",
+      "name": "Combustion",
+      "activation": "triggered",
+      "durationFrames": 481,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.2953,
+        "physFixed": 39,
+        "attributeMultiplier": 0.2953,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z",
+      "tags": ["role:combustion"],
+      "receives": ["bellstrikeUmbraBleedingDamage", "soulShaken"]
+    },
+    {
+      "id": "debuff-bellstrikeUmbra-dark-fire",
+      "classId": "bellstrikeUmbra",
+      "name": "Smolder",
+      "breakdownName": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.236,
+        "physFixed": 44,
+        "attributeMultiplier": 0.354,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z",
+      "receives": ["soulShaken"]
+    },
+    {
+      "id": "debuff-bellstrikeSplendor-dark-fire",
+      "classId": "bellstrikeSplendor",
+      "name": "Smolder",
+      "breakdownName": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.236,
+        "physFixed": 44,
+        "attributeMultiplier": 0.354,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-07-30T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z",
+      "receives": ["soulShaken"]
+    },
+    {
+      "id": "db-user-authored-ember",
+      "classId": "bellstrikeUmbra",
+      "name": "Ember",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.1,
+        "physFixed": 0,
+        "attributeMultiplier": 0.1,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null,
+        "sourceSkillId": "bellstrikeUmbra-fire-breath-1-hit"
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-dragon-head"
+      },
+      "createdAt": "2026-09-01T00:00:00.000Z",
+      "updatedAt": "2026-09-01T00:00:00.000Z"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC, ROLE } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
@@ -8,7 +9,7 @@ import { SKILL } from "./ids"
 // a 246-frame cast landing its hit on the final frame.
 export const dragonHead = defineSkill({
   id: SKILL.dragonHead,
-  classId: "universal",
+  classId: MYSTIC_ARTS_CLASS_ID,
   name: "Dragon Head",
   tags: [MYSTIC.burst, ROLE.dragonHead],
   skillType: "mystic",
@@ -29,5 +30,5 @@ export const dragonHead = defineSkill({
     }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",
-  updatedAt: "2026-08-06T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

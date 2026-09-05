@@ -1,21 +1,22 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
+import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 
-export const fluteOfTheTidesPrepull = defineSkill({
-  id: SKILL.fluteOfTheTidesPrepull,
-  classId: "universal",
-  name: "Flute of the Tides Prepull",
+export const fluteOfTheTidesCancel = defineSkill({
+  id: SKILL.fluteOfTheTidesCancel,
+  classId: MYSTIC_ARTS_CLASS_ID,
+  name: "Flute of the Tides Cancel",
   breakdownName: "Flute Chanting a Thousand Waves",
   tags: [MYSTIC.areaDamage],
   skillType: "mystic",
   weaponOrAttribute: "",
   attributeAttack: "",
-  castTag: CAST.fluteOfTheTidesPrepull,
+  castTag: CAST.fluteOfTheTidesCancel,
   triggersBuffs: [BUFF.fluteBoost],
-  castFrames: 0,
+  castFrames: 81,
   triggerable: true,
   hits: [
     hit(0, {
@@ -28,5 +29,5 @@ export const fluteOfTheTidesPrepull = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-05T00:00:00.000Z",
 })

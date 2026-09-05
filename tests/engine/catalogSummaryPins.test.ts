@@ -19,6 +19,7 @@ import type { Inputs } from "../../src/engine/types"
 import { builtinSkill } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -101,14 +102,14 @@ describe("catalog summary pins — soulShaken", () => {
 
 describe("catalog summary pins — surgingWaves", () => {
   it("Applies row on Dragon Head - Plus reads the pre-conversion per-stack text", () => {
-    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.dragonHeadPlus), CLASS)
+    const rows = appliesForSkill(builtinSkill(CLASS, MYSTIC_SKILL.dragonHeadPlus), CLASS)
     expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.3% all/stack")
   })
 })
 
 describe("catalog summary pins — fluteBoost", () => {
   it("Applies row on Flute of the Tides Full reads the pre-conversion param-sourced text", () => {
-    const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.fluteOfTheTidesFull), CLASS)
+    const rows = appliesForSkill(builtinSkill(CLASS, MYSTIC_SKILL.fluteOfTheTidesFull), CLASS)
     expect(rows.find((row) => row.id === "fluteBoost")!.effect).toBe("+all (from fluteBoostValue)")
   })
 })
