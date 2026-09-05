@@ -15,12 +15,9 @@
   overscroll-behavior: contain;
 }
 
-.mainColumn {
+.outputGrid {
   flex: 1;
   min-width: 0;
-}
-
-.outputGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
