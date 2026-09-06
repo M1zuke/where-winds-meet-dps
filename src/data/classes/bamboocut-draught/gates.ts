@@ -11,6 +11,7 @@ export const SKYSPEAK_DEEPDAZE_EXTENSION_FRAMES = 300
 export const CAROUSE_DURATION_FRAMES = 1200
 export const CLASH_TOAST_DURATION_FRAMES = 900
 export const EONPOUR_EXHAUSTED_COOLDOWN_FRAMES = 3600
+export const DEEPDAZE_MAX_EXTENDED_DURATION_FRAMES = 960
 
 // In-game state text, 2026-09-06: Binge Points start at 60 and cap at 200;
 // Tipsy from 100, Deepdaze at 200 for 5 s, 10 s with Skyspeak tier 3. When

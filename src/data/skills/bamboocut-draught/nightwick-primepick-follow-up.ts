@@ -24,7 +24,6 @@ export const primepickFollowUpHits = [
     physFixed: 237.93,
     attributeFixed: 129.69,
     conditions: [{ buffId: STATUS.inebriateDeepdaze, op: "gte", stacks: 1 }],
-    triggers: [applyDebuff({ target: DEBUFF.nightwickExposure, stacks: 1, phase: "exhausted" })],
   }),
 ]
 

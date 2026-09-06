@@ -36,11 +36,7 @@ export const boundvessel = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.boundvessel,
-  receives: [
-    ...INEBRIATE_ENHANCED_RECEIVES,
-    BUFF.nonPlayerBaseDamage50,
-    BUFF.boundvesselStaggerDamage,
-  ],
+  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage50],
   triggerable: false,
   castFrames: 173,
   hits: [

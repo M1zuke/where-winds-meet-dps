@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
-import { SKILL } from "./ids"
+import { DEBUFF, SKILL } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
 // The airborne follow-up of Reveldrift. Coefficients: client
@@ -27,6 +28,7 @@ export const realmplay = defineSkill({
       attributeMultiplier: 1.206,
       physFixed: 223,
       attributeFixed: 122,
+      triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",

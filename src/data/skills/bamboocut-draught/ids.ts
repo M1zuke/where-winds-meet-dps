@@ -34,7 +34,6 @@ export const DEBUFF = {
   drunkslay: "debuff-bamboocutDraught-drunkslay",
   strayhunt: "debuff-bamboocutDraught-strayhunt",
   wildstride: "debuff-bamboocutDraught-wildstride",
-  nightwickExposure: "debuff-bamboocutDraught-nightwick-exposure",
   bitterSeasonTick: "debuff-bamboocutDraught-bitter-season-tick",
 } as const
 

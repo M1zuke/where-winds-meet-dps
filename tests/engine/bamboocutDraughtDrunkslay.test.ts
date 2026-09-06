@@ -117,13 +117,14 @@ describe("the Drunkslay echo", () => {
     expect(rowNamed(result, ECHO_ROW)).toBeUndefined()
   })
 
-  it("feeds nothing below Skyspeak tier 6", () => {
-    expect(
-      rowNamed(run([grantDeepdaze, marker, feeder, marker], skyspeakAt(5)), ECHO_ROW),
-    ).toBeUndefined()
-    expect(
-      rowNamed(run([grantDeepdaze, marker, feeder, marker], defaultInputs.mindMethods), ECHO_ROW),
-    ).toBeUndefined()
+  it("banks from any source of the mark, whatever the inner ways are", () => {
+    for (const mindMethods of [skyspeakAt(5), defaultInputs.mindMethods]) {
+      const result = run([grantDeepdaze, marker, feeder, marker], mindMethods)
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      expect(echoRow.count).toBe(1)
+      expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage, 6)
+    }
   })
 
   it("feeds nothing from a hit landing outside the mark", () => {

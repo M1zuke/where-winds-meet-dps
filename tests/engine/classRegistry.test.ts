@@ -143,7 +143,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "clashToastDamage",
       "nonPlayerBaseDamage40",
       "nonPlayerBaseDamage50",
-      "boundvesselStaggerDamage",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
     ])

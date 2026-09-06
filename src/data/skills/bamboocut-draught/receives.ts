@@ -1,12 +1,6 @@
 import { BUFF } from "../buffs/ids"
 
-export const CLASS_RECEIVES = [
-  BUFF.inebriateCritDamage,
-  BUFF.eonpourInebriateDamage,
-  BUFF.mistwingPhysicalPenetration,
-  BUFF.mistwingAllTypePenetration,
-  BUFF.mistwingInebriatePenetration,
-]
+export const CLASS_RECEIVES = [BUFF.eonpourInebriateDamage]
 
 export const INEBRIATE_ENHANCED_RECEIVES = [
   ...CLASS_RECEIVES,

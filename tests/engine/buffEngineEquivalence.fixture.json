@@ -685,7 +685,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
@@ -721,7 +721,7 @@
           "requires": {
             "classId": "bamboocutDraught"
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -835,30 +835,6 @@
           "summary": "damage ×1.5 against non-player units on the twinblades Inebriate skills"
         },
         {
-          "id": "boundvesselStaggerDamage",
-          "name": "Boundvessel - Stagger",
-          "classBuff": false,
-          "requires": {
-            "classId": "bamboocutDraught"
-          },
-          "affectsAll": false,
-          "alwaysActive": true,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 9999,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "allDamageBoost +20% on the receiving skill while the target is in the Qi-break window"
-        },
-        {
           "id": "bellstrikeUmbraBleedPen",
           "name": "Bleed penetration Enhancement",
           "classBuff": true,
@@ -936,7 +912,6 @@
       "castTags": [
         "probe:bellstrikeUmbraBleedPen",
         "probe:bellstrikeUmbraBleedingDamage",
-        "probe:boundvesselStaggerDamage",
         "probe:buff-bellstrikeUmbra-zenith-bar",
         "probe:clashToastDamage",
         "probe:cloudvault",
@@ -1179,11 +1154,6 @@
           "breakdown": {}
         },
         "0|receives:nonPlayerBaseDamage50": {
-          "effects": [],
-          "forceCrit": false,
-          "breakdown": {}
-        },
-        "0|receives:boundvesselStaggerDamage": {
           "effects": [],
           "forceCrit": false,
           "breakdown": {}
@@ -1435,11 +1405,6 @@
           "forceCrit": false,
           "breakdown": {}
         },
-        "1|receives:boundvesselStaggerDamage": {
-          "effects": [],
-          "forceCrit": false,
-          "breakdown": {}
-        },
         "1|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -1683,11 +1648,6 @@
           "breakdown": {}
         },
         "2|receives:nonPlayerBaseDamage50": {
-          "effects": [],
-          "forceCrit": false,
-          "breakdown": {}
-        },
-        "2|receives:boundvesselStaggerDamage": {
           "effects": [],
           "forceCrit": false,
           "breakdown": {}
@@ -2204,18 +2164,6 @@
           }
         },
         "3|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25
-          }
-        },
-        "3|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -2756,18 +2704,6 @@
           }
         },
         "4|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25
-          }
-        },
-        "4|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -3503,23 +3439,6 @@
           }
         },
         "5|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "wineGu": 0.05
-          }
-        },
-        "5|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -4296,23 +4215,6 @@
             "wineGu": 0.05
           }
         },
-        "6|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "wineGu": 0.05
-          }
-        },
         "6|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -5057,23 +4959,6 @@
           }
         },
         "7|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "wineGu": 0.05
-          }
-        },
-        "7|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -6185,32 +6070,6 @@
           }
         },
         "8|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "critDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "disintegration": 0.5,
-            "potentRiverFlow": 0.25,
-            "wineGu": 0.05
-          }
-        },
-        "8|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -7358,32 +7217,6 @@
           }
         },
         "9|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "critDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "disintegration": 0.5,
-            "potentRiverFlow": 0.25,
-            "wineGu": 0.05
-          }
-        },
-        "9|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -8756,37 +8589,6 @@
             "wineGu": 0.05
           }
         },
-        "10|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "critDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "disintegration": 0.5,
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "wineGu": 0.05
-          }
-        },
         "10|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -10119,37 +9921,6 @@
           }
         },
         "11|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "critDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "disintegration": 0.5,
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "wineGu": 0.05
-          }
-        },
-        "11|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -11742,42 +11513,6 @@
             "wineGu": 0.05
           }
         },
-        "12|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "critDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.25
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "disintegration": 0.5,
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "12|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -12995,33 +12730,6 @@
             "wineGu": 0.05
           }
         },
-        "13|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "13|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -14186,33 +13894,6 @@
           }
         },
         "14|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
-        "14|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -15429,33 +15110,6 @@
             "wineGu": 0.05
           }
         },
-        "15|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "15|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -16620,33 +16274,6 @@
           }
         },
         "16|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
-        "16|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -17863,33 +17490,6 @@
             "wineGu": 0.05
           }
         },
-        "17|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "17|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -19054,33 +18654,6 @@
           }
         },
         "18|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
-        "18|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -20297,33 +19870,6 @@
             "wineGu": 0.05
           }
         },
-        "19|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "19|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -21488,33 +21034,6 @@
           }
         },
         "20|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.25
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "potentRiverFlow": 0.25,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
-        "20|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -22731,33 +22250,6 @@
             "wineGu": 0.05
           }
         },
-        "21|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "21|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -23948,33 +23440,6 @@
             "wineGu": 0.05
           }
         },
-        "22|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.05
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08,
-            "wineGu": 0.05
-          }
-        },
         "22|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -24944,28 +24409,6 @@
           }
         },
         "23|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "23|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -25962,28 +25405,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "24|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "24|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -26933,28 +26354,6 @@
           }
         },
         "25|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "25|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -27951,28 +27350,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "26|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "26|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -28927,28 +28304,6 @@
           }
         },
         "27|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "27|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -29945,28 +29300,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "28|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "mirageBonus": 0.15,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "28|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -30726,23 +30059,6 @@
           }
         },
         "29|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "29|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -31524,23 +30840,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "30|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "30|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -32290,23 +31589,6 @@
           }
         },
         "31|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "31|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -33077,23 +32359,6 @@
           }
         },
         "32|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "32|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -34059,28 +33324,6 @@
           }
         },
         "33|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "33|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -35092,28 +34335,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "34|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "34|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -36078,28 +35299,6 @@
           }
         },
         "35|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "35|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -37106,28 +36305,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "36|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "36|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -38092,28 +37269,6 @@
           }
         },
         "37|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "37|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -39120,28 +38275,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "38|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "38|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -40106,28 +39239,6 @@
           }
         },
         "39|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "39|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -41134,28 +40245,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "40|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "40|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -42120,28 +41209,6 @@
           }
         },
         "41|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "41|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -43148,28 +42215,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "42|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "42|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -44134,28 +43179,6 @@
           }
         },
         "43|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "43|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -45162,28 +44185,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "44|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "resistanceResolve": 0.1,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "44|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -45953,23 +44954,6 @@
           }
         },
         "45|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "45|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -46756,23 +45740,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "46|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "46|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -47527,23 +46494,6 @@
           }
         },
         "47|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "47|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -48325,23 +47275,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "48|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "48|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -49091,23 +48024,6 @@
           }
         },
         "49|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "49|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -49884,23 +48800,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "50|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "50|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -50645,23 +49544,6 @@
           }
         },
         "51|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "51|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -51438,23 +50320,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "52|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "52|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -52194,23 +51059,6 @@
           }
         },
         "53|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "53|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -52982,23 +51830,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "54|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "54|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -53738,23 +52569,6 @@
           }
         },
         "55|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "55|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -54526,23 +53340,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "56|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "56|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -55282,23 +54079,6 @@
           }
         },
         "57|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "57|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -56070,23 +54850,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "58|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "58|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -56826,23 +55589,6 @@
           }
         },
         "59|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "59|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -57614,23 +56360,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "60|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "60|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -58370,23 +57099,6 @@
           }
         },
         "61|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "61|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -59158,23 +57870,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "62|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "62|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -59249,10 +57944,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59266,10 +57966,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59283,10 +57988,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59300,10 +58010,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59317,10 +58032,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59334,10 +58054,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59351,10 +58076,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59368,10 +58098,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59385,10 +58120,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59402,10 +58142,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59419,10 +58164,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59440,11 +58190,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "buff-bellstrikeUmbra-zenith-bar": 0.15,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59458,10 +58213,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59475,10 +58235,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59492,10 +58257,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59509,10 +58279,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59526,10 +58301,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59543,10 +58323,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59560,10 +58345,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59577,10 +58367,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59594,10 +58389,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59611,10 +58411,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59628,10 +58433,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59645,10 +58455,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59662,10 +58477,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59683,11 +58503,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.45
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "dragonHeadLowHp": 0.45,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59701,10 +58526,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59718,10 +58548,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59735,10 +58570,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59752,10 +58592,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59769,10 +58614,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59786,10 +58636,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59803,10 +58658,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59820,10 +58680,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59837,10 +58702,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59854,10 +58724,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59871,10 +58746,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59888,10 +58768,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59905,10 +58790,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59922,27 +58812,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "63|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.08
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59958,6 +58836,10 @@
               "amount": 0.08
             },
             {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
             },
@@ -59969,6 +58851,7 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -59986,11 +58869,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60004,10 +58892,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60021,10 +58914,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60038,10 +58936,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60055,10 +58958,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60072,10 +58980,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60089,10 +59002,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60106,10 +59024,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60123,10 +59046,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60140,10 +59068,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60157,10 +59090,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60174,10 +59112,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60191,10 +59134,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60212,11 +59160,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "buff-bellstrikeUmbra-zenith-bar": 0.15,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60230,10 +59183,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60247,10 +59205,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60264,10 +59227,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60281,10 +59249,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60298,10 +59271,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60315,10 +59293,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60332,10 +59315,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60349,10 +59337,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60366,10 +59359,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60383,10 +59381,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60400,10 +59403,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60417,10 +59425,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60434,10 +59447,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60455,11 +59473,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.45
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "dragonHeadLowHp": 0.45,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60473,10 +59496,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60490,10 +59518,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60507,10 +59540,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60524,10 +59562,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60541,10 +59584,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60558,10 +59606,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60575,10 +59628,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60592,10 +59650,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60609,10 +59672,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60626,10 +59694,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60643,10 +59716,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60660,10 +59738,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60677,10 +59760,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60694,27 +59782,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "64|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
             },
             {
               "statKey": "allDamageBoost",
-              "amount": 0.08
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60730,6 +59806,10 @@
               "amount": 0.08
             },
             {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
+            },
+            {
               "statKey": "bellstrike.penetration",
               "amount": 0.15
             },
@@ -60741,6 +59821,7 @@
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedPen": 0.3,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60758,11 +59839,16 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
             "bellstrikeUmbraBleedingDamage": 0.18,
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -60776,10 +59862,15 @@
             {
               "statKey": "allDamageBoost",
               "amount": 0.08
+            },
+            {
+              "statKey": "allDamageBoost",
+              "amount": 0.2
             }
           ],
           "forceCrit": false,
           "breakdown": {
+            "healerBuff": 0.2,
             "revelryScript": 0.3,
             "vulnerabilityTeammate": 0.08
           }
@@ -61653,28 +60744,6 @@
           }
         },
         "65|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "65|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -62666,28 +61735,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "66|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "66|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -63637,28 +62684,6 @@
           }
         },
         "67|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "67|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -64650,28 +63675,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "68|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "68|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -65621,28 +64624,6 @@
           }
         },
         "69|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "69|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -66634,28 +65615,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "70|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "70|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -67605,28 +66564,6 @@
           }
         },
         "71|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "71|receives:boundvesselStaggerDamage": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -68618,28 +67555,6 @@
             "vulnerabilityTeammate": 0.08
           }
         },
-        "72|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
         "72|receives:bellstrikeUmbraBleedPen": {
           "effects": [
             {
@@ -68699,1990 +67614,6 @@
           }
         },
         "72|receives:healerBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|role:bleedDetonation": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|role:bleedTick": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|role:combustion": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|role:dragonHead": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|role:dragonHeadPlus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|prop:isCharged": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|prop:isExecution": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|type:sustain": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|attack:heavy": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|attack:light": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:buff-bellstrikeUmbra-zenith-bar": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "buff-bellstrikeUmbra-zenith-bar": 0.15,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:potentRiverFlow": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:wineGu": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:soulShaken": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:disintegration": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:revelryScript": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:vulnerabilityTeammate": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:jadeware": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:mirage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:mirageBonus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:rainwhisperCritDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:rainwhisperShield": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:resistanceResolve": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:surgingWaves": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:dragonHeadLowHp": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.45
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "dragonHeadLowHp": 0.45,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:windWall": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:windWallPursuit": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:pursuitChargedBoost": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:lingeringBone": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:mistwillowBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:mistwillowHeavyBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:mistwillowLightBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:tiltrimStack": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:tiltrimInebriateBonus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:inebriateCritDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:cloudvault": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:clashToastDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:nonPlayerBaseDamage40": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:bellstrikeUmbraBleedPen": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "bellstrike.penetration",
-              "amount": 0.15
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "bellstrikeUmbraBleedPen": 0.3,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:bellstrikeUmbraBleedingDamage": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.18
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "73|receives:healerBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|role:bleedDetonation": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|role:bleedTick": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|role:combustion": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|role:dragonHead": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|role:dragonHeadPlus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|prop:isCharged": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|prop:isExecution": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|type:sustain": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|attack:heavy": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|attack:light": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:buff-bellstrikeUmbra-zenith-bar": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.15
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "buff-bellstrikeUmbra-zenith-bar": 0.15,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:potentRiverFlow": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:wineGu": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:soulShaken": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:disintegration": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:revelryScript": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:vulnerabilityTeammate": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:jadeware": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:mirage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:mirageBonus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:rainwhisperCritDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:rainwhisperShield": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:resistanceResolve": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:surgingWaves": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:dragonHeadLowHp": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.45
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "dragonHeadLowHp": 0.45,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:windWall": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:windWallPursuit": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:pursuitChargedBoost": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:lingeringBone": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:mistwillowBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:mistwillowHeavyBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:mistwillowLightBuff": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:tiltrimStack": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:tiltrimInebriateBonus": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:inebriateCritDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:cloudvault": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:clashToastDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:nonPlayerBaseDamage40": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:nonPlayerBaseDamage50": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:boundvesselStaggerDamage": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:bellstrikeUmbraBleedPen": {
-          "effects": [
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            },
-            {
-              "statKey": "bellstrike.penetration",
-              "amount": 0.15
-            },
-            {
-              "statKey": "phys.penetration",
-              "amount": 0.15
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "bellstrikeUmbraBleedPen": 0.3,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:bellstrikeUmbraBleedingDamage": {
-          "effects": [
-            {
-              "statKey": "affinityDamageBoost",
-              "amount": 0.18
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.3
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "statKey": "allDamageBoost",
-              "amount": 0.2
-            }
-          ],
-          "forceCrit": false,
-          "breakdown": {
-            "bellstrikeUmbraBleedingDamage": 0.18,
-            "healerBuff": 0.2,
-            "revelryScript": 0.3,
-            "vulnerabilityTeammate": 0.08
-          }
-        },
-        "74|receives:healerBuff": {
           "effects": [
             {
               "statKey": "allDamageBoost",
@@ -77494,6 +74425,18 @@
             "requires": "dragonHeadLowHpMaxBonus"
           },
           {
+            "id": "healerBuff",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
+          },
+          {
             "id": "revelryScript",
             "stacks": 1,
             "maxStacks": 1,
@@ -77570,6 +74513,18 @@
               }
             ],
             "requires": "dragonHeadLowHpMaxBonus"
+          },
+          {
+            "id": "healerBuff",
+            "stacks": 1,
+            "maxStacks": 1,
+            "effects": [
+              {
+                "statKey": "allDamageBoost",
+                "amount": 0.2
+              }
+            ],
+            "requires": null
           },
           {
             "id": "revelryScript",
@@ -78227,186 +75182,6 @@
           }
         ],
         "72": [
-          {
-            "id": "bellstrikeUmbraBleedPen",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "phys.penetration",
-                "amount": 0.15
-              },
-              {
-                "statKey": "bellstrike.penetration",
-                "amount": 0.15
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "bellstrikeUmbraBleedingDamage",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.18
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "buff-bellstrikeUmbra-zenith-bar",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.15
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "dragonHeadLowHp",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.45
-              }
-            ],
-            "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "healerBuff",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
-            "id": "revelryScript",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.3
-              }
-            ],
-            "requires": "revelryScript"
-          },
-          {
-            "id": "vulnerabilityTeammate",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.08
-              }
-            ],
-            "requires": null
-          }
-        ],
-        "73": [
-          {
-            "id": "bellstrikeUmbraBleedPen",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "phys.penetration",
-                "amount": 0.15
-              },
-              {
-                "statKey": "bellstrike.penetration",
-                "amount": 0.15
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "bellstrikeUmbraBleedingDamage",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "affinityDamageBoost",
-                "amount": 0.18
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "buff-bellstrikeUmbra-zenith-bar",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.15
-              }
-            ],
-            "requires": "swordHorizon"
-          },
-          {
-            "id": "dragonHeadLowHp",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.45
-              }
-            ],
-            "requires": "dragonHeadLowHpMaxBonus"
-          },
-          {
-            "id": "healerBuff",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.2
-              }
-            ],
-            "requires": null
-          },
-          {
-            "id": "revelryScript",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.3
-              }
-            ],
-            "requires": "revelryScript"
-          },
-          {
-            "id": "vulnerabilityTeammate",
-            "stacks": 1,
-            "maxStacks": 1,
-            "effects": [
-              {
-                "statKey": "allDamageBoost",
-                "amount": 0.08
-              }
-            ],
-            "requires": null
-          }
-        ],
-        "74": [
           {
             "id": "bellstrikeUmbraBleedPen",
             "stacks": 1,
@@ -79290,7 +76065,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
@@ -79326,7 +76101,7 @@
           "requires": {
             "classId": "bamboocutDraught"
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -79438,30 +76213,6 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "damage ×1.5 against non-player units on the twinblades Inebriate skills"
-        },
-        {
-          "id": "boundvesselStaggerDamage",
-          "name": "Boundvessel - Stagger",
-          "classBuff": false,
-          "requires": {
-            "classId": "bamboocutDraught"
-          },
-          "affectsAll": false,
-          "alwaysActive": true,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 9999,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "allDamageBoost +20% on the receiving skill while the target is in the Qi-break window"
         },
         {
           "id": "ironGuards",
@@ -79580,7 +76331,7 @@
       ]
     },
     "dynamic": {
-      "digest": "0e950dc2188f37b8f2edafc20a3c11f2baeb020f4751fc1f7968a3bd2754a62c"
+      "digest": "c51846f2b2b1a4a65e63951733580885c69c6118ee4c9c1769567d99af0fc259"
     }
   },
   "bellstrikeSplendor": {
@@ -80275,7 +77026,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
@@ -80311,7 +77062,7 @@
           "requires": {
             "classId": "bamboocutDraught"
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -80423,30 +77174,6 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "damage ×1.5 against non-player units on the twinblades Inebriate skills"
-        },
-        {
-          "id": "boundvesselStaggerDamage",
-          "name": "Boundvessel - Stagger",
-          "classBuff": false,
-          "requires": {
-            "classId": "bamboocutDraught"
-          },
-          "affectsAll": false,
-          "alwaysActive": true,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 9999,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "allDamageBoost +20% on the receiving skill while the target is in the Qi-break window"
         },
         {
           "id": "endlessGale",
@@ -80615,7 +77342,7 @@
       ]
     },
     "dynamic": {
-      "digest": "81897000a661be59d17b8645146280d792f0c39cfb556fb9c8b8aff604adfddf"
+      "digest": "98013b81312e69e763c0752c7cd6ea1fcebbefb07f4ee402abc6ef7530d2cb6c"
     }
   },
   "silkbindJade": {
@@ -81334,7 +78061,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
@@ -81370,7 +78097,7 @@
           "requires": {
             "classId": "bamboocutDraught"
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -81484,30 +78211,6 @@
           "summary": "damage ×1.5 against non-player units on the twinblades Inebriate skills"
         },
         {
-          "id": "boundvesselStaggerDamage",
-          "name": "Boundvessel - Stagger",
-          "classBuff": false,
-          "requires": {
-            "classId": "bamboocutDraught"
-          },
-          "affectsAll": false,
-          "alwaysActive": true,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 9999,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "allDamageBoost +20% on the receiving skill while the target is in the Qi-break window"
-        },
-        {
           "id": "lowQiFollowUp",
           "name": "Low Qi Follow-up",
           "classBuff": true,
@@ -81578,7 +78281,7 @@
       ]
     },
     "dynamic": {
-      "digest": "e959088a607b84020c66ffdd6c15869159d3298a602f382fe7f1423d4049aea5"
+      "digest": "6249a9215ad3ec2bbd53e53f04e68d22fd2b85eba79c238b231bf901d9412f70"
     }
   },
   "bamboocutDraught": {
@@ -81641,14 +78344,13 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "b7337f50241ba296af0e04235a6b7519860dcb235b20484117af4e37c485c385"
+        "digest": "122ca201d99f6fb2922d061e69f2f0a0527aa509a66c5d4e109cdf5beed6b95d"
       },
       "debuffs": {
-        "count": 9,
+        "count": 8,
         "ids": [
           "debuff-bamboocutDraught-bitter-season-tick",
           "debuff-bamboocutDraught-drunkslay",
-          "debuff-bamboocutDraught-nightwick-exposure",
           "debuff-bamboocutDraught-strayhunt",
           "debuff-bamboocutDraught-wildstride",
           "debuff-mystic-combustion",
@@ -81656,7 +78358,7 @@
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison"
         ],
-        "digest": "f1041a9d2610b544fa319c9081f0a0500e7346e9fc9616d530477618393dedb0"
+        "digest": "07d78b2d12e3a533f5fb48583509a7e8b8568b1a5caec29798cf3169b3fa72e6"
       },
       "buffs": [
         {
@@ -81715,8 +78417,7 @@
           "name": "Drunkslay",
           "classBuff": false,
           "requires": {
-            "param": "skyspeak",
-            "minTier": 6
+            "classId": "bamboocutDraught"
           },
           "affectsAll": false,
           "alwaysActive": true,
@@ -81743,7 +78444,7 @@
             "param": "mistwing",
             "minTier": 1
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -81768,7 +78469,7 @@
             "param": "mistwing",
             "minTier": 4
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -81793,7 +78494,7 @@
             "param": "mistwing",
             "minTier": 6
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -82306,7 +79007,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
@@ -82342,7 +79043,7 @@
           "requires": {
             "classId": "bamboocutDraught"
           },
-          "affectsAll": false,
+          "affectsAll": true,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
@@ -82456,30 +79157,6 @@
           "summary": "damage ×1.5 against non-player units on the twinblades Inebriate skills"
         },
         {
-          "id": "boundvesselStaggerDamage",
-          "name": "Boundvessel - Stagger",
-          "classBuff": false,
-          "requires": {
-            "classId": "bamboocutDraught"
-          },
-          "affectsAll": false,
-          "alwaysActive": true,
-          "buffAppliesOnCastEnd": false,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": 9999,
-          "maxStacks": null,
-          "effects": "[fn]",
-          "summary": "allDamageBoost +20% on the receiving skill while the target is in the Qi-break window"
-        },
-        {
           "id": "inebriateSkillCritDamage",
           "name": "Inebriate Critical Enhancement",
           "classBuff": true,
@@ -82550,7 +79227,7 @@
       ]
     },
     "dynamic": {
-      "digest": "4a88f8b49904d24991a78a72abe505dbd27567f3fe515550a14e3f43626b7bea"
+      "digest": "efe8c35c56f9e265eecedf66623538b3883e2c82becb75145ff5455c2b1aa0ac"
     }
   }
 }

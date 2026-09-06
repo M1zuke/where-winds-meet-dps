@@ -23,7 +23,6 @@ import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
 import { clashToastDamage } from "./clashToastDamage"
 import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
-import { boundvesselStaggerDamage } from "./boundvesselStaggerDamage"
 
 // Order is load-bearing (float addition is not associative): the globals that
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
@@ -53,7 +52,6 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   clashToastDamage,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
-  boundvesselStaggerDamage,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

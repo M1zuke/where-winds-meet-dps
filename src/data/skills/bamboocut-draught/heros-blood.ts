@@ -1,6 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff, applyDebuff, releaseEcho } from "../../../definitions/skills/triggers"
+import type { TriggerCondition } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
@@ -12,6 +14,10 @@ const strike = {
   attributeFixed: 50,
 }
 
+const MARKS_DRUNKSLAY: TriggerCondition[] = [
+  { buffId: BUFF.skyspeakDrunkslay, op: "gte", stacks: 1 },
+]
+
 // Two strikes on one damage share (in-game animation, 2026-09-05). The Binge
 // Points grant must run before the Deepdaze threshold check on the same hit.
 export const herosBloodHits = [
@@ -22,7 +28,7 @@ export const herosBloodHits = [
       applyBuff({ target: STATUS.bingePoints, stacks: 40 }),
       applyBuff({ target: STATUS.carouse, stacks: 1 }),
       releaseEcho({ target: DEBUFF.drunkslay }),
-      applyDebuff({ target: DEBUFF.drunkslay, stacks: 1 }),
+      applyDebuff({ target: DEBUFF.drunkslay, stacks: 1, conditions: MARKS_DRUNKSLAY }),
       ...deepdazeEntryTriggers(),
     ],
   }),

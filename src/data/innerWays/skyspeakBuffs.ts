@@ -1,16 +1,17 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
-import { BUFF, PARAM } from "../skills/buffs/ids"
+import { BUFF } from "../skills/buffs/ids"
 import { echo } from "../../engine/effects/effect"
 import { DEBUFF } from "../skills/bamboocut-draught/ids"
 import { isInebriate } from "../skills/bamboocut-draught/buffs/inebriate"
 
-// From tier 6, Inebriate-enhanced skill damage feeds Drunkslay's echo, and
-// the echo counts as repeated damage, which a target under both Wildstride
-// and Strayhunt takes 20% more of (in-game inner-way text, 2026-09-06).
+// The echo lives on the Drunkslay mark itself, so any source of the mark
+// brings it — Skyspeak gates who can apply the mark, not whether it echoes.
+// The echo counts as repeated damage, which a target under both Wildstride
+// and Strayhunt takes 20% more of.
 export const drunkslayEcho = defineBuff({
   id: BUFF.drunkslayEcho,
   name: "Drunkslay",
-  requires: { param: PARAM.skyspeak, minTier: 6 },
+  requires: { classId: "bamboocutDraught" },
   alwaysActive: true,
   duration: 9999,
   summary:

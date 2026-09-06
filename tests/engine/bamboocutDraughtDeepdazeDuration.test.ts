@@ -8,6 +8,8 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { deepdazeEntryTriggers } from "../../src/data/skills/bamboocut-draught/buffs/deepdazeEntry"
+import { applyBuff } from "../../src/definitions/skills/triggers"
+import { DEEPDAZE_MAX_EXTENDED_DURATION_FRAMES } from "../../src/data/classes/bamboocut-draught/gates"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import type { Inputs } from "../../src/engine/types"
 
@@ -100,5 +102,52 @@ describe("Inebriate - Deepdaze duration", () => {
     })
     const window = deepdazeWindow(result)
     expect(window.endSec - window.startSec).toBeCloseTo(10, 1)
+  })
+
+  it("caps what an extension may leave running, so repeated extensions stop growing it", () => {
+    const extender = (name: string, capped: boolean) =>
+      makeSkill(CLASS, {
+        name,
+        castFrames: 60,
+        hits: [
+          makeHit({
+            frame: 0,
+            triggers: [
+              applyBuff({
+                target: STATUS.inebriateDeepdaze,
+                stacks: 1,
+                extendFrames: 360,
+                extendOnly: true,
+                ...(capped
+                  ? { maxExtendedDurationFrames: DEEPDAZE_MAX_EXTENDED_DURATION_FRAMES }
+                  : {}),
+              }),
+            ],
+          }),
+        ],
+      })
+    const run = (extend: ReturnType<typeof extender>) => {
+      const result = runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        set: null,
+        mindMethods: skyspeakAt(3),
+        customSkills: [grantDeepdaze, extend, idlePad],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
+            ...Array.from({ length: 4 }, () => makeStep({ skillId: extend.id, hitCount: 1 })),
+            makeStep({ skillId: idlePad.id, hitCount: 1 }),
+          ],
+          openingStacks: { [STATUS.bingePoints]: 200 },
+        }),
+      })
+      const window = deepdazeWindow(result)
+      return window.endSec - window.startSec
+    }
+    const capped = run(extender("Test Deepdaze Extension", true))
+    const uncapped = run(extender("Test Deepdaze Extension Uncapped", false))
+    expect(uncapped).toBeCloseTo(10 + 4 * 6, 1)
+    expect(capped).toBeLessThan(uncapped)
   })
 })

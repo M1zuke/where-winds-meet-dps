@@ -23,14 +23,19 @@ export const drunkslay = defineDebuff({
   updatedAt: "2026-09-05T00:00:00.000Z",
 })
 
-// +2% damage taken of every type for 20 s (in-game state text, 2026-09-05).
+// While the mark holds, the attacker's physical and attribute damage scales
+// rise by 2%. It is an attacker-side bonus, not a vulnerability on the target,
+// so it multiplies the attack term rather than joining the target channel.
 export const strayhunt = defineDebuff({
   id: DEBUFF.strayhunt,
   classId: CLASS_ID,
   name: "Strayhunt",
   activation: "triggered",
   durationFrames: 1200,
-  effects: [{ statKey: "target.generalDamageTaken", amount: 0.02 }],
+  effects: [
+    { statKey: "physBoost", amount: 0.02 },
+    { statKey: "attributeDamageBoost", amount: 0.02 },
+  ],
   dot: null,
   maxStacks: 1,
   stackScaling: "flat",
@@ -48,23 +53,6 @@ export const wildstride = defineDebuff({
   activation: "triggered",
   durationFrames: 1200,
   effects: [],
-  dot: null,
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
-})
-
-// "+10% damage taken for 10 s" when Tri-strike or Grounddrift lands during
-// the target's stagger, which this model reads as the Qi-break window (client
-// locale text, 2026-09-04).
-export const nightwickExposure = defineDebuff({
-  id: DEBUFF.nightwickExposure,
-  classId: CLASS_ID,
-  name: "Nightwick Exposure",
-  activation: "triggered",
-  durationFrames: 600,
-  effects: [{ statKey: "target.generalDamageTaken", amount: 0.1 }],
   dot: null,
   maxStacks: 1,
   stackScaling: "flat",
@@ -100,10 +88,4 @@ export const bitterSeasonTick = defineDebuff({
   receives: [BUFF.soulShaken],
 })
 
-export const DEBUFFS: readonly Debuff[] = [
-  drunkslay,
-  strayhunt,
-  wildstride,
-  nightwickExposure,
-  bitterSeasonTick,
-]
+export const DEBUFFS: readonly Debuff[] = [drunkslay, strayhunt, wildstride, bitterSeasonTick]

@@ -20,7 +20,13 @@ function eonpourAt(tier: number): Inputs["mindMethods"] {
   ]
 }
 
-function runLightAttack(mindMethods: Inputs["mindMethods"], inCarouse: boolean) {
+const FULL_CHAIN = 6
+
+function runLightAttack(
+  mindMethods: Inputs["mindMethods"],
+  inCarouse: boolean,
+  hitCount = FULL_CHAIN,
+) {
   const openingStacks: Record<string, number> = {}
   if (inCarouse) openingStacks[STATUS.carouse] = 1
   return runEngine({
@@ -29,7 +35,7 @@ function runLightAttack(mindMethods: Inputs["mindMethods"], inCarouse: boolean) 
     set: null,
     mindMethods,
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: SKILL.lightAttack, hitCount: 1 })],
+      steps: [makeStep({ skillId: SKILL.lightAttack, hitCount })],
       openingStacks,
     }),
   })
@@ -41,17 +47,25 @@ function bingePointsAfter(result: ReturnType<typeof runLightAttack>): number | u
 }
 
 describe("Eonpour light attack Binge Points", () => {
-  it("a light attack landing grants 2 Binge Points with Eonpour slotted and none without", () => {
+  it("pays 5 Binge Points once the chain closes, with Eonpour slotted and none without", () => {
     const withEonpour = bingePointsAfter(runLightAttack(eonpourAt(1), false))!
     const withoutEonpour = bingePointsAfter(runLightAttack(defaultInputs.mindMethods, false))!
-    expect(withEonpour - withoutEonpour).toBe(2)
+    expect(withEonpour - withoutEonpour).toBe(5)
   })
 
-  it("the Carouse light-attack points need Eonpour tier 4", () => {
+  it("pays nothing while the chain is still short of its closing stage", () => {
+    const withEonpour = bingePointsAfter(runLightAttack(eonpourAt(1), false, FULL_CHAIN - 1))!
+    const withoutEonpour = bingePointsAfter(
+      runLightAttack(defaultInputs.mindMethods, false, FULL_CHAIN - 1),
+    )!
+    expect(withEonpour - withoutEonpour).toBe(0)
+  })
+
+  it("pays a second helping in Carouse only from Eonpour tier 4", () => {
     const withoutEonpour = bingePointsAfter(runLightAttack(defaultInputs.mindMethods, true))!
     const atTier3 = bingePointsAfter(runLightAttack(eonpourAt(3), true))!
     const atTier4 = bingePointsAfter(runLightAttack(eonpourAt(4), true))!
-    expect(atTier3 - withoutEonpour).toBe(2)
-    expect(atTier4 - withoutEonpour).toBe(3)
+    expect(atTier3 - withoutEonpour).toBe(5)
+    expect(atTier4 - withoutEonpour).toBe(10)
   })
 })

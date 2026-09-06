@@ -1,8 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { DEBUFF, SKILL } from "./ids"
+import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 const pursuit = (index: number, frame: number) =>
@@ -12,7 +11,6 @@ const pursuit = (index: number, frame: number) =>
     attributeMultiplier: 0.85797,
     physFixed: 158.25,
     attributeFixed: 86.25,
-    triggers: [applyDebuff({ target: DEBUFF.nightwickExposure, stacks: 1, phase: "exhausted" })],
   })
 
 // Client skill_numerical_config row 20902109 (2.28792 / 633 / 345 at skill
