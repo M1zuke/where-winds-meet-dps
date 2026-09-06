@@ -240,8 +240,15 @@ export function buildContext(
 
   const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
-  const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
-  const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
+  // Dummy mode drops what the target brings on its own, not what the player
+  // puts on it: a training dummy has no baseline vulnerability, but it still
+  // takes every debuff that writes to the same path.
+  const targetGeneralDamageTaken =
+    (inputs.dummyMode ? 0 : baseTarget.generalDamageTaken) +
+    (targetOverride?.generalDamageTakenDelta ?? 0)
+  const targetFatigueDamageTaken =
+    (inputs.dummyMode ? 0 : baseTarget.fatigueDamageTaken) +
+    (targetOverride?.fatigueDamageTakenDelta ?? 0)
   const effectiveBossBoost = inputs.bossBoost
 
   const generalDamageBoost =

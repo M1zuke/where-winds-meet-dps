@@ -141,4 +141,18 @@ describe("Volutefit", () => {
     expect(herosBloodRatio).toBeCloseTo(1, 6)
     expect(peakfallRatio).toBeGreaterThan(herosBloodRatio)
   })
+
+  it("lands its two panel lines on the path's own attribute, from tiers 2 and 5", () => {
+    const derived = (mindMethods: Inputs["mindMethods"]) =>
+      withDerivedStats({ ...defaultInputs, classId: CLASS, breakthrough: 17, mindMethods })
+    const unslotted = derived(UNSLOTTED)
+    const at = (tier: number) => derived(mindMethodsWith(INNER_WAY_ID.volutefit, tier))
+
+    expect(at(1).bamboocut.max).toBeCloseTo(unslotted.bamboocut.max, 6)
+    expect(at(2).bamboocut.max - unslotted.bamboocut.max).toBeCloseTo(29.5, 6)
+    expect(at(2).bamboocut.min - unslotted.bamboocut.min).toBeCloseTo(14.7, 6)
+
+    expect(at(4).bamboocut.penetration).toBeCloseTo(unslotted.bamboocut.penetration, 6)
+    expect(at(5).bamboocut.penetration - unslotted.bamboocut.penetration).toBeCloseTo(0.06, 6)
+  })
 })

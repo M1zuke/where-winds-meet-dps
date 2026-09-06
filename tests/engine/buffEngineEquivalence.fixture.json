@@ -688,7 +688,7 @@
           "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
+          "summary": "Physical and Attribute Attack +1%/stack while Inebriate (max 5 stacks)"
         },
         {
           "id": "tiltrimInebriateBonus",
@@ -76068,7 +76068,7 @@
           "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
+          "summary": "Physical and Attribute Attack +1%/stack while Inebriate (max 5 stacks)"
         },
         {
           "id": "tiltrimInebriateBonus",
@@ -77029,7 +77029,7 @@
           "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
+          "summary": "Physical and Attribute Attack +1%/stack while Inebriate (max 5 stacks)"
         },
         {
           "id": "tiltrimInebriateBonus",
@@ -78064,7 +78064,7 @@
           "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
+          "summary": "Physical and Attribute Attack +1%/stack while Inebriate (max 5 stacks)"
         },
         {
           "id": "tiltrimInebriateBonus",
@@ -79010,7 +79010,7 @@
           "duration": 5.1,
           "maxStacks": 5,
           "effects": "[fn]",
-          "summary": "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)"
+          "summary": "Physical and Attribute Attack +1%/stack while Inebriate (max 5 stacks)"
         },
         {
           "id": "tiltrimInebriateBonus",

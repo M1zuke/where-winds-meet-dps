@@ -629,6 +629,46 @@ describe("timeline — combined buff + debuff rotation", () => {
   })
 })
 
+describe("timeline — dummy mode keeps the debuffs the player applies", () => {
+  it("drops the target's own vulnerability but still counts a target.generalDamageTaken debuff", () => {
+    const vuln = makeDebuff(CLASS, {
+      name: "Vuln",
+      activation: "triggered",
+      durationFrames: 600,
+      effects: [{ statKey: "target.generalDamageTaken", amount: 0.2 }],
+    })
+    const setup = makeSkill(CLASS, {
+      name: "Setup",
+      castFrames: 30,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyDebuff", targetId: vuln.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const attack = makeSkill(CLASS, {
+      name: "Attack",
+      castFrames: 300,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1000 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: setup.id, hitCount: 1 }),
+        makeStep({ skillId: attack.id, hitCount: 1 }),
+      ],
+    })
+    const run = (dummyMode: boolean, debuffs: Debuff[]) =>
+      simulateTimeline({
+        ...timelineInputs(rotation, [setup, attack], [], debuffs),
+        dummyMode,
+      }).totalDamage
+
+    expect(run(true, [])).toBeLessThan(run(false, []))
+    expect(run(true, [vuln])).toBeGreaterThan(run(true, []))
+  })
+})
+
 describe("timeline — an edited copy of a built-in skill overrides the built-in by id", () => {
   it("seedSkillFromBuiltin keeps the built-in's id, so an edited copy changes the same rotation's damage", () => {
     const classId = "bellstrikeUmbra"

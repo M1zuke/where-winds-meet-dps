@@ -5,7 +5,12 @@ import type { StatKey } from "../statRegistry"
 // `extraCritDamage` is deliberately excluded: `hitToArtRow` DOES set it, and
 // `buildArt` may overwrite it again resolving the crit-boost sentinel — a
 // replace, not an addition (see `behavior.ts`). It has no `artBonus` producer.
-export type ArtBonusField = "extraCritRate" | "extraPhysPenetration"
+export type ArtBonusField =
+  | "extraCritRate"
+  | "extraPhysPenetration"
+  | "minPhysPctBonus"
+  | "maxPhysPctBonus"
+  | "attributeAttackPctBonus"
 
 export type Effect =
   | { kind: "stat"; statKey: StatKey; amount: number }

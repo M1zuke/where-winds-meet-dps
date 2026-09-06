@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeHit, makeSkill } from "../../src/engine/skill"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
@@ -64,6 +65,35 @@ describe("Tiltrim", () => {
     const result = runHerosBlood(0)
     const herosBloodCast = result.casts!.find((cast) => cast.skillName === "Twinblade Special")!
     expect(herosBloodCast.buffs.some((buff) => buff.id === BUFF.tiltrimStack)).toBe(false)
+  })
+
+  it("scales the attack value, so a hit made only of flat damage gains nothing", () => {
+    const run = (physMultiplier: number, physFixed: number, set: string | null) => {
+      const probe = makeSkill(CLASS, {
+        name: "Test Probe",
+        castFrames: 60,
+        hits: [makeHit({ frame: 0, physMultiplier, physFixed })],
+      })
+      const result = runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        set,
+        customSkills: [probe],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: probe.id, hitCount: 1 }),
+            makeStep({ skillId: probe.id, hitCount: 1 }),
+          ],
+          openingStacks: { [STATUS.bingePoints]: 100 },
+        }),
+      })
+      const events = result.timeline!.filter((event) => event.skillName === probe.name)
+      return events[events.length - 1].damage
+    }
+    const scaledGrowth = run(1, 0, SET_ID.tiltrim) / run(1, 0, null)
+    const flatGrowth = run(0, 1000, SET_ID.tiltrim) / run(0, 1000, null)
+    expect(scaledGrowth).toBeGreaterThan(1)
+    expect(flatGrowth).toBeCloseTo(1, 6)
   })
 
   it("the 5-stack bonus reaches only Inebriate-enhanced skills", () => {

@@ -34,6 +34,9 @@ type ArtRow = {
   minPhysFlatBonus?: number
   maxPhysPctBonus?: number
   maxPhysFlatBonus?: number
+  // Scales the attribute attack VALUE, the way the phys pct bonuses scale the
+  // physical one — not the flat damage a skill's own rows carry.
+  attributeAttackPctBonus?: number
   extraCritRate?: number
   extraCritDamage?: number
   extraAffinityRate?: number
@@ -321,8 +324,9 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const minAttack = block.min
-    const maxAttack = Math.max(block.max, minAttack)
+    const attackScale = 1 + numberOrZero(art.attributeAttackPctBonus)
+    const minAttack = block.min * attackScale
+    const maxAttack = Math.max(block.max * attackScale, minAttack)
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0

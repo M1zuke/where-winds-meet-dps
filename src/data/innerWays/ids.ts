@@ -67,6 +67,7 @@ export const INNER_WAY_LADDER = {
   critRateFiveStar: "critRateFiveStar",
   affinityRateFourStar: "affinityRateFourStar",
   attributeAttackFourStar: "attributeAttackFourStar",
+  attributeAttackFiveStar: "attributeAttackFiveStar",
 } as const
 
 export type InnerWayLadderId = (typeof INNER_WAY_LADDER)[keyof typeof INNER_WAY_LADDER]
