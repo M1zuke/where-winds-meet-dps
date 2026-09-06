@@ -25,6 +25,8 @@ export const BUFF = {
   mountainSplitter: "mountainSplitter",
   nonPlayerBaseDamage40: "nonPlayerBaseDamage40",
   nonPlayerBaseDamage50: "nonPlayerBaseDamage50",
+  mistwingPhysicalPenetration: "mistwingPhysicalPenetration",
+  mistwingAllTypePenetration: "mistwingAllTypePenetration",
   mistwingInebriatePenetration: "mistwingInebriatePenetration",
   mountainsMight: "mountainsMight",
   mountainsMightQiImbalance: "mountainsMightQiImbalance",

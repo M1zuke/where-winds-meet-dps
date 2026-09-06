@@ -4,6 +4,7 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
+import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
@@ -81,14 +82,36 @@ describe("Skyspeak", () => {
 })
 
 describe("Mistwing", () => {
+  it("keeps the rung penetration out of the derived panel stats", () => {
+    const inputs = withDerivedStats({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods: mindMethodsWith(INNER_WAY_ID.mistwing, 6),
+    })
+    const unslotted = withDerivedStats({ ...defaultInputs, classId: CLASS, mindMethods: UNSLOTTED })
+    expect(inputs.phys.penetration).toBe(unslotted.phys.penetration)
+    expect(inputs.bamboocut.penetration).toBe(unslotted.bamboocut.penetration)
+  })
+
+  it("tier 1 raises damage over unslotted and tier 4 over tier 3, both without Inebriate", () => {
+    const unslotted = peakfallDamage(runPeakfall(UNSLOTTED, 0))
+    const tier1 = peakfallDamage(runPeakfall(mindMethodsWith(INNER_WAY_ID.mistwing, 1), 0))
+    const tier3 = peakfallDamage(runPeakfall(mindMethodsWith(INNER_WAY_ID.mistwing, 3), 0))
+    const tier4 = peakfallDamage(runPeakfall(mindMethodsWith(INNER_WAY_ID.mistwing, 4), 0))
+    expect(tier1).toBeGreaterThan(unslotted)
+    expect(tier4).toBeGreaterThan(tier3)
+  })
+
   it("tier 5 adds no Inebriate penetration, tier 6 does", () => {
     // Other always-on Inebriate bonuses (unrelated to Mistwing) already
     // separate Tipsy from not-Tipsy damage at every tier, so the Mistwing-
     // specific contribution is the MARGIN Tipsy adds, not the raw damage.
     const tier5 = mindMethodsWith(INNER_WAY_ID.mistwing, 5)
     const tier6 = mindMethodsWith(INNER_WAY_ID.mistwing, 6)
-    const tier5Margin = peakfallDamage(runPeakfall(tier5, 100)) - peakfallDamage(runPeakfall(tier5, 0))
-    const tier6Margin = peakfallDamage(runPeakfall(tier6, 100)) - peakfallDamage(runPeakfall(tier6, 0))
+    const tier5Margin =
+      peakfallDamage(runPeakfall(tier5, 100)) - peakfallDamage(runPeakfall(tier5, 0))
+    const tier6Margin =
+      peakfallDamage(runPeakfall(tier6, 100)) - peakfallDamage(runPeakfall(tier6, 0))
     expect(tier6Margin).toBeGreaterThan(tier5Margin)
   })
 })
@@ -111,8 +134,10 @@ describe("Volutefit", () => {
       result.perSkill.find((row) => row.breakdownName === "Hero's Blood")!.expectedDamage
 
     const tier1 = mindMethodsWith(INNER_WAY_ID.volutefit, 1)
-    const peakfallRatio = peakfallDamage(runPeakfall(tier1)) / peakfallDamage(runPeakfall(UNSLOTTED))
-    const herosBloodRatio = herosBloodDamage(runHerosBlood(tier1)) / herosBloodDamage(runHerosBlood(UNSLOTTED))
+    const peakfallRatio =
+      peakfallDamage(runPeakfall(tier1)) / peakfallDamage(runPeakfall(UNSLOTTED))
+    const herosBloodRatio =
+      herosBloodDamage(runHerosBlood(tier1)) / herosBloodDamage(runHerosBlood(UNSLOTTED))
     expect(herosBloodRatio).toBeCloseTo(1, 6)
     expect(peakfallRatio).toBeGreaterThan(herosBloodRatio)
   })

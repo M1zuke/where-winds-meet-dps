@@ -81641,7 +81641,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "7e0dd6880f1d824dea98065deaa46ea8c18c9d52118cdb53484d14c44a67e456"
+        "digest": "ee3c8ead49656394ffab2f7a48688e98b5a734a429cf091dc0a029dc56edc7bc"
       },
       "debuffs": {
         "count": 9,
@@ -81736,8 +81736,58 @@
           "summary": "Inebriate-enhanced skill damage feeds the Drunkslay echo while the mark is on the target, ×1.2 with Wildstride and Strayhunt on it"
         },
         {
+          "id": "mistwingPhysicalPenetration",
+          "name": "Mistwing T1 (Physical Penetration)",
+          "classBuff": false,
+          "requires": {
+            "param": "mistwing",
+            "minTier": 1
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "phys.penetration +3"
+        },
+        {
+          "id": "mistwingAllTypePenetration",
+          "name": "Mistwing T4 (All-Type Penetration)",
+          "classBuff": false,
+          "requires": {
+            "param": "mistwing",
+            "minTier": 4
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "phys.penetration +3, bamboocut.penetration +6"
+        },
+        {
           "id": "mistwingInebriatePenetration",
-          "name": "Mistwing",
+          "name": "Mistwing T6 (Inebriate Penetration)",
           "classBuff": false,
           "requires": {
             "param": "mistwing",
@@ -82500,7 +82550,7 @@
       ]
     },
     "dynamic": {
-      "digest": "151f1cb71808da49ca29c5a871f7dad40b3cbd1c51c99b11731dfe38499b4ebc"
+      "digest": "4a88f8b49904d24991a78a72abe505dbd27567f3fe515550a14e3f43626b7bea"
     }
   }
 }
