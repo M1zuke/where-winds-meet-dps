@@ -230,9 +230,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     const capOf = (status: Buff | Debuff): number => Math.max(1, status.maxStacks)
 
-    const openWindow = (status: Buff | Debuff, frame: number, owner: number): void => {
+    const openWindow = (
+      status: Buff | Debuff,
+      frame: number,
+      owner: number,
+      durationFrames?: number,
+    ): void => {
       if (status.activation === "permanent") target.openPermanent(status.id)
-      else target.pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), owner)
+      else
+        target.pushWindow(
+          status.id,
+          frame,
+          frame + Math.max(1, durationFrames ?? status.durationFrames),
+          owner,
+        )
     }
 
     const write = (
@@ -242,10 +253,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       owner: number,
       timedWindow: boolean,
       fireMaxStacks: boolean,
+      durationFrames?: number,
     ): void => {
       const before = target.stacksAt(status.id, frame)
       target.recordStack(status.id, frame, next, owner)
-      if (timedWindow || status.activation === "permanent") openWindow(status, frame, owner)
+      if (timedWindow || status.activation === "permanent")
+        openWindow(status, frame, owner, durationFrames)
       if (!fireMaxStacks || isDebuffStatus(status) || !status.onMaxStacks) return
       if (before >= capOf(status) || next < capOf(status)) return
       for (const trigger of status.onMaxStacks) applyTrigger(trigger, frame, owner, false)
@@ -257,9 +270,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       stacks: number,
       owner: number,
       fireMaxStacks: boolean,
+      durationFrames?: number,
     ): void => {
       const next = clamp(target.stacksAt(status.id, frame) + stacks, 0, capOf(status))
-      write(status, frame, next, owner, true, fireMaxStacks)
+      write(status, frame, next, owner, true, fireMaxStacks, durationFrames)
     }
 
     function applyTrigger(
@@ -292,7 +306,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         } else if (!trigger.extendOnly) grant(status, frame, trigger.stacks, owner, fireMaxStacks)
         return
       }
-      grant(status, frame, trigger.stacks, owner, fireMaxStacks)
+      grant(status, frame, trigger.stacks, owner, fireMaxStacks, trigger.durationFrames)
     }
 
     return {
@@ -310,6 +324,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             )
             if (refreshed) continue
             const reset = status.onExpire!
+            if (reset.requiresBuffId && !target.longestActiveWindow(reset.requiresBuffId, window.end))
+              continue
             const resetTarget = statusById.get(reset.targetId)
             if (!resetTarget) continue
             const next = clamp(reset.stacks, 0, capOf(resetTarget))

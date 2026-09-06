@@ -11,6 +11,11 @@ import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
 import { BAMBOOCUT_DRAUGHT_GRADUATION_BUILD } from "./graduationBuild"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
 
+const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
+const skillsWithClassDeflect = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
+  (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
+)
+
 // The talent "Inebriate Critical Enhancement" is carried by its own module,
 // so the weapon-type crit-boost gate stays empty on purpose.
 export const bamboocutDraught = defineClass({
@@ -37,7 +42,7 @@ export const bamboocutDraught = defineClass({
   ],
   weapons: [MARTIAL_ART_ID.skystrikeGauntlets, MARTIAL_ART_ID.rivenTwinblades],
   critBoostWeaponTypes: [],
-  skills: withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS),
+  skills: skillsWithClassDeflect,
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,

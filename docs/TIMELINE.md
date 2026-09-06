@@ -114,6 +114,9 @@ Rules:
 - A trigger that enqueues another skill's hits must not form an unbounded chain.
 - Extending an already-active window is a distinct operation from opening a
   fresh one. Do not emulate one with the other.
+- **A trigger may open its own grant at a length other than the target
+  status's own** (`durationFrames`): that grant's window uses it in place of
+  the status's declared duration, for that grant alone.
 - **A trigger may move one status's stacks onto another** (`transferFrom`): the
   target gains as many stacks as the source holds at that frame, window-aware
   and clamped to the target's cap, and the source is set to 0 at the same frame
@@ -178,7 +181,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   value. A refresh never fires it, an extension moves the frame it fires at,
   a permanent-activation buff never fires it, and each window fires at most
   once. The reset lands in the layout pass and the event loop alike, so a hit
-  variant or cast length gated on the target sees it from that frame on.
+  variant or cast length gated on the target sees it from that frame on. It
+  may also declare `requiresBuffId`: the reset only lands if that other
+  status has a live window at the same frame, so the same lapse silently
+  does nothing without it.
 - **A buff may count damaging hits** (`stacksPerDamagingHit`): every damaging
   hit from any skill grants one stack, at most once per its cooldown, clamped
   to `maxStacks` and opening the buff's own window. The granting hit's own

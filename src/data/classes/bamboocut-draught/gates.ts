@@ -1,21 +1,23 @@
 import type { Buff } from "../../../engine/buff"
 import { defineGateBuff } from "../../../definitions/skills/skillDef"
+import { BUFF } from "../../skills/buffs/ids"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
 
 const CLASS_ID = "bamboocutDraught"
 
 export const BINGE_MARKS_DURATION_FRAMES = 600
-export const INEBRIATE_DEEPDAZE_DURATION_FRAMES = 600
+export const INEBRIATE_DEEPDAZE_DURATION_FRAMES = 300
+export const SKYSPEAK_DEEPDAZE_EXTENSION_FRAMES = 300
 export const CAROUSE_DURATION_FRAMES = 1200
 export const CLASH_TOAST_DURATION_FRAMES = 900
-export const EONPOUR_PEAKFALL_COOLDOWN_FRAMES = 3600
+export const EONPOUR_EXHAUSTED_COOLDOWN_FRAMES = 3600
 
-// In-game state text, 2026-09-05: Binge Points start at 60 and cap at 200;
+// In-game state text, 2026-09-06: Binge Points start at 60 and cap at 200;
 // Tipsy from 100, Deepdaze at 200 for 5 s, 10 s with Skyspeak tier 3. When
-// Deepdaze lapses the counter is cleared, to 60 with Skyspeak tier 2. Binge
-// Marks hold 50 for 10 s. Carouse lasts 20 s at the talent's top rank.
-// Clash-toast lasts 15 s at ultimate rank 5. Cloudvault holds 2 stacks until
-// Hero's Blood - Inebriate consumes them.
+// Deepdaze lapses the counter is cleared, to 60 with Skyspeak slotted at all
+// (rank 1). Binge Marks hold 50 for 10 s. Carouse lasts 20 s at the talent's
+// top rank. Clash-toast lasts 15 s at ultimate rank 5. Cloudvault holds 2
+// stacks until Hero's Blood - Inebriate consumes them.
 export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
   defineGateBuff({
     id: STATUS.bingePoints,
@@ -54,22 +56,26 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",
-    onExpire: { targetId: STATUS.bingePoints, stacks: 60 },
+    onExpire: {
+      targetId: STATUS.bingePoints,
+      stacks: 60,
+      requiresBuffId: BUFF.skyspeakDeepdazeRefund,
+    },
     createdAt: "2026-09-03T00:00:00.000Z",
     updatedAt: "2026-09-04T00:00:00.000Z",
   }),
   defineGateBuff({
-    id: STATUS.eonpourPeakfallCooldown,
+    id: STATUS.eonpourExhaustedCooldown,
     classId: CLASS_ID,
-    name: "Eonpour - Peakfall Cooldown",
+    name: "Eonpour - Exhausted Cooldown",
     scope: "player",
     activation: "triggered",
-    durationFrames: EONPOUR_PEAKFALL_COOLDOWN_FRAMES,
+    durationFrames: EONPOUR_EXHAUSTED_COOLDOWN_FRAMES,
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",
     createdAt: "2026-09-05T00:00:00.000Z",
-    updatedAt: "2026-09-05T00:00:00.000Z",
+    updatedAt: "2026-09-06T00:00:00.000Z",
   }),
   defineGateBuff({
     id: STATUS.carouse,

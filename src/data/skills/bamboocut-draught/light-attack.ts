@@ -2,15 +2,31 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
 import type { HitTrigger } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
 const inCarouse = [{ buffId: STATUS.carouse, op: "gte" as const, stacks: 1 }]
+const eonpourBaseOutsideCarouse = [
+  { buffId: BUFF.eonpourLightAttackPoints, op: "gte" as const, stacks: 1 },
+  { buffId: STATUS.carouse, op: "eq" as const, stacks: 0 },
+]
+const eonpourBaseBelowCarouseTier = [
+  { buffId: BUFF.eonpourLightAttackPoints, op: "gte" as const, stacks: 1 },
+  { buffId: STATUS.carouse, op: "gte" as const, stacks: 1 },
+  { buffId: BUFF.eonpourCarousePoints, op: "eq" as const, stacks: 0 },
+]
+const eonpourCarouseTier4 = [
+  { buffId: STATUS.carouse, op: "gte" as const, stacks: 1 },
+  { buffId: BUFF.eonpourCarousePoints, op: "gte" as const, stacks: 1 },
+]
 
 const onLanding = (carousePoints: number): HitTrigger[] => [
   applyBuff({ target: STATUS.bingeMarks, stacks: 2 }),
   applyBuff({ target: STATUS.bingeMarks, stacks: 3, conditions: inCarouse }),
-  applyBuff({ target: STATUS.bingePoints, stacks: carousePoints, conditions: inCarouse }),
+  applyBuff({ target: STATUS.bingePoints, stacks: 2, conditions: eonpourBaseOutsideCarouse }),
+  applyBuff({ target: STATUS.bingePoints, stacks: 2, conditions: eonpourBaseBelowCarouseTier }),
+  applyBuff({ target: STATUS.bingePoints, stacks: carousePoints, conditions: eonpourCarouseTier4 }),
 ]
 
 const stage = (
@@ -30,12 +46,13 @@ const stage = (
     triggers,
   })
 
-// Coefficients: client skill_numerical_config rows 20902011-20902016 at skill
-// level 100 (patch container, 2026-09-04), one hit per stage; Bloombreak, the
-// Inebriate form, shares them. Each landing grants 2 Binge Marks, 5 during
-// Carouse, and during Carouse 3 Binge Points, 5 on the sixth, which also
-// unleashes Falcon's Pursuit. Cast length and hit frames: in-game animation,
-// 2026-09-05, the six stages played back to back.
+// Coefficients: in-game skill data at skill level 100 (2026-09-04), one hit
+// per stage; Bloombreak, the Inebriate form, shares them. Each landing grants
+// 2 Binge Marks, 5 during Carouse; with Eonpour slotted it also grants 2
+// Binge Points, or in Carouse from tier 4, 3 Binge Points, 5 on the sixth,
+// which also unleashes Falcon's Pursuit (in-game inner-way text, 2026-09-06).
+// Cast length and hit frames: in-game animation, 2026-09-05, the six stages
+// played back to back.
 export const lightAttack = defineSkill({
   id: SKILL.lightAttack,
   classId: "bamboocutDraught",

@@ -67,7 +67,7 @@ const skyspeakAt = (tier: number): Inputs["mindMethods"] => [
   { name: "", stacks: "" },
 ]
 
-function run(sequence: Skill[], mindMethods: Inputs["mindMethods"] = skyspeakAt(4)) {
+function run(sequence: Skill[], mindMethods: Inputs["mindMethods"] = skyspeakAt(6)) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
@@ -117,8 +117,8 @@ describe("the Drunkslay echo", () => {
     expect(rowNamed(result, ECHO_ROW)).toBeUndefined()
   })
 
-  it("feeds nothing below Skyspeak tier 4", () => {
-    expect(rowNamed(run([grantDeepdaze, marker, feeder, marker], skyspeakAt(3)), ECHO_ROW)).toBeUndefined()
+  it("feeds nothing below Skyspeak tier 6", () => {
+    expect(rowNamed(run([grantDeepdaze, marker, feeder, marker], skyspeakAt(5)), ECHO_ROW)).toBeUndefined()
     expect(
       rowNamed(run([grantDeepdaze, marker, feeder, marker], defaultInputs.mindMethods), ECHO_ROW),
     ).toBeUndefined()

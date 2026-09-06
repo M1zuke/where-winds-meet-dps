@@ -16,7 +16,7 @@ const drinkGrants = (points: number) => [
   applyBuff({ target: STATUS.bingePoints, stacks: points, conditions: noMarks }),
   applyBuff({ target: STATUS.bingePoints, stacks: points, conditions: [...noMarks, inCarouse] }),
   applyBuff({ target: STATUS.bingePoints, transferFrom: STATUS.bingeMarks }),
-  ...deepdazeEntryTriggers,
+  ...deepdazeEntryTriggers(),
 ]
 
 export const perfectDrinkGrants = drinkGrants(25)

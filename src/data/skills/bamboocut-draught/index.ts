@@ -25,6 +25,7 @@ import { reveldriftCancel } from "./reveldrift-cancel"
 import { realmplay } from "./realmplay"
 import { boundvessel } from "./boundvessel"
 import { skystrikeGauntletsEx } from "./skystrike-gauntlets-ex"
+import { deflectCancel } from "./deflect-cancel"
 
 export const CLASS_ID = "bamboocutDraught"
 
@@ -55,4 +56,5 @@ export const SKILLS: Skill[] = [
   realmplay,
   boundvessel,
   skystrikeGauntletsEx,
+  deflectCancel,
 ]

@@ -5,8 +5,9 @@ import { SKILL } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 import { reveldriftHits } from "./reveldrift"
 
-// A cancel form ends one frame after its last landed collider; the parry that
-// ends it is the next rotation step.
+// A cancel form ends where the animation opens its interrupt window — 28
+// frames in, after the first hit (in-game animation, 2026-09-06); the parry
+// that ends it is the next rotation step.
 export const reveldriftCancel = defineSkill({
   id: SKILL.reveldriftCancel,
   classId: "bamboocutDraught",
@@ -20,7 +21,7 @@ export const reveldriftCancel = defineSkill({
   receives: CLASS_RECEIVES,
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
-  castFrames: 20,
+  castFrames: 28,
   hits: [reveldriftHits[0]],
   createdAt: "2026-09-05T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

@@ -2,11 +2,12 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
+import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
-// The ultimate deals no damage of its own: a big drink that enters Deepdaze
-// outright and grants Clash-toast for 15 s at rank 5 (client skill
-// descriptions 30616-30620, 2026-09-04). Deepdaze needs the counter at its cap.
-// Cast length: in-game animation, 2026-09-05.
+// The ultimate deals no damage of its own: a big drink that fills Binge
+// Points to their cap and grants Clash-toast for 15 s at rank 5, entering
+// Deepdaze through the same threshold every other source does (in-game
+// ultimate text, 2026-09-06). Cast length: in-game animation, 2026-09-05.
 export const skystrikeGauntletsEx = defineSkill({
   id: SKILL.skystrikeGauntletsEx,
   classId: "bamboocutDraught",
@@ -28,7 +29,7 @@ export const skystrikeGauntletsEx = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyBuff({ target: STATUS.bingePoints, stacks: 200 }),
-        applyBuff({ target: STATUS.inebriateDeepdaze, stacks: 1 }),
+        ...deepdazeEntryTriggers(),
         applyBuff({ target: STATUS.clashToast, stacks: 1 }),
       ],
     }),

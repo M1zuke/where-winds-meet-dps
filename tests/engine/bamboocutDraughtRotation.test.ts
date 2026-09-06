@@ -39,7 +39,7 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
   })
 
   it("is the class default", () => {
-    expect(classDef.defaultRotationId).toBe("builtin-bamboocutDraught-dummy-rotation")
+    expect(classDef.defaultRotationId).toBe("builtin-bamboocutDraught-1m-dummy-windsfromcn")
     expect(classDef.rotations.some((r) => r.id === classDef.defaultRotationId)).toBe(true)
   })
 
@@ -224,21 +224,79 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
     const result = runPeakfall(true, true)
     const windows = deepdazeWindows(result)
     expect(windows).toHaveLength(1)
-    expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(16, 1)
+    expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(11, 1)
   })
 
   it("does nothing without Eonpour", () => {
     expect(deepdazeWindows(runPeakfall(false, false))).toHaveLength(0)
   })
 
+  it("does not also fire Skyspeak's tier-3 grant on the same Exhausted hit that extends a running Deepdaze", () => {
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: [grantDeepdaze],
+      mindMethods: [
+        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "3" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+      ],
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [
+          makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
+          makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
+        ],
+        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+      }),
+      set: null,
+    })
+    const windows = deepdazeWindows(result)
+    expect(windows).toHaveLength(1)
+    expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(11, 1)
+  })
+
   it("shows its 60 s cooldown on the cast and blocks a second Peakfall inside it", () => {
     const result = runPeakfall(true, false, 2)
     const [first, second] = result.casts!.filter((cast) => cast.skillName === "Gauntlet Q")
-    const cooldown = first.buffs.find((buff) => buff.id === STATUS.eonpourPeakfallCooldown)
+    const cooldown = first.buffs.find((buff) => buff.id === STATUS.eonpourExhaustedCooldown)
     expect(cooldown?.remainingSec).toBeCloseTo(60, 0)
-    expect(second.buffs.some((buff) => buff.id === STATUS.eonpourPeakfallCooldown)).toBe(true)
+    expect(second.buffs.some((buff) => buff.id === STATUS.eonpourExhaustedCooldown)).toBe(true)
     expect(deepdazeWindows(result)).toHaveLength(1)
     expect(result.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt)).toHaveLength(1)
+  })
+
+  it("Castlink on the Exhausted boss fires the same trigger and shares the 60 s cooldown", () => {
+    const castlinkOnly = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods: eonpourTier6,
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [makeStep({ skillId: SKILL.castlink, hitCount: 4 })],
+        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+      }),
+      set: null,
+    })
+    expect(deepdazeWindows(castlinkOnly)).toHaveLength(1)
+    expect(castlinkOnly.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt)).toHaveLength(1)
+
+    const peakfallThenCastlink = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      mindMethods: eonpourTier6,
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [
+          makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
+          makeStep({ skillId: SKILL.castlink, hitCount: 4 }),
+        ],
+        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+      }),
+      set: null,
+    })
+    expect(deepdazeWindows(peakfallThenCastlink)).toHaveLength(1)
+    expect(
+      peakfallThenCastlink.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),
+    ).toHaveLength(1)
   })
 })
 

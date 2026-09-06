@@ -46,6 +46,9 @@ export interface HitTrigger {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
+  // Opens the granted window at this length instead of the target status's
+  // own `durationFrames`.
+  durationFrames?: number
 }
 
 export interface SkillHit {
@@ -201,6 +204,13 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     (typeof t.cooldownFrames !== "number" ||
       !Number.isFinite(t.cooldownFrames) ||
       t.cooldownFrames < 0)
+  )
+    return false
+  if (
+    t.durationFrames !== undefined &&
+    (typeof t.durationFrames !== "number" ||
+      !Number.isFinite(t.durationFrames) ||
+      t.durationFrames <= 0)
   )
     return false
   return true

@@ -25,6 +25,7 @@ export const SKILL = {
   realmplay: "bamboocutDraught-realmplay",
   boundvessel: "bamboocutDraught-boundvessel",
   skystrikeGauntletsEx: "bamboocutDraught-skystrike-gauntlets-ex",
+  deflectCancel: "bamboocutDraught-deflect-cancel",
 } as const
 
 export const DEBUFF = {
@@ -42,5 +43,5 @@ export const STATUS = {
   carouse: "buff-bamboocutDraught-carouse",
   clashToast: "buff-bamboocutDraught-clash-toast",
   cloudvault: "buff-bamboocutDraught-cloudvault",
-  eonpourPeakfallCooldown: "buff-bamboocutDraught-eonpour-peakfall-cooldown",
+  eonpourExhaustedCooldown: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
 } as const

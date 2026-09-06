@@ -18,6 +18,7 @@ import { resistanceResolve } from "./resistanceResolve"
 import { surgingWaves } from "./surgingWaves"
 import { dragonHeadLowHp } from "./dragonHeadLowHp"
 import { tiltrimStack } from "./tiltrimStack"
+import { tiltrimInebriateBonus } from "./tiltrimInebriateBonus"
 import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
 import { clashToastDamage } from "./clashToastDamage"
@@ -46,6 +47,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   mistwillowHeavyBuff,
   mistwillowLightBuff,
   tiltrimStack,
+  tiltrimInebriateBonus,
   inebriateCritDamage,
   cloudvault,
   clashToastDamage,

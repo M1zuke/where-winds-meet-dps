@@ -32,14 +32,10 @@ function receivedBuffIds(): Set<string> {
 // `mountainsMightQiImbalance` carries no stat effect either: it exists so an
 // inner way can gate which skills inflict a status the class also inflicts
 // ungated, and its only effect applies that status.
-// `tiltrimStack` reaches Bamboocut - Draught's own Inebriate-boosted skills,
-// which aren't authored yet — remove this once that class's skills declare
-// `receives: [BUFF.tiltrimStack]`.
 const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mirage",
   "rainwhisperShield",
   "mountainsMightQiImbalance",
-  "tiltrimStack",
 ])
 
 describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {

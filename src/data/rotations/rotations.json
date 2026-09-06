@@ -3193,8 +3193,8 @@
   "bamboocutDraught": {
     "rotations": [
       {
-        "id": "builtin-bamboocutDraught-dummy-rotation",
-        "name": "Dummy Rotation",
+        "id": "builtin-bamboocutDraught-1m-dummy-windsfromcn",
+        "name": "1m Dummy - By WindsFromCN",
         "classId": "bamboocutDraught",
         "steps": [
           {
@@ -3273,7 +3273,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-second-cancel",
             "hitCount": 6,
             "prePull": false
           },
@@ -3283,8 +3283,13 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-third-cancel",
             "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3348,7 +3353,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-second-cancel",
             "hitCount": 6,
             "prePull": false
           },
@@ -3358,8 +3363,13 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-third-cancel",
             "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3393,7 +3403,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-second-cancel",
             "hitCount": 6,
             "prePull": false
           },
@@ -3403,8 +3413,13 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-third-cancel",
             "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3478,7 +3493,7 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate-cancel",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-second-cancel",
             "hitCount": 6,
             "prePull": false
           },
@@ -3488,8 +3503,13 @@
             "prePull": false
           },
           {
-            "skillId": "bamboocutDraught-dragonquench-inebriate",
+            "skillId": "bamboocutDraught-dragonquench-inebriate-third-cancel",
             "hitCount": 6,
+            "prePull": false
+          },
+          {
+            "skillId": "bamboocutDraught-deflect-cancel",
+            "hitCount": 1,
             "prePull": false
           },
           {
@@ -3504,13 +3524,17 @@
           }
         ],
         "permanentBuffIds": [],
-        "qiBreak": { "startSec": 25, "durationSec": 10, "lowQiLeadSec": 5 },
-        "prePullHitsCount": false,
-        "createdAt": "2026-09-04T00:00:00.000Z",
-        "updatedAt": "2026-09-05T00:00:00.000Z",
-        "description": "Training-dummy rotation as played in game (2026-09-04). Cast lengths follow the community speed-rotation workbook v2.0; every Parry Cancel ends a recovery, none cuts a hit. Cooldowns are not enforced. Deepdaze entry depends on the simulated Binge Points — check the timeline before relying on the Inebriate forms."
+        "openingStacks": {},
+        "qiBreak": {
+          "startSec": 25,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
+        "createdAt": "2026-09-06T00:00:00.000Z",
+        "updatedAt": "2026-09-06T00:00:00.000Z",
+        "description": "One-minute training-dummy rotation by WindsFromCN, as played in game (2026-09-06): three parry-cancelled Dragonquench combos per Deepdaze, then Hero's Blood - Inebriate. Every Parry Cancel ends a recovery, none cuts a hit. Cooldowns are not enforced. Deepdaze entry depends on the simulated Binge Points — check the timeline before relying on the Inebriate forms."
       }
     ],
-    "defaultRotationId": "builtin-bamboocutDraught-dummy-rotation"
+    "defaultRotationId": "builtin-bamboocutDraught-1m-dummy-windsfromcn"
   }
 }

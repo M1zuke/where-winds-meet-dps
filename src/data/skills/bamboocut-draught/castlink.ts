@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { eonpourExhaustedTriggers } from "./buffs/eonpourExhausted"
 
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 
@@ -16,8 +17,9 @@ const jadeflushKick = {
   attributeFixed: 95.75,
 }
 
-// Cast length to the earliest next input and hit frames: in-game animation,
-// 2026-09-05.
+// Shares Peakfall's Eonpour tier-6 Exhausted trigger and its 60 s cooldown
+// (in-game text of the trigger's own cooldown state, 2026-09-06). Cast length
+// to the earliest next input and hit frames: in-game animation, 2026-09-05.
 export const castlink = defineSkill({
   id: SKILL.castlink,
   classId: "bamboocutDraught",
@@ -38,6 +40,7 @@ export const castlink = defineSkill({
       attributeMultiplier: 0.9242475,
       physFixed: 171,
       attributeFixed: 93,
+      triggers: eonpourExhaustedTriggers,
       variants: [{ ...jadeflushKick, castFrames: 89 }],
     }),
     hit(1, {

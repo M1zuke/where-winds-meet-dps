@@ -4,8 +4,9 @@ import { SKILL } from "./ids"
 import { DRAGONQUENCH_RECEIVES, DRAGONQUENCH_TAGS } from "./dragonquench-inebriate"
 import { dragonquenchSecondStages } from "./dragonquench-inebriate-second"
 
-// A cancel form ends one frame after its last landed collider; the parry
-// that ends it is the next rotation step.
+// A cancel form ends where the animation opens its interrupt window — 35
+// frames into the finisher (in-game animation, 2026-09-06); the parry that
+// ends it is the next rotation step.
 export const dragonquenchInebriateSecondCancel = defineSkill({
   id: SKILL.dragonquenchInebriateSecondCancel,
   classId: "bamboocutDraught",
@@ -19,7 +20,7 @@ export const dragonquenchInebriateSecondCancel = defineSkill({
   guaranteedPrecision: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
-  castFrames: 91,
+  castFrames: 101,
   hits: dragonquenchSecondStages,
   createdAt: "2026-09-05T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

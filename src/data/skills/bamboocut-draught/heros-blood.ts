@@ -23,7 +23,7 @@ export const herosBloodHits = [
       applyBuff({ target: STATUS.carouse, stacks: 1 }),
       releaseEcho({ target: DEBUFF.drunkslay }),
       applyDebuff({ target: DEBUFF.drunkslay, stacks: 1 }),
-      ...deepdazeEntryTriggers,
+      ...deepdazeEntryTriggers(),
     ],
   }),
   hit(1, { ...strike, frame: 33 }),

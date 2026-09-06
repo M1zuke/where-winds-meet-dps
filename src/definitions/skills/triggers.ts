@@ -12,6 +12,7 @@ interface TriggerSpec {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
+  durationFrames?: number
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -24,6 +25,7 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.transferFrom !== undefined ? { transferFrom: spec.transferFrom } : {}),
     ...(spec.phase !== undefined ? { phase: spec.phase } : {}),
     ...(spec.cooldownFrames !== undefined ? { cooldownFrames: spec.cooldownFrames } : {}),
+    ...(spec.durationFrames !== undefined ? { durationFrames: spec.durationFrames } : {}),
     ...(spec.extendFrames !== undefined ? { extendFrames: spec.extendFrames } : {}),
     ...(spec.extendOnly !== undefined ? { extendOnly: spec.extendOnly } : {}),
     ...(spec.maxExtendedDurationFrames !== undefined

@@ -24,7 +24,7 @@ export interface Buff {
   requiresParam?: string
   requiresMinTier?: number
   defaultOpeningStacks?: number
-  onExpire?: { targetId: string; stacks: number }
+  onExpire?: { targetId: string; stacks: number; requiresBuffId?: string }
   stacksPerDamagingHit?: { cooldownFrames: number }
   onMaxStacks?: HitTrigger[]
   createdAt: string
@@ -68,6 +68,8 @@ export function isBuff(x: unknown): x is Buff {
     if (!onExpire || typeof onExpire !== "object") return false
     if (typeof onExpire.targetId !== "string" || !onExpire.targetId) return false
     if (typeof onExpire.stacks !== "number" || !Number.isFinite(onExpire.stacks)) return false
+    if (onExpire.requiresBuffId !== undefined && typeof onExpire.requiresBuffId !== "string")
+      return false
   }
   if (b.stacksPerDamagingHit !== undefined) {
     const perHit = b.stacksPerDamagingHit as Record<string, unknown> | null

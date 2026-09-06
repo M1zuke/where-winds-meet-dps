@@ -3,8 +3,8 @@ import { INNER_WAY_ID, INNER_WAY_LADDER } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { mistwingInebriatePenetration } from "./mistwingBuffs"
 
-// In-game inner-way text (2026-09-03): each rung's flat penetration is
-// authored here and the tier-5 Inebriate bonus in its buff module; the
+// In-game inner-way text (2026-09-06): each rung's flat penetration is
+// authored here and the tier-6 Inebriate bonus in its buff module; the
 // missing-HP and enhancement scaling has no target-HP state to read and is
 // deliberately absent. Panel lines read in game at breakthrough 17
 // (2026-09-03).

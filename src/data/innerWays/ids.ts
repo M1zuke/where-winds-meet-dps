@@ -48,9 +48,11 @@ export const INNER_WAY_NODE = {
   breakingPointPerfectDodgeStacks: "breakingPointPerfectDodgeStacks",
   dragonquenchUnlock: "dragonquenchUnlock",
   lightAttackBingeBonus: "lightAttackBingeBonus",
+  carouseLightAttackPoints: "carouseLightAttackPoints",
   heroSBloodInebriateUnlock: "heroSBloodInebriateUnlock",
+  deepdazeRefund: "deepdazeRefund",
   deepdazeDuration: "deepdazeDuration",
-  drunkslayRepeatedDamage: "drunkslayRepeatedDamage",
+  drunkslay: "drunkslay",
 } as const
 
 export type InnerWayNode = (typeof INNER_WAY_NODE)[keyof typeof INNER_WAY_NODE]
