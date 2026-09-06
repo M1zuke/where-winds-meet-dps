@@ -107,13 +107,6 @@ describe("catalog summary pins — surgingWaves", () => {
   })
 })
 
-describe("catalog summary pins — fluteBoost", () => {
-  it("Applies row on Flute of the Tides Full reads the pre-conversion param-sourced text", () => {
-    const rows = appliesForSkill(builtinSkill(CLASS, MYSTIC_SKILL.fluteOfTheTidesFull), CLASS)
-    expect(rows.find((row) => row.id === "fluteBoost")!.effect).toBe("+all (from fluteBoostValue)")
-  })
-})
-
 describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
   it("Class Buffs row reads the pre-conversion key name and percent", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizon("tier 6"))

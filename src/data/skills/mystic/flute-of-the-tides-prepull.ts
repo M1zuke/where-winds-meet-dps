@@ -2,7 +2,6 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
-import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 
 export const fluteOfTheTidesPrepull = defineSkill({
@@ -15,7 +14,6 @@ export const fluteOfTheTidesPrepull = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.fluteOfTheTidesPrepull,
-  triggersBuffs: [BUFF.fluteBoost],
   castFrames: 0,
   triggerable: true,
   hits: [

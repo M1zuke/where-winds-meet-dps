@@ -26,15 +26,15 @@ describe("spec-scoping — buffDefsForClass", () => {
     expect("classBuff" in soulShaken).toBe(false)
   })
 
-  it("keeps the universal fluteBoost for a class whose spec bucket omits it", () => {
+  it("keeps the universal vulnerabilityTeammate for a class whose spec bucket omits it", () => {
     const ids = new Set(buffDefsForClass("bellstrikeUmbra").map((d) => d.id))
-    expect(ids.has("fluteBoost")).toBe(true)
+    expect(ids.has("vulnerabilityTeammate")).toBe(true)
   })
 
   it("unknown class falls back to the full universe", () => {
     const ids = new Set(buffDefsForClass("unknownClass").map((d) => d.id))
     expect(ids.has("soulShaken")).toBe(true)
-    expect(ids.has("fluteBoost")).toBe(true)
+    expect(ids.has("vulnerabilityTeammate")).toBe(true)
   })
 })
 
