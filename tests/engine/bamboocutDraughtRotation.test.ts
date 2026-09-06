@@ -94,7 +94,6 @@ describe("a cancel form deals the full form's damage over a shorter cast", () =>
     expect(dragonquenchInebriateCancel.castFrames).toBeLessThan(dragonquenchInebriate.castFrames)
     expect(dragonquenchInebriateCancel.breakdownName).toBe(dragonquenchInebriate.name)
   })
-
 })
 
 describe("a 1-hit cancel form", () => {
@@ -106,8 +105,12 @@ describe("a 1-hit cancel form", () => {
 
   it("Primepick Follow-up lands only the thrust over a shorter cast", () => {
     expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
-    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(nightwickPrimepickFollowUp.castFrames)
-    expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(nightwickPrimepickFollowUp.breakdownName)
+    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(
+      nightwickPrimepickFollowUp.castFrames,
+    )
+    expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(
+      nightwickPrimepickFollowUp.breakdownName,
+    )
   })
 })
 
@@ -115,7 +118,9 @@ describe("the Perfect Quick Drink", () => {
   it("adds the perfect falcon to the drink's grants, which run before the Deepdaze check, over a shorter cast", () => {
     const drinkTargets = whaledraft.hits[0].triggers.map((trigger) => trigger.targetId)
     const perfectTargets = quickDrink.hits[0].triggers.map((trigger) => trigger.targetId)
-    expect(drinkTargets.indexOf(STATUS.bingePoints)).toBeLessThan(drinkTargets.indexOf(STATUS.inebriateDeepdaze))
+    expect(drinkTargets.indexOf(STATUS.bingePoints)).toBeLessThan(
+      drinkTargets.indexOf(STATUS.inebriateDeepdaze),
+    )
     expect(drinkTargets).not.toContain(SKILL.falconsPursuit)
     expect(perfectTargets).toEqual([...drinkTargets, SKILL.falconsPursuit])
     expect(quickDrink.breakdownName).toBe(whaledraft.breakdownName)
@@ -187,7 +192,9 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
     hits: [
       makeHit({
         frame: 0,
-        triggers: [makeTrigger({ kind: "applyBuff", targetId: STATUS.inebriateDeepdaze, stacks: 1 })],
+        triggers: [
+          makeTrigger({ kind: "applyBuff", targetId: STATUS.inebriateDeepdaze, stacks: 1 }),
+        ],
       }),
     ],
   })
@@ -195,7 +202,9 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
   function runPeakfall(withEonpour: boolean, alreadyInDeepdaze: boolean, peakfalls = 1) {
     const steps = [
       ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id, hitCount: 1 })] : []),
-      ...Array.from({ length: peakfalls }, () => makeStep({ skillId: SKILL.peakfall, hitCount: 2 })),
+      ...Array.from({ length: peakfalls }, () =>
+        makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
+      ),
     ]
     return runEngine({
       ...defaultInputs,
@@ -278,7 +287,9 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       set: null,
     })
     expect(deepdazeWindows(castlinkOnly)).toHaveLength(1)
-    expect(castlinkOnly.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt)).toHaveLength(1)
+    expect(
+      castlinkOnly.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),
+    ).toHaveLength(1)
 
     const peakfallThenCastlink = runEngine({
       ...defaultInputs,

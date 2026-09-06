@@ -1,7 +1,11 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
-import { DRAGONQUENCH_RECEIVES, DRAGONQUENCH_TAGS, dragonquenchStagesAt } from "./dragonquench-inebriate"
+import {
+  DRAGONQUENCH_RECEIVES,
+  DRAGONQUENCH_TAGS,
+  dragonquenchStagesAt,
+} from "./dragonquench-inebriate"
 
 export const dragonquenchSecondStages = dragonquenchStagesAt([16, 36, 60, 78, 84, 90])
 

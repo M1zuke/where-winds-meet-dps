@@ -5,12 +5,7 @@ import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 export type TriggerKind =
-  | "applyBuff"
-  | "applyDebuff"
-  | "castSkill"
-  | "applyDot"
-  | "detonateDot"
-  | "releaseEcho"
+  "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot" | "releaseEcho"
 export type TriggerOp = "gte" | "gt" | "eq"
 
 export interface TriggerCondition {

@@ -118,7 +118,9 @@ describe("the Drunkslay echo", () => {
   })
 
   it("feeds nothing below Skyspeak tier 6", () => {
-    expect(rowNamed(run([grantDeepdaze, marker, feeder, marker], skyspeakAt(5)), ECHO_ROW)).toBeUndefined()
+    expect(
+      rowNamed(run([grantDeepdaze, marker, feeder, marker], skyspeakAt(5)), ECHO_ROW),
+    ).toBeUndefined()
     expect(
       rowNamed(run([grantDeepdaze, marker, feeder, marker], defaultInputs.mindMethods), ECHO_ROW),
     ).toBeUndefined()

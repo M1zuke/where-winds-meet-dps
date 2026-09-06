@@ -1,7 +1,11 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
-import { DRAGONQUENCH_RECEIVES, DRAGONQUENCH_TAGS, dragonquenchStages } from "./dragonquench-inebriate"
+import {
+  DRAGONQUENCH_RECEIVES,
+  DRAGONQUENCH_TAGS,
+  dragonquenchStages,
+} from "./dragonquench-inebriate"
 
 // A cancel form ends where the animation opens its interrupt window — 40
 // frames into the finisher, after its last strike (in-game animation,

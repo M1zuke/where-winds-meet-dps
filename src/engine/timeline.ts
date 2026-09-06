@@ -324,7 +324,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             )
             if (refreshed) continue
             const reset = status.onExpire!
-            if (reset.requiresBuffId && !target.longestActiveWindow(reset.requiresBuffId, window.end))
+            if (
+              reset.requiresBuffId &&
+              !target.longestActiveWindow(reset.requiresBuffId, window.end)
+            )
               continue
             const resetTarget = statusById.get(reset.targetId)
             if (!resetTarget) continue

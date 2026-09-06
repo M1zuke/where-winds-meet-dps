@@ -25,7 +25,9 @@ function runHerosBlood(bingePoints: number) {
 
 function primeAndMeasure(primerCasts: number, measuredSkillId: string, measuredHitCount: number) {
   const steps = [
-    ...Array.from({ length: primerCasts }, () => makeStep({ skillId: SKILL.peakfall, hitCount: 2 })),
+    ...Array.from({ length: primerCasts }, () =>
+      makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
+    ),
     makeStep({ skillId: measuredSkillId, hitCount: measuredHitCount }),
   ]
   const result = runEngine({

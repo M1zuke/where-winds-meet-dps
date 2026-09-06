@@ -11,7 +11,10 @@ export function stepCastFrames(step: RotationStep, skill: Skill | undefined): nu
   return skill.castFrames || maxFrame + 1
 }
 
-export function castsCoverRotation(rotation: Rotation, casts: readonly RotationCast[] | undefined): boolean {
+export function castsCoverRotation(
+  rotation: Rotation,
+  casts: readonly RotationCast[] | undefined,
+): boolean {
   if (!casts || casts.length !== rotation.steps.length) return false
   return rotation.steps.every((step, index) => casts[index]?.stepId === step.id)
 }

@@ -19,9 +19,6 @@ export const tiltrimStack = defineBuff({
   summary: "physBoost +1%/stack, attributeDamageBoost +1%/stack while Inebriate (max 5 stacks)",
   effects: (ctx) =>
     ctx.self.reachesEvent && isInebriate(ctx)
-      ? [
-          stat("physBoost", ctx.self.stacks * 0.01),
-          stat("attributeDamageBoost", ctx.self.stacks * 0.01),
-        ]
+      ? [stat("physBoost", ctx.self.stacks * 0.01), stat("attributeDamageBoost", ctx.self.stacks * 0.01)]
       : [],
 })
