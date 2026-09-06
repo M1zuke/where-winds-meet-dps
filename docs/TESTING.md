@@ -5,7 +5,8 @@
 
 ## Class scoping — a class's numbers are defended only by an anchor
 
-`bellstrikeUmbra` and `stonesplitStrength` are validated (CLASSES.md). A passing
+`bellstrikeUmbra`, `bellstrikeSplendor` and `stonesplitStrength` are validated
+(CLASSES.md). A passing
 sweep over a class that has no anchor reads as validation it has not had.
 
 - **Do not add an all-classes `dps > 0` sweep.** It proves nothing and
@@ -80,6 +81,10 @@ assert properties of the code rather than of a build:
   fails the suite instead of silently reaching nothing, and a module can't be both
   globally- and specifically-scoped at once
 - the `src/data` ↔ `src/definitions` boundary in both directions (CLASSES.md)
+- every mystic art authored once under the shared class id, no class folder
+  declaring one, nothing in the shared pool naming a class, and every registered
+  class's composed definition carrying the whole pool (CLASSES.md § "Mystic
+  arts")
 - `docs/**` naming no content and carrying no dates (CLAUDE.md § "Docs are
   implementation rules")
 

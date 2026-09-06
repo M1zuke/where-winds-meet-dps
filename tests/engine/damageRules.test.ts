@@ -171,6 +171,17 @@ describe("graze (abrasion) rate — (1 − precision)(1 − affinity)", () => {
   })
 })
 
+describe("abrasionAvoidRate — scales the graze rate onto the normal row, never crit", () => {
+  it("raising it from 0 to 1 zeroes AL and moves the same mass into AR, leaving AN and AP untouched", () => {
+    const withoutAvoid = computeSkillDamage(art, baseCtx, 1).cells
+    const withAvoid = computeSkillDamage({ ...art, abrasionAvoidRate: 1 }, baseCtx, 1).cells
+    expect(withAvoid.AL).toBe(0)
+    expect(withAvoid.AN).toBeCloseTo(withoutAvoid.AN, 9)
+    expect(withAvoid.AP).toBeCloseTo(withoutAvoid.AP, 9)
+    expect(withAvoid.AR).toBeCloseTo(withoutAvoid.AR + withoutAvoid.AL, 9)
+  })
+})
+
 // Deliberately INVERTS PDF §7 (overflow ÷200, deficit ÷100)
 describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflow", () => {
   it("with resistance omitted (0), AH > 0", () => {

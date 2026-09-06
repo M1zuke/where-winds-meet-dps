@@ -39,6 +39,7 @@ const MARTIAL_BOOST_PATHS = [
   "dualKnivesBoost",
   "ropeDartBoost",
   "hengDaoBoost",
+  "gauntletsBoost",
 ]
 
 const TARGET_BOOST_PATHS = ["bossBoost", "singleMysticBoost", "areaMysticBoost"]

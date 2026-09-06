@@ -14,6 +14,7 @@ import {
 import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
+import { MYSTIC_SKILLS } from "../../src/data/skills/mystic"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
@@ -137,6 +138,11 @@ describe("built-in data — one file per skill", () => {
       const fromModule = bellstrikeUmbra.SKILLS.find((m) => m.id === s.id)
       if (fromModule) {
         expect(fromModule).toEqual(s)
+        continue
+      }
+      const fromMystic = MYSTIC_SKILLS.find((m) => m.id === s.id)
+      if (fromMystic) {
+        expect(fromMystic).toEqual(s)
         continue
       }
       const universal = UNIVERSAL_SKILLS.find(

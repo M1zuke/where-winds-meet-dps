@@ -1,4 +1,5 @@
 import type { StatKey } from "./statRegistry"
+import { isHitTrigger, type HitTrigger } from "./skill"
 
 export interface BuffStatEffect {
   statKey: StatKey
@@ -14,6 +15,7 @@ export interface Buff {
   id: string
   classId: string
   name: string
+  description?: string
   scope: BuffScope
   activation: BuffActivation
   durationFrames: number
@@ -21,6 +23,11 @@ export interface Buff {
   maxStacks: number
   stackScaling: StackScaling
   requiresParam?: string
+  requiresMinTier?: number
+  defaultOpeningStacks?: number
+  onExpire?: { targetId: string; stacks: number; requiresBuffId?: string }
+  stacksPerDamagingHit?: { cooldownFrames: number }
+  onMaxStacks?: HitTrigger[]
   createdAt: string
   updatedAt: string
 }
@@ -47,6 +54,33 @@ export function isBuff(x: unknown): x is Buff {
     const ef = e as Record<string, unknown>
     if (!ef || typeof ef.statKey !== "string") return false
     if (typeof ef.amount !== "number" || !Number.isFinite(ef.amount)) return false
+  }
+  if (
+    b.defaultOpeningStacks !== undefined &&
+    (typeof b.defaultOpeningStacks !== "number" || !Number.isFinite(b.defaultOpeningStacks))
+  )
+    return false
+  if (b.requiresMinTier !== undefined) {
+    if (typeof b.requiresMinTier !== "number" || !Number.isFinite(b.requiresMinTier)) return false
+    if (typeof b.requiresParam !== "string" || !b.requiresParam) return false
+  }
+  if (b.onExpire !== undefined) {
+    const onExpire = b.onExpire as Record<string, unknown> | null
+    if (!onExpire || typeof onExpire !== "object") return false
+    if (typeof onExpire.targetId !== "string" || !onExpire.targetId) return false
+    if (typeof onExpire.stacks !== "number" || !Number.isFinite(onExpire.stacks)) return false
+    if (onExpire.requiresBuffId !== undefined && typeof onExpire.requiresBuffId !== "string")
+      return false
+  }
+  if (b.stacksPerDamagingHit !== undefined) {
+    const perHit = b.stacksPerDamagingHit as Record<string, unknown> | null
+    if (!perHit || typeof perHit !== "object") return false
+    if (typeof perHit.cooldownFrames !== "number" || !Number.isFinite(perHit.cooldownFrames))
+      return false
+  }
+  if (b.onMaxStacks !== undefined) {
+    if (!Array.isArray(b.onMaxStacks)) return false
+    for (const trigger of b.onMaxStacks) if (!isHitTrigger(trigger)) return false
   }
   if (typeof b.createdAt !== "string") return false
   if (typeof b.updatedAt !== "string") return false

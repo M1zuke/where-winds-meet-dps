@@ -5,15 +5,14 @@ import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinDebuff, builtinSkill, dotRow } from "../builtins"
-import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
-import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
-import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
+import { SKILL as UMBRA_SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
-const DARK_FIRE_ID = DEBUFF.darkFire
+const DARK_FIRE_ID = DEBUFF.smolder
 const ONE_HIT = SKILL.dragonFireSmolder1Hit
 const TWO_HITS = SKILL.dragonFireSmolder2Hits
 
@@ -84,8 +83,8 @@ describe("Dragon Fire (Smolder) skills", () => {
   })
 
   it("are distinct from the plain Dragon's Breath rows, which stay untouched", () => {
-    const fb1 = skillOf(UNIVERSAL_SKILL.fireBreath1Hit)
-    const fb2 = skillOf(UNIVERSAL_SKILL.fireBreath2Hit)
+    const fb1 = skillOf(SKILL.fireBreath1Hit)
+    const fb2 = skillOf(SKILL.fireBreath2Hit)
     expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36185, 10)
     expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.2245, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
@@ -107,9 +106,9 @@ describe("Dragon Fire (Smolder) → Smolder in the simulator", () => {
   it("casting either opens a Smolder window that actually ticks", () => {
     for (const skillId of [ONE_HIT, TWO_HITS]) {
       const result = run([skillId])
-      expect(dotDamage(result, DEBUFF.darkFire)).toBeGreaterThan(0)
+      expect(dotDamage(result, DEBUFF.smolder)).toBeGreaterThan(0)
       const ticks = result.timeline!.filter(
-        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.darkFire),
+        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.smolder),
       )
       expect(ticks.length).toBeGreaterThan(0)
       for (const tick of ticks) expect(tick.damage).toBeGreaterThan(0)
@@ -130,8 +129,8 @@ describe("Dragon Fire (Smolder) → Smolder in the simulator", () => {
     const smolder = run([ONE_HIT])
     expect(dotDamage(smolder, DEBUFF.combustion)).toBe(0)
 
-    const plain = run([UNIVERSAL_SKILL.fireBreath1Hit])
-    expect(dotDamage(plain, DEBUFF.darkFire)).toBe(0)
+    const plain = run([SKILL.fireBreath1Hit])
+    expect(dotDamage(plain, DEBUFF.smolder)).toBe(0)
     expect(dotDamage(plain, DEBUFF.combustion)).toBeGreaterThan(0)
   })
 })
@@ -170,7 +169,7 @@ describe("Smolder duration", () => {
       }
       const r = simulateTimeline(inputs)
       const ticks = r.timeline!.filter(
-        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.darkFire),
+        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.smolder),
       )
       const first = r.timeline!.find(
         (ev) => ev.kind === "hit" && /Smolder/.test(ev.skillName),
@@ -184,7 +183,7 @@ describe("Smolder duration", () => {
 
 describe("Zenith detonation extends Smolder", () => {
   it("Blood Burst carries an extend-only, zenith-gated Smolder trigger", () => {
-    const det = skillOf(SKILL.bleedDetonation)
+    const det = skillOf(UMBRA_SKILL.bleedDetonation)
     const t = det.hits.flatMap((h) => h.triggers).find((tr) => tr.targetId === DARK_FIRE_ID)
     expect(t).toBeTruthy()
     expect(t!.extendFrames).toBe(600)
@@ -199,9 +198,9 @@ describe("Zenith detonation extends Smolder", () => {
       { name: "Insightful Strike", stacks: "tier 6" },
       { name: "Morale Chant", stacks: "tier 6" },
     ]
-    const detonation = skillOf(SKILL.bleedDetonation)
+    const detonation = skillOf(UMBRA_SKILL.bleedDetonation)
     const smolder = skillOf(TWO_HITS)
-    const filler = skillOf(UNIVERSAL_SKILL.soaring)
+    const filler = skillOf(SKILL.soaring)
     const ticksFor = (detonations: number) => {
       const steps = [makeStep({ skillId: smolder.id, hitCount: smolder.hits.length })]
       for (let i = 0; i < detonations; i++)
@@ -215,7 +214,7 @@ describe("Zenith detonation extends Smolder", () => {
         activeCustomRotation: makeRotation(CLASS, { name: `zenith-${detonations}`, steps }),
       }
       return simulateTimeline(inputs).timeline!.filter(
-        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.darkFire),
+        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.smolder),
       ).length
     }
     // See `ZENITH_MAX_EXTENDED_DURATION_FRAMES` (builtinBuffs.ts). No further
@@ -234,9 +233,9 @@ describe("Zenith detonation extends Smolder", () => {
       { name: "Insightful Strike", stacks: "tier 6" },
       { name: "Morale Chant", stacks: "tier 6" },
     ]
-    const detonation = skillOf(SKILL.bleedDetonation)
+    const detonation = skillOf(UMBRA_SKILL.bleedDetonation)
     const smolder = skillOf(TWO_HITS)
-    const filler = skillOf(UNIVERSAL_SKILL.soaring)
+    const filler = skillOf(SKILL.soaring)
     const ticksFor = (smolderCasts: number, detonations: number) => {
       const steps: ReturnType<typeof makeStep>[] = []
       for (let i = 0; i < smolderCasts; i++)
@@ -255,7 +254,7 @@ describe("Zenith detonation extends Smolder", () => {
         }),
       }
       return simulateTimeline(inputs).timeline!.filter(
-        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.darkFire),
+        (ev) => ev.kind === "dot" && ev.skillName === dotRow(CLASS, DEBUFF.smolder),
       ).length
     }
     for (const smolderCasts of [1, 2, 3, 4]) {

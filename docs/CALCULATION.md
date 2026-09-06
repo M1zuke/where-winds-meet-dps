@@ -66,7 +66,9 @@ They have no cached anchor — `tests/engine/damageRules.test.ts` is the only
 guard, and it is directional.
 
 1. **Graze/abrasion rate** is `(1 − precision) × (1 − affinity)`, not
-   `1 − precision` (PDF §8). Differs only below 100 % precision.
+   `1 − precision` (PDF §8). Differs only below 100 % precision. An
+   abrasion-avoid fraction scales this rate down further, and the mass it
+   removes lands on the normal row, never on crit.
 2. **Penetration** uses net `(pen − resistance)`, `÷100` when net ≤ 0 (deficit
    at full weight) and `÷200` when net > 0 (overflow halved), for the physical
    and every attribute track. ⚠️ This deliberately **inverts PDF §7** — the CN

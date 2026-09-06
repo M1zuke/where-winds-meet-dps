@@ -23,15 +23,9 @@ export const SKILL = {
   spearspecial: "bellstrikeUmbra-spearspecial",
   bleedTick: "bellstrikeUmbra-bleed-tick",
   bleedDetonation: "bellstrikeUmbra-bleed-detonation",
-  dragonFireSmolder1Hit: "bellstrikeUmbra-dragon-fire-smolder-1-hit",
-  dragonFireSmolder2Hits: "bellstrikeUmbra-dragon-fire-smolder-2-hits",
 } as const
 
 export const DEBUFF = {
-  toadPoison: "debuff-bellstrikeUmbra-toad-poison",
-  combustion: "debuff-bellstrikeUmbra-combustion",
-  darkFire: "debuff-bellstrikeUmbra-dark-fire",
-  fluteRipple: "debuff-bellstrikeUmbra-flute-ripple",
   bleedTick: "debuff-bellstrikeUmbra-bleed-tick",
   bitterSeasonTick: "debuff-bellstrikeUmbra-bitter-season-tick",
   defenseDown: "debuff-bellstrikeUmbra-defense-down",

@@ -1,9 +1,11 @@
 import type { computeSkillDamage } from "./formula"
+import type { QiPhase } from "./effects/context"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
-export type TriggerKind = "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot"
+export type TriggerKind =
+  "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot" | "releaseEcho"
 export type TriggerOp = "gte" | "gt" | "eq"
 
 export interface TriggerCondition {
@@ -20,6 +22,7 @@ export interface HitVariant {
   attributeMultiplier: number
   physFixed: number
   attributeFixed: number
+  castFrames?: number
 }
 
 export interface HitTrigger {
@@ -35,6 +38,12 @@ export interface HitTrigger {
   // the window. An extension always adds its full amount; if the window is
   // already longer than the ceiling it is left alone, never truncated down.
   maxExtendedDurationFrames?: number
+  transferFrom?: string
+  phase?: QiPhase
+  cooldownFrames?: number
+  // Opens the granted window at this length instead of the target status's
+  // own `durationFrames`.
+  durationFrames?: number
 }
 
 export interface SkillHit {
@@ -46,6 +55,7 @@ export interface SkillHit {
   attributeFixed: number
   extraCritDamage: number
   variants?: HitVariant[]
+  conditions?: TriggerCondition[]
   triggers: HitTrigger[]
 }
 
@@ -68,11 +78,17 @@ export interface Skill {
   castFrames: number
   triggerable: boolean
   elevatedAttributeMultiplier?: boolean
-  guaranteedPrecision?: boolean
+  neverAbrades?: boolean
   guaranteedNormal?: boolean
   prePull?: boolean
   createdAt: string
   updatedAt: string
+}
+
+export const MYSTIC_ARTS_CLASS_ID = "mystic"
+
+export function belongsToClass(entity: { classId: string }, classId: string): boolean {
+  return entity.classId === classId || entity.classId === MYSTIC_ARTS_CLASS_ID
 }
 
 let counter = 0
@@ -144,6 +160,14 @@ export function isTriggerCondition(x: unknown): x is TriggerCondition {
   return true
 }
 
+export function conditionSatisfiedByStacks(condition: TriggerCondition, stacks: number): boolean {
+  return condition.op === "gte"
+    ? stacks >= condition.stacks
+    : condition.op === "gt"
+      ? stacks > condition.stacks
+      : stacks === condition.stacks
+}
+
 export function isHitTrigger(x: unknown): x is HitTrigger {
   if (!x || typeof x !== "object") return false
   const t = x as Record<string, unknown>
@@ -152,7 +176,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "applyDebuff" &&
     t.kind !== "castSkill" &&
     t.kind !== "applyDot" &&
-    t.kind !== "detonateDot"
+    t.kind !== "detonateDot" &&
+    t.kind !== "releaseEcho"
   )
     return false
   if (typeof t.targetId !== "string") return false
@@ -164,7 +189,30 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       if (!isTriggerCondition(c)) return false
     }
   }
+  if (t.transferFrom !== undefined) {
+    if (typeof t.transferFrom !== "string" || !t.transferFrom) return false
+    if (t.extendFrames !== undefined) return false
+  }
+  if (t.phase !== undefined && !isQiPhase(t.phase)) return false
+  if (
+    t.cooldownFrames !== undefined &&
+    (typeof t.cooldownFrames !== "number" ||
+      !Number.isFinite(t.cooldownFrames) ||
+      t.cooldownFrames < 0)
+  )
+    return false
+  if (
+    t.durationFrames !== undefined &&
+    (typeof t.durationFrames !== "number" ||
+      !Number.isFinite(t.durationFrames) ||
+      t.durationFrames <= 0)
+  )
+    return false
   return true
+}
+
+export function isQiPhase(x: unknown): x is QiPhase {
+  return x === "normal" || x === "below30" || x === "exhausted"
 }
 
 export function isHitVariant(x: unknown): x is HitVariant {
@@ -178,6 +226,9 @@ export function isHitVariant(x: unknown): x is HitVariant {
   }
   for (const k of ["physMultiplier", "attributeMultiplier", "physFixed", "attributeFixed"]) {
     if (typeof v[k] !== "number" || !Number.isFinite(v[k] as number)) return false
+  }
+  if (v.castFrames !== undefined) {
+    if (typeof v.castFrames !== "number" || !Number.isFinite(v.castFrames)) return false
   }
   return true
 }
@@ -204,6 +255,12 @@ export function isSkillHit(x: unknown): x is SkillHit {
     if (!Array.isArray(h.variants)) return false
     for (const v of h.variants) {
       if (!isHitVariant(v)) return false
+    }
+  }
+  if (h.conditions !== undefined) {
+    if (!Array.isArray(h.conditions)) return false
+    for (const c of h.conditions) {
+      if (!isTriggerCondition(c)) return false
     }
   }
   return true
@@ -281,7 +338,7 @@ export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
     attributeAttack: skill.attributeAttack || undefined,
     specialTag: skill.skillType === "sustain" ? "sustain" : undefined,
     elevatedAttributeMultiplier: skill.elevatedAttributeMultiplier === false ? false : undefined,
-    guaranteedPrecision: skill.guaranteedPrecision ? 1 : undefined,
+    abrasionAvoidRate: skill.neverAbrades ? 1 : undefined,
     guaranteedNormal: skill.guaranteedNormal ? 1 : undefined,
     mysticCategory: mysticCategoryOf(skill) || undefined,
     attuneTag: attuneTagOf(skill) || undefined,
@@ -298,7 +355,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     castFrames: src.castFrames,
     triggerable: src.triggerable,
     elevatedAttributeMultiplier: src.elevatedAttributeMultiplier,
-    guaranteedPrecision: src.guaranteedPrecision,
+    neverAbrades: src.neverAbrades,
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
     tags: [...(src.tags ?? [])],
@@ -315,6 +372,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
         id: newVariantId(),
         conditions: v.conditions.map((c) => ({ ...c })),
       })),
+      conditions: h.conditions?.map((c) => ({ ...c })),
       triggers: h.triggers.map((tr) => ({
         ...tr,
         conditions: tr.conditions ? tr.conditions.map((c) => ({ ...c })) : undefined,

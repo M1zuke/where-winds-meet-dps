@@ -5,7 +5,6 @@ import { pursuitChargedBoost } from "./pursuitChargedBoost"
 import { lingeringBone } from "./lingeringBone"
 import { healerBuff } from "./healerBuff"
 import { revelryScript } from "./revelryScript"
-import { fluteBoost } from "./fluteBoost"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
 import { jadeware } from "./jadeware"
 import { mirage } from "./mirage"
@@ -18,13 +17,18 @@ import { rainwhisperShield } from "./rainwhisperShield"
 import { resistanceResolve } from "./resistanceResolve"
 import { surgingWaves } from "./surgingWaves"
 import { dragonHeadLowHp } from "./dragonHeadLowHp"
+import { tiltrimStack } from "./tiltrimStack"
+import { tiltrimInebriateBonus } from "./tiltrimInebriateBonus"
+import { inebriateCritDamage } from "./inebriateCritDamage"
+import { cloudvault } from "./cloudvault"
+import { clashToastDamage } from "./clashToastDamage"
+import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
 
-// Order is load-bearing (float addition is not associative): `fluteBoost` must
-// stay ahead of the other five globals that emit `allDamageBoost`, so append
-// nothing before it.
+// Order is load-bearing (float addition is not associative): the globals that
+// emit `allDamageBoost` sum in this order, so reorder none of them and insert
+// nothing among them.
 export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   revelryScript,
-  fluteBoost,
   vulnerabilityTeammate,
   jadeware,
   mirage,
@@ -41,6 +45,13 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   mistwillowBuff,
   mistwillowHeavyBuff,
   mistwillowLightBuff,
+  tiltrimStack,
+  tiltrimInebriateBonus,
+  inebriateCritDamage,
+  cloudvault,
+  clashToastDamage,
+  nonPlayerBaseDamage40,
+  nonPlayerBaseDamage50,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

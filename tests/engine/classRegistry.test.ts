@@ -21,6 +21,7 @@ describe("class registry — one call answers what a class is made of", () => {
       "stonesplitStrength",
       "bellstrikeSplendor",
       "silkbindJade",
+      "bamboocutDraught",
     ])
     expect(classDefinition("notAClass")).toBeNull()
   })
@@ -111,7 +112,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 25-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 33-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "potentRiverFlow",
@@ -119,7 +120,6 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "soulShaken",
       "disintegration",
       "revelryScript",
-      "fluteBoost",
       "vulnerabilityTeammate",
       "jadeware",
       "mirage",
@@ -136,6 +136,13 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "mistwillowBuff",
       "mistwillowHeavyBuff",
       "mistwillowLightBuff",
+      "tiltrimStack",
+      "tiltrimInebriateBonus",
+      "inebriateCritDamage",
+      "cloudvault",
+      "clashToastDamage",
+      "nonPlayerBaseDamage40",
+      "nonPlayerBaseDamage50",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
     ])

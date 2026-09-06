@@ -6,20 +6,20 @@
 import { describe, expect, it } from "vitest"
 import { CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { builtinSkill } from "../builtins"
-import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 const FPS = 60
 
 describe("extraDebuffHits wiring", () => {
   it("emits a zero-damage applyDebuff hit that re-applies the DoT (generic path)", () => {
-    const flute = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fluteOfTheTidesCancel)
+    const flute = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.fluteOfTheTidesCancel)
     const [hit] = flute.hits
     expect(hit.physMultiplier).toBe(0)
     expect(hit.attributeMultiplier).toBe(0)
     expect(hit.triggers).toHaveLength(1)
     const [trigger] = hit.triggers
     expect(trigger.kind).toBe("applyDebuff")
-    expect(trigger.targetId).toBe("debuff-bellstrikeUmbra-flute-ripple")
+    expect(trigger.targetId).toBe("debuff-mystic-flute-ripple")
     expect(trigger.stacks).toBe(1)
     expect(trigger.condition).toBeNull()
     // Generic path re-applies; it must NOT carry the extend-only machinery.
@@ -28,20 +28,20 @@ describe("extraDebuffHits wiring", () => {
   })
 
   it("wires Dragon's Breath 2 Hits as one apply plus pure Combustion-extend triggers (dragonBreath path)", () => {
-    const breath = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fireBreath2Hit)
+    const breath = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.fireBreath2Hit)
     expect(breath.hits).toHaveLength(3)
     const [first, ...rest] = breath.hits
 
     // First hit applies Combustion (and sets its duration); the rest only extend.
     expect(first.triggers).toHaveLength(1)
-    expect(first.triggers[0].targetId).toBe("debuff-bellstrikeUmbra-combustion")
+    expect(first.triggers[0].targetId).toBe("debuff-mystic-combustion")
     expect(first.triggers[0].extendOnly).toBeFalsy()
     expect(first.triggers[0].extendFrames).toBe(Math.round(1.5 * FPS))
 
     const extendFrames = rest.map((h) => {
       expect(h.triggers).toHaveLength(1)
       expect(h.triggers[0].kind).toBe("applyDebuff")
-      expect(h.triggers[0].targetId).toBe("debuff-bellstrikeUmbra-combustion")
+      expect(h.triggers[0].targetId).toBe("debuff-mystic-combustion")
       expect(h.triggers[0].extendOnly).toBe(true)
       return h.triggers[0].extendFrames
     })

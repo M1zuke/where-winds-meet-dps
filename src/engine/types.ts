@@ -6,6 +6,7 @@ import type { HitOutcome } from "./formula"
 import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
+import type { Effect } from "./effects/effect"
 
 export const ATTRIBUTE_KEYS = ["Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"] as const
 
@@ -20,6 +21,7 @@ export const WEAPON_NAMES = [
   "Twin Blades",
   "Rope Dart",
   "Hengdao",
+  "Gauntlets",
 ] as const
 
 export type WeaponName = (typeof WEAPON_NAMES)[number]
@@ -109,6 +111,7 @@ export interface Inputs {
   dualKnivesBoost: number
   ropeDartBoost: number
   hengDaoBoost: number
+  gauntletsBoost: number
 
   bossBoost: number
   singleMysticBoost: number
@@ -352,6 +355,7 @@ export interface CastBuffTag {
   stacks: number
   maxStacks: number
   effects: BuffStatEffect[]
+  extras?: Effect[]
   dotIntervalSec?: number
   requires?: string
   description?: string

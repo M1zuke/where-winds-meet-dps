@@ -1,0 +1,1400 @@
+{
+  "_source": {
+    "site": "https://h9dh.cn/",
+    "file": "破竹樽110阶竞速轴属性毕业率进阶计算器2.0.xlsx",
+    "url": "https://h9dh.cn/excel/%E7%A0%B4%E7%AB%B9%E6%A8%BD110%E9%98%B6%E7%AB%9E%E9%80%9F%E8%BD%B4%E5%B1%9E%E6%80%A7%E6%AF%95%E4%B8%9A%E7%8E%87%E8%BF%9B%E9%98%B6%E8%AE%A1%E7%AE%97%E5%99%A82.0.xlsx",
+    "sheet": "武学奇术 (Martial & Mystic Arts)",
+    "classZh": "破竹樽",
+    "classEn": "Bamboocut Draught",
+    "classId": "bamboocutDraught",
+    "spec": "bamboocut_draught",
+    "workbookVersion": "2.0",
+    "level": "110阶 (lvl-110 speed rotation)",
+    "note": "Coefficients/flat values are verbatim cached cell values at full stored precision; formulas are retained in the complete workbook extraction."
+  },
+  "_translation": {
+    "method": "enSource='official' means the exact key exists in reference/locale/zhToEnOfficial.json (official ZH<->EN pairs from the game client); 'inherited' means the label was already rendered by the Stonesplit Strength, Bellstrike Umbra, Bellstrike Splendor or Silkbind Jade extraction and that rendering is reused so a shared label cannot diverge; 'composed' means it was built from official component terms plus spreadsheet shorthand (the class's own skill names are the official English skill names, which the pair list predates); 'untranslated' means the Chinese is kept because the client DB has no key for it.",
+    "columns": [
+      {
+        "col": "A",
+        "zh": null,
+        "en": "(row label)",
+        "enSource": "n/a"
+      },
+      {
+        "col": "B",
+        "zh": "通用增伤",
+        "en": "Universal DMG Boost",
+        "enSource": "inherited"
+      },
+      {
+        "col": "C",
+        "zh": "最小外功",
+        "en": "Min Physical",
+        "enSource": "inherited"
+      },
+      {
+        "col": "D",
+        "zh": "最大外功",
+        "en": "Max Physical",
+        "enSource": "inherited"
+      },
+      {
+        "col": "E",
+        "zh": "外功加成",
+        "en": "Physical Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "F",
+        "zh": "外功穿透",
+        "en": "Physical Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "G",
+        "zh": "外攻伤害加成",
+        "en": "Physical DMG Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "H",
+        "zh": "属性攻击加成",
+        "en": "Attribute Attack Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "I",
+        "zh": "鸣金穿透",
+        "en": "Bellstrike Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "J",
+        "zh": "鸣金加成",
+        "en": "Bellstrike Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "K",
+        "zh": "裂石穿透",
+        "en": "Stonesplit Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "L",
+        "zh": "裂石加成",
+        "en": "Stonesplit Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "M",
+        "zh": "牵丝穿透",
+        "en": "Silkbind Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "N",
+        "zh": "牵丝加成",
+        "en": "Silkbind Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "O",
+        "zh": "破竹穿透",
+        "en": "Bamboocut Penetration",
+        "enSource": "inherited"
+      },
+      {
+        "col": "P",
+        "zh": "破竹加成",
+        "en": "Bamboocut Bonus",
+        "enSource": "inherited"
+      },
+      {
+        "col": "Q",
+        "zh": "会心率",
+        "en": "Critical Rate",
+        "enSource": "inherited"
+      },
+      {
+        "col": "R",
+        "zh": "会心伤害",
+        "en": "Critical DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "S",
+        "zh": "会意率",
+        "en": "Affinity Rate",
+        "enSource": "inherited"
+      },
+      {
+        "col": "T",
+        "zh": "会意伤害",
+        "en": "Affinity Damage",
+        "enSource": "inherited"
+      },
+      {
+        "col": "U",
+        "zh": "蓄力",
+        "en": "Charged",
+        "enSource": "composed"
+      },
+      {
+        "col": "V",
+        "zh": "强制精准",
+        "en": "Guaranteed Precision",
+        "enSource": "composed"
+      },
+      {
+        "col": "W",
+        "zh": "强制会心",
+        "en": "Guaranteed Crit",
+        "enSource": "composed"
+      },
+      {
+        "col": "X",
+        "zh": "强制会意",
+        "en": "Guaranteed Affinity",
+        "enSource": "composed"
+      },
+      {
+        "col": "Y",
+        "zh": "类型",
+        "en": "Type",
+        "enSource": "inherited"
+      },
+      {
+        "col": "Z",
+        "zh": "外功倍率",
+        "en": "Physical Multiplier",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AA",
+        "zh": "外攻固伤",
+        "en": "Physical Fixed DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AB",
+        "zh": "属性倍率",
+        "en": "Attribute Multiplier",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AC",
+        "zh": "属性固伤",
+        "en": "Attribute Fixed DMG",
+        "enSource": "inherited"
+      },
+      {
+        "col": "AD",
+        "zh": "定音加成",
+        "en": "Attunement Bonus",
+        "enSource": "composed"
+      },
+      {
+        "col": "AF",
+        "zh": "会意转化",
+        "en": "Affinity Conversion",
+        "enSource": "composed"
+      }
+    ]
+  },
+  "skills": [
+    {
+      "row": 2,
+      "nameZh": "长鲸吸川(拳甲+浅醉)",
+      "nameEn": "Whaledraft (Gauntlets, Inebriate - Tipsy)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.862784,
+        "Attribute Multiplier": 2.794176
+      }
+    },
+    {
+      "row": 3,
+      "nameZh": "长鲸吸川(拳甲+浓醺)",
+      "nameEn": "Whaledraft (Gauntlets, Inebriate - Deepdaze)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 2.173248,
+        "Attribute Multiplier": 3.259872
+      }
+    },
+    {
+      "row": 4,
+      "nameZh": "拳甲～(浅醉)",
+      "nameEn": "Gauntlets Special Skill (Inebriate - Tipsy)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.58662,
+        "Physical Fixed DMG": 439.6,
+        "Attribute Multiplier": 2.37986,
+        "Attribute Fixed DMG": 239.4
+      }
+    },
+    {
+      "row": 5,
+      "nameZh": "拳甲～破防(浅醉)",
+      "nameEn": "Gauntlets Special Skill, Guard Broken (Inebriate - Tipsy)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.08472,
+        "Physical Fixed DMG": 302.4,
+        "Attribute Multiplier": 1.62708,
+        "Attribute Fixed DMG": 163.8
+      }
+    },
+    {
+      "row": 6,
+      "nameZh": "拳甲Q1",
+      "nameEn": "Gauntlets Martial Art, stage 1 (Inebriate)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 2.64712,
+        "Physical Fixed DMG": 733.6,
+        "Attribute Multiplier": 3.97068,
+        "Attribute Fixed DMG": 798
+      }
+    },
+    {
+      "row": 7,
+      "nameZh": "拳甲Q2",
+      "nameEn": "Gauntlets Martial Art, stage 2 (Inebriate)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 4.26944,
+        "Physical Fixed DMG": 1181.6,
+        "Attribute Multiplier": 6.40416,
+        "Attribute Fixed DMG": 638.4
+      }
+    },
+    {
+      "row": 8,
+      "nameZh": "普通拳甲Q1",
+      "nameEn": "Gauntlets Martial Art, stage 1 (no Inebriate)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.28702,
+        "Physical Fixed DMG": 357,
+        "Attribute Multiplier": 1.9306,
+        "Attribute Fixed DMG": 389.2
+      }
+    },
+    {
+      "row": 9,
+      "nameZh": "普通拳甲Q2",
+      "nameEn": "Gauntlets Martial Art, stage 2 (no Inebriate)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.72536,
+        "Physical Fixed DMG": 478.8,
+        "Attribute Multiplier": 2.58776,
+        "Attribute Fixed DMG": 260.4
+      }
+    },
+    {
+      "row": 10,
+      "nameZh": "饮龙·酩酊",
+      "nameEn": "Dragonquench - Inebriate",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 7.79674,
+        "Physical Fixed DMG": 2161.6,
+        "Attribute Multiplier": 11.69518,
+        "Attribute Fixed DMG": 1176,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 11,
+      "nameZh": "饮龙·酩酊一段",
+      "nameEn": "Dragonquench - Inebriate (stage 1)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.34876,
+        "Physical Fixed DMG": 373.8,
+        "Attribute Multiplier": 2.02314,
+        "Attribute Fixed DMG": 203,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 12,
+      "nameZh": "饮龙·酩酊二段",
+      "nameEn": "Dragonquench - Inebriate (stage 2)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.2964,
+        "Physical Fixed DMG": 359.8,
+        "Attribute Multiplier": 1.9446,
+        "Attribute Fixed DMG": 196,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 13,
+      "nameZh": "饮龙·酩酊三段",
+      "nameEn": "Dragonquench - Inebriate (stage 3)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 1.58172,
+        "Physical Fixed DMG": 438.2,
+        "Attribute Multiplier": 2.37258,
+        "Attribute Fixed DMG": 238,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 14,
+      "nameZh": "饮龙·酩酊四段",
+      "nameEn": "Dragonquench - Inebriate (stage 4)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "拳甲",
+          "en": "Gauntlets"
+        },
+        "Physical Multiplier": 3.56986,
+        "Physical Fixed DMG": 989.8,
+        "Attribute Multiplier": 5.35486,
+        "Attribute Fixed DMG": 539,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 15,
+      "nameZh": "碧血为迎",
+      "nameEn": "Hero's Blood",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 0.6587,
+        "Physical Fixed DMG": 183,
+        "Attribute Multiplier": 0.9881,
+        "Attribute Fixed DMG": 100
+      }
+    },
+    {
+      "row": 16,
+      "nameZh": "碧血为迎(浅醉)",
+      "nameEn": "Hero's Blood (Inebriate - Tipsy)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 0.79044,
+        "Physical Fixed DMG": 219.6,
+        "Attribute Multiplier": 1.18572,
+        "Attribute Fixed DMG": 120
+      }
+    },
+    {
+      "row": 17,
+      "nameZh": "碧血为迎·酩酊一段",
+      "nameEn": "Hero's Blood - Inebriate (stage 1)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 4.28274,
+        "Physical Fixed DMG": 1184.4,
+        "Attribute Multiplier": 6.42411,
+        "Attribute Fixed DMG": 644.7,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 18,
+      "nameZh": "碧血为迎·酩酊后续",
+      "nameEn": "Hero's Blood - Inebriate (follow-up)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 5.71032,
+        "Physical Fixed DMG": 1579.2,
+        "Attribute Multiplier": 8.56464,
+        "Attribute Fixed DMG": 856.8,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 19,
+      "nameZh": "碧血为迎·酩酊尾段",
+      "nameEn": "Hero's Blood - Inebriate (final stage)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 4.28274,
+        "Physical Fixed DMG": 1184.4,
+        "Attribute Multiplier": 6.42411,
+        "Attribute Fixed DMG": 644.7,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 20,
+      "nameZh": "碧血为迎·酩酊",
+      "nameEn": "Hero's Blood - Inebriate",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Critical DMG": 0.3,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 14.2758,
+        "Physical Fixed DMG": 3948,
+        "Attribute Multiplier": 21.41286,
+        "Attribute Fixed DMG": 2146.2,
+        "Attunement Bonus": {
+          "zh": "酩酊技",
+          "en": "酩酊技"
+        }
+      }
+    },
+    {
+      "row": 21,
+      "nameZh": "双刀Q1",
+      "nameEn": "Reveldrift (Twinblades Martial Art, stage 1)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "双刀",
+          "en": "Twinblades"
+        },
+        "Physical Multiplier": 1.2672,
+        "Physical Fixed DMG": 351.6,
+        "Attribute Multiplier": 1.90092,
+        "Attribute Fixed DMG": 192
+      }
+    },
+    {
+      "row": 22,
+      "nameZh": "醉杀",
+      "nameEn": "Drunkslay",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 0,
+        "Physical Fixed DMG": 0,
+        "Attribute Multiplier": 0,
+        "Attribute Fixed DMG": 0
+      }
+    },
+    {
+      "row": 23,
+      "nameZh": "萧呤千浪AOE",
+      "nameEn": "Flute of the Tides (AoE)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 3.9746,
+        "Physical Fixed DMG": 1008,
+        "Attribute Multiplier": 5.9619
+      }
+    },
+    {
+      "row": 24,
+      "nameZh": "萧呤千浪流星",
+      "nameEn": "Flute of the Tides (Meteor)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 1.4904,
+        "Physical Fixed DMG": 378,
+        "Attribute Multiplier": 2.2356
+      }
+    },
+    {
+      "row": 25,
+      "nameZh": "衍九矢9hit",
+      "nameEn": "Bursting Nine (9 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 10.315755,
+        "Physical Fixed DMG": 1992.6,
+        "Attribute Multiplier": 15.4736325
+      }
+    },
+    {
+      "row": 26,
+      "nameZh": "骑龙回马",
+      "nameEn": "Soaring Spin",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 7.1084,
+        "Physical Fixed DMG": 1369,
+        "Attribute Multiplier": 10.6626
+      }
+    },
+    {
+      "row": 27,
+      "nameZh": "叶龙骧首(32层+70%HP)",
+      "nameEn": "Dragon Head (32 stacks, above 70% HP)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Universal DMG Boost": 0.47,
+        "Guaranteed Precision": 1,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 25.201792,
+        "Physical Fixed DMG": 4869.48,
+        "Attribute Multiplier": 37.802688
+      }
+    },
+    {
+      "row": 28,
+      "nameZh": "墨洗翰华(打盾)",
+      "nameEn": "Inkwash Splendor (vs Shield)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 23.7726,
+        "Physical Fixed DMG": 4592,
+        "Attribute Multiplier": 35.6589
+      }
+    },
+    {
+      "row": 29,
+      "nameZh": "神龙吐火暗灼1hit",
+      "nameEn": "Dragon's Breath (Smolder 1 hit)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.28505,
+        "Physical Fixed DMG": 251,
+        "Attribute Multiplier": 1.927575
+      }
+    },
+    {
+      "row": 30,
+      "nameZh": "神龙吐火暗灼2hit",
+      "nameEn": "Dragon's Breath (Smolder 2 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 3.9863,
+        "Physical Fixed DMG": 778,
+        "Attribute Multiplier": 5.97945
+      }
+    },
+    {
+      "row": 31,
+      "nameZh": "神龙吐火暗灼dot",
+      "nameEn": "Dragon's Breath (Smolder DoT)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.236,
+        "Physical Fixed DMG": 46,
+        "Attribute Multiplier": 0.354
+      }
+    },
+    {
+      "row": 32,
+      "nameZh": "神龙吐火1hit",
+      "nameEn": "Dragon's Breath (1 hit)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.3621,
+        "Physical Fixed DMG": 264,
+        "Attribute Multiplier": 2.04315
+      }
+    },
+    {
+      "row": 33,
+      "nameZh": "神龙吐火2hit",
+      "nameEn": "Dragon's Breath (2 hits)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 4.2253,
+        "Physical Fixed DMG": 819,
+        "Attribute Multiplier": 6.33795
+      }
+    },
+    {
+      "row": 34,
+      "nameZh": "神龙吐火dot",
+      "nameEn": "Dragon's Breath (DoT)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.2958,
+        "Physical Fixed DMG": 57,
+        "Attribute Multiplier": 0.4437
+      }
+    },
+    {
+      "row": 35,
+      "nameZh": "太白醉月1-4",
+      "nameEn": "Drunken Poet (1-4)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.0239,
+        "Physical Fixed DMG": 196,
+        "Attribute Multiplier": 1.53585
+      }
+    },
+    {
+      "row": 36,
+      "nameZh": "太白醉月5",
+      "nameEn": "Drunken Poet (5)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.8,
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.7065,
+        "Physical Fixed DMG": 327,
+        "Attribute Multiplier": 2.55975
+      }
+    },
+    {
+      "row": 37,
+      "nameZh": "太白醉月爆燃",
+      "nameEn": "Drunken Poet (Combustion)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 0.7021,
+        "Physical Fixed DMG": 134,
+        "Attribute Multiplier": 1.05315
+      }
+    },
+    {
+      "row": 38,
+      "nameZh": "太白醉月暗灼",
+      "nameEn": "Drunken Poet (Smolder)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "单体奇术",
+          "en": "Single-Target Mystic Art"
+        },
+        "Physical Multiplier": 1.609,
+        "Physical Fixed DMG": 308,
+        "Attribute Multiplier": 2.4135
+      }
+    },
+    {
+      "row": 39,
+      "nameZh": "易水歌6重",
+      "nameEn": "Morale Chant (6 Tier)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 1,
+        "Attribute Multiplier": 1
+      }
+    },
+    {
+      "row": 40,
+      "nameZh": "衍九矢9hit一段",
+      "nameEn": "Bursting Nine (9 hits, stage 1)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Type": {
+          "zh": "群体奇术",
+          "en": "Group Mystic Art"
+        },
+        "Physical Multiplier": 6.87717,
+        "Physical Fixed DMG": 1328.4,
+        "Attribute Multiplier": 10.315755
+      }
+    },
+    {
+      "row": 41,
+      "nameZh": "N/a",
+      "nameEn": "N/A",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Type": {
+          "zh": "心法",
+          "en": "Inner Way"
+        },
+        "Physical Multiplier": 0,
+        "Attribute Multiplier": 0
+      }
+    }
+  ],
+  "buffs": [
+    {
+      "row": 2,
+      "nameZh": "惧刃(拐)",
+      "nameEn": "Fearful Blade (拐)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Bellstrike Penetration": 16,
+        "Stonesplit Penetration": 16,
+        "Silkbind Penetration": 16,
+        "Bamboocut Penetration": 16
+      }
+    },
+    {
+      "row": 3,
+      "nameZh": "惊神(拐)",
+      "nameEn": "Soul Shaken (拐)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.25
+      }
+    },
+    {
+      "row": 4,
+      "nameZh": "烁鼓(拐)",
+      "nameEn": "烁鼓(拐)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Bonus": 0,
+        "Attribute Attack Bonus": 0
+      }
+    },
+    {
+      "row": 5,
+      "nameZh": "扶风(拐)",
+      "nameEn": "扶风(拐)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Attribute Attack Bonus": 0
+      }
+    },
+    {
+      "row": 6,
+      "nameZh": "裁云(拐)",
+      "nameEn": "裁云(拐)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical DMG Bonus": 0,
+        "Bellstrike Bonus": 0,
+        "Stonesplit Bonus": 0,
+        "Silkbind Bonus": 0,
+        "Bamboocut Bonus": 0
+      }
+    },
+    {
+      "row": 7,
+      "nameZh": "离猎",
+      "nameEn": "Strayhunt",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical DMG Bonus": 0.02,
+        "Bellstrike Bonus": 0.02,
+        "Stonesplit Bonus": 0.02,
+        "Silkbind Bonus": 0.02,
+        "Bamboocut Bonus": 0.02
+      }
+    },
+    {
+      "row": 8,
+      "nameZh": "步乱",
+      "nameEn": "Wildstride",
+      "nameEnSource": "composed",
+      "fields": {
+        "Settlement DMG Boost": 0.2
+      }
+    },
+    {
+      "row": 9,
+      "nameZh": "无惧",
+      "nameEn": "Fearless",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Special DMG Boost": 0.05
+      }
+    },
+    {
+      "row": 10,
+      "nameZh": "小燕别(0%)",
+      "nameEn": "小燕别(0%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 6,
+        "Bellstrike Penetration": 6,
+        "Stonesplit Penetration": 6,
+        "Silkbind Penetration": 6,
+        "Bamboocut Penetration": 6
+      }
+    },
+    {
+      "row": 11,
+      "nameZh": "小燕别(10%)",
+      "nameEn": "小燕别(10%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 7,
+        "Bellstrike Penetration": 7,
+        "Stonesplit Penetration": 7,
+        "Silkbind Penetration": 7,
+        "Bamboocut Penetration": 7
+      }
+    },
+    {
+      "row": 12,
+      "nameZh": "小燕别(20%)",
+      "nameEn": "小燕别(20%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 8,
+        "Bellstrike Penetration": 8,
+        "Stonesplit Penetration": 8,
+        "Silkbind Penetration": 8,
+        "Bamboocut Penetration": 8
+      }
+    },
+    {
+      "row": 13,
+      "nameZh": "小燕别(30%)",
+      "nameEn": "小燕别(30%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 9,
+        "Bellstrike Penetration": 9,
+        "Stonesplit Penetration": 9,
+        "Silkbind Penetration": 9,
+        "Bamboocut Penetration": 9
+      }
+    },
+    {
+      "row": 14,
+      "nameZh": "小燕别(40%)",
+      "nameEn": "小燕别(40%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 10,
+        "Bellstrike Penetration": 10,
+        "Stonesplit Penetration": 10,
+        "Silkbind Penetration": 10,
+        "Bamboocut Penetration": 10
+      }
+    },
+    {
+      "row": 15,
+      "nameZh": "燕别(0%)",
+      "nameEn": "燕别(0%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 12,
+        "Bellstrike Penetration": 12,
+        "Stonesplit Penetration": 12,
+        "Silkbind Penetration": 12,
+        "Bamboocut Penetration": 12
+      }
+    },
+    {
+      "row": 16,
+      "nameZh": "燕别(10%)",
+      "nameEn": "燕别(10%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 14,
+        "Bellstrike Penetration": 14,
+        "Stonesplit Penetration": 14,
+        "Silkbind Penetration": 14,
+        "Bamboocut Penetration": 14
+      }
+    },
+    {
+      "row": 17,
+      "nameZh": "燕别(20%)",
+      "nameEn": "燕别(20%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 16,
+        "Bellstrike Penetration": 16,
+        "Stonesplit Penetration": 16,
+        "Silkbind Penetration": 16,
+        "Bamboocut Penetration": 16
+      }
+    },
+    {
+      "row": 18,
+      "nameZh": "燕别(30%)",
+      "nameEn": "燕别(30%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 18,
+        "Bellstrike Penetration": 18,
+        "Stonesplit Penetration": 18,
+        "Silkbind Penetration": 18,
+        "Bamboocut Penetration": 18
+      }
+    },
+    {
+      "row": 19,
+      "nameZh": "燕别(40%)",
+      "nameEn": "燕别(40%)",
+      "nameEnSource": "untranslated",
+      "fields": {
+        "Physical Penetration": 20,
+        "Bellstrike Penetration": 20,
+        "Stonesplit Penetration": 20,
+        "Silkbind Penetration": 20,
+        "Bamboocut Penetration": 20
+      }
+    },
+    {
+      "row": 20,
+      "nameZh": "气竭",
+      "nameEn": "Exhausted",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Special DMG Boost": 0.1
+      }
+    },
+    {
+      "row": 21,
+      "nameZh": "近战笛",
+      "nameEn": "Melee Flute",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.02
+      }
+    },
+    {
+      "row": 22,
+      "nameZh": "阴阳",
+      "nameEn": "Yin-Yang",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.15
+      }
+    },
+    {
+      "row": 23,
+      "nameZh": "进气断石",
+      "nameEn": "Shattered Stone (on Qi gain)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 24,
+      "nameZh": "断石1层",
+      "nameEn": "Shattered Stone (1 stack)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 25,
+      "nameZh": "断石2层",
+      "nameEn": "Shattered Stone (2 stacks)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 26,
+      "nameZh": "断石3层",
+      "nameEn": "Shattered Stone (3 stacks)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 27,
+      "nameZh": "断石4层",
+      "nameEn": "Shattered Stone (4 stacks)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 28,
+      "nameZh": "断石5层",
+      "nameEn": "Shattered Stone (5 stacks)",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical Penetration": 0,
+        "Critical DMG": 0
+      }
+    },
+    {
+      "row": 29,
+      "nameZh": "真气失衡",
+      "nameEn": "Qi Imbalance",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Bellstrike Bonus": 0.1,
+        "Special DMG Boost": 0.1
+      }
+    },
+    {
+      "row": 30,
+      "nameZh": "醉意增伤",
+      "nameEn": "Inebriate DMG Boost",
+      "nameEnSource": "composed",
+      "fields": {
+        "Physical DMG Bonus": 0.09,
+        "Bamboocut Bonus": 0.09
+      }
+    },
+    {
+      "row": 31,
+      "nameZh": "浅醉",
+      "nameEn": "Inebriate - Tipsy",
+      "nameEnSource": "composed",
+      "fields": {
+        "Critical DMG": 0.05
+      }
+    },
+    {
+      "row": 32,
+      "nameZh": "浓醺",
+      "nameEn": "Inebriate - Deepdaze",
+      "nameEnSource": "composed",
+      "fields": {
+        "Critical DMG": 0.1
+      }
+    },
+    {
+      "row": 33,
+      "nameZh": "沧海帖1层",
+      "nameEn": "Waveborn Script (1 stack)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.01
+      }
+    },
+    {
+      "row": 34,
+      "nameZh": "沧海帖2层",
+      "nameEn": "Waveborn Script (2 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.02
+      }
+    },
+    {
+      "row": 35,
+      "nameZh": "沧海帖3层",
+      "nameEn": "Waveborn Script (3 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.03
+      }
+    },
+    {
+      "row": 36,
+      "nameZh": "沧海帖4层",
+      "nameEn": "Waveborn Script (4 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.04
+      }
+    },
+    {
+      "row": 37,
+      "nameZh": "沧海帖5层",
+      "nameEn": "Waveborn Script (5 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.05
+      }
+    },
+    {
+      "row": 38,
+      "nameZh": "沧海帖6层",
+      "nameEn": "Waveborn Script (6 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.06
+      }
+    },
+    {
+      "row": 39,
+      "nameZh": "沧海帖7层",
+      "nameEn": "Waveborn Script (7 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.07
+      }
+    },
+    {
+      "row": 40,
+      "nameZh": "沧海帖8层",
+      "nameEn": "Waveborn Script (8 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.08
+      }
+    },
+    {
+      "row": 41,
+      "nameZh": "沧海帖9层",
+      "nameEn": "Waveborn Script (9 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.09
+      }
+    },
+    {
+      "row": 42,
+      "nameZh": "沧海帖10层",
+      "nameEn": "Waveborn Script (10 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.1
+      }
+    },
+    {
+      "row": 43,
+      "nameZh": "鬼掣帖",
+      "nameEn": "Wraithstrike Script",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Critical DMG": 0.1
+      }
+    },
+    {
+      "row": 44,
+      "nameZh": "易水歌1层",
+      "nameEn": "Morale Chant (1 stack)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.01,
+        "Physical Penetration": 2
+      }
+    },
+    {
+      "row": 45,
+      "nameZh": "易水歌2层",
+      "nameEn": "Morale Chant (2 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.02,
+        "Physical Penetration": 4
+      }
+    },
+    {
+      "row": 46,
+      "nameZh": "易水歌3层",
+      "nameEn": "Morale Chant (3 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.03,
+        "Physical Penetration": 6
+      }
+    },
+    {
+      "row": 47,
+      "nameZh": "易水歌4层",
+      "nameEn": "Morale Chant (4 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.04,
+        "Physical Penetration": 8
+      }
+    },
+    {
+      "row": 48,
+      "nameZh": "易水歌5层",
+      "nameEn": "Morale Chant (5 stacks)",
+      "nameEnSource": "inherited",
+      "fields": {
+        "Universal DMG Boost": 0.05,
+        "Physical Penetration": 10
+      }
+    },
+    {
+      "row": 49,
+      "nameZh": "N/a",
+      "nameEn": "N/A",
+      "nameEnSource": "inherited",
+      "fields": {}
+    }
+  ],
+  "_comparison": {
+    "ourSource": "src/data/skills/bamboocut-draught/*.ts",
+    "rule": "No ourSkill block is emitted. The class's coefficients are sourced from the game client per hit, while the workbook rows are per-cast totals that fold class-side multipliers in, so a row-to-module comparison is not a like-for-like check and is not automated here.",
+    "matched": 0,
+    "totalDamageRows": 40
+  }
+}

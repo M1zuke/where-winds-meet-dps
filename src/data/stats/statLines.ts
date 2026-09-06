@@ -196,6 +196,15 @@ export const STAT_LINES = [
     category: "Martial Boosts",
   },
   {
+    id: "gauntletsBoost",
+    label: "Art of Gauntlets DMG Boost",
+    unit: "percent",
+    enginePath: "gauntletsBoost",
+    maxRoll: 0.062,
+    scope: "player",
+    category: "Martial Boosts",
+  },
+  {
     id: "damageVsBoss",
     label: "Combat Boost Against Boss Units",
     unit: "percent",

@@ -56,6 +56,10 @@ export const PASSIVE_INNER_WAY_NAMES: Readonly<Record<string, string>> = {
   "602": "Sky Gripped",
   "603": "Empirical Edge",
   "604": "Celestial Vigor",
+  "701": "Eonpour",
+  "702": "Skyspeak",
+  "703": "Mistwing",
+  "704": "Volutefit",
 }
 
 export const PASSIVE_ID_TO_INNER_WAY: Readonly<Record<string, InnerWayId>> = {
@@ -74,4 +78,8 @@ export const PASSIVE_ID_TO_INNER_WAY: Readonly<Record<string, InnerWayId>> = {
   "551": "frostCladNight",
   "552": "steadfastDevotion",
   "553": "throatPierce",
+  "701": "eonpour",
+  "702": "skyspeak",
+  "703": "mistwing",
+  "704": "volutefit",
 }

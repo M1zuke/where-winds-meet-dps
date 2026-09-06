@@ -24,9 +24,11 @@ on the 60 fps grid. Rules:
   map. A skill whose key resolves to neither takes no typing boost.
 - `elevatedAttributeMultiplier` **defaults true**. Set it false **only** for a
   real DoT tick. Ticks authored on a debuff's `dot` get it automatically.
-- `guaranteedPrecision` forces effective precision to 1; crit and affinity still
-  roll. `guaranteedNormal` means the hit can trigger none of crit, affinity or
-  abrasion and always deals the normal row.
+- `neverAbrades` removes the abrasion outcome: the mass that would have abraded
+  deals the normal row. Precision, crit and affinity chances are unchanged — a
+  hit that fails precision still cannot crit. `guaranteedNormal` means the hit
+  can trigger none of crit, affinity or abrasion and always deals the normal
+  row.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 
 ### Hit variants
@@ -35,6 +37,29 @@ A hit may carry buff-gated alternative coefficient rows. The first variant whose
 conditions all hold replaces the hit's four coefficients; nothing else is
 affected, and no match leaves the hit's own row untouched. **This is how an
 empowered form is authored** — never with a per-skill branch in the timeline.
+
+A variant may also carry its own cast length, for an empowered form that
+genuinely runs longer or shorter than the skill's own. Every cast's length is
+resolved incrementally, in rotation order, against the ledger state built from
+every cast laid out before it — never only the rotation's declared opening
+state — so a condition only a mid-fight trigger satisfies can still activate a
+cast-length override. A cast's own triggers can never affect its own length or
+hit set; only what came before it can. Where a skill's several hits each
+select an active variant with an override, the first hit in authoring order
+decides. Leaving the override unset, or giving it the same placeholder value
+`castFrames` itself uses for "not yet measured", both mean no override — never
+a value that could move the cast cursor backwards.
+
+### Conditional hits
+
+A hit may carry its own ANDed conditions, gating whether it occurs at all —
+unmet, it deals no damage and fires no triggers, exactly as if it were absent
+from the cast. This resolves at the same point, and against the same ledger
+state, as the cast's own length, so a skill whose real hit count only grows
+past some threshold is authored as one hit per real hit, each gated on that
+threshold, rather than as a separate module per hit count. A cast's length
+must be derived only from the hits that actually occur, never from every hit
+the skill could ever land.
 
 ## Identity and tags
 
@@ -53,6 +78,14 @@ empowered form is authored** — never with a per-skill branch in the timeline.
   engine-level variants of one in-game skill read as a single row; absent or
   blank falls back to the skill's own `name`. It is display text only — nothing
   matches on it, and it changes neither damage nor a cast's own timeline row.
+- **Only a hit that deals damage reports into the breakdown.** A hit whose
+  coefficients and flat adds are all zero exists to carry triggers; it still
+  fires them and still lands on the cast timeline, but it adds neither a count
+  nor a row, so a grant-only cast has no breakdown row at all.
+- **A pre-pull cast sets up; it never lands.** Its hits fire their `triggers`
+  and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
+  negative frames — but it adds nothing to the total, the breakdown or an echo
+  bank, whatever its coefficients say, and its frames stay out of the duration.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the
@@ -83,6 +116,31 @@ Rules:
 - A trigger that enqueues another skill's hits must not form an unbounded chain.
 - Extending an already-active window is a distinct operation from opening a
   fresh one. Do not emulate one with the other.
+- **A trigger may open its own grant at a length other than the target
+  status's own** (`durationFrames`): that grant's window uses it in place of
+  the status's declared duration, for that grant alone.
+- **A trigger may move one status's stacks onto another** (`transferFrom`): the
+  target gains as many stacks as the source holds at that frame, window-aware
+  and clamped to the target's cap, and the source is set to 0 at the same frame
+  with its windows untouched. Such a trigger ignores its own stack delta and
+  never extends; the target write fires the cap payout like any other write,
+  and both passes resolve it against the same ledger state.
+- **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
+  clock-driven phase at its frame — the rotation's Qi-break window and its
+  low-Qi lead, never a status — is the named one. A stagger or control state
+  the source material gates on is expressed as the `exhausted` phase.
+- **A trigger may carry its own cooldown** (`cooldownFrames`): once it fires,
+  the same trigger fires again only after that many frames. The first firing
+  is never held back, a firing blocked by its conditions or phase does not
+  start the cooldown, and every pass counts on its own, so the layout pass
+  and the event loop agree.
+- **A trigger may release a debuff's echo** (`releaseEcho`): everything the
+  target debuff has banked since its last release is dealt at that hit's frame
+  as one event on the echo's own row. It carries no share and no name — both
+  live on the debuff — and an empty pot deals nothing. A re-application
+  without it refreshes the mark and keeps banking; a pot no trigger releases
+  is dealt when the debuff's coverage lapses, and never after the rotation
+  ends.
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared
@@ -111,8 +169,47 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   The timeline drops the buff entirely when that param is off, so a condition on
   it never holds and the state cannot be reached. Use it instead of gating each
   trigger site; the requirement belongs on the entity, once.
+- **A state marker that only exists from some tier of that param declares
+  `requiresMinTier`** next to `requiresParam`, and is dropped below that tier
+  exactly as it is when the param is off. It is invalid without `requiresParam`.
+- **A buff a rotation may open the fight already holding some of can declare
+  its own starting count**, read only when the rotation carries no explicit
+  opening entry of its own. Never written back into stored rotation data — a
+  rotation saved before the counter existed still opens on the declared
+  default, not on zero.
+- **A timed buff may clear or reset another status when it lapses**
+  (`onExpire`): at the frame a window ends with no other window of the same
+  buff covering that frame, the target's stack count is set to the declared
+  value. A refresh never fires it, an extension moves the frame it fires at,
+  a permanent-activation buff never fires it, and each window fires at most
+  once. The reset lands in the layout pass and the event loop alike, so a hit
+  variant or cast length gated on the target sees it from that frame on. It
+  may also declare `requiresBuffId`: the reset only lands if that other
+  status has a live window at the same frame, so the same lapse silently
+  does nothing without it.
+- **A buff may count damaging hits** (`stacksPerDamagingHit`): every damaging
+  hit from any skill grants one stack, at most once per its cooldown, clamped
+  to `maxStacks` and opening the buff's own window. The granting hit's own
+  triggers run after the grant.
+- **A buff may fire triggers on reaching its cap** (`onMaxStacks`): the stack
+  write that takes it from below `maxStacks` to `maxStacks` runs the listed
+  `applyBuff`/`applyDebuff` triggers at that frame, conditions and
+  extensions honoured, other trigger kinds ignored. A trigger fired this way
+  never fires another buff's `onMaxStacks`, and may lower the firing buff
+  itself.
+- **A debuff may bank an echo** (`echo`): while one of its windows is active,
+  every scored damage event a def feeds into it — a regular hit, a DoT tick or
+  a mechanic's extra event — banks `share` of its realised damage, scaled by
+  the feeding effect's factor. A release deals the banked sum as it stands:
+  never re-run through the formula, never rolled, reported under the echo's
+  own `breakdownName` and `skillType`, and only from events inside the
+  rotation window.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
+- **A status may carry a `description`**: one line of display text the cast
+  chip shows under the name, rendered through the locale catalogue like every
+  other name. Nothing matches on it, and it is never a substitute for an
+  effect a module should author.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`
   skill type is a scaling tag on one hit, not a DoT. Each tick runs through the
   kernel like any hit.
@@ -139,6 +236,10 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   before the tick pass, so a regular hit is scored before any tick has applied
   anything, and even an `affectsAll` def is skipped there. Do not declare
   `triggersBuffs` on a debuff expecting it to boost a regular hit.
+- **An `echo` effect is a feed, not a magnitude.** A def returning one names
+  the debuff whose echo the event it reaches feeds, and a factor on that
+  debuff's banked share; it changes nothing about the event itself. The share
+  and the row are the debuff's — never author them on the def.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this
@@ -152,6 +253,10 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   effects from the module side; only the module may author a magnitude, and the
   gate's `requiresParam` must match the module's own requirement or the state
   opens for a build the module never reaches.
+- **A module's `effects` may read the build's min physical attack from its
+  context, alongside the fight state.** It is the same value the damage kernel
+  takes as base min phys, and a magnitude that scales with it is computed in
+  the module — never re-derived in the UI or hardcoded in the timeline.
 
 ## Procedural behaviour
 

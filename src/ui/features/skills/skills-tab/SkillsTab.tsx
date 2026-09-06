@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
+  belongsToClass,
   makeSkill,
   makeHit,
   seedSkillFromBuiltin,
@@ -36,6 +37,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import {
   attributeAttackKey,
   classKey,
+  debuffEchoKey,
   skillKey,
   skillTypeKey,
   weaponKey,
@@ -60,6 +62,7 @@ const WEAPONS = [
   "Twin Blades",
   "Rope Dart",
   "Hengdao",
+  "Gauntlets",
 ]
 const SKILL_TYPES = ["weapon", "mindMethod", "mystic", "sustain", "Heavenwork"]
 const MYSTIC_CATEGORIES = ["control", "burst", "area-debuff", "area-damage", "area"]
@@ -193,7 +196,8 @@ function deriveTriggerDrafts(skill: Skill): TriggerDraft[] {
 
 function kindClass(kind: TriggerKind): string {
   if (kind === "applyBuff") return styles.isBuff
-  if (kind === "applyDebuff" || kind === "applyDot") return styles.isDebuff
+  if (kind === "applyDebuff" || kind === "applyDot" || kind === "releaseEcho")
+    return styles.isDebuff
   return styles.isCast
 }
 
@@ -251,7 +255,7 @@ export function SkillsTab({
   const fileRef = useRef<HTMLInputElement>(null)
 
   const classSkills = useMemo(
-    () => customSkills.filter((skill) => skill.classId === classId),
+    () => customSkills.filter((skill) => belongsToClass(skill, classId)),
     [customSkills, classId],
   )
   const classBuffs = useMemo(
@@ -259,7 +263,7 @@ export function SkillsTab({
     [customBuffs, classId],
   )
   const classDebuffs = useMemo(
-    () => customDebuffs.filter((debuff) => debuff.classId === classId),
+    () => customDebuffs.filter((debuff) => belongsToClass(debuff, classId)),
     [customDebuffs, classId],
   )
 
@@ -322,6 +326,7 @@ export function SkillsTab({
           ...variant,
           conditions: variant.conditions.map((condition) => ({ ...condition })),
         })),
+        conditions: hit.conditions?.map((condition) => ({ ...condition })),
       })),
     }
     setDraft(cloned)
@@ -346,7 +351,7 @@ export function SkillsTab({
       selectSkill(existing)
       return
     }
-    const seeded = seedSkillFromBuiltin(classId, skill)
+    const seeded = seedSkillFromBuiltin(skill.classId, skill)
     setSelectedKey(`builtin:${skill.id}`)
     loadDraft(seeded)
   }
@@ -562,7 +567,7 @@ export function SkillsTab({
     }
     if (draft.guaranteedNormal)
       return { ...summed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
-    if (draft.guaranteedPrecision) return { ...summed, abrasion: 0 }
+    if (draft.neverAbrades) return { ...summed, abrasion: 0 }
     return summed
   }, [draft, engineInputs])
 
@@ -632,6 +637,14 @@ export function SkillsTab({
       if (gate) effect += ` · ${gate}`
       return { label, effect }
     }
+    if (kind === "releaseEcho") {
+      const status = resolveStatus(trigger.targetId)
+      if (!status || !("dot" in status) || !status.echo)
+        return { label: t("skills.selectATarget"), effect: "" }
+      const label = `${t("skills.releases")} ${t(debuffEchoKey(status.id), status.echo.breakdownName)}`
+      const effect = `${t("skills.echo")} ${status.name}${gate ? ` · ${gate}` : ""}`
+      return { label, effect }
+    }
     if (kind === "applyDebuff" || kind === "applyBuff") {
       const status = resolveStatus(trigger.targetId)
       if (!status) return { label: t("skills.selectATarget"), effect: "" }
@@ -639,6 +652,11 @@ export function SkillsTab({
       if ("dot" in status && status.dot) {
         parts.push(
           `${t("common.dot")} · ${t("common.every")} ${(status.dot.tickIntervalFrames / FPS).toFixed(1)}s`,
+        )
+      }
+      if ("dot" in status && status.echo) {
+        parts.push(
+          `${t("skills.echo")} ${Math.round(status.echo.share * 100)}% → ${t(debuffEchoKey(status.id), status.echo.breakdownName)}`,
         )
       }
       const eff = effectsSummary(status.effects, t)
@@ -1055,13 +1073,11 @@ export function SkillsTab({
                     </button>
                     <button
                       type="button"
-                      className={styles.pill + (draft.guaranteedPrecision ? ` ${styles.on}` : "")}
-                      title={t("skills.neverAbradesPrecisionHint")}
-                      onClick={() =>
-                        patchDraft({ guaranteedPrecision: !(draft.guaranteedPrecision ?? false) })
-                      }
+                      className={styles.pill + (draft.neverAbrades ? ` ${styles.on}` : "")}
+                      title={t("skills.neverAbradesHint")}
+                      onClick={() => patchDraft({ neverAbrades: !(draft.neverAbrades ?? false) })}
                     >
-                      {t("skills.guaranteedPrecision")}
+                      {t("skills.neverAbrades")}
                     </button>
                     <button
                       type="button"

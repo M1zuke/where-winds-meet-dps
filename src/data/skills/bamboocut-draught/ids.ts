@@ -1,0 +1,48 @@
+export const SKILL = {
+  lightAttack: "bamboocutDraught-light-attack",
+  falconsPursuit: "bamboocutDraught-falcons-pursuit",
+  whaledraft: "bamboocutDraught-whaledraft",
+  quickDrink: "bamboocutDraught-quick-drink",
+  quickDrinkCancel: "bamboocutDraught-quick-drink-cancel",
+  nightwickPrimepick: "bamboocutDraught-nightwick-primepick",
+  nightwickPrimepickFollowUp: "bamboocutDraught-nightwick-primepick-follow-up",
+  nightwickPrimepickFollowUpCancel: "bamboocutDraught-nightwick-primepick-follow-up-cancel",
+  nightwickTipsylay: "bamboocutDraught-nightwick-tipsylay",
+  nightwickGrounddrift: "bamboocutDraught-nightwick-grounddrift",
+  peakfall: "bamboocutDraught-peakfall",
+  peakfallPrepull: "bamboocutDraught-peakfall-prepull",
+  castlink: "bamboocutDraught-castlink",
+  dragonquenchInebriate: "bamboocutDraught-dragonquench-inebriate",
+  dragonquenchInebriateCancel: "bamboocutDraught-dragonquench-inebriate-cancel",
+  dragonquenchInebriateSecond: "bamboocutDraught-dragonquench-inebriate-second",
+  dragonquenchInebriateSecondCancel: "bamboocutDraught-dragonquench-inebriate-second-cancel",
+  dragonquenchInebriateThird: "bamboocutDraught-dragonquench-inebriate-third",
+  dragonquenchInebriateThirdCancel: "bamboocutDraught-dragonquench-inebriate-third-cancel",
+  herosBlood: "bamboocutDraught-heros-blood",
+  herosBloodInebriate: "bamboocutDraught-heros-blood-inebriate",
+  reveldrift: "bamboocutDraught-reveldrift",
+  reveldriftCancel: "bamboocutDraught-reveldrift-cancel",
+  realmplay: "bamboocutDraught-realmplay",
+  boundvessel: "bamboocutDraught-boundvessel",
+  skystrikeGauntletsEx: "bamboocutDraught-skystrike-gauntlets-ex",
+  deflectCancel: "bamboocutDraught-deflect-cancel",
+  perfectDodge: "bamboocutDraught-perfect-dodge",
+  perfectDodgeFull: "bamboocutDraught-perfect-dodge-full",
+} as const
+
+export const DEBUFF = {
+  drunkslay: "debuff-bamboocutDraught-drunkslay",
+  strayhunt: "debuff-bamboocutDraught-strayhunt",
+  wildstride: "debuff-bamboocutDraught-wildstride",
+  bitterSeasonTick: "debuff-bamboocutDraught-bitter-season-tick",
+} as const
+
+export const STATUS = {
+  bingePoints: "buff-bamboocutDraught-binge-points",
+  bingeMarks: "buff-bamboocutDraught-binge-marks",
+  inebriateDeepdaze: "buff-bamboocutDraught-inebriate-deepdaze",
+  carouse: "buff-bamboocutDraught-carouse",
+  clashToast: "buff-bamboocutDraught-clash-toast",
+  cloudvault: "buff-bamboocutDraught-cloudvault",
+  eonpourExhaustedCooldown: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+} as const

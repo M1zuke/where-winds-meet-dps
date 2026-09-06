@@ -16,7 +16,7 @@ import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/sw
 export const bellstrikeSplendor = defineClass({
   id: CLASS_ID,
   displayName: "Bellstrike Splendor",
-  validated: false,
+  validated: true,
   spec: "bellstrike_splendor",
   primaryAttribute: "Bellstrike",
   classMindGroup: INNER_WAY_ID.swordMorph,

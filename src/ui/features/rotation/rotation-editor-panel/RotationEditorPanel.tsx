@@ -15,11 +15,11 @@ import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engin
 import type { QiBreakWindow } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
-import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
+import { classDefinition } from "../../../../definitions/classes/registry"
 import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
@@ -45,11 +45,18 @@ import {
   loadCustomDebuffsForClass,
 } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { buffKey, rotationKey, skillKey } from "../../../../i18n/contentKeys"
+import {
+  buffDescriptionKey,
+  buffKey,
+  debuffKey,
+  rotationKey,
+  skillKey,
+} from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
+import { rotationDurationSec } from "./rotationDuration"
 
 interface Props {
   inputs: Inputs
@@ -57,13 +64,7 @@ interface Props {
   result: Result
 }
 
-function stepCastFrames(step: RotationStep, skill: Skill | undefined): number {
-  if (!skill) return 0
-  const hitCount = Math.max(0, Math.min(step.hitCount, skill.hits.length))
-  const performed = skill.hits.slice(0, hitCount)
-  const maxFrame = performed.length > 0 ? Math.max(...performed.map((hit) => hit.frame)) : -1
-  return skill.castFrames || maxFrame + 1
-}
+const OPENING_STACK_PIP_LIMIT = 12
 
 function effectsSummary(
   effects: BuffStatEffect[],
@@ -112,12 +113,27 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
           </div>
         )}
         {eff && <div>{eff}</div>}
+        {tag.extras?.map((extra, index) => (
+          <div key={index}>
+            {extra.kind === "damageMultiplier"
+              ? `${t("common.damage")} ×${extra.factor}`
+              : extra.kind === "forceOutcome"
+                ? `${t("rotation.editor.effectGuaranteed")} ${extra.outcome}`
+                : extra.kind === "artBonus"
+                  ? `${extra.field} ${extra.amount >= 0 ? "+" : ""}${extra.amount}`
+                  : extra.kind === "applyBuff"
+                    ? `${t("skills.applies")} ${t(buffKey(extra.id), extra.id)}`
+                    : extra.kind === "echo"
+                      ? `${t("skills.echo")} ×${extra.factor} → ${t(debuffKey(extra.debuffId), extra.debuffId)}`
+                      : null}
+          </div>
+        ))}
         {tag.requires && (
           <div>
             {t("common.requires")} {tag.requires}
           </div>
         )}
-        {tag.description && <div>{tag.description}</div>}
+        {tag.description && <div>{t(buffDescriptionKey(tag.id), tag.description)}</div>}
       </span>
     </span>
   )
@@ -148,7 +164,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     [inputs.classId],
   )
   const openingStackBuffs = useMemo<Buff[]>(() => {
-    const openable = openingStackBuffIds(inputs.mindMethods)
+    const fromClass = classDefinition(inputs.classId)?.openingStackBuffIds ?? []
+    const openable = [...new Set([...openingStackBuffIds(inputs.mindMethods), ...fromClass])]
     if (openable.length === 0) return []
     const byId = new Map(builtinBuffsForClass(inputs.classId).map((buff) => [buff.id, buff]))
     return openable
@@ -197,16 +214,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeRotation?.id, skillsById])
 
-  const computedDurationSec = useMemo(() => {
-    if (!activeRotation) return 0
-    const frames = activeRotation.steps
-      .filter((step) => {
-        const skill = skillsById.get(step.skillId)
-        return !skill || !isPrePullSkill(skill)
-      })
-      .reduce((sum, step) => sum + stepCastFrames(step, skillsById.get(step.skillId)), 0)
-    return frames / FPS
-  }, [activeRotation, skillsById])
+  const computedDurationSec = useMemo(
+    () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
+    [activeRotation, skillsById, result],
+  )
 
   const diagnostics = useMemo(() => {
     if (!isCustom || !activeRotation) return []
@@ -516,7 +527,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               <OpeningStackRow
                 key={buff.id}
                 buff={buff}
-                value={activeRotation.openingStacks?.[buff.id] ?? 0}
+                value={activeRotation.openingStacks?.[buff.id] ?? buff.defaultOpeningStacks ?? 0}
                 onChange={isCustom ? (stacks) => setOpeningStacks(buff.id, stacks) : null}
               />
             ))}
@@ -741,13 +752,6 @@ function OpeningStackRow({
   const { t } = useI18n()
   const max = buff.maxStacks
   const clamped = Math.max(0, Math.min(max, value))
-  const charges = Array.from({ length: max + 1 }, (_, charge) => charge)
-  const pipClassName = (charge: number): string => {
-    const filled = charge === 0 ? clamped === 0 : charge <= clamped
-    return [styles.pip, charge === 0 ? styles.pipEmpty : "", filled ? styles.pipOn : ""]
-      .filter(Boolean)
-      .join(" ")
-  }
   const style = { "--buff-hue": buffChipHue(buff.name, buff.id) } as React.CSSProperties
   const rowClassName = [styles.entry, styles.openingRow, onChange ? "" : styles.openingRowReadonly]
     .filter(Boolean)
@@ -766,26 +770,55 @@ function OpeningStackRow({
       <div className={styles.headControls}>
         <span className={styles.headField}>
           <span className={styles.headCap}>{t("rotation.editor.charges")}</span>
-          <span className={styles.pips}>
-            {charges.map((charge) => (
-              <button
-                key={charge}
-                type="button"
-                className={pipClassName(charge)}
-                aria-pressed={charge === clamped}
-                aria-label={`${charge} / ${max}`}
-                disabled={!onChange}
-                onClick={() => onChange?.(charge)}
-                title={`${charge} / ${max}`}
-              />
-            ))}
-          </span>
+          {max <= OPENING_STACK_PIP_LIMIT ? (
+            <OpeningStackPips max={max} clamped={clamped} onChange={onChange} />
+          ) : (
+            <NumInput
+              value={clamped}
+              onChange={(next) => onChange?.(Math.max(0, Math.min(max, Math.round(next))))}
+              disabled={!onChange}
+            />
+          )}
           <span className={styles.pipCount}>
             {clamped} / {max}
           </span>
         </span>
       </div>
     </div>
+  )
+}
+
+function OpeningStackPips({
+  max,
+  clamped,
+  onChange,
+}: {
+  max: number
+  clamped: number
+  onChange: ((stacks: number) => void) | null
+}) {
+  const charges = Array.from({ length: max + 1 }, (_, charge) => charge)
+  const pipClassName = (charge: number): string => {
+    const filled = charge === 0 ? clamped === 0 : charge <= clamped
+    return [styles.pip, charge === 0 ? styles.pipEmpty : "", filled ? styles.pipOn : ""]
+      .filter(Boolean)
+      .join(" ")
+  }
+  return (
+    <span className={styles.pips}>
+      {charges.map((charge) => (
+        <button
+          key={charge}
+          type="button"
+          className={pipClassName(charge)}
+          aria-pressed={charge === clamped}
+          aria-label={`${charge} / ${max}`}
+          disabled={!onChange}
+          onClick={() => onChange?.(charge)}
+          title={`${charge} / ${max}`}
+        />
+      ))}
+    </span>
   )
 }
 

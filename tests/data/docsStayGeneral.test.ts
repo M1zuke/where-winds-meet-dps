@@ -76,7 +76,10 @@ describe("docs stay general", () => {
   })
 
   it.each(docFiles())("%s names no skill, buff, debuff, inner way or gear set", (file) => {
-    const text = readFileSync(join(DOCS_DIR, file), "utf8")
+    const raw = readFileSync(join(DOCS_DIR, file), "utf8")
+    const text = CLASS_NAMES_ALLOWED_IN.has(file)
+      ? classTerms().reduce((masked, className) => masked.replaceAll(className, ""), raw)
+      : raw
     const found = terms
       .filter((term) => text.includes(term))
       .map((term) => `${term} (line ${offendingLines(text, term).join(", ")})`)

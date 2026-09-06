@@ -5,6 +5,7 @@ import type {
   RawCustomDebuffsBlob,
 } from "./types"
 import { V3__umbraBleedTick } from "./V3__umbraBleedTick"
+import { V4__mysticArtIds } from "./V4__mysticArtIds"
 
 export type {
   CustomDebuffMigration,
@@ -12,8 +13,12 @@ export type {
   RawCustomDebuffsBlob,
 } from "./types"
 export { migrateUmbraBleedDot } from "./V3__umbraBleedTick"
+export { migrateMysticDebuffReferences } from "./V4__mysticArtIds"
 
-export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [V3__umbraBleedTick]
+export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
+  V3__umbraBleedTick,
+  V4__mysticArtIds,
+]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store
 // that `storage.ts` splits on load, and nothing older exists.

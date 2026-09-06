@@ -10,6 +10,7 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { dotRow, skillRow } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { DEBUFF as MYSTIC_DEBUFF } from "../../src/data/skills/mystic/ids"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -79,7 +80,7 @@ describe("mystic skills and their DoTs take neither weapon boost", () => {
   it("allMartialBoost and swordBoost leave a burst-mystic rotation (incl. Combustion DoT) untouched", () => {
     const base = simulate(BURST_ROTATION)
     const boosted = simulate(BURST_ROTATION, { allMartialBoost: 0.1, swordBoost: 0.1 })
-    expect(damageOf(base, dotRow(CLASS, DEBUFF.combustion))).toBeGreaterThan(0)
+    expect(damageOf(base, dotRow(CLASS, MYSTIC_DEBUFF.combustion))).toBeGreaterThan(0)
     expect(boosted.totalDamage).toBe(base.totalDamage)
   })
 

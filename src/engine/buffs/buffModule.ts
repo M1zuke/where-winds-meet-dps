@@ -5,6 +5,7 @@ export interface BuffRequirements {
   param?: string
   minTier?: number
   set?: string
+  classId?: string
 }
 
 export interface ActiveAfterBuffEnds {

@@ -4,6 +4,7 @@ import {
   builtinDebuffsForClass,
   builtinBuffsForClass,
 } from "../../src/engine/builtinLibrary"
+import { MYSTIC_ARTS_CLASS_ID, belongsToClass } from "../../src/engine/skill"
 
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 const EXPECTED_COUNTS: Record<string, number> = {
@@ -18,9 +19,10 @@ describe("per-class skill file coverage", () => {
       const ids = skills.map((s) => s.id)
       expect(new Set(ids).size).toBe(ids.length)
       for (const s of skills) {
-        expect(s.classId).toBe(classId)
-        expect(s.id.startsWith(`${classId}-`)).toBe(true)
+        expect(belongsToClass(s, classId)).toBe(true)
+        expect(s.id.startsWith(`${s.classId}-`)).toBe(true)
       }
+      expect(skills.some((s) => s.classId === MYSTIC_ARTS_CLASS_ID)).toBe(true)
     })
   }
 })

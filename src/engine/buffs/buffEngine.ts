@@ -9,6 +9,7 @@
 // Runs on `BuffModule` only.
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
+import type { StatusView } from "../ledger"
 import type { BuffModule, BuffRequirements, ConditionalFinalCrit } from "./buffModule"
 
 // What a cast carries away from the buff engine: ids that count as active for
@@ -28,10 +29,17 @@ import type {
 } from "../effects/context"
 import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
-import { paramOnOf, paramTierOf } from "./params"
+import { clockQiPhase, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
 
 export type BuffParams = Record<string, unknown>
+
+// The timeline's own statuses — gates and debuffs the ledger tracks — so a
+// module's `ctx.status` can read an id this engine never applies itself.
+export interface TimelineStatuses {
+  view: StatusView
+  fps: number
+}
 
 interface ActiveBuff {
   appliedAt: number
@@ -63,6 +71,7 @@ export interface DamageEffectsResult {
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
   breakdown: Record<string, number>
+  echoFeeds: { debuffId: string; factor: number }[]
 }
 
 const DEFAULT_DURATION = 15
@@ -89,6 +98,11 @@ export class BuffEngine {
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
+  private statuses: TimelineStatuses | null = null
+
+  attachStatuses(statuses: TimelineStatuses): void {
+    this.statuses = statuses
+  }
 
   constructor(
     params: BuffParams,
@@ -122,6 +136,7 @@ export class BuffEngine {
   }
 
   private requirementsMet(requires: BuffRequirements | undefined): boolean {
+    if (requires?.classId && requires.classId !== this.params.classId) return false
     if (!requires?.param) return true
     if (!this.paramOn(requires.param)) return false
     if (requires.minTier && this.paramTier(requires.param) < requires.minTier) return false
@@ -133,16 +148,9 @@ export class BuffEngine {
   }
 
   qiPhase(time: number): QiPhase {
-    const params = this.params
-    const qiBreakTime = (params.qiBreakTime as number) ?? 25
-    const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-    const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-    const healerExt = (params.healerBreakExtension as number) ?? 0
-    const breakEnd = qiBreakTime + bossBreakDuration + healerExt
-    if (time >= qiBreakTime && time < breakEnd) return "exhausted"
-    if (time >= belowQiTime && time < qiBreakTime) return "below30"
-    if (this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time)) return "below30"
-    return "normal"
+    const clockPhase = clockQiPhase(this.params, time)
+    if (clockPhase !== "normal") return clockPhase
+    return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
   qiBreakWindow(): { start: number; end: number } {
@@ -162,16 +170,30 @@ export class BuffEngine {
     return belowQiTime < qiBreakTime ? { start: belowQiTime, end: qiBreakTime } : null
   }
 
+  private statusActive(id: string, time: number): boolean {
+    if (this.definitions.has(id)) return this.isBuffActiveAtTime(id, time)
+    const statuses = this.statuses
+    return statuses ? statuses.view.isActiveAt(id, Math.round(time * statuses.fps)) : false
+  }
+
+  private statusStacks(id: string, time: number): number {
+    if (this.definitions.has(id)) return this.getHistoricalBuffStacks(id, time)
+    const statuses = this.statuses
+    return statuses ? statuses.view.conditionStacksAt(id, Math.round(time * statuses.fps)) : 0
+  }
+
   private buildContext(
     time: number,
     event: EffectEvent,
     selfStacks: number,
     module?: BuffModule,
+    forDisplay = false,
   ): EffectContext {
     const build: BuildView = {
       classId: (this.params.classId as string) ?? "",
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
+      minPhysAttack: this.paramNum("minPhysAttack"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
       paramValue: (id) => this.paramNum(id),
@@ -182,15 +204,16 @@ export class BuffEngine {
       build,
       target: { isTrainingDummy: !!this.params.isTrainingDummy },
       status: {
-        isActive: (id) => this.isBuffActiveAtTime(id, time),
-        stacks: (id) => this.getHistoricalBuffStacks(id, time),
+        isActive: (id) => this.statusActive(id, time),
+        stacks: (id) => this.statusStacks(id, time),
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
       },
       self: {
         stacks: selfStacks,
         reachesEvent:
-          module !== undefined && event.kind === "damage" && reaches(event.tags, module),
+          module !== undefined &&
+          (forDisplay || (event.kind === "damage" && reaches(event.tags, module))),
       },
       event,
     }
@@ -215,12 +238,48 @@ export class BuffEngine {
     return window ? window.expiresAt - time : undefined
   }
 
+  displayEffectsFor(
+    module: BuffModule,
+    time: number,
+    stacks: number = module.maxStacks ?? 1,
+  ): Effect[] {
+    const asDamage: EffectEvent = { kind: "damage", castTag: "", tags: new Set() }
+    const ctx = this.buildContext(time, asDamage, stacks, module, true)
+    return resolveEffects(module, ctx).filter((effect) =>
+      effect.kind === "stat"
+        ? effect.amount !== 0
+        : effect.kind === "damageMultiplier" ||
+          effect.kind === "forceOutcome" ||
+          effect.kind === "artBonus" ||
+          effect.kind === "applyBuff" ||
+          effect.kind === "echo",
+    )
+  }
+
+  private static isStateMarker(module: BuffModule): boolean {
+    return Array.isArray(module.effects) && module.effects.length === 0
+  }
+
+  private static splitForDisplay(effects: Effect[]): {
+    stats: { statKey: StatKey; amount: number }[]
+    extras: Effect[]
+  } {
+    const stats: { statKey: StatKey; amount: number }[] = []
+    const extras: Effect[] = []
+    for (const effect of effects) {
+      if (effect.kind === "stat") stats.push({ statKey: effect.statKey, amount: effect.amount })
+      else extras.push(effect)
+    }
+    return { stats, extras }
+  }
+
   activeBuffsForDisplay(time: number): {
     id: string
     name: string
     stacks: number
     maxStacks: number
     effects: { statKey: StatKey; amount: number }[]
+    extras: Effect[]
     requires?: string
     remainingSec?: number
   }[] {
@@ -230,6 +289,7 @@ export class BuffEngine {
       stacks: number
       maxStacks: number
       effects: { statKey: StatKey; amount: number }[]
+      extras: Effect[]
       requires?: string
       remainingSec?: number
     }[] = []
@@ -237,18 +297,17 @@ export class BuffEngine {
     const push = (id: string, module: BuffModule | undefined, stacks: number) => {
       if (seen.has(id)) return
       seen.add(id)
-      const ctx = this.buildContext(time, { kind: "display" }, stacks, module)
-      const effects: { statKey: StatKey; amount: number }[] = module
-        ? resolveEffects(module, ctx).flatMap((effect) =>
-            effect.kind === "stat" ? [{ statKey: effect.statKey, amount: effect.amount }] : [],
-          )
-        : []
+      const { stats, extras } = BuffEngine.splitForDisplay(
+        module ? this.displayEffectsFor(module, time, stacks) : [],
+      )
+      if (module && !BuffEngine.isStateMarker(module) && stats.length + extras.length === 0) return
       out.push({
         id,
         name: module?.name ?? id,
         stacks: Math.max(1, stacks),
         maxStacks: module?.maxStacks ?? 1,
-        effects,
+        effects: stats,
+        extras,
         requires: module?.requires?.set ?? module?.requires?.param,
         remainingSec: this.displayRemainingSec(module, id, time),
       })
@@ -353,6 +412,7 @@ export class BuffEngine {
       artBonus: () => {},
       damageMultiplier: () => {},
       setStatus: () => {},
+      echo: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -754,6 +814,7 @@ export class BuffEngine {
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
+    const echoFeeds: { debuffId: string; factor: number }[] = []
     let currentId = ""
 
     const sink: EffectSink = {
@@ -773,6 +834,9 @@ export class BuffEngine {
         damageFactor *= factor
       },
       setStatus: () => {},
+      echo(debuffId, factor) {
+        echoFeeds.push({ debuffId, factor })
+      },
     }
 
     for (const [id, module] of this.definitions) {
@@ -804,6 +868,14 @@ export class BuffEngine {
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
     }
 
-    return { effects, forceCrit, damageFactor, conditionalFinalCrit, artBonuses, breakdown }
+    return {
+      effects,
+      forceCrit,
+      damageFactor,
+      conditionalFinalCrit,
+      artBonuses,
+      breakdown,
+      echoFeeds,
+    }
   }
 }

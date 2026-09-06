@@ -15,13 +15,14 @@ only when an anchor test defends its numbers.
 offered in the class picker; `validated` gates how far its numbers may be trusted,
 never whether the UI shows it.
 
-**Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) and Stonesplit
+**Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`), Bellstrike
+Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) and Stonesplit
 Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — each
-holds a measured build exactly. Rely on nothing either reports beyond what its
-anchor pins.
+holds a measured build exactly. Rely on nothing any of them reports beyond what
+its anchor pins.
 
-**Bellstrike Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) and
-Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) are registered and not
+**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Draught
+(`bamboocutDraught`, spec `bamboocut_draught`) are registered and not
 validated** — selectable, and carrying nothing an anchor defends.
 
 The remaining classes — the other Stonesplit and Bamboocut specs — are **not
@@ -47,6 +48,8 @@ Test-suite consequences are in TESTING.md § "Class scoping".
 - **A class's own modules live in one folder per class**, whose barrel exports the
   `defineClass` call. A module only one class uses belongs there, not beside the
   barrel.
+- **A mystic art lives in the shared mystic folder**, never in a class folder —
+  § "Mystic arts".
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
   ways, martial arts, classes. There is no JSON authoring format: the only JSON
@@ -75,13 +78,14 @@ is allowlisted as content rather than logic.
 Whatever a class does beyond data reaches the engine through registrations
 declared as fields on its own definition, which one registry loop reads:
 
-| the class needs                      | it declares       |
-| ------------------------------------ | ----------------- |
-| state markers the timeline reads     | gate buffs        |
-| a stochastic or stateful mechanic    | mechanics         |
-| procedural behaviour on one skill    | skill behaviours  |
-| a Skill Editor "is this active" gate | display gates     |
-| a poison/DoT extension window        | poison extensions |
+| the class needs                          | it declares            |
+| ----------------------------------------- | ----------------------- |
+| state markers the timeline reads         | gate buffs              |
+| a counter the rotation editor opens with | opening-stack buff ids  |
+| a stochastic or stateful mechanic        | mechanics               |
+| procedural behaviour on one skill        | skill behaviours        |
+| a Skill Editor "is this active" gate     | display gates           |
+| a poison/DoT extension window            | poison extensions       |
 
 An inner way or a gear set declares mechanics the same way, read by its own
 registry. `declareMechanic` is the one contract all three owners use, and it
@@ -113,7 +117,10 @@ id, so this crosses no new line.
 - A **weapon-art talent** goes on the class's own list.
 - A buff a **skill triggers** is a normal buff and goes on the global list. Being
   reachable by one class only does **not** make it a class buff — what decides is
-  whether a skill triggers it or the talent panel grants it.
+  whether a skill triggers it or the talent panel grants it. A normal buff only
+  one class can produce declares that class in `requires.classId`, so it exists
+  in no other class's build; when always active, the rotation editor suppresses
+  its chip for that class exactly as it does the class's own.
 - A def an **inner way gates** goes on that inner way.
 - A def gated on a global toggle goes on the global or group list.
 
@@ -125,12 +132,31 @@ a buff the skill applies, not a property of the class. The class or inner way
 that lists a module is the **only** statement of its scope; the marker on the
 module itself is inert everywhere else.
 
+## Mystic arts — one source, shared by every class
+
+A mystic art belongs to no class. It is authored **once** in the shared mystic
+folder, with `mystic` as its class id and its id segment, and every class's
+composed definition carries it and the debuffs it applies exactly as authored —
+nothing is instantiated, stamped or copied.
+
+- **A `mystic`-typed skill never lives in a class folder**, and a class never
+  re-declares a debuff a mystic art applies.
+- A mystic art and its debuffs carry no attribute path of their own: a
+  non-`weapon` hit elevates the casting class's primary attribute, so the same
+  module is right for every class.
+- Nothing a mystic art or its debuff references may name a class.
+- An entity whose class id is the shared one belongs to **every** class. A user
+  copy is filtered by `belongsToClass`, never by class-id equality, and a copy
+  seeded from a mystic art keeps the shared class id.
+- Mechanically guarded (TESTING.md § "The architecture guards").
+
 ## Universal skills — one source, instantiated per class
 
-A skill every class can equip lives **once**, with `universal` as its id segment,
-and is instantiated per class: the `universal` segment in the skill id, and in
-every id a trigger's target or a condition's buff names, becomes the class id,
-and the attribute path becomes the instantiating class's primary attribute.
+A class-neutral skill that is not a mystic art lives **once**, with `universal`
+as its id segment, and is instantiated per class: the `universal` segment in the
+skill id, and in every id a trigger's target or a condition's buff names,
+becomes the class id, and the attribute path becomes the instantiating class's
+primary attribute.
 
 - **Never duplicate a universal skill into a class folder.**
 - The instantiated `<classId>-<slug>` id shape is **load-bearing** — saved
@@ -142,7 +168,8 @@ and the attribute path becomes the instantiating class's primary attribute.
 - **Class ids are English camelCase.** Never pinyin. Spec ids keep snake_case —
   a different namespace.
 - **Entity ids carry no vendor namespace**: skills are `<classId>-<slug>`, buffs
-  `buff-<classId>-<slug>`, debuffs `debuff-<classId>-<slug>`.
+  `buff-<classId>-<slug>`, debuffs `debuff-<classId>-<slug>`. A mystic art and
+  the debuffs it applies take `mystic` as the class segment.
 - The `buff-` / `debuff-` prefixes are **load-bearing** — a DoT's tick-skill id
   is derived by stripping the debuff prefix when the debuff names none.
   Authoring the source skill id explicitly overrides that.

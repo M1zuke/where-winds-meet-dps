@@ -21,8 +21,6 @@ import { spearspecial1HitCancel } from "./spearspecial-1-hit-cancel"
 import { spearspecial } from "./spearspecial"
 import { bleedTick } from "./bleed-tick"
 import { bleedDetonation } from "./bleed-detonation"
-import { dragonFireSmolder1Hit } from "./dragon-fire-smolder-1-hit"
-import { dragonFireSmolder2Hits } from "./dragon-fire-smolder-2-hits"
 
 export const CLASS_ID = "bellstrikeUmbra"
 
@@ -49,6 +47,4 @@ export const SKILLS: Skill[] = [
   spearspecial,
   bleedTick,
   bleedDetonation,
-  dragonFireSmolder1Hit,
-  dragonFireSmolder2Hits,
 ]
