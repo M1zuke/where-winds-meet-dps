@@ -3504,7 +3504,7 @@
           }
         ],
         "permanentBuffIds": [],
-        "qiBreak": { "startSec": 23, "durationSec": 10, "lowQiLeadSec": 5 },
+        "qiBreak": { "startSec": 25, "durationSec": 10, "lowQiLeadSec": 5 },
         "prePullHitsCount": false,
         "createdAt": "2026-09-04T00:00:00.000Z",
         "updatedAt": "2026-09-05T00:00:00.000Z",
