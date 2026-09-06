@@ -15,13 +15,13 @@ only when an anchor test defends its numbers.
 offered in the class picker; `validated` gates how far its numbers may be trusted,
 never whether the UI shows it.
 
-**Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`) and Stonesplit
+**Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`), Bellstrike
+Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) and Stonesplit
 Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — each
-holds a measured build exactly. Rely on nothing either reports beyond what its
-anchor pins.
+holds a measured build exactly. Rely on nothing any of them reports beyond what
+its anchor pins.
 
-**Bellstrike Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`),
-Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Draught
+**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Draught
 (`bamboocutDraught`, spec `bamboocut_draught`) are registered and not
 validated** — selectable, and carrying nothing an anchor defends.
 

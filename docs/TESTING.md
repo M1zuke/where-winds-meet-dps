@@ -5,7 +5,8 @@
 
 ## Class scoping — a class's numbers are defended only by an anchor
 
-`bellstrikeUmbra` and `stonesplitStrength` are validated (CLASSES.md). A passing
+`bellstrikeUmbra`, `bellstrikeSplendor` and `stonesplitStrength` are validated
+(CLASSES.md). A passing
 sweep over a class that has no anchor reads as validation it has not had.
 
 - **Do not add an all-classes `dps > 0` sweep.** It proves nothing and
