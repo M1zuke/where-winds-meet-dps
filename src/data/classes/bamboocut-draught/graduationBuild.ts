@@ -15,7 +15,7 @@ export const BAMBOOCUT_DRAUGHT_GRADUATION_BUILD: GraduationBuild = {
     createGraduationGearPiece({
       idPrefix,
       slot: "rightWeapon",
-      words: ["minPhys", "minPhys", "gauntletsBoost", "agility", "maxFormless"],
+      words: ["minPhys", "minPhys", "gauntletsBoost", "agility", "precision"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
@@ -33,7 +33,7 @@ export const BAMBOOCUT_DRAUGHT_GRADUATION_BUILD: GraduationBuild = {
     createGraduationGearPiece({
       idPrefix,
       slot: "helm",
-      words: ["crit", "agility", "minPhys", "maxBamboocut", "crit"],
+      words: ["crit", "agility", "minPhys", "precision", "crit"],
       attunement: "driftcleaveDeepdaze",
     }),
     createGraduationGearPiece({
