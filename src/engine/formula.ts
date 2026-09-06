@@ -49,8 +49,8 @@ type ArtRow = {
   elevatedAttributeMultiplier?: boolean
   attuneTag?: string
   guaranteedCrit?: number
-  guaranteedPrecision?: number
   guaranteedNormal?: number
+  abrasionAvoidRate?: number
   conditionalFinalCrit?: ConditionalFinalCrit
   extraStonesplitPenetration?: number
   mysticCategory?: string
@@ -144,8 +144,8 @@ export function computeSkillDamage(
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"
   let guaranteedCrit = art.guaranteedCrit === 1
-  const guaranteedPrecision = art.guaranteedPrecision === 1
   const guaranteedNormal = art.guaranteedNormal === 1
+  const abrasionAvoidRate = Math.min(numberOrZero(art.abrasionAvoidRate), 1)
   const isPersistent = art.specialTag === "sustain"
   const usesChargeBoost = art.usesChargeBoost === 1
   const usesGyrationUmbrella = art.specialTag === "Spinning Umbrella"
@@ -170,7 +170,7 @@ export function computeSkillDamage(
   const skillAffinityDamage = numberOrZero(art.extraAffinityDamage)
   const affinityDamageBoost = ctx.affinityDmgBoostPanel + skillAffinityDamage
 
-  const precisionRate = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
+  const precisionRate = isTianGong ? 1 : Math.min(ctx.precisionPanel, 1)
 
   // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
   // `panel.ts`'s white→yellow conversion, so they are never divided here.
@@ -217,7 +217,7 @@ export function computeSkillDamage(
 
   const physGrazeRow =
     physMin * physCoefficient * physRowScale * (1 + physDamageBoost) * (1 + physPenFraction)
-  const grazeChance = (1 - precisionRate) * (1 - affinityRate)
+  const grazeChance = (1 - precisionRate) * (1 - affinityRate) * (1 - abrasionAvoidRate)
   const physCritRow =
     physAvg *
     physCoefficient *

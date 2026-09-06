@@ -24,9 +24,11 @@ on the 60 fps grid. Rules:
   map. A skill whose key resolves to neither takes no typing boost.
 - `elevatedAttributeMultiplier` **defaults true**. Set it false **only** for a
   real DoT tick. Ticks authored on a debuff's `dot` get it automatically.
-- `guaranteedPrecision` forces effective precision to 1; crit and affinity still
-  roll. `guaranteedNormal` means the hit can trigger none of crit, affinity or
-  abrasion and always deals the normal row.
+- `neverAbrades` removes the abrasion outcome: the mass that would have abraded
+  deals the normal row. Precision, crit and affinity chances are unchanged — a
+  hit that fails precision still cannot crit. `guaranteedNormal` means the hit
+  can trigger none of crit, affinity or abrasion and always deals the normal
+  row.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 
 ### Hit variants

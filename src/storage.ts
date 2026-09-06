@@ -55,6 +55,7 @@ import {
   LATEST_CUSTOM_SKILLS_VERSION,
   OLDEST_MIGRATABLE_CUSTOM_SKILLS_VERSION,
   runCustomSkillMigrations,
+  migrateNeverAbradesSkill,
   type RawCustomSkillsBlob,
 } from "./migrations/customSkills"
 import {
@@ -1200,7 +1201,8 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     castFrames: typeof c.castFrames === "number" ? c.castFrames : 0,
     triggerable: typeof c.triggerable === "boolean" ? c.triggerable : true,
     elevatedAttributeMultiplier: c.elevatedAttributeMultiplier === false ? false : undefined,
-    guaranteedPrecision: c.guaranteedPrecision === true ? true : undefined,
+    neverAbrades:
+      (migrateNeverAbradesSkill(c) as Partial<Skill>).neverAbrades === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
     receives: Array.isArray(c.receives)

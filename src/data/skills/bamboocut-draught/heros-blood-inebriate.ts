@@ -34,10 +34,10 @@ const dashHalf = {
   conditions: UNLOCKED,
 }
 
-// Forced precision per the talent "Increased Binge Point Gain" rank 2. The
-// launch refreshes Carouse (in-game skill text, 2026-09-05); the dash ends the
-// cast and with it Cloudvault. Cast length to the earliest next input and hit
-// frames: in-game animation, 2026-09-05.
+// Cannot trigger Abrasion per the talent "Increased Binge Point Gain" rank 2.
+// The launch refreshes Carouse (in-game skill text, 2026-09-05); the dash ends
+// the cast and with it Cloudvault. Cast length to the earliest next input and
+// hit frames: in-game animation, 2026-09-05.
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
@@ -48,7 +48,7 @@ export const herosBloodInebriate = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.herosBloodInebriate,
-  guaranteedPrecision: true,
+  neverAbrades: true,
   receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.cloudvault, BUFF.nonPlayerBaseDamage50],
   triggerable: false,
   castFrames: 177,
@@ -70,5 +70,5 @@ export const herosBloodInebriate = defineSkill({
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-06T00:00:00.000Z",
 })

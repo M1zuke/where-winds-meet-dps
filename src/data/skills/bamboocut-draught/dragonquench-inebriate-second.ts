@@ -18,11 +18,11 @@ export const dragonquenchInebriateSecond = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateSecond,
-  guaranteedPrecision: true,
+  neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 123,
   hits: dragonquenchSecondStages,
   createdAt: "2026-09-05T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-06T00:00:00.000Z",
 })

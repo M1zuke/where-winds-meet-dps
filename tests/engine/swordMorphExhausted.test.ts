@@ -45,7 +45,7 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
     const skill = vagrantSword()
     for (let index = 0; index < skill.hits.length; index++) {
       const art = behavior.buildArt(hitInput(skill, index), contextAt("exhausted"))
-      expect(art.guaranteedPrecision, `wave ${index + 1}`).toBe(1)
+      expect(art.abrasionAvoidRate, `wave ${index + 1}`).toBe(1)
     }
   })
 
@@ -53,7 +53,7 @@ describe("Sword Morph's Exhausted sword energy rules", () => {
     const behavior = swordMorphExhaustedBehavior(buildAt(6))!
     for (const phase of ["normal", "below30"] as const) {
       const art = behavior.buildArt(hitInput(vagrantSword(), 0), contextAt(phase))
-      expect(art.guaranteedPrecision, phase).toBeUndefined()
+      expect(art.abrasionAvoidRate, phase).toBeUndefined()
     }
   })
 

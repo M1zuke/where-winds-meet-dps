@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { loadCustomSkills } from "../../src/storage"
 import {
   LATEST_CUSTOM_SKILLS_VERSION,
+  migrateNeverAbradesSkill,
   runCustomSkillMigrations,
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
@@ -79,7 +80,8 @@ describe("every captured custom-skill store walks the whole chain", () => {
       const identities = walkedIdentities(fixture.blob.skills)
       ;(result.blob.skills as Skill[]).forEach((walked, index) => {
         const stored = fixture.blob.skills[index]
-        expect(strip(walked)).toEqual(strip({ ...stored, ...identities[index] }))
+        const expected = migrateNeverAbradesSkill({ ...stored, ...identities[index] }) as Skill
+        expect(strip(walked)).toEqual(strip(expected))
       })
     },
   )

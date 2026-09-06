@@ -7,6 +7,7 @@ import type {
 import { V4__dragonHeadCoefficients } from "./V4__dragonHeadCoefficients"
 import { V5__umbraHitCoefficients } from "./V5__umbraHitCoefficients"
 import { V6__mysticArtIds } from "./V6__mysticArtIds"
+import { V7__neverAbrades } from "./V7__neverAbrades"
 
 export type {
   CustomSkillMigration,
@@ -16,11 +17,13 @@ export type {
 export { migrateDragonHeadHits } from "./V4__dragonHeadCoefficients"
 export { umbraHitSwapsFor } from "./V5__umbraHitCoefficients"
 export { migrateMysticSkillHit } from "./V6__mysticArtIds"
+export { migrateNeverAbradesSkill } from "./V7__neverAbrades"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
   V5__umbraHitCoefficients,
   V6__mysticArtIds,
+  V7__neverAbrades,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

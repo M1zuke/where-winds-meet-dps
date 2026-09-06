@@ -28,7 +28,7 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
     expect(base!.tags).toContain("mystic:burst")
     expect(plus!.tags).toContain("mystic:burst")
     expect(base!.guaranteedNormal).toBe(true)
-    expect(plus!.guaranteedPrecision).toBe(true)
+    expect(plus!.neverAbrades).toBe(true)
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
@@ -135,31 +135,34 @@ describe("guaranteedNormal — fixed damage, immune to every rate", () => {
   })
 })
 
-describe("guaranteedPrecision — never abrades, crit/affinity still roll", () => {
+describe("neverAbrades — abrasion mass becomes normal, crit still gated by precision", () => {
+  const fullPrecision = { ...ctx, precisionPanel: 1 }
+  const lowPrecision = { ...ctx, precisionPanel: 0.5 }
   const plus = asArt({
     name: "Dragon Head - Plus",
     ...DRAGON_HEAD_ROW,
     physMultiplier: 17.3793,
     physFixed: 3237,
     attributeMultiplier: 26.0689,
-    guaranteedPrecision: 1,
+    abrasionAvoidRate: 1,
+  })
+  const unflagged = asArt({ ...plus, abrasionAvoidRate: undefined })
+
+  it("U tracks the panel precision (not 1), AL is 0, and AN/AR move exactly the abraded mass onto normal", () => {
+    const flaggedCells = computeSkillDamage(plus, lowPrecision, 1).cells
+    const unflaggedCells = computeSkillDamage(unflagged, lowPrecision, 1).cells
+    expect(flaggedCells.U).toBeCloseTo(0.5, 9)
+    expect(flaggedCells.AL).toBe(0)
+    expect(flaggedCells.AN).toBeCloseTo(unflaggedCells.AN, 9)
+    expect(flaggedCells.AR).toBeCloseTo(unflaggedCells.AR + unflaggedCells.AL, 9)
   })
 
-  it("U is 1 and the abrasion weight AL is 0 even at low panel precision", () => {
-    const cells = computeSkillDamage(plus, { ...ctx, precisionPanel: 0.5 }, 1).cells
-    expect(cells.U).toBe(1)
-    expect(cells.AL).toBe(0)
-  })
-
-  it("lowering precision does not lower it, but does lower the unflagged variant", () => {
-    const lowPrecision = { ...ctx, precisionPanel: 0.5 }
-    const flagged = computeSkillDamage(plus, lowPrecision, 1).expectedDamage
-    expect(flagged).toBeCloseTo(computeSkillDamage(plus, ctx, 1).expectedDamage, 6)
-
-    const unflagged = asArt({ ...plus, guaranteedPrecision: undefined })
+  it("lower precision still lowers the flagged art's damage, but leaves it above the unflagged art at the same precision", () => {
+    const flaggedFull = computeSkillDamage(plus, fullPrecision, 1).expectedDamage
+    const flaggedLow = computeSkillDamage(plus, lowPrecision, 1).expectedDamage
     const unflaggedLow = computeSkillDamage(unflagged, lowPrecision, 1).expectedDamage
-    const unflaggedBase = computeSkillDamage(unflagged, ctx, 1).expectedDamage
-    expect(unflaggedLow).toBeLessThan(unflaggedBase)
+    expect(flaggedLow).toBeLessThan(flaggedFull)
+    expect(flaggedLow).toBeGreaterThan(unflaggedLow)
   })
 
   it("raising crit rate still raises it", () => {

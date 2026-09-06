@@ -83,7 +83,7 @@ export interface Skill {
   castFrames: number
   triggerable: boolean
   elevatedAttributeMultiplier?: boolean
-  guaranteedPrecision?: boolean
+  neverAbrades?: boolean
   guaranteedNormal?: boolean
   prePull?: boolean
   createdAt: string
@@ -343,7 +343,7 @@ export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
     attributeAttack: skill.attributeAttack || undefined,
     specialTag: skill.skillType === "sustain" ? "sustain" : undefined,
     elevatedAttributeMultiplier: skill.elevatedAttributeMultiplier === false ? false : undefined,
-    guaranteedPrecision: skill.guaranteedPrecision ? 1 : undefined,
+    abrasionAvoidRate: skill.neverAbrades ? 1 : undefined,
     guaranteedNormal: skill.guaranteedNormal ? 1 : undefined,
     mysticCategory: mysticCategoryOf(skill) || undefined,
     attuneTag: attuneTagOf(skill) || undefined,
@@ -360,7 +360,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     castFrames: src.castFrames,
     triggerable: src.triggerable,
     elevatedAttributeMultiplier: src.elevatedAttributeMultiplier,
-    guaranteedPrecision: src.guaranteedPrecision,
+    neverAbrades: src.neverAbrades,
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
     tags: [...(src.tags ?? [])],

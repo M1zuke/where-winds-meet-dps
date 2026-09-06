@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 75179.2,
-    "totalDamage": 4495716.41,
+    "dps": 75005.47,
+    "totalDamage": 4485327.28,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -106,7 +106,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 741607.39,
+        "expectedDamage": 731218.26,
         "castCount": 1
       },
       {
@@ -147,11 +147,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6278ea876c16758a9c8f6b26eddc5b1f6c6241038e5fb994b46807bbf4fde87d"
+    "digest": "4314a8da2391b34746612a6abfae3e69c65bdcd584822cf09e04f44c730f0ce4"
   },
   "anchor:noAttunement": {
-    "dps": 67597.97,
-    "totalDamage": 4042358.61,
+    "dps": 67424.24,
+    "totalDamage": 4031969.48,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -256,7 +256,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 741607.39,
+        "expectedDamage": 731218.26,
         "castCount": 1
       },
       {
@@ -297,11 +297,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "b3d3f5866b628aff4c954841ddae5dfde8998eabc79e22628eba46596f5ce0e0"
+    "digest": "36d4e7d353ec4c5f0e1f27d7ab72532746942e555a8ea32336db31c8603bab1b"
   },
   "anchor:dummyOff": {
-    "dps": 80381.86,
-    "totalDamage": 4806835.32,
+    "dps": 80198.79,
+    "totalDamage": 4795887.44,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -406,7 +406,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 781493.05,
+        "expectedDamage": 770545.17,
         "castCount": 1
       },
       {
@@ -447,11 +447,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "071a78d333af88d038446d678c43da347eb8170110c8712c714ca2a404c0a684"
+    "digest": "2928ee4859bc18f1f6ac293e36aaebf219c252e63d8b6d8199f475151cad714a"
   },
   "anchor:noQiBreak": {
-    "dps": 67996.76,
-    "totalDamage": 4066206.17,
+    "dps": 67914.56,
+    "totalDamage": 4061290.98,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -556,7 +556,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 350860.86,
+        "expectedDamage": 345945.68,
         "castCount": 1
       },
       {
@@ -597,11 +597,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "fb9ed66254cd97ef1d1f3431fc340052c1c0a98c3623b39815fef2f30f4298cf"
+    "digest": "6c7ebd2c394e5164902966a30964018cf495504a69563f0da0f821779a5e00e3"
   },
   "anchor:healerBuff": {
-    "dps": 82554.48,
-    "totalDamage": 4936758.09,
+    "dps": 82365.18,
+    "totalDamage": 4925437.7,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -706,7 +706,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 808083.49,
+        "expectedDamage": 796763.1,
         "castCount": 1
       },
       {
@@ -747,11 +747,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7c68efe7bf286645b4a7ee0db199120deeeb0d9fedd7661aac64a01a2d09ba08"
+    "digest": "dbe34c8198b4da3c210bc8b1b119c3ea595721c587ddc6af77281093e050af78"
   },
   "anchor:revelryScript": {
-    "dps": 85584.52,
-    "totalDamage": 5117954.24,
+    "dps": 85392.1,
+    "totalDamage": 5106447.6,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -856,7 +856,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 821378.71,
+        "expectedDamage": 809872.07,
         "castCount": 1
       },
       {
@@ -897,11 +897,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "4f56cdb89dfe162244247c36f4c19b356b87d06213af7a7a7d9b47d1e7045fe4"
+    "digest": "32ff29b12d109c1c7252d746a40a9cb0768901f54668e8776241e212cde2dc61"
   },
   "anchor:breakExtension": {
-    "dps": 76175.5,
-    "totalDamage": 4555294.75,
+    "dps": 76001.77,
+    "totalDamage": 4544905.62,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1006,7 +1006,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 741607.39,
+        "expectedDamage": 731218.26,
         "castCount": 1
       },
       {
@@ -1047,11 +1047,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "a7d29293de4349724c810f9a14bfc1cefc81006201bd7d4adb20243acb8db73b"
+    "digest": "c43c5097d54ccd45d681aac55591320ee1596ae067cab1694bcf5a6c5e8337d6"
   },
   "anchor:swordHorizonT1": {
-    "dps": 52496.94,
-    "totalDamage": 3139317,
+    "dps": 52325.3,
+    "totalDamage": 3129052.97,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1156,7 +1156,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 718747.14,
+        "expectedDamage": 708483.11,
         "castCount": 1
       },
       {
@@ -1197,11 +1197,11 @@
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "03c9dd35e5553f53faf63306db8d2da97518128b9d5e05d76797a187be7b9008"
+    "digest": "91babb0b7b6004b6beb8d96a89c19bd18db7db955d82eb500548bf9f5b81a03f"
   },
   "anchor:noSwordHorizon": {
-    "dps": 46085.01,
-    "totalDamage": 2755883.66,
+    "dps": 45913.37,
+    "totalDamage": 2745619.63,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1306,7 +1306,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 718747.14,
+        "expectedDamage": 708483.11,
         "castCount": 1
       },
       {
@@ -1347,11 +1347,11 @@
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "04b8498c84f247e5c0b6075efa7d794b8fa7d62e1c2cbc85140fa843520c61d4"
+    "digest": "982bcaa5531c7141ef5d390af8c66eb6acdf3f46c90446a3132d8b713d0cc796"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 64280.76,
-    "totalDamage": 3843989.73,
+    "dps": 64113.25,
+    "totalDamage": 3833972.49,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1456,7 +1456,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 673449.18,
+        "expectedDamage": 663431.93,
         "castCount": 1
       },
       {
@@ -1497,11 +1497,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "584aa0d1d09060253d2d2fa2fbc1967b1f98a2cc40ca0afab2e766d90d466573"
+    "digest": "1367b26cd2272da9ee1143283ccf69555c6585c1685ac67967d61f492887108b"
   },
   "anchor:noMoraleChant": {
-    "dps": 68689.7,
-    "totalDamage": 4107644.2,
+    "dps": 68553.11,
+    "totalDamage": 4099475.96,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1606,7 +1606,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 677251.81,
+        "expectedDamage": 669083.57,
         "castCount": 1
       },
       {
@@ -1639,7 +1639,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d95fd9ef8dcd32b0ba87ff36b68a31239108cdd6c4ebd4be2cc554efd2175b1f"
+    "digest": "f64a3995d0d225732d5115c3c5e33347df52d7f398aac6b1d314d5922d347c19"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 37819.13,
@@ -1808,8 +1808,8 @@
     "digest": "d9c3d97b65dbcc66961557a94fe52c820b62d11c3e1f0e0652b176816c446bc3"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 47665.72,
-    "totalDamage": 2850410.24,
+    "dps": 47550.39,
+    "totalDamage": 2843513.37,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1914,7 +1914,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 650145.4,
+        "expectedDamage": 643248.54,
         "castCount": 1
       },
       {
@@ -1963,11 +1963,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "97132d4319ed980a42c498360357474e57d8b5d138baa6e5fe7c87aa18f68b36"
+    "digest": "a8bc018ef2878dc8e10567be66ad28e446ad0aa9a46737d34e68a947ab5a6c42"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 46769.53,
-    "totalDamage": 2796817.71,
+    "dps": 46656.36,
+    "totalDamage": 2790050.5,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2072,7 +2072,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 637773.38,
+        "expectedDamage": 631006.16,
         "castCount": 1
       },
       {
@@ -2121,11 +2121,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "7a4c3559b9d43e67b565be0ebb8ff78ce9365e8f57a49a635597cb53b2d7fdc8"
+    "digest": "d5290fe3b87780e7a744ec11f1098345e0e23df4965a55d4f4952d5484f7291b"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 46368.96,
-    "totalDamage": 2772863.64,
+    "dps": 46214.8,
+    "totalDamage": 2763645.31,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2230,7 +2230,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 637773.38,
+        "expectedDamage": 628555.05,
         "castCount": 1
       },
       {
@@ -2279,11 +2279,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "e704c1564994e5de594f4b617d9ee8acf352a51ccf1faf255db2d44b8fb58bcb"
+    "digest": "b0181afacd7b8b9a176c3c489186c81aa8a114bcec0b323cd446bbd360c56d15"
   },
   "anchor:noSet": {
-    "dps": 68766.04,
-    "totalDamage": 4112209.03,
+    "dps": 68602.87,
+    "totalDamage": 4102451.77,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2388,7 +2388,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 686292.45,
+        "expectedDamage": 676535.2,
         "castCount": 1
       },
       {
@@ -2429,11 +2429,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "9274b941940e254634457dcaf083aa1581641c6a81c33a4338aadaf23a170282"
+    "digest": "17db44cfc2e4ce7f49ef3848cd106ba59726bd3c9f65dc550d159b478b812a03"
   },
   "anchor:set-Jadeware": {
-    "dps": 70849.59,
-    "totalDamage": 4236805.37,
+    "dps": 70684.39,
+    "totalDamage": 4226926.68,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2538,7 +2538,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 696481.83,
+        "expectedDamage": 686603.13,
         "castCount": 1
       },
       {
@@ -2579,11 +2579,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5a7089e4674cb3cb2066eb0c3a9c78564d56ce78929127f21f2d9c1da77e5013"
+    "digest": "b5d43a8d92257e1a7a22bc159aa7167ddf8699af9cac5a98da7e808861e40f2a"
   },
   "anchor:set-Mistwillow": {
-    "dps": 69362.64,
-    "totalDamage": 4147885.89,
+    "dps": 69249.78,
+    "totalDamage": 4141136.65,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2688,7 +2688,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 686292.45,
+        "expectedDamage": 679543.21,
         "castCount": 1
       },
       {
@@ -2729,11 +2729,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "aa16f9ee8e35645768a46a6aebd390dbfd45d93c5551f4b073087dcc829ec9e1"
+    "digest": "358263755b69a3db7deea0b6f6725a299d45f78a1142e0cddf74a0753ce2d672"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 70342.47,
-    "totalDamage": 4206479.69,
+    "dps": 70207.03,
+    "totalDamage": 4198380.61,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2838,7 +2838,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 698700.53,
+        "expectedDamage": 690601.44,
         "castCount": 1
       },
       {
@@ -2879,11 +2879,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "31346504ddd0cd437f76fc7955e74680498ec9073a433e8a210116fe4b74feae"
+    "digest": "28d15a82e05febf90af0e0586f6fb8efe9f9466a5457fa2d4e45eae81089b568"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 70702.43,
-    "totalDamage": 4228005.13,
+    "dps": 70534.27,
+    "totalDamage": 4217949.34,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2988,7 +2988,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 702294.27,
+        "expectedDamage": 692238.48,
         "castCount": 1
       },
       {
@@ -3029,7 +3029,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "1770e204fa7b3eb59085a133f086b240fc62b5c1dfd2d1639372fe7b6aac694c"
+    "digest": "064ba1978e44f72f23ec1e3ab1314629b5be820f372473fddce1022ac88f154c"
   },
   "defaults:umbra": {
     "dps": 9784.62,

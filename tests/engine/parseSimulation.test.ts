@@ -165,16 +165,38 @@ describe("a sampled hit", () => {
     expect(rolled.chance.crit).toBe(1)
   })
 
-  it("never draws abrasion when precision is guaranteed", () => {
+  it("never draws abrasion when the skill cannot abrade", () => {
     const ctx = context()
     const rolled = computeSkillDamage(
-      { ...FLAT_ART, guaranteedPrecision: 1 },
+      { ...FLAT_ART, abrasionAvoidRate: 1 },
       ctx,
       1,
       () => 0,
     ).rolled!
     expect(rolled.outcome).not.toBe("abrasion")
     expect(rolled.chance.abrasion).toBe(0)
+  })
+
+  it("a draw that used to fall in the graze band lands as normal once abrasionAvoidRate removes it", () => {
+    const ctx = {
+      ...context(),
+      precisionPanel: 0.5,
+      critPanel: 0,
+      affinityPanel: 0,
+      directCritPanel: 0,
+      directAffinityPanel: 0,
+    }
+    const withoutAvoid = computeSkillDamage(FLAT_ART, ctx, 1, () => 0).rolled!
+    expect(withoutAvoid.outcome).toBe("abrasion")
+
+    const midGrazeBand = withoutAvoid.chance.abrasion / 2
+    const withAvoid = computeSkillDamage(
+      { ...FLAT_ART, abrasionAvoidRate: 1 },
+      ctx,
+      1,
+      () => midGrazeBand,
+    ).rolled!
+    expect(withAvoid.outcome).toBe("normal")
   })
 
   it("always draws the normal track for a Heavenwork row", () => {

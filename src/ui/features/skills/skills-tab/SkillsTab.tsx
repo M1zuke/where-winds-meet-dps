@@ -567,7 +567,7 @@ export function SkillsTab({
     }
     if (draft.guaranteedNormal)
       return { ...summed, abrasion: 0, crit: { min: 0, max: 0 }, affinity: 0 }
-    if (draft.guaranteedPrecision) return { ...summed, abrasion: 0 }
+    if (draft.neverAbrades) return { ...summed, abrasion: 0 }
     return summed
   }, [draft, engineInputs])
 
@@ -1073,13 +1073,11 @@ export function SkillsTab({
                     </button>
                     <button
                       type="button"
-                      className={styles.pill + (draft.guaranteedPrecision ? ` ${styles.on}` : "")}
-                      title={t("skills.neverAbradesPrecisionHint")}
-                      onClick={() =>
-                        patchDraft({ guaranteedPrecision: !(draft.guaranteedPrecision ?? false) })
-                      }
+                      className={styles.pill + (draft.neverAbrades ? ` ${styles.on}` : "")}
+                      title={t("skills.neverAbradesHint")}
+                      onClick={() => patchDraft({ neverAbrades: !(draft.neverAbrades ?? false) })}
                     >
-                      {t("skills.guaranteedPrecision")}
+                      {t("skills.neverAbrades")}
                     </button>
                     <button
                       type="button"

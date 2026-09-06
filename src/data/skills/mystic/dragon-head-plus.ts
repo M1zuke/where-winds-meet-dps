@@ -15,7 +15,7 @@ export const dragonHeadPlus = defineSkill({
   castTag: CAST.dragonHeadPlus,
   receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
   triggersBuffs: [BUFF.surgingWaves],
-  guaranteedPrecision: true,
+  neverAbrades: true,
   castFrames: 246,
   triggerable: true,
   hits: [
@@ -28,5 +28,5 @@ export const dragonHeadPlus = defineSkill({
     }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-06T00:00:00.000Z",
 })
