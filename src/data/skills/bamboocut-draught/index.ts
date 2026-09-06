@@ -26,6 +26,8 @@ import { realmplay } from "./realmplay"
 import { boundvessel } from "./boundvessel"
 import { skystrikeGauntletsEx } from "./skystrike-gauntlets-ex"
 import { deflectCancel } from "./deflect-cancel"
+import { perfectDodge } from "./perfect-dodge"
+import { perfectDodgeFull } from "./perfect-dodge-full"
 
 export const CLASS_ID = "bamboocutDraught"
 
@@ -57,4 +59,6 @@ export const SKILLS: Skill[] = [
   boundvessel,
   skystrikeGauntletsEx,
   deflectCancel,
+  perfectDodge,
+  perfectDodgeFull,
 ]

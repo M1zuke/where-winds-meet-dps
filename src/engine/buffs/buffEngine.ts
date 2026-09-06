@@ -193,6 +193,7 @@ export class BuffEngine {
       classId: (this.params.classId as string) ?? "",
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
+      minPhysAttack: this.paramNum("minPhysAttack"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
       paramValue: (id) => this.paramNum(id),

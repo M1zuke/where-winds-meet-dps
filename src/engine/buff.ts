@@ -15,6 +15,7 @@ export interface Buff {
   id: string
   classId: string
   name: string
+  description?: string
   scope: BuffScope
   activation: BuffActivation
   durationFrames: number

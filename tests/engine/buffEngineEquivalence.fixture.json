@@ -81641,7 +81641,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "d1bee78384a173591d6404d575062fee7666880157eec2a54555e7132de18a0b"
+        "digest": "b7337f50241ba296af0e04235a6b7519860dcb235b20484117af4e37c485c385"
       },
       "debuffs": {
         "count": 9,
@@ -82499,7 +82499,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "critDamageBoost +30% on Inebriate-enhanced skills while Inebriate"
+          "summary": "critDamageBoost up to +30% on Inebriate-enhanced skills while Inebriate, full at 750 Min Phys"
         },
         {
           "id": "inebriateDamageScaling",
@@ -82521,7 +82521,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physBoost +9%, attributeDamageBoost +9% while Inebriate"
+          "summary": "physBoost and attributeDamageBoost up to +9% while Inebriate, full at 750 Min Phys"
         }
       ],
       "group": [

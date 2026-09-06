@@ -10,6 +10,7 @@ import {
   attributeAttackKey,
   attunementHintKey,
   attunementKey,
+  buffDescriptionKey,
   buffKey,
   classKey,
   debuffBreakdownKey,
@@ -73,7 +74,10 @@ export function collectContentKeys(): Record<string, string> {
       add(debuffBreakdownKey(debuff.id), debuff.breakdownName)
       add(debuffEchoKey(debuff.id), debuff.echo?.breakdownName)
     }
-    for (const buff of definition.buffs) add(buffKey(buff.id), buff.name)
+    for (const buff of definition.buffs) {
+      add(buffKey(buff.id), buff.name)
+      add(buffDescriptionKey(buff.id), buff.description)
+    }
     for (const module of definition.buffModules) add(buffKey(module.id), module.name)
     for (const skill of definition.skills) {
       add(skillKey(skill), skill.name)

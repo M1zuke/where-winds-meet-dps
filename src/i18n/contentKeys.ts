@@ -27,6 +27,10 @@ export function buffKey(buffId: string): string {
   return `content.buff.${buffId}`
 }
 
+export function buffDescriptionKey(buffId: string): string {
+  return `content.buff.${buffId}.description`
+}
+
 export function debuffKey(debuffId: string): string {
   return `content.debuff.${debuffId}`
 }

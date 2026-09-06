@@ -45,7 +45,13 @@ import {
   loadCustomDebuffsForClass,
 } from "../../../../storage"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { buffKey, debuffKey, rotationKey, skillKey } from "../../../../i18n/contentKeys"
+import {
+  buffDescriptionKey,
+  buffKey,
+  debuffKey,
+  rotationKey,
+  skillKey,
+} from "../../../../i18n/contentKeys"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
@@ -127,7 +133,7 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
             {t("common.requires")} {tag.requires}
           </div>
         )}
-        {tag.description && <div>{tag.description}</div>}
+        {tag.description && <div>{t(buffDescriptionKey(tag.id), tag.description)}</div>}
       </span>
     </span>
   )

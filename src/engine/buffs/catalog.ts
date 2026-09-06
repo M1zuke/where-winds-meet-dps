@@ -316,12 +316,8 @@ export interface ClassBuffRow {
   requires: string | null
 }
 
-// The column lists defs that scope themselves to specific skills; an unscoped
-// def applies to the whole build and is shown on the skills it triggers from
-// instead (an Applies row — see `appliesForSkill`).
-function hasScope(module: BuffModule, skills: readonly Skill[]): boolean {
-  if (module.affectsAll) return false
-  return skills.some((skill) => skill.receives?.includes(module.id))
+function isVisibleOnTalentsTab(module: BuffModule, skills: readonly Skill[]): boolean {
+  return module.affectsAll || skills.some((skill) => skill.receives?.includes(module.id))
 }
 
 // `classBuffDefs`, not the composed `buffModules`: a buff an inner way owns is
@@ -336,7 +332,7 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const skills = skillsInScope(inputs.classId, inputs)
   const rows: ClassBuffRow[] = []
   for (const module of byId.values()) {
-    if (!hasScope(module, skills)) continue
+    if (!isVisibleOnTalentsTab(module, skills)) continue
     if (module.requires?.param && !paramOnOf(params, module.requires.param)) continue
     if (
       module.requires?.minTier &&

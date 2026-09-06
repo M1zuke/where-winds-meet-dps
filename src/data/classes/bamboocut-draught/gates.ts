@@ -37,6 +37,7 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     id: STATUS.bingeMarks,
     classId: CLASS_ID,
     name: "Binge Marks",
+    description: "The next drink converts every mark into one Binge Point.",
     scope: "player",
     activation: "triggered",
     durationFrames: BINGE_MARKS_DURATION_FRAMES,
@@ -68,6 +69,7 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     id: STATUS.eonpourExhaustedCooldown,
     classId: CLASS_ID,
     name: "Eonpour - Exhausted Cooldown",
+    description: "While running, the Eonpour Exhausted-target payout cannot fire again.",
     scope: "player",
     activation: "triggered",
     durationFrames: EONPOUR_EXHAUSTED_COOLDOWN_FRAMES,
@@ -81,6 +83,8 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     id: STATUS.carouse,
     classId: CLASS_ID,
     name: "Carouse",
+    description:
+      "Whaledraft grants 50 Binge Points instead of 25, a light attack 5 Binge Marks instead of 2, and a Perfect Dodge restores 5 Binge Points once per second.",
     scope: "player",
     activation: "triggered",
     durationFrames: CAROUSE_DURATION_FRAMES,
@@ -107,6 +111,8 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     id: STATUS.cloudvault,
     classId: CLASS_ID,
     name: "Cloudvault",
+    description:
+      "At 2 stacks, Hero's Blood - Inebriate deals 10% more damage against non-player targets and consumes both stacks.",
     scope: "player",
     activation: "permanent",
     durationFrames: 0,

@@ -73,5 +73,7 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
 
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 
+  params.minPhysAttack = inputs.phys.min
+
   return params
 }

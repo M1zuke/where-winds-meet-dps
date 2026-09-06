@@ -26,6 +26,8 @@ export const SKILL = {
   boundvessel: "bamboocutDraught-boundvessel",
   skystrikeGauntletsEx: "bamboocutDraught-skystrike-gauntlets-ex",
   deflectCancel: "bamboocutDraught-deflect-cancel",
+  perfectDodge: "bamboocutDraught-perfect-dodge",
+  perfectDodgeFull: "bamboocutDraught-perfect-dodge-full",
 } as const
 
 export const DEBUFF = {

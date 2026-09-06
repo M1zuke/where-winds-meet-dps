@@ -206,6 +206,10 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   rotation window.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
+- **A status may carry a `description`**: one line of display text the cast
+  chip shows under the name, rendered through the locale catalogue like every
+  other name. Nothing matches on it, and it is never a substitute for an
+  effect a module should author.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`
   skill type is a scaling tag on one hit, not a DoT. Each tick runs through the
   kernel like any hit.
@@ -249,6 +253,10 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   effects from the module side; only the module may author a magnitude, and the
   gate's `requiresParam` must match the module's own requirement or the state
   opens for a build the module never reaches.
+- **A module's `effects` may read the build's min physical attack from its
+  context, alongside the fight state.** It is the same value the damage kernel
+  takes as base min phys, and a magnitude that scales with it is computed in
+  the module — never re-derived in the UI or hardcoded in the timeline.
 
 ## Procedural behaviour
 

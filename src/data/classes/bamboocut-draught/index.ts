@@ -12,7 +12,7 @@ import { BAMBOOCUT_DRAUGHT_GRADUATION_BUILD } from "./graduationBuild"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
-const skillsWithClassDeflect = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
+const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
   (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
 )
 
@@ -42,7 +42,7 @@ export const bamboocutDraught = defineClass({
   ],
   weapons: [MARTIAL_ART_ID.skystrikeGauntlets, MARTIAL_ART_ID.rivenTwinblades],
   critBoostWeaponTypes: [],
-  skills: skillsWithClassDeflect,
+  skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,
