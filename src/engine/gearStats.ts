@@ -1,6 +1,7 @@
-import type { GearPiece, Inputs } from "./types"
+import type { GearLevel, GearPiece, Inputs } from "./types"
 import { isWeaponSlot } from "./types"
 import { gearBaseStatsFor } from "../data/stats/gearBaseStats"
+import { gearWordPoolForLine } from "../data/stats/gearWordPools"
 import { getWordSpecs } from "./itemRanking"
 import { getAttunement } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
@@ -95,18 +96,16 @@ function wordContribution(
   accepts: (word: string) => boolean,
 ): GearContribution {
   const out: GearContribution = []
-  const specs = getWordSpecs(ctx)
-  for (const w of piece.words) {
-    if (!w.word || !accepts(w.word)) continue
+  const specs = getWordSpecs(ctx, piece.level)
+  piece.words.forEach((w, lineIndex) => {
+    if (!w.word || !accepts(w.word) || !w.value) return
+    const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex)
+    if (!pool.includes(w.word)) return
     const spec = specs.find((s) => s.word === w.word)
-    if (!spec || !spec.amount) continue
-    const scale = w.value / spec.amount
-    if (!scale) continue
-    const after = spec.apply(ctx)
-    for (const d of diffNumeric(ctx, after)) {
-      out.push({ path: d.path, amount: d.amount * scale })
-    }
-  }
+    if (!spec) return
+    const after = spec.apply(ctx, w.value)
+    out.push(...diffNumeric(ctx, after))
+  })
   return out
 }
 
@@ -177,12 +176,14 @@ export function gearAttributeTotals(pieces: readonly GearPiece[]): {
   let agility = 0
   let momentum = 0
   for (const p of pieces) {
-    for (const w of p.words) {
-      if (!w.word || !w.value) continue
+    p.words.forEach((w, lineIndex) => {
+      if (!w.word || !w.value) return
+      const pool = gearWordPoolForLine(p.level, p.slot, lineIndex)
+      if (!pool.includes(w.word)) return
       if (w.word === "power") power += w.value
       else if (w.word === "agility") agility += w.value
       else if (w.word === "momentum") momentum += w.value
-    }
+    })
   }
   return { power, agility, momentum }
 }
@@ -210,8 +211,8 @@ export function applyPieceContribution(inputs: Inputs, piece: GearPiece, sign: 1
   return next
 }
 
-export function maxRelayedClone(piece: GearPiece, ctx: Inputs): GearPiece {
-  const specs = getWordSpecs(ctx)
+export function maxRelayedClone(piece: GearPiece, ctx: Inputs, level: GearLevel): GearPiece {
+  const specs = getWordSpecs(ctx, level)
   const upgraded = piece.words.map((w) => {
     if (!w.word) return w
     const spec = specs.find((s) => s.word === w.word)

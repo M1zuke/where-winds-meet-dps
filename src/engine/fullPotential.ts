@@ -1,8 +1,9 @@
-import type { GearPiece, GearSlot, Inputs } from "./types"
+import type { GearLevel, GearPiece, GearSlot, Inputs } from "./types"
 import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { getWordSpecs } from "./itemRanking"
-import { attunementsFor } from "./attunements"
+import { attunementMax, attunementsFor } from "./attunements"
+import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
 
@@ -12,11 +13,16 @@ function slotEmptyBaseline(slot: GearSlot, inputs: Inputs): Inputs {
   return equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
 }
 
-function bestRetunedVariant(piece: GearPiece, inputs: Inputs, baseline: Inputs): GearPiece {
+function bestRetunedVariant(
+  piece: GearPiece,
+  inputs: Inputs,
+  baseline: Inputs,
+  level: GearLevel,
+): GearPiece {
   const pool = poolForClass(inputs.classId)
   if (!pool || pool.stats.length === 0) return piece
 
-  const specs = getWordSpecs(inputs)
+  const specs = getWordSpecs(inputs, level)
   let bestPiece = piece
   let bestDps = runEngine(applyPieceContribution(baseline, piece, +1)).dps
 
@@ -41,7 +47,12 @@ function bestRetunedVariant(piece: GearPiece, inputs: Inputs, baseline: Inputs):
   return bestPiece
 }
 
-function applyBestAttunement(piece: GearPiece, inputs: Inputs, baseline: Inputs): GearPiece {
+function applyBestAttunement(
+  piece: GearPiece,
+  inputs: Inputs,
+  baseline: Inputs,
+  level: GearLevel,
+): GearPiece {
   const opts = attunementsFor(piece.slot, inputs.classId).filter((o) => o.enginePath !== null)
   if (opts.length === 0) return piece
 
@@ -51,7 +62,7 @@ function applyBestAttunement(piece: GearPiece, inputs: Inputs, baseline: Inputs)
     const candidate: GearPiece = {
       ...piece,
       attunement: opt.id,
-      attunementValue: opt.max,
+      attunementValue: attunementMax(opt, level),
     }
     const dps = runEngine(applyPieceContribution(baseline, candidate, +1)).dps
     if (dps > bestDps) {
@@ -64,18 +75,30 @@ function applyBestAttunement(piece: GearPiece, inputs: Inputs, baseline: Inputs)
 
 export function getFTPiece(piece: GearPiece, inputs: Inputs): GearPiece {
   const baseline = slotEmptyBaseline(piece.slot, inputs)
+  const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
 
   if (piece.relayed) {
-    return applyBestAttunement(maxRelayedClone(piece, inputs), inputs, baseline)
+    const relayedClone = maxRelayedClone(piece, inputs, breakthroughLevel)
+    return applyBestAttunement(relayedClone, inputs, baseline, breakthroughLevel)
   }
 
-  const retuned = bestRetunedVariant(piece, inputs, baseline)
+  const retuned = bestRetunedVariant(piece, inputs, baseline, piece.level)
   const retunedDps = runEngine(applyPieceContribution(baseline, retuned, +1)).dps
-  const relayed = bestRetunedVariant(maxRelayedClone(piece, inputs), inputs, baseline)
+  const relayed = bestRetunedVariant(
+    maxRelayedClone(piece, inputs, breakthroughLevel),
+    inputs,
+    baseline,
+    breakthroughLevel,
+  )
   const relayedDps = runEngine(applyPieceContribution(baseline, relayed, +1)).dps
-  const afterRelayDecision = relayedDps > retunedDps ? relayed : retuned
+  const relayWins = relayedDps > retunedDps
 
-  return applyBestAttunement(afterRelayDecision, inputs, baseline)
+  return applyBestAttunement(
+    relayWins ? relayed : retuned,
+    inputs,
+    baseline,
+    relayWins ? breakthroughLevel : piece.level,
+  )
 }
 
 export function ftDpsWhenEquipped(piece: GearPiece, inputs: Inputs): number {

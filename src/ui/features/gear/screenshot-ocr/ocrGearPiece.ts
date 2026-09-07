@@ -1,13 +1,10 @@
 import type { AttunementOption } from "../../../../engine/attunements"
-import { ATTUNEMENT_OPTIONS } from "../../../../engine/attunements"
+import { ATTUNEMENT_OPTIONS, attunementMax, attunementMin } from "../../../../engine/attunements"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
-import {
-  GEAR_WORD_LINES,
-  GEAR_WORD_MAX_ROLL,
-  GEAR_WORD_UNIT,
-} from "../../../../data/stats/statLines"
+import { GEAR_WORD_LINES, GEAR_WORD_UNIT, gearWordMaxRoll } from "../../../../data/stats/statLines"
 import type { GearWordId } from "../../../../data/stats/statLines"
+import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { emptyGearWord } from "../../../../engine/types"
 import type {
   GearLevel,
@@ -74,7 +71,7 @@ export interface GearScreenshotParse {
   error: GearScreenshotParseError | null
 }
 
-const VALID_LEVELS: readonly GearLevel[] = [86, 91, 96]
+const VALID_LEVELS: readonly GearLevel[] = [86, 91, 96, 100, 105]
 const FALLBACK_LEVEL: GearLevel = 96
 const FALLBACK_RARITY: GearPiece["rarity"] = "legendary"
 
@@ -393,12 +390,19 @@ function displayNumber(value: StatRowValue): string {
   return `${value.magnitude}${value.isPercent ? "%" : ""}`
 }
 
-function parseWordCandidate(rowText: string | undefined): ParsedWordCandidate | undefined {
+function parseWordCandidate(
+  rowText: string | undefined,
+  level: GearLevel,
+  slot: GearSlot,
+  lineIndex: number,
+): ParsedWordCandidate | undefined {
   if (rowText === undefined) return undefined
 
   const bracket = stripRetuneBracket(rowText)
   const matched = matchStatRow(bracket.remaining)
-  const wordId = matched ? resolveByName(matched.name, GEAR_WORD_NAME_INDEX) : null
+  const resolved = matched ? resolveByName(matched.name, GEAR_WORD_NAME_INDEX) : null
+  const pool = gearWordPoolForLine(level, slot, lineIndex)
+  const wordId = resolved && pool.includes(resolved) ? resolved : null
   const magnitude = matched?.value
     ? matched.value.isPercent
       ? matched.value.magnitude / 100
@@ -407,7 +411,7 @@ function parseWordCandidate(rowText: string | undefined): ParsedWordCandidate | 
 
   let provesNotRelayed = false
   if (wordId) {
-    const cap = GEAR_WORD_MAX_ROLL[wordId]
+    const cap = gearWordMaxRoll(wordId, level)
     const relayedCeiling = relayedCapValue(cap, GEAR_WORD_UNIT[wordId])
     provesNotRelayed = magnitude > relayedCeiling && magnitude <= cap
   }
@@ -442,6 +446,7 @@ function finalizeWordRow(
   slot: GearScreenshotRowSlot,
   candidate: ParsedWordCandidate | undefined,
   relayed: boolean,
+  level: GearLevel,
 ): {
   entry: GearWordEntry
   report: GearScreenshotRowReport
@@ -473,7 +478,7 @@ function finalizeWordRow(
     }
   }
 
-  const cap = GEAR_WORD_MAX_ROLL[candidate.wordId]
+  const cap = gearWordMaxRoll(candidate.wordId, level)
   const unit = GEAR_WORD_UNIT[candidate.wordId]
   const ceiling = relayed ? relayedCapValue(cap, unit) : cap
 
@@ -503,6 +508,7 @@ function finalizeWordRow(
 function resolveAttunementRow(
   rowText: string | undefined,
   classId: string,
+  level: GearLevel,
 ): {
   attunement: string
   attunementValue: number
@@ -554,6 +560,8 @@ function resolveAttunementRow(
   }
 
   const legalForClass = !option.classIds || option.classIds.includes(classId)
+  const min = attunementMin(option, level)
+  const max = attunementMax(option, level)
 
   if (!rowValue) {
     return {
@@ -564,7 +572,7 @@ function resolveAttunementRow(
         ...baseDiagnostic,
         resolvedTo: option.id,
         convertedValue: null,
-        cap: option.max,
+        cap: max,
         legalForClass,
         exceededCap: false,
       },
@@ -573,13 +581,13 @@ function resolveAttunementRow(
   }
   const magnitude = rowValue.magnitude
   const candidates = [magnitude, magnitude / 100, magnitude / 1000]
-  const inRange = candidates.find((candidate) => candidate >= option.min && candidate <= option.max)
+  const inRange = candidates.find((candidate) => candidate >= min && candidate <= max)
   const attunementValue = roundAttunementValue(inRange ?? magnitude)
   const diagnostic: GearScreenshotRowDiagnostic = {
     ...baseDiagnostic,
     resolvedTo: option.id,
     convertedValue: attunementValue,
-    cap: option.max,
+    cap: max,
     legalForClass,
     exceededCap: inRange === undefined,
   }
@@ -665,11 +673,11 @@ export function parseGearScreenshot(
     ParsedWordCandidate | undefined,
     ParsedWordCandidate | undefined,
   ] = [
-    parseWordCandidate(rowTexts[0]),
-    parseWordCandidate(rowTexts[1]),
-    parseWordCandidate(rowTexts[2]),
-    parseWordCandidate(rowTexts[3]),
-    parseWordCandidate(rowTexts[4]),
+    parseWordCandidate(rowTexts[0], levelGuess.level, slotGuess.slot, 0),
+    parseWordCandidate(rowTexts[1], levelGuess.level, slotGuess.slot, 1),
+    parseWordCandidate(rowTexts[2], levelGuess.level, slotGuess.slot, 2),
+    parseWordCandidate(rowTexts[3], levelGuess.level, slotGuess.slot, 3),
+    parseWordCandidate(rowTexts[4], levelGuess.level, slotGuess.slot, 4),
   ]
   const notRelayedProven =
     headerRelayedGuess && wordCandidates.some((candidate) => candidate?.provesNotRelayed)
@@ -683,16 +691,16 @@ export function parseGearScreenshot(
     ReturnType<typeof finalizeWordRow>,
     ReturnType<typeof finalizeWordRow>,
   ] = [
-    finalizeWordRow(wordSlots[0]!, wordCandidates[0], relayed),
-    finalizeWordRow(wordSlots[1]!, wordCandidates[1], relayed),
-    finalizeWordRow(wordSlots[2]!, wordCandidates[2], relayed),
-    finalizeWordRow(wordSlots[3]!, wordCandidates[3], relayed),
-    finalizeWordRow(wordSlots[4]!, wordCandidates[4], relayed),
+    finalizeWordRow(wordSlots[0]!, wordCandidates[0], relayed, levelGuess.level),
+    finalizeWordRow(wordSlots[1]!, wordCandidates[1], relayed, levelGuess.level),
+    finalizeWordRow(wordSlots[2]!, wordCandidates[2], relayed, levelGuess.level),
+    finalizeWordRow(wordSlots[3]!, wordCandidates[3], relayed, levelGuess.level),
+    finalizeWordRow(wordSlots[4]!, wordCandidates[4], relayed, levelGuess.level),
   ]
 
   const attunementIsTrailing = rows.length <= 5
   const attunementRowText = attunementIsTrailing ? trailing?.text : rows[rows.length - 1]!.text
-  const attunementRow = resolveAttunementRow(attunementRowText, inputs.classId)
+  const attunementRow = resolveAttunementRow(attunementRowText, inputs.classId, levelGuess.level)
 
   // The attunement is evidence about the slot, not something a wrong guess vetoes:
   // when the title named no slot and the matched attunement disagrees with the

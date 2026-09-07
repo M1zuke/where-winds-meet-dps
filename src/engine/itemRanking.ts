@@ -1,12 +1,19 @@
-﻿import type { AttributeKey, GearWordId, Inputs, ItemRankingRow, WeaponName } from "./types"
+﻿import type {
+  AttributeKey,
+  GearLevel,
+  GearWordId,
+  Inputs,
+  ItemRankingRow,
+  WeaponName,
+} from "./types"
 import { ATTRIBUTE_KEYS, isWeaponName } from "./types"
 import type { Skill } from "./skill"
 import { runEngine } from "./dps"
 import { getSchool } from "./panel"
 import {
-  GEAR_WORD_MAX_ROLL,
   GEAR_WORD_UNIT,
   gearWordIdForPath,
+  gearWordMaxRoll,
   statLineLabel,
 } from "../data/stats/statLines"
 import { statLineKey } from "../i18n/contentKeys"
@@ -16,9 +23,10 @@ import {
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
 import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
-import { attunementLabelKey, attunementsForClass } from "./attunements"
+import { attunementLabelKey, attunementMax, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
+import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { resolveRotation } from "./rotation"
 
 export interface WordSpec<TName extends string = string> {
@@ -27,11 +35,11 @@ export interface WordSpec<TName extends string = string> {
   labelKey: string
   amount: number
   unit: "raw" | "percent"
-  apply(inputs: Inputs): Inputs
+  apply(inputs: Inputs, roll?: number): Inputs
 }
 
-export function getWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
-  return buildWordSpecs(inputs)
+export function getWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[] {
+  return buildWordSpecs(inputs, level)
 }
 
 function rotationWeapons(inputs: Inputs): WeaponName[] {
@@ -57,22 +65,22 @@ function rotationWeapons(inputs: Inputs): WeaponName[] {
     .filter(isWeaponName)
 }
 
-function wordSpec(
-  word: GearWordId,
-  apply: (inputs: Inputs, roll: number) => void,
-): WordSpec<GearWordId> {
-  const roll = GEAR_WORD_MAX_ROLL[word]
-  return {
-    word,
-    label: statLineLabel(word),
-    labelKey: statLineKey(word),
-    amount: roll,
-    unit: GEAR_WORD_UNIT[word],
-    apply: (inputs) => clone(inputs, (next) => apply(next, roll)),
+function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[] {
+  function wordSpec(
+    word: GearWordId,
+    applyRoll: (inputs: Inputs, roll: number) => void,
+  ): WordSpec<GearWordId> {
+    const ceiling = gearWordMaxRoll(word, level)
+    return {
+      word,
+      label: statLineLabel(word),
+      labelKey: statLineKey(word),
+      amount: ceiling,
+      unit: GEAR_WORD_UNIT[word],
+      apply: (inputs, roll = ceiling) => clone(inputs, (next) => applyRoll(next, roll)),
+    }
   }
-}
 
-function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
   const school = getSchool(inputs.classId)
   const weapons = rotationWeapons(inputs)
   const schoolWeapons = school.martialArts.map((martialArt) => martialArt.weaponType)
@@ -152,26 +160,30 @@ function buildWordSpecs(inputs: Inputs): WordSpec<GearWordId>[] {
       applyAttrPenetration(x, school.primaryAttribute, roll)
     }),
   )
-  return specs
+  return specs.filter((spec) => spec.amount > 0)
 }
 
 const ATTUNEMENTS_ALREADY_LISTED_AS_WORDS = new Set(["physPen", "formlessPen"])
 
-function buildAttunementSpecs(inputs: Inputs): WordSpec[] {
+function buildAttunementSpecs(inputs: Inputs, level: GearLevel): WordSpec[] {
   return attunementsForClass(inputs.classId)
     .filter((opt) => !ATTUNEMENTS_ALREADY_LISTED_AS_WORDS.has(opt.id))
-    .map((opt) => ({
-      word: opt.id,
-      label: opt.label,
-      labelKey: attunementLabelKey(opt, inputs.classId),
-      amount: opt.max,
-      unit: "percent" as const,
-      apply: (i: Inputs) =>
-        clone(i, (x) => {
-          if (!opt.enginePath) return
-          addStatDelta(x, resolveEnginePath(opt.enginePath, x), opt.max)
-        }),
-    }))
+    .filter((opt) => attunementMax(opt, level) > 0)
+    .map((opt) => {
+      const ceiling = attunementMax(opt, level)
+      return {
+        word: opt.id,
+        label: opt.label,
+        labelKey: attunementLabelKey(opt, inputs.classId),
+        amount: ceiling,
+        unit: "percent" as const,
+        apply: (i: Inputs, roll = ceiling) =>
+          clone(i, (x) => {
+            if (!opt.enginePath) return
+            addStatDelta(x, resolveEnginePath(opt.enginePath, x), roll)
+          }),
+      }
+    })
 }
 
 function applyWeaponBoost(i: Inputs, weapon: WeaponName, amt: number) {
@@ -206,9 +218,10 @@ function applyAttrAttack(i: Inputs, attr: AttributeKey, field: "min" | "max", am
 }
 
 export function computeRanking(inputs: Inputs, baseDps: number): ItemRankingRow[] {
+  const level = gearLevelForBreakthrough(inputs.breakthrough)
   const catalogues: { source: ItemRankingRow["source"]; specs: WordSpec[] }[] = [
-    { source: "tunement", specs: buildWordSpecs(inputs) },
-    { source: "attunement", specs: buildAttunementSpecs(inputs) },
+    { source: "tunement", specs: buildWordSpecs(inputs, level) },
+    { source: "attunement", specs: buildAttunementSpecs(inputs, level) },
   ]
   const rows: ItemRankingRow[] = []
   for (const { source, specs } of catalogues) {

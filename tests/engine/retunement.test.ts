@@ -4,9 +4,17 @@ import {
   annotatePoolForSlot,
   filterPoolForSlot,
   rerollableSlots,
+  retuneAttemptBudget,
+  retuneLineOutcome,
+  retunePoolChoices,
 } from "../../src/engine/retunement"
 import { computeReattunement, computeRetunement } from "../../src/engine/dpsWorker"
-import { ATTUNEMENT_OPTIONS, getAttunement } from "../../src/engine/attunements"
+import {
+  ATTUNEMENT_OPTIONS,
+  attunementMax,
+  attunementMin,
+  getAttunement,
+} from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
 import {
   applyPieceContribution,
@@ -16,6 +24,7 @@ import {
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
+import { retuneWeightPool, type RetuneLine } from "../../src/data/stats/gearRetuneWeights"
 import type { GearPiece, Inputs } from "../../src/engine/types"
 
 const BELLSTRIKE_POOL = poolForClass("bellstrikeUmbra")!
@@ -191,7 +200,7 @@ describe("computeRetunement (worker compute)", () => {
   })
 
   it("reports ~0 ΔDPS for a candidate identical to the slot's current word", () => {
-    const specs = getWordSpecs(defaultInputs)
+    const specs = getWordSpecs(defaultInputs, 91)
     const minSpec = specs.find((s) => s.word === "power")!
     const p = piece([w("crit", 0.07), w("power", minSpec.amount), EMPTY, EMPTY, EMPTY])
     const inputs = withPieceInInventory(p)
@@ -209,8 +218,8 @@ describe("computeRetunement (worker compute)", () => {
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
 
-    const targetSpec = getWordSpecs(inputs).find((s) => s.word === "maxBellstrike")!
-    const relayed = maxRelayedClone(p, inputs)
+    const targetSpec = getWordSpecs(inputs, p.level).find((s) => s.word === "maxBellstrike")!
+    const relayed = maxRelayedClone(p, inputs, p.level)
     const relayedSwapped: GearPiece = {
       ...relayed,
       words: relayed.words.map((wd, i) =>
@@ -236,7 +245,7 @@ describe("computeRetunement (worker compute)", () => {
     const inputs = withPieceInInventory(p)
     const res = computeRetunement({ reqId: 1, inputs, pieceId: p.id })
 
-    const specs = getWordSpecs(inputs)
+    const specs = getWordSpecs(inputs, p.level)
     const targetSpec = specs.find((s) => s.word === "maxBellstrike")!
     const swappedWords = p.words.map((wd, i) =>
       i === 2 ? { word: "maxBellstrike", value: targetSpec.amount, retuned: true } : wd,
@@ -310,7 +319,11 @@ describe("computeReattunement", () => {
     const res = computeReattunement({ reqId: 1, inputs, pieceId: wp.id })
 
     const opt = getAttunement("physPen")!
-    const swapped: GearPiece = { ...wp, attunement: "physPen", attunementValue: opt.max }
+    const swapped: GearPiece = {
+      ...wp,
+      attunement: "physPen",
+      attunementValue: attunementMax(opt, wp.level),
+    }
     const equipDps = runEngine(applyPieceContribution(inputs, wp, +1)).dps
     const swappedDps = runEngine(applyPieceContribution(inputs, swapped, +1)).dps
     const handDelta = swappedDps - equipDps
@@ -339,7 +352,9 @@ describe("computeReattunement", () => {
 
   it("reports a per-option probability strictly between 0 and 1 when current value is mid-range", () => {
     const opt = getAttunement("physPen")!
-    const wp = weaponPiece({ attunement: "physPen", attunementValue: opt.min })
+    const min = attunementMin(opt, 91)
+    const max = attunementMax(opt, 91)
+    const wp = weaponPiece({ attunement: "physPen", attunementValue: min })
     const inputs = withPieceInInventory(wp)
     const res = computeReattunement({ reqId: 1, inputs, pieceId: wp.id })
     const physPen = res.options.find((o) => o.optionId === "physPen")!
@@ -347,7 +362,7 @@ describe("computeReattunement", () => {
 
     const wp2 = weaponPiece({
       attunement: "physPen",
-      attunementValue: (opt.min + opt.max) / 2,
+      attunementValue: (min + max) / 2,
     })
     const inputs2 = withPieceInInventory(wp2)
     const res2 = computeReattunement({ reqId: 1, inputs: inputs2, pieceId: wp2.id })
@@ -357,5 +372,160 @@ describe("computeReattunement", () => {
 
   it("ATTUNEMENT_OPTIONS catalog is non-empty (sanity)", () => {
     expect(ATTUNEMENT_OPTIONS.length).toBeGreaterThan(0)
+  })
+})
+
+describe("retuneAttemptBudget", () => {
+  it("is single at 86 and repeatable from 91 up", () => {
+    expect(retuneAttemptBudget(86)).toBe("single")
+    expect(retuneAttemptBudget(91)).toBe("repeatable")
+    expect(retuneAttemptBudget(96)).toBe("repeatable")
+    expect(retuneAttemptBudget(100)).toBe("repeatable")
+    expect(retuneAttemptBudget(105)).toBe("repeatable")
+  })
+})
+
+describe("retunePoolChoices", () => {
+  const bellstrikeWeaponPool = retuneWeightPool("Bellstrike", 96, "leftWeapon")!
+
+  function bareWeaponPiece(overrides: Partial<GearPiece> = {}): GearPiece {
+    return piece([EMPTY, EMPTY, EMPTY, EMPTY, EMPTY], {
+      slot: "leftWeapon",
+      level: 96,
+      ...overrides,
+    })
+  }
+
+  it("shows every pool line, summing to 1, when nothing is equipped or deselected", () => {
+    const choices = retunePoolChoices(bareWeaponPiece(), bellstrikeWeaponPool)
+    expect(choices.map((c) => c.word).sort()).toEqual(
+      bellstrikeWeaponPool.map((l) => l.word).sort(),
+    )
+    expect(choices.reduce((sum, c) => sum + c.pDraw, 0)).toBeCloseTo(1, 6)
+  })
+
+  it("keeps a line already sitting on another row visible, at 0 chance and out of the denominator", () => {
+    const withCrit = bareWeaponPiece({
+      words: [w("crit", 0.05), EMPTY, EMPTY, EMPTY, EMPTY],
+    })
+    const choices = retunePoolChoices(withCrit, bellstrikeWeaponPool)
+    const crit = choices.find((c) => c.word === "crit")!
+    expect(crit.onPiece).toBe(true)
+    expect(crit.pDraw).toBe(0)
+    const drawn = choices.filter((c) => c.pDraw > 0)
+    expect(drawn.reduce((sum, c) => sum + c.pDraw, 0)).toBeCloseTo(1, 10)
+  })
+
+  it("shows a deselected line struck through — 0 chance, excluded from the denominator", () => {
+    const withHistory = bareWeaponPiece({ retunedOutWords: ["momentum"] })
+    const momentum = retunePoolChoices(withHistory, bellstrikeWeaponPool).find(
+      (c) => c.word === "momentum",
+    )!
+    expect(momentum.deselected).toBe(true)
+    expect(momentum.pDraw).toBe(0)
+  })
+
+  it("deselecting momentum rebalances the rest to the documented shares", () => {
+    const withHistory = bareWeaponPiece({ retunedOutWords: ["momentum"] })
+    const choices = retunePoolChoices(withHistory, bellstrikeWeaponPool)
+    const shareOf = (word: string) => choices.find((c) => c.word === word)!.pDraw
+    expect(shareOf("maxFormless")).toBeCloseTo(0.292, 3)
+    expect(shareOf("maxPhys")).toBeCloseTo(0.22, 3)
+    expect(shareOf("crit")).toBeCloseTo(0.206, 3)
+    expect(shareOf("affinity")).toBeCloseTo(0.206, 3)
+    expect(shareOf("power")).toBeCloseTo(0.074, 3)
+  })
+})
+
+describe("retuneLineOutcome", () => {
+  const syntheticLine: RetuneLine = {
+    word: "power",
+    weight: 100,
+    bands: [
+      { min: 0, max: 10, star5Weight: 0, lowerStarWeight: 40 },
+      { min: 10, max: 20, star5Weight: 60, lowerStarWeight: 50 },
+      { min: 20, max: 30, star5Weight: 40, lowerStarWeight: 10 },
+    ],
+  }
+
+  it("reports pImprove 1 when every band already clears the baseline", () => {
+    const outcome = retuneLineOutcome(syntheticLine, "legendary", -1, (value) => value)
+    expect(outcome.pImprove).toBe(1)
+  })
+
+  it("reports pImprove 0 when every band stays under the baseline", () => {
+    const outcome = retuneLineOutcome(syntheticLine, "legendary", 1000, (value) => value)
+    expect(outcome.pImprove).toBe(0)
+  })
+
+  it("weights the expected drawn value by rarity's own band weights", () => {
+    const star5 = retuneLineOutcome(syntheticLine, "legendary", 0, (value) => value)
+    const lowerStar = retuneLineOutcome(syntheticLine, "epic", 0, (value) => value)
+    // 5★ zeroes band 1 (0/60/40): E[value] = 0.6·15 + 0.4·25 = 19
+    expect(star5.eDeltaDpsGivenDrawn).toBeCloseTo(19, 6)
+    // 3★/4★ weights 40/50/10: E[value] = 0.4·5 + 0.5·15 + 0.1·25 = 12
+    expect(lowerStar.eDeltaDpsGivenDrawn).toBeCloseTo(12, 6)
+  })
+})
+
+describe("computeRetunement — weighted advisor (levels 96/100/105)", () => {
+  function withPieceInInventory(p: GearPiece): Inputs {
+    return { ...defaultInputs, inventory: [p], classId: "bellstrikeUmbra" }
+  }
+
+  function weightedWeaponPiece(overrides: Partial<GearPiece> = {}): GearPiece {
+    return piece([w("power", 30), EMPTY, EMPTY, EMPTY, EMPTY], {
+      slot: "leftWeapon",
+      level: 96,
+      minPhys: 100,
+      maxPhys: 200,
+      ...overrides,
+    })
+  }
+
+  it("returns null pDraw/pImprove/eDeltaDps at level 91 (no weighted data)", () => {
+    const p = weightedWeaponPiece({ level: 91 })
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    expect(res.reason).toBe("ok")
+    expect(res.rows.length).toBeGreaterThan(0)
+    for (const row of res.rows) {
+      expect(row.pDraw).toBeNull()
+      expect(row.pImprove).toBeNull()
+      expect(row.eDeltaDps).toBeNull()
+    }
+  })
+
+  it("emits numeric pDraw/pImprove/eDeltaDps at level 96", () => {
+    const p = weightedWeaponPiece()
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    expect(res.reason).toBe("ok")
+    expect(res.rows.length).toBeGreaterThan(0)
+    for (const row of res.rows) {
+      expect(typeof row.pDraw).toBe("number")
+      expect(typeof row.pImprove).toBe("number")
+      expect(typeof row.eDeltaDps).toBe("number")
+    }
+  })
+
+  it("pDraw sums to 1 across the candidates offered for one slot", () => {
+    const p = weightedWeaponPiece()
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    const rowsForSlot1 = res.rows.filter((row) => row.slotIndex === 1)
+    const total = rowsForSlot1.reduce((sum, row) => sum + (row.pDraw ?? 0), 0)
+    expect(total).toBeCloseTo(1, 6)
+  })
+
+  it("never offers a line unreachable by retuning", () => {
+    const p = weightedWeaponPiece()
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    const words = new Set(res.rows.map((row) => row.word))
+    expect(words.has("precision")).toBe(false)
+    expect(words.has("swordBoost")).toBe(false)
+  })
+
+  it("excludes a word already on the piece from every slot's rows", () => {
+    const p = weightedWeaponPiece()
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    expect(res.rows.some((row) => row.word === "power")).toBe(false)
   })
 })

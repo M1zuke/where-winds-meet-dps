@@ -257,7 +257,11 @@ export function isWeaponSlot(slot: GearSlot): boolean {
   return WEAPON_SLOTS.includes(slot)
 }
 
-export type GearLevel = 86 | 91 | 96
+export const GEAR_LEVELS = [86, 91, 96, 100, 105] as const
+export type GearLevel = (typeof GEAR_LEVELS)[number]
+
+export type GearLevelValues = Partial<Record<GearLevel, number>>
+
 export const GEAR_RARITIES = ["legendary", "epic"] as const
 export type GearRarity = (typeof GEAR_RARITIES)[number]
 
@@ -283,6 +287,9 @@ export interface GearPiece {
   isNew?: boolean
   label?: string
   note?: string
+  // The retune direction is locked for the life of the item, so this history
+  // belongs to the piece rather than to any one word slot.
+  retunedOutWords?: readonly GearWordId[]
 }
 
 export type EquippedSlots = Record<GearSlot, string | null>

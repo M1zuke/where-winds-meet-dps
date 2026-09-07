@@ -13,6 +13,10 @@ export const hawking = defineSet({
   // `hawkwingMechanic.ts`. This is the fallback `formula.ts` uses when that
   // scheduler didn't run.
   formulaBonus: { physBoost: 0.1 },
-  panelBonus: { stat: "affinityRate", value: 0.045 },
+  // 2-piece BASH_PROB, gear-level ladder (in-game, 2026-09-07).
+  panelBonus: {
+    stat: "affinityRate",
+    value: { 86: 0.032, 91: 0.037, 96: 0.045, 100: 0.052, 105: 0.061 },
+  },
   mechanics: [declareMechanic(hawkwingMechanic(SET_ID.hawking, DISPLAY_NAME))],
 })

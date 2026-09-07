@@ -1,6 +1,7 @@
 [
   {
     "breakthrough": 12,
+    "gearLevel": 86,
     "name": "Simplicity",
     "levelRange": "81-85",
     "resistance": 15,
@@ -11,6 +12,7 @@
   },
   {
     "breakthrough": 13,
+    "gearLevel": 86,
     "name": "Universal View",
     "levelRange": "86-90",
     "resistance": 30,
@@ -21,6 +23,7 @@
   },
   {
     "breakthrough": 14,
+    "gearLevel": 91,
     "name": "",
     "levelRange": "91-95",
     "resistance": 45,
@@ -53,6 +56,7 @@
   },
   {
     "breakthrough": 15,
+    "gearLevel": 91,
     "name": "",
     "levelRange": "91-95",
     "resistance": 45,
@@ -85,6 +89,7 @@
   },
   {
     "breakthrough": 16,
+    "gearLevel": 96,
     "name": "",
     "levelRange": "96-100",
     "resistance": 65,
@@ -117,6 +122,7 @@
   },
   {
     "breakthrough": 17,
+    "gearLevel": 96,
     "name": "",
     "levelRange": "96-100",
     "resistance": 65,
@@ -150,6 +156,7 @@
   },
   {
     "breakthrough": 18,
+    "gearLevel": 100,
     "name": "",
     "levelRange": "100",
     "resistance": 85,
@@ -160,6 +167,7 @@
   },
   {
     "breakthrough": 19,
+    "gearLevel": 100,
     "name": "",
     "levelRange": "100",
     "resistance": 85,
@@ -170,6 +178,7 @@
   },
   {
     "breakthrough": 20,
+    "gearLevel": 105,
     "name": "",
     "levelRange": "100",
     "resistance": 115,
@@ -180,6 +189,7 @@
   },
   {
     "breakthrough": 21,
+    "gearLevel": 105,
     "name": "",
     "levelRange": "100",
     "resistance": 115,

@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
-import { getAttunement } from "../../src/engine/attunements"
+import { attunementMax, getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
-import { GEAR_WORD_MAX_ROLL, GEAR_WORD_UNIT } from "../../src/data/stats/statLines"
+import { GEAR_WORD_UNIT, gearWordMaxRoll } from "../../src/data/stats/statLines"
 import { relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
@@ -11,7 +11,9 @@ import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
 import { graduationBuild, graduationInputs } from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { GEAR_SLOTS } from "../../src/engine/types"
+import { GEAR_SLOTS, type GearLevel } from "../../src/engine/types"
+
+const GRADUATION_LEVEL: GearLevel = 96
 
 function dpsFor(inputs = defaultInputs): number {
   return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs)))).dps
@@ -34,7 +36,7 @@ describe("graduation builds", () => {
   it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
     "%s rolls every graduation word and attunement at the catalogue's max",
     (classId, classDef) => {
-      const specs = getWordSpecs({ ...defaultInputs, classId })
+      const specs = getWordSpecs({ ...defaultInputs, classId }, GRADUATION_LEVEL)
       for (const piece of classDef.graduationBuild.gear) {
         for (const word of piece.words) {
           const spec = specs.find((candidate) => candidate.word === word.word)
@@ -44,7 +46,10 @@ describe("graduation builds", () => {
           ).toBeDefined()
           expect(word.value).toBe(spec!.amount)
         }
-        expect(piece.attunementValue).toBe(getAttunement(piece.attunement)?.max)
+        const attunement = getAttunement(piece.attunement)
+        expect(piece.attunementValue).toBe(
+          attunement ? attunementMax(attunement, GRADUATION_LEVEL) : undefined,
+        )
       }
     },
   )
@@ -63,7 +68,7 @@ describe("graduation builds", () => {
   it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
     "%s relays every graduation word to the shared relayed cap and keeps its attunement at max",
     (classId, classDef) => {
-      const relayed = graduationBuild(classId, "relayed")
+      const relayed = graduationBuild(classId, "relayed", GRADUATION_LEVEL)
       expect(relayed).not.toBeNull()
 
       for (const piece of relayed!.gear) {
@@ -71,10 +76,16 @@ describe("graduation builds", () => {
         for (const word of piece.words) {
           if (!word.word) continue
           expect(word.value).toBe(
-            relayedCapValue(GEAR_WORD_MAX_ROLL[word.word], GEAR_WORD_UNIT[word.word]),
+            relayedCapValue(
+              gearWordMaxRoll(word.word, GRADUATION_LEVEL),
+              GEAR_WORD_UNIT[word.word],
+            ),
           )
         }
-        expect(piece.attunementValue).toBe(getAttunement(piece.attunement)?.max)
+        const attunement = getAttunement(piece.attunement)
+        expect(piece.attunementValue).toBe(
+          attunement ? attunementMax(attunement, GRADUATION_LEVEL) : undefined,
+        )
       }
       expect(relayed!.gear.map((piece) => piece.id)).toEqual(
         classDef.graduationBuild.gear.map((piece) => piece.id),
@@ -87,7 +98,7 @@ describe("graduation builds", () => {
     (classId, classDef) => {
       const build = classDef.graduationBuild
       const overrides = build.relayedOverrides ?? {}
-      const relayed = graduationBuild(classId, "relayed")
+      const relayed = graduationBuild(classId, "relayed", GRADUATION_LEVEL)
 
       expect(relayed!.set).toBe(overrides.set ?? build.set)
       expect(relayed!.bowSet).toBe(overrides.bowSet ?? build.bowSet)
@@ -96,10 +107,10 @@ describe("graduation builds", () => {
   )
 
   it("leaves the max-roll variant untouched by the relayed overrides", () => {
-    const build = graduationBuild("bellstrikeUmbra", "maxRolls")
-    expect(build).toBe(classDefinition("bellstrikeUmbra")!.graduationBuild)
+    const build = graduationBuild("bellstrikeUmbra", "maxRolls", GRADUATION_LEVEL)
+    expect(build!.gear).toEqual(classDefinition("bellstrikeUmbra")!.graduationBuild.gear)
     expect(build!.bowSet).toBe("crit")
-    expect(graduationBuild("bellstrikeUmbra", "relayed")!.bowSet).toBe("affinity")
+    expect(graduationBuild("bellstrikeUmbra", "relayed", GRADUATION_LEVEL)!.bowSet).toBe("affinity")
   })
 
   it("always enables every class talent and oddity", () => {
@@ -112,6 +123,35 @@ describe("graduation builds", () => {
         .flat()
         .every((oddity) => oddity.enabled),
     ).toBe(true)
+  })
+})
+
+describe("graduation build follows the current breakthrough's gear level", () => {
+  it("BT18 (level 100) rolls every word and attunement at the level-100 ceiling", () => {
+    const inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 18 }
+    const build = graduationBuild(inputs.classId, "maxRolls", 100)!
+    const specs = getWordSpecs(inputs, 100)
+
+    for (const piece of build.gear) {
+      expect(piece.level).toBe(100)
+      expect(piece).toMatchObject(gearBaseStatsFor(piece))
+      for (const word of piece.words) {
+        const spec = specs.find((candidate) => candidate.word === word.word)
+        expect(spec).toBeDefined()
+        expect(word.value).toBe(spec!.amount)
+      }
+      const attunement = getAttunement(piece.attunement)
+      expect(piece.attunementValue).toBe(attunement ? attunementMax(attunement, 100) : undefined)
+    }
+  })
+
+  it("BT18's benchmark differs from BT17's — the ceilings are not silently shared", () => {
+    const bt17Inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 17 }
+    const bt18Inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 18 }
+    const bt17Benchmark = withDerivedStats(graduationInputs(bt17Inputs)!)
+    const bt18Benchmark = withDerivedStats(graduationInputs(bt18Inputs)!)
+
+    expect(bt18Benchmark.phys.max).toBeGreaterThan(bt17Benchmark.phys.max)
   })
 })
 

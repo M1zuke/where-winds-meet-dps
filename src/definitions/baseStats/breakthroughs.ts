@@ -1,4 +1,5 @@
 import breakthroughTiers from "../../data/baseStats/breakthroughTiers.json"
+import type { GearLevel } from "../../engine/types"
 
 export interface BreakthroughAttribute {
   id: number
@@ -8,6 +9,7 @@ export interface BreakthroughAttribute {
 
 export interface BreakthroughTier {
   breakthrough: number
+  gearLevel: GearLevel
   name: string
   levelRange: string
   resistance: number
@@ -55,6 +57,22 @@ export function getBreakthrough(breakthrough: number): BreakthroughTier {
   const tier = BREAKTHROUGH_TIERS.find((candidate) => candidate.breakthrough === breakthrough)
   if (!tier) throw new Error(`Unknown breakthrough: ${breakthrough}`)
   return tier
+}
+
+export function gearLevelForBreakthrough(breakthrough: number): GearLevel {
+  const atOrBelow = BREAKTHROUGH_TIERS.filter((tier) => tier.breakthrough <= breakthrough)
+  const tier = atOrBelow.length > 0 ? atOrBelow[atOrBelow.length - 1]! : BREAKTHROUGH_TIERS[0]!
+  return tier.gearLevel
+}
+
+export function gearLevelsUpTo(breakthrough: number): GearLevel[] {
+  const reached = new Set(
+    BREAKTHROUGH_TIERS.filter((tier) => tier.breakthrough <= breakthrough).map(
+      (tier) => tier.gearLevel,
+    ),
+  )
+  const levels = [...reached].sort((left, right) => left - right)
+  return levels.length > 0 ? levels : [BREAKTHROUGH_TIERS[0]!.gearLevel]
 }
 
 const MEASURED_TIERS = BREAKTHROUGH_TIERS.filter((tier) => tier.attributes?.length)

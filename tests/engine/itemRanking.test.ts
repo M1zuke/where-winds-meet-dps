@@ -5,22 +5,24 @@
 import { describe, expect, it } from "vitest"
 import { computeRanking, getWordSpecs } from "../../src/engine/itemRanking"
 import { computeGearContribution } from "../../src/engine/gearStats"
-import { attunementsForClass, getAttunement } from "../../src/engine/attunements"
+import { attunementMax, attunementsForClass, getAttunement } from "../../src/engine/attunements"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
+import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import type { GearPiece } from "../../src/engine/types"
 import english from "../../src/i18n/locales/en.json"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+const GEAR_LEVEL = gearLevelForBreakthrough(umbraInputs.breakthrough)
 
 describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   const base = runEngine(umbraInputs)
   const rows = computeRanking(umbraInputs, base.dps)
 
-  it("produces a row per gear word plus one per class-legal attunement", () => {
-    expect(rows.filter((row) => row.source === "tunement").length).toBe(26)
+  it("produces a row per gear word the build's gear level offers, plus one per class-legal attunement", () => {
+    expect(rows.filter((row) => row.source === "tunement").length).toBe(23)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
       "Strategic Sword Martial Art Skill DMG Boost",
@@ -86,18 +88,28 @@ describe("computeRanking — top-rank consistency", () => {
   it("All Martial Boost ranks in the top 11", () => expect(top11.has("allMartialBoost")).toBe(true))
 })
 
-// `WordSpec.amount` and the `apply` delta must stay in lockstep, since
-// `computeGearContribution` scales the delta by `value / amount`.
-describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
-  const specs = getWordSpecs(umbraInputs)
+describe("computeRanking — the gear stat lift follows the current breakthrough's gear level", () => {
+  it("the same stat line reports a different max at BT17 (96) than at BT18 (100)", () => {
+    const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
+    const bt18Inputs = { ...umbraInputs, breakthrough: 18 }
+    const bt17Rows = computeRanking(bt17Inputs, runEngine(bt17Inputs).dps)
+    const bt18Rows = computeRanking(bt18Inputs, runEngine(bt18Inputs).dps)
 
-  it("is pinned at 9.797 %, while the area mystic word stays at 7 %", () => {
+    const bt17MaxPhys = bt17Rows.find((row) => row.statLineId === "maxPhys")!
+    const bt18MaxPhys = bt18Rows.find((row) => row.statLineId === "maxPhys")!
+    expect(bt18MaxPhys.amount).toBeGreaterThan(bt17MaxPhys.amount)
+  })
+})
+
+describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
+  const specs = getWordSpecs(umbraInputs, GEAR_LEVEL)
+
+  it("matches the area mystic word's ceiling at this gear level", () => {
     const single = specs.find((s) => s.word === "singleTargetMysticBoost")!
     expect(single.unit).toBe("percent")
-    expect(single.amount).toBeCloseTo(0.09797, 10)
 
     const area = specs.find((s) => s.word === "areaMysticBoost")!
-    expect(area.amount).toBeCloseTo(0.07, 10)
+    expect(single.amount).toBeCloseTo(area.amount, 10)
   })
 
   it("offers one merged area word, not the two pre-merge ones", () => {
@@ -116,8 +128,8 @@ describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
       hp: 0,
       physDef: 0,
       words: [
-        { word: "singleTargetMysticBoost", value: 0.09797, retuned: false },
         { word: "", value: 0, retuned: false },
+        { word: "singleTargetMysticBoost", value: 0.09797, retuned: true },
         { word: "", value: 0, retuned: false },
         { word: "", value: 0, retuned: false },
         { word: "", value: 0, retuned: false },
@@ -147,7 +159,7 @@ describe("attunement rows", () => {
       const row = attunementRows.find((candidate) => candidate.label === option.label)
       if (!row) continue
       expect(row.unit).toBe("percent")
-      expect(row.amount).toBeCloseTo(option.max, 10)
+      expect(row.amount).toBeCloseTo(attunementMax(option, GEAR_LEVEL), 10)
     }
   })
 

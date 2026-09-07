@@ -210,10 +210,10 @@ describe("suggestions from the reported max roll", () => {
 
 describe("a user choice maps an id the table does not carry", () => {
   it("resolves a chosen word and keeps the payload value", () => {
-    const chosen: AffixChoices = { "9999999": "word:power" }
+    const chosen: AffixChoices = { "9999999": "word:momentum" }
     expect(untabledWordRowOnWeapon(chosen).resolution).toMatchObject({
       kind: "resolved",
-      target: { word: "power" },
+      target: { word: "momentum" },
       value: 45.569,
       clampedFrom: null,
     })
@@ -251,10 +251,10 @@ describe("a user choice maps an id the table does not carry", () => {
   })
 
   it("clamps above the cap and records what it was", () => {
-    const cap = getWordSpecs(inputs).find((spec) => spec.word === "crit")!.amount
+    const cap = getWordSpecs(inputs, FALLBACK_LEVEL).find((spec) => spec.word === "crit")!.amount
     const text = JSON.stringify({
       wearEquipsDetailed: {
-        "1": {
+        "3": {
           exVo: { baseAffixes: [{ equipmentDetails: [9793119, 0.5, 5.555555555555555, 3, true] }] },
         },
       },
@@ -269,7 +269,7 @@ describe("a user choice maps an id the table does not carry", () => {
   it("keeps full precision below the cap — no rounding", () => {
     const text = JSON.stringify({
       wearEquipsDetailed: {
-        "1": {
+        "3": {
           exVo: {
             baseAffixes: [{ equipmentDetails: [9793119, 0.0873421, 0.9704677777777778, 3, true] }],
           },

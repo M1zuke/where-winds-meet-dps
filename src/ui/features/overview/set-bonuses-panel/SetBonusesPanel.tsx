@@ -3,9 +3,11 @@ import {
   ARMOR_SET_OPTIONS,
   ARSENAL_BONUS,
   BOW_SET_BONUS,
+  armorSetValueForLevel,
   defaultArsenalForClass,
   swapArsenal,
 } from "../../../../engine/panel"
+import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { setKey } from "../../../../i18n/contentKeys"
 import { deltaTone, type OptionTileTone } from "../../../components/option-tile/optionTileTone"
@@ -104,6 +106,7 @@ function buildArmorRows(
       ? armorDpsByKey[inputs.set]
       : (armorDpsByKey?.__none ?? Number.NaN)
 
+  const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
   const rows: OptionRow[] = ARMOR_SET_OPTIONS.map((opt) => {
     const statLabel = opt.stat ? t(PANEL_STAT_KEYS[opt.stat] ?? opt.stat) : ""
     const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys"
@@ -111,7 +114,7 @@ function buildArmorRows(
     return {
       key: opt.setKey,
       label: t(setKey(opt.setKey), opt.name),
-      bonus: bonusWithStatLabel(statLabel, opt.value ?? 0, isFlat),
+      bonus: bonusWithStatLabel(statLabel, armorSetValueForLevel(opt, gearLevel) ?? 0, isFlat),
       delta: dps - currentDps,
       selected: armorSelectedKey === opt.setKey,
       onSelect: () => onChange({ ...inputs, set: opt.setKey }),

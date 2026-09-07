@@ -1,0 +1,67 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface-inset);
+}
+
+.tile.deselected,
+.tile.onPiece {
+  opacity: 0.5;
+}
+
+.tile.onPiece {
+  border-style: dashed;
+}
+
+.tileName {
+  font-weight: 600;
+}
+
+.deselected .tileName {
+  text-decoration: line-through;
+}
+
+.tileRange {
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tileChance {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tileChance b {
+  font-size: 0.95em;
+  color: var(--color-accent);
+}
+
+.tileChance em {
+  font-style: normal;
+  font-size: 0.72em;
+  color: var(--color-text-muted);
+}
+
+.tileMarker {
+  font-size: 0.85em;
+  color: var(--color-negative);
+}
+
+.budget {
+  margin-right: auto;
+  font-size: 0.85em;
+  color: var(--color-text-muted);
+}

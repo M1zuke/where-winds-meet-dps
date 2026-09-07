@@ -1,10 +1,10 @@
-import type { Inputs, AttributeKey, Arsenal } from "./types"
+import type { Inputs, AttributeKey, Arsenal, GearLevel, GearLevelValues } from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
-import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
 
 export { getBreakthrough, henZhiActiveForInputs }
@@ -99,7 +99,7 @@ export interface ArmorSetOption {
   // rather than a 2-piece panel stat. Such a set is still selectable — it has
   // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
   stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
-  value?: number
+  value?: GearLevelValues
 }
 export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
   name: set.name,
@@ -107,11 +107,18 @@ export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) =
   ...set.panelBonus,
 }))
 
+// The pieces carrying a set aren't modeled individually, so the 2-piece bonus
+// follows the current breakthrough's gear level.
+export function armorSetValueForLevel(opt: ArmorSetOption, level: GearLevel): number | undefined {
+  return opt.value?.[level]
+}
+
 export function applyArmorSet(inputs: Inputs): Inputs {
   if (!inputs.set) return inputs
   const opt = ARMOR_SET_OPTIONS.find((o) => o.setKey === inputs.set)
-  if (!opt || opt.stat === undefined || opt.value === undefined) return inputs
-  const { value } = opt
+  if (!opt || opt.stat === undefined) return inputs
+  const value = armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough))
+  if (value === undefined) return inputs
   switch (opt.stat) {
     case "affinityRate":
       return { ...inputs, affinityRate: inputs.affinityRate + value }

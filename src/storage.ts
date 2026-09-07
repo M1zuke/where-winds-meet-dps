@@ -1,6 +1,7 @@
 import type {
   DisabledTalentPoints,
   EnhancementSlot,
+  GearPiece,
   Inputs,
   OddityNode,
   OddityRegions,
@@ -229,6 +230,14 @@ function repairGearWord(entry: unknown): unknown {
   return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: stored }
 }
 
+// additive — see CLAUDE.md → "localStorage migrations". A word this build no
+// longer resolves stays in the history: it never scores anything, it only
+// hides a choice the player already recorded as retuned out.
+function sanitizeRetunedOutWords(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value.filter((entry): entry is string => typeof entry === "string" && entry !== "")
+}
+
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
 // is frozen at the display names V11 knew, so it recognises neither a set
 // retired since nor one added since, and run alone it clears a legitimate
@@ -307,14 +316,23 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (!Array.isArray(next.inventory)) next.inventory = []
   next.inventory = next.inventory.map((piece) => {
     const p = piece as Partial<typeof piece> & Record<string, unknown>
-    const { name: _legacyName, isNew: _rawIsNew, label: _rawLabel, note: _rawNote, ...rest } = p
+    const {
+      name: _legacyName,
+      isNew: _rawIsNew,
+      label: _rawLabel,
+      note: _rawNote,
+      retunedOutWords: _rawRetunedOutWords,
+      ...rest
+    } = p
     void _legacyName
     void _rawIsNew
     void _rawLabel
     void _rawNote
+    void _rawRetunedOutWords
     const isNew = p.isNew === true
     const label = sanitizeGearPieceText(p.label, 40)
     const note = sanitizeGearPieceText(p.note, 500)
+    const retunedOutWords = sanitizeRetunedOutWords(p.retunedOutWords)
     const rawWords = (rest as unknown as { words?: unknown }).words
     const words = Array.isArray(rawWords) ? rawWords.map(repairGearWord) : rawWords
     return {
@@ -326,6 +344,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
       ...(isNew ? { isNew: true } : {}),
       ...(label ? { label } : {}),
       ...(note ? { note } : {}),
+      ...(retunedOutWords.length > 0
+        ? { retunedOutWords: retunedOutWords as GearPiece["retunedOutWords"] }
+        : {}),
     }
   })
   if (!next.equipped || typeof next.equipped !== "object") {

@@ -1,5 +1,5 @@
 import { attunementKey } from "../i18n/contentKeys"
-import type { GearSlot } from "./types"
+import type { GearLevel, GearLevelValues, GearSlot } from "./types"
 import { ATTUNEMENT_OPTIONS as OPTIONS } from "../data/classes/attunementOptions"
 
 export interface AttunementOption {
@@ -9,8 +9,8 @@ export interface AttunementOption {
   // after its own art, so `label` is the weapon-shaped fallback for a call site
   // holding no class, and this carries the official name per class.
   labelByClass?: Readonly<Record<string, string>>
-  min: number
-  max: number
+  min: GearLevelValues
+  max: GearLevelValues
   slots: readonly GearSlot[]
   classIds: readonly string[] | null
   enginePath: string | null
@@ -45,4 +45,13 @@ export function attunementsFor(slot: GearSlot, classId: string): AttunementOptio
 
 export function getAttunement(id: string): AttunementOption | undefined {
   return ATTUNEMENT_OPTIONS.find((o) => o.id === id)
+}
+
+/** 0 for a level the option does not roll at — see the ladder's `—` rule. */
+export function attunementMin(option: AttunementOption, level: GearLevel): number {
+  return option.min[level] ?? 0
+}
+
+export function attunementMax(option: AttunementOption, level: GearLevel): number {
+  return option.max[level] ?? 0
 }

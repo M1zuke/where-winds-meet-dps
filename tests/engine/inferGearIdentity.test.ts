@@ -3,7 +3,7 @@ import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { inferGearIdentity } from "../../src/engine/gearIdentity"
 import { GEAR_SLOTS, type GearLevel, type GearRarity } from "../../src/engine/types"
 
-const TABLED_LEVELS: GearLevel[] = [91, 96]
+const TABLED_LEVELS: GearLevel[] = [86, 91, 96, 100, 105]
 const RARITIES: GearRarity[] = ["legendary", "epic"]
 
 describe("inferGearIdentity", () => {

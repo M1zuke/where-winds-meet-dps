@@ -15,15 +15,15 @@ function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
   const helm: GearPiece = {
     id: "formless-helm",
     slot: "helm",
-    level: 91,
+    level: 96,
     rarity: "legendary",
     minPhys: 0,
     maxPhys: 0,
     hp: 0,
     physDef: 0,
     words: [
-      { word: "maxFormless", value: formlessMaxRoll, retuned: false },
       { word: "minBellstrike", value: 20, retuned: false },
+      { word: "maxFormless", value: formlessMaxRoll, retuned: true },
       { word: "maxBellstrike", value: 30, retuned: false },
       { word: "", value: 0, retuned: false },
       { word: "", value: 0, retuned: false },

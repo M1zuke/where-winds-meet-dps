@@ -3,6 +3,7 @@ import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
 import { statLineLabel } from "../../../../data/stats/statLines"
+import { retuneAttemptBudget } from "../../../../engine/retunement"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { statLineKey } from "../../../../i18n/contentKeys"
@@ -25,6 +26,8 @@ interface Pick extends Ranked {
   currentWord: string
   word: string
   legalCount: number
+  pDraw: number | null
+  pImprove: number | null
 }
 
 function fmtDpsDelta(deltaDps: number): string {
@@ -44,6 +47,14 @@ function fmtChance(legalCount: number): string {
   if (legalCount <= 0) return "—"
   const pct = (100 / legalCount).toFixed(1)
   return `1 / ${legalCount} (${pct} %)`
+}
+
+function fmtDrawChance(pDraw: number | null, legalCount: number): string {
+  return pDraw === null ? fmtChance(legalCount) : `${(pDraw * 100).toFixed(1)} %`
+}
+
+function fmtPercent(value: number | null): string {
+  return value === null ? "—" : `${(value * 100).toFixed(1)} %`
 }
 
 export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Props) {
@@ -73,6 +84,8 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             deltaDps: row.deltaDps,
             deltaDpsRelayed: row.deltaDpsRelayed,
             legalCount: countBySlot.get(row.slotIndex) ?? 0,
+            pDraw: row.pDraw,
+            pImprove: row.pImprove,
           }
         }
       }
@@ -101,6 +114,8 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
         deltaDps: row.deltaDps,
         deltaDpsRelayed: row.deltaDpsRelayed,
         legalCount: best.legalCount,
+        pDraw: row.pDraw,
+        pImprove: row.pImprove,
       })
     }
     out.sort((rowA, rowB) => rowB.deltaDps - rowA.deltaDps)
@@ -149,6 +164,11 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
       : null
 
   const hasRows = rows.length > 0
+  const budget = retuneAttemptBudget(piece.level)
+  const budgetKey =
+    budget === "single"
+      ? "gear.retunementAnalyzer.budgetSingle"
+      : "gear.retunementAnalyzer.budgetRepeatable"
 
   return (
     <div className={`panel ${retunement.panel}`}>
@@ -156,6 +176,7 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
         <span className="toolbar-label">{t("common.retunement")}</span>
         {isPending && <span className="hint">{t("gear.retunementAnalyzer.computing")}</span>}
         {lockedNote && <span className="hint">{lockedNote}</span>}
+        <span className="hint">{t(budgetKey)}</span>
       </div>
 
       {!hasRows && isPending && (
@@ -204,8 +225,16 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
           )}
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>{t("gear.retunementAnalyzer.success")}</span>
-            <span>{fmtChance(best.legalCount)}</span>
+            <span>{fmtDrawChance(best.pDraw, best.legalCount)}</span>
           </div>
+          {best.pImprove !== null && (
+            <div className={retunement.bestRow}>
+              <span className={retunement.bestLabel}>
+                {t("gear.retunementAnalyzer.chanceToImprove")}
+              </span>
+              <span>{fmtPercent(best.pImprove)}</span>
+            </div>
+          )}
           {!recommended && (
             <div className={retunement.warn}>
               {t("gear.retunementAnalyzer.notRecommendedToRetuneThis")}
@@ -222,6 +251,7 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             {t("gear.retunementAnalyzer.bothAt94")}
             <HelpHint text={t("gear.retunementAnalyzer.scoresTheSwapHint")} />
           </div>
+          <div className={retunement.th}>{t("gear.retunementAnalyzer.drawChance")}</div>
           {focusSlotCandidates.map((candidate) => (
             <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
               <div className={retunement.cell}>
@@ -232,6 +262,9 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
               </div>
               <div className={`${retunement.cell} ${deltaSignClass(candidate.deltaDpsRelayed)}`}>
                 {fmtDpsDelta(candidate.deltaDpsRelayed)}
+              </div>
+              <div className={retunement.cell}>
+                {fmtDrawChance(candidate.pDraw, candidate.legalCount)}
               </div>
             </div>
           ))}
