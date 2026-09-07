@@ -4,7 +4,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 
 describe("resistanceForBreakthrough — bracket presets", () => {
   it("maps each breakthrough to the in-game percent", () => {
-    expect(resistanceForBreakthrough(12)).toBe(15)
+    expect(resistanceForBreakthrough(13)).toBe(30)
     expect(resistanceForBreakthrough(13)).toBe(30)
     expect(resistanceForBreakthrough(14)).toBe(45)
     expect(resistanceForBreakthrough(15)).toBe(45)
@@ -28,7 +28,7 @@ describe("effectiveRates — precision soft-cap formula", () => {
     expect(eff.precision).toBeCloseTo(1.0, 6)
   })
   it("65 % white → 65 % effective at every breakthrough (the cap)", () => {
-    for (const breakthrough of [12, 13, 14, 15, 16, 17, 18, 19, 20, 21]) {
+    for (const breakthrough of [13, 14, 15, 16, 17, 18, 19, 20, 21]) {
       const eff = effectiveRates({ ...defaultInputs, breakthrough, precision: 0.65 })
       expect(eff.precision).toBeCloseTo(0.65, 6)
     }
@@ -45,9 +45,9 @@ describe("effectiveRates — crit / affinity divide-by-(1+r)", () => {
     expect(eff.critRate).toBeCloseTo(0.7, 6)
     expect(eff.affinityRate).toBeCloseTo(0.164, 6)
   })
-  it("breakthrough 12 (15 % resistance): white / 1.15", () => {
-    const eff = effectiveRates({ ...defaultInputs, breakthrough: 12 })
-    expect(eff.critRate).toBeCloseTo(defaultInputs.critRate / 1.15, 6)
+  it("breakthrough 13 (30 % resistance): white / 1.3", () => {
+    const eff = effectiveRates({ ...defaultInputs, breakthrough: 13 })
+    expect(eff.critRate).toBeCloseTo(defaultInputs.critRate / 1.3, 6)
   })
   it("breakthrough 16 (65 % resistance): white / 1.65", () => {
     const eff = effectiveRates({ ...defaultInputs, breakthrough: 16 })
@@ -61,7 +61,7 @@ describe("effectiveRates — crit / affinity divide-by-(1+r)", () => {
 
 describe("effectiveRates — resistance follows the breakthrough", () => {
   it("changing breakthrough across brackets DOES change effective rates", () => {
-    const a = effectiveRates({ ...defaultInputs, breakthrough: 12 })
+    const a = effectiveRates({ ...defaultInputs, breakthrough: 13 })
     const b = effectiveRates({ ...defaultInputs, breakthrough: 20 })
     expect(a.critRate).not.toBeCloseTo(b.critRate, 3)
   })

@@ -35,7 +35,7 @@ describe("target.defensePct — a fraction of the breakthrough's own defense", (
   })
 
   it("scales with the breakthrough, so the same effect is not a fixed number of points", () => {
-    const lowTier = { ...defaultInputs, breakthrough: 12 }
+    const lowTier = { ...defaultInputs, breakthrough: 13 }
     const highTier = { ...defaultInputs, breakthrough: 21 }
     const deltaAt = (inputs: typeof defaultInputs) =>
       applyBuffEffects(inputs, [{ statKey: "target.defensePct", amount: -0.05 }]).targetOverride

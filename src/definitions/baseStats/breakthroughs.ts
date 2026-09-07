@@ -16,7 +16,6 @@ export interface BreakthroughTier {
   defense: number
   generalDamageTaken: number
   fatigueDamageTaken: number
-  multiplier: number
   attributes?: BreakthroughAttribute[]
   // In-game unlock instant, UTC. A tier without one is already live.
   release?: string
@@ -77,8 +76,8 @@ export function gearLevelsUpTo(breakthrough: number): GearLevel[] {
 
 const MEASURED_TIERS = BREAKTHROUGH_TIERS.filter((tier) => tier.attributes?.length)
 
-// Only breakthroughs 14-17 have a measured attribute table (in-game,
-// 2026-07-24); a tier outside it resolves to the nearest measured one.
+// Breakthrough 13 has no attribute table; a tier without one resolves to the
+// nearest tier that has.
 export function breakthroughAttributes(breakthrough: number): readonly BreakthroughAttribute[] {
   let nearest: BreakthroughTier | undefined
   for (const tier of MEASURED_TIERS) {

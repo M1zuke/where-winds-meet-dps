@@ -38,7 +38,6 @@ export interface DerivedStats {
   effectiveDefense: number
   generalDamageTaken: number
   fatigueDamageTaken: number
-  targetMultiplier: number
   generalDamageBoost: number
   weaponBoosts: Record<string, number>
   typeBoosts: Record<string, number>
@@ -209,7 +208,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     effectiveDefense,
     generalDamageTaken: targetGeneralDamageTaken,
     fatigueDamageTaken: targetFatigueDamageTaken,
-    targetMultiplier: target.multiplier,
     generalDamageBoost,
     weaponBoosts,
     typeBoosts,

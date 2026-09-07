@@ -70,9 +70,10 @@ describe("tiers with no measured attribute row", () => {
     }
   })
 
-  it("clamps a tier above the measured range down to the highest measured tier", () => {
+  it("reports every tier from 18 up from its own row, not the highest measured one below it", () => {
     for (const breakthrough of [18, 19, 20, 21]) {
-      expect(breakthroughAttributes(breakthrough)).toEqual(breakthroughAttributes(17))
+      expect(breakthroughAttributes(breakthrough)).not.toEqual(breakthroughAttributes(17))
+      expect(breakthroughAttributes(breakthrough)).toHaveLength(4)
     }
   })
 
@@ -91,9 +92,9 @@ describe("the merged tier table", () => {
   it("keeps the target-side columns for every selectable tier", () => {
     for (const tier of BREAKTHROUGH_TIERS) {
       expect(tier.defense).toBeGreaterThan(0)
-      expect(tier.multiplier).toBeGreaterThan(0)
       expect(typeof tier.resistance).toBe("number")
       expect(typeof tier.levelRange).toBe("string")
+      expect(tier.name).not.toBe("")
     }
   })
 
