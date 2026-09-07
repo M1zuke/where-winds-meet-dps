@@ -163,6 +163,35 @@ describe("the shipped affix table is the authority", () => {
       expect(key.startsWith("attunement:")).toBe(isAttunementId)
     }
   })
+
+  it("leaves the Art of Fan/Umbrella Boost ids unmapped rather than resolving them as the DMG Boost line", () => {
+    for (const affixId of [
+      "9293026",
+      "9294026",
+      "9793020",
+      "9794020",
+      "10193020",
+      "10194020",
+      "10693020",
+      "10694020",
+      "9293027",
+      "9294027",
+      "9793021",
+      "9794021",
+      "10193021",
+      "10194021",
+      "10693021",
+      "10694021",
+    ]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBeUndefined()
+    }
+  })
+
+  it("maps every Vernal Umbrella Frequent Projectile id across every gear level it rolls at", () => {
+    for (const affixId of ["280304", "280305", "290304", "300304"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbFrequentProjectile")
+    }
+  })
 })
 
 describe("suggestions from the reported max roll", () => {
