@@ -120,7 +120,7 @@ describe("StatsOverviewPanel", () => {
     )
   })
 
-  it("shows Body, Defense and Max HP alongside Power, Agility and Momentum", () => {
+  it("shows Constitution, Defense and Max HP alongside Power, Agility and Momentum", () => {
     const equipped = equippedPiecesFor(defaultInputs)
     const attrs = totalPlayerAttributes(
       defaultInputs.breakthrough,
@@ -139,22 +139,22 @@ describe("StatsOverviewPanel", () => {
       </I18nProvider>,
     )
 
-    expect(screen.getByText("Body").parentElement).toHaveTextContent(fmt(attrs.body, false))
+    expect(screen.getByText("Constitution").parentElement).toHaveTextContent(fmt(attrs.body, false))
     expect(screen.getByText("Defense").parentElement).toHaveTextContent(fmt(attrs.defense, false))
     expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
   })
 
-  it("marks Max HP as a floor, since the Arsenal's gear-score-dependent grant isn't tracked", () => {
+  it("states the current-arsenal Total Mastery assumption behind Max HP, without a floor marker", () => {
     render(
       <I18nProvider>
         <StatsOverviewPanel inputs={defaultInputs} />
       </I18nProvider>,
     )
 
-    expect(screen.getByText("Max HP").parentElement).toHaveTextContent("≥")
+    expect(screen.getByText("Max HP").parentElement).not.toHaveTextContent("≥")
     expect(screen.getByText("Max HP")).toHaveAttribute(
       "title",
-      "Minimum — excludes the Arsenal's gear-score-dependent HP, which isn't tracked",
+      "Assumes the current Arsenal store is at Total Mastery; HP from score above that isn't counted",
     )
   })
 

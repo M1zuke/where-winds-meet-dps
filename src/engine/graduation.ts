@@ -71,6 +71,6 @@ export function graduationInputs(
       enabled: true,
     })),
     oddities: allOddities(),
-    enhancements: DEFAULT_ENHANCEMENTS.map((node) => ({ ...node })),
+    enhancements: { ...DEFAULT_ENHANCEMENTS },
   }
 }

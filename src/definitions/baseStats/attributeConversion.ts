@@ -16,8 +16,7 @@ export const MOMENTUM_PER_POINT = {
   affinityRate: 0.00038,
 } as const
 
-// Game client table attr_first_level_trans as of 2026-09-07: CON_HP_X. The
-// client names Body's code CON.
+// Game client table attr_first_level_trans as of 2026-09-07: CON_HP_X.
 export const BODY_PER_POINT = {
   hp: 60,
 } as const

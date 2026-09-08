@@ -83,7 +83,7 @@ export const defaultInputs: Inputs = {
 
   disabledTalentPoints: {},
 
-  enhancements: DEFAULT_ENHANCEMENTS,
+  enhancements: { ...DEFAULT_ENHANCEMENTS },
 
   combatSettings: defaultCombatSettings(),
 }

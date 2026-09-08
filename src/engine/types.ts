@@ -153,7 +153,7 @@ export interface Inputs {
 
   disabledTalentPoints: DisabledTalentPoints
 
-  enhancements: EnhancementNode[]
+  enhancements: EnhancementLevels
 }
 
 export type TalentStat =
@@ -221,22 +221,6 @@ export type OddityRegions = Record<string, OddityNode[]>
 
 export type DisabledTalentPoints = Record<string, number[]>
 
-export const ENHANCEMENT_SLOTS = [
-  "leftWeapon",
-  "rightWeapon",
-  "disc",
-  "pendant",
-] as const satisfies readonly GearSlot[]
-
-export type EnhancementSlot = (typeof ENHANCEMENT_SLOTS)[number]
-
-export interface EnhancementNode {
-  id: number
-  slot: EnhancementSlot
-  stat: TalentStat
-  value: number
-}
-
 export type GearSlot =
   "leftWeapon" | "rightWeapon" | "disc" | "pendant" | "helm" | "armor" | "greaves" | "bracer"
 
@@ -256,6 +240,10 @@ export const WEAPON_SLOTS: readonly GearSlot[] = ["leftWeapon", "rightWeapon", "
 export function isWeaponSlot(slot: GearSlot): boolean {
   return WEAPON_SLOTS.includes(slot)
 }
+
+export type EnhancementStat = "minPhys" | "maxPhys" | "maxHp" | "physDef"
+
+export type EnhancementLevels = Record<GearSlot, number>
 
 export const GEAR_LEVELS = [86, 91, 96, 100, 105] as const
 export type GearLevel = (typeof GEAR_LEVELS)[number]

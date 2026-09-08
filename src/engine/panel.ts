@@ -136,24 +136,45 @@ export function applyArmorSet(inputs: Inputs): Inputs {
 
 export const ARSENAL_BONUS = { min: 131, max: 263 } as const
 
-// Game client table equip_box_score_attrs as of 2026-09-07: graduation_promotion
-// per already-graduated arsenal, summed for each breakthrough's unlocked-arsenal
-// count. A floor — excludes the current/unfilled arsenal's score-dependent
-// grant, which the app has no stored gear score to compute.
-const ARSENAL_FLAT_HP: Readonly<Record<number, number>> = {
-  13: 19100,
-  14: 23100,
-  15: 23100,
-  16: 23100,
-  17: 23100,
-  18: 27500,
-  19: 27500,
-  20: 27500,
-  21: 27500,
+// Game client tables equip_box_score_attrs and equip_box_config as of
+// 2026-09-07. A graduated (Total Mastery) store grants its flat
+// graduation_promotion; the current store instead pays
+// ratio_a + ratio_b * max(0, score - ratio_c). We model the current store as
+// having just reached Total Mastery (score == ratio_c), where that reduces to
+// exactly ratio_a — overflow score isn't tracked, so it isn't modeled. There
+// is no store 11: equip_box_config has no row past 10 in any container.
+const ARSENAL_GRADUATION_HP: readonly number[] = [
+  1600, 3200, 3350, 3500, 3650, 3800, 4000, 4200, 4400, 4600,
+]
+const CURRENT_ARSENAL_HP = 100 // ratio_a, constant from store 3 up
+
+interface ArsenalUnlockState {
+  graduatedStores: number
+  currentStore?: number
 }
 
-export function arsenalFlatHp(breakthrough: number): number {
-  return ARSENAL_FLAT_HP[breakthrough] ?? 0
+// Not a formula: which stores are graduated vs. current per breakthrough is a
+// client fact, verbatim.
+const ARSENAL_UNLOCK_BY_BREAKTHROUGH: Readonly<Record<number, ArsenalUnlockState>> = {
+  13: { graduatedStores: 6 },
+  14: { graduatedStores: 7 },
+  15: { graduatedStores: 7 },
+  16: { graduatedStores: 7, currentStore: 8 },
+  17: { graduatedStores: 7, currentStore: 8 },
+  18: { graduatedStores: 8, currentStore: 9 },
+  19: { graduatedStores: 8, currentStore: 9 },
+  20: { graduatedStores: 9, currentStore: 10 },
+  21: { graduatedStores: 9, currentStore: 10 },
+}
+
+export function arsenalHp(breakthrough: number): number {
+  const unlock = ARSENAL_UNLOCK_BY_BREAKTHROUGH[breakthrough]
+  if (!unlock) return 0
+  const graduatedHp = ARSENAL_GRADUATION_HP.slice(0, unlock.graduatedStores).reduce(
+    (sum, hp) => sum + hp,
+    0,
+  )
+  return graduatedHp + (unlock.currentStore !== undefined ? CURRENT_ARSENAL_HP : 0)
 }
 
 const PRIMARY_TO_ARSENAL: Readonly<Record<AttributeKey, Arsenal>> = {

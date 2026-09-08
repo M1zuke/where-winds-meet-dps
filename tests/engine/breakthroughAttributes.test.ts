@@ -5,16 +5,24 @@ import {
   breakthroughAttributes,
   getBreakthrough,
 } from "../../src/definitions/baseStats/breakthroughs"
-import { getConfiguredBase, playerAttributes, totalMaxHp } from "../../src/definitions/baseStats"
+import {
+  averageEnhancementBonus,
+  DEFAULT_ENHANCEMENTS,
+  enhancementHpTotal,
+  getConfiguredBase,
+  playerAttributes,
+  totalMaxHp,
+} from "../../src/definitions/baseStats"
 import {
   BODY_PER_POINT,
   DEFENSE_PER_POINT,
 } from "../../src/definitions/baseStats/attributeConversion"
-import { arsenalFlatHp } from "../../src/engine/panel"
+import { arsenalHp } from "../../src/engine/panel"
+import { gearHpTotal } from "../../src/engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import type { Inputs } from "../../src/engine/types"
+import type { GearPiece, Inputs } from "../../src/engine/types"
 import baseStatsByLevel from "../../src/data/baseStats/baseStats.json"
 
 const SELECTABLE = BREAKTHROUGH_TIERS.map((tier) => tier.breakthrough)
@@ -62,7 +70,7 @@ describe("breakthrough drives the player's base attributes", () => {
     expect(playerAttributes(16).power).toBeGreaterThan(attributeValue(16, "power"))
   })
 
-  it("grants Body and Defense the same amount the tier grants Power", () => {
+  it("grants Constitution and Defense the same amount the tier grants Power", () => {
     for (const breakthrough of SELECTABLE) {
       const power = attributeValue(breakthrough, "power")
       expect(attributeValue(breakthrough, "body")).toBe(power)
@@ -72,23 +80,54 @@ describe("breakthrough drives the player's base attributes", () => {
 })
 
 describe("Max HP", () => {
-  it("grows when Body or Defense grows with the breakthrough", () => {
+  it("grows when Constitution or Defense grows with the breakthrough", () => {
     const lower = totalMaxHp(15, [])
     const higher = totalMaxHp(17, [])
     expect(higher).toBeGreaterThan(lower)
   })
 
-  it("sums the base level's HP, the Arsenal's flat HP, and Body/Defense converted at their documented rates", () => {
+  it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, then applies the average-level percentage", () => {
     const attrs = playerAttributes(17)
     const baseHp = (baseStatsByLevel as Record<string, Record<string, number>>)[
       String(APP_PLAYER_LEVEL)
     ]!.HP_MAX
-    const expected =
+    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    const flat =
       baseHp +
-      arsenalFlatHp(17) +
+      arsenalHp(17) +
       attrs.body * BODY_PER_POINT.hp +
-      attrs.defense * DEFENSE_PER_POINT.hp
+      attrs.defense * DEFENSE_PER_POINT.hp +
+      enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
+      bonus.maxHp
+    const expected = flat * (1 + bonus.percent)
     expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
+  })
+
+  it("adds the equipped armor's own HP on top of the unequipped total", () => {
+    const helm: GearPiece = {
+      id: "max-hp-test-helm",
+      slot: "helm",
+      level: 96,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+    const delta = totalMaxHp(17, [helm]) - totalMaxHp(17, [])
+    const percent = averageEnhancementBonus(DEFAULT_ENHANCEMENTS).percent
+    expect(delta).toBeCloseTo(gearHpTotal([helm]) * (1 + percent), 9)
+    expect(delta).toBeGreaterThan(0)
   })
 })
 

@@ -53,7 +53,6 @@ interface RowEntry {
   effective?: number
   isPercent: boolean
   isPenetration?: boolean
-  isFloor?: boolean
   hint?: string
 }
 
@@ -89,7 +88,12 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentPoints,
   )
-  const maxHp = totalMaxHp(inputs.breakthrough, equippedPieces, inputs.disabledTalentPoints)
+  const maxHp = totalMaxHp(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+  )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
     row(t("content.statLine.agility"), attrs.agility, false),
@@ -100,8 +104,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
       label: t("content.statLine.maxHp"),
       value: maxHp,
       isPercent: false,
-      isFloor: true,
-      hint: t("components.statsOverviewPanel.maxHpFloor"),
+      hint: t("components.statsOverviewPanel.maxHpAssumption"),
     },
   ]
 
@@ -213,7 +216,6 @@ function Section({ title, rows }: { title: string; rows: RowEntry[] }) {
               {entry.label}
             </div>
             <div className={styles.statsOverviewValue}>
-              {entry.isFloor && "≥ "}
               {fmt(entry.value, entry.isPercent, entry.isPenetration)}
               {entry.effective !== undefined && (
                 <span className={styles.statsOverviewEff}>

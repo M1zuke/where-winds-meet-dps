@@ -1,14 +1,13 @@
 import type {
   DisabledTalentPoints,
-  EnhancementSlot,
+  EnhancementLevels,
   GearPiece,
   Inputs,
   OddityNode,
   OddityRegions,
   StoredProfile,
-  TalentStat,
 } from "./engine/types"
-import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
+import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
@@ -21,9 +20,8 @@ import {
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import {
-  clampEnhancementValue,
+  DEFAULT_ENHANCEMENT_LEVEL,
   getDefaultTalentsForClass,
-  DEFAULT_ENHANCEMENTS,
   DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
 import {
@@ -79,6 +77,7 @@ import {
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
   migrateHawkingSetId,
+  enhancementLevelsFromLegacyNodes,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -445,35 +444,21 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.disabledTalentPoints = healed
   }
   {
-    const stored = Array.isArray(next.enhancements) ? (next.enhancements as unknown[]) : []
-    const healed = stored
-      .filter((node): node is Record<string, unknown> => !!node && typeof node === "object")
-      .map((node, index) => {
-        const id = typeof node.id === "number" ? node.id : index + 1
-        const fallback = DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)
-        return {
-          id,
-          slot:
-            typeof node.slot === "string"
-              ? (node.slot as EnhancementSlot)
-              : (fallback?.slot ?? "disc"),
-          stat:
-            typeof node.stat === "string"
-              ? (node.stat as TalentStat)
-              : (fallback?.stat ?? "maxPhys"),
-          value: clampEnhancementValue(
-            id,
-            typeof node.value === "number" ? node.value : (fallback?.value ?? 0),
-          ),
-        }
-      })
-    const storedIds = new Set(healed.map((node) => node.id))
-    next.enhancements = [
-      ...healed,
-      ...DEFAULT_ENHANCEMENTS.filter((entry) => !storedIds.has(entry.id)).map((entry) => ({
-        ...entry,
-      })),
-    ]
+    const stored = next.enhancements as unknown
+    const bySlot = Array.isArray(stored)
+      ? enhancementLevelsFromLegacyNodes(stored)
+      : stored && typeof stored === "object"
+        ? (stored as Record<string, unknown>)
+        : {}
+    const healed = {} as EnhancementLevels
+    for (const slot of GEAR_SLOTS) {
+      const value = bySlot[slot]
+      healed[slot] =
+        typeof value === "number" && Number.isFinite(value) && value >= 0
+          ? Math.round(value)
+          : DEFAULT_ENHANCEMENT_LEVEL
+    }
+    next.enhancements = healed
   }
   {
     const def = defaultCombatSettings()

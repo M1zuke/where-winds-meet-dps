@@ -1,4 +1,4 @@
-import { ARSENAL_BONUS, arsenalFlatHp, getSchool } from "../../engine/panel"
+import { ARSENAL_BONUS, arsenalHp, getSchool } from "../../engine/panel"
 import { formlessWordTotals, gearAttributeTotals, gearHpTotal } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
@@ -6,8 +6,7 @@ import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../inne
 import type {
   AttributeKey,
   DisabledTalentPoints,
-  EnhancementNode,
-  EnhancementSlot,
+  EnhancementLevels,
   GearPiece,
   Inputs,
   MartialArtsTalent,
@@ -19,7 +18,6 @@ import type {
 import baseStatsJson from "../../data/baseStats/baseStats.json"
 import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
 import odditiesJson from "../../data/baseStats/oddities.json"
-import enhancementsJson from "../../data/baseStats/enhancements.json"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
@@ -31,12 +29,18 @@ import {
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "./attributeConversion"
+import {
+  averageEnhancementBonus,
+  DEFAULT_ENHANCEMENTS,
+  enhancementContributions as enhancementAttackContributions,
+  enhancementHpTotal,
+} from "./enhancements"
 
 export * from "./talentPointGroups"
+export * from "./enhancements"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-const ENHANCEMENT_TIER = "95"
 
 type BaseStatsByLevel = Record<string, Record<string, number>>
 
@@ -47,12 +51,6 @@ interface BaseEntry {
 }
 
 type TieredEntries = Record<string, BaseEntry[]>
-
-interface EnhancementEntry extends BaseEntry {
-  slot: string
-}
-
-type TieredEnhancements = Record<string, EnhancementEntry[]>
 
 interface BaseAccumulator {
   minPhys: number
@@ -289,15 +287,6 @@ export const DEFAULT_ODDITIES: OddityRegions = (() => {
   return out
 })()
 
-export const DEFAULT_ENHANCEMENTS: EnhancementNode[] = (
-  (enhancementsJson as TieredEnhancements)[ENHANCEMENT_TIER] ?? []
-).map((entry) => ({
-  id: entry.id,
-  slot: entry.slot as EnhancementSlot,
-  stat: entry.stat as TalentStat,
-  value: entry.value,
-}))
-
 export const CLASS_PRIMARY_BASE = {
   min: 0,
   max: 0,
@@ -378,15 +367,19 @@ export function totalMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
-  return (
+  const bonus = averageEnhancementBonus(enhancements)
+  const flat =
     acc.hp +
     gearHpTotal(equippedPieces) +
     acc.body * BODY_PER_POINT.hp +
     acc.defense * DEFENSE_PER_POINT.hp +
-    arsenalFlatHp(breakthrough)
-  )
+    arsenalHp(breakthrough) +
+    enhancementHpTotal(enhancements) +
+    bonus.maxHp
+  return flat * (1 + bonus.percent)
 }
 
 export function userTalentContributions(
@@ -414,29 +407,6 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
       const path = STAT_TO_PATH[n.stat] ?? n.stat
       out[path] = (out[path] ?? 0) + n.value
     }
-  }
-  return out
-}
-
-export function enhancementCap(id: number): number | undefined {
-  return DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)?.value
-}
-
-export function clampEnhancementValue(id: number, value: number): number {
-  if (!Number.isFinite(value)) return 0
-  const cap = enhancementCap(id)
-  if (cap === undefined) return value
-  return Math.min(Math.max(value, 0), cap)
-}
-
-export function enhancementContributions(
-  enhancements: readonly EnhancementNode[],
-): Record<string, number> {
-  const out: Record<string, number> = {}
-  for (const node of enhancements) {
-    if (!node.value) continue
-    const path = STAT_TO_PATH[node.stat] ?? node.stat
-    out[path] = (out[path] ?? 0) + node.value
   }
   return out
 }
@@ -500,7 +470,7 @@ export function getConfiguredBase(
     base[path] = (base[path] ?? 0) + amount
   }
   const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS
-  for (const [path, amount] of Object.entries(enhancementContributions(enhancements))) {
+  for (const [path, amount] of Object.entries(enhancementAttackContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }
   return base
