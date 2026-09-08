@@ -2,7 +2,11 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { equippedPiecesFor, withDerivedStats } from "../../src/engine/derivedInputs"
-import { totalFormlessAttack } from "../../src/definitions/baseStats"
+import {
+  totalFormlessAttack,
+  totalMaxHp,
+  totalPlayerAttributes,
+} from "../../src/definitions/baseStats"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
@@ -114,6 +118,30 @@ describe("StatsOverviewPanel", () => {
     expect(screen.getByText("Max Bellstrike Attack").parentElement).toHaveTextContent(
       fmt(withSets.bellstrike.max - formless.max, false),
     )
+  })
+
+  it("shows Body, Defense and Max HP alongside Power, Agility and Momentum", () => {
+    const equipped = equippedPiecesFor(defaultInputs)
+    const attrs = totalPlayerAttributes(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+    const maxHp = totalMaxHp(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Body").parentElement).toHaveTextContent(fmt(attrs.body, false))
+    expect(screen.getByText("Defense").parentElement).toHaveTextContent(fmt(attrs.defense, false))
+    expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
   })
 
   it("counts an equipped Formless word on the Formless row, not the attribute's own", () => {

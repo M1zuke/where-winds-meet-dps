@@ -3,6 +3,7 @@ import {
   applyPieceContribution,
   computeGearContribution,
   gearAttributeTotals,
+  gearHpTotal,
   maxRelayedClone,
   relayedCapValue,
 } from "../../src/engine/gearStats"
@@ -340,5 +341,17 @@ describe("a word outside the line's own pool scores as nothing", () => {
     const totals = gearAttributeTotals([weaponPieceWithFirstLine("power", 40, false)])
     expect(totals.power).toBe(0)
     expect(totals.momentum).toBe(30)
+  })
+
+  it("gearHpTotal sums the base HP of every non-weapon slot and ignores weapon slots", () => {
+    const armor = armorPiece()
+    const weapon = weaponPiece()
+    const expected = gearBaseStatsFor(armor).hp
+    expect(gearHpTotal([armor, weapon])).toBe(expected)
+  })
+
+  it("gearHpTotal reads the level's base HP rather than the piece's own hp field", () => {
+    const armor = { ...armorPiece(), hp: 999999 }
+    expect(gearHpTotal([armor])).toBe(gearBaseStatsFor(armor).hp)
   })
 })

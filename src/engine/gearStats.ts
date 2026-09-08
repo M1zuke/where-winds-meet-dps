@@ -188,6 +188,14 @@ export function gearAttributeTotals(pieces: readonly GearPiece[]): {
   return { power, agility, momentum }
 }
 
+export function gearHpTotal(pieces: readonly GearPiece[]): number {
+  let hp = 0
+  for (const piece of pieces) {
+    if (!isWeaponSlot(piece.slot)) hp += gearBaseStatsFor(piece).hp
+  }
+  return hp
+}
+
 function clonePieceShape(i: Inputs): Inputs {
   return {
     ...i,

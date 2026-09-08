@@ -42,6 +42,16 @@
         "id": 4,
         "stat": "momentum",
         "value": 120
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 120
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 120
       }
     ]
   },
@@ -76,6 +86,16 @@
         "id": 4,
         "stat": "momentum",
         "value": 125
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 125
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 125
       }
     ]
   },
@@ -109,6 +129,16 @@
       {
         "id": 4,
         "stat": "momentum",
+        "value": 138
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 138
+      },
+      {
+        "id": 6,
+        "stat": "defense",
         "value": 138
       }
     ]
@@ -145,6 +175,16 @@
         "id": 4,
         "stat": "momentum",
         "value": 150
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 150
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 150
       }
     ]
   },
@@ -178,6 +218,16 @@
       {
         "id": 4,
         "stat": "momentum",
+        "value": 164
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 164
+      },
+      {
+        "id": 6,
+        "stat": "defense",
         "value": 164
       }
     ]
@@ -213,6 +263,16 @@
         "id": 4,
         "stat": "momentum",
         "value": 178
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 178
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 178
       }
     ]
   },
@@ -247,6 +307,16 @@
         "id": 4,
         "stat": "momentum",
         "value": 192
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 192
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 192
       }
     ]
   },
@@ -280,6 +350,16 @@
       {
         "id": 4,
         "stat": "momentum",
+        "value": 208
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 208
+      },
+      {
+        "id": 6,
+        "stat": "defense",
         "value": 208
       }
     ]

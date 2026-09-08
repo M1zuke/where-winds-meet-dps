@@ -1,5 +1,5 @@
 import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
-import { formlessWordTotals, gearAttributeTotals } from "../../engine/gearStats"
+import { formlessWordTotals, gearAttributeTotals, gearHpTotal } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../innerWays/registry"
@@ -24,7 +24,13 @@ import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
 import { breakthroughAttributes } from "./breakthroughs"
-import { AGILITY_PER_POINT, MOMENTUM_PER_POINT, POWER_PER_POINT } from "./attributeConversion"
+import {
+  AGILITY_PER_POINT,
+  BODY_PER_POINT,
+  DEFENSE_PER_POINT,
+  MOMENTUM_PER_POINT,
+  POWER_PER_POINT,
+} from "./attributeConversion"
 
 export * from "./talentPointGroups"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
@@ -61,6 +67,9 @@ interface BaseAccumulator {
   power: number
   agility: number
   momentum: number
+  body: number
+  defense: number
+  hp: number
 }
 
 function readBaseLevel(): BaseAccumulator {
@@ -80,6 +89,9 @@ function readBaseLevel(): BaseAccumulator {
     power: 0,
     agility: 0,
     momentum: 0,
+    body: 0,
+    defense: 0,
+    hp: get("HP_MAX"),
   }
 }
 
@@ -121,6 +133,12 @@ function applyEntry(acc: BaseAccumulator, entry: BaseEntry): void {
     case "momentum":
       acc.momentum += entry.value
       break
+    case "body":
+      acc.body += entry.value
+      break
+    case "defense":
+      acc.defense += entry.value
+      break
   }
 }
 
@@ -159,6 +177,8 @@ export interface PlayerAttributes {
   power: number
   agility: number
   momentum: number
+  body: number
+  defense: number
 }
 
 const ACCUMULATOR_BY_SELECTION = new Map<string, BaseAccumulator>()
@@ -196,7 +216,13 @@ export function playerAttributes(
 ): Readonly<PlayerAttributes> {
   return cached(ATTRIBUTES_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
-    return { power: acc.power, agility: acc.agility, momentum: acc.momentum }
+    return {
+      power: acc.power,
+      agility: acc.agility,
+      momentum: acc.momentum,
+      body: acc.body,
+      defense: acc.defense,
+    }
   })
 }
 
@@ -343,7 +369,23 @@ export function totalPlayerAttributes(
     power: fromBreakthrough.power + gear.power,
     agility: fromBreakthrough.agility + gear.agility,
     momentum: fromBreakthrough.momentum + gear.momentum,
+    body: fromBreakthrough.body,
+    defense: fromBreakthrough.defense,
   }
+}
+
+export function totalMaxHp(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+): number {
+  const acc = accumulatorFor(breakthrough, disabled)
+  return (
+    acc.hp +
+    gearHpTotal(equippedPieces) +
+    acc.body * BODY_PER_POINT.hp +
+    acc.defense * DEFENSE_PER_POINT.hp
+  )
 }
 
 export function userTalentContributions(

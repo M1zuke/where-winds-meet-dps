@@ -1,6 +1,10 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
-import { totalFormlessAttack, totalPlayerAttributes } from "../../../definitions/baseStats"
+import {
+  totalFormlessAttack,
+  totalMaxHp,
+  totalPlayerAttributes,
+} from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
@@ -83,10 +87,14 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentPoints,
   )
+  const maxHp = totalMaxHp(inputs.breakthrough, equippedPieces, inputs.disabledTalentPoints)
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
     row(t("content.statLine.agility"), attrs.agility, false),
     row(t("content.statLine.momentum"), attrs.momentum, false),
+    row(t("content.statLine.body"), attrs.body, false),
+    row(t("content.statLine.defense"), attrs.defense, false),
+    row(t("content.statLine.maxHp"), maxHp, false),
   ]
 
   const rateRows: RowEntry[] = [

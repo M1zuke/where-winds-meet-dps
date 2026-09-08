@@ -5,10 +5,16 @@ import {
   breakthroughAttributes,
   getBreakthrough,
 } from "../../src/definitions/baseStats/breakthroughs"
-import { getConfiguredBase, playerAttributes } from "../../src/definitions/baseStats"
+import { getConfiguredBase, playerAttributes, totalMaxHp } from "../../src/definitions/baseStats"
+import {
+  BODY_PER_POINT,
+  DEFENSE_PER_POINT,
+} from "../../src/definitions/baseStats/attributeConversion"
+import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import type { Inputs } from "../../src/engine/types"
+import baseStatsByLevel from "../../src/data/baseStats/baseStats.json"
 
 const SELECTABLE = BREAKTHROUGH_TIERS.map((tier) => tier.breakthrough)
 
@@ -44,7 +50,7 @@ describe("breakthrough drives the player's base attributes", () => {
   })
 
   it("shifts each attribute by exactly the difference between the two tiers' rows", () => {
-    for (const stat of ["power", "agility", "momentum"] as const) {
+    for (const stat of ["power", "agility", "momentum", "body", "defense"] as const) {
       const rowDelta = attributeValue(17, stat) - attributeValue(15, stat)
       const derivedDelta = playerAttributes(17)[stat] - playerAttributes(15)[stat]
       expect(derivedDelta).toBeCloseTo(rowDelta, 10)
@@ -53,6 +59,31 @@ describe("breakthrough drives the player's base attributes", () => {
 
   it("adds gear attributes on top of the tier's row rather than replacing it", () => {
     expect(playerAttributes(16).power).toBeGreaterThan(attributeValue(16, "power"))
+  })
+
+  it("grants Body and Defense the same amount the tier grants Power", () => {
+    for (const breakthrough of SELECTABLE) {
+      const power = attributeValue(breakthrough, "power")
+      expect(attributeValue(breakthrough, "body")).toBe(power)
+      expect(attributeValue(breakthrough, "defense")).toBe(power)
+    }
+  })
+})
+
+describe("Max HP", () => {
+  it("grows when Body or Defense grows with the breakthrough", () => {
+    const lower = totalMaxHp(15, [])
+    const higher = totalMaxHp(17, [])
+    expect(higher).toBeGreaterThan(lower)
+  })
+
+  it("sums the base level's HP with Body and Defense converted at their documented rates", () => {
+    const attrs = playerAttributes(17)
+    const baseHp = (baseStatsByLevel as Record<string, Record<string, number>>)[
+      String(APP_PLAYER_LEVEL)
+    ]!.HP_MAX
+    const expected = baseHp + attrs.body * BODY_PER_POINT.hp + attrs.defense * DEFENSE_PER_POINT.hp
+    expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
   })
 })
 
@@ -73,7 +104,7 @@ describe("tiers with no measured attribute row", () => {
   it("reports every tier from 18 up from its own row, not the highest measured one below it", () => {
     for (const breakthrough of [18, 19, 20, 21]) {
       expect(breakthroughAttributes(breakthrough)).not.toEqual(breakthroughAttributes(17))
-      expect(breakthroughAttributes(breakthrough)).toHaveLength(4)
+      expect(breakthroughAttributes(breakthrough)).toHaveLength(6)
     }
   })
 
