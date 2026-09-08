@@ -154,7 +154,7 @@ const STRENGTH_TOTAL_WEIGHT: Readonly<Record<GearLevel, number>> = {
 }
 
 // Silkbind - Jade armour re-attunement pool, in-game 2026-09-08. Two pool
-// members (`umbCharged`, `umbSpecial`) and one undecoded member carry no
+// members (`umbCharged`, `umbSpecial`) and one unidentified member carry no
 // modelled engine effect; their weight stays in `totalWeight` so the modelled
 // lines' draw chance is not overstated.
 const JADE_WEIGHTS: ClassWeights = {

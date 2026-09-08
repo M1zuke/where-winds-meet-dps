@@ -49,9 +49,9 @@ export function arsenalStoreHp(state: ArsenalStoreState): number {
 
 const ARSENAL_ATTACK_RUNG_SECTIONS = 6
 
-// score_section splits Total Mastery into 6 equal-width bands; the ladder
-// entry is 1 + the count of thresholds at or below score (inclusive lower
-// boundary), same list the Total Mastery threshold's last entry comes from.
+// Total Mastery is split into 6 equal-width bands; the ladder entry is 1 + the
+// count of thresholds at or below the score, with the lower boundary
+// inclusive.
 function arsenalAttackThresholds(totalMastery: number): readonly number[] {
   return Array.from(
     { length: ARSENAL_ATTACK_RUNG_SECTIONS },
