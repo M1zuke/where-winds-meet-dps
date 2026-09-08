@@ -136,6 +136,26 @@ export function applyArmorSet(inputs: Inputs): Inputs {
 
 export const ARSENAL_BONUS = { min: 131, max: 263 } as const
 
+// Game client table equip_box_score_attrs as of 2026-09-07: graduation_promotion
+// per already-graduated arsenal, summed for each breakthrough's unlocked-arsenal
+// count. A floor — excludes the current/unfilled arsenal's score-dependent
+// grant, which the app has no stored gear score to compute.
+const ARSENAL_FLAT_HP: Readonly<Record<number, number>> = {
+  13: 19100,
+  14: 23100,
+  15: 23100,
+  16: 23100,
+  17: 23100,
+  18: 27500,
+  19: 27500,
+  20: 27500,
+  21: 27500,
+}
+
+export function arsenalFlatHp(breakthrough: number): number {
+  return ARSENAL_FLAT_HP[breakthrough] ?? 0
+}
+
 const PRIMARY_TO_ARSENAL: Readonly<Record<AttributeKey, Arsenal>> = {
   Bellstrike: "bellstrike",
   Stonesplit: "stonesplit",

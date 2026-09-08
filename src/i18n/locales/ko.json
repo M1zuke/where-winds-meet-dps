@@ -93,6 +93,7 @@
   "components.statsOverviewPanel.damageBoosts": "피해 증가",
   "components.statsOverviewPanel.finalAffinity": "최종 각성 확률",
   "components.statsOverviewPanel.finalCrit": "최종 치명타 확률",
+  "components.statsOverviewPanel.maxHpFloor": "",
   "components.statsOverviewPanel.threeRates": "3대 확률",
   "content.attributeAttack.Bellstrike": "명금",
   "content.attributeAttack.Silkbind": "견사",

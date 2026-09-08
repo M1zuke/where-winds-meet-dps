@@ -93,6 +93,7 @@
   "components.statsOverviewPanel.damageBoosts": "Damage Boosts",
   "components.statsOverviewPanel.finalAffinity": "Final Affinity",
   "components.statsOverviewPanel.finalCrit": "Final Crit",
+  "components.statsOverviewPanel.maxHpFloor": "Minimum — excludes the Arsenal's gear-score-dependent HP, which isn't tracked",
   "components.statsOverviewPanel.threeRates": "Three Rates",
   "content.attributeAttack.Bellstrike": "Bellstrike",
   "content.attributeAttack.Silkbind": "Silkbind",

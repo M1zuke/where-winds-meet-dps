@@ -1,4 +1,4 @@
-import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
+import { ARSENAL_BONUS, arsenalFlatHp, getSchool } from "../../engine/panel"
 import { formlessWordTotals, gearAttributeTotals, gearHpTotal } from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
@@ -384,7 +384,8 @@ export function totalMaxHp(
     acc.hp +
     gearHpTotal(equippedPieces) +
     acc.body * BODY_PER_POINT.hp +
-    acc.defense * DEFENSE_PER_POINT.hp
+    acc.defense * DEFENSE_PER_POINT.hp +
+    arsenalFlatHp(breakthrough)
   )
 }
 

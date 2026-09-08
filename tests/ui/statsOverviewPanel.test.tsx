@@ -144,6 +144,20 @@ describe("StatsOverviewPanel", () => {
     expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
   })
 
+  it("marks Max HP as a floor, since the Arsenal's gear-score-dependent grant isn't tracked", () => {
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Max HP").parentElement).toHaveTextContent("≥")
+    expect(screen.getByText("Max HP")).toHaveAttribute(
+      "title",
+      "Minimum — excludes the Arsenal's gear-score-dependent HP, which isn't tracked",
+    )
+  })
+
   it("counts an equipped Formless word on the Formless row, not the attribute's own", () => {
     const bare = totalFormlessAttack(defaultInputs, equippedPiecesFor(defaultInputs))
     const withWord = withFormlessAndBellstrikeHelm(40)

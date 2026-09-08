@@ -53,6 +53,8 @@ interface RowEntry {
   effective?: number
   isPercent: boolean
   isPenetration?: boolean
+  isFloor?: boolean
+  hint?: string
 }
 
 function row(
@@ -94,7 +96,13 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(t("content.statLine.momentum"), attrs.momentum, false),
     row(t("content.statLine.body"), attrs.body, false),
     row(t("content.statLine.defense"), attrs.defense, false),
-    row(t("content.statLine.maxHp"), maxHp, false),
+    {
+      label: t("content.statLine.maxHp"),
+      value: maxHp,
+      isPercent: false,
+      isFloor: true,
+      hint: t("components.statsOverviewPanel.maxHpFloor"),
+    },
   ]
 
   const rateRows: RowEntry[] = [
@@ -201,10 +209,11 @@ function Section({ title, rows }: { title: string; rows: RowEntry[] }) {
       <div className={styles.statsOverviewGrid}>
         {rows.map((entry, index) => (
           <div key={index} className={styles.statsOverviewRow}>
-            <div className={styles.statsOverviewLabel} title={entry.label}>
+            <div className={styles.statsOverviewLabel} title={entry.hint ?? entry.label}>
               {entry.label}
             </div>
             <div className={styles.statsOverviewValue}>
+              {entry.isFloor && "≥ "}
               {fmt(entry.value, entry.isPercent, entry.isPenetration)}
               {entry.effective !== undefined && (
                 <span className={styles.statsOverviewEff}>

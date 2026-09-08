@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  arsenalFlatHp,
   deriveStats,
   getSchool,
   getBreakthrough,
@@ -72,5 +73,28 @@ describe("penResistanceForBreakthrough", () => {
       physical: 20,
       attribute: 24,
     })
+  })
+})
+
+describe("arsenalFlatHp", () => {
+  it("steps once per season across the selectable breakthroughs", () => {
+    expect(arsenalFlatHp(13)).toBe(19100)
+    expect(arsenalFlatHp(14)).toBe(23100)
+    expect(arsenalFlatHp(15)).toBe(23100)
+    expect(arsenalFlatHp(16)).toBe(23100)
+    expect(arsenalFlatHp(17)).toBe(23100)
+    expect(arsenalFlatHp(18)).toBe(27500)
+    expect(arsenalFlatHp(19)).toBe(27500)
+    expect(arsenalFlatHp(20)).toBe(27500)
+    expect(arsenalFlatHp(21)).toBe(27500)
+  })
+
+  it("never reports less HP for a higher breakthrough", () => {
+    const breakthroughs = [13, 14, 15, 16, 17, 18, 19, 20, 21]
+    for (const [index, breakthrough] of breakthroughs.slice(1).entries()) {
+      expect(arsenalFlatHp(breakthrough)).toBeGreaterThanOrEqual(
+        arsenalFlatHp(breakthroughs[index]),
+      )
+    }
   })
 })

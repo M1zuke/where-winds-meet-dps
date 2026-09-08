@@ -10,6 +10,7 @@ import {
   BODY_PER_POINT,
   DEFENSE_PER_POINT,
 } from "../../src/definitions/baseStats/attributeConversion"
+import { arsenalFlatHp } from "../../src/engine/panel"
 import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
@@ -77,12 +78,16 @@ describe("Max HP", () => {
     expect(higher).toBeGreaterThan(lower)
   })
 
-  it("sums the base level's HP with Body and Defense converted at their documented rates", () => {
+  it("sums the base level's HP, the Arsenal's flat HP, and Body/Defense converted at their documented rates", () => {
     const attrs = playerAttributes(17)
     const baseHp = (baseStatsByLevel as Record<string, Record<string, number>>)[
       String(APP_PLAYER_LEVEL)
     ]!.HP_MAX
-    const expected = baseHp + attrs.body * BODY_PER_POINT.hp + attrs.defense * DEFENSE_PER_POINT.hp
+    const expected =
+      baseHp +
+      arsenalFlatHp(17) +
+      attrs.body * BODY_PER_POINT.hp +
+      attrs.defense * DEFENSE_PER_POINT.hp
     expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
   })
 })
