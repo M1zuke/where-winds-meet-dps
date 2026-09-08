@@ -16,7 +16,10 @@ export function addMissingOddityNodes(oddities: unknown): unknown {
     const stored = next[region]
     if (!Array.isArray(stored)) continue
     const existingIds = new Set(
-      stored.filter(isRec).map((node) => node.id).filter((id): id is number => typeof id === "number"),
+      stored
+        .filter(isRec)
+        .map((node) => node.id)
+        .filter((id): id is number => typeof id === "number"),
     )
     const missing = defNodes.filter((defNode) => !existingIds.has(defNode.id))
     if (missing.length === 0) continue

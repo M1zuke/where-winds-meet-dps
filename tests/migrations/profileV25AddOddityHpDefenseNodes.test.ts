@@ -29,9 +29,9 @@ describe("profile-v24 fixture", () => {
     expect(LEGACY.v).toBe(V25__addOddityHpDefenseNodes.to - 1)
     const oddities = LEGACY.profile.inputs.oddities
     expect(oddities.Qinghe).toHaveLength(6)
-    expect(oddities.Qinghe.every((node) => node.stat === "minPhys" || node.stat === "maxPhys")).toBe(
-      true,
-    )
+    expect(
+      oddities.Qinghe.every((node) => node.stat === "minPhys" || node.stat === "maxPhys"),
+    ).toBe(true)
   })
 })
 
