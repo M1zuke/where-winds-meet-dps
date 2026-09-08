@@ -7,6 +7,12 @@ import {
   penResistanceForBreakthrough,
   penResistanceForInputs,
 } from "../../src/engine/panel"
+import {
+  arsenalScoreCap,
+  arsenalStoreHp,
+  arsenalStoreState,
+  defaultArsenalScores,
+} from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 
 describe("panel.deriveStats", () => {
@@ -94,5 +100,42 @@ describe("arsenalHp", () => {
     for (const [index, breakthrough] of breakthroughs.slice(1).entries()) {
       expect(arsenalHp(breakthrough)).toBeGreaterThanOrEqual(arsenalHp(breakthroughs[index]))
     }
+  })
+
+  it("adds the Tier 91 store's real overflow score into the breakthrough-17 total: 26,477.5, carrying the fractional ratio_b term", () => {
+    const scores = { ...defaultArsenalScores(), 8: 7200 }
+    expect(arsenalHp(17, scores)).toBeCloseTo(26477.5, 9)
+  })
+})
+
+describe("arsenal store states — the three branches", () => {
+  it("pays the flat graduation_promotion once a past store reaches Total Mastery", () => {
+    const state = arsenalStoreState(8, arsenalScoreCap(8), true)
+    expect(state.graduated).toBe(true)
+    expect(arsenalStoreHp(state)).toBe(4200)
+  })
+
+  it("pays the overflow formula instead of the flat amount below Total Mastery — the 4,100 HP cliff", () => {
+    const state = arsenalStoreState(8, 0, true)
+    expect(state.graduated).toBe(false)
+    expect(arsenalStoreHp(state)).toBe(100)
+  })
+
+  it("lets the current store's score run past Total Mastery, still on the overflow formula", () => {
+    const state = arsenalStoreState(8, 7200, false)
+    expect(state.graduated).toBe(false)
+    expect(arsenalStoreHp(state)).toBeCloseTo(3377.5, 9)
+  })
+
+  it("reads store 2's Total Mastery as 1000, not its ratio_c of 860", () => {
+    expect(arsenalScoreCap(2)).toBe(1000)
+
+    const atRatioC = arsenalStoreState(2, 860, true)
+    expect(atRatioC.graduated).toBe(false)
+    expect(arsenalStoreHp(atRatioC)).toBe(100)
+
+    const atTotalMastery = arsenalStoreState(2, 1000, true)
+    expect(atTotalMastery.graduated).toBe(true)
+    expect(arsenalStoreHp(atTotalMastery)).toBe(3200)
   })
 })

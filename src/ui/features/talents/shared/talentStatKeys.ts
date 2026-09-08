@@ -22,4 +22,6 @@ export const TALENT_STAT_KEYS: Readonly<Record<TalentStat, string>> = {
   critDamage: "talents.stat.critDamage",
   affinityDamage: "talents.stat.affinityDamage",
   attributeDamage: "talents.stat.attributeDamage",
+  maxHp: "content.statLine.maxHp",
+  physDef: "content.statLine.physDef",
 }

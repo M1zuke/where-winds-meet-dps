@@ -1,8 +1,10 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
 import {
+  effectiveMaxHp,
   totalFormlessAttack,
   totalMaxHp,
+  totalPhysDef,
   totalPlayerAttributes,
 } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
@@ -93,6 +95,23 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentPoints,
     inputs.enhancements,
+    inputs.oddities,
+    inputs.arsenalScores,
+  )
+  const maxHpEffective = effectiveMaxHp(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+    inputs.oddities,
+    inputs.arsenalScores,
+  )
+  const physDef = totalPhysDef(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+    inputs.oddities,
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
@@ -103,9 +122,11 @@ export function StatsOverviewPanel({ inputs }: Props) {
     {
       label: t("content.statLine.maxHp"),
       value: maxHp,
+      effective: maxHpEffective,
       isPercent: false,
-      hint: t("components.statsOverviewPanel.maxHpAssumption"),
+      hint: t("components.statsOverviewPanel.maxHpArsenalNote"),
     },
+    row(t("content.statLine.physDef"), physDef, false),
   ]
 
   const rateRows: RowEntry[] = [

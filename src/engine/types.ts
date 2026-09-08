@@ -32,6 +32,9 @@ export type BowSet = "affinity" | "crit" | "precision" | null
 
 export type Arsenal = "general" | "bellstrike" | "stonesplit" | "silkbind" | "bamboocut"
 
+// Keyed by store number (1-10).
+export type ArsenalScores = Record<number, number>
+
 export interface AttackBlock {
   min: number
   max: number
@@ -127,6 +130,7 @@ export interface Inputs {
 
   bowSet: BowSet
   arsenal: Arsenal
+  arsenalScores: ArsenalScores
   dummyMode: boolean
 
   rotation: string | null
@@ -178,6 +182,8 @@ export type TalentStat =
   | "critDamage"
   | "affinityDamage"
   | "attributeDamage"
+  | "maxHp"
+  | "physDef"
 
 export type AttributeName = "power" | "agility" | "momentum"
 

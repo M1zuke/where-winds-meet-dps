@@ -8,22 +8,42 @@ import {
 import {
   averageEnhancementBonus,
   DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+  effectiveMaxHp,
   enhancementHpTotal,
   getConfiguredBase,
+  oddityHpTotal,
   playerAttributes,
+  TALENT_POINT_GROUPS,
   totalMaxHp,
+  totalPhysDef,
 } from "../../src/definitions/baseStats"
 import {
   BODY_PER_POINT,
   DEFENSE_PER_POINT,
 } from "../../src/definitions/baseStats/attributeConversion"
+import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../src/data/baseStats"
 import { arsenalHp } from "../../src/engine/panel"
 import { gearHpTotal } from "../../src/engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import type { GearPiece, Inputs } from "../../src/engine/types"
+import type { DisabledTalentPoints, GearPiece, Inputs } from "../../src/engine/types"
 import baseStatsByLevel from "../../src/data/baseStats/baseStats.json"
+
+function talentStatTotal(stat: "maxHp" | "physDef"): number {
+  return TALENT_POINT_TIERS.flatMap((tier) => TALENT_POINTS[tier]).reduce(
+    (total, point) => total + (point.effects[stat] ?? 0),
+    0,
+  )
+}
+
+function disableTalentGroup(stat: "maxHp" | "physDef"): DisabledTalentPoints {
+  const group = TALENT_POINT_GROUPS.find((candidate) => candidate.stats[0] === stat)!
+  const out: DisabledTalentPoints = {}
+  for (const member of group.members) out[member.tier] = [...(out[member.tier] ?? []), member.id]
+  return out
+}
 
 const SELECTABLE = BREAKTHROUGH_TIERS.map((tier) => tier.breakthrough)
 
@@ -86,21 +106,28 @@ describe("Max HP", () => {
     expect(higher).toBeGreaterThan(lower)
   })
 
-  it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, then applies the average-level percentage", () => {
+  it("sums the base level's HP, the Arsenal's HP, Constitution/Defense converted at their documented rates, and the enhancement layer, without the average-level percentage", () => {
     const attrs = playerAttributes(17)
     const baseHp = (baseStatsByLevel as Record<string, Record<string, number>>)[
       String(APP_PLAYER_LEVEL)
     ]!.HP_MAX
     const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
-    const flat =
+    const expected =
       baseHp +
+      talentStatTotal("maxHp") +
       arsenalHp(17) +
       attrs.body * BODY_PER_POINT.hp +
       attrs.defense * DEFENSE_PER_POINT.hp +
       enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
-      bonus.maxHp
-    const expected = flat * (1 + bonus.percent)
+      bonus.maxHp +
+      oddityHpTotal(DEFAULT_ODDITIES)
     expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
+  })
+
+  it("applies the average-level percentage only to the effective figure, leaving the raw total alone", () => {
+    const bonus = averageEnhancementBonus(DEFAULT_ENHANCEMENTS)
+    expect(bonus.percent).toBeGreaterThan(0)
+    expect(effectiveMaxHp(17, [])).toBeCloseTo(totalMaxHp(17, []) * (1 + bonus.percent), 9)
   })
 
   it("adds the equipped armor's own HP on top of the unequipped total", () => {
@@ -125,9 +152,48 @@ describe("Max HP", () => {
       relayed: false,
     }
     const delta = totalMaxHp(17, [helm]) - totalMaxHp(17, [])
-    const percent = averageEnhancementBonus(DEFAULT_ENHANCEMENTS).percent
-    expect(delta).toBeCloseTo(gearHpTotal([helm]) * (1 + percent), 9)
+    expect(delta).toBeCloseTo(gearHpTotal([helm]), 9)
     expect(delta).toBeGreaterThan(0)
+  })
+})
+
+describe("the character-level row's Physical Defense column", () => {
+  it("carries W_DEF 128 at the pinned level", () => {
+    const row = (baseStatsByLevel as Record<string, Record<string, number>>)[
+      String(APP_PLAYER_LEVEL)
+    ]!
+    expect(row.W_DEF).toBe(128)
+  })
+
+  it("reaches totalPhysDef, moving it by exactly the row's own value", () => {
+    const zeroEnhancements = Object.fromEntries(
+      Object.keys(DEFAULT_ENHANCEMENTS).map((slot) => [slot, 0]),
+    ) as typeof DEFAULT_ENHANCEMENTS
+    const disabledPhysDef = disableTalentGroup("physDef")
+    const withoutOddities = totalPhysDef(17, [], disabledPhysDef, zeroEnhancements, {})
+    const row = (baseStatsByLevel as Record<string, Record<string, number>>)[
+      String(APP_PLAYER_LEVEL)
+    ]!
+    const attrs = playerAttributes(17, disabledPhysDef)
+    expect(withoutOddities - attrs.defense * DEFENSE_PER_POINT.physDef).toBeCloseTo(row.W_DEF, 9)
+  })
+})
+
+describe("the talent board's Max HP and Physical Defense grants", () => {
+  it("add +7000 Max HP at breakthrough 17, reachable through totalMaxHp", () => {
+    const delta = totalMaxHp(17, []) - totalMaxHp(17, [], disableTalentGroup("maxHp"))
+    expect(delta).toBeCloseTo(7000, 9)
+  })
+
+  it("add +92.4 Physical Defense at breakthrough 17, reachable through totalPhysDef", () => {
+    const delta = totalPhysDef(17, []) - totalPhysDef(17, [], disableTalentGroup("physDef"))
+    expect(delta).toBeCloseTo(92.4, 9)
+  })
+
+  it("bring Body and Defense to 169 at breakthrough 17 with every point taken", () => {
+    const attrs = playerAttributes(17)
+    expect(attrs.body).toBe(169)
+    expect(attrs.defense).toBe(169)
   })
 })
 

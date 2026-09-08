@@ -217,6 +217,40 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.bamboocut).toEqual({ min: 0, max: 0, penetration: 0 })
   })
 
+  it("loadProfiles fills a profile saved before arsenalScores existed with each store's Total Mastery", () => {
+    const { arsenalScores: _dropped, ...withoutArsenalScores } = defaultInputs
+    void _dropped
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Arsenal", inputs: withoutArsenalScores }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.arsenalScores).toEqual(defaultInputs.arsenalScores)
+  })
+
+  it("loadProfiles keeps a stored arsenalScores value above its store's cap rather than lowering it", () => {
+    const inputs: Inputs = {
+      ...defaultInputs,
+      arsenalScores: { ...defaultInputs.arsenalScores, 8: 7200 },
+    }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Overflow", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
+  })
+
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),

@@ -1,6 +1,10 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ENHANCEMENTS, DEFAULT_ODDITIES } from "../definitions/baseStats"
+import {
+  DEFAULT_ARSENAL_SCORES,
+  DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+} from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -68,6 +72,7 @@ export const defaultInputs: Inputs = {
   shareEasyHurt: false,
   bowSet: null,
   arsenal: "bamboocut",
+  arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,
 
   rotation: null,

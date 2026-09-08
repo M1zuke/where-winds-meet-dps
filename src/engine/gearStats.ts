@@ -196,6 +196,14 @@ export function gearHpTotal(pieces: readonly GearPiece[]): number {
   return hp
 }
 
+export function gearPhysDefTotal(pieces: readonly GearPiece[]): number {
+  let physDef = 0
+  for (const piece of pieces) {
+    if (!isWeaponSlot(piece.slot)) physDef += gearBaseStatsFor(piece).physDef
+  }
+  return physDef
+}
+
 function clonePieceShape(i: Inputs): Inputs {
   return {
     ...i,

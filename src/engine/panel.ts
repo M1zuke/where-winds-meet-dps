@@ -1,4 +1,11 @@
-import type { Inputs, AttributeKey, Arsenal, GearLevel, GearLevelValues } from "./types"
+import type {
+  Inputs,
+  AttributeKey,
+  Arsenal,
+  ArsenalScores,
+  GearLevel,
+  GearLevelValues,
+} from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
@@ -6,6 +13,13 @@ import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
 import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
+import {
+  arsenalScoreCap,
+  arsenalStoreHp,
+  arsenalStoreState,
+  DEFAULT_ARSENAL_SCORES,
+  type ArsenalStoreState,
+} from "../definitions/baseStats/arsenal"
 
 export { getBreakthrough, henZhiActiveForInputs }
 
@@ -136,18 +150,6 @@ export function applyArmorSet(inputs: Inputs): Inputs {
 
 export const ARSENAL_BONUS = { min: 131, max: 263 } as const
 
-// Game client tables equip_box_score_attrs and equip_box_config as of
-// 2026-09-07. A graduated (Total Mastery) store grants its flat
-// graduation_promotion; the current store instead pays
-// ratio_a + ratio_b * max(0, score - ratio_c). We model the current store as
-// having just reached Total Mastery (score == ratio_c), where that reduces to
-// exactly ratio_a — overflow score isn't tracked, so it isn't modeled. There
-// is no store 11: equip_box_config has no row past 10 in any container.
-const ARSENAL_GRADUATION_HP: readonly number[] = [
-  1600, 3200, 3350, 3500, 3650, 3800, 4000, 4200, 4400, 4600,
-]
-const CURRENT_ARSENAL_HP = 100 // ratio_a, constant from store 3 up
-
 interface ArsenalUnlockState {
   graduatedStores: number
   currentStore?: number
@@ -167,14 +169,32 @@ const ARSENAL_UNLOCK_BY_BREAKTHROUGH: Readonly<Record<number, ArsenalUnlockState
   21: { graduatedStores: 9, currentStore: 10 },
 }
 
-export function arsenalHp(breakthrough: number): number {
+// Newest first: the current store (if any), then the past stores descending.
+export function unlockedArsenalStores(
+  breakthrough: number,
+): readonly { store: number; isPast: boolean }[] {
   const unlock = ARSENAL_UNLOCK_BY_BREAKTHROUGH[breakthrough]
-  if (!unlock) return 0
-  const graduatedHp = ARSENAL_GRADUATION_HP.slice(0, unlock.graduatedStores).reduce(
-    (sum, hp) => sum + hp,
-    0,
+  if (!unlock) return []
+  const stores: { store: number; isPast: boolean }[] = []
+  if (unlock.currentStore !== undefined) stores.push({ store: unlock.currentStore, isPast: false })
+  for (let store = unlock.graduatedStores; store >= 1; store--) stores.push({ store, isPast: true })
+  return stores
+}
+
+export function arsenalStates(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): ArsenalStoreState[] {
+  return unlockedArsenalStores(breakthrough).map(({ store, isPast }) =>
+    arsenalStoreState(store, scores[store] ?? arsenalScoreCap(store), isPast),
   )
-  return graduatedHp + (unlock.currentStore !== undefined ? CURRENT_ARSENAL_HP : 0)
+}
+
+export function arsenalHp(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): number {
+  return arsenalStates(breakthrough, scores).reduce((sum, state) => sum + arsenalStoreHp(state), 0)
 }
 
 const PRIMARY_TO_ARSENAL: Readonly<Record<AttributeKey, Arsenal>> = {

@@ -27,6 +27,10 @@ const STAT_ORDER: Readonly<Record<TalentPointStat, number>> = {
   power: 9,
   agility: 10,
   momentum: 11,
+  body: 12,
+  defense: 13,
+  maxHp: 14,
+  physDef: 15,
 }
 
 export function talentPointStats(effects: TalentPointEffects): TalentPointStat[] {

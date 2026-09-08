@@ -1,23 +1,28 @@
 import { ARSENAL_BONUS, arsenalHp, getSchool } from "../../engine/panel"
-import { formlessWordTotals, gearAttributeTotals, gearHpTotal } from "../../engine/gearStats"
+import {
+  formlessWordTotals,
+  gearAttributeTotals,
+  gearHpTotal,
+  gearPhysDefTotal,
+} from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../innerWays/registry"
+import { DEFAULT_ARSENAL_SCORES } from "./arsenal"
 import type {
+  ArsenalScores,
   AttributeKey,
   DisabledTalentPoints,
   EnhancementLevels,
   GearPiece,
   Inputs,
   MartialArtsTalent,
-  OddityNode,
   OddityRegions,
   ScalingSource,
   TalentStat,
 } from "../../engine/types"
 import baseStatsJson from "../../data/baseStats/baseStats.json"
-import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
-import odditiesJson from "../../data/baseStats/oddities.json"
+import { ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
@@ -34,10 +39,12 @@ import {
   DEFAULT_ENHANCEMENTS,
   enhancementContributions as enhancementAttackContributions,
   enhancementHpTotal,
+  enhancementPhysDefTotal,
 } from "./enhancements"
 
 export * from "./talentPointGroups"
 export * from "./enhancements"
+export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
@@ -49,8 +56,6 @@ interface BaseEntry {
   stat: string
   value: number
 }
-
-type TieredEntries = Record<string, BaseEntry[]>
 
 interface BaseAccumulator {
   minPhys: number
@@ -68,8 +73,11 @@ interface BaseAccumulator {
   body: number
   defense: number
   hp: number
+  physDef: number
 }
 
+// Game client table avatar_base_attrs as of 2026-09-08: W_DEF is Physical
+// Defense.
 function readBaseLevel(): BaseAccumulator {
   const row = (baseStatsJson as BaseStatsByLevel)[String(BASE_LEVEL)]
   if (!row) throw new Error(`baseStats.json missing Level ${BASE_LEVEL}`)
@@ -90,6 +98,7 @@ function readBaseLevel(): BaseAccumulator {
     body: 0,
     defense: 0,
     hp: get("HP_MAX"),
+    physDef: get("W_DEF"),
   }
 }
 
@@ -136,6 +145,12 @@ function applyEntry(acc: BaseAccumulator, entry: BaseEntry): void {
       break
     case "defense":
       acc.defense += entry.value
+      break
+    case "maxHp":
+      acc.hp += entry.value
+      break
+    case "physDef":
+      acc.physDef += entry.value
       break
   }
 }
@@ -276,13 +291,8 @@ export function globalBase(
 
 export const DEFAULT_ODDITIES: OddityRegions = (() => {
   const out: OddityRegions = {}
-  for (const [region, entries] of Object.entries(odditiesJson as TieredEntries)) {
-    out[region] = entries.map((e) => ({
-      id: e.id,
-      stat: e.stat as OddityNode["stat"],
-      value: e.value,
-      enabled: true,
-    }))
+  for (const [region, nodes] of Object.entries(ODDITIES)) {
+    out[region] = nodes.map((node) => ({ ...node, enabled: true }))
   }
   return out
 })()
@@ -368,18 +378,56 @@ export function totalMaxHp(
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentPoints,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+  arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
-  const bonus = averageEnhancementBonus(enhancements)
-  const flat =
+  return (
     acc.hp +
     gearHpTotal(equippedPieces) +
     acc.body * BODY_PER_POINT.hp +
     acc.defense * DEFENSE_PER_POINT.hp +
-    arsenalHp(breakthrough) +
+    arsenalHp(breakthrough, arsenalScores) +
     enhancementHpTotal(enhancements) +
-    bonus.maxHp
-  return flat * (1 + bonus.percent)
+    averageEnhancementBonus(enhancements).maxHp +
+    oddityHpTotal(oddities)
+  )
+}
+
+export function effectiveMaxHp(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+  arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): number {
+  const raw = totalMaxHp(
+    breakthrough,
+    equippedPieces,
+    disabled,
+    enhancements,
+    oddities,
+    arsenalScores,
+  )
+  return raw * (1 + averageEnhancementBonus(enhancements).percent)
+}
+
+export function totalPhysDef(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+): number {
+  const acc = accumulatorFor(breakthrough, disabled)
+  return (
+    acc.physDef +
+    gearPhysDefTotal(equippedPieces) +
+    acc.defense * DEFENSE_PER_POINT.physDef +
+    enhancementPhysDefTotal(enhancements) +
+    oddityPhysDefTotal(oddities)
+  )
 }
 
 export function userTalentContributions(
@@ -403,12 +451,30 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
   const out: Record<string, number> = {}
   for (const nodes of Object.values(oddities)) {
     for (const n of nodes) {
-      if (!n.enabled || !n.value) continue
+      if (!n.enabled || !n.value || n.stat === "maxHp" || n.stat === "physDef") continue
       const path = STAT_TO_PATH[n.stat] ?? n.stat
       out[path] = (out[path] ?? 0) + n.value
     }
   }
   return out
+}
+
+function oddityStatTotal(oddities: OddityRegions, stat: "maxHp" | "physDef"): number {
+  let total = 0
+  for (const nodes of Object.values(oddities)) {
+    for (const n of nodes) {
+      if (n.enabled && n.stat === stat) total += n.value
+    }
+  }
+  return total
+}
+
+export function oddityHpTotal(oddities: OddityRegions): number {
+  return oddityStatTotal(oddities, "maxHp")
+}
+
+export function oddityPhysDefTotal(oddities: OddityRegions): number {
+  return oddityStatTotal(oddities, "physDef")
 }
 
 export function buildScalingSources(

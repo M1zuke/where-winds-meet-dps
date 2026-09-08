@@ -1,4 +1,5 @@
 import type {
+  ArsenalScores,
   DisabledTalentPoints,
   EnhancementLevels,
   GearPiece,
@@ -20,10 +21,12 @@ import {
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import {
+  arsenalScoreCap,
   DEFAULT_ENHANCEMENT_LEVEL,
   getDefaultTalentsForClass,
   DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
+import { ARSENAL_STORES } from "./data/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -459,6 +462,23 @@ function hydrateInputs(inputs: Inputs): Inputs {
           : DEFAULT_ENHANCEMENT_LEVEL
     }
     next.enhancements = healed
+  }
+  {
+    const stored =
+      next.arsenalScores &&
+      typeof next.arsenalScores === "object" &&
+      !Array.isArray(next.arsenalScores)
+        ? (next.arsenalScores as Record<string, unknown>)
+        : {}
+    const healed: ArsenalScores = {}
+    for (let store = 1; store <= ARSENAL_STORES.length; store++) {
+      const value = stored[store]
+      healed[store] =
+        typeof value === "number" && Number.isFinite(value) && value >= 0
+          ? value
+          : arsenalScoreCap(store)
+    }
+    next.arsenalScores = healed
   }
   {
     const def = defaultCombatSettings()

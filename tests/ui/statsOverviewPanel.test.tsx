@@ -144,7 +144,7 @@ describe("StatsOverviewPanel", () => {
     expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
   })
 
-  it("states the current-arsenal Total Mastery assumption behind Max HP, without a floor marker", () => {
+  it("points Max HP at the Arsenal tab's own mastery score, without a floor marker", () => {
     render(
       <I18nProvider>
         <StatsOverviewPanel inputs={defaultInputs} />
@@ -154,7 +154,7 @@ describe("StatsOverviewPanel", () => {
     expect(screen.getByText("Max HP").parentElement).not.toHaveTextContent("≥")
     expect(screen.getByText("Max HP")).toHaveAttribute(
       "title",
-      "Assumes the current Arsenal store is at Total Mastery; HP from score above that isn't counted",
+      "Includes each unlocked Arsenal's own mastery score, set on the Arsenal tab; defaults to Total Mastery",
     )
   })
 
