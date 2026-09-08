@@ -375,6 +375,90 @@ describe("computeReattunement", () => {
   })
 })
 
+describe("computeReattunement — weighted advisor", () => {
+  function withPieceInInventory(p: GearPiece): Inputs {
+    return { ...defaultInputs, inventory: [p] }
+  }
+
+  function weaponPiece(overrides: Partial<GearPiece> = {}): GearPiece {
+    return piece([w("crit", 0.07), w("agility", 35), w("momentum", 35), EMPTY, EMPTY], {
+      slot: "leftWeapon",
+      minPhys: 1000,
+      maxPhys: 2000,
+      ...overrides,
+    })
+  }
+
+  it("reports numeric pDraw/expectedValueIfDrawn/eDeltaDps once weighted pool data exists", () => {
+    const wp = weaponPiece({ attunement: "physPen", attunementValue: 0.07 })
+    const inputs = withPieceInInventory(wp)
+    const res = computeReattunement({ reqId: 1, inputs, pieceId: wp.id })
+    for (const option of res.options) {
+      expect(typeof option.pDraw).toBe("number")
+      expect(typeof option.expectedValueIfDrawn).toBe("number")
+      expect(typeof option.eDeltaDpsGivenDrawn).toBe("number")
+      expect(typeof option.eDeltaDps).toBe("number")
+    }
+    expect(typeof res.eDeltaDpsOverall).toBe("number")
+  })
+
+  it("guarantees the currently-held line's expected value is strictly above its current value", () => {
+    const wp = weaponPiece({ attunement: "physPen", attunementValue: 0.07 })
+    const inputs = withPieceInInventory(wp)
+    const res = computeReattunement({ reqId: 1, inputs, pieceId: wp.id })
+    const physPen = res.options.find((o) => o.optionId === "physPen")!
+    expect(physPen.isCurrent).toBe(true)
+    expect(physPen.expectedValueIfDrawn!).toBeGreaterThan(0.07)
+  })
+
+  it("excludes the currently-held line once it sits at its ladder maximum", () => {
+    const opt = getAttunement("physPen")!
+    const max = attunementMax(opt, 91)
+    const wp = weaponPiece({ attunement: "physPen", attunementValue: max })
+    const inputs = withPieceInInventory(wp)
+    const res = computeReattunement({ reqId: 1, inputs, pieceId: wp.id })
+    const physPen = res.options.find((o) => o.optionId === "physPen")!
+    expect(physPen.pDraw).toBe(0)
+  })
+
+  it("reports the pity threshold from level 91 up and none at 86", () => {
+    const wp91 = weaponPiece({ attunement: "physPen", attunementValue: 0.06, level: 91 })
+    const res91 = computeReattunement({
+      reqId: 1,
+      inputs: withPieceInInventory(wp91),
+      pieceId: wp91.id,
+    })
+    expect(res91.pityThreshold).toBe(6)
+
+    const wp86 = weaponPiece({ attunement: "physPen", attunementValue: 0.05, level: 86 })
+    const res86 = computeReattunement({
+      reqId: 1,
+      inputs: withPieceInInventory(wp86),
+      pieceId: wp86.id,
+    })
+    expect(res86.pityThreshold).toBeNull()
+  })
+
+  it("leaves an unmodelled pool member's weighted fields null alongside its modelled siblings", () => {
+    const armor = piece([w("crit", 0.07), w("agility", 35), EMPTY, EMPTY, EMPTY], {
+      slot: "helm",
+      hp: 5000,
+      physDef: 800,
+      minPhys: 0,
+      maxPhys: 0,
+      attunement: "umbQ",
+      attunementValue: 0.036,
+    })
+    const inputs = { ...withPieceInInventory(armor), classId: "silkbindJade" }
+    const res = computeReattunement({ reqId: 1, inputs, pieceId: armor.id })
+    expect(res.reason).toBe("ok")
+    const unmodelled = res.options.find((o) => o.optionId === "umbFrequentProjectile")!
+    expect(unmodelled.pDraw).toBeNull()
+    const modelled = res.options.find((o) => o.optionId === "umbQ")!
+    expect(typeof modelled.pDraw).toBe("number")
+  })
+})
+
 describe("retuneAttemptBudget", () => {
   it("is single at 86 and repeatable from 91 up", () => {
     expect(retuneAttemptBudget(86)).toBe("single")

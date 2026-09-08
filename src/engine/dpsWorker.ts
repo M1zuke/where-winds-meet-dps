@@ -12,6 +12,13 @@ import {
 } from "./retunement"
 import { retuneWeightPool, type RetuneLine } from "../data/stats/gearRetuneWeights"
 import { GEAR_WORD_UNIT } from "../data/stats/statLines"
+import { reattunementPool } from "../data/stats/gearReattunementWeights"
+import {
+  expectedFreshValue,
+  expectedRedeterminedValue,
+  reattunementDrawables,
+  reattunementPityThreshold,
+} from "./reattunement"
 import { attunementMax, attunementMin, attunementsFor, attunementLabelKey } from "./attunements"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
@@ -349,6 +356,14 @@ export interface ReattunementOption {
   probImproveGivenOption: number
   inert: boolean
   isCurrent: boolean
+  // Null wherever the app has no pool data for this option — an unauthored
+  // level/class/slot, or a pool member with no modelled engine effect. When
+  // isCurrent is true, expectedValueIfDrawn comes from the monotone
+  // re-determination of the held line; otherwise from an ordinary fresh roll.
+  pDraw: number | null
+  expectedValueIfDrawn: number | null
+  eDeltaDpsGivenDrawn: number | null
+  eDeltaDps: number | null
 }
 
 export interface ReattunementWorkerResponse {
@@ -356,6 +371,8 @@ export interface ReattunementWorkerResponse {
   pieceId: string
   options: ReattunementOption[]
   probImproveOverall: number
+  eDeltaDpsOverall: number | null
+  pityThreshold: number | null
   reason: "ok" | "no-piece" | "no-pool"
 }
 
@@ -373,16 +390,40 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
   const { inputs, pieceId } = req
   const piece = inputs.inventory.find((p) => p.id === pieceId)
   if (!piece) {
-    return { reqId: req.reqId, pieceId, options: [], probImproveOverall: 0, reason: "no-piece" }
+    return {
+      reqId: req.reqId,
+      pieceId,
+      options: [],
+      probImproveOverall: 0,
+      eDeltaDpsOverall: null,
+      pityThreshold: null,
+      reason: "no-piece",
+    }
   }
 
   const pool = attunementsFor(piece.slot, inputs.classId)
   if (pool.length === 0) {
-    return { reqId: req.reqId, pieceId, options: [], probImproveOverall: 0, reason: "no-pool" }
+    return {
+      reqId: req.reqId,
+      pieceId,
+      options: [],
+      probImproveOverall: 0,
+      eDeltaDpsOverall: null,
+      pityThreshold: null,
+      reason: "no-pool",
+    }
   }
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
   const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+
+  const weightedPool = reattunementPool(inputs.classId, piece.slot, piece.level)
+  const drawables = weightedPool
+    ? reattunementDrawables(weightedPool, piece.attunement, piece.attunementValue)
+    : []
+  const drawableByOptionId = new Map(
+    drawables.map((drawable) => [drawable.line.optionId, drawable] as const),
+  )
 
   const options: ReattunementOption[] = pool.map((opt) => {
     const inert = opt.enginePath === null
@@ -390,6 +431,28 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     const max = attunementMax(opt, piece.level)
     const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max)
     const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min)
+    const isCurrent = piece.attunement === opt.id
+
+    const line = weightedPool?.lines.find((candidate) => candidate.optionId === opt.id) ?? null
+    const drawable = drawableByOptionId.get(opt.id) ?? null
+
+    let pDraw: number | null = null
+    let expectedValueIfDrawn: number | null = null
+    let eDeltaDpsGivenDrawn: number | null = null
+    if (line && drawable) {
+      pDraw = drawable.pDraw
+      expectedValueIfDrawn = drawable.isCurrentLine
+        ? expectedRedeterminedValue(line, piece.attunementValue)
+        : expectedFreshValue(line)
+      eDeltaDpsGivenDrawn =
+        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn) - equipDps
+    } else if (line && isCurrent) {
+      // Popped: the currently-held line is already at its maximum.
+      pDraw = 0
+      expectedValueIfDrawn = piece.attunementValue
+      eDeltaDpsGivenDrawn = 0
+    }
+
     return {
       optionId: opt.id,
       label: opt.label,
@@ -399,14 +462,30 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
       deltaDpsAtMax: dpsAtMax - equipDps,
       probImproveGivenOption: probLinearImprove(dpsAtMin, dpsAtMax, equipDps, min, max),
       inert,
-      isCurrent: piece.attunement === opt.id,
+      isCurrent,
+      pDraw,
+      expectedValueIfDrawn,
+      eDeltaDpsGivenDrawn,
+      eDeltaDps:
+        pDraw !== null && eDeltaDpsGivenDrawn !== null ? pDraw * eDeltaDpsGivenDrawn : null,
     }
   })
 
   const probImproveOverall =
     options.reduce((acc, o) => acc + o.probImproveGivenOption, 0) / options.length
+  const eDeltaDpsOverall = weightedPool
+    ? options.reduce((sum, option) => sum + (option.eDeltaDps ?? 0), 0)
+    : null
 
-  return { reqId: req.reqId, pieceId, options, probImproveOverall, reason: "ok" }
+  return {
+    reqId: req.reqId,
+    pieceId,
+    options,
+    probImproveOverall,
+    eDeltaDpsOverall,
+    pityThreshold: reattunementPityThreshold(piece.level),
+    reason: "ok",
+  }
 }
 
 export interface WordMaxWorkerRequest {

@@ -9,6 +9,8 @@ export type ReattunementReason = "ok" | "no-piece" | "no-pool" | "no-selection"
 export interface ReattunementAnalysisResult {
   options: ReattunementOption[]
   probImproveOverall: number
+  eDeltaDpsOverall: number | null
+  pityThreshold: number | null
   reason: ReattunementReason
   isPending: boolean
   forPieceId: string | null
@@ -19,6 +21,8 @@ const NO_OPTIONS: ReattunementOption[] = []
 const NO_SELECTION_RESULT: ReattunementAnalysisResult = {
   options: NO_OPTIONS,
   probImproveOverall: 0,
+  eDeltaDpsOverall: null,
+  pityThreshold: null,
   reason: "no-selection",
   forPieceId: null,
   isPending: false,
@@ -27,6 +31,8 @@ const NO_SELECTION_RESULT: ReattunementAnalysisResult = {
 interface ReceivedReattunement {
   options: ReattunementOption[]
   probImproveOverall: number
+  eDeltaDpsOverall: number | null
+  pityThreshold: number | null
   reason: ReattunementReason
   pieceId: string
 }
@@ -35,8 +41,8 @@ function receivedReattunement(
   response: ReattunementWorkerResponse | null,
 ): ReceivedReattunement | null {
   if (!response) return null
-  const { options, reason, pieceId, probImproveOverall } = response
-  return { options, reason, pieceId, probImproveOverall }
+  const { options, reason, pieceId, probImproveOverall, eDeltaDpsOverall, pityThreshold } = response
+  return { options, reason, pieceId, probImproveOverall, eDeltaDpsOverall, pityThreshold }
 }
 
 export function useReattunementAnalysis(
@@ -63,6 +69,8 @@ export function useReattunementAnalysis(
   return {
     options: received?.options ?? NO_OPTIONS,
     probImproveOverall: received?.probImproveOverall ?? 0,
+    eDeltaDpsOverall: received?.eDeltaDpsOverall ?? null,
+    pityThreshold: received?.pityThreshold ?? null,
     reason: received?.reason ?? "no-selection",
     isPending,
     forPieceId: received?.pieceId ?? null,
