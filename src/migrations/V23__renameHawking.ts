@@ -1,4 +1,4 @@
-// v22 -> v23 — the client spells this set "Hawkwing"; "Hawking" never existed.
+// v22 -> v23 — the game spells this set "Hawkwing"; "Hawking" never existed.
 import type { Migration, RawProfilesBlob } from "./types"
 
 const LEGACY_SET_ID = "hawking"

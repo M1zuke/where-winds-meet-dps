@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  arsenalAttack,
   arsenalHp,
   deriveStats,
   getSchool,
@@ -9,6 +10,7 @@ import {
 } from "../../src/engine/panel"
 import {
   arsenalScoreCap,
+  arsenalStoreAttack,
   arsenalStoreHp,
   arsenalStoreState,
   defaultArsenalScores,
@@ -137,5 +139,58 @@ describe("arsenal store states — the three branches", () => {
     const atTotalMastery = arsenalStoreState(2, 1000, true)
     expect(atTotalMastery.graduated).toBe(true)
     expect(arsenalStoreHp(atTotalMastery)).toBe(3200)
+  })
+})
+
+describe("arsenalAttack", () => {
+  it("sums each unlocked store's attack ladder rung at Total Mastery, per breakthrough", () => {
+    expect(arsenalAttack(13)).toEqual({ min: 97, max: 195 })
+    expect(arsenalAttack(14)).toEqual({ min: 114, max: 229 })
+    expect(arsenalAttack(15)).toEqual({ min: 114, max: 229 })
+    expect(arsenalAttack(16)).toEqual({ min: 131, max: 263 })
+    expect(arsenalAttack(17)).toEqual({ min: 131, max: 263 })
+    expect(arsenalAttack(18)).toEqual({ min: 148, max: 297 })
+    expect(arsenalAttack(19)).toEqual({ min: 148, max: 297 })
+    expect(arsenalAttack(20)).toEqual({ min: 165, max: 331 })
+    expect(arsenalAttack(21)).toEqual({ min: 165, max: 331 })
+  })
+})
+
+describe("arsenalStoreAttack — the rung ladder", () => {
+  it("steps store 8's rung at the inclusive-lower-boundary threshold, not before it", () => {
+    expect(arsenalStoreAttack({ store: 8, isPast: true, graduated: false, score: 949 })).toEqual({
+      min: 2,
+      max: 5,
+    })
+    expect(arsenalStoreAttack({ store: 8, isPast: true, graduated: false, score: 950 })).toEqual({
+      min: 5,
+      max: 10,
+    })
+    expect(arsenalStoreAttack({ store: 8, isPast: true, graduated: false, score: 5699 })).toEqual({
+      min: 15,
+      max: 31,
+    })
+    expect(arsenalStoreAttack({ store: 8, isPast: true, graduated: false, score: 5700 })).toEqual({
+      min: 17,
+      max: 34,
+    })
+  })
+
+  it("grants store 1's first rung at score 0 — entry 1 is not a zero rung", () => {
+    expect(arsenalStoreAttack({ store: 1, isPast: false, graduated: false, score: 0 })).toEqual({
+      min: 1,
+      max: 3,
+    })
+  })
+
+  it("keeps paying a graduated store's attack rung, unlike its HP branch", () => {
+    const graduated = arsenalStoreState(8, arsenalScoreCap(8), true)
+    expect(graduated.graduated).toBe(true)
+    expect(arsenalStoreAttack(graduated)).toEqual({ min: 17, max: 34 })
+  })
+
+  it("freezes attack at the top rung past Total Mastery — no ratio_b overflow", () => {
+    const overflowing = arsenalStoreState(8, 7200, false)
+    expect(arsenalStoreAttack(overflowing)).toEqual({ min: 17, max: 34 })
   })
 })

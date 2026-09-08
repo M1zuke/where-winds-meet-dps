@@ -6,8 +6,7 @@ import {
   defineWeaponLevels,
 } from "../../definitions/baseStats/enhancementLadderDef"
 
-// Game client table equip_enhance_data as of 2026-09-07, pack table, index1
-// bucket 12438, data4 2435-2440. Cumulative totals per level, index 0 holding
+// In-game values as of 2026-09-07. Cumulative totals per level, index 0 holding
 // level 1.
 export const WEAPON_ENHANCEMENT_LEVELS = defineWeaponLevels([
   { minPhys: 1, maxPhys: 1 },
@@ -281,8 +280,8 @@ export const CHEST_GREAVES_ENHANCEMENT_LEVELS = defineChestGreavesLevels([
   { maxHp: 6169, physDef: 60 },
 ])
 
-// Game client table average_enhance_bonus as of 2026-09-07, index1 bucket
-// 2010. Index 0 holds average enhancement level 5, stepping by 5 through 85.
+// In-game values as of 2026-09-07. Index 0 holds average enhancement level 5,
+// stepping by 5 through 85.
 export const AVERAGE_ENHANCEMENT_BONUS_LEVELS = defineAverageEnhancementBonusLevels([
   { maxHp: 583, percent: 0 },
   { maxHp: 808, percent: 0 },

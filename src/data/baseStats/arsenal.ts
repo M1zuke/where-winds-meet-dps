@@ -1,10 +1,30 @@
 import { defineArsenalStores } from "../../definitions/baseStats/arsenalStoreDef"
+import type { ArsenalAttackLadder } from "../../definitions/baseStats/arsenalStoreDef"
 
-// Game client tables equip_box_score_attrs and equip_box_config as of
-// 2026-09-08, 10 rows (store 11 has no equip_box_config row in any container
-// and cannot be unlocked). Total Mastery is score_section's last entry, not
-// ratioC — they coincide for every store except store 2 (mastery 1000, ratioC
-// 860).
+// In-game values as of 2026-09-08. Ten stores; an eleventh is unreachable.
+// Total Mastery is not ratioC — they coincide for every store except store 2,
+// whose mastery is 1000 against a ratioC of 860. Every arsenal style grants the
+// same attack amounts; only the stat block they land on differs.
+const STORE_1_ATTACK_LADDER: ArsenalAttackLadder = [
+  { min: 1, max: 3 },
+  { min: 3, max: 7 },
+  { min: 5, max: 11 },
+  { min: 7, max: 15 },
+  { min: 9, max: 19 },
+  { min: 11, max: 23 },
+  { min: 12, max: 25 },
+]
+
+const STORE_2_TO_10_ATTACK_LADDER: ArsenalAttackLadder = [
+  { min: 2, max: 5 },
+  { min: 5, max: 10 },
+  { min: 7, max: 15 },
+  { min: 10, max: 20 },
+  { min: 13, max: 26 },
+  { min: 15, max: 31 },
+  { min: 17, max: 34 },
+]
+
 export const ARSENAL_STORES = defineArsenalStores([
   {
     gearTier: 41,
@@ -13,6 +33,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 1.432,
     ratioC: 550,
     totalMastery: 550,
+    attackLadder: STORE_1_ATTACK_LADDER,
   },
   {
     gearTier: 51,
@@ -21,6 +42,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.349,
     ratioC: 860,
     totalMastery: 1000,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 56,
@@ -29,6 +51,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.352,
     ratioC: 1980,
     totalMastery: 1980,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 61,
@@ -37,6 +60,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.35,
     ratioC: 2520,
     totalMastery: 2520,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 71,
@@ -45,6 +69,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.358,
     ratioC: 3300,
     totalMastery: 3300,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 81,
@@ -53,6 +78,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.291,
     ratioC: 3960,
     totalMastery: 3960,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 86,
@@ -61,6 +87,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 1.985,
     ratioC: 4620,
     totalMastery: 4620,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 91,
@@ -69,6 +96,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.185,
     ratioC: 5700,
     totalMastery: 5700,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 96,
@@ -77,6 +105,7 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.02,
     ratioC: 7020,
     totalMastery: 7020,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
   {
     gearTier: 100,
@@ -85,5 +114,6 @@ export const ARSENAL_STORES = defineArsenalStores([
     ratioB: 2.065,
     ratioC: 7320,
     totalMastery: 7320,
+    attackLadder: STORE_2_TO_10_ATTACK_LADDER,
   },
 ])

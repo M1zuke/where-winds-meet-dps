@@ -1,6 +1,6 @@
 // Each `labelByClass` entry carries the official English Attune Effect name for
 // that class's art (in-game Attune Effect list, 2026-08-13; Nameless Sword /
-// Spear from the client localization).
+// Spear from the in-game English text).
 import type { AttunementOption } from "../../engine/attunements"
 import { ARMOR_SLOTS } from "./attunementSlots"
 

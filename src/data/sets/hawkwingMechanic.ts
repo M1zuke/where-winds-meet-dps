@@ -8,7 +8,7 @@ import {
 } from "../../engine/buffs/hawkwing"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
-// The client's own Affinity-outcome roll is `min(affinityRate, 0.4) +
+// The game's own Affinity-outcome roll is `min(affinityRate, 0.4) +
 // directAffinityRate` (`formula.ts`'s `affinityRate`) — the direct-affinity
 // term sits outside the cap, so a build with a base direct-affinity rate
 // (Jadeware, an inner-way line) triggers stacks more often than the capped

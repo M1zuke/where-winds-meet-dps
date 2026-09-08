@@ -4,10 +4,10 @@ export const TALENT_POINT_TIERS = ["95.1", "95.2", "100.1", "100.2"] as const
 
 export type TalentPointTier = (typeof TALENT_POINT_TIERS)[number]
 
-// Game client table talent_node_info as of 2026-09-08: ALL_ONELEVEL_ATTR grants
-// all five attributes, not just power/agility/momentum. HP_MAX and W_DEF rank
-// ladders are collapsed into one entry per grid position, the same way the
-// MIN_W_ATK/MAX_W_ATK ladders below already are.
+// In-game values as of 2026-09-08. "All Five Attributes" grants all five, not
+// just power/agility/momentum. Max HP and Physical Defense rank ladders are
+// collapsed into one entry per grid position, the same way the attack ladders
+// below already are.
 const TIER_95_1: readonly TalentPointDef[] = [
   defineTalentPoint({ id: 1, effects: { critRate: 0.04 } }),
   defineTalentPoint({ id: 2, effects: { critDamage: 0.05 } }),

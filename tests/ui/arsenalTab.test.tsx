@@ -95,4 +95,62 @@ describe("the Arsenal tab", () => {
     await Promise.resolve()
     expect(onChange.mock.lastCall![0].arsenalScores).toEqual(defaultArsenalScores())
   })
+
+  it("labels the attack readouts by the active arsenal style", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17, arsenal: "bellstrike" })
+    expect(screen.getAllByText("Max Bellstrike Attack").length).toBeGreaterThan(0)
+    expect(screen.queryByText("Max Bamboocut Attack")).toBeNull()
+  })
+
+  it("sums every unlocked store's attack rung into the toolbar total, as two labelled figures", () => {
+    const { container } = renderTab({ ...defaultInputs, breakthrough: 17 })
+    const toolbar = container.querySelector(".toolbar")!
+    expect(toolbar).toHaveTextContent("Min Bamboocut Attack")
+    expect(toolbar).toHaveTextContent("+131")
+    expect(toolbar).toHaveTextContent("Max Bamboocut Attack")
+    expect(toolbar).toHaveTextContent("+263")
+  })
+
+  it("shows a store's own attack as two labelled figures and nothing else", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    const card = cardFor("Tier 91 Arsenal")
+    expect(card).toHaveTextContent("Min Bamboocut Attack")
+    expect(card).toHaveTextContent("+17")
+    expect(card).toHaveTextContent("Max Bamboocut Attack")
+    expect(card).toHaveTextContent("+34")
+  })
+
+  it("keeps paying a graduated store's attack rung, unlike its flat HP", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    const card = cardFor("Tier 86 Arsenal")
+    expect(card).toHaveTextContent("Graduated")
+    expect(card).toHaveTextContent("4,000")
+    expect(card).toHaveTextContent("+17")
+    expect(card).toHaveTextContent("+34")
+  })
+
+  it("drops the formula line for a graduated store — the chip already says flat", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    const card = cardFor("Tier 86 Arsenal")
+    expect(within(card).queryByText(/×/)).toBeNull()
+  })
+
+  it("drops the formula line for the current store", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    const card = cardFor("Tier 91 Arsenal")
+    expect(within(card).queryByText(/×/)).toBeNull()
+  })
+
+  it("keeps the formula line for a below-mastery store and steps its attack down with it", () => {
+    const inputs: Inputs = {
+      ...defaultInputs,
+      breakthrough: 17,
+      arsenalScores: { ...defaultArsenalScores(), 7: 0 },
+    }
+    renderTab(inputs)
+    const card = cardFor("Tier 86 Arsenal")
+    expect(within(card).queryByText(/×/)).not.toBeNull()
+    expect(card).toHaveTextContent("+2")
+    expect(card).toHaveTextContent("+5")
+  })
 })

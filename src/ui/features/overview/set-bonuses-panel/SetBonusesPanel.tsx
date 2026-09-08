@@ -1,9 +1,9 @@
 import type { Arsenal, BowSet, Inputs } from "../../../../engine/types"
 import {
   ARMOR_SET_OPTIONS,
-  ARSENAL_BONUS,
   BOW_SET_BONUS,
   armorSetValueForLevel,
+  arsenalAttack,
   defaultArsenalForClass,
   swapArsenal,
 } from "../../../../engine/panel"
@@ -183,12 +183,13 @@ function buildArsenalRows(
     defaultArsenalForClass(inputs.classId),
     inputs.arsenal,
   ])
+  const attack = arsenalAttack(inputs.breakthrough, inputs.arsenalScores)
   return ARSENAL_TILES.filter((tile) => visibleChoices.has(tile.choice)).map((tile) => {
     const dps = arsenalDpsByChoice?.[tile.choice] ?? Number.NaN
     return {
       key: tile.choice,
       label: t(tile.labelKey),
-      bonus: `+${ARSENAL_BONUS.min} / +${ARSENAL_BONUS.max} ${tile.statKey}`,
+      bonus: `+${attack.min} / +${attack.max} ${tile.statKey}`,
       delta: dps - currentDps,
       selected: inputs.arsenal === tile.choice,
       onSelect: () => onChange(swapArsenal(inputs, tile.choice)),

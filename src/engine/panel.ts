@@ -15,11 +15,13 @@ import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseSt
 import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
 import {
   arsenalScoreCap,
+  arsenalStoreAttack,
   arsenalStoreHp,
   arsenalStoreState,
   DEFAULT_ARSENAL_SCORES,
   type ArsenalStoreState,
 } from "../definitions/baseStats/arsenal"
+import type { ArsenalAttackRung } from "../definitions/baseStats/arsenalStoreDef"
 
 export { getBreakthrough, henZhiActiveForInputs }
 
@@ -148,15 +150,13 @@ export function applyArmorSet(inputs: Inputs): Inputs {
   }
 }
 
-export const ARSENAL_BONUS = { min: 131, max: 263 } as const
-
 interface ArsenalUnlockState {
   graduatedStores: number
   currentStore?: number
 }
 
-// Not a formula: which stores are graduated vs. current per breakthrough is a
-// client fact, verbatim.
+// Not a formula: which stores are graduated vs. current per breakthrough is an
+// in-game fact, verbatim.
 const ARSENAL_UNLOCK_BY_BREAKTHROUGH: Readonly<Record<number, ArsenalUnlockState>> = {
   13: { graduatedStores: 6 },
   14: { graduatedStores: 7 },
@@ -195,6 +195,19 @@ export function arsenalHp(
   scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   return arsenalStates(breakthrough, scores).reduce((sum, state) => sum + arsenalStoreHp(state), 0)
+}
+
+export function arsenalAttack(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): ArsenalAttackRung {
+  return arsenalStates(breakthrough, scores).reduce(
+    (sum, state) => {
+      const rung = arsenalStoreAttack(state)
+      return { min: sum.min + rung.min, max: sum.max + rung.max }
+    },
+    { min: 0, max: 0 },
+  )
 }
 
 const PRIMARY_TO_ARSENAL: Readonly<Record<AttributeKey, Arsenal>> = {

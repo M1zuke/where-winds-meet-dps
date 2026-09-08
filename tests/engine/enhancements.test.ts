@@ -94,7 +94,7 @@ describe("enhancementContributions — the attack stat feeding the damage base",
 })
 
 describe("the armour totals at the level-65 cap", () => {
-  it("matches the client's 30 206 Max HP and 120 Physical Defense", () => {
+  it("matches the in-game 30 206 Max HP and 120 Physical Defense", () => {
     expect(enhancementHpTotal(DEFAULT_ENHANCEMENTS)).toBe(30206)
     expect(enhancementPhysDefTotal(DEFAULT_ENHANCEMENTS)).toBe(120)
   })

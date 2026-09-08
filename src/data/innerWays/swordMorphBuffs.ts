@@ -3,7 +3,7 @@ import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
 
 // "Unleashing multiple sword energy attacks consumes additional Endurance to
-// increase damage by 1.5% per point consumed, up to 30%" (client localization,
+// increase damage by 1.5% per point consumed, up to 30%" (in-game English text,
 // 2026-08-15). The rotation spends the full 20 points, so this sits at the cap
 // — the reference workbook models it the same way, as a picked row rather than
 // a simulated resource.

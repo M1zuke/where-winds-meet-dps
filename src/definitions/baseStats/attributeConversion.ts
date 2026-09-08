@@ -1,6 +1,4 @@
-// Game client table attr_first_level_trans as of 2026-09-07: STR_PATK_MIN_X,
-// STR_PATK_MAX_X, CRI_PATK_MIN_X, CRI_CRI_PROB_X, BAS_PATK_MAX_X,
-// BAS_BASH_PROB_X. The client names agility's pair CRI_* and momentum's BAS_*.
+// In-game attribute conversion rates as of 2026-09-07.
 export const POWER_PER_POINT = {
   minPhys: 0.22,
   maxPhys: 1.36,
@@ -16,13 +14,12 @@ export const MOMENTUM_PER_POINT = {
   affinityRate: 0.00038,
 } as const
 
-// Game client table attr_first_level_trans as of 2026-09-07: CON_HP_X.
+// In-game attribute conversion rate as of 2026-09-07.
 export const BODY_PER_POINT = {
   hp: 60,
 } as const
 
-// Game client table attr_first_level_trans as of 2026-09-07: AGI_PDEF_X,
-// AGI_HP_X. The client names Defense's code AGI, which the app calls defense.
+// In-game attribute conversion rates as of 2026-09-07.
 export const DEFENSE_PER_POINT = {
   physDef: 0.57,
   hp: 17,

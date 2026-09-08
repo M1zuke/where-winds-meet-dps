@@ -1,4 +1,4 @@
-import { ARSENAL_BONUS, arsenalHp, getSchool } from "../../engine/panel"
+import { arsenalAttack, arsenalHp, getSchool } from "../../engine/panel"
 import {
   formlessWordTotals,
   gearAttributeTotals,
@@ -76,8 +76,6 @@ interface BaseAccumulator {
   physDef: number
 }
 
-// Game client table avatar_base_attrs as of 2026-09-08: W_DEF is Physical
-// Defense.
 function readBaseLevel(): BaseAccumulator {
   const row = (baseStatsJson as BaseStatsByLevel)[String(BASE_LEVEL)]
   if (!row) throw new Error(`baseStats.json missing Level ${BASE_LEVEL}`)
@@ -520,7 +518,7 @@ export function getConfiguredBase(
     [`${key}.max`]: CLASS_PRIMARY_BASE.max + formless.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,
   }
-  const arsenal = arsenalContribution(inputs.arsenal)
+  const arsenal = arsenalContribution(inputs.arsenal, inputs.breakthrough, inputs.arsenalScores)
   if (arsenal) {
     base[`${arsenal.block}.min`] = (base[`${arsenal.block}.min`] ?? 0) + arsenal.min
     base[`${arsenal.block}.max`] = (base[`${arsenal.block}.max`] ?? 0) + arsenal.max
@@ -542,7 +540,7 @@ export function getConfiguredBase(
   return base
 }
 
-const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
+export const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
   general: "phys",
   bellstrike: "bellstrike",
   stonesplit: "stonesplit",
@@ -552,11 +550,14 @@ const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
 
 function arsenalContribution(
   arsenal: Inputs["arsenal"],
+  breakthrough: number,
+  arsenalScores: ArsenalScores,
 ): { block: string; min: number; max: number } | null {
   if (!arsenal) return null
   const block = ARSENAL_TO_BLOCK[arsenal]
   if (!block) return null
-  return { block, min: ARSENAL_BONUS.min, max: ARSENAL_BONUS.max }
+  const attack = arsenalAttack(breakthrough, arsenalScores)
+  return { block, min: attack.min, max: attack.max }
 }
 
 function primaryAttackKey(classId: string): string {

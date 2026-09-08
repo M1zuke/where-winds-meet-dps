@@ -3,7 +3,7 @@ import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { comboBuffDef, comboUmbLightBonusBuffDef } from "./blossomBarrageBuffs"
 
-// Client localization ladder (2026-08-15): base +10% Combo damage taken for
+// In-game text ladder (2026-08-15): base +10% Combo damage taken for
 // 10s; an unnumbered rung raising it to +20% for the same 10s; a further rung
 // extends the window to 15s and adds Spring Sorrow's +30% cast speed; Tier 4
 // (`comboUmbLightBonus.json`'s own `minTier`) adds Spring Away's +10% bonus

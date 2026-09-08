@@ -10,7 +10,7 @@ import { jadeware as jadewareSet } from "../../sets/jadeware"
 // 15 Aug 2026)
 //
 // The tooltip reads as if both bonuses were gated on the target's Qi; the
-// client buff itself carries `affinityDamageBoost` unconditionally for the
+// buff itself carries `affinityDamageBoost` unconditionally for the
 // whole window, and only `directAffinityRate` asks about the target. Every
 // low-Qi source the sim models — the lead-in window, Qi Imbalance, and the
 // broken bar during qi-break — reports a non-`normal` phase.

@@ -6,6 +6,13 @@ type TupleOfLength<
 
 export type ArsenalStoreLevels = Readonly<TupleOfLength<ArsenalStore, 10>>
 
+export interface ArsenalAttackRung {
+  min: number
+  max: number
+}
+
+export type ArsenalAttackLadder = Readonly<TupleOfLength<ArsenalAttackRung, 7>>
+
 export interface ArsenalStore {
   gearTier: number
   graduationPromotion: number
@@ -13,6 +20,7 @@ export interface ArsenalStore {
   ratioB: number
   ratioC: number
   totalMastery: number
+  attackLadder: ArsenalAttackLadder
 }
 
 export function defineArsenalStores(stores: ArsenalStoreLevels): typeof stores {

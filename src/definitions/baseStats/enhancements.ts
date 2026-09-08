@@ -137,8 +137,8 @@ interface EnhancementCapTier {
   reqWorldLevel: number
 }
 
-// Game client table equip_enhance_limit_conf as of 2026-09-07: req_equip_level,
-// req_world_level per enhancement level.
+// In-game values as of 2026-09-07: the gear level and world level each
+// enhancement cap requires.
 const CAP_TIERS: readonly EnhancementCapTier[] = [
   { level: 2, reqGearLevel: 1, reqWorldLevel: 0 },
   { level: 5, reqGearLevel: 16, reqWorldLevel: 0 },
@@ -165,8 +165,8 @@ interface SeasonCeiling {
   ceiling: number
 }
 
-// Game client table version_level_config.enhance_max_level_ver_limit as of
-// 2026-09-07, keyed by the world level each season introduces. A season's
+// In-game values as of 2026-09-07, keyed by the world level each season
+// introduces. A season's
 // ceiling governs every world level from the previous season's threshold up
 // to and including its own.
 const SEASON_CEILINGS: readonly SeasonCeiling[] = [

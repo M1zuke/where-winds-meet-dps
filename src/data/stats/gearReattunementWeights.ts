@@ -192,7 +192,7 @@ interface PenImprove {
 // Weapon / disc / pendant re-attunement pool, in-game 2026-09-08 — the same
 // pool for every class. `physPen`/`physResist` share one band shape;
 // `formlessPen` is its own line and does not exist at 86. Ranges are stated in
-// the app's fraction, one hundredth of the client's raw percentage-point step.
+// the app's fraction, one hundredth of the in-game percentage-point step.
 const PEN_BANDS: Readonly<Record<GearLevel, PenShape>> = {
   86: { pen: bands([0.047, 0.066, 60], [0.067, 0.078, 40]) },
   91: {

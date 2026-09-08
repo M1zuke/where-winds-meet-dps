@@ -1,8 +1,15 @@
 import type { Inputs } from "../../../../engine/types"
-import { arsenalHp, arsenalStates, unlockedArsenalStores } from "../../../../engine/panel"
+import {
+  arsenalAttack,
+  arsenalHp,
+  arsenalStates,
+  unlockedArsenalStores,
+} from "../../../../engine/panel"
 import type { ArsenalStoreState } from "../../../../definitions/baseStats/arsenal"
 import {
+  ARSENAL_TO_BLOCK,
   arsenalScoreCap,
+  arsenalStoreAttack,
   arsenalStoreHp,
   defaultArsenalScores,
 } from "../../../../definitions/baseStats"
@@ -11,6 +18,7 @@ import type { ArsenalStore } from "../../../../definitions/baseStats/arsenalStor
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { statPathLabel } from "../../../utils/statFormatting"
 import { ARSENAL_STORE_NAME_KEYS } from "../shared/arsenalStoreKeys"
 import styles from "./ArsenalTab.module.scss"
 
@@ -26,8 +34,7 @@ function variantOf(state: ArsenalStoreState): ArsenalStoreVariant {
   return state.graduated ? "graduated" : "belowMastery"
 }
 
-function formulaText(def: ArsenalStore, state: ArsenalStoreState): string {
-  if (state.graduated) return `= ${fmtNum(def.graduationPromotion)}`
+function belowMasteryFormulaText(def: ArsenalStore): string {
   return `${fmtNum(def.ratioA)} + ${def.ratioB} × max(0, score − ${fmtNum(def.ratioC)})`
 }
 
@@ -42,6 +49,10 @@ export function ArsenalTab({ inputs, onChange }: Props) {
   const states = arsenalStates(inputs.breakthrough, inputs.arsenalScores)
   const lockedCount = ARSENAL_STORES.length - unlockedArsenalStores(inputs.breakthrough).length
   const totalHp = arsenalHp(inputs.breakthrough, inputs.arsenalScores)
+  const totalAttack = arsenalAttack(inputs.breakthrough, inputs.arsenalScores)
+  const attackBlock = ARSENAL_TO_BLOCK[inputs.arsenal] ?? "phys"
+  const attackMinLabel = statPathLabel(`${attackBlock}.min`, t)
+  const attackMaxLabel = statPathLabel(`${attackBlock}.max`, t)
 
   const pastCount = states.filter((state) => state.isPast).length
   const currentState = states.find((state) => !state.isPast)
@@ -71,6 +82,12 @@ export function ArsenalTab({ inputs, onChange }: Props) {
         <span>
           {t("content.statLine.maxHp")} <b>{fmtNum(totalHp)}</b>
         </span>
+        <span>
+          {attackMinLabel} <b>+{fmtNum(totalAttack.min)}</b>
+        </span>
+        <span>
+          {attackMaxLabel} <b>+{fmtNum(totalAttack.max)}</b>
+        </span>
       </div>
 
       <div className={`panel ${styles.summaryPanel}`}>
@@ -92,6 +109,7 @@ export function ArsenalTab({ inputs, onChange }: Props) {
           if (!def) return null
           const cap = arsenalScoreCap(state.store)
           const hp = arsenalStoreHp(state)
+          const attack = arsenalStoreAttack(state)
           const variant = variantOf(state)
           return (
             <div className={`panel ${styles.storeCard}`} key={state.store}>
@@ -105,7 +123,9 @@ export function ArsenalTab({ inputs, onChange }: Props) {
                       : t("talents.arsenal.stateBelowMastery")}
                 </span>
               </div>
-              <div className={styles.formula}>{formulaText(def, state)}</div>
+              {variant === "belowMastery" && (
+                <div className={styles.formula}>{belowMasteryFormulaText(def)}</div>
+              )}
               <div className={styles.scoreRow}>
                 <label>{t("talents.arsenal.score")}</label>
                 <NumInput
@@ -116,6 +136,14 @@ export function ArsenalTab({ inputs, onChange }: Props) {
                   / {fmtNum(cap)}
                   {state.isPast ? "" : " +"}
                 </span>
+              </div>
+              <div className={styles.hpRow}>
+                <span>{attackMinLabel}</span>
+                <span>+{fmtNum(attack.min)}</span>
+              </div>
+              <div className={styles.hpRow}>
+                <span>{attackMaxLabel}</span>
+                <span>+{fmtNum(attack.max)}</span>
               </div>
               <div className={styles.hpRow}>
                 <span>{t("content.statLine.maxHp")}</span>

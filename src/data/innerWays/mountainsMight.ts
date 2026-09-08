@@ -3,7 +3,7 @@ import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { mountainsMightBuff, mountainsMightPathQiImbalance } from "./mountainsMightBuffs"
 
-// Tier 1 wording from the client localization (2026-08-15): hitting a boss unit
+// Tier 1 wording from the in-game English text (2026-08-15): hitting a boss unit
 // with any Bellstrike - Splendor Martial Art Skill inflicts Qi Imbalance.
 export const mountainsMight = defineInnerWay({
   id: INNER_WAY_ID.mountainsMight,

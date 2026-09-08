@@ -4,7 +4,7 @@ import { damageMultiplier, stat } from "../../../../engine/effects/effect"
 
 // "Increases all Qi damage taken by 10% for 15 seconds. Increases HP damage
 // taken by 10%, and Bellstrike damage taken is increased by an additional 10%
-// while in the Exhausted state" (client localization, 2026-08-15). The 25 June
+// while in the Exhausted state" (in-game English text, 2026-08-15). The 25 June
 // 2026 patch note carries the latter two at 8%; the discrepancy is unresolved
 // and the localization postdates the note.
 //

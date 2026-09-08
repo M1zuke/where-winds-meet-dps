@@ -4,7 +4,7 @@ import { stat } from "../../../../engine/effects/effect"
 
 // "Applied by Nameless Sword's sword energy attacks. Each stack increases sword
 // energy damage by 5%. Against non-player units, the damage bonus is 8% per
-// stack, or 10% while they are Exhausted" (client localization, 2026-08-15).
+// stack, or 10% while they are Exhausted" (in-game English text, 2026-08-15).
 // The engine simulates a non-player target, so the player figure never applies.
 export const swordSlashDamageBoost = defineClassBuff({
   id: BUFF.swordSlashDamageBoost,

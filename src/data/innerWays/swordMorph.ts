@@ -5,7 +5,7 @@ import { swordMorphEnduranceBoost } from "./swordMorphBuffs"
 import { swordMorphExhaustedBehavior } from "./swordMorphExhausted"
 import { SKILL } from "../skills/bellstrike-splendor/ids"
 
-// Tier 3 and Tier 6 wording from the client localization (2026-08-15): the
+// Tier 3 and Tier 6 wording from the in-game English text (2026-08-15): the
 // multiple sword energy attacks never Abrade an Exhausted unit and the third
 // is a guaranteed Affinity hit against one; Tier 6 grants Energy Surge, which
 // releases them again without charging.
