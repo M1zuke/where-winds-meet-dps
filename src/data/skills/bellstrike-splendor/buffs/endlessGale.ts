@@ -6,8 +6,8 @@ import { stat } from "../../../../engine/effects/effect"
 // The direct-affinity half is Mountain's Might's, and lives on that inner way
 // — putting it here too would apply it twice.
 //
-// That inner way also "extends the duration of Endless Gale to 10s" (client
-// localization, 2026-08-15), so the window is 8s on its own and 10s with it.
+// That inner way also "extends the duration of Endless Gale to 10s" (in-game
+// English text, 2026-08-15), so the window is 8s on its own and 10s with it.
 export const endlessGale = defineClassBuff({
   id: BUFF.endlessGale,
   name: "Endless Gale",

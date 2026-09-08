@@ -1,6 +1,12 @@
 import type { Inputs } from "../../../engine/types"
 import { withDerivedStats, equippedPiecesFor } from "../../../engine/derivedInputs"
-import { totalFormlessAttack, totalPlayerAttributes } from "../../../definitions/baseStats"
+import {
+  effectiveMaxHp,
+  totalFormlessAttack,
+  totalMaxHp,
+  totalPhysDef,
+  totalPlayerAttributes,
+} from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
@@ -49,6 +55,7 @@ interface RowEntry {
   effective?: number
   isPercent: boolean
   isPenetration?: boolean
+  hint?: string
 }
 
 function row(
@@ -83,10 +90,43 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentPoints,
   )
+  const maxHp = totalMaxHp(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+    inputs.oddities,
+    inputs.arsenalScores,
+  )
+  const maxHpEffective = effectiveMaxHp(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+    inputs.oddities,
+    inputs.arsenalScores,
+  )
+  const physDef = totalPhysDef(
+    inputs.breakthrough,
+    equippedPieces,
+    inputs.disabledTalentPoints,
+    inputs.enhancements,
+    inputs.oddities,
+  )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),
     row(t("content.statLine.agility"), attrs.agility, false),
     row(t("content.statLine.momentum"), attrs.momentum, false),
+    row(t("content.statLine.body"), attrs.body, false),
+    row(t("content.statLine.defense"), attrs.defense, false),
+    {
+      label: t("content.statLine.maxHp"),
+      value: maxHp,
+      effective: maxHpEffective,
+      isPercent: false,
+      hint: t("components.statsOverviewPanel.maxHpArsenalNote"),
+    },
+    row(t("content.statLine.physDef"), physDef, false),
   ]
 
   const rateRows: RowEntry[] = [
@@ -193,7 +233,7 @@ function Section({ title, rows }: { title: string; rows: RowEntry[] }) {
       <div className={styles.statsOverviewGrid}>
         {rows.map((entry, index) => (
           <div key={index} className={styles.statsOverviewRow}>
-            <div className={styles.statsOverviewLabel} title={entry.label}>
+            <div className={styles.statsOverviewLabel} title={entry.hint ?? entry.label}>
               {entry.label}
             </div>
             <div className={styles.statsOverviewValue}>

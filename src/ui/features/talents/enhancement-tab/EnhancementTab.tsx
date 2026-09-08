@@ -1,15 +1,19 @@
 import { useMemo } from "react"
-import type { EnhancementNode, EnhancementSlot, Inputs } from "../../../../engine/types"
-import { ENHANCEMENT_SLOTS } from "../../../../engine/types"
+import type { EnhancementStat, GearSlot, Inputs } from "../../../../engine/types"
+import { GEAR_SLOTS } from "../../../../engine/types"
 import {
-  clampEnhancementValue,
-  DEFAULT_ENHANCEMENTS,
+  averageEnhancementBonus,
+  averageEnhancementLevel,
+  defaultEnhancementLevels,
   enhancementCap,
+  enhancementStatsAtLevel,
 } from "../../../../definitions/baseStats"
+import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
-import { NumInput } from "../../../components/number-inputs/NumberInputs"
-import { TALENT_STAT_KEYS } from "../shared/talentStatKeys"
+import { fmt } from "../../../utils/statFormatting"
+import { GEAR_SLOT_KEYS } from "../../gear/shared/gearSlotKeys"
+import { ENHANCEMENT_STAT_KEYS } from "../shared/enhancementStatKeys"
 import styles from "./EnhancementTab.module.scss"
 
 interface Props {
@@ -17,44 +21,55 @@ interface Props {
   onChange: (next: Inputs) => void
 }
 
-const SLOT_KEYS: Readonly<Record<EnhancementSlot, string>> = {
-  disc: "gear.slot.disc",
-  pendant: "gear.slot.pendant",
-  leftWeapon: "gear.slot.leftWeapon",
-  rightWeapon: "gear.slot.rightWeapon",
-}
+const STAT_ORDER: readonly EnhancementStat[] = ["minPhys", "maxPhys", "maxHp", "physDef"]
 
-function minimumStatFirst(left: EnhancementNode, right: EnhancementNode): number {
-  return Number(right.stat.startsWith("min")) - Number(left.stat.startsWith("min"))
-}
+// Display order only — a 4-column, 2-row grid pairing each weapon row with
+// the armour slot beside it. Nothing that sums or stores enhancement levels
+// may depend on this order.
+const SLOT_DISPLAY_ORDER: readonly GearSlot[] = [
+  "leftWeapon",
+  "rightWeapon",
+  "helm",
+  "armor",
+  "disc",
+  "pendant",
+  "greaves",
+  "bracer",
+]
 
 export function EnhancementTab({ inputs, onChange }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
-  const enhancements = inputs.enhancements
+  const levels = inputs.enhancements
 
-  const nodesBySlot = useMemo(() => {
-    const out = new Map<EnhancementSlot, EnhancementNode[]>(
-      ENHANCEMENT_SLOTS.map((slot) => [slot, []]),
-    )
-    for (const node of enhancements) out.get(node.slot)?.push(node)
-    for (const nodes of out.values()) nodes.sort(minimumStatFirst)
+  const capBySlot = useMemo(() => {
+    const byId = new Map(inputs.inventory.map((piece) => [piece.id, piece]))
+    const fallbackGearLevel = gearLevelForBreakthrough(inputs.breakthrough)
+    const out = {} as Record<GearSlot, number>
+    for (const slot of GEAR_SLOTS) {
+      const equippedId = inputs.equipped[slot]
+      const piece = equippedId ? byId.get(equippedId) : undefined
+      out[slot] = enhancementCap(piece?.level ?? fallbackGearLevel, inputs.breakthrough)
+    }
     return out
-  }, [enhancements])
+  }, [inputs.inventory, inputs.equipped, inputs.breakthrough])
 
-  function setValue(id: number, value: number) {
+  function step(slot: GearSlot, delta: number) {
+    const current = levels[slot] ?? 0
+    if (delta > 0 && current >= capBySlot[slot]) return
     onChange({
       ...inputs,
-      enhancements: enhancements.map((node) =>
-        node.id === id ? { ...node, value: clampEnhancementValue(id, value) } : node,
-      ),
+      enhancements: { ...levels, [slot]: Math.max(0, current + delta) },
     })
   }
 
   async function resetAll() {
     if (!(await confirm(t("talents.enhancement.resetAllEnhancementsToDefault")))) return
-    onChange({ ...inputs, enhancements: DEFAULT_ENHANCEMENTS.map((node) => ({ ...node })) })
+    onChange({ ...inputs, enhancements: defaultEnhancementLevels() })
   }
+
+  const average = averageEnhancementLevel(levels)
+  const bonus = averageEnhancementBonus(levels)
 
   return (
     <div>
@@ -65,24 +80,58 @@ export function EnhancementTab({ inputs, onChange }: Props) {
         </button>
       </div>
 
+      <div className={`panel ${styles.averagePanel}`}>
+        <span>
+          {t("talents.enhancement.averageLevel")} <b>{average}</b>
+        </span>
+        <span>
+          {t("talents.enhancement.averageBonusHp")} <b>+{bonus.maxHp.toLocaleString()}</b>
+        </span>
+        <span>
+          {t("talents.enhancement.averageBonusPercent")} <b>+{fmt(bonus.percent, true)}</b>
+        </span>
+      </div>
+
       <div className={styles.slotGrid}>
-        {ENHANCEMENT_SLOTS.map((slot) => (
-          <div className={`panel ${styles.slotCard}`} key={slot}>
-            <h2>{t(SLOT_KEYS[slot])}</h2>
-            {(nodesBySlot.get(slot) ?? []).map((node) => (
-              <label className={styles.statRow} key={node.id}>
-                <span>{t(TALENT_STAT_KEYS[node.stat], node.stat)}</span>
-                <NumInput
-                  min={0}
-                  max={enhancementCap(node.id)}
-                  value={node.value}
-                  onChange={(value) => setValue(node.id, value)}
-                />
-                <span className={styles.cap}>/ {enhancementCap(node.id)}</span>
-              </label>
-            ))}
-          </div>
-        ))}
+        {SLOT_DISPLAY_ORDER.map((slot) => {
+          const level = levels[slot] ?? 0
+          const cap = capBySlot[slot]
+          const stats = enhancementStatsAtLevel(slot, level)
+          return (
+            <div className={`panel ${styles.slotCard}`} key={slot}>
+              <h2>{t(GEAR_SLOT_KEYS[slot])}</h2>
+              <div className={styles.levelControl}>
+                <button
+                  type="button"
+                  className={styles.stepButton}
+                  aria-label={t("talents.enhancement.decreaseLevel")}
+                  disabled={level <= 0}
+                  onClick={() => step(slot, -1)}
+                >
+                  −
+                </button>
+                <span className={styles.level}>
+                  <b>{level}</b> / {cap}
+                </span>
+                <button
+                  type="button"
+                  className={styles.stepButton}
+                  aria-label={t("talents.enhancement.increaseLevel")}
+                  disabled={level >= cap}
+                  onClick={() => step(slot, 1)}
+                >
+                  +
+                </button>
+              </div>
+              {STAT_ORDER.filter((stat) => stats[stat] !== undefined).map((stat) => (
+                <div className={styles.statRow} key={stat}>
+                  <span>{t(ENHANCEMENT_STAT_KEYS[stat])}</span>
+                  <span>{stats[stat]?.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

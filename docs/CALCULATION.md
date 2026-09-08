@@ -84,8 +84,9 @@ guard, and it is directional.
    and added **after** the cap — so a charged hit can exceed the plain crit cap.
    Direct rates stay flat.
 
-**Penetration resistance is zero for every target.** PvE targets carry none.
-The plumbing stays so real values can slot in if a target ever has any.
+**Penetration resistance is zero for every target below breakthrough 20, and
+non-zero from breakthrough 20 on.** It is read off the target's own
+breakthrough, the same way its defense is.
 
 ### Sources of truth
 

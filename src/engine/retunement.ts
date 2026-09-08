@@ -1,5 +1,7 @@
-import type { GearPiece, GearWordId } from "./types"
+import type { GearLevel, GearPiece, GearRarity, GearWordId } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
+import type { RetuneBand, RetuneLine } from "../data/stats/gearRetuneWeights"
+import type { StatLineUnit } from "../data/stats/statLines"
 
 export const FIRST_LOCKED_SLOT = 0
 export const ALL_REROLLABLE_SLOTS: readonly number[] = [1, 2, 3, 4]
@@ -66,4 +68,127 @@ export function annotatePoolForSlot(
       isCurrent: word === currentWord,
     }
   })
+}
+
+// The retune draw pops every word currently on the piece, so the survivor set
+// is the same regardless of which row is being retuned.
+function equippedWords(piece: GearPiece): ReadonlySet<GearWordId> {
+  return new Set(
+    piece.words.map((entry) => entry.word).filter((word): word is GearWordId => word !== ""),
+  )
+}
+
+export function retunedOutWordsOf(piece: GearPiece): ReadonlySet<GearWordId> {
+  return new Set(piece.retunedOutWords ?? [])
+}
+
+export interface RetuneChoice {
+  word: GearWordId
+  min: number
+  max: number
+  pDraw: number
+  deselected: boolean
+  onPiece: boolean
+}
+
+export function retunePoolChoices(
+  piece: GearPiece,
+  pool: readonly RetuneLine[],
+): readonly RetuneChoice[] {
+  const onPiece = equippedWords(piece)
+  const deselected = retunedOutWordsOf(piece)
+  const drawable = pool.filter((line) => !onPiece.has(line.word) && !deselected.has(line.word))
+  const totalWeight = drawable.reduce((sum, line) => sum + line.weight, 0)
+  return pool.map((line) => {
+    const out = onPiece.has(line.word) || deselected.has(line.word)
+    return {
+      word: line.word,
+      min: line.bands[0].min,
+      max: line.bands[2].max,
+      pDraw: !out && totalWeight > 0 ? line.weight / totalWeight : 0,
+      deselected: deselected.has(line.word),
+      onPiece: onPiece.has(line.word),
+    }
+  })
+}
+
+export type RetuneAttemptBudget = "single" | "repeatable"
+
+// Gear level 86 grants exactly one retune ever; every level from 91 up is
+// repeatable (subject to an in-game cooldown this app does not model).
+export function retuneAttemptBudget(level: GearLevel): RetuneAttemptBudget {
+  return level <= 86 ? "single" : "repeatable"
+}
+
+function bandStarWeight(band: RetuneBand, rarity: GearRarity): number {
+  return rarity === "legendary" ? band.star5Weight : band.lowerStarWeight
+}
+
+const RAW_VALUE_STEP = 0.1
+const PERCENT_VALUE_STEP = 0.001
+
+export function exactMaxWithinLineChance(
+  line: RetuneLine,
+  rarity: GearRarity,
+  unit: StatLineUnit,
+): number {
+  const totalWeight = line.bands.reduce((sum, band) => sum + bandStarWeight(band, rarity), 0)
+  if (totalWeight <= 0) return 0
+  const topBand = line.bands[2]
+  const step = unit === "percent" ? PERCENT_VALUE_STEP : RAW_VALUE_STEP
+  const steps = Math.round((topBand.max - topBand.min) / step) + 1
+  return bandStarWeight(topBand, rarity) / totalWeight / steps
+}
+
+// Assumes ΔDPS is linear in the rolled value between `min` and `max` — the
+// same assumption `probLinearImprove` makes for re-attunement's single range,
+// applied per band here.
+export function probLinearImprove(
+  dpsMin: number,
+  dpsMax: number,
+  baseline: number,
+  min: number,
+  max: number,
+): number {
+  if (max <= min || Math.abs(dpsMax - dpsMin) < 1e-9) {
+    return dpsMax > baseline + 1e-9 ? 1 : 0
+  }
+  if (dpsMax > dpsMin) {
+    if (dpsMin >= baseline) return 1
+    if (dpsMax <= baseline) return 0
+    const vCrit = min + ((baseline - dpsMin) * (max - min)) / (dpsMax - dpsMin)
+    return Math.max(0, Math.min(1, (max - vCrit) / (max - min)))
+  }
+  if (dpsMax >= baseline) return 1
+  if (dpsMin <= baseline) return 0
+  const vCrit = min + ((baseline - dpsMin) * (max - min)) / (dpsMax - dpsMin)
+  return Math.max(0, Math.min(1, (vCrit - min) / (max - min)))
+}
+
+export interface RetuneLineOutcome {
+  pImprove: number
+  eDeltaDpsGivenDrawn: number
+}
+
+export function retuneLineOutcome(
+  line: RetuneLine,
+  rarity: GearRarity,
+  baseline: number,
+  dpsAt: (value: number) => number,
+): RetuneLineOutcome {
+  const totalWeight = line.bands.reduce((sum, band) => sum + bandStarWeight(band, rarity), 0)
+  if (totalWeight <= 0) return { pImprove: 0, eDeltaDpsGivenDrawn: 0 }
+
+  let pImprove = 0
+  let eDeltaDpsGivenDrawn = 0
+  for (const band of line.bands) {
+    const bandWeight = bandStarWeight(band, rarity)
+    if (bandWeight <= 0) continue
+    const share = bandWeight / totalWeight
+    const dpsAtMin = dpsAt(band.min)
+    const dpsAtMax = dpsAt(band.max)
+    pImprove += share * probLinearImprove(dpsAtMin, dpsAtMax, baseline, band.min, band.max)
+    eDeltaDpsGivenDrawn += share * ((dpsAtMin + dpsAtMax) / 2 - baseline)
+  }
+  return { pImprove, eDeltaDpsGivenDrawn }
 }

@@ -3,10 +3,10 @@ import { kvStore } from "../../src/kvStore"
 import { loadProfiles, saveProfiles } from "../../src/storage"
 import { DEFAULT_ENHANCEMENTS } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
+import { LATEST_PROFILES_VERSION } from "../../src/migrations"
 import type { Inputs } from "../../src/engine/types"
 
 const PROFILES_KEY = "wwm.profiles"
-const PROFILES_VERSION = 4
 
 function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   const inputs: Omit<Inputs, "enhancements"> & { enhancements?: unknown } = {
@@ -17,30 +17,28 @@ function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   kvStore.set(
     PROFILES_KEY,
     JSON.stringify({
-      v: PROFILES_VERSION,
+      v: LATEST_PROFILES_VERSION,
       profiles: [{ id: "p1", name: "Legacy", inputs }],
       activeId: "p1",
     }),
   )
 }
 
-describe("enhancements migration (additive field, no version bump)", () => {
+describe("enhancement levels — the every-load hydrator", () => {
   beforeEach(() => {
     try {
       kvStore.remove(PROFILES_KEY)
     } catch {}
   })
 
-  it("seeds DEFAULT_ENHANCEMENTS when the stored blob has no `enhancements` key", () => {
+  it("seeds every slot at level 65 when the stored blob has no `enhancements` key", () => {
     writeProfilesBlob({})
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
   })
 
-  it("preserves a lowered value already on the blob (idempotent)", () => {
-    const lowered = DEFAULT_ENHANCEMENTS.map((node) =>
-      node.id === 1 ? { ...node, value: 12 } : { ...node },
-    )
+  it("preserves a lowered level already on the blob (idempotent)", () => {
+    const lowered = { ...DEFAULT_ENHANCEMENTS, disc: 12 }
     writeProfilesBlob({ enhancements: lowered })
     const first = loadProfiles()
     expect(first.profiles[0].inputs.enhancements).toEqual(lowered)
@@ -50,39 +48,39 @@ describe("enhancements migration (additive field, no version bump)", () => {
     expect(second.profiles[0].inputs.enhancements).toEqual(lowered)
   })
 
-  it("merges entries added to enhancements.json after the profile was saved", () => {
-    const partial = DEFAULT_ENHANCEMENTS.slice(0, 2).map((node) => ({ ...node }))
-    writeProfilesBlob({ enhancements: partial })
+  it("fills a slot missing from the stored object with the default level", () => {
+    const partial = { leftWeapon: 40, rightWeapon: 40 }
+    writeProfilesBlob({ enhancements: partial as unknown as Inputs["enhancements"] })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
+    expect(profiles[0].inputs.enhancements).toEqual({
+      ...DEFAULT_ENHANCEMENTS,
+      leftWeapon: 40,
+      rightWeapon: 40,
+    })
   })
 
-  it("clamps a stored value above the figure enhancements.json authors", () => {
-    const inflated = DEFAULT_ENHANCEMENTS.map((node) => ({ ...node, value: node.value + 500 }))
+  it("never clamps a stored level down to the current cap", () => {
+    const inflated = Object.fromEntries(
+      Object.entries(DEFAULT_ENHANCEMENTS).map(([slot, level]) => [slot, level + 500]),
+    ) as Inputs["enhancements"]
     writeProfilesBlob({ enhancements: inflated })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
+    expect(profiles[0].inputs.enhancements).toEqual(inflated)
   })
 
   it("heals a malformed `enhancements` value back to the default", () => {
-    writeProfilesBlob({ enhancements: "not-an-array" as unknown as Inputs["enhancements"] })
+    writeProfilesBlob({ enhancements: "not-an-object" as unknown as Inputs["enhancements"] })
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
   })
 
-  it("keeps an entry this build no longer defines rather than dropping it", () => {
-    const unknownId = Math.max(...DEFAULT_ENHANCEMENTS.map((node) => node.id)) + 1
-    const stored = [
-      ...DEFAULT_ENHANCEMENTS.map((node) => ({ ...node })),
-      { id: unknownId, slot: "helm", stat: "maxPhys", value: 42 },
-    ]
-    writeProfilesBlob({ enhancements: stored as unknown as Inputs["enhancements"] })
+  it("drops a slot the current build no longer defines", () => {
+    const withStrayKey = {
+      ...DEFAULT_ENHANCEMENTS,
+      notASlot: 40,
+    } as unknown as Inputs["enhancements"]
+    writeProfilesBlob({ enhancements: withStrayKey })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.enhancements).toContainEqual({
-      id: unknownId,
-      slot: "helm",
-      stat: "maxPhys",
-      value: 42,
-    })
+    expect(profiles[0].inputs.enhancements).toEqual(DEFAULT_ENHANCEMENTS)
   })
 })

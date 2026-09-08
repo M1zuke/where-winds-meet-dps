@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import type {
   GearLevel,
   GearPiece,
@@ -7,11 +7,19 @@ import type {
   GearWordEntry,
 } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
-import { isGearWordId, isUnknownGearWord } from "../../../../data/stats/statLines"
+import { isGearWordId } from "../../../../data/stats/statLines"
+import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { relayedCapValue } from "../../../../engine/gearStats"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
-import { attunementsFor, attunementLabelKey, getAttunement } from "../../../../engine/attunements"
+import { selectableGearLevels } from "../shared/selectableGearLevels"
+import {
+  attunementLabelKey,
+  attunementMax,
+  attunementMin,
+  attunementsFor,
+  getAttunement,
+} from "../../../../engine/attunements"
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -22,7 +30,9 @@ import { NumInput, PercentInput } from "../../../components/number-inputs/Number
 import { Switch } from "../../../components/switch/Switch"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { GEAR_LEVEL_KEYS } from "../shared/gearLevelKeys"
 import type { GearScreenshotRowSlot } from "../screenshot-ocr/ocrGearPiece"
+import { RetuneOptionsDialog } from "../retune-options-dialog/RetuneOptionsDialog"
 import styles from "./GearPieceForm.module.scss"
 
 export type ScanMarkField = "slot" | "level" | GearScreenshotRowSlot
@@ -72,6 +82,7 @@ export function GearPieceForm({
   onScanMarkCleared,
 }: Props) {
   const { t } = useI18n()
+  const [openRetuneRow, setOpenRetuneRow] = useState<number | null>(null)
 
   function markClassName(field: ScanMarkField, half: ScanFieldHalf): string | undefined {
     const mark = scanMarks?.[field]
@@ -85,12 +96,12 @@ export function GearPieceForm({
     [t],
   )
   const levelOptions: ComboboxOption[] = useMemo(
-    () => [
-      { value: "86", label: t("gear.level.86") },
-      { value: "91", label: t("gear.level.91") },
-      { value: "96", label: t("gear.level.96") },
-    ],
-    [t],
+    () =>
+      selectableGearLevels(inputs.breakthrough, piece.level).map((level) => ({
+        value: String(level),
+        label: t(GEAR_LEVEL_KEYS[level]),
+      })),
+    [t, inputs.breakthrough, piece.level],
   )
   const rarityOptions: ComboboxOption[] = useMemo(
     () => [
@@ -99,14 +110,18 @@ export function GearPieceForm({
     ],
     [t],
   )
-  const wordSpecs = useMemo(() => getWordSpecs(inputs), [inputs])
-  const wordOptions: ComboboxOption[] = useMemo(() => {
-    const list = wordSpecs.map((spec) => ({
+  const buildWordSpecs = useMemo(() => getWordSpecs(inputs, piece.level), [inputs, piece.level])
+  function wordSpecsForLine(lineIndex: number) {
+    const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex)
+    return buildWordSpecs.filter((spec) => pool.includes(spec.word))
+  }
+  function wordOptionsForLine(lineIndex: number): ComboboxOption[] {
+    const list = wordSpecsForLine(lineIndex).map((spec) => ({
       value: spec.word,
       label: t(statLineKey(spec.word), spec.label),
     }))
     return [{ value: "", label: t("common.none") }, ...list]
-  }, [wordSpecs, t])
+  }
   const attunementCatalog = useMemo(
     () => attunementsFor(piece.slot, inputs.classId),
     [piece.slot, inputs.classId],
@@ -125,10 +140,13 @@ export function GearPieceForm({
   const weaponSide = isWeaponSlot(piece.slot)
   const base = gearBaseStatsFor(piece)
 
-  function capFor(word: GearWordEntry["word"], relayed: boolean): number | null {
-    const spec = wordSpecs.find((candidate) => candidate.word === word)
+  function capFor(lineIndex: number, word: GearWordEntry["word"], relayed: boolean): number | null {
+    const spec = wordSpecsForLine(lineIndex).find((candidate) => candidate.word === word)
     if (!spec) return null
     return relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
+  }
+  function isHiddenGearWord(lineIndex: number, word: GearWordEntry["word"]): boolean {
+    return word !== "" && !wordSpecsForLine(lineIndex).some((spec) => spec.word === word)
   }
   // Two decimals as displayed, so a percent word keeps four on its fraction.
   function roundToShownPrecision(value: number, isPercent: boolean): number {
@@ -150,8 +168,13 @@ export function GearPieceForm({
       physDef: base.physDef,
     })
   }
-  function clampAndRound(value: number, word: GearWordEntry["word"], relayed: boolean): number {
-    const spec = wordSpecs.find((candidate) => candidate.word === word)
+  function clampAndRound(
+    lineIndex: number,
+    value: number,
+    word: GearWordEntry["word"],
+    relayed: boolean,
+  ): number {
+    const spec = wordSpecsForLine(lineIndex).find((candidate) => candidate.word === word)
     if (!spec || !Number.isFinite(value)) return value
     const cap = relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
     return roundToShownPrecision(Math.min(Math.max(value, 0), cap), spec.unit === "percent")
@@ -161,25 +184,44 @@ export function GearPieceForm({
   // writes over the row it sits on.
   function patchWord(idx: number, patchedFields: Partial<GearWordEntry>): void {
     const next = [...piece.words] as GearPiece["words"]
-    const current = next[idx]
-    const base = isUnknownGearWord(current.word)
-      ? { ...current, word: "" as const, value: 0 }
-      : current
-    const merged = { ...base, ...patchedFields }
-    merged.value = clampAndRound(merged.value, merged.word, piece.relayed)
-    next[idx] = merged
+    const merged = { ...next[idx], ...patchedFields }
+    const effective = isHiddenGearWord(idx, merged.word)
+      ? { ...merged, word: "" as const, value: 0 }
+      : merged
+    effective.value = clampAndRound(idx, effective.value, effective.word, piece.relayed)
+    next[idx] = effective
     onChange({ ...piece, words: next })
   }
   function setRelayed(relayed: boolean): void {
-    const nextWords = piece.words.map((word) => ({
+    const nextWords = piece.words.map((word, idx) => ({
       ...word,
-      value: clampAndRound(word.value, word.word, relayed),
+      value: clampAndRound(idx, word.value, word.word, relayed),
     })) as GearPiece["words"]
     onChange({ ...piece, relayed, words: nextWords })
+  }
+  // The initial affix can never be retuned, and at most one line may be
+  // retuned at a time — turning R on for a row turns it off for every other.
+  function setRetunedSlot(idx: number, retuned: boolean): void {
+    if (idx === 0) return
+    const next = piece.words.map((word, i) => ({
+      ...word,
+      retuned: i === idx ? retuned : retuned ? false : word.retuned,
+    })) as GearPiece["words"]
+    onChange({ ...piece, words: next })
+    setOpenRetuneRow(null)
   }
 
   return (
     <fieldset className={styles.gearForm}>
+      {openRetuneRow !== null && (
+        <RetuneOptionsDialog
+          piece={piece}
+          slotIndex={openRetuneRow}
+          inputs={inputs}
+          onChange={onChange}
+          onClose={() => setOpenRetuneRow(null)}
+        />
+      )}
       <div className={styles.identityRow}>
         <Field label={t("common.type")}>
           <Select
@@ -253,6 +295,7 @@ export function GearPieceForm({
             {t("gear.pieceForm.value")}
           </span>
           <span className={styles.colHead} />
+          <span className={styles.colHead} />
           {showWordMax && (
             <>
               <span className={`${styles.colHead} ${styles.colHeadRight}`}>
@@ -264,13 +307,13 @@ export function GearPieceForm({
             </>
           )}
           {piece.words.map((stored, idx) => {
-            const word = isUnknownGearWord(stored.word)
+            const word = isHiddenGearWord(idx, stored.word)
               ? { ...stored, word: "" as const, value: 0 }
               : stored
-            const spec = wordSpecs.find((candidate) => candidate.word === word.word)
+            const spec = wordSpecsForLine(idx).find((candidate) => candidate.word === word.word)
             const isPercent = spec?.unit === "percent"
             const ValueInput = isPercent ? PercentInput : NumInput
-            const cap = capFor(word.word, piece.relayed)
+            const cap = capFor(idx, word.word, piece.relayed)
             const maxDisplay =
               cap != null ? (isPercent ? `${(cap * 100).toFixed(2)} %` : cap.toFixed(2)) : undefined
             const wm: WordMaxRow | undefined = wordMaxRows[idx]
@@ -298,7 +341,7 @@ export function GearPieceForm({
                     (markClassName(wordField, "name") ? ` ${markClassName(wordField, "name")}` : "")
                   }
                   value={word.word}
-                  options={wordOptions}
+                  options={wordOptionsForLine(idx)}
                   onChange={(value) => {
                     onScanMarkCleared?.(wordField)
                     patchWord(idx, { word: isGearWordId(value) ? value : "" })
@@ -318,10 +361,20 @@ export function GearPieceForm({
                 <button
                   type="button"
                   className={"btn" + (word.retuned ? " is-on" : "")}
-                  onClick={() => patchWord(idx, { retuned: !word.retuned })}
+                  disabled={idx === 0}
+                  onClick={() => setRetunedSlot(idx, !word.retuned)}
                   title={t("gear.pieceForm.retune")}
                 >
                   R
+                </button>
+                <button
+                  type="button"
+                  className="btn"
+                  disabled={!word.retuned}
+                  onClick={() => setOpenRetuneRow(idx)}
+                  title={t("gear.pieceForm.retuneOptions")}
+                >
+                  ⚙
                 </button>
                 {showWordMax && (
                   <>
@@ -345,14 +398,14 @@ export function GearPieceForm({
           active && attunementCatalog.some((opt) => opt.id === active.id) ? active : undefined
         const isPercent = true
         const ValueInput = isPercent ? PercentInput : NumInput
-        const min = selected?.min ?? 0
-        const max = selected?.max ?? 0
+        const min = selected ? attunementMin(selected, piece.level) : 0
+        const max = selected ? attunementMax(selected, piece.level) : 0
         const rangeHint = selected
           ? `${(min * 100).toFixed(1)}–${(max * 100).toFixed(1)} %${selected.hint ? " " + t(attunementHintKey(selected.id), selected.hint) : ""}`
           : ""
         function clampValue(value: number): number {
           if (!selected || !Number.isFinite(value)) return value
-          return Math.round(Math.min(Math.max(value, selected.min), selected.max) * 1000) / 1000
+          return Math.round(Math.min(Math.max(value, min), max) * 1000) / 1000
         }
         return (
           <div className={styles.attunementSection}>

@@ -23,10 +23,10 @@ function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T
 }
 
-function writeProfile(profile: StoredProfile): void {
+function writeProfile(profile: StoredProfile, version = LEGACY.v): void {
   localStorage.setItem(
     PROFILES_KEY,
-    JSON.stringify({ v: LEGACY.v, profiles: [profile], activeId: profile.id }),
+    JSON.stringify({ v: version, profiles: [profile], activeId: profile.id }),
   )
 }
 
@@ -100,7 +100,11 @@ describe("profile-v6 with a slot at a tier only reachable via the widened Bitter
   it("is idempotent across repeated loads", () => {
     writeProfile(withBitterSeasonAtTier3(clone(LEGACY.profile)))
     const once = loadOne()
-    writeProfile(clone(once))
+    // A real reload persists at the version it just walked to, per
+    // `runProfileMigrations` — not at the fixture's original floor, which
+    // would replay every step (including ones frozen to an id table older
+    // than a value a later step produced) against an already-migrated shape.
+    writeProfile(clone(once), LATEST_PROFILES_VERSION)
     expect(loadOne()).toEqual(once)
   })
 })

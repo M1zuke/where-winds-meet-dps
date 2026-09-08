@@ -20,9 +20,9 @@ function critDamageAt(engine: BuffEngine, time: number): number | undefined {
 }
 
 describe("rainwhisper — 2-piece precision", () => {
-  it("adds 8% precision to the panel", () => {
-    const base = { ...defaultInputs, set: null }
-    const equipped = { ...defaultInputs, set: SET_ID.rainwhisper }
+  it("adds 8% precision to the panel at gear level 96", () => {
+    const base = { ...defaultInputs, breakthrough: 16, set: null }
+    const equipped = { ...defaultInputs, breakthrough: 16, set: SET_ID.rainwhisper }
     expect(applyArmorSet(equipped).precision).toBeCloseTo(applyArmorSet(base).precision + 0.08, 10)
   })
 })

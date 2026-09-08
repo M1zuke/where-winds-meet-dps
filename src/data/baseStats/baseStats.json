@@ -6,7 +6,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 2787,
+    "W_DEF": 28
   },
   "2": {
     "MIN_W_ATK": 58,
@@ -15,7 +17,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 2829,
+    "W_DEF": 28
   },
   "3": {
     "MIN_W_ATK": 58,
@@ -24,7 +28,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 2873,
+    "W_DEF": 28
   },
   "4": {
     "MIN_W_ATK": 59,
@@ -33,7 +39,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 2918,
+    "W_DEF": 29
   },
   "5": {
     "MIN_W_ATK": 59,
@@ -42,7 +50,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 2965,
+    "W_DEF": 29
   },
   "6": {
     "MIN_W_ATK": 60,
@@ -51,7 +61,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3014,
+    "W_DEF": 29
   },
   "7": {
     "MIN_W_ATK": 61,
@@ -60,7 +72,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3065,
+    "W_DEF": 30
   },
   "8": {
     "MIN_W_ATK": 61,
@@ -69,7 +83,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3117,
+    "W_DEF": 30
   },
   "9": {
     "MIN_W_ATK": 62,
@@ -78,7 +94,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3172,
+    "W_DEF": 30
   },
   "10": {
     "MIN_W_ATK": 63,
@@ -87,7 +105,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3228,
+    "W_DEF": 31
   },
   "11": {
     "MIN_W_ATK": 64,
@@ -96,7 +116,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3286,
+    "W_DEF": 31
   },
   "12": {
     "MIN_W_ATK": 64,
@@ -105,7 +127,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3347,
+    "W_DEF": 31
   },
   "13": {
     "MIN_W_ATK": 65,
@@ -114,7 +138,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3410,
+    "W_DEF": 32
   },
   "14": {
     "MIN_W_ATK": 66,
@@ -123,7 +149,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3475,
+    "W_DEF": 32
   },
   "15": {
     "MIN_W_ATK": 67,
@@ -132,7 +160,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3543,
+    "W_DEF": 33
   },
   "16": {
     "MIN_W_ATK": 68,
@@ -141,7 +171,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3645,
+    "W_DEF": 33
   },
   "17": {
     "MIN_W_ATK": 70,
@@ -150,7 +182,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3752,
+    "W_DEF": 34
   },
   "18": {
     "MIN_W_ATK": 71,
@@ -159,7 +193,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3865,
+    "W_DEF": 35
   },
   "19": {
     "MIN_W_ATK": 73,
@@ -168,7 +204,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 3984,
+    "W_DEF": 36
   },
   "20": {
     "MIN_W_ATK": 74,
@@ -177,7 +215,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4110,
+    "W_DEF": 36
   },
   "21": {
     "MIN_W_ATK": 75,
@@ -186,7 +226,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4175,
+    "W_DEF": 37
   },
   "22": {
     "MIN_W_ATK": 76,
@@ -195,7 +237,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4242,
+    "W_DEF": 37
   },
   "23": {
     "MIN_W_ATK": 77,
@@ -204,7 +248,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4311,
+    "W_DEF": 38
   },
   "24": {
     "MIN_W_ATK": 78,
@@ -213,7 +259,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4382,
+    "W_DEF": 38
   },
   "25": {
     "MIN_W_ATK": 79,
@@ -222,7 +270,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4454,
+    "W_DEF": 39
   },
   "26": {
     "MIN_W_ATK": 80,
@@ -231,7 +281,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4528,
+    "W_DEF": 39
   },
   "27": {
     "MIN_W_ATK": 80,
@@ -240,7 +292,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4605,
+    "W_DEF": 39
   },
   "28": {
     "MIN_W_ATK": 82,
@@ -249,7 +303,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4683,
+    "W_DEF": 40
   },
   "29": {
     "MIN_W_ATK": 83,
@@ -258,7 +314,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4764,
+    "W_DEF": 41
   },
   "30": {
     "MIN_W_ATK": 84,
@@ -267,7 +325,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4846,
+    "W_DEF": 41
   },
   "31": {
     "MIN_W_ATK": 85,
@@ -276,7 +336,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4919,
+    "W_DEF": 42
   },
   "32": {
     "MIN_W_ATK": 86,
@@ -285,7 +347,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 4994,
+    "W_DEF": 42
   },
   "33": {
     "MIN_W_ATK": 86,
@@ -294,7 +358,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5071,
+    "W_DEF": 42
   },
   "34": {
     "MIN_W_ATK": 88,
@@ -303,7 +369,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5149,
+    "W_DEF": 43
   },
   "35": {
     "MIN_W_ATK": 89,
@@ -312,7 +380,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5230,
+    "W_DEF": 44
   },
   "36": {
     "MIN_W_ATK": 90,
@@ -321,7 +391,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5311,
+    "W_DEF": 44
   },
   "37": {
     "MIN_W_ATK": 91,
@@ -330,7 +402,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5395,
+    "W_DEF": 45
   },
   "38": {
     "MIN_W_ATK": 92,
@@ -339,7 +413,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5481,
+    "W_DEF": 45
   },
   "39": {
     "MIN_W_ATK": 93,
@@ -348,7 +424,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5569,
+    "W_DEF": 46
   },
   "40": {
     "MIN_W_ATK": 94,
@@ -357,7 +435,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 5659,
+    "W_DEF": 46
   },
   "41": {
     "MIN_W_ATK": 95,
@@ -366,7 +446,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 6472,
+    "W_DEF": 47
   },
   "42": {
     "MIN_W_ATK": 96,
@@ -375,7 +457,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 6626,
+    "W_DEF": 47
   },
   "43": {
     "MIN_W_ATK": 97,
@@ -384,7 +468,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 6785,
+    "W_DEF": 48
   },
   "44": {
     "MIN_W_ATK": 98,
@@ -393,7 +479,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 6950,
+    "W_DEF": 48
   },
   "45": {
     "MIN_W_ATK": 99,
@@ -402,7 +490,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 7121,
+    "W_DEF": 49
   },
   "46": {
     "MIN_W_ATK": 100,
@@ -411,7 +501,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 7299,
+    "W_DEF": 50
   },
   "47": {
     "MIN_W_ATK": 101,
@@ -420,7 +512,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 7484,
+    "W_DEF": 50
   },
   "48": {
     "MIN_W_ATK": 103,
@@ -429,7 +523,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 7675,
+    "W_DEF": 51
   },
   "49": {
     "MIN_W_ATK": 104,
@@ -438,7 +534,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 7874,
+    "W_DEF": 51
   },
   "50": {
     "MIN_W_ATK": 105,
@@ -447,7 +545,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 8080,
+    "W_DEF": 52
   },
   "51": {
     "MIN_W_ATK": 107,
@@ -456,7 +556,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 9317,
+    "W_DEF": 53
   },
   "52": {
     "MIN_W_ATK": 109,
@@ -465,7 +567,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 9664,
+    "W_DEF": 54
   },
   "53": {
     "MIN_W_ATK": 110,
@@ -474,7 +578,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 10030,
+    "W_DEF": 54
   },
   "54": {
     "MIN_W_ATK": 112,
@@ -483,7 +589,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 10415,
+    "W_DEF": 56
   },
   "55": {
     "MIN_W_ATK": 114,
@@ -492,7 +600,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 10820,
+    "W_DEF": 56
   },
   "56": {
     "MIN_W_ATK": 116,
@@ -501,7 +611,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 12047,
+    "W_DEF": 57
   },
   "57": {
     "MIN_W_ATK": 119,
@@ -510,7 +622,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 12548,
+    "W_DEF": 59
   },
   "58": {
     "MIN_W_ATK": 121,
@@ -519,7 +633,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 13077,
+    "W_DEF": 60
   },
   "59": {
     "MIN_W_ATK": 123,
@@ -528,7 +644,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 13637,
+    "W_DEF": 61
   },
   "60": {
     "MIN_W_ATK": 125,
@@ -537,7 +655,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 14228,
+    "W_DEF": 62
   },
   "61": {
     "MIN_W_ATK": 128,
@@ -546,7 +666,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 16174,
+    "W_DEF": 63
   },
   "62": {
     "MIN_W_ATK": 130,
@@ -555,7 +677,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 16626,
+    "W_DEF": 64
   },
   "63": {
     "MIN_W_ATK": 132,
@@ -564,7 +688,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 17093,
+    "W_DEF": 65
   },
   "64": {
     "MIN_W_ATK": 135,
@@ -573,7 +699,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 17575,
+    "W_DEF": 67
   },
   "65": {
     "MIN_W_ATK": 138,
@@ -582,7 +710,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 18074,
+    "W_DEF": 68
   },
   "66": {
     "MIN_W_ATK": 140,
@@ -591,7 +721,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 18590,
+    "W_DEF": 69
   },
   "67": {
     "MIN_W_ATK": 143,
@@ -600,7 +732,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 19123,
+    "W_DEF": 71
   },
   "68": {
     "MIN_W_ATK": 146,
@@ -609,7 +743,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 19675,
+    "W_DEF": 72
   },
   "69": {
     "MIN_W_ATK": 149,
@@ -618,7 +754,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 20245,
+    "W_DEF": 74
   },
   "70": {
     "MIN_W_ATK": 152,
@@ -627,7 +765,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 20835,
+    "W_DEF": 75
   },
   "71": {
     "MIN_W_ATK": 154,
@@ -636,7 +776,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 20980,
+    "W_DEF": 76
   },
   "72": {
     "MIN_W_ATK": 156,
@@ -645,7 +787,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21124,
+    "W_DEF": 77
   },
   "73": {
     "MIN_W_ATK": 157,
@@ -654,7 +798,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21269,
+    "W_DEF": 77
   },
   "74": {
     "MIN_W_ATK": 159,
@@ -663,7 +809,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21415,
+    "W_DEF": 78
   },
   "75": {
     "MIN_W_ATK": 161,
@@ -672,7 +820,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21560,
+    "W_DEF": 78
   },
   "76": {
     "MIN_W_ATK": 163,
@@ -681,7 +831,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21706,
+    "W_DEF": 79
   },
   "77": {
     "MIN_W_ATK": 165,
@@ -690,7 +842,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21852,
+    "W_DEF": 80
   },
   "78": {
     "MIN_W_ATK": 167,
@@ -699,7 +853,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 21998,
+    "W_DEF": 80
   },
   "79": {
     "MIN_W_ATK": 169,
@@ -708,7 +864,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 22145,
+    "W_DEF": 81
   },
   "80": {
     "MIN_W_ATK": 171,
@@ -717,7 +875,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 22292,
+    "W_DEF": 82
   },
   "81": {
     "MIN_W_ATK": 174,
@@ -726,7 +886,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 22915,
+    "W_DEF": 83
   },
   "82": {
     "MIN_W_ATK": 177,
@@ -735,7 +897,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 23560,
+    "W_DEF": 85
   },
   "83": {
     "MIN_W_ATK": 180,
@@ -744,7 +908,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 24227,
+    "W_DEF": 86
   },
   "84": {
     "MIN_W_ATK": 184,
@@ -753,7 +919,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 24918,
+    "W_DEF": 88
   },
   "85": {
     "MIN_W_ATK": 187,
@@ -762,7 +930,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 25633,
+    "W_DEF": 90
   },
   "86": {
     "MIN_W_ATK": 191,
@@ -771,7 +941,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 26374,
+    "W_DEF": 92
   },
   "87": {
     "MIN_W_ATK": 195,
@@ -780,7 +952,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 27141,
+    "W_DEF": 94
   },
   "88": {
     "MIN_W_ATK": 198,
@@ -789,7 +963,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 27935,
+    "W_DEF": 95
   },
   "89": {
     "MIN_W_ATK": 203,
@@ -798,7 +974,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 28758,
+    "W_DEF": 97
   },
   "90": {
     "MIN_W_ATK": 207,
@@ -807,7 +985,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 29611,
+    "W_DEF": 100
   },
   "91": {
     "MIN_W_ATK": 211,
@@ -816,7 +996,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 30495,
+    "W_DEF": 102
   },
   "92": {
     "MIN_W_ATK": 215,
@@ -825,7 +1007,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 31412,
+    "W_DEF": 104
   },
   "93": {
     "MIN_W_ATK": 219,
@@ -834,7 +1018,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 32362,
+    "W_DEF": 106
   },
   "94": {
     "MIN_W_ATK": 224,
@@ -843,7 +1029,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 33347,
+    "W_DEF": 108
   },
   "95": {
     "MIN_W_ATK": 229,
@@ -852,7 +1040,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 34369,
+    "W_DEF": 110
   },
   "96": {
     "MIN_W_ATK": 235,
@@ -861,7 +1051,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 35759,
+    "W_DEF": 114
   },
   "97": {
     "MIN_W_ATK": 242,
@@ -870,7 +1062,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 37219,
+    "W_DEF": 117
   },
   "98": {
     "MIN_W_ATK": 248,
@@ -879,7 +1073,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 38751,
+    "W_DEF": 120
   },
   "99": {
     "MIN_W_ATK": 255,
@@ -888,7 +1084,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 40360,
+    "W_DEF": 124
   },
   "100": {
     "MIN_W_ATK": 263,
@@ -897,7 +1095,9 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.35,
-    "BASH_UP": 0.2
+    "BASH_UP": 0.2,
+    "HP_MAX": 42050,
+    "W_DEF": 128
   },
   "1000": {
     "MIN_W_ATK": 0,
@@ -906,6 +1106,8 @@
     "CRI_PROB": 0,
     "BASH_PROB": 0,
     "W_ATK_CRI_UP": 0.5,
-    "BASH_UP": 0.35
+    "BASH_UP": 0.35,
+    "HP_MAX": 4800,
+    "W_DEF": 40
   }
 }

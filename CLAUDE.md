@@ -283,7 +283,8 @@ deficit / `÷200` overflow (deliberately inverts PDF §7 — **do not "fix" it
 back**); DoT (`sustain`) rows lose elevated matching-path scaling but keep
 the flat damage their own data authors; a skill's raw affinity-rate bonus is
 `÷(1+r)` and falls inside the cap, while its raw crit-rate bonus is flat and
-added after the cap. Penetration resistance is **zero for every target**.
+added after the cap. Penetration resistance is zero for every target below
+breakthrough 20, and non-zero from breakthrough 20 on.
 
 These have no cached anchor — only the directional `damageRules.test.ts`.
 

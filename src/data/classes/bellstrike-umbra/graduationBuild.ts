@@ -55,7 +55,7 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
       attunement: "bleedingDamage",
     }),
   ],
-  set: SET_ID.hawking,
+  set: SET_ID.hawkwing,
   bowSet: "crit",
   arsenal: "bellstrike",
   relayedOverrides: { bowSet: "affinity" },

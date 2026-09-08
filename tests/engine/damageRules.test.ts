@@ -6,7 +6,7 @@ import {
 } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
-import { penResistanceForLevel } from "../../src/engine/panel"
+import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
@@ -195,10 +195,16 @@ describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflo
     expect(withRes).toBeLessThan(base)
   })
 
-  it("penResistanceForLevel is zero for every target", () => {
-    for (const lvl of [80, 85, 90, 95, 100]) {
-      expect(penResistanceForLevel(lvl)).toEqual({ physical: 0, attribute: 0 })
-    }
+  it("a build at breakthrough 20 deals less damage than the same build with its pen resistance zeroed", () => {
+    const ctx20 = buildContext({ ...defaultInputs, breakthrough: 20 })
+    const ctx20WithoutPenResistance = { ...ctx20, physPenResistance: 0, attrPenResistance: 0 }
+    const damageWithPenResistance = computeSkillDamage(art, ctx20, 1).expectedDamage
+    const damageWithoutPenResistance = computeSkillDamage(
+      art,
+      ctx20WithoutPenResistance,
+      1,
+    ).expectedDamage
+    expect(damageWithPenResistance).toBeLessThan(damageWithoutPenResistance)
   })
 })
 

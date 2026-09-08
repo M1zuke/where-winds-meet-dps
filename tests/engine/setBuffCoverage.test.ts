@@ -40,8 +40,10 @@ describe("Jadeware pays out against low-Qi targets only", () => {
     return effects({ phase } as never)
   }
 
-  it("gives nothing while the target's Qi is untouched", () => {
-    expect(effectsAt("normal")).toEqual([])
+  it("gives only the unconditional affinity-damage bonus while the target's Qi is untouched", () => {
+    expect(effectsAt("normal")).toEqual([
+      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
+    ])
   })
 
   it.each(["below30", "exhausted"] as const)("gives both bonuses while %s", (phase) => {
@@ -63,8 +65,8 @@ describe("Jadeware pays out against low-Qi targets only", () => {
       .breakdown[BUFF.jadeware]
   }
 
-  it("contributes nothing inside its own window while the target is at full Qi", () => {
-    expect(contributionAt(engineWithSet("jadeware"), 24.5)).toBeUndefined()
+  it("contributes only the unconditional affinity-damage bonus while the target is at full Qi", () => {
+    expect(contributionAt(engineWithSet("jadeware"), 24.5)).toBeCloseTo(0.1, 10)
   })
 
   it("contributes both bonuses once the same window overlaps the break", () => {

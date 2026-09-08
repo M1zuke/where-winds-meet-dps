@@ -9,8 +9,9 @@ import { jadeware as jadewareSet } from "../../sets/jadeware"
 // lasts 10s and can only trigger once every 12s." (in-game set tooltip, as of
 // 15 Aug 2026)
 //
-// The window and its cooldown run off the cast alone; only the bonus asks about
-// the target, so the gate sits on the effects rather than on the trigger. Every
+// The tooltip reads as if both bonuses were gated on the target's Qi; the
+// buff itself carries `affinityDamageBoost` unconditionally for the
+// whole window, and only `directAffinityRate` asks about the target. Every
 // low-Qi source the sim models — the lead-in window, Qi Imbalance, and the
 // broken bar during qi-break — reports a non-`normal` phase.
 export const jadeware = defineBuff({
@@ -20,7 +21,9 @@ export const jadeware = defineBuff({
   affectsAll: true,
   duration: 10,
   cooldown: 12,
-  summary: "affinityDmg +10%, directAffinity +7.5% — low-Qi targets only",
-  effects: (ctx) =>
-    ctx.phase === "normal" ? [] : [stat("affinityDamageBoost", 0.1), stat("directAffinityRate", 0.075)],
+  summary: "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
+  effects: (ctx) => [
+    stat("affinityDamageBoost", 0.1),
+    ...(ctx.phase === "normal" ? [] : [stat("directAffinityRate", 0.075)]),
+  ],
 })

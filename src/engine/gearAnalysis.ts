@@ -1,11 +1,12 @@
 import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone } from "./gearStats"
-import { getWordSpecs, type WordSpec } from "./itemRanking"
+import { getWordSpecs } from "./itemRanking"
 import { poolForClass } from "../definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "./retunement"
-import { attunementsFor } from "./attunements"
+import { attunementMax, attunementsFor } from "./attunements"
+import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { GEAR_SLOTS } from "./types"
-import type { GearPiece, GearSlot, GearWordId, Inputs } from "./types"
+import type { GearLevel, GearPiece, GearSlot, Inputs } from "./types"
 import type { RetunementPool } from "../definitions/classes/classDef"
 
 export interface GearSlotAnalysisRow {
@@ -31,11 +32,12 @@ function bestRetuneDps(
   slotEmpty: Inputs,
   piece: GearPiece,
   pool: RetunementPool | null,
-  specByWord: Map<GearWordId, WordSpec<GearWordId>>,
+  inputs: Inputs,
 ): number | null {
   if (piece.relayed) return null
   if (!pool || pool.stats.length === 0) return null
 
+  const specByWord = new Map(getWordSpecs(inputs, piece.level).map((spec) => [spec.word, spec]))
   let best: number | null = null
   for (const slotIndex of rerollableSlots(piece)) {
     for (const { word, legal, isCurrent } of annotatePoolForSlot(piece, slotIndex, pool)) {
@@ -61,21 +63,26 @@ function bestReattuneDps(slotEmpty: Inputs, piece: GearPiece, classId: string): 
     const dps = dpsWithPiece(slotEmpty, {
       ...piece,
       attunement: option.id,
-      attunementValue: option.max,
+      attunementValue: attunementMax(option, piece.level),
     })
     if (best === null || dps > best) best = dps
   }
   return best
 }
 
-function relayedDps(slotEmpty: Inputs, piece: GearPiece, inputs: Inputs): number | null {
+function relayedDps(
+  slotEmpty: Inputs,
+  piece: GearPiece,
+  inputs: Inputs,
+  breakthroughLevel: GearLevel,
+): number | null {
   if (piece.relayed) return null
-  return dpsWithPiece(slotEmpty, maxRelayedClone(piece, inputs))
+  return dpsWithPiece(slotEmpty, maxRelayedClone(piece, inputs, breakthroughLevel))
 }
 
 export function computeGearAnalysis(inputs: Inputs, baselineDps: number): GearSlotAnalysisRow[] {
   const pool = poolForClass(inputs.classId)
-  const specByWord = new Map(getWordSpecs(inputs).map((spec) => [spec.word, spec] as const))
+  const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
 
   return GEAR_SLOTS.map((slot) => {
     const piece = equippedPiece(inputs, slot)
@@ -96,9 +103,9 @@ export function computeGearAnalysis(inputs: Inputs, baselineDps: number): GearSl
     return {
       slot,
       pieceId: piece.id,
-      retuneGain: gainOver(bestRetuneDps(slotEmpty, piece, pool, specByWord)),
+      retuneGain: gainOver(bestRetuneDps(slotEmpty, piece, pool, inputs)),
       reattuneGain: gainOver(bestReattuneDps(slotEmpty, piece, inputs.classId)),
-      relayGain: gainOver(relayedDps(slotEmpty, piece, inputs)),
+      relayGain: gainOver(relayedDps(slotEmpty, piece, inputs, breakthroughLevel)),
       unequipLoss: baselineDps - runEngine(slotEmpty).dps,
     }
   })

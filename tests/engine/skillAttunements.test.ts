@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest"
 import {
   ATTUNEMENT_OPTIONS,
+  attunementMax,
   getAttunement,
   type AttunementOption,
 } from "../../src/engine/attunements"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
+import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { makeDebuff } from "../../src/engine/debuff"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
@@ -16,6 +18,7 @@ import type { Result } from "../../src/engine/types"
 const SKILL_ATTUNEMENTS = ATTUNEMENT_OPTIONS.filter(
   (option): option is AttunementOption & { affectsTag: string } => !!option.affectsTag,
 )
+const GEAR_LEVEL = gearLevelForBreakthrough(defaultInputs.breakthrough)
 
 function damageOf(result: Result, name: string): number {
   return result.perSkill
@@ -97,18 +100,16 @@ describe("declarative skill attunements", () => {
   it.each(SKILL_ATTUNEMENTS)(
     "$id applies its configured multiplier to a tagged direct skill and linked DoT",
     (option) => {
+      const max = attunementMax(option, GEAR_LEVEL)
       const base = runTaggedSkillAndDot(option, 0)
-      const boosted = runTaggedSkillAndDot(option, option.max)
+      const boosted = runTaggedSkillAndDot(option, max)
       const directName = `${option.id} Direct`
       const dotName = `${option.id} Tick (DoT)`
 
       expect(damageOf(base, directName)).toBeGreaterThan(0)
       expect(damageOf(base, dotName)).toBeGreaterThan(0)
-      expect(damageOf(boosted, directName) / damageOf(base, directName)).toBeCloseTo(
-        1 + option.max,
-        10,
-      )
-      expect(damageOf(boosted, dotName) / damageOf(base, dotName)).toBeCloseTo(1 + option.max, 10)
+      expect(damageOf(boosted, directName) / damageOf(base, directName)).toBeCloseTo(1 + max, 10)
+      expect(damageOf(boosted, dotName) / damageOf(base, dotName)).toBeCloseTo(1 + max, 10)
     },
   )
 
@@ -137,12 +138,13 @@ describe("declarative skill attunements", () => {
       })
     }
 
+    const max = attunementMax(option, GEAR_LEVEL)
     const phalanxBase = damageOf(run(phalanx.id, 0), phalanx.name)
-    const phalanxBoosted = damageOf(run(phalanx.id, option.max), phalanx.name)
+    const phalanxBoosted = damageOf(run(phalanx.id, max), phalanx.name)
     const specialBase = damageOf(run(special.id, 0), special.name)
-    const specialBoosted = damageOf(run(special.id, option.max), special.name)
+    const specialBoosted = damageOf(run(special.id, max), special.name)
 
-    expect(phalanxBoosted / phalanxBase).toBeCloseTo(1 + option.max, 10)
+    expect(phalanxBoosted / phalanxBase).toBeCloseTo(1 + max, 10)
     expect(specialBoosted).toBeCloseTo(specialBase, 10)
   })
 })

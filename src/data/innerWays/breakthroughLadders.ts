@@ -1,7 +1,7 @@
 import type { PanelStats } from "../../definitions/innerWays/innerWayDef"
 import type { InnerWayLadderId } from "./ids"
 
-// Game client tables xinfa_uprank_attr and xinfa_uprank_world_lv as of 2026-09-03
+// In-game ladder values as of 2026-09-03
 // (reference/innerWays/breakthroughPanelStats.json), keyed by breakthrough.
 export const INNER_WAY_LADDERS: Readonly<
   Record<InnerWayLadderId, Readonly<Record<number, PanelStats>>>

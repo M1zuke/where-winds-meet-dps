@@ -4,10 +4,10 @@ import { kvStore } from "../../src/kvStore"
 import { loadProfiles, saveProfiles } from "../../src/storage"
 import { DEFAULT_ODDITIES } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
+import { LATEST_PROFILES_VERSION } from "../../src/migrations"
 import type { Inputs } from "../../src/engine/types"
 
 const PROFILES_KEY = "wwm.profiles"
-const PROFILES_VERSION = 4
 
 function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   const inputs: Omit<Inputs, "oddities"> & { oddities?: unknown } = {
@@ -18,7 +18,7 @@ function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   kvStore.set(
     PROFILES_KEY,
     JSON.stringify({
-      v: PROFILES_VERSION,
+      v: LATEST_PROFILES_VERSION,
       profiles: [{ id: "p1", name: "Legacy", inputs }],
       activeId: "p1",
     }),
@@ -53,7 +53,7 @@ describe("oddities migration (additive field, no version bump)", () => {
     expect(second.profiles[0].inputs.oddities).toEqual(first.profiles[0].inputs.oddities)
   })
 
-  it("merges regions added to oddities.json after the profile was saved", () => {
+  it("merges regions added to oddities.ts after the profile was saved", () => {
     const stored = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as Inputs["oddities"]
     delete stored["Hidden Mountain: Suixiang"]
     stored.Qinghe[0] = { ...stored.Qinghe[0], enabled: false }

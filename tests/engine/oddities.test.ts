@@ -3,25 +3,20 @@ import {
   oddityContributions,
   DEFAULT_ODDITIES,
   getConfiguredBase,
+  oddityHpTotal,
+  oddityPhysDefTotal,
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
-import odditiesJson from "../../src/data/baseStats/oddities.json"
+import { ODDITIES } from "../../src/data/baseStats/oddities"
 import type { Inputs, OddityRegions } from "../../src/engine/types"
-
-interface RawOddityEntry {
-  id: number
-  stat: string
-  value: number
-}
-type RawOddities = Record<string, RawOddityEntry[]>
 
 function rawTotals(): { min: number; max: number } {
   let min = 0
   let max = 0
-  for (const entries of Object.values(odditiesJson as RawOddities)) {
-    for (const e of entries) {
-      if (e.stat === "minPhys") min += e.value
-      if (e.stat === "maxPhys") max += e.value
+  for (const entries of Object.values(ODDITIES)) {
+    for (const node of entries) {
+      if (node.stat === "minPhys") min += node.value
+      if (node.stat === "maxPhys") max += node.value
     }
   }
   return { min, max }
@@ -70,6 +65,25 @@ describe("editable oddities", () => {
     const withField = getConfiguredBase({ ...defaultInputs, oddities: DEFAULT_ODDITIES }, [])
     expect(withoutField["phys.min"]).toBeCloseTo(withField["phys.min"], 6)
     expect(withoutField["phys.max"]).toBeCloseTo(withField["phys.max"], 6)
+  })
+
+  it("sums every region's Max HP nodes to 8150", () => {
+    expect(oddityHpTotal(DEFAULT_ODDITIES)).toBe(8150)
+  })
+
+  it("sums every region's Physical Defense nodes to 50", () => {
+    expect(oddityPhysDefTotal(DEFAULT_ODDITIES)).toBe(50)
+  })
+
+  it("leaves the attack-node total at 124, unchanged by adding the HP and defense nodes", () => {
+    const raw = rawTotals()
+    expect(raw.min + raw.max).toBe(124)
+  })
+
+  it("keeps Max HP and Physical Defense nodes off the combat base, unlike the attack nodes", () => {
+    const out = oddityContributions(DEFAULT_ODDITIES)
+    expect(out.maxHp).toBeUndefined()
+    expect(out.physDef).toBeUndefined()
   })
 
   it("toggling a node's enabled flag lowers the base by exactly that node's value", () => {
