@@ -62,13 +62,15 @@ export function resistanceForInputs(inputs: Inputs): number {
   return resistanceForBreakthrough(inputs.breakthrough)
 }
 
-// Pen resistance is zero for every target per the 2026-07 decision; the
-// level parameter is kept as plumbing for a future target that has one.
-export function penResistanceForLevel(_level: number): { physical: number; attribute: number } {
-  return { physical: 0, attribute: 0 }
+export function penResistanceForBreakthrough(breakthrough: number): {
+  physical: number
+  attribute: number
+} {
+  const tier = getBreakthrough(breakthrough)
+  return { physical: tier.physPenResistance, attribute: tier.attrPenResistance }
 }
-export function penResistanceForInputs(_inputs: Inputs): { physical: number; attribute: number } {
-  return penResistanceForLevel(0)
+export function penResistanceForInputs(inputs: Inputs): { physical: number; attribute: number } {
+  return penResistanceForBreakthrough(inputs.breakthrough)
 }
 
 // White → yellow conversion — see CLAUDE.md § "White vs Yellow rates":

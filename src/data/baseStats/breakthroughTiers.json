@@ -6,6 +6,8 @@
     "levelRange": "86-90",
     "resistance": 30,
     "defense": 308,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1
   },
@@ -16,6 +18,8 @@
     "levelRange": "91-95",
     "resistance": 45,
     "defense": 351,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -48,6 +52,8 @@
     "levelRange": "91-95",
     "resistance": 45,
     "defense": 351,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -80,6 +86,8 @@
     "levelRange": "96-100",
     "resistance": 65,
     "defense": 408,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -112,6 +120,8 @@
     "levelRange": "96-100",
     "resistance": 65,
     "defense": 408,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "release": "2026-09-03T03:30:00Z",
@@ -144,7 +154,9 @@
     "name": "Discernment",
     "levelRange": "100",
     "resistance": 85,
-    "defense": 446,
+    "defense": 500,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -176,7 +188,9 @@
     "name": "Vision",
     "levelRange": "100",
     "resistance": 85,
-    "defense": 446,
+    "defense": 500,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -208,7 +222,9 @@
     "name": "Fathoming",
     "levelRange": "100",
     "resistance": 115,
-    "defense": 446,
+    "defense": 558,
+    "physPenResistance": 20,
+    "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [
@@ -240,7 +256,9 @@
     "name": "Equanimity",
     "levelRange": "100",
     "resistance": 115,
-    "defense": 446,
+    "defense": 558,
+    "physPenResistance": 20,
+    "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
     "attributes": [

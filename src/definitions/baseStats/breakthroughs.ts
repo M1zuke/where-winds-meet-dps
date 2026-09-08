@@ -14,6 +14,10 @@ export interface BreakthroughTier {
   levelRange: string
   resistance: number
   defense: number
+  // Breakthrough 21 repeats 20's figures by the season pattern — no client
+  // entry above world level 20 exists yet to read them from directly.
+  physPenResistance: number
+  attrPenResistance: number
   generalDamageTaken: number
   fatigueDamageTaken: number
   attributes?: BreakthroughAttribute[]
