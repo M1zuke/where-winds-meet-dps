@@ -1,3 +1,4 @@
+import type { GearLevelValues } from "../../engine/types"
 import type { MechanicRegistration } from "../../engine/mechanics"
 
 // A field a set doesn't carry is omitted, never zero-filled: a zero here reads
@@ -9,10 +10,10 @@ export interface SetFormulaBonus {
   generalDamageBoost?: number
 }
 
-// The 2-piece bonus: one scalar into one named panel stat.
+// The 2-piece bonus: one scalar into one named panel stat, per gear level.
 export interface SetPanelBonus {
   stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
-  value: number
+  value: GearLevelValues
 }
 
 export interface SetDef {

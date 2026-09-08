@@ -31,35 +31,22 @@ function optionButtons(): HTMLElement[] {
   return screen.getAllByRole("button").filter((button) => button.hasAttribute("aria-current"))
 }
 
-describe("RotationTab subtabs", () => {
-  it("opens on the rotation's output, not on the editor", () => {
+describe("RotationTab", () => {
+  it("shows the rotation output beside the list, with no subtab to choose", () => {
     renderTab()
 
     expect(screen.getByText("Rotations")).toBeInTheDocument()
     expect(screen.getByText("DPS Breakdown")).toBeInTheDocument()
     expect(screen.getByText("DPS Graph")).toBeInTheDocument()
     expect(screen.getByText("Cast Timeline")).toBeInTheDocument()
+    expect(screen.queryAllByRole("tab")).toHaveLength(0)
+  })
+
+  it("leaves the editor to its own tab", () => {
+    renderTab()
+
     expect(screen.queryByRole("button", { name: "+ Add skill" })).not.toBeInTheDocument()
-  })
-
-  it("shows the editor once its subtab is selected", () => {
-    renderTab()
-
-    fireEvent.click(screen.getByRole("tab", { name: "Rotation Editor" }))
-
-    expect(screen.getByRole("button", { name: "+ New" })).toBeInTheDocument()
-    expect(screen.queryByText("DPS Breakdown")).not.toBeInTheDocument()
-    expect(screen.queryByText("Cast Timeline")).not.toBeInTheDocument()
-  })
-
-  it("keeps the rotation list beside both subtabs", () => {
-    renderTab()
-    const listedOnOverview = optionButtons().length
-
-    fireEvent.click(screen.getByRole("tab", { name: "Rotation Editor" }))
-
-    expect(screen.getByText("Rotations")).toBeInTheDocument()
-    expect(optionButtons()).toHaveLength(listedOnOverview)
+    expect(screen.queryByRole("button", { name: "+ New" })).not.toBeInTheDocument()
   })
 
   it("lists every rotation the class offers and nothing else", () => {

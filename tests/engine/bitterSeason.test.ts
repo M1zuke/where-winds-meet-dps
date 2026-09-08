@@ -194,6 +194,7 @@ describe("Bitter Season panel-stat tier gating (getMindMethodContributions)", ()
     getMindMethodContributions({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
+      breakthrough: 17,
       mindMethods: [
         { name: "bitterSeason", stacks },
         emptyMindMethod,

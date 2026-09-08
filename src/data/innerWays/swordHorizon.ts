@@ -1,5 +1,5 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { SWORD_HORIZON_GATES, ZENITH_BAR_BUFF_ID, zenithBar } from "./swordHorizonZenith"
 import { crosswindBehavior } from "./swordHorizonCrosswind"
@@ -11,11 +11,9 @@ export const swordHorizon = defineInnerWay({
   selectableTiers: [6, 5],
   confirmedBreakthrough: 17,
   buffParam: PARAM.swordHorizon,
-  panelStats: {
-    "phys.max": 77.9,
-    directAffinityRate: 0.023,
-  },
   tiers: {
+    2: { ladder: INNER_WAY_LADDER.weaponAttackMaxFiveStar },
+    5: { panelStats: { directAffinityRate: 0.023 } },
     6: {
       nodes: [INNER_WAY_NODE.crosswindChargeRetention, INNER_WAY_NODE.dotDetonationRetention],
     },

@@ -1,4 +1,5 @@
 import type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
+import { latestVersion, runChain } from "./chain"
 import { V5__englishIdsWithoutSitePrefix } from "./V5__englishIdsWithoutSitePrefix"
 import { V6__dropDerivedStats } from "./V6__dropDerivedStats"
 import { V7__clampSingleMysticWordRoll } from "./V7__clampSingleMysticWordRoll"
@@ -16,6 +17,10 @@ import { V18__followNewUmbraDefaultRotation } from "./V18__followNewUmbraDefault
 import { V19__qiBreakOverride } from "./V19__qiBreakOverride"
 import { V20__mergeRiverFlowIntoWolfchasersArt } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 import { V21__formlessAttackWordIds } from "./V21__formlessAttackWordIds"
+import { V22__dropBreakthrough12 } from "./V22__dropBreakthrough12"
+import { V23__renameHawking } from "./V23__renameHawking"
+import { V24__enhancementLevelsPerSlot } from "./V24__enhancementLevelsPerSlot"
+import { V25__addOddityHpDefenseNodes } from "./V25__addOddityHpDefenseNodes"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -36,6 +41,9 @@ export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
 export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
 export { migrateRiverFlowBuffId } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 export { migrateFormlessWordId } from "./V21__formlessAttackWordIds"
+export { migrateHawkingSetId } from "./V23__renameHawking"
+export { enhancementLevelsFromLegacyNodes } from "./V24__enhancementLevelsPerSlot"
+export { addMissingOddityNodes } from "./V25__addOddityHpDefenseNodes"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -55,58 +63,19 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V19__qiBreakOverride,
   V20__mergeRiverFlowIntoWolfchasersArt,
   V21__formlessAttackWordIds,
+  V22__dropBreakthrough12,
+  V23__renameHawking,
+  V24__enhancementLevelsPerSlot,
+  V25__addOddityHpDefenseNodes,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4
 
-export const LATEST_PROFILES_VERSION = PROFILE_MIGRATIONS.reduce(
-  (max, m) => Math.max(max, m.to),
-  VERSION_BEFORE_THIS_FOLDER,
-)
+export const LATEST_PROFILES_VERSION = latestVersion(PROFILE_MIGRATIONS, VERSION_BEFORE_THIS_FOLDER)
 
 export function runProfileMigrations(
   input: unknown,
   options?: { toVersion?: number },
 ): MigrationRunResult | null {
-  if (!input || typeof input !== "object" || Array.isArray(input)) return null
-
-  const applied: string[] = []
-  const notes: string[] = []
-  const source = input as RawProfilesBlob
-  const targetVersion = Math.min(
-    options?.toVersion ?? LATEST_PROFILES_VERSION,
-    LATEST_PROFILES_VERSION,
-  )
-
-  const rawVersion = typeof source.v === "number" && Number.isFinite(source.v) ? source.v : 0
-  if (rawVersion !== source.v) notes.push(`missing/invalid version, treated as ${rawVersion}`)
-
-  // A downgrade must not shred data a newer build wrote.
-  if (rawVersion > targetVersion) {
-    notes.push(`blob v${rawVersion} is newer than v${targetVersion} — left untouched`)
-    return { blob: source, applied, notes }
-  }
-
-  const byTarget = new Map(PROFILE_MIGRATIONS.map((m) => [m.to, m]))
-  let blob: RawProfilesBlob = source
-
-  for (let target = rawVersion + 1; target <= targetVersion; target++) {
-    const step = byTarget.get(target)
-    if (!step) {
-      notes.push(`no migration to v${target} — passed through`)
-      blob = { ...blob, v: target }
-      continue
-    }
-    try {
-      const next = step.migrate(blob)
-      if (!next || typeof next !== "object") throw new Error("step returned a non-object")
-      blob = { ...next, v: target }
-      applied.push(step.name)
-    } catch (e) {
-      notes.push(`${step.name} failed (${(e as Error)?.message ?? e}) — blob kept unchanged`)
-      blob = { ...blob, v: target }
-    }
-  }
-
-  return { blob, applied, notes }
+  return runChain<RawProfilesBlob>(PROFILE_MIGRATIONS, LATEST_PROFILES_VERSION, input, options)
 }

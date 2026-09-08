@@ -1,6 +1,7 @@
 import { useId, useMemo, useRef, useState } from "react"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
+import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { RELAYED_FACTOR } from "../../../../engine/gearStats"
 import { graduationBuild, graduationInputs } from "../../../../engine/graduation"
 import { resistanceForInputs } from "../../../../engine/panel"
@@ -48,7 +49,11 @@ export function GraduationBuildDialog({
   const [relayed, setRelayed] = useState(false)
   const variant = relayed ? "relayed" : "maxRolls"
   const classDef = classDefinition(inputs.classId)
-  const build = useMemo(() => graduationBuild(inputs.classId, variant), [inputs.classId, variant])
+  const level = gearLevelForBreakthrough(inputs.breakthrough)
+  const build = useMemo(
+    () => graduationBuild(inputs.classId, variant, level),
+    [inputs.classId, variant, level],
+  )
   const benchmarkInputs = useMemo(() => graduationInputs(inputs, variant), [inputs, variant])
 
   if (!classDef || !build || !benchmarkInputs) return null

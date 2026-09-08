@@ -152,6 +152,16 @@
   margin-left: auto;
 }
 
+.tabGapBefore {
+  margin-left: 20px;
+}
+
+@include breakpoints.below(breakpoints.$bp-980) {
+  .tabGapBefore {
+    margin-left: 0;
+  }
+}
+
 @include breakpoints.below(breakpoints.$bp-700) {
   .tab {
     display: flex;

@@ -21,10 +21,10 @@ export const spearspecial1HitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 25,
-      physMultiplier: 0.8561,
-      attributeMultiplier: 1.28415,
-      physFixed: 237,
-      attributeFixed: 129,
+      physMultiplier: 0.6848704,
+      attributeMultiplier: 1.0273056,
+      physFixed: 189.76,
+      attributeFixed: 103.36,
       triggers: [
         applyDot({
           target: DEBUFF.bleedTick,
@@ -63,14 +63,14 @@ export const spearspecial1HitCancel = defineSkill({
           id: "hv-spearspecial-1-hit-cancel-river-flow",
           label: "River Flow",
           conditions: [{ buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }],
-          physMultiplier: 1.02732,
-          attributeMultiplier: 1.54096,
-          physFixed: 284.4,
-          attributeFixed: 154.8,
+          physMultiplier: 1.0273056,
+          attributeMultiplier: 1.5409584,
+          physFixed: 284.64,
+          attributeFixed: 155.04,
         },
       ],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-07-30T00:00:00.000Z",
+  updatedAt: "2026-09-03T00:00:00.000Z",
 })

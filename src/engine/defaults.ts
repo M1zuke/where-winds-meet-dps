@@ -1,6 +1,10 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import { DEFAULT_ENHANCEMENTS, DEFAULT_ODDITIES } from "../definitions/baseStats"
+import {
+  DEFAULT_ARSENAL_SCORES,
+  DEFAULT_ENHANCEMENTS,
+  DEFAULT_ODDITIES,
+} from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -18,9 +22,10 @@ export const defaultInputs: Inputs = {
   bellstrike: { min: 57.0, max: 0, penetration: 0 },
   stonesplit: { min: 28.0, max: 0, penetration: 0 },
   silkbind: { min: 0, max: 0, penetration: 0 },
-  // This character-sheet build's bamboocut min/max bake in an OLDER arsenal
-  // bonus (+114/229) than the live ARSENAL_BONUS (+131/263) — the engine
-  // consumes them verbatim; do not "fix" this mismatch by re-deriving them.
+  // This character-sheet build's bamboocut min/max bake in a 7-arsenal
+  // total (+114/229, breakthrough 14-15's Total Mastery sum) rather than
+  // this build's own breakthrough 13 (+97/195) — a captured build, not a
+  // re-derivable one; the engine consumes them verbatim.
   bamboocut: { min: 352.0, max: 502.0, penetration: 0.212 },
 
   // White values chosen to round-trip to the effective 1.0 / 0.7 / 0.164 at
@@ -63,11 +68,12 @@ export const defaultInputs: Inputs = {
 
   food: true,
   tianGongElement: "fire",
-  set: SET_ID.hawking,
+  set: SET_ID.hawkwing,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
   bowSet: null,
   arsenal: "bamboocut",
+  arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,
 
   rotation: null,
@@ -81,7 +87,9 @@ export const defaultInputs: Inputs = {
 
   oddities: DEFAULT_ODDITIES,
 
-  enhancements: DEFAULT_ENHANCEMENTS,
+  disabledTalentPoints: {},
+
+  enhancements: { ...DEFAULT_ENHANCEMENTS },
 
   combatSettings: defaultCombatSettings(),
 }

@@ -6,7 +6,7 @@ import { stat } from "../../../../engine/effects/effect"
 // Affinity DMG Bonus": "Increases the Affinity DMG of sword energy attacks
 // against targets with Qi below 40% (including Exhausted targets) or in a state
 // of Qi Imbalance, based on Max Physical Attack, up to 18.0% increase at 1500
-// Max Physical Attack" (client localization, 2026-08-15).
+// Max Physical Attack" (in-game English text, 2026-08-15).
 //
 // Carried at the cap, which any realistic build clears. The target condition is
 // `phase !== "normal"`: the low-Qi window models the below-40% state, and Qi

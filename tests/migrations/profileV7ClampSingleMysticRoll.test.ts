@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { loadProfiles } from "../../src/storage"
 import { computeGearContribution, relayedCapValue } from "../../src/engine/gearStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
+import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import { V7__clampSingleMysticWordRoll } from "../../src/migrations/V7__clampSingleMysticWordRoll"
 import type { GearPiece, Inputs, StoredProfile } from "../../src/engine/types"
@@ -15,6 +16,8 @@ import legacyProfileFile from "./testProfiles/v6/bellstrikeUmbra.json"
 const PROFILES_KEY = "wwm.profiles"
 const LEGACY_WORD = "Single-Target Mystic Skill DMG Boost"
 const WORD_ID = "singleTargetMysticBoost"
+// The migration's own historical cap, frozen in V7__clampSingleMysticWordRoll —
+// unrelated to the live per-level ceiling checked below.
 const MAX_ROLL = 0.09797
 
 // The fixture is pre-V12, so the same word reads as a display name before the
@@ -73,16 +76,18 @@ describe("profile-v6 fixture — the stored blob predates the corrected max roll
 })
 
 describe("the corrected cap is what the gear form and the engine both use", () => {
-  it("getWordSpecs reports 9.797 %, and relayed gear 9.21 %", () => {
-    const spec = getWordSpecs(LEGACY.profile.inputs).find(
+  const level = gearLevelForBreakthrough(LEGACY.profile.inputs.breakthrough)
+
+  it("getWordSpecs reports 9.8 %, and relayed gear 9.21 %", () => {
+    const spec = getWordSpecs(LEGACY.profile.inputs, level).find(
       (candidate) => candidate.word === WORD_ID,
     )!
-    expect(spec.amount).toBeCloseTo(MAX_ROLL, 10)
+    expect(spec.amount).toBeCloseTo(0.098, 10)
     expect(relayedCapValue(spec.amount, spec.unit)).toBeCloseTo(0.0921, 10)
   })
 
   it("only ever raises the cap a stored roll was clamped to, so v7 profiles stay legal", () => {
-    const spec = getWordSpecs(LEGACY.profile.inputs).find(
+    const spec = getWordSpecs(LEGACY.profile.inputs, level).find(
       (candidate) => candidate.word === WORD_ID,
     )!
     expect(relayedCapValue(spec.amount, spec.unit)).toBeGreaterThanOrEqual(0.092)

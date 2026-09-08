@@ -57,7 +57,7 @@ describe("catalog summary pins — jadeware", () => {
   it("Applies row on Sword Martial Q names the target state the bonus needs", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10%, directAffinity +7.5% — low-Qi targets only",
+      "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
     )
   })
 })

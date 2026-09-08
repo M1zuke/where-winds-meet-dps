@@ -1,6 +1,6 @@
 import { declareMechanic } from "../../engine/mechanics"
 import { defineInnerWay, innerWayHasNode } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID, INNER_WAY_NODE, type InnerWayNode } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE, type InnerWayNode } from "./ids"
 import type { BitterSeasonTuning } from "../../engine/buffs/bitterSeason"
 import { bitterSeasonMechanic } from "./bitterSeasonMechanic"
 
@@ -11,7 +11,7 @@ export const bitterSeason = defineInnerWay({
   confirmedBreakthrough: 17,
   tiers: {
     1: { nodes: [INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction] },
-    2: { panelStats: { precision: 0.072 } },
+    2: { ladder: INNER_WAY_LADDER.precisionFourStar },
     4: { nodes: [INNER_WAY_NODE.bitterSeasonImprovedProcChance] },
     5: { panelStats: { physBoost: 0.025 } },
     6: { nodes: [INNER_WAY_NODE.bitterSeasonMaxStackPenetration] },

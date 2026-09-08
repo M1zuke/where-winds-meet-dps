@@ -1,6 +1,6 @@
 import { declareMechanic } from "../../engine/mechanics"
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID, INNER_WAY_NODE } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { insightfulStrikeMechanic } from "./insightfulStrikeMechanic"
 
 // Deliberately maps no `buffParam` and declares no `buffDefs`: Concentration is
@@ -11,16 +11,13 @@ export const insightfulStrike = defineInnerWay({
   name: "Insightful Strike",
   selectableTiers: [6, 5],
   confirmedBreakthrough: 17,
-  panelStats: {
-    "phys.min": 23.3,
-    "phys.max": 46.7,
-    "phys.penetration": 0.051,
-  },
   scalars: {
     dotDamageBoost: 0.1,
     allDamageBonus: 0.015,
   },
   tiers: {
+    2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },
+    5: { panelStats: { "phys.penetration": 0.051 } },
     6: {
       nodes: [INNER_WAY_NODE.concentrationDotMultiplier, INNER_WAY_NODE.concentrationSustainPair],
     },

@@ -98,9 +98,12 @@ guard** — an invariant only prose enforces is one that rots.
 
 ## Migration tests
 
-Every step in `src/migrations/` ships with a test in `tests/migrations/`.
-Migrations are the one kind of code neither the type checker nor the rest of the
-suite can protect: a broken step corrupts real saved builds silently.
+Every step in `src/migrations/` — the profile chain and the per-store chains
+under it — ships with a test in `tests/migrations/`. Migrations are the one kind
+of code neither the type checker nor the rest of the suite can protect: a broken
+step corrupts real saved builds silently. The rules below name profiles; they bind
+a skill or debuff store step the same way, with the store fixture in place of the
+profile.
 
 1. **Test against a real captured profile**, one test file per step, named for the
    version the step produces and reading the fixture at the version the step

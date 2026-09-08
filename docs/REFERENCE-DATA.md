@@ -13,7 +13,7 @@ English labels — never read these at runtime, and never in a test.
 
 | location              | what it is                                                                  | use it for                                     |
 | --------------------- | --------------------------------------------------------------------------- | ---------------------------------------------- |
-| `reference/locale/`   | official Chinese→English string pairs extracted from the game client        | naming a new domain term                       |
+| `reference/locale/`   | official Chinese→English string pairs from the game's own text              | naming a new domain term                       |
 | `reference/formula/`  | the external damage-formula reference                                       | the calculation rules (CALCULATION.md)         |
 | `reference/workbook/` | curated coefficient tables and a full cell dump from the community workbook | provenance for a coefficient baked into `src/` |
 | `reference/classes/`  | the unimplemented classes' imported data                                    | building one of them out (CLASSES.md)          |

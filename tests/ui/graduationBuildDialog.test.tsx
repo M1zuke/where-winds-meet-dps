@@ -11,12 +11,16 @@ import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-p
 import { GraduationBuildDialog } from "../../src/ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
+// The dialog's word/base-stat literals below are the level-96 ladder values,
+// so breakthrough 16 (gear level 96) keeps them meaningful.
+const inputs = { ...defaultInputs, breakthrough: 16 }
+
 describe("GraduationBuildDialog", () => {
   it("shows the class benchmark summary and all eight gear pieces", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
-          inputs={defaultInputs}
+          inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
@@ -41,7 +45,7 @@ describe("GraduationBuildDialog", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
-          inputs={defaultInputs}
+          inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
@@ -67,7 +71,7 @@ describe("GraduationBuildDialog", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
-          inputs={defaultInputs}
+          inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
@@ -82,7 +86,7 @@ describe("GraduationBuildDialog", () => {
     const relayedPhys = screen.getByText(statLineLabel("maxPhys")).parentElement?.textContent
 
     const relayed = applyBowSet(
-      applyArmorSet(withDerivedStats(graduationInputs(defaultInputs, "relayed")!)),
+      applyArmorSet(withDerivedStats(graduationInputs(inputs, "relayed")!)),
     )
     expect(relayedPhys).toContain(fmt(relayed.phys.max, false))
     expect(relayedPhys).not.toBe(maxRollPhys)
@@ -92,7 +96,7 @@ describe("GraduationBuildDialog", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
-          inputs={defaultInputs}
+          inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onClose={() => undefined}
@@ -104,7 +108,7 @@ describe("GraduationBuildDialog", () => {
 
     expect(screen.queryAllByRole("article")).toHaveLength(0)
 
-    const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(defaultInputs)!)))
+    const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(inputs)!)))
     const effective = effectiveRates(benchmark)
     const finalRates = finalCritAffinityRates({
       precision: effective.precision,

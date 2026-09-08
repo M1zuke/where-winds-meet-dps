@@ -126,9 +126,9 @@ export const bleedTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
-    physMultiplier: 0.06864,
+    physMultiplier: 0.066,
     physFixed: 0,
-    attributeMultiplier: 0.10296,
+    attributeMultiplier: 0.099,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",
@@ -147,7 +147,7 @@ export const bleedTick = defineDebuff({
     retainParamStacks: 2,
   },
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-03T00:00:00.000Z",
   tags: [ROLE.bleedTick],
   receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
@@ -181,7 +181,7 @@ export const bitterSeasonTick = defineDebuff({
 })
 
 // 5 %: the spear special's in-game hint, "Reduces Physical Defense by 5 %
-// (25 % for players)" — the non-player figure, game client locale as of
+// (25 % for players)" — the non-player figure, in-game English text as of
 // 2026-08-13. 10 s: the workbook states no duration, so it is read off its own
 // defense-reduction buff slot (umbraWorkbook.wb1.5-lvl110, rotation sheet),
 // flagged across five full runs of ten consecutive one-second bleed ticks.

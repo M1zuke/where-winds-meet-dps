@@ -16,7 +16,7 @@ function engineInputs(variant: Inputs = umbra): Inputs {
 }
 
 const procFree = engineInputs({ ...umbra, set: null, mindMethods: defaultInputs.mindMethods })
-const withProcs = engineInputs({ ...umbra, set: SET_ID.hawking })
+const withProcs = engineInputs({ ...umbra, set: SET_ID.hawkwing })
 
 function sampled(inputs: Inputs, seed: number) {
   return runEngine(inputs, { seed, collect: "totals" })

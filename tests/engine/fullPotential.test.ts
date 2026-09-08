@@ -7,19 +7,21 @@ import {
   maxRelayedClone,
   relayedCapValue,
 } from "../../src/engine/gearStats"
-import { attunementsFor } from "../../src/engine/attunements"
+import { attunementMax, attunementsFor } from "../../src/engine/attunements"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
 import { defaultInputs } from "../../src/engine/defaults"
+import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 
-import type { GearPiece, Inputs } from "../../src/engine/types"
+import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
 const umbraInputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+const BREAKTHROUGH_LEVEL = gearLevelForBreakthrough(umbraInputs.breakthrough)
 
 function piece(words: GearPiece["words"], overrides: Partial<GearPiece> = {}): GearPiece {
   return {
@@ -83,7 +85,7 @@ describe("getFTPiece", () => {
     const ft = getFTPiece(p, inputs)
 
     expect(ft.relayed).toBe(true)
-    const specs = getWordSpecs(inputs)
+    const specs = getWordSpecs(inputs, BREAKTHROUGH_LEVEL)
     for (let i = 0; i < 5; i++) {
       expect(ft.words[i].retuned).toBe(p.words[i].retuned)
       if (!ft.words[i].word) continue
@@ -107,7 +109,7 @@ describe("getFTPiece", () => {
     const baseline = applyPieceContribution(inputs, p, -1)
     let bestSwap: { slot: number; word: string; dps: number } | null = null
     const pool = poolForClass(inputs.classId)
-    const specs = getWordSpecs(inputs)
+    const specs = getWordSpecs(inputs, p.level)
     if (pool) {
       for (const slotIndex of rerollableSlots(p)) {
         const annotated = annotatePoolForSlot(p, slotIndex, pool)
@@ -157,7 +159,7 @@ describe("getFTPiece", () => {
 
     let bestSwapDps = runEngine(applyPieceContribution(baseline, p, +1)).dps
     const pool = poolForClass(inputs.classId)
-    const specs = getWordSpecs(inputs)
+    const specs = getWordSpecs(inputs, p.level)
     if (pool) {
       for (const slotIndex of rerollableSlots(p)) {
         const annotated = annotatePoolForSlot(p, slotIndex, pool)
@@ -202,7 +204,7 @@ describe("getFTPiece", () => {
     runEngine(inputs)
     const ft = getFTPiece(p, inputs)
     expect(ft.relayed).toBe(true)
-    const specs = getWordSpecs(inputs)
+    const specs = getWordSpecs(inputs, BREAKTHROUGH_LEVEL)
     for (const wd of ft.words) {
       if (!wd.word) continue
       const spec = specs.find((s) => s.word === wd.word)
@@ -249,7 +251,7 @@ describe("computeDpsDeltas → fullPotential field", () => {
   })
 
   it("for the equipped piece already at full potential, emits ~0", () => {
-    const specs = getWordSpecs(umbraInputs)
+    const specs = getWordSpecs(umbraInputs, BREAKTHROUGH_LEVEL)
     const at = (word: string) => {
       const spec = specs.find((s) => s.word === word)
       return spec ? relayedCapValue(spec.amount, spec.unit) : 0
@@ -326,57 +328,81 @@ describe("computeDpsDeltas → fullPotential field", () => {
   })
 })
 
+// Every fixture below is a level-96 piece, so the breakthrough has to resolve
+// to that same gear level — otherwise relaying (which follows the
+// breakthrough) would target a different ceiling than the pieces carry.
 describe("FT variant selection", () => {
+  const level96Inputs = { ...umbraInputs, breakthrough: 16 }
+
   function derivedInputs(equipped: GearPiece[], inventory: GearPiece[]): Inputs {
     const equippedIds = Object.fromEntries(equipped.map((p) => [p.slot, p.id]))
     return applyBowSet(
       applyArmorSet(
         withDerivedStats({
-          ...umbraInputs,
+          ...level96Inputs,
           inventory: [...equipped, ...inventory],
-          equipped: { ...umbraInputs.equipped, ...equippedIds },
+          equipped: { ...level96Inputs.equipped, ...equippedIds },
         }),
       ),
     )
   }
 
+  // Mirrors `getFTPiece`'s reachable space: a plain retune stays at the piece's
+  // own gear level, while relaying — and any retune stacked on top of a relay —
+  // follows the current breakthrough's level instead.
   function bestReachableDps(candidate: GearPiece, inputs: Inputs): number {
     const equippedId = inputs.equipped[candidate.slot]
     const equipped = equippedId ? (inputs.inventory.find((p) => p.id === equippedId) ?? null) : null
     const slotEmpty = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
-    const specs = getWordSpecs(inputs)
+    const pieceLevel = candidate.level
+    const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
     const pool = poolForClass(inputs.classId)
     const attunements = attunementsFor(candidate.slot, inputs.classId).filter(
       (option) => option.enginePath !== null,
     )
 
-    const retuneVariants: GearPiece[] = [candidate]
-    if (pool && !candidate.relayed) {
-      for (const slotIndex of rerollableSlots(candidate)) {
-        for (const { word, legal, isCurrent } of annotatePoolForSlot(candidate, slotIndex, pool)) {
+    function retuneVariantsOf(piece: GearPiece, level: GearLevel): GearPiece[] {
+      if (!pool) return [piece]
+      const specs = getWordSpecs(inputs, level)
+      const variants: GearPiece[] = [piece]
+      for (const slotIndex of rerollableSlots(piece)) {
+        for (const { word, legal, isCurrent } of annotatePoolForSlot(piece, slotIndex, pool)) {
           if (!legal || isCurrent) continue
           const spec = specs.find((s) => s.word === word)
           if (!spec) continue
-          retuneVariants.push({
-            ...candidate,
-            words: candidate.words.map((existing, index) =>
-              index === slotIndex ? { word, value: spec.amount, retuned: true } : existing,
+          const value = piece.relayed ? relayedCapValue(spec.amount, spec.unit) : spec.amount
+          variants.push({
+            ...piece,
+            words: piece.words.map((existing, index) =>
+              index === slotIndex ? { word, value, retuned: true } : existing,
             ) as GearPiece["words"],
           })
         }
       }
+      return variants
     }
 
+    const reachablePieces: { piece: GearPiece; level: GearLevel }[] = candidate.relayed
+      ? [{ piece: maxRelayedClone(candidate, inputs, breakthroughLevel), level: breakthroughLevel }]
+      : [
+          ...retuneVariantsOf(candidate, pieceLevel).map((piece) => ({ piece, level: pieceLevel })),
+          ...retuneVariantsOf(
+            maxRelayedClone(candidate, inputs, breakthroughLevel),
+            breakthroughLevel,
+          ).map((piece) => ({ piece, level: breakthroughLevel })),
+        ]
+
     let best = -Infinity
-    for (const variant of retuneVariants) {
-      for (const relayed of [false, true]) {
-        const built = relayed ? maxRelayedClone(variant, inputs) : variant
-        for (const attunement of [null, ...attunements]) {
-          const reachable: GearPiece = attunement
-            ? { ...built, attunement: attunement.id, attunementValue: attunement.max }
-            : built
-          best = Math.max(best, runEngine(applyPieceContribution(slotEmpty, reachable, +1)).dps)
-        }
+    for (const { piece, level } of reachablePieces) {
+      for (const attunement of [null, ...attunements]) {
+        const reachable: GearPiece = attunement
+          ? {
+              ...piece,
+              attunement: attunement.id,
+              attunementValue: attunementMax(attunement, level),
+            }
+          : piece
+        best = Math.max(best, runEngine(applyPieceContribution(slotEmpty, reachable, +1)).dps)
       }
     }
     return best

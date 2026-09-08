@@ -25,6 +25,7 @@ export const BUFF = {
   mountainsMight: "mountainsMight",
   mountainsMightQiImbalance: "mountainsMightQiImbalance",
   cleftpeakDeflect: "cleftpeakDeflect",
+  cleftpeakStacks: "cleftpeakStacks",
   stonesplitStrengthSkillCritDamage: "stonesplitStrengthSkillCritDamage",
   throatPierced: "throatPierced",
   dragonHeadLowHp: "dragonHeadLowHp",

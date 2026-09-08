@@ -79,13 +79,13 @@
 
 .gearWordsGrid {
   display: grid;
-  grid-template-columns: 1fr 88px 30px 62px 58px;
+  grid-template-columns: 1fr 88px 30px 30px 62px 58px;
   column-gap: 8px;
   align-items: center;
 }
 
 .gearWordsGridNoMax {
-  grid-template-columns: 1fr 88px 30px;
+  grid-template-columns: 1fr 88px 30px 30px;
 }
 
 .colHead {

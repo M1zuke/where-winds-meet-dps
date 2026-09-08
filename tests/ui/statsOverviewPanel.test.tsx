@@ -2,7 +2,11 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { equippedPiecesFor, withDerivedStats } from "../../src/engine/derivedInputs"
-import { totalFormlessAttack } from "../../src/definitions/baseStats"
+import {
+  totalFormlessAttack,
+  totalMaxHp,
+  totalPlayerAttributes,
+} from "../../src/definitions/baseStats"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
@@ -15,15 +19,15 @@ function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
   const helm: GearPiece = {
     id: "formless-helm",
     slot: "helm",
-    level: 91,
+    level: 96,
     rarity: "legendary",
     minPhys: 0,
     maxPhys: 0,
     hp: 0,
     physDef: 0,
     words: [
-      { word: "maxFormless", value: formlessMaxRoll, retuned: false },
       { word: "minBellstrike", value: 20, retuned: false },
+      { word: "maxFormless", value: formlessMaxRoll, retuned: true },
       { word: "maxBellstrike", value: 30, retuned: false },
       { word: "", value: 0, retuned: false },
       { word: "", value: 0, retuned: false },
@@ -113,6 +117,44 @@ describe("StatsOverviewPanel", () => {
     )
     expect(screen.getByText("Max Bellstrike Attack").parentElement).toHaveTextContent(
       fmt(withSets.bellstrike.max - formless.max, false),
+    )
+  })
+
+  it("shows Constitution, Defense and Max HP alongside Power, Agility and Momentum", () => {
+    const equipped = equippedPiecesFor(defaultInputs)
+    const attrs = totalPlayerAttributes(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+    const maxHp = totalMaxHp(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Constitution").parentElement).toHaveTextContent(fmt(attrs.body, false))
+    expect(screen.getByText("Defense").parentElement).toHaveTextContent(fmt(attrs.defense, false))
+    expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
+  })
+
+  it("points Max HP at the Arsenal tab's own mastery score, without a floor marker", () => {
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Max HP").parentElement).not.toHaveTextContent("≥")
+    expect(screen.getByText("Max HP")).toHaveAttribute(
+      "title",
+      "Includes each unlocked Arsenal's own mastery score, set on the Arsenal tab; defaults to Total Mastery",
     )
   })
 

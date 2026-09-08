@@ -1,5 +1,5 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
-import { INNER_WAY_ID } from "./ids"
+import { INNER_WAY_ID, INNER_WAY_LADDER } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import { springThunder, thunderousBloomBuffDef } from "./thunderousBloomBuffs"
 
@@ -9,7 +9,7 @@ export const thunderousBloom = defineInnerWay({
   selectableTiers: [6, 5],
   confirmedBreakthrough: 17,
   tiers: {
-    2: { panelStats: { "phys.min": 23.3, "phys.max": 46.7 } },
+    2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },
     5: { panelStats: { physBoost: 0.025 } },
   },
   buffParam: PARAM.thunderousBloom,

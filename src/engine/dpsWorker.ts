@@ -2,9 +2,25 @@ import { runEngine } from "./dps"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
-import { poolForClass } from "../definitions/classes/registry"
-import { annotatePoolForSlot, rerollableSlots } from "./retunement"
-import { attunementsFor, attunementLabelKey } from "./attunements"
+import { attributeForClass, poolForClass } from "../definitions/classes/registry"
+import {
+  annotatePoolForSlot,
+  probLinearImprove,
+  rerollableSlots,
+  retuneLineOutcome,
+  retunePoolChoices,
+} from "./retunement"
+import { retuneWeightPool, type RetuneLine } from "../data/stats/gearRetuneWeights"
+import { GEAR_WORD_UNIT } from "../data/stats/statLines"
+import { reattunementPool } from "../data/stats/gearReattunementWeights"
+import {
+  expectedFreshValue,
+  expectedRedeterminedValue,
+  reattunementDrawables,
+  reattunementPityThreshold,
+} from "./reattunement"
+import { attunementMax, attunementMin, attunementsFor, attunementLabelKey } from "./attunements"
+import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { ftDpsWhenEquipped, ftDpsWithSlotEmpty } from "./fullPotential"
 import { withCustomContent } from "./customContent"
 import { withDerivedStats } from "./derivedInputs"
@@ -20,6 +36,7 @@ import type { Rotation } from "./rotation"
 import type { Skill } from "./skill"
 import type { Buff } from "./buff"
 import type { Debuff } from "./debuff"
+import type { RetunementPool } from "../definitions/classes/classDef"
 import { RUN_SEED_STRIDE } from "./rng"
 import type { HitOutcome } from "./formula"
 import { GEAR_SLOTS } from "./types"
@@ -120,7 +137,11 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     const unequippedBaseline = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
 
     const currentDps = dpsForSwap(unequippedBaseline, candidate)
-    const upgraded = maxRelayedClone(candidate, inputs)
+    const upgraded = maxRelayedClone(
+      candidate,
+      inputs,
+      gearLevelForBreakthrough(inputs.breakthrough),
+    )
     const upgradedDps = dpsForSwap(unequippedBaseline, upgraded)
 
     const ftCandidateDps = ftDpsFor(candidate)
@@ -154,6 +175,10 @@ export interface RetunementRow {
   // relayed to its 94 % cap, measured against that same relayed piece.
   deltaDpsRelayed: number
   poolSize: number
+  // null where no weighted pool exists yet for this gear level (86, 91).
+  pDraw: number | null
+  pImprove: number | null
+  eDeltaDps: number | null
 }
 
 export interface RetunementWorkerResponse {
@@ -171,28 +196,10 @@ function inputsWithSlotEmpty(inputs: Inputs, slot: GearSlot): Inputs {
   return applyPieceContribution(inputs, equippedPiece, -1)
 }
 
-function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerResponse {
-  const { inputs, pieceId } = req
-  const piece = inputs.inventory.find((p) => p.id === pieceId)
-  if (!piece) {
-    return { reqId: req.reqId, pieceId, rows: [], reason: "no-piece" }
-  }
-  if (piece.relayed) {
-    return { reqId: req.reqId, pieceId, rows: [], reason: "relayed" }
-  }
-  const pool = poolForClass(inputs.classId)
-  if (!pool || pool.stats.length === 0) {
-    return { reqId: req.reqId, pieceId, rows: [], reason: "no-pool" }
-  }
-
-  const specs = getWordSpecs(inputs)
-  const specByWord = new Map(specs.map((s) => [s.word, s] as const))
-  const rows: RetunementRow[] = []
-  const slots = rerollableSlots(piece)
-
+function retunementDpsHelpers(inputs: Inputs, piece: GearPiece) {
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
   const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
-  const relayedPiece = maxRelayedClone(piece, inputs)
+  const relayedPiece = maxRelayedClone(piece, inputs, piece.level)
   const relayedDps = runEngine(applyPieceContribution(slotEmpty, relayedPiece, +1)).dps
 
   const dpsWithWord = (from: GearPiece, slotIndex: number, word: GearWordId, value: number) => {
@@ -201,6 +208,21 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
     ) as GearPiece["words"]
     return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1)).dps
   }
+
+  return { equipDps, relayedPiece, relayedDps, dpsWithWord }
+}
+
+function computeLegacyRetunement(
+  req: RetunementWorkerRequest,
+  piece: GearPiece,
+  pool: RetunementPool,
+): RetunementWorkerResponse {
+  const { inputs, pieceId } = req
+  const specs = getWordSpecs(inputs, piece.level)
+  const specByWord = new Map(specs.map((s) => [s.word, s] as const))
+  const rows: RetunementRow[] = []
+  const slots = rerollableSlots(piece)
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
 
   for (const slotIndex of slots) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -214,6 +236,9 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           deltaDps: 0,
           deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
+          pDraw: null,
+          pImprove: null,
+          eDeltaDps: null,
         })
         continue
       }
@@ -227,6 +252,9 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
           deltaDps: 0,
           deltaDpsRelayed: 0,
           poolSize: pool.stats.length,
+          pDraw: null,
+          pImprove: null,
+          eDeltaDps: null,
         })
         continue
       }
@@ -239,11 +267,77 @@ function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerRespon
         deltaDps: dpsWithWord(piece, slotIndex, word, spec.amount) - equipDps,
         deltaDpsRelayed: dpsWithWord(relayedPiece, slotIndex, word, cappedValue) - relayedDps,
         poolSize: pool.stats.length,
+        pDraw: null,
+        pImprove: null,
+        eDeltaDps: null,
       })
     }
   }
 
   return { reqId: req.reqId, pieceId, rows, reason: "ok" }
+}
+
+function computeWeightedRetunement(
+  req: RetunementWorkerRequest,
+  piece: GearPiece,
+  weightPool: readonly RetuneLine[],
+): RetunementWorkerResponse {
+  const { inputs, pieceId } = req
+  const rows: RetunementRow[] = []
+  const slots = rerollableSlots(piece)
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
+
+  const choices = retunePoolChoices(piece, weightPool).filter(
+    (choice) => !choice.deselected && !choice.onPiece,
+  )
+  const lineByWord = new Map(weightPool.map((line) => [line.word, line] as const))
+
+  for (const slotIndex of slots) {
+    for (const { word, pDraw } of choices) {
+      const line = lineByWord.get(word)
+      if (!line) continue
+      const outcome = retuneLineOutcome(line, piece.rarity, equipDps, (value) =>
+        dpsWithWord(piece, slotIndex, word, value),
+      )
+      const maxValue = line.bands[2].max
+      const relayedMaxValue = relayedCapValue(maxValue, GEAR_WORD_UNIT[word])
+      rows.push({
+        slotIndex,
+        word,
+        legal: true,
+        isCurrent: false,
+        deltaDps: dpsWithWord(piece, slotIndex, word, maxValue) - equipDps,
+        deltaDpsRelayed: dpsWithWord(relayedPiece, slotIndex, word, relayedMaxValue) - relayedDps,
+        poolSize: weightPool.length,
+        pDraw,
+        pImprove: outcome.pImprove,
+        eDeltaDps: pDraw * outcome.eDeltaDpsGivenDrawn,
+      })
+    }
+  }
+
+  return { reqId: req.reqId, pieceId, rows, reason: "ok" }
+}
+
+function computeRetunement(req: RetunementWorkerRequest): RetunementWorkerResponse {
+  const { inputs, pieceId } = req
+  const piece = inputs.inventory.find((p) => p.id === pieceId)
+  if (!piece) {
+    return { reqId: req.reqId, pieceId, rows: [], reason: "no-piece" }
+  }
+  if (piece.relayed) {
+    return { reqId: req.reqId, pieceId, rows: [], reason: "relayed" }
+  }
+
+  const attribute = attributeForClass(inputs.classId)
+  const weightPool = attribute ? retuneWeightPool(attribute, piece.level, piece.slot) : null
+  if (weightPool) return computeWeightedRetunement(req, piece, weightPool)
+
+  const pool = poolForClass(inputs.classId)
+  if (!pool || pool.stats.length === 0) {
+    return { reqId: req.reqId, pieceId, rows: [], reason: "no-pool" }
+  }
+  return computeLegacyRetunement(req, piece, pool)
 }
 
 export interface ReattunementWorkerRequest {
@@ -262,6 +356,14 @@ export interface ReattunementOption {
   probImproveGivenOption: number
   inert: boolean
   isCurrent: boolean
+  // Null wherever the app has no pool data for this option — an unauthored
+  // level/class/slot, or a pool member with no modelled engine effect. When
+  // isCurrent is true, expectedValueIfDrawn comes from the monotone
+  // re-determination of the held line; otherwise from an ordinary fresh roll.
+  pDraw: number | null
+  expectedValueIfDrawn: number | null
+  eDeltaDpsGivenDrawn: number | null
+  eDeltaDps: number | null
 }
 
 export interface ReattunementWorkerResponse {
@@ -269,6 +371,8 @@ export interface ReattunementWorkerResponse {
   pieceId: string
   options: ReattunementOption[]
   probImproveOverall: number
+  eDeltaDpsOverall: number | null
+  pityThreshold: number | null
   reason: "ok" | "no-piece" | "no-pool"
 }
 
@@ -282,64 +386,106 @@ function dpsWithAttunement(
   return runEngine(applyPieceContribution(slotEmpty, swapped, +1)).dps
 }
 
-function probLinearImprove(
-  dpsMin: number,
-  dpsMax: number,
-  baseline: number,
-  min: number,
-  max: number,
-): number {
-  if (max <= min || Math.abs(dpsMax - dpsMin) < 1e-9) {
-    return dpsMax > baseline + 1e-9 ? 1 : 0
-  }
-  if (dpsMax > dpsMin) {
-    if (dpsMin >= baseline) return 1
-    if (dpsMax <= baseline) return 0
-    const vCrit = min + ((baseline - dpsMin) * (max - min)) / (dpsMax - dpsMin)
-    return Math.max(0, Math.min(1, (max - vCrit) / (max - min)))
-  }
-  if (dpsMax >= baseline) return 1
-  if (dpsMin <= baseline) return 0
-  const vCrit = min + ((baseline - dpsMin) * (max - min)) / (dpsMax - dpsMin)
-  return Math.max(0, Math.min(1, (vCrit - min) / (max - min)))
-}
-
 function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorkerResponse {
   const { inputs, pieceId } = req
   const piece = inputs.inventory.find((p) => p.id === pieceId)
   if (!piece) {
-    return { reqId: req.reqId, pieceId, options: [], probImproveOverall: 0, reason: "no-piece" }
+    return {
+      reqId: req.reqId,
+      pieceId,
+      options: [],
+      probImproveOverall: 0,
+      eDeltaDpsOverall: null,
+      pityThreshold: null,
+      reason: "no-piece",
+    }
   }
 
   const pool = attunementsFor(piece.slot, inputs.classId)
   if (pool.length === 0) {
-    return { reqId: req.reqId, pieceId, options: [], probImproveOverall: 0, reason: "no-pool" }
+    return {
+      reqId: req.reqId,
+      pieceId,
+      options: [],
+      probImproveOverall: 0,
+      eDeltaDpsOverall: null,
+      pityThreshold: null,
+      reason: "no-pool",
+    }
   }
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
   const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
 
+  const weightedPool = reattunementPool(inputs.classId, piece.slot, piece.level)
+  const drawables = weightedPool
+    ? reattunementDrawables(weightedPool, piece.attunement, piece.attunementValue)
+    : []
+  const drawableByOptionId = new Map(
+    drawables.map((drawable) => [drawable.line.optionId, drawable] as const),
+  )
+
   const options: ReattunementOption[] = pool.map((opt) => {
     const inert = opt.enginePath === null
-    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, opt.max)
-    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, opt.min)
+    const min = attunementMin(opt, piece.level)
+    const max = attunementMax(opt, piece.level)
+    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max)
+    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min)
+    const isCurrent = piece.attunement === opt.id
+
+    const line = weightedPool?.lines.find((candidate) => candidate.optionId === opt.id) ?? null
+    const drawable = drawableByOptionId.get(opt.id) ?? null
+
+    let pDraw: number | null = null
+    let expectedValueIfDrawn: number | null = null
+    let eDeltaDpsGivenDrawn: number | null = null
+    if (line && drawable) {
+      pDraw = drawable.pDraw
+      expectedValueIfDrawn = drawable.isCurrentLine
+        ? expectedRedeterminedValue(line, piece.attunementValue)
+        : expectedFreshValue(line)
+      eDeltaDpsGivenDrawn =
+        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn) - equipDps
+    } else if (line && isCurrent) {
+      // Popped: the currently-held line is already at its maximum.
+      pDraw = 0
+      expectedValueIfDrawn = piece.attunementValue
+      eDeltaDpsGivenDrawn = 0
+    }
+
     return {
       optionId: opt.id,
       label: opt.label,
       labelKey: attunementLabelKey(opt, inputs.classId),
-      min: opt.min,
-      max: opt.max,
+      min,
+      max,
       deltaDpsAtMax: dpsAtMax - equipDps,
-      probImproveGivenOption: probLinearImprove(dpsAtMin, dpsAtMax, equipDps, opt.min, opt.max),
+      probImproveGivenOption: probLinearImprove(dpsAtMin, dpsAtMax, equipDps, min, max),
       inert,
-      isCurrent: piece.attunement === opt.id,
+      isCurrent,
+      pDraw,
+      expectedValueIfDrawn,
+      eDeltaDpsGivenDrawn,
+      eDeltaDps:
+        pDraw !== null && eDeltaDpsGivenDrawn !== null ? pDraw * eDeltaDpsGivenDrawn : null,
     }
   })
 
   const probImproveOverall =
     options.reduce((acc, o) => acc + o.probImproveGivenOption, 0) / options.length
+  const eDeltaDpsOverall = weightedPool
+    ? options.reduce((sum, option) => sum + (option.eDeltaDps ?? 0), 0)
+    : null
 
-  return { reqId: req.reqId, pieceId, options, probImproveOverall, reason: "ok" }
+  return {
+    reqId: req.reqId,
+    pieceId,
+    options,
+    probImproveOverall,
+    eDeltaDpsOverall,
+    pityThreshold: reattunementPityThreshold(piece.level),
+    reason: "ok",
+  }
 }
 
 export interface WordMaxWorkerRequest {
@@ -364,7 +510,7 @@ export interface WordMaxWorkerResponse {
 
 function computeWordMax(req: WordMaxWorkerRequest): WordMaxWorkerResponse {
   const { inputs, piece } = req
-  const specs = getWordSpecs(inputs)
+  const specs = getWordSpecs(inputs, piece.level)
   const specByWord = new Map(specs.map((s) => [s.word, s] as const))
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)

@@ -13,9 +13,9 @@ describe("DoT wiring — bellstrikeUmbra bleed", () => {
 
   it("builtinDebuffsForClass exposes the bleed debuff with the expected per-tick shape", () => {
     const debuffs = builtinDebuffsForClass("bellstrikeUmbra")
-    const bleed = debuffs.find((d) => d.dot && d.dot.physMultiplier === 0.06864)
+    const bleed = debuffs.find((d) => d.dot && d.dot.physMultiplier === 0.066)
     expect(bleed).toBeTruthy()
-    expect(bleed!.dot!.attributeMultiplier).toBeCloseTo(0.10296, 10)
+    expect(bleed!.dot!.attributeMultiplier).toBeCloseTo(0.099, 10)
     expect(bleed!.dot!.tickIntervalFrames).toBe(60)
     expect(bleed!.maxStacks).toBe(5)
     expect(bleed!.stackScaling).toBe("perStack")

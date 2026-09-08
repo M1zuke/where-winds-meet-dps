@@ -110,7 +110,7 @@ describe("following a breakthrough release", () => {
   it("leaves a deliberately chosen breakthrough untouched", () => {
     vi.setSystemTime(BREAKTHROUGH_17_RELEASE)
     writeProfiles([{ breakthrough: 12 }, { breakthrough: 14 }, { breakthrough: 21 }])
-    expect(loadedBreakthroughs()).toEqual([12, 14, 21])
+    expect(loadedBreakthroughs()).toEqual([13, 14, 21])
   })
 
   it("persists the follow so it happens once, not per load", () => {

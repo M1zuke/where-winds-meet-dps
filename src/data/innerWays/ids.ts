@@ -45,3 +45,17 @@ export const INNER_WAY_NODE = {
 } as const
 
 export type InnerWayNode = (typeof INNER_WAY_NODE)[keyof typeof INNER_WAY_NODE]
+
+export const INNER_WAY_LADDER = {
+  weaponAttackFourStar: "weaponAttackFourStar",
+  weaponAttackFiveStar: "weaponAttackFiveStar",
+  weaponAttackMinFiveStar: "weaponAttackMinFiveStar",
+  weaponAttackMaxFiveStar: "weaponAttackMaxFiveStar",
+  precisionFourStar: "precisionFourStar",
+  critRateFourStar: "critRateFourStar",
+  critRateFiveStar: "critRateFiveStar",
+  affinityRateFourStar: "affinityRateFourStar",
+  attributeAttackFourStar: "attributeAttackFourStar",
+} as const
+
+export type InnerWayLadderId = (typeof INNER_WAY_LADDER)[keyof typeof INNER_WAY_LADDER]

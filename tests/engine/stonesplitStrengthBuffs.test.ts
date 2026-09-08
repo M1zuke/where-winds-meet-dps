@@ -37,6 +37,9 @@ const share = (
   defId: string,
 ) => engineUnderTest.calculateDamageEffects(target, at).breakdown[defId] ?? 0
 
+const factorAt = (engineUnderTest: BuffEngine, target: ReturnType<typeof skill>, at: number) =>
+  engineUnderTest.calculateDamageEffects(target, at).damageFactor
+
 const statOf = (
   engineUnderTest: BuffEngine,
   target: ReturnType<typeof skill>,
@@ -119,25 +122,30 @@ describe("Cleftpeak", () => {
     expect(engine({ armorSet: "jadeware" }).definitions.has(BUFF.cleftpeakDeflect)).toBe(false)
   })
 
-  it("pays out at five damage stacks and not before", () => {
+  it("ramps a multiplicative ×(1 + 1%/stack) on any damaging hit, reaching every skill", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
     for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, boosted(), 0.5, BUFF.cleftpeakDeflect)).toBe(0)
+    expect(factorAt(ridged, plain(), 0.5)).toBeCloseTo(1.04, 9)
 
     ridged.processDamageHit(0.4)
-    expect(share(ridged, boosted(), 0.5, BUFF.cleftpeakDeflect)).toBeCloseTo(0.08, 9)
+    expect(factorAt(ridged, plain(), 0.5)).toBeCloseTo(1.05, 9)
   })
 
-  it("stacks on any damaging hit, but reaches only the skills that carry the property", () => {
+  it("multiplies in a further ×1.08 at five stacks, only on the skills that carry the property", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
-    for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, plain(), 0.5, BUFF.cleftpeakDeflect)).toBe(0)
+    for (let hit = 0; hit < 4; hit++) ridged.processDamageHit(hit * 0.1)
+    expect(factorAt(ridged, boosted(), 0.5)).toBeCloseTo(1.04, 9)
+
+    ridged.processDamageHit(0.4)
+    expect(factorAt(ridged, boosted(), 0.5)).toBeCloseTo(1.05 * 1.08, 9)
+    expect(factorAt(ridged, plain(), 0.5)).toBeCloseTo(1.05, 9)
   })
 
-  it("lets its five-second window lapse", () => {
+  it("lets its 5.1-second window lapse", () => {
     const ridged = engine({ armorSet: cleftpeak.siteKey })
     for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(share(ridged, boosted(), 6, BUFF.cleftpeakDeflect)).toBe(0)
+    expect(factorAt(ridged, boosted(), 6)).toBe(1)
+    expect(factorAt(ridged, plain(), 6)).toBe(1)
   })
 })
 

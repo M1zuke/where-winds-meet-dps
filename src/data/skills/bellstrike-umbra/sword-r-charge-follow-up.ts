@@ -18,21 +18,21 @@ export const swordRChargeFollowUp = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 0.40665,
-      attributeMultiplier: 0.609975,
+      physMultiplier: 0.325601,
+      attributeMultiplier: 0.488401,
       physFixed: 0,
       attributeFixed: 0,
       triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(1, {
       frame: 15,
-      physMultiplier: 0.40665,
-      attributeMultiplier: 0.609975,
+      physMultiplier: 0.488401,
+      attributeMultiplier: 0.732602,
       physFixed: 0,
       attributeFixed: 0,
       triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-07-30T00:00:00.000Z",
+  updatedAt: "2026-09-03T00:00:00.000Z",
 })

@@ -1,0 +1,65 @@
+{
+  "v": 2,
+  "debuffs": [
+    {
+      "id": "debuff-bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleeding",
+      "activation": "triggered",
+      "durationFrames": 601,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.06864,
+        "physFixed": 0,
+        "attributeMultiplier": 0.10296,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 5,
+      "stackScaling": "perStack",
+      "detonation": {
+        "skillId": "bellstrikeUmbra-bleed-detonation",
+        "retainStacks": 0,
+        "retainParam": "swordHorizon",
+        "retainMinTier": 6,
+        "retainParamStacks": 2
+      },
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "tags": ["role:bleedTick"],
+      "receives": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage", "soulShaken"]
+    },
+    {
+      "id": "db-user-authored-poison",
+      "classId": "bellstrikeUmbra",
+      "name": "My Poison",
+      "activation": "triggered",
+      "durationFrames": 300,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 60,
+        "physMultiplier": 0.06864,
+        "physFixed": 0,
+        "attributeMultiplier": 0.10296,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "weaponOrAttribute": "Sword",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": [2, 2.5, 3, 4, 5]
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "detonation": null,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    }
+  ]
+}

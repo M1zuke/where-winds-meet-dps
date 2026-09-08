@@ -9,6 +9,8 @@ interface Props {
   piece: GearPiece | null
   options: ReattunementOption[]
   probImproveOverall: number
+  eDeltaDpsOverall: number | null
+  pityThreshold: number | null
   reason: ReattunementReason
   isPending: boolean
 }
@@ -37,10 +39,16 @@ function fmtRange(min: number, max: number): string {
   return `${(min * 100).toFixed(1)}–${(max * 100).toFixed(1)} %`
 }
 
+function fmtDrawChance(pDraw: number | null): string {
+  return pDraw === null ? "—" : fmtPct(pDraw)
+}
+
 export function ReattunementAnalyzerPanel({
   piece,
   options,
   probImproveOverall,
+  eDeltaDpsOverall,
+  pityThreshold,
   reason,
   isPending,
 }: Props) {
@@ -48,6 +56,19 @@ export function ReattunementAnalyzerPanel({
 
   const sorted = useMemo(() => {
     return options.slice().sort((optionA, optionB) => optionB.deltaDpsAtMax - optionA.deltaDpsAtMax)
+  }, [options])
+
+  const mostLikely = useMemo(() => {
+    let pick: ReattunementOption | null = null
+    let bestPDraw = -1
+    for (const option of options) {
+      if (option.pDraw === null || option.isCurrent) continue
+      if (option.pDraw > bestPDraw) {
+        pick = option
+        bestPDraw = option.pDraw
+      }
+    }
+    return pick
   }, [options])
 
   const best = sorted.length > 0 ? sorted[0] : null
@@ -80,6 +101,9 @@ export function ReattunementAnalyzerPanel({
       <div className="toolbar">
         <span className="toolbar-label">{t("common.reattunement")}</span>
         {isPending && <span className="hint">{t("gear.reattunementAnalyzer.computing")}</span>}
+        {pityThreshold !== null && (
+          <span className="hint">{t("gear.reattunementAnalyzer.pityAfter") + pityThreshold}</span>
+        )}
       </div>
 
       {sorted.length === 0 && isPending && (
@@ -108,6 +132,35 @@ export function ReattunementAnalyzerPanel({
               {fmtDpsDelta(best.deltaDpsAtMax)} DPS
             </span>
           </div>
+          {mostLikely && (
+            <div className={retunement.bestRow}>
+              <span className={retunement.bestLabel}>
+                {t("gear.reattunementAnalyzer.mostLikelyDraw")}
+              </span>
+              <span className={retunement.bestSlot}>
+                <strong>{t(mostLikely.labelKey, mostLikely.label)}</strong>
+                {" — "}
+                {fmtDrawChance(mostLikely.pDraw)}
+              </span>
+              <span
+                className={`${retunement.bestDelta} ${deltaSignClass(mostLikely.eDeltaDpsGivenDrawn ?? 0)}`}
+              >
+                {mostLikely.eDeltaDpsGivenDrawn === null
+                  ? "—"
+                  : `${fmtDpsDelta(mostLikely.eDeltaDpsGivenDrawn)} DPS`}
+              </span>
+            </div>
+          )}
+          {eDeltaDpsOverall !== null && (
+            <div className={retunement.bestRow}>
+              <span className={retunement.bestLabel}>
+                {t("gear.reattunementAnalyzer.expectedGain")}
+              </span>
+              <span className={deltaSignClass(eDeltaDpsOverall)}>
+                {fmtDpsDelta(eDeltaDpsOverall)} DPS
+              </span>
+            </div>
+          )}
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>
               {t("gear.reattunementAnalyzer.improveChance")}
@@ -128,9 +181,10 @@ export function ReattunementAnalyzerPanel({
       )}
 
       {sorted.length > 0 && (
-        <div className={retunement.reattunementTable}>
+        <div className={retunement.reattunementWeightedTable}>
           <div className={retunement.th}>{t("common.attunement")}</div>
           <div className={retunement.th}>{t("gear.reattunementAnalyzer.range")}</div>
+          <div className={retunement.th}>{t("gear.reattunementAnalyzer.drawChance")}</div>
           <div className={retunement.th}>{t("gear.reattunementAnalyzer.symbol")}</div>
           {sorted.map((option) => {
             const sign = deltaSignClass(option.deltaDpsAtMax)
@@ -144,6 +198,7 @@ export function ReattunementAnalyzerPanel({
                   )}
                 </div>
                 <div className={retunement.cell}>{fmtRange(option.min, option.max)}</div>
+                <div className={retunement.cell}>{fmtDrawChance(option.pDraw)}</div>
                 <div className={`${retunement.cell} ${sign}`}>
                   {fmtDpsDelta(option.deltaDpsAtMax)}
                 </div>

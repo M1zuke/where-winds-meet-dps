@@ -1,7 +1,5 @@
-// Ladder [2, 2.5, 3, 4, 5] source: Bellstrike Umbra v1.5 lvl-110 coefficient
-// table (`reference/workbook/umbraSkillCoefficients.wb1.5-lvl110.json`), bleed
-// rows 0.13728 / 0.1716 / 0.20592 / 0.27456 / 0.3432 phys = unit 0.06864 ×
-// that ladder.
+// Ladder [2, 2.5, 3, 4, 5]: bleed rows 0.132 / 0.165 / 0.198 / 0.264 / 0.33
+// phys = unit 0.066 × that ladder.
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -14,11 +12,11 @@ import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 const CLASS = "bellstrikeUmbra"
 const BLEED_ROW = dotRow(CLASS, DEBUFF.bleedTick)
 
-const UNIT_PHYS = 0.06864
-const UNIT_ATTR = 0.10296
+const UNIT_PHYS = 0.066
+const UNIT_ATTR = 0.099
 const LADDER = [2, 2.5, 3, 4, 5]
-const REFERENCE_PHYS = [0.13728, 0.1716, 0.20592, 0.27456, 0.3432]
-const REFERENCE_ATTR = [0.20592, 0.2574, 0.30888, 0.41184, 0.5148]
+const REFERENCE_PHYS = [0.132, 0.165, 0.198, 0.264, 0.33]
+const REFERENCE_ATTR = [0.198, 0.2475, 0.297, 0.396, 0.495]
 
 const bleedTickDebuff = () =>
   builtinDebuffsForClass("bellstrikeUmbra").find(

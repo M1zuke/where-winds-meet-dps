@@ -5,9 +5,9 @@ Everything it shows lives in this folder:
 
 | path            | holds                                                          |
 | --------------- | -------------------------------------------------------------- |
-| `types.ts`      | the format — read it for the authoritative field shapes         |
-| `registry.ts`   | `CHANGELOG_ENTRIES`, newest first, one lazy loader per version   |
-| `entries/v*.ts` | one module per release, holding that release's grouped changes   |
+| `types.ts`      | the format — read it for the authoritative field shapes        |
+| `registry.ts`   | `CHANGELOG_ENTRIES`, newest first, one lazy loader per version |
+| `entries/v*.ts` | one module per release, holding that release's grouped changes |
 
 The rule that the header version comes from `package.json`, and nothing else, is
 stated in `docs/UI.md`.
@@ -50,7 +50,7 @@ stated in `docs/UI.md`.
    author.
 
 4. **Create the entry module**, `entries/v<version with dots replaced by
-   dashes>.ts` (e.g. version `x.y.z` → `entries/vx-y-z.ts`), exporting `details`.
+dashes>.ts` (e.g. version `x.y.z` → `entries/vx-y-z.ts`), exporting `details`.
    Group the sentences into sections in the canonical order — `Added`, then
    `Changed`, then `Fixed` — and omit a section entirely rather than leaving it
    empty.
@@ -97,14 +97,14 @@ stated in `docs/UI.md`.
 
 `types.ts` is authoritative for the shape. The constraints the tests enforce:
 
-| field                        | rule                                                                                                                          |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `version`                    | `MAJOR.MINOR.PATCH`; unique; the registry's first entry equals `package.json`'s version; strictly descending down the list      |
+| field                        | rule                                                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `version`                    | `MAJOR.MINOR.PATCH`; unique; the registry's first entry equals `package.json`'s version; strictly descending down the list     |
 | `date`                       | `YYYY-MM-DD`; non-increasing from newest to oldest                                                                             |
 | `headline`                   | one line, at most 60 characters, no trailing period                                                                            |
 | `sections[].label`           | `Added`, `Changed` or `Fixed`; at most one of each; canonical order                                                            |
-| `sections[].items[].text`    | 1–25 per section, each one line, at most 120 characters, player-facing, and not restating its own section label                 |
-| `sections[].items[].authors` | at least one GitHub login, taken from the commits that shipped that line; every author gets an avatar linking to their profile  |
+| `sections[].items[].text`    | 1–25 per section, each one line, at most 120 characters, player-facing, and not restating its own section label                |
+| `sections[].items[].authors` | at least one GitHub login, taken from the commits that shipped that line; every author gets an avatar linking to their profile |
 | entry module filename        | `vx-y-z.ts` for version `x.y.z`; exactly one module per registry entry, no orphans                                             |
 
 Use a placeholder version (`x.y.z` / `vx-y-z`) in any example you add here — do

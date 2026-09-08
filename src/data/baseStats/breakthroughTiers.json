@@ -1,33 +1,27 @@
 [
   {
-    "breakthrough": 12,
-    "name": "Simplicity",
-    "levelRange": "81-85",
-    "resistance": 15,
-    "defense": 271,
-    "generalDamageTaken": 0.15,
-    "fatigueDamageTaken": 0.1,
-    "multiplier": 1.15
-  },
-  {
     "breakthrough": 13,
-    "name": "Universal View",
+    "gearLevel": 86,
+    "name": "Revelation",
     "levelRange": "86-90",
     "resistance": 30,
     "defense": 308,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
-    "fatigueDamageTaken": 0.1,
-    "multiplier": 1.3
+    "fatigueDamageTaken": 0.1
   },
   {
     "breakthrough": 14,
-    "name": "",
+    "gearLevel": 91,
+    "name": "Profundity",
     "levelRange": "91-95",
     "resistance": 45,
     "defense": 351,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.45,
     "attributes": [
       {
         "id": 1,
@@ -48,18 +42,30 @@
         "id": 4,
         "stat": "momentum",
         "value": 120
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 120
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 120
       }
     ]
   },
   {
     "breakthrough": 15,
-    "name": "",
+    "gearLevel": 91,
+    "name": "Subtlety",
     "levelRange": "91-95",
     "resistance": 45,
     "defense": 351,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.45,
     "attributes": [
       {
         "id": 1,
@@ -80,18 +86,30 @@
         "id": 4,
         "stat": "momentum",
         "value": 125
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 125
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 125
       }
     ]
   },
   {
     "breakthrough": 16,
-    "name": "",
+    "gearLevel": 96,
+    "name": "Awakening",
     "levelRange": "96-100",
     "resistance": 65,
     "defense": 408,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65,
     "attributes": [
       {
         "id": 1,
@@ -112,18 +130,30 @@
         "id": 4,
         "stat": "momentum",
         "value": 138
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 138
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 138
       }
     ]
   },
   {
     "breakthrough": 17,
-    "name": "",
+    "gearLevel": 96,
+    "name": "Ascendancy",
     "levelRange": "96-100",
     "resistance": 65,
     "defense": 408,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65,
     "release": "2026-09-03T03:30:00Z",
     "attributes": [
       {
@@ -145,47 +175,193 @@
         "id": 4,
         "stat": "momentum",
         "value": 150
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 150
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 150
       }
     ]
   },
   {
     "breakthrough": 18,
-    "name": "",
+    "gearLevel": 100,
+    "name": "Discernment",
     "levelRange": "100",
     "resistance": 85,
-    "defense": 446,
+    "defense": 500,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.178
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 164
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 164
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 164
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 164
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 164
+      }
+    ]
   },
   {
     "breakthrough": 19,
-    "name": "",
+    "gearLevel": 100,
+    "name": "Vision",
     "levelRange": "100",
     "resistance": 85,
-    "defense": 446,
+    "defense": 500,
+    "physPenResistance": 0,
+    "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.192
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 178
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 178
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 178
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 178
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 178
+      }
+    ]
   },
   {
     "breakthrough": 20,
-    "name": "",
+    "gearLevel": 105,
+    "name": "Fathoming",
     "levelRange": "100",
     "resistance": 115,
-    "defense": 446,
+    "defense": 558,
+    "physPenResistance": 20,
+    "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.207
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 192
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 192
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 192
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 192
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 192
+      }
+    ]
   },
   {
     "breakthrough": 21,
-    "name": "",
+    "gearLevel": 105,
+    "name": "Equanimity",
     "levelRange": "100",
     "resistance": 115,
-    "defense": 446,
+    "defense": 558,
+    "physPenResistance": 20,
+    "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
-    "multiplier": 1.65
+    "attributes": [
+      {
+        "id": 1,
+        "stat": "precisionRate",
+        "value": 0.223
+      },
+      {
+        "id": 2,
+        "stat": "power",
+        "value": 208
+      },
+      {
+        "id": 3,
+        "stat": "agility",
+        "value": 208
+      },
+      {
+        "id": 4,
+        "stat": "momentum",
+        "value": 208
+      },
+      {
+        "id": 5,
+        "stat": "body",
+        "value": 208
+      },
+      {
+        "id": 6,
+        "stat": "defense",
+        "value": 208
+      }
+    ]
   }
 ]

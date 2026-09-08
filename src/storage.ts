@@ -1,12 +1,14 @@
 import type {
-  EnhancementSlot,
+  ArsenalScores,
+  DisabledTalentPoints,
+  EnhancementLevels,
+  GearPiece,
   Inputs,
   OddityNode,
   OddityRegions,
   StoredProfile,
-  TalentStat,
 } from "./engine/types"
-import { EMPTY_EQUIPPED, defaultCombatSettings } from "./engine/types"
+import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
@@ -19,11 +21,12 @@ import {
 } from "./definitions/innerWays/registry"
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import {
-  clampEnhancementValue,
+  arsenalScoreCap,
+  DEFAULT_ENHANCEMENT_LEVEL,
   getDefaultTalentsForClass,
-  DEFAULT_ENHANCEMENTS,
   DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
+import { ARSENAL_STORES } from "./data/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -50,6 +53,18 @@ import type { Debuff, DebuffDotSpec, DotDetonationSpec, DotStackShape } from "./
 import { isDebuff, makeDebuff } from "./engine/debuff"
 import { kvStore } from "./kvStore"
 import {
+  LATEST_CUSTOM_SKILLS_VERSION,
+  OLDEST_MIGRATABLE_CUSTOM_SKILLS_VERSION,
+  runCustomSkillMigrations,
+  type RawCustomSkillsBlob,
+} from "./migrations/customSkills"
+import {
+  LATEST_CUSTOM_DEBUFFS_VERSION,
+  OLDEST_MIGRATABLE_CUSTOM_DEBUFFS_VERSION,
+  runCustomDebuffMigrations,
+  type RawCustomDebuffsBlob,
+} from "./migrations/customDebuffs"
+import {
   LATEST_PROFILES_VERSION,
   runProfileMigrations,
   migrateClassId,
@@ -64,6 +79,8 @@ import {
   migrateRiverFlowBuffId,
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
+  migrateHawkingSetId,
+  enhancementLevelsFromLegacyNodes,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -216,6 +233,14 @@ function repairGearWord(entry: unknown): unknown {
   return isGearWordId(renamed) ? { ...entry, word: renamed } : { ...entry, word: stored }
 }
 
+// additive — see CLAUDE.md → "localStorage migrations". A word this build no
+// longer resolves stays in the history: it never scores anything, it only
+// hides a choice the player already recorded as retuned out.
+function sanitizeRetunedOutWords(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value.filter((entry): entry is string => typeof entry === "string" && entry !== "")
+}
+
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
 // is frozen at the display names V11 knew, so it recognises neither a set
 // retired since nor one added since, and run alone it clears a legitimate
@@ -226,9 +251,9 @@ function repairGearWord(entry: unknown): unknown {
 // A set id neither table nor registry knows is one this build has no option
 // for, and is handed back as stored rather than cleared.
 function selectableSetId(stored: string | null): string | null {
-  const renamed = migrateCleftpeakSetId(stored)
+  const renamed = migrateHawkingSetId(migrateCleftpeakSetId(stored))
   if (typeof renamed === "string" && SET_BY_ID[renamed] !== undefined) return renamed
-  const migrated = migrateCleftpeakSetId(migrateSetId(stored))
+  const migrated = migrateHawkingSetId(migrateCleftpeakSetId(migrateSetId(stored)))
   if (typeof migrated === "string" && SET_BY_ID[migrated] !== undefined) return migrated
   return typeof stored === "string" && stored !== "" ? stored : null
 }
@@ -294,14 +319,23 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (!Array.isArray(next.inventory)) next.inventory = []
   next.inventory = next.inventory.map((piece) => {
     const p = piece as Partial<typeof piece> & Record<string, unknown>
-    const { name: _legacyName, isNew: _rawIsNew, label: _rawLabel, note: _rawNote, ...rest } = p
+    const {
+      name: _legacyName,
+      isNew: _rawIsNew,
+      label: _rawLabel,
+      note: _rawNote,
+      retunedOutWords: _rawRetunedOutWords,
+      ...rest
+    } = p
     void _legacyName
     void _rawIsNew
     void _rawLabel
     void _rawNote
+    void _rawRetunedOutWords
     const isNew = p.isNew === true
     const label = sanitizeGearPieceText(p.label, 40)
     const note = sanitizeGearPieceText(p.note, 500)
+    const retunedOutWords = sanitizeRetunedOutWords(p.retunedOutWords)
     const rawWords = (rest as unknown as { words?: unknown }).words
     const words = Array.isArray(rawWords) ? rawWords.map(repairGearWord) : rawWords
     return {
@@ -313,6 +347,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
       ...(isNew ? { isNew: true } : {}),
       ...(label ? { label } : {}),
       ...(note ? { note } : {}),
+      ...(retunedOutWords.length > 0
+        ? { retunedOutWords: retunedOutWords as GearPiece["retunedOutWords"] }
+        : {}),
     }
   })
   if (!next.equipped || typeof next.equipped !== "object") {
@@ -396,35 +433,52 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.oddities = healed
   }
   {
-    const stored = Array.isArray(next.enhancements) ? (next.enhancements as unknown[]) : []
-    const healed = stored
-      .filter((node): node is Record<string, unknown> => !!node && typeof node === "object")
-      .map((node, index) => {
-        const id = typeof node.id === "number" ? node.id : index + 1
-        const fallback = DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)
-        return {
-          id,
-          slot:
-            typeof node.slot === "string"
-              ? (node.slot as EnhancementSlot)
-              : (fallback?.slot ?? "disc"),
-          stat:
-            typeof node.stat === "string"
-              ? (node.stat as TalentStat)
-              : (fallback?.stat ?? "maxPhys"),
-          value: clampEnhancementValue(
-            id,
-            typeof node.value === "number" ? node.value : (fallback?.value ?? 0),
-          ),
-        }
-      })
-    const storedIds = new Set(healed.map((node) => node.id))
-    next.enhancements = [
-      ...healed,
-      ...DEFAULT_ENHANCEMENTS.filter((entry) => !storedIds.has(entry.id)).map((entry) => ({
-        ...entry,
-      })),
-    ]
+    const stored = next.disabledTalentPoints as unknown
+    const healed: DisabledTalentPoints = {}
+    if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+      for (const [tier, ids] of Object.entries(stored as Record<string, unknown>)) {
+        if (!Array.isArray(ids)) continue
+        const numeric = [...new Set(ids.filter((id): id is number => typeof id === "number"))].sort(
+          (left, right) => left - right,
+        )
+        if (numeric.length > 0) healed[tier] = numeric
+      }
+    }
+    next.disabledTalentPoints = healed
+  }
+  {
+    const stored = next.enhancements as unknown
+    const bySlot = Array.isArray(stored)
+      ? enhancementLevelsFromLegacyNodes(stored)
+      : stored && typeof stored === "object"
+        ? (stored as Record<string, unknown>)
+        : {}
+    const healed = {} as EnhancementLevels
+    for (const slot of GEAR_SLOTS) {
+      const value = bySlot[slot]
+      healed[slot] =
+        typeof value === "number" && Number.isFinite(value) && value >= 0
+          ? Math.round(value)
+          : DEFAULT_ENHANCEMENT_LEVEL
+    }
+    next.enhancements = healed
+  }
+  {
+    const stored =
+      next.arsenalScores &&
+      typeof next.arsenalScores === "object" &&
+      !Array.isArray(next.arsenalScores)
+        ? (next.arsenalScores as Record<string, unknown>)
+        : {}
+    const healed: ArsenalScores = {}
+    for (let store = 1; store <= ARSENAL_STORES.length; store++) {
+      const value = stored[store]
+      healed[store] =
+        typeof value === "number" && Number.isFinite(value) && value >= 0
+          ? value
+          : arsenalScoreCap(store)
+    }
+    next.arsenalScores = healed
   }
   {
     const def = defaultCombatSettings()
@@ -689,7 +743,6 @@ export function importCustomRotation(text: string): Rotation {
 }
 
 const CUSTOM_SKILLS_KEY = "wwm.customSkills"
-const CUSTOM_SKILLS_VERSION = 3
 
 interface CustomSkillsBlob {
   v: number
@@ -875,45 +928,6 @@ function healDebuffReceives(debuff: Pick<Debuff, "receives" | "tags" | "dot">): 
   return legacyReceives(legacyTags)
 }
 
-// These coefficients were replaced wholesale, so a stored copy carrying the
-// superseded workbook numbers scores ~69x low. Only
-// an untouched copy is rewritten — a hit the user actually edited is left
-// alone, since we cannot tell a stale value from a deliberate one once it
-// differs.
-const SUPERSEDED_DRAGON_HEAD_HITS: Record<
-  string,
-  { from: [number, number, number]; to: [number, number, number] }
-> = {
-  "-dragon-head-plus": {
-    from: [25.200406, 4695.46, 37.800609],
-    to: [17.3793, 3237, 26.0689],
-  },
-  "-dragon-head": {
-    from: [36.00058, 6707.8, 54.00087],
-    to: [24.827571, 4624.285714, 37.241286],
-  },
-}
-
-function healDragonHeadCoefficients(id: string, hits: SkillHit[]): SkillHit[] {
-  const suffix = id.endsWith("-dragon-head-plus") ? "-dragon-head-plus" : "-dragon-head"
-  if (!id.endsWith(suffix)) return hits
-  const swap = SUPERSEDED_DRAGON_HEAD_HITS[suffix]
-  if (!swap) return hits
-  return hits.map((hit) => {
-    const untouched =
-      hit.physMultiplier === swap.from[0] &&
-      hit.physFixed === swap.from[1] &&
-      hit.attributeMultiplier === swap.from[2]
-    if (!untouched) return hit
-    return {
-      ...hit,
-      physMultiplier: swap.to[0],
-      physFixed: swap.to[1],
-      attributeMultiplier: swap.to[2],
-    }
-  })
-}
-
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateSkill(s: Skill): Skill {
   if (!s || typeof s !== "object") return s
@@ -929,12 +943,7 @@ function hydrateSkill(s: Skill): Skill {
     classId: migrateClassId(s.classId),
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
     tags: healedTags,
-    hits: Array.isArray(s.hits)
-      ? healDragonHeadCoefficients(
-          id,
-          s.hits.map((h) => hydrateSkillHit(h)),
-        )
-      : s.hits,
+    hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     ...healSkillReach(id, s, reachTags),
   }
 }
@@ -979,10 +988,17 @@ export function loadCustomSkills(): Skill[] {
   try {
     const raw = kvStore.get(CUSTOM_SKILLS_KEY)
     if (!raw) return []
-    const parsed = JSON.parse(raw) as CustomSkillsBlob
-    if (parsed.v !== CUSTOM_SKILLS_VERSION) return []
-    if (!Array.isArray(parsed.skills)) return []
-    return parsed.skills.map(hydrateSkill).filter(isSkill)
+    const parsed = JSON.parse(raw) as RawCustomSkillsBlob
+    if (typeof parsed.v !== "number" || parsed.v < OLDEST_MIGRATABLE_CUSTOM_SKILLS_VERSION)
+      return []
+    const result = runCustomSkillMigrations(parsed)
+    if (!result || !Array.isArray(result.blob.skills)) return []
+    const skills = result.blob.skills.map((skill) => hydrateSkill(skill as Skill)).filter(isSkill)
+    const storedByNewerBuild = result.blob.v > LATEST_CUSTOM_SKILLS_VERSION
+    if (!storedByNewerBuild && (result.applied.length > 0 || parsed.v !== result.blob.v)) {
+      writeCustomSkills(skills)
+    }
+    return skills
   } catch {
     return []
   }
@@ -994,7 +1010,7 @@ export function loadCustomSkillsForClass(classId: string): Skill[] {
 
 function writeCustomSkills(skills: Skill[]): void {
   try {
-    const blob: CustomSkillsBlob = { v: CUSTOM_SKILLS_VERSION, skills }
+    const blob: CustomSkillsBlob = { v: LATEST_CUSTOM_SKILLS_VERSION, skills }
     kvStore.set(CUSTOM_SKILLS_KEY, JSON.stringify(blob))
   } catch {}
 }
@@ -1363,13 +1379,7 @@ function migrateStatusStoresIfNeeded(): void {
 
     let existingDebuffs: Debuff[] = []
     try {
-      const existingRaw = kvStore.get(CUSTOM_DEBUFFS_KEY)
-      if (existingRaw) {
-        const parsedD = JSON.parse(existingRaw) as { v?: number; debuffs?: unknown[] }
-        if (parsedD.v === CUSTOM_DEBUFFS_VERSION && Array.isArray(parsedD.debuffs)) {
-          existingDebuffs = parsedD.debuffs.filter(isDebuff)
-        }
-      }
+      existingDebuffs = readStoredDebuffs().debuffs
     } catch {}
     writeCustomDebuffs([...existingDebuffs, ...debuffs])
   } catch {}
@@ -1446,7 +1456,6 @@ export function importCustomBuff(text: string, targetClassId: string): Buff {
 }
 
 const CUSTOM_DEBUFFS_KEY = "wwm.customDebuffs"
-const CUSTOM_DEBUFFS_VERSION = 2
 
 interface CustomDebuffsBlob {
   v: number
@@ -1510,15 +1519,28 @@ function hydrateDebuff(d: Debuff): Debuff {
   }
 }
 
+function readStoredDebuffs(): { debuffs: Debuff[]; persist: boolean } {
+  const raw = kvStore.get(CUSTOM_DEBUFFS_KEY)
+  if (!raw) return { debuffs: [], persist: false }
+  const parsed = JSON.parse(raw) as RawCustomDebuffsBlob
+  if (typeof parsed.v !== "number" || parsed.v < OLDEST_MIGRATABLE_CUSTOM_DEBUFFS_VERSION) {
+    return { debuffs: [], persist: false }
+  }
+  const result = runCustomDebuffMigrations(parsed)
+  if (!result || !Array.isArray(result.blob.debuffs)) return { debuffs: [], persist: false }
+  const storedByNewerBuild = result.blob.v > LATEST_CUSTOM_DEBUFFS_VERSION
+  return {
+    debuffs: result.blob.debuffs.filter(isDebuff).map(hydrateDebuff),
+    persist: !storedByNewerBuild && (result.applied.length > 0 || parsed.v !== result.blob.v),
+  }
+}
+
 export function loadCustomDebuffs(): Debuff[] {
   migrateStatusStoresIfNeeded()
   try {
-    const raw = kvStore.get(CUSTOM_DEBUFFS_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as CustomDebuffsBlob
-    if (parsed.v !== CUSTOM_DEBUFFS_VERSION) return []
-    if (!Array.isArray(parsed.debuffs)) return []
-    return parsed.debuffs.filter(isDebuff).map(hydrateDebuff)
+    const { debuffs, persist } = readStoredDebuffs()
+    if (persist) writeCustomDebuffs(debuffs)
+    return debuffs
   } catch {
     return []
   }
@@ -1530,7 +1552,7 @@ export function loadCustomDebuffsForClass(classId: string): Debuff[] {
 
 function writeCustomDebuffs(debuffs: Debuff[]): void {
   try {
-    const blob: CustomDebuffsBlob = { v: CUSTOM_DEBUFFS_VERSION, debuffs }
+    const blob: CustomDebuffsBlob = { v: LATEST_CUSTOM_DEBUFFS_VERSION, debuffs }
     kvStore.set(CUSTOM_DEBUFFS_KEY, JSON.stringify(blob))
   } catch {}
 }

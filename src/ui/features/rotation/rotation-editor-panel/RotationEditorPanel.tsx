@@ -403,7 +403,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const steps = activeRotation?.steps ?? []
 
   return (
-    <div className={styles.customRotationPanel}>
+    <div className={`panel ${styles.customRotationPanel}`}>
       <div className="toolbar">
         <span className="toolbar-label">{t("rotation.editor.rotationEditor")}</span>
         <Select
