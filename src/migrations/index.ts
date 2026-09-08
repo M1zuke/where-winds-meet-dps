@@ -18,6 +18,7 @@ import { V19__qiBreakOverride } from "./V19__qiBreakOverride"
 import { V20__mergeRiverFlowIntoWolfchasersArt } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 import { V21__formlessAttackWordIds } from "./V21__formlessAttackWordIds"
 import { V22__dropBreakthrough12 } from "./V22__dropBreakthrough12"
+import { V23__renameHawking } from "./V23__renameHawking"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -38,6 +39,7 @@ export { dropRetiredRotationId } from "./V18__followNewUmbraDefaultRotation"
 export { qiBreakOverrideFrom, readQiBreakWindow, rotationWindowOf } from "./V19__qiBreakOverride"
 export { migrateRiverFlowBuffId } from "./V20__mergeRiverFlowIntoWolfchasersArt"
 export { migrateFormlessWordId } from "./V21__formlessAttackWordIds"
+export { migrateHawkingSetId } from "./V23__renameHawking"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -58,6 +60,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V20__mergeRiverFlowIntoWolfchasersArt,
   V21__formlessAttackWordIds,
   V22__dropBreakthrough12,
+  V23__renameHawking,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

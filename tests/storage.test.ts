@@ -1314,11 +1314,11 @@ describe("armor-set display name heal (wwm.inputs blob, no version bump)", () =>
     } catch {}
   })
 
-  it("a legacy wwm.inputs blob naming its set by display name rolls into a profile with the id", () => {
+  it("a legacy wwm.inputs blob naming its set by display name rolls into a profile with the current id", () => {
     saveInputs({ ...defaultInputs, set: "Hawking" })
     const { profiles } = loadProfiles()
     expect(profiles).toHaveLength(1)
-    expect(profiles[0].inputs.set).toBe("hawking")
+    expect(profiles[0].inputs.set).toBe("hawkwing")
   })
 
   it("keeps an unrecognised set stored and grants nothing for it", () => {

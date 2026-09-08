@@ -3,10 +3,10 @@ import { SET_ID } from "./ids"
 import { declareMechanic } from "../../engine/mechanics"
 import { hawkwingMechanic } from "./hawkwingMechanic"
 
-const DISPLAY_NAME = "Hawking"
+const DISPLAY_NAME = "Hawkwing"
 
-export const hawking = defineSet({
-  id: SET_ID.hawking,
+export const hawkwing = defineSet({
+  id: SET_ID.hawkwing,
   name: DISPLAY_NAME,
   siteKey: "hawkwing",
   // The 4-piece ramp itself is time-averaged, not this flat value — see
@@ -18,5 +18,5 @@ export const hawking = defineSet({
     stat: "affinityRate",
     value: { 86: 0.032, 91: 0.037, 96: 0.045, 100: 0.052, 105: 0.061 },
   },
-  mechanics: [declareMechanic(hawkwingMechanic(SET_ID.hawking, DISPLAY_NAME))],
+  mechanics: [declareMechanic(hawkwingMechanic(SET_ID.hawkwing, DISPLAY_NAME))],
 })

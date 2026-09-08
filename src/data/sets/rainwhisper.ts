@@ -2,7 +2,7 @@ import { defineSet } from "../../definitions/sets/setDef"
 import { SET_ID } from "./ids"
 
 // 2-piece ACR_PROB, gear-level ladder (in-game, 2026-09-07), in the same
-// fraction-of-100 unit `hawking`'s affinity carries.
+// fraction-of-100 unit `hawkwing`'s affinity carries.
 //
 // The 4-piece crit-damage bonus lives in
 // `data/skills/buffs/rainwhisperCritDamage.ts`, not here: its magnitude follows

@@ -78,6 +78,7 @@ import {
   migrateRiverFlowBuffId,
   migrateCleftpeakSetId,
   migrateCleftpeakTag,
+  migrateHawkingSetId,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -248,9 +249,9 @@ function sanitizeRetunedOutWords(value: unknown): string[] {
 // A set id neither table nor registry knows is one this build has no option
 // for, and is handed back as stored rather than cleared.
 function selectableSetId(stored: string | null): string | null {
-  const renamed = migrateCleftpeakSetId(stored)
+  const renamed = migrateHawkingSetId(migrateCleftpeakSetId(stored))
   if (typeof renamed === "string" && SET_BY_ID[renamed] !== undefined) return renamed
-  const migrated = migrateCleftpeakSetId(migrateSetId(stored))
+  const migrated = migrateHawkingSetId(migrateCleftpeakSetId(migrateSetId(stored)))
   if (typeof migrated === "string" && SET_BY_ID[migrated] !== undefined) return migrated
   return typeof stored === "string" && stored !== "" ? stored : null
 }

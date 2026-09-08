@@ -1,4 +1,4 @@
-// The Hawking 4-piece ramps on affinity procs, so its stack count is an
+// The Hawkwing 4-piece ramps on affinity procs, so its stack count is an
 // expectation over simulated runs rather than a window.
 import {
   HAWKWING_BONUS_PER_STACK,
@@ -8,19 +8,26 @@ import {
 } from "../../engine/buffs/hawkwing"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
+// The client's own Affinity-outcome roll is `min(affinityRate, 0.4) +
+// directAffinityRate` (`formula.ts`'s `affinityRate`) — the direct-affinity
+// term sits outside the cap, so a build with a base direct-affinity rate
+// (Jadeware, an inner-way line) triggers stacks more often than the capped
+// term alone predicts.
 const AFFINITY_PROC_CAP = 0.4
 
 type State = { schedule: HawkwingStacksSchedule }
 
 // A factory rather than a module-level constant so this file need not import
-// `hawking.ts` — `hawking.ts` imports this to declare the mechanic instead.
+// `hawkwing.ts` — `hawkwing.ts` imports this to declare the mechanic instead.
 export function hawkwingMechanic(setId: string, setName: string): TimelineMechanic<State> {
   return {
     id: "hawkwing",
 
     prepare(setup) {
       if (setup.inputs.set !== setId) return null
-      const proc = Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP)
+      const proc =
+        Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
+        setup.inputs.directAffinityRate
       return {
         schedule: hawkwingStacksSchedule(
           setup.hitTimesSec,

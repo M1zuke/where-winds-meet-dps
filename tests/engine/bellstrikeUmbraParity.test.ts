@@ -52,7 +52,7 @@ const inputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
 
-  set: SET_ID.hawking,
+  set: SET_ID.hawkwing,
   bowSet: "affinity",
   arsenal: "bellstrike",
   mindMethods: [
