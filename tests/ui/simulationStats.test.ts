@@ -21,6 +21,7 @@ import {
 } from "../../src/ui/features/simulation/simulation-outcome-mix-panel/outcomeMix"
 import {
   clampRunCount,
+  DEFAULT_RUN_COUNT,
   MAX_RUN_COUNT,
   MIN_RUN_COUNT,
 } from "../../src/ui/features/simulation/simulationRunSettings"
@@ -28,14 +29,20 @@ import {
 function run(
   totalDamage: number,
   hits = { abrasion: 1, normal: 5, crit: 3, affinity: 1 },
+  index = 0,
 ): ParseRun {
   return {
+    index,
     totalDamage,
     dps: totalDamage / 60,
     abrasionHits: hits.abrasion,
     normalHits: hits.normal,
     criticalHits: hits.crit,
     affinityHits: hits.affinity,
+    abrasionDamage: totalDamage * 0.02,
+    normalDamage: totalDamage * 0.28,
+    criticalDamage: totalDamage * 0.4,
+    affinityDamage: totalDamage * 0.3,
   }
 }
 
@@ -193,6 +200,19 @@ describe("outcomeMix", () => {
     }
   })
 
+  it("splits the damage across the same four categories, summing to one", () => {
+    const rows = outcomeMix(summary, null)
+    expect(rows.reduce((sum, row) => sum + row.damageShare, 0)).toBeCloseTo(1, 10)
+    expect(rows.find((row) => row.category === "affinity")!.damageShare).toBeCloseTo(0.3, 10)
+    expect(rows.find((row) => row.category === "critical")!.damageShare).toBeCloseTo(0.4, 10)
+  })
+
+  it("reports a damage share that does not follow the share of hits", () => {
+    const rows = outcomeMix(summary, null)
+    const affinity = rows.find((row) => row.category === "affinity")!
+    expect(affinity.damageShare).toBeGreaterThan(affinity.observedShare)
+  })
+
   it("states the gap to the expected rate in percentage points", () => {
     const rows = outcomeMix(summary, { abrasion: 0.1, normal: 0.5, crit: 0.25, affinity: 0.15 })
     expect(rows.find((row) => row.category === "critical")!.deltaPoints).toBeCloseTo(5, 10)
@@ -208,6 +228,6 @@ describe("clampRunCount", () => {
   })
 
   it("falls back to the default when the field holds no number", () => {
-    expect(clampRunCount(Number.NaN)).toBe(1000)
+    expect(clampRunCount(Number.NaN)).toBe(DEFAULT_RUN_COUNT)
   })
 })

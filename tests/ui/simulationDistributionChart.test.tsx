@@ -11,12 +11,17 @@ const DURATION = 60
 const runs: ParseRun[] = Array.from({ length: 200 }, (_unused, index) => {
   const totalDamage = 371_000 + (index % 40) * 2100
   return {
+    index,
     totalDamage,
     dps: totalDamage / DURATION,
     abrasionHits: 1,
     normalHits: 5,
     criticalHits: 3,
     affinityHits: 1,
+    abrasionDamage: totalDamage * 0.02,
+    normalDamage: totalDamage * 0.28,
+    criticalDamage: totalDamage * 0.4,
+    affinityDamage: totalDamage * 0.3,
   }
 }).sort((left, right) => left.totalDamage - right.totalDamage)
 

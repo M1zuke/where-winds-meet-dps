@@ -344,6 +344,7 @@ export interface Result {
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.
   outcomeCounts?: OutcomeCounts
+  outcomeDamage?: OutcomeCounts
   expectedOutcomeShare?: OutcomeCounts
 }
 
