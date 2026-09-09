@@ -49,6 +49,7 @@ function damageOf(result: Result, name: string): number {
 const spearQId = SKILL.spearq
 const spearSpecialId = SKILL.spearspecial
 const swordSpecial3Id = SKILL.swordspecial3Hit
+const spearSpecialHitCount = skillOf(spearSpecialId).hits.length
 
 const SPEARQ_CAST_FRAMES = 120
 
@@ -56,7 +57,7 @@ const WOLFCHASERS_ART_SLOT = { name: "wolfchasersArt", stacks: "tier 5" }
 
 describe("Spear Special — no River Flow", () => {
   it("deals base coefficients with no bleed payload or detonation", () => {
-    const r = runSteps([{ skillId: spearSpecialId, hitCount: 1 }])
+    const r = runSteps([{ skillId: spearSpecialId, hitCount: spearSpecialHitCount }])
     expect(detonationEvents(r)).toHaveLength(0)
     expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(false)
     expect(damageOf(r, "Spear Special")).toBeGreaterThan(0)
@@ -64,38 +65,41 @@ describe("Spear Special — no River Flow", () => {
 })
 
 function describeEmpoweredCast(skillIdArg: string) {
-  const name = builtinSkill(CLASS, skillIdArg).name
+  const trueSkill = skillOf(skillIdArg)
+  const name = trueSkill.name
+  const hitCount = trueSkill.hits.length
   describe(`${name} — River Flow active, cooldown inactive`, () => {
     it("uses the EXACT River Flow coefficients (not merely a larger number)", () => {
       const id = skillIdArg
-      const baseline = damageOf(runSteps([{ skillId: id, hitCount: 1 }]), name)
+      const baseline = damageOf(runSteps([{ skillId: id, hitCount }]), name)
       const r = runSteps([
         { skillId: spearQId, hitCount: 6 },
-        { skillId: id, hitCount: 1 },
+        { skillId: id, hitCount },
       ])
       const empowered = damageOf(r, name)
       expect(empowered).toBeGreaterThan(baseline)
 
-      const trueSkill = skillOf(skillIdArg)
-      const variant = trueSkill.hits[0].variants![0]
+      // Keeps each hit's own triggers — Sweep All's first hit lands Defense Down, which
+      // raises the second hit's damage within the same cast, so stripping triggers here
+      // would compare against a control that never saw that debuff.
       const stripped: Skill = {
         ...trueSkill,
-        hits: [
-          {
-            ...trueSkill.hits[0],
+        hits: trueSkill.hits.map((hit) => {
+          const variant = hit.variants![0]
+          return {
+            ...hit,
             physMultiplier: variant.physMultiplier,
             attributeMultiplier: variant.attributeMultiplier,
             physFixed: variant.physFixed,
             attributeFixed: variant.attributeFixed,
             variants: undefined,
-            triggers: [],
-          },
-        ],
+          }
+        }),
       }
       const control = runSteps(
         [
           { skillId: spearQId, hitCount: 6 },
-          { skillId: id, hitCount: 1 },
+          { skillId: id, hitCount },
         ],
         [stripped],
       )
@@ -108,14 +112,15 @@ function describeEmpoweredCast(skillIdArg: string) {
       const r = runSteps(
         [
           { skillId: spearQId, hitCount: 6 },
-          { skillId: id, hitCount: 1 },
+          { skillId: id, hitCount },
           { skillId: filler.id, hitCount: 1 },
         ],
         [filler],
       )
       const dets = detonationEvents(r)
       expect(dets).toHaveLength(1)
-      const hitFrame = SPEARQ_CAST_FRAMES + skillOf(skillIdArg).hits[0].frame
+      const payloadHit = trueSkill.hits.find((hit) => hit.triggers.length > 0)!
+      const hitFrame = SPEARQ_CAST_FRAMES + payloadHit.frame
       expect(dets[0].frame).toBe(hitFrame)
       expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(true)
     })
@@ -128,7 +133,7 @@ describe("Spear Special — bleed stacks are not consumed by its own payload", (
   it("SwordSpecial 3-Hit continues from the 3 stacks Spear Special left standing, detonating on its 2nd hit ⇒ 2 detonations total", () => {
     const r = runSteps([
       { skillId: spearQId, hitCount: 6 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
       { skillId: swordSpecial3Id, hitCount: 3 },
     ])
     expect(detonationEvents(r)).toHaveLength(2)
@@ -140,18 +145,18 @@ describe("Spear Special Cooldown — suppresses a second payload", () => {
     const singleCast = damageOf(
       runSteps([
         { skillId: spearQId, hitCount: 6 },
-        { skillId: spearSpecialId, hitCount: 1 },
+        { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
       ]),
       "Spear Special",
     )
     const r = runSteps([
       { skillId: spearQId, hitCount: 6 },
-      { skillId: spearSpecialId, hitCount: 1 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
     ])
     expect(detonationEvents(r)).toHaveLength(1)
     const row = r.perSkill.find((p) => p.name === skillOf(SKILL.spearspecial).name)!
-    expect(row.count).toBe(2)
+    expect(row.count).toBe(2 * spearSpecialHitCount)
     expect(row.expectedDamage).toBeGreaterThan(singleCast * 1.9)
     expect(row.expectedDamage).toBeLessThan(singleCast * 2.1)
   })
@@ -161,7 +166,7 @@ describe("River Flow — the cast tag shows the buff its module carries", () => 
   it("keeps its effects even though the gate projection sharing its id has none", () => {
     const r = runSteps([
       { skillId: spearQId, hitCount: 6 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
     ])
     const spearSpecialCast = r.casts!.find((cast) => cast.skillName === "Spear Special")!
     const tag = spearSpecialCast.buffs.find((b) => b.id === BUFF.potentRiverFlow)!
@@ -175,13 +180,13 @@ describe("River Flow — only exists while Wolfchaser's Art is slotted", () => {
   it("leaves SpearQ + Spear Special at base damage with no payload when it is not", () => {
     const steps = [
       { skillId: spearQId, hitCount: 6 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
     ]
     const r = runSteps(steps, [], defaultInputs.mindMethods)
     const trueSkill = skillOf(SKILL.spearspecial)
     const strippedToBase: Skill = {
       ...trueSkill,
-      hits: [{ ...trueSkill.hits[0], variants: undefined }],
+      hits: trueSkill.hits.map((hit) => ({ ...hit, variants: undefined })),
     }
     const control = runSteps(steps, [strippedToBase], defaultInputs.mindMethods)
     expect(damageOf(r, "Spear Special")).toBeCloseTo(damageOf(control, "Spear Special"), 6)
@@ -194,17 +199,17 @@ describe("Spear Special — fewer than 5 SpearQ hits", () => {
   it("never applies River Flow ⇒ base damage, no detonation", () => {
     const r = runSteps([
       { skillId: spearQId, hitCount: 4 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
     ])
     const trueSkill = skillOf(SKILL.spearspecial)
     const strippedToBase: Skill = {
       ...trueSkill,
-      hits: [{ ...trueSkill.hits[0], variants: undefined }],
+      hits: trueSkill.hits.map((hit) => ({ ...hit, variants: undefined })),
     }
     const control = runSteps(
       [
         { skillId: spearQId, hitCount: 4 },
-        { skillId: spearSpecialId, hitCount: 1 },
+        { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
       ],
       [strippedToBase],
     )
@@ -219,13 +224,13 @@ describe("River Flow — window expiry", () => {
     const steps = [
       { skillId: spearQId, hitCount: 6 },
       { skillId: filler.id, hitCount: 1 },
-      { skillId: spearSpecialId, hitCount: 1 },
+      { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
     ]
     const r = runSteps(steps, [filler])
     const trueSkill = skillOf(SKILL.spearspecial)
     const strippedToBase: Skill = {
       ...trueSkill,
-      hits: [{ ...trueSkill.hits[0], variants: undefined }],
+      hits: trueSkill.hits.map((hit) => ({ ...hit, variants: undefined })),
     }
     const control = runSteps(steps, [filler, strippedToBase])
     expect(damageOf(r, "Spear Special")).toBeCloseTo(damageOf(control, "Spear Special"), 6)
@@ -239,10 +244,10 @@ describe("Spear Special Cooldown — window expiry", () => {
     const r = runSteps(
       [
         { skillId: spearQId, hitCount: 6 },
-        { skillId: spearSpecialId, hitCount: 1 },
+        { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
         { skillId: filler.id, hitCount: 1 },
         { skillId: spearQId, hitCount: 6 },
-        { skillId: spearSpecialId, hitCount: 1 },
+        { skillId: spearSpecialId, hitCount: spearSpecialHitCount },
       ],
       [filler],
     )

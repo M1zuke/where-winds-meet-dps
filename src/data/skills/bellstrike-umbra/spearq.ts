@@ -15,39 +15,41 @@ export const spearq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
   triggersBuffs: [BUFF.potentRiverFlow, BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
+  receives: [BUFF.wolfchasersArtMartialDamage],
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 120,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 14,
       physMultiplier: 0.321033,
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
     }),
     hit(1, {
-      frame: 20,
+      frame: 31,
       physMultiplier: 0.321033,
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
     }),
     hit(2, {
-      frame: 40,
+      frame: 45,
       physMultiplier: 0.321033,
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
     }),
     hit(3, {
-      frame: 60,
+      frame: 62,
       physMultiplier: 0.321033,
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
     }),
     hit(4, {
-      frame: 80,
+      frame: 82,
       physMultiplier: 0.321033,
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
@@ -55,7 +57,7 @@ export const spearq = defineSkill({
       triggers: [applyBuff({ target: BUFF.potentRiverFlow })],
     }),
     hit(5, {
-      frame: 100,
+      frame: 98,
       physMultiplier: 0.535055,
       attributeMultiplier: 0.8025825,
       physFixed: 148.25,
@@ -63,5 +65,5 @@ export const spearq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

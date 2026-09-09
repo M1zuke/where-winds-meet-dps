@@ -15,11 +15,12 @@ export const spearheavy1Hit = defineSkill({
   castTag: CAST.spearHeavy1Hit,
   triggersBuffs: [BUFF.soulShaken],
   receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 60,
   triggerable: true,
   hits: [
-    hit(0, { frame: 0, physMultiplier: 0.30346, attributeMultiplier: 0.45518, physFixed: 70.2, attributeFixed: 39.2 }),
+    hit(0, { frame: 25, physMultiplier: 0.30346, attributeMultiplier: 0.45518, physFixed: 70.2, attributeFixed: 39.2 }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })
