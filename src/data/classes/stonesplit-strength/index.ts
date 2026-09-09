@@ -18,6 +18,7 @@ export const stonesplitStrength = defineClass({
   validated: true,
   spec: "stonesplit_strength",
   primaryAttribute: "Stonesplit",
+  attributeMultiplier: 1.5,
   classMindGroup: INNER_WAY_ID.frostCladNight,
   allowedMindMethods: [
     INNER_WAY_ID.moraleChant,

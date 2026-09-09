@@ -1,7 +1,7 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
+import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
-import { SKILL, DEBUFF } from "./ids"
+import { SKILL } from "./ids"
+import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 
 export const swordspecial4Hit = defineSkill({
   id: SKILL.swordspecial4Hit,
@@ -13,42 +13,10 @@ export const swordspecial4Hit = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial4Hit,
-  castFrames: 60,
+  // A player-ended form: castFrames is capped at the animation's own end frame, 84 — an 11-frame margin would run past it (in-game animation, 2026-09-09).
+  castFrames: 84,
   triggerable: true,
-  hits: [
-    hit(0, {
-      frame: 0,
-      physMultiplier: 0.196354,
-      attributeMultiplier: 0.294531,
-      physFixed: 54.4,
-      attributeFixed: 29.6,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
-    }),
-    hit(1, {
-      frame: 15,
-      physMultiplier: 0.392708,
-      attributeMultiplier: 0.589062,
-      physFixed: 108.8,
-      attributeFixed: 59.2,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
-    }),
-    hit(2, {
-      frame: 30,
-      physMultiplier: 0.196354,
-      attributeMultiplier: 0.294531,
-      physFixed: 54.4,
-      attributeFixed: 29.6,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
-    }),
-    hit(3, {
-      frame: 45,
-      physMultiplier: 0.392708,
-      attributeMultiplier: 0.589062,
-      physFixed: 108.8,
-      attributeFixed: 59.2,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
-    }),
-  ],
+  hits: SWORDSPECIAL_HITS.slice(0, 4),
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

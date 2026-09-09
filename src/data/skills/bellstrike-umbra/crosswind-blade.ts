@@ -1,7 +1,7 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
+import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
-import { SKILL, DEBUFF } from "./ids"
+import { SKILL } from "./ids"
+import { CROSSWIND_BLADE_HITS } from "./crosswind-blade-hits"
 
 export const crosswindBlade = defineSkill({
   id: SKILL.crosswindBlade,
@@ -13,18 +13,10 @@ export const crosswindBlade = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.crosswindBlade,
-  castFrames: 30,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
+  castFrames: 57,
   triggerable: true,
-  hits: [
-    hit(0, {
-      frame: 0,
-      physMultiplier: 0.625421,
-      attributeMultiplier: 0.938132,
-      physFixed: 0,
-      attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
-    }),
-  ],
+  hits: CROSSWIND_BLADE_HITS,
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

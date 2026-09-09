@@ -1,9 +1,8 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, applyDebuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
+import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL, DEBUFF } from "./ids"
-import { SPEAR_SPECIAL_COOLDOWN_BUFF_ID } from "../../innerWays/wolfchasersArtGates"
+import { SKILL } from "./ids"
+import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
 
 export const spearspecial = defineSkill({
   id: SKILL.spearspecial,
@@ -16,61 +15,10 @@ export const spearspecial = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial,
   receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
-  castFrames: 60,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
+  castFrames: 102,
   triggerable: true,
-  hits: [
-    hit(0, {
-      frame: 25,
-      physMultiplier: 1.712176,
-      attributeMultiplier: 2.568264,
-      physFixed: 474.4,
-      attributeFixed: 258.4,
-      triggers: [
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        castSkill({
-          target: SKILL.bleedDetonation,
-          stacks: 0,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDebuff({
-          target: DEBUFF.defenseDown,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyBuff({
-          target: SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-      ],
-      variants: [
-        {
-          id: "hv-spearspecial-river-flow",
-          label: "River Flow",
-          conditions: [{ buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }],
-          physMultiplier: 2.568264,
-          attributeMultiplier: 3.852396,
-          physFixed: 711.6,
-          attributeFixed: 387.6,
-        },
-      ],
-    }),
-  ],
+  hits: SPEARSPECIAL_HITS,
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

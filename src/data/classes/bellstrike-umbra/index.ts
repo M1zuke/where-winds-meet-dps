@@ -3,14 +3,12 @@ import { CLASS_ID, SKILLS } from "../../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
-import { declareMechanic } from "../../../engine/mechanics"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
-import { levelAttributeBonusMechanic } from "./levelBonus"
 import { BELLSTRIKE_UMBRA_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
@@ -20,6 +18,7 @@ export const bellstrikeUmbra = defineClass({
   validated: true,
   spec: "bellstrike_umbra",
   primaryAttribute: "Bellstrike",
+  attributeMultiplier: 1.5,
   classMindGroup: "swordHorizon",
   allowedMindMethods: [
     "wolfchasersArt",
@@ -37,7 +36,7 @@ export const bellstrikeUmbra = defineClass({
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
   classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
   gateBuffs: [],
-  mechanics: [declareMechanic(levelAttributeBonusMechanic)],
+  mechanics: [],
   skillBehaviors: [],
   displayGates: [],
   // Sword Horizon's Zenith detonation extends an active Bitter Season poison.

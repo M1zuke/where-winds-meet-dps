@@ -14,9 +14,9 @@ export const toadPoison = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 300,
-    physMultiplier: 1.6216,
-    physFixed: 219,
-    attributeMultiplier: 1.6216,
+    physMultiplier: 1.62189,
+    physFixed: 243.7,
+    attributeMultiplier: 1.62189,
     attributeFixed: 0,
     attributeAttack: "Stonesplit",
     skillType: "sustain",
@@ -27,7 +27,7 @@ export const toadPoison = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
   receives: [BUFF.soulShaken],
 })
 
@@ -40,9 +40,9 @@ export const combustion = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
-    physMultiplier: 0.2953,
-    physFixed: 39,
-    attributeMultiplier: 0.2953,
+    physMultiplier: 0.29545,
+    physFixed: 44.62,
+    attributeMultiplier: 0.29545,
     attributeFixed: 0,
     attributeAttack: "Stonesplit",
     skillType: "sustain",
@@ -53,7 +53,7 @@ export const combustion = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
   receives: [BUFF.soulShaken],
 })
 
@@ -66,9 +66,9 @@ export const fluteRipple = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 150,
-    physMultiplier: 1.4696,
-    physFixed: 310,
-    attributeMultiplier: 2.2044,
+    physMultiplier: 1.47645,
+    physFixed: 320.97,
+    attributeMultiplier: 2.214675,
     attributeFixed: 0,
     attributeAttack: "Stonesplit",
     skillType: "sustain",
@@ -79,7 +79,7 @@ export const fluteRipple = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
   receives: [BUFF.soulShaken],
 })
 

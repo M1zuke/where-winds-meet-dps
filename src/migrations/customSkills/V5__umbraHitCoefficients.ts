@@ -89,13 +89,6 @@ const SUPERSEDED_UMBRA_HITS: Record<string, readonly HitSwap[]> = {
     from: [0.321, 0.4814, 74, 41],
     to: SPEAR_Q_NEW,
   }),
-  "bellstrikeUmbra-spearspecial": [
-    {
-      from: [1.7122, 2.5683, 474, 258],
-      to: [1.712176, 2.568264, 474.4, 258.4],
-      variants: [{ from: [2.5683, 3.8524, 711, 387], to: [2.568264, 3.852396, 711.6, 387.6] }],
-    },
-  ],
   "bellstrikeUmbra-spearspecial-1-hit-cancel": [
     {
       from: [0.8561, 1.28415, 237, 129],

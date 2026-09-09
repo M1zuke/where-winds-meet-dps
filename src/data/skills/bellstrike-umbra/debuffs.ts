@@ -18,9 +18,9 @@ export const toadPoison = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 300,
-    physMultiplier: 1.6216,
-    physFixed: 219,
-    attributeMultiplier: 1.6216,
+    physMultiplier: 1.62189,
+    physFixed: 243.7,
+    attributeMultiplier: 1.62189,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",
@@ -31,8 +31,8 @@ export const toadPoison = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const combustion = defineDebuff({
@@ -44,9 +44,9 @@ export const combustion = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
-    physMultiplier: 0.2953,
-    physFixed: 39,
-    attributeMultiplier: 0.2953,
+    physMultiplier: 0.29545,
+    physFixed: 44.62,
+    attributeMultiplier: 0.29545,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",
@@ -57,7 +57,7 @@ export const combustion = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
   tags: [ROLE.combustion],
   receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
@@ -72,9 +72,9 @@ export const darkFire = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
-    physMultiplier: 0.236,
-    physFixed: 44,
-    attributeMultiplier: 0.354,
+    physMultiplier: 0.24991,
+    physFixed: 37.74,
+    attributeMultiplier: 0.374865,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",
@@ -86,8 +86,8 @@ export const darkFire = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-07-30T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const fluteRipple = defineDebuff({
@@ -100,9 +100,9 @@ export const fluteRipple = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 150,
-    physMultiplier: 1.4614,
-    physFixed: 300,
-    attributeMultiplier: 2.1921,
+    physMultiplier: 1.47645,
+    physFixed: 320.97,
+    attributeMultiplier: 2.214675,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",
@@ -113,8 +113,8 @@ export const fluteRipple = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const bleedTick = defineDebuff({
@@ -176,8 +176,8 @@ export const bitterSeasonTick = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-06T00:00:00.000Z",
-  updatedAt: "2026-08-06T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 // 5 %: the spear special's in-game hint, "Reduces Physical Defense by 5 %

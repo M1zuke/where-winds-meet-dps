@@ -70,6 +70,7 @@ export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
     hits: [],
     castFrames: 0,
     triggerable: false,
+    isDotTick: true,
     createdAt: debuff.createdAt,
     updatedAt: debuff.updatedAt,
   }
@@ -91,7 +92,6 @@ function tickArt(
     extraCritDamage: dot.extraCritDamage,
     skillType: dot.skillType || "sustain",
     specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,

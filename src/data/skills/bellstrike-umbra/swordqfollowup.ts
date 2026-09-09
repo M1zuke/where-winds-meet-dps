@@ -15,11 +15,13 @@ export const swordqfollowup = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ,
   triggersBuffs: [BUFF.jadeware],
-  castFrames: 66,
+  receives: [BUFF.wolfchasersArtMartialDamage],
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
+  castFrames: 64,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 5,
       physMultiplier: 0.544068,
       attributeMultiplier: 0.816102,
       physFixed: 150.6,
@@ -27,7 +29,7 @@ export const swordqfollowup = defineSkill({
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(1, {
-      frame: 16,
+      frame: 23,
       physMultiplier: 0.408051,
       attributeMultiplier: 0.6120765,
       physFixed: 112.95,
@@ -35,7 +37,7 @@ export const swordqfollowup = defineSkill({
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(2, {
-      frame: 32,
+      frame: 34,
       physMultiplier: 0.408051,
       attributeMultiplier: 0.6120765,
       physFixed: 112.95,
@@ -43,7 +45,7 @@ export const swordqfollowup = defineSkill({
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
     }),
     hit(3, {
-      frame: 48,
+      frame: 43,
       physMultiplier: 0.816102,
       attributeMultiplier: 1.224153,
       physFixed: 225.9,
@@ -52,5 +54,5 @@ export const swordqfollowup = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

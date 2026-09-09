@@ -7,6 +7,8 @@ import {
   runCustomSkillMigrations,
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
+import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
+import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 
@@ -62,9 +64,12 @@ describe("every captured custom-skill store walks the whole chain", () => {
         ...skill,
         hits: skill.hits.map(({ id, frame, triggers }) => ({ id, frame, triggers })),
       })
-      ;(result.blob.skills as Skill[]).forEach((walked, index) =>
-        expect(strip(walked)).toEqual(strip(fixture.blob.skills[index])),
-      )
+      ;(result.blob.skills as Skill[]).forEach((walked, index) => {
+        const claimed = healRiverFlowApplication(
+          healBleedRowDefaults(clone(fixture.blob.skills[index])),
+        ) as Skill
+        expect(strip(walked)).toEqual(strip(claimed))
+      })
     },
   )
 })
@@ -87,7 +92,8 @@ describe("the oldest custom-skill store survives loadCustomSkills end to end", (
         (hit, index) =>
           hit.physMultiplier === 0.6 && builtin && builtin.hits[index].physMultiplier !== 0.6,
       )
-      if (!builtin || edited) {
+      const reshaped = builtin && stored.hits.length !== builtin.hits.length
+      if (!builtin || edited || reshaped) {
         stored.hits.forEach((hit, index) => expect(rowOf(skill.hits[index])).toEqual(rowOf(hit)))
       } else {
         builtin.hits.forEach((hit, index) =>

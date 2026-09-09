@@ -11,7 +11,6 @@ import type { TimelineMechanic } from "../../engine/mechanics/types"
 const AFFINITY_PROC_CAP = 0.4
 const DOT_MULTIPLIER_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
-const DOT_MULT_ROLES = ["role:bleedDetonation", "role:bleedTick", "role:combustion"]
 
 const EFFECTS = [
   { statKey: "affinityDamageBoost" as const, amount: 0.1 },
@@ -71,8 +70,7 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
               amount: effect.amount * activeProb,
             }))
           : []
-      const scaled =
-        state.tier6 && skill && DOT_MULT_ROLES.some((role) => skill.tags?.includes(role))
+      const scaled = state.tier6 && skill?.isDotTick
       if (effects.length === 0 && !scaled) return null
       return {
         effects,

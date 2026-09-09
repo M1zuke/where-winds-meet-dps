@@ -19,6 +19,7 @@ export const bellstrikeSplendor = defineClass({
   validated: false,
   spec: "bellstrike_splendor",
   primaryAttribute: "Bellstrike",
+  attributeMultiplier: 1.5,
   classMindGroup: INNER_WAY_ID.swordMorph,
   allowedMindMethods: [
     INNER_WAY_ID.battleAnthem,

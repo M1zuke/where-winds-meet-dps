@@ -16,11 +16,11 @@ export const soaring = defineSkill({
   hits: evenlySpacedHits({
     count: 2,
     everyFrames: 60,
-    physMultiplier: 3.5537,
-    attributeMultiplier: 5.3298,
-    physFixed: 660,
+    physMultiplier: 3.55121,
+    attributeMultiplier: 5.326815,
+    physFixed: 535.03,
     attributeFixed: 0,
   }),
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })
