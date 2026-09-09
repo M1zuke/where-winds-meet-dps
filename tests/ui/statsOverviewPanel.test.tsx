@@ -15,10 +15,10 @@ import { StatsOverviewPanel } from "../../src/ui/components/stats-overview-panel
 import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
-function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
-  const helm: GearPiece = {
-    id: "formless-helm",
-    slot: "helm",
+function withFormlessAndBellstrikeWeapon(formlessMaxRoll: number): Inputs {
+  const weapon: GearPiece = {
+    id: "formless-weapon",
+    slot: "leftWeapon",
     level: 96,
     rarity: "legendary",
     minPhys: 0,
@@ -36,7 +36,11 @@ function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
     attunementValue: 0,
     relayed: false,
   }
-  return { ...defaultInputs, inventory: [helm], equipped: { ...EMPTY_EQUIPPED, helm: helm.id } }
+  return {
+    ...defaultInputs,
+    inventory: [weapon],
+    equipped: { ...EMPTY_EQUIPPED, leftWeapon: weapon.id },
+  }
 }
 
 describe("finalCritAffinityRates", () => {
@@ -95,7 +99,7 @@ describe("StatsOverviewPanel", () => {
   })
 
   it("reads Formless attack out of the primary attribute row and onto its own", () => {
-    const inputs = withFormlessAndBellstrikeHelm(40)
+    const inputs = withFormlessAndBellstrikeWeapon(40)
     const equipped = equippedPiecesFor(inputs)
     const formless = totalFormlessAttack(inputs, equipped)
     const withSets = applyBowSet(applyArmorSet(withDerivedStats(inputs)))
@@ -160,7 +164,7 @@ describe("StatsOverviewPanel", () => {
 
   it("counts an equipped Formless word on the Formless row, not the attribute's own", () => {
     const bare = totalFormlessAttack(defaultInputs, equippedPiecesFor(defaultInputs))
-    const withWord = withFormlessAndBellstrikeHelm(40)
+    const withWord = withFormlessAndBellstrikeWeapon(40)
     const geared = totalFormlessAttack(withWord, equippedPiecesFor(withWord))
 
     expect(geared.max - bare.max).toBeCloseTo(40, 9)
