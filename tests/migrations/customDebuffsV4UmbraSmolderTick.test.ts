@@ -26,7 +26,8 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const debuffIn = (blob: { debuffs: unknown[] }, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
 
-const currentTick = () => builtinDebuffsForClass(CLASS).find((debuff) => debuff.id === SMOLDER)!.dot!
+const currentTick = () =>
+  builtinDebuffsForClass(CLASS).find((debuff) => debuff.id === SMOLDER)!.dot!
 
 describe("custom-debuffs v3 fixture", () => {
   it("is v3 and still stores the superseded Smolder tick the built-in no longer carries", () => {
@@ -38,7 +39,10 @@ describe("custom-debuffs v3 fixture", () => {
 
 describe("migrateUmbraSmolderDot", () => {
   it("rewrites the untouched tick to the built-in's current tick", () => {
-    const healed = migrateUmbraSmolderDot(SMOLDER, clone(debuffIn(STORE, SMOLDER).dot)) as Debuff["dot"]
+    const healed = migrateUmbraSmolderDot(
+      SMOLDER,
+      clone(debuffIn(STORE, SMOLDER).dot),
+    ) as Debuff["dot"]
     expect(healed!.physMultiplier).toBe(currentTick().physMultiplier)
     expect(healed!.physFixed).toBe(currentTick().physFixed)
     expect(healed!.attributeMultiplier).toBe(currentTick().attributeMultiplier)

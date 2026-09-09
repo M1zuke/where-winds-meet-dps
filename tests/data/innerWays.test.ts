@@ -275,10 +275,7 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
 describe("inner-way ownership — buffDefs and skillBehaviors", () => {
   it.each([
     [INNER_WAY_ID.insightfulStrike, []],
-    [
-      INNER_WAY_ID.wolfchasersArt,
-      ["wineGu", "soulShaken", "wolfchasersArtMartialDamage"],
-    ],
+    [INNER_WAY_ID.wolfchasersArt, ["wineGu", "soulShaken", "wolfchasersArtMartialDamage"]],
     [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
     [INNER_WAY_ID.moraleChant, []],
     [INNER_WAY_ID.bitterSeason, []],

@@ -30,8 +30,9 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
 
   it("base + River Flow variant coefficients split 0.40 / 0.60 across Spear Special's two hits; the cancel shares hit 1", () => {
     const [first, second] = spearSpecial[0].hits
-    const total = (field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed") =>
-      first[field] + second[field]
+    const total = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => first[field] + second[field]
 
     expect(total("physMultiplier")).toBeCloseTo(1.712176, 10)
     expect(total("attributeMultiplier")).toBeCloseTo(2.568264, 10)

@@ -1,321 +1,294 @@
 {
- "v": 7,
- "skills": [
-  {
-   "id": "bellstrikeUmbra-poet1",
-   "classId": "bellstrikeUmbra",
-   "name": "Poet1",
-   "skillType": "mystic",
-   "weaponOrAttribute": "",
-   "attributeAttack": "",
-   "tags": [
-    "mystic:burst"
-   ],
-   "castTag": "cast:poet1",
-   "castFrames": 29,
-   "triggerable": true,
-   "hits": [
+  "v": 7,
+  "skills": [
     {
-     "id": "hit-1",
-     "frame": 0,
-     "physMultiplier": 1.02325,
-     "attributeMultiplier": 1.534875,
-     "physFixed": 153.82,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyDebuff",
-       "targetId": "debuff-bellstrikeUmbra-combustion",
-       "stacks": 0,
-       "extendFrames": 90,
-       "extendOnly": true,
-       "condition": null
-      }
-     ]
+      "id": "bellstrikeUmbra-poet1",
+      "classId": "bellstrikeUmbra",
+      "name": "Poet1",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "castTag": "cast:poet1",
+      "castFrames": 29,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-combustion",
+              "stacks": 0,
+              "extendFrames": 90,
+              "extendOnly": true,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-dragon-head-plus",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head - Plus",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "castTag": "cast:dragonHeadPlus",
+      "guaranteedPrecision": true,
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
+      "castFrames": 246,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 246,
+          "physMultiplier": 17.34049,
+          "attributeMultiplier": 26.010735,
+          "physFixed": 2608.52,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath: Smolder 2 Hits",
+      "breakdownName": "Dragon's Breath",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bellstrike",
+      "tags": ["mystic:burst"],
+      "castTag": "cast:dragonSBreathSmolder2Hits",
+      "castFrames": 100,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 40,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 100,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-toad-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Toad[Cancel]",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:area-debuff"],
+      "castTag": "cast:toadCancel",
+      "castFrames": 72,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 99,
+          "attributeMultiplier": 2.8378,
+          "physFixed": 255.5,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 36,
+          "physMultiplier": 1.8922,
+          "attributeMultiplier": 2.8383,
+          "physFixed": 284.31,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-toad-poison",
+              "stacks": 0,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 30,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearq",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearQ",
+      "breakdownName": "Sober Sorrow",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ",
+      "triggersBuffs": ["potentRiverFlow", "wineGu", "soulShaken", "jadeware"],
+      "receives": ["wolfchasersArtMartialDamage"],
+      "castFrames": 120,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 45,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 62,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 82,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "potentRiverFlow",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 98,
+          "physMultiplier": 0.535055,
+          "attributeMultiplier": 0.8025825,
+          "physFixed": 148.25,
+          "attributeFixed": 80.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
     }
-   ],
-   "createdAt": "2026-08-01T00:00:00.000Z",
-   "updatedAt": "2026-08-01T00:00:00.000Z"
-  },
-  {
-   "id": "bellstrikeUmbra-dragon-head-plus",
-   "classId": "bellstrikeUmbra",
-   "name": "Dragon Head - Plus",
-   "skillType": "mystic",
-   "weaponOrAttribute": "",
-   "attributeAttack": "",
-   "tags": [
-    "mystic:burst",
-    "prop:hasQiBreakDoubleDamage",
-    "role:dragonHeadPlus",
-    "role:dragonHead"
-   ],
-   "castTag": "cast:dragonHeadPlus",
-   "guaranteedPrecision": true,
-   "receives": [
-    "surgingWaves",
-    "dragonHeadLowHp"
-   ],
-   "triggersBuffs": [
-    "surgingWaves"
-   ],
-   "castFrames": 246,
-   "triggerable": true,
-   "hits": [
-    {
-     "id": "hit-1",
-     "frame": 246,
-     "physMultiplier": 17.34049,
-     "attributeMultiplier": 26.010735,
-     "physFixed": 2608.52,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": []
-    }
-   ],
-   "createdAt": "2026-08-01T00:00:00.000Z",
-   "updatedAt": "2026-08-01T00:00:00.000Z"
-  },
-  {
-   "id": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
-   "classId": "bellstrikeUmbra",
-   "name": "Dragon's Breath: Smolder 2 Hits",
-   "breakdownName": "Dragon's Breath",
-   "skillType": "mystic",
-   "weaponOrAttribute": "",
-   "attributeAttack": "Bellstrike",
-   "tags": [
-    "mystic:burst"
-   ],
-   "castTag": "cast:dragonSBreathSmolder2Hits",
-   "castFrames": 100,
-   "triggerable": true,
-   "hits": [
-    {
-     "id": "hit-1",
-     "frame": 40,
-     "physMultiplier": 1.40692,
-     "attributeMultiplier": 2.11038,
-     "physFixed": 212.49,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyDebuff",
-       "targetId": "debuff-bellstrikeUmbra-dark-fire",
-       "stacks": 0,
-       "extendFrames": 240,
-       "condition": null
-      }
-     ]
-    },
-    {
-     "id": "hit-2",
-     "frame": 70,
-     "physMultiplier": 1.40692,
-     "attributeMultiplier": 2.11038,
-     "physFixed": 212.49,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyDebuff",
-       "targetId": "debuff-bellstrikeUmbra-dark-fire",
-       "stacks": 0,
-       "extendFrames": 240,
-       "condition": null
-      }
-     ]
-    },
-    {
-     "id": "hit-3",
-     "frame": 100,
-     "physMultiplier": 1.40692,
-     "attributeMultiplier": 2.11038,
-     "physFixed": 212.49,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyDebuff",
-       "targetId": "debuff-bellstrikeUmbra-dark-fire",
-       "stacks": 0,
-       "extendFrames": 240,
-       "condition": null
-      }
-     ]
-    }
-   ],
-   "createdAt": "2026-08-01T00:00:00.000Z",
-   "updatedAt": "2026-08-01T00:00:00.000Z"
-  },
-  {
-   "id": "bellstrikeUmbra-toad-cancel",
-   "classId": "bellstrikeUmbra",
-   "name": "Toad[Cancel]",
-   "skillType": "mystic",
-   "weaponOrAttribute": "",
-   "attributeAttack": "",
-   "tags": [
-    "mystic:area-debuff"
-   ],
-   "castTag": "cast:toadCancel",
-   "castFrames": 72,
-   "triggerable": true,
-   "hits": [
-    {
-     "id": "hit-1",
-     "frame": 0,
-     "physMultiplier": 99,
-     "attributeMultiplier": 2.8378,
-     "physFixed": 255.5,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": []
-    },
-    {
-     "id": "hit-2",
-     "frame": 36,
-     "physMultiplier": 1.8922,
-     "attributeMultiplier": 2.8383,
-     "physFixed": 284.31,
-     "attributeFixed": 0,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyDebuff",
-       "targetId": "debuff-bellstrikeUmbra-toad-poison",
-       "stacks": 0,
-       "condition": null
-      }
-     ]
-    }
-   ],
-   "createdAt": "2026-08-01T00:00:00.000Z",
-   "updatedAt": "2026-08-01T00:00:00.000Z"
-  },
-  {
-   "id": "sk-user-authored-slash",
-   "classId": "bellstrikeUmbra",
-   "name": "My Slash",
-   "skillType": "weapon",
-   "weaponOrAttribute": "Sword",
-   "attributeAttack": "Bellstrike",
-   "tags": [],
-   "hits": [
-    {
-     "id": "hit-1",
-     "frame": 0,
-     "physMultiplier": 0.5441,
-     "attributeMultiplier": 0.8161,
-     "physFixed": 150,
-     "attributeFixed": 82,
-     "extraCritDamage": 0,
-     "triggers": []
-    }
-   ],
-   "castFrames": 30,
-   "triggerable": true,
-   "createdAt": "2026-08-01T00:00:00.000Z",
-   "updatedAt": "2026-08-01T00:00:00.000Z"
-  },
-  {
-   "id": "bellstrikeUmbra-spearq",
-   "classId": "bellstrikeUmbra",
-   "name": "SpearQ",
-   "breakdownName": "Sober Sorrow",
-   "tags": [
-    "weapon:Spear",
-    "attune:spearQ",
-    "prop:isMartialSkillQ"
-   ],
-   "skillType": "weapon",
-   "weaponOrAttribute": "Spear",
-   "attributeAttack": "Bellstrike",
-   "castTag": "cast:spearQ",
-   "triggersBuffs": [
-    "potentRiverFlow",
-    "wineGu",
-    "soulShaken",
-    "jadeware"
-   ],
-   "receives": [
-    "wolfchasersArtMartialDamage"
-   ],
-   "castFrames": 120,
-   "triggerable": true,
-   "hits": [
-    {
-     "id": "hit-0",
-     "frame": 14,
-     "physMultiplier": 0.321033,
-     "attributeMultiplier": 0.4815495,
-     "physFixed": 88.95,
-     "attributeFixed": 48.45,
-     "extraCritDamage": 0,
-     "triggers": []
-    },
-    {
-     "id": "hit-1",
-     "frame": 31,
-     "physMultiplier": 0.321033,
-     "attributeMultiplier": 0.4815495,
-     "physFixed": 88.95,
-     "attributeFixed": 48.45,
-     "extraCritDamage": 0,
-     "triggers": []
-    },
-    {
-     "id": "hit-2",
-     "frame": 45,
-     "physMultiplier": 0.321033,
-     "attributeMultiplier": 0.4815495,
-     "physFixed": 88.95,
-     "attributeFixed": 48.45,
-     "extraCritDamage": 0,
-     "triggers": []
-    },
-    {
-     "id": "hit-3",
-     "frame": 62,
-     "physMultiplier": 0.321033,
-     "attributeMultiplier": 0.4815495,
-     "physFixed": 88.95,
-     "attributeFixed": 48.45,
-     "extraCritDamage": 0,
-     "triggers": []
-    },
-    {
-     "id": "hit-4",
-     "frame": 82,
-     "physMultiplier": 0.321033,
-     "attributeMultiplier": 0.4815495,
-     "physFixed": 88.95,
-     "attributeFixed": 48.45,
-     "extraCritDamage": 0,
-     "triggers": [
-      {
-       "kind": "applyBuff",
-       "targetId": "potentRiverFlow",
-       "stacks": 1,
-       "condition": null
-      }
-     ]
-    },
-    {
-     "id": "hit-5",
-     "frame": 98,
-     "physMultiplier": 0.535055,
-     "attributeMultiplier": 0.8025825,
-     "physFixed": 148.25,
-     "attributeFixed": 80.75,
-     "extraCritDamage": 0,
-     "triggers": []
-    }
-   ],
-   "createdAt": "2026-07-19T00:00:00.000Z",
-   "updatedAt": "2026-09-09T00:00:00.000Z"
-  }
- ]
+  ]
 }

@@ -22,10 +22,6 @@ export const wolfchasersArt: InnerWayDef = defineInnerWay({
     5: { panelStats: { affinityDamageBoost: 0.052 } },
     6: { nodes: [INNER_WAY_NODE.soulShaken] },
   },
-  buffDefs: [
-    wineGuBuffDef(),
-    soulShakenBuffDef(),
-    wolfchasersArtMartialDamageBuffDef(),
-  ],
+  buffDefs: [wineGuBuffDef(), soulShakenBuffDef(), wolfchasersArtMartialDamageBuffDef()],
   gateBuffs: WOLFCHASERS_ART_GATES,
 })

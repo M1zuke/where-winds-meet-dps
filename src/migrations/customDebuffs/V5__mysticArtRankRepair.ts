@@ -19,7 +19,11 @@ interface CoefficientSwap {
 
 const TOAD_POISON_NEW = { physMultiplier: 1.62189, attributeMultiplier: 1.62189, physFixed: 243.7 }
 const COMBUSTION_NEW = { physMultiplier: 0.29545, attributeMultiplier: 0.29545, physFixed: 44.62 }
-const FLUTE_RIPPLE_NEW = { physMultiplier: 1.47645, attributeMultiplier: 2.214675, physFixed: 320.97 }
+const FLUTE_RIPPLE_NEW = {
+  physMultiplier: 1.47645,
+  attributeMultiplier: 2.214675,
+  physFixed: 320.97,
+}
 const DARK_FIRE_NEW = { physMultiplier: 0.24991, attributeMultiplier: 0.374865, physFixed: 37.74 }
 
 const MYSTIC_DOT_RANK_SWAPS: readonly CoefficientSwap[] = [

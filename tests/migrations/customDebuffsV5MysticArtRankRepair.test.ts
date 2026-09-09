@@ -61,7 +61,10 @@ describe("healMysticDotRank", () => {
   })
 
   it("rewrites Bellstrike Splendor's stale Smolder tick", () => {
-    const healed = healMysticDotRank(SPLENDOR_DARK_FIRE, clone(debuffIn(STORE, SPLENDOR_DARK_FIRE).dot))
+    const healed = healMysticDotRank(
+      SPLENDOR_DARK_FIRE,
+      clone(debuffIn(STORE, SPLENDOR_DARK_FIRE).dot),
+    )
     expect(healed).toEqual({
       ...clone(debuffIn(STORE, SPLENDOR_DARK_FIRE).dot),
       physMultiplier: 0.24991,

@@ -62,7 +62,9 @@ describe("the built-in Bellstrike Umbra default rotation", () => {
   const classDef = classDefinition(CLASS)!
 
   it("every step resolves to a registered skill", () => {
-    const rotation = classDef.rotations.find((candidate) => candidate.id === classDef.defaultRotationId)!
+    const rotation = classDef.rotations.find(
+      (candidate) => candidate.id === classDef.defaultRotationId,
+    )!
     const skillIds = new Set(classDef.skills.map((skill) => skill.id))
     for (const step of rotation.steps) {
       expect(skillIds.has(step.skillId), step.skillId).toBe(true)
@@ -150,8 +152,9 @@ describe("Sweep All lands two hits", () => {
 
   it("the two hits' coefficients split 0.40 / 0.60 of the whole skill", () => {
     const [first, second] = spearspecial.hits
-    const total = (field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed") =>
-      first[field] + second[field]
+    const total = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => first[field] + second[field]
     expect(first.physMultiplier / total("physMultiplier")).toBeCloseTo(0.4, 6)
     expect(second.physMultiplier / total("physMultiplier")).toBeCloseTo(0.6, 6)
   })
