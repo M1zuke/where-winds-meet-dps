@@ -1256,6 +1256,59 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
     expect(reloaded.triggersBuffs).toBeUndefined()
   })
 
+  it("gives an Umbra DoT seeded before the widened bleeding-damage buff its reach", () => {
+    const seeded = {
+      ...builtinDebuffsForClass("bellstrikeUmbra").find(
+        (debuff) => debuff.id === "debuff-bellstrikeUmbra-dark-fire",
+      )!,
+      receives: ["soulShaken"],
+    }
+    saveCustomDebuff(seeded)
+    const healed = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === seeded.id,
+    )!
+    expect(healed.receives).toEqual(["bellstrikeUmbraBleedingDamage", "soulShaken"])
+  })
+
+  it("leaves an Umbra DoT the user has actually edited alone", () => {
+    const edited = {
+      ...builtinDebuffsForClass("bellstrikeUmbra").find(
+        (debuff) => debuff.id === "debuff-bellstrikeUmbra-toad-poison",
+      )!,
+      receives: ["soulShaken", "mountainSplitter"],
+    }
+    saveCustomDebuff(edited)
+    const reloaded = loadCustomDebuffsForClass("bellstrikeUmbra").find(
+      (debuff) => debuff.id === edited.id,
+    )!
+    expect(reloaded.receives).toEqual(["soulShaken", "mountainSplitter"])
+  })
+
+  it("gives a Sword/Spear Martial Q skill seeded before Wolfchaser's Art martial damage its reach", () => {
+    const builtinSwordq = builtinSkillsForClass("bellstrikeUmbra").find(
+      (skill) => skill.id === "bellstrikeUmbra-swordq",
+    )!
+    const stale = { ...seedSkillFromBuiltin("bellstrikeUmbra", builtinSwordq) }
+    delete stale.receives
+    saveCustomSkill(stale)
+    const healed = loadCustomSkillsForClass("bellstrikeUmbra").find(
+      (skill) => skill.id === stale.id,
+    )!
+    expect(healed.receives).toEqual(["wolfchasersArtMartialDamage"])
+  })
+
+  it("leaves a Sword Martial Q skill the user has actually edited alone", () => {
+    const builtinSwordq = builtinSkillsForClass("bellstrikeUmbra").find(
+      (skill) => skill.id === "bellstrikeUmbra-swordq",
+    )!
+    const edited = { ...seedSkillFromBuiltin("bellstrikeUmbra", builtinSwordq), receives: [] }
+    saveCustomSkill(edited)
+    const reloaded = loadCustomSkillsForClass("bellstrikeUmbra").find(
+      (skill) => skill.id === edited.id,
+    )!
+    expect(reloaded.receives).toEqual([])
+  })
+
   it("leaves an already-authored debuff's receives alone, including an explicit empty one", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
       (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",

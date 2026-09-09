@@ -18,8 +18,14 @@ export const dragonHeadPlus = defineSkill({
   castFrames: 246,
   triggerable: true,
   hits: [
-    hit(0, { frame: 246, physMultiplier: 17.3793, attributeMultiplier: 26.0689, physFixed: 3237, attributeFixed: 0 }),
+    hit(0, {
+      frame: 246,
+      physMultiplier: 17.34049,
+      attributeMultiplier: 26.010735,
+      physFixed: 2608.52,
+      attributeFixed: 0,
+    }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",
-  updatedAt: "2026-08-06T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

@@ -903,6 +903,21 @@ function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
   return untouched ? ["jadeware", ...triggersBuffs] : triggersBuffs
 }
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// Wolfchaser's Art rank 3 raises these seven skills' damage; a copy seeded
+// before that bonus was modeled has no `receives` field at all, so it is not
+// caught by the `Array.isArray` branch below.
+const RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE = new Set([
+  "bellstrikeUmbra-swordq",
+  "bellstrikeUmbra-swordqfollowup",
+  "bellstrikeUmbra-swordq-follow-up-1-hit-cancel",
+  "bellstrikeUmbra-swordq-follow-up-2-hit-cancel",
+  "bellstrikeUmbra-sword-martial-qqq",
+  "bellstrikeUmbra-spearq",
+  "bellstrikeUmbra-spearq-5-hit-cancel",
+])
+
 // A skill's `type:<skillType>` tag is derived, never stored, so it is added
 // back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
 function healSkillReach(
@@ -911,7 +926,11 @@ function healSkillReach(
   tags: readonly string[],
 ): Pick<Skill, "receives" | "triggersBuffs"> {
   const legacyTags = skill.skillType ? [...tags, `type:${skill.skillType}`] : tags
-  const receives = Array.isArray(skill.receives) ? skill.receives : legacyReceives(legacyTags)
+  const receives = Array.isArray(skill.receives)
+    ? skill.receives
+    : RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE.has(id)
+      ? ["wolfchasersArtMartialDamage"]
+      : legacyReceives(legacyTags)
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
@@ -1474,8 +1493,31 @@ interface CustomDebuffsBlob {
 const DRONE_DEBUFF_RECEIVES_BEFORE_LINGERING_BONE = ["soulShaken"]
 const DRONE_DEBUFF_ID = /^debuff-silkbindJade-umbdrone-\d+hit$/
 
-function healDroneDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
-  const receives = healDebuffReceives(d)
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The reach these four Bellstrike Umbra DoTs carried before their class
+// affinity-damage buff was widened to every damage-over-time tick. A copy
+// seeded then keeps missing it, with no editor surface showing the gap. Only
+// a list still identical to what was seeded is rewritten, same reason as the
+// drone repair below.
+const UMBRA_DOT_RECEIVES_BEFORE_BLEEDING_DAMAGE = ["soulShaken"]
+const UMBRA_DOT_IDS_MISSING_BLEEDING_DAMAGE = new Set([
+  "debuff-bellstrikeUmbra-toad-poison",
+  "debuff-bellstrikeUmbra-dark-fire",
+  "debuff-bellstrikeUmbra-flute-ripple",
+  "debuff-bellstrikeUmbra-bitter-season-tick",
+])
+
+function healUmbraDotBleedingDamageReach(id: string, receives: string[]): string[] {
+  if (!UMBRA_DOT_IDS_MISSING_BLEEDING_DAMAGE.has(id)) return receives
+  const seeded =
+    receives.length === UMBRA_DOT_RECEIVES_BEFORE_BLEEDING_DAMAGE.length &&
+    UMBRA_DOT_RECEIVES_BEFORE_BLEEDING_DAMAGE.every((buffId, index) => receives[index] === buffId)
+  return seeded ? ["bellstrikeUmbraBleedingDamage", ...receives] : receives
+}
+
+function healDebuffReach(d: Debuff): Pick<Debuff, "receives" | "triggersBuffs"> {
+  const receives = healUmbraDotBleedingDamageReach(d.id, healDebuffReceives(d))
   const triggersBuffs = d.triggersBuffs?.map(migrateBuffId)
   if (!DRONE_DEBUFF_ID.test(d.id)) return { receives, triggersBuffs }
   const seeded =
@@ -1515,7 +1557,7 @@ function hydrateDebuff(d: Debuff): Debuff {
     stackScaling: d.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof d.maxStacks === "number" && d.maxStacks > 0 ? d.maxStacks : 1,
     detonation,
-    ...healDroneDebuffReach(d),
+    ...healDebuffReach(d),
   }
 }
 

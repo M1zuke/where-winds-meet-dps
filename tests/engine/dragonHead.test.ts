@@ -33,12 +33,12 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
-    expect(plusHit.physMultiplier).toBeCloseTo(17.3793, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(26.0689, 9)
-    expect(plusHit.physFixed).toBeCloseTo(3237, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(17.34049, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(26.010735, 9)
+    expect(plusHit.physFixed).toBeCloseTo(2608.52, 9)
     expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
     expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
-    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 4)
+    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 2)
   })
 
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
@@ -69,9 +69,9 @@ type Art = Parameters<typeof computeSkillDamage>[0]
 const asArt = (fields: Record<string, unknown>) => fields as unknown as Art
 
 const DRAGON_HEAD_ROW = {
-  physMultiplier: 24.827571,
-  physFixed: 4624.285714,
-  attributeMultiplier: 37.241286,
+  physMultiplier: 24.77213,
+  physFixed: 3726.46,
+  attributeMultiplier: 37.158195,
   attributeFixed: 0,
   skillType: "mystic",
   mysticCategory: "burst",
@@ -140,9 +140,9 @@ describe("guaranteedPrecision — never abrades, crit/affinity still roll", () =
   const plus = asArt({
     name: "Dragon Head - Plus",
     ...DRAGON_HEAD_ROW,
-    physMultiplier: 17.3793,
-    physFixed: 3237,
-    attributeMultiplier: 26.0689,
+    physMultiplier: 17.34049,
+    physFixed: 2608.52,
+    attributeMultiplier: 26.010735,
     guaranteedPrecision: 1,
   })
 

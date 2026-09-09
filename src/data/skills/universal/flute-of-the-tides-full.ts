@@ -20,20 +20,20 @@ export const fluteOfTheTidesFull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 3.897,
-      attributeMultiplier: 5.8454999999999995,
-      physFixed: 800,
+      physMultiplier: 3.93721,
+      attributeMultiplier: 5.905815,
+      physFixed: 855.92,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 81,
-      physMultiplier: 3.897,
-      attributeMultiplier: 5.8454999999999995,
-      physFixed: 800,
+      physMultiplier: 3.93721,
+      attributeMultiplier: 5.905815,
+      physFixed: 855.92,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.fluteRipple })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

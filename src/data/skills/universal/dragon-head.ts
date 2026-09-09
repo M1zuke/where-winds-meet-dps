@@ -22,12 +22,12 @@ export const dragonHead = defineSkill({
   hits: [
     hit(0, {
       frame: 246,
-      physMultiplier: 24.827571,
-      attributeMultiplier: 37.241286,
-      physFixed: 4624.285714,
+      physMultiplier: 24.77213,
+      attributeMultiplier: 37.158195,
+      physFixed: 3726.46,
       attributeFixed: 0,
     }),
   ],
   createdAt: "2026-08-06T00:00:00.000Z",
-  updatedAt: "2026-08-06T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

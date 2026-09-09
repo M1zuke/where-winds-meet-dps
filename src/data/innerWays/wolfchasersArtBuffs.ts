@@ -37,6 +37,21 @@ export function wineGuBuffDef() {
   })
 }
 
+// In-game talent text as of 2026-09-09: from rank 3, Wolfchaser's Art raises
+// the Martial Art skill family's damage by 10%. The in-game text names only
+// Sword Martial Q; in practice it reaches every Sword/Spear Martial Q hit.
+export function wolfchasersArtMartialDamageBuffDef() {
+  return defineBuff({
+    id: BUFF.wolfchasersArtMartialDamage,
+    name: "Martial Art Damage",
+    requires: { param: PARAM.wolfchasersArt, minTier: 3 },
+    alwaysActive: true,
+    duration: 9999,
+    summary: "allDamageBoost +10%",
+    effects: (ctx) => (ctx.self.reachesEvent ? [stat("allDamageBoost", 0.1)] : []),
+  })
+}
+
 // Memoized rather than read fresh: `requires.minTier` is read per active
 // module per damage event (`buffEngine.ts`, `catalog.ts`), inside the 60 fps
 // timeline simulation `runEngine` runs repeatedly — the getter, not a plain
@@ -60,7 +75,7 @@ export function soulShakenBuffDef(): BuffModule {
         ))
       },
     },
-    duration: 15,
+    duration: 18,
     maxStacks: 5,
     stacksPerHit: true,
     summary: "+10.0% all/stack",

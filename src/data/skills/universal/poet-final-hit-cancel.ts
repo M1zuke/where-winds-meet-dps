@@ -17,9 +17,9 @@ export const poetFinalHitCancel = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.7063,
-      attributeMultiplier: 2.55945,
-      physFixed: 315,
+      physMultiplier: 1.70541,
+      attributeMultiplier: 2.558115,
+      physFixed: 256.37,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -32,5 +32,5 @@ export const poetFinalHitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })
