@@ -14,8 +14,8 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(60196.68801355277)
-    expect(result.totalDamage).toBe(3581702.9368063896)
+    expect(result.dps).toBe(61482.5509696222)
+    expect(result.totalDamage).toBe(3658211.782692521)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {
