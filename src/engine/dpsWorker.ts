@@ -49,6 +49,7 @@ import type {
   Inputs,
   ItemRankingRow,
   OutcomeCounts,
+  SkillTickResult,
 } from "./types"
 
 const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
@@ -612,12 +613,21 @@ const PARSE_TARGET_CHUNK_MS = 60
 const MAX_CHUNK_RUNS = 200
 
 export interface ParseRun {
+  index: number
   totalDamage: number
   dps: number
   abrasionHits: number
   normalHits: number
   criticalHits: number
   affinityHits: number
+  abrasionDamage: number
+  normalDamage: number
+  criticalDamage: number
+  affinityDamage: number
+}
+
+export function parseRunSeed(baseSeed: number, index: number): number {
+  return (baseSeed + index * RUN_SEED_STRIDE) | 0
 }
 
 export type ExpectedOutcomeRates = OutcomeCounts
@@ -632,6 +642,7 @@ export interface ParseSimulationWorkerRequest {
 
 export interface ParseSimulationWorkerResponse {
   reqId: number
+  seed: number
   runs: ParseRun[]
   expectedRates: ExpectedOutcomeRates | null
   rotationDuration: number
@@ -672,7 +683,7 @@ async function computeParseSimulation(
 
   const runOnce = (index: number): void => {
     const result = runEngine(runInputs, {
-      seed: (req.seed + index * RUN_SEED_STRIDE) | 0,
+      seed: parseRunSeed(req.seed, index),
       collect: "totals",
     })
     const counts = result.outcomeCounts ?? NO_OUTCOMES
@@ -682,13 +693,19 @@ async function computeParseSimulation(
       warnings = result.warnings
       rotationDuration = result.rotationDuration
     }
+    const outcomeDamage = result.outcomeDamage ?? NO_OUTCOMES
     runs.push({
+      index,
       totalDamage: result.totalDamage,
       dps: result.dps,
       abrasionHits: counts.abrasion,
       normalHits: counts.normal,
       criticalHits: counts.crit,
       affinityHits: counts.affinity,
+      abrasionDamage: outcomeDamage.abrasion,
+      normalDamage: outcomeDamage.normal,
+      criticalDamage: outcomeDamage.crit,
+      affinityDamage: outcomeDamage.affinity,
     })
   }
 
@@ -715,6 +732,7 @@ async function computeParseSimulation(
 
   return {
     reqId: req.reqId,
+    seed: req.seed,
     runs,
     expectedRates: runs.length > 0 ? expectedRates : null,
     rotationDuration,
@@ -722,6 +740,45 @@ async function computeParseSimulation(
     completedRuns: runs.length,
     cancelled: runs.length < total,
     warnings,
+  }
+}
+
+export interface ParseRunDetailWorkerRequest {
+  reqId: number
+  inputs: Inputs
+  rotation: Rotation | null
+  seed: number
+}
+
+export interface ParseRunDetailWorkerResponse {
+  reqId: number
+  seed: number
+  totalDamage: number
+  dps: number
+  rotationDuration: number
+  perSkill: SkillTickResult[]
+  outcomeCounts: OutcomeCounts
+  outcomeDamage: OutcomeCounts
+}
+
+function computeParseRunDetail(req: ParseRunDetailWorkerRequest): ParseRunDetailWorkerResponse {
+  const result = runEngine(
+    {
+      ...req.inputs,
+      activeCustomRotation: req.rotation,
+      selectedBuiltinRotationId: null,
+    },
+    { seed: req.seed },
+  )
+  return {
+    reqId: req.reqId,
+    seed: req.seed,
+    totalDamage: result.totalDamage,
+    dps: result.dps,
+    rotationDuration: result.rotationDuration,
+    perSkill: result.perSkill,
+    outcomeCounts: result.outcomeCounts ?? NO_OUTCOMES,
+    outcomeDamage: result.outcomeDamage ?? NO_OUTCOMES,
   }
 }
 
@@ -843,6 +900,7 @@ export type WorkerRequest =
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerRequest)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerRequest)
   | ({ kind: "parseSimulationCancel" } & ParseSimulationCancelRequest)
+  | ({ kind: "parseRunDetail" } & ParseRunDetailWorkerRequest)
   | ({ kind: "graduation" } & GraduationWorkerRequest)
 
 export type WorkerResponse =
@@ -858,6 +916,7 @@ export type WorkerResponse =
   | ({ kind: "profileMetrics" } & ProfileMetricsWorkerResponse)
   | ({ kind: "parseSimulation" } & ParseSimulationWorkerResponse)
   | ({ kind: "parseSimulationProgress" } & ParseSimulationProgressResponse)
+  | ({ kind: "parseRunDetail" } & ParseRunDetailWorkerResponse)
   | ({ kind: "graduation" } & GraduationWorkerResponse)
 
 const cancelledReqIds = new Set<number>()
@@ -894,6 +953,9 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
   } else if (req.kind === "profileMetrics") {
     const res = computeProfileMetrics(req)
     ;(self as unknown as Worker).postMessage({ kind: "profileMetrics", ...res })
+  } else if (req.kind === "parseRunDetail") {
+    const res = computeParseRunDetail(req)
+    ;(self as unknown as Worker).postMessage({ kind: "parseRunDetail", ...res })
   } else if (req.kind === "parseSimulationCancel") {
     cancelledReqIds.add(req.reqId)
   } else if (req.kind === "parseSimulation") {
@@ -929,5 +991,6 @@ export {
   computeRotationDps,
   computeProfileMetrics,
   computeParseSimulation,
+  computeParseRunDetail,
   computeGraduation,
 }

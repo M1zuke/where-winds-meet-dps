@@ -1,8 +1,14 @@
 import { useI18n } from "../../../../i18n/i18nContext"
 import type { ExpectedOutcomeRates } from "../../../../engine/dpsWorker"
-import { fixed } from "../damageFormat"
+import { compactDamage, fixed } from "../damageFormat"
 import type { ParseSummary } from "../simulation-summary-bar/summaryStats"
-import { outcomeMix, totalMeanHits, type OutcomeCategory } from "./outcomeMix"
+import {
+  outcomeMix,
+  totalMeanDamage,
+  totalMeanHits,
+  type OutcomeCategory,
+  type OutcomeRow,
+} from "./outcomeMix"
 import styles from "./SimulationOutcomeMixPanel.module.scss"
 
 const CATEGORY_KEYS: Record<OutcomeCategory, string> = {
@@ -22,35 +28,56 @@ export function SimulationOutcomeMixPanel({
   const { t } = useI18n()
   const rows = outcomeMix(summary, expectedRates)
   const total = totalMeanHits(summary)
+  const damageTotal = totalMeanDamage(summary)
   if (total <= 0) return <div className="empty-tab">{t("common.none")}</div>
 
-  const mixLabel = rows
-    .map((row) => `${t(CATEGORY_KEYS[row.category])} ${fixed(row.observedShare * 100, 1)} %`)
-    .join(", ")
+  const mixLabel = (share: (row: OutcomeRow) => number) =>
+    rows
+      .map((row) => `${t(CATEGORY_KEYS[row.category])} ${fixed(share(row) * 100, 1)} %`)
+      .join(", ")
 
-  return (
-    <>
-      <div
-        className={styles.mixBar}
-        role="img"
-        aria-label={`${t("simulation.outcomeMix.outcomeMix")} — ${mixLabel}`}
-      >
+  const mixBar = (label: string, share: (row: OutcomeRow) => number, ariaLabel: string) => (
+    <div className={styles.mixRow}>
+      <span className={styles.mixLabel}>{label}</span>
+      <div className={styles.mixBar} role="img" aria-label={ariaLabel}>
         {rows.map((row) => (
           <div
             key={row.category}
             className={`${styles.segment} ${styles[row.category]}`}
-            style={{ flexBasis: (row.observedShare * 100).toFixed(2) + "%" }}
+            style={{ flexBasis: (share(row) * 100).toFixed(2) + "%" }}
           />
         ))}
       </div>
+    </div>
+  )
+
+  return (
+    <>
+      {damageTotal > 0 &&
+        mixBar(
+          t("common.damage"),
+          (row) => row.damageShare,
+          `${t("simulation.outcomeMix.damageComposition")} — ${mixLabel((row) => row.damageShare)}`,
+        )}
+      {mixBar(
+        t("common.hits2"),
+        (row) => row.observedShare,
+        `${t("simulation.outcomeMix.outcomeMix")} — ${mixLabel((row) => row.observedShare)}`,
+      )}
       <table className={`ranking-table ranking-table-spaced ${styles.mixTable}`}>
         <thead>
           <tr>
             <th>{t("simulation.outcomeMix.outcome")}</th>
             <th className={styles.centered}>{t("common.hits2")}</th>
             <th className={styles.centered}>{t("common.share")}</th>
-            <th className={styles.centered}>{t("simulation.outcomeMix.expected")}</th>
-            <th className={styles.centered}>{t("simulation.outcomeMix.gapPp")}</th>
+            <th className={styles.centered}>{t("common.damage")}</th>
+            <th className={styles.centered}>{t("simulation.outcomeMix.damageShare")}</th>
+            <th className={`${styles.centered} ${styles.expectedCell}`}>
+              {t("simulation.outcomeMix.expected")}
+            </th>
+            <th className={`${styles.centered} ${styles.expectedCell}`}>
+              {t("simulation.outcomeMix.gapPp")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -65,15 +92,22 @@ export function SimulationOutcomeMixPanel({
                 {fixed(row.observedShare * 100, 1)} %
               </td>
               <td className={`${styles.numeric} ${styles.centered}`}>
+                {compactDamage(row.meanDamage)}
+              </td>
+              <td className={`${styles.numeric} ${styles.centered} ${styles.damageShareCell}`}>
+                {fixed(row.damageShare * 100, 1)} %
+              </td>
+              <td className={`${styles.numeric} ${styles.centered} ${styles.expectedCell}`}>
                 {row.expectedShare === null ? "—" : `${fixed(row.expectedShare * 100, 1)} %`}
               </td>
-              <td className={`${styles.numeric} ${styles.centered}`}>
+              <td className={`${styles.numeric} ${styles.centered} ${styles.expectedCell}`}>
                 {row.deltaPoints === null ? "—" : fixed(row.deltaPoints, 2)}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <p className="hint">{t("simulation.outcomeMix.damageShareTracksHint")}</p>
       <p className="hint">{t("simulation.outcomeMix.observedShareShouldHint")}</p>
     </>
   )

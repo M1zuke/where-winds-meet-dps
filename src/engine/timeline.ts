@@ -565,9 +565,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   let totalDamage = 0
   const outcomeTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  const outcomeDamageTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
   const expectedShareTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
-  const tallyRoll = (rolled: RolledHit): void => {
+  const tallyRoll = (rolled: RolledHit, damage: number): void => {
     outcomeTally[rolled.outcome] += 1
+    outcomeDamageTally[rolled.outcome] += damage
     for (const outcome of OUTCOME_KEYS) expectedShareTally[outcome] += rolled.chance[outcome]
   }
   let processed = 0
@@ -652,7 +654,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const hitInWindow = inWindow(frame)
     if (hitInWindow) {
       totalDamage += damage
-      if (rolled) tallyRoll(rolled)
+      if (rolled) tallyRoll(rolled, damage)
       add(
         skill.name,
         skill.skillType,
@@ -951,7 +953,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // number the way a regular hit takes it on its art `correction`.
     const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
     totalDamage += damage
-    if (tick.rolled) tallyRoll(tick.rolled)
+    if (tick.rolled) tallyRoll(tick.rolled, damage)
     add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
     pushEvent({
       frame: entry.frame,
@@ -972,7 +974,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
       const damage = rolled?.damage ?? expectedDamage
       totalDamage += damage
-      if (rolled) tallyRoll(rolled)
+      if (rolled) tallyRoll(rolled, damage)
       add(
         event.name,
         event.type,
@@ -1037,6 +1039,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     lowQiWindow,
     casts,
     outcomeCounts: hitRng ? outcomeTally : undefined,
+    outcomeDamage: hitRng ? outcomeDamageTally : undefined,
     expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
   }
 }

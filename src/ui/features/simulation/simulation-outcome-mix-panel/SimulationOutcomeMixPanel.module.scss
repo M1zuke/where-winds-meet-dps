@@ -1,8 +1,25 @@
+@use "breakpoints";
+
+.mixRow {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.mixLabel {
+  font-size: 0.68em;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: right;
+}
+
 .mixBar {
   display: flex;
   gap: 2px;
   height: 14px;
-  margin-bottom: 12px;
 }
 
 .segment {
@@ -52,4 +69,14 @@
 .mixTable th.centered,
 .mixTable td.centered {
   text-align: center;
+}
+
+.mixTable td.damageShareCell {
+  color: var(--color-accent-bright);
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .mixTable .expectedCell {
+    display: none;
+  }
 }
