@@ -164,7 +164,7 @@ describe("the shipped affix table is the authority", () => {
     }
   })
 
-  it("leaves the Art of Fan/Umbrella Boost ids unmapped rather than resolving them as the DMG Boost line", () => {
+  it("maps the Art of Fan/Umbrella ids that replace the DMG Boost line from gear level 91 on", () => {
     for (const affixId of [
       "9293026",
       "9294026",
@@ -174,6 +174,10 @@ describe("the shipped affix table is the authority", () => {
       "10194020",
       "10693020",
       "10694020",
+    ]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:fanBoost")
+    }
+    for (const affixId of [
       "9293027",
       "9294027",
       "9793021",
@@ -183,7 +187,7 @@ describe("the shipped affix table is the authority", () => {
       "10693021",
       "10694021",
     ]) {
-      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBeUndefined()
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:umbrellaBoost")
     }
   })
 
