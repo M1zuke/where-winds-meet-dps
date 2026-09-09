@@ -428,7 +428,7 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
   it("renames a stored piece's Formless labels to their stat-line ids and keeps the primary-attribute contribution", () => {
     const formlessPiece: StoredGearPiece = {
       id: "test-formless-piece",
-      slot: "helm",
+      slot: "leftWeapon",
       level: 96,
       rarity: "legendary",
       minPhys: 0,

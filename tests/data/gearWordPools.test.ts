@@ -9,6 +9,32 @@ import {
 } from "../../src/data/stats/gearWordPools"
 import { GEAR_LEVELS, GEAR_SLOTS } from "../../src/engine/types"
 
+const MARTIAL_ART_BOOST_WORDS = [
+  "swordBoost",
+  "spearBoost",
+  "fanBoost",
+  "umbrellaBoost",
+  "modaoBoost",
+  "dualKnivesBoost",
+  "ropeDartBoost",
+  "hengDaoBoost",
+]
+
+const ATTRIBUTE_ATTACK_WORDS = [
+  "minBellstrike",
+  "maxBellstrike",
+  "minStonesplit",
+  "maxStonesplit",
+  "minSilkbind",
+  "maxSilkbind",
+  "minBamboocut",
+  "maxBamboocut",
+]
+
+const FORMLESS_ATTACK_WORDS = ["minFormless", "maxFormless"]
+
+const ARMOUR_SLOTS = ["disc", "pendant", "helm", "armor", "greaves", "bracer"] as const
+
 const PENETRATION_WORDS = [
   "physicalPenetration",
   "bellstrikePenetration",
@@ -70,23 +96,61 @@ describe("a weapon's first line", () => {
     expect(pool).not.toContain("precision")
     expect(pool).not.toContain("affinity")
   })
+})
 
-  it.each(GEAR_LEVELS)("level %s offers every attribute-attack pair", (level) => {
-    const pool = gearWordPoolInitial(level, "leftWeapon")
-    expect(pool).toContain("minBellstrike")
-    expect(pool).toContain("minStonesplit")
-    expect(pool).toContain("minSilkbind")
-    expect(pool).toContain("minBamboocut")
+describe("both weapon slots carry every attribute-attack pair on every line", () => {
+  it.each(GEAR_LEVELS)("level %s offers all eight from both pools", (level) => {
+    for (const slot of ["leftWeapon", "rightWeapon"] as const) {
+      for (const word of ATTRIBUTE_ATTACK_WORDS) {
+        expect(gearWordPoolInitial(level, slot)).toContain(word)
+        expect(gearWordPoolRetune(level, slot)).toContain(word)
+      }
+    }
   })
 })
 
-describe("the four attribute-attack pairs are unreachable by retuning a weapon", () => {
-  it.each(GEAR_LEVELS)("level %s offers none of them via the retune pool", (level) => {
+describe("a Formless attack word belongs to a weapon slot alone", () => {
+  it.each(GEAR_LEVELS)("level %s offers neither on an armour slot", (level) => {
+    for (const slot of ARMOUR_SLOTS) {
+      for (const word of FORMLESS_ATTACK_WORDS)
+        expect(gearWordPool(level, slot)).not.toContain(word)
+    }
+  })
+
+  it.each([96, 100, 105] as const)("level %s offers both on either weapon", (level) => {
+    for (const slot of ["leftWeapon", "rightWeapon"] as const) {
+      for (const word of FORMLESS_ATTACK_WORDS) expect(gearWordPool(level, slot)).toContain(word)
+    }
+  })
+
+  it.each([86, 91] as const)("level %s has no Formless word on any slot", (level) => {
+    for (const slot of GEAR_SLOTS) {
+      for (const word of FORMLESS_ATTACK_WORDS)
+        expect(gearWordPool(level, slot)).not.toContain(word)
+    }
+  })
+})
+
+describe("every martial-art boost is reachable by retuning a weapon", () => {
+  it.each(GEAR_LEVELS)("level %s leaves none of the eight out", (level) => {
     const pool = gearWordPoolRetune(level, "leftWeapon")
-    expect(pool).not.toContain("minBellstrike")
-    expect(pool).not.toContain("minStonesplit")
-    expect(pool).not.toContain("minSilkbind")
-    expect(pool).not.toContain("minBamboocut")
+    for (const word of MARTIAL_ART_BOOST_WORDS) expect(pool).toContain(word)
+  })
+})
+
+describe("from level 96 a martial-art boost is a weapon line only", () => {
+  it.each([96, 100, 105] as const)("level %s offers none of them on armour", (level) => {
+    for (const slot of ["disc", "helm", "greaves"] as const) {
+      const pool = gearWordPoolRetune(level, slot)
+      for (const word of MARTIAL_ART_BOOST_WORDS) expect(pool).not.toContain(word)
+    }
+  })
+
+  it.each([86, 91] as const)("level %s still offers them on armour", (level) => {
+    for (const slot of ["disc", "helm", "greaves"] as const) {
+      const pool = gearWordPoolRetune(level, slot)
+      for (const word of MARTIAL_ART_BOOST_WORDS) expect(pool).toContain(word)
+    }
   })
 })
 
