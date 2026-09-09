@@ -20,7 +20,7 @@ export const spearheavy = defineSkill({
   hits: [
     // Hit frame: in-game animation, 2026-09-09.
     hit(0, { frame: 25, physMultiplier: 0.30346, attributeMultiplier: 0.45518000000000003, physFixed: 70.2, attributeFixed: 39.2 }),
-    // Hits 2-5: the animations they belong to carry no collider data — frames still evenly-spaced placeholders.
+    // Hits 2-5 are unmeasured: evenly-spaced placeholders, not observed frames.
     hit(1, { frame: 18, physMultiplier: 0.30346, attributeMultiplier: 0.45518000000000003, physFixed: 70.2, attributeFixed: 39.2 }),
     hit(2, { frame: 36, physMultiplier: 0.30346, attributeMultiplier: 0.45518000000000003, physFixed: 70.2, attributeFixed: 39.2 }),
     hit(3, { frame: 54, physMultiplier: 0.30346, attributeMultiplier: 0.45518000000000003, physFixed: 70.2, attributeFixed: 39.2 }),

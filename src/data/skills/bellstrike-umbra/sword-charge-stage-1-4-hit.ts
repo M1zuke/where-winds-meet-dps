@@ -13,7 +13,7 @@ export const swordChargeStage14Hit = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordChargeStage14Hit,
-  // A player-ended form: castFrames is capped short of the follow-up window's open frame, 56.46 — an 11-frame margin would trigger the five-hit outcome instead (in-game animation, 2026-09-09).
+  // A player-ended form: castFrames is capped where the follow-up window closes — an 11-frame margin would land past it and give the five-hit ending instead (in-game animation, 2026-09-09).
   castFrames: 56,
   triggerable: true,
   hits: SWORD_CHARGE_STAGE_1_HITS.slice(0, 4),
