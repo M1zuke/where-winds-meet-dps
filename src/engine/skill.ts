@@ -71,6 +71,7 @@ export interface Skill {
   guaranteedPrecision?: boolean
   guaranteedNormal?: boolean
   prePull?: boolean
+  isDotTick?: boolean
   createdAt: string
   updatedAt: string
 }

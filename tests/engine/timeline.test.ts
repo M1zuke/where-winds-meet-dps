@@ -356,7 +356,6 @@ function expectedRowDamage(inputs: Inputs, row: DotStackShape, buffName: string)
     attributeAttack: undefined,
     skillType: "sustain",
     specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
   } as Parameters<typeof computeSkillDamage>[0]
   return computeSkillDamage(art, ctx, 1).expectedDamage
 }

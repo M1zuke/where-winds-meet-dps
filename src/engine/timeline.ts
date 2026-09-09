@@ -49,7 +49,6 @@ import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramOnOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
-import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import { PROP } from "../data/skills/ids"
 
@@ -495,11 +494,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const healerAmount = 0.2 + (qiPhaseHere === "exhausted" ? 0.05 : 0)
         effects.push({ statKey: "allDamageBoost", amount: healerAmount })
         sig += `~healerBuff:${healerAmount}`
-      }
-      const innerWayBonus = innerWayAllDamageBoost(inputs.mindMethods)
-      if (innerWayBonus !== 0) {
-        effects.push({ statKey: "allDamageBoost", amount: innerWayBonus })
-        sig += `~innerWay:${innerWayBonus}`
       }
     }
     let r = stateMemo.get(sig)
