@@ -277,7 +277,7 @@ describe("inner-way ownership — buffDefs and skillBehaviors", () => {
     [INNER_WAY_ID.insightfulStrike, []],
     [
       INNER_WAY_ID.wolfchasersArt,
-      ["potentRiverFlow", "wineGu", "soulShaken", "wolfchasersArtMartialDamage"],
+      ["wineGu", "soulShaken", "wolfchasersArtMartialDamage"],
     ],
     [INNER_WAY_ID.swordHorizon, ["buff-bellstrikeUmbra-zenith-bar"]],
     [INNER_WAY_ID.moraleChant, []],

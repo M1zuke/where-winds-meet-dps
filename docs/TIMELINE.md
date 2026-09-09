@@ -90,6 +90,10 @@ Rules:
 - A trigger that enqueues another skill's hits must not form an unbounded chain.
 - Extending an already-active window is a distinct operation from opening a
   fresh one. Do not emulate one with the other.
+- A status the player only gains once the granting cast is over opens at that
+  cast's end, declared on the trigger. Never emulate it by moving the trigger to
+  a later hit: a hit's frame is where it lands, not where a window starts, and a
+  cast's end is usually past every hit it has.
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared

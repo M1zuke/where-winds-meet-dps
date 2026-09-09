@@ -65,6 +65,11 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
 }
 
+function castEndFrame(skill: Skill, castFrame: number): number {
+  const lastHitFrame = skill.hits.length > 0 ? Math.max(...skill.hits.map((h) => h.frame)) : -1
+  return castFrame + (skill.castFrames || lastHitFrame + 1)
+}
+
 interface HitEvent {
   frame: number
   seq: number
@@ -729,11 +734,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           }
           continue
         }
-        const cur = stacksAt(status.id, frame)
+        const openAt = trigger.appliesOnCastEnd ? castEndFrame(skill, castFrame) : frame
+        const cur = stacksAt(status.id, openAt)
         const next = clamp(cur + trigger.stacks, 0, Math.max(1, status.maxStacks))
-        recordStack(status.id, frame, next, stepStart)
+        recordStack(status.id, openAt, next, stepStart)
         if (status.activation === "permanent") openPermanent(status.id)
-        else pushWindow(status.id, frame, frame + Math.max(1, status.durationFrames), stepStart)
+        else pushWindow(status.id, openAt, openAt + Math.max(1, status.durationFrames), stepStart)
       } else {
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue

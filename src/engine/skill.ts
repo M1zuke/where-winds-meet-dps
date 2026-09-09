@@ -35,6 +35,9 @@ export interface HitTrigger {
   // the window. An extension always adds its full amount; if the window is
   // already longer than the ceiling it is left alone, never truncated down.
   maxExtendedDurationFrames?: number
+  // The ledger-side counterpart of a buff module's `buffAppliesOnCastEnd`: the
+  // window opens where the granting cast ends, not at this hit's frame.
+  appliesOnCastEnd?: boolean
 }
 
 export interface SkillHit {

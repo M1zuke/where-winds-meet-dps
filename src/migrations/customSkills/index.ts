@@ -8,6 +8,7 @@ import { V4__dragonHeadCoefficients } from "./V4__dragonHeadCoefficients"
 import { V5__umbraHitCoefficients } from "./V5__umbraHitCoefficients"
 import { V6__bleedRowDefaults } from "./V6__bleedRowDefaults"
 import { V7__mysticArtRankRepair } from "./V7__mysticArtRankRepair"
+import { V8__riverFlowAppliesOnCastEnd } from "./V8__riverFlowAppliesOnCastEnd"
 
 export type {
   CustomSkillMigration,
@@ -18,12 +19,14 @@ export { migrateDragonHeadHits } from "./V4__dragonHeadCoefficients"
 export { umbraHitSwapsFor } from "./V5__umbraHitCoefficients"
 export { healBleedRowDefaults } from "./V6__bleedRowDefaults"
 export { healMysticArtRank } from "./V7__mysticArtRankRepair"
+export { healRiverFlowApplication } from "./V8__riverFlowAppliesOnCastEnd"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
   V5__umbraHitCoefficients,
   V6__bleedRowDefaults,
   V7__mysticArtRankRepair,
+  V8__riverFlowAppliesOnCastEnd,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

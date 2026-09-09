@@ -1180,6 +1180,7 @@ function importedTrigger(t: unknown): HitTrigger {
   if (Array.isArray(c.conditions)) {
     trigger.conditions = c.conditions.filter(isTriggerCondition)
   }
+  if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
   return trigger
 }
 

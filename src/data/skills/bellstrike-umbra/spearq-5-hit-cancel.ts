@@ -14,7 +14,7 @@ export const spearq5HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ5HitCancel,
-  triggersBuffs: [BUFF.potentRiverFlow, BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
+  triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage],
   // A cancel form ends where the animation opens its interrupt window — 101 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 101,
@@ -54,7 +54,7 @@ export const spearq5HitCancel = defineSkill({
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
-      triggers: [applyBuff({ target: BUFF.potentRiverFlow })],
+      triggers: [applyBuff({ target: BUFF.potentRiverFlow, appliesOnCastEnd: true })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

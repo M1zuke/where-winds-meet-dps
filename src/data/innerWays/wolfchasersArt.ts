@@ -2,7 +2,6 @@ import { defineInnerWay, type InnerWayDef } from "../../definitions/innerWays/in
 import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
 import {
-  riverFlowBuffDef,
   soulShakenBuffDef,
   wineGuBuffDef,
   wolfchasersArtMartialDamageBuffDef,
@@ -23,10 +22,7 @@ export const wolfchasersArt: InnerWayDef = defineInnerWay({
     5: { panelStats: { affinityDamageBoost: 0.052 } },
     6: { nodes: [INNER_WAY_NODE.soulShaken] },
   },
-  // Wine Gu's `allDamageBoost` sums after River Flow's and Soul Shaken's after
-  // both, exactly as before the three moved here together.
   buffDefs: [
-    riverFlowBuffDef(),
     wineGuBuffDef(),
     soulShakenBuffDef(),
     wolfchasersArtMartialDamageBuffDef(),

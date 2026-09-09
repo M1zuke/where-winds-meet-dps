@@ -14,7 +14,7 @@ export const spearq = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
-  triggersBuffs: [BUFF.potentRiverFlow, BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
+  triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 120,
@@ -54,7 +54,7 @@ export const spearq = defineSkill({
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
-      triggers: [applyBuff({ target: BUFF.potentRiverFlow })],
+      triggers: [applyBuff({ target: BUFF.potentRiverFlow, appliesOnCastEnd: true })],
     }),
     hit(5, {
       frame: 98,

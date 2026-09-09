@@ -162,8 +162,8 @@ describe("Spear Special Cooldown — suppresses a second payload", () => {
   })
 })
 
-describe("River Flow — the cast tag shows the buff its module carries", () => {
-  it("keeps its effects even though the gate projection sharing its id has none", () => {
+describe("River Flow — the cast tag shows the magnitude the status carries", () => {
+  it("reports its damage boost on the cast it is active for", () => {
     const r = runSteps([
       { skillId: spearQId, hitCount: 6 },
       { skillId: spearSpecialId, hitCount: spearSpecialHitCount },

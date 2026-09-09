@@ -159,7 +159,7 @@ describe("built-in data — one file per skill", () => {
 })
 
 describe("builtinBuffsForClass", () => {
-  it("bellstrikeUmbra carries River Flow, Spear Special Cooldown, Zenith Bar and Zenith Detonation, all effect-less state markers", () => {
+  it("bellstrikeUmbra carries River Flow with its own magnitude, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
     expect(buffs).toHaveLength(4)
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
@@ -171,8 +171,11 @@ describe("builtinBuffsForClass", () => {
     expect(riverFlow.name).toBe("River Flow")
     expect(cooldown.name).toBe("Spear Special Cooldown")
     expect(zenith.name).toBe("Zenith Detonation")
-    for (const b of [riverFlow, cooldown, zenith]) {
+    expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.25 }])
+    for (const b of [cooldown, zenith]) {
       expect(b.effects).toEqual([])
+    }
+    for (const b of [riverFlow, cooldown, zenith]) {
       expect(b.maxStacks).toBe(1)
       expect(b.activation).toBe("triggered")
       expect(b.scope).toBe("player")
