@@ -8,6 +8,7 @@ interface TriggerSpec {
   extendFrames?: number
   extendOnly?: boolean
   maxExtendedDurationFrames?: number
+  appliesOnCastEnd?: boolean
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -22,6 +23,7 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.maxExtendedDurationFrames !== undefined
       ? { maxExtendedDurationFrames: spec.maxExtendedDurationFrames }
       : {}),
+    ...(spec.appliesOnCastEnd !== undefined ? { appliesOnCastEnd: spec.appliesOnCastEnd } : {}),
   }
 }
 

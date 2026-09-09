@@ -13,18 +13,21 @@ export const dragonFireSmolder1Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Bellstrike",
   castTag: CAST.dragonSBreathSmolder1Hit,
+  // Hit frame: in-game animation, 2026-09-09. castFrames is not margin-derived — it stays
+  // 40 only because the hit landing at 36 keeps it legal; do not "correct" it to match the
+  // margin the other cut forms carry.
   castFrames: 40,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 40,
-      physMultiplier: 1.2848,
-      attributeMultiplier: 1.9272,
-      physFixed: 241.5,
+      frame: 36,
+      physMultiplier: 1.36064,
+      attributeMultiplier: 2.04096,
+      physFixed: 205.5,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.darkFire, extendFrames: 240 })],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-07-30T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

@@ -208,31 +208,85 @@ describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflo
   })
 })
 
-// PDF §1
-describe("DoT rules — the elevated multiplier only, flat damage is the data's (PDF §1)", () => {
+describe("keeps the matching-path multiplier on a damage-over-time row", () => {
   const bleed = BLEED_DOT
   const combustion = COMBUSTION_TICK
 
-  it("bleed: the DoT variant (elevatedAttributeMultiplier: false) deals strictly less", () => {
-    const eligible = computeSkillDamage(bleed, baseCtx, 1).expectedDamage
+  it("bleed: left at its default, a DoT row matches an explicitly elevated one and beats a demoted one", () => {
+    const atDefault = computeSkillDamage(bleed, baseCtx, 1).expectedDamage
+    const elevated = computeSkillDamage(
+      { ...bleed, elevatedAttributeMultiplier: true },
+      baseCtx,
+      1,
+    ).expectedDamage
     const demoted = computeSkillDamage(
       { ...bleed, elevatedAttributeMultiplier: false },
       baseCtx,
       1,
     ).expectedDamage
-    expect(demoted).toBeLessThan(eligible)
+    expect(atDefault).toBeCloseTo(elevated, 9)
+    expect(atDefault).toBeGreaterThan(demoted)
   })
 
-  it("combustion: flat survives the demotion, and a non-matching path is untouched by it", () => {
-    const eligible = computeSkillDamage(combustion, baseCtx, 1)
+  it("combustion: flat survives an explicit demotion, and a non-matching path is untouched by it", () => {
+    const atDefault = computeSkillDamage(combustion, baseCtx, 1)
     const demoted = computeSkillDamage(
       { ...combustion, elevatedAttributeMultiplier: false },
       baseCtx,
       1,
     )
-    expect(eligible.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
+    expect(atDefault.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
     expect(demoted.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
-    expect(demoted.expectedDamage).toBeCloseTo(eligible.expectedDamage, 9)
+    expect(demoted.expectedDamage).toBeCloseTo(atDefault.expectedDamage, 9)
+  })
+})
+
+describe("the attribute flat term takes the martial art's multiplier alongside its coefficient", () => {
+  const artWithFlat = { ...BLEED_DOT, attributeFixed: 40 }
+  const ctxWithMultiplier = { ...baseCtx, attributeFlatMultiplier: 1.5 }
+
+  it("an elevated row scales its flat rows by the context multiplier", () => {
+    const scaled = computeSkillDamage(artWithFlat, ctxWithMultiplier, 1).cells
+    const unscaled = computeSkillDamage(
+      artWithFlat,
+      { ...ctxWithMultiplier, attributeFlatMultiplier: 1 },
+      1,
+    ).cells
+    expect(scaled.BS).toBeCloseTo(unscaled.BS * 1.5, 9)
+  })
+
+  it("with no context multiplier supplied, the flat term stays unscaled", () => {
+    const withoutField = computeSkillDamage(artWithFlat, baseCtx, 1).cells
+    const withExplicitOne = computeSkillDamage(
+      artWithFlat,
+      { ...baseCtx, attributeFlatMultiplier: 1 },
+      1,
+    ).cells
+    expect(withoutField.BS).toBeCloseTo(withExplicitOne.BS, 9)
+  })
+
+  it("a demoted row ignores the context multiplier on the flat term, same as its coefficient", () => {
+    const demotedWithMultiplier = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      ctxWithMultiplier,
+      1,
+    ).cells
+    const demotedWithoutMultiplier = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      { ...ctxWithMultiplier, attributeFlatMultiplier: 1 },
+      1,
+    ).cells
+    expect(demotedWithMultiplier.BS).toBeCloseTo(demotedWithoutMultiplier.BS, 9)
+  })
+
+  it("a demoted row deals less total damage than the same row elevated", () => {
+    const elevated = computeSkillDamage(artWithFlat, ctxWithMultiplier, 1).expectedDamage
+    const demoted = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      ctxWithMultiplier,
+      1,
+    ).expectedDamage
+    expect(demoted).toBeLessThan(elevated)
   })
 })
 
@@ -259,9 +313,9 @@ describe("rate resistance on a raw rate source (PDF §11)", () => {
   })
 })
 
-describe("burst detonation is exempt from the DoT rule", () => {
+describe("keeps the matching-path multiplier on a sustain-tagged burst row", () => {
   const matchAttr = baseCtx.primaryAttribute
-  const mkArt = (burst: boolean) =>
+  const mkArt = (elevated: boolean | undefined) =>
     ({
       name: "Blood Burst",
       physMultiplier: 2.4,
@@ -272,15 +326,15 @@ describe("burst detonation is exempt from the DoT rule", () => {
       specialTag: "sustain",
       attributeAttack: matchAttr,
       weaponOrAttribute: matchAttr,
-      elevatedAttributeMultiplier: burst ? undefined : false,
+      elevatedAttributeMultiplier: elevated,
     }) as unknown as Parameters<typeof computeSkillDamage>[0]
 
-  it("with the flag omitted (burst), the elevated multiplier alone out-damages the demoted variant", () => {
-    const burst = computeSkillDamage(mkArt(true), baseCtx, 1)
+  it("with the flag left at its default, a sustain-tagged row out-damages an explicitly demoted one", () => {
+    const atDefault = computeSkillDamage(mkArt(undefined), baseCtx, 1)
     const demoted = computeSkillDamage(mkArt(false), baseCtx, 1)
-    expect(burst.cells.AT).toBeCloseTo(100, 9)
+    expect(atDefault.cells.AT).toBeCloseTo(100, 9)
     expect(demoted.cells.AT).toBeCloseTo(100, 9)
-    expect(burst.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
+    expect(atDefault.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
   })
 })
 

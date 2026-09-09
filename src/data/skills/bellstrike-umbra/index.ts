@@ -5,9 +5,14 @@ import { spearheavy } from "./spearheavy"
 import { spearq } from "./spearq"
 import { swordspecial3Hit } from "./swordspecial-3-hit"
 import { crosswindBlade } from "./crosswind-blade"
+import { crosswindBladeCancel } from "./crosswind-blade-cancel"
 import { spearheavy1HitPrepull } from "./spearheavy-1-hit-prepull"
 import { spearq5HitCancel } from "./spearq-5-hit-cancel"
 import { swordspecial4Hit } from "./swordspecial-4-hit"
+import { swordspecial1Hit } from "./swordspecial-1-hit"
+import { swordspecial2Hit } from "./swordspecial-2-hit"
+import { swordChargeStage11Hit } from "./sword-charge-stage-1-1-hit"
+import { swordChargeStage12Hit } from "./sword-charge-stage-1-2-hit"
 import { swordChargeStage14Hit } from "./sword-charge-stage-1-4-hit"
 import { swordqFollowUp1HitCancel } from "./swordq-follow-up-1-hit-cancel"
 import { swordqFollowUp2HitCancel } from "./swordq-follow-up-2-hit-cancel"
@@ -33,9 +38,14 @@ export const SKILLS: Skill[] = [
   spearq,
   swordspecial3Hit,
   crosswindBlade,
+  crosswindBladeCancel,
   spearheavy1HitPrepull,
   spearq5HitCancel,
   swordspecial4Hit,
+  swordspecial1Hit,
+  swordspecial2Hit,
+  swordChargeStage11Hit,
+  swordChargeStage12Hit,
   swordChargeStage14Hit,
   swordqFollowUp1HitCancel,
   swordqFollowUp2HitCancel,

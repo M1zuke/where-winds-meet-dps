@@ -38,6 +38,9 @@ export interface ClassDef {
   validated: boolean
   spec: string
   primaryAttribute: AttributeKey
+  // In-game martial art attribute multiplier as of 2026-09-09 — a straight
+  // factor (e.g. 1.5), not a percent.
+  attributeMultiplier: number
   generalDamageBoost?: number
   classMindGroup: InnerWayId | ""
   allowedMindMethods: readonly InnerWayId[]

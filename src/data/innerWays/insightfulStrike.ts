@@ -11,10 +11,6 @@ export const insightfulStrike = defineInnerWay({
   name: "Insightful Strike",
   selectableTiers: [6, 5],
   confirmedBreakthrough: 17,
-  scalars: {
-    dotDamageBoost: 0.1,
-    allDamageBonus: 0.015,
-  },
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },
     5: { panelStats: { "phys.penetration": 0.051 } },

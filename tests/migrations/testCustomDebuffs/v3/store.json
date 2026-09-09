@@ -1,0 +1,57 @@
+{
+  "v": 3,
+  "debuffs": [
+    {
+      "id": "debuff-bellstrikeUmbra-dark-fire",
+      "classId": "bellstrikeUmbra",
+      "name": "Smolder",
+      "breakdownName": "Smolder",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.236,
+        "physFixed": 44,
+        "attributeMultiplier": 0.354,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z",
+      "receives": ["soulShaken"]
+    },
+    {
+      "id": "db-user-authored-fire",
+      "classId": "bellstrikeUmbra",
+      "name": "My Fire",
+      "activation": "triggered",
+      "durationFrames": 240,
+      "effects": [],
+      "dot": {
+        "tickIntervalFrames": 30,
+        "physMultiplier": 0.236,
+        "physFixed": 44,
+        "attributeMultiplier": 0.354,
+        "attributeFixed": 0,
+        "attributeAttack": "Bellstrike",
+        "skillType": "sustain",
+        "mysticCategory": "burst",
+        "count": 1,
+        "perStackShapes": null,
+        "perStackMultipliers": null
+      },
+      "maxStacks": 1,
+      "stackScaling": "flat",
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    }
+  ]
+}

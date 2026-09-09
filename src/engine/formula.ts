@@ -84,7 +84,6 @@ export interface FormulaContext {
   affinityDmgBoostPanel: number
   attributeDmgBoostPanel: number
   sustainDmgBoostPanel: number
-  dotDamageBoost?: number
   dotDamageMultiplier?: number
   allDamageBoost?: number
   allMartialBoost?: number
@@ -107,6 +106,7 @@ export interface FormulaContext {
   attrPenResistance?: number
   rateResistance?: number
   hawkwingPhysBonus?: number
+  attributeFlatMultiplier?: number
 }
 
 function setFormulaBonus(setId: string | null, field: keyof SetFormulaBonus): number {
@@ -158,10 +158,6 @@ export function computeSkillDamage(
     const net = penetration - resistancePercent
     return net <= 0 ? net / 100 : net / 200
   }
-  // A DoT row loses the elevated matching-path multiplier (PDF §1) and nothing
-  // else; its flat damage is whatever its own data authors. A sustain-tagged
-  // burst detonation (elevatedAttributeMultiplier defaults true) is not
-  // demoted at all — docs/CALCULATION.md § "Calculation rules" rule 3.
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
 
   const skillCritDamage = numberOrZero(art.extraCritDamage)
@@ -283,7 +279,7 @@ export function computeSkillDamage(
           : ctx.bamboocut.pen
   const attributeFlatPenetration = primaryAttributePenetration
   const attributeDamageBoost = ctx.attributeDmgBoostPanel
-  const attributeFlatRowScale = 1
+  const attributeFlatRowScale = getsElevatedMultiplier ? (ctx.attributeFlatMultiplier ?? 1) : 1
   const attributeFlatPenFraction = penetrationFraction(
     attributeFlatPenetration,
     attributePenResistance,
@@ -453,10 +449,7 @@ export function computeSkillDamage(
     scopedDamageBoost +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
     numberOrZero(art.extraDamageBoost) +
-    (isPersistent
-      ? ctx.sustainDmgBoostPanel +
-        (ctx.dotDamageMultiplier === undefined ? (ctx.dotDamageBoost ?? 0) : 0)
-      : 0)
+    (isPersistent ? ctx.sustainDmgBoostPanel : 0)
 
   // A scoped stat, in the same family as `weaponBoosts` / `mysticTypeBoosts`
   // (folded into `scopedDamageBoost` above) — but multiplicative here rather

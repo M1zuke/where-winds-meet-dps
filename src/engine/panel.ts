@@ -405,11 +405,11 @@ export function buildContext(
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
-    dotDamageBoost: innerWayScalar(inputs.mindMethods, "dotDamageBoost"),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     rateResistance: eff.resistance,
     hawkwingPhysBonus,
     dotDamageMultiplier,
+    attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

@@ -15,7 +15,7 @@ export const bleedDetonation = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Blood Burst",
   tags: [WEAPON.sword, ATTUNE.bleed, ROLE.bleedDetonation],
-  skillType: "sustain",
+  skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.bleedDetonation,

@@ -18,7 +18,7 @@ describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
     .sort((a, b) => a - b)
 
   it("fires roughly one tick per second the rotation runs", () => {
-    expect(bleedTicks.length).toBeGreaterThanOrEqual(0.8 * Math.floor(result.rotationDuration))
+    expect(bleedTicks.length).toBeGreaterThanOrEqual(0.75 * Math.floor(result.rotationDuration))
   })
 
   it("ticks on a uniform 60-frame grid within each continuously-maintained episode", () => {

@@ -37,15 +37,16 @@ describe("custom-skills v3 fixture", () => {
 })
 
 describe("migrateDragonHeadHits", () => {
-  it("rewrites an untouched superseded row to the built-in's current row", () => {
-    const builtin = builtinSkillsForClass(CLASS).find((skill) => skill.id === DRAGON_HEAD_PLUS)!
+  // The v3 → v4 hop's own target — a later rank repair moves the built-in
+  // further, so this step's fixed output no longer equals the live built-in.
+  it("rewrites an untouched superseded row to this hop's target row", () => {
     const [healed] = migrateDragonHeadHits(
       DRAGON_HEAD_PLUS,
       clone(skillIn(STORE, DRAGON_HEAD_PLUS).hits),
     ) as Skill["hits"]
-    expect(healed.physMultiplier).toBe(builtin.hits[0].physMultiplier)
-    expect(healed.physFixed).toBe(builtin.hits[0].physFixed)
-    expect(healed.attributeMultiplier).toBe(builtin.hits[0].attributeMultiplier)
+    expect(healed.physMultiplier).toBe(17.3793)
+    expect(healed.physFixed).toBe(3237)
+    expect(healed.attributeMultiplier).toBe(26.0689)
   })
 
   it("leaves an edited row and a skill with another id alone", () => {

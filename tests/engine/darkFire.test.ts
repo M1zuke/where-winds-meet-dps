@@ -1,6 +1,8 @@
-// Coefficients (1-hit 128.48 %, 2-hit 398.55 %, DoT 23.6 % / 44 flat) are
-// sourced from the lvl-110 workbook's Smolder rows, distinct from the plain
-// Dragon's Breath rows.
+// Skill coefficients are recalibrated to the mystic art's actual reachable
+// rank, in-game values as of 2026-09-09 — the same rank the plain Dragon's
+// Breath rows carry, so the two share identical multipliers and differ only
+// in which debuff they apply. The DoT's own coefficients are recalibrated the
+// same way — see `debuffs.ts`.
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -52,11 +54,11 @@ describe("Smolder debuff data", () => {
     expect(combustion!.id).not.toBe(darkFire!.id)
   })
 
-  it("carries the workbook's Smolder DoT row verbatim", () => {
+  it("carries the DoT row recalibrated to the mystic art's actual reachable rank", () => {
     const dot = darkFire!.dot!
-    expect(dot.physMultiplier).toBeCloseTo(0.236, 10)
-    expect(dot.attributeMultiplier).toBeCloseTo(0.354, 10)
-    expect(dot.physFixed).toBeCloseTo(44, 10)
+    expect(dot.physMultiplier).toBeCloseTo(0.24991, 10)
+    expect(dot.attributeMultiplier).toBeCloseTo(0.374865, 10)
+    expect(dot.physFixed).toBeCloseTo(37.74, 10)
     expect(dot.attributeFixed).toBe(0)
     expect(dot.tickIntervalFrames).toBe(30)
     expect(darkFire!.maxStacks).toBe(1)
@@ -73,21 +75,21 @@ describe("Dragon Fire (Smolder) skills", () => {
       s.hits.reduce((a, h) => a + h[field], 0)
 
     expect(one.hits.length).toBe(1)
-    expect(sum(one, "physMultiplier")).toBeCloseTo(1.2848, 10)
-    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.9272, 10)
-    expect(sum(one, "physFixed")).toBeCloseTo(241.5, 10)
+    expect(sum(one, "physMultiplier")).toBeCloseTo(1.36064, 10)
+    expect(sum(one, "attributeMultiplier")).toBeCloseTo(2.04096, 10)
+    expect(sum(one, "physFixed")).toBeCloseTo(205.5, 10)
 
     expect(two.hits.length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(3.9855, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.97825, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(749, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(4.22076, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(6.33114, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(637.47, 10)
   })
 
-  it("are distinct from the plain Dragon's Breath rows, which stay untouched", () => {
+  it("apply Combustion, never Smolder, even though the coefficients now match", () => {
     const fb1 = skillOf(UNIVERSAL_SKILL.fireBreath1Hit)
     const fb2 = skillOf(UNIVERSAL_SKILL.fireBreath2Hit)
-    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36185, 10)
-    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.2245, 10)
+    expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36064, 10)
+    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.22076, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
       s.hits.flatMap((h) => h.triggers.map((t) => t.targetId)),
     )
@@ -223,7 +225,7 @@ describe("Zenith detonation extends Smolder", () => {
     // later detonation's extend-only trigger finds nothing active to extend.
     const noZenith = ticksFor(5)
     const oneZenith = ticksFor(6)
-    expect(oneZenith - noZenith).toBe(11)
+    expect(oneZenith - noZenith).toBe(12)
     expect(ticksFor(12) - oneZenith).toBe(0)
   })
 
