@@ -397,7 +397,7 @@
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
         "qiBreak": {
-          "startSec": 33,
+          "startSec": 34,
           "durationSec": 10,
           "lowQiLeadSec": 5
         },
@@ -811,7 +811,7 @@
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
         "qiBreak": {
-          "startSec": 33,
+          "startSec": 34,
           "durationSec": 10,
           "lowQiLeadSec": 5
         },
@@ -1195,7 +1195,7 @@
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
         "qiBreak": {
-          "startSec": 33,
+          "startSec": 35,
           "durationSec": 10,
           "lowQiLeadSec": 5
         },
@@ -1359,7 +1359,7 @@
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
         "qiBreak": {
-          "startSec": 34,
+          "startSec": 25,
           "durationSec": 10,
           "lowQiLeadSec": 5
         },

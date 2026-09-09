@@ -3832,8 +3832,8 @@
     "digest": "4a24ffc74e2890c92ac82a943b5a83db26a9f888600e9e0be2192a62e7015cb8"
   },
   "defaults:umbra": {
-    "dps": 9519.18,
-    "totalDamage": 570992.26,
+    "dps": 9513.67,
+    "totalDamage": 570661.45,
     "rotationDuration": 59.98,
     "warnings": [],
     "perSkill": [
@@ -3874,7 +3874,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 25344.86,
+        "expectedDamage": 25060.33,
         "castCount": 3
       },
       {
@@ -3890,7 +3890,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 40781.33,
+        "expectedDamage": 41129.36,
         "castCount": 10
       },
       {
@@ -3914,7 +3914,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 17881.21,
+        "expectedDamage": 17581.88,
         "castCount": 5
       },
       {
@@ -4002,7 +4002,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 48,
-        "expectedDamage": 49017.1,
+        "expectedDamage": 48922.12,
         "castCount": 0
       },
       {
@@ -4019,6 +4019,6 @@
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "f4ce0cde91b4931b795ef6e09544d59bdf06cbb9cd41ebf7f8bf971dea2173cb"
+    "digest": "d2fa31b1e6d6492a7a76d87a82d8ea8ad4885309ffbb4323ae64577cf62dab6d"
   }
 }
