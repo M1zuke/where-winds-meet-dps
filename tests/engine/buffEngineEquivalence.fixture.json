@@ -85199,6 +85199,31 @@
           "summary": "phys.penetration +6, bamboocut.penetration +6 while Inebriate"
         },
         {
+          "id": "mistwingTargetHealthPenetration",
+          "name": "Mistwing T6 (Target Health Penetration)",
+          "classBuff": false,
+          "requires": {
+            "param": "mistwing",
+            "minTier": 6
+          },
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate"
+        },
+        {
           "id": "volutefitWineboundDamage",
           "name": "Volutefit",
           "classBuff": false,
@@ -85960,7 +85985,7 @@
       ]
     },
     "dynamic": {
-      "digest": "e198c5a7851090abd9e2c7e0a22df27a93ffbd56273be60b8d1ec55b1ae5c2a1"
+      "digest": "4d5a2ffedc935d2892da31a228ee32867284c209047443227f904ce90df2e481"
     }
   }
 }

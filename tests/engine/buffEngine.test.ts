@@ -198,6 +198,51 @@ describe("BuffEngine — targeting & triggers", () => {
   })
 })
 
+describe("BuffEngine — target.remainingHealthFraction", () => {
+  const fractionProbeModules: BuffModule[] = [
+    {
+      id: "fractionProbe",
+      name: "Fraction Probe",
+      alwaysActive: true,
+      affectsAll: true,
+      duration: 10,
+      summary: "test",
+      effects: (ctx) => [stat("allDamageBoost", ctx.target.remainingHealthFraction)],
+    },
+  ]
+
+  function fractionProbeEngine(targetMaxHp: number) {
+    return new BuffEngine({ targetMaxHp }, fractionProbeModules)
+  }
+
+  function fractionOf(engine: BuffEngine, damageSoFar: number): number {
+    return engine.calculateDamageEffects(taggedSkill("Any"), 1, [], damageSoFar).effects[0]!.amount
+  }
+
+  it("is 1 at zero damage dealt and falls as damage accumulates", () => {
+    const engine = fractionProbeEngine(1000)
+    expect(fractionOf(engine, 0)).toBe(1)
+    expect(fractionOf(engine, 250)).toBeCloseTo(0.75, 6)
+    expect(fractionOf(engine, 1000)).toBe(0)
+  })
+
+  it("clamps at 0 rather than going negative once damage exceeds the target's health", () => {
+    const engine = fractionProbeEngine(1000)
+    expect(fractionOf(engine, 1500)).toBe(0)
+  })
+
+  it("stays at 1 when the tier carries no target health, or a zero one", () => {
+    expect(fractionOf(fractionProbeEngine(0), 500)).toBe(1)
+    expect(fractionOf(new BuffEngine({}, fractionProbeModules), 500)).toBe(1)
+  })
+
+  it("defaults to full health for the display and duration-resolution paths", () => {
+    const engine = fractionProbeEngine(1000)
+    const [displayed] = engine.activeBuffsForDisplay(1)
+    expect(displayed.effects).toContainEqual({ statKey: "allDamageBoost", amount: 1 })
+  })
+})
+
 describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () => {
   it("applies a declared buff the same way processSkillCast's declared path would", () => {
     const modules: BuffModule[] = [

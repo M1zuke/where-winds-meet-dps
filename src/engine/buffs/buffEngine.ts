@@ -170,16 +170,24 @@ export class BuffEngine {
     return belowQiTime < qiBreakTime ? { start: belowQiTime, end: qiBreakTime } : null
   }
 
-  private statusActive(id: string, time: number): boolean {
+  private statusActive(id: string, time: number, statusesView?: StatusView): boolean {
     if (this.definitions.has(id)) return this.isBuffActiveAtTime(id, time)
-    const statuses = this.statuses
-    return statuses ? statuses.view.isActiveAt(id, Math.round(time * statuses.fps)) : false
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    return view && fps ? view.isActiveAt(id, Math.round(time * fps)) : false
   }
 
-  private statusStacks(id: string, time: number): number {
+  private statusStacks(id: string, time: number, statusesView?: StatusView): number {
     if (this.definitions.has(id)) return this.getHistoricalBuffStacks(id, time)
-    const statuses = this.statuses
-    return statuses ? statuses.view.conditionStacksAt(id, Math.round(time * statuses.fps)) : 0
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    return view && fps ? view.conditionStacksAt(id, Math.round(time * fps)) : 0
+  }
+
+  private remainingHealthFraction(damageSoFar: number): number {
+    const targetMaxHp = this.paramNum("targetMaxHp")
+    if (targetMaxHp <= 0) return 1
+    return Math.min(1, Math.max(0, 1 - damageSoFar / targetMaxHp))
   }
 
   private buildContext(
@@ -188,6 +196,8 @@ export class BuffEngine {
     selfStacks: number,
     module?: BuffModule,
     forDisplay = false,
+    damageSoFar = 0,
+    statusesView?: StatusView,
   ): EffectContext {
     const build: BuildView = {
       classId: (this.params.classId as string) ?? "",
@@ -202,10 +212,13 @@ export class BuffEngine {
       timeSec: time,
       phase: this.qiPhase(time),
       build,
-      target: { isTrainingDummy: !!this.params.isTrainingDummy },
+      target: {
+        isTrainingDummy: !!this.params.isTrainingDummy,
+        remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
+      },
       status: {
-        isActive: (id) => this.statusActive(id, time),
-        stacks: (id) => this.statusStacks(id, time),
+        isActive: (id) => this.statusActive(id, time, statusesView),
+        stacks: (id) => this.statusStacks(id, time, statusesView),
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
       },
@@ -804,6 +817,8 @@ export class BuffEngine {
     skill: Skill,
     time: number,
     castScopedBuffIds: readonly string[] = [],
+    damageSoFar = 0,
+    statusesView?: StatusView,
   ): DamageEffectsResult {
     const castTag = castTagOf(skill)
     const tagSet = skillTagsOf(skill)
@@ -863,7 +878,15 @@ export class BuffEngine {
       if (module.reachesDotTicks === false && skill.isDotTick) continue
 
       const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
-      const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks, module)
+      const ctx = this.buildContext(
+        time,
+        { kind: "damage", castTag, tags: tagSet },
+        stacks,
+        module,
+        false,
+        damageSoFar,
+        statusesView,
+      )
       currentId = id
       for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit

@@ -45,3 +45,36 @@ export const mistwingInebriatePenetration = defineBuff({
       ? [stat("phys.penetration", 0.06), stat("bamboocut.penetration", 0.06)]
       : [],
 })
+
+// In-game values as of 2026-09-10.
+const TARGET_HEALTH_PENETRATION_BANDS: readonly { above: number; step: number }[] = [
+  { above: 0.9, step: 0 },
+  { above: 0.8, step: 0.01 },
+  { above: 0.7, step: 0.02 },
+  { above: 0.6, step: 0.03 },
+  { above: -Infinity, step: 0.04 },
+]
+
+function targetHealthPenetrationStep(remainingHealthFraction: number): number {
+  const band = TARGET_HEALTH_PENETRATION_BANDS.find(
+    (candidate) => remainingHealthFraction > candidate.above,
+  )
+  return band ? band.step : 0.04
+}
+
+export const mistwingTargetHealthPenetration = defineBuff({
+  id: BUFF.mistwingTargetHealthPenetration,
+  name: "Mistwing T6 (Target Health Penetration)",
+  requires: { param: PARAM.mistwing, minTier: 6 },
+  affectsAll: true,
+  alwaysActive: true,
+  duration: 9999,
+  summary:
+    "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate",
+  effects: (ctx) => {
+    if (!ctx.self.reachesEvent) return []
+    const base = targetHealthPenetrationStep(ctx.target.remainingHealthFraction)
+    const step = isInebriate(ctx) ? base * 2 : base
+    return step > 0 ? [stat("phys.penetration", step), stat("bamboocut.penetration", step)] : []
+  },
+})

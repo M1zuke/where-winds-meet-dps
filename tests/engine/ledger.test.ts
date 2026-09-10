@@ -48,7 +48,9 @@ describe("StatusLedger — windows", () => {
     const led = ledger()
     led.openPermanent("aura")
     led.openPermanent("aura")
-    expect(led.windowsOf("aura")).toEqual([{ start: SPAN_START, end: SPAN_END, owner: UNOWNED }])
+    expect(led.windowsOf("aura")).toMatchObject([
+      { start: SPAN_START, end: SPAN_END, owner: UNOWNED },
+    ])
   })
 
   it("gates stacks on the window — the question a trigger condition asks", () => {
@@ -67,6 +69,36 @@ describe("StatusLedger — windows", () => {
     expect(led.longestActiveWindow("buff", 150)?.end).toBe(400)
     expect(led.remainingFramesAt("buff", 150)).toBe(250)
     expect(led.remainingFramesAt("buff", 500)).toBeUndefined()
+  })
+})
+
+describe("StatusLedger — asOf hides writes at or after a mark", () => {
+  it("hides a window pushed at or after the mark, keeps one pushed before it", () => {
+    const led = ledger()
+    led.pushWindow("early", 0, 100)
+    const mark = led.mark()
+    led.pushWindow("late", 0, 100)
+    const view = led.asOf(mark)
+    expect(view.isActiveAt("early", 50)).toBe(true)
+    expect(view.isActiveAt("late", 50)).toBe(false)
+    expect(led.isActiveAt("late", 50)).toBe(true)
+  })
+
+  it("hides a stack recorded at or after the mark", () => {
+    const led = ledger()
+    led.recordStack("bleed", 0, 1)
+    const mark = led.mark()
+    led.recordStack("bleed", 0, 5)
+    expect(led.asOf(mark).stacksAt("bleed", 0)).toBe(1)
+    expect(led.stacksAt("bleed", 0)).toBe(5)
+  })
+
+  it("advances the mark by one write, and shares it across window and stack writes", () => {
+    const led = ledger()
+    const before = led.mark()
+    led.pushWindow("a", 0, 10)
+    led.recordStack("a", 0, 1)
+    expect(led.mark()).toBe(before + 2)
   })
 })
 

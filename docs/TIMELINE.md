@@ -240,13 +240,10 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   `requiresActiveBuffOnTrigger`, `requires`) gates a tick exactly as it gates a
   cast, so a def that should fire once per application still needs that gate
   authored on the module, not assumed from the trigger site.
-- ⚠️ **A buff a debuff's tick applies reaches the tick that applied it, every
-  later tick (of the same or a different debuff), a mechanic's own extra event,
-  and the chips of any cast resolving after it — but never a regular hit.** That
-  last one is an ordering limit, not a scope one: the main hit-damage pass runs
-  before the tick pass, so a regular hit is scored before any tick has applied
-  anything, and even an `affectsAll` def is skipped there. Do not declare
-  `triggersBuffs` on a debuff expecting it to boost a regular hit.
+- **A buff a debuff's tick applies reaches every damage event that comes after
+  it in time** — a later tick of the same or a different debuff, a mechanic's
+  own extra event, the chips of any cast resolving after it, and a regular hit
+  too, since every damage event is scored in one time-ordered pass.
 - **An `echo` effect is a feed, not a magnitude.** A def returning one names
   the debuff whose echo the event it reaches feeds, and a factor on that
   debuff's banked share; it changes nothing about the event itself. The share
@@ -268,6 +265,9 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   context, alongside the fight state.** It is the same value the damage kernel
   takes as base min phys, and a magnitude that scales with it is computed in
   the module — never re-derived in the UI or hardcoded in the timeline.
+- **A module's `effects` may read the target's remaining health from
+  context**, as a fraction of its max that falls with the damage dealt so far
+  in time order — never re-derived from a hit count or a display value.
 
 ## Procedural behaviour
 

@@ -5,11 +5,12 @@ import {
   mistwingAllTypePenetration,
   mistwingInebriatePenetration,
   mistwingPhysicalPenetration,
+  mistwingTargetHealthPenetration,
 } from "./mistwingBuffs"
 
-// In-game inner-way text (2026-09-06): the missing-HP and enhancement
-// scaling has no target-HP state to read and is deliberately absent. The
-// tier-5 panel line was read in game at breakthrough 17 (2026-09-03).
+// In-game inner-way text (2026-09-06): the enhancement scaling has no state
+// to read and is deliberately absent. The tier-5 panel line was read in game
+// at breakthrough 17 (2026-09-03).
 export const mistwing = defineInnerWay({
   id: INNER_WAY_ID.mistwing,
   name: "Mistwing",
@@ -20,5 +21,10 @@ export const mistwing = defineInnerWay({
     2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },
     5: { panelStats: { physBoost: 0.025 } },
   },
-  buffDefs: [mistwingPhysicalPenetration, mistwingAllTypePenetration, mistwingInebriatePenetration],
+  buffDefs: [
+    mistwingPhysicalPenetration,
+    mistwingAllTypePenetration,
+    mistwingInebriatePenetration,
+    mistwingTargetHealthPenetration,
+  ],
 })

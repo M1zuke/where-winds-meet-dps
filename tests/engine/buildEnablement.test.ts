@@ -110,7 +110,8 @@ describe("paramsFromInputs — build derivation", () => {
         param === "classId" ||
         param === "spec" ||
         param === "belowQiTime" ||
-        param === "minPhysAttack"
+        param === "minPhysAttack" ||
+        param === "targetMaxHp"
       )
         continue
       expect(def).toBeFalsy()

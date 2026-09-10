@@ -28,6 +28,7 @@ export const BUFF = {
   mistwingPhysicalPenetration: "mistwingPhysicalPenetration",
   mistwingAllTypePenetration: "mistwingAllTypePenetration",
   mistwingInebriatePenetration: "mistwingInebriatePenetration",
+  mistwingTargetHealthPenetration: "mistwingTargetHealthPenetration",
   mountainsMight: "mountainsMight",
   mountainsMightQiImbalance: "mountainsMightQiImbalance",
   cleftpeakDeflect: "cleftpeakDeflect",

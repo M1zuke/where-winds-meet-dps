@@ -14,12 +14,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 290989.46,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36429.63,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 484325.1,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 104740.57,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -62,6 +86,14 @@
         "castCount": 4
       },
       {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 57701.04,
+        "castCount": 0
+      },
+      {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -108,38 +140,6 @@
         "count": 1,
         "expectedDamage": 730447.54,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 104740.57,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 290989.46,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 484325.1,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 57701.04,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -147,7 +147,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "43bb4fa336b49e7adc26e34b5eabbd5c487087d576d7b1c33f75874da07ca5b6"
+    "digest": "6a2ec2588cb201982d5cecffc7fdf7a2f030b547e7a846d6be12ba2a85b3688f"
   },
   "anchor:noAttunement": {
     "dps": 67916.7,
@@ -164,12 +164,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 238711.61,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36429.63,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 484325.1,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 104740.57,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -212,6 +236,14 @@
         "castCount": 4
       },
       {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 57701.04,
+        "castCount": 0
+      },
+      {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -258,38 +290,6 @@
         "count": 1,
         "expectedDamage": 730447.54,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 104740.57,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 238711.61,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 484325.1,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 57701.04,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -297,7 +297,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5fa35bab420bdf72cfabcb72953bf4bf0f36f8ba4c09a37fabecd17b269278df"
+    "digest": "b5f19f370f10a31b5e487986e9abe1578a7a0c299bf3fc3947805791ef08d7a9"
   },
   "anchor:dummyOff": {
     "dps": 80646.68,
@@ -314,12 +314,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 312799.73,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 40550.35,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 518916.96,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 113799.4,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -360,6 +384,14 @@
         "count": 4,
         "expectedDamage": 56185.28,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 63608.69,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -408,38 +440,6 @@
         "count": 1,
         "expectedDamage": 769945.43,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 113799.4,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 312799.73,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 518916.96,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 63608.69,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -447,7 +447,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6a21e16e4c8947bb04f32efc81017ed9caf5ed78fd0a687b87dff0ba995fee12"
+    "digest": "d39b067a1f9ee8edc6e2f6e16b0bb72cda7d7df6671004e74a89b234ac0e95aa"
   },
   "anchor:noQiBreak": {
     "dps": 68303.9,
@@ -464,12 +464,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 287717.73,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36429.63,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 478295.59,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 104740.57,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -510,6 +534,14 @@
         "count": 4,
         "expectedDamage": 50053.81,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 56714.13,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -558,38 +590,6 @@
         "count": 1,
         "expectedDamage": 345474.83,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 104740.57,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 287717.73,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 478295.59,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 56714.13,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -597,7 +597,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "2c5b0cb68a96de0e1e557f8923e5fcf7aa905d81afbec29511673d81b5b7bed1"
+    "digest": "50dc55858a1e45201575f22bf45e30fe41b58beda7871b33eb26eb4744cc5e3b"
   },
   "anchor:healerBuff": {
     "dps": 82835.22,
@@ -614,12 +614,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 321160.4,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 41923.93,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 532457.42,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 116819.01,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -660,6 +684,14 @@
         "count": 4,
         "expectedDamage": 58229.11,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 65906.87,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -708,38 +740,6 @@
         "count": 1,
         "expectedDamage": 796277.35,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 116819.01,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 321160.4,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 532457.42,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 65906.87,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -747,7 +747,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "2d5a5302c6310ebe93b7a59a8a9191f768a72cd263e6d82958603c178c6f065f"
+    "digest": "5e8a7403e3f011a0bbde446001f3ba2676676b9e2836d6956173c3991c59aac5"
   },
   "anchor:revelryScript": {
     "dps": 85970.22,
@@ -764,12 +764,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 334610.01,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 44671.08,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 553508.83,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 122858.23,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -810,6 +834,14 @@
         "count": 4,
         "expectedDamage": 61088.28,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 69516.34,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -858,38 +890,6 @@
         "count": 1,
         "expectedDamage": 809443.31,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 122858.23,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 334610.01,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 553508.83,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 69516.34,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -897,7 +897,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "995b803f4ae0599a879345695e03a15228722f615cebce8ce746d6aa3ad76db8"
+    "digest": "18303de1e4e5bb54d788105ef2e3539c11f061ace5ac0165bad761fdc236ad03"
   },
   "anchor:breakExtension": {
     "dps": 76368.32,
@@ -914,12 +914,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 295825.82,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36429.63,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 491633.3,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 104740.57,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -960,6 +984,14 @@
         "count": 4,
         "expectedDamage": 52510.76,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 58682.74,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1008,38 +1040,6 @@
         "count": 1,
         "expectedDamage": 730447.54,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 104740.57,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 295825.82,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 491633.3,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 58682.74,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1047,7 +1047,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "52de44e147d3d41c1f08b97bb2a0c0e55426d46faf3d07a99dc6fd58b3cd5b65"
+    "digest": "70a0a572456922b5c5d8d7a7f3f7a16014995fbb392ea0f1e1a5bb9f75330715"
   },
   "anchor:swordHorizonT1": {
     "dps": 53452.38,
@@ -1064,12 +1064,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 42,
+        "expectedDamage": 209698.17,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35102.67,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 58,
+        "expectedDamage": 237105.56,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 100857.17,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -1112,6 +1136,14 @@
         "castCount": 4
       },
       {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 55670.99,
+        "castCount": 0
+      },
+      {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1158,38 +1190,6 @@
         "count": 1,
         "expectedDamage": 696915.77,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 100857.17,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 42,
-        "expectedDamage": 209698.17,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 58,
-        "expectedDamage": 237105.56,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 55670.99,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1197,7 +1197,7 @@
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "f1585f5dfdd6e7084dd2fbf011e05d6141d90bd40d9a4cd3e20340a7c27fbfff"
+    "digest": "c509dc1f0356b68e45cc3090656f9590aeaf80d0839088097327ad316263634d"
   },
   "anchor:noSwordHorizon": {
     "dps": 44777.98,
@@ -1214,12 +1214,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 42,
+        "expectedDamage": 179853.81,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35102.67,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 23,
+        "expectedDamage": 80376.05,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 94393.32,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -1262,6 +1286,14 @@
         "castCount": 4
       },
       {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 55670.99,
+        "castCount": 0
+      },
+      {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1308,38 +1340,6 @@
         "count": 1,
         "expectedDamage": 696915.77,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 94393.32,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 42,
-        "expectedDamage": 179853.81,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 23,
-        "expectedDamage": 80376.05,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 55670.99,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1347,7 +1347,7 @@
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "d15c4df725e01e61ab17aff6f48971029f3d119e070688756d5330e0c6c43427"
+    "digest": "8e1ed0e270112daf2dc8e1e385d51ee2b2e6ed5d990649a8414576ff7a0db6f8"
   },
   "anchor:noInsightfulStrike": {
     "dps": 64921.72,
@@ -1364,12 +1364,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 250329.04,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35448.2,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 415832.34,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 91749.42,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -1410,6 +1434,14 @@
         "count": 4,
         "expectedDamage": 46598.92,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 52036.01,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1458,38 +1490,6 @@
         "count": 1,
         "expectedDamage": 666112.51,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 91749.42,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 250329.04,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 415832.34,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 52036.01,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1497,7 +1497,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6f86410f468595ac9bd05b2f53cfdfdf4220177dc8ba027d5b799013026c38c3"
+    "digest": "f41592817b620df435f67d0d50a27993af46afaf5c8db258192b0655e0854a40"
   },
   "anchor:noMoraleChant": {
     "dps": 68845.35,
@@ -1514,12 +1514,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 269391.32,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34774.84,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 447722.24,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 97727.18,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -1608,30 +1632,6 @@
         "count": 1,
         "expectedDamage": 668133.12,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 97727.18,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 269391.32,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 447722.24,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1639,7 +1639,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5ba3adfdada7de7a08c0498d70c2462ba389391e34278169eefc18b9f61a2f2e"
+    "digest": "195986ce7c2c8f5561a078d1cd62b10b4a47fd5a47f28130a9a2f102a6a44084"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 35743.83,
@@ -1664,12 +1664,36 @@
         "castCount": 2
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 161809.38,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 10,
+        "expectedDamage": 145488.3,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 1 Hit",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
         "expectedDamage": 11389.54,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 64,
+        "expectedDamage": 176995.22,
+        "castCount": 0
       },
       {
         "name": "SpearQ 5-Hit Cancel",
@@ -1710,6 +1734,14 @@
         "count": 5,
         "expectedDamage": 33224.33,
         "castCount": 5
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 46018.18,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1766,38 +1798,6 @@
         "count": 3,
         "expectedDamage": 8976.57,
         "castCount": 3
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 10,
-        "expectedDamage": 145488.3,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 161809.38,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 64,
-        "expectedDamage": 176995.22,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 46018.18,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1805,7 +1805,7 @@
       "buffWindows": 118,
       "casts": 80
     },
-    "digest": "73ffc0476f482812a85e55042527e1d12de86d34a4f09529f01eba18eda4e2f6"
+    "digest": "cf53ad56fb1d14f18eb181bc7a7cc43af02c39790e196a59bc3a05e68507a7b1"
   },
   "anchor:bitterSeasonT6": {
     "dps": 47534.65,
@@ -1822,12 +1822,44 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 175451.83,
+        "castCount": 0
+      },
+      {
+        "name": "Bitter Season Tick (DoT)",
+        "breakdownName": "Bitter Season Tick",
+        "type": "sustain",
+        "count": 59,
+        "expectedDamage": 80808.44,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36148.47,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 93,
+        "expectedDamage": 267715.76,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 69775.57,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -1868,6 +1900,14 @@
         "count": 4,
         "expectedDamage": 27524.25,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 47530.83,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -1916,46 +1956,6 @@
         "count": 1,
         "expectedDamage": 632346.73,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 69775.57,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 175451.83,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 93,
-        "expectedDamage": 267715.76,
-        "castCount": 0
-      },
-      {
-        "name": "Bitter Season Tick (DoT)",
-        "breakdownName": "Bitter Season Tick",
-        "type": "sustain",
-        "count": 59,
-        "expectedDamage": 80808.44,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 47530.83,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -1963,7 +1963,7 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "c11c8b3a5ff0d864b1fe085ddd86ba173e6efc07ee4efc92d20e10c65741e52b"
+    "digest": "cf44aaac15889ce421a7bb1a4fcc569dff9ea3780cc1e701fbfe2e52d61d78b9"
   },
   "anchor:bitterSeasonT4": {
     "dps": 46639.23,
@@ -1980,12 +1980,44 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 172161.42,
+        "castCount": 0
+      },
+      {
+        "name": "Bitter Season Tick (DoT)",
+        "breakdownName": "Bitter Season Tick",
+        "type": "sustain",
+        "count": 59,
+        "expectedDamage": 79288.02,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35474,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 93,
+        "expectedDamage": 262624.65,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 68447.14,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2026,6 +2058,14 @@
         "count": 4,
         "expectedDamage": 27020.51,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 46561.89,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2074,46 +2114,6 @@
         "count": 1,
         "expectedDamage": 620341.84,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 68447.14,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 172161.42,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 93,
-        "expectedDamage": 262624.65,
-        "castCount": 0
-      },
-      {
-        "name": "Bitter Season Tick (DoT)",
-        "breakdownName": "Bitter Season Tick",
-        "type": "sustain",
-        "count": 59,
-        "expectedDamage": 79288.02,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 46561.89,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2121,7 +2121,7 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "c06b165672e338fe96b7838031e5bc119ce579da8c5cdbc5b3fa59a2f9356491"
+    "digest": "9cda0d42966183a08ac057a581863aa8c8db2d08dcef42643fb542b7d4f5a734"
   },
   "anchor:bitterSeasonT1": {
     "dps": 46181.12,
@@ -2138,12 +2138,44 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 170184.06,
+        "castCount": 0
+      },
+      {
+        "name": "Bitter Season Tick (DoT)",
+        "breakdownName": "Bitter Season Tick",
+        "type": "sustain",
+        "count": 59,
+        "expectedDamage": 74399.67,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35033.12,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 93,
+        "expectedDamage": 259676.06,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 67680.77,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2184,6 +2216,14 @@
         "count": 4,
         "expectedDamage": 26727.89,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 46017,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2232,46 +2272,6 @@
         "count": 1,
         "expectedDamage": 617937.19,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 67680.77,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 170184.06,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 93,
-        "expectedDamage": 259676.06,
-        "castCount": 0
-      },
-      {
-        "name": "Bitter Season Tick (DoT)",
-        "breakdownName": "Bitter Season Tick",
-        "type": "sustain",
-        "count": 59,
-        "expectedDamage": 74399.67,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 46017,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2279,7 +2279,7 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "c77c2a5b4aee0ea4bd64ed9154da4e0bff504a3e832b44b5bf8b247cc4f934f0"
+    "digest": "1f01c54fb9122c2f585aa8abcc8c066446cd45709ae313b23511eaebf835ba0b"
   },
   "anchor:noSet": {
     "dps": 68625.83,
@@ -2296,12 +2296,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 263838.57,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 34547.1,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 440217.57,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 95739.27,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2342,6 +2366,14 @@
         "count": 4,
         "expectedDamage": 46932.95,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 51891.39,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2390,38 +2422,6 @@
         "count": 1,
         "expectedDamage": 665204.32,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 95739.27,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 263838.57,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 440217.57,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 51891.39,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2429,7 +2429,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "8095bbc68054458f444737ff6ae26d8e120d27c4490d4c3abc984f037569aacd"
+    "digest": "e5d5fae3f6a2a4159f2f18a7c71d7b575fab4019387666b29a5d668513970251"
   },
   "anchor:set-Jadeware": {
     "dps": 72002.84,
@@ -2446,12 +2446,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 277821.1,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35047,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 463667.55,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 100181.26,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2492,6 +2516,14 @@
         "count": 4,
         "expectedDamage": 50289.89,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 54873.39,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2540,38 +2572,6 @@
         "count": 1,
         "expectedDamage": 675170.12,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 100181.26,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 277821.1,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 463667.55,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 54873.39,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2579,7 +2579,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5690dac656507040d8d46c06a5918ec4cdda8b0bcd7aeddface981c3ed41f99a"
+    "digest": "acd8ff280fb8739b2e639171f1083e6ccdc5f1acf719823d87ca8bb99387a622"
   },
   "anchor:set-Mistwillow": {
     "dps": 69288.91,
@@ -2596,12 +2596,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 267351.13,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35044.29,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 445935.54,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 96977.97,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2642,6 +2666,14 @@
         "count": 4,
         "expectedDamage": 47518.95,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 52595.05,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2690,38 +2722,6 @@
         "count": 1,
         "expectedDamage": 668155.35,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 96977.97,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 267351.13,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 445935.54,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 52595.05,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2729,7 +2729,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "367e61f69a66cc0c9736dca5520c832a6415d0ac59e04ec5069eea6a13186f4e"
+    "digest": "c75490be521680dc32fd7c3f348c4c1f531841f01757d910b979176ddab6165b"
   },
   "anchor:set-Rainwhisper": {
     "dps": 70241.96,
@@ -2746,12 +2746,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 271564.23,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 35659.93,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 453023.34,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 98533.98,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2792,6 +2816,14 @@
         "count": 4,
         "expectedDamage": 48319.13,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 53453.5,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2840,38 +2872,6 @@
         "count": 1,
         "expectedDamage": 679004.07,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 98533.98,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 271564.23,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 453023.34,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 53453.5,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -2879,7 +2879,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "952bd70ac64c1b58d6c0c9b68c5b3d2d2a4043f1975fb383fce8d8e0628cf1c9"
+    "digest": "9da956ff9eb8a40b1a9263cfc4bbcea9fcba68808d2c51c77f65331f677923ec"
   },
   "anchor:set-Cleftpeak": {
     "dps": 72370.56,
@@ -2896,12 +2896,36 @@
         "castCount": 4
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 56,
+        "expectedDamage": 278731.38,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 2 Hits",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
         "expectedDamage": 36518.07,
         "castCount": 1
+      },
+      {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 110,
+        "expectedDamage": 465041.36,
+        "castCount": 0
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 5,
+        "expectedDamage": 101130.73,
+        "castCount": 0
       },
       {
         "name": "SpearQ",
@@ -2942,6 +2966,14 @@
         "count": 4,
         "expectedDamage": 49555.19,
         "castCount": 4
+      },
+      {
+        "name": "Yi River",
+        "breakdownName": "Morale Chant",
+        "type": "mindMethod",
+        "count": 6,
+        "expectedDamage": 52249.83,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
@@ -2990,38 +3022,6 @@
         "count": 1,
         "expectedDamage": 702114.4,
         "castCount": 1
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 5,
-        "expectedDamage": 101130.73,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 56,
-        "expectedDamage": 278731.38,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 110,
-        "expectedDamage": 465041.36,
-        "castCount": 0
-      },
-      {
-        "name": "Yi River",
-        "breakdownName": "Morale Chant",
-        "type": "mindMethod",
-        "count": 6,
-        "expectedDamage": 52249.83,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -3029,7 +3029,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "178fc73ff64ad01ebfa55ad207605f663538702fdf1fd92221b74269ff6802bd"
+    "digest": "3ced80bbf1ee2876884d0fa18280cedb9b245cdbcd701466a69d2013bbee825a"
   },
   "defaults:umbra": {
     "dps": 9498.97,
@@ -3046,6 +3046,14 @@
         "castCount": 2
       },
       {
+        "name": "Bleeding (DoT)",
+        "breakdownName": "Bleeding",
+        "type": "sustain",
+        "count": 48,
+        "expectedDamage": 46953.65,
+        "castCount": 0
+      },
+      {
         "name": "Dragon's Breath: Smolder 1 Hit",
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
@@ -3054,12 +3062,28 @@
         "castCount": 1
       },
       {
+        "name": "Smolder (DoT)",
+        "breakdownName": "Smolder",
+        "type": "sustain",
+        "count": 8,
+        "expectedDamage": 8783.44,
+        "castCount": 0
+      },
+      {
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
         "expectedDamage": 25060.33,
         "castCount": 3
+      },
+      {
+        "name": "Flute Ripple (DoT)",
+        "breakdownName": "Flute Chanting a Thousand Waves",
+        "type": "sustain",
+        "count": 10,
+        "expectedDamage": 69596.23,
+        "castCount": 0
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3148,30 +3172,6 @@
         "count": 3,
         "expectedDamage": 4210.95,
         "castCount": 3
-      },
-      {
-        "name": "Flute Ripple (DoT)",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "sustain",
-        "count": 10,
-        "expectedDamage": 69596.23,
-        "castCount": 0
-      },
-      {
-        "name": "Bleeding (DoT)",
-        "breakdownName": "Bleeding",
-        "type": "sustain",
-        "count": 48,
-        "expectedDamage": 46953.65,
-        "castCount": 0
-      },
-      {
-        "name": "Smolder (DoT)",
-        "breakdownName": "Smolder",
-        "type": "sustain",
-        "count": 8,
-        "expectedDamage": 8783.44,
-        "castCount": 0
       }
     ],
     "counts": {
@@ -3179,6 +3179,6 @@
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "f62ad87138fa360f946346aaff2660f00d24ee363c1526975fc49ba784d9d577"
+    "digest": "1424c33bf4d957b96818e221c18328ee0ecf2f3cdcf568bcfa97d9e7420dd67f"
   }
 }

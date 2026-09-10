@@ -27,9 +27,14 @@ import {
   skillKey,
 } from "../i18n/contentKeys"
 import { resolveRotation, type ResolvedStep } from "./rotation"
-import { StatusLedger, UNOWNED, type StatusWindow } from "./ledger"
+import { StatusLedger, UNOWNED, type StatusView, type StatusWindow } from "./ledger"
 import { collectCastBuffs } from "./castBuffs"
-import { prepareMechanics, type ContextPatch, type MechanicSetup } from "./mechanics"
+import {
+  prepareMechanics,
+  type ContextPatch,
+  type MechanicEvent,
+  type MechanicSetup,
+} from "./mechanics"
 import {
   dotRowName,
   dotTickDamage,
@@ -512,15 +517,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const liveWriter = statusWriter(ledger, conditionHolds)
   seedOpeningState(liveWriter, spanStart)
 
-  function activeBuffsAt(frame: number): (Buff | Debuff)[] {
-    const out: (Buff | Debuff)[] = []
-    for (const id of ledger.activeIdsAt(frame)) {
-      const status = statusById.get(id)
-      if (status) out.push(status)
-    }
-    return out
-  }
-
   const buildView: BuildView = {
     classId: inputs.classId,
     innerWayTier: (innerWayId) => innerWayTier(inputs.mindMethods, innerWayId),
@@ -673,11 +669,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     forceGuaranteedAffinity?: boolean
   }
   const stateMemo = new Map<string, Resolved>()
+  // `statusesView` is the ledger a hit's own damage query reads — pass 1's
+  // `ledger.asOf(mark)`, taken before this hit's own triggers ran, so a status
+  // its own trigger just opened cannot reach its own hit. A tick or a
+  // mechanic's extra event never writes the ledger, so both default to the
+  // live one.
   function resolveState(
     frame: number,
     skill?: Skill,
     override?: ResolveOverride,
     castFrame = frame,
+    damageSoFar = 0,
+    statusesView: StatusView = ledger,
   ): Resolved & {
     forceCrit: boolean
     damageFactor: number
@@ -685,17 +688,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     artBonuses: Partial<Record<ArtBonusField, number>>
     echoFeeds: readonly EchoFeed[]
   } {
-    const active = activeBuffsAt(frame)
     const sigParts: string[] = []
     const effects: BuffStatEffect[] = []
-    for (const b of active) {
-      const perStack = (b.stackScaling ?? "flat") === "perStack"
-      const count = perStack ? Math.max(0, stacksAt(b.id, frame)) : 1
-      sigParts.push(`${b.id}:${count}`)
+    for (const id of statusesView.activeIdsAt(frame)) {
+      const status = statusById.get(id)
+      if (!status) continue
+      const perStack = (status.stackScaling ?? "flat") === "perStack"
+      const count = perStack ? Math.max(0, statusesView.stacksAt(id, frame)) : 1
+      sigParts.push(`${id}:${count}`)
       if (perStack) {
-        for (const e of b.effects) effects.push({ statKey: e.statKey, amount: e.amount * count })
+        for (const statEffect of status.effects)
+          effects.push({ statKey: statEffect.statKey, amount: statEffect.amount * count })
       } else {
-        effects.push(...b.effects)
+        effects.push(...status.effects)
       }
     }
     let sig = sigParts.sort().join("|")
@@ -706,7 +711,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let echoFeeds: readonly EchoFeed[] = []
     if (buffEngine && skill) {
       const scoped = castScopedBuffs.get(castScopedKey(castFrame, skill.id)) ?? []
-      const site = buffEngine.calculateDamageEffects(skill, frame / FPS, scoped)
+      const site = buffEngine.calculateDamageEffects(
+        skill,
+        frame / FPS,
+        scoped,
+        damageSoFar,
+        statusesView,
+      )
       if (site.effects.length > 0) {
         for (const e of site.effects) effects.push(e)
         sig +=
@@ -797,20 +808,54 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
-  interface EchoBank {
-    frame: number
-    seq: number
-    debuffId: string
-    amount: number
+  interface DotTickEntry extends DotTickPlan {
+    debuff: Debuff
+    debuffForTick: Debuff
+    dotSkill: Skill
+    dotName: string
+    dotBreakdownName: string
+    dotBreakdownKey: string
+    dotType: string
   }
-  interface EchoRelease {
-    frame: number
-    seq: number
-    debuffId: string
+
+  // A hit, a DoT tick, a mechanic's own extra event and an echo release all
+  // flow through one frame-ordered list, so `totalDamage` accumulates
+  // strictly in time order and a buff module can read it mid-run. `seq`
+  // breaks ties at the same frame: a hit before a tick before an extra event
+  // before a release, so a release a hit's own trigger fires always scores
+  // after that hit.
+  type MergedEvent =
+    | {
+        kind: "hit"
+        frame: number
+        seq: number
+        skill: Skill
+        hit: SkillHit
+        castFrame: number
+        stepStart: number
+        extraEffects: BuffStatEffect[]
+        forceGuaranteedAffinity: boolean
+        ledgerMark: number
+      }
+    | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
+    | { kind: "extra"; frame: number; seq: number; event: MechanicEvent }
+    | { kind: "echoRelease"; frame: number; seq: number; debuffId: string }
+
+  const MERGED_KIND_PRIORITY: Record<MergedEvent["kind"], number> = {
+    hit: 0,
+    tick: 1,
+    extra: 2,
+    echoRelease: 3,
   }
-  const echoBanks: EchoBank[] = []
-  const echoReleases: EchoRelease[] = []
-  let echoSeq = 0
+  function byMergedOrder(left: MergedEvent, right: MergedEvent): number {
+    return (
+      left.frame - right.frame ||
+      MERGED_KIND_PRIORITY[left.kind] - MERGED_KIND_PRIORITY[right.kind] ||
+      left.seq - right.seq
+    )
+  }
+
+  const echoPotByDebuff = new Map<string, number>()
   const echoOf = (debuffId: string) => {
     const status = statusById.get(debuffId)
     return status && isDebuffStatus(status) ? (status.echo ?? null) : null
@@ -819,12 +864,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const feed of feeds) {
       const echo = echoOf(feed.debuffId)
       if (!echo || !ledger.isActiveAt(feed.debuffId, frame)) continue
-      echoBanks.push({
-        frame,
-        seq: echoSeq++,
-        debuffId: feed.debuffId,
-        amount: damage * echo.share * feed.factor,
-      })
+      echoPotByDebuff.set(
+        feed.debuffId,
+        (echoPotByDebuff.get(feed.debuffId) ?? 0) + damage * echo.share * feed.factor,
+      )
     }
   }
 
@@ -880,6 +923,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     outcomeDamageTally[rolled.outcome] += damage
     for (const outcome of OUTCOME_KEYS) expectedShareTally[outcome] += rolled.chance[outcome]
   }
+  // Pass 1: walks every hit — laid, and every one a trigger chain
+  // generates — in frame order, firing triggers and writing the status
+  // ledger exactly as a single chronological pass would. No damage is
+  // scored here: a window's coverage at a fixed frame can only ever be
+  // widened by a later trigger for frames after that trigger's own frame,
+  // never for one before it, so the ledger this pass builds is safe to
+  // query from pass 2, however later that runs. `onHit`/`claimStatEffects`
+  // still run here — they can write the ledger via `setStatus` — but their
+  // `stat`/`forceOutcome` output only feeds the formula, so it is captured
+  // onto the hit's own merged event for pass 2 instead of reapplied there.
+  const mergedEvents: MergedEvent[] = []
+  let mergedSeq = 0
   let processed = 0
   while (queue.size > 0) {
     if (processed >= EVENT_CAP) {
@@ -897,8 +952,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const hitInput = hitInputAt(skill, hit, frame)
     const extraEffects: BuffStatEffect[] = []
     let forceGuaranteedAffinity = false
-    // `onHit`/`claimStatEffects` run BEFORE the formula context is built, so
-    // only the effect kinds that can change that context are live here.
     const hitSink: EffectSink = {
       stat: (statKey, amount) => extraEffects.push({ statKey, amount }),
       forceOutcome: (outcome) => {
@@ -926,68 +979,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
     for (const effect of behavior.claimStatEffects(hitInput, qiPhase)) applyEffect(hitSink, effect)
-    const resolveOverride: ResolveOverride | undefined =
-      extraEffects.length > 0 || forceGuaranteedAffinity
-        ? { extraEffects, forceGuaranteedAffinity }
-        : undefined
-    const st = resolveState(frame, skill, resolveOverride, castFrame)
-    const hitContext: HitContext = {
-      phase: qiPhase,
-      smallPhys: st.ctx.smallPhys,
-      isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
-    }
-    const art = behavior.buildArt(hitInput, hitContext)
-    if (st.forceCrit) art.guaranteedCrit = 1
-    // `patchArt` runs AFTER the formula context is built and may read it.
-    const artSink: EffectSink = {
-      stat: () => {},
-      forceOutcome: () => {},
-      applyBuff: () => {},
-      consumeStacks: () => {},
-      setStatus: () => {},
-      artBonus: (field, amount) => {
-        art[field] = (art[field] ?? 0) + amount
-      },
-      damageMultiplier: (factor) => {
-        art.correction = (art.correction ?? 1) * factor
-      },
-      echo: () => {},
-    }
-    for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
-    for (const [field, amount] of Object.entries(st.artBonuses)) {
-      const key = field as ArtBonusField
-      art[key] = (art[key] ?? 0) + amount
-    }
-    if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
-    if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
-    const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
-    const damage = rolled?.damage ?? expectedDamage
+
     const hitInWindow = inWindow(frame)
-    const landsInFight = hitInWindow && !isPrePullSkill(skill)
-    if (landsInFight) {
-      totalDamage += damage
-      if (rolled) tallyRoll(rolled, damage)
-      // A hit that carries no coefficient exists to fire its triggers, and
-      // counting it would put hits a player never sees in the breakdown.
-      if (hitDealsDamage(hit))
-        add(
-          skill.name,
-          skill.skillType,
-          1,
-          damage,
-          breakdownNameOf(skill.breakdownName, skill.name),
-          skillBreakdownRowKey(skill),
-        )
-      bankEcho(frame, st.echoFeeds, damage)
-    }
-    pushEvent({
-      frame,
-      timeSec: frame / FPS,
-      skillName: skill.name,
-      type: skill.skillType,
+    const ledgerMark = ledger.mark()
+    mergedEvents.push({
       kind: "hit",
-      damage,
-      inWindow: landsInFight,
+      frame,
+      seq: mergedSeq++,
+      skill,
+      hit,
+      castFrame,
+      stepStart,
+      extraEffects,
+      ledgerMark,
+      forceGuaranteedAffinity,
     })
 
     if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
@@ -995,7 +1000,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (trigger.kind === "detonateDot") continue
       if (trigger.kind === "releaseEcho") {
         if (hitInWindow && liveWriter.fires(trigger, frame))
-          echoReleases.push({ frame, seq: echoSeq++, debuffId: trigger.targetId })
+          mergedEvents.push({
+            kind: "echoRelease",
+            frame,
+            seq: mergedSeq++,
+            debuffId: trigger.targetId,
+          })
         continue
       }
       if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
@@ -1142,19 +1152,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return windows
   }
 
-  interface DotTickEntry extends DotTickPlan {
-    seq: number
-    debuff: Debuff
-    debuffForTick: Debuff
-    dotSkill: Skill
-    dotName: string
-    dotBreakdownName: string
-    dotBreakdownKey: string
-    dotType: string
-  }
-
   const dotTickEntries: DotTickEntry[] = []
-  let dotTickSeq = 0
   for (const [buffId, arr] of ledger.entries()) {
     const status = statusById.get(buffId)
     if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
@@ -1185,9 +1183,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         return 1
       },
     })) {
-      dotTickEntries.push({
+      const entry: DotTickEntry = {
         ...plan,
-        seq: dotTickSeq++,
         debuff: status,
         debuffForTick,
         dotBreakdownKey,
@@ -1195,34 +1192,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         dotName,
         dotBreakdownName,
         dotType,
-      })
+      }
+      dotTickEntries.push(entry)
+      mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
     }
   }
-
-  // A tick's declared buffs must reach `buffHistory` before ANY tick's damage
-  // is queried, in real chronological order across every debuff — not in the
-  // per-debuff batches `dotTickEntries` was built in above, or a tick from a
-  // debuff visited later in `ledger.entries()` could be evaluated as if an
-  // earlier-in-time tick from a different debuff hadn't triggered yet.
-  const byTriggerTime = [...dotTickEntries].sort(
-    (left, right) => left.frame - right.frame || left.seq - right.seq,
-  )
-  for (const entry of byTriggerTime) {
-    if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
-      buffEngine?.triggerDeclaredBuffs(
-        entry.debuff.triggersBuffs,
-        castTagOf(entry.dotSkill),
-        entry.frame / FPS,
-        propsOfSkill(entry.dotSkill, 1),
-      )
-    }
-  }
-
-  // After the tick pass, never before it: a cast chip reports what is live once
-  // the cast resolves, and a buff a tick applies or extends only reaches
-  // `buffHistory` once every tick has been walked.
-  const casts: RotationCast[] = collectDetail ? buildCasts() : []
-  const buffWindows: BuffWindow[] = collectDetail ? buildBuffWindows() : []
 
   // A tick carries the same `extraCritDamage` sentinel a regular hit does, but
   // never reaches `buildArt`, where a hit's is resolved. Resolved here against
@@ -1238,69 +1212,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return { ...entry.debuffForTick, dot: { ...dot, extraCritDamage: resolved } }
   }
 
-  for (const entry of dotTickEntries) {
-    const st = resolveState(entry.frame, entry.dotSkill)
-    const tick = dotTickDamage(
-      tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
-      st.ctx,
-      computeSkillDamage,
-      st.forceCrit,
-      entry.shape,
-      hitRng,
-      st.artBonuses,
-    )
-    // `damageFactor` is post-formula, so a tick takes it on its finished
-    // number the way a regular hit takes it on its art `correction`.
-    const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
-    totalDamage += damage
-    if (tick.rolled) tallyRoll(tick.rolled, damage)
-    add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
-    bankEcho(entry.frame, st.echoFeeds, damage)
-    pushEvent({
-      frame: entry.frame,
-      timeSec: entry.frame / FPS,
-      skillName: entry.dotName,
-      type: entry.dotType,
-      kind: "dot",
-      damage,
-      inWindow: true,
-    })
-  }
-
   for (const { mechanic, state } of mechanics) {
     for (const event of mechanic.extraEvents?.(state, mechanicSetup) ?? []) {
-      const st = resolveState(event.frame, event.skill)
-      const art = { ...event.art } as Parameters<typeof computeSkillDamage>[0]
-      if (st.forceCrit) art.guaranteedCrit = 1
-      const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
-      const damage = rolled?.damage ?? expectedDamage
-      totalDamage += damage
-      if (rolled) tallyRoll(rolled, damage)
-      add(
-        event.name,
-        event.type,
-        1,
-        damage,
-        breakdownNameOf(event.skill.breakdownName, event.name),
-        skillBreakdownRowKey(event.skill),
-      )
-      bankEcho(event.frame, st.echoFeeds, damage)
-      pushEvent({
-        frame: event.frame,
-        timeSec: event.frame / FPS,
-        skillName: event.name,
-        type: event.type,
-        kind: "hit",
-        damage,
-        inWindow: true,
-      })
+      mergedEvents.push({ kind: "extra", frame: event.frame, seq: mergedSeq++, event })
     }
   }
-
-  const byFrameThenSeq = (
-    left: { frame: number; seq: number },
-    right: { frame: number; seq: number },
-  ): number => left.frame - right.frame || left.seq - right.seq
 
   function coverageEnds(windows: readonly StatusWindow[]): number[] {
     const ends: number[] = []
@@ -1316,28 +1232,185 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return ends
   }
 
-  for (const debuffId of new Set(echoBanks.map((bank) => bank.debuffId))) {
-    const echo = echoOf(debuffId)!
-    const releases = [
-      ...echoReleases.filter((release) => release.debuffId === debuffId),
-      ...coverageEnds(ledger.windowsOf(debuffId))
-        .filter((end) => end <= durationFrames)
-        .map((end) => ({ frame: end, seq: Number.MAX_SAFE_INTEGER })),
-    ].sort(byFrameThenSeq)
-    const banks = echoBanks.filter((bank) => bank.debuffId === debuffId).sort(byFrameThenSeq)
-    let nextBank = 0
-    for (const release of releases) {
-      let pot = 0
-      while (nextBank < banks.length && byFrameThenSeq(banks[nextBank], release) < 0) {
-        pot += banks[nextBank].amount
-        nextBank++
+  // A pot no `releaseEcho` trigger claims is paid out when the debuff's
+  // coverage lapses, and never after the rotation ends — scheduled here from
+  // the final ledger, alongside every trigger-fired release pass 1 already
+  // queued, so both flow through the one time-ordered pass below.
+  for (const [debuffId, status] of statusById) {
+    if (!isDebuffStatus(status) || !status.echo) continue
+    const windows = ledger.windowsOf(debuffId)
+    if (windows.length === 0) continue
+    for (const frame of coverageEnds(windows).filter((end) => end <= durationFrames))
+      mergedEvents.push({ kind: "echoRelease", frame, seq: mergedSeq++, debuffId })
+  }
+
+  // Pass 2: every damage event, in true time order — a hit, a tick (its
+  // declared buffs applied immediately before its own damage is scored, so a
+  // later event of any kind already sees them), a mechanic's extra event, and
+  // an echo release, which takes whatever this debuff has banked since its
+  // last release. `totalDamage` accumulates as each one is scored, so a buff
+  // module's `target.remainingHealthFraction` reads the true running total.
+  mergedEvents.sort(byMergedOrder)
+  for (const event of mergedEvents) {
+    if (event.kind === "hit") {
+      const { frame, skill, hit, castFrame, extraEffects, forceGuaranteedAffinity, ledgerMark } =
+        event
+      const behavior = behaviorFor(skill)
+      const hitInput = hitInputAt(skill, hit, frame)
+      const resolveOverride: ResolveOverride | undefined =
+        extraEffects.length > 0 || forceGuaranteedAffinity
+          ? { extraEffects, forceGuaranteedAffinity }
+          : undefined
+      const st = resolveState(
+        frame,
+        skill,
+        resolveOverride,
+        castFrame,
+        totalDamage,
+        ledger.asOf(ledgerMark),
+      )
+      const hitContext: HitContext = {
+        phase: buffEngine?.qiPhase(frame / FPS) ?? "normal",
+        smallPhys: st.ctx.smallPhys,
+        isEngineBuffActive: (id) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
       }
-      if (pot <= 0) continue
-      totalDamage += pot
-      add(echo.breakdownName, echo.skillType, 1, pot, echo.breakdownName, debuffEchoKey(debuffId))
+      const art = behavior.buildArt(hitInput, hitContext)
+      if (st.forceCrit) art.guaranteedCrit = 1
+      const artSink: EffectSink = {
+        stat: () => {},
+        forceOutcome: () => {},
+        applyBuff: () => {},
+        consumeStacks: () => {},
+        setStatus: () => {},
+        artBonus: (field, amount) => {
+          art[field] = (art[field] ?? 0) + amount
+        },
+        damageMultiplier: (factor) => {
+          art.correction = (art.correction ?? 1) * factor
+        },
+        echo: () => {},
+      }
+      for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
+      for (const [field, amount] of Object.entries(st.artBonuses)) {
+        const key = field as ArtBonusField
+        art[key] = (art[key] ?? 0) + amount
+      }
+      if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
+      if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
+      const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
+      const damage = rolled?.damage ?? expectedDamage
+      const landsInFight = inWindow(frame) && !isPrePullSkill(skill)
+      if (landsInFight) {
+        totalDamage += damage
+        if (rolled) tallyRoll(rolled, damage)
+        // A hit that carries no coefficient exists to fire its triggers, and
+        // counting it would put hits a player never sees in the breakdown.
+        if (hitDealsDamage(hit))
+          add(
+            skill.name,
+            skill.skillType,
+            1,
+            damage,
+            breakdownNameOf(skill.breakdownName, skill.name),
+            skillBreakdownRowKey(skill),
+          )
+        bankEcho(frame, st.echoFeeds, damage)
+      }
       pushEvent({
-        frame: release.frame,
-        timeSec: release.frame / FPS,
+        frame,
+        timeSec: frame / FPS,
+        skillName: skill.name,
+        type: skill.skillType,
+        kind: "hit",
+        damage,
+        inWindow: landsInFight,
+      })
+    } else if (event.kind === "tick") {
+      const { entry } = event
+      if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
+        buffEngine?.triggerDeclaredBuffs(
+          entry.debuff.triggersBuffs,
+          castTagOf(entry.dotSkill),
+          entry.frame / FPS,
+          propsOfSkill(entry.dotSkill, 1),
+        )
+      }
+      const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
+      const tick = dotTickDamage(
+        tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
+        st.ctx,
+        computeSkillDamage,
+        st.forceCrit,
+        entry.shape,
+        hitRng,
+        st.artBonuses,
+      )
+      // `damageFactor` is post-formula, so a tick takes it on its finished
+      // number the way a regular hit takes it on its art `correction`.
+      const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
+      totalDamage += damage
+      if (tick.rolled) tallyRoll(tick.rolled, damage)
+      add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
+      bankEcho(entry.frame, st.echoFeeds, damage)
+      pushEvent({
+        frame: entry.frame,
+        timeSec: entry.frame / FPS,
+        skillName: entry.dotName,
+        type: entry.dotType,
+        kind: "dot",
+        damage,
+        inWindow: true,
+      })
+    } else if (event.kind === "extra") {
+      const mechEvent = event.event
+      const st = resolveState(
+        mechEvent.frame,
+        mechEvent.skill,
+        undefined,
+        mechEvent.frame,
+        totalDamage,
+      )
+      const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
+      if (st.forceCrit) art.guaranteedCrit = 1
+      const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
+      const damage = rolled?.damage ?? expectedDamage
+      totalDamage += damage
+      if (rolled) tallyRoll(rolled, damage)
+      add(
+        mechEvent.name,
+        mechEvent.type,
+        1,
+        damage,
+        breakdownNameOf(mechEvent.skill.breakdownName, mechEvent.name),
+        skillBreakdownRowKey(mechEvent.skill),
+      )
+      bankEcho(mechEvent.frame, st.echoFeeds, damage)
+      pushEvent({
+        frame: mechEvent.frame,
+        timeSec: mechEvent.frame / FPS,
+        skillName: mechEvent.name,
+        type: mechEvent.type,
+        kind: "hit",
+        damage,
+        inWindow: true,
+      })
+    } else {
+      const pot = echoPotByDebuff.get(event.debuffId) ?? 0
+      echoPotByDebuff.set(event.debuffId, 0)
+      if (pot <= 0) continue
+      const echo = echoOf(event.debuffId)!
+      totalDamage += pot
+      add(
+        echo.breakdownName,
+        echo.skillType,
+        1,
+        pot,
+        echo.breakdownName,
+        debuffEchoKey(event.debuffId),
+      )
+      pushEvent({
+        frame: event.frame,
+        timeSec: event.frame / FPS,
         skillName: echo.breakdownName,
         type: echo.skillType,
         kind: "hit",
@@ -1346,6 +1419,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       })
     }
   }
+
+  // Only now is `buffHistory` settled by every event, ticks included, so a
+  // cast chip reports what a tick applied to it.
+  const casts: RotationCast[] = collectDetail ? buildCasts() : []
+  const buffWindows: BuffWindow[] = collectDetail ? buildBuffWindows() : []
 
   timeline.sort((a, b) => a.frame - b.frame || (a.kind === b.kind ? 0 : a.kind === "hit" ? -1 : 1))
 

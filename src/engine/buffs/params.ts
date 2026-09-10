@@ -4,6 +4,7 @@ import type { QiPhase } from "../effects/context"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
+import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
 import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
 
@@ -40,6 +41,7 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
     isTrainingDummy: !!inputs.dummyMode,
     classId: inputs.classId,
     spec: specForClass(inputs.classId),
+    targetMaxHp: getBreakthrough(inputs.breakthrough).targetHp,
   }
 
   const armorSetKey = inputs.set ? SET_BY_ID[inputs.set]?.siteKey : undefined

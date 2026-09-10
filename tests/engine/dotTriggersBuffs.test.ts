@@ -91,11 +91,7 @@ describe("Debuff.triggersBuffs — DoT ticks trigger declared buffs", () => {
     expect(withTriggers.totalDamage).toBeGreaterThan(without.totalDamage)
   })
 
-  // A tick-applied buff reaches later ticks and shows on later cast chips. It
-  // still does NOT reach a later regular hit: the main hit-damage pass runs
-  // before the tick pass, so a regular hit is scored before any tick has
-  // applied anything. Ordering, not scope — the buff is `affectsAll`.
-  it("a tick-triggered buff reaches a later tick and that cast's chips, but not a regular hit already scored", () => {
+  it("a tick-triggered buff reaches a later tick, that cast's chips, and a later regular hit", () => {
     const debuffA = dotDebuff("Debuff A", 60, [BUFF.vulnerabilityTeammate])
     const skillApplyA = makeSkill(CLASS, {
       name: "Apply A",
@@ -132,7 +128,10 @@ describe("Debuff.triggersBuffs — DoT ticks trigger declared buffs", () => {
       buildContext(inputs),
       1,
     ).expectedDamage
-    expect(r.perSkill.find((s) => s.name === "Probe")!.expectedDamage).toBeCloseTo(
+    expect(r.perSkill.find((s) => s.name === "Probe")!.expectedDamage).toBeGreaterThan(
+      buffLessProbeDamage,
+    )
+    expect(untriggered.perSkill.find((s) => s.name === "Probe")!.expectedDamage).toBeCloseTo(
       buffLessProbeDamage,
       6,
     )
