@@ -93,6 +93,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(umbra.classBuffDefs.map((module) => module.id)).toEqual([
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
@@ -105,10 +106,11 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "disintegration",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 25-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 26-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "wineGu",
@@ -135,6 +137,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "mistwillowLightBuff",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 

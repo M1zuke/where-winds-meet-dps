@@ -11,7 +11,7 @@ import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import type { Inputs } from "../../src/engine/types"
 import { insightfulStrike } from "../../src/data/innerWays/insightfulStrike"
 import { insightfulStrikeMechanic } from "../../src/data/innerWays/insightfulStrikeMechanic"
-import { ROLE } from "../../src/data/skills/ids"
+import { PROP, ROLE } from "../../src/data/skills/ids"
 
 const NS_TIER_6 = { name: "Insightful Strike", stacks: "tier 6" } as const
 const NS_TIER_5 = { name: "Insightful Strike", stacks: "tier 5" } as const
@@ -100,7 +100,7 @@ describe("Insightful Strike — Concentration's all-damage bonus is counted once
   })
 })
 
-describe("Insightful Strike — DoT multiplier reaches every damage-over-time row at tier 6, and none below it", () => {
+describe("Insightful Strike — DoT multiplier reaches every damage-over-time row and every declared empowered effect at tier 6, and none below it", () => {
   it("multiplies a damage-over-time row's damage at tier 6 while Concentration is active", () => {
     const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])
     const mechanic = insightfulStrikeMechanic()
@@ -130,6 +130,29 @@ describe("Insightful Strike — DoT multiplier reaches every damage-over-time ro
     const state = mechanic.prepare(setup)!
     const bloodBurst = makeSkill(CLASS_ID, { tags: [ROLE.bleedDetonation] })
     const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, bloodBurst, setup)
+    expect(contribution?.context).toBeUndefined()
+  })
+
+  it("multiplies a regular hit that declares itself an empowered damage-over-time effect", () => {
+    const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])
+    const mechanic = insightfulStrikeMechanic()
+    const state = mechanic.prepare(setup)!
+    const empowered = makeSkill(CLASS_ID, { tags: [PROP.empoweredDotEffect] })
+    const dotTick = makeSkill(CLASS_ID, { isDotTick: true, tags: [] })
+    const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, empowered, setup)
+    const tick = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, dotTick, setup)
+    expect(contribution?.context?.dotDamageMultiplier).toBeCloseTo(
+      tick?.context?.dotDamageMultiplier ?? 0,
+      9,
+    )
+  })
+
+  it("does not multiply a declared empowered effect below tier 6", () => {
+    const setup = setupFor([emptyMindMethod, NS_TIER_5, emptyMindMethod, emptyMindMethod])
+    const mechanic = insightfulStrikeMechanic()
+    const state = mechanic.prepare(setup)!
+    const empowered = makeSkill(CLASS_ID, { tags: [PROP.empoweredDotEffect] })
+    const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, empowered, setup)
     expect(contribution?.context).toBeUndefined()
   })
 

@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 72920.88,
-    "totalDamage": 4360668.4,
+    "dps": 77294.96,
+    "totalDamage": 4622238.42,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -74,7 +74,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1922220.49,
+        "expectedDamage": 2174317.16,
         "castCount": 0
       },
       {
@@ -162,7 +162,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 315778.49,
+        "expectedDamage": 325251.85,
         "castCount": 0
       },
       {
@@ -187,11 +187,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d3af5259fa4a5faef01071e1c29edebc3a7c676058a51e3f363278d598ec285a"
+    "digest": "c3bcef3b69b0ed8a09d56b8384e1fedddaa29aeefe628b7826b435158ca3e82d"
   },
   "anchor:noAttunement": {
-    "dps": 66197.32,
-    "totalDamage": 3958599.67,
+    "dps": 69785.57,
+    "totalDamage": 4173177.21,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -264,7 +264,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1576883.09,
+        "expectedDamage": 1783689.22,
         "castCount": 0
       },
       {
@@ -352,7 +352,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 259047.16,
+        "expectedDamage": 266818.58,
         "castCount": 0
       },
       {
@@ -377,11 +377,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d1454cc406abb711ba9e7aa7ba271307305fb157b1694d37a1f4292758f7c347"
+    "digest": "8fab598385669308d6e10d9770498437064d9e66405b010646966ab36b9b36fd"
   },
   "anchor:dummyOff": {
-    "dps": 78046.09,
-    "totalDamage": 4667156.34,
+    "dps": 82711.56,
+    "totalDamage": 4946151.5,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -454,7 +454,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2049843.21,
+        "expectedDamage": 2318674.38,
         "castCount": 0
       },
       {
@@ -542,7 +542,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 338799.69,
+        "expectedDamage": 348963.68,
         "castCount": 0
       },
       {
@@ -567,11 +567,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6bb581ccebedf5e0f6355666fe7d9b335b41a241d0493691f83a86b5bdb992f3"
+    "digest": "5778f0da49de7ec14d9fc4731e76c64b8cf51140f891c895ece89399200c25ea"
   },
   "anchor:noQiBreak": {
-    "dps": 65830.84,
-    "totalDamage": 3936684.33,
+    "dps": 70168.16,
+    "totalDamage": 4196056.17,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -644,7 +644,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1906508.45,
+        "expectedDamage": 2156516.14,
         "castCount": 0
       },
       {
@@ -732,7 +732,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 312138.22,
+        "expectedDamage": 321502.36,
         "castCount": 0
       },
       {
@@ -757,11 +757,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "73f89f210132f80122f8c2603727da8265301c7322a147b244a5717a02d7c018"
+    "digest": "cf571f47be0a6f238b7a858255ba51677ea34220fcb99882d76e4433e2a9e105"
   },
   "anchor:healerBuff": {
-    "dps": 80164.82,
-    "totalDamage": 4793856.03,
+    "dps": 84939.67,
+    "totalDamage": 5079392.3,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -834,7 +834,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2097621.46,
+        "expectedDamage": 2372727.12,
         "castCount": 0
       },
       {
@@ -922,7 +922,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 347686.85,
+        "expectedDamage": 358117.45,
         "castCount": 0
       },
       {
@@ -947,11 +947,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7bbdccae4a3a8db1ea8c081f729b6f4f1cfe0ed2b96af9cdb83c5a150991201f"
+    "digest": "03e40e174f3610096fa8407da09546650d70a793ed681f66b60fa85ac0df4a86"
   },
   "anchor:revelryScript": {
-    "dps": 83171.31,
-    "totalDamage": 4973644.29,
+    "dps": 88128.17,
+    "totalDamage": 5270064.58,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1024,7 +1024,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2177465.92,
+        "expectedDamage": 2463031.59,
         "castCount": 0
       },
       {
@@ -1112,7 +1112,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 361820.89,
+        "expectedDamage": 372675.51,
         "castCount": 0
       },
       {
@@ -1137,11 +1137,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "ea8ea1e43ba799934a94252a51d548bb41fa6ac8f698503e521707ec495ec85a"
+    "digest": "4da3f25da80e0118042711b169fdc8906c59e91781254049a4b02a2d95ee9c2a"
   },
   "anchor:breakExtension": {
-    "dps": 73902.2,
-    "totalDamage": 4419351.79,
+    "dps": 78348.53,
+    "totalDamage": 4685242.27,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1214,7 +1214,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1953663.18,
+        "expectedDamage": 2209940.28,
         "castCount": 0
       },
       {
@@ -1302,7 +1302,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 320445.75,
+        "expectedDamage": 330059.12,
         "castCount": 0
       },
       {
@@ -1327,11 +1327,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5cf4239b911d0cb911f746b1a4c91f9934d63bc4cca53bab12c1698f3d8bc342"
+    "digest": "7522656f5be2bb4387fc01cf0cb0b0f62e295d71cb9650dbab5818d827f81e1f"
   },
   "anchor:swordHorizonT1": {
-    "dps": 52159.49,
-    "totalDamage": 3119137.25,
+    "dps": 54688.17,
+    "totalDamage": 3270352.86,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1404,7 +1404,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 1111371.8,
+        "expectedDamage": 1255877.03,
         "castCount": 0
       },
       {
@@ -1492,7 +1492,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 43,
-        "expectedDamage": 223679.65,
+        "expectedDamage": 230390.04,
         "castCount": 0
       },
       {
@@ -1517,11 +1517,11 @@
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "55de8324a024f46c5b015823f1501543cbd3fa9b7e3bf14f1007de2104ab67bb"
+    "digest": "60a735cf8fcfe559f2c41d9630d7ae267e48b31a3a53a202facb4d89e4c2758d"
   },
   "anchor:noSwordHorizon": {
-    "dps": 44172.44,
-    "totalDamage": 2641511.62,
+    "dps": 45555.78,
+    "totalDamage": 2724235.38,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1594,7 +1594,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 847461.74,
+        "expectedDamage": 930185.49,
         "castCount": 0
       },
       {
@@ -1707,11 +1707,11 @@
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "1ea5be0eef5413a0598b38d36a1908371f59f5d2b519703f3d69922eda3be3b4"
+    "digest": "39b473872d01f737630d76119adcda29fec09094fc682093fd4cd32ec292bc23"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 65178.22,
-    "totalDamage": 3897657.63,
+    "dps": 66187.4,
+    "totalDamage": 3958006.23,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1784,7 +1784,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1748943.36,
+        "expectedDamage": 1801411.66,
         "castCount": 0
       },
       {
@@ -1872,7 +1872,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 262676.73,
+        "expectedDamage": 270557.03,
         "castCount": 0
       },
       {
@@ -1897,11 +1897,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "a1e2d32e193844d58910827831de415d77e30aea2137ba98f7c2ad07a66ade7c"
+    "digest": "801085c824d8cc42fb2219a54a4ecba03a1a628ac834fe65db3b495f1f769639"
   },
   "anchor:noMoraleChant": {
-    "dps": 66589.71,
-    "totalDamage": 3982064.44,
+    "dps": 70660.79,
+    "totalDamage": 4225515.34,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1974,7 +1974,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1789757.28,
+        "expectedDamage": 2024434.01,
         "castCount": 0
       },
       {
@@ -2062,7 +2062,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 292472.46,
+        "expectedDamage": 301246.63,
         "castCount": 0
       },
       {
@@ -2079,11 +2079,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "14d84e663b057ab430c163c4b0b70d24dbb60ddc48104e7a95e909be8e9a9c04"
+    "digest": "52decfc8c8f200084119487e947cdfd9dae7d650c47bd7b04f775431bdd60429"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 34017.85,
-    "totalDamage": 2091531.09,
+    "dps": 36273.72,
+    "totalDamage": 2230229.48,
     "rotationDuration": 61.48,
     "warnings": [],
     "perSkill": [
@@ -2156,7 +2156,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 28,
-        "expectedDamage": 1018062.26,
+        "expectedDamage": 1151500.64,
         "castCount": 0
       },
       {
@@ -2260,7 +2260,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 175333.81,
+        "expectedDamage": 180593.83,
         "castCount": 0
       },
       {
@@ -2285,11 +2285,11 @@
       "buffWindows": 118,
       "casts": 80
     },
-    "digest": "9a465d0ce0ebd1bfa470aab1333ea8b77ed9ff5a59d517f8ad3e92ee0514c3c5"
+    "digest": "0474d20fc9913910bc2204662b9a6fb5d539540d9b77209c9daa01485fb90050"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 46338.47,
-    "totalDamage": 2771040.67,
+    "dps": 48445.93,
+    "totalDamage": 2897066.34,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2362,7 +2362,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 922125.42,
+        "expectedDamage": 1042531.1,
         "castCount": 0
       },
       {
@@ -2450,7 +2450,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 187332.74,
+        "expectedDamage": 192952.72,
         "castCount": 0
       },
       {
@@ -2483,11 +2483,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "5d6450f39adccab89de58e0de27e3007981a94a1b7e3cc057662f87813f50056"
+    "digest": "ecc8d819c6c487647abd1607615532b942cc3b278a00b47363a7f2159e706fec"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 45465.39,
-    "totalDamage": 2718830.41,
+    "dps": 47533.11,
+    "totalDamage": 2842480.08,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2560,7 +2560,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 904736.56,
+        "expectedDamage": 1022871.77,
         "castCount": 0
       },
       {
@@ -2648,7 +2648,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 183815.72,
+        "expectedDamage": 189330.2,
         "castCount": 0
       },
       {
@@ -2681,11 +2681,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "300889fc1b3d7fa8f23bf53e6952ae2daa191b77539b84f5060ea5121fe54e6b"
+    "digest": "945424ac3ef5182fe5dfba8e574c2aee3f114ad3d4a60c514709f81cc7ede9d9"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 45059.75,
-    "totalDamage": 2694573.15,
+    "dps": 47110.63,
+    "totalDamage": 2817215.67,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2758,7 +2758,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 897558.2,
+        "expectedDamage": 1014746.08,
         "castCount": 0
       },
       {
@@ -2846,7 +2846,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 181821.29,
+        "expectedDamage": 187275.93,
         "castCount": 0
       },
       {
@@ -2879,11 +2879,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "58a70ae72e4e6e88c7ffcc7dca77e3ebf6662ddc8a3c29cfa790f27cf2e36ffb"
+    "digest": "5f0b107b1017f8f8f4596c4b9f93226b14931b0f667a1685006e006191602fde"
   },
   "anchor:noSet": {
-    "dps": 66453.35,
-    "totalDamage": 3973910.41,
+    "dps": 70421.46,
+    "totalDamage": 4211203.01,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2956,7 +2956,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1750435.9,
+        "expectedDamage": 1979138.66,
         "castCount": 0
       },
       {
@@ -3044,7 +3044,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 286328.02,
+        "expectedDamage": 294917.86,
         "castCount": 0
       },
       {
@@ -3069,11 +3069,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "efe231c4fd9c6f9959baeb633958070e9dd4f6300abd0bbd48d778ee9ba01e53"
+    "digest": "922f2010a8f95e9b3c7bcf902b02ab74559fdfeaa71858268226a05cb5773021"
   },
   "anchor:set-Jadeware": {
-    "dps": 69710.51,
-    "totalDamage": 4168688.66,
+    "dps": 73913.58,
+    "totalDamage": 4420032.28,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3146,7 +3146,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1854616.78,
+        "expectedDamage": 2096895.89,
         "castCount": 0
       },
       {
@@ -3234,7 +3234,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 302150.59,
+        "expectedDamage": 311215.11,
         "castCount": 0
       },
       {
@@ -3259,11 +3259,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "1c2b228d9d1cdbb66af6bef2544bac0d8511db90d67e3b8918bcd18808a7af9d"
+    "digest": "e0cb16538aa50c150196913a08d6cf34af9ba828f6ec8c75e745c08cd9bebd5b"
   },
   "anchor:set-Mistwillow": {
-    "dps": 67041.06,
-    "totalDamage": 4009055.45,
+    "dps": 71045.53,
+    "totalDamage": 4248522.73,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3336,7 +3336,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1766135.76,
+        "expectedDamage": 1996905.44,
         "castCount": 0
       },
       {
@@ -3424,7 +3424,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 289919.69,
+        "expectedDamage": 298617.28,
         "castCount": 0
       },
       {
@@ -3449,11 +3449,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "853f196fcb867eda07b0b3a079b71dff59b7f0bff68fb1f532a918b7964a94f8"
+    "digest": "80a5c139e310ebe5c3fd7d5075bacb1c236fdb324046ff53e6b8e1c0bea166eb"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 67991.28,
-    "totalDamage": 4065878.41,
+    "dps": 72040.89,
+    "totalDamage": 4308045.19,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3526,7 +3526,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1785625.7,
+        "expectedDamage": 2018961.4,
         "castCount": 0
       },
       {
@@ -3614,7 +3614,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 294369.63,
+        "expectedDamage": 303200.72,
         "castCount": 0
       },
       {
@@ -3639,11 +3639,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "3186a083d268fc3c2927ab10f380806915b9f4b83341433c3a77a1a186499bfa"
+    "digest": "40a04bfe948f71d674114ac019f651d560cdacca1afec0197ff4f6d742bad35f"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66787.56,
-    "totalDamage": 3993895.86,
+    "dps": 70772.79,
+    "totalDamage": 4232212.94,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -3716,7 +3716,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1757831.94,
+        "expectedDamage": 1987508.39,
         "castCount": 0
       },
       {
@@ -3804,7 +3804,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 288020.8,
+        "expectedDamage": 296661.42,
         "castCount": 0
       },
       {
@@ -3829,7 +3829,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "8dd5d2d789ea70cb095ba657c66abb22af1f20ca8900496c5ea027f1f9d612aa"
+    "digest": "3e9d7622a36b25cd4405f4b5f96ed94328ee2c5d54f4777056d51b5f341c27b6"
   },
   "defaults:umbra": {
     "dps": 9513.67,

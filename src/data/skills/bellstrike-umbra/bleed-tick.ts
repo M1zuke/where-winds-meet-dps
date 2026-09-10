@@ -13,7 +13,12 @@ export const bleedTick = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.bleedTick,
-  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [
+    BUFF.bellstrikeUmbraBleedPen,
+    BUFF.bellstrikeUmbraBleedingDamage,
+    BUFF.bellstrikeUmbraBleedCoefficient,
+    BUFF.soulShaken,
+  ],
   castFrames: 0,
   triggerable: true,
   hits: [

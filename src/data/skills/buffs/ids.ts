@@ -6,6 +6,7 @@ export const BUFF = {
   battleAnthemChargedDamage: "battleAnthemChargedDamage",
   battleAnthemEnduranceBoost: "battleAnthemEnduranceBoost",
   belowSixtyEndurance: "belowSixtyEndurance",
+  bellstrikeUmbraBleedCoefficient: "bellstrikeUmbraBleedCoefficient",
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
   combo: "combo",

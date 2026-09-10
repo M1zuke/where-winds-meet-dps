@@ -5,6 +5,7 @@ import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
+import { bellstrikeUmbraBleedCoefficient } from "../../skills/bellstrike-umbra/buffs/bleedCoefficient"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
@@ -34,7 +35,11 @@ export const bellstrikeUmbra = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
-  classBuffDefs: [bellstrikeUmbraBleedPen, bellstrikeUmbraBleedingDamage],
+  classBuffDefs: [
+    bellstrikeUmbraBleedPen,
+    bellstrikeUmbraBleedingDamage,
+    bellstrikeUmbraBleedCoefficient,
+  ],
   gateBuffs: [],
   mechanics: [],
   skillBehaviors: [],

@@ -140,6 +140,7 @@ describe("Class Buffs column — class ownership and scope decide membership", (
       [
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
+        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.03",
       ].sort(),
     )
   })

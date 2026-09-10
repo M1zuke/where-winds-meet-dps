@@ -183,6 +183,7 @@ export const PROP = {
   abrasionImmune: "prop:abrasionImmune",
   consumesInnerPassion: "prop:consumesInnerPassion",
   consumesInnerPassionBurningHeart: "prop:consumesInnerPassionBurningHeart",
+  empoweredDotEffect: "prop:empoweredDotEffect",
   hasLowQiCritBoost: "prop:hasLowQiCritBoost",
   hasLowQiDmgBoost: "prop:hasLowQiDmgBoost",
   hasQiBreakDoubleDamage: "prop:hasQiBreakDoubleDamage",

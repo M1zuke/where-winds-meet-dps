@@ -149,7 +149,12 @@ export const bleedTick = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-03T00:00:00.000Z",
   tags: [ROLE.bleedTick],
-  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [
+    BUFF.bellstrikeUmbraBleedPen,
+    BUFF.bellstrikeUmbraBleedingDamage,
+    BUFF.bellstrikeUmbraBleedCoefficient,
+    BUFF.soulShaken,
+  ],
 })
 
 export const bitterSeasonTick = defineDebuff({

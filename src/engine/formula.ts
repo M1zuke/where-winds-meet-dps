@@ -442,7 +442,7 @@ export function computeSkillDamage(
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
-  const dotMultiplier = isPersistent ? (ctx.dotDamageMultiplier ?? 1) : 1
+  const dotMultiplier = ctx.dotDamageMultiplier ?? 1
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +

@@ -9,6 +9,7 @@ import {
 } from "../../src/migrations/customSkills"
 import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
 import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
+import { healBleedCoefficientReach } from "../../src/migrations/customSkills/V9__bleedCoefficientReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 
@@ -65,8 +66,8 @@ describe("every captured custom-skill store walks the whole chain", () => {
         hits: skill.hits.map(({ id, frame, triggers }) => ({ id, frame, triggers })),
       })
       ;(result.blob.skills as Skill[]).forEach((walked, index) => {
-        const claimed = healRiverFlowApplication(
-          healBleedRowDefaults(clone(fixture.blob.skills[index])),
+        const claimed = healBleedCoefficientReach(
+          healRiverFlowApplication(healBleedRowDefaults(clone(fixture.blob.skills[index]))),
         ) as Skill
         expect(strip(walked)).toEqual(strip(claimed))
       })

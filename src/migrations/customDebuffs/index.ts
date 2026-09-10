@@ -7,6 +7,7 @@ import type {
 import { V3__umbraBleedTick } from "./V3__umbraBleedTick"
 import { V4__umbraSmolderTick } from "./V4__umbraSmolderTick"
 import { V5__mysticArtRankRepair } from "./V5__mysticArtRankRepair"
+import { V6__bleedCoefficientReach } from "./V6__bleedCoefficientReach"
 
 export type {
   CustomDebuffMigration,
@@ -16,11 +17,13 @@ export type {
 export { migrateUmbraBleedDot } from "./V3__umbraBleedTick"
 export { migrateUmbraSmolderDot } from "./V4__umbraSmolderTick"
 export { healMysticDotRank } from "./V5__mysticArtRankRepair"
+export { healBleedCoefficientReceives } from "./V6__bleedCoefficientReach"
 
 export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V3__umbraBleedTick,
   V4__umbraSmolderTick,
   V5__mysticArtRankRepair,
+  V6__bleedCoefficientReach,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store
