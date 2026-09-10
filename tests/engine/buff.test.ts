@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
-import { makeBuff as makeBuffStore, type Buff } from "../../src/engine/buff"
+import { makeBuff as makeBuffStore, type Buff, type BuffStatEffect } from "../../src/engine/buff"
 import {
   saveCustomBuff,
   deleteCustomBuff,
@@ -17,6 +17,7 @@ import {
   applyBuffEffects,
   type StatKey,
 } from "../../src/engine/statRegistry"
+import { isGearWordId, statLine } from "../../src/data/stats/statLines"
 import type { Inputs } from "../../src/engine/types"
 
 const ATTACK_BLOCKS = ["phys", "bellstrike", "stonesplit", "silkbind", "bamboocut"] as const
@@ -44,6 +45,13 @@ describe("stat registry — every StatKey resolves to a real path", () => {
   it("no duplicate keys", () => {
     const keys = STAT_DEFS.map((d) => d.key)
     expect(new Set(keys).size).toBe(keys.length)
+  })
+
+  it("the retired target-exhaustion stat keeps its id but is no longer pickable", () => {
+    expect(STAT_DEF_BY_KEY["target.fatigueDamageTaken"]).toBeUndefined()
+    expect(STAT_DEFS.some((def) => (def.key as string) === "target.fatigueDamageTaken")).toBe(false)
+    expect(isGearWordId("targetFatigueDamageTaken")).toBe(false)
+    expect(statLine("targetFatigueDamageTaken")).toBeDefined()
   })
 })
 
@@ -172,6 +180,36 @@ describe("persistence — customBuffs CRUD (player/team-only, no DoT)", () => {
     const loaded = loadCustomBuffsForClass("bellstrikeUmbra").find((x) => x.name === "legacy")
     expect(loaded?.stackScaling).toBe("flat")
     expect(loaded?.maxStacks).toBeGreaterThanOrEqual(1)
+  })
+
+  it("a buff saved against the retired target-exhaustion stat survives load and deals no damage", () => {
+    const retiredEffects = [
+      { statKey: "target.fatigueDamageTaken", amount: 0.5 },
+    ] as unknown as BuffStatEffect[]
+    const buff = makeBuffStore("bellstrikeUmbra", {
+      name: "Retired Exhaustion Boost",
+      effects: retiredEffects,
+    })
+    saveCustomBuff(buff)
+    const loaded = loadCustomBuffsForClass("bellstrikeUmbra").find((b) => b.id === buff.id)
+    expect(loaded?.effects).toEqual(retiredEffects)
+
+    const { inputs, targetOverride } = applyBuffEffects(defaultInputs, loaded!.effects)
+    expect(inputs).toBe(defaultInputs)
+    expect(targetOverride).toEqual({})
+
+    const art = { name: "t", physMultiplier: 1, skillType: "weapon" } as Parameters<
+      typeof computeSkillDamage
+    >[0]
+    const baseline = computeSkillDamage(art, buildContext(defaultInputs), 1).expectedDamage
+    const withRetiredEffect = computeSkillDamage(
+      art,
+      buildContext(inputs, targetOverride),
+      1,
+    ).expectedDamage
+    expect(withRetiredEffect).toBe(baseline)
+
+    deleteCustomBuff(buff.id)
   })
 
   it("importCustomBuff coerces a target-scope import into player and drops target.* effects", () => {

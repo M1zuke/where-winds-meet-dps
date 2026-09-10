@@ -1,40 +1,16 @@
 {
   "anchor": {
-    "dps": 72920.88,
-    "totalDamage": 4360668.4,
+    "dps": 75496.33,
+    "totalDamage": 4514680.4,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 56496.51,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -54,14 +30,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -74,7 +42,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1922220.49,
+        "expectedDamage": 2174317.16,
         "castCount": 0
       },
       {
@@ -106,7 +74,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30021.08,
+        "expectedDamage": 28284.86,
         "castCount": 4
       },
       {
@@ -114,7 +82,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 119968.95,
+        "expectedDamage": 113030.32,
         "castCount": 4
       },
       {
@@ -122,16 +90,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -154,23 +114,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 315778.49,
+        "count": 56,
+        "expectedDamage": 290989.46,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 541703.41,
+        "count": 110,
+        "expectedDamage": 484325.1,
         "castCount": 0
       },
       {
@@ -183,48 +143,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d3af5259fa4a5faef01071e1c29edebc3a7c676058a51e3f363278d598ec285a"
+    "digest": "e65d5bbe3f7c6b8179dac6bdb56c61ede969a823e16b1378a06c4674bb769321"
   },
   "anchor:noAttunement": {
-    "dps": 66197.32,
-    "totalDamage": 3958599.67,
+    "dps": 68089.88,
+    "totalDamage": 4071774.61,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 56496.51,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -244,14 +180,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -264,7 +192,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1576883.09,
+        "expectedDamage": 1783689.22,
         "castCount": 0
       },
       {
@@ -296,7 +224,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30021.08,
+        "expectedDamage": 28284.86,
         "castCount": 4
       },
       {
@@ -304,7 +232,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 119968.95,
+        "expectedDamage": 113030.32,
         "castCount": 4
       },
       {
@@ -312,16 +240,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -344,23 +264,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 259047.16,
+        "count": 56,
+        "expectedDamage": 238711.61,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 541703.41,
+        "count": 110,
+        "expectedDamage": 484325.1,
         "castCount": 0
       },
       {
@@ -373,48 +293,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d1454cc406abb711ba9e7aa7ba271307305fb157b1694d37a1f4292758f7c347"
+    "digest": "9118485e50bb1b695b589814da9af8b0eb88602f8439f4140e95df2c6ba5c45d"
   },
   "anchor:dummyOff": {
-    "dps": 78046.09,
-    "totalDamage": 4667156.34,
+    "dps": 80829.23,
+    "totalDamage": 4833587.98,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 62097.8,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -434,14 +330,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -454,7 +342,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2049843.21,
+        "expectedDamage": 2318674.38,
         "castCount": 0
       },
       {
@@ -486,7 +374,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 32625.4,
+        "expectedDamage": 30889.18,
         "castCount": 4
       },
       {
@@ -494,7 +382,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 130376.91,
+        "expectedDamage": 123438.27,
         "castCount": 4
       },
       {
@@ -502,16 +390,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 42273,
+        "expectedDamage": 40023.29,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -534,23 +414,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 118980.11,
+        "expectedDamage": 113799.4,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 338799.69,
+        "count": 56,
+        "expectedDamage": 312799.73,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 579211.26,
+        "count": 110,
+        "expectedDamage": 518916.96,
         "castCount": 0
       },
       {
@@ -563,48 +443,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6bb581ccebedf5e0f6355666fe7d9b335b41a241d0493691f83a86b5bdb992f3"
+    "digest": "04cb142f2941d91db80ddad65381d6e236add08c57d8221225b6b7fe938f01c4"
   },
   "anchor:noQiBreak": {
-    "dps": 65830.84,
-    "totalDamage": 3936684.33,
+    "dps": 68385.81,
+    "totalDamage": 4089471.61,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 56496.51,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -624,14 +480,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -644,7 +492,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1906508.45,
+        "expectedDamage": 2156516.14,
         "castCount": 0
       },
       {
@@ -676,7 +524,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29376.83,
+        "expectedDamage": 27640.61,
         "castCount": 4
       },
       {
@@ -684,7 +532,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 117401.33,
+        "expectedDamage": 110462.7,
         "castCount": 4
       },
       {
@@ -692,16 +540,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38064.88,
+        "expectedDamage": 35815.16,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -724,23 +564,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 312138.22,
+        "count": 56,
+        "expectedDamage": 287717.73,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 535178.18,
+        "count": 110,
+        "expectedDamage": 478295.59,
         "castCount": 0
       },
       {
@@ -753,48 +593,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "73f89f210132f80122f8c2603727da8265301c7322a147b244a5717a02d7c018"
+    "digest": "5e8b44a79dd58f8effa53adf2cacb438c8f05b1c0ff106ba6086c69adf260dc4"
   },
   "anchor:healerBuff": {
-    "dps": 80164.82,
-    "totalDamage": 4793856.03,
+    "dps": 83024.01,
+    "totalDamage": 4964835.79,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 63964.89,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -814,14 +630,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -834,7 +642,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2097621.46,
+        "expectedDamage": 2372727.12,
         "castCount": 0
       },
       {
@@ -866,7 +674,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33708.26,
+        "expectedDamage": 31972.04,
         "castCount": 4
       },
       {
@@ -874,7 +682,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 134702.1,
+        "expectedDamage": 127763.46,
         "castCount": 4
       },
       {
@@ -882,16 +690,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 43675.71,
+        "expectedDamage": 41426,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -914,23 +714,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 122062.37,
+        "expectedDamage": 116819.01,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 347686.85,
+        "count": 56,
+        "expectedDamage": 321160.4,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 593888.95,
+        "count": 110,
+        "expectedDamage": 532457.42,
         "castCount": 0
       },
       {
@@ -943,48 +743,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7bbdccae4a3a8db1ea8c081f729b6f4f1cfe0ed2b96af9cdb83c5a150991201f"
+    "digest": "7f33bc48664af44fa5fcec95e1301c4a457675981392a3f0d3196b669c2cb94a"
   },
   "anchor:revelryScript": {
-    "dps": 83171.31,
-    "totalDamage": 4973644.29,
+    "dps": 86162.13,
+    "totalDamage": 5152495.56,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 67699.09,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1004,14 +780,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1024,7 +792,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2177465.92,
+        "expectedDamage": 2463031.59,
         "castCount": 0
       },
       {
@@ -1056,7 +824,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 35229.73,
+        "expectedDamage": 33493.51,
         "castCount": 4
       },
       {
@@ -1064,7 +832,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 140784.86,
+        "expectedDamage": 133846.22,
         "castCount": 4
       },
       {
@@ -1072,16 +840,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 45647.57,
+        "expectedDamage": 43397.86,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1104,23 +864,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 128226.89,
+        "expectedDamage": 122858.23,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 361820.89,
+        "count": 56,
+        "expectedDamage": 334610.01,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 616719.11,
+        "count": 110,
+        "expectedDamage": 553508.83,
         "castCount": 0
       },
       {
@@ -1133,48 +893,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "ea8ea1e43ba799934a94252a51d548bb41fa6ac8f698503e521707ec495ec85a"
+    "digest": "1df6ff5a4b390491d03df0966c3918370efff6b18446bc96796ff09d84c8b30c"
   },
   "anchor:breakExtension": {
-    "dps": 73902.2,
-    "totalDamage": 4419351.79,
+    "dps": 76541.51,
+    "totalDamage": 4577182.03,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 57948.18,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1194,14 +930,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1214,7 +942,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1953663.18,
+        "expectedDamage": 2209940.28,
         "castCount": 0
       },
       {
@@ -1246,7 +974,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30674.44,
+        "expectedDamage": 28938.22,
         "castCount": 4
       },
       {
@@ -1254,7 +982,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 121602.35,
+        "expectedDamage": 114663.72,
         "castCount": 4
       },
       {
@@ -1262,16 +990,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1294,23 +1014,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 320445.75,
+        "count": 56,
+        "expectedDamage": 295825.82,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 549542.91,
+        "count": 110,
+        "expectedDamage": 491633.3,
         "castCount": 0
       },
       {
@@ -1323,48 +1043,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5cf4239b911d0cb911f746b1a4c91f9934d63bc4cca53bab12c1698f3d8bc342"
+    "digest": "98fce76aa8172f0bfc63c953d915ae28d78bd08bd34d5510c864ebe0f583b906"
   },
   "anchor:swordHorizonT1": {
-    "dps": 52159.49,
-    "totalDamage": 3119137.25,
+    "dps": 53620.87,
+    "totalDamage": 3206527.94,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 54767.12,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1384,14 +1080,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1404,7 +1092,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 1111371.8,
+        "expectedDamage": 1255877.03,
         "castCount": 0
       },
       {
@@ -1436,7 +1124,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29097.05,
+        "expectedDamage": 27414.26,
         "castCount": 4
       },
       {
@@ -1444,7 +1132,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115954.58,
+        "expectedDamage": 109246.97,
         "castCount": 4
       },
       {
@@ -1452,16 +1140,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37593.71,
+        "expectedDamage": 35419.44,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1484,23 +1164,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 105629.05,
+        "expectedDamage": 100857.17,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 43,
-        "expectedDamage": 223679.65,
+        "count": 42,
+        "expectedDamage": 209698.17,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 61,
-        "expectedDamage": 264902.06,
+        "count": 58,
+        "expectedDamage": 237105.56,
         "castCount": 0
       },
       {
@@ -1513,48 +1193,24 @@
       }
     ],
     "counts": {
-      "timeline": 290,
+      "timeline": 286,
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "55de8324a024f46c5b015823f1501543cbd3fa9b7e3bf14f1007de2104ab67bb"
+    "digest": "8f6c9320b7275f479f27d0d4aac154c4bc3d5f7cd82076ea86c7fbe29927ff5e"
   },
   "anchor:noSwordHorizon": {
-    "dps": 44172.44,
-    "totalDamage": 2641511.62,
+    "dps": 44946.47,
+    "totalDamage": 2687798.69,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 54767.12,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1574,14 +1230,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1594,7 +1242,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 847461.74,
+        "expectedDamage": 930185.49,
         "castCount": 0
       },
       {
@@ -1626,7 +1274,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29097.05,
+        "expectedDamage": 27414.26,
         "castCount": 4
       },
       {
@@ -1634,7 +1282,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115954.58,
+        "expectedDamage": 109246.97,
         "castCount": 4
       },
       {
@@ -1642,16 +1290,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37593.71,
+        "expectedDamage": 35419.44,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1674,15 +1314,15 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 98614.08,
+        "expectedDamage": 94393.32,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 43,
-        "expectedDamage": 197040.77,
+        "count": 42,
+        "expectedDamage": 179853.81,
         "castCount": 0
       },
       {
@@ -1690,7 +1330,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 84840.35,
+        "expectedDamage": 80376.05,
         "castCount": 0
       },
       {
@@ -1703,48 +1343,24 @@
       }
     ],
     "counts": {
-      "timeline": 252,
+      "timeline": 251,
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "1ea5be0eef5413a0598b38d36a1908371f59f5d2b519703f3d69922eda3be3b4"
+    "digest": "5afcf708ea236602039d1c9b9355d4c83458111c5d3912da2fc8161ab3277a3a"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 65178.22,
-    "totalDamage": 3897657.63,
+    "dps": 65089.58,
+    "totalDamage": 3892356.71,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 52013.71,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1764,14 +1380,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1784,7 +1392,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1748943.36,
+        "expectedDamage": 1801411.66,
         "castCount": 0
       },
       {
@@ -1816,7 +1424,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27282.63,
+        "expectedDamage": 25690.98,
         "castCount": 4
       },
       {
@@ -1824,7 +1432,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109029.7,
+        "expectedDamage": 102668.61,
         "castCount": 4
       },
       {
@@ -1832,16 +1440,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35206.61,
+        "expectedDamage": 33152.62,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -1864,23 +1464,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 93378.47,
+        "expectedDamage": 91749.42,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 262676.73,
+        "count": 56,
+        "expectedDamage": 250329.04,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 449618.11,
+        "count": 110,
+        "expectedDamage": 415832.34,
         "castCount": 0
       },
       {
@@ -1893,48 +1493,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "a1e2d32e193844d58910827831de415d77e30aea2137ba98f7c2ad07a66ade7c"
+    "digest": "1c20575db18ebade9b7a37ed134084242fa23fd8e1f4b63a103de5b7362a1e0f"
   },
   "anchor:noMoraleChant": {
-    "dps": 66589.71,
-    "totalDamage": 3982064.44,
+    "dps": 68981.45,
+    "totalDamage": 4125090.75,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 52448.85,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -1954,14 +1530,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -1974,7 +1542,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1789757.28,
+        "expectedDamage": 2024434.01,
         "castCount": 0
       },
       {
@@ -2006,7 +1574,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27502.06,
+        "expectedDamage": 25852.01,
         "castCount": 4
       },
       {
@@ -2014,7 +1582,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109905.8,
+        "expectedDamage": 103311.46,
         "castCount": 4
       },
       {
@@ -2022,16 +1590,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35568.56,
+        "expectedDamage": 33434.48,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -2054,61 +1614,45 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 102454.95,
+        "expectedDamage": 97727.18,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 292472.46,
+        "count": 56,
+        "expectedDamage": 269391.32,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 501185.28,
+        "count": 110,
+        "expectedDamage": 447722.24,
         "castCount": 0
       }
     ],
     "counts": {
-      "timeline": 368,
+      "timeline": 359,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "14d84e663b057ab430c163c4b0b70d24dbb60ddc48104e7a95e909be8e9a9c04"
+    "digest": "b29b1777b4acbbf17a9216d0b2773ca1f4bb0b3f17c8e2ed36b51327ffabbcb3"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 34017.85,
-    "totalDamage": 2091531.09,
+    "dps": 35743.83,
+    "totalDamage": 2197649.77,
     "rotationDuration": 61.48,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "SpearHeavy",
         "breakdownName": "Drifting Thrust",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2312.59,
+        "expectedDamage": 9717.35,
         "castCount": 1
       },
       {
@@ -2136,14 +1680,6 @@
         "castCount": 3
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 20,
-        "expectedDamage": 0,
-        "castCount": 20
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -2156,7 +1692,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 28,
-        "expectedDamage": 1018062.26,
+        "expectedDamage": 1151500.64,
         "castCount": 0
       },
       {
@@ -2208,14 +1744,6 @@
         "castCount": 4
       },
       {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
@@ -2240,35 +1768,27 @@
         "castCount": 3
       },
       {
-        "name": "Flute of the Tides Cancel",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 10,
-        "expectedDamage": 150631.09,
+        "expectedDamage": 145488.3,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 175333.81,
+        "count": 56,
+        "expectedDamage": 161809.38,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 67,
-        "expectedDamage": 193052.44,
+        "count": 64,
+        "expectedDamage": 176995.22,
         "castCount": 0
       },
       {
@@ -2281,48 +1801,24 @@
       }
     ],
     "counts": {
-      "timeline": 330,
+      "timeline": 324,
       "buffWindows": 118,
       "casts": 80
     },
-    "digest": "9a465d0ce0ebd1bfa470aab1333ea8b77ed9ff5a59d517f8ad3e92ee0514c3c5"
+    "digest": "d692b2fbea1b4bea1476146643c7013a8aac82f737131a40763669aaca506b10"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 46338.47,
-    "totalDamage": 2771040.67,
+    "dps": 47647.79,
+    "totalDamage": 2849337.81,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 47424.39,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -2342,14 +1838,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -2362,7 +1850,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 922125.42,
+        "expectedDamage": 1042531.1,
         "castCount": 0
       },
       {
@@ -2414,14 +1902,6 @@
         "castCount": 4
       },
       {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
@@ -2442,23 +1922,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 71830.64,
+        "expectedDamage": 69775.57,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 187332.74,
+        "count": 56,
+        "expectedDamage": 175451.83,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 98,
-        "expectedDamage": 292795.09,
+        "count": 93,
+        "expectedDamage": 267715.76,
         "castCount": 0
       },
       {
@@ -2466,7 +1946,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 83901.68,
+        "expectedDamage": 80808.44,
         "castCount": 0
       },
       {
@@ -2479,48 +1959,24 @@
       }
     ],
     "counts": {
-      "timeline": 407,
+      "timeline": 399,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "5d6450f39adccab89de58e0de27e3007981a94a1b7e3cc057662f87813f50056"
+    "digest": "c1aef645fe5f48d99055f512b851d631cee035098b963128b1d73dc285a8bbc3"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 45465.39,
-    "totalDamage": 2718830.41,
+    "dps": 46750.25,
+    "totalDamage": 2795664.97,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 46561.93,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -2540,14 +1996,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -2560,7 +2008,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 904736.56,
+        "expectedDamage": 1022871.77,
         "castCount": 0
       },
       {
@@ -2612,14 +2060,6 @@
         "castCount": 4
       },
       {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
@@ -2640,23 +2080,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 70462.31,
+        "expectedDamage": 68447.14,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 183815.72,
+        "count": 56,
+        "expectedDamage": 172161.42,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 98,
-        "expectedDamage": 287222.14,
+        "count": 93,
+        "expectedDamage": 262624.65,
         "castCount": 0
       },
       {
@@ -2664,7 +2104,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 82321.69,
+        "expectedDamage": 79288.02,
         "castCount": 0
       },
       {
@@ -2677,48 +2117,24 @@
       }
     ],
     "counts": {
-      "timeline": 407,
+      "timeline": 399,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "300889fc1b3d7fa8f23bf53e6952ae2daa191b77539b84f5060ea5121fe54e6b"
+    "digest": "571f9cea0fa028581a3246e61f43d23dca7300f621772278aad39fb7a318db5a"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 45059.75,
-    "totalDamage": 2694573.15,
+    "dps": 46332.35,
+    "totalDamage": 2770674.75,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 46047.9,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -2738,14 +2154,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -2758,7 +2166,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 897558.2,
+        "expectedDamage": 1014746.08,
         "castCount": 0
       },
       {
@@ -2810,14 +2218,6 @@
         "castCount": 4
       },
       {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
@@ -2838,23 +2238,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 69707.72,
+        "expectedDamage": 67680.77,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 181821.29,
+        "count": 56,
+        "expectedDamage": 170184.06,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 98,
-        "expectedDamage": 284176.58,
+        "count": 93,
+        "expectedDamage": 259676.06,
         "castCount": 0
       },
       {
@@ -2862,7 +2262,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 77321.25,
+        "expectedDamage": 74399.67,
         "castCount": 0
       },
       {
@@ -2875,48 +2275,24 @@
       }
     ],
     "counts": {
-      "timeline": 407,
+      "timeline": 399,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "58a70ae72e4e6e88c7ffcc7dca77e3ebf6662ddc8a3c29cfa790f27cf2e36ffb"
+    "digest": "43859ad9b2316da96740fb5199564b5b252851e5bae18d1f16a5d0387c3a1ea9"
   },
   "anchor:noSet": {
-    "dps": 66453.35,
-    "totalDamage": 3973910.41,
+    "dps": 68785.9,
+    "totalDamage": 4113397.04,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 52342.03,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -2936,14 +2312,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -2956,7 +2324,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1750435.9,
+        "expectedDamage": 1979138.66,
         "castCount": 0
       },
       {
@@ -2988,7 +2356,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27591.65,
+        "expectedDamage": 25996.29,
         "castCount": 4
       },
       {
@@ -2996,7 +2364,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110364.92,
+        "expectedDamage": 103983.55,
         "castCount": 4
       },
       {
@@ -3004,16 +2372,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35396.75,
+        "expectedDamage": 33350.07,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3036,23 +2396,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 100254.19,
+        "expectedDamage": 95739.27,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 286328.02,
+        "count": 56,
+        "expectedDamage": 263838.57,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 492405.93,
+        "count": 110,
+        "expectedDamage": 440217.57,
         "castCount": 0
       },
       {
@@ -3065,48 +2425,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "efe231c4fd9c6f9959baeb633958070e9dd4f6300abd0bbd48d778ee9ba01e53"
+    "digest": "04d8bcfa20bc1b99df62ad7c3111080740b615864dd35ff87b95bda06706435a"
   },
   "anchor:set-Jadeware": {
-    "dps": 69710.51,
-    "totalDamage": 4168688.66,
+    "dps": 72164.92,
+    "totalDamage": 4315462.28,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 54734.52,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -3126,14 +2462,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -3146,7 +2474,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1854616.78,
+        "expectedDamage": 2096895.89,
         "castCount": 0
       },
       {
@@ -3178,7 +2506,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28772.19,
+        "expectedDamage": 27107.54,
         "castCount": 4
       },
       {
@@ -3186,7 +2514,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 114009.73,
+        "expectedDamage": 107414.86,
         "castCount": 4
       },
       {
@@ -3194,16 +2522,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35939.08,
+        "expectedDamage": 33861.03,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3226,23 +2546,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 105066.36,
+        "expectedDamage": 100181.26,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 302150.59,
+        "count": 56,
+        "expectedDamage": 277821.1,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 519620.87,
+        "count": 110,
+        "expectedDamage": 463667.55,
         "castCount": 0
       },
       {
@@ -3255,48 +2575,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "1c2b228d9d1cdbb66af6bef2544bac0d8511db90d67e3b8918bcd18808a7af9d"
+    "digest": "6a3b212018fb43e2c232450cce3706ea792c427d0f796271ac4be65422032a24"
   },
   "anchor:set-Mistwillow": {
-    "dps": 67041.06,
-    "totalDamage": 4009055.45,
+    "dps": 69399.64,
+    "totalDamage": 4150098.46,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 53005.74,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -3316,14 +2612,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -3336,7 +2624,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1766135.76,
+        "expectedDamage": 1996905.44,
         "castCount": 0
       },
       {
@@ -3368,7 +2656,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27934.8,
+        "expectedDamage": 26319.6,
         "castCount": 4
       },
       {
@@ -3376,7 +2664,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111737.53,
+        "expectedDamage": 105276.8,
         "castCount": 4
       },
       {
@@ -3384,16 +2672,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35870.11,
+        "expectedDamage": 33796.05,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3416,23 +2696,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 101489.71,
+        "expectedDamage": 96977.97,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 289919.69,
+        "count": 56,
+        "expectedDamage": 267351.13,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 498431.92,
+        "count": 110,
+        "expectedDamage": 445935.54,
         "castCount": 0
       },
       {
@@ -3445,48 +2725,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "853f196fcb867eda07b0b3a079b71dff59b7f0bff68fb1f532a918b7964a94f8"
+    "digest": "ca6e7481277282c8c3837938c75cf6f82faf33f6a6b9ab3e63f5b039eb869735"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 67991.28,
-    "totalDamage": 4065878.41,
+    "dps": 70374.83,
+    "totalDamage": 4208414.6,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
         "expectedDamage": 53909.08,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
         "castCount": 4
       },
       {
@@ -3506,14 +2762,6 @@
         "castCount": 4
       },
       {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
-      },
-      {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
@@ -3526,7 +2774,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1785625.7,
+        "expectedDamage": 2018961.4,
         "castCount": 0
       },
       {
@@ -3558,7 +2806,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28405.16,
+        "expectedDamage": 26762.76,
         "castCount": 4
       },
       {
@@ -3566,7 +2814,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 113618.97,
+        "expectedDamage": 107049.45,
         "castCount": 4
       },
       {
@@ -3574,16 +2822,8 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36458.16,
+        "expectedDamage": 34350.1,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
@@ -3606,23 +2846,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 103083.41,
+        "expectedDamage": 98533.98,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 294369.63,
+        "count": 56,
+        "expectedDamage": 271564.23,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 506148.05,
+        "count": 110,
+        "expectedDamage": 453023.34,
         "castCount": 0
       },
       {
@@ -3635,48 +2875,24 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "3186a083d268fc3c2927ab10f380806915b9f4b83341433c3a77a1a186499bfa"
+    "digest": "eb8f885f69ea913479fe110b57fd908bcf8db12b120fd8d2fb94903439ca0e86"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66787.56,
-    "totalDamage": 3993895.86,
+    "dps": 72540.75,
+    "totalDamage": 4337936.7,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52639.12,
-        "castCount": 4
-      },
-      {
-        "name": "Delay",
-        "breakdownName": "Delay",
-        "type": "weapon",
-        "count": 4,
-        "expectedDamage": 0,
+        "expectedDamage": 55001.94,
         "castCount": 4
       },
       {
@@ -3684,7 +2900,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34779.12,
+        "expectedDamage": 36518.07,
         "castCount": 1
       },
       {
@@ -3692,23 +2908,15 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96393.81,
+        "expectedDamage": 101213.5,
         "castCount": 4
-      },
-      {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 15,
-        "expectedDamage": 0,
-        "castCount": 15
       },
       {
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91721.35,
+        "expectedDamage": 96307.42,
         "castCount": 10
       },
       {
@@ -3716,7 +2924,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1757831.94,
+        "expectedDamage": 2086883.81,
         "castCount": 0
       },
       {
@@ -3724,7 +2932,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64383.9,
+        "expectedDamage": 67603.09,
         "castCount": 10
       },
       {
@@ -3732,7 +2940,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47195.42,
+        "expectedDamage": 49555.19,
         "castCount": 4
       },
       {
@@ -3740,7 +2948,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56566.51,
+        "expectedDamage": 59394.84,
         "castCount": 4
       },
       {
@@ -3748,7 +2956,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27745.07,
+        "expectedDamage": 27447.88,
         "castCount": 4
       },
       {
@@ -3756,7 +2964,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110978.61,
+        "expectedDamage": 109789.85,
         "castCount": 4
       },
       {
@@ -3764,23 +2972,15 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35620.18,
+        "expectedDamage": 35238.6,
         "castCount": 4
-      },
-      {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
       },
       {
         "name": "Sword R Charge - Follow Up 1-Hit[cancel]",
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3369.1,
+        "expectedDamage": 3537.56,
         "castCount": 1
       },
       {
@@ -3788,7 +2988,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 678373,
+        "expectedDamage": 712291.65,
         "castCount": 1
       },
       {
@@ -3796,23 +2996,23 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 100824.1,
+        "expectedDamage": 101130.73,
         "castCount": 0
       },
       {
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 59,
-        "expectedDamage": 288020.8,
+        "count": 56,
+        "expectedDamage": 278731.38,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 116,
-        "expectedDamage": 495204,
+        "count": 110,
+        "expectedDamage": 465041.36,
         "castCount": 0
       },
       {
@@ -3825,34 +3025,18 @@
       }
     ],
     "counts": {
-      "timeline": 374,
+      "timeline": 365,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "8dd5d2d789ea70cb095ba657c66abb22af1f20ca8900496c5ea027f1f9d612aa"
+    "digest": "15491767ef4426a763e308327bfb6214517c00569c28749dde7c44d7fea56b7f"
   },
   "defaults:umbra": {
-    "dps": 9513.67,
-    "totalDamage": 570661.45,
+    "dps": 9498.97,
+    "totalDamage": 569779.84,
     "rotationDuration": 59.98,
     "warnings": [],
     "perSkill": [
-      {
-        "name": "DrunkenPoet Prepull",
-        "breakdownName": "DrunkenPoet Prepull",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
-        "name": "Flute of the Tides Prepull",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
       {
         "name": "Sword Charge Stage 1, 4-Hit",
         "breakdownName": "Second Track Slash",
@@ -3876,14 +3060,6 @@
         "count": 15,
         "expectedDamage": 25060.33,
         "castCount": 3
-      },
-      {
-        "name": "Deflect Cancel",
-        "breakdownName": "Deflect Cancel",
-        "type": "weapon",
-        "count": 20,
-        "expectedDamage": 0,
-        "castCount": 20
       },
       {
         "name": "SwordSpecial 3-Hit",
@@ -3950,14 +3126,6 @@
         "castCount": 4
       },
       {
-        "name": "Ghostly Steps",
-        "breakdownName": "Ghostly Steps",
-        "type": "weapon",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
@@ -3982,14 +3150,6 @@
         "castCount": 3
       },
       {
-        "name": "Flute of the Tides Cancel",
-        "breakdownName": "Flute Chanting a Thousand Waves",
-        "type": "mystic",
-        "count": 1,
-        "expectedDamage": 0,
-        "castCount": 1
-      },
-      {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
@@ -4002,23 +3162,23 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 48,
-        "expectedDamage": 48922.12,
+        "expectedDamage": 46953.65,
         "castCount": 0
       },
       {
         "name": "Smolder (DoT)",
         "breakdownName": "Smolder",
         "type": "sustain",
-        "count": 7,
-        "expectedDamage": 7696.57,
+        "count": 8,
+        "expectedDamage": 8783.44,
         "castCount": 0
       }
     ],
     "counts": {
-      "timeline": 242,
+      "timeline": 243,
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "d2fa31b1e6d6492a7a76d87a82d8ea8ad4885309ffbb4323ae64577cf62dab6d"
+    "digest": "7c49cc038846f408d878e3e3f0e93efeb2252639da7b21a311c8ebf437fb0f4c"
   }
 }

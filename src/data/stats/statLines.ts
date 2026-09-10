@@ -409,14 +409,10 @@ export const STAT_LINES = [
     scope: "target",
     category: "Target",
   },
-  {
-    id: "targetFatigueDamageTaken",
-    label: "Target Exhaustion Boost",
-    unit: "percent",
-    enginePath: "target.fatigueDamageTaken",
-    scope: "target",
-    category: "Target",
-  },
+  // Retired: no engine path, so it is display-only and unpickable. Do not
+  // re-add one — nothing consumes it. Id/label stay for a profile that
+  // already stored this stat on a custom buff or debuff.
+  { id: "targetFatigueDamageTaken", label: "Target Exhaustion Boost", unit: "percent" },
   { id: "hp", label: "HP", unit: "raw", enginePath: "hp" },
   { id: "physDef", label: "Phys Defense", unit: "raw", enginePath: "physDef" },
   { id: "maxHp", label: "Max HP", unit: "raw" },

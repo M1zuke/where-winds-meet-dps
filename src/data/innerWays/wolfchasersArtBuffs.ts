@@ -19,19 +19,21 @@ export function wineGuBuffDef() {
     name: "Wine Gu",
     requires: { param: PARAM.wolfchasersArt, minTier: 6 },
     affectsAll: true,
+    // In-game behaviour as of 2026-09-10: this one raises the damage of an
+    // attack, and leaves a damage-over-time tick alone.
+    reachesDotTicks: false,
     duration: 15,
     buffAppliesOnCastEnd: true,
     effects: [stat("allDamageBoost", 0.05)],
   })
 }
 
-// In-game talent text as of 2026-09-09: from rank 3, Wolfchaser's Art raises
-// the Martial Art skill family's damage by 10%. The in-game text names only
-// Sword Martial Q; in practice it reaches every Sword/Spear Martial Q hit.
+// In-game talent text as of 2026-09-10: from rank 3, Wolfchaser's Art raises
+// Sober Sorrow's damage by 10%.
 export function wolfchasersArtMartialDamageBuffDef() {
   return defineBuff({
     id: BUFF.wolfchasersArtMartialDamage,
-    name: "Martial Art Damage",
+    name: "Sober Sorrow Damage",
     requires: { param: PARAM.wolfchasersArt, minTier: 3 },
     alwaysActive: true,
     duration: 9999,

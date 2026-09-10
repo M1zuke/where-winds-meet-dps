@@ -9,7 +9,12 @@
     "physPenResistance": 0,
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
-    "fatigueDamageTaken": 0.1
+    "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0
   },
   {
     "breakthrough": 14,
@@ -22,6 +27,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -66,6 +76,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -110,6 +125,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -154,6 +174,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "release": "2026-09-03T03:30:00Z",
     "attributes": [
       {
@@ -199,6 +224,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -243,6 +273,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -287,6 +322,11 @@
     "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -331,6 +371,11 @@
     "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,

@@ -1,10 +1,11 @@
-// Ticks on ONE unbroken 1-second grid anchored at the first application, not a
-// fresh grid per re-application — docs/CALCULATION.md § "Mechanic rules". Locks
-// against a per-window phase reset.
+// Ticks on ONE unbroken cadence carried from the first application, not a fresh
+// one per re-application — docs/CALCULATION.md § "Mechanic rules". Locks against
+// a per-window phase reset.
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
-import { dotRow } from "../builtins"
+import { effectiveTickIntervalFrames } from "../../src/engine/dot"
+import { builtinDebuff, dotRow } from "../builtins"
 import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
@@ -21,10 +22,13 @@ describe("bleed-tick cadence — bellstrikeUmbra default rotation", () => {
     expect(bleedTicks.length).toBeGreaterThanOrEqual(0.75 * Math.floor(result.rotationDuration))
   })
 
-  it("ticks on a uniform 60-frame grid within each continuously-maintained episode", () => {
+  it("holds one cadence across a continuously-maintained episode, never restarting its phase", () => {
+    const interval = effectiveTickIntervalFrames(builtinDebuff(CLASS, DEBUFF.bleedTick).dot!)
     for (let i = 1; i < bleedTicks.length; i++) {
+      // A tick the stack count skips leaves a gap of several intervals; what
+      // must never happen is a gap that is not a whole number of them.
       const gap = bleedTicks[i] - bleedTicks[i - 1]
-      expect(gap % 60).toBe(0)
+      expect(Math.abs(gap - Math.round(gap / interval) * interval)).toBeLessThanOrEqual(1)
     }
   })
 

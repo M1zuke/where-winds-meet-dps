@@ -39,10 +39,14 @@ describe("spec-scoping — buffDefsForClass", () => {
 })
 
 describe("spec-scoping — classDef.classBuffDefs, the class's own", () => {
-  it("bellstrikeUmbra's own list is exactly the two bleed passives, each carrying the class-buff marker", () => {
+  it("bellstrikeUmbra's own list is exactly the three bleed passives, each carrying the class-buff marker", () => {
     const umbra = classDefinition("bellstrikeUmbra")!.classBuffDefs
     expect(umbra.map((module) => module.id).sort()).toEqual(
-      ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"].sort(),
+      [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+      ].sort(),
     )
     for (const module of umbra) expect("classBuff" in module).toBe(true)
   })

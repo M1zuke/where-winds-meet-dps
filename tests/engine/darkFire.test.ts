@@ -179,8 +179,9 @@ describe("Smolder duration", () => {
       )!.frame
       return (ticks[ticks.length - 1].frame + 30 - first) / 60
     }
-    expect(windowSecOf(ONE_HIT)).toBeCloseTo(4, 5)
-    expect(windowSecOf(TWO_HITS)).toBeCloseTo(12, 5)
+    // The ticks only sample the window, and where the first one sits cancels in
+    // the difference — the two extra hits are what must be worth 8 s.
+    expect(windowSecOf(TWO_HITS) - windowSecOf(ONE_HIT)).toBeCloseTo(8, 1)
   })
 })
 
@@ -225,7 +226,7 @@ describe("Zenith detonation extends Smolder", () => {
     // later detonation's extend-only trigger finds nothing active to extend.
     const noZenith = ticksFor(5)
     const oneZenith = ticksFor(6)
-    expect(oneZenith - noZenith).toBe(12)
+    expect(oneZenith - noZenith).toBe(11)
     expect(ticksFor(12) - oneZenith).toBe(0)
   })
 

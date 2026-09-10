@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 import {
+  AFFINITY_DAMAGE_MULTIPLIER_MAX,
+  AFFINITY_DAMAGE_MULTIPLIER_MIN,
   computeSkillDamage,
+  CRIT_DAMAGE_MULTIPLIER_MAX,
+  CRIT_DAMAGE_MULTIPLIER_MIN,
   FOOD_MAX_PHYS_BONUS,
   FOOD_MIN_PHYS_BONUS,
 } from "../../src/engine/formula"
@@ -97,7 +101,6 @@ const baseCtx: FormulaContext = {
   generalDamageBoost: 0,
   chargeBonus: 0,
   effectiveDefense: 307,
-  fatigueDamageTaken: 0,
   hasSixHenZhi: false,
   food: false,
   set: null,
@@ -171,7 +174,7 @@ describe("graze (abrasion) rate — (1 − precision)(1 − affinity)", () => {
   })
 })
 
-// Deliberately INVERTS PDF §7 (overflow ÷200, deficit ÷100)
+// Corrects PDF §7 (overflow ÷200, deficit ÷100)
 describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflow", () => {
   it("with resistance omitted (0), AH > 0", () => {
     const cells = computeSkillDamage(art, baseCtx, 1).cells
@@ -290,26 +293,45 @@ describe("the attribute flat term takes the martial art's multiplier alongside i
   })
 })
 
-// PDF §11. `art.extraAffinityRate` is the one raw rate source the formula
-// receives, so it is the vehicle for the shared divide-before-cap rule that
-// both rate cells implement.
-describe("rate resistance on a raw rate source (PDF §11)", () => {
-  it("a raw affinity-rate source is divided by (1 + r) before the 40 % cap", () => {
-    const rawRate = { ...art, extraAffinityRate: 0.1 }
-    const noRes = computeSkillDamage(rawRate, baseCtx, 1).cells
-    const withRes = computeSkillDamage(rawRate, { ...baseCtx, rateResistance: 0.3 }, 1).cells
-    expect(noRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
-    expect(withRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1 / 1.3, 9)
+// PDF §11
+describe("a skill's own rate bonus is added undivided, inside the cap", () => {
+  it("a skill's crit-rate bonus cannot push the capped part above the cap", () => {
+    const cells = computeSkillDamage(MODAO_CHARGE, { ...baseCtx, critPanel: 0.7 }, 1).cells
+    expect(cells.V).toBeCloseTo(0.8 + baseCtx.directCritPanel, 9)
   })
 
-  it("Thundercry (Modao) charged bonus crit is FLAT: unresisted, added after the cap", () => {
-    const modao = MODAO_CHARGE
+  it("a skill's affinity-rate bonus is added undivided onto the already-resisted panel rate", () => {
+    const rawRate = { ...art, extraAffinityRate: 0.1 }
+    const cells = computeSkillDamage(rawRate, baseCtx, 1).cells
+    expect(cells.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
+  })
+
+  it("the direct crit rate still sits outside the cap", () => {
     const cells = computeSkillDamage(
-      modao,
-      { ...baseCtx, critPanel: 0.7, rateResistance: 0.3 },
+      art,
+      { ...baseCtx, critPanel: 1, directCritPanel: 0.05 },
       1,
     ).cells
-    expect(cells.V).toBeCloseTo(0.7 + 0.24, 9)
+    expect(cells.V).toBeCloseTo(0.8 + 0.05, 9)
+  })
+
+  it("the direct affinity rate still sits outside the cap", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, affinityPanel: 1, directAffinityPanel: 0.05 },
+      1,
+    ).cells
+    expect(cells.W).toBeCloseTo(0.4 + 0.05, 9)
+  })
+
+  it("a panel rate driven negative by resistance cannot go below zero", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, critPanel: -0.5, affinityPanel: -0.5 },
+      1,
+    ).cells
+    expect(cells.V).toBeCloseTo(baseCtx.directCritPanel, 9)
+    expect(cells.W).toBeCloseTo(baseCtx.directAffinityPanel, 9)
   })
 })
 
@@ -335,6 +357,38 @@ describe("keeps the matching-path multiplier on a sustain-tagged burst row", () 
     expect(atDefault.cells.AT).toBeCloseTo(100, 9)
     expect(demoted.cells.AT).toBeCloseTo(100, 9)
     expect(atDefault.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
+  })
+})
+
+describe("crit- and affinity-damage multipliers are clamped", () => {
+  it("caps the crit multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: 5 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the crit multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: -2 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves a crit multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.X).toBeCloseTo(baseCtx.critDmgBoostPanel, 9)
+  })
+
+  it("caps the affinity multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: 5 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the affinity multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: -2 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves an affinity multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.Y).toBeCloseTo(baseCtx.affinityDmgBoostPanel, 9)
   })
 })
 

@@ -293,7 +293,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 export interface TargetOverride {
   defenseDelta?: number
   generalDamageTakenDelta?: number
-  fatigueDamageTakenDelta?: number
 }
 
 export function buildContext(
@@ -309,8 +308,6 @@ export function buildContext(
     defense: baseTarget.defense + (targetOverride?.defenseDelta ?? 0),
     generalDamageTaken:
       baseTarget.generalDamageTaken + (targetOverride?.generalDamageTakenDelta ?? 0),
-    fatigueDamageTaken:
-      baseTarget.fatigueDamageTaken + (targetOverride?.fatigueDamageTakenDelta ?? 0),
   }
   const eff = effectiveRates(inputs)
 
@@ -322,7 +319,11 @@ export function buildContext(
   const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
   const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
-  const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
+  const targetDamageReduction = inputs.dummyMode ? 0 : target.damageReduction
+  const targetPhysDamageBoostReduction = inputs.dummyMode ? 0 : target.physDamageBoostReduction
+  const targetAttrDamageBoostReduction = inputs.dummyMode ? 0 : target.attrDamageBoostReduction
+  const targetCritDamageReduction = inputs.dummyMode ? 0 : target.critDamageReduction
+  const targetAffinityDamageReduction = inputs.dummyMode ? 0 : target.affinityDamageReduction
   const effectiveBossBoost = inputs.bossBoost
 
   const generalDamageBoost =
@@ -391,7 +392,6 @@ export function buildContext(
     allDamageBoost: inputs.allDamageBoost ?? 0,
     chargeBonus,
     effectiveDefense,
-    fatigueDamageTaken: targetFatigueDamageTaken,
     hasSixHenZhi: henZhiActive,
     food: inputs.food,
     set: inputs.set,
@@ -407,7 +407,11 @@ export function buildContext(
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
-    rateResistance: eff.resistance,
+    damageReduction: targetDamageReduction,
+    physDamageBoostReduction: targetPhysDamageBoostReduction,
+    attrDamageBoostReduction: targetAttrDamageBoostReduction,
+    critDamageReduction: targetCritDamageReduction,
+    affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus,
     dotDamageMultiplier,
     attributeFlatMultiplier: school.attributeMultiplier,

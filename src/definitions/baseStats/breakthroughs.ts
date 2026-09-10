@@ -20,6 +20,11 @@ export interface BreakthroughTier {
   attrPenResistance: number
   generalDamageTaken: number
   fatigueDamageTaken: number
+  damageReduction: number
+  physDamageBoostReduction: number
+  attrDamageBoostReduction: number
+  critDamageReduction: number
+  affinityDamageReduction: number
   attributes?: BreakthroughAttribute[]
   // In-game unlock instant, UTC. A tier without one is already live.
   release?: string

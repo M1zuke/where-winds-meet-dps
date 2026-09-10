@@ -9,6 +9,11 @@ import {
 } from "../../src/migrations/customSkills"
 import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
 import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
+import { healBleedCoefficientReach } from "../../src/migrations/customSkills/V9__bleedCoefficientReach"
+import { healWolfchasersArtSwordOverreach } from "../../src/migrations/customSkills/V10__wolfchasersArtSwordOverreach"
+import { healSpearMistwillowReach } from "../../src/migrations/customSkills/V11__spearMistwillowReach"
+import { healDragonHeadLowHpReach } from "../../src/migrations/customSkills/V12__dragonHeadLowHpReach"
+import { healSpearHeavyChargedCoefficients } from "../../src/migrations/customSkills/V13__spearHeavyChargedCoefficients"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 
@@ -65,8 +70,16 @@ describe("every captured custom-skill store walks the whole chain", () => {
         hits: skill.hits.map(({ id, frame, triggers }) => ({ id, frame, triggers })),
       })
       ;(result.blob.skills as Skill[]).forEach((walked, index) => {
-        const claimed = healRiverFlowApplication(
-          healBleedRowDefaults(clone(fixture.blob.skills[index])),
+        const claimed = healSpearHeavyChargedCoefficients(
+          healDragonHeadLowHpReach(
+            healSpearMistwillowReach(
+              healWolfchasersArtSwordOverreach(
+                healBleedCoefficientReach(
+                  healRiverFlowApplication(healBleedRowDefaults(clone(fixture.blob.skills[index]))),
+                ),
+              ),
+            ),
+          ),
         ) as Skill
         expect(strip(walked)).toEqual(strip(claimed))
       })

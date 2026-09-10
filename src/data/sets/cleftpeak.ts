@@ -3,9 +3,9 @@ import { SET_ID } from "./ids"
 
 // 2-piece MIN_W_ATK, gear-level ladder (in-game, 2026-09-07).
 //
-// The 4-piece is the two multiplicative Stonesplit-Strength class buffs
-// `cleftpeakStacks`/`cleftpeakDeflect`, not a `formulaBonus` here: it ramps
-// with stacks and only its max-stack half is scoped to specific skills.
+// The 4-piece is the two multiplicative buffs `cleftpeakStacks` (global,
+// reaches every damage row) and `cleftpeakDeflect` (Stonesplit Strength's
+// own, scoped to specific skills), not a `formulaBonus` here.
 export const cleftpeak = defineSet({
   id: SET_ID.cleftpeak,
   name: "Cleftpeak",

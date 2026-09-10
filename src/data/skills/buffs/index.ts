@@ -7,6 +7,7 @@ import { healerBuff } from "./healerBuff"
 import { revelryScript } from "./revelryScript"
 import { fluteBoost } from "./fluteBoost"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
+import { cleftpeakStacks } from "./cleftpeakStacks"
 import { jadeware } from "./jadeware"
 import { mirage } from "./mirage"
 import { mirageBonus } from "./mirageBonus"
@@ -41,6 +42,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   mistwillowBuff,
   mistwillowHeavyBuff,
   mistwillowLightBuff,
+  cleftpeakStacks,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]
