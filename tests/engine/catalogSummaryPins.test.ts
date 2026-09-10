@@ -102,7 +102,7 @@ describe("catalog summary pins — soulShaken", () => {
 describe("catalog summary pins — surgingWaves", () => {
   it("Applies row on Dragon Head - Plus reads the pre-conversion per-stack text", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, UNIVERSAL_SKILL.dragonHeadPlus), CLASS)
-    expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.3% all/stack")
+    expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.25% all/stack")
   })
 })
 

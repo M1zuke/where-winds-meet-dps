@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 76503.18,
-    "totalDamage": 4574890.09,
+    "dps": 75496.33,
+    "totalDamage": 4514680.4,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -74,7 +74,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30021.08,
+        "expectedDamage": 28284.86,
         "castCount": 4
       },
       {
@@ -82,7 +82,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 119968.95,
+        "expectedDamage": 113030.32,
         "castCount": 4
       },
       {
@@ -90,7 +90,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
       },
       {
@@ -114,7 +114,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
@@ -122,7 +122,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 307786.71,
+        "expectedDamage": 290989.46,
         "castCount": 0
       },
       {
@@ -130,7 +130,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 511820.22,
+        "expectedDamage": 484325.1,
         "castCount": 0
       },
       {
@@ -147,11 +147,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "e78ba52acf6f8e2f2358325ad86fb06cee7d629416a5041f869a91de2e6a6d90"
+    "digest": "e65d5bbe3f7c6b8179dac6bdb56c61ede969a823e16b1378a06c4674bb769321"
   },
   "anchor:noAttunement": {
-    "dps": 69046.26,
-    "totalDamage": 4128966.59,
+    "dps": 68089.88,
+    "totalDamage": 4071774.61,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -224,7 +224,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30021.08,
+        "expectedDamage": 28284.86,
         "castCount": 4
       },
       {
@@ -232,7 +232,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 119968.95,
+        "expectedDamage": 113030.32,
         "castCount": 4
       },
       {
@@ -240,7 +240,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
       },
       {
@@ -264,7 +264,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
@@ -272,7 +272,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 252491.15,
+        "expectedDamage": 238711.61,
         "castCount": 0
       },
       {
@@ -280,7 +280,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 511820.22,
+        "expectedDamage": 484325.1,
         "castCount": 0
       },
       {
@@ -297,11 +297,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "e1f8972570b5617f0b8a2f73a0e7e4feaa270f3b65657fdef32c9cf1b3d22dc2"
+    "digest": "9118485e50bb1b695b589814da9af8b0eb88602f8439f4140e95df2c6ba5c45d"
   },
   "anchor:dummyOff": {
-    "dps": 81864.03,
-    "totalDamage": 4895469.06,
+    "dps": 80829.23,
+    "totalDamage": 4833587.98,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -374,7 +374,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 32625.4,
+        "expectedDamage": 30889.18,
         "castCount": 4
       },
       {
@@ -382,7 +382,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 130376.91,
+        "expectedDamage": 123438.27,
         "castCount": 4
       },
       {
@@ -390,7 +390,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 42273,
+        "expectedDamage": 40023.29,
         "castCount": 4
       },
       {
@@ -414,7 +414,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 118980.11,
+        "expectedDamage": 113799.4,
         "castCount": 0
       },
       {
@@ -422,7 +422,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 330170.31,
+        "expectedDamage": 312799.73,
         "castCount": 0
       },
       {
@@ -430,7 +430,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 547322.18,
+        "expectedDamage": 518916.96,
         "castCount": 0
       },
       {
@@ -447,11 +447,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "6b253a34d931df88ce64232c58d58f3c4b65b4bbfd755a21abd44e37cb33d685"
+    "digest": "04cb142f2941d91db80ddad65381d6e236add08c57d8221225b6b7fe938f01c4"
   },
   "anchor:noQiBreak": {
-    "dps": 69388.3,
-    "totalDamage": 4149420.56,
+    "dps": 68385.81,
+    "totalDamage": 4089471.61,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -524,7 +524,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29376.83,
+        "expectedDamage": 27640.61,
         "castCount": 4
       },
       {
@@ -532,7 +532,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 117401.33,
+        "expectedDamage": 110462.7,
         "castCount": 4
       },
       {
@@ -540,7 +540,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38064.88,
+        "expectedDamage": 35815.16,
         "castCount": 4
       },
       {
@@ -564,7 +564,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
@@ -572,7 +572,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 304422.2,
+        "expectedDamage": 287717.73,
         "castCount": 0
       },
       {
@@ -580,7 +580,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 505622.74,
+        "expectedDamage": 478295.59,
         "castCount": 0
       },
       {
@@ -597,11 +597,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "dc38e0727f8d7255b99b3f4435a491d532248ab663edf05bee7c2d1bdcb34d7a"
+    "digest": "5e8b44a79dd58f8effa53adf2cacb438c8f05b1c0ff106ba6086c69adf260dc4"
   },
   "anchor:healerBuff": {
-    "dps": 84069.58,
-    "totalDamage": 5027360.9,
+    "dps": 83024.01,
+    "totalDamage": 4964835.79,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -674,7 +674,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33708.26,
+        "expectedDamage": 31972.04,
         "castCount": 4
       },
       {
@@ -682,7 +682,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 134702.1,
+        "expectedDamage": 127763.46,
         "castCount": 4
       },
       {
@@ -690,7 +690,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 43675.71,
+        "expectedDamage": 41426,
         "castCount": 4
       },
       {
@@ -714,7 +714,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 122062.37,
+        "expectedDamage": 116819.01,
         "castCount": 0
       },
       {
@@ -722,7 +722,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 338753.01,
+        "expectedDamage": 321160.4,
         "castCount": 0
       },
       {
@@ -730,7 +730,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 561222,
+        "expectedDamage": 532457.42,
         "castCount": 0
       },
       {
@@ -747,11 +747,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "3081118783d6f132cf88747b929372a8e023682a709bd6c6393d07e51e9516f3"
+    "digest": "7f33bc48664af44fa5fcec95e1301c4a457675981392a3f0d3196b669c2cb94a"
   },
   "anchor:revelryScript": {
-    "dps": 87224.88,
-    "totalDamage": 5216048.02,
+    "dps": 86162.13,
+    "totalDamage": 5152495.56,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -824,7 +824,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 35229.73,
+        "expectedDamage": 33493.51,
         "castCount": 4
       },
       {
@@ -832,7 +832,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 140784.86,
+        "expectedDamage": 133846.22,
         "castCount": 4
       },
       {
@@ -840,7 +840,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 45647.57,
+        "expectedDamage": 43397.86,
         "castCount": 4
       },
       {
@@ -864,7 +864,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 128226.89,
+        "expectedDamage": 122858.23,
         "castCount": 0
       },
       {
@@ -872,7 +872,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 352553.9,
+        "expectedDamage": 334610.01,
         "castCount": 0
       },
       {
@@ -880,7 +880,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 582824.15,
+        "expectedDamage": 553508.83,
         "castCount": 0
       },
       {
@@ -897,11 +897,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "999848d646a25cf1f67ed751588e961d1d721f6f1b69a04611439a6e77e06b5a"
+    "digest": "1df6ff5a4b390491d03df0966c3918370efff6b18446bc96796ff09d84c8b30c"
   },
   "anchor:breakExtension": {
-    "dps": 77554.05,
-    "totalDamage": 4637732.45,
+    "dps": 76541.51,
+    "totalDamage": 4577182.03,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -974,7 +974,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 30674.44,
+        "expectedDamage": 28938.22,
         "castCount": 4
       },
       {
@@ -982,7 +982,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 121602.35,
+        "expectedDamage": 114663.72,
         "castCount": 4
       },
       {
@@ -990,7 +990,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38898.43,
+        "expectedDamage": 36648.72,
         "castCount": 4
       },
       {
@@ -1014,7 +1014,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 109733.33,
+        "expectedDamage": 104740.57,
         "castCount": 0
       },
       {
@@ -1022,7 +1022,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 312760.23,
+        "expectedDamage": 295825.82,
         "castCount": 0
       },
       {
@@ -1030,7 +1030,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 519331.98,
+        "expectedDamage": 491633.3,
         "castCount": 0
       },
       {
@@ -1047,11 +1047,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "18132f8632f37316636d951d93a39207f0661da5b175d529648f24e0459df400"
+    "digest": "98fce76aa8172f0bfc63c953d915ae28d78bd08bd34d5510c864ebe0f583b906"
   },
   "anchor:swordHorizonT1": {
-    "dps": 54294.52,
-    "totalDamage": 3246812.13,
+    "dps": 53620.87,
+    "totalDamage": 3206527.94,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1124,7 +1124,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29097.05,
+        "expectedDamage": 27414.26,
         "castCount": 4
       },
       {
@@ -1132,7 +1132,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115954.58,
+        "expectedDamage": 109246.97,
         "castCount": 4
       },
       {
@@ -1140,7 +1140,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37593.71,
+        "expectedDamage": 35419.44,
         "castCount": 4
       },
       {
@@ -1164,7 +1164,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 105629.05,
+        "expectedDamage": 100857.17,
         "castCount": 0
       },
       {
@@ -1172,7 +1172,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 221594.78,
+        "expectedDamage": 209698.17,
         "castCount": 0
       },
       {
@@ -1180,7 +1180,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 250156.6,
+        "expectedDamage": 237105.56,
         "castCount": 0
       },
       {
@@ -1197,11 +1197,11 @@
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "1d0342ae2e8b23e1307f7db7bd746e72335ed07444708a6b7699d1bc06984fa5"
+    "digest": "8f6c9320b7275f479f27d0d4aac154c4bc3d5f7cd82076ea86c7fbe29927ff5e"
   },
   "anchor:noSwordHorizon": {
-    "dps": 45414.13,
-    "totalDamage": 2715765.14,
+    "dps": 44946.47,
+    "totalDamage": 2687798.69,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1274,7 +1274,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29097.05,
+        "expectedDamage": 27414.26,
         "castCount": 4
       },
       {
@@ -1282,7 +1282,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 115954.58,
+        "expectedDamage": 109246.97,
         "castCount": 4
       },
       {
@@ -1290,7 +1290,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 37593.71,
+        "expectedDamage": 35419.44,
         "castCount": 4
       },
       {
@@ -1314,7 +1314,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 98614.08,
+        "expectedDamage": 94393.32,
         "castCount": 0
       },
       {
@@ -1322,7 +1322,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 189516.35,
+        "expectedDamage": 179853.81,
         "castCount": 0
       },
       {
@@ -1330,7 +1330,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 83894.53,
+        "expectedDamage": 80376.05,
         "castCount": 0
       },
       {
@@ -1347,11 +1347,11 @@
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "b07d75ceff7fa96aacebfd681d92a008a84b5f339ee0ba870668f91a91792319"
+    "digest": "5afcf708ea236602039d1c9b9355d4c83458111c5d3912da2fc8161ab3277a3a"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 65535.94,
-    "totalDamage": 3919049.34,
+    "dps": 65089.58,
+    "totalDamage": 3892356.71,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1424,7 +1424,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27282.63,
+        "expectedDamage": 25690.98,
         "castCount": 4
       },
       {
@@ -1432,7 +1432,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109029.7,
+        "expectedDamage": 102668.61,
         "castCount": 4
       },
       {
@@ -1440,7 +1440,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35206.61,
+        "expectedDamage": 33152.62,
         "castCount": 4
       },
       {
@@ -1464,7 +1464,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 93378.47,
+        "expectedDamage": 91749.42,
         "castCount": 0
       },
       {
@@ -1472,7 +1472,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 256067.55,
+        "expectedDamage": 250329.04,
         "castCount": 0
       },
       {
@@ -1480,7 +1480,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 425150.69,
+        "expectedDamage": 415832.34,
         "castCount": 0
       },
       {
@@ -1497,11 +1497,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7f7e0c6cd1311bf2f4ff3d50613249b8d74bb26033e1904f93afe7a1f388b82a"
+    "digest": "1c20575db18ebade9b7a37ed134084242fa23fd8e1f4b63a103de5b7362a1e0f"
   },
   "anchor:noMoraleChant": {
-    "dps": 69932.62,
-    "totalDamage": 4181970.81,
+    "dps": 68981.45,
+    "totalDamage": 4125090.75,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1574,7 +1574,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27502.06,
+        "expectedDamage": 25852.01,
         "castCount": 4
       },
       {
@@ -1582,7 +1582,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 109905.8,
+        "expectedDamage": 103311.46,
         "castCount": 4
       },
       {
@@ -1590,7 +1590,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35568.56,
+        "expectedDamage": 33434.48,
         "castCount": 4
       },
       {
@@ -1614,7 +1614,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 102454.95,
+        "expectedDamage": 97727.18,
         "castCount": 0
       },
       {
@@ -1622,7 +1622,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 285247.25,
+        "expectedDamage": 269391.32,
         "castCount": 0
       },
       {
@@ -1630,7 +1630,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 473640.13,
+        "expectedDamage": 447722.24,
         "castCount": 0
       }
     ],
@@ -1639,11 +1639,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "1541dd075cdbaa13600cbd9e69094297fe80f137407def72266fb75d605b8c86"
+    "digest": "b29b1777b4acbbf17a9216d0b2773ca1f4bb0b3f17c8e2ed36b51327ffabbcb3"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 35912.5,
-    "totalDamage": 2208019.93,
+    "dps": 35743.83,
+    "totalDamage": 2197649.77,
     "rotationDuration": 61.48,
     "warnings": [],
     "perSkill": [
@@ -1652,7 +1652,7 @@
         "breakdownName": "Drifting Thrust",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 2312.59,
+        "expectedDamage": 9717.35,
         "castCount": 1
       },
       {
@@ -1772,7 +1772,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 10,
-        "expectedDamage": 150631.09,
+        "expectedDamage": 145488.3,
         "castCount": 0
       },
       {
@@ -1780,7 +1780,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 167956.52,
+        "expectedDamage": 161809.38,
         "castCount": 0
       },
       {
@@ -1788,7 +1788,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 64,
-        "expectedDamage": 183480.2,
+        "expectedDamage": 176995.22,
         "castCount": 0
       },
       {
@@ -1805,11 +1805,11 @@
       "buffWindows": 118,
       "casts": 80
     },
-    "digest": "6bfcc5671c6352c410b18d89ba0ad97d87391a414934cafd030c06a902c75e0d"
+    "digest": "d692b2fbea1b4bea1476146643c7013a8aac82f737131a40763669aaca506b10"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 47998.16,
-    "totalDamage": 2870289.73,
+    "dps": 47647.79,
+    "totalDamage": 2849337.81,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -1922,7 +1922,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 71830.64,
+        "expectedDamage": 69775.57,
         "castCount": 0
       },
       {
@@ -1930,7 +1930,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 181794.42,
+        "expectedDamage": 175451.83,
         "castCount": 0
       },
       {
@@ -1938,7 +1938,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 93,
-        "expectedDamage": 277176.79,
+        "expectedDamage": 267715.76,
         "castCount": 0
       },
       {
@@ -1946,7 +1946,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 83901.68,
+        "expectedDamage": 80808.44,
         "castCount": 0
       },
       {
@@ -1963,11 +1963,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "bb365a231f84a77923f3f4e8f09579383599dd5e3412ef2fce300eedc406288b"
+    "digest": "c1aef645fe5f48d99055f512b851d631cee035098b963128b1d73dc285a8bbc3"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47093.85,
-    "totalDamage": 2816211.98,
+    "dps": 46750.25,
+    "totalDamage": 2795664.97,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2080,7 +2080,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 70462.31,
+        "expectedDamage": 68447.14,
         "castCount": 0
       },
       {
@@ -2088,7 +2088,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 178382.09,
+        "expectedDamage": 172161.42,
         "castCount": 0
       },
       {
@@ -2096,7 +2096,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 93,
-        "expectedDamage": 271902.15,
+        "expectedDamage": 262624.65,
         "castCount": 0
       },
       {
@@ -2104,7 +2104,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 82321.69,
+        "expectedDamage": 79288.02,
         "castCount": 0
       },
       {
@@ -2121,11 +2121,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "0497fdc7643cf6e17df16e4d0651bab55b3c80751e84d03dae5fc2d56b2f11b9"
+    "digest": "571f9cea0fa028581a3246e61f43d23dca7300f621772278aad39fb7a318db5a"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 46676.03,
-    "totalDamage": 2791226.31,
+    "dps": 46332.35,
+    "totalDamage": 2770674.75,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2238,7 +2238,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 69707.72,
+        "expectedDamage": 67680.77,
         "castCount": 0
       },
       {
@@ -2246,7 +2246,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 176446.32,
+        "expectedDamage": 170184.06,
         "castCount": 0
       },
       {
@@ -2254,7 +2254,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 93,
-        "expectedDamage": 269016.83,
+        "expectedDamage": 259676.06,
         "castCount": 0
       },
       {
@@ -2262,7 +2262,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 77321.25,
+        "expectedDamage": 74399.67,
         "castCount": 0
       },
       {
@@ -2279,11 +2279,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "9f0da0d035227edb0f2f259b83215feda9cc490c4f7bb01d2f346179bc6d9358"
+    "digest": "43859ad9b2316da96740fb5199564b5b252851e5bae18d1f16a5d0387c3a1ea9"
   },
   "anchor:noSet": {
-    "dps": 69705.75,
-    "totalDamage": 4168403.83,
+    "dps": 68785.9,
+    "totalDamage": 4113397.04,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2356,7 +2356,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27591.65,
+        "expectedDamage": 25996.29,
         "castCount": 4
       },
       {
@@ -2364,7 +2364,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110364.92,
+        "expectedDamage": 103983.55,
         "castCount": 4
       },
       {
@@ -2372,7 +2372,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35396.75,
+        "expectedDamage": 33350.07,
         "castCount": 4
       },
       {
@@ -2396,7 +2396,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 100254.19,
+        "expectedDamage": 95739.27,
         "castCount": 0
       },
       {
@@ -2404,7 +2404,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 279163.5,
+        "expectedDamage": 263838.57,
         "castCount": 0
       },
       {
@@ -2412,7 +2412,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 465361.11,
+        "expectedDamage": 440217.57,
         "castCount": 0
       },
       {
@@ -2429,11 +2429,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "8be21b56d35c7d83f6ed8b56f1f184e9c04c368b3552745b9be10d989a604d3e"
+    "digest": "04d8bcfa20bc1b99df62ad7c3111080740b615864dd35ff87b95bda06706435a"
   },
   "anchor:set-Jadeware": {
-    "dps": 73142.9,
-    "totalDamage": 4373945.47,
+    "dps": 72164.92,
+    "totalDamage": 4315462.28,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2506,7 +2506,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28772.19,
+        "expectedDamage": 27107.54,
         "castCount": 4
       },
       {
@@ -2514,7 +2514,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 114009.73,
+        "expectedDamage": 107414.86,
         "castCount": 4
       },
       {
@@ -2522,7 +2522,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35939.08,
+        "expectedDamage": 33861.03,
         "castCount": 4
       },
       {
@@ -2546,7 +2546,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 105066.36,
+        "expectedDamage": 100181.26,
         "castCount": 0
       },
       {
@@ -2554,7 +2554,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 294204.14,
+        "expectedDamage": 277821.1,
         "castCount": 0
       },
       {
@@ -2562,7 +2562,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 490545.02,
+        "expectedDamage": 463667.55,
         "castCount": 0
       },
       {
@@ -2579,11 +2579,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "faf4a7647a657aa56e2e47b64f5de5b46976df3ca9ee2b651bdf83bde87a61b1"
+    "digest": "6a3b212018fb43e2c232450cce3706ea792c427d0f796271ac4be65422032a24"
   },
   "anchor:set-Mistwillow": {
-    "dps": 70321.04,
-    "totalDamage": 4205198.02,
+    "dps": 69399.64,
+    "totalDamage": 4150098.46,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2656,7 +2656,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27934.8,
+        "expectedDamage": 26319.6,
         "castCount": 4
       },
       {
@@ -2664,7 +2664,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111737.53,
+        "expectedDamage": 105276.8,
         "castCount": 4
       },
       {
@@ -2672,7 +2672,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35870.11,
+        "expectedDamage": 33796.05,
         "castCount": 4
       },
       {
@@ -2696,7 +2696,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 101489.71,
+        "expectedDamage": 96977.97,
         "castCount": 0
       },
       {
@@ -2704,7 +2704,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 282665.65,
+        "expectedDamage": 267351.13,
         "castCount": 0
       },
       {
@@ -2712,7 +2712,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 471058.84,
+        "expectedDamage": 445935.54,
         "castCount": 0
       },
       {
@@ -2729,11 +2729,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d5525800d750cc155a2a27c1f9b5fafbf536ddf58a81f08741208eb7ff60a1d0"
+    "digest": "ca6e7481277282c8c3837938c75cf6f82faf33f6a6b9ab3e63f5b039eb869735"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 71305.26,
-    "totalDamage": 4264054.34,
+    "dps": 70374.83,
+    "totalDamage": 4208414.6,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2806,7 +2806,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28405.16,
+        "expectedDamage": 26762.76,
         "castCount": 4
       },
       {
@@ -2814,7 +2814,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 113618.97,
+        "expectedDamage": 107049.45,
         "castCount": 4
       },
       {
@@ -2822,7 +2822,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 36458.16,
+        "expectedDamage": 34350.1,
         "castCount": 4
       },
       {
@@ -2846,7 +2846,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 103083.41,
+        "expectedDamage": 98533.98,
         "castCount": 0
       },
       {
@@ -2854,7 +2854,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 287004.61,
+        "expectedDamage": 271564.23,
         "castCount": 0
       },
       {
@@ -2862,7 +2862,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 478353.31,
+        "expectedDamage": 453023.34,
         "castCount": 0
       },
       {
@@ -2879,11 +2879,11 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7a4cf08a2f3b2e95d56b33df5421eefb9b371489df3d8a7e6da8fcbc558bbabb"
+    "digest": "eb8f885f69ea913479fe110b57fd908bcf8db12b120fd8d2fb94903439ca0e86"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 70052.98,
-    "totalDamage": 4189168.32,
+    "dps": 72540.75,
+    "totalDamage": 4337936.7,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2892,7 +2892,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52639.12,
+        "expectedDamage": 55001.94,
         "castCount": 4
       },
       {
@@ -2900,7 +2900,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34779.12,
+        "expectedDamage": 36518.07,
         "castCount": 1
       },
       {
@@ -2908,7 +2908,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96393.81,
+        "expectedDamage": 101213.5,
         "castCount": 4
       },
       {
@@ -2916,7 +2916,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91721.35,
+        "expectedDamage": 96307.42,
         "castCount": 10
       },
       {
@@ -2924,7 +2924,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1987508.39,
+        "expectedDamage": 2086883.81,
         "castCount": 0
       },
       {
@@ -2932,7 +2932,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 64383.9,
+        "expectedDamage": 67603.09,
         "castCount": 10
       },
       {
@@ -2940,7 +2940,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47195.42,
+        "expectedDamage": 49555.19,
         "castCount": 4
       },
       {
@@ -2948,7 +2948,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56566.51,
+        "expectedDamage": 59394.84,
         "castCount": 4
       },
       {
@@ -2956,7 +2956,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27745.07,
+        "expectedDamage": 27447.88,
         "castCount": 4
       },
       {
@@ -2964,7 +2964,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110978.61,
+        "expectedDamage": 109789.85,
         "castCount": 4
       },
       {
@@ -2972,7 +2972,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35620.18,
+        "expectedDamage": 35238.6,
         "castCount": 4
       },
       {
@@ -2980,7 +2980,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 1,
-        "expectedDamage": 3369.1,
+        "expectedDamage": 3537.56,
         "castCount": 1
       },
       {
@@ -2988,7 +2988,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 678373,
+        "expectedDamage": 712291.65,
         "castCount": 1
       },
       {
@@ -2996,7 +2996,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "sustain",
         "count": 5,
-        "expectedDamage": 100824.1,
+        "expectedDamage": 101130.73,
         "castCount": 0
       },
       {
@@ -3004,7 +3004,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 280814,
+        "expectedDamage": 278731.38,
         "castCount": 0
       },
       {
@@ -3012,7 +3012,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 468006.81,
+        "expectedDamage": 465041.36,
         "castCount": 0
       },
       {
@@ -3029,7 +3029,7 @@
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "0b80bb81ef9e968c6da4c85240ba8059fed87610febe118e89cdcf043f67fb29"
+    "digest": "15491767ef4426a763e308327bfb6214517c00569c28749dde7c44d7fea56b7f"
   },
   "defaults:umbra": {
     "dps": 9498.97,

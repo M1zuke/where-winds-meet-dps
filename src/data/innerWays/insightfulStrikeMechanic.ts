@@ -22,11 +22,18 @@ function takesDotDamageBoost(skill: Skill | undefined): boolean {
   return skill.isDotTick === true || skillTagsOf(skill).has(PROP.empoweredDotEffect)
 }
 
-const EFFECTS = [
-  { statKey: "affinityDamageBoost" as const, amount: 0.1 },
+// In-game, 2026-09-10: directAffinityRate and allDamageBoost apply to an
+// attack, not to a damage-over-time tick.
+function isDotTick(skill: Skill | undefined): boolean {
+  return skill?.isDotTick === true
+}
+
+const AFFINITY_DAMAGE_EFFECT = { statKey: "affinityDamageBoost" as const, amount: 0.1 }
+const ATTACK_ONLY_EFFECTS = [
   { statKey: "directAffinityRate" as const, amount: 0.03 },
   { statKey: "allDamageBoost" as const, amount: 0.015 },
 ]
+const EFFECTS = [AFFINITY_DAMAGE_EFFECT, ...ATTACK_ONLY_EFFECTS]
 
 export function concentrationAvailable(inputs: {
   mindMethods: readonly { id?: string; name: string; stacks: string }[]
@@ -73,9 +80,10 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
 
     contributeAt(state, frame, skill, setup) {
       const activeProb = state.schedule.getActiveProbAtTime(frame / setup.fps)
+      const applicableEffects = isDotTick(skill) ? [AFFINITY_DAMAGE_EFFECT] : EFFECTS
       const effects =
         activeProb > 0
-          ? EFFECTS.map((effect) => ({
+          ? applicableEffects.map((effect) => ({
               statKey: effect.statKey,
               amount: effect.amount * activeProb,
             }))

@@ -41,6 +41,12 @@ describe("Dragon Head registry — universal mystic, both versions", () => {
     expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 2)
   })
 
+  it("both versions receive the same buffs, so the pair cannot drift apart again", () => {
+    const base = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHead)
+    const plus = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.dragonHeadPlus)
+    expect(base.receives).toEqual(plus.receives)
+  })
+
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
     const surgingWaves = GLOBAL_BUFF_DEFS.find((module) => module.id === "surgingWaves")
     expect(surgingWaves).toBeTruthy()
@@ -100,7 +106,6 @@ const ctx: FormulaContext = {
   generalDamageBoost: 0,
   chargeBonus: 0,
   effectiveDefense: 307,
-  fatigueDamageTaken: 0,
   hasSixHenZhi: false,
   food: false,
   set: null,
@@ -282,7 +287,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     combatSettings: { ...defaultCombatSettings(), dragonHeadLowHpMaxBonus: true },
   })
 
-  it("is a global buff def applying the sourced 45 % cap, gated to the Plus", () => {
+  it("is a global buff def applying the sourced 45 % cap, gated by the toggle only", () => {
     const dragonHeadLowHp = GLOBAL_BUFF_DEFS.find((module) => module.id === "dragonHeadLowHp")
     expect(dragonHeadLowHp).toBeTruthy()
     expect(dragonHeadLowHp!.effects).toEqual([
@@ -328,12 +333,19 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
-  it("does not touch the base version or any other skill", () => {
-    for (const name of [UNIVERSAL_SKILL.dragonHead, SKILL.swordq]) {
-      const alone = skillDamage(simulate([name]), name)
-      const withBonus = skillDamage(simulate([name], withLowHp()), name)
-      expect(withBonus, name).toBeCloseTo(alone, 6)
-    }
+  it("does not touch an unrelated skill", () => {
+    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const withBonus = skillDamage(simulate([SKILL.swordq], withLowHp()), SKILL.swordq)
+    expect(withBonus).toBeCloseTo(alone, 6)
+  })
+
+  it("boosts the base version too, the same as the Plus version", () => {
+    const alone = skillDamage(simulate([UNIVERSAL_SKILL.dragonHead]), UNIVERSAL_SKILL.dragonHead)
+    const withBonus = skillDamage(
+      simulate([UNIVERSAL_SKILL.dragonHead], withLowHp()),
+      UNIVERSAL_SKILL.dragonHead,
+    )
+    expect(withBonus).toBeGreaterThan(alone)
   })
 })
 

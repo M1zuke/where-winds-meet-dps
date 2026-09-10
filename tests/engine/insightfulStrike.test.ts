@@ -100,6 +100,31 @@ describe("Insightful Strike — Concentration's all-damage bonus is counted once
   })
 })
 
+describe("Insightful Strike — attack-only effects do not reach damage-over-time ticks", () => {
+  it("gives a damage-over-time tick only the affinity-damage effect", () => {
+    const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])
+    const mechanic = insightfulStrikeMechanic()
+    const state = mechanic.prepare(setup)!
+    const dotTick = makeSkill(CLASS_ID, { isDotTick: true, tags: [] })
+    const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, dotTick, setup)
+    const statKeys = contribution?.effects?.map((effect) => effect.statKey)
+    expect(statKeys).toEqual(["affinityDamageBoost"])
+  })
+
+  it("still gives an ordinary hit all three effects", () => {
+    const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])
+    const mechanic = insightfulStrikeMechanic()
+    const state = mechanic.prepare(setup)!
+    const hit = makeSkill(CLASS_ID)
+    const contribution = mechanic.contributeAt?.(state, FRAME_NEAR_SATURATION, hit, setup)
+    const statKeys = contribution?.effects?.map((effect) => effect.statKey)
+    expect(statKeys).toEqual(
+      expect.arrayContaining(["affinityDamageBoost", "directAffinityRate", "allDamageBoost"]),
+    )
+    expect(statKeys).toHaveLength(3)
+  })
+})
+
 describe("Insightful Strike — DoT multiplier reaches every damage-over-time row and every declared empowered effect at tier 6, and none below it", () => {
   it("multiplies a damage-over-time row's damage at tier 6 while Concentration is active", () => {
     const setup = setupFor([emptyMindMethod, NS_TIER_6, emptyMindMethod, emptyMindMethod])

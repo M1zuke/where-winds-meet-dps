@@ -8,7 +8,7 @@ export const surgingWaves = defineBuff({
   duration: 6,
   maxStacks: 40,
   stacks: (ctx) => (ctx.build.param(PARAM.allySurgingWaves) ? 40 : 8),
-  summary: "+1.3% all/stack",
+  summary: "+1.25% all/stack",
   // Omit the effect at 0 stacks rather than a no-op stat, matching the
   // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.
   effects: (ctx) => (ctx.self.stacks > 0 ? [stat("allDamageBoost", 0.0125 * ctx.self.stacks)] : []),

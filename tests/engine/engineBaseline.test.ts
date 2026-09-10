@@ -293,8 +293,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(76503.18)
-    expect(round(result.totalDamage, 2)).toBe(4574890.09)
+    expect(round(result.dps, 2)).toBe(75496.33)
+    expect(round(result.totalDamage, 2)).toBe(4514680.4)
     expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
@@ -303,14 +303,14 @@ describe("engine baseline — profile-v7 anchor", () => {
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
     expect(damageOf("Blood Burst")).toBe(2174317.16)
-    expect(damageOf("Bleeding (DoT)")).toBe(307786.71)
+    expect(damageOf("Bleeding (DoT)")).toBe(290989.46)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(511820.22)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(109733.33)
+    expect(damageOf("Smolder (DoT)")).toBe(484325.1)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(104740.57)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.

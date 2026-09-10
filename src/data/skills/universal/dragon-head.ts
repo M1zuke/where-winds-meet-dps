@@ -15,7 +15,8 @@ export const dragonHead = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonHead,
-  receives: [BUFF.surgingWaves],
+  // In-game, the low-HP bonus covers this and the Plus variant alike, 2026-09-10.
+  receives: [BUFF.surgingWaves, BUFF.dragonHeadLowHp],
   guaranteedNormal: true,
   castFrames: 246,
   triggerable: true,

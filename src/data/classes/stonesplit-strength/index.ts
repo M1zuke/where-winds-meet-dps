@@ -6,7 +6,6 @@ import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { ironGuards } from "../../skills/stonesplit-strength/buffs/ironGuards"
 import { cleftpeakDeflect } from "../../skills/stonesplit-strength/buffs/cleftpeakDeflect"
-import { cleftpeakStacks } from "../../skills/stonesplit-strength/buffs/cleftpeakStacks"
 import { stonesplitStrengthSkillCritDamage } from "../../skills/stonesplit-strength/buffs/skillCritDamage"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
 import { STONESPLIT_STRENGTH_GRADUATION_BUILD } from "./graduationBuild"
@@ -40,7 +39,7 @@ export const stonesplitStrength = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: STONESPLIT_STRENGTH_GRADUATION_BUILD,
-  classBuffDefs: [ironGuards, cleftpeakStacks, cleftpeakDeflect, stonesplitStrengthSkillCritDamage],
+  classBuffDefs: [ironGuards, cleftpeakDeflect, stonesplitStrengthSkillCritDamage],
   gateBuffs: STONESPLIT_STRENGTH_GATES,
   mechanics: [],
   skillBehaviors: [],
