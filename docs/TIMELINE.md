@@ -22,8 +22,10 @@ on the 60 fps grid. Rules:
   multiplier, or be empty.
 - `weaponOrAttribute` is the lookup key into the weapon or mystic-category boost
   map. A skill whose key resolves to neither takes no typing boost.
-- `elevatedAttributeMultiplier` **defaults true**. Set it false **only** for a
-  real DoT tick. Ticks authored on a debuff's `dot` get it automatically.
+- `elevatedAttributeMultiplier` **defaults true** on every row, DoT ticks
+  included. Set it false only when a hit has its own reason to take the
+  non-matching coefficient — doing so demotes the row's flat attribute term
+  along with its coefficient, never one without the other.
 - `neverAbrades` removes the abrasion outcome: the mass that would have abraded
   deals the normal row. Precision, crit and affinity chances are unchanged — a
   hit that fails precision still cannot crit. `guaranteedNormal` means the hit
@@ -73,6 +75,11 @@ the skill could ever land.
   membership**. Express a family by giving every member the family tag _as
   well as_ its own — never by one name being a stem of another. A skill may
   then belong to several families, which a prefix cannot express.
+- **"Every damage-over-time row" is a structural check, not a tag list.** A
+  DoT tick's synthetic skill carries `isDotTick`; a mechanic that must reach
+  every such row tests that field, never a role tag or an enumerated list of
+  them — a list silently stops matching the row it was written for once that
+  row is retyped, and never grows to cover one added later.
 - **The breakdown row a cast reports into is authored, not derived.** A skill's
   `breakdownName` is the in-game name its casts are summed under, so the
   engine-level variants of one in-game skill read as a single row; absent or
@@ -116,6 +123,10 @@ Rules:
 - A trigger that enqueues another skill's hits must not form an unbounded chain.
 - Extending an already-active window is a distinct operation from opening a
   fresh one. Do not emulate one with the other.
+- A status the player only gains once the granting cast is over opens at that
+  cast's end, declared on the trigger. Never emulate it by moving the trigger to
+  a later hit: a hit's frame is where it lands, not where a window starts, and a
+  cast's end is usually past every hit it has.
 - **A trigger may open its own grant at a length other than the target
   status's own** (`durationFrames`): that grant's window uses it in place of
   the status's declared duration, for that grant alone.
@@ -278,7 +289,8 @@ a refactor.
 1. English identifiers only.
 2. Coefficients, frames and `castFrames` set per hit.
 3. `skillType` correct — it selects the boost bucket and the sustain branch.
-4. `elevatedAttributeMultiplier` left default except on a real DoT tick.
+4. `elevatedAttributeMultiplier` left at its default unless the hit has its
+   own reason to demote.
 5. DoTs on a debuff's `dot`, never faked with a `sustain` hit.
 6. Giving a status: a hit trigger (editor system) or a `requires`-gated
    module, applied by the skill's own `triggersBuffs`, or by every tick of a

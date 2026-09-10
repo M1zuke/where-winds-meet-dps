@@ -163,6 +163,39 @@ describe("the shipped affix table is the authority", () => {
       expect(key.startsWith("attunement:")).toBe(isAttunementId)
     }
   })
+
+  it("maps the Art of Fan/Umbrella ids that replace the DMG Boost line from gear level 91 on", () => {
+    for (const affixId of [
+      "9293026",
+      "9294026",
+      "9793020",
+      "9794020",
+      "10193020",
+      "10194020",
+      "10693020",
+      "10694020",
+    ]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:fanBoost")
+    }
+    for (const affixId of [
+      "9293027",
+      "9294027",
+      "9793021",
+      "9794021",
+      "10193021",
+      "10194021",
+      "10693021",
+      "10694021",
+    ]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:umbrellaBoost")
+    }
+  })
+
+  it("maps every Vernal Umbrella Frequent Projectile id across every gear level it rolls at", () => {
+    for (const affixId of ["280304", "280305", "290304", "300304"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("attunement:umbFrequentProjectile")
+    }
+  })
 })
 
 describe("suggestions from the reported max roll", () => {
@@ -210,10 +243,10 @@ describe("suggestions from the reported max roll", () => {
 
 describe("a user choice maps an id the table does not carry", () => {
   it("resolves a chosen word and keeps the payload value", () => {
-    const chosen: AffixChoices = { "9999999": "word:power" }
+    const chosen: AffixChoices = { "9999999": "word:momentum" }
     expect(untabledWordRowOnWeapon(chosen).resolution).toMatchObject({
       kind: "resolved",
-      target: { word: "power" },
+      target: { word: "momentum" },
       value: 45.569,
       clampedFrom: null,
     })
@@ -251,10 +284,10 @@ describe("a user choice maps an id the table does not carry", () => {
   })
 
   it("clamps above the cap and records what it was", () => {
-    const cap = getWordSpecs(inputs).find((spec) => spec.word === "crit")!.amount
+    const cap = getWordSpecs(inputs, FALLBACK_LEVEL).find((spec) => spec.word === "crit")!.amount
     const text = JSON.stringify({
       wearEquipsDetailed: {
-        "1": {
+        "3": {
           exVo: { baseAffixes: [{ equipmentDetails: [9793119, 0.5, 5.555555555555555, 3, true] }] },
         },
       },
@@ -269,7 +302,7 @@ describe("a user choice maps an id the table does not carry", () => {
   it("keeps full precision below the cap — no rounding", () => {
     const text = JSON.stringify({
       wearEquipsDetailed: {
-        "1": {
+        "3": {
           exVo: {
             baseAffixes: [{ equipmentDetails: [9793119, 0.0873421, 0.9704677777777778, 3, true] }],
           },

@@ -300,6 +300,62 @@
       "triggersBuffs": ["surgingWaves"]
     },
     {
+      "id": "bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleed Tick",
+      "breakdownName": "Bleeding",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedTick"],
+      "castTag": "cast:bleedTick",
+      "receives": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage", "soulShaken"],
+      "elevatedAttributeMultiplier": false,
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.066,
+          "attributeMultiplier": 0.099,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-bleed-detonation",
+      "classId": "bellstrikeUmbra",
+      "name": "Blood Burst",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation"],
+      "castTag": "cast:bleedDetonation",
+      "receives": ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage", "soulShaken"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 2.4,
+          "attributeMultiplier": 3.6,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
       "id": "sk-user-authored-slash",
       "classId": "bellstrikeUmbra",
       "name": "My Slash",
@@ -323,147 +379,6 @@
       "triggerable": true,
       "createdAt": "2026-08-01T00:00:00.000Z",
       "updatedAt": "2026-08-01T00:00:00.000Z"
-    },
-    {
-      "id": "stonesplitStrength-flute-of-the-tides-full",
-      "classId": "stonesplitStrength",
-      "name": "Flute of the Tides Full",
-      "breakdownName": "Flute Chanting a Thousand Waves",
-      "tags": ["mystic:area"],
-      "skillType": "mystic",
-      "weaponOrAttribute": "",
-      "attributeAttack": "Stonesplit",
-      "castTag": "cast:fluteOfTheTidesFull",
-      "triggersBuffs": ["fluteBoost"],
-      "castFrames": 162,
-      "triggerable": true,
-      "hits": [
-        {
-          "id": "hit-0",
-          "frame": 0,
-          "physMultiplier": 3.897,
-          "attributeMultiplier": 5.8454999999999995,
-          "physFixed": 800,
-          "attributeFixed": 0,
-          "extraCritDamage": 0,
-          "triggers": []
-        },
-        {
-          "id": "hit-1",
-          "frame": 81,
-          "physMultiplier": 3.897,
-          "attributeMultiplier": 5.8454999999999995,
-          "physFixed": 800,
-          "attributeFixed": 0,
-          "extraCritDamage": 0,
-          "triggers": [
-            {
-              "kind": "applyDebuff",
-              "targetId": "debuff-stonesplitStrength-flute-ripple",
-              "stacks": 1,
-              "condition": null
-            }
-          ]
-        }
-      ],
-      "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-09-05T00:00:00.000Z"
-    },
-    {
-      "id": "bellstrikeUmbra-flute-of-the-tides-full",
-      "classId": "bellstrikeUmbra",
-      "name": "Flute of the Tides Full",
-      "breakdownName": "Flute Chanting a Thousand Waves",
-      "tags": ["mystic:area"],
-      "skillType": "mystic",
-      "weaponOrAttribute": "",
-      "attributeAttack": "Bellstrike",
-      "castTag": "cast:fluteOfTheTidesFull",
-      "triggersBuffs": ["fluteBoost"],
-      "castFrames": 162,
-      "triggerable": true,
-      "hits": [
-        {
-          "id": "hit-0",
-          "frame": 0,
-          "physMultiplier": 4.5,
-          "attributeMultiplier": 5.8454999999999995,
-          "physFixed": 800,
-          "attributeFixed": 0,
-          "extraCritDamage": 0,
-          "triggers": []
-        },
-        {
-          "id": "hit-1",
-          "frame": 81,
-          "physMultiplier": 3.897,
-          "attributeMultiplier": 5.8454999999999995,
-          "physFixed": 800,
-          "attributeFixed": 0,
-          "extraCritDamage": 0,
-          "triggers": [
-            {
-              "kind": "applyDebuff",
-              "targetId": "debuff-bellstrikeUmbra-flute-ripple",
-              "stacks": 1,
-              "condition": null
-            }
-          ]
-        }
-      ],
-      "createdAt": "2026-07-19T00:00:00.000Z",
-      "updatedAt": "2026-09-05T00:00:00.000Z"
-    },
-    {
-      "id": "sk-user-authored-poet-chain",
-      "classId": "bellstrikeUmbra",
-      "name": "Poet Chain",
-      "skillType": "mystic",
-      "weaponOrAttribute": "",
-      "attributeAttack": "Bellstrike",
-      "tags": ["mystic:burst"],
-      "castFrames": 30,
-      "triggerable": true,
-      "hits": [
-        {
-          "id": "hit-0",
-          "frame": 0,
-          "physMultiplier": 1,
-          "attributeMultiplier": 1.5,
-          "physFixed": 100,
-          "attributeFixed": 0,
-          "extraCritDamage": 0,
-          "conditions": [
-            {
-              "buffId": "debuff-bellstrikeUmbra-flute-ripple",
-              "op": "gte",
-              "stacks": 1
-            }
-          ],
-          "triggers": [
-            {
-              "kind": "castSkill",
-              "targetId": "bellstrikeUmbra-poet1",
-              "stacks": 1,
-              "condition": null
-            },
-            {
-              "kind": "applyDebuff",
-              "targetId": "debuff-bellstrikeUmbra-combustion",
-              "stacks": 1,
-              "condition": {
-                "buffId": "debuff-bellstrikeUmbra-dark-fire",
-                "op": "gte",
-                "stacks": 1
-              },
-              "extendFrames": 90,
-              "extendOnly": true
-            }
-          ]
-        }
-      ],
-      "createdAt": "2026-09-01T00:00:00.000Z",
-      "updatedAt": "2026-09-01T00:00:00.000Z"
     }
   ]
 }

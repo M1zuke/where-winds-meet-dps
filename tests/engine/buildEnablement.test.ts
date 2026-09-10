@@ -187,7 +187,7 @@ describe("set enablement registers a requiresSet buff", () => {
     expect(withSet.definitions.has("jadeware")).toBe(true)
 
     const withoutSet = new BuffEngine(
-      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawking }),
+      paramsFromInputs({ ...defaultInputs, set: SET_ID.hawkwing }),
       allBuffDefsDeduped(),
       groupBuffDefs(),
     )

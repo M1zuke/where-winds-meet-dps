@@ -127,6 +127,7 @@ function parseSimulationResponse(reqId: number): WorkerResponse {
   return {
     kind: "parseSimulation",
     reqId,
+    seed: 1,
     runs: [],
     expectedRates: null,
     rotationDuration: 0,

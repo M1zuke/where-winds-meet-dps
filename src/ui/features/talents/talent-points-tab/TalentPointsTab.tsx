@@ -30,6 +30,10 @@ const STAT_KEYS: Readonly<Record<TalentPointStat, string>> = {
   power: "content.statLine.power",
   agility: "content.statLine.agility",
   momentum: "content.statLine.momentum",
+  body: "content.statLine.body",
+  defense: "content.statLine.defense",
+  maxHp: "content.statLine.maxHp",
+  physDef: "content.statLine.physDef",
 }
 
 const STAT_GLYPH: Readonly<Record<TalentPointStat, string>> = {
@@ -45,6 +49,10 @@ const STAT_GLYPH: Readonly<Record<TalentPointStat, string>> = {
   power: "◈",
   agility: "◈",
   momentum: "◈",
+  body: "◈",
+  defense: "◈",
+  maxHp: "❤",
+  physDef: "🛡",
 }
 
 const RATE_STATS = new Set<TalentPointStat>([

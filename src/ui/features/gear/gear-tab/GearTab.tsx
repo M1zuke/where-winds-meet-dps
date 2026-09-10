@@ -231,6 +231,8 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
             piece={retuneTargetId ? selectedPiece : null}
             options={reattuneOptsMatch ? reattunement.options : []}
             probImproveOverall={reattuneOptsMatch ? reattunement.probImproveOverall : 0}
+            eDeltaDpsOverall={reattuneOptsMatch ? reattunement.eDeltaDpsOverall : null}
+            pityThreshold={reattuneOptsMatch ? reattunement.pityThreshold : null}
             reason={
               !retuneTargetId ? "no-selection" : reattuneOptsMatch ? reattunement.reason : "ok"
             }

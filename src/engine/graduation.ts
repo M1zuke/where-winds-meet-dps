@@ -4,9 +4,10 @@ import {
   getDefaultTalentsForClass,
 } from "../definitions/baseStats"
 import { classDefinition } from "../definitions/classes/registry"
+import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type { GraduationBuild } from "../definitions/classes/classDef"
-import { relayGraduationGearPiece } from "../data/classes/graduationGear"
-import type { EquippedSlots, Inputs, OddityRegions } from "./types"
+import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
+import type { EquippedSlots, GearLevel, Inputs, OddityRegions } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
@@ -29,15 +30,20 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
 export function graduationBuild(
   classId: string,
   variant: GraduationVariant,
+  level: GearLevel,
 ): GraduationBuild | null {
   const build = classDefinition(classId)?.graduationBuild
   if (!build) return null
-  if (variant === "maxRolls") return build
+  const leveledGear = build.gear.map((piece) => gearPieceAtGearLevel(piece, level))
+  if (variant === "maxRolls") return { ...build, gear: leveledGear }
   const overrides = build.relayedOverrides ?? {}
+  const baseGear = overrides.gear
+    ? overrides.gear.map((piece) => gearPieceAtGearLevel(piece, level))
+    : leveledGear
   return {
     ...build,
     ...overrides,
-    gear: (overrides.gear ?? build.gear).map(relayGraduationGearPiece),
+    gear: baseGear.map((piece) => relayGraduationGearPiece(piece, level)),
   }
 }
 
@@ -45,7 +51,8 @@ export function graduationInputs(
   inputs: Inputs,
   variant: GraduationVariant = "maxRolls",
 ): Inputs | null {
-  const build = graduationBuild(inputs.classId, variant)
+  const level = gearLevelForBreakthrough(inputs.breakthrough)
+  const build = graduationBuild(inputs.classId, variant, level)
   if (!build) return null
   const inventory = build.gear.map((piece) => ({
     ...piece,
@@ -64,6 +71,6 @@ export function graduationInputs(
       enabled: true,
     })),
     oddities: allOddities(),
-    enhancements: DEFAULT_ENHANCEMENTS.map((node) => ({ ...node })),
+    enhancements: { ...DEFAULT_ENHANCEMENTS },
   }
 }

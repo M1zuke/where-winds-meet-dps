@@ -13,10 +13,9 @@ const pursuit = (index: number, frame: number) =>
     attributeFixed: 86.25,
   })
 
-// Client skill_numerical_config row 20902109 (2.28792 / 633 / 345 at skill
-// level 100, patch container 2026-09-04) at the tooltip's 0.25 per hit;
-// four hits is a provisional count. Attribute side × 1.5. Cast length and hit
-// frames: in-game animation, 2026-09-05.
+// In-game level-100 row (2.28792 / 633 / 345, 2026-09-04) at the tooltip's
+// 0.25 per hit; four hits is a provisional count. Attribute side × 1.5. Cast
+// length and hit frames: in-game animation, 2026-09-05.
 export const nightwickGrounddrift = defineSkill({
   id: SKILL.nightwickGrounddrift,
   classId: "bamboocutDraught",

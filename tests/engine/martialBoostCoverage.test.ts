@@ -39,9 +39,14 @@ function damageOf(result: ReturnType<typeof simulateTimeline>, name: string): nu
     .reduce((sum, p) => sum + p.expectedDamage, 0)
 }
 
-// 6 hits of the canDetonate 3-hit skill ⇒ bleed ticks plus exactly one
-// detonation (see bleedDetonation.test.ts).
-const BLEED_ROTATION = ["SwordSpecial 3-Hit", "SwordSpecial 3-Hit"]
+// Four casts, not two: a tick lands only once the window outlasts the
+// stack-reset gap a detonation opens (see bleedDetonation.test.ts).
+const BLEED_ROTATION = [
+  "SwordSpecial 3-Hit",
+  "SwordSpecial 3-Hit",
+  "SwordSpecial 3-Hit",
+  "SwordSpecial 3-Hit",
+]
 const BURST_ROTATION = ["Dragon's Breath 1 Hit", "Poet1", "Poet2"]
 
 describe("all-martial and sword boost reach every Sword-typed row", () => {

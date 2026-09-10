@@ -6,6 +6,7 @@ export const BUFF = {
   battleAnthemChargedDamage: "battleAnthemChargedDamage",
   battleAnthemEnduranceBoost: "battleAnthemEnduranceBoost",
   belowSixtyEndurance: "belowSixtyEndurance",
+  bellstrikeUmbraBleedCoefficient: "bellstrikeUmbraBleedCoefficient",
   bellstrikeUmbraBleedPen: "bellstrikeUmbraBleedPen",
   bellstrikeUmbraBleedingDamage: "bellstrikeUmbraBleedingDamage",
   combo: "combo",
@@ -30,6 +31,7 @@ export const BUFF = {
   mountainsMight: "mountainsMight",
   mountainsMightQiImbalance: "mountainsMightQiImbalance",
   cleftpeakDeflect: "cleftpeakDeflect",
+  cleftpeakStacks: "cleftpeakStacks",
   clashToastDamage: "clashToastDamage",
   cloudvault: "cloudvault",
   stonesplitStrengthSkillCritDamage: "stonesplitStrengthSkillCritDamage",
@@ -82,6 +84,7 @@ export const BUFF = {
   windWall: "windWall",
   windWallPursuit: "windWallPursuit",
   wineGu: "wineGu",
+  wolfchasersArtMartialDamage: "wolfchasersArtMartialDamage",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across

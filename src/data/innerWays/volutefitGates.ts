@@ -6,7 +6,8 @@ import { BUFF, PARAM } from "../skills/buffs/ids"
 
 export const SUBTLEFIT_DURATION_FRAMES = 300
 
-// 5 s (client locale text, 2026-09-03); the Deepdaze-long form is not modelled.
+// 5 s (in-game English text, 2026-09-03); the Deepdaze-long form is not
+// modelled.
 export const VOLUTEFIT_GATES: readonly InnerWayGateBuff[] = [
   defineInnerWayGateBuff({
     id: BUFF.subtlefit,

@@ -15,11 +15,12 @@ export const swordq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQ,
   triggersBuffs: [BUFF.jadeware],
-  castFrames: 30,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
+  castFrames: 18,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 10,
       physMultiplier: 0.544068,
       attributeMultiplier: 0.816102,
       physFixed: 150.6,
@@ -28,5 +29,5 @@ export const swordq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

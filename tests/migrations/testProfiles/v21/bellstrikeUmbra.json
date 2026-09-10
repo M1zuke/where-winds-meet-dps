@@ -34,46 +34,7 @@
       "arsenal": "bellstrike",
       "dummyMode": true,
       "rotation": null,
-      "activeCustomRotation": {
-        "id": "rt-user-flute-opener",
-        "name": "Flute opener",
-        "classId": "bellstrikeUmbra",
-        "steps": [
-          {
-            "id": "st-1",
-            "skillId": "bellstrikeUmbra-flute-of-the-tides-prepull",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "id": "st-2",
-            "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "id": "st-3",
-            "skillId": "bellstrikeUmbra-swordq",
-            "hitCount": 1,
-            "prePull": false
-          },
-          {
-            "id": "st-4",
-            "skillId": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
-            "hitCount": 3,
-            "prePull": false
-          },
-          {
-            "id": "st-5",
-            "skillId": "bellstrikeUmbra-dragon-head-plus",
-            "hitCount": 1,
-            "prePull": false
-          }
-        ],
-        "permanentBuffIds": ["debuff-bellstrikeUmbra-combustion", "revelryScript"],
-        "createdAt": "2026-09-01T00:00:00.000Z",
-        "updatedAt": "2026-09-01T00:00:00.000Z"
-      },
+      "activeCustomRotation": null,
       "inventory": [
         {
           "id": "gp-ms9h9cgs-269r62-1",
@@ -771,7 +732,7 @@
           "lowQiLeadSec": 5
         }
       },
-      "selectedBuiltinRotationId": null
+      "selectedBuiltinRotationId": "builtin-bellstrikeUmbra-nox-1m-dh"
     }
   }
 }

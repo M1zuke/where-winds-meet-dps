@@ -1,9 +1,7 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, applyDebuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
+import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
-import { SKILL, DEBUFF } from "./ids"
-import { SPEAR_SPECIAL_COOLDOWN_BUFF_ID } from "../../innerWays/wolfchasersArtGates"
+import { SKILL } from "./ids"
+import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
 
 export const spearspecial1HitCancel = defineSkill({
   id: SKILL.spearspecial1HitCancel,
@@ -15,62 +13,10 @@ export const spearspecial1HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial1HitCancel,
-  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
-  castFrames: 59,
+  // A cancel form ends where the animation opens its interrupt window — 35 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
+  castFrames: 35,
   triggerable: true,
-  hits: [
-    hit(0, {
-      frame: 25,
-      physMultiplier: 0.6848704,
-      attributeMultiplier: 1.0273056,
-      physFixed: 189.76,
-      attributeFixed: 103.36,
-      triggers: [
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDot({
-          target: DEBUFF.bleedTick,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        castSkill({
-          target: SKILL.bleedDetonation,
-          stacks: 0,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyDebuff({
-          target: DEBUFF.defenseDown,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-        applyBuff({
-          target: SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
-          condition: { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 },
-          conditions: [{ buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }],
-        }),
-      ],
-      variants: [
-        {
-          id: "hv-spearspecial-1-hit-cancel-river-flow",
-          label: "River Flow",
-          conditions: [{ buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }],
-          physMultiplier: 1.0273056,
-          attributeMultiplier: 1.5409584,
-          physFixed: 284.64,
-          attributeFixed: 155.04,
-        },
-      ],
-    }),
-  ],
+  hits: SPEARSPECIAL_HITS.slice(0, 1),
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

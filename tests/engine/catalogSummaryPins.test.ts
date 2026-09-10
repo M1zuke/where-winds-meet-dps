@@ -58,7 +58,7 @@ describe("catalog summary pins — jadeware", () => {
   it("Applies row on Sword Martial Q names the target state the bonus needs", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.swordq), CLASS)
     expect(rows.find((row) => row.id === "jadeware")!.effect).toBe(
-      "affinityDmg +10%, directAffinity +7.5% — low-Qi targets only",
+      "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
     )
   })
 })
@@ -103,7 +103,7 @@ describe("catalog summary pins — soulShaken", () => {
 describe("catalog summary pins — surgingWaves", () => {
   it("Applies row on Dragon Head - Plus reads the pre-conversion per-stack text", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, MYSTIC_SKILL.dragonHeadPlus), CLASS)
-    expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.3% all/stack")
+    expect(rows.find((row) => row.id === "surgingWaves")!.effect).toBe("+1.25% all/stack")
   })
 })
 
@@ -134,6 +134,7 @@ describe("Class Buffs column — class ownership and scope decide membership", (
       [
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
+        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.03",
       ].sort(),
     )
   })

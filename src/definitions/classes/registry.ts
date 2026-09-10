@@ -16,6 +16,7 @@
 import type { Buff } from "../../engine/buff"
 import type { BuffModule } from "../../engine/buffs/buffModule"
 import type { AttunementOption } from "../../engine/attunements"
+import type { AttributeKey } from "../../engine/types"
 import { attunementsForClass } from "../../engine/attunements"
 import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtinBuffs"
 import type { ClassDef, RetunementPool } from "./classDef"
@@ -113,8 +114,12 @@ export function classDefinition(classId: string): ClassDefinition | null {
   return definition
 }
 
+export function attributeForClass(classId: string): AttributeKey | null {
+  return CLASSES.find((classDef) => classDef.id === classId)?.primaryAttribute ?? null
+}
+
 export function poolForClass(classId: string): RetunementPool | null {
-  const attribute = CLASSES.find((classDef) => classDef.id === classId)?.primaryAttribute
+  const attribute = attributeForClass(classId)
   return (attribute && RETUNEMENT_POOLS[attribute]) ?? null
 }
 

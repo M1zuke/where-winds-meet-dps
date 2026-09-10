@@ -22,10 +22,6 @@ export interface InnerWayScalars {
   minTier?: number
   generalDamageBoost?: number
   chargeBonus?: number
-  // Superseded by a mechanic's `dotDamageMultiplier` when one is passed.
-  dotDamageBoost?: number
-  // The site's `Ss[key].allDamageBonus`, `zo()` ~L7743-65.
-  allDamageBonus?: number
   targetDefenseMultiplier?: number
 }
 

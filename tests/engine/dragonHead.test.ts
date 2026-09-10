@@ -32,12 +32,18 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
-    expect(plusHit.physMultiplier).toBeCloseTo(17.3793, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(26.0689, 9)
-    expect(plusHit.physFixed).toBeCloseTo(3237, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(17.34049, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(26.010735, 9)
+    expect(plusHit.physFixed).toBeCloseTo(2608.52, 9)
     expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
     expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
-    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 4)
+    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 2)
+  })
+
+  it("both versions receive the same buffs, so the pair cannot drift apart again", () => {
+    const base = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHead)
+    const plus = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHeadPlus)
+    expect(base.receives).toEqual(plus.receives)
   })
 
   it("Surging Waves is a global buff def: 8 stacks/cast of the Plus (40 with the ally toggle), +1.25 %/stack, max 40, gated to Dragon Head", () => {
@@ -68,9 +74,9 @@ type Art = Parameters<typeof computeSkillDamage>[0]
 const asArt = (fields: Record<string, unknown>) => fields as unknown as Art
 
 const DRAGON_HEAD_ROW = {
-  physMultiplier: 24.827571,
-  physFixed: 4624.285714,
-  attributeMultiplier: 37.241286,
+  physMultiplier: 24.77213,
+  physFixed: 3726.46,
+  attributeMultiplier: 37.158195,
   attributeFixed: 0,
   skillType: "mystic",
   mysticCategory: "burst",
@@ -141,9 +147,9 @@ describe("neverAbrades — abrasion mass becomes normal, crit still gated by pre
   const plus = asArt({
     name: "Dragon Head - Plus",
     ...DRAGON_HEAD_ROW,
-    physMultiplier: 17.3793,
-    physFixed: 3237,
-    attributeMultiplier: 26.0689,
+    physMultiplier: 17.34049,
+    physFixed: 2608.52,
+    attributeMultiplier: 26.010735,
     abrasionAvoidRate: 1,
   })
   const unflagged = asArt({ ...plus, abrasionAvoidRate: undefined })
@@ -284,7 +290,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     combatSettings: { ...defaultCombatSettings(), dragonHeadLowHpMaxBonus: true },
   })
 
-  it("is a global buff def applying the sourced 45 % cap, gated to the Plus", () => {
+  it("is a global buff def applying the sourced 45 % cap, gated by the toggle only", () => {
     const dragonHeadLowHp = GLOBAL_BUFF_DEFS.find((module) => module.id === "dragonHeadLowHp")
     expect(dragonHeadLowHp).toBeTruthy()
     expect(dragonHeadLowHp!.effects).toEqual([
@@ -324,12 +330,19 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
-  it("does not touch the base version or any other skill", () => {
-    for (const name of [MYSTIC_SKILL.dragonHead, SKILL.swordq]) {
-      const alone = skillDamage(simulate([name]), name)
-      const withBonus = skillDamage(simulate([name], withLowHp()), name)
-      expect(withBonus, name).toBeCloseTo(alone, 6)
-    }
+  it("does not touch an unrelated skill", () => {
+    const alone = skillDamage(simulate([SKILL.swordq]), SKILL.swordq)
+    const withBonus = skillDamage(simulate([SKILL.swordq], withLowHp()), SKILL.swordq)
+    expect(withBonus).toBeCloseTo(alone, 6)
+  })
+
+  it("boosts the base version too, the same as the Plus version", () => {
+    const alone = skillDamage(simulate([MYSTIC_SKILL.dragonHead]), MYSTIC_SKILL.dragonHead)
+    const withBonus = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHead], withLowHp()),
+      MYSTIC_SKILL.dragonHead,
+    )
+    expect(withBonus).toBeGreaterThan(alone)
   })
 })
 

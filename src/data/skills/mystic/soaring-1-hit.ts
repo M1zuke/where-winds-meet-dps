@@ -17,12 +17,12 @@ export const soaring1Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 3.1951,
-      attributeMultiplier: 4.7927,
-      physFixed: 432,
+      physMultiplier: 3.19609,
+      attributeMultiplier: 4.794135,
+      physFixed: 481.53,
       attributeFixed: 0,
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

@@ -16,7 +16,7 @@ const ALL_POINTS = TALENT_POINT_TIERS.flatMap((tier) =>
   TALENT_POINTS[tier].map((point) => ({ tier, point })),
 )
 
-const ATTRIBUTE_STATS = ["power", "agility", "momentum"]
+const ATTRIBUTE_STATS = ["power", "agility", "momentum", "body", "defense"]
 
 function withDisabled(disabled: DisabledTalentPoints): Inputs {
   return { ...defaultInputs, disabledTalentPoints: disabled }
@@ -27,12 +27,27 @@ function groupFor(stat: string) {
 }
 
 describe("talent point authoring", () => {
-  it("merges only the primary-attribute triple into one point", () => {
+  it("merges only the all-five-attributes grant into one point", () => {
     for (const { point } of ALL_POINTS) {
       const stats = Object.keys(point.effects)
       if (stats.length === 1) continue
       expect(stats.sort()).toEqual([...ATTRIBUTE_STATS].sort())
     }
+  })
+
+  it("grants all five attributes, not just power/agility/momentum, on all 19 of its nodes", () => {
+    const allFive = ALL_POINTS.filter(({ point }) => Object.keys(point.effects).length === 5)
+    expect(allFive).toHaveLength(19)
+    for (const { point } of allFive) {
+      expect(point.effects).toEqual({ power: 1, agility: 1, momentum: 1, body: 1, defense: 1 })
+    }
+  })
+
+  it("totals +7000 Max HP and +92.4 Physical Defense across every tier", () => {
+    const sumStat = (stat: "maxHp" | "physDef") =>
+      ALL_POINTS.reduce((total, { point }) => total + (point.effects[stat] ?? 0), 0)
+    expect(sumStat("maxHp")).toBe(7000)
+    expect(sumStat("physDef")).toBeCloseTo(92.4, 9)
   })
 
   it("keeps a min/max attack pair as two separate points", () => {

@@ -1,36 +1,53 @@
-import { ARSENAL_BONUS, getSchool } from "../../engine/panel"
-import { formlessWordTotals, gearAttributeTotals } from "../../engine/gearStats"
+import { arsenalAttack, arsenalHp, getSchool } from "../../engine/panel"
+import {
+  formlessWordTotals,
+  gearAttributeTotals,
+  gearHpTotal,
+  gearPhysDefTotal,
+} from "../../engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../engine/buffs/levelAttributeBonus"
 import { tierFromStacks } from "../innerWays/innerWayDef"
 import { innerWayDefinition, innerWayLadderStats, slotInnerWayId } from "../innerWays/registry"
+import { DEFAULT_ARSENAL_SCORES } from "./arsenal"
 import type {
+  ArsenalScores,
   AttributeKey,
   DisabledTalentPoints,
-  EnhancementNode,
-  EnhancementSlot,
+  EnhancementLevels,
   GearPiece,
   Inputs,
   MartialArtsTalent,
-  OddityNode,
   OddityRegions,
   ScalingSource,
   TalentStat,
 } from "../../engine/types"
 import baseStatsJson from "../../data/baseStats/baseStats.json"
-import { TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
-import odditiesJson from "../../data/baseStats/oddities.json"
-import enhancementsJson from "../../data/baseStats/enhancements.json"
+import { ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
 import { breakthroughAttributes } from "./breakthroughs"
-import { AGILITY_PER_POINT, MOMENTUM_PER_POINT, POWER_PER_POINT } from "./attributeConversion"
+import {
+  AGILITY_PER_POINT,
+  BODY_PER_POINT,
+  DEFENSE_PER_POINT,
+  MOMENTUM_PER_POINT,
+  POWER_PER_POINT,
+} from "./attributeConversion"
+import {
+  averageEnhancementBonus,
+  DEFAULT_ENHANCEMENTS,
+  enhancementContributions as enhancementAttackContributions,
+  enhancementHpTotal,
+  enhancementPhysDefTotal,
+} from "./enhancements"
 
 export * from "./talentPointGroups"
+export * from "./enhancements"
+export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-const ENHANCEMENT_TIER = "95"
 
 type BaseStatsByLevel = Record<string, Record<string, number>>
 
@@ -39,14 +56,6 @@ interface BaseEntry {
   stat: string
   value: number
 }
-
-type TieredEntries = Record<string, BaseEntry[]>
-
-interface EnhancementEntry extends BaseEntry {
-  slot: string
-}
-
-type TieredEnhancements = Record<string, EnhancementEntry[]>
 
 interface BaseAccumulator {
   minPhys: number
@@ -61,6 +70,10 @@ interface BaseAccumulator {
   power: number
   agility: number
   momentum: number
+  body: number
+  defense: number
+  hp: number
+  physDef: number
 }
 
 function readBaseLevel(): BaseAccumulator {
@@ -80,6 +93,10 @@ function readBaseLevel(): BaseAccumulator {
     power: 0,
     agility: 0,
     momentum: 0,
+    body: 0,
+    defense: 0,
+    hp: get("HP_MAX"),
+    physDef: get("W_DEF"),
   }
 }
 
@@ -121,6 +138,18 @@ function applyEntry(acc: BaseAccumulator, entry: BaseEntry): void {
     case "momentum":
       acc.momentum += entry.value
       break
+    case "body":
+      acc.body += entry.value
+      break
+    case "defense":
+      acc.defense += entry.value
+      break
+    case "maxHp":
+      acc.hp += entry.value
+      break
+    case "physDef":
+      acc.physDef += entry.value
+      break
   }
 }
 
@@ -159,6 +188,8 @@ export interface PlayerAttributes {
   power: number
   agility: number
   momentum: number
+  body: number
+  defense: number
 }
 
 const ACCUMULATOR_BY_SELECTION = new Map<string, BaseAccumulator>()
@@ -196,7 +227,13 @@ export function playerAttributes(
 ): Readonly<PlayerAttributes> {
   return cached(ATTRIBUTES_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
-    return { power: acc.power, agility: acc.agility, momentum: acc.momentum }
+    return {
+      power: acc.power,
+      agility: acc.agility,
+      momentum: acc.momentum,
+      body: acc.body,
+      defense: acc.defense,
+    }
   })
 }
 
@@ -252,25 +289,11 @@ export function globalBase(
 
 export const DEFAULT_ODDITIES: OddityRegions = (() => {
   const out: OddityRegions = {}
-  for (const [region, entries] of Object.entries(odditiesJson as TieredEntries)) {
-    out[region] = entries.map((e) => ({
-      id: e.id,
-      stat: e.stat as OddityNode["stat"],
-      value: e.value,
-      enabled: true,
-    }))
+  for (const [region, nodes] of Object.entries(ODDITIES)) {
+    out[region] = nodes.map((node) => ({ ...node, enabled: true }))
   }
   return out
 })()
-
-export const DEFAULT_ENHANCEMENTS: EnhancementNode[] = (
-  (enhancementsJson as TieredEnhancements)[ENHANCEMENT_TIER] ?? []
-).map((entry) => ({
-  id: entry.id,
-  slot: entry.slot as EnhancementSlot,
-  stat: entry.stat as TalentStat,
-  value: entry.value,
-}))
 
 export const CLASS_PRIMARY_BASE = {
   min: 0,
@@ -343,7 +366,66 @@ export function totalPlayerAttributes(
     power: fromBreakthrough.power + gear.power,
     agility: fromBreakthrough.agility + gear.agility,
     momentum: fromBreakthrough.momentum + gear.momentum,
+    body: fromBreakthrough.body,
+    defense: fromBreakthrough.defense,
   }
+}
+
+export function totalMaxHp(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+  arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): number {
+  const acc = accumulatorFor(breakthrough, disabled)
+  return (
+    acc.hp +
+    gearHpTotal(equippedPieces) +
+    acc.body * BODY_PER_POINT.hp +
+    acc.defense * DEFENSE_PER_POINT.hp +
+    arsenalHp(breakthrough, arsenalScores) +
+    enhancementHpTotal(enhancements) +
+    averageEnhancementBonus(enhancements).maxHp +
+    oddityHpTotal(oddities)
+  )
+}
+
+export function effectiveMaxHp(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+  arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): number {
+  const raw = totalMaxHp(
+    breakthrough,
+    equippedPieces,
+    disabled,
+    enhancements,
+    oddities,
+    arsenalScores,
+  )
+  return raw * (1 + averageEnhancementBonus(enhancements).percent)
+}
+
+export function totalPhysDef(
+  breakthrough: number,
+  equippedPieces: readonly GearPiece[],
+  disabled?: DisabledTalentPoints,
+  enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
+  oddities: OddityRegions = DEFAULT_ODDITIES,
+): number {
+  const acc = accumulatorFor(breakthrough, disabled)
+  return (
+    acc.physDef +
+    gearPhysDefTotal(equippedPieces) +
+    acc.defense * DEFENSE_PER_POINT.physDef +
+    enhancementPhysDefTotal(enhancements) +
+    oddityPhysDefTotal(oddities)
+  )
 }
 
 export function userTalentContributions(
@@ -367,7 +449,7 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
   const out: Record<string, number> = {}
   for (const nodes of Object.values(oddities)) {
     for (const n of nodes) {
-      if (!n.enabled || !n.value) continue
+      if (!n.enabled || !n.value || n.stat === "maxHp" || n.stat === "physDef") continue
       const path = STAT_TO_PATH[n.stat] ?? n.stat
       out[path] = (out[path] ?? 0) + n.value
     }
@@ -375,27 +457,22 @@ export function oddityContributions(oddities: OddityRegions): Record<string, num
   return out
 }
 
-export function enhancementCap(id: number): number | undefined {
-  return DEFAULT_ENHANCEMENTS.find((entry) => entry.id === id)?.value
-}
-
-export function clampEnhancementValue(id: number, value: number): number {
-  if (!Number.isFinite(value)) return 0
-  const cap = enhancementCap(id)
-  if (cap === undefined) return value
-  return Math.min(Math.max(value, 0), cap)
-}
-
-export function enhancementContributions(
-  enhancements: readonly EnhancementNode[],
-): Record<string, number> {
-  const out: Record<string, number> = {}
-  for (const node of enhancements) {
-    if (!node.value) continue
-    const path = STAT_TO_PATH[node.stat] ?? node.stat
-    out[path] = (out[path] ?? 0) + node.value
+function oddityStatTotal(oddities: OddityRegions, stat: "maxHp" | "physDef"): number {
+  let total = 0
+  for (const nodes of Object.values(oddities)) {
+    for (const n of nodes) {
+      if (n.enabled && n.stat === stat) total += n.value
+    }
   }
-  return out
+  return total
+}
+
+export function oddityHpTotal(oddities: OddityRegions): number {
+  return oddityStatTotal(oddities, "maxHp")
+}
+
+export function oddityPhysDefTotal(oddities: OddityRegions): number {
+  return oddityStatTotal(oddities, "physDef")
 }
 
 export function buildScalingSources(
@@ -441,7 +518,7 @@ export function getConfiguredBase(
     [`${key}.max`]: CLASS_PRIMARY_BASE.max + formless.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,
   }
-  const arsenal = arsenalContribution(inputs.arsenal)
+  const arsenal = arsenalContribution(inputs.arsenal, inputs.breakthrough, inputs.arsenalScores)
   if (arsenal) {
     base[`${arsenal.block}.min`] = (base[`${arsenal.block}.min`] ?? 0) + arsenal.min
     base[`${arsenal.block}.max`] = (base[`${arsenal.block}.max`] ?? 0) + arsenal.max
@@ -457,13 +534,13 @@ export function getConfiguredBase(
     base[path] = (base[path] ?? 0) + amount
   }
   const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS
-  for (const [path, amount] of Object.entries(enhancementContributions(enhancements))) {
+  for (const [path, amount] of Object.entries(enhancementAttackContributions(enhancements))) {
     base[path] = (base[path] ?? 0) + amount
   }
   return base
 }
 
-const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
+export const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
   general: "phys",
   bellstrike: "bellstrike",
   stonesplit: "stonesplit",
@@ -473,11 +550,14 @@ const ARSENAL_TO_BLOCK: Readonly<Record<string, string>> = {
 
 function arsenalContribution(
   arsenal: Inputs["arsenal"],
+  breakthrough: number,
+  arsenalScores: ArsenalScores,
 ): { block: string; min: number; max: number } | null {
   if (!arsenal) return null
   const block = ARSENAL_TO_BLOCK[arsenal]
   if (!block) return null
-  return { block, min: ARSENAL_BONUS.min, max: ARSENAL_BONUS.max }
+  const attack = arsenalAttack(breakthrough, arsenalScores)
+  return { block, min: attack.min, max: attack.max }
 }
 
 function primaryAttackKey(classId: string): string {

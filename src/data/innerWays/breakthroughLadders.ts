@@ -1,8 +1,8 @@
 import type { PanelStats } from "../../definitions/innerWays/innerWayDef"
 import type { InnerWayLadderId } from "./ids"
 
-// Keyed by breakthrough; the extracted values live in
-// reference/innerWays/breakthroughPanelStats.json.
+// In-game ladder values as of 2026-09-03
+// (reference/innerWays/breakthroughPanelStats.json), keyed by breakthrough.
 export const INNER_WAY_LADDERS: Readonly<
   Record<InnerWayLadderId, Readonly<Record<number, PanelStats>>>
 > = {

@@ -18,13 +18,13 @@ export const fireBreath1Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 40,
-      physMultiplier: 1.36185,
-      attributeMultiplier: 2.042775,
-      physFixed: 254,
+      physMultiplier: 1.36064,
+      attributeMultiplier: 2.04096,
+      physFixed: 205.5,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

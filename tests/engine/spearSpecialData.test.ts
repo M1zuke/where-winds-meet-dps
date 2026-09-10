@@ -29,30 +29,28 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancel).toHaveLength(1)
   })
 
-  it("base + River Flow variant coefficients; the cancel's rows are the first 0.4 of Spear Special's two-hit total", () => {
-    const hit = spearSpecial[0].hits[0]
-    expect(hit.physMultiplier).toBeCloseTo(1.712176, 10)
-    expect(hit.attributeMultiplier).toBeCloseTo(2.568264, 10)
-    expect(hit.physFixed).toBeCloseTo(474.4, 10)
-    expect(hit.attributeFixed).toBeCloseTo(258.4, 10)
+  it("base + River Flow variant coefficients split 0.40 / 0.60 across Spear Special's two hits; the cancel shares hit 1", () => {
+    const [first, second] = spearSpecial[0].hits
+    const total = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => first[field] + second[field]
 
-    const variant = hit.variants![0]
-    expect(variant.physMultiplier).toBeCloseTo(2.568264, 10)
-    expect(variant.attributeMultiplier).toBeCloseTo(3.852396, 10)
-    expect(variant.physFixed).toBeCloseTo(711.6, 10)
-    expect(variant.attributeFixed).toBeCloseTo(387.6, 10)
+    expect(total("physMultiplier")).toBeCloseTo(1.712176, 10)
+    expect(total("attributeMultiplier")).toBeCloseTo(2.568264, 10)
+    expect(total("physFixed")).toBeCloseTo(474.4, 10)
+    expect(total("attributeFixed")).toBeCloseTo(258.4, 10)
+    expect(first.physMultiplier / total("physMultiplier")).toBeCloseTo(0.4, 6)
+    expect(second.physMultiplier / total("physMultiplier")).toBeCloseTo(0.6, 6)
 
-    const cancelHit = cancel[0].hits[0]
-    expect(cancelHit.physMultiplier).toBeCloseTo(hit.physMultiplier * 0.4, 6)
-    expect(cancelHit.attributeMultiplier).toBeCloseTo(hit.attributeMultiplier * 0.4, 6)
-    expect(cancelHit.physFixed).toBeCloseTo(hit.physFixed * 0.4, 6)
-    expect(cancelHit.attributeFixed).toBeCloseTo(hit.attributeFixed * 0.4, 6)
+    const totalVariant = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => first.variants![0][field] + second.variants![0][field]
+    expect(totalVariant("physMultiplier")).toBeCloseTo(2.568264, 10)
+    expect(totalVariant("attributeMultiplier")).toBeCloseTo(3.852396, 10)
+    expect(totalVariant("physFixed")).toBeCloseTo(711.6, 10)
+    expect(totalVariant("attributeFixed")).toBeCloseTo(387.6, 10)
 
-    const cancelVariant = cancelHit.variants![0]
-    expect(cancelVariant.physMultiplier).toBeCloseTo(variant.physMultiplier * 0.4, 6)
-    expect(cancelVariant.attributeMultiplier).toBeCloseTo(variant.attributeMultiplier * 0.4, 6)
-    expect(cancelVariant.physFixed).toBeCloseTo(variant.physFixed * 0.4, 6)
-    expect(cancelVariant.attributeFixed).toBeCloseTo(variant.attributeFixed * 0.4, 6)
+    expect(cancel[0].hits).toEqual([first])
   })
 
   it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Blood Burst), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
@@ -158,17 +156,17 @@ describe("built-in data — one file per skill", () => {
     }
   })
 
-  it("SpearQ 5-Hit Cancel's 5th hit lands on the cast's final frame", () => {
+  it("SpearQ 5-Hit Cancel's 5th hit lands before the cast ends", () => {
     const skill = builtinSkillsForClass(CLASS).find(
       (s) => s.id === "bellstrikeUmbra-spearq-5-hit-cancel",
     )!
     expect(skill.hits).toHaveLength(5)
-    expect(skill.hits[4].frame).toBe(skill.castFrames - 1)
+    expect(skill.hits[4].frame).toBeLessThan(skill.castFrames)
   })
 })
 
 describe("builtinBuffsForClass", () => {
-  it("bellstrikeUmbra carries River Flow, Spear Special Cooldown, Zenith Bar and Zenith Detonation, all effect-less state markers", () => {
+  it("bellstrikeUmbra carries River Flow with its own magnitude, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
     expect(buffs).toHaveLength(4)
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
@@ -180,8 +178,11 @@ describe("builtinBuffsForClass", () => {
     expect(riverFlow.name).toBe("River Flow")
     expect(cooldown.name).toBe("Spear Special Cooldown")
     expect(zenith.name).toBe("Zenith Detonation")
-    for (const b of [riverFlow, cooldown, zenith]) {
+    expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.25 }])
+    for (const b of [cooldown, zenith]) {
       expect(b.effects).toEqual([])
+    }
+    for (const b of [riverFlow, cooldown, zenith]) {
       expect(b.maxStacks).toBe(1)
       expect(b.activation).toBe("triggered")
       expect(b.scope).toBe("player")

@@ -1,11 +1,27 @@
-import type { Inputs, AttributeKey, Arsenal } from "./types"
+import type {
+  Inputs,
+  AttributeKey,
+  Arsenal,
+  ArsenalScores,
+  GearLevel,
+  GearLevelValues,
+} from "./types"
 import type { FormulaContext } from "./formula"
 import { ATTUNEMENT_OPTIONS } from "./attunements"
 import { MYSTIC_TYPE_BOOST_STAT_KEY, WEAPON_BOOST_STAT_KEY, type StatKey } from "./statRegistry"
 import { henZhiActiveForInputs, innerWayScalar } from "../definitions/innerWays/registry"
 import { classDefinition, type ClassDefinition } from "../definitions/classes/registry"
-import { getBreakthrough } from "../definitions/baseStats/breakthroughs"
+import { getBreakthrough, gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import { SET_BY_ID, SET_DEFS } from "../definitions/sets/registry"
+import {
+  arsenalScoreCap,
+  arsenalStoreAttack,
+  arsenalStoreHp,
+  arsenalStoreState,
+  DEFAULT_ARSENAL_SCORES,
+  type ArsenalStoreState,
+} from "../definitions/baseStats/arsenal"
+import type { ArsenalAttackRung } from "../definitions/baseStats/arsenalStoreDef"
 
 export { getBreakthrough, henZhiActiveForInputs }
 
@@ -38,7 +54,6 @@ export interface DerivedStats {
   effectiveDefense: number
   generalDamageTaken: number
   fatigueDamageTaken: number
-  targetMultiplier: number
   generalDamageBoost: number
   weaponBoosts: Record<string, number>
   typeBoosts: Record<string, number>
@@ -63,13 +78,15 @@ export function resistanceForInputs(inputs: Inputs): number {
   return resistanceForBreakthrough(inputs.breakthrough)
 }
 
-// Pen resistance is zero for every target per the 2026-07 decision; the
-// level parameter is kept as plumbing for a future target that has one.
-export function penResistanceForLevel(_level: number): { physical: number; attribute: number } {
-  return { physical: 0, attribute: 0 }
+export function penResistanceForBreakthrough(breakthrough: number): {
+  physical: number
+  attribute: number
+} {
+  const tier = getBreakthrough(breakthrough)
+  return { physical: tier.physPenResistance, attribute: tier.attrPenResistance }
 }
-export function penResistanceForInputs(_inputs: Inputs): { physical: number; attribute: number } {
-  return penResistanceForLevel(0)
+export function penResistanceForInputs(inputs: Inputs): { physical: number; attribute: number } {
+  return penResistanceForBreakthrough(inputs.breakthrough)
 }
 
 // White → yellow conversion — see CLAUDE.md § "White vs Yellow rates":
@@ -99,7 +116,7 @@ export interface ArmorSetOption {
   // rather than a 2-piece panel stat. Such a set is still selectable — it has
   // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
   stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
-  value?: number
+  value?: GearLevelValues
 }
 export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
   name: set.name,
@@ -107,11 +124,18 @@ export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) =
   ...set.panelBonus,
 }))
 
+// The pieces carrying a set aren't modeled individually, so the 2-piece bonus
+// follows the current breakthrough's gear level.
+export function armorSetValueForLevel(opt: ArmorSetOption, level: GearLevel): number | undefined {
+  return opt.value?.[level]
+}
+
 export function applyArmorSet(inputs: Inputs): Inputs {
   if (!inputs.set) return inputs
   const opt = ARMOR_SET_OPTIONS.find((o) => o.setKey === inputs.set)
-  if (!opt || opt.stat === undefined || opt.value === undefined) return inputs
-  const { value } = opt
+  if (!opt || opt.stat === undefined) return inputs
+  const value = armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough))
+  if (value === undefined) return inputs
   switch (opt.stat) {
     case "affinityRate":
       return { ...inputs, affinityRate: inputs.affinityRate + value }
@@ -126,7 +150,65 @@ export function applyArmorSet(inputs: Inputs): Inputs {
   }
 }
 
-export const ARSENAL_BONUS = { min: 131, max: 263 } as const
+interface ArsenalUnlockState {
+  graduatedStores: number
+  currentStore?: number
+}
+
+// Not a formula: which stores are graduated vs. current per breakthrough is an
+// in-game fact, verbatim.
+const ARSENAL_UNLOCK_BY_BREAKTHROUGH: Readonly<Record<number, ArsenalUnlockState>> = {
+  13: { graduatedStores: 6 },
+  14: { graduatedStores: 7 },
+  15: { graduatedStores: 7 },
+  16: { graduatedStores: 7, currentStore: 8 },
+  17: { graduatedStores: 7, currentStore: 8 },
+  18: { graduatedStores: 8, currentStore: 9 },
+  19: { graduatedStores: 8, currentStore: 9 },
+  20: { graduatedStores: 9, currentStore: 10 },
+  21: { graduatedStores: 9, currentStore: 10 },
+}
+
+// Newest first: the current store (if any), then the past stores descending.
+export function unlockedArsenalStores(
+  breakthrough: number,
+): readonly { store: number; isPast: boolean }[] {
+  const unlock = ARSENAL_UNLOCK_BY_BREAKTHROUGH[breakthrough]
+  if (!unlock) return []
+  const stores: { store: number; isPast: boolean }[] = []
+  if (unlock.currentStore !== undefined) stores.push({ store: unlock.currentStore, isPast: false })
+  for (let store = unlock.graduatedStores; store >= 1; store--) stores.push({ store, isPast: true })
+  return stores
+}
+
+export function arsenalStates(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): ArsenalStoreState[] {
+  return unlockedArsenalStores(breakthrough).map(({ store, isPast }) =>
+    arsenalStoreState(store, scores[store] ?? arsenalScoreCap(store), isPast),
+  )
+}
+
+export function arsenalHp(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): number {
+  return arsenalStates(breakthrough, scores).reduce((sum, state) => sum + arsenalStoreHp(state), 0)
+}
+
+export function arsenalAttack(
+  breakthrough: number,
+  scores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
+): ArsenalAttackRung {
+  return arsenalStates(breakthrough, scores).reduce(
+    (sum, state) => {
+      const rung = arsenalStoreAttack(state)
+      return { min: sum.min + rung.min, max: sum.max + rung.max }
+    },
+    { min: 0, max: 0 },
+  )
+}
 
 const PRIMARY_TO_ARSENAL: Readonly<Record<AttributeKey, Arsenal>> = {
   Bellstrike: "bellstrike",
@@ -202,7 +284,6 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     effectiveDefense,
     generalDamageTaken: targetGeneralDamageTaken,
     fatigueDamageTaken: targetFatigueDamageTaken,
-    targetMultiplier: target.multiplier,
     generalDamageBoost,
     weaponBoosts,
     typeBoosts,
@@ -249,6 +330,11 @@ export function buildContext(
   const targetFatigueDamageTaken =
     (inputs.dummyMode ? 0 : baseTarget.fatigueDamageTaken) +
     (targetOverride?.fatigueDamageTakenDelta ?? 0)
+  const targetDamageReduction = inputs.dummyMode ? 0 : target.damageReduction
+  const targetPhysDamageBoostReduction = inputs.dummyMode ? 0 : target.physDamageBoostReduction
+  const targetAttrDamageBoostReduction = inputs.dummyMode ? 0 : target.attrDamageBoostReduction
+  const targetCritDamageReduction = inputs.dummyMode ? 0 : target.critDamageReduction
+  const targetAffinityDamageReduction = inputs.dummyMode ? 0 : target.affinityDamageReduction
   const effectiveBossBoost = inputs.bossBoost
 
   const generalDamageBoost =
@@ -331,11 +417,15 @@ export function buildContext(
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
-    dotDamageBoost: innerWayScalar(inputs.mindMethods, "dotDamageBoost"),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
-    rateResistance: eff.resistance,
+    damageReduction: targetDamageReduction,
+    physDamageBoostReduction: targetPhysDamageBoostReduction,
+    attrDamageBoostReduction: targetAttrDamageBoostReduction,
+    critDamageReduction: targetCritDamageReduction,
+    affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus,
     dotDamageMultiplier,
+    attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

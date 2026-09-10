@@ -3,7 +3,7 @@ import { BUFF } from "./ids"
 import { stat } from "../../../engine/effects/effect"
 import { STATUS } from "../bamboocut-draught/ids"
 
-// +10% against non-player units at 2 stacks (client locale text, 2026-09-04).
+// +10% against non-player units at 2 stacks (in-game English text, 2026-09-04).
 export const cloudvault = defineBuff({
   id: BUFF.cloudvault,
   name: "Cloudvault",

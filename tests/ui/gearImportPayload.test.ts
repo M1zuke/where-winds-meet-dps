@@ -131,16 +131,16 @@ describe("slot resolution", () => {
 describe("affix extraction from the equipmentDetails tuple", () => {
   it("reads id, value and rolled ratio, and derives the max roll", () => {
     const affix = pieceFor(fixtureText, "1").affixes[0]!
-    expect(affix.affixId).toBe("9793015")
-    expect(affix.rawValue).toBe(0.05828)
+    expect(affix.affixId).toBe("9713001")
+    expect(affix.rawValue).toBe(73.132)
     expect(affix.rolledRatio).toBe(0.94)
-    expect(affix.derivedMax).toBeCloseTo(0.062, 10)
+    expect(affix.derivedMax).toBeCloseTo(77.8, 10)
   })
 
   it("separates the six-digit attunement affix from the tunements", () => {
     const piece = pieceFor(fixtureText, "1")
     expect(piece.affixes.map((affix) => affix.affixId)).toEqual([
-      "9793015",
+      "9713001",
       "9793119",
       "9793120",
       "9793005",
@@ -168,7 +168,7 @@ describe("affix extraction from the equipmentDetails tuple", () => {
 
   it("keeps the raw entry so diagnostics survive a shape change", () => {
     expect(pieceFor(fixtureText, "1").affixes[0]!.raw).toEqual({
-      equipmentDetails: [9793015, 0.05828, 0.94, 3, true],
+      equipmentDetails: [9713001, 73.132, 0.94, 3, true],
     })
   })
 
@@ -206,7 +206,7 @@ describe("buildImportDiagnostics", () => {
       (piece: { gameSlotId: string }) => piece.gameSlotId === "1",
     )
     expect(weapon.baseAffixes).toHaveLength(5)
-    expect(weapon.baseAffixes[0].affixId).toBe("9793015")
+    expect(weapon.baseAffixes[0].affixId).toBe("9713001")
     expect(weapon.attunement.affixId).toBe("280701")
   })
 

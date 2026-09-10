@@ -2,7 +2,11 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { equippedPiecesFor, withDerivedStats } from "../../src/engine/derivedInputs"
-import { totalFormlessAttack } from "../../src/definitions/baseStats"
+import {
+  totalFormlessAttack,
+  totalMaxHp,
+  totalPlayerAttributes,
+} from "../../src/definitions/baseStats"
 import { EMPTY_EQUIPPED } from "../../src/engine/types"
 import type { GearPiece, Inputs } from "../../src/engine/types"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
@@ -11,19 +15,19 @@ import { StatsOverviewPanel } from "../../src/ui/components/stats-overview-panel
 import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
-function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
-  const helm: GearPiece = {
-    id: "formless-helm",
-    slot: "helm",
-    level: 91,
+function withFormlessAndBellstrikeWeapon(formlessMaxRoll: number): Inputs {
+  const weapon: GearPiece = {
+    id: "formless-weapon",
+    slot: "leftWeapon",
+    level: 96,
     rarity: "legendary",
     minPhys: 0,
     maxPhys: 0,
     hp: 0,
     physDef: 0,
     words: [
-      { word: "maxFormless", value: formlessMaxRoll, retuned: false },
       { word: "minBellstrike", value: 20, retuned: false },
+      { word: "maxFormless", value: formlessMaxRoll, retuned: true },
       { word: "maxBellstrike", value: 30, retuned: false },
       { word: "", value: 0, retuned: false },
       { word: "", value: 0, retuned: false },
@@ -32,7 +36,11 @@ function withFormlessAndBellstrikeHelm(formlessMaxRoll: number): Inputs {
     attunementValue: 0,
     relayed: false,
   }
-  return { ...defaultInputs, inventory: [helm], equipped: { ...EMPTY_EQUIPPED, helm: helm.id } }
+  return {
+    ...defaultInputs,
+    inventory: [weapon],
+    equipped: { ...EMPTY_EQUIPPED, leftWeapon: weapon.id },
+  }
 }
 
 describe("finalCritAffinityRates", () => {
@@ -91,7 +99,7 @@ describe("StatsOverviewPanel", () => {
   })
 
   it("reads Formless attack out of the primary attribute row and onto its own", () => {
-    const inputs = withFormlessAndBellstrikeHelm(40)
+    const inputs = withFormlessAndBellstrikeWeapon(40)
     const equipped = equippedPiecesFor(inputs)
     const formless = totalFormlessAttack(inputs, equipped)
     const withSets = applyBowSet(applyArmorSet(withDerivedStats(inputs)))
@@ -116,9 +124,47 @@ describe("StatsOverviewPanel", () => {
     )
   })
 
+  it("shows Constitution, Defense and Max HP alongside Power, Agility and Momentum", () => {
+    const equipped = equippedPiecesFor(defaultInputs)
+    const attrs = totalPlayerAttributes(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+    const maxHp = totalMaxHp(
+      defaultInputs.breakthrough,
+      equipped,
+      defaultInputs.disabledTalentPoints,
+    )
+
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Constitution").parentElement).toHaveTextContent(fmt(attrs.body, false))
+    expect(screen.getByText("Defense").parentElement).toHaveTextContent(fmt(attrs.defense, false))
+    expect(screen.getByText("Max HP").parentElement).toHaveTextContent(fmt(maxHp, false))
+  })
+
+  it("points Max HP at the Arsenal tab's own mastery score, without a floor marker", () => {
+    render(
+      <I18nProvider>
+        <StatsOverviewPanel inputs={defaultInputs} />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText("Max HP").parentElement).not.toHaveTextContent("≥")
+    expect(screen.getByText("Max HP")).toHaveAttribute(
+      "title",
+      "Includes each unlocked Arsenal's own mastery score, set on the Arsenal tab; defaults to Total Mastery",
+    )
+  })
+
   it("counts an equipped Formless word on the Formless row, not the attribute's own", () => {
     const bare = totalFormlessAttack(defaultInputs, equippedPiecesFor(defaultInputs))
-    const withWord = withFormlessAndBellstrikeHelm(40)
+    const withWord = withFormlessAndBellstrikeWeapon(40)
     const geared = totalFormlessAttack(withWord, equippedPiecesFor(withWord))
 
     expect(geared.max - bare.max).toBeCloseTo(40, 9)

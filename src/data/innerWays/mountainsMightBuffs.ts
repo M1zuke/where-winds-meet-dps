@@ -3,7 +3,7 @@ import { BUFF, PARAM } from "../skills/buffs/ids"
 import { applyBuff, stat } from "../../engine/effects/effect"
 
 // 1.5% direct affinity while Endless Gale is up, and 1.5% again against a boss
-// (client localization, 2026-08-15). The engine simulates a boss target, so the
+// (in-game English text, 2026-08-15). The engine simulates a boss target, so the
 // two are carried as one 3% figure — the same value the reference site's own
 // def and the workbook both hold.
 export const mountainsMightBuff = defineBuff({

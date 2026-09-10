@@ -133,6 +133,7 @@ export function useGearImportDraft(inputs: Inputs) {
     importMappings,
     copyNotice,
     copyDiagnostics,
+    breakthrough: inputs.breakthrough,
   }
 }
 

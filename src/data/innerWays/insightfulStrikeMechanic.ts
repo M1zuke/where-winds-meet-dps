@@ -1,23 +1,39 @@
 // Insightful Strike's Concentration: a weapon hit can proc it, so its uptime is
-// a probability schedule rather than a window. Tier 6 additionally multiplies
-// DoT damage while it is up.
+// a probability schedule rather than a window — the def vocabulary has no
+// stochastic per-hit proc, which is why this is a mechanic.
 import { concentrationActiveProbSchedule } from "../../engine/buffs/concentration"
 import { innerWayHasNode, slottedInnerWayTier } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_NODE } from "./ids"
 import { BUFF } from "../skills/buffs/ids"
+import { PROP } from "../skills/ids"
+import { skillTagsOf } from "../../engine/buffs/tags"
 import { insightfulStrike } from "./insightfulStrike"
+import type { Skill } from "../../engine/skill"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const AFFINITY_PROC_CAP = 0.4
 const DOT_MULTIPLIER_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
-const DOT_MULT_ROLES = ["role:bleedDetonation", "role:bleedTick", "role:combustion"]
 
-const EFFECTS = [
-  { statKey: "affinityDamageBoost" as const, amount: 0.1 },
+// In-game text, 2026-09-10: the tier-6 rung raises "DoT and its empowered
+// effects" — a wider set than the ticks.
+function takesDotDamageBoost(skill: Skill | undefined): boolean {
+  if (!skill) return false
+  return skill.isDotTick === true || skillTagsOf(skill).has(PROP.empoweredDotEffect)
+}
+
+// In-game, 2026-09-10: directAffinityRate and allDamageBoost apply to an
+// attack, not to a damage-over-time tick.
+function isDotTick(skill: Skill | undefined): boolean {
+  return skill?.isDotTick === true
+}
+
+const AFFINITY_DAMAGE_EFFECT = { statKey: "affinityDamageBoost" as const, amount: 0.1 }
+const ATTACK_ONLY_EFFECTS = [
   { statKey: "directAffinityRate" as const, amount: 0.03 },
   { statKey: "allDamageBoost" as const, amount: 0.015 },
 ]
+const EFFECTS = [AFFINITY_DAMAGE_EFFECT, ...ATTACK_ONLY_EFFECTS]
 
 export function concentrationAvailable(inputs: {
   mindMethods: readonly { id?: string; name: string; stacks: string }[]
@@ -64,15 +80,15 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
 
     contributeAt(state, frame, skill, setup) {
       const activeProb = state.schedule.getActiveProbAtTime(frame / setup.fps)
+      const applicableEffects = isDotTick(skill) ? [AFFINITY_DAMAGE_EFFECT] : EFFECTS
       const effects =
         activeProb > 0
-          ? EFFECTS.map((effect) => ({
+          ? applicableEffects.map((effect) => ({
               statKey: effect.statKey,
               amount: effect.amount * activeProb,
             }))
           : []
-      const scaled =
-        state.tier6 && skill && DOT_MULT_ROLES.some((role) => skill.tags?.includes(role))
+      const scaled = state.tier6 && takesDotDamageBoost(skill)
       if (effects.length === 0 && !scaled) return null
       return {
         effects,

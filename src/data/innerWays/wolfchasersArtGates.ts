@@ -1,7 +1,3 @@
-// The first gate here is the projection of River Flow whose magnitude
-// `riverFlowBuffDef` carries under this same id. Both live apart from that
-// module because `wolfchasersArtBuffs.ts` and `wolfchasersArt.ts` import each
-// other, and a `const` read from `wolfchasersArt.ts`'s own body would be in TDZ.
 import {
   defineInnerWayGateBuff,
   type InnerWayGateBuff,
@@ -24,7 +20,7 @@ export const WOLFCHASERS_ART_GATES: readonly InnerWayGateBuff[] = [
     scope: "player",
     activation: "triggered",
     durationFrames: RIVER_FLOW_DURATION_FRAMES,
-    effects: [],
+    effects: [{ statKey: "allDamageBoost", amount: 0.25 }],
     maxStacks: 1,
     stackScaling: "flat",
     requiresParam: PARAM.wolfchasersArt,

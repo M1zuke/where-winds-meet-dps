@@ -52,7 +52,7 @@ const inputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
 
-  set: SET_ID.hawking,
+  set: SET_ID.hawkwing,
   bowSet: "affinity",
   arsenal: "bellstrike",
   mindMethods: [
@@ -107,11 +107,11 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(eff.resistance).toBeCloseTo(0.45, 3)
   })
 
-  it("runs the T6-Bili rotation (~60.7 s) and lands within a loose band of the site's target", () => {
+  it("runs the T6-Bili rotation (~67.7 s) and lands within a loose band of the site's target", () => {
     const result = runEngine(inputs)
 
-    expect(result.rotationDuration).toBeGreaterThan(60.2)
-    expect(result.rotationDuration).toBeLessThan(61.2)
+    expect(result.rotationDuration).toBeGreaterThan(67.4)
+    expect(result.rotationDuration).toBeLessThan(67.9)
 
     const detonation = result.perSkill.find(
       (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
@@ -147,25 +147,21 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(49500)
-    expect(result.dps).toBeLessThan(49680)
-    expect(result.totalDamage).toBeGreaterThan(3003000)
-    expect(result.totalDamage).toBeLessThan(3018000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1614000)
-    expect(detonation?.expectedDamage).toBeLessThan(1628000)
+    expect(result.dps).toBeGreaterThan(43350)
+    expect(result.dps).toBeLessThan(43500)
+    expect(result.totalDamage).toBeGreaterThan(2932000)
+    expect(result.totalDamage).toBeLessThan(2947000)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1549000)
+    expect(detonation?.expectedDamage).toBeLessThan(1560000)
 
-    // The engine sits ~2.5 % ABOVE the cached target, from four sources the
-    // cached run predates: bleed ticks and Bleed Detonation take all-martial
-    // (and ticks sword boost) per the Sword typing, a DoT tick keeps the flat
-    // damage its own data authors, the built-in rotations open on a full
-    // Zenith bar, which lands the bar's damage bonus on detonations the cached
-    // run scored from empty — the detonation row alone therefore runs ~2.7 %
-    // over — and the sword and spear kits are authored hit by hit, which
-    // raised the special and the Crisscross follow-ups and lowered the tick.
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.999)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(1.03)
+    // dps sits ~10 % below the cached target while total damage sits slightly
+    // above it: the animation-accurate cast lengths lengthen the rotation by
+    // several seconds, so the same hits land over a longer clock.
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.895)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.901)
     expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.999)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.03)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(1.03)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.004)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.98)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.99)
   })
 })

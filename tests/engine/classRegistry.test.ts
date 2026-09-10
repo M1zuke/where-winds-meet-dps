@@ -6,11 +6,8 @@ import {
   grantsMinPhysCritBoostFor,
 } from "../../src/definitions/classes/registry"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
-import { prepareMechanics } from "../../src/engine/mechanics"
-import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import { poisonExtensionForClass } from "../../src/definitions/classes/poisonExtensions"
 import { buildBehaviors, DEFAULT_BEHAVIOR, type BuildView } from "../../src/engine/behavior"
-import { defaultInputs } from "../../src/engine/defaults"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
@@ -97,27 +94,29 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(umbra.classBuffDefs.map((module) => module.id)).toEqual([
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
   it("buffModules composes every slottable inner way's buffDefs (barrel order) ahead of the class's own", () => {
     expect(umbra.buffModules.map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
-      "potentRiverFlow",
       "wineGu",
       "soulShaken",
+      "wolfchasersArtMartialDamage",
       "disintegration",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
   it("buffDefsForClass('bellstrikeUmbra') is the full 33-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
-      "potentRiverFlow",
       "wineGu",
       "soulShaken",
+      "wolfchasersArtMartialDamage",
       "disintegration",
       "revelryScript",
       "vulnerabilityTeammate",
@@ -136,6 +135,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "mistwillowBuff",
       "mistwillowHeavyBuff",
       "mistwillowLightBuff",
+      "cleftpeakStacks",
       "tiltrimStack",
       "tiltrimInebriateBonus",
       "inebriateCritDamage",
@@ -145,6 +145,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "nonPlayerBaseDamage50",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
@@ -161,23 +162,8 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(umbra.gateBuffs).toEqual([])
   })
 
-  it("mechanics are registered for this class", () => {
-    expect(umbra.mechanics.map(({ mechanic }) => mechanic.id)).toEqual(["levelAttributeBonus"])
-    const setup: MechanicSetup = {
-      inputs: defaultInputs,
-      classId: "bellstrikeUmbra",
-      fps: 60,
-      rotationDurationSec: 10,
-      hitTimesSec: [0],
-      weaponHitTimesSec: [0],
-      qiPhaseAt: () => "normal",
-      paramOn: () => false,
-      paramTier: () => 0,
-      hasBuffEngine: true,
-      effectiveRates: { precision: 1, critRate: 0.5, affinityRate: 0.2 },
-    }
-    const preparedIds = prepareMechanics(setup).map((prepared) => prepared.mechanic.id)
-    expect(preparedIds).toContain("levelAttributeBonus")
+  it("declares no mechanics of its own", () => {
+    expect(umbra.mechanics).toEqual([])
   })
 
   it("the skill behaviour is registered for Blood Burst", () => {

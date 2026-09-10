@@ -4,9 +4,8 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { DEBUFF, SKILL } from "./ids"
 import { CLASS_RECEIVES } from "./receives"
 
-// The airborne follow-up of Reveldrift. Coefficients: client
-// skill_numerical_config row 20503102 at skill level 100 (patch container,
-// 2026-09-04): 0.804 / 223 / 122 at the tooltip's full ratio as one hit;
+// The airborne follow-up of Reveldrift. Coefficients: the in-game level-100
+// row (0.804 / 223 / 122, 2026-09-04) at the tooltip's full ratio as one hit;
 // attribute side × 1.5. Cast length and hit frame: in-game animation,
 // 2026-09-05.
 export const realmplay = defineSkill({

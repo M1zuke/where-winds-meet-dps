@@ -1,5 +1,5 @@
 import type { GearLevel, GearRarity, GearSlot } from "./types"
-import { isWeaponSlot } from "./types"
+import { GEAR_LEVELS, isWeaponSlot } from "./types"
 import type { GearBaseStats } from "../data/stats/gearBaseStats"
 import { gearBaseStatsFor } from "../data/stats/gearBaseStats"
 
@@ -14,7 +14,6 @@ export interface InferredGearIdentity {
   candidates: readonly GearIdentity[]
 }
 
-const TABLED_LEVELS: readonly GearLevel[] = [91, 96]
 const RARITIES: readonly GearRarity[] = ["legendary", "epic"]
 
 function comparedFields(slot: GearSlot): readonly (keyof GearBaseStats)[] {
@@ -29,7 +28,7 @@ export function inferGearIdentity(
   if (!fields.length) return { level: null, rarity: null, candidates: [] }
 
   const candidates: GearIdentity[] = []
-  for (const level of TABLED_LEVELS) {
+  for (const level of GEAR_LEVELS) {
     for (const rarity of RARITIES) {
       const tabled = gearBaseStatsFor({ slot, level, rarity })
       if (fields.every((field) => tabled[field] === observed[field])) {

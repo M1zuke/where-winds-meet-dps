@@ -96,6 +96,51 @@ describe("BuffEngine — targeting & triggers", () => {
     expect(engine.calculateDamageEffects(unlisted, 1).effects).toHaveLength(0)
   })
 
+  it("reachesDotTicks: false contributes nothing to a tick but still reaches an ordinary hit", () => {
+    const modules: BuffModule[] = [
+      {
+        id: "hitOnly",
+        name: "Hit Only",
+        duration: 10,
+        affectsAll: true,
+        reachesDotTicks: false,
+        effects: [stat("allDamageBoost", 0.2)],
+      },
+    ]
+    const engine = new BuffEngine({}, modules)
+    engine.processSkillCast("cast:probe", 0, {}, false, ["hitOnly"])
+    const ordinaryHit = taggedSkill("Ordinary Hit")
+    const tick = makeSkill("test", { name: "Tick", isDotTick: true })
+    expect(engine.calculateDamageEffects(ordinaryHit, 1).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.2,
+    })
+    const tickResult = engine.calculateDamageEffects(tick, 1)
+    expect(tickResult.effects).toHaveLength(0)
+    expect(tickResult.damageFactor).toBe(1)
+    expect(tickResult.artBonuses).toEqual({})
+    expect(tickResult.forceCrit).toBe(false)
+  })
+
+  it("a module with reachesDotTicks absent still reaches a tick, matching pre-existing behaviour", () => {
+    const modules: BuffModule[] = [
+      {
+        id: "unstated",
+        name: "Unstated",
+        duration: 10,
+        affectsAll: true,
+        effects: [stat("allDamageBoost", 0.2)],
+      },
+    ]
+    const engine = new BuffEngine({}, modules)
+    engine.processSkillCast("cast:probe", 0, {}, false, ["unstated"])
+    const tick = makeSkill("test", { name: "Tick", isDotTick: true })
+    expect(engine.calculateDamageEffects(tick, 1).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.2,
+    })
+  })
+
   it("a skill's own `triggersBuffs` is the only trigger channel a buff needs", () => {
     const modules: BuffModule[] = [
       {

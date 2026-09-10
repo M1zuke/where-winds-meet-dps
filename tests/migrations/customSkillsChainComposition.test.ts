@@ -8,9 +8,26 @@ import {
   runCustomSkillMigrations,
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
+import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
+import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
+import { healBleedCoefficientReach } from "../../src/migrations/customSkills/V9__bleedCoefficientReach"
+import { healWolfchasersArtSwordOverreach } from "../../src/migrations/customSkills/V10__wolfchasersArtSwordOverreach"
+import { healSpearMistwillowReach } from "../../src/migrations/customSkills/V11__spearMistwillowReach"
+import { healDragonHeadLowHpReach } from "../../src/migrations/customSkills/V12__dragonHeadLowHpReach"
+import { healSpearHeavyChargedCoefficients } from "../../src/migrations/customSkills/V13__spearHeavyChargedCoefficients"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
+
+const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
+  [6, healBleedRowDefaults],
+  [8, healRiverFlowApplication],
+  [9, healBleedCoefficientReach],
+  [10, healWolfchasersArtSwordOverreach],
+  [11, healSpearMistwillowReach],
+  [12, healDragonHeadLowHpReach],
+  [13, healSpearHeavyChargedCoefficients],
+]
 
 const SKILLS_KEY = "wwm.customSkills"
 const ROOT = join(process.cwd(), "tests/migrations/testCustomSkills")
@@ -78,9 +95,17 @@ describe("every captured custom-skill store walks the whole chain", () => {
         hits: skill.hits.map(({ id, frame }) => ({ id, frame })),
       })
       const identities = walkedIdentities(fixture.blob.skills)
+      const stepsAbove = (version: number) =>
+        HEALS_BY_STEP.filter(([to]) => version < to).map(([, heal]) => heal)
       ;(result.blob.skills as Skill[]).forEach((walked, index) => {
-        const stored = fixture.blob.skills[index]
-        const expected = migrateNeverAbradesSkill({ ...stored, ...identities[index] }) as Skill
+        const healed = stepsAbove(fixture.version).reduce(
+          (skill, heal) => heal(skill) as Skill,
+          clone(fixture.blob.skills[index]),
+        )
+        const identified = { ...healed, ...identities[index] }
+        const expected = (
+          fixture.version < 15 ? migrateNeverAbradesSkill(identified) : identified
+        ) as Skill
         expect(strip(walked)).toEqual(strip(expected))
       })
     },
@@ -107,7 +132,8 @@ describe("the oldest custom-skill store survives loadCustomSkills end to end", (
         (hit, index) =>
           hit.physMultiplier === 0.6 && builtin && builtin.hits[index].physMultiplier !== 0.6,
       )
-      if (!builtin || edited) {
+      const reshaped = builtin && stored.hits.length !== builtin.hits.length
+      if (!builtin || edited || reshaped) {
         stored.hits.forEach((hit, index) => expect(rowOf(skill.hits[index])).toEqual(rowOf(hit)))
       } else {
         builtin.hits.forEach((hit, index) =>

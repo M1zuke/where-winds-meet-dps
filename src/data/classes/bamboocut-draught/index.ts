@@ -24,6 +24,7 @@ export const bamboocutDraught = defineClass({
   validated: false,
   spec: "bamboocut_draught",
   primaryAttribute: "Bamboocut",
+  attributeMultiplier: 1.5,
   classMindGroup: INNER_WAY_ID.eonpour,
   allowedMindMethods: [
     INNER_WAY_ID.skyspeak,
@@ -46,7 +47,6 @@ export const bamboocutDraught = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,
-  retunementPool: null,
   classBuffDefs: [inebriateSkillCritDamage, inebriateDamageScaling],
   gateBuffs: BAMBOOCUT_DRAUGHT_GATES,
   openingStackBuffIds: [STATUS.bingePoints],

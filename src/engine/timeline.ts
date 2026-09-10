@@ -62,7 +62,6 @@ import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { clockQiPhase, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
-import { innerWayAllDamageBoost } from "./buffs/innerWayBonus"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import { PROP } from "../data/skills/ids"
 
@@ -78,6 +77,11 @@ type EchoFeed = DamageEffectsResult["echoFeeds"][number]
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
+}
+
+function castEndFrame(skill: Skill, castFrame: number): number {
+  const lastHitFrame = skill.hits.length > 0 ? Math.max(...skill.hits.map((h) => h.frame)) : -1
+  return castFrame + (skill.castFrames || lastHitFrame + 1)
 }
 
 interface HitEvent {
@@ -766,11 +770,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         effects.push({ statKey: "allDamageBoost", amount: healerAmount })
         sig += `~healerBuff:${healerAmount}`
       }
-      const innerWayBonus = innerWayAllDamageBoost(inputs.mindMethods)
-      if (innerWayBonus !== 0) {
-        effects.push({ statKey: "allDamageBoost", amount: innerWayBonus })
-        sig += `~innerWay:${innerWayBonus}`
-      }
     }
     let r = stateMemo.get(sig)
     if (!r) {
@@ -874,9 +873,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   let totalDamage = 0
   const outcomeTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
+  const outcomeDamageTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
   const expectedShareTally: OutcomeCounts = { abrasion: 0, normal: 0, crit: 0, affinity: 0 }
-  const tallyRoll = (rolled: RolledHit): void => {
+  const tallyRoll = (rolled: RolledHit, damage: number): void => {
     outcomeTally[rolled.outcome] += 1
+    outcomeDamageTally[rolled.outcome] += damage
     for (const outcome of OUTCOME_KEYS) expectedShareTally[outcome] += rolled.chance[outcome]
   }
   let processed = 0
@@ -965,7 +966,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const landsInFight = hitInWindow && !isPrePullSkill(skill)
     if (landsInFight) {
       totalDamage += damage
-      if (rolled) tallyRoll(rolled)
+      if (rolled) tallyRoll(rolled, damage)
+      // A hit that carries no coefficient exists to fire its triggers, and
+      // counting it would put hits a player never sees in the breakdown.
       if (hitDealsDamage(hit))
         add(
           skill.name,
@@ -996,7 +999,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         continue
       }
       if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
-        liveWriter.applyTrigger(trigger, frame, stepStart)
+        liveWriter.applyTrigger(
+          trigger,
+          trigger.appliesOnCastEnd ? castEndFrame(skill, castFrame) : frame,
+          stepStart,
+        )
         continue
       }
       if (!liveWriter.fires(trigger, frame)) continue
@@ -1246,7 +1253,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // number the way a regular hit takes it on its art `correction`.
     const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
     totalDamage += damage
-    if (tick.rolled) tallyRoll(tick.rolled)
+    if (tick.rolled) tallyRoll(tick.rolled, damage)
     add(entry.dotName, entry.dotType, 1, damage, entry.dotBreakdownName, entry.dotBreakdownKey)
     bankEcho(entry.frame, st.echoFeeds, damage)
     pushEvent({
@@ -1268,7 +1275,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
       const damage = rolled?.damage ?? expectedDamage
       totalDamage += damage
-      if (rolled) tallyRoll(rolled)
+      if (rolled) tallyRoll(rolled, damage)
       add(
         event.name,
         event.type,
@@ -1384,6 +1391,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     lowQiWindow,
     casts,
     outcomeCounts: hitRng ? outcomeTally : undefined,
+    outcomeDamage: hitRng ? outcomeDamageTally : undefined,
     expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
   }
 }

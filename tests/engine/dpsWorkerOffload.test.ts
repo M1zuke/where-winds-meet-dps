@@ -5,12 +5,14 @@ import {
   computeDpsDeltas,
   computeEquippedDeltas,
   computeGearAnalysisRequest,
+  computeParseRunDetail,
   computeParseSimulation,
   computeProfileMetrics,
   computeRankingRequest,
   computeRotationDps,
   computeSetTiles,
   PARSE_RUN_CAP,
+  parseRunSeed,
   type ParseSimulationWorkerRequest,
 } from "../../src/engine/dpsWorker"
 import { RUN_SEED_STRIDE } from "../../src/engine/rng"
@@ -319,6 +321,60 @@ describe("computeParseSimulation", () => {
     const rates = res.expectedRates!
     const sum = rates.abrasion + rates.normal + rates.crit + rates.affinity
     expect(sum).toBeCloseTo(1, 6)
+  })
+
+  it("echoes the seed the runs were drawn from", async () => {
+    expect((await computeParseSimulation(request())).seed).toBe(seed)
+  })
+
+  it("numbers the runs in the order they were drawn", async () => {
+    const res = await computeParseSimulation(request({ runs: 6 }))
+    expect(res.runs.map((run) => run.index)).toEqual([0, 1, 2, 3, 4, 5])
+  })
+})
+
+describe("computeParseRunDetail", () => {
+  const rotation = defaultRotationForClass("bellstrikeUmbra")
+  const seed = 20260816
+
+  it("reproduces a listed run's totals from its seed", async () => {
+    const simulation = await computeParseSimulation({
+      reqId: 1,
+      inputs: umbraInputs,
+      rotation,
+      runs: 6,
+      seed,
+    })
+
+    for (const run of simulation.runs) {
+      const detail = computeParseRunDetail({
+        reqId: 2,
+        inputs: umbraInputs,
+        rotation,
+        seed: parseRunSeed(simulation.seed, run.index),
+      })
+
+      expect(detail.totalDamage).toBe(run.totalDamage)
+      expect(detail.dps).toBe(run.dps)
+      expect(detail.outcomeCounts.crit).toBe(run.criticalHits)
+      expect(detail.outcomeCounts.affinity).toBe(run.affinityHits)
+      expect(detail.outcomeCounts.normal).toBe(run.normalHits)
+      expect(detail.outcomeCounts.abrasion).toBe(run.abrasionHits)
+    }
+  })
+
+  it("carries the per-skill rows the simulation itself never collects", () => {
+    const detail = computeParseRunDetail({
+      reqId: 1,
+      inputs: umbraInputs,
+      rotation,
+      seed: parseRunSeed(seed, 3),
+    })
+
+    expect(detail.perSkill.length).toBeGreaterThan(0)
+    const summed = detail.perSkill.reduce((total, row) => total + row.expectedDamage, 0)
+    expect(summed).toBeCloseTo(detail.totalDamage, 6)
+    expect(detail.seed).toBe(parseRunSeed(seed, 3))
   })
 })
 

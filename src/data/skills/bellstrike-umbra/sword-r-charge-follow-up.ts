@@ -13,11 +13,12 @@ export const swordRChargeFollowUp = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordRChargeFollowUp,
-  castFrames: 30,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
+  castFrames: 86,
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 14,
       physMultiplier: 0.325601,
       attributeMultiplier: 0.488401,
       physFixed: 0,
@@ -25,7 +26,7 @@ export const swordRChargeFollowUp = defineSkill({
       triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
     }),
     hit(1, {
-      frame: 15,
+      frame: 41,
       physMultiplier: 0.488401,
       attributeMultiplier: 0.732602,
       physFixed: 0,
@@ -34,5 +35,5 @@ export const swordRChargeFollowUp = defineSkill({
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-03T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

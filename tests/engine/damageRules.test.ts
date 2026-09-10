@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest"
 import {
+  AFFINITY_DAMAGE_MULTIPLIER_MAX,
+  AFFINITY_DAMAGE_MULTIPLIER_MIN,
   computeSkillDamage,
+  CRIT_DAMAGE_MULTIPLIER_MAX,
+  CRIT_DAMAGE_MULTIPLIER_MIN,
   FOOD_MAX_PHYS_BONUS,
   FOOD_MIN_PHYS_BONUS,
 } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
-import { penResistanceForLevel } from "../../src/engine/panel"
+import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
@@ -182,7 +186,7 @@ describe("abrasionAvoidRate — scales the graze rate onto the normal row, never
   })
 })
 
-// Deliberately INVERTS PDF §7 (overflow ÷200, deficit ÷100)
+// Corrects PDF §7 (overflow ÷200, deficit ÷100)
 describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflow", () => {
   it("with resistance omitted (0), AH > 0", () => {
     const cells = computeSkillDamage(art, baseCtx, 1).cells
@@ -206,67 +210,146 @@ describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflo
     expect(withRes).toBeLessThan(base)
   })
 
-  it("penResistanceForLevel is zero for every target", () => {
-    for (const lvl of [80, 85, 90, 95, 100]) {
-      expect(penResistanceForLevel(lvl)).toEqual({ physical: 0, attribute: 0 })
-    }
+  it("a build at breakthrough 20 deals less damage than the same build with its pen resistance zeroed", () => {
+    const ctx20 = buildContext({ ...defaultInputs, breakthrough: 20 })
+    const ctx20WithoutPenResistance = { ...ctx20, physPenResistance: 0, attrPenResistance: 0 }
+    const damageWithPenResistance = computeSkillDamage(art, ctx20, 1).expectedDamage
+    const damageWithoutPenResistance = computeSkillDamage(
+      art,
+      ctx20WithoutPenResistance,
+      1,
+    ).expectedDamage
+    expect(damageWithPenResistance).toBeLessThan(damageWithoutPenResistance)
   })
 })
 
-// PDF §1
-describe("DoT rules — the elevated multiplier only, flat damage is the data's (PDF §1)", () => {
+describe("keeps the matching-path multiplier on a damage-over-time row", () => {
   const bleed = BLEED_DOT
   const combustion = COMBUSTION_TICK
 
-  it("bleed: the DoT variant (elevatedAttributeMultiplier: false) deals strictly less", () => {
-    const eligible = computeSkillDamage(bleed, baseCtx, 1).expectedDamage
+  it("bleed: left at its default, a DoT row matches an explicitly elevated one and beats a demoted one", () => {
+    const atDefault = computeSkillDamage(bleed, baseCtx, 1).expectedDamage
+    const elevated = computeSkillDamage(
+      { ...bleed, elevatedAttributeMultiplier: true },
+      baseCtx,
+      1,
+    ).expectedDamage
     const demoted = computeSkillDamage(
       { ...bleed, elevatedAttributeMultiplier: false },
       baseCtx,
       1,
     ).expectedDamage
-    expect(demoted).toBeLessThan(eligible)
+    expect(atDefault).toBeCloseTo(elevated, 9)
+    expect(atDefault).toBeGreaterThan(demoted)
   })
 
-  it("combustion: flat survives the demotion, and a non-matching path is untouched by it", () => {
-    const eligible = computeSkillDamage(combustion, baseCtx, 1)
+  it("combustion: flat survives an explicit demotion, and a non-matching path is untouched by it", () => {
+    const atDefault = computeSkillDamage(combustion, baseCtx, 1)
     const demoted = computeSkillDamage(
       { ...combustion, elevatedAttributeMultiplier: false },
       baseCtx,
       1,
     )
-    expect(eligible.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
+    expect(atDefault.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
     expect(demoted.cells.AT).toBeCloseTo(combustion.physFixed ?? 0, 9)
-    expect(demoted.expectedDamage).toBeCloseTo(eligible.expectedDamage, 9)
+    expect(demoted.expectedDamage).toBeCloseTo(atDefault.expectedDamage, 9)
   })
 })
 
-// PDF §11. `art.extraAffinityRate` is the one raw rate source the formula
-// receives, so it is the vehicle for the shared divide-before-cap rule that
-// both rate cells implement.
-describe("rate resistance on a raw rate source (PDF §11)", () => {
-  it("a raw affinity-rate source is divided by (1 + r) before the 40 % cap", () => {
-    const rawRate = { ...art, extraAffinityRate: 0.1 }
-    const noRes = computeSkillDamage(rawRate, baseCtx, 1).cells
-    const withRes = computeSkillDamage(rawRate, { ...baseCtx, rateResistance: 0.3 }, 1).cells
-    expect(noRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
-    expect(withRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1 / 1.3, 9)
-  })
+describe("the attribute flat term takes the martial art's multiplier alongside its coefficient", () => {
+  const artWithFlat = { ...BLEED_DOT, attributeFixed: 40 }
+  const ctxWithMultiplier = { ...baseCtx, attributeFlatMultiplier: 1.5 }
 
-  it("Thundercry (Modao) charged bonus crit is FLAT: unresisted, added after the cap", () => {
-    const modao = MODAO_CHARGE
-    const cells = computeSkillDamage(
-      modao,
-      { ...baseCtx, critPanel: 0.7, rateResistance: 0.3 },
+  it("an elevated row scales its flat rows by the context multiplier", () => {
+    const scaled = computeSkillDamage(artWithFlat, ctxWithMultiplier, 1).cells
+    const unscaled = computeSkillDamage(
+      artWithFlat,
+      { ...ctxWithMultiplier, attributeFlatMultiplier: 1 },
       1,
     ).cells
-    expect(cells.V).toBeCloseTo(0.7 + 0.24, 9)
+    expect(scaled.BS).toBeCloseTo(unscaled.BS * 1.5, 9)
+  })
+
+  it("with no context multiplier supplied, the flat term stays unscaled", () => {
+    const withoutField = computeSkillDamage(artWithFlat, baseCtx, 1).cells
+    const withExplicitOne = computeSkillDamage(
+      artWithFlat,
+      { ...baseCtx, attributeFlatMultiplier: 1 },
+      1,
+    ).cells
+    expect(withoutField.BS).toBeCloseTo(withExplicitOne.BS, 9)
+  })
+
+  it("a demoted row ignores the context multiplier on the flat term, same as its coefficient", () => {
+    const demotedWithMultiplier = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      ctxWithMultiplier,
+      1,
+    ).cells
+    const demotedWithoutMultiplier = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      { ...ctxWithMultiplier, attributeFlatMultiplier: 1 },
+      1,
+    ).cells
+    expect(demotedWithMultiplier.BS).toBeCloseTo(demotedWithoutMultiplier.BS, 9)
+  })
+
+  it("a demoted row deals less total damage than the same row elevated", () => {
+    const elevated = computeSkillDamage(artWithFlat, ctxWithMultiplier, 1).expectedDamage
+    const demoted = computeSkillDamage(
+      { ...artWithFlat, elevatedAttributeMultiplier: false },
+      ctxWithMultiplier,
+      1,
+    ).expectedDamage
+    expect(demoted).toBeLessThan(elevated)
   })
 })
 
-describe("burst detonation is exempt from the DoT rule", () => {
+// PDF §11
+describe("a skill's own rate bonus is added undivided, inside the cap", () => {
+  it("a skill's crit-rate bonus cannot push the capped part above the cap", () => {
+    const cells = computeSkillDamage(MODAO_CHARGE, { ...baseCtx, critPanel: 0.7 }, 1).cells
+    expect(cells.V).toBeCloseTo(0.8 + baseCtx.directCritPanel, 9)
+  })
+
+  it("a skill's affinity-rate bonus is added undivided onto the already-resisted panel rate", () => {
+    const rawRate = { ...art, extraAffinityRate: 0.1 }
+    const cells = computeSkillDamage(rawRate, baseCtx, 1).cells
+    expect(cells.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
+  })
+
+  it("the direct crit rate still sits outside the cap", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, critPanel: 1, directCritPanel: 0.05 },
+      1,
+    ).cells
+    expect(cells.V).toBeCloseTo(0.8 + 0.05, 9)
+  })
+
+  it("the direct affinity rate still sits outside the cap", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, affinityPanel: 1, directAffinityPanel: 0.05 },
+      1,
+    ).cells
+    expect(cells.W).toBeCloseTo(0.4 + 0.05, 9)
+  })
+
+  it("a panel rate driven negative by resistance cannot go below zero", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, critPanel: -0.5, affinityPanel: -0.5 },
+      1,
+    ).cells
+    expect(cells.V).toBeCloseTo(baseCtx.directCritPanel, 9)
+    expect(cells.W).toBeCloseTo(baseCtx.directAffinityPanel, 9)
+  })
+})
+
+describe("keeps the matching-path multiplier on a sustain-tagged burst row", () => {
   const matchAttr = baseCtx.primaryAttribute
-  const mkArt = (burst: boolean) =>
+  const mkArt = (elevated: boolean | undefined) =>
     ({
       name: "Blood Burst",
       physMultiplier: 2.4,
@@ -277,15 +360,47 @@ describe("burst detonation is exempt from the DoT rule", () => {
       specialTag: "sustain",
       attributeAttack: matchAttr,
       weaponOrAttribute: matchAttr,
-      elevatedAttributeMultiplier: burst ? undefined : false,
+      elevatedAttributeMultiplier: elevated,
     }) as unknown as Parameters<typeof computeSkillDamage>[0]
 
-  it("with the flag omitted (burst), the elevated multiplier alone out-damages the demoted variant", () => {
-    const burst = computeSkillDamage(mkArt(true), baseCtx, 1)
+  it("with the flag left at its default, a sustain-tagged row out-damages an explicitly demoted one", () => {
+    const atDefault = computeSkillDamage(mkArt(undefined), baseCtx, 1)
     const demoted = computeSkillDamage(mkArt(false), baseCtx, 1)
-    expect(burst.cells.AT).toBeCloseTo(100, 9)
+    expect(atDefault.cells.AT).toBeCloseTo(100, 9)
     expect(demoted.cells.AT).toBeCloseTo(100, 9)
-    expect(burst.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
+    expect(atDefault.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
+  })
+})
+
+describe("crit- and affinity-damage multipliers are clamped", () => {
+  it("caps the crit multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: 5 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the crit multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: -2 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves a crit multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.X).toBeCloseTo(baseCtx.critDmgBoostPanel, 9)
+  })
+
+  it("caps the affinity multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: 5 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the affinity multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: -2 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves an affinity multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.Y).toBeCloseTo(baseCtx.affinityDmgBoostPanel, 9)
   })
 })
 

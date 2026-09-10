@@ -1,5 +1,11 @@
-import { attunementsFor, attunementLabelKey } from "../../../../engine/attunements"
+import {
+  attunementsFor,
+  attunementLabelKey,
+  attunementMax,
+  attunementMin,
+} from "../../../../engine/attunements"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { gearWordPool, gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { inferGearIdentity } from "../../../../engine/gearIdentity"
 import { getWordSpecs } from "../../../../engine/itemRanking"
 import { EMPTY_EQUIPPED, emptyGearWord } from "../../../../engine/types"
@@ -53,7 +59,13 @@ function ceilingOf(target: AffixTarget): number {
  * attunement — `toGearPieces` reads the two from different places, so crossing
  * them would drop the line instead of importing it.
  */
-function legalTargets(affix: ImportedAffix, slot: GearSlot | null, inputs: Inputs): AffixTarget[] {
+function legalTargets(
+  affix: ImportedAffix,
+  slot: GearSlot | null,
+  inputs: Inputs,
+  level: GearLevel,
+  lineIndex: number | null,
+): AffixTarget[] {
   if (affix.isAttunementAffix) {
     if (!slot) return []
     return attunementsFor(slot, inputs.classId).map((option) => ({
@@ -61,16 +73,23 @@ function legalTargets(affix: ImportedAffix, slot: GearSlot | null, inputs: Input
       attunementId: option.id,
       label: option.label,
       labelKey: attunementLabelKey(option, inputs.classId),
-      min: option.min,
-      max: option.max,
+      min: attunementMin(option, level),
+      max: attunementMax(option, level),
     }))
   }
-  return getWordSpecs(inputs).map((spec) => ({
-    kind: "word",
-    word: spec.word,
-    unit: spec.unit,
-    cap: spec.amount,
-  }))
+  const pool = !slot
+    ? null
+    : lineIndex === null
+      ? gearWordPool(level, slot)
+      : gearWordPoolForLine(level, slot, lineIndex)
+  return getWordSpecs(inputs, level)
+    .filter((spec) => !pool || pool.includes(spec.word))
+    .map((spec) => ({
+      kind: "word",
+      word: spec.word,
+      unit: spec.unit,
+      cap: spec.amount,
+    }))
 }
 
 /**
@@ -109,8 +128,10 @@ function resolveAffix(
   slot: GearSlot | null,
   inputs: Inputs,
   choices: AffixChoices,
+  level: GearLevel,
+  lineIndex: number | null,
 ): ImportedAffix {
-  const targets = legalTargets(affix, slot, inputs)
+  const targets = legalTargets(affix, slot, inputs, level, lineIndex)
   const suggestions = suggestedTargets(affix, targets)
   const mappedKey = AFFIX_ID_TO_STAT_LINE[affix.affixId] ?? choices[affix.affixId]
   const target = mappedKey
@@ -162,17 +183,28 @@ export function resolveAgainstBuild(
   inputs: Inputs,
   choices: AffixChoices = {},
 ): GearImportResult {
-  const pieces = result.pieces.map((piece) => {
+  const withIdentity = result.pieces.map((piece) => {
     const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
     return {
       ...piece,
       identity:
         slot && piece.observedBaseStats ? inferGearIdentity(slot, piece.observedBaseStats) : null,
-      affixes: piece.affixes.map((affix) => resolveAffix(affix, slot, inputs, choices)),
-      overflowAffixes: piece.overflowAffixes.map((affix) =>
-        resolveAffix(affix, slot, inputs, choices),
+    }
+  })
+  const pieces = withIdentity.map((piece) => {
+    const slot = piece.slot.kind === "mapped" ? piece.slot.slot : null
+    const level = piece.identity?.level ?? levelAgreedByWeapons(withIdentity) ?? FALLBACK_LEVEL
+    return {
+      ...piece,
+      affixes: piece.affixes.map((affix, lineIndex) =>
+        resolveAffix(affix, slot, inputs, choices, level, lineIndex),
       ),
-      attunement: piece.attunement ? resolveAffix(piece.attunement, slot, inputs, choices) : null,
+      overflowAffixes: piece.overflowAffixes.map((affix) =>
+        resolveAffix(affix, slot, inputs, choices, level, null),
+      ),
+      attunement: piece.attunement
+        ? resolveAffix(piece.attunement, slot, inputs, choices, level, null)
+        : null,
     }
   })
   return { ...result, pieces, innerWays: resolveInnerWays(result, inputs) }

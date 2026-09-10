@@ -860,6 +860,7 @@ export class BuffEngine {
       )
         continue
       if (!reaches(tagSet, module)) continue
+      if (module.reachesDotTicks === false && skill.isDotTick) continue
 
       const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
       const ctx = this.buildContext(time, { kind: "damage", castTag, tags: tagSet }, stacks, module)

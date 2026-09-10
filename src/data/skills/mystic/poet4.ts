@@ -18,9 +18,9 @@ export const poet4 = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.0238,
-      attributeMultiplier: 1.5357,
-      physFixed: 189,
+      physMultiplier: 1.02325,
+      attributeMultiplier: 1.534875,
+      physFixed: 153.82,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -33,5 +33,5 @@ export const poet4 = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

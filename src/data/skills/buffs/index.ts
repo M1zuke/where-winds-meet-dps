@@ -6,6 +6,7 @@ import { lingeringBone } from "./lingeringBone"
 import { healerBuff } from "./healerBuff"
 import { revelryScript } from "./revelryScript"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
+import { cleftpeakStacks } from "./cleftpeakStacks"
 import { jadeware } from "./jadeware"
 import { mirage } from "./mirage"
 import { mirageBonus } from "./mirageBonus"
@@ -45,6 +46,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   mistwillowBuff,
   mistwillowHeavyBuff,
   mistwillowLightBuff,
+  cleftpeakStacks,
   tiltrimStack,
   tiltrimInebriateBonus,
   inebriateCritDamage,

@@ -11,6 +11,10 @@ export type TalentPointStat =
   | "power"
   | "agility"
   | "momentum"
+  | "body"
+  | "defense"
+  | "maxHp"
+  | "physDef"
 
 export type TalentPointEffects = Readonly<Partial<Record<TalentPointStat, number>>>
 

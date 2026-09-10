@@ -18,17 +18,17 @@ export const fireBreath2Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 40,
-      physMultiplier: 1.4081666666666666,
-      attributeMultiplier: 2.11225,
-      physFixed: 262.6666666666667,
+      physMultiplier: 1.40692,
+      attributeMultiplier: 2.11038,
+      physFixed: 212.49,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
     hit(1, {
       frame: 70,
-      physMultiplier: 1.4081666666666666,
-      attributeMultiplier: 2.11225,
-      physFixed: 262.6666666666667,
+      physMultiplier: 1.40692,
+      attributeMultiplier: 2.11038,
+      physFixed: 212.49,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -40,9 +40,9 @@ export const fireBreath2Hit = defineSkill({
     }),
     hit(2, {
       frame: 100,
-      physMultiplier: 1.4081666666666666,
-      attributeMultiplier: 2.11225,
-      physFixed: 262.6666666666667,
+      physMultiplier: 1.40692,
+      attributeMultiplier: 2.11038,
+      physFixed: 212.49,
       attributeFixed: 0,
       triggers: [
         applyDebuff({
@@ -54,5 +54,5 @@ export const fireBreath2Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
 })

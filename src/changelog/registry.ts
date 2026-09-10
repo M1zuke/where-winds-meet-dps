@@ -2,6 +2,18 @@ import type { ChangelogEntry } from "./types"
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   {
+    version: "0.6.1",
+    date: "2026-09-09",
+    headline: "Bellstrike Umbra timings, mystic art ranks and gear pools",
+    loadDetails: () => import("./entries/v0-6-1").then((module) => module.details),
+  },
+  {
+    version: "0.6.0",
+    date: "2026-09-08",
+    headline: "Arsenal and Talent Points tabs, and complete Max HP",
+    loadDetails: () => import("./entries/v0-6-0").then((module) => module.details),
+  },
+  {
     version: "0.5.1",
     date: "2026-09-03",
     headline: "Editable enhancements, and breakthrough 17 figures",

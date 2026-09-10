@@ -2,6 +2,7 @@ import { useRef } from "react"
 import type { GearLevel, GearRarity, GearSlot, Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS, isWeaponSlot } from "../../../../engine/types"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
+import { selectableGearLevels } from "../shared/selectableGearLevels"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { getAttunement } from "../../../../engine/attunements"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -16,6 +17,7 @@ import { fmt } from "../../../utils/statFormatting"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import previewStyles from "../shared/gearPreview.module.scss"
 import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { GEAR_LEVEL_KEYS } from "../shared/gearLevelKeys"
 import { unsupportedInnerWayNames } from "./importedInnerWays"
 import {
   innerWaysAbsentFromCapture,
@@ -30,12 +32,6 @@ import {
 import { effectiveIdentity, type IdentityOverrides } from "./importedGearPieces"
 import type { GearImportDraft } from "./useGearImportDraft"
 import styles from "./gearImport.module.scss"
-
-const LEVEL_OPTIONS: { value: string; labelKey: string }[] = [
-  { value: "86", labelKey: "gear.level.86" },
-  { value: "91", labelKey: "gear.level.91" },
-  { value: "96", labelKey: "gear.level.96" },
-]
 
 // An unmapped line's units are unknown, and two decimals alone would render both
 // a 0.044 ceiling and a 0.04 one as "0.04" — so sub-1 magnitudes read as percent.
@@ -74,6 +70,7 @@ export function GearImportPreview({
     importMappings,
     copyNotice,
     copyDiagnostics,
+    breakthrough,
   } = draft
 
   if (!result || !summary) return null
@@ -195,6 +192,7 @@ export function GearImportPreview({
             piece={piece}
             allPieces={result.pieces}
             overrides={overrides}
+            breakthrough={breakthrough}
             onOverride={setOverride}
             onChooseTarget={chooseTarget}
           />
@@ -231,12 +229,14 @@ function PiecePreview({
   piece,
   allPieces,
   overrides,
+  breakthrough,
   onOverride,
   onChooseTarget,
 }: {
   piece: ImportedPiece
   allPieces: readonly ImportedPiece[]
   overrides: IdentityOverrides
+  breakthrough: number
   onOverride(gameSlotId: string, patch: { level?: GearLevel; rarity?: GearRarity }): void
   onChooseTarget(affixId: string, key: string): void
 }) {
@@ -278,7 +278,10 @@ function PiecePreview({
         <Combobox
           className={previewStyles.identityPicker}
           value={String(identity.level)}
-          options={LEVEL_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }))}
+          options={selectableGearLevels(breakthrough, identity.level).map((level) => ({
+            value: String(level),
+            label: t(GEAR_LEVEL_KEYS[level]),
+          }))}
           onChange={(value) => onOverride(piece.gameSlotId, { level: Number(value) as GearLevel })}
         />
         <Combobox

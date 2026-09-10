@@ -68,13 +68,13 @@ describe("mistwillow — BuffEngine", () => {
     expect(r.breakdown[BUFF.mistwillowHeavyBuff]).toBeCloseTo(0.2, 10)
   })
 
-  it("a mixed hit under a single stance gets half the bonus", () => {
+  it("a mixed hit under a single stance gets the full bonus, same as any other reaching skill", () => {
     const e = engine(SET_ID.mistwillow)
     e.processSkillCast("SomeHeavyHit", 0, { attackType: "heavy" })
     const r = e.calculateDamageEffects(mixedProbe("SomeMixedHit"), 0.1)
-    expect(r.effects).toContainEqual({ statKey: "physBoost", amount: 0.05 })
-    expect(r.effects).toContainEqual({ statKey: "attributeDamageBoost", amount: 0.05 })
-    expect(r.breakdown[BUFF.mistwillowHeavyBuff]).toBeCloseTo(0.1, 10)
+    expect(r.effects).toContainEqual({ statKey: "physBoost", amount: 0.1 })
+    expect(r.effects).toContainEqual({ statKey: "attributeDamageBoost", amount: 0.1 })
+    expect(r.breakdown[BUFF.mistwillowHeavyBuff]).toBeCloseTo(0.2, 10)
   })
 
   it("a mixed cast lands both bonuses at once, so it upgrades straight to the merged Mistwillow (full 10%)", () => {

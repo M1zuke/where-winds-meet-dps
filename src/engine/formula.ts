@@ -14,6 +14,12 @@ export interface ConditionalFinalCrit {
 export const FOOD_MIN_PHYS_BONUS = 120
 export const FOOD_MAX_PHYS_BONUS = 240
 
+// In-game crit/affinity-damage multiplier bounds as of 2026-09-10.
+export const CRIT_DAMAGE_MULTIPLIER_MIN = 1.35
+export const CRIT_DAMAGE_MULTIPLIER_MAX = 2.5
+export const AFFINITY_DAMAGE_MULTIPLIER_MIN = 1.2
+export const AFFINITY_DAMAGE_MULTIPLIER_MAX = 2.3
+
 export function effectivePhysRange(
   minPhys: number,
   maxPhys: number,
@@ -87,7 +93,6 @@ export interface FormulaContext {
   affinityDmgBoostPanel: number
   attributeDmgBoostPanel: number
   sustainDmgBoostPanel: number
-  dotDamageBoost?: number
   dotDamageMultiplier?: number
   allDamageBoost?: number
   allMartialBoost?: number
@@ -108,8 +113,13 @@ export interface FormulaContext {
   shareDebuffs: { henZhi: boolean; easyHurt: boolean }
   physPenResistance?: number
   attrPenResistance?: number
-  rateResistance?: number
+  damageReduction?: number
+  physDamageBoostReduction?: number
+  attrDamageBoostReduction?: number
+  critDamageReduction?: number
+  affinityDamageReduction?: number
   hawkwingPhysBonus?: number
+  attributeFlatMultiplier?: number
 }
 
 function setFormulaBonus(setId: string | null, field: keyof SetFormulaBonus): number {
@@ -155,43 +165,54 @@ export function computeSkillDamage(
 
   const physPenResistance = ctx.physPenResistance ?? 0
   const attributePenResistance = ctx.attrPenResistance ?? 0
-  // Deliberately INVERTS Midasione PDF §7 (net>0 → ÷200, not ÷100) — see
+  const damageReduction = ctx.damageReduction ?? 0
+  const physDamageBoostReduction = ctx.physDamageBoostReduction ?? 0
+  const attributeDamageBoostReduction = ctx.attrDamageBoostReduction ?? 0
+  const critDamageReduction = ctx.critDamageReduction ?? 0
+  const affinityDamageReduction = ctx.affinityDamageReduction ?? 0
+  // Corrects Midasione PDF §7 (net>0 → ÷200, not ÷100) — see
   // docs/CALCULATION.md § "Calculation rules" rule 2.
   const penetrationFraction = (penetration: number, resistancePercent: number) => {
     const net = penetration - resistancePercent
     return net <= 0 ? net / 100 : net / 200
   }
-  // A DoT row loses the elevated matching-path multiplier (PDF §1) and nothing
-  // else; its flat damage is whatever its own data authors. A sustain-tagged
-  // burst detonation (elevatedAttributeMultiplier defaults true) is not
-  // demoted at all — docs/CALCULATION.md § "Calculation rules" rule 3.
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
 
+  const clampMultiplier = (multiplier: number, min: number, max: number) =>
+    Math.min(Math.max(multiplier, min), max)
+
   const skillCritDamage = numberOrZero(art.extraCritDamage)
-  const critDamageBoost = ctx.critDmgBoostPanel + skillCritDamage
+  const critDamageBoost =
+    clampMultiplier(
+      1 + ctx.critDmgBoostPanel + skillCritDamage - critDamageReduction,
+      CRIT_DAMAGE_MULTIPLIER_MIN,
+      CRIT_DAMAGE_MULTIPLIER_MAX,
+    ) - 1
 
   const skillAffinityDamage = numberOrZero(art.extraAffinityDamage)
-  const affinityDamageBoost = ctx.affinityDmgBoostPanel + skillAffinityDamage
+  const affinityDamageBoost =
+    clampMultiplier(
+      1 + ctx.affinityDmgBoostPanel + skillAffinityDamage - affinityDamageReduction,
+      AFFINITY_DAMAGE_MULTIPLIER_MIN,
+      AFFINITY_DAMAGE_MULTIPLIER_MAX,
+    ) - 1
 
   const precisionRate = isTianGong ? 1 : Math.min(ctx.precisionPanel, 1)
 
   // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
-  // `panel.ts`'s white→yellow conversion, so they are never divided here.
-  // `art.extraAffinityRate` is the one raw (unconverted) rate source the
-  // formula still receives, per PDF §11 divided by (1 + resistance) before
-  // the 40 % cap. Exception: Thundercry Blade's (Modao) charged-attack crit
-  // rate (`art.extraCritRate`) is a flat, unresisted addition after the cap.
-  const rateResistance = ctx.rateResistance ?? 0
+  // `panel.ts`'s white→yellow conversion, so they are never divided here. A
+  // skill's own rate bonus (`art.extraCritRate`/`art.extraAffinityRate`) is
+  // added undivided, floored at zero, then capped alongside the panel rate;
+  // the direct rate is added after the cap. In-game as of 2026-09-10.
   const critRate = isTianGong
     ? 0
-    : Math.min(ctx.critPanel, 0.8) + ctx.directCritPanel + numberOrZero(art.extraCritRate)
+    : Math.min(Math.max(ctx.critPanel + numberOrZero(art.extraCritRate), 0), 0.8) +
+      ctx.directCritPanel
 
   const affinityRate = isTianGong
     ? 0
-    : Math.min(
-        ctx.affinityPanel + numberOrZero(art.extraAffinityRate) / (1 + rateResistance),
-        0.4,
-      ) + ctx.directAffinityPanel
+    : Math.min(Math.max(ctx.affinityPanel + numberOrZero(art.extraAffinityRate), 0), 0.4) +
+      ctx.directAffinityPanel
 
   const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)
@@ -215,16 +236,17 @@ export function computeSkillDamage(
   const physPenFraction = penetrationFraction(physPenTotal, physPenResistance)
 
   const physDamageBoost = ctx.physDmgBoostPanel + (usesGyrationUmbrella ? 0.15 : 0)
+  const physDamageBoostMultiplier = Math.max(1 + physDamageBoost - physDamageBoostReduction, 0)
 
   const physRowScale = 1
 
   const physGrazeRow =
-    physMin * physCoefficient * physRowScale * (1 + physDamageBoost) * (1 + physPenFraction)
+    physMin * physCoefficient * physRowScale * physDamageBoostMultiplier * (1 + physPenFraction)
   const grazeChance = (1 - precisionRate) * (1 - affinityRate) * (1 - abrasionAvoidRate)
   const physCritRow =
     physAvg *
     physCoefficient *
-    (1 + physDamageBoost) *
+    physDamageBoostMultiplier *
     (1 + physPenFraction) *
     physRowScale *
     (1 + critDamageBoost)
@@ -236,10 +258,10 @@ export function computeSkillDamage(
     physRowScale *
     (1 + affinityDamageBoost) *
     (1 + physPenFraction) *
-    (1 + physDamageBoost)
+    physDamageBoostMultiplier
   const affinityChance = affinityRate
   const physNormalRow =
-    physAvg * physCoefficient * (1 + physPenFraction) * (1 + physDamageBoost) * physRowScale
+    physAvg * physCoefficient * (1 + physPenFraction) * physDamageBoostMultiplier * physRowScale
   if (!guaranteedCrit && art.conditionalFinalCrit) {
     if (critChance >= art.conditionalFinalCrit.threshold) guaranteedCrit = true
     else
@@ -258,20 +280,20 @@ export function computeSkillDamage(
   const physFlatRowScale = 1
   const physFlatCritRow =
     physFlatAvg *
-    (1 + physFlatDamageBoost) *
+    physDamageBoostMultiplier *
     (1 + critDamageBoost) *
     physFlatRowScale *
     (1 + physFlatPenFraction)
   const physFlatGrazeRow =
-    physFlatMin * physFlatRowScale * (1 + physFlatDamageBoost) * (1 + physFlatPenFraction)
+    physFlatMin * physFlatRowScale * physDamageBoostMultiplier * (1 + physFlatPenFraction)
   const physFlatAffinityRow =
     physFlatMax *
     physFlatRowScale *
     (1 + affinityDamageBoost) *
     (1 + physFlatPenFraction) *
-    (1 + physFlatDamageBoost)
+    physDamageBoostMultiplier
   const physFlatNormalRow =
-    physFlatAvg * (1 + physFlatPenFraction) * (1 + physFlatDamageBoost) * physFlatRowScale
+    physFlatAvg * (1 + physFlatPenFraction) * physDamageBoostMultiplier * physFlatRowScale
 
   const attributeFlatMin = attributeFlat
   const attributeFlatMax = attributeFlat
@@ -286,7 +308,11 @@ export function computeSkillDamage(
           : ctx.bamboocut.pen
   const attributeFlatPenetration = primaryAttributePenetration
   const attributeDamageBoost = ctx.attributeDmgBoostPanel
-  const attributeFlatRowScale = 1
+  const attributeFlatDamageBoostMultiplier = Math.max(
+    1 + attributeDamageBoost - attributeDamageBoostReduction,
+    0,
+  )
+  const attributeFlatRowScale = getsElevatedMultiplier ? (ctx.attributeFlatMultiplier ?? 1) : 1
   const attributeFlatPenFraction = penetrationFraction(
     attributeFlatPenetration,
     attributePenResistance,
@@ -294,24 +320,24 @@ export function computeSkillDamage(
   const attributeFlatGrazeRow =
     attributeFlatMin *
     (1 + attributeFlatPenFraction) *
-    (1 + attributeDamageBoost) *
+    attributeFlatDamageBoostMultiplier *
     attributeFlatRowScale
   const attributeFlatCritRow =
     attributeFlatAvg *
     (1 + critDamageBoost) *
     (1 + attributeFlatPenFraction) *
-    (1 + attributeDamageBoost) *
+    attributeFlatDamageBoostMultiplier *
     attributeFlatRowScale
   const attributeFlatAffinityRow =
     attributeFlatMax *
     (1 + attributeFlatPenFraction) *
-    (1 + attributeDamageBoost) *
+    attributeFlatDamageBoostMultiplier *
     (1 + affinityDamageBoost) *
     attributeFlatRowScale
   const attributeFlatNormalRow =
     attributeFlatAvg *
     (1 + attributeFlatPenFraction) *
-    (1 + attributeDamageBoost) *
+    attributeFlatDamageBoostMultiplier *
     attributeFlatRowScale
 
   const scalingAttribute: Attribute | "" = isWeapon
@@ -330,26 +356,39 @@ export function computeSkillDamage(
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0
+    const damageBoostMultiplier = Math.max(1 + damageBoost - attributeDamageBoostReduction, 0)
     const coefficient =
       scalingAttribute === attribute && getsElevatedMultiplier
         ? attributeCoefficient
         : physCoefficient
     const penetrationMultiplier = 1 + penetrationFraction(penetrationTotal, attributePenResistance)
-    const grazeRow = minAttack * coefficient * penetrationMultiplier * (1 + damageBoost)
+    const grazeRow = minAttack * coefficient * penetrationMultiplier * damageBoostMultiplier
     const critRow =
-      avgAttack * coefficient * penetrationMultiplier * (1 + damageBoost) * (1 + critDamageBoost)
+      avgAttack *
+      coefficient *
+      penetrationMultiplier *
+      damageBoostMultiplier *
+      (1 + critDamageBoost)
     const affinityRow =
       maxAttack *
       coefficient *
       penetrationMultiplier *
-      (1 + damageBoost) *
+      damageBoostMultiplier *
       (1 + affinityDamageBoost)
-    const normalRow = avgAttack * coefficient * (1 + damageBoost) * penetrationMultiplier
+    const normalRow = avgAttack * coefficient * damageBoostMultiplier * penetrationMultiplier
     const critRowMin =
-      minAttack * coefficient * penetrationMultiplier * (1 + damageBoost) * (1 + critDamageBoost)
+      minAttack *
+      coefficient *
+      penetrationMultiplier *
+      damageBoostMultiplier *
+      (1 + critDamageBoost)
     const critRowMax =
-      maxAttack * coefficient * penetrationMultiplier * (1 + damageBoost) * (1 + critDamageBoost)
-    const normalRowMax = maxAttack * coefficient * (1 + damageBoost) * penetrationMultiplier
+      maxAttack *
+      coefficient *
+      penetrationMultiplier *
+      damageBoostMultiplier *
+      (1 + critDamageBoost)
+    const normalRowMax = maxAttack * coefficient * damageBoostMultiplier * penetrationMultiplier
     return { grazeRow, critRow, affinityRow, normalRow, critRowMin, critRowMax, normalRowMax }
   }
 
@@ -404,19 +443,19 @@ export function computeSkillDamage(
   const physCritRowMin =
     physMin *
     physCoefficient *
-    (1 + physDamageBoost) *
+    physDamageBoostMultiplier *
     (1 + physPenFraction) *
     physRowScale *
     (1 + critDamageBoost)
   const physCritRowMax =
     physMax *
     physCoefficient *
-    (1 + physDamageBoost) *
+    physDamageBoostMultiplier *
     (1 + physPenFraction) *
     physRowScale *
     (1 + critDamageBoost)
   const physNormalRowMax =
-    physMax * physCoefficient * (1 + physPenFraction) * (1 + physDamageBoost) * physRowScale
+    physMax * physCoefficient * (1 + physPenFraction) * physDamageBoostMultiplier * physRowScale
   const normalMin = grazeTotal
   const normalMax =
     physNormalRowMax +
@@ -450,17 +489,14 @@ export function computeSkillDamage(
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
-  const dotMultiplier = isPersistent ? (ctx.dotDamageMultiplier ?? 1) : 1
+  const dotMultiplier = ctx.dotDamageMultiplier ?? 1
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
     scopedDamageBoost +
     (usesChargeBoost ? ctx.chargeBonus : 0) +
     numberOrZero(art.extraDamageBoost) +
-    (isPersistent
-      ? ctx.sustainDmgBoostPanel +
-        (ctx.dotDamageMultiplier === undefined ? (ctx.dotDamageBoost ?? 0) : 0)
-      : 0)
+    (isPersistent ? ctx.sustainDmgBoostPanel : 0)
 
   // A scoped stat, in the same family as `weaponBoosts` / `mysticTypeBoosts`
   // (folded into `scopedDamageBoost` above) — but multiplicative here rather
@@ -481,7 +517,13 @@ export function computeSkillDamage(
   // evaluates the identical expression tree: reassociating the product moves
   // the last ULP, which `engineBaseline.fixture.json` hashes.
   const withTail = (base: number) =>
-    base * (1 + damageBoostTotal) * count * correction * (1 + attuneBoost) * dotMultiplier
+    base *
+    (1 + damageBoostTotal) *
+    (1 - damageReduction) *
+    count *
+    correction *
+    (1 + attuneBoost) *
+    dotMultiplier
   const expectedDamage = withTail(selectedRowTotal)
 
   function rollHit(draw: () => number): RolledHit {

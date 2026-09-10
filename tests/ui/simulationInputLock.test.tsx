@@ -43,14 +43,20 @@ function completion(reqId: number): WorkerResponse {
   return {
     kind: "parseSimulation",
     reqId,
+    seed: 1,
     runs: [
       {
+        index: 0,
         totalDamage: 100,
         dps: 1.5,
         abrasionHits: 0,
         normalHits: 1,
         criticalHits: 0,
         affinityHits: 0,
+        abrasionDamage: 0,
+        normalDamage: 100,
+        criticalDamage: 0,
+        affinityDamage: 0,
       },
     ],
     expectedRates: null,

@@ -36,6 +36,8 @@ const STAT_OPTIONS: readonly TalentStat[] = [
   "critDamage",
   "affinityDamage",
   "attributeDamage",
+  "maxHp",
+  "physDef",
 ]
 
 const RATE_STATS = new Set<TalentStat>([
@@ -82,6 +84,8 @@ const STAT_GLYPH: Readonly<Record<TalentStat, string>> = {
   critDamage: "✦",
   affinityDamage: "❈",
   attributeDamage: "✧",
+  maxHp: "❤",
+  physDef: "🛡",
 }
 
 function glyphFor(node: OddityNode): string {

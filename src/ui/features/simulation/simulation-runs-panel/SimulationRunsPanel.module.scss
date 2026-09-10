@@ -1,0 +1,325 @@
+@use "breakpoints";
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.body.withDetail {
+  grid-template-columns: minmax(0, 500px) minmax(0, 1fr);
+}
+
+.listColumn {
+  min-width: 0;
+}
+
+.tableScroller {
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.withDetail .listColumn {
+  border-right: 1px solid var(--color-border);
+  padding-right: 14px;
+}
+
+.detailColumn {
+  min-width: 0;
+  padding-left: 16px;
+}
+
+.jump {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.jumpLabel {
+  font-size: 0.72em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.runs {
+  table-layout: auto;
+}
+
+.runs .numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.runs .rankCell {
+  text-align: left;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.runs thead .rankCell {
+  color: var(--color-text-muted);
+  font-weight: normal;
+}
+
+.sortable {
+  padding: 0;
+}
+
+.sortButton {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  padding: 3px 8px;
+  width: 100%;
+  text-align: right;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.sortButton:focus-visible {
+  color: var(--color-accent-bright);
+}
+
+@include breakpoints.hoverable {
+  .sortButton:hover {
+    color: var(--color-text);
+  }
+}
+
+.caret {
+  font-size: 0.7em;
+  color: var(--color-accent);
+}
+
+.runRow {
+  cursor: pointer;
+}
+
+.runRow .dpsCell {
+  color: var(--color-text);
+}
+
+.runRow .runCell {
+  color: var(--color-text-faint);
+}
+
+.runRow:focus-visible td,
+.runRow:focus-visible th {
+  background: var(--color-surface-inset-hover);
+  box-shadow:
+    inset 0 1px 0 var(--color-accent),
+    inset 0 -1px 0 var(--color-accent);
+}
+
+@include breakpoints.hoverable {
+  .runRow:hover td,
+  .runRow:hover th {
+    background: var(--color-surface-raised);
+  }
+}
+
+.runRow.selected td,
+.runRow.selected th {
+  background: var(--color-surface-selected);
+  color: var(--color-text);
+}
+
+.runRow.selected .rankCell {
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+.divergingFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.divergingFill:global(.is-positive) {
+  background: var(--color-positive);
+}
+
+.divergingFill:global(.is-negative) {
+  background: var(--color-negative);
+}
+
+.divergingFill:global(.is-zero) {
+  background: transparent;
+}
+
+.centreTick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--color-border-strong);
+}
+
+.deltaCell:global(.is-positive) {
+  color: var(--color-positive);
+}
+
+.deltaCell:global(.is-negative) {
+  color: var(--color-negative);
+}
+
+.deltaCell:global(.is-zero) {
+  color: var(--color-text-muted);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.82em;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowCount {
+  margin-right: auto;
+}
+
+.pageButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gap {
+  color: var(--color-text-faint);
+  padding: 0 2px;
+}
+
+.pageOfCount {
+  display: none;
+  color: var(--color-text-dim);
+}
+
+.withDetail .abrasionCell,
+.withDetail .normalCell,
+.withDetail .criticalCell,
+.withDetail .affinityCell {
+  display: none;
+}
+
+.withDetail .barCell {
+  min-width: 70px;
+}
+
+@include breakpoints.below(breakpoints.$bp-1100) {
+  .body.withDetail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .withDetail .listColumn {
+    display: none;
+  }
+
+  .detailColumn {
+    padding-left: 0;
+  }
+
+  .abrasionCell,
+  .normalCell {
+    display: none;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .criticalCell,
+  .affinityCell {
+    display: none;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-700) {
+  .runs thead tr {
+    display: flex;
+    gap: 6px;
+    border-bottom: 1px solid var(--color-surface-raised);
+    padding-bottom: 6px;
+  }
+
+  .runs thead th {
+    display: none;
+    border-bottom: none;
+  }
+
+  .runs thead .sortable {
+    display: block;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 4px;
+  }
+
+  .runs tbody tr {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+    border-bottom: 1px solid var(--color-surface-raised);
+    padding: 4px 0;
+  }
+
+  .runs tbody td,
+  .runs tbody th {
+    border-bottom: none;
+    padding: 0 4px;
+  }
+
+  .runs .rankCell {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    text-align: right;
+  }
+
+  .runs .dpsCell {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: left;
+    font-size: 1.1em;
+  }
+
+  .runs .deltaCell {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  .runs .runCell {
+    grid-column: 2;
+    grid-row: 2;
+    text-align: left;
+    font-size: 0.9em;
+  }
+
+  .runs .damageCell {
+    grid-column: 3;
+    grid-row: 2;
+    font-size: 0.9em;
+    color: var(--color-text-faint);
+  }
+
+  .barCell {
+    display: none;
+  }
+
+  .pageButtons {
+    display: none;
+  }
+
+  .pageOfCount {
+    display: inline;
+  }
+}

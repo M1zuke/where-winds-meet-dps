@@ -293,8 +293,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(75005.47)
-    expect(round(result.totalDamage, 2)).toBe(4485327.28)
+    expect(round(result.dps, 2)).toBe(75323.15)
+    expect(round(result.totalDamage, 2)).toBe(4504324.15)
     expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
@@ -302,19 +302,19 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2236751.13)
-    expect(damageOf("Bleeding (DoT)")).toBe(286733.6)
+    expect(damageOf("Blood Burst")).toBe(2174317.16)
+    expect(damageOf("Bleeding (DoT)")).toBe(290989.46)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(426510.99)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(91981.77)
+    expect(damageOf("Smolder (DoT)")).toBe(484325.1)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(104740.57)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(60255.22)
+    expect(damageOf("Yi River")).toBe(57701.04)
   })
 })

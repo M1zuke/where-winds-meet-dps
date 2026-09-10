@@ -14,9 +14,9 @@ export const toadPoison = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 300,
-    physMultiplier: 1.6216,
-    physFixed: 219,
-    attributeMultiplier: 1.6216,
+    physMultiplier: 1.62189,
+    physFixed: 243.7,
+    attributeMultiplier: 1.62189,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
@@ -27,8 +27,8 @@ export const toadPoison = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const combustion = defineDebuff({
@@ -40,9 +40,12 @@ export const combustion = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
-    physMultiplier: 0.2953,
-    physFixed: 39,
-    attributeMultiplier: 0.2953,
+    // In-game cadence as of 2026-09-10: ticks on application.
+    firstTickOffsetFrames: 0,
+    reschedulesPerTick: true,
+    physMultiplier: 0.29545,
+    physFixed: 44.62,
+    attributeMultiplier: 0.29545,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
@@ -53,7 +56,7 @@ export const combustion = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-09T00:00:00.000Z",
   tags: [ROLE.combustion],
   receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
@@ -68,9 +71,13 @@ export const smolder = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
-    physMultiplier: 0.236,
-    physFixed: 44,
-    attributeMultiplier: 0.354,
+    // In-game cadence as of 2026-09-10: ticks on application, then every half
+    // second.
+    firstTickOffsetFrames: 0,
+    reschedulesPerTick: true,
+    physMultiplier: 0.24991,
+    physFixed: 37.74,
+    attributeMultiplier: 0.374865,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
@@ -82,8 +89,8 @@ export const smolder = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const fluteRipple = defineDebuff({
@@ -96,9 +103,12 @@ export const fluteRipple = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 150,
-    physMultiplier: 1.4614,
-    physFixed: 300,
-    attributeMultiplier: 2.1921,
+    // Pulses on its own schedule rather than re-arming a tick timer — in-game
+    // tick counts as of 2026-09-10.
+    reschedulesPerTick: false,
+    physMultiplier: 1.47645,
+    physFixed: 320.97,
+    attributeMultiplier: 2.214675,
     attributeFixed: 0,
     attributeAttack: "",
     skillType: "sustain",
@@ -109,8 +119,8 @@ export const fluteRipple = defineDebuff({
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
-  receives: [BUFF.soulShaken],
+  updatedAt: "2026-09-09T00:00:00.000Z",
+  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
 })
 
 export const MYSTIC_DEBUFFS: readonly Debuff[] = [toadPoison, combustion, smolder, fluteRipple]

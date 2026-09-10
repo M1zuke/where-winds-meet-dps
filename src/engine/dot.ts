@@ -9,6 +9,17 @@ type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 const DEBUFF_ID_PREFIX = "debuff-"
 
+// A DoT tick does not run on a grid: each tick schedules the next one when it
+// fires, so every tick pays the timer's own overhead once and the interval runs
+// long. The same fraction for every interval length, compounding over the
+// window. Calibrated against in-game tick counts, 2026-09-10.
+const TICK_TIMER_INTERVAL_FACTOR = 1.0625
+
+export function effectiveTickIntervalFrames(dot: DebuffDotSpec): number {
+  const base = dot.tickIntervalFrames
+  return dot.reschedulesPerTick === true ? base * TICK_TIMER_INTERVAL_FACTOR : base
+}
+
 // A debuff names the skill its per-tick coefficients come from. `sourceSkillId`
 // is authored; absent, the id convention is used — `debuff-<classId>-<slug>`
 // ticks from `<classId>-<slug>` (CLASSES.md § "Id schemes").
@@ -40,14 +51,20 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
 }
 
 // How many ticks one uninterrupted window emits, counted the way
-// `planDotTicks` walks it: the first lands one interval in, and a window that
-// is an exact multiple of the interval emits one fewer than the division
-// suggests. The editor shows this beside a tick source's single authored hit.
+// `planDotTicks` walks it: from the first tick's offset, then one effective
+// interval at a time. The editor shows this beside a tick source's single
+// authored hit.
 export function dotTicksPerWindow(debuff: Pick<Debuff, "dot" | "durationFrames">): number {
-  const interval = debuff.dot?.tickIntervalFrames ?? 0
-  if (interval <= 0) return 0
+  const dot = debuff.dot
+  if (!dot || dot.tickIntervalFrames <= 0) return 0
+  const interval = effectiveTickIntervalFrames(dot)
   let ticks = 0
-  for (let frame = interval; frame < debuff.durationFrames; frame += interval) ticks++
+  for (
+    let frame = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames;
+    frame < debuff.durationFrames;
+    frame += interval
+  )
+    ticks++
   return ticks
 }
 export function dotRowName(debuff: Pick<Debuff, "name">): string {
@@ -70,6 +87,7 @@ export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
     hits: [],
     castFrames: 0,
     triggerable: false,
+    isDotTick: true,
     createdAt: debuff.createdAt,
     updatedAt: debuff.updatedAt,
   }
@@ -91,7 +109,6 @@ function tickArt(
     extraCritDamage: dot.extraCritDamage,
     skillType: dot.skillType || "sustain",
     specialTag: "sustain",
-    elevatedAttributeMultiplier: false,
     guaranteedCrit: forceCrit ? 1 : undefined,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
@@ -160,8 +177,9 @@ export interface DotPlanQuery {
 
 export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
   const { debuff, dot } = query
-  const interval = dot.tickIntervalFrames
-  if (interval <= 0) return []
+  if (dot.tickIntervalFrames <= 0) return []
+  const interval = effectiveTickIntervalFrames(dot)
+  const firstOffset = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames
 
   const perStack = (debuff.stackScaling ?? "flat") === "perStack"
   const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null
@@ -169,7 +187,10 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
 
   const plans: DotTickPlan[] = []
   for (const episode of mergeEpisodes(query.windows)) {
-    for (let frame = episode.start + interval; frame < episode.end; frame += interval) {
+    // The accumulator stays exact while the frame it lands on is rounded, so a
+    // fractional interval cannot compound its own rounding error.
+    for (let at = episode.start + firstOffset; at < episode.end; at += interval) {
+      const frame = Math.round(at)
       if (frame < 0 || !query.inWindow(frame)) continue
       const weight = query.weightAt(frame)
       if (weight <= 0) continue

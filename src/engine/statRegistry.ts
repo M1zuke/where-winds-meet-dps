@@ -63,7 +63,6 @@ const ATTACK_BLOCKS = new Set(["phys", "bellstrike", "stonesplit", "silkbind", "
 const TARGET_DELTA_FIELD: Record<string, keyof TargetOverride> = {
   "target.defense": "defenseDelta",
   "target.generalDamageTaken": "generalDamageTakenDelta",
-  "target.fatigueDamageTaken": "fatigueDamageTakenDelta",
 }
 
 export interface AppliedBuffDeltas {

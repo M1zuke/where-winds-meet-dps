@@ -12,7 +12,7 @@ export function inebriateCritDamageBoostAt(minPhysAttack: number): number {
 
 // Talent "Inebriate Critical Enhancement", rank 3 at art level 100: up to
 // +30% critical damage at 750 Min Physical Attack on Inebriate-enhanced
-// skills (client talent row 320203, 2026-09-04), scaling linearly with Min
+// skills (in-game talent values, 2026-09-04), scaling linearly with Min
 // Physical Attack below that.
 export const inebriateSkillCritDamage = defineClassBuff({
   id: BUFF.inebriateSkillCritDamage,

@@ -9,6 +9,7 @@ interface TriggerSpec {
   extendFrames?: number
   extendOnly?: boolean
   maxExtendedDurationFrames?: number
+  appliesOnCastEnd?: boolean
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
@@ -31,6 +32,7 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.maxExtendedDurationFrames !== undefined
       ? { maxExtendedDurationFrames: spec.maxExtendedDurationFrames }
       : {}),
+    ...(spec.appliesOnCastEnd !== undefined ? { appliesOnCastEnd: spec.appliesOnCastEnd } : {}),
   }
 }
 

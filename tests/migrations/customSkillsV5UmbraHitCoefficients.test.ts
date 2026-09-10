@@ -78,13 +78,9 @@ describe("V5__umbraHitCoefficients — called directly", () => {
     healed.hits.forEach((hit, index) => expect(rowOf(hit)).toEqual(rowOf(builtin(QQ).hits[index])))
   })
 
-  it("rewrites the hit and its River Flow variant of the spear special", () => {
+  it("leaves the spear special's full form alone — Sweep All lands two hits, a shape swapSkillHits cannot repair", () => {
     const after = V5__umbraHitCoefficients.migrate(clone(STORE))
-    const healed = skillIn(after, SPEAR_SPECIAL).hits[0]
-    const current = builtin(SPEAR_SPECIAL).hits[0]
-    expect(rowOf(healed)).toEqual(rowOf(current))
-    expect(rowOf(healed.variants![0])).toEqual(rowOf(current.variants![0]))
-    expect(healed.variants![0].id).toBe(skillIn(STORE, SPEAR_SPECIAL).hits[0].variants![0].id)
+    expect(skillIn(after, SPEAR_SPECIAL)).toEqual(skillIn(STORE, SPEAR_SPECIAL))
   })
 
   it("leaves an edited copy and a user-authored skill with the same old row alone", () => {

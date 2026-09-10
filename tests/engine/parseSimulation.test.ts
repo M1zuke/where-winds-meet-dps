@@ -16,7 +16,7 @@ function engineInputs(variant: Inputs = umbra): Inputs {
 }
 
 const procFree = engineInputs({ ...umbra, set: null, mindMethods: defaultInputs.mindMethods })
-const withProcs = engineInputs({ ...umbra, set: SET_ID.hawking })
+const withProcs = engineInputs({ ...umbra, set: SET_ID.hawkwing })
 
 function sampled(inputs: Inputs, seed: number) {
   return runEngine(inputs, { seed, collect: "totals" })
@@ -73,6 +73,28 @@ describe("a sampled engine run", () => {
     const tallied = counts.abrasion + counts.normal + counts.crit + counts.affinity
     const events = (result.timeline ?? []).filter((entry) => entry.inWindow).length
     expect(tallied).toBe(events)
+  })
+
+  it("books every point of damage into exactly one of the four outcomes", () => {
+    const result = runEngine(procFree, { seed: 77 })
+    const damage = result.outcomeDamage!
+    const tallied = damage.abrasion + damage.normal + damage.crit + damage.affinity
+    expect(tallied).toBeCloseTo(result.totalDamage, 6)
+  })
+
+  it("reports no outcome damage on an unseeded run, as it reports no counts", () => {
+    expect(runEngine(procFree).outcomeDamage).toBeUndefined()
+  })
+
+  it("weighs an affinity hit above its share of hits", () => {
+    const result = runEngine(procFree, { seed: 77 })
+    const counts = result.outcomeCounts!
+    const damage = result.outcomeDamage!
+    const hits = counts.abrasion + counts.normal + counts.crit + counts.affinity
+    const hitShare = counts.affinity / hits
+    const damageShare = damage.affinity / result.totalDamage
+
+    expect(damageShare).toBeGreaterThan(hitShare)
   })
 
   it("mean of sampled runs converges to the deterministic total for a build with no proc mechanics", () => {

@@ -142,7 +142,7 @@ export function PerSkillTable({ result }: { result: Result }) {
       <thead>
         <tr>
           <th>{t("common.skill")}</th>
-          <th>{t("layout.outputPanel.count")}</th>
+          <th>{t("common.count")}</th>
           <th>{t("common.damage")}</th>
           <th>{t("common.share")}</th>
           <th className="bar-col" />
