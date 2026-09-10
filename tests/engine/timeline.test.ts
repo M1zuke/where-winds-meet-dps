@@ -777,3 +777,51 @@ describe("timeline — cast chips sample once the cast has fully resolved", () =
     expect(lastCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(2)
   })
 })
+
+describe("timeline — a hit that carries no coefficient", () => {
+  it("still fires its trigger, and is left out of the breakdown's hit count", () => {
+    const debuff = makeDebuff(CLASS, {
+      name: "Mark",
+      durationFrames: 300,
+      dot: {
+        tickIntervalFrames: 60,
+        physMultiplier: 1,
+        physFixed: 0,
+        attributeMultiplier: 0,
+        attributeFixed: 0,
+        attributeAttack: "",
+        skillType: "sustain",
+        count: 1,
+      },
+    })
+    const opener = makeSkill(CLASS, {
+      name: "Silent Opener",
+      castFrames: 60,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 0,
+          attributeMultiplier: 0,
+          physFixed: 0,
+          attributeFixed: 0,
+          triggers: [makeTrigger({ kind: "applyDebuff", targetId: debuff.id })],
+        }),
+      ],
+    })
+    const pad = makeSkill(CLASS, { name: "Pad", castFrames: 600, hits: [makeHit({ frame: 0 })] })
+    const rotation = makeRotation(CLASS, {
+      name: "silent",
+      steps: [
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+        makeStep({ skillId: pad.id, hitCount: 1 }),
+      ],
+    })
+    const result = simulateTimeline(timelineInputs(rotation, [opener, pad], [], [debuff]))
+
+    expect(result.perSkill.find((row) => row.name === "Silent Opener")).toBeUndefined()
+    expect(
+      result.timeline!.some((ev) => ev.kind === "hit" && ev.skillName === "Silent Opener"),
+    ).toBe(true)
+    expect(result.perSkill.find((row) => row.name.startsWith("Mark"))!.count).toBeGreaterThan(0)
+  })
+})

@@ -10,6 +10,15 @@ export interface DotStackShape {
 
 export interface DebuffDotSpec {
   tickIntervalFrames: number
+  // Frames from the window opening to the FIRST tick. In game this is a
+  // separate number from the interval, and a DoT whose first tick lands on
+  // application carries 0. Absent, the first tick falls one interval in.
+  firstTickOffsetFrames?: number | null
+  // Whether each tick schedules the next one, which is what makes the interval
+  // run long (see `dot.ts`'s tick-timer factor). False for a DoT that pulses on
+  // a fixed schedule instead. Absent means it has not been established for this
+  // DoT yet, and the interval is left alone.
+  reschedulesPerTick?: boolean | null
   physMultiplier: number
   physFixed: number
   attributeMultiplier: number

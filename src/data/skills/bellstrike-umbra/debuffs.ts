@@ -44,6 +44,9 @@ export const combustion = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
+    // In-game cadence as of 2026-09-10: ticks on application.
+    firstTickOffsetFrames: 0,
+    reschedulesPerTick: true,
     physMultiplier: 0.29545,
     physFixed: 44.62,
     attributeMultiplier: 0.29545,
@@ -72,6 +75,10 @@ export const darkFire = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 30,
+    // In-game cadence as of 2026-09-10: ticks on application, then every half
+    // second.
+    firstTickOffsetFrames: 0,
+    reschedulesPerTick: true,
     physMultiplier: 0.24991,
     physFixed: 37.74,
     attributeMultiplier: 0.374865,
@@ -100,6 +107,9 @@ export const fluteRipple = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 150,
+    // Pulses on its own schedule rather than re-arming a tick timer — in-game
+    // tick counts as of 2026-09-10.
+    reschedulesPerTick: false,
     physMultiplier: 1.47645,
     physFixed: 320.97,
     attributeMultiplier: 2.214675,
@@ -126,6 +136,10 @@ export const bleedTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
+    // In-game cadence as of 2026-09-10: the first tick lands half a second in,
+    // every later one a full second after the one before it.
+    firstTickOffsetFrames: 30,
+    reschedulesPerTick: true,
     physMultiplier: 0.066,
     physFixed: 0,
     attributeMultiplier: 0.099,

@@ -655,14 +655,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (hitInWindow) {
       totalDamage += damage
       if (rolled) tallyRoll(rolled, damage)
-      add(
-        skill.name,
-        skill.skillType,
-        1,
-        damage,
-        breakdownNameOf(skill.breakdownName, skill.name),
-        skillBreakdownRowKey(skill),
-      )
+      // A hit that carries no coefficient exists to fire its triggers, and
+      // counting it would put hits a player never sees in the breakdown.
+      if (hitDealsDamage(hit))
+        add(
+          skill.name,
+          skill.skillType,
+          1,
+          damage,
+          breakdownNameOf(skill.breakdownName, skill.name),
+          skillBreakdownRowKey(skill),
+        )
     }
     pushEvent({
       frame,
