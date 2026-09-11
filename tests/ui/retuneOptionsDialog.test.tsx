@@ -56,7 +56,23 @@ describe("RetuneOptionsDialog", () => {
     expect(dialog.getByText("Affinity Rate")).toBeInTheDocument()
   })
 
-  it("greys out a line already sitting on another row instead of hiding it", () => {
+  it("greys out a line already sitting on a retunable row instead of hiding it", () => {
+    const piece = makePiece({
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "crit", value: 0.05, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+    })
+    render(<Harness initialPiece={piece} />)
+    const dialog = within(screen.getByRole("dialog"))
+    expect(dialog.getByText("Critical Rate")).toBeInTheDocument()
+    expect(dialog.getByText("Already on a retunable line")).toBeInTheDocument()
+  })
+
+  it("keeps the fixed first line's word drawable rather than marking it taken", () => {
     const piece = makePiece({
       words: [
         { word: "crit", value: 0.05, retuned: false },
@@ -69,7 +85,7 @@ describe("RetuneOptionsDialog", () => {
     render(<Harness initialPiece={piece} />)
     const dialog = within(screen.getByRole("dialog"))
     expect(dialog.getByText("Critical Rate")).toBeInTheDocument()
-    expect(dialog.getByText("Already on this piece")).toBeInTheDocument()
+    expect(dialog.queryByText("Already on a retunable line")).not.toBeInTheDocument()
   })
 
   it("never offers a line unreachable by retuning", () => {
