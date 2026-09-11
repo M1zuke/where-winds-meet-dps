@@ -32,6 +32,8 @@ export function isWeaponName(value: string): value is WeaponName {
 
 export type BowSet = "affinity" | "crit" | "precision" | null
 
+export type ScriptId = "wraithstrikeScript" | "voidrotScript"
+
 export type Arsenal = "general" | "bellstrike" | "stonesplit" | "silkbind" | "bamboocut"
 
 // Keyed by store number (1-10).
@@ -60,7 +62,7 @@ export interface CombatSettings {
   dragonsBreath: boolean
   healerBuff: boolean
   breakExtension: boolean
-  revelryScript: boolean
+  script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
   lowEndurance: boolean
@@ -72,7 +74,7 @@ export function defaultCombatSettings(): CombatSettings {
     dragonsBreath: false,
     healerBuff: false,
     breakExtension: false,
-    revelryScript: false,
+    script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
@@ -104,6 +106,7 @@ export interface Inputs {
   sustainDamageBoost: number
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
+  independentDamageBoost?: number
 
   allMartialBoost: number
   swordBoost: number

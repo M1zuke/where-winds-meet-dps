@@ -20,7 +20,7 @@ export type Effect =
   | { kind: "artBonus"; field: ArtBonusField; amount: number }
   | { kind: "damageMultiplier"; factor: number }
   | { kind: "setStatus"; id: string; stacks?: number; permanent?: boolean; durationFrames?: number }
-  | { kind: "echo"; debuffId: string; factor: number }
+  | { kind: "echo"; debuffId: string }
 
 // The subset `SkillBehavior.claimStatEffects`/`onHit` may return — before the
 // formula context is built. `forceOutcome` narrows to "affinity": nothing
@@ -78,6 +78,6 @@ export function setStatus(
   return { kind: "setStatus", id, ...opts }
 }
 
-export function echo(debuffId: string, factor = 1): Extract<Effect, { kind: "echo" }> {
-  return { kind: "echo", debuffId, factor }
+export function echo(debuffId: string): Extract<Effect, { kind: "echo" }> {
+  return { kind: "echo", debuffId }
 }

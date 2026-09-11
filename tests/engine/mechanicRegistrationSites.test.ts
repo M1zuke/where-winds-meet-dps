@@ -33,9 +33,10 @@ function callSitesOf(name: string): string[] {
 }
 
 describe("registerMechanic call sites", () => {
-  it("are exactly the three owner registries plus the definition site", () => {
+  it("are exactly the four owner registries plus the definition site", () => {
     expect(callSitesOf("registerMechanic")).toEqual([
       "src/definitions/classes/registry.ts",
+      "src/definitions/consumables/registry.ts",
       "src/definitions/innerWays/registry.ts",
       "src/definitions/sets/registry.ts",
       "src/engine/mechanics/index.ts",

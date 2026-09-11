@@ -1,7 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL } from "./ids"
+import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
 // One kick at the special skill's full share (0.9444 / 262 / 143 at skill
@@ -28,6 +29,7 @@ export const nightwickTipsylay = defineSkill({
       attributeMultiplier: 1.4166,
       physFixed: 262,
       attributeFixed: 143,
+      triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",

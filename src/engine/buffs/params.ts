@@ -69,6 +69,7 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
     params.belowQiTime = Math.max(0, qiBreak.startSec - qiBreak.lowQiLeadSec)
   }
 
+  if (inputs.combatSettings?.script) params[inputs.combatSettings.script] = true
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.combatSettings?.lowEndurance) params.lowEndurance = true

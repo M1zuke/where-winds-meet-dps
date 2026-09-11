@@ -401,6 +401,7 @@ export function buildContext(
 
     generalDamageBoost,
     allDamageBoost: inputs.allDamageBoost ?? 0,
+    independentDamageBoost: inputs.independentDamageBoost ?? 0,
     chargeBonus,
     effectiveDefense,
     fatigueDamageTaken: targetFatigueDamageTaken,

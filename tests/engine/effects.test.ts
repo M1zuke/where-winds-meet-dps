@@ -23,7 +23,7 @@ function recordingSink(): { sink: EffectSink; calls: unknown[][] } {
     damageMultiplier: (factor) => calls.push(["damageMultiplier", factor]),
     setStatus: (id, stacks, permanent, durationFrames) =>
       calls.push(["setStatus", id, stacks, permanent, durationFrames]),
-    echo: (debuffId, factor) => calls.push(["echo", debuffId, factor]),
+    echo: (debuffId) => calls.push(["echo", debuffId]),
   }
   return { sink, calls }
 }
@@ -39,7 +39,7 @@ describe("applyEffect", () => {
     applyEffect(sink, artBonus("extraCritRate", 0.3))
     applyEffect(sink, damageMultiplier(2))
     applyEffect(sink, setStatus("someStatus", { stacks: 1, permanent: true }))
-    applyEffect(sink, echo("someDebuff", 1.2))
+    applyEffect(sink, echo("someDebuff"))
 
     expect(calls).toEqual([
       ["stat", "allDamageBoost", 0.1],
@@ -49,7 +49,7 @@ describe("applyEffect", () => {
       ["artBonus", "extraCritRate", 0.3],
       ["damageMultiplier", 2],
       ["setStatus", "someStatus", 1, true, undefined],
-      ["echo", "someDebuff", 1.2],
+      ["echo", "someDebuff"],
     ])
   })
 
@@ -78,7 +78,7 @@ describe("effect constructor helpers", () => {
     })
     expect(damageMultiplier(2)).toEqual({ kind: "damageMultiplier", factor: 2 })
     expect(setStatus("x")).toEqual({ kind: "setStatus", id: "x" })
-    expect(echo("x")).toEqual({ kind: "echo", debuffId: "x", factor: 1 })
+    expect(echo("x")).toEqual({ kind: "echo", debuffId: "x" })
     expect(setStatus("x", { stacks: 3 })).toEqual({ kind: "setStatus", id: "x", stacks: 3 })
   })
 })

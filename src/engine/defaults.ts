@@ -41,6 +41,7 @@ export const defaultInputs: Inputs = {
   attributeDamageBoost: 0.076,
   sustainDamageBoost: 0,
   allDamageBoost: 0,
+  independentDamageBoost: 0,
 
   allMartialBoost: 0,
   swordBoost: 0,
@@ -116,6 +117,7 @@ export const blankInputs: Inputs = {
   attributeDamageBoost: 0,
   sustainDamageBoost: 0,
   allDamageBoost: 0,
+  independentDamageBoost: 0,
 
   classSpecificAttunement: {},
 

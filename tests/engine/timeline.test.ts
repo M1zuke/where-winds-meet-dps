@@ -122,7 +122,9 @@ describe("timeline — no-buff parity with the formula kernel", () => {
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] })
     // set: null — the default build's Hawkwing 4-piece is a rotation-wide
     // time-averaged proc a bare buildContext() call can't reproduce.
-    const inputs = { ...timelineInputs(rotation, [skill], []), set: null }
+    // tianGongElement: null — the default Fire Oil's Burn ticks on its own
+    // schedule, independent of this one hit.
+    const inputs = { ...timelineInputs(rotation, [skill], []), set: null, tianGongElement: null }
     const r = simulateTimeline(inputs)
 
     const ctx = buildContext(inputs)

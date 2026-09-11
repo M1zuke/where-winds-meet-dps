@@ -65,6 +65,9 @@ anything rate-shaped. Two rules bind here:
   floored at zero after the subtraction, and a crit- or affinity-damage
   reduction applies **before** that multiplier's clamp, so it is clamped with
   everything else.
+- **An independent damage boost is its own multiplicative factor in the shared
+  tail every row passes through, never an addend in the additive boost
+  total.**
 
 ## Calculation rules
 
@@ -154,8 +157,8 @@ A mechanic is the escape hatch for what the def schema cannot express — a
 stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 
 - **Declared by the thing it is a mechanic of** — its class, its inner way, its
-  gear set. `src/engine/mechanics/` holds only the contract and the registry:
-  **no instances**.
+  gear set, its consumable. `src/engine/mechanics/` holds only the contract and
+  the registry: **no instances**.
 - **Registry order is load-bearing.** Contributions apply in it and float
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.

@@ -68,6 +68,7 @@ import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { clockQiPhase, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayTier } from "../definitions/innerWays/registry"
+import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
 
 export const FPS = 60
@@ -487,6 +488,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const damagingHitTimesSec: number[] = []
   const weaponHitTimesSec: number[] = []
   for (const ls of laidSteps) {
+    if (ls.prePull) continue
     for (const hit of ls.performedHits) {
       if (!hitDealsDamage(hit)) continue
       const timeSec = (ls.startFrame + hit.frame) / FPS
@@ -766,14 +768,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           : "")
     }
     const combat = inputs.combatSettings
-    if (combat?.revelryScript) {
-      effects.push({ statKey: "allDamageBoost", amount: 0.3 })
-      sig += "~revelryScript"
-    }
     if (buffEngine) {
       const qiPhaseHere = buffEngine.qiPhase(frame / FPS)
       if (qiPhaseHere === "exhausted") {
-        effects.push({ statKey: "allDamageBoost", amount: 0.1 })
+        effects.push({ statKey: "independentDamageBoost", amount: 0.1 })
         sig += "~qiBreakBoost"
       }
       if (combat?.healerBuff) {
@@ -866,7 +864,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (!echo || !ledger.isActiveAt(feed.debuffId, frame)) continue
       echoPotByDebuff.set(
         feed.debuffId,
-        (echoPotByDebuff.get(feed.debuffId) ?? 0) + damage * echo.share * feed.factor,
+        (echoPotByDebuff.get(feed.debuffId) ?? 0) + damage * echo.share,
       )
     }
   }
@@ -1399,12 +1397,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       echoPotByDebuff.set(event.debuffId, 0)
       if (pot <= 0) continue
       const echo = echoOf(event.debuffId)!
-      totalDamage += pot
+      const adjustment = echo.releaseAdjustment
+      const paid =
+        adjustment && adjustment.requiresStatuses.every((id) => ledger.isActiveAt(id, event.frame))
+          ? pot * adjustment.factor
+          : pot
+      totalDamage += paid
       add(
         echo.breakdownName,
         echo.skillType,
         1,
-        pot,
+        paid,
         echo.breakdownName,
         debuffEchoKey(event.debuffId),
       )
@@ -1414,7 +1417,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         skillName: echo.breakdownName,
         type: echo.skillType,
         kind: "hit",
-        damage: pot,
+        damage: paid,
         inWindow: true,
       })
     }

@@ -71,7 +71,7 @@ export interface DamageEffectsResult {
   // `tests/engine/buffEngineAdvanced.test.ts` and `mistwillow.test.ts` to pin
   // which def a contribution came from.
   breakdown: Record<string, number>
-  echoFeeds: { debuffId: string; factor: number }[]
+  echoFeeds: { debuffId: string }[]
 }
 
 const DEFAULT_DURATION = 15
@@ -829,7 +829,7 @@ export class BuffEngine {
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
-    const echoFeeds: { debuffId: string; factor: number }[] = []
+    const echoFeeds: { debuffId: string }[] = []
     let currentId = ""
 
     const sink: EffectSink = {
@@ -849,8 +849,8 @@ export class BuffEngine {
         damageFactor *= factor
       },
       setStatus: () => {},
-      echo(debuffId, factor) {
-        echoFeeds.push({ debuffId, factor })
+      echo(debuffId) {
+        echoFeeds.push({ debuffId })
       },
     }
 

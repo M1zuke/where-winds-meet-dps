@@ -210,11 +210,13 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   itself.
 - **A debuff may bank an echo** (`echo`): while one of its windows is active,
   every scored damage event a def feeds into it — a regular hit, a DoT tick or
-  a mechanic's extra event — banks `share` of its realised damage, scaled by
-  the feeding effect's factor. A release deals the banked sum as it stands:
-  never re-run through the formula, never rolled, reported under the echo's
-  own `breakdownName` and `skillType`, and only from events inside the
-  rotation window.
+  a mechanic's extra event — banks `share` of its realised damage. A release
+  deals the banked sum as it stands: never re-run through the formula, never
+  rolled, reported under the echo's own `breakdownName` and `skillType`, and
+  only from events inside the rotation window. The echo may also declare a
+  release-time adjustment: a factor applied once to the released total, read
+  against the target's state at the release frame rather than at banking
+  time.
 - A class may ship built-in buffs alongside the user's own. A same-id user buff
   wins.
 - **A status may carry a `description`**: one line of display text the cast
@@ -245,9 +247,9 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   own extra event, the chips of any cast resolving after it, and a regular hit
   too, since every damage event is scored in one time-ordered pass.
 - **An `echo` effect is a feed, not a magnitude.** A def returning one names
-  the debuff whose echo the event it reaches feeds, and a factor on that
-  debuff's banked share; it changes nothing about the event itself. The share
-  and the row are the debuff's — never author them on the def.
+  the debuff whose echo the event it reaches feeds; it changes nothing about
+  the event itself. The share, the row and any release-time adjustment are
+  the debuff's — never author them on the def.
 - A def a class reaches purely by being that class goes on the class. A def an
   inner way gates goes on that inner way. A def that applies across every class,
   or is gated on a global toggle, goes on the global or group list. Getting this

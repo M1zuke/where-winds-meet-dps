@@ -3,7 +3,9 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill, makeTrigger, type Skill } from "../../src/engine/skill"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import type { Debuff } from "../../src/engine/debuff"
 import { DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { drunkslay } from "../../src/data/skills/bamboocut-draught/debuffs"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import type { Inputs } from "../../src/engine/types"
@@ -60,6 +62,51 @@ const idle = makeSkill(CLASS, {
   hits: [makeHit({ frame: 0 })],
 })
 
+// Wildstride and Strayhunt at the release-adjustment's own duration (1200
+// frames — `debuffs.ts`), so the window this opens stays up well past any
+// nearby release in these tests unless the case is deliberately built to
+// outlast it.
+const markWildstrideStrayhunt = makeSkill(CLASS, {
+  name: "Test Wildstride+Strayhunt",
+  castFrames: 12,
+  hits: [
+    makeHit({
+      frame: 0,
+      triggers: [
+        makeTrigger({ kind: "applyDebuff", targetId: DEBUFF.wildstride, stacks: 1 }),
+        makeTrigger({ kind: "applyDebuff", targetId: DEBUFF.strayhunt, stacks: 1 }),
+      ],
+    }),
+  ],
+})
+
+// A short-lived override of the same marks, open for only 20 frames from a
+// cast that itself takes 10 — long enough for the very next step to still see
+// them, short enough that the step after that no longer does.
+const markWildstrideStrayhuntBriefly = makeSkill(CLASS, {
+  name: "Test Wildstride+Strayhunt (brief)",
+  castFrames: 10,
+  hits: [
+    makeHit({
+      frame: 0,
+      triggers: [
+        makeTrigger({
+          kind: "applyDebuff",
+          targetId: DEBUFF.wildstride,
+          stacks: 1,
+          durationFrames: 20,
+        }),
+        makeTrigger({
+          kind: "applyDebuff",
+          targetId: DEBUFF.strayhunt,
+          stacks: 1,
+          durationFrames: 20,
+        }),
+      ],
+    }),
+  ],
+})
+
 const skyspeakAt = (tier: number): Inputs["mindMethods"] => [
   { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: String(tier) },
   { name: "", stacks: "" },
@@ -67,16 +114,30 @@ const skyspeakAt = (tier: number): Inputs["mindMethods"] => [
   { name: "", stacks: "" },
 ]
 
-function run(sequence: Skill[], mindMethods: Inputs["mindMethods"] = skyspeakAt(6)) {
+function run(
+  sequence: Skill[],
+  mindMethods: Inputs["mindMethods"] = skyspeakAt(6),
+  debuffs: Debuff[] = [],
+) {
   return runEngine({
     ...defaultInputs,
     classId: CLASS,
     mindMethods,
-    customSkills: [grantDeepdaze, marker, refresher, feeder, idle],
+    customSkills: [
+      grantDeepdaze,
+      marker,
+      refresher,
+      feeder,
+      idle,
+      markWildstrideStrayhunt,
+      markWildstrideStrayhuntBriefly,
+    ],
+    customDebuffs: debuffs,
     activeCustomRotation: makeRotation(CLASS, {
       steps: sequence.map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
     }),
     set: null,
+    tianGongElement: null,
   })
 }
 
@@ -132,5 +193,59 @@ describe("the Drunkslay echo", () => {
     const echoRow = rowNamed(result, ECHO_ROW)!
     const fed = rowNamed(result, feeder.name)!
     expect(echoRow.expectedDamage).toBeCloseTo(0.1 * fed.expectedDamage, 6)
+  })
+
+  describe("the Wildstride/Strayhunt release adjustment", () => {
+    it("applies once, to the released total — never blended across partial banking", () => {
+      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, feeder, marker])
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      const bankedPot = 0.2 * fed.expectedDamage
+      expect(echoRow.expectedDamage).toBeCloseTo(bankedPot * 1.2, 6)
+    })
+
+    it("does nothing when the marks are present at banking but gone by the release frame", () => {
+      const result = run([
+        grantDeepdaze,
+        marker,
+        feeder,
+        markWildstrideStrayhuntBriefly,
+        feeder,
+        marker,
+      ])
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage, 6)
+    })
+
+    it("applies to the whole pot when the marks arrive only after every contribution banked", () => {
+      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker])
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage * 1.2, 6)
+    })
+
+    it("applies to a lapse payout too, read at the lapse frame", () => {
+      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, idle])
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage * 1.2, 6)
+      expect(result.timeline!.find((event) => event.skillName === ECHO_ROW)!.frame).toBe(12 + 1200)
+    })
+
+    it("never applies to a debuff whose echo declares no release adjustment", () => {
+      const drunkslayWithNoAdjustment: Debuff = {
+        ...drunkslay,
+        echo: { ...drunkslay.echo!, releaseAdjustment: null },
+      }
+      const result = run(
+        [grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker],
+        skyspeakAt(6),
+        [drunkslayWithNoAdjustment],
+      )
+      const echoRow = rowNamed(result, ECHO_ROW)!
+      const fed = rowNamed(result, feeder.name)!
+      expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage, 6)
+    })
   })
 })

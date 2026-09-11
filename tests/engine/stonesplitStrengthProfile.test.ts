@@ -6,6 +6,11 @@
 // Re-baselined again, in the last floating-point place only: the engine now
 // sums every damage event into the total in one time-ordered pass, which
 // reorders the same floating-point additions.
+// Re-baselined again: the Exhausted (Qi-break) bonus now multiplies outside
+// the additive boost bracket instead of folding into it, raising every hit
+// and tick inside the break window.
+// Re-baselined again: the stored Fire Oil setting now also applies its Burn
+// DoT, not just its flat damage bonus.
 import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -17,8 +22,8 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(61482.550969622214)
-    expect(result.totalDamage).toBe(3658211.782692522)
+    expect(result.dps).toBe(62987.17932653259)
+    expect(result.totalDamage).toBe(3747737.169928689)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

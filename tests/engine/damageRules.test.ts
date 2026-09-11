@@ -12,6 +12,12 @@ import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
 import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
+import { makeDebuff } from "../../src/engine/debuff"
+import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { defaultCombatSettings } from "../../src/engine/types"
+import type { QiBreakWindow, TimelineEvent } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -401,6 +407,104 @@ describe("crit- and affinity-damage multipliers are clamped", () => {
   it("leaves an affinity multiplier inside the range untouched", () => {
     const cells = computeSkillDamage(art, baseCtx, 1).cells
     expect(cells.Y).toBeCloseTo(baseCtx.affinityDmgBoostPanel, 9)
+  })
+})
+
+describe("an independent damage boost is its own multiplicative factor in the shared tail", () => {
+  it("multiplies a row by exactly (1 + x), not folded into the additive boost bracket", () => {
+    const withBracket = { ...baseCtx, generalDamageBoost: 0.2 }
+    const base = computeSkillDamage(art, withBracket, 1).expectedDamage
+    const boosted = computeSkillDamage(
+      art,
+      { ...withBracket, independentDamageBoost: 0.1 },
+      1,
+    ).expectedDamage
+    expect(boosted).toBeCloseTo(base * 1.1, 9)
+    expect(boosted).not.toBeCloseTo((base * (1 + 0.2 + 0.1)) / (1 + 0.2), 3)
+  })
+})
+
+describe("the exhausted phase raises damage by its own factor, on a hit and a DoT tick alike", () => {
+  const FIGHT_FRAMES = 3600
+  const SECOND = 60
+
+  const probeDot = makeDebuff("bellstrikeUmbra", {
+    name: "Probe Dot",
+    durationFrames: FIGHT_FRAMES,
+    dot: {
+      tickIntervalFrames: SECOND,
+      physMultiplier: 0.1,
+      physFixed: 0,
+      attributeMultiplier: 0,
+      attributeFixed: 0,
+      attributeAttack: "",
+      skillType: "weapon",
+      weaponOrAttribute: "",
+      count: 1,
+      perStackShapes: null,
+      perStackMultipliers: null,
+    },
+  })
+
+  const probeHits = Array.from({ length: FIGHT_FRAMES / SECOND }, (_, index) =>
+    makeHit({
+      frame: index * SECOND,
+      physMultiplier: 0.1,
+      triggers: index === 0 ? [makeTrigger({ kind: "applyDot", targetId: probeDot.id })] : [],
+    }),
+  )
+  const probeSkill = makeSkill("bellstrikeUmbra", {
+    name: "Probe Hit",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+    castFrames: FIGHT_FRAMES,
+    guaranteedNormal: true,
+    hits: probeHits,
+  })
+
+  function probeRun(qiBreakOverride: QiBreakWindow | null) {
+    return runEngine({
+      ...umbraInputs,
+      set: null,
+      customSkills: [probeSkill],
+      customDebuffs: [probeDot],
+      activeCustomRotation: makeRotation("bellstrikeUmbra", {
+        steps: [makeStep({ skillId: probeSkill.id, hitCount: probeHits.length })],
+      }),
+      combatSettings: { ...defaultCombatSettings(), qiBreakOverride },
+    }).timeline!
+  }
+
+  it("scales every probe event inside the break window by 1.1, and leaves the rest untouched", () => {
+    const withBreak = probeRun(null)
+    const withoutBreak = probeRun({ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 })
+    const probeEvents = (timeline: TimelineEvent[]) =>
+      timeline.filter(
+        (event) => event.skillName === "Probe Hit" || event.skillName === "Probe Dot (DoT)",
+      )
+
+    const withBreakEvents = probeEvents(withBreak)
+    const withoutBreakEvents = probeEvents(withoutBreak)
+    expect(withBreakEvents.length).toBe(withoutBreakEvents.length)
+    expect(withBreakEvents.length).toBeGreaterThan(0)
+
+    const breakStart = DEFAULT_QI_BREAK_WINDOW.startSec
+    const breakEnd = breakStart + DEFAULT_QI_BREAK_WINDOW.durationSec
+    let sawHitInWindow = false
+    let sawDotInWindow = false
+    for (let index = 0; index < withBreakEvents.length; index++) {
+      const withEvent = withBreakEvents[index]
+      const withoutEvent = withoutBreakEvents[index]
+      const insideWindow = withEvent.timeSec >= breakStart && withEvent.timeSec < breakEnd
+      expect(
+        withEvent.damage / withoutEvent.damage,
+        `${withEvent.kind}@${withEvent.timeSec}`,
+      ).toBeCloseTo(insideWindow ? 1.1 : 1, 9)
+      if (insideWindow && withEvent.kind === "hit") sawHitInWindow = true
+      if (insideWindow && withEvent.kind === "dot") sawDotInWindow = true
+    }
+    expect(sawHitInWindow).toBe(true)
+    expect(sawDotInWindow).toBe(true)
   })
 })
 

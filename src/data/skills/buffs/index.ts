@@ -4,7 +4,8 @@ import { windWallPursuit } from "./windWallPursuit"
 import { pursuitChargedBoost } from "./pursuitChargedBoost"
 import { lingeringBone } from "./lingeringBone"
 import { healerBuff } from "./healerBuff"
-import { revelryScript } from "./revelryScript"
+import { wraithstrikeScript } from "./wraithstrikeScript"
+import { voidrotScript } from "./voidrotScript"
 import { vulnerabilityTeammate } from "./vulnerabilityTeammate"
 import { cleftpeakStacks } from "./cleftpeakStacks"
 import { jadeware } from "./jadeware"
@@ -29,7 +30,8 @@ import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDam
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
 // nothing among them.
 export const GLOBAL_BUFF_DEFS: BuffModule[] = [
-  revelryScript,
+  wraithstrikeScript,
+  voidrotScript,
   vulnerabilityTeammate,
   jadeware,
   mirage,

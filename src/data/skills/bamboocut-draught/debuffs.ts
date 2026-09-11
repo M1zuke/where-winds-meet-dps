@@ -7,7 +7,9 @@ const CLASS_ID = "bamboocutDraught"
 
 // 20% of the damage the marked target takes from Inebriate-enhanced skills is
 // banked and dealt again as one strike when Hero's Blood hits it again or the
-// mark lapses (in-game skill text, 2026-09-05).
+// mark lapses; the release counts as repeated damage, which the target takes
+// 20% more of while both Wildstride and Strayhunt are on it at that moment
+// (in-game behaviour, 2026-09-11).
 export const drunkslay = defineDebuff({
   id: DEBUFF.drunkslay,
   classId: CLASS_ID,
@@ -16,11 +18,16 @@ export const drunkslay = defineDebuff({
   durationFrames: 1200,
   effects: [],
   dot: null,
-  echo: { share: 0.2, breakdownName: "Drunkslay State", skillType: "mindMethod" },
+  echo: {
+    share: 0.2,
+    breakdownName: "Drunkslay State",
+    skillType: "mindMethod",
+    releaseAdjustment: { factor: 1.2, requiresStatuses: [DEBUFF.wildstride, DEBUFF.strayhunt] },
+  },
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-09-11T00:00:00.000Z",
 })
 
 // While the mark holds, the attacker's physical and attribute damage scales

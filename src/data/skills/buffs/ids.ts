@@ -63,7 +63,6 @@ export const BUFF = {
   rainwhisperCritDamage: "rainwhisperCritDamage",
   rainwhisperShield: "rainwhisperShield",
   resistanceResolve: "resistanceResolve",
-  revelryScript: "revelryScript",
   skyspeakUnlock: "skyspeakUnlock",
   skyspeakDeepdazeDuration: "skyspeakDeepdazeDuration",
   skyspeakDeepdazeRefund: "skyspeakDeepdazeRefund",
@@ -80,12 +79,14 @@ export const BUFF = {
   thunderousBloom: "thunderousBloom",
   tiltrimStack: "tiltrimStack",
   tiltrimInebriateBonus: "tiltrimInebriateBonus",
+  voidrotScript: "voidrotScript",
   volutefitWineboundDamage: "volutefitWineboundDamage",
   vulnerabilityTeammate: "vulnerabilityTeammate",
   windWall: "windWall",
   windWallPursuit: "windWallPursuit",
   wineGu: "wineGu",
   wolfchasersArtMartialDamage: "wolfchasersArtMartialDamage",
+  wraithstrikeScript: "wraithstrikeScript",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across
@@ -105,7 +106,6 @@ export const PARAM = {
   mistwing: "mistwing",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
-  revelryScript: "revelryScript",
   skyspeak: "skyspeak",
   starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
@@ -113,6 +113,8 @@ export const PARAM = {
   swordMorph: "swordMorph",
   throatPierced: "throatPierced",
   thunderousBloom: "thunderousBloom",
+  voidrotScript: "voidrotScript",
   volutefit: "volutefit",
   wolfchasersArt: "wolfchasersArt",
+  wraithstrikeScript: "wraithstrikeScript",
 } as const

@@ -151,9 +151,9 @@ describe("the Primepick follow-up", () => {
     const steps = withDeepdaze
       ? [
           makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
-          makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 2 }),
+          makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 3 }),
         ]
-      : [makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 2 })]
+      : [makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 3 })]
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
@@ -163,18 +163,28 @@ describe("the Primepick follow-up", () => {
     })
   }
 
-  it("applies Wildstride on its thrust and lands the Tri-strike only in Deepdaze", () => {
+  it("applies Wildstride on its thrust and lands both Deepdaze-only strikes only in Deepdaze", () => {
     const withDeepdaze = runFollowUp(true)
     const withoutDeepdaze = runFollowUp(false)
 
     const rowIn = (result: ReturnType<typeof runEngine>) =>
       result.perSkill.find((row) => row.breakdownName === "Nightwick - Primepick")!
 
-    expect(rowIn(withDeepdaze).count).toBe(2)
+    expect(rowIn(withDeepdaze).count).toBe(3)
     expect(rowIn(withoutDeepdaze).count).toBe(1)
 
     for (const result of [withDeepdaze, withoutDeepdaze]) {
       expect(result.buffWindows!.some((window) => window.id === DEBUFF.wildstride)).toBe(true)
+    }
+  })
+
+  it("pins the three Deepdaze hits' coefficients and frames", () => {
+    expect(nightwickPrimepickFollowUp.hits.map((hit) => hit.frame)).toEqual([20, 49, 76])
+    for (const hit of nightwickPrimepickFollowUp.hits) {
+      expect(hit.physMultiplier).toBe(0.859716)
+      expect(hit.physFixed).toBe(237.93)
+      expect(hit.attributeMultiplier).toBe(1.289574)
+      expect(hit.attributeFixed).toBe(129.69)
     }
   })
 })

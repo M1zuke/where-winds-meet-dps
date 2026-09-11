@@ -139,6 +139,14 @@ export const STAT_LINES = [
     category: "Damage Boosts",
   },
   {
+    id: "independentDamageBoost",
+    label: "Independent DMG Boost",
+    unit: "percent",
+    enginePath: "independentDamageBoost",
+    scope: "player",
+    category: "Damage Boosts",
+  },
+  {
     id: "allMartialBoost",
     label: "All Martial Arts Boost",
     unit: "percent",

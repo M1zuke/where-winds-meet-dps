@@ -45,10 +45,16 @@ export interface DotDetonationSpec {
   retainParamStacks?: number
 }
 
+export interface DebuffEchoReleaseAdjustment {
+  factor: number
+  requiresStatuses: string[]
+}
+
 export interface DebuffEchoSpec {
   share: number
   breakdownName: string
   skillType: string
+  releaseAdjustment?: DebuffEchoReleaseAdjustment | null
 }
 
 export interface Debuff {
@@ -127,7 +133,17 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
     maxStacks: src.maxStacks,
     stackScaling: src.stackScaling,
     detonation: src.detonation ? { ...src.detonation } : (src.detonation ?? null),
-    echo: src.echo ? { ...src.echo } : (src.echo ?? null),
+    echo: src.echo
+      ? {
+          ...src.echo,
+          releaseAdjustment: src.echo.releaseAdjustment
+            ? {
+                ...src.echo.releaseAdjustment,
+                requiresStatuses: [...src.echo.releaseAdjustment.requiresStatuses],
+              }
+            : (src.echo.releaseAdjustment ?? null),
+        }
+      : (src.echo ?? null),
   })
 }
 
@@ -166,10 +182,20 @@ export function isDebuff(x: unknown): x is Debuff {
 function isDebuffEchoSpec(x: unknown): x is DebuffEchoSpec {
   if (!x || typeof x !== "object") return false
   const echo = x as Record<string, unknown>
-  return (
+  const shapeOk =
     typeof echo.share === "number" &&
     Number.isFinite(echo.share) &&
     typeof echo.breakdownName === "string" &&
     typeof echo.skillType === "string"
-  )
+  if (!shapeOk) return false
+  if (echo.releaseAdjustment === undefined || echo.releaseAdjustment === null) return true
+  return isDebuffEchoReleaseAdjustment(echo.releaseAdjustment)
+}
+
+function isDebuffEchoReleaseAdjustment(x: unknown): x is DebuffEchoReleaseAdjustment {
+  if (!x || typeof x !== "object") return false
+  const adjustment = x as Record<string, unknown>
+  if (typeof adjustment.factor !== "number" || !Number.isFinite(adjustment.factor)) return false
+  if (!Array.isArray(adjustment.requiresStatuses)) return false
+  return adjustment.requiresStatuses.every((id) => typeof id === "string")
 }

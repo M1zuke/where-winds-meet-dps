@@ -1,12 +1,12 @@
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes". Pins the
-// Skill Editor text for the eight buffs (of the 18 Umbra-scoped modules) whose
+// Skill Editor text for the ten buffs (of the 19 Umbra-scoped modules) whose
 // rendering carries an author-written `summary` rather than one the catalog's
 // generic label table can derive from the effect list, so a future edit can't
-// move it silently. The other ten (zenithBar, potentRiverFlow, wineGu,
-// revelryScript, vulnerabilityTeammate, mirage, mirageBonus,
-// rainwhisperShield, resistanceResolve, dragonHeadLowHp) all express their
-// bonus as a plain `allDamageBoost` `StatKey`, which that generic table
-// already renders as "+N% all".
+// move it silently. The other nine (zenithBar, potentRiverFlow, wineGu,
+// vulnerabilityTeammate, mirage, mirageBonus, rainwhisperShield,
+// resistanceResolve, dragonHeadLowHp) all express their bonus as a plain
+// `allDamageBoost` `StatKey`, which that generic table already renders as
+// "+N% all".
 import { describe, expect, it } from "vitest"
 import {
   appliesForSkill,
@@ -39,8 +39,7 @@ function inputsWithSwordHorizon(tier: string): Inputs {
 // Sword Horizon gates bellstrikeUmbraBleedPen/bellstrikeUmbraBleedingDamage/
 // zenithBar; Wolfchaser's Art tier 6 gates soulShaken — the two
 // `requires` every scoped Class Buffs row actually reads. Insightful Strike's
-// and Revelry Script's own params gate other, unscoped modules and stay
-// closed here on purpose.
+// own param gates other, unscoped modules and stays closed here on purpose.
 function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
   return {
     ...defaultInputs,

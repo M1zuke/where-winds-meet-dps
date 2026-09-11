@@ -95,6 +95,7 @@ export interface FormulaContext {
   sustainDmgBoostPanel: number
   dotDamageMultiplier?: number
   allDamageBoost?: number
+  independentDamageBoost?: number
   allMartialBoost?: number
   weaponBoosts?: Record<string, number>
   mysticTypeBoosts?: Record<string, number>
@@ -166,6 +167,7 @@ export function computeSkillDamage(
   const physPenResistance = ctx.physPenResistance ?? 0
   const attributePenResistance = ctx.attrPenResistance ?? 0
   const damageReduction = ctx.damageReduction ?? 0
+  const independentDamageBoost = ctx.independentDamageBoost ?? 0
   const physDamageBoostReduction = ctx.physDamageBoostReduction ?? 0
   const attributeDamageBoostReduction = ctx.attrDamageBoostReduction ?? 0
   const critDamageReduction = ctx.critDamageReduction ?? 0
@@ -520,6 +522,7 @@ export function computeSkillDamage(
     base *
     (1 + damageBoostTotal) *
     (1 - damageReduction) *
+    (1 + independentDamageBoost) *
     count *
     correction *
     (1 + attuneBoost) *

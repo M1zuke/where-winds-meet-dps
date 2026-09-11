@@ -6,6 +6,7 @@ import type {
   Inputs,
   OddityNode,
   OddityRegions,
+  ScriptId,
   StoredProfile,
 } from "./engine/types"
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
@@ -299,6 +300,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
+  if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
   if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
   delete (next as unknown as Record<string, unknown>).singleBurstBoost
   delete (next as unknown as Record<string, unknown>).singleControlBoost
@@ -491,12 +493,18 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
     if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
+    // `revelryScript` named a boolean toggle this build no longer offers or
+    // reads — kept rather than dropped, per CLAUDE.md → "localStorage migrations".
+    const legacyFields: Record<string, unknown> = {}
+    if ("revelryScript" in r) legacyFields.revelryScript = r.revelryScript
     next.combatSettings = {
+      ...legacyFields,
       qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
-      revelryScript: typeof r.revelryScript === "boolean" ? r.revelryScript : def.revelryScript,
+      // Kept as stored even when unrecognised, same as `bowSet`/`arsenal` above.
+      script: typeof r.script === "string" && r.script !== "" ? (r.script as ScriptId) : def.script,
       dragonHeadFullStacks:
         typeof r.dragonHeadFullStacks === "boolean"
           ? r.dragonHeadFullStacks

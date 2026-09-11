@@ -5,19 +5,25 @@ import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
 
-// Hit frames: in-game animation colliders, 2026-09-05 — the thrust on the
-// first, the Tri-strike on the third; the second collider has no numerical
-// row and is not modelled.
+// Hit frames: in-game animation, 2026-09-11.
 export const primepickFollowUpHits = [
   hit(0, {
     frame: 20,
-    physMultiplier: 0.64565,
-    attributeMultiplier: 0.968475,
-    physFixed: 180,
-    attributeFixed: 98,
+    physMultiplier: 0.859716,
+    attributeMultiplier: 1.289574,
+    physFixed: 237.93,
+    attributeFixed: 129.69,
     triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
   }),
   hit(1, {
+    frame: 49,
+    physMultiplier: 0.859716,
+    attributeMultiplier: 1.289574,
+    physFixed: 237.93,
+    attributeFixed: 129.69,
+    conditions: [{ buffId: STATUS.inebriateDeepdaze, op: "gte", stacks: 1 }],
+  }),
+  hit(2, {
     frame: 76,
     physMultiplier: 0.859716,
     attributeMultiplier: 1.289574,

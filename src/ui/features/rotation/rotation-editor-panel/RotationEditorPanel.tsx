@@ -124,7 +124,7 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
                   : extra.kind === "applyBuff"
                     ? `${t("skills.applies")} ${t(buffKey(extra.id), extra.id)}`
                     : extra.kind === "echo"
-                      ? `${t("skills.echo")} ×${extra.factor} → ${t(debuffKey(extra.debuffId), extra.debuffId)}`
+                      ? `${t("skills.echo")} → ${t(debuffKey(extra.debuffId), extra.debuffId)}`
                       : null}
           </div>
         ))}

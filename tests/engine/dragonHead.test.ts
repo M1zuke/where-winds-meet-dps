@@ -310,15 +310,17 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(boosted).toBeGreaterThan(plain)
   })
 
-  // Cross-checked against Revelry Script, a known +0.30 into the same additive
-  // pool: it fixes the pool size independently, which then predicts the 0.45.
-  it("adds exactly 0.45 to the same additive pool Revelry Script feeds", () => {
-    const withRevelry = (): Partial<Inputs> => ({
-      combatSettings: { ...defaultCombatSettings(), revelryScript: true },
+  // Cross-checked against the Healer Buff toggle, a known +0.20 into the same
+  // additive pool (frame 0 sits outside the default Qi break, so its bonus is
+  // the flat, unboosted amount): it fixes the pool size independently, which
+  // then predicts the 0.45.
+  it("adds exactly 0.45 to the same additive pool the Healer Buff toggle feeds", () => {
+    const withHealerBuff = (): Partial<Inputs> => ({
+      combatSettings: { ...defaultCombatSettings(), healerBuff: true },
     })
     const plain = skillDamage(simulate([MYSTIC_SKILL.dragonHeadPlus]), MYSTIC_SKILL.dragonHeadPlus)
-    const revelry = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], withRevelry()),
+    const healed = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff()),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     const lowHp = skillDamage(
@@ -326,7 +328,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
       MYSTIC_SKILL.dragonHeadPlus,
     )
 
-    const pool = 0.3 / (revelry / plain - 1)
+    const pool = 0.2 / (healed / plain - 1)
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
