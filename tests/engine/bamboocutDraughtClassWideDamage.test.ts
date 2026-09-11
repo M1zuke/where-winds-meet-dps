@@ -1,5 +1,5 @@
-// Scoped to Bamboocut Draught — the class carries no validated anchor
-// (docs/TESTING.md § "Class scoping"), so nothing here asserts an absolute
+// Scoped to Bamboocut Draught (docs/TESTING.md § "Class scoping"); its anchor
+// is bamboocutDraughtProfile.test.ts, so nothing here asserts an absolute
 // DPS number. Covers the talent and ultimate bonuses that read "damage
 // dealt" rather than naming the class's own skills.
 import { describe, expect, it } from "vitest"

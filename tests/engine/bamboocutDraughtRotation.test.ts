@@ -1,6 +1,6 @@
-// Scoped to Bamboocut Draught's built-in dummy rotation — the class carries
-// no validated anchor (docs/TESTING.md § "Class scoping"), so nothing here
-// asserts an absolute DPS number.
+// Scoped to Bamboocut Draught's built-in dummy rotation (docs/TESTING.md
+// § "Class scoping"); the class's anchor is bamboocutDraughtProfile.test.ts,
+// so nothing here asserts an absolute DPS number.
 import { describe, expect, it } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"

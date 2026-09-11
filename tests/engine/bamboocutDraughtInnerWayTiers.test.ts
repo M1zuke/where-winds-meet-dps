@@ -1,6 +1,6 @@
-// Scoped to Bamboocut Draught's four slottable inner ways — the class
-// carries no validated anchor (docs/TESTING.md § "Class scoping"), so
-// nothing here asserts an absolute DPS number.
+// Scoped to Bamboocut Draught's four slottable inner ways (docs/TESTING.md
+// § "Class scoping"); the class's anchor is bamboocutDraughtProfile.test.ts,
+// so nothing here asserts an absolute DPS number.
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"

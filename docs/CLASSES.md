@@ -16,13 +16,13 @@ offered in the class picker; `validated` gates how far its numbers may be truste
 never whether the UI shows it.
 
 **Bellstrike Umbra (`bellstrikeUmbra`, spec `bellstrike_umbra`), Bellstrike
-Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`) and Stonesplit
-Strength (`stonesplitStrength`, spec `stonesplit_strength`) are validated** — each
+Splendor (`bellstrikeSplendor`, spec `bellstrike_splendor`), Stonesplit
+Strength (`stonesplitStrength`, spec `stonesplit_strength`) and Bamboocut
+Draught (`bamboocutDraught`, spec `bamboocut_draught`) are validated** — each
 holds a measured build exactly. Rely on nothing any of them reports beyond what
 its anchor pins.
 
-**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Draught
-(`bamboocutDraught`, spec `bamboocut_draught`) are registered and not
+**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) is registered and not
 validated** — selectable, and carrying nothing an anchor defends.
 
 The remaining classes — the other Stonesplit and Bamboocut specs — are **not

@@ -21,7 +21,7 @@ const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Bamboocut", SKIL
 export const bamboocutDraught = defineClass({
   id: CLASS_ID,
   displayName: "Bamboocut Draught",
-  validated: false,
+  validated: true,
   spec: "bamboocut_draught",
   primaryAttribute: "Bamboocut",
   attributeMultiplier: 1.5,

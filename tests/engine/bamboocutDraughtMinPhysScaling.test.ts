@@ -1,6 +1,6 @@
-// Scoped to Bamboocut Draught's Min-Phys-scaled talents — the class carries
-// no validated anchor (docs/TESTING.md § "Class scoping"), so nothing here
-// asserts an absolute DPS number.
+// Scoped to Bamboocut Draught's Min-Phys-scaled talents (docs/TESTING.md
+// § "Class scoping"); the class's anchor is bamboocutDraughtProfile.test.ts,
+// so nothing here asserts an absolute DPS number.
 import { describe, expect, it } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
 import { paramsFromInputs } from "../../src/engine/buffs/params"

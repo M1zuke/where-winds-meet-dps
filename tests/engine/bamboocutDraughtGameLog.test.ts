@@ -1,7 +1,7 @@
 // Scoped to Bamboocut Draught's built-in dummy rotation (docs/TESTING.md
 // § "Class scoping"): the hit counts of a 60 s training-dummy run read from
 // the in-game damage log (2026-09-05), one row per breakdown name. Damage is
-// not asserted — the class carries no validated anchor.
+// not asserted here — that is the anchor's job, bamboocutDraughtProfile.test.ts.
 import { describe, expect, it } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"
