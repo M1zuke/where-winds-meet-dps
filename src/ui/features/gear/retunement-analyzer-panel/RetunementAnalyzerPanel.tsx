@@ -165,10 +165,6 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
 
   const hasRows = rows.length > 0
   const budget = retuneAttemptBudget(piece.level)
-  const budgetKey =
-    budget === "single"
-      ? "gear.retunementAnalyzer.budgetSingle"
-      : "gear.retunementAnalyzer.budgetRepeatable"
 
   return (
     <div className={`panel ${retunement.panel}`}>
@@ -176,7 +172,9 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
         <span className="toolbar-label">{t("common.retunement")}</span>
         {isPending && <span className="hint">{t("gear.retunementAnalyzer.computing")}</span>}
         {lockedNote && <span className="hint">{lockedNote}</span>}
-        <span className="hint">{t(budgetKey)}</span>
+        <span className="hint">
+          {budget === "single" ? t("gear.retuneBudget.single") : t("gear.retuneBudget.repeatable")}
+        </span>
       </div>
 
       {!hasRows && isPending && (

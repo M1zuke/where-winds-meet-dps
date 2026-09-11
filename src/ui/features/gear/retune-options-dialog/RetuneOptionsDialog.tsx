@@ -67,9 +67,7 @@ export function RetuneOptionsDialog({ piece, slotIndex, inputs, onChange, onClos
       </DialogBody>
       <DialogFooter>
         <span className={styles.budget}>
-          {budget === "single"
-            ? t("gear.retuneOptionsDialog.budgetSingle")
-            : t("gear.retuneOptionsDialog.budgetRepeatable")}
+          {budget === "single" ? t("gear.retuneBudget.single") : t("gear.retuneBudget.repeatable")}
         </span>
         <button type="button" className="btn" onClick={onClose}>
           {t("common.close")}
