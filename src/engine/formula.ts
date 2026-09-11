@@ -40,6 +40,9 @@ type ArtRow = {
   minPhysFlatBonus?: number
   maxPhysPctBonus?: number
   maxPhysFlatBonus?: number
+  // Scales the attribute attack VALUE, the way the phys pct bonuses scale the
+  // physical one — not the flat damage a skill's own rows carry.
+  attributeAttackPctBonus?: number
   extraCritRate?: number
   extraCritDamage?: number
   extraAffinityRate?: number
@@ -55,8 +58,8 @@ type ArtRow = {
   elevatedAttributeMultiplier?: boolean
   attuneTag?: string
   guaranteedCrit?: number
-  guaranteedPrecision?: number
   guaranteedNormal?: number
+  abrasionAvoidRate?: number
   conditionalFinalCrit?: ConditionalFinalCrit
   extraStonesplitPenetration?: number
   mysticCategory?: string
@@ -92,12 +95,14 @@ export interface FormulaContext {
   sustainDmgBoostPanel: number
   dotDamageMultiplier?: number
   allDamageBoost?: number
+  independentDamageBoost?: number
   allMartialBoost?: number
   weaponBoosts?: Record<string, number>
   mysticTypeBoosts?: Record<string, number>
   generalDamageBoost: number
   chargeBonus: number
   effectiveDefense: number
+  fatigueDamageTaken: number
   hasSixHenZhi: boolean
   food: boolean
   set: string | null
@@ -153,8 +158,8 @@ export function computeSkillDamage(
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"
   let guaranteedCrit = art.guaranteedCrit === 1
-  const guaranteedPrecision = art.guaranteedPrecision === 1
   const guaranteedNormal = art.guaranteedNormal === 1
+  const abrasionAvoidRate = Math.min(numberOrZero(art.abrasionAvoidRate), 1)
   const isPersistent = art.specialTag === "sustain"
   const usesChargeBoost = art.usesChargeBoost === 1
   const usesGyrationUmbrella = art.specialTag === "Spinning Umbrella"
@@ -162,6 +167,7 @@ export function computeSkillDamage(
   const physPenResistance = ctx.physPenResistance ?? 0
   const attributePenResistance = ctx.attrPenResistance ?? 0
   const damageReduction = ctx.damageReduction ?? 0
+  const independentDamageBoost = ctx.independentDamageBoost ?? 0
   const physDamageBoostReduction = ctx.physDamageBoostReduction ?? 0
   const attributeDamageBoostReduction = ctx.attrDamageBoostReduction ?? 0
   const critDamageReduction = ctx.critDamageReduction ?? 0
@@ -193,7 +199,7 @@ export function computeSkillDamage(
       AFFINITY_DAMAGE_MULTIPLIER_MAX,
     ) - 1
 
-  const precisionRate = isTianGong || guaranteedPrecision ? 1 : Math.min(ctx.precisionPanel, 1)
+  const precisionRate = isTianGong ? 1 : Math.min(ctx.precisionPanel, 1)
 
   // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
   // `panel.ts`'s white→yellow conversion, so they are never divided here. A
@@ -238,7 +244,7 @@ export function computeSkillDamage(
 
   const physGrazeRow =
     physMin * physCoefficient * physRowScale * physDamageBoostMultiplier * (1 + physPenFraction)
-  const grazeChance = (1 - precisionRate) * (1 - affinityRate)
+  const grazeChance = (1 - precisionRate) * (1 - affinityRate) * (1 - abrasionAvoidRate)
   const physCritRow =
     physAvg *
     physCoefficient *
@@ -346,8 +352,9 @@ export function computeSkillDamage(
     penetration: number,
     extraSkillPenetration: number,
   ) {
-    const minAttack = block.min
-    const maxAttack = Math.max(block.max, minAttack)
+    const attackScale = 1 + numberOrZero(art.attributeAttackPctBonus)
+    const minAttack = block.min * attackScale
+    const maxAttack = Math.max(block.max * attackScale, minAttack)
     const avgAttack = (minAttack + maxAttack) / 2
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0
@@ -515,6 +522,7 @@ export function computeSkillDamage(
     base *
     (1 + damageBoostTotal) *
     (1 - damageReduction) *
+    (1 + independentDamageBoost) *
     count *
     correction *
     (1 + attuneBoost) *

@@ -97,6 +97,17 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
     takes a request kind on the shared client — routing it through the client
     would apply rules 3 and 5 to a request the client's cache and abort
     contracts were never designed for.
+14. **A buff chip shows the effect the module applies at that cast, and appears
+    only while it applies one.** The engine evaluates every module for display
+    as reaching the cast, against the live state at that frame — the gates the
+    ledger tracks included — and a module that yields nothing there is left off
+    the cast entirely; a hint never carries a summary or a description in place
+    of an effect. The kinds a hint renders: a stat delta, a damage multiplier, a
+    forced outcome, an art bonus, an applied buff. Two things are chips without
+    an effect line by design: a status the ledger tracks, whose stacks and
+    remaining time are its information, and a module declared with a literal
+    empty `effects` array, a state marker other modules read. A gate a build
+    opens for the whole fight as a bare unlock marker is not a chip at all.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
 

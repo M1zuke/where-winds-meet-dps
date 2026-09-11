@@ -65,6 +65,9 @@ anything rate-shaped. Two rules bind here:
   floored at zero after the subtraction, and a crit- or affinity-damage
   reduction applies **before** that multiplier's clamp, so it is clamped with
   everything else.
+- **An independent damage boost is its own multiplicative factor in the shared
+  tail every row passes through, never an addend in the additive boost
+  total.**
 
 ## Calculation rules
 
@@ -73,7 +76,9 @@ They have no cached anchor — `tests/engine/damageRules.test.ts` is the only
 guard, and it is directional.
 
 1. **Graze/abrasion rate** is `(1 − precision) × (1 − affinity)`, not
-   `1 − precision` (PDF §8). Differs only below 100 % precision.
+   `1 − precision` (PDF §8). Differs only below 100 % precision. An
+   abrasion-avoid fraction scales this rate down further, and the mass it
+   removes lands on the normal row, never on crit.
 2. **Penetration** uses net `(pen − resistance)`, `÷100` when net ≤ 0 (deficit
    at full weight) and `÷200` when net > 0 (overflow halved), for the physical
    and every attribute track. ⚠️ This **corrects PDF §7** — the CN sources'
@@ -152,8 +157,8 @@ A mechanic is the escape hatch for what the def schema cannot express — a
 stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 
 - **Declared by the thing it is a mechanic of** — its class, its inner way, its
-  gear set. `src/engine/mechanics/` holds only the contract and the registry:
-  **no instances**.
+  gear set, its consumable. `src/engine/mechanics/` holds only the contract and
+  the registry: **no instances**.
 - **Registry order is load-bearing.** Contributions apply in it and float
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.

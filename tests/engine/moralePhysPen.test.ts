@@ -81,8 +81,8 @@ describe("Morale Chant phys-penetration term", () => {
             ...inputs.phys,
             penetration: inputs.phys.penetration + stacks * MORALE_PEN_PER_STACK,
           },
-          allDamageBoost:
-            (inputs.allDamageBoost ?? 0) + stacks * moraleDmgPerStack(inQiBreak) + qiBreakBonus,
+          allDamageBoost: (inputs.allDamageBoost ?? 0) + stacks * moraleDmgPerStack(inQiBreak),
+          independentDamageBoost: qiBreakBonus,
         }),
         1,
       ).expectedDamage

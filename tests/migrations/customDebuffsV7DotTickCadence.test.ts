@@ -10,6 +10,7 @@ import {
   healDotTickCadence,
 } from "../../src/migrations/customDebuffs/V7__dotTickCadence"
 import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
+import { DEBUFF as MYSTIC_DEBUFF } from "../../src/data/skills/mystic/ids"
 import type { Debuff } from "../../src/engine/debuff"
 import storeV6File from "./testCustomDebuffs/v6/store.json"
 
@@ -37,10 +38,10 @@ describe("custom-debuffs v6 fixture", () => {
 
   it("holds them on the built-ins the copies were seeded from", () => {
     const built = (id: string) => builtinDebuffsForClass(CLASS).find((d) => d.id === id)!
-    expect(built(SMOLDER).dot!.firstTickOffsetFrames).toBe(0)
-    expect(built(SMOLDER).dot!.reschedulesPerTick).toBe(true)
+    expect(built(MYSTIC_DEBUFF.smolder).dot!.firstTickOffsetFrames).toBe(0)
+    expect(built(MYSTIC_DEBUFF.smolder).dot!.reschedulesPerTick).toBe(true)
     expect(built(BLEED).dot!.firstTickOffsetFrames).toBe(30)
-    expect(built(FLUTE).dot!.reschedulesPerTick).toBe(false)
+    expect(built(MYSTIC_DEBUFF.fluteRipple).dot!.reschedulesPerTick).toBe(false)
   })
 })
 

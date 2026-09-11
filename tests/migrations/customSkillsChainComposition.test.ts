@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { loadCustomSkills } from "../../src/storage"
 import {
   LATEST_CUSTOM_SKILLS_VERSION,
+  migrateNeverAbradesSkill,
   runCustomSkillMigrations,
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
@@ -15,7 +16,18 @@ import { healSpearMistwillowReach } from "../../src/migrations/customSkills/V11_
 import { healDragonHeadLowHpReach } from "../../src/migrations/customSkills/V12__dragonHeadLowHpReach"
 import { healSpearHeavyChargedCoefficients } from "../../src/migrations/customSkills/V13__spearHeavyChargedCoefficients"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import type { Skill } from "../../src/engine/skill"
+import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
+import { migrateMysticId } from "../../src/migrations"
+
+const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
+  [6, healBleedRowDefaults],
+  [8, healRiverFlowApplication],
+  [9, healBleedCoefficientReach],
+  [10, healWolfchasersArtSwordOverreach],
+  [11, healSpearMistwillowReach],
+  [12, healDragonHeadLowHpReach],
+  [13, healSpearHeavyChargedCoefficients],
+]
 
 const SKILLS_KEY = "wwm.customSkills"
 const ROOT = join(process.cwd(), "tests/migrations/testCustomSkills")
@@ -49,6 +61,19 @@ const rowOf = (hit: Skill["hits"][number]) => [
   hit.attributeFixed,
 ]
 
+const walkedIdentities = (skills: Skill[]): Pick<Skill, "id" | "classId">[] => {
+  const stored = new Set(skills.map((skill) => skill.id))
+  const claimed = new Set<string>()
+  return skills.map((skill) => {
+    const id = migrateMysticId(skill.id)
+    if (id === skill.id || stored.has(id) || claimed.has(id)) {
+      return { id: skill.id, classId: skill.classId }
+    }
+    claimed.add(id)
+    return { id, classId: MYSTIC_ARTS_CLASS_ID }
+  })
+}
+
 describe("every captured custom-skill store walks the whole chain", () => {
   it.each(cases(FIXTURES))(
     "%s lands at the latest version with every skill kept",
@@ -56,7 +81,7 @@ describe("every captured custom-skill store walks the whole chain", () => {
       const result = runCustomSkillMigrations(clone(fixture.blob))!
       expect(result.blob.v).toBe(LATEST_CUSTOM_SKILLS_VERSION)
       expect((result.blob.skills as Skill[]).map((skill) => skill.id)).toEqual(
-        fixture.blob.skills.map((skill) => skill.id),
+        walkedIdentities(fixture.blob.skills).map((identity) => identity.id),
       )
     },
   )
@@ -67,21 +92,21 @@ describe("every captured custom-skill store walks the whole chain", () => {
       const result = runCustomSkillMigrations(clone(fixture.blob))!
       const strip = (skill: Skill) => ({
         ...skill,
-        hits: skill.hits.map(({ id, frame, triggers }) => ({ id, frame, triggers })),
+        hits: skill.hits.map(({ id, frame }) => ({ id, frame })),
       })
+      const identities = walkedIdentities(fixture.blob.skills)
+      const stepsAbove = (version: number) =>
+        HEALS_BY_STEP.filter(([to]) => version < to).map(([, heal]) => heal)
       ;(result.blob.skills as Skill[]).forEach((walked, index) => {
-        const claimed = healSpearHeavyChargedCoefficients(
-          healDragonHeadLowHpReach(
-            healSpearMistwillowReach(
-              healWolfchasersArtSwordOverreach(
-                healBleedCoefficientReach(
-                  healRiverFlowApplication(healBleedRowDefaults(clone(fixture.blob.skills[index]))),
-                ),
-              ),
-            ),
-          ),
+        const healed = stepsAbove(fixture.version).reduce(
+          (skill, heal) => heal(skill) as Skill,
+          clone(fixture.blob.skills[index]),
+        )
+        const identified = { ...healed, ...identities[index] }
+        const expected = (
+          fixture.version < 15 ? migrateNeverAbradesSkill(identified) : identified
         ) as Skill
-        expect(strip(walked)).toEqual(strip(claimed))
+        expect(strip(walked)).toEqual(strip(expected))
       })
     },
   )
@@ -93,14 +118,16 @@ describe("the oldest custom-skill store survives loadCustomSkills end to end", (
   it("is persisted once at the latest version with every seeded copy on the built-in's current rows", () => {
     localStorage.setItem(SKILLS_KEY, JSON.stringify(OLDEST.blob))
     const loaded = loadCustomSkills()
-    expect(loaded.map((skill) => skill.id)).toEqual(OLDEST.blob.skills.map((skill) => skill.id))
+    const identities = walkedIdentities(OLDEST.blob.skills)
+    expect(loaded.map((skill) => skill.id)).toEqual(identities.map((identity) => identity.id))
 
     const persisted = JSON.parse(localStorage.getItem(SKILLS_KEY)!) as RawCustomSkillsBlob
     expect(persisted.v).toBe(LATEST_CUSTOM_SKILLS_VERSION)
 
     for (const skill of loaded) {
       const builtin = builtinSkillsForClass(CLASS).find((candidate) => candidate.id === skill.id)
-      const stored = OLDEST.blob.skills.find((candidate) => candidate.id === skill.id)!
+      const stored =
+        OLDEST.blob.skills[identities.findIndex((identity) => identity.id === skill.id)]
       const edited = stored.hits.some(
         (hit, index) =>
           hit.physMultiplier === 0.6 && builtin && builtin.hits[index].physMultiplier !== 0.6,

@@ -21,6 +21,7 @@ import { V22__dropBreakthrough12 } from "./V22__dropBreakthrough12"
 import { V23__renameHawking } from "./V23__renameHawking"
 import { V24__enhancementLevelsPerSlot } from "./V24__enhancementLevelsPerSlot"
 import { V25__addOddityHpDefenseNodes } from "./V25__addOddityHpDefenseNodes"
+import { V26__mysticArtIds } from "./V26__mysticArtIds"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -44,6 +45,7 @@ export { migrateFormlessWordId } from "./V21__formlessAttackWordIds"
 export { migrateHawkingSetId } from "./V23__renameHawking"
 export { enhancementLevelsFromLegacyNodes } from "./V24__enhancementLevelsPerSlot"
 export { addMissingOddityNodes } from "./V25__addOddityHpDefenseNodes"
+export { migrateMysticId, migrateRotationMysticIds } from "./V26__mysticArtIds"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -67,6 +69,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V23__renameHawking,
   V24__enhancementLevelsPerSlot,
   V25__addOddityHpDefenseNodes,
+  V26__mysticArtIds,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

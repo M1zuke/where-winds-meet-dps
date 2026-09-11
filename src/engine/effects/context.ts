@@ -6,6 +6,7 @@ export interface BuildView {
   classId: string
   spec: string | undefined
   armorSet: string | undefined
+  minPhysAttack: number
   param(id: string): boolean
   paramTier(id: string): number
   paramValue(id: string): number
@@ -13,6 +14,8 @@ export interface BuildView {
 
 export interface TargetView {
   isTrainingDummy: boolean
+  // 1 at full health, falling to 0 as the target is worn down.
+  remainingHealthFraction: number
 }
 
 export interface StatusView {

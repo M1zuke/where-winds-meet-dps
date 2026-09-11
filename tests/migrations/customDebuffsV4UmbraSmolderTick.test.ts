@@ -17,6 +17,7 @@ import storeV3File from "./testCustomDebuffs/v3/store.json"
 
 const CLASS = "bellstrikeUmbra"
 const SMOLDER = "debuff-bellstrikeUmbra-dark-fire"
+const WALKED_SMOLDER = "debuff-mystic-smolder"
 const USER_AUTHORED = "db-user-authored-fire"
 const DEBUFFS_KEY = "wwm.customDebuffs"
 const STORE = storeV3File as unknown as { v: number; debuffs: Debuff[] }
@@ -27,7 +28,7 @@ const debuffIn = (blob: { debuffs: unknown[] }, id: string): Debuff =>
   (blob.debuffs as Debuff[]).find((debuff) => debuff.id === id)!
 
 const currentTick = () =>
-  builtinDebuffsForClass(CLASS).find((debuff) => debuff.id === SMOLDER)!.dot!
+  builtinDebuffsForClass(CLASS).find((debuff) => debuff.id === WALKED_SMOLDER)!.dot!
 
 describe("custom-debuffs v3 fixture", () => {
   it("is v3 and still stores the superseded Smolder tick the built-in no longer carries", () => {
@@ -91,8 +92,8 @@ describe("V4__umbraSmolderTick — through the chain", () => {
   it("loadCustomDebuffs walks the store once and persists it at the latest version", () => {
     localStorage.setItem(DEBUFFS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomDebuffs()
-    expect(loaded.map((debuff) => debuff.id)).toEqual(STORE.debuffs.map((debuff) => debuff.id))
-    expect(loaded.find((debuff) => debuff.id === SMOLDER)!.dot!.physMultiplier).toBe(
+    expect(loaded.map((debuff) => debuff.id)).toEqual([WALKED_SMOLDER, USER_AUTHORED])
+    expect(loaded.find((debuff) => debuff.id === WALKED_SMOLDER)!.dot!.physMultiplier).toBe(
       currentTick().physMultiplier,
     )
     expect(loaded.find((debuff) => debuff.id === USER_AUTHORED)!.dot!.physMultiplier).toBe(0.236)

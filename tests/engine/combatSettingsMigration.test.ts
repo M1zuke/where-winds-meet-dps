@@ -1,9 +1,11 @@
 // Additive field, no version bump — see CLAUDE.md → "localStorage migrations".
 // Also covers folding legacy `fireOil`/`vulnerability` into `tianGongElement`/
-// `shareEasyHurt` and dropping the inert `formbendSet`.
+// `shareEasyHurt`, dropping the inert `formbendSet`, and keeping the removed
+// `revelryScript` field rather than stripping it.
 import { beforeEach, describe, expect, it } from "vitest"
 import { kvStore } from "../../src/kvStore"
 import { loadProfiles, saveProfiles } from "../../src/storage"
+import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
 import type { Inputs } from "../../src/engine/types"
@@ -53,7 +55,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       dragonsBreath: false,
       healerBuff: true,
       breakExtension: false,
-      revelryScript: false,
+      script: "wraithstrikeScript" as const,
       dragonHeadFullStacks: false,
       dragonHeadLowHpMaxBonus: false,
       lowEndurance: false,
@@ -175,5 +177,29 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     const { profiles } = loadProfiles()
     expect("formbendSet" in profiles[0].inputs.combatSettings!).toBe(false)
     expect("shareDebuff5JingShen" in profiles[0].inputs).toBe(false)
+  })
+
+  it("keeps a stored `revelryScript` field rather than stripping it", () => {
+    writeProfilesBlob({
+      combatSettings: { revelryScript: true } as unknown as Inputs["combatSettings"],
+    })
+    const { profiles } = loadProfiles()
+    expect(
+      (profiles[0].inputs.combatSettings as unknown as { revelryScript: boolean }).revelryScript,
+    ).toBe(true)
+  })
+
+  it("scores identically whether or not a legacy `revelryScript` field is present", () => {
+    writeProfilesBlob({
+      combatSettings: { revelryScript: true } as unknown as Inputs["combatSettings"],
+    })
+    const withField = loadProfiles().profiles[0].inputs
+
+    kvStore.remove(PROFILES_KEY)
+    writeProfilesBlob({})
+    const withoutField = loadProfiles().profiles[0].inputs
+
+    expect(runEngine(withField).totalDamage).toBeCloseTo(runEngine(withoutField).totalDamage, 9)
+    expect(runEngine(withField).warnings).toEqual(runEngine(withoutField).warnings)
   })
 })

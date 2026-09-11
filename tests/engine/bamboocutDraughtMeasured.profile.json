@@ -1,0 +1,698 @@
+{
+  "v": 22,
+  "profile": {
+    "id": "pr-mtrfd7ou-mokgvj-1",
+    "name": "Bamboocut Draught measured build",
+    "inputs": {
+      "classId": "bamboocutDraught",
+      "breakthrough": 17,
+      "followedBreakthroughRelease": 17,
+      "allDamageBoost": 0,
+      "mindMethods": [
+        {
+          "name": "Eonpour",
+          "stacks": "tier 6",
+          "id": "eonpour"
+        },
+        {
+          "name": "Skyspeak",
+          "stacks": "tier 6",
+          "id": "skyspeak"
+        },
+        {
+          "name": "Mistwing",
+          "stacks": "tier 6",
+          "id": "mistwing"
+        },
+        {
+          "name": "Morale Chant",
+          "stacks": "tier 6",
+          "id": "moraleChant"
+        }
+      ],
+      "food": true,
+      "tianGongElement": "fire",
+      "set": "tiltrim",
+      "shareDebuff5HenZhi": false,
+      "shareEasyHurt": false,
+      "bowSet": "precision",
+      "arsenal": "bamboocut",
+      "dummyMode": true,
+      "rotation": null,
+      "activeCustomRotation": null,
+      "inventory": [
+        {
+          "id": "gp-mtrfdafj-nvfphh-1",
+          "slot": "leftWeapon",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 59,
+          "maxPhys": 136,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "gauntletsBoost",
+              "value": 0.0583,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.11,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrfdxda-tzsp0k-2",
+          "slot": "rightWeapon",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 59,
+          "maxPhys": 136,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "dualKnivesBoost",
+              "value": 0.0583,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.11,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrfedue-ajmjx0-3",
+          "slot": "disc",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 86,
+          "maxPhys": 0,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "precision",
+              "value": 0.0752,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.11,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrff04r-ooozbt-4",
+          "slot": "pendant",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 129,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "allMartialBoost",
+              "value": 0.0301,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.11,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrffg4k-obtwa4-5",
+          "slot": "helm",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 5774,
+          "physDef": 22,
+          "words": [
+            {
+              "word": "precision",
+              "value": 0.0752,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            }
+          ],
+          "attunement": "driftcleaveDeepdaze",
+          "attunementValue": 0.06,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrfhdpy-i0trj3-6",
+          "slot": "armor",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 11547,
+          "physDef": 22,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "precision",
+              "value": 0.0752,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            }
+          ],
+          "attunement": "driftcleaveDeepdaze",
+          "attunementValue": 0.059,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrfi70a-jx3zdk-7",
+          "slot": "greaves",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 5774,
+          "physDef": 44,
+          "words": [
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "damageVsBoss",
+              "value": 0.0301,
+              "retuned": false
+            }
+          ],
+          "attunement": "driftcleaveDeepdaze",
+          "attunementValue": 0.06,
+          "relayed": true
+        },
+        {
+          "id": "gp-mtrfip32-cib3x8-8",
+          "slot": "bracer",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 5774,
+          "physDef": 22,
+          "words": [
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.0846,
+              "retuned": false
+            },
+            {
+              "word": "power",
+              "value": 46.44,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.13,
+              "retuned": false
+            },
+            {
+              "word": "damageVsBoss",
+              "value": 0.0301,
+              "retuned": false
+            }
+          ],
+          "attunement": "driftcleaveDeepdaze",
+          "attunementValue": 0.059,
+          "relayed": true
+        }
+      ],
+      "equipped": {
+        "leftWeapon": "gp-mtrfdafj-nvfphh-1",
+        "rightWeapon": "gp-mtrfdxda-tzsp0k-2",
+        "disc": "gp-mtrfedue-ajmjx0-3",
+        "pendant": "gp-mtrff04r-ooozbt-4",
+        "helm": "gp-mtrffg4k-obtwa4-5",
+        "armor": "gp-mtrfhdpy-i0trj3-6",
+        "greaves": "gp-mtrfi70a-jx3zdk-7",
+        "bracer": "gp-mtrfip32-cib3x8-8"
+      },
+      "martialArtsTalents": [
+        {
+          "id": "default-bamboocutDraught-0",
+          "name": "Critical Rate UP",
+          "enabled": true,
+          "stat": "critRate",
+          "maxBonus": 0.085,
+          "scalesWith": "agility",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-bamboocutDraught-1",
+          "name": "Physical Attack UP",
+          "enabled": true,
+          "stat": "minPhys",
+          "maxBonus": 73.9,
+          "scalesWith": "agility",
+          "scaleMax": 280
+        },
+        {
+          "id": "default-bamboocutDraught-2",
+          "name": "Gauntlets Bamboocut Attack Min",
+          "enabled": true,
+          "stat": "minBamboocut",
+          "maxBonus": 98,
+          "scalesWith": "agility",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bamboocutDraught-3",
+          "name": "Gauntlets Bamboocut Attack Max",
+          "enabled": true,
+          "stat": "maxBamboocut",
+          "maxBonus": 196,
+          "scalesWith": "agility",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bamboocutDraught-4",
+          "name": "Twin Blades Bamboocut Attack Min",
+          "enabled": true,
+          "stat": "minBamboocut",
+          "maxBonus": 98,
+          "scalesWith": "agility",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bamboocutDraught-5",
+          "name": "Twin Blades Bamboocut Attack Max",
+          "enabled": true,
+          "stat": "maxBamboocut",
+          "maxBonus": 196,
+          "scalesWith": "agility",
+          "scaleMax": 0
+        },
+        {
+          "id": "default-bamboocutDraught-6",
+          "name": "Bamboocut Penetration Scale",
+          "enabled": true,
+          "stat": "bamboocutPenetration",
+          "maxBonus": 0.22,
+          "scalesWith": "bamboocut.min",
+          "scaleMax": 328
+        },
+        {
+          "id": "default-bamboocutDraught-7",
+          "name": "Attribute Damage Scale",
+          "enabled": true,
+          "stat": "attributeDamage",
+          "maxBonus": 0.11,
+          "scalesWith": "bamboocut.min",
+          "scaleMax": 328
+        }
+      ],
+      "oddities": {
+        "Qinghe": [
+          {
+            "id": 1,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 7,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 8,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 9,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 10,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hexi": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Kaifeng Palace": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ],
+        "Hidden Mountain: Suixiang": [
+          {
+            "id": 1,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 2,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 3,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 4,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 5,
+            "stat": "minPhys",
+            "value": 4,
+            "enabled": true
+          },
+          {
+            "id": 6,
+            "stat": "maxPhys",
+            "value": 4,
+            "enabled": true
+          }
+        ]
+      },
+      "disabledTalentPoints": {},
+      "enhancements": [
+        {
+          "id": 1,
+          "slot": "disc",
+          "stat": "maxPhys",
+          "value": 160
+        },
+        {
+          "id": 2,
+          "slot": "pendant",
+          "stat": "maxPhys",
+          "value": 160
+        },
+        {
+          "id": 3,
+          "slot": "leftWeapon",
+          "stat": "maxPhys",
+          "value": 77
+        },
+        {
+          "id": 4,
+          "slot": "leftWeapon",
+          "stat": "minPhys",
+          "value": 115
+        },
+        {
+          "id": 5,
+          "slot": "rightWeapon",
+          "stat": "maxPhys",
+          "value": 72
+        },
+        {
+          "id": 6,
+          "slot": "rightWeapon",
+          "stat": "minPhys",
+          "value": 108
+        }
+      ],
+      "combatSettings": {
+        "qiBreakOverride": null,
+        "dragonsBreath": false,
+        "healerBuff": false,
+        "breakExtension": false,
+        "revelryScript": false,
+        "dragonHeadFullStacks": false,
+        "dragonHeadLowHpMaxBonus": false,
+        "lowEndurance": false
+      }
+    }
+  }
+}

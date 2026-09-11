@@ -1209,7 +1209,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
   it("recovers a debuff's receives from its own tags and its dot's implied sustain type, in the value saveCustomDebuff itself returns", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
-      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+      (debuff) => debuff.id === "debuff-mystic-combustion",
     )!
     const stale = { ...builtinCombustion }
     delete stale.receives
@@ -1259,7 +1259,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
   it("gives an Umbra DoT seeded before the widened bleeding-damage buff its reach", () => {
     const seeded = {
       ...builtinDebuffsForClass("bellstrikeUmbra").find(
-        (debuff) => debuff.id === "debuff-bellstrikeUmbra-dark-fire",
+        (debuff) => debuff.id === "debuff-mystic-smolder",
       )!,
       receives: ["soulShaken"],
     }
@@ -1273,7 +1273,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
   it("leaves an Umbra DoT the user has actually edited alone", () => {
     const edited = {
       ...builtinDebuffsForClass("bellstrikeUmbra").find(
-        (debuff) => debuff.id === "debuff-bellstrikeUmbra-toad-poison",
+        (debuff) => debuff.id === "debuff-mystic-toad-poison",
       )!,
       receives: ["soulShaken", "mountainSplitter"],
     }
@@ -1311,7 +1311,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
   it("leaves an already-authored debuff's receives alone, including an explicit empty one", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
-      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+      (debuff) => debuff.id === "debuff-mystic-combustion",
     )!
     const explicit = { ...builtinCombustion, receives: [] }
     saveCustomDebuff(explicit)
@@ -1323,7 +1323,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
   it("carries an explicit triggersBuffs through save/load and export/import unchanged", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
-      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+      (debuff) => debuff.id === "debuff-mystic-combustion",
     )!
     const explicit = { ...builtinCombustion, triggersBuffs: ["mountainSplitter"] }
     saveCustomDebuff(explicit)
@@ -1338,7 +1338,7 @@ describe("skill/debuff reach heal (receives/triggersBuffs, no version bump)", ()
 
   it("leaves a stale debuff missing triggersBuffs without one — nothing to heal it from", () => {
     const builtinCombustion = builtinDebuffsForClass("bellstrikeUmbra").find(
-      (debuff) => debuff.id === "debuff-bellstrikeUmbra-combustion",
+      (debuff) => debuff.id === "debuff-mystic-combustion",
     )!
     const stale = { ...builtinCombustion }
     delete stale.triggersBuffs

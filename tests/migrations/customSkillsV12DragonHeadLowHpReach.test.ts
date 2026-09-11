@@ -10,6 +10,7 @@ import {
   healDragonHeadLowHpReach,
 } from "../../src/migrations/customSkills/V12__dragonHeadLowHpReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 import type { Skill } from "../../src/engine/skill"
 import storeV11File from "./testCustomSkills/v11/store.json"
 
@@ -35,7 +36,7 @@ describe("custom-skills v11 fixture", () => {
   })
 
   it("holds the corrected shape on the built-in the copy was seeded from", () => {
-    expect(builtin(DRAGON_HEAD_ID).receives).toEqual(HEALED_RECEIVES)
+    expect(builtin(MYSTIC_SKILL.dragonHead).receives).toEqual(HEALED_RECEIVES)
   })
 })
 

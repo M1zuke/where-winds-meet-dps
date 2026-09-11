@@ -12,6 +12,7 @@ import {
 import { loadCustomDebuffs } from "../../src/storage"
 import type { Debuff } from "../../src/engine/debuff"
 import storeV4File from "./testCustomDebuffs/v4/store.json"
+import { DEBUFF as MYSTIC_DEBUFF } from "../../src/data/skills/mystic/ids"
 
 const TOAD_POISON = "debuff-bellstrikeUmbra-toad-poison"
 const FLUTE_RIPPLE = "debuff-stonesplitStrength-flute-ripple"
@@ -120,11 +121,16 @@ describe("V5__mysticArtRankRepair — through the chain", () => {
   it("loadCustomDebuffs walks the store once and persists it at the latest version", () => {
     localStorage.setItem(DEBUFFS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomDebuffs()
-    expect(loaded.map((debuff) => debuff.id)).toEqual(STORE.debuffs.map((debuff) => debuff.id))
-    expect(loaded.find((debuff) => debuff.id === TOAD_POISON)!.dot!.physMultiplier).toBeCloseTo(
-      1.62189,
-      10,
-    )
+    expect(loaded.map((debuff) => debuff.id)).toEqual([
+      MYSTIC_DEBUFF.toadPoison,
+      MYSTIC_DEBUFF.fluteRipple,
+      MYSTIC_DEBUFF.smolder,
+      UMBRA_DARK_FIRE,
+      USER_AUTHORED,
+    ])
+    expect(
+      loaded.find((debuff) => debuff.id === MYSTIC_DEBUFF.toadPoison)!.dot!.physMultiplier,
+    ).toBeCloseTo(1.62189, 10)
     const persisted = JSON.parse(localStorage.getItem(DEBUFFS_KEY)!) as RawCustomDebuffsBlob
     expect(persisted.v).toBe(LATEST_CUSTOM_DEBUFFS_VERSION)
     const written = localStorage.getItem(DEBUFFS_KEY)

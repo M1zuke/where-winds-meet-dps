@@ -14,6 +14,8 @@ import { V10__wolfchasersArtSwordOverreach } from "./V10__wolfchasersArtSwordOve
 import { V11__spearMistwillowReach } from "./V11__spearMistwillowReach"
 import { V12__dragonHeadLowHpReach } from "./V12__dragonHeadLowHpReach"
 import { V13__spearHeavyChargedCoefficients } from "./V13__spearHeavyChargedCoefficients"
+import { V14__mysticArtIds } from "./V14__mysticArtIds"
+import { V15__neverAbrades } from "./V15__neverAbrades"
 
 export type {
   CustomSkillMigration,
@@ -33,6 +35,8 @@ export {
   healSpearHeavyChargedCoefficients,
   spearHeavyHitSwapsFor,
 } from "./V13__spearHeavyChargedCoefficients"
+export { migrateMysticSkillHit } from "./V14__mysticArtIds"
+export { migrateNeverAbradesSkill } from "./V15__neverAbrades"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -45,6 +49,8 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V11__spearMistwillowReach,
   V12__dragonHeadLowHpReach,
   V13__spearHeavyChargedCoefficients,
+  V14__mysticArtIds,
+  V15__neverAbrades,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

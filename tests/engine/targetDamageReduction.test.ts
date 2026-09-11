@@ -52,6 +52,7 @@ const baseCtx: FormulaContext = {
   generalDamageBoost: 0,
   chargeBonus: 0,
   effectiveDefense: 307,
+  fatigueDamageTaken: 0,
   hasSixHenZhi: false,
   food: false,
   set: null,

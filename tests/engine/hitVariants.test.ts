@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { simulateTimeline } from "../../src/engine/timeline"
+import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 
 import {
@@ -9,6 +9,7 @@ import {
   selectHitVariant,
   type HitVariant,
   type Skill,
+  type TriggerCondition,
 } from "../../src/engine/skill"
 import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
 import { makeBuff, type Buff } from "../../src/engine/buff"
@@ -307,5 +308,264 @@ describe("no-op regression — a skill with neither variants nor extra condition
 
     expect(r.totalDamage).toBeGreaterThan(0)
     expect(r.totalDamage).toBeCloseTo(r2.totalDamage, 10)
+  })
+})
+
+describe("hit variant — cast-length override", () => {
+  function skillWithVariant(variant: HitVariant, opts: { secondHitVariant?: HitVariant } = {}) {
+    const hits = [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1, variants: [variant] })]
+    if (opts.secondHitVariant) {
+      hits.push(
+        makeHit({ frame: 10, physMultiplier: 1, physFixed: 1, variants: [opts.secondHitVariant] }),
+      )
+    }
+    return makeSkill(CLASS, { name: "Variant carrier", castFrames: 90, hits })
+  }
+
+  function durationSec(skill: Skill, buffs: Buff[] = []) {
+    return simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [makeStep({ skillId: skill.id, hitCount: skill.hits.length })],
+        }),
+        [skill],
+        buffs,
+      ),
+    ).rotationDuration
+  }
+
+  it("an active variant's override drives the cast length instead of the skill-level value", () => {
+    const skill = skillWithVariant({
+      id: "hv-cast-1",
+      label: "Longer",
+      conditions: [],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      castFrames: 30,
+    })
+    expect(durationSec(skill)).toBeCloseTo(30 / FPS, 10)
+  })
+
+  it("an unmet condition leaves the skill-level cast length in force", () => {
+    const gate = makeGate({ maxStacks: 10 })
+    const skill = skillWithVariant({
+      id: "hv-cast-2",
+      label: "Longer",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 5 }],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      castFrames: 30,
+    })
+    expect(durationSec(skill, [gate])).toBeCloseTo(90 / FPS, 10)
+  })
+
+  it("a condition met by the rotation's declared opening stacks activates the override", () => {
+    const gate = makeGate({ maxStacks: 10 })
+    const skill = skillWithVariant({
+      id: "hv-cast-3",
+      label: "Longer",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 5 }],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      castFrames: 30,
+    })
+    const seconds = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [makeStep({ skillId: skill.id, hitCount: skill.hits.length })],
+          openingStacks: { [gate.id]: 7 },
+        }),
+        [skill],
+        [gate],
+      ),
+    ).rotationDuration
+    expect(seconds).toBeCloseTo(30 / FPS, 10)
+  })
+
+  it("the skill-level not-yet-measured sentinel on a variant counts as no override", () => {
+    const skill = skillWithVariant({
+      id: "hv-cast-4",
+      label: "Unmeasured",
+      conditions: [],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      castFrames: -1,
+    })
+    expect(durationSec(skill)).toBeCloseTo(90 / FPS, 10)
+  })
+
+  it("of several hits each selecting an active variant, the first in authoring order decides", () => {
+    const skill = skillWithVariant(
+      {
+        id: "hv-cast-5a",
+        label: "First",
+        conditions: [],
+        physMultiplier: 1,
+        attributeMultiplier: 0,
+        physFixed: 1,
+        attributeFixed: 0,
+        castFrames: 20,
+      },
+      {
+        secondHitVariant: {
+          id: "hv-cast-5b",
+          label: "Second",
+          conditions: [],
+          physMultiplier: 1,
+          attributeMultiplier: 0,
+          physFixed: 1,
+          attributeFixed: 0,
+          castFrames: 50,
+        },
+      },
+    )
+    expect(durationSec(skill)).toBeCloseTo(20 / FPS, 10)
+  })
+
+  it("a condition met by a MID-FIGHT trigger (not the rotation's opening state) activates the override", () => {
+    const gate = makeGate({ maxStacks: 10 })
+    const granter = makeSkill(CLASS, {
+      name: "Granter",
+      castFrames: 60,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyBuff", targetId: gate.id, stacks: 5 })],
+        }),
+      ],
+    })
+    const skill = skillWithVariant({
+      id: "hv-cast-6",
+      label: "Longer",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 5 }],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      castFrames: 30,
+    })
+    const seconds = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: granter.id, hitCount: 1 }),
+            makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
+          ],
+        }),
+        [granter, skill],
+        [gate],
+      ),
+    ).rotationDuration
+    expect(seconds).toBeCloseTo((60 + 30) / FPS, 10)
+  })
+})
+
+describe("conditional hits — a hit that occurs only when its own conditions hold", () => {
+  function skillWithConditionalHit(conditions: TriggerCondition[]) {
+    return makeSkill(CLASS, {
+      name: "Conditional",
+      castFrames: 60,
+      hits: [
+        makeHit({ frame: 0, physMultiplier: 1, physFixed: 100 }),
+        makeHit({ frame: 10, physMultiplier: 1, physFixed: 100, conditions }),
+      ],
+    })
+  }
+
+  it("unmet ⇒ the hit deals no damage, matching the hit-1-less twin exactly", () => {
+    const gate = makeGate()
+    const skill = skillWithConditionalHit([{ buffId: gate.id, op: "gte", stacks: 1 }])
+    const withGate = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 2 })] }),
+        [skill],
+        [gate],
+      ),
+    )
+    const singleHitOnly = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] }),
+        [skill],
+        [gate],
+      ),
+    )
+    expect(withGate.totalDamage).toBeCloseTo(singleHitOnly.totalDamage, 10)
+  })
+
+  it("met by an earlier step's mid-fight trigger ⇒ the hit lands, and its own trigger fires too", () => {
+    const gate = makeGate()
+    const marker = makeGate({ name: "Marker" })
+    const granter = makeGranter(gate.id)
+    const skill = makeSkill(CLASS, {
+      name: "Conditional",
+      castFrames: 60,
+      hits: [
+        makeHit({ frame: 0, physMultiplier: 1, physFixed: 100 }),
+        makeHit({
+          frame: 10,
+          physMultiplier: 1,
+          physFixed: 100,
+          conditions: [{ buffId: gate.id, op: "gte", stacks: 1 }],
+          triggers: [makeTrigger({ kind: "applyBuff", targetId: marker.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const reader = makeSkill(CLASS, {
+      name: "Reader",
+      castFrames: 60,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 1,
+          variants: [
+            {
+              id: "hv-marker",
+              label: "Marked",
+              conditions: [{ buffId: marker.id, op: "gte", stacks: 1 }],
+              physMultiplier: 10,
+              attributeMultiplier: 0,
+              physFixed: 1000,
+              attributeFixed: 0,
+            },
+          ],
+        }),
+      ],
+    })
+    const stepsWithGranter = [
+      makeStep({ skillId: granter.id, hitCount: 1 }),
+      makeStep({ skillId: skill.id, hitCount: 2 }),
+      makeStep({ skillId: reader.id, hitCount: 1 }),
+    ]
+    const gateHeld = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, { steps: stepsWithGranter }),
+        [granter, skill, reader],
+        [gate, marker],
+      ),
+    )
+    const gateUnheld = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: skill.id, hitCount: 2 }),
+            makeStep({ skillId: reader.id, hitCount: 1 }),
+          ],
+        }),
+        [granter, skill, reader],
+        [gate, marker],
+      ),
+    )
+    const readerDamage = (r: typeof gateHeld) =>
+      r.perSkill.find((s) => s.name === "Reader")?.expectedDamage
+    expect(readerDamage(gateHeld)).toBeGreaterThan(readerDamage(gateUnheld) ?? 0)
   })
 })

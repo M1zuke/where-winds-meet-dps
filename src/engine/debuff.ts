@@ -45,6 +45,18 @@ export interface DotDetonationSpec {
   retainParamStacks?: number
 }
 
+export interface DebuffEchoReleaseAdjustment {
+  factor: number
+  requiresStatuses: string[]
+}
+
+export interface DebuffEchoSpec {
+  share: number
+  breakdownName: string
+  skillType: string
+  releaseAdjustment?: DebuffEchoReleaseAdjustment | null
+}
+
 export interface Debuff {
   id: string
   classId: string
@@ -63,6 +75,7 @@ export interface Debuff {
   maxStacks: number
   stackScaling: StackScaling
   detonation?: DotDetonationSpec | null
+  echo?: DebuffEchoSpec | null
   createdAt: string
   updatedAt: string
 }
@@ -88,6 +101,7 @@ export function makeDebuff(classId: string, patch: Partial<Debuff> = {}): Debuff
     maxStacks: 1,
     stackScaling: "flat",
     detonation: null,
+    echo: null,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -119,6 +133,17 @@ export function seedDebuffFromBuiltin(classId: string, src: Debuff): Debuff {
     maxStacks: src.maxStacks,
     stackScaling: src.stackScaling,
     detonation: src.detonation ? { ...src.detonation } : (src.detonation ?? null),
+    echo: src.echo
+      ? {
+          ...src.echo,
+          releaseAdjustment: src.echo.releaseAdjustment
+            ? {
+                ...src.echo.releaseAdjustment,
+                requiresStatuses: [...src.echo.releaseAdjustment.requiresStatuses],
+              }
+            : (src.echo.releaseAdjustment ?? null),
+        }
+      : (src.echo ?? null),
   })
 }
 
@@ -148,7 +173,29 @@ export function isDebuff(x: unknown): x is Debuff {
     if (!ef || typeof ef.statKey !== "string") return false
     if (typeof ef.amount !== "number" || !Number.isFinite(ef.amount)) return false
   }
+  if (d.echo !== undefined && d.echo !== null && !isDebuffEchoSpec(d.echo)) return false
   if (typeof d.createdAt !== "string") return false
   if (typeof d.updatedAt !== "string") return false
   return true
+}
+
+function isDebuffEchoSpec(x: unknown): x is DebuffEchoSpec {
+  if (!x || typeof x !== "object") return false
+  const echo = x as Record<string, unknown>
+  const shapeOk =
+    typeof echo.share === "number" &&
+    Number.isFinite(echo.share) &&
+    typeof echo.breakdownName === "string" &&
+    typeof echo.skillType === "string"
+  if (!shapeOk) return false
+  if (echo.releaseAdjustment === undefined || echo.releaseAdjustment === null) return true
+  return isDebuffEchoReleaseAdjustment(echo.releaseAdjustment)
+}
+
+function isDebuffEchoReleaseAdjustment(x: unknown): x is DebuffEchoReleaseAdjustment {
+  if (!x || typeof x !== "object") return false
+  const adjustment = x as Record<string, unknown>
+  if (typeof adjustment.factor !== "number" || !Number.isFinite(adjustment.factor)) return false
+  if (!Array.isArray(adjustment.requiresStatuses)) return false
+  return adjustment.requiresStatuses.every((id) => typeof id === "string")
 }

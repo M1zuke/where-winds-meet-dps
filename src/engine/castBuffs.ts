@@ -80,13 +80,16 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
     if (overridden) remainingSec = overridden.seconds
 
     const projection = status.effects.length === 0 ? engineDisplayById.get(id) : undefined
+    const description = "description" in status ? status.description : undefined
     buffs.push({
       id,
       name: status.name,
       stacks,
       maxStacks: status.maxStacks ?? 1,
       effects: projection?.effects ?? status.effects,
+      ...(projection?.extras.length ? { extras: projection.extras } : {}),
       ...(projection?.requires ? { requires: projection.requires } : {}),
+      ...(description ? { description } : {}),
       dotIntervalSec,
       remainingSec,
     })
@@ -102,6 +105,7 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
         stacks: engineBuff.stacks,
         maxStacks: engineBuff.maxStacks,
         effects: engineBuff.effects,
+        ...(engineBuff.extras.length ? { extras: engineBuff.extras } : {}),
         requires: engineBuff.requires,
         remainingSec: engineBuff.remainingSec,
       })

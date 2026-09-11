@@ -130,8 +130,12 @@ const CASES: { name: string; build: () => Inputs }[] = [
     build: () => toEngineInputs(withCombat(anchorInputs(), { healerBuff: true })),
   },
   {
-    name: "anchor:revelryScript",
-    build: () => toEngineInputs(withCombat(anchorInputs(), { revelryScript: true })),
+    name: "anchor:wraithstrikeScript",
+    build: () => toEngineInputs(withCombat(anchorInputs(), { script: "wraithstrikeScript" })),
+  },
+  {
+    name: "anchor:voidrotScript",
+    build: () => toEngineInputs(withCombat(anchorInputs(), { script: "voidrotScript" })),
   },
   {
     name: "anchor:breakExtension",
@@ -293,8 +297,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(75496.33)
-    expect(round(result.totalDamage, 2)).toBe(4514680.4)
+    expect(round(result.dps, 2)).toBe(77715.24)
+    expect(round(result.totalDamage, 2)).toBe(4647371.62)
     expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
@@ -302,19 +306,19 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2174317.16)
-    expect(damageOf("Bleeding (DoT)")).toBe(290989.46)
+    expect(damageOf("Blood Burst")).toBe(2189649.7)
+    expect(damageOf("Bleeding (DoT)")).toBe(293338.56)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(484325.1)
+    expect(damageOf("Smolder (DoT)")).toBe(488983.9)
     expect(damageOf("Flute Ripple (DoT)")).toBe(104740.57)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(57701.04)
+    expect(damageOf("Yi River")).toBe(58056.33)
   })
 })
