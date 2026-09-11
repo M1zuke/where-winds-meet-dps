@@ -2,7 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 import { reveldriftHits } from "./reveldrift"
 
 // A cancel form ends where the animation opens its interrupt window — 28
@@ -18,7 +18,7 @@ export const reveldriftCancel = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.reveldriftCancel,
-  receives: CLASS_RECEIVES,
+  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
   castFrames: 28,

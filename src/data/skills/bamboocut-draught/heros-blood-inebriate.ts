@@ -4,7 +4,7 @@ import type { TriggerCondition } from "../../../engine/skill"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.skyspeakUnlock, op: "gte", stacks: 1 }]
 
@@ -49,7 +49,12 @@ export const herosBloodInebriate = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.herosBloodInebriate,
   neverAbrades: true,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.cloudvault, BUFF.nonPlayerBaseDamage50],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    BUFF.cloudvault,
+    BUFF.nonPlayerBaseDamage50,
+  ],
   triggerable: false,
   castFrames: 177,
   hits: [

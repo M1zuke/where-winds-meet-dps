@@ -7,6 +7,11 @@ import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { inebriateSkillCritDamage } from "../../skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
 import { inebriateDamageScaling } from "../../skills/bamboocut-draught/buffs/inebriateDamageScaling"
+import {
+  rivenTwinbladesAdditionalAttack,
+  skystrikeGauntletsAdditionalAttack,
+  skystrikeGauntletsAdditionalAttackCoefficient,
+} from "../../skills/bamboocut-draught/buffs/additionalAttack"
 import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
 import { BAMBOOCUT_DRAUGHT_GRADUATION_BUILD } from "./graduationBuild"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
@@ -47,7 +52,13 @@ export const bamboocutDraught = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,
-  classBuffDefs: [inebriateSkillCritDamage, inebriateDamageScaling],
+  classBuffDefs: [
+    inebriateSkillCritDamage,
+    inebriateDamageScaling,
+    skystrikeGauntletsAdditionalAttack,
+    rivenTwinbladesAdditionalAttack,
+    skystrikeGauntletsAdditionalAttackCoefficient,
+  ],
   gateBuffs: BAMBOOCUT_DRAUGHT_GATES,
   openingStackBuffIds: [STATUS.bingePoints],
   mechanics: [],

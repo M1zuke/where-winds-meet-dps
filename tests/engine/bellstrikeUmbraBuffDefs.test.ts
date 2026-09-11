@@ -71,16 +71,30 @@ describe("Bellstrike Umbra bleed power coefficient — a multiplier, never a dam
     new BuffEngine(params, [], umbraOwnBuffDefs()).calculateDamageEffects(skill(receives), 0)
       .damageFactor
 
-  it("scales a bleed row that receives it", () => {
-    expect(factorFor(SWORD_HORIZON, ["bellstrikeUmbraBleedCoefficient"])).toBeCloseTo(1.03, 10)
+  it("contributes nothing below breakthrough 18", () => {
+    expect(factorFor({ breakthrough: 17 }, ["bellstrikeUmbraBleedCoefficient"])).toBe(1)
+  })
+
+  it("scales a bleed row that receives it ×1.00725 at breakthrough 18", () => {
+    expect(factorFor({ breakthrough: 18 }, ["bellstrikeUmbraBleedCoefficient"])).toBeCloseTo(
+      1.00725,
+      10,
+    )
+  })
+
+  it("scales a bleed row that receives it ×1.03 at breakthrough 21", () => {
+    expect(factorFor({ breakthrough: 21 }, ["bellstrikeUmbraBleedCoefficient"])).toBeCloseTo(
+      1.03,
+      10,
+    )
   })
 
   it("leaves a row that does not receive it alone", () => {
-    expect(factorFor(SWORD_HORIZON, ["bellstrikeUmbraBleedingDamage"])).toBe(1)
+    expect(factorFor({ breakthrough: 21 }, ["bellstrikeUmbraBleedingDamage"])).toBe(1)
   })
 
   it("contributes no stat effect, so it can never join the additive boost sum", () => {
-    expect(sumsFor(SWORD_HORIZON, ["bellstrikeUmbraBleedCoefficient"])).toEqual({
+    expect(sumsFor({ breakthrough: 21 }, ["bellstrikeUmbraBleedCoefficient"])).toEqual({
       affinityDamageBoost: 0,
       "phys.penetration": 0,
       "bellstrike.penetration": 0,

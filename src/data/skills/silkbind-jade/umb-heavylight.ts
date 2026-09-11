@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 // The authored value is the whole cast spread over its hits, not a per-hit
 // value — the reference def states it per hit. Kept as total ÷ hits so the
@@ -37,6 +38,7 @@ export const umbHeavylight = defineSkill({
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
+    ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castFrames: 75,
   triggerable: true,

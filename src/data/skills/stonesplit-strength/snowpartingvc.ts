@@ -3,6 +3,7 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
 export const snowpartingvc = defineSkill({
   id: SKILL.snowpartingvc,
@@ -27,6 +28,7 @@ export const snowpartingvc = defineSkill({
     BUFF.frostCladSnowbreakIPConsume,
     BUFF.frostCladSnowbreakT6,
     BUFF.cleftpeakDeflect,
+    ...SNOWPARTING_BLADE_RECEIVES,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.forgetfulness],
   castFrames: 52,

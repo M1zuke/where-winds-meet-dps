@@ -150,5 +150,26 @@ describe("user-defined martial-arts talents", () => {
       expect(contributions["bellstrike.min"]).toBe(196)
       expect(contributions["bellstrike.max"]).toBe(392)
     })
+
+    it("the stage attack rows follow the breakthrough, and nothing else moves", () => {
+      const at17 = getDefaultTalentsForClass("bellstrikeUmbra", 17)
+      const at18 = getDefaultTalentsForClass("bellstrikeUmbra", 18)
+      const byName17 = Object.fromEntries(at17.map((d) => [d.name, d]))
+      const byName18 = Object.fromEntries(at18.map((d) => [d.name, d]))
+      expect(byName17["Sword Bellstrike Attack Min"].maxBonus).toBe(98)
+      expect(byName17["Sword Bellstrike Attack Max"].maxBonus).toBe(196)
+      expect(byName18["Sword Bellstrike Attack Min"].maxBonus).toBe(106)
+      expect(byName18["Sword Bellstrike Attack Max"].maxBonus).toBe(212)
+      expect(byName18["Spear Bellstrike Attack Min"].maxBonus).toBe(106)
+      expect(byName18["Spear Bellstrike Attack Max"].maxBonus).toBe(212)
+      for (const name of [
+        "Affinity Rate UP",
+        "Physical Attack UP",
+        "Bellstrike Penetration Scale",
+        "Attribute Damage Scale",
+      ]) {
+        expect(byName18[name]).toEqual(byName17[name])
+      }
+    })
   })
 })

@@ -67,10 +67,12 @@ export function graduationInputs(
     set: build.set,
     bowSet: build.bowSet,
     arsenal: build.arsenal,
-    martialArtsTalents: getDefaultTalentsForClass(inputs.classId).map((talent) => ({
-      ...talent,
-      enabled: true,
-    })),
+    martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
+      (talent) => ({
+        ...talent,
+        enabled: true,
+      }),
+    ),
     oddities: allOddities(),
     enhancements: { ...DEFAULT_ENHANCEMENTS },
   }

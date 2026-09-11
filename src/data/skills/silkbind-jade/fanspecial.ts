@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { INKWELL_FAN_RECEIVES } from "./receives"
 
 // The authored value is the whole cast spread over its hits, not a per-hit
 // value — the reference def states it per hit. Kept as total ÷ hits so the
@@ -31,6 +32,7 @@ export const fanspecial = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanSpecial,
+  receives: INKWELL_FAN_RECEIVES,
   triggersBuffs: [BUFF.lingeringBone],
   castFrames: 72,
   triggerable: true,

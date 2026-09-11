@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const bleedTick = defineSkill({
   id: SKILL.bleedTick,
@@ -18,6 +19,7 @@ export const bleedTick = defineSkill({
     BUFF.bellstrikeUmbraBleedingDamage,
     BUFF.bellstrikeUmbraBleedCoefficient,
     BUFF.soulShaken,
+    ...STRATEGIC_SWORD_RECEIVES,
   ],
   castFrames: 0,
   triggerable: true,

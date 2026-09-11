@@ -111,7 +111,8 @@ describe("paramsFromInputs — build derivation", () => {
         param === "spec" ||
         param === "belowQiTime" ||
         param === "minPhysAttack" ||
-        param === "targetMaxHp"
+        param === "targetMaxHp" ||
+        param === "breakthrough"
       )
         continue
       expect(def).toBeFalsy()

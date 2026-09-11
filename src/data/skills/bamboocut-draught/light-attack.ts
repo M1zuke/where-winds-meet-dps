@@ -4,7 +4,7 @@ import type { HitTrigger } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 const inCarouse = [{ buffId: STATUS.carouse, op: "gte" as const, stacks: 1 }]
 const eonpourLightAttackPoints = [
@@ -58,7 +58,7 @@ export const lightAttack = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.lightAttack,
-  receives: CLASS_RECEIVES,
+  receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 154,
   hits: [

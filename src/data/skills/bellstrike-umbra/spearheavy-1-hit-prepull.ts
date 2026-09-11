@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
 export const spearheavy1HitPrepull = defineSkill({
   id: SKILL.spearheavy1HitPrepull,
@@ -14,6 +15,7 @@ export const spearheavy1HitPrepull = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy1HitPrepull,
   triggersBuffs: [BUFF.soulShaken],
+  receives: HEAVENQUAKER_SPEAR_RECEIVES,
   castFrames: 0,
   triggerable: true,
   hits: [

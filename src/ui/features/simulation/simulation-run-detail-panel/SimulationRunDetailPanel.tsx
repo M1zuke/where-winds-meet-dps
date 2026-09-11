@@ -104,7 +104,7 @@ export function SimulationRunDetailPanel({
           {t("simulation.runDetail.run")} #{fullNumber(run.index + 1)}
         </span>
         <span className={styles.context}>
-          {t("simulation.runs.rank")} {fullNumber(rank)} {t("common.of")} {fullNumber(runCount)} ·{" "}
+          {t("common.rank")} {fullNumber(rank)} {t("common.of")} {fullNumber(runCount)} ·{" "}
           {t("simulation.runDetail.top")} {fixed(topPercent, 2)} %
           {detail === null ? ` · ${t("simulation.runDetail.replaying")}` : ""}
         </span>

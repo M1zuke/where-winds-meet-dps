@@ -36,6 +36,7 @@ type ArtRow = {
   physFixed?: number
   attributeMultiplier?: number
   attributeFixed?: number
+  fixedDamagePctBonus?: number
   minPhysPctBonus?: number
   minPhysFlatBonus?: number
   maxPhysPctBonus?: number
@@ -152,8 +153,9 @@ export function computeSkillDamage(
   const numberOrZero = (value: number | undefined) => value ?? 0
   const physCoefficient = numberOrZero(art.physMultiplier)
   const attributeCoefficient = numberOrZero(art.attributeMultiplier)
-  const physFlat = numberOrZero(art.physFixed)
-  const attributeFlat = numberOrZero(art.attributeFixed)
+  const fixedDamageScale = 1 + numberOrZero(art.fixedDamagePctBonus)
+  const physFlat = numberOrZero(art.physFixed) * fixedDamageScale
+  const attributeFlat = numberOrZero(art.attributeFixed) * fixedDamageScale
   const skillType = art.skillType ?? ""
   const isWeapon = skillType === "weapon"
   const isTianGong = skillType === "Heavenwork"

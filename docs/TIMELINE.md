@@ -278,6 +278,12 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
 - **A module's `effects` may read the target's remaining health from
   context**, as a fraction of its max that falls with the damage dealt so far
   in time order — never re-derived from a hit count or a display value.
+- **A module's `effects` may read the build's breakthrough from its
+  context**, the same way it reads min physical attack. A module that only
+  exists from some breakthrough on declares that minimum in `requires` rather
+  than returning no effects below it — the catalog and the display gates read
+  `requires` without executing anything, so a gate hidden inside `effects`
+  never reaches them.
 
 ## Procedural behaviour
 

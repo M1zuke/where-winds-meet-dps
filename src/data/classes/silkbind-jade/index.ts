@@ -6,6 +6,10 @@ import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { lowQiFollowUp } from "../../skills/silkbind-jade/buffs/lowQiFollowUp"
 import { trajectorySkill } from "../../skills/silkbind-jade/buffs/trajectorySkill"
+import {
+  inkwellFanAdditionalAttack,
+  vernalUmbrellaAdditionalAttack,
+} from "../../skills/silkbind-jade/buffs/additionalAttack"
 import { SILKBIND_JADE_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
@@ -38,7 +42,12 @@ export const silkbindJade = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
-  classBuffDefs: [lowQiFollowUp, trajectorySkill],
+  classBuffDefs: [
+    lowQiFollowUp,
+    trajectorySkill,
+    inkwellFanAdditionalAttack,
+    vernalUmbrellaAdditionalAttack,
+  ],
   gateBuffs: [],
   mechanics: [],
   skillBehaviors: [],

@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { NAMELESS_SWORD_RECEIVES } from "./receives"
 
 export const swordHeavyCharged = defineSkill({
   id: SKILL.swordHeavyCharged,
@@ -23,6 +24,7 @@ export const swordHeavyCharged = defineSkill({
     BUFF.swordMorphEnduranceBoost,
     BUFF.battleAnthemChargedDamage,
     BUFF.battleAnthemEnduranceBoost,
+    ...NAMELESS_SWORD_RECEIVES,
   ],
   castFrames: 140,
   triggerable: true,

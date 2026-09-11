@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
+import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 export const umbdronelaunch12Hit = defineSkill({
   id: SKILL.umbdronelaunch12Hit,
@@ -25,6 +26,7 @@ export const umbdronelaunch12Hit = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
+    ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castTag: CAST.umbDroneLaunch12hit,
   castFrames: 68,

@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 export const umbq = defineSkill({
   id: SKILL.umbq,
@@ -12,7 +13,7 @@ export const umbq = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
   castTag: CAST.umbQ,
-  receives: [BUFF.combo, BUFF.windWall, BUFF.trajectorySkill],
+  receives: [BUFF.combo, BUFF.windWall, BUFF.trajectorySkill, ...VERNAL_UMBRELLA_RECEIVES],
   triggersBuffs: [BUFF.jadeware, BUFF.combo, BUFF.comboUmbLightBonus, BUFF.springThunder],
   castFrames: 75,
   triggerable: true,

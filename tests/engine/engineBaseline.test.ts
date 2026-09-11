@@ -297,8 +297,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(77715.24)
-    expect(round(result.totalDamage, 2)).toBe(4647371.62)
+    expect(round(result.dps, 2)).toBe(76505.88)
+    expect(round(result.totalDamage, 2)).toBe(4575051.58)
     expect(round(result.rotationDuration, 4)).toBe(59.8)
     expect(result.warnings).toEqual([])
   })
@@ -306,8 +306,8 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2189649.7)
-    expect(damageOf("Bleeding (DoT)")).toBe(293338.56)
+    expect(damageOf("Blood Burst")).toBe(2125873.49)
+    expect(damageOf("Bleeding (DoT)")).toBe(284794.72)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not

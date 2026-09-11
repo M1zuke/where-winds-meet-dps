@@ -2,6 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CROSSWIND_BLADE_HITS } from "./crosswind-blade-hits"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const crosswindBlade = defineSkill({
   id: SKILL.crosswindBlade,
@@ -13,6 +14,7 @@ export const crosswindBlade = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.crosswindBlade,
+  receives: STRATEGIC_SWORD_RECEIVES,
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 57,
   triggerable: true,

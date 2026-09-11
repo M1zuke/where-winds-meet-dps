@@ -2,7 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 const pursuit = (index: number, frame: number) =>
   hit(index, {
@@ -25,7 +25,11 @@ export const nightwickGrounddrift = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.nightwickGrounddrift,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.nonPlayerBaseDamage40,
+  ],
   triggerable: false,
   castFrames: 93,
   hits: [pursuit(0, 8), pursuit(1, 24), pursuit(2, 56), pursuit(3, 88)],

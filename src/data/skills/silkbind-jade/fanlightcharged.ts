@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { INKWELL_FAN_RECEIVES } from "./receives"
 
 // The authored row carries the breakthrough-14 multiplier that the engine
 // does not apply — `FormulaContext.targetMultiplier` is set in panel.ts and
@@ -25,6 +26,7 @@ export const fanlightcharged = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
+    ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.lingeringBone],
   castFrames: 75,

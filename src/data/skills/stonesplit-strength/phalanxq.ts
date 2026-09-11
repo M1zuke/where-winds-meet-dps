@@ -3,6 +3,7 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 
 export const phalanxq = defineSkill({
   id: SKILL.phalanxq,
@@ -13,7 +14,7 @@ export const phalanxq = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxQ,
-  receives: [BUFF.cleftpeakDeflect],
+  receives: [BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
   triggersBuffs: [BUFF.throatPierced],
   castFrames: 49,
   triggerable: true,

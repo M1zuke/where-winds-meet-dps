@@ -19,28 +19,32 @@
       "stat": "minBellstrike",
       "maxBonus": 98,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Sword Bellstrike Attack Max",
       "stat": "maxBellstrike",
       "maxBonus": 196,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Spear Bellstrike Attack Min",
       "stat": "minBellstrike",
       "maxBonus": 98,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Spear Bellstrike Attack Max",
       "stat": "maxBellstrike",
       "maxBonus": 196,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Bellstrike Penetration Scale",
@@ -77,28 +81,32 @@
       "stat": "minBellstrike",
       "maxBonus": 98,
       "scalesWith": "momentum",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Sword Bellstrike Attack Max",
       "stat": "maxBellstrike",
       "maxBonus": 196,
       "scalesWith": "momentum",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Spear Bellstrike Attack Min",
       "stat": "minBellstrike",
       "maxBonus": 98,
       "scalesWith": "momentum",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Spear Bellstrike Attack Max",
       "stat": "maxBellstrike",
       "maxBonus": 196,
       "scalesWith": "momentum",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Bellstrike Penetration Scale",
@@ -135,28 +143,32 @@
       "stat": "minStonesplit",
       "maxBonus": 98,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Mo Blade Stonesplit Attack Max",
       "stat": "maxStonesplit",
       "maxBonus": 196,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Heng Blade Stonesplit Attack Min",
       "stat": "minStonesplit",
       "maxBonus": 98,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Heng Blade Stonesplit Attack Max",
       "stat": "maxStonesplit",
       "maxBonus": 196,
       "scalesWith": "power",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Stonesplit Penetration Scale",
@@ -193,28 +205,32 @@
       "stat": "minSilkbind",
       "maxBonus": 98,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Umbrella Silkbind Attack Max",
       "stat": "maxSilkbind",
       "maxBonus": 196,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Fan Silkbind Attack Min",
       "stat": "minSilkbind",
       "maxBonus": 98,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Fan Silkbind Attack Max",
       "stat": "maxSilkbind",
       "maxBonus": 196,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Silkbind Penetration Scale",
@@ -251,28 +267,32 @@
       "stat": "minBamboocut",
       "maxBonus": 98,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Gauntlets Bamboocut Attack Max",
       "stat": "maxBamboocut",
       "maxBonus": 196,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Twin Blades Bamboocut Attack Min",
       "stat": "minBamboocut",
       "maxBonus": 98,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "min"
     },
     {
       "skill": "Twin Blades Bamboocut Attack Max",
       "stat": "maxBamboocut",
       "maxBonus": 196,
       "scalesWith": "agility",
-      "scaleMax": 0
+      "scaleMax": 0,
+      "stage": "max"
     },
     {
       "skill": "Bamboocut Penetration Scale",

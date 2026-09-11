@@ -79,10 +79,15 @@ function humanize(param: string): string {
 export function requiresLabel(module: BuffModule): string | null {
   const requires = module.requires
   if (requires?.set) return setDisplayNameForSiteKey(requires.set) ?? requires.set
-  if (!requires?.param) return null
+  const breakthroughLabel = requires?.minBreakthrough
+    ? `breakthrough ${requires.minBreakthrough}+`
+    : null
+  if (!requires?.param) return breakthroughLabel
   const innerWayName = innerWayForBuffParam(requires.param)?.name
-  if (innerWayName) return innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
-  return humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
+  const paramLabel = innerWayName
+    ? innerWayName + (requires.minTier ? ` tier ${requires.minTier}+` : "")
+    : humanize(requires.param) + (requires.minTier ? ` T${requires.minTier}+` : "")
+  return breakthroughLabel ? `${paramLabel}, ${breakthroughLabel}` : paramLabel
 }
 
 // Both scoped to the class's OWN `classBuffDefs` — never `buffDefsForClass`'s
@@ -126,6 +131,11 @@ export function buffGateSatisfied(module: BuffModule, params: BuffParams): boole
   const requires = module.requires
   if (requires?.classId && requires.classId !== params.classId) return false
   if (requires?.set && requires.set !== params.armorSet) return false
+  if (
+    requires?.minBreakthrough &&
+    (typeof params.breakthrough !== "number" || params.breakthrough < requires.minBreakthrough)
+  )
+    return false
   if (requires?.param && !paramOnOf(params, requires.param)) return false
   if (requires?.minTier && requires.param && paramTierOf(params, requires.param) < requires.minTier)
     return false
@@ -333,6 +343,12 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
   const rows: ClassBuffRow[] = []
   for (const module of byId.values()) {
     if (!isVisibleOnTalentsTab(module, skills)) continue
+    if (
+      module.requires?.minBreakthrough &&
+      (typeof params.breakthrough !== "number" ||
+        params.breakthrough < module.requires.minBreakthrough)
+    )
+      continue
     if (module.requires?.param && !paramOnOf(params, module.requires.param)) continue
     if (
       module.requires?.minTier &&

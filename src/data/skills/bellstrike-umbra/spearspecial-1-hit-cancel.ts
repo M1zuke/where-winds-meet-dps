@@ -2,6 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
+import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
 export const spearspecial1HitCancel = defineSkill({
   id: SKILL.spearspecial1HitCancel,
@@ -13,6 +14,7 @@ export const spearspecial1HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial1HitCancel,
+  receives: HEAVENQUAKER_SPEAR_RECEIVES,
   // A cancel form ends where the animation opens its interrupt window — 35 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 35,
   triggerable: true,

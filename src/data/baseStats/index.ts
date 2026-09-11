@@ -1,4 +1,5 @@
 export { TALENT_POINTS, TALENT_POINT_TIERS, type TalentPointTier } from "./talentPoints"
+export { artAttackStageAt, type ArtAttackStage } from "./artAttackStages"
 export { ARSENAL_STORES } from "./arsenal"
 export { ODDITIES, ODDITY_REGIONS, type OddityRegionKey } from "./oddities"
 export {

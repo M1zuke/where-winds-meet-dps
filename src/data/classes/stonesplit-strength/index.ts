@@ -7,6 +7,10 @@ import { INNER_WAY_ID } from "../../innerWays/ids"
 import { ironGuards } from "../../skills/stonesplit-strength/buffs/ironGuards"
 import { cleftpeakDeflect } from "../../skills/stonesplit-strength/buffs/cleftpeakDeflect"
 import { stonesplitStrengthSkillCritDamage } from "../../skills/stonesplit-strength/buffs/skillCritDamage"
+import {
+  phalanxbaneBladeAdditionalAttack,
+  snowpartingBladeAdditionalAttack,
+} from "../../skills/stonesplit-strength/buffs/additionalAttack"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
 import { STONESPLIT_STRENGTH_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
@@ -39,7 +43,13 @@ export const stonesplitStrength = defineClass({
   debuffs: DEBUFFS,
   ...rotationPoolFor(CLASS_ID),
   graduationBuild: STONESPLIT_STRENGTH_GRADUATION_BUILD,
-  classBuffDefs: [ironGuards, cleftpeakDeflect, stonesplitStrengthSkillCritDamage],
+  classBuffDefs: [
+    ironGuards,
+    cleftpeakDeflect,
+    stonesplitStrengthSkillCritDamage,
+    phalanxbaneBladeAdditionalAttack,
+    snowpartingBladeAdditionalAttack,
+  ],
   gateBuffs: STONESPLIT_STRENGTH_GATES,
   mechanics: [],
   skillBehaviors: [],

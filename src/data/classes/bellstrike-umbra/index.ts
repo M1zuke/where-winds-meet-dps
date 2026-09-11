@@ -5,7 +5,11 @@ import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
 import { rotationPoolFor } from "../../../definitions/rotations/registry"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
-import { bellstrikeUmbraBleedCoefficient } from "../../skills/bellstrike-umbra/buffs/bleedCoefficient"
+import {
+  heavenquakerSpearAdditionalAttack,
+  strategicSwordAdditionalAttack,
+  strategicSwordAdditionalAttackCoefficient,
+} from "../../skills/bellstrike-umbra/buffs/additionalAttack"
 import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
@@ -38,7 +42,9 @@ export const bellstrikeUmbra = defineClass({
   classBuffDefs: [
     bellstrikeUmbraBleedPen,
     bellstrikeUmbraBleedingDamage,
-    bellstrikeUmbraBleedCoefficient,
+    strategicSwordAdditionalAttackCoefficient,
+    strategicSwordAdditionalAttack,
+    heavenquakerSpearAdditionalAttack,
   ],
   gateBuffs: [],
   mechanics: [],

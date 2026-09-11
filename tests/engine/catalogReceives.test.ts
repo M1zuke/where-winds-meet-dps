@@ -126,26 +126,30 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
 // `dragonHeadLowHp` is a global and `alwaysActive`, and must not be caught
 // by either.
 describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
-  it("the Spec Mechanics column is exactly the three bleed passives", () => {
+  it("the Spec Mechanics column is exactly the five bleed and additional-attack passives", () => {
     const ids = specMechanicIds(CLASS)
     expect(ids).toEqual(
       new Set([
         "bellstrikeUmbraBleedPen",
         "bellstrikeUmbraBleedingDamage",
         "bellstrikeUmbraBleedCoefficient",
+        "strategicSwordAdditionalAttack",
+        "heavenquakerSpearAdditionalAttack",
       ]),
     )
     expect(ids.has("soulShaken")).toBe(false)
     expect(ids.has("dragonHeadLowHp")).toBe(false)
   })
 
-  it("the timeline chip-hiding set is the same three", () => {
+  it("the timeline chip-hiding set is the same five", () => {
     const ids = hiddenTimelineBuffIds(CLASS)
     expect(ids).toEqual(
       new Set([
         "bellstrikeUmbraBleedPen",
         "bellstrikeUmbraBleedingDamage",
         "bellstrikeUmbraBleedCoefficient",
+        "strategicSwordAdditionalAttack",
+        "heavenquakerSpearAdditionalAttack",
       ]),
     )
     expect(ids.has("dragonHeadLowHp")).toBe(false)

@@ -4,7 +4,7 @@ import type { TriggerCondition } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF, STATUS } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
 const strike = {
@@ -46,7 +46,7 @@ export const herosBlood = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.herosBlood,
-  receives: CLASS_RECEIVES,
+  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggerable: false,
   castFrames: 46,
   hits: herosBloodHits,

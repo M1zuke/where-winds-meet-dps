@@ -12,6 +12,10 @@ import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
 import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
 import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/swordSlashDamageBoost"
+import {
+  namelessSpearAdditionalAttack,
+  namelessSwordAdditionalAttack,
+} from "../../skills/bellstrike-splendor/buffs/additionalAttack"
 
 export const bellstrikeSplendor = defineClass({
   id: CLASS_ID,
@@ -49,6 +53,8 @@ export const bellstrikeSplendor = defineClass({
     swordEnergyHpDamage,
     qiImbalance,
     belowSixtyEndurance,
+    namelessSwordAdditionalAttack,
+    namelessSpearAdditionalAttack,
   ],
   gateBuffs: [],
   mechanics: [],

@@ -41,7 +41,8 @@ describe("custom-skills v10 fixture", () => {
   })
 
   it("holds the corrected shape on the built-ins the copies were seeded from", () => {
-    for (const id of SPEAR_MISTWILLOW_IDS) expect(builtin(id).receives ?? []).toEqual([])
+    for (const id of SPEAR_MISTWILLOW_IDS)
+      expect(builtin(id).receives ?? []).toEqual(["heavenquakerSpearAdditionalAttack"])
   })
 })
 
