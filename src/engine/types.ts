@@ -6,6 +6,7 @@ import type { HitOutcome } from "./formula"
 import type { Skill } from "./skill"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff } from "./debuff"
+import type { Effect } from "./effects/effect"
 
 export const ATTRIBUTE_KEYS = ["Bellstrike", "Stonesplit", "Silkbind", "Bamboocut"] as const
 
@@ -20,6 +21,7 @@ export const WEAPON_NAMES = [
   "Twin Blades",
   "Rope Dart",
   "Hengdao",
+  "Gauntlets",
 ] as const
 
 export type WeaponName = (typeof WEAPON_NAMES)[number]
@@ -29,6 +31,8 @@ export function isWeaponName(value: string): value is WeaponName {
 }
 
 export type BowSet = "affinity" | "crit" | "precision" | null
+
+export type ScriptId = "wraithstrikeScript" | "voidrotScript"
 
 export type Arsenal = "general" | "bellstrike" | "stonesplit" | "silkbind" | "bamboocut"
 
@@ -58,7 +62,7 @@ export interface CombatSettings {
   dragonsBreath: boolean
   healerBuff: boolean
   breakExtension: boolean
-  revelryScript: boolean
+  script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
   lowEndurance: boolean
@@ -70,7 +74,7 @@ export function defaultCombatSettings(): CombatSettings {
     dragonsBreath: false,
     healerBuff: false,
     breakExtension: false,
-    revelryScript: false,
+    script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
@@ -102,6 +106,7 @@ export interface Inputs {
   sustainDamageBoost: number
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
+  independentDamageBoost?: number
 
   allMartialBoost: number
   swordBoost: number
@@ -112,6 +117,7 @@ export interface Inputs {
   dualKnivesBoost: number
   ropeDartBoost: number
   hengDaoBoost: number
+  gauntletsBoost: number
 
   bossBoost: number
   singleMysticBoost: number
@@ -344,6 +350,7 @@ export interface Result {
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.
   outcomeCounts?: OutcomeCounts
+  outcomeDamage?: OutcomeCounts
   expectedOutcomeShare?: OutcomeCounts
 }
 
@@ -353,6 +360,7 @@ export interface CastBuffTag {
   stacks: number
   maxStacks: number
   effects: BuffStatEffect[]
+  extras?: Effect[]
   dotIntervalSec?: number
   requires?: string
   description?: string

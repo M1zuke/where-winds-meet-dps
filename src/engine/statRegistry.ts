@@ -47,6 +47,7 @@ export const WEAPON_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
   "Twin Blades": "dualKnivesBoost",
   "Rope Dart": "ropeDartBoost",
   Hengdao: "hengDaoBoost",
+  Gauntlets: "gauntletsBoost",
 }
 
 export const MYSTIC_TYPE_BOOST_STAT_KEY: Readonly<Record<string, StatKey>> = {
@@ -62,7 +63,6 @@ const ATTACK_BLOCKS = new Set(["phys", "bellstrike", "stonesplit", "silkbind", "
 const TARGET_DELTA_FIELD: Record<string, keyof TargetOverride> = {
   "target.defense": "defenseDelta",
   "target.generalDamageTaken": "generalDamageTakenDelta",
-  "target.fatigueDamageTaken": "fatigueDamageTakenDelta",
 }
 
 export interface AppliedBuffDeltas {

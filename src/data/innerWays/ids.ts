@@ -7,16 +7,20 @@ export const INNER_WAY_ID = {
   bitterSeason: "bitterSeason",
   blossomBarrage: "blossomBarrage",
   breakingPoint: "breakingPoint",
+  eonpour: "eonpour",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",
+  mistwing: "mistwing",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
+  skyspeak: "skyspeak",
   starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",
   swordMorph: "swordMorph",
   throatPierce: "throatPierce",
   thunderousBloom: "thunderousBloom",
+  volutefit: "volutefit",
   wolfchasersArt: "wolfchasersArt",
 } as const
 
@@ -42,6 +46,13 @@ export const INNER_WAY_NODE = {
   bitterSeasonMaxStackPenetration: "bitterSeasonMaxStackPenetration",
   blossomBarrageSpringAwayBonus: "blossomBarrageSpringAwayBonus",
   breakingPointPerfectDodgeStacks: "breakingPointPerfectDodgeStacks",
+  dragonquenchUnlock: "dragonquenchUnlock",
+  lightAttackBingeBonus: "lightAttackBingeBonus",
+  carouseLightAttackPoints: "carouseLightAttackPoints",
+  heroSBloodInebriateUnlock: "heroSBloodInebriateUnlock",
+  deepdazeRefund: "deepdazeRefund",
+  deepdazeDuration: "deepdazeDuration",
+  drunkslay: "drunkslay",
 } as const
 
 export type InnerWayNode = (typeof INNER_WAY_NODE)[keyof typeof INNER_WAY_NODE]
@@ -56,6 +67,7 @@ export const INNER_WAY_LADDER = {
   critRateFiveStar: "critRateFiveStar",
   affinityRateFourStar: "affinityRateFourStar",
   attributeAttackFourStar: "attributeAttackFourStar",
+  attributeAttackFiveStar: "attributeAttackFiveStar",
 } as const
 
 export type InnerWayLadderId = (typeof INNER_WAY_LADDER)[keyof typeof INNER_WAY_LADDER]

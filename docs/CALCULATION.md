@@ -58,6 +58,16 @@ anything rate-shaped. Two rules bind here:
   is always 1, and the counters are always zero. Do not build a mechanic that
   depends on either; the qi phase reaches the kernel through buff effects and
   per-hit art patches instead.
+- **A target-side reduction subtracts inside the bracket it opposes; it is never
+  an addend in the additive boost total.** A whole-damage reduction is its own
+  factor in the shared tail every row passes through, so it reaches a
+  damage-over-time tick and an ordinary hit alike. A damage-boost bracket is
+  floored at zero after the subtraction, and a crit- or affinity-damage
+  reduction applies **before** that multiplier's clamp, so it is clamped with
+  everything else.
+- **An independent damage boost is its own multiplicative factor in the shared
+  tail every row passes through, never an addend in the additive boost
+  total.**
 
 ## Calculation rules
 
@@ -66,16 +76,18 @@ They have no cached anchor — `tests/engine/damageRules.test.ts` is the only
 guard, and it is directional.
 
 1. **Graze/abrasion rate** is `(1 − precision) × (1 − affinity)`, not
-   `1 − precision` (PDF §8). Differs only below 100 % precision.
+   `1 − precision` (PDF §8). Differs only below 100 % precision. An
+   abrasion-avoid fraction scales this rate down further, and the mass it
+   removes lands on the normal row, never on crit.
 2. **Penetration** uses net `(pen − resistance)`, `÷100` when net ≤ 0 (deficit
    at full weight) and `÷200` when net > 0 (overflow halved), for the physical
-   and every attribute track. ⚠️ This deliberately **inverts PDF §7** — the CN
-   sources' worked examples go the other way, and the PDF-literal branch
-   inflated the pen term about 2×. **Do not "fix" it back.**
-3. **A skill's raw affinity-rate bonus** divides by `(1 + resistance)` and falls
-   **inside** the cap (PDF §11), while **a skill's raw crit-rate bonus is flat**
-   and added **after** the cap — so a charged hit can exceed the plain crit cap.
-   Direct rates stay flat.
+   and every attribute track. ⚠️ This **corrects PDF §7** — the CN sources'
+   worked examples go the other way, and the PDF-literal branch inflated the
+   pen term about 2×. **Do not "fix" it back.**
+3. **A skill's own rate bonus** — crit and affinity alike — is added undivided
+   onto the already-resisted panel rate, floored at zero, and falls **inside**
+   the cap (PDF §11). The direct rate is added **after** the cap, unaffected by
+   resistance.
 
 **The martial art's attribute multiplier applies to every row alike, its flat
 term together with its coefficient** — a damage-over-time tick included.
@@ -145,8 +157,8 @@ A mechanic is the escape hatch for what the def schema cannot express — a
 stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
 
 - **Declared by the thing it is a mechanic of** — its class, its inner way, its
-  gear set. `src/engine/mechanics/` holds only the contract and the registry:
-  **no instances**.
+  gear set, its consumable. `src/engine/mechanics/` holds only the contract and
+  the registry: **no instances**.
 - **Registry order is load-bearing.** Contributions apply in it and float
   addition is not associative. The memo signature is derived from what a
   mechanic returns, never hand-appended.

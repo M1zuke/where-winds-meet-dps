@@ -9,7 +9,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 import { builtinSkill } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
-import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 const CLASS = "bellstrikeUmbra"
 const RETENTION_ROW_ID = `dotRetention:${DEBUFF.bleedTick}`
@@ -114,11 +114,7 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
   })
 
   it("a burst-mystic cast lists the single-target mystic stat and no weapon stats", () => {
-    const rows = receivesForSkill(
-      builtinSkill(CLASS, UNIVERSAL_SKILL.fireBreath1Hit),
-      CLASS,
-      inputs,
-    )
+    const rows = receivesForSkill(builtinSkill(CLASS, MYSTIC_SKILL.fireBreath1Hit), CLASS, inputs)
     expect(rows.some((r) => r.id === "stat:singleMysticBoost")).toBe(true)
     expect(rows.some((r) => r.id === "stat:allMartialBoost")).toBe(false)
     expect(rows.some((r) => r.id === "stat:swordBoost")).toBe(false)
@@ -130,16 +126,28 @@ describe("catalog receives — gear-stat boost rows follow the skill's typing", 
 // `dragonHeadLowHp` is a global and `alwaysActive`, and must not be caught
 // by either.
 describe("specMechanicIds and hiddenTimelineBuffIds stay scoped to the class's own classBuffDefs", () => {
-  it("the Spec Mechanics column is exactly the two bleed passives", () => {
+  it("the Spec Mechanics column is exactly the three bleed passives", () => {
     const ids = specMechanicIds(CLASS)
-    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids).toEqual(
+      new Set([
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+      ]),
+    )
     expect(ids.has("soulShaken")).toBe(false)
     expect(ids.has("dragonHeadLowHp")).toBe(false)
   })
 
-  it("the timeline chip-hiding set is the same two", () => {
+  it("the timeline chip-hiding set is the same three", () => {
     const ids = hiddenTimelineBuffIds(CLASS)
-    expect(ids).toEqual(new Set(["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"]))
+    expect(ids).toEqual(
+      new Set([
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+      ]),
+    )
     expect(ids.has("dragonHeadLowHp")).toBe(false)
   })
 })

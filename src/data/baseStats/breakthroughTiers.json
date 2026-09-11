@@ -1,6 +1,7 @@
 [
   {
     "breakthrough": 13,
+    "targetHp": 5633453,
     "gearLevel": 86,
     "name": "Revelation",
     "levelRange": "86-90",
@@ -9,10 +10,16 @@
     "physPenResistance": 0,
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
-    "fatigueDamageTaken": 0.1
+    "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0
   },
   {
     "breakthrough": 14,
+    "targetHp": 7500652,
     "gearLevel": 91,
     "name": "Profundity",
     "levelRange": "91-95",
@@ -22,6 +29,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -57,6 +69,7 @@
   },
   {
     "breakthrough": 15,
+    "targetHp": 7500652,
     "gearLevel": 91,
     "name": "Subtlety",
     "levelRange": "91-95",
@@ -66,6 +79,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -101,6 +119,7 @@
   },
   {
     "breakthrough": 16,
+    "targetHp": 9674809,
     "gearLevel": 96,
     "name": "Awakening",
     "levelRange": "96-100",
@@ -110,6 +129,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -145,6 +169,7 @@
   },
   {
     "breakthrough": 17,
+    "targetHp": 9674809,
     "gearLevel": 96,
     "name": "Ascendancy",
     "levelRange": "96-100",
@@ -154,6 +179,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "release": "2026-09-03T03:30:00Z",
     "attributes": [
       {
@@ -190,6 +220,7 @@
   },
   {
     "breakthrough": 18,
+    "targetHp": 12572848,
     "gearLevel": 100,
     "name": "Discernment",
     "levelRange": "100",
@@ -199,6 +230,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -234,6 +270,7 @@
   },
   {
     "breakthrough": 19,
+    "targetHp": 12572848,
     "gearLevel": 100,
     "name": "Vision",
     "levelRange": "100",
@@ -243,6 +280,11 @@
     "attrPenResistance": 0,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -278,6 +320,7 @@
   },
   {
     "breakthrough": 20,
+    "targetHp": 14793620,
     "gearLevel": 105,
     "name": "Fathoming",
     "levelRange": "100",
@@ -287,6 +330,11 @@
     "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,
@@ -322,6 +370,7 @@
   },
   {
     "breakthrough": 21,
+    "targetHp": 14793620,
     "gearLevel": 105,
     "name": "Equanimity",
     "levelRange": "100",
@@ -331,6 +380,11 @@
     "attrPenResistance": 24,
     "generalDamageTaken": 0.15,
     "fatigueDamageTaken": 0.1,
+    "damageReduction": 0,
+    "physDamageBoostReduction": 0,
+    "attrDamageBoostReduction": 0,
+    "critDamageReduction": 0,
+    "affinityDamageReduction": 0,
     "attributes": [
       {
         "id": 1,

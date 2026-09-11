@@ -96,6 +96,51 @@ describe("BuffEngine — targeting & triggers", () => {
     expect(engine.calculateDamageEffects(unlisted, 1).effects).toHaveLength(0)
   })
 
+  it("reachesDotTicks: false contributes nothing to a tick but still reaches an ordinary hit", () => {
+    const modules: BuffModule[] = [
+      {
+        id: "hitOnly",
+        name: "Hit Only",
+        duration: 10,
+        affectsAll: true,
+        reachesDotTicks: false,
+        effects: [stat("allDamageBoost", 0.2)],
+      },
+    ]
+    const engine = new BuffEngine({}, modules)
+    engine.processSkillCast("cast:probe", 0, {}, false, ["hitOnly"])
+    const ordinaryHit = taggedSkill("Ordinary Hit")
+    const tick = makeSkill("test", { name: "Tick", isDotTick: true })
+    expect(engine.calculateDamageEffects(ordinaryHit, 1).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.2,
+    })
+    const tickResult = engine.calculateDamageEffects(tick, 1)
+    expect(tickResult.effects).toHaveLength(0)
+    expect(tickResult.damageFactor).toBe(1)
+    expect(tickResult.artBonuses).toEqual({})
+    expect(tickResult.forceCrit).toBe(false)
+  })
+
+  it("a module with reachesDotTicks absent still reaches a tick, matching pre-existing behaviour", () => {
+    const modules: BuffModule[] = [
+      {
+        id: "unstated",
+        name: "Unstated",
+        duration: 10,
+        affectsAll: true,
+        effects: [stat("allDamageBoost", 0.2)],
+      },
+    ]
+    const engine = new BuffEngine({}, modules)
+    engine.processSkillCast("cast:probe", 0, {}, false, ["unstated"])
+    const tick = makeSkill("test", { name: "Tick", isDotTick: true })
+    expect(engine.calculateDamageEffects(tick, 1).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.2,
+    })
+  })
+
   it("a skill's own `triggersBuffs` is the only trigger channel a buff needs", () => {
     const modules: BuffModule[] = [
       {
@@ -114,7 +159,7 @@ describe("BuffEngine — targeting & triggers", () => {
     })
   })
 
-  it("hands a module reachesEvent: false on a non-damage event, true on a damage event its scope matches", () => {
+  it("hands a module reachesEvent: true for display and on a damage event its scope matches", () => {
     const modules: BuffModule[] = [
       {
         id: "reachesEventProbe",
@@ -128,7 +173,7 @@ describe("BuffEngine — targeting & triggers", () => {
     ]
     const engine = new BuffEngine({}, modules)
     const [displayed] = engine.activeBuffsForDisplay(1)
-    expect(displayed.effects).toHaveLength(0)
+    expect(displayed.effects).toContainEqual({ statKey: "allDamageBoost", amount: 0.1 })
     expect(engine.calculateDamageEffects(taggedSkill("Anything"), 1).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.1,
@@ -150,6 +195,51 @@ describe("BuffEngine — targeting & triggers", () => {
     const engine = new BuffEngine({}, modules)
     engine.processSkillCast("cast:both", 0, {}, false, ["bothChannels", "bothChannels"])
     expect(engine.getHistoricalBuffStacks("bothChannels", 0)).toBe(1)
+  })
+})
+
+describe("BuffEngine — target.remainingHealthFraction", () => {
+  const fractionProbeModules: BuffModule[] = [
+    {
+      id: "fractionProbe",
+      name: "Fraction Probe",
+      alwaysActive: true,
+      affectsAll: true,
+      duration: 10,
+      summary: "test",
+      effects: (ctx) => [stat("allDamageBoost", ctx.target.remainingHealthFraction)],
+    },
+  ]
+
+  function fractionProbeEngine(targetMaxHp: number) {
+    return new BuffEngine({ targetMaxHp }, fractionProbeModules)
+  }
+
+  function fractionOf(engine: BuffEngine, damageSoFar: number): number {
+    return engine.calculateDamageEffects(taggedSkill("Any"), 1, [], damageSoFar).effects[0]!.amount
+  }
+
+  it("is 1 at zero damage dealt and falls as damage accumulates", () => {
+    const engine = fractionProbeEngine(1000)
+    expect(fractionOf(engine, 0)).toBe(1)
+    expect(fractionOf(engine, 250)).toBeCloseTo(0.75, 6)
+    expect(fractionOf(engine, 1000)).toBe(0)
+  })
+
+  it("clamps at 0 rather than going negative once damage exceeds the target's health", () => {
+    const engine = fractionProbeEngine(1000)
+    expect(fractionOf(engine, 1500)).toBe(0)
+  })
+
+  it("stays at 1 when the tier carries no target health, or a zero one", () => {
+    expect(fractionOf(fractionProbeEngine(0), 500)).toBe(1)
+    expect(fractionOf(new BuffEngine({}, fractionProbeModules), 500)).toBe(1)
+  })
+
+  it("defaults to full health for the display and duration-resolution paths", () => {
+    const engine = fractionProbeEngine(1000)
+    const [displayed] = engine.activeBuffsForDisplay(1)
+    expect(displayed.effects).toContainEqual({ statKey: "allDamageBoost", amount: 1 })
   })
 })
 

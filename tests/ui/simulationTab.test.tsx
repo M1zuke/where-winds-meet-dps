@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import type { WorkerResponse } from "../../src/engine/dpsWorker"
+import { parseRunSeed, type WorkerResponse } from "../../src/engine/dpsWorker"
 
 const { created, MockWorker } = vi.hoisted(() => {
   const instances: {
@@ -32,6 +32,8 @@ const { SimulationTab } =
 const { useParseSimulation } = await import("../../src/ui/hooks/useParseSimulation")
 const { simulationViewState } = await import("../../src/ui/features/simulation/simulationViewState")
 const { DEFAULT_RUN_COUNT } = await import("../../src/ui/features/simulation/simulationRunSettings")
+
+const SIMULATION_SEED = 12345
 
 const umbra = applyBowSet(
   applyArmorSet(withDerivedStats({ ...defaultInputs, classId: "bellstrikeUmbra" })),
@@ -71,13 +73,19 @@ function completion(
   return {
     kind: "parseSimulation",
     reqId,
-    runs: totals.map((totalDamage) => ({
+    seed: SIMULATION_SEED,
+    runs: totals.map((totalDamage, index) => ({
+      index,
       totalDamage,
       dps: totalDamage / 60,
       abrasionHits: 1,
       normalHits: 5,
       criticalHits: 3,
       affinityHits: 1,
+      abrasionDamage: totalDamage * 0.02,
+      normalDamage: totalDamage * 0.28,
+      criticalDamage: totalDamage * 0.4,
+      affinityDamage: totalDamage * 0.3,
     })),
     expectedRates: { abrasion: 0.1, normal: 0.5, crit: 0.3, affinity: 0.1 },
     rotationDuration: 60,
@@ -89,10 +97,47 @@ function completion(
   }
 }
 
+function runDetail(reqId: number, seed: number): WorkerResponse {
+  return {
+    kind: "parseRunDetail",
+    reqId,
+    seed,
+    totalDamage: 120,
+    dps: 2,
+    rotationDuration: 60,
+    outcomeCounts: { abrasion: 1, normal: 5, crit: 3, affinity: 1 },
+    outcomeDamage: { abrasion: 2, normal: 34, crit: 48, affinity: 36 },
+    perSkill: [
+      {
+        name: "Blood Burst",
+        breakdownName: "Blood Burst",
+        breakdownKey: "content.skill.bloodBurst",
+        type: "weapon",
+        count: 7,
+        expectedDamage: 84,
+        percentOfTotal: 0.7,
+      },
+      {
+        name: "Bleeding (DoT)",
+        breakdownName: "Bleeding (DoT)",
+        breakdownKey: "content.skill.bleeding",
+        type: "mystic",
+        count: 12,
+        expectedDamage: 36,
+        percentOfTotal: 0.3,
+      },
+    ],
+  }
+}
+
 beforeEach(() => {
   simulationViewState.optionId = null
   simulationViewState.runCount = DEFAULT_RUN_COUNT
   simulationViewState.ranSignature = null
+  simulationViewState.selectedRunIndex = null
+  simulationViewState.page = 1
+  simulationViewState.sortColumn = "dps"
+  simulationViewState.sortDescending = true
 })
 
 afterEach(() => {
@@ -115,7 +160,7 @@ describe("SimulationTab", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run" }))
 
     expect(lastRequest().kind).toBe("parseSimulation")
-    expect(lastRequest().runs).toBe(1000)
+    expect(lastRequest().runs).toBe(DEFAULT_RUN_COUNT)
   })
 
   it("clamps a run count above the ceiling before starting", () => {
@@ -196,6 +241,50 @@ describe("SimulationTab", () => {
     expect(
       screen.getByText("Your build changed since this simulation — run it again"),
     ).toBeInTheDocument()
+  })
+
+  it("reports the damage composition beside the share of hits", () => {
+    renderTab()
+    fireEvent.click(screen.getByRole("button", { name: "Run" }))
+
+    respond(completion(lastRequest().reqId as number, [80, 100, 120]))
+
+    expect(screen.getByText("Damage Share")).toBeInTheDocument()
+    const affinityRow = screen.getByRole("row", { name: /^Affinity/ })
+    expect(affinityRow).toHaveTextContent("10.0 %")
+    expect(affinityRow).toHaveTextContent("30.0 %")
+  })
+
+  it("lists every run under the graphs, best parse first", () => {
+    renderTab()
+    fireEvent.click(screen.getByRole("button", { name: "Run" }))
+
+    respond(completion(lastRequest().reqId as number, [80, 100, 120]))
+
+    expect(screen.getByRole("heading", { name: "Runs" })).toBeInTheDocument()
+    expect(screen.getByText("Select a run to break its damage down by skill.")).toBeInTheDocument()
+    expect(screen.getByText("Rows 1–3 of 3")).toBeInTheDocument()
+    const runNumbers = screen.getAllByText(/^#\d$/).map((cell) => cell.textContent)
+    expect(runNumbers).toEqual(["#3", "#2", "#1"])
+  })
+
+  it("replays the selected run's seed and shows its damage by skill", () => {
+    renderTab()
+    fireEvent.click(screen.getByRole("button", { name: "Run" }))
+    respond(completion(lastRequest().reqId as number, [80, 100, 120]))
+
+    fireEvent.click(screen.getByText("#3"))
+
+    expect(lastRequest().kind).toBe("parseRunDetail")
+    expect(lastRequest().seed).toBe(parseRunSeed(SIMULATION_SEED, 2))
+    expect(screen.getByText("Run #3")).toBeInTheDocument()
+
+    respond(runDetail(lastRequest().reqId as number, parseRunSeed(SIMULATION_SEED, 2)))
+
+    expect(screen.getByText("Damage by Skill")).toBeInTheDocument()
+    expect(screen.getByText("Blood Burst")).toBeInTheDocument()
+    expect(screen.getByText("84")).toBeInTheDocument()
+    expect(screen.getByText("70.0 %")).toBeInTheDocument()
   })
 
   it("leaves the result alone when only the run count changes", () => {

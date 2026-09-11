@@ -26,9 +26,6 @@ export const SKILL = {
 } as const
 
 export const DEBUFF = {
-  toadPoison: "debuff-stonesplitStrength-toad-poison",
-  combustion: "debuff-stonesplitStrength-combustion",
-  fluteRipple: "debuff-stonesplitStrength-flute-ripple",
   bitterSeasonTick: "debuff-stonesplitStrength-bitter-season-tick",
 } as const
 

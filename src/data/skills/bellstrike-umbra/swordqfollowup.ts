@@ -15,7 +15,6 @@ export const swordqfollowup = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ,
   triggersBuffs: [BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 64,
   triggerable: true,

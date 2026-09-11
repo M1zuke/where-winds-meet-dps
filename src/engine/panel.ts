@@ -265,7 +265,7 @@ export function deriveStats(inputs: Inputs): DerivedStats {
     "Twin Blades": inputs.dualKnivesBoost,
     "Rope Dart": inputs.ropeDartBoost,
     Hengdao: inputs.hengDaoBoost,
-    Knuckles: 0,
+    Gauntlets: inputs.gauntletsBoost,
   }
 
   const typeBoosts: Record<string, number> = {
@@ -321,8 +321,20 @@ export function buildContext(
 
   const chargeBonus = innerWayScalar(inputs.mindMethods, "chargeBonus")
 
-  const targetGeneralDamageTaken = inputs.dummyMode ? 0 : target.generalDamageTaken
-  const targetFatigueDamageTaken = inputs.dummyMode ? 0 : target.fatigueDamageTaken
+  // Dummy mode drops what the target brings on its own, not what the player
+  // puts on it: a training dummy has no baseline vulnerability, but it still
+  // takes every debuff that writes to the same path.
+  const targetGeneralDamageTaken =
+    (inputs.dummyMode ? 0 : baseTarget.generalDamageTaken) +
+    (targetOverride?.generalDamageTakenDelta ?? 0)
+  const targetFatigueDamageTaken =
+    (inputs.dummyMode ? 0 : baseTarget.fatigueDamageTaken) +
+    (targetOverride?.fatigueDamageTakenDelta ?? 0)
+  const targetDamageReduction = inputs.dummyMode ? 0 : target.damageReduction
+  const targetPhysDamageBoostReduction = inputs.dummyMode ? 0 : target.physDamageBoostReduction
+  const targetAttrDamageBoostReduction = inputs.dummyMode ? 0 : target.attrDamageBoostReduction
+  const targetCritDamageReduction = inputs.dummyMode ? 0 : target.critDamageReduction
+  const targetAffinityDamageReduction = inputs.dummyMode ? 0 : target.affinityDamageReduction
   const effectiveBossBoost = inputs.bossBoost
 
   const generalDamageBoost =
@@ -389,6 +401,7 @@ export function buildContext(
 
     generalDamageBoost,
     allDamageBoost: inputs.allDamageBoost ?? 0,
+    independentDamageBoost: inputs.independentDamageBoost ?? 0,
     chargeBonus,
     effectiveDefense,
     fatigueDamageTaken: targetFatigueDamageTaken,
@@ -407,7 +420,11 @@ export function buildContext(
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
-    rateResistance: eff.resistance,
+    damageReduction: targetDamageReduction,
+    physDamageBoostReduction: targetPhysDamageBoostReduction,
+    attrDamageBoostReduction: targetAttrDamageBoostReduction,
+    critDamageReduction: targetCritDamageReduction,
+    affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus,
     dotDamageMultiplier,
     attributeFlatMultiplier: school.attributeMultiplier,

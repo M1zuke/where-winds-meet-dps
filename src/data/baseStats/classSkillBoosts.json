@@ -230,5 +230,63 @@
       "scalesWith": "silkbind.min",
       "scaleMax": 328
     }
+  ],
+  "bamboocutDraught": [
+    {
+      "skill": "Critical Rate UP",
+      "stat": "critRate",
+      "maxBonus": 0.085,
+      "scalesWith": "agility",
+      "scaleMax": 280
+    },
+    {
+      "skill": "Physical Attack UP",
+      "stat": "minPhys",
+      "maxBonus": 73.9,
+      "scalesWith": "agility",
+      "scaleMax": 280
+    },
+    {
+      "skill": "Gauntlets Bamboocut Attack Min",
+      "stat": "minBamboocut",
+      "maxBonus": 98,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Gauntlets Bamboocut Attack Max",
+      "stat": "maxBamboocut",
+      "maxBonus": 196,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Twin Blades Bamboocut Attack Min",
+      "stat": "minBamboocut",
+      "maxBonus": 98,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Twin Blades Bamboocut Attack Max",
+      "stat": "maxBamboocut",
+      "maxBonus": 196,
+      "scalesWith": "agility",
+      "scaleMax": 0
+    },
+    {
+      "skill": "Bamboocut Penetration Scale",
+      "stat": "bamboocutPenetration",
+      "maxBonus": 0.22,
+      "scalesWith": "bamboocut.min",
+      "scaleMax": 328
+    },
+    {
+      "skill": "Attribute Damage Scale",
+      "stat": "attributeDamage",
+      "maxBonus": 0.11,
+      "scalesWith": "bamboocut.min",
+      "scaleMax": 328
+    }
   ]
 }

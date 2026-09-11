@@ -114,4 +114,16 @@ export const INNER_WAY_LADDERS: Readonly<
     20: { "primaryAttr.max": 33.3, "primaryAttr.min": 16.7 },
     21: { "primaryAttr.max": 35.9, "primaryAttr.min": 17.9 },
   },
+  attributeAttackFiveStar: {
+    12: { "primaryAttr.max": 17.7, "primaryAttr.min": 8.9 },
+    13: { "primaryAttr.max": 20.7, "primaryAttr.min": 10.3 },
+    14: { "primaryAttr.max": 24.1, "primaryAttr.min": 12.1 },
+    15: { "primaryAttr.max": 26.8, "primaryAttr.min": 13.4 },
+    16: { "primaryAttr.max": 28.1, "primaryAttr.min": 14.1 },
+    17: { "primaryAttr.max": 29.5, "primaryAttr.min": 14.7 },
+    18: { "primaryAttr.max": 31.7, "primaryAttr.min": 15.9 },
+    19: { "primaryAttr.max": 34.3, "primaryAttr.min": 17.1 },
+    20: { "primaryAttr.max": 36.9, "primaryAttr.min": 18.5 },
+    21: { "primaryAttr.max": 39.9, "primaryAttr.min": 19.9 },
+  },
 }

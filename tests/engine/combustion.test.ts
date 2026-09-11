@@ -11,8 +11,7 @@ import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { builtinSkill, dotRow } from "../builtins"
-import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
-import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
+import { DEBUFF, SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 import { retiredRotation } from "./retiredRotations"
 
 function rotationOf(classId: string, skillIds: string[]) {
@@ -32,8 +31,8 @@ function combustionDamage(r: ReturnType<typeof simulateTimeline>): number {
 describe("Dragon's Breath → Combustion DoT", () => {
   it("a rotation casting Dragon's Breath deals real Combustion tick damage", () => {
     const rotation = rotationOf("bellstrikeUmbra", [
-      UNIVERSAL_SKILL.fireBreath1Hit,
-      UNIVERSAL_SKILL.fireBreath2Hit,
+      MYSTIC_SKILL.fireBreath1Hit,
+      MYSTIC_SKILL.fireBreath2Hit,
     ])
     const inputs: Inputs = {
       ...defaultInputs,
@@ -67,15 +66,15 @@ describe("Dragon's Breath → Combustion DoT", () => {
       (d) => d.id === DEBUFF.combustion,
     )!.id
 
-    const fireBreath = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.fireBreath1Hit)
-    expect(fireBreath.id).toBe("bellstrikeUmbra-fire-breath-1-hit")
+    const fireBreath = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.fireBreath1Hit)
+    expect(fireBreath.id).toBe("mystic-fire-breath-1-hit")
     const fbTrigger = fireBreath.hits[0].triggers.find((t) => t.targetId === combustionId)
     expect(fbTrigger).toBeTruthy()
     expect(fbTrigger!.kind).toBe("applyDebuff")
     expect(fbTrigger!.extendFrames).toBeGreaterThan(0)
     expect(fbTrigger!.extendOnly).toBeFalsy()
 
-    const poet = builtinSkill("bellstrikeUmbra", UNIVERSAL_SKILL.poet1)
+    const poet = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.poet1)
     const poetTrigger = poet.hits[0].triggers.find((t) => t.targetId === combustionId)
     expect(poetTrigger).toBeTruthy()
     expect(poetTrigger!.extendOnly).toBe(true)
@@ -83,13 +82,13 @@ describe("Dragon's Breath → Combustion DoT", () => {
   })
 
   it("Poet casts extend the Combustion window: Dragon's Breath + Poet1-4 outdamages Dragon's Breath alone", () => {
-    const alone = rotationOf("bellstrikeUmbra", [UNIVERSAL_SKILL.fireBreath1Hit])
+    const alone = rotationOf("bellstrikeUmbra", [MYSTIC_SKILL.fireBreath1Hit])
     const extended = rotationOf("bellstrikeUmbra", [
-      UNIVERSAL_SKILL.fireBreath1Hit,
-      UNIVERSAL_SKILL.poet1,
-      UNIVERSAL_SKILL.poet2,
-      UNIVERSAL_SKILL.poet3,
-      UNIVERSAL_SKILL.poet4,
+      MYSTIC_SKILL.fireBreath1Hit,
+      MYSTIC_SKILL.poet1,
+      MYSTIC_SKILL.poet2,
+      MYSTIC_SKILL.poet3,
+      MYSTIC_SKILL.poet4,
     ])
     const before = simulateTimeline({
       ...defaultInputs,

@@ -18,6 +18,7 @@ export interface ParseSimulationRequest {
 }
 
 interface Completed {
+  seed: number
   runs: ParseRun[]
   expectedRates: ExpectedOutcomeRates | null
   rotationDuration: number
@@ -36,6 +37,7 @@ export interface ParseSimulationState extends Completed {
 const NO_RUNS: ParseRun[] = []
 const NO_PROGRESS = { done: 0, total: 0 }
 const NOT_RUN: Completed = {
+  seed: 0,
   runs: NO_RUNS,
   expectedRates: null,
   rotationDuration: 0,
@@ -54,6 +56,7 @@ export function useParseSimulation(): ParseSimulationState {
       setIsRunning(false)
       setProgress({ done: response.completedRuns, total: response.requestedRuns })
       setCompleted({
+        seed: response.seed,
         runs: response.runs,
         expectedRates: response.expectedRates,
         rotationDuration: response.rotationDuration,

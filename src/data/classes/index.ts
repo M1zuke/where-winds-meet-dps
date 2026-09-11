@@ -2,6 +2,7 @@
 // procedural behaviour — a skill behaviour, a mechanic — adds its folder here
 // and nowhere else; nothing in `src/engine` imports a class module.
 import type { ClassDef } from "../../definitions/classes/classDef"
+import { bamboocutDraught } from "./bamboocut-draught"
 import { bellstrikeSplendor } from "./bellstrike-splendor"
 import { bellstrikeUmbra } from "./bellstrike-umbra"
 import { silkbindJade } from "./silkbind-jade"
@@ -12,6 +13,7 @@ export const CLASSES: readonly ClassDef[] = [
   stonesplitStrength,
   bellstrikeSplendor,
   silkbindJade,
+  bamboocutDraught,
 ]
 
 export { RETUNEMENT_POOLS } from "./retunementPools"

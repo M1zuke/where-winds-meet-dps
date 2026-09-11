@@ -11,6 +11,7 @@ import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
 import { getWordSpecs } from "../../src/engine/itemRanking"
 import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
+import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import type { GearPiece, GearWordId, Inputs } from "../../src/engine/types"
 
@@ -354,5 +355,55 @@ describe("a word outside the line's own pool scores as nothing", () => {
   it("gearHpTotal reads the level's base HP rather than the piece's own hp field", () => {
     const armor = { ...armorPiece(), hp: 999999 }
     expect(gearHpTotal([armor])).toBe(gearBaseStatsFor(armor).hp)
+  })
+})
+
+describe("a weapon's Art of Gauntlets DMG Boost line counts like its Twin Blades sibling", () => {
+  function boostWeaponPiece(word: GearWordId): GearPiece {
+    return {
+      id: "boost-weapon",
+      slot: "leftWeapon",
+      level: 96,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word, value: 0.06, retuned: true },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+  }
+
+  function inputsWith(piece: GearPiece): Inputs {
+    return withDerivedStats({
+      ...defaultInputs,
+      classId: "bamboocutDraught",
+      inventory: [piece],
+      equipped: { ...defaultInputs.equipped, [piece.slot]: piece.id },
+    })
+  }
+
+  it("contributes its value to inputs.gauntletsBoost, exactly as dualKnivesBoost contributes to inputs.dualKnivesBoost", () => {
+    const gauntlets = inputsWith(boostWeaponPiece("gauntletsBoost"))
+    const dualKnives = inputsWith(boostWeaponPiece("dualKnivesBoost"))
+    expect(gauntlets.gauntletsBoost).toBeCloseTo(0.06, 9)
+    expect(gauntlets.gauntletsBoost).toBeCloseTo(dualKnives.dualKnivesBoost, 9)
+  })
+
+  it("contributes nothing on a non-weapon slot", () => {
+    const helmPiece: GearPiece = {
+      ...boostWeaponPiece("gauntletsBoost"),
+      id: "boost-helm",
+      slot: "helm",
+    }
+    expect(inputsWith(helmPiece).gauntletsBoost).toBe(0)
   })
 })

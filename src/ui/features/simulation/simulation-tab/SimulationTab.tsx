@@ -14,6 +14,7 @@ import { parseSummary, sortedParses } from "../simulation-summary-bar/summarySta
 import { SimulationDistributionPanel } from "../simulation-distribution-panel/SimulationDistributionPanel"
 import { SimulationParseLadderPanel } from "../simulation-parse-ladder-panel/SimulationParseLadderPanel"
 import { SimulationOutcomeMixPanel } from "../simulation-outcome-mix-panel/SimulationOutcomeMixPanel"
+import { SimulationRunsPanel } from "../simulation-runs-panel/SimulationRunsPanel"
 import styles from "./SimulationTab.module.scss"
 
 export function SimulationTab({
@@ -55,20 +56,23 @@ export function SimulationTab({
   const summary = useMemo(() => parseSummary(simulation.runs), [simulation.runs])
   const sorted = useMemo(() => sortedParses(simulation.runs), [simulation.runs])
 
+  const selectedOption = options.find((candidate) => candidate.id === optionId)
+
   function run() {
-    const option = options.find((candidate) => candidate.id === optionId)
     const clamped = clampRunCount(runCount)
     changeRunCount(clamped)
     simulationViewState.ranSignature = signature
+    simulationViewState.selectedRunIndex = null
+    simulationViewState.page = 1
     setRanSignature(signature)
     simulation.start({
       inputs: engineInputs,
-      rotation: option?.rotation ?? null,
+      rotation: selectedOption?.rotation ?? null,
       runCount: clamped,
     })
   }
 
-  const rotationName = options.find((candidate) => candidate.id === optionId)?.name ?? ""
+  const rotationName = selectedOption?.name ?? ""
   const contextLabel = !summary
     ? t("simulation.notRunYet")
     : simulation.cancelled
@@ -119,6 +123,17 @@ export function SimulationTab({
           <div className="panel">
             <h2>{t("simulation.outcomeMix")}</h2>
             <SimulationOutcomeMixPanel summary={summary} expectedRates={simulation.expectedRates} />
+          </div>
+          <div className={`panel ${styles.spanColumns}`}>
+            <SimulationRunsPanel
+              sorted={sorted}
+              seed={simulation.seed}
+              inputs={engineInputs}
+              rotation={selectedOption?.rotation ?? null}
+              meanDps={summary.meanDps}
+              rotationDuration={simulation.rotationDuration}
+              isStale={isStale}
+            />
           </div>
         </div>
       ) : (

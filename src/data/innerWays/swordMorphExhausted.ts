@@ -26,7 +26,7 @@ export function swordMorphExhaustedBehavior(build: BuildView): SkillBehavior | n
 
     buildArt(input, context) {
       const art = DEFAULT_BEHAVIOR.buildArt.call(this, input, context)
-      if (context.phase === "exhausted") art.guaranteedPrecision = 1
+      if (context.phase === "exhausted") art.abrasionAvoidRate = 1
       return art
     },
 

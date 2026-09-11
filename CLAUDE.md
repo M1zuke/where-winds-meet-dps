@@ -279,9 +279,9 @@ display wrapper that duplicates an engine constant. One source of truth.
 
 Three rules apply unconditionally, from the external sources (Midasione PDF +
 CN community sources): graze rate `(1−precision)(1−affinity)`; net-pen `÷100`
-deficit / `÷200` overflow (deliberately inverts PDF §7 — **do not "fix" it
-back**); a skill's raw affinity-rate bonus is `÷(1+r)` and falls inside the
-cap, while its raw crit-rate bonus is flat and added after the cap. The
+deficit / `÷200` overflow (corrects PDF §7 — **do not "fix" it back**); a
+skill's own rate bonus is added undivided and falls inside the cap, for both
+crit and affinity alike, while the direct rate is added outside it. The
 martial art's attribute multiplier applies to every row alike, DoT ticks
 included, and to a row's flat term together with its coefficient.
 Penetration resistance is zero for every target below breakthrough 20, and
@@ -322,8 +322,9 @@ its data is live; it is validated only once its output is checked against a
 measured build. `ClassDef.validated` states which, and only a validated class's
 numbers may be relied on.
 
-**Bellstrike Umbra (`bellstrikeUmbra`) and Stonesplit Strength
-(`stonesplitStrength`) are validated.** Every other class carries unverified
+**Bellstrike Umbra (`bellstrikeUmbra`), Bellstrike Splendor (`bellstrikeSplendor`),
+Stonesplit Strength (`stonesplitStrength`) and Bamboocut Draught
+(`bamboocutDraught`) are validated.** Every other class carries unverified
 numbers, whether registered or not.
 
 → The full class/spec table and what that means for tests: **docs/CLASSES.md**,

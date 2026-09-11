@@ -13,6 +13,10 @@ export interface ParseSummary {
   meanNormalHits: number
   meanCriticalHits: number
   meanAffinityHits: number
+  meanAbrasionDamage: number
+  meanNormalDamage: number
+  meanCriticalDamage: number
+  meanAffinityDamage: number
 }
 
 export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
@@ -24,6 +28,10 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
   let normal = 0
   let critical = 0
   let affinity = 0
+  let abrasionDamage = 0
+  let normalDamage = 0
+  let criticalDamage = 0
+  let affinityDamage = 0
   let best = runs[0]
   let worst = runs[0]
 
@@ -34,6 +42,10 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
     normal += run.normalHits
     critical += run.criticalHits
     affinity += run.affinityHits
+    abrasionDamage += run.abrasionDamage
+    normalDamage += run.normalDamage
+    criticalDamage += run.criticalDamage
+    affinityDamage += run.affinityDamage
     if (run.totalDamage > best.totalDamage) best = run
     if (run.totalDamage < worst.totalDamage) worst = run
   }
@@ -53,6 +65,10 @@ export function parseSummary(runs: readonly ParseRun[]): ParseSummary | null {
     meanNormalHits: normal / runs.length,
     meanCriticalHits: critical / runs.length,
     meanAffinityHits: affinity / runs.length,
+    meanAbrasionDamage: abrasionDamage / runs.length,
+    meanNormalDamage: normalDamage / runs.length,
+    meanCriticalDamage: criticalDamage / runs.length,
+    meanAffinityDamage: affinityDamage / runs.length,
   }
 }
 

@@ -24,8 +24,8 @@ import { spearq } from "../../src/data/skills/bellstrike-umbra/spearq"
 import { spearq5HitCancel } from "../../src/data/skills/bellstrike-umbra/spearq-5-hit-cancel"
 import { spearspecial } from "../../src/data/skills/bellstrike-umbra/spearspecial"
 import { spearspecial1HitCancel } from "../../src/data/skills/bellstrike-umbra/spearspecial-1-hit-cancel"
-import { dragonFireSmolder1Hit } from "../../src/data/skills/bellstrike-umbra/dragon-fire-smolder-1-hit"
-import { dragonFireSmolder2Hits } from "../../src/data/skills/bellstrike-umbra/dragon-fire-smolder-2-hits"
+import { dragonFireSmolder1Hit } from "../../src/data/skills/mystic/dragon-fire-smolder-1-hit"
+import { dragonFireSmolder2Hits } from "../../src/data/skills/mystic/dragon-fire-smolder-2-hits"
 
 const CLASS = "bellstrikeUmbra"
 

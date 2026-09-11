@@ -75,6 +75,28 @@ describe("a sampled engine run", () => {
     expect(tallied).toBe(events)
   })
 
+  it("books every point of damage into exactly one of the four outcomes", () => {
+    const result = runEngine(procFree, { seed: 77 })
+    const damage = result.outcomeDamage!
+    const tallied = damage.abrasion + damage.normal + damage.crit + damage.affinity
+    expect(tallied).toBeCloseTo(result.totalDamage, 6)
+  })
+
+  it("reports no outcome damage on an unseeded run, as it reports no counts", () => {
+    expect(runEngine(procFree).outcomeDamage).toBeUndefined()
+  })
+
+  it("weighs an affinity hit above its share of hits", () => {
+    const result = runEngine(procFree, { seed: 77 })
+    const counts = result.outcomeCounts!
+    const damage = result.outcomeDamage!
+    const hits = counts.abrasion + counts.normal + counts.crit + counts.affinity
+    const hitShare = counts.affinity / hits
+    const damageShare = damage.affinity / result.totalDamage
+
+    expect(damageShare).toBeGreaterThan(hitShare)
+  })
+
   it("mean of sampled runs converges to the deterministic total for a build with no proc mechanics", () => {
     const expected = runEngine(procFree).totalDamage
     const runs = 2000
@@ -165,16 +187,38 @@ describe("a sampled hit", () => {
     expect(rolled.chance.crit).toBe(1)
   })
 
-  it("never draws abrasion when precision is guaranteed", () => {
+  it("never draws abrasion when the skill cannot abrade", () => {
     const ctx = context()
     const rolled = computeSkillDamage(
-      { ...FLAT_ART, guaranteedPrecision: 1 },
+      { ...FLAT_ART, abrasionAvoidRate: 1 },
       ctx,
       1,
       () => 0,
     ).rolled!
     expect(rolled.outcome).not.toBe("abrasion")
     expect(rolled.chance.abrasion).toBe(0)
+  })
+
+  it("a draw that used to fall in the graze band lands as normal once abrasionAvoidRate removes it", () => {
+    const ctx = {
+      ...context(),
+      precisionPanel: 0.5,
+      critPanel: 0,
+      affinityPanel: 0,
+      directCritPanel: 0,
+      directAffinityPanel: 0,
+    }
+    const withoutAvoid = computeSkillDamage(FLAT_ART, ctx, 1, () => 0).rolled!
+    expect(withoutAvoid.outcome).toBe("abrasion")
+
+    const midGrazeBand = withoutAvoid.chance.abrasion / 2
+    const withAvoid = computeSkillDamage(
+      { ...FLAT_ART, abrasionAvoidRate: 1 },
+      ctx,
+      1,
+      () => midGrazeBand,
+    ).rolled!
+    expect(withAvoid.outcome).toBe("normal")
   })
 
   it("always draws the normal track for a Heavenwork row", () => {

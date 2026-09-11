@@ -6,6 +6,7 @@ export interface BuildView {
   classId: string
   spec: string | undefined
   armorSet: string | undefined
+  minPhysAttack: number
   param(id: string): boolean
   paramTier(id: string): number
   paramValue(id: string): number
@@ -13,6 +14,8 @@ export interface BuildView {
 
 export interface TargetView {
   isTrainingDummy: boolean
+  // 1 at full health, falling to 0 as the target is worn down.
+  remainingHealthFraction: number
 }
 
 export interface StatusView {
@@ -48,6 +51,7 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
   [PROP.abrasionImmune]: "abrasionImmune",
   [PROP.consumesInnerPassion]: "consumesInnerPassion",
   [PROP.consumesInnerPassionBurningHeart]: "consumesInnerPassionBurningHeart",
+  [PROP.empoweredDotEffect]: "empoweredDotEffect",
   [PROP.hasLowQiCritBoost]: "hasLowQiCritBoost",
   [PROP.hasLowQiDmgBoost]: "hasLowQiDmgBoost",
   [PROP.hasQiBreakDoubleDamage]: "hasQiBreakDoubleDamage",

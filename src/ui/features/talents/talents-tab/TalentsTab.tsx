@@ -6,6 +6,8 @@ import { buffKey, talentKey } from "../../../../i18n/contentKeys"
 import { buildScalingSources } from "../../../../definitions/baseStats"
 import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedInputs"
 import { TALENT_STAT_KEYS } from "../shared/talentStatKeys"
+import { inebriateCritDamageBoostAt } from "../../../../data/skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
+import { inebriateDamageBoostAt } from "../../../../data/skills/bamboocut-draught/buffs/inebriateDamageScaling"
 import styles from "./TalentsTab.module.scss"
 
 interface Props {
@@ -79,8 +81,18 @@ function talentCurrent(row: MartialArtsTalent, sources: Record<ScalingSource, nu
 type TalentEffectLine =
   | { kind: "talent"; skill: string; labelKey?: string }
   | { kind: "talentFlatText"; skills: string[]; textKey: string }
-  | { kind: "mechanic"; id: string; noteKey?: string }
+  | {
+      kind: "mechanic"
+      id: string
+      noteKey?: string
+      currentValue?: (minPhysAttack: number) => number
+    }
   | { kind: "static"; textKey: string; subNoteKey?: string }
+
+function formatSignedPercent(value: number): string {
+  const sign = value >= 0 ? "+" : ""
+  return `${sign}${(value * 100).toFixed(1)}%`
+}
 
 interface TalentCardConfig {
   nameKey: string
@@ -386,6 +398,102 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
       ],
     },
   ],
+  bamboocutDraught: [
+    {
+      weaponKey: "content.martialArt.skystrikeGauntlets",
+      cards: [
+        {
+          nameKey: "talents.card.physicalAttackUp",
+          lines: [{ kind: "talent", skill: "Physical Attack UP" }],
+        },
+        {
+          nameKey: "talents.card.inebriateCriticalEnhancement",
+          lines: [
+            {
+              kind: "mechanic",
+              id: "inebriateSkillCritDamage",
+              noteKey: "talents.note.scalesWithMinPhysFullAt750",
+              currentValue: inebriateCritDamageBoostAt,
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.bamboocutAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Gauntlets Bamboocut Attack Min", "Gauntlets Bamboocut Attack Max"],
+              textKey: "talents.effect.98Min196MaxBamboocut",
+            },
+            { kind: "talent", skill: "Bamboocut Penetration Scale" },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.bamboocutAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.inebriateDodgeEnhancement",
+          lines: [{ kind: "static", textKey: "talents.effect.inCarouseAPerfectDodgeHint" }],
+        },
+      ],
+    },
+    {
+      weaponKey: "content.martialArt.rivenTwinblades",
+      cards: [
+        {
+          nameKey: "talents.card.criticalRateUp",
+          lines: [{ kind: "talent", skill: "Critical Rate UP" }],
+        },
+        {
+          nameKey: "talents.card.inebriateDmgBoostEnhancement",
+          lines: [
+            {
+              kind: "mechanic",
+              id: "inebriateDamageScaling",
+              noteKey: "talents.note.scalesWithMinPhysFullAt750",
+              currentValue: inebriateDamageBoostAt,
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.bamboocutAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Twin Blades Bamboocut Attack Min", "Twin Blades Bamboocut Attack Max"],
+              textKey: "talents.effect.98Min196MaxBamboocut",
+            },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "content.statLine.attributeDamageBoost",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.bamboocutAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.increasedBingePointGain",
+          lines: [{ kind: "static", textKey: "talents.effect.carouseLasts20sHint" }],
+        },
+      ],
+    },
+  ],
 }
 
 export function TalentsTab({ inputs }: Props) {
@@ -449,10 +557,16 @@ export function TalentsTab({ inputs }: Props) {
     line: Extract<TalentEffectLine, { kind: "mechanic" }>,
     buff: ClassBuffRow,
   ) {
+    const current = line.currentValue?.(sources["phys.min"] ?? 0)
     return (
       <div className={styles.classBuffLine} key={`mechanic:${line.id}`}>
         <div className={styles.classBuffHead}>
           <span className={styles.classBuffEffect}>{buff.effect}</span>
+          {current !== undefined && (
+            <span className={styles.classBuffCurrent}>
+              {t("talents.current")}: {formatSignedPercent(current)}
+            </span>
+          )}
         </div>
         {line.noteKey && <div className={styles.classBuffNote}>{t(line.noteKey)}</div>}
       </div>

@@ -9,114 +9,6 @@ import { swordHorizon } from "../../innerWays/swordHorizon"
 
 const CLASS_ID = "bellstrikeUmbra"
 
-export const toadPoison = defineDebuff({
-  id: DEBUFF.toadPoison,
-  classId: CLASS_ID,
-  name: "Toad Poison",
-  activation: "triggered",
-  durationFrames: 601,
-  effects: [],
-  dot: {
-    tickIntervalFrames: 300,
-    physMultiplier: 1.62189,
-    physFixed: 243.7,
-    attributeMultiplier: 1.62189,
-    attributeFixed: 0,
-    attributeAttack: "Bellstrike",
-    skillType: "sustain",
-    mysticCategory: "area-debuff",
-    count: 1,
-    perStackShapes: null,
-  },
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
-})
-
-export const combustion = defineDebuff({
-  id: DEBUFF.combustion,
-  classId: CLASS_ID,
-  name: "Combustion",
-  activation: "triggered",
-  durationFrames: 481,
-  effects: [],
-  dot: {
-    tickIntervalFrames: 30,
-    physMultiplier: 0.29545,
-    physFixed: 44.62,
-    attributeMultiplier: 0.29545,
-    attributeFixed: 0,
-    attributeAttack: "Bellstrike",
-    skillType: "sustain",
-    mysticCategory: "burst",
-    count: 1,
-    perStackShapes: null,
-  },
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
-  tags: [ROLE.combustion],
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
-})
-
-export const darkFire = defineDebuff({
-  id: DEBUFF.darkFire,
-  classId: CLASS_ID,
-  name: "Smolder",
-  breakdownName: "Smolder",
-  activation: "triggered",
-  durationFrames: 240,
-  effects: [],
-  dot: {
-    tickIntervalFrames: 30,
-    physMultiplier: 0.24991,
-    physFixed: 37.74,
-    attributeMultiplier: 0.374865,
-    attributeFixed: 0,
-    attributeAttack: "Bellstrike",
-    skillType: "sustain",
-    mysticCategory: "burst",
-    count: 1,
-    perStackShapes: null,
-    perStackMultipliers: null,
-  },
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
-})
-
-export const fluteRipple = defineDebuff({
-  id: DEBUFF.fluteRipple,
-  classId: CLASS_ID,
-  name: "Flute Ripple",
-  breakdownName: "Flute Chanting a Thousand Waves",
-  activation: "triggered",
-  durationFrames: 751,
-  effects: [],
-  dot: {
-    tickIntervalFrames: 150,
-    physMultiplier: 1.47645,
-    physFixed: 320.97,
-    attributeMultiplier: 2.214675,
-    attributeFixed: 0,
-    attributeAttack: "Bellstrike",
-    skillType: "sustain",
-    mysticCategory: "area-damage",
-    count: 1,
-    perStackShapes: null,
-  },
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
-  receives: [BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
-})
-
 export const bleedTick = defineDebuff({
   id: DEBUFF.bleedTick,
   classId: CLASS_ID,
@@ -126,6 +18,10 @@ export const bleedTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
+    // In-game cadence as of 2026-09-10: the first tick lands half a second in,
+    // every later one a full second after the one before it.
+    firstTickOffsetFrames: 30,
+    reschedulesPerTick: true,
     physMultiplier: 0.066,
     physFixed: 0,
     attributeMultiplier: 0.099,
@@ -149,7 +45,12 @@ export const bleedTick = defineDebuff({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-03T00:00:00.000Z",
   tags: [ROLE.bleedTick],
-  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, BUFF.soulShaken],
+  receives: [
+    BUFF.bellstrikeUmbraBleedPen,
+    BUFF.bellstrikeUmbraBleedingDamage,
+    BUFF.bellstrikeUmbraBleedCoefficient,
+    BUFF.soulShaken,
+  ],
 })
 
 export const bitterSeasonTick = defineDebuff({
@@ -199,12 +100,4 @@ export const defenseDown = defineDebuff({
   updatedAt: "2026-08-13T00:00:00.000Z",
 })
 
-export const DEBUFFS: readonly Debuff[] = [
-  toadPoison,
-  combustion,
-  darkFire,
-  fluteRipple,
-  bleedTick,
-  bitterSeasonTick,
-  defenseDown,
-]
+export const DEBUFFS: readonly Debuff[] = [bleedTick, bitterSeasonTick, defenseDown]

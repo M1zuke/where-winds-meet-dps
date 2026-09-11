@@ -139,6 +139,14 @@ export const STAT_LINES = [
     category: "Damage Boosts",
   },
   {
+    id: "independentDamageBoost",
+    label: "Independent DMG Boost",
+    unit: "percent",
+    enginePath: "independentDamageBoost",
+    scope: "player",
+    category: "Damage Boosts",
+  },
+  {
     id: "allMartialBoost",
     label: "All Martial Arts Boost",
     unit: "percent",
@@ -215,6 +223,15 @@ export const STAT_LINES = [
     label: "Art of Hengdao DMG Boost",
     unit: "percent",
     enginePath: "hengDaoBoost",
+    maxRoll: MARTIAL_ART_BOOST_CEILING,
+    scope: "player",
+    category: "Martial Boosts",
+  },
+  {
+    id: "gauntletsBoost",
+    label: "Art of Gauntlets DMG Boost",
+    unit: "percent",
+    enginePath: "gauntletsBoost",
     maxRoll: MARTIAL_ART_BOOST_CEILING,
     scope: "player",
     category: "Martial Boosts",
@@ -409,14 +426,10 @@ export const STAT_LINES = [
     scope: "target",
     category: "Target",
   },
-  {
-    id: "targetFatigueDamageTaken",
-    label: "Target Exhaustion Boost",
-    unit: "percent",
-    enginePath: "target.fatigueDamageTaken",
-    scope: "target",
-    category: "Target",
-  },
+  // Retired: no engine path, so it is display-only and unpickable. Do not
+  // re-add one — nothing consumes it. Id/label stay for a profile that
+  // already stored this stat on a custom buff or debuff.
+  { id: "targetFatigueDamageTaken", label: "Target Exhaustion Boost", unit: "percent" },
   { id: "hp", label: "HP", unit: "raw", enginePath: "hp" },
   { id: "physDef", label: "Phys Defense", unit: "raw", enginePath: "physDef" },
   { id: "maxHp", label: "Max HP", unit: "raw" },

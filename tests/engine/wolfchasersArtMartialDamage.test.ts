@@ -8,23 +8,29 @@ import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 
 const CLASS = "bellstrikeUmbra"
 const BUFF_ID = "wolfchasersArtMartialDamage"
-const MARTIAL_Q_SKILL_IDS = [
-  SKILL.swordq,
-  SKILL.swordqfollowup,
-  SKILL.swordqFollowUp1HitCancel,
-  SKILL.swordqFollowUp2HitCancel,
-  SKILL.swordMartialQqq,
-  SKILL.spearq,
-  SKILL.spearq5HitCancel,
-].sort()
+const SOBER_SORROW_SKILL_IDS = [SKILL.spearq, SKILL.spearq5HitCancel].sort()
 
 describe("Wolfchaser's Art martial-art damage — reach", () => {
-  it("reaches exactly the seven Sword/Spear Martial Q skills, and none of Bellstrike Umbra's other skills", () => {
+  it("reaches exactly the two Sober Sorrow skills, and none of Bellstrike Umbra's other skills", () => {
     const reaching = builtinSkillsForClass(CLASS)
       .filter((skill) => skill.receives?.includes(BUFF_ID))
       .map((skill) => skill.id)
       .sort()
-    expect(reaching).toEqual(MARTIAL_Q_SKILL_IDS)
+    expect(reaching).toEqual(SOBER_SORROW_SKILL_IDS)
+  })
+
+  it("does not reach the five sword Martial Q skills — their in-game names differ from Sober Sorrow", () => {
+    const swordMartialQIds = [
+      SKILL.swordq,
+      SKILL.swordqfollowup,
+      SKILL.swordqFollowUp1HitCancel,
+      SKILL.swordqFollowUp2HitCancel,
+      SKILL.swordMartialQqq,
+    ]
+    for (const id of swordMartialQIds) {
+      const skill = builtinSkillsForClass(CLASS).find((candidate) => candidate.id === id)!
+      expect(skill.receives ?? []).not.toContain(BUFF_ID)
+    }
   })
 
   it("does not reach Bleed Tick or Blood Burst", () => {

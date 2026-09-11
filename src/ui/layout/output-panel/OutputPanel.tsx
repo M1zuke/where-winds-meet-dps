@@ -59,7 +59,7 @@ export function MetricsCard({
     theoreticalDps === null
       ? t("layout.outputPanel.currentDpsDividedByThe")
       : `${t("layout.outputPanel.currentDpsDividedByThe")}: ${formatNumber(theoreticalDps, 2)} DPS`
-  const durationText = `${formatNumber(result.rotationDuration, 0)}s`
+  const durationText = `${formatNumber(result.rotationDuration, 2)}s`
   return (
     <div className={styles.metricsCard + (className ? ` ${className}` : "")}>
       <div className={styles.dps}>
@@ -142,7 +142,7 @@ export function PerSkillTable({ result }: { result: Result }) {
       <thead>
         <tr>
           <th>{t("common.skill")}</th>
-          <th>{t("layout.outputPanel.count")}</th>
+          <th>{t("common.count")}</th>
           <th>{t("common.damage")}</th>
           <th>{t("common.share")}</th>
           <th className="bar-col" />

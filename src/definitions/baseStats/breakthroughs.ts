@@ -9,6 +9,8 @@ export interface BreakthroughAttribute {
 
 export interface BreakthroughTier {
   breakthrough: number
+  // The practice target's in-game health pool, as of 2026-09-10.
+  targetHp: number
   gearLevel: GearLevel
   name: string
   levelRange: string
@@ -20,6 +22,11 @@ export interface BreakthroughTier {
   attrPenResistance: number
   generalDamageTaken: number
   fatigueDamageTaken: number
+  damageReduction: number
+  physDamageBoostReduction: number
+  attrDamageBoostReduction: number
+  critDamageReduction: number
+  affinityDamageReduction: number
   attributes?: BreakthroughAttribute[]
   // In-game unlock instant, UTC. A tier without one is already live.
   release?: string

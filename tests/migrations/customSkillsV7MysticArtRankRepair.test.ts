@@ -9,6 +9,7 @@ import {
   healMysticArtRank,
 } from "../../src/migrations/customSkills/V7__mysticArtRankRepair"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 import type { Skill } from "../../src/engine/skill"
 import storeV6File from "./testCustomSkills/v6/store.json"
 
@@ -36,8 +37,8 @@ describe("custom-skills v6 fixture", () => {
   })
 
   it("holds coefficients the built-ins no longer carry", () => {
-    expect(builtin(POET1).hits[0].physMultiplier).not.toBe(1.0238)
-    expect(builtin(DRAGON_HEAD_PLUS).hits[0].physMultiplier).not.toBe(17.3793)
+    expect(builtin(MYSTIC_SKILL.poet1).hits[0].physMultiplier).not.toBe(1.0238)
+    expect(builtin(MYSTIC_SKILL.dragonHeadPlus).hits[0].physMultiplier).not.toBe(17.3793)
   })
 })
 

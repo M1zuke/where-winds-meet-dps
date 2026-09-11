@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 import {
+  AFFINITY_DAMAGE_MULTIPLIER_MAX,
+  AFFINITY_DAMAGE_MULTIPLIER_MIN,
   computeSkillDamage,
+  CRIT_DAMAGE_MULTIPLIER_MAX,
+  CRIT_DAMAGE_MULTIPLIER_MIN,
   FOOD_MAX_PHYS_BONUS,
   FOOD_MIN_PHYS_BONUS,
 } from "../../src/engine/formula"
@@ -8,6 +12,12 @@ import type { FormulaContext } from "../../src/engine/formula"
 import { runEngine } from "../../src/engine/dps"
 import { buildContext } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
+import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
+import { makeDebuff } from "../../src/engine/debuff"
+import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { defaultCombatSettings } from "../../src/engine/types"
+import type { QiBreakWindow, TimelineEvent } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -171,7 +181,18 @@ describe("graze (abrasion) rate — (1 − precision)(1 − affinity)", () => {
   })
 })
 
-// Deliberately INVERTS PDF §7 (overflow ÷200, deficit ÷100)
+describe("abrasionAvoidRate — scales the graze rate onto the normal row, never crit", () => {
+  it("raising it from 0 to 1 zeroes AL and moves the same mass into AR, leaving AN and AP untouched", () => {
+    const withoutAvoid = computeSkillDamage(art, baseCtx, 1).cells
+    const withAvoid = computeSkillDamage({ ...art, abrasionAvoidRate: 1 }, baseCtx, 1).cells
+    expect(withAvoid.AL).toBe(0)
+    expect(withAvoid.AN).toBeCloseTo(withoutAvoid.AN, 9)
+    expect(withAvoid.AP).toBeCloseTo(withoutAvoid.AP, 9)
+    expect(withAvoid.AR).toBeCloseTo(withoutAvoid.AR + withoutAvoid.AL, 9)
+  })
+})
+
+// Corrects PDF §7 (overflow ÷200, deficit ÷100)
 describe("penetration — net(pen − resistance), ÷100 deficit / ÷200 overflow", () => {
   it("with resistance omitted (0), AH > 0", () => {
     const cells = computeSkillDamage(art, baseCtx, 1).cells
@@ -290,26 +311,45 @@ describe("the attribute flat term takes the martial art's multiplier alongside i
   })
 })
 
-// PDF §11. `art.extraAffinityRate` is the one raw rate source the formula
-// receives, so it is the vehicle for the shared divide-before-cap rule that
-// both rate cells implement.
-describe("rate resistance on a raw rate source (PDF §11)", () => {
-  it("a raw affinity-rate source is divided by (1 + r) before the 40 % cap", () => {
-    const rawRate = { ...art, extraAffinityRate: 0.1 }
-    const noRes = computeSkillDamage(rawRate, baseCtx, 1).cells
-    const withRes = computeSkillDamage(rawRate, { ...baseCtx, rateResistance: 0.3 }, 1).cells
-    expect(noRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
-    expect(withRes.W).toBeCloseTo(baseCtx.affinityPanel + 0.1 / 1.3, 9)
+// PDF §11
+describe("a skill's own rate bonus is added undivided, inside the cap", () => {
+  it("a skill's crit-rate bonus cannot push the capped part above the cap", () => {
+    const cells = computeSkillDamage(MODAO_CHARGE, { ...baseCtx, critPanel: 0.7 }, 1).cells
+    expect(cells.V).toBeCloseTo(0.8 + baseCtx.directCritPanel, 9)
   })
 
-  it("Thundercry (Modao) charged bonus crit is FLAT: unresisted, added after the cap", () => {
-    const modao = MODAO_CHARGE
+  it("a skill's affinity-rate bonus is added undivided onto the already-resisted panel rate", () => {
+    const rawRate = { ...art, extraAffinityRate: 0.1 }
+    const cells = computeSkillDamage(rawRate, baseCtx, 1).cells
+    expect(cells.W).toBeCloseTo(baseCtx.affinityPanel + 0.1, 9)
+  })
+
+  it("the direct crit rate still sits outside the cap", () => {
     const cells = computeSkillDamage(
-      modao,
-      { ...baseCtx, critPanel: 0.7, rateResistance: 0.3 },
+      art,
+      { ...baseCtx, critPanel: 1, directCritPanel: 0.05 },
       1,
     ).cells
-    expect(cells.V).toBeCloseTo(0.7 + 0.24, 9)
+    expect(cells.V).toBeCloseTo(0.8 + 0.05, 9)
+  })
+
+  it("the direct affinity rate still sits outside the cap", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, affinityPanel: 1, directAffinityPanel: 0.05 },
+      1,
+    ).cells
+    expect(cells.W).toBeCloseTo(0.4 + 0.05, 9)
+  })
+
+  it("a panel rate driven negative by resistance cannot go below zero", () => {
+    const cells = computeSkillDamage(
+      art,
+      { ...baseCtx, critPanel: -0.5, affinityPanel: -0.5 },
+      1,
+    ).cells
+    expect(cells.V).toBeCloseTo(baseCtx.directCritPanel, 9)
+    expect(cells.W).toBeCloseTo(baseCtx.directAffinityPanel, 9)
   })
 })
 
@@ -335,6 +375,136 @@ describe("keeps the matching-path multiplier on a sustain-tagged burst row", () 
     expect(atDefault.cells.AT).toBeCloseTo(100, 9)
     expect(demoted.cells.AT).toBeCloseTo(100, 9)
     expect(atDefault.expectedDamage).toBeGreaterThan(demoted.expectedDamage)
+  })
+})
+
+describe("crit- and affinity-damage multipliers are clamped", () => {
+  it("caps the crit multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: 5 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the crit multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, critDmgBoostPanel: -2 }, 1).cells
+    expect(cells.X).toBeCloseTo(CRIT_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves a crit multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.X).toBeCloseTo(baseCtx.critDmgBoostPanel, 9)
+  })
+
+  it("caps the affinity multiplier at its ceiling", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: 5 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MAX - 1, 9)
+  })
+
+  it("raises the affinity multiplier to its floor", () => {
+    const cells = computeSkillDamage(art, { ...baseCtx, affinityDmgBoostPanel: -2 }, 1).cells
+    expect(cells.Y).toBeCloseTo(AFFINITY_DAMAGE_MULTIPLIER_MIN - 1, 9)
+  })
+
+  it("leaves an affinity multiplier inside the range untouched", () => {
+    const cells = computeSkillDamage(art, baseCtx, 1).cells
+    expect(cells.Y).toBeCloseTo(baseCtx.affinityDmgBoostPanel, 9)
+  })
+})
+
+describe("an independent damage boost is its own multiplicative factor in the shared tail", () => {
+  it("multiplies a row by exactly (1 + x), not folded into the additive boost bracket", () => {
+    const withBracket = { ...baseCtx, generalDamageBoost: 0.2 }
+    const base = computeSkillDamage(art, withBracket, 1).expectedDamage
+    const boosted = computeSkillDamage(
+      art,
+      { ...withBracket, independentDamageBoost: 0.1 },
+      1,
+    ).expectedDamage
+    expect(boosted).toBeCloseTo(base * 1.1, 9)
+    expect(boosted).not.toBeCloseTo((base * (1 + 0.2 + 0.1)) / (1 + 0.2), 3)
+  })
+})
+
+describe("the exhausted phase raises damage by its own factor, on a hit and a DoT tick alike", () => {
+  const FIGHT_FRAMES = 3600
+  const SECOND = 60
+
+  const probeDot = makeDebuff("bellstrikeUmbra", {
+    name: "Probe Dot",
+    durationFrames: FIGHT_FRAMES,
+    dot: {
+      tickIntervalFrames: SECOND,
+      physMultiplier: 0.1,
+      physFixed: 0,
+      attributeMultiplier: 0,
+      attributeFixed: 0,
+      attributeAttack: "",
+      skillType: "weapon",
+      weaponOrAttribute: "",
+      count: 1,
+      perStackShapes: null,
+      perStackMultipliers: null,
+    },
+  })
+
+  const probeHits = Array.from({ length: FIGHT_FRAMES / SECOND }, (_, index) =>
+    makeHit({
+      frame: index * SECOND,
+      physMultiplier: 0.1,
+      triggers: index === 0 ? [makeTrigger({ kind: "applyDot", targetId: probeDot.id })] : [],
+    }),
+  )
+  const probeSkill = makeSkill("bellstrikeUmbra", {
+    name: "Probe Hit",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+    castFrames: FIGHT_FRAMES,
+    guaranteedNormal: true,
+    hits: probeHits,
+  })
+
+  function probeRun(qiBreakOverride: QiBreakWindow | null) {
+    return runEngine({
+      ...umbraInputs,
+      set: null,
+      customSkills: [probeSkill],
+      customDebuffs: [probeDot],
+      activeCustomRotation: makeRotation("bellstrikeUmbra", {
+        steps: [makeStep({ skillId: probeSkill.id, hitCount: probeHits.length })],
+      }),
+      combatSettings: { ...defaultCombatSettings(), qiBreakOverride },
+    }).timeline!
+  }
+
+  it("scales every probe event inside the break window by 1.1, and leaves the rest untouched", () => {
+    const withBreak = probeRun(null)
+    const withoutBreak = probeRun({ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 })
+    const probeEvents = (timeline: TimelineEvent[]) =>
+      timeline.filter(
+        (event) => event.skillName === "Probe Hit" || event.skillName === "Probe Dot (DoT)",
+      )
+
+    const withBreakEvents = probeEvents(withBreak)
+    const withoutBreakEvents = probeEvents(withoutBreak)
+    expect(withBreakEvents.length).toBe(withoutBreakEvents.length)
+    expect(withBreakEvents.length).toBeGreaterThan(0)
+
+    const breakStart = DEFAULT_QI_BREAK_WINDOW.startSec
+    const breakEnd = breakStart + DEFAULT_QI_BREAK_WINDOW.durationSec
+    let sawHitInWindow = false
+    let sawDotInWindow = false
+    for (let index = 0; index < withBreakEvents.length; index++) {
+      const withEvent = withBreakEvents[index]
+      const withoutEvent = withoutBreakEvents[index]
+      const insideWindow = withEvent.timeSec >= breakStart && withEvent.timeSec < breakEnd
+      expect(
+        withEvent.damage / withoutEvent.damage,
+        `${withEvent.kind}@${withEvent.timeSec}`,
+      ).toBeCloseTo(insideWindow ? 1.1 : 1, 9)
+      if (insideWindow && withEvent.kind === "hit") sawHitInWindow = true
+      if (insideWindow && withEvent.kind === "dot") sawDotInWindow = true
+    }
+    expect(sawHitInWindow).toBe(true)
+    expect(sawDotInWindow).toBe(true)
   })
 })
 

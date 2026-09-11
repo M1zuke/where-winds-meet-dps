@@ -1,11 +1,17 @@
 import type { ReactNode } from "react"
-import type { Inputs } from "../../../../engine/types"
+import type { Inputs, ScriptId } from "../../../../engine/types"
 import { defaultCombatSettings } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
+import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
 import styles from "./EncounterSettingsPanel.module.scss"
+
+const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
+  wraithstrikeScript: "overview.encounterSettings.wraithstrikeScript",
+  voidrotScript: "overview.encounterSettings.voidrotScript",
+}
 
 interface Props {
   inputs: Inputs
@@ -37,19 +43,15 @@ function SwitchRow({
   )
 }
 
-function DivinecraftSegments({
+function SegmentedControl<T>({
   value,
+  options,
   onChange,
 }: {
-  value: Inputs["tianGongElement"]
-  onChange: (next: Inputs["tianGongElement"]) => void
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (next: T) => void
 }) {
-  const { t } = useI18n()
-  const options: { value: Inputs["tianGongElement"]; label: string }[] = [
-    { value: null, label: t("common.none2") },
-    { value: "fire", label: t("overview.encounterSettings.fireOil") },
-    { value: "poison", label: t("overview.encounterSettings.poison") },
-  ]
   return (
     <div className={styles.segmented}>
       {options.map((option) => (
@@ -65,6 +67,37 @@ function DivinecraftSegments({
       ))}
     </div>
   )
+}
+
+function DivinecraftSegments({
+  value,
+  onChange,
+}: {
+  value: Inputs["tianGongElement"]
+  onChange: (next: Inputs["tianGongElement"]) => void
+}) {
+  const { t } = useI18n()
+  const options: { value: Inputs["tianGongElement"]; label: string }[] = [
+    { value: null, label: t("common.none2") },
+    { value: "fire", label: t("overview.encounterSettings.fireOil") },
+    { value: "poison", label: t("overview.encounterSettings.poison") },
+  ]
+  return <SegmentedControl value={value} options={options} onChange={onChange} />
+}
+
+function ScriptSegments({
+  value,
+  onChange,
+}: {
+  value: ScriptId | null
+  onChange: (next: ScriptId | null) => void
+}) {
+  const { t } = useI18n()
+  const options: { value: ScriptId | null; label: string }[] = [
+    { value: null, label: t("common.none2") },
+    ...SCRIPT_IDS.map((id) => ({ value: id, label: t(SCRIPT_LABEL_KEYS[id]) })),
+  ]
+  return <SegmentedControl value={value} options={options} onChange={onChange} />
 }
 
 export function EncounterSettingsPanel({ inputs, onChange }: Props) {
@@ -95,11 +128,6 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             onChange={(value) => set("food", value)}
           />
           <SwitchRow
-            label={t("overview.encounterSettings.revelryScript")}
-            checked={settings.revelryScript}
-            onChange={(value) => setCombat("revelryScript", value)}
-          />
-          <SwitchRow
             label={t("overview.encounterSettings.maxLowHpBonusDragon")}
             checked={settings.dragonHeadLowHpMaxBonus}
             onChange={(value) => setCombat("dragonHeadLowHpMaxBonus", value)}
@@ -110,6 +138,10 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             onChange={(value) => setCombat("lowEndurance", value)}
           />
         </div>
+      </Section>
+
+      <Section title={t("overview.encounterSettings.script")}>
+        <ScriptSegments value={settings.script} onChange={(value) => setCombat("script", value)} />
       </Section>
 
       <Section title={t("overview.encounterSettings.divinecraft")}>

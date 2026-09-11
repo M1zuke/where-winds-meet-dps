@@ -59,6 +59,7 @@ const NUMERIC_PATHS = [
   "dualKnivesBoost",
   "ropeDartBoost",
   "hengDaoBoost",
+  "gauntletsBoost",
   "bossBoost",
   "singleMysticBoost",
   "areaMysticBoost",

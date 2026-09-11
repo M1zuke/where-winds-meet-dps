@@ -10,6 +10,9 @@ export interface StatusWindow {
   start: number
   end: number
   owner?: number
+  // Write order, not time order — `asOf` walks it to answer "as this ledger
+  // stood before a given write" for a query that must not see its own cause.
+  seq?: number
   extensions?: Array<{ frame: number; amount: number }>
 }
 
@@ -41,17 +44,24 @@ export class StatusLedger implements StatusView {
   private readonly windows = new Map<string, StatusWindow[]>()
   private readonly stacks = new Map<
     string,
-    Array<{ frame: number; value: number; owner: number }>
+    Array<{ frame: number; value: number; owner: number; seq: number }>
   >()
   private readonly permanentOpened = new Set<string>()
+  private writeSeq = 0
 
   constructor(
     private readonly spanStart: number,
     private readonly spanEnd: number,
   ) {}
 
+  // How many writes this ledger has taken so far — pair with `asOf` to give a
+  // query a view that stops just before a write it must not see.
+  mark(): number {
+    return this.writeSeq
+  }
+
   pushWindow(id: string, start: number, end: number, owner: number = UNOWNED): void {
-    const window: StatusWindow = { start, end, owner }
+    const window: StatusWindow = { start, end, owner, seq: this.writeSeq++ }
     const existing = this.windows.get(id)
     if (existing) existing.push(window)
     else this.windows.set(id, [window])
@@ -64,9 +74,10 @@ export class StatusLedger implements StatusView {
   }
 
   recordStack(id: string, frame: number, value: number, owner: number = UNOWNED): void {
+    const entry = { frame, value, owner, seq: this.writeSeq++ }
     const existing = this.stacks.get(id)
-    if (existing) existing.push({ frame, value, owner })
-    else this.stacks.set(id, [{ frame, value, owner }])
+    if (existing) existing.push(entry)
+    else this.stacks.set(id, [entry])
   }
 
   throughOwner(ownerLimit: number): StatusLedger {
@@ -135,6 +146,50 @@ export class StatusLedger implements StatusView {
 
   windowsOf(id: string): readonly StatusWindow[] {
     return this.windows.get(id) ?? []
+  }
+
+  // A view that only sees writes strictly before `beforeSeq` — what a hit's
+  // own damage query reads, so a status its own trigger just opened cannot
+  // reach its own hit.
+  asOf(beforeSeq: number): StatusView {
+    const windowsFor = (id: string): StatusWindow[] =>
+      (this.windows.get(id) ?? []).filter((window) => (window.seq ?? 0) < beforeSeq)
+    const activeAt = (id: string, frame: number): boolean =>
+      windowsFor(id).some((window) => frame >= window.start && frame < window.end)
+    const stackValueAt = (id: string, frame: number): number => {
+      let bestFrame = Number.NEGATIVE_INFINITY
+      let bestSeq = -1
+      let found = 0
+      for (const entry of this.stacks.get(id) ?? []) {
+        if (entry.seq >= beforeSeq || entry.frame > frame) continue
+        if (entry.frame > bestFrame || (entry.frame === bestFrame && entry.seq > bestSeq)) {
+          bestFrame = entry.frame
+          bestSeq = entry.seq
+          found = entry.value
+        }
+      }
+      return found
+    }
+    return {
+      activeIdsAt: (frame) => {
+        const out: string[] = []
+        for (const id of this.windows.keys()) if (activeAt(id, frame)) out.push(id)
+        return out
+      },
+      isActiveAt: activeAt,
+      stacksAt: stackValueAt,
+      conditionStacksAt: (id, frame) => (activeAt(id, frame) ? stackValueAt(id, frame) : 0),
+      remainingFramesAt: (id, frame) => {
+        let end: number | undefined
+        for (const window of windowsFor(id)) {
+          const endHere = windowEndAt(window, frame)
+          if (frame >= window.start && frame < endHere && (end === undefined || endHere > end))
+            end = endHere
+        }
+        return end === undefined ? undefined : end - frame
+      },
+      windowsOf: windowsFor,
+    }
   }
 
   // The window covering `frame` with the furthest end — the one an extension

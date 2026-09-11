@@ -14,12 +14,18 @@ export const spearheavy1HitPrepull = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearHeavy1HitPrepull,
   triggersBuffs: [BUFF.soulShaken],
-  receives: [BUFF.mistwillowLightBuff, BUFF.mistwillowBuff],
   castFrames: 0,
   triggerable: true,
   hits: [
-    hit(0, { frame: 0, physMultiplier: 0.30346, attributeMultiplier: 0.45518, physFixed: 70.2, attributeFixed: 39.2 }),
+    // Coefficients: in-game values, 2026-09-10.
+    hit(0, {
+      frame: 0,
+      physMultiplier: 1.250878,
+      attributeMultiplier: 1.876317,
+      physFixed: 346,
+      attributeFixed: 188.6,
+    }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-07-19T00:00:00.000Z",
+  updatedAt: "2026-09-10T00:00:00.000Z",
 })

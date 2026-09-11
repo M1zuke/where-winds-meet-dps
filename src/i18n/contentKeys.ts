@@ -27,12 +27,20 @@ export function buffKey(buffId: string): string {
   return `content.buff.${buffId}`
 }
 
+export function buffDescriptionKey(buffId: string): string {
+  return `content.buff.${buffId}.description`
+}
+
 export function debuffKey(debuffId: string): string {
   return `content.debuff.${debuffId}`
 }
 
 export function debuffBreakdownKey(debuffId: string): string {
   return `content.debuff.${debuffId}.breakdown`
+}
+
+export function debuffEchoKey(debuffId: string): string {
+  return `content.debuff.${debuffId}.echo`
 }
 
 export function rotationKey(rotationId: string): string {

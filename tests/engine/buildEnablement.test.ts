@@ -109,7 +109,9 @@ describe("paramsFromInputs — build derivation", () => {
         param === "armorSet" ||
         param === "classId" ||
         param === "spec" ||
-        param === "belowQiTime"
+        param === "belowQiTime" ||
+        param === "minPhysAttack" ||
+        param === "targetMaxHp"
       )
         continue
       expect(def).toBeFalsy()

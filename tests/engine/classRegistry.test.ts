@@ -18,6 +18,7 @@ describe("class registry — one call answers what a class is made of", () => {
       "stonesplitStrength",
       "bellstrikeSplendor",
       "silkbindJade",
+      "bamboocutDraught",
     ])
     expect(classDefinition("notAClass")).toBeNull()
   })
@@ -93,6 +94,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(umbra.classBuffDefs.map((module) => module.id)).toEqual([
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
@@ -105,18 +107,19 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "disintegration",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 25-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 34-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "wineGu",
       "soulShaken",
       "wolfchasersArtMartialDamage",
       "disintegration",
-      "revelryScript",
-      "fluteBoost",
+      "wraithstrikeScript",
+      "voidrotScript",
       "vulnerabilityTeammate",
       "jadeware",
       "mirage",
@@ -133,8 +136,17 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "mistwillowBuff",
       "mistwillowHeavyBuff",
       "mistwillowLightBuff",
+      "cleftpeakStacks",
+      "tiltrimStack",
+      "tiltrimInebriateBonus",
+      "inebriateCritDamage",
+      "cloudvault",
+      "clashToastDamage",
+      "nonPlayerBaseDamage40",
+      "nonPlayerBaseDamage50",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
+      "bellstrikeUmbraBleedCoefficient",
     ])
   })
 

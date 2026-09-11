@@ -78,7 +78,7 @@ describe("timeline — computed duration", () => {
     expect(r.rotationDuration).toBeCloseTo((120 + 60) / FPS, 10)
   })
 
-  it("a pre-pull cast's damage counts toward the total its frames are excluded from", () => {
+  it("a pre-pull cast with real coefficients lands neither damage nor a breakdown row", () => {
     const pre = makeSkill(CLASS, {
       name: "Pre Prepull",
       castFrames: 90,
@@ -89,17 +89,21 @@ describe("timeline — computed duration", () => {
       castFrames: 60,
       hits: [makeHit({ frame: 0, physMultiplier: 2, physFixed: 50 })],
     })
-    const rotation = makeRotation(CLASS, {
+    const withPrePull = makeRotation(CLASS, {
       steps: [
         makeStep({ skillId: pre.id, hitCount: 1 }),
         makeStep({ skillId: main.id, hitCount: 1 }),
       ],
     })
-    const r = simulateTimeline(timelineInputs(rotation, [pre, main], []))
+    const mainOnly = makeRotation(CLASS, {
+      steps: [makeStep({ skillId: main.id, hitCount: 1 })],
+    })
+    const r = simulateTimeline(timelineInputs(withPrePull, [pre, main], []))
+    const baseline = simulateTimeline(timelineInputs(mainOnly, [main], []))
 
-    const prePullRow = r.perSkill.find((s) => s.name === "Pre Prepull")!
-    expect(prePullRow.castCount).toBe(1)
-    expect(prePullRow.expectedDamage).toBeGreaterThan(0)
+    expect(r.perSkill.find((s) => s.name === "Pre Prepull")).toBeUndefined()
+    expect((r.timeline ?? []).some((e) => e.skillName === "Pre Prepull" && e.frame < 0)).toBe(true)
+    expect(r.totalDamage).toBe(baseline.totalDamage)
     expect(r.rotationDuration).toBeCloseTo(60 / FPS, 10)
   })
 
@@ -118,7 +122,9 @@ describe("timeline — no-buff parity with the formula kernel", () => {
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] })
     // set: null — the default build's Hawkwing 4-piece is a rotation-wide
     // time-averaged proc a bare buildContext() call can't reproduce.
-    const inputs = { ...timelineInputs(rotation, [skill], []), set: null }
+    // tianGongElement: null — the default Fire Oil's Burn ticks on its own
+    // schedule, independent of this one hit.
+    const inputs = { ...timelineInputs(rotation, [skill], []), set: null, tianGongElement: null }
     const r = simulateTimeline(inputs)
 
     const ctx = buildContext(inputs)
@@ -624,6 +630,46 @@ describe("timeline — combined buff + debuff rotation", () => {
   })
 })
 
+describe("timeline — dummy mode keeps the debuffs the player applies", () => {
+  it("drops the target's own vulnerability but still counts a target.generalDamageTaken debuff", () => {
+    const vuln = makeDebuff(CLASS, {
+      name: "Vuln",
+      activation: "triggered",
+      durationFrames: 600,
+      effects: [{ statKey: "target.generalDamageTaken", amount: 0.2 }],
+    })
+    const setup = makeSkill(CLASS, {
+      name: "Setup",
+      castFrames: 30,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyDebuff", targetId: vuln.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const attack = makeSkill(CLASS, {
+      name: "Attack",
+      castFrames: 300,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1000 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: setup.id, hitCount: 1 }),
+        makeStep({ skillId: attack.id, hitCount: 1 }),
+      ],
+    })
+    const run = (dummyMode: boolean, debuffs: Debuff[]) =>
+      simulateTimeline({
+        ...timelineInputs(rotation, [setup, attack], [], debuffs),
+        dummyMode,
+      }).totalDamage
+
+    expect(run(true, [])).toBeLessThan(run(false, []))
+    expect(run(true, [vuln])).toBeGreaterThan(run(true, []))
+  })
+})
+
 describe("timeline — an edited copy of a built-in skill overrides the built-in by id", () => {
   it("seedSkillFromBuiltin keeps the built-in's id, so an edited copy changes the same rotation's damage", () => {
     const classId = "bellstrikeUmbra"
@@ -775,5 +821,53 @@ describe("timeline — cast chips sample once the cast has fully resolved", () =
     const lastCast = r.casts![r.casts!.length - 1]
     expect(silentCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(1)
     expect(lastCast.buffs.find((b) => b.name === "Marker")!.stacks).toBe(2)
+  })
+})
+
+describe("timeline — a hit that carries no coefficient", () => {
+  it("still fires its trigger, and is left out of the breakdown's hit count", () => {
+    const debuff = makeDebuff(CLASS, {
+      name: "Mark",
+      durationFrames: 300,
+      dot: {
+        tickIntervalFrames: 60,
+        physMultiplier: 1,
+        physFixed: 0,
+        attributeMultiplier: 0,
+        attributeFixed: 0,
+        attributeAttack: "",
+        skillType: "sustain",
+        count: 1,
+      },
+    })
+    const opener = makeSkill(CLASS, {
+      name: "Silent Opener",
+      castFrames: 60,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 0,
+          attributeMultiplier: 0,
+          physFixed: 0,
+          attributeFixed: 0,
+          triggers: [makeTrigger({ kind: "applyDebuff", targetId: debuff.id })],
+        }),
+      ],
+    })
+    const pad = makeSkill(CLASS, { name: "Pad", castFrames: 600, hits: [makeHit({ frame: 0 })] })
+    const rotation = makeRotation(CLASS, {
+      name: "silent",
+      steps: [
+        makeStep({ skillId: opener.id, hitCount: 1 }),
+        makeStep({ skillId: pad.id, hitCount: 1 }),
+      ],
+    })
+    const result = simulateTimeline(timelineInputs(rotation, [opener, pad], [], [debuff]))
+
+    expect(result.perSkill.find((row) => row.name === "Silent Opener")).toBeUndefined()
+    expect(
+      result.timeline!.some((ev) => ev.kind === "hit" && ev.skillName === "Silent Opener"),
+    ).toBe(true)
+    expect(result.perSkill.find((row) => row.name.startsWith("Mark"))!.count).toBeGreaterThan(0)
   })
 })

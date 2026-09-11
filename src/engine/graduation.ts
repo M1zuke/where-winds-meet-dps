@@ -61,6 +61,7 @@ export function graduationInputs(
   return {
     ...inputs,
     allDamageBoost: 0,
+    independentDamageBoost: 0,
     inventory,
     equipped: equippedSlots(build),
     set: build.set,

@@ -1,0 +1,376 @@
+{
+  "v": 21,
+  "profile": {
+    "id": "bamboocut-draught-v1",
+    "name": "Bamboocut Draught",
+    "inputs": {
+      "classId": "bamboocutDraught",
+      "breakthrough": 17,
+      "allDamageBoost": 0,
+      "mindMethods": [
+        {
+          "name": "Eonpour",
+          "stacks": "tier 6"
+        },
+        {
+          "name": "Mistwing",
+          "stacks": "tier 6"
+        }
+      ],
+      "food": true,
+      "tianGongElement": "fire",
+      "set": "tiltrim",
+      "shareDebuff5HenZhi": true,
+      "shareEasyHurt": true,
+      "bowSet": "crit",
+      "arsenal": "bamboocut",
+      "dummyMode": true,
+      "rotation": null,
+      "activeCustomRotation": null,
+      "inventory": [
+        {
+          "id": "gp-bamboocut-1",
+          "slot": "leftWeapon",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 65,
+          "maxPhys": 151,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 65,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 73.1,
+              "retuned": false
+            },
+            {
+              "word": "gauntletsBoost",
+              "value": 0.05,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 34,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 45.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.099,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-2",
+          "slot": "rightWeapon",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 59,
+          "maxPhys": 136,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 59,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 70.4,
+              "retuned": false
+            },
+            {
+              "word": "dualKnivesBoost",
+              "value": 0.05,
+              "retuned": false
+            },
+            {
+              "word": "crit",
+              "value": 0.041,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.4,
+              "retuned": true
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.099,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-3",
+          "slot": "disc",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 86,
+          "maxPhys": 0,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 86,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 34,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 45.5,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 60,
+              "retuned": false
+            },
+            {
+              "word": "allMartialBoost",
+              "value": 0.024,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.099,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-4",
+          "slot": "pendant",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 116,
+          "hp": 0,
+          "physDef": 0,
+          "words": [
+            {
+              "word": "minPhys",
+              "value": 60,
+              "retuned": false
+            },
+            {
+              "word": "maxPhys",
+              "value": 70.4,
+              "retuned": false
+            },
+            {
+              "word": "allMartialBoost",
+              "value": 0.02,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 41.8,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 34,
+              "retuned": false
+            }
+          ],
+          "attunement": "physPen",
+          "attunementValue": 0.099,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-5",
+          "slot": "helm",
+          "level": 91,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4614,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.069,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 44.6,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 34.4,
+              "retuned": false
+            },
+            {
+              "word": "precision",
+              "value": 0.035,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 63.8,
+              "retuned": true
+            }
+          ],
+          "attunement": "gauntletsMartialArt",
+          "attunementValue": 0.05,
+          "relayed": false
+        },
+        {
+          "id": "gp-bamboocut-6",
+          "slot": "armor",
+          "level": 96,
+          "rarity": "legendary",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 9227,
+          "physDef": 18,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.04,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 40.4,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 34,
+              "retuned": true
+            },
+            {
+              "word": "minPhys",
+              "value": 63.8,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 60,
+              "retuned": false
+            }
+          ],
+          "attunement": "gauntletsSpecial",
+          "attunementValue": 0.052,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-7",
+          "slot": "greaves",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 32,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.044,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 30,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 38,
+              "retuned": true
+            },
+            {
+              "word": "minPhys",
+              "value": 44.6,
+              "retuned": false
+            }
+          ],
+          "attunement": "twinbladesMartialArt",
+          "attunementValue": 0.058,
+          "relayed": true
+        },
+        {
+          "id": "gp-bamboocut-8",
+          "slot": "bracer",
+          "level": 96,
+          "rarity": "epic",
+          "minPhys": 0,
+          "maxPhys": 0,
+          "hp": 4153,
+          "physDef": 16,
+          "words": [
+            {
+              "word": "crit",
+              "value": 0.07,
+              "retuned": false
+            },
+            {
+              "word": "agility",
+              "value": 70.5,
+              "retuned": false
+            },
+            {
+              "word": "maxBamboocut",
+              "value": 30,
+              "retuned": false
+            },
+            {
+              "word": "minPhys",
+              "value": 42.4,
+              "retuned": true
+            },
+            {
+              "word": "minPhys",
+              "value": 42.4,
+              "retuned": false
+            }
+          ],
+          "attunement": "driftcleaveDeepdaze",
+          "attunementValue": 0.054,
+          "relayed": true
+        }
+      ],
+      "equipped": {
+        "leftWeapon": "gp-bamboocut-1",
+        "rightWeapon": "gp-bamboocut-2",
+        "disc": "gp-bamboocut-3",
+        "pendant": "gp-bamboocut-4",
+        "helm": "gp-bamboocut-5",
+        "armor": "gp-bamboocut-6",
+        "greaves": "gp-bamboocut-7",
+        "bracer": "gp-bamboocut-8"
+      },
+      "martialArtsTalents": [],
+      "oddities": {},
+      "combatSettings": {
+        "dragonsBreath": false,
+        "healerBuff": false,
+        "breakExtension": false,
+        "revelryScript": false,
+        "dragonHeadFullStacks": true,
+        "dragonHeadLowHpMaxBonus": true,
+        "qiBreakOverride": null
+      },
+      "selectedBuiltinRotationId": null
+    }
+  }
+}

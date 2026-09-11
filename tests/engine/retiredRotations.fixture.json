@@ -10,7 +10,7 @@
         "prePull": true
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },
@@ -35,7 +35,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-soaring",
+        "skillId": "mystic-soaring",
         "hitCount": 2,
         "prePull": false
       },
@@ -55,7 +55,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },
@@ -120,7 +120,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },
@@ -135,102 +135,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-soaring",
-        "hitCount": 2,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
-        "hitCount": 3,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-crosswind-blade",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-deflect-cancel",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
-        "hitCount": 3,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-crosswind-blade",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-deflect-cancel",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-deflect-cancel",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
-        "hitCount": 3,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-crosswind-blade",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-deflect-cancel",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
-        "hitCount": 3,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-crosswind-blade",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-deflect-cancel",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordq",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-swordqfollowup",
-        "hitCount": 4,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-spearq",
-        "hitCount": 6,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
-        "hitCount": 1,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-soaring",
+        "skillId": "mystic-soaring",
         "hitCount": 2,
         "prePull": false
       },
@@ -265,12 +170,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
-        "hitCount": 3,
-        "prePull": false
-      },
-      {
-        "skillId": "bellstrikeUmbra-crosswind-blade",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },
@@ -280,7 +180,12 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+        "hitCount": 3,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-crosswind-blade",
         "hitCount": 1,
         "prePull": false
       },
@@ -320,7 +225,102 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-soaring",
+        "skillId": "mystic-fire-breath-1-hit",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "mystic-soaring",
+        "hitCount": 2,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+        "hitCount": 3,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-crosswind-blade",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-deflect-cancel",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+        "hitCount": 3,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-crosswind-blade",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-deflect-cancel",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+        "hitCount": 3,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-crosswind-blade",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-deflect-cancel",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "mystic-fire-breath-1-hit",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-deflect-cancel",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+        "hitCount": 3,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-crosswind-blade",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-deflect-cancel",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordq",
+        "hitCount": 1,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-swordqfollowup",
+        "hitCount": 4,
+        "prePull": false
+      },
+      {
+        "skillId": "bellstrikeUmbra-spearq",
+        "hitCount": 6,
+        "prePull": false
+      },
+      {
+        "skillId": "mystic-soaring",
         "hitCount": 2,
         "prePull": false
       },
@@ -399,12 +399,12 @@
     "classId": "bellstrikeUmbra",
     "steps": [
       {
-        "skillId": "bellstrikeUmbra-drunkenpoet-prepull",
+        "skillId": "mystic-drunkenpoet-prepull",
         "hitCount": 1,
         "prePull": true
       },
       {
-        "skillId": "bellstrikeUmbra-flute-of-the-tides-prepull",
+        "skillId": "mystic-flute-of-the-tides-prepull",
         "hitCount": 1,
         "prePull": true
       },
@@ -419,7 +419,7 @@
         "prePull": true
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },
@@ -474,7 +474,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-2-hit",
+        "skillId": "mystic-fire-breath-2-hit",
         "hitCount": 5,
         "prePull": false
       },
@@ -564,7 +564,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-2-hit",
+        "skillId": "mystic-fire-breath-2-hit",
         "hitCount": 5,
         "prePull": false
       },
@@ -654,7 +654,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-2-hit",
+        "skillId": "mystic-fire-breath-2-hit",
         "hitCount": 5,
         "prePull": false
       },
@@ -729,7 +729,7 @@
         "prePull": false
       },
       {
-        "skillId": "bellstrikeUmbra-fire-breath-1-hit",
+        "skillId": "mystic-fire-breath-1-hit",
         "hitCount": 1,
         "prePull": false
       },

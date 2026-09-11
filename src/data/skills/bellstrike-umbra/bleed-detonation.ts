@@ -1,8 +1,9 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
-import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL, DEBUFF } from "./ids"
+import { DEBUFF as MYSTIC_DEBUFF } from "../mystic/ids"
+import { SKILL } from "./ids"
 import {
   ZENITH_BAR_BUFF_ID,
   ZENITH_DETONATION_BUFF_ID,
@@ -14,12 +15,18 @@ export const bleedDetonation = defineSkill({
   id: SKILL.bleedDetonation,
   classId: "bellstrikeUmbra",
   name: "Blood Burst",
-  tags: [WEAPON.sword, ATTUNE.bleed, ROLE.bleedDetonation],
+  tags: [WEAPON.sword, ATTUNE.bleed, ROLE.bleedDetonation, PROP.empoweredDotEffect],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.bleedDetonation,
-  receives: [BUFF.bellstrikeUmbraBleedPen, BUFF.bellstrikeUmbraBleedingDamage, ZENITH_BAR_BUFF_ID, BUFF.soulShaken],
+  receives: [
+    BUFF.bellstrikeUmbraBleedPen,
+    BUFF.bellstrikeUmbraBleedingDamage,
+    BUFF.bellstrikeUmbraBleedCoefficient,
+    ZENITH_BAR_BUFF_ID,
+    BUFF.soulShaken,
+  ],
   castFrames: 0,
   triggerable: true,
   hits: [
@@ -31,7 +38,7 @@ export const bleedDetonation = defineSkill({
       attributeFixed: 0,
       triggers: [
         applyDebuff({
-          target: DEBUFF.darkFire,
+          target: MYSTIC_DEBUFF.smolder,
           stacks: 0,
           condition: { buffId: ZENITH_DETONATION_BUFF_ID, op: "gte", stacks: 1 },
           extendFrames: ZENITH_SMOLDER_EXTEND_FRAMES,

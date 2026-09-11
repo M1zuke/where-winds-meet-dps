@@ -5,6 +5,7 @@ export interface BuffRequirements {
   param?: string
   minTier?: number
   set?: string
+  classId?: string
 }
 
 export interface ActiveAfterBuffEnds {
@@ -92,6 +93,11 @@ export interface BuffMeta {
   perHitConsume?: PerHitConsume
   stacks?: (ctx: EffectContext) => number
   duration: number | ((ctx: EffectContext) => number)
+  // Whether this module reaches a damage-over-time tick, as opposed to an
+  // ordinary hit from a cast. Absent means it has not been established for
+  // this module yet, and it keeps reaching ticks exactly as it does today.
+  // Only an explicit `false` excludes them.
+  reachesDotTicks?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

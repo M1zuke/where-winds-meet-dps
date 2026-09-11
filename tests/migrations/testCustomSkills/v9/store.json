@@ -1,0 +1,652 @@
+{
+  "v": 9,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-poet1",
+      "classId": "bellstrikeUmbra",
+      "name": "Poet1",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst"],
+      "castTag": "cast:poet1",
+      "castFrames": 29,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 1.02325,
+          "attributeMultiplier": 1.534875,
+          "physFixed": 153.82,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-combustion",
+              "stacks": 0,
+              "extendFrames": 90,
+              "extendOnly": true,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-dragon-head-plus",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon Head - Plus",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:burst", "prop:hasQiBreakDoubleDamage", "role:dragonHeadPlus", "role:dragonHead"],
+      "castTag": "cast:dragonHeadPlus",
+      "guaranteedPrecision": true,
+      "receives": ["surgingWaves", "dragonHeadLowHp"],
+      "triggersBuffs": ["surgingWaves"],
+      "castFrames": 246,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 246,
+          "physMultiplier": 17.34049,
+          "attributeMultiplier": 26.010735,
+          "physFixed": 2608.52,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-dragon-fire-smolder-2-hits",
+      "classId": "bellstrikeUmbra",
+      "name": "Dragon's Breath: Smolder 2 Hits",
+      "breakdownName": "Dragon's Breath",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "Bellstrike",
+      "tags": ["mystic:burst"],
+      "castTag": "cast:dragonSBreathSmolder2Hits",
+      "castFrames": 100,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 40,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 70,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 100,
+          "physMultiplier": 1.40692,
+          "attributeMultiplier": 2.11038,
+          "physFixed": 212.49,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "extendFrames": 240,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-toad-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Toad[Cancel]",
+      "skillType": "mystic",
+      "weaponOrAttribute": "",
+      "attributeAttack": "",
+      "tags": ["mystic:area-debuff"],
+      "castTag": "cast:toadCancel",
+      "castFrames": 72,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 99,
+          "attributeMultiplier": 2.8378,
+          "physFixed": 255.5,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 36,
+          "physMultiplier": 1.8922,
+          "attributeMultiplier": 2.8383,
+          "physFixed": 284.31,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-toad-poison",
+              "stacks": 0,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "sk-user-authored-slash",
+      "classId": "bellstrikeUmbra",
+      "name": "My Slash",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": [],
+      "hits": [
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5441,
+          "attributeMultiplier": 0.8161,
+          "physFixed": 150,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 30,
+      "triggerable": true,
+      "createdAt": "2026-08-01T00:00:00.000Z",
+      "updatedAt": "2026-08-01T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-spearq",
+      "classId": "bellstrikeUmbra",
+      "name": "SpearQ",
+      "breakdownName": "Sober Sorrow",
+      "tags": ["weapon:Spear", "attune:spearQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Spear",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:spearQ",
+      "triggersBuffs": ["wineGu", "soulShaken", "jadeware"],
+      "receives": ["wolfchasersArtMartialDamage"],
+      "castFrames": 120,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 14,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 31,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 45,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-3",
+          "frame": 62,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-4",
+          "frame": 82,
+          "physMultiplier": 0.321033,
+          "attributeMultiplier": 0.4815495,
+          "physFixed": 88.95,
+          "attributeFixed": 48.45,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "potentRiverFlow",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true
+            }
+          ]
+        },
+        {
+          "id": "hit-5",
+          "frame": 98,
+          "physMultiplier": 0.535055,
+          "attributeMultiplier": 0.8025825,
+          "physFixed": 148.25,
+          "attributeFixed": 80.75,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-09-09T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeUmbra-bleed-tick",
+      "classId": "bellstrikeUmbra",
+      "name": "Bleed Tick",
+      "skillType": "sustain",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedTick"],
+      "hits": [
+        {
+          "id": "hit-mtv9j6om-n4u8jp-1",
+          "frame": 0,
+          "physMultiplier": 0.066,
+          "attributeMultiplier": 0.099,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "createdAt": "2026-09-10T08:26:00.982Z",
+      "updatedAt": "2026-09-10T08:26:00.982Z",
+      "castTag": "cast:bleedTick",
+      "breakdownName": "Bleeding",
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "soulShaken",
+        "bellstrikeUmbraBleedCoefficient"
+      ]
+    },
+    {
+      "id": "bellstrikeUmbra-bleed-detonation",
+      "classId": "bellstrikeUmbra",
+      "name": "Blood Burst",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation", "prop:empoweredDotEffect"],
+      "hits": [
+        {
+          "id": "hit-mtv9j6om-efqu33-4",
+          "frame": 0,
+          "physMultiplier": 2.4,
+          "attributeMultiplier": 3.6,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-dark-fire",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-zenith-detonation",
+                "op": "gte",
+                "stacks": 1
+              },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            }
+          ]
+        }
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "createdAt": "2026-09-10T08:26:00.982Z",
+      "updatedAt": "2026-09-10T08:26:00.982Z",
+      "castTag": "cast:bleedDetonation",
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "buff-bellstrikeUmbra-zenith-bar",
+        "soulShaken",
+        "bellstrikeUmbraBleedCoefficient"
+      ]
+    },
+    {
+      "id": "bellstrikeUmbra-swordq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial Q",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-mtvhmeh1-lznpbq-1",
+          "frame": 10,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 18,
+      "triggerable": true,
+      "createdAt": "2026-09-10T12:12:27.973Z",
+      "updatedAt": "2026-09-10T12:12:27.973Z",
+      "castTag": "cast:swordMartialQ",
+      "breakdownName": "Inner Track Slash",
+      "receives": ["wolfchasersArtMartialDamage"],
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-swordqfollowup",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-mtvhmeh2-tlsu4v-4",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-mtvhmeh2-w2cuf5-5",
+          "frame": 23,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-mtvhmeh2-zzu1qw-6",
+          "frame": 34,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-mtvhmeh2-3udwom-7",
+          "frame": 43,
+          "physMultiplier": 0.816102,
+          "attributeMultiplier": 1.224153,
+          "physFixed": 225.9,
+          "attributeFixed": 123,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 64,
+      "triggerable": true,
+      "createdAt": "2026-09-10T12:12:27.974Z",
+      "updatedAt": "2026-09-10T12:12:27.974Z",
+      "castTag": "cast:swordMartialQQ",
+      "breakdownName": "Inner Track Slash",
+      "receives": ["wolfchasersArtMartialDamage"],
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-swordq-follow-up-1-hit-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ 1-Hit [Cancel]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-mtvhmeh2-fb0j1y-a",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 24,
+      "triggerable": true,
+      "createdAt": "2026-09-10T12:12:27.974Z",
+      "updatedAt": "2026-09-10T12:12:27.974Z",
+      "castTag": "cast:swordMartialQQ1HitCancel",
+      "breakdownName": "Inner Track Slash",
+      "receives": ["wolfchasersArtMartialDamage"],
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-swordq-follow-up-2-hit-cancel",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQ 2-Hit[Cancel]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-mtvhmeh2-aptqvv-d",
+          "frame": 5,
+          "physMultiplier": 0.544068,
+          "attributeMultiplier": 0.816102,
+          "physFixed": 150.6,
+          "attributeFixed": 82,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-mtvhmeh2-3xu7au-e",
+          "frame": 23,
+          "physMultiplier": 0.408051,
+          "attributeMultiplier": 0.6120765,
+          "physFixed": 112.95,
+          "attributeFixed": 61.5,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 42,
+      "triggerable": true,
+      "createdAt": "2026-09-10T12:12:27.974Z",
+      "updatedAt": "2026-09-10T12:12:27.974Z",
+      "castTag": "cast:swordMartialQQ2HitCancel",
+      "breakdownName": "Inner Track Slash",
+      "receives": ["wolfchasersArtMartialDamage"],
+      "triggersBuffs": ["jadeware"]
+    },
+    {
+      "id": "bellstrikeUmbra-sword-martial-qqq",
+      "classId": "bellstrikeUmbra",
+      "name": "Sword Martial QQQ",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "hits": [
+        {
+          "id": "hit-mtvhmeh2-e1ff9m-h",
+          "frame": 32,
+          "physMultiplier": 0.316911,
+          "attributeMultiplier": 0.475366,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            }
+          ]
+        },
+        {
+          "id": "hit-mtvhmeh2-flx526-i",
+          "frame": 71,
+          "physMultiplier": 0.475366,
+          "attributeMultiplier": 0.713049,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 1,
+              "condition": null
+            },
+            {
+              "kind": "detonateDot",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 86,
+      "triggerable": true,
+      "createdAt": "2026-09-10T12:12:27.974Z",
+      "updatedAt": "2026-09-10T12:12:27.974Z",
+      "castTag": "cast:swordMartialQQQ",
+      "breakdownName": "Crisscross - Inner Track",
+      "receives": ["wolfchasersArtMartialDamage"],
+      "triggersBuffs": ["jadeware"]
+    }
+  ]
+}
