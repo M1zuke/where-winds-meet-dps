@@ -93,7 +93,7 @@ function RetuneChoiceTile({
       className={
         styles.tile +
         (choice.deselected ? ` ${styles.deselected}` : "") +
-        (choice.onPiece ? ` ${styles.onPiece}` : "")
+        (choice.onRerollableLine ? ` ${styles.onRerollableLine}` : "")
       }
     >
       <span className={styles.tileName}>
@@ -102,8 +102,10 @@ function RetuneChoiceTile({
       <span className={styles.tileRange}>
         {formatValue(choice.min, unit)} – {formatValue(choice.max, unit)}
       </span>
-      {choice.onPiece ? (
-        <span className={styles.tileMarker}>{t("gear.retuneOptionsDialog.onPieceMarker")}</span>
+      {choice.onRerollableLine ? (
+        <span className={styles.tileMarker}>
+          {t("gear.retuneOptionsDialog.onRerollableLineMarker")}
+        </span>
       ) : choice.deselected ? (
         <span className={styles.tileMarker}>{t("gear.retuneOptionsDialog.retunedOutMarker")}</span>
       ) : (
@@ -115,7 +117,7 @@ function RetuneChoiceTile({
       <button
         type="button"
         className="btn"
-        disabled={choice.onPiece}
+        disabled={choice.onRerollableLine}
         onClick={() => onToggle(choice.word)}
       >
         {choice.deselected

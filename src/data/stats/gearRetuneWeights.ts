@@ -188,6 +188,7 @@ const RETUNE_WEIGHTS: Partial<
   Bellstrike: buildAttributePools("maxFormless", "maxBellstrike", bellstrikeShape),
   Stonesplit: buildAttributePools("maxFormless", "maxStonesplit", otherShape),
   Silkbind: buildAttributePools("maxFormless", "maxSilkbind", otherShape),
+  Bamboocut: buildAttributePools("maxFormless", "maxBamboocut", otherShape),
 }
 
 export function retuneWeightPool(

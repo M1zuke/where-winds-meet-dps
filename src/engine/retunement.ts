@@ -70,11 +70,14 @@ export function annotatePoolForSlot(
   })
 }
 
-// The retune draw pops every word currently on the piece, so the survivor set
-// is the same regardless of which row is being retuned.
-function equippedWords(piece: GearPiece): ReadonlySet<GearWordId> {
+// The first line is fixed in-game: it never retunes, and a draw may duplicate it
+// onto one of the other four — so only those four narrow the draw, identically
+// whichever one of them is being retuned.
+function wordsOnRerollableLines(piece: GearPiece): ReadonlySet<GearWordId> {
   return new Set(
-    piece.words.map((entry) => entry.word).filter((word): word is GearWordId => word !== ""),
+    ALL_REROLLABLE_SLOTS.map((slotIndex) => piece.words[slotIndex]?.word).filter(
+      (word): word is GearWordId => word !== undefined && word !== "",
+    ),
   )
 }
 
@@ -88,26 +91,26 @@ export interface RetuneChoice {
   max: number
   pDraw: number
   deselected: boolean
-  onPiece: boolean
+  onRerollableLine: boolean
 }
 
 export function retunePoolChoices(
   piece: GearPiece,
   pool: readonly RetuneLine[],
 ): readonly RetuneChoice[] {
-  const onPiece = equippedWords(piece)
+  const takenWords = wordsOnRerollableLines(piece)
   const deselected = retunedOutWordsOf(piece)
-  const drawable = pool.filter((line) => !onPiece.has(line.word) && !deselected.has(line.word))
+  const drawable = pool.filter((line) => !takenWords.has(line.word) && !deselected.has(line.word))
   const totalWeight = drawable.reduce((sum, line) => sum + line.weight, 0)
   return pool.map((line) => {
-    const out = onPiece.has(line.word) || deselected.has(line.word)
+    const out = takenWords.has(line.word) || deselected.has(line.word)
     return {
       word: line.word,
       min: line.bands[0].min,
       max: line.bands[2].max,
       pDraw: !out && totalWeight > 0 ? line.weight / totalWeight : 0,
       deselected: deselected.has(line.word),
-      onPiece: onPiece.has(line.word),
+      onRerollableLine: takenWords.has(line.word),
     }
   })
 }
