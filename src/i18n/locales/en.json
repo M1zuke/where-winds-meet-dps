@@ -804,7 +804,7 @@
   "gear.retuneOptionsDialog.chanceCaption": "chance to draw this line",
   "gear.retuneOptionsDialog.markDeselected": "Mark retuned out",
   "gear.retuneOptionsDialog.noProbabilityData": "No draw-probability data at this gear level yet.",
-  "gear.retuneOptionsDialog.onPieceMarker": "Already on this piece",
+  "gear.retuneOptionsDialog.onRerollableLineMarker": "Already on a retunable line",
   "gear.retuneOptionsDialog.retunedOutMarker": "Retuned out",
   "gear.retuneOptionsDialog.title": "Retune options",
   "gear.retuneOptionsDialog.undoDeselect": "Undo",

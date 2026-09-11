@@ -488,16 +488,36 @@ describe("retunePoolChoices", () => {
     expect(choices.reduce((sum, c) => sum + c.pDraw, 0)).toBeCloseTo(1, 6)
   })
 
-  it("keeps a line already sitting on another row visible, at 0 chance and out of the denominator", () => {
+  it("keeps a line already sitting on a retunable row visible, at 0 chance and out of the denominator", () => {
     const withCrit = bareWeaponPiece({
-      words: [w("crit", 0.05), EMPTY, EMPTY, EMPTY, EMPTY],
+      words: [EMPTY, w("crit", 0.05), EMPTY, EMPTY, EMPTY],
     })
     const choices = retunePoolChoices(withCrit, bellstrikeWeaponPool)
     const crit = choices.find((c) => c.word === "crit")!
-    expect(crit.onPiece).toBe(true)
+    expect(crit.onRerollableLine).toBe(true)
     expect(crit.pDraw).toBe(0)
     const drawn = choices.filter((c) => c.pDraw > 0)
     expect(drawn.reduce((sum, c) => sum + c.pDraw, 0)).toBeCloseTo(1, 10)
+  })
+
+  it("leaves the fixed first line drawable — one of the four rows may duplicate it", () => {
+    const withCritFirst = bareWeaponPiece({
+      words: [w("crit", 0.05), EMPTY, EMPTY, EMPTY, EMPTY],
+    })
+    const choices = retunePoolChoices(withCritFirst, bellstrikeWeaponPool)
+    const crit = choices.find((c) => c.word === "crit")!
+    expect(crit.onRerollableLine).toBe(false)
+    expect(crit.pDraw).toBeGreaterThan(0)
+    expect(choices.reduce((sum, c) => sum + c.pDraw, 0)).toBeCloseTo(1, 10)
+  })
+
+  it("drops the first line's stat from the draw once one of the four already carries it", () => {
+    const duplicated = bareWeaponPiece({
+      words: [w("crit", 0.05), w("crit", 0.04), EMPTY, EMPTY, EMPTY],
+    })
+    const crit = retunePoolChoices(duplicated, bellstrikeWeaponPool).find((c) => c.word === "crit")!
+    expect(crit.onRerollableLine).toBe(true)
+    expect(crit.pDraw).toBe(0)
   })
 
   it("shows a deselected line struck through — 0 chance, excluded from the denominator", () => {
@@ -607,9 +627,18 @@ describe("computeRetunement — weighted advisor (levels 96/100/105)", () => {
     expect(words.has("swordBoost")).toBe(false)
   })
 
-  it("excludes a word already on the piece from every slot's rows", () => {
-    const p = weightedWeaponPiece()
+  it("excludes a word already on a retunable row from every slot's rows", () => {
+    const p = weightedWeaponPiece({ words: [EMPTY, w("power", 30), EMPTY, EMPTY, EMPTY] })
     const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
     expect(res.rows.some((row) => row.word === "power")).toBe(false)
+  })
+
+  it("still offers the fixed first line's word on every retunable row", () => {
+    const p = weightedWeaponPiece()
+    const res = computeRetunement({ reqId: 1, inputs: withPieceInInventory(p), pieceId: p.id })
+    const slotsOffering = new Set(
+      res.rows.filter((row) => row.word === "power").map((row) => row.slotIndex),
+    )
+    expect([...slotsOffering].sort()).toEqual([1, 2, 3, 4])
   })
 })

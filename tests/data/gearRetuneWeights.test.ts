@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest"
 import { retuneWeightPool, type RetuneLine } from "../../src/data/stats/gearRetuneWeights"
 import { exactMaxWithinLineChance } from "../../src/engine/retunement"
 import { GEAR_LEVELS } from "../../src/engine/types"
+import { CLASS_DEFS } from "../../src/definitions/classes/registry"
+
+const REGISTERED_ATTRIBUTES = [
+  ...new Set(CLASS_DEFS().map((classDef) => classDef.primaryAttribute)),
+]
 
 function line(pool: readonly RetuneLine[], word: string): RetuneLine {
   const found = pool.find((candidate) => candidate.word === word)
@@ -10,53 +15,56 @@ function line(pool: readonly RetuneLine[], word: string): RetuneLine {
 }
 
 describe("retuneWeightPool", () => {
-  it("has weighted data for every registered attribute at 96, 100 and 105", () => {
-    for (const attribute of ["Bellstrike", "Stonesplit", "Silkbind"] as const) {
-      for (const level of [96, 100, 105] as const) {
-        expect(retuneWeightPool(attribute, level, "leftWeapon")).not.toBeNull()
-        expect(retuneWeightPool(attribute, level, "helm")).not.toBeNull()
-      }
+  it.each(REGISTERED_ATTRIBUTES)("has weighted data for %s at 96, 100 and 105", (attribute) => {
+    for (const level of [96, 100, 105] as const) {
+      expect(retuneWeightPool(attribute, level, "leftWeapon")).not.toBeNull()
+      expect(retuneWeightPool(attribute, level, "helm")).not.toBeNull()
     }
   })
 
-  it("has no weighted data at 86 or 91 — not in the referenced pool tables", () => {
-    for (const attribute of ["Bellstrike", "Stonesplit", "Silkbind"] as const) {
+  it.each(REGISTERED_ATTRIBUTES)(
+    "has no weighted data for %s at 86 or 91 — not in the referenced pool tables",
+    (attribute) => {
       expect(retuneWeightPool(attribute, 86, "leftWeapon")).toBeNull()
       expect(retuneWeightPool(attribute, 91, "leftWeapon")).toBeNull()
-    }
-  })
+    },
+  )
 
-  it("has no entry for an unregistered attribute", () => {
-    expect(retuneWeightPool("Bamboocut", 96, "leftWeapon")).toBeNull()
-  })
-
-  it("sums Bellstrike weapon weights to 4839 and non-Bellstrike to 4407, at every level", () => {
-    for (const level of [96, 100, 105] as const) {
-      const bellstrike = retuneWeightPool("Bellstrike", level, "leftWeapon")!
-      const stonesplit = retuneWeightPool("Stonesplit", level, "leftWeapon")!
-      expect(bellstrike.reduce((sum, l) => sum + l.weight, 0)).toBe(4839)
-      expect(stonesplit.reduce((sum, l) => sum + l.weight, 0)).toBe(4407)
-    }
-  })
-
-  it("uses the attribute's own armour attack word, distinct from the weapon's", () => {
-    const weapon = retuneWeightPool("Bellstrike", 96, "leftWeapon")!
-    const armour = retuneWeightPool("Bellstrike", 96, "helm")!
-    expect(weapon.some((l) => l.word === "maxFormless")).toBe(true)
-    expect(armour.some((l) => l.word === "maxBellstrike")).toBe(true)
-    expect(armour.some((l) => l.word === "maxFormless")).toBe(false)
-  })
-
-  it("never offers a line unreachable by retuning", () => {
-    for (const level of GEAR_LEVELS) {
-      for (const attribute of ["Bellstrike", "Stonesplit", "Silkbind"] as const) {
-        const pool = retuneWeightPool(attribute, level, "leftWeapon")
-        if (!pool) continue
-        const words = pool.map((l) => l.word)
-        expect(words).not.toContain("precision")
-        expect(words).not.toContain("minFormless")
-        expect(words).not.toContain("swordBoost")
+  it.each(REGISTERED_ATTRIBUTES)(
+    "sums %s weapon weights to 4839 for Bellstrike and 4407 otherwise, at every level",
+    (attribute) => {
+      const expected = attribute === "Bellstrike" ? 4839 : 4407
+      for (const level of [96, 100, 105] as const) {
+        const pool = retuneWeightPool(attribute, level, "leftWeapon")!
+        expect(pool.reduce((sum, l) => sum + l.weight, 0)).toBe(expected)
       }
+    },
+  )
+
+  it.each([
+    ["Bellstrike", "maxBellstrike"],
+    ["Stonesplit", "maxStonesplit"],
+    ["Silkbind", "maxSilkbind"],
+    ["Bamboocut", "maxBamboocut"],
+  ] as const)(
+    "uses %s's own armour attack word, distinct from the weapon's",
+    (attribute, armourWord) => {
+      const weapon = retuneWeightPool(attribute, 96, "leftWeapon")!
+      const armour = retuneWeightPool(attribute, 96, "helm")!
+      expect(weapon.some((l) => l.word === "maxFormless")).toBe(true)
+      expect(armour.some((l) => l.word === armourWord)).toBe(true)
+      expect(armour.some((l) => l.word === "maxFormless")).toBe(false)
+    },
+  )
+
+  it.each(REGISTERED_ATTRIBUTES)("never offers a %s line unreachable by retuning", (attribute) => {
+    for (const level of GEAR_LEVELS) {
+      const pool = retuneWeightPool(attribute, level, "leftWeapon")
+      if (!pool) continue
+      const words = pool.map((l) => l.word)
+      expect(words).not.toContain("precision")
+      expect(words).not.toContain("minFormless")
+      expect(words).not.toContain("swordBoost")
     }
   })
 

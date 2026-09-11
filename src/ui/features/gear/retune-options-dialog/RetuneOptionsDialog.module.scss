@@ -15,11 +15,11 @@
 }
 
 .tile.deselected,
-.tile.onPiece {
+.tile.onRerollableLine {
   opacity: 0.5;
 }
 
-.tile.onPiece {
+.tile.onRerollableLine {
   border-style: dashed;
 }
 

@@ -289,7 +289,7 @@ function computeWeightedRetunement(
   const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
 
   const choices = retunePoolChoices(piece, weightPool).filter(
-    (choice) => !choice.deselected && !choice.onPiece,
+    (choice) => !choice.deselected && !choice.onRerollableLine,
   )
   const lineByWord = new Map(weightPool.map((line) => [line.word, line] as const))
 
