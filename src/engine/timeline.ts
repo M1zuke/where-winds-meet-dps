@@ -455,6 +455,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const windowFramesOverride =
+    rotation.fixedWindowSec === undefined ? null : Math.round(rotation.fixedWindowSec * FPS)
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
@@ -478,12 +480,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })()
     if (prePull) preCursor += castLen
     else activeCursor += castLen
-    seedStepTriggers(occurringHits, startFrame)
-    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: occurringHits })
+    const landedHits =
+      prePull || windowFramesOverride === null
+        ? occurringHits
+        : occurringHits.filter((h) => startFrame + h.frame <= windowFramesOverride)
+    seedStepTriggers(landedHits, startFrame)
+    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: landedHits })
   }
-  const durationFrames = activeCursor
+  const castCursorFrames = activeCursor
+  const windowFrames = windowFramesOverride ?? castCursorFrames
   const spanStart = Math.min(0, -prePullBound)
-  const rotationDurationSec = durationFrames / FPS
+  const rotationDurationSec = windowFrames / FPS
 
   const damagingHitTimesSec: number[] = []
   const weaponHitTimesSec: number[] = []
@@ -499,7 +506,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
 
-  const inWindow = (frame: number): boolean => frame <= durationFrames
+  const inWindow = (frame: number): boolean => frame <= windowFrames
 
   const castCounts = new Map<string, number>()
   for (const ls of laidSteps) {
@@ -507,7 +514,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
   }
 
-  const ledger = new StatusLedger(spanStart, durationFrames)
+  const ledger = new StatusLedger(spanStart, windowFrames)
   const recordStack = (id: string, frame: number, value: number, owner = UNOWNED) =>
     ledger.recordStack(id, frame, value, owner)
   const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
@@ -1065,7 +1072,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
-  liveWriter.processExpiries(durationFrames)
+  liveWriter.processExpiries(windowFrames)
 
   // Zenith extension events only exist for a Sword Horizon build (the only
   // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
@@ -1238,7 +1245,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (!isDebuffStatus(status) || !status.echo) continue
     const windows = ledger.windowsOf(debuffId)
     if (windows.length === 0) continue
-    for (const frame of coverageEnds(windows).filter((end) => end <= durationFrames))
+    for (const frame of coverageEnds(windows).filter((end) => end <= windowFrames))
       mergedEvents.push({ kind: "echoRelease", frame, seq: mergedSeq++, debuffId })
   }
 
@@ -1441,9 +1448,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     castCount: castCounts.get(name) ?? 0,
   }))
 
-  const durationSeconds = durationFrames / FPS
+  const durationSeconds = windowFrames / FPS
   const dps = durationSeconds > 0 ? totalDamage / durationSeconds : 0
-  if (durationFrames <= 0)
+  if (castCursorFrames <= 0)
     warnings.push("Timeline has no in-window skills — duration and DPS are 0.")
 
   const rolledHits = OUTCOME_KEYS.reduce((sum, outcome) => sum + outcomeTally[outcome], 0)
@@ -1462,6 +1469,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     dps,
     totalDamage,
     rotationDuration: durationSeconds,
+    castDuration: castCursorFrames / FPS,
     graduationRate: null,
     perSkill,
     ranking: [],
@@ -1482,6 +1490,7 @@ function emptyResult(warnings: string[]): Result {
     dps: 0,
     totalDamage: 0,
     rotationDuration: 0,
+    castDuration: 0,
     graduationRate: null,
     perSkill: [],
     ranking: [],

@@ -34,7 +34,7 @@ import {
   releasedBreakthroughs,
 } from "./definitions/baseStats/breakthroughs"
 import type { Rotation, RotationStep } from "./engine/rotation"
-import { newRotationId, newStepId, isRotation } from "./engine/rotation"
+import { newRotationId, newStepId, isRotation, readFixedWindowSec } from "./engine/rotation"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
 import {
   newSkillId,
@@ -209,6 +209,11 @@ function migrateRotationIds<T>(rotation: T): T {
     const window = readQiBreakWindow(r.qiBreak)
     if (window) next.qiBreak = window
     else delete next.qiBreak
+  }
+  if (r.fixedWindowSec !== undefined) {
+    const windowSec = readFixedWindowSec(r.fixedWindowSec)
+    if (windowSec === undefined) delete next.fixedWindowSec
+    else next.fixedWindowSec = windowSec
   }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return migrateRotationMysticIds(next) as unknown as T

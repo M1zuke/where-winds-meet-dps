@@ -93,6 +93,14 @@ the skill could ever land.
   and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
   negative frames — but it adds nothing to the total, the breakdown or an echo
   bank, whatever its coefficients say, and its frames stay out of the duration.
+- **A rotation may fix its own window** (`fixedWindowSec`): the run then lasts
+  exactly that long, and DPS divides by it. Casts shorter than the window are
+  followed by idle time in which every status keeps its own schedule — a
+  damage-over-time effect still up keeps ticking and still counts. A cast that
+  runs past the window keeps only the hits inside it, for damage and for the
+  triggers and status writes those hits make alike; nothing outside the window
+  fires, scores or opens a window. The cast length is still reported beside the
+  run length, and a rotation with no window is exactly as long as its casts.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the

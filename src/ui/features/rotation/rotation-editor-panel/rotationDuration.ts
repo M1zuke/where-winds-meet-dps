@@ -22,9 +22,9 @@ export function castsCoverRotation(
 export function rotationDurationSec(
   rotation: Rotation,
   skillsById: ReadonlyMap<string, Skill>,
-  simulated: { rotationDuration: number; casts?: readonly RotationCast[] },
+  simulated: { castDuration: number; casts?: readonly RotationCast[] },
 ): number {
-  if (castsCoverRotation(rotation, simulated.casts)) return simulated.rotationDuration
+  if (castsCoverRotation(rotation, simulated.casts)) return simulated.castDuration
   const frames = rotation.steps
     .filter((step) => {
       const skill = skillsById.get(step.skillId)

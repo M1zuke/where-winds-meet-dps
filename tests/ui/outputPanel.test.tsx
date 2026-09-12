@@ -8,6 +8,7 @@ const result: Result = {
   dps: 8642,
   totalDamage: 518520,
   rotationDuration: 60,
+  castDuration: 60,
   graduationRate: 0.8642,
   perSkill: [],
   ranking: [],

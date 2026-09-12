@@ -976,6 +976,8 @@
   "rotation.editor.durationComputed": "Duration (computed)",
   "rotation.editor.eachStepPicksHint": "Each step picks a saved skill; hit-triggered buffs/skills land at the hit's frame offset. The Buffs column shows what's still active once that cast fully resolves, chips are ordered by when each buff first appears in the rotation, and always-on spec passives are listed in the Class Talents tab instead.",
   "rotation.editor.effectGuaranteed": "Guaranteed",
+  "rotation.editor.fixedWindowHint": "Measure the run over a fixed window instead of the rotation's own length: a shorter rotation idles to the end with its damage-over-time effects still ticking, a longer one is cut where it runs past.",
+  "rotation.editor.fixedWindowS": "Fixed window (s)",
   "rotation.editor.forkToCustom": "Fork to Custom",
   "rotation.editor.noExhaustedPhase": "No exhausted phase",
   "rotation.editor.opening": "Opening",

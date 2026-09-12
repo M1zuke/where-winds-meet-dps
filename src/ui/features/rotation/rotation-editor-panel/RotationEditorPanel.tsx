@@ -3,9 +3,11 @@ import type { Inputs, Result, CastBuffTag, RotationCast } from "../../../../engi
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
 import {
+  DEFAULT_FIXED_WINDOW_SEC,
   makeRotation,
   newRotationId,
   newStepId,
+  readFixedWindowSec,
   resolveRotation,
   type Rotation,
   type RotationStep,
@@ -312,6 +314,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       qiBreak: { ...(rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW), ...patch },
     }))
   }
+  function setFixedWindowSec(windowSec: number | undefined) {
+    commitRotation((rotation) => {
+      const next = { ...rotation }
+      if (windowSec === undefined) delete next.fixedWindowSec
+      else next.fixedWindowSec = windowSec
+      return next
+    })
+  }
   function setOpeningStacks(buffId: string, stacks: number) {
     commitRotation((rotation) => {
       const next = { ...rotation.openingStacks }
@@ -336,6 +346,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       permanentBuffIds: [...activeRotation.permanentBuffIds],
       openingStacks: { ...activeRotation.openingStacks },
       qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
+      fixedWindowSec: activeRotation.fixedWindowSec,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -474,6 +485,30 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
             <label className={styles.field}>
               <span>{t("rotation.editor.durationComputed")}</span>
               <span className={styles.durationDisplay}>{computedDurationSec.toFixed(2)} s</span>
+            </label>
+            <label className={styles.field} title={t("rotation.editor.fixedWindowHint")}>
+              <span>{t("rotation.editor.fixedWindowS")}</span>
+              <span className={styles.fixedWindow}>
+                <input
+                  type="checkbox"
+                  checked={activeRotation.fixedWindowSec !== undefined}
+                  disabled={!isCustom}
+                  onChange={(e) =>
+                    setFixedWindowSec(e.target.checked ? DEFAULT_FIXED_WINDOW_SEC : undefined)
+                  }
+                />
+                {activeRotation.fixedWindowSec !== undefined && (
+                  <NumInput
+                    value={activeRotation.fixedWindowSec}
+                    min={1}
+                    disabled={!isCustom}
+                    onChange={(next) => {
+                      const windowSec = readFixedWindowSec(next)
+                      if (windowSec !== undefined) setFixedWindowSec(windowSec)
+                    }}
+                  />
+                )}
+              </span>
             </label>
             <div className={styles.actions}>
               {isCustom ? (

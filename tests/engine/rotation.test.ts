@@ -148,6 +148,34 @@ describe("storage round-trip", () => {
     expect(loaded.openingStacks).toEqual({ "buff-b": 2 })
   })
 
+  it("save → load preserves fixedWindowSec", () => {
+    const r = makeRotation(CLASS, { name: "Windowed", fixedWindowSec: 60 })
+    saveCustomRotation(r)
+    const loaded = loadCustomRotations().find((x) => x.id === r.id)!
+    expect(loaded.fixedWindowSec).toBe(60)
+  })
+
+  it.each([
+    ["0", 0],
+    ["-5", -5],
+    ["a string", "60"],
+    ["NaN", Number.NaN],
+  ])(
+    "heals an unreadable fixedWindowSec (%s) to no window instead of dropping the rotation",
+    (_label, stored) => {
+      const corrupt = { ...makeRotation(CLASS, { name: "Corrupt" }), fixedWindowSec: stored }
+      saveCustomRotation(corrupt as never)
+      const loaded = loadCustomRotations().find((x) => x.id === corrupt.id)!
+      expect("fixedWindowSec" in loaded).toBe(false)
+    },
+  )
+
+  it("isRotation rejects a fixedWindowSec that is not a positive number", () => {
+    expect(isRotation(makeRotation(CLASS, { fixedWindowSec: 0 }))).toBe(false)
+    expect(isRotation({ ...makeRotation(CLASS), fixedWindowSec: "60" })).toBe(false)
+    expect(isRotation(makeRotation(CLASS, { fixedWindowSec: 60 }))).toBe(true)
+  })
+
   it("export → import carries openingStacks across", () => {
     const r = makeRotation(CLASS, { name: "x", openingStacks: { "buff-a": 4 } })
     expect(importCustomRotation(exportCustomRotation(r)).openingStacks).toEqual({ "buff-a": 4 })

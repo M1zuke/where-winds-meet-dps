@@ -25,6 +25,7 @@ function resultWith(perSkill: SkillTickResult[], rotationDuration = 0): Result {
     dps: 0,
     totalDamage: 0,
     rotationDuration,
+    castDuration: rotationDuration,
     graduationRate: null,
     perSkill,
     ranking: [],
