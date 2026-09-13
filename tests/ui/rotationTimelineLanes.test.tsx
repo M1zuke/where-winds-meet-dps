@@ -34,6 +34,7 @@ function resultWith(perSkill: SkillTickResult[], timeline: TimelineEvent[]): Res
     dps: 0,
     totalDamage: 0,
     rotationDuration: 12,
+    castDuration: 12,
     graduationRate: null,
     perSkill,
     ranking: [],

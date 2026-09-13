@@ -41,7 +41,7 @@ function cast(stepId: string, stepIndex: number): RotationCast {
 describe("the editor's computed duration", () => {
   it("takes the simulated duration when the result laid out exactly the shown rotation", () => {
     const simulated = {
-      rotationDuration: 1.7,
+      castDuration: 1.7,
       casts: [cast("s0", 0), cast("s1", 1), cast("s2", 2)],
     }
     expect(rotationDurationSec(rotation, skillsById, simulated)).toBe(1.7)
@@ -49,10 +49,10 @@ describe("the editor's computed duration", () => {
 
   it("falls back to the modules' cast frames, pre-pull steps excluded, when the result belongs to another rotation", () => {
     const simulated = {
-      rotationDuration: 9,
+      castDuration: 9,
       casts: [cast("other-0", 0), cast("other-1", 1), cast("other-2", 2)],
     }
     expect(rotationDurationSec(rotation, skillsById, simulated)).toBe(1)
-    expect(rotationDurationSec(rotation, skillsById, { rotationDuration: 9, casts: [] })).toBe(1)
+    expect(rotationDurationSec(rotation, skillsById, { castDuration: 9, casts: [] })).toBe(1)
   })
 })

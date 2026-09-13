@@ -17,6 +17,7 @@ export interface Rotation {
   permanentBuffIds: string[]
   openingStacks?: Record<string, number>
   qiBreak?: QiBreakWindow
+  fixedWindowSec?: number
   createdAt: string
   updatedAt: string
   description?: string
@@ -92,6 +93,8 @@ export function isRotation(x: unknown): x is Rotation {
     }
   }
   if (r.qiBreak !== undefined && !isQiBreakWindow(r.qiBreak)) return false
+  if (r.fixedWindowSec !== undefined && readFixedWindowSec(r.fixedWindowSec) === undefined)
+    return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
   return true
@@ -105,6 +108,14 @@ export function isQiBreakWindow(x: unknown): x is QiBreakWindow {
     if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return false
   }
   return true
+}
+
+export const DEFAULT_FIXED_WINDOW_SEC = 60
+const MAX_FIXED_WINDOW_SEC = 3600
+
+export function readFixedWindowSec(value: unknown): number | undefined {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined
+  return Math.min(value, MAX_FIXED_WINDOW_SEC)
 }
 
 export interface ResolvedStep {

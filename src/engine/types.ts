@@ -338,6 +338,7 @@ export interface Result {
   dps: number
   totalDamage: number
   rotationDuration: number
+  castDuration: number
   graduationRate: number | null
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]
