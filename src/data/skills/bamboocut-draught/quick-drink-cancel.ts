@@ -1,7 +1,7 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { perfectQuickDrinkHit } from "./quick-drink"
 
 // A cancel form ends where the animation clears its input buffer — 24
@@ -17,7 +17,7 @@ export const quickDrinkCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.quickDrinkCancel,
-  receives: CLASS_RECEIVES,
+  receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 24,
   hits: [perfectQuickDrinkHit],

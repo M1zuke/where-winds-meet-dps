@@ -8,6 +8,13 @@ import { withDerivedStats, equippedPiecesFor } from "../../../../engine/derivedI
 import { TALENT_STAT_KEYS } from "../shared/talentStatKeys"
 import { inebriateCritDamageBoostAt } from "../../../../data/skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
 import { inebriateDamageBoostAt } from "../../../../data/skills/bamboocut-draught/buffs/inebriateDamageScaling"
+import {
+  ADDITIONAL_ATTACK_FIRST_RANK_BREAKTHROUGH,
+  ADDITIONAL_ATTACK_RANKS,
+  ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION,
+  additionalAttackRankAt,
+  type AdditionalAttackRank,
+} from "../../../../data/skills/buffs/additionalAttackRanks"
 import styles from "./TalentsTab.module.scss"
 
 interface Props {
@@ -88,10 +95,21 @@ type TalentEffectLine =
       currentValue?: (minPhysAttack: number) => number
     }
   | { kind: "static"; textKey: string; subNoteKey?: string }
+  | {
+      kind: "additionalAttack"
+      ladder: readonly AdditionalAttackRank[]
+      coefficientTargetsKey?: string
+    }
 
 function formatSignedPercent(value: number): string {
   const sign = value >= 0 ? "+" : ""
   return `${sign}${(value * 100).toFixed(1)}%`
+}
+
+// 0.725 and 7.25 must stay distinguishable, unlike formatSignedPercent's one decimal.
+function formatSignedPercentPrecise(value: number): string {
+  const sign = value >= 0 ? "+" : ""
+  return `${sign}${Number((value * 100).toFixed(3))}%`
 }
 
 interface TalentCardConfig {
@@ -129,7 +147,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"],
-              textKey: "talents.effect.98Min196MaxBellstrike",
+              textKey: "talents.effect.bellstrikeAttackAlways",
             },
             { kind: "talent", skill: "Bellstrike Penetration Scale" },
           ],
@@ -141,6 +159,16 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               kind: "static",
               textKey: "talents.effect.bellstrikeAttackDeals50Bonus",
               subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [
+            {
+              kind: "additionalAttack",
+              ladder: ADDITIONAL_ATTACK_RANKS,
+              coefficientTargetsKey: "talents.effect.coefficientsOfBleed",
             },
           ],
         },
@@ -169,7 +197,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Spear Bellstrike Attack Min", "Spear Bellstrike Attack Max"],
-              textKey: "talents.effect.98Min196MaxBellstrike",
+              textKey: "talents.effect.bellstrikeAttackAlways",
             },
             {
               kind: "talent",
@@ -177,6 +205,10 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               labelKey: "content.statLine.attributeDamageBoost",
             },
           ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -215,7 +247,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Umbrella Silkbind Attack Min", "Umbrella Silkbind Attack Max"],
-              textKey: "talents.effect.98Min196MaxSilkbind",
+              textKey: "talents.effect.silkbindAttackAlways",
             },
             { kind: "talent", skill: "Silkbind Penetration Scale" },
           ],
@@ -229,6 +261,10 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -265,7 +301,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Fan Silkbind Attack Min", "Fan Silkbind Attack Max"],
-              textKey: "talents.effect.98Min196MaxSilkbind",
+              textKey: "talents.effect.silkbindAttackAlways",
             },
             {
               kind: "talent",
@@ -283,6 +319,10 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -326,7 +366,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"],
-              textKey: "talents.effect.98Min196MaxBellstrike",
+              textKey: "talents.effect.bellstrikeAttackAlways",
             },
             { kind: "talent", skill: "Bellstrike Penetration Scale" },
           ],
@@ -340,6 +380,10 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -376,7 +420,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Spear Bellstrike Attack Min", "Spear Bellstrike Attack Max"],
-              textKey: "talents.effect.98Min196MaxBellstrike",
+              textKey: "talents.effect.bellstrikeAttackAlways",
             },
             {
               kind: "talent",
@@ -394,6 +438,10 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
               subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
             },
           ],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -423,7 +471,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Gauntlets Bamboocut Attack Min", "Gauntlets Bamboocut Attack Max"],
-              textKey: "talents.effect.98Min196MaxBamboocut",
+              textKey: "talents.effect.bamboocutAttackAlways",
             },
             { kind: "talent", skill: "Bamboocut Penetration Scale" },
           ],
@@ -441,6 +489,16 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
         {
           nameKey: "talents.card.inebriateDodgeEnhancement",
           lines: [{ kind: "static", textKey: "talents.effect.inCarouseAPerfectDodgeHint" }],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [
+            {
+              kind: "additionalAttack",
+              ladder: ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION,
+              coefficientTargetsKey: "talents.effect.coefficientsOfFalconsPursuit",
+            },
+          ],
         },
       ],
     },
@@ -468,7 +526,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "talentFlatText",
               skills: ["Twin Blades Bamboocut Attack Min", "Twin Blades Bamboocut Attack Max"],
-              textKey: "talents.effect.98Min196MaxBamboocut",
+              textKey: "talents.effect.bamboocutAttackAlways",
             },
             {
               kind: "talent",
@@ -490,6 +548,32 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
         {
           nameKey: "talents.card.increasedBingePointGain",
           lines: [{ kind: "static", textKey: "talents.effect.carouseLasts20sHint" }],
+        },
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [
+            { kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS_WITH_BAMBOOCUT_EXTENSION },
+          ],
+        },
+      ],
+    },
+  ],
+  stonesplitStrength: [
+    {
+      weaponKey: "content.martialArt.phalanxbaneBlade",
+      cards: [
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
+        },
+      ],
+    },
+    {
+      weaponKey: "content.martialArt.snowpartingBlade",
+      cards: [
+        {
+          nameKey: "talents.card.additionalAttackUp",
+          lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
       ],
     },
@@ -542,12 +626,15 @@ export function TalentsTab({ inputs }: Props) {
   }
 
   function renderFlatTextLine(line: Extract<TalentEffectLine, { kind: "talentFlatText" }>) {
-    const present = line.skills.some((skillName) => talentsByName.has(skillName))
-    if (!present) return null
+    const [minRow, maxRow] = line.skills.map((skillName) => talentsByName.get(skillName))
+    if (!minRow || !maxRow) return null
     return (
       <div className={styles.classBuffLine} key={`flat:${line.skills.join("+")}`}>
         <div className={styles.classBuffHead}>
-          <span className={styles.classBuffEffect}>{t(line.textKey)}</span>
+          <span className={styles.classBuffEffect}>
+            +{minRow.maxBonus} {t("common.min")} / +{maxRow.maxBonus} {t("common.max")}{" "}
+            {t(line.textKey)}
+          </span>
         </div>
       </div>
     )
@@ -584,12 +671,49 @@ export function TalentsTab({ inputs }: Props) {
     )
   }
 
+  function renderAdditionalAttackLine(
+    line: Extract<TalentEffectLine, { kind: "additionalAttack" }>,
+  ) {
+    const rank = additionalAttackRankAt(line.ladder, inputs.breakthrough)
+    const displayRank = rank ?? line.ladder[0]
+    const rankIndex = line.ladder.indexOf(displayRank) + 1
+    const valueClass = rank ? styles.classBuffEffect : styles.classBuffNote
+    return (
+      <div className={styles.classBuffLine} key="additionalAttack">
+        <div className={styles.classBuffHead}>
+          <span className={valueClass}>
+            {formatSignedPercentPrecise(displayRank.flatBonus)}{" "}
+            {t("talents.effect.bonusAttackOnArtSkills")}
+          </span>
+          <span className={styles.classBuffCurrent}>
+            {t("common.rank")} {rankIndex}/{line.ladder.length}
+          </span>
+        </div>
+        {line.coefficientTargetsKey && (
+          <div className={styles.classBuffHead}>
+            <span className={valueClass}>
+              {formatSignedPercentPrecise(displayRank.coefficientBonus)}{" "}
+              {t(line.coefficientTargetsKey)}
+            </span>
+          </div>
+        )}
+        {!rank && (
+          <div className={styles.classBuffNote}>
+            {t("talents.note.unlocksAtBreakthrough")} {ADDITIONAL_ATTACK_FIRST_RANK_BREAKTHROUGH}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   function renderLine(line: TalentEffectLine) {
     switch (line.kind) {
       case "talent":
         return renderTalentLine(line)
       case "talentFlatText":
         return renderFlatTextLine(line)
+      case "additionalAttack":
+        return renderAdditionalAttackLine(line)
       case "mechanic": {
         const buff = classBuffsById.get(line.id)
         return buff ? renderMechanicLine(line, buff) : null

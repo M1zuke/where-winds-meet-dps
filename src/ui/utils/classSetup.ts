@@ -7,7 +7,7 @@ export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
   const talents =
     inputs.classId === classId && inputs.martialArtsTalents.length > 0
       ? inputs.martialArtsTalents
-      : getDefaultTalentsForClass(classId)
+      : getDefaultTalentsForClass(classId, inputs.breakthrough)
   const withArsenal = swapArsenal(inputs, defaultArsenalForClass(classId))
   const allowed = new Set(allowedInnerWaysForClass(classId))
   const kept = new Set<string>()

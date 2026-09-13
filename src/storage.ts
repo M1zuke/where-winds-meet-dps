@@ -24,7 +24,7 @@ import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInp
 import {
   arsenalScoreCap,
   DEFAULT_ENHANCEMENT_LEVEL,
-  getDefaultTalentsForClass,
+  resyncDefaultTalentsForBreakthrough,
   DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
@@ -421,7 +421,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
         } as Inputs["martialArtsTalents"][number]
       })
       .filter((r) => !r.id.startsWith("default-"))
-    next.martialArtsTalents = [...healed, ...getDefaultTalentsForClass(next.classId)]
+    next.martialArtsTalents = healed as Inputs["martialArtsTalents"]
+    next.martialArtsTalents = resyncDefaultTalentsForBreakthrough(next).martialArtsTalents
   }
   if (!next.oddities || typeof next.oddities !== "object" || Array.isArray(next.oddities)) {
     next.oddities = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as OddityRegions
@@ -539,7 +540,10 @@ function followBreakthroughReleases(inputs: Inputs, now: number): Inputs {
     const supersededDefault = defaultBreakthrough(release.at - 1)
     if (breakthrough === supersededDefault) breakthrough = release.breakthrough
   }
-  return { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+  const followed = { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+  return breakthrough === inputs.breakthrough
+    ? followed
+    : resyncDefaultTalentsForBreakthrough(followed)
 }
 
 export function loadProfiles(): ProfilesState & { firstRun: boolean } {

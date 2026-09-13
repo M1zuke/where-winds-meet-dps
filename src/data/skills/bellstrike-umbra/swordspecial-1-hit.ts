@@ -2,6 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const swordspecial1Hit = defineSkill({
   id: SKILL.swordspecial1Hit,
@@ -13,6 +14,7 @@ export const swordspecial1Hit = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial1Hit,
+  receives: STRATEGIC_SWORD_RECEIVES,
   // A player-ended form: castFrames sits 11 frames past the frame at which the animation would accept the next input (in-game animation, 2026-09-09).
   castFrames: 41,
   triggerable: true,

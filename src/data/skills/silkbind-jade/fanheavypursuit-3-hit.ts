@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { INKWELL_FAN_RECEIVES } from "./receives"
 
 // The authored value is the whole cast spread over its hits, not a per-hit
 // value — the reference def states it per hit. Kept as total ÷ hits so the
@@ -52,6 +53,7 @@ export const fanheavypursuit3Hit = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
+    ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.pursuitChargedBoost],
   castFrames: 90,

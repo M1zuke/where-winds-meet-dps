@@ -3,7 +3,7 @@ import type { TriggerCondition } from "../../../engine/skill"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.eonpourUnlock, op: "gte", stacks: 1 }]
 
@@ -38,7 +38,11 @@ export const dragonquenchStagesAt = (frames: readonly number[]) => [
 ]
 
 export const DRAGONQUENCH_TAGS = [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze]
-export const DRAGONQUENCH_RECEIVES = [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40]
+export const DRAGONQUENCH_RECEIVES = [
+  ...INEBRIATE_ENHANCED_RECEIVES,
+  ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+  BUFF.nonPlayerBaseDamage40,
+]
 
 export const dragonquenchStages = dragonquenchStagesAt([18, 41, 69, 91, 98, 105])
 

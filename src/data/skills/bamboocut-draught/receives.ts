@@ -9,3 +9,7 @@ export const INEBRIATE_ENHANCED_RECEIVES = [
   BUFF.volutefitWineboundDamage,
   BUFF.tiltrimInebriateBonus,
 ]
+
+export const SKYSTRIKE_GAUNTLETS_RECEIVES = [BUFF.skystrikeGauntletsAdditionalAttack]
+
+export const RIVEN_TWINBLADES_RECEIVES = [BUFF.rivenTwinbladesAdditionalAttack]

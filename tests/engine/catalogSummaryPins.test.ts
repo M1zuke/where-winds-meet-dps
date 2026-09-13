@@ -1,5 +1,5 @@
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes". Pins the
-// Skill Editor text for the ten buffs (of the 19 Umbra-scoped modules) whose
+// Skill Editor text for the twelve buffs (of the 21 Umbra-scoped modules) whose
 // rendering carries an author-written `summary` rather than one the catalog's
 // generic label table can derive from the effect list, so a future edit can't
 // move it silently. The other nine (zenithBar, potentRiverFlow, wineGu,
@@ -37,13 +37,15 @@ function inputsWithSwordHorizon(tier: string): Inputs {
 }
 
 // Sword Horizon gates bellstrikeUmbraBleedPen/bellstrikeUmbraBleedingDamage/
-// zenithBar; Wolfchaser's Art tier 6 gates soulShaken — the two
-// `requires` every scoped Class Buffs row actually reads. Insightful Strike's
-// own param gates other, unscoped modules and stays closed here on purpose.
+// zenithBar; Wolfchaser's Art tier 6 gates soulShaken; breakthrough 18 gates
+// the additional-attack talent's own three rows — the `requires` every
+// scoped Class Buffs row actually reads. Insightful Strike's own param gates
+// other, unscoped modules and stays closed here on purpose.
 function inputsWithSwordHorizonAndWolfchasersArt(): Inputs {
   return {
     ...defaultInputs,
     classId: CLASS,
+    breakthrough: 18,
     mindMethods: [
       { name: "Sword Horizon", stacks: "tier 6" },
       { name: "Wolfchaser's Art", stacks: "tier 6" },
@@ -127,13 +129,15 @@ describe("catalog summary pins — bellstrikeUmbraBleedingDamage", () => {
 })
 
 describe("Class Buffs column — class ownership and scope decide membership", () => {
-  it("is exactly the class's own scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6", () => {
+  it("is exactly the class's own scoped modules, with Sword Horizon and Wolfchaser's Art both at tier 6 and breakthrough 18", () => {
     const rows = alwaysActiveClassBuffs(inputsWithSwordHorizonAndWolfchasersArt())
     expect(rows.map((row) => `${row.id}: ${row.effect}`).sort()).toEqual(
       [
         "bellstrikeUmbraBleedPen: physPen +15, bellstrikePen +15",
         "bellstrikeUmbraBleedingDamage: affinityDmg +18%",
-        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.03",
+        "bellstrikeUmbraBleedCoefficient: Bleeding and Blood Burst ×1.00725 to ×1.03 by breakthrough",
+        "strategicSwordAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
+        "heavenquakerSpearAdditionalAttack: physFixed/attributeFixed +7.25% to +30% by breakthrough",
       ].sort(),
     )
   })

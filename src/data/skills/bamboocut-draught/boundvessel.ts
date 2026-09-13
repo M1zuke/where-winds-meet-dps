@@ -4,7 +4,7 @@ import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
 
@@ -36,7 +36,11 @@ export const boundvessel = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.boundvessel,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage50],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...RIVEN_TWINBLADES_RECEIVES,
+    BUFF.nonPlayerBaseDamage50,
+  ],
   triggerable: false,
   castFrames: 173,
   hits: [

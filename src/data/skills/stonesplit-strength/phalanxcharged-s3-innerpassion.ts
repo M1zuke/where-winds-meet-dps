@@ -3,6 +3,7 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 
 export const phalanxchargedS3Innerpassion = defineSkill({
   id: SKILL.phalanxchargedS3Innerpassion,
@@ -21,7 +22,7 @@ export const phalanxchargedS3Innerpassion = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3InnerPassion,
-  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect],
+  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 138,
   triggerable: true,

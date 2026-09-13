@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
+import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
 export const snowpartingslidePrepull = defineSkill({
   id: SKILL.snowpartingslidePrepull,
@@ -11,6 +12,7 @@ export const snowpartingslidePrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSlidePrepull,
+  receives: SNOWPARTING_BLADE_RECEIVES,
   castFrames: 0,
   triggerable: true,
   hits: [

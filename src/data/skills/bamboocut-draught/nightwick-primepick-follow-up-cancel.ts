@@ -2,7 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { primepickFollowUpHits } from "./nightwick-primepick-follow-up"
 
 // A cancel form ends one frame after its last landed collider; the drink
@@ -17,7 +17,11 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.nightwickPrimepickFollowUpCancel,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.nonPlayerBaseDamage40,
+  ],
   triggerable: false,
   castFrames: 21,
   hits: [primepickFollowUpHits[0]],

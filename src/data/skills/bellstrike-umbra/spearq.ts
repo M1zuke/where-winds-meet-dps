@@ -3,6 +3,7 @@ import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -15,7 +16,7 @@ export const spearq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
   triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage],
+  receives: [BUFF.wolfchasersArtMartialDamage, ...HEAVENQUAKER_SPEAR_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 120,
   triggerable: true,

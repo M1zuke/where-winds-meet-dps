@@ -3,7 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 // Hit frames: in-game animation, 2026-09-11.
 export const primepickFollowUpHits = [
@@ -44,7 +44,11 @@ export const nightwickPrimepickFollowUp = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.nightwickPrimepickFollowUp,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.nonPlayerBaseDamage40,
+  ],
   triggerable: false,
   castFrames: 102,
   hits: primepickFollowUpHits,

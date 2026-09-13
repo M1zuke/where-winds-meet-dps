@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { INKWELL_FAN_RECEIVES } from "./receives"
 
 export const fanq = defineSkill({
   id: SKILL.fanq,
@@ -12,6 +13,7 @@ export const fanq = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQ,
+  receives: INKWELL_FAN_RECEIVES,
   triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
   castFrames: 66,
   triggerable: true,

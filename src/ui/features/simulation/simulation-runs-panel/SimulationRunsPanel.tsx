@@ -218,7 +218,7 @@ export function SimulationRunsPanel({
             <table className={`ranking-table ${styles.runs}`}>
               <thead>
                 <tr>
-                  <th className={styles.rankCell}>{t("simulation.runs.rank")}</th>
+                  <th className={styles.rankCell}>{t("common.rank")}</th>
                   {sortableHeader("run", t("simulation.runs.runNumber"))}
                   {sortableHeader("dps", t("common.dps"))}
                   {sortableHeader("damage", t("common.damage"))}

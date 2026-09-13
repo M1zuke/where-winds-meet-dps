@@ -147,21 +147,21 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(44625)
-    expect(result.dps).toBeLessThan(44775)
-    expect(result.totalDamage).toBeGreaterThan(3018000)
-    expect(result.totalDamage).toBeLessThan(3032000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1560000)
-    expect(detonation?.expectedDamage).toBeLessThan(1573000)
+    expect(result.dps).toBeGreaterThan(43845)
+    expect(result.dps).toBeLessThan(43995)
+    expect(result.totalDamage).toBeGreaterThan(2966000)
+    expect(result.totalDamage).toBeLessThan(2980000)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1514000)
+    expect(detonation?.expectedDamage).toBeLessThan(1527000)
 
-    // dps sits ~7.6 % below the cached target while total damage sits above
+    // dps sits ~9.2 % below the cached target while total damage sits above
     // it: the animation-accurate cast lengths lengthen the rotation by
     // several seconds, so the same hits land over a longer clock.
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.92)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.929)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.025)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.035)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.988)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.998)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.904)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.912)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.008)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.017)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.959)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.968)
   })
 })

@@ -3,6 +3,7 @@ import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
+import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
 export const snowpartingqStab = defineSkill({
   id: SKILL.snowpartingqStab,
@@ -13,7 +14,7 @@ export const snowpartingqStab = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingQStab,
-  receives: [BUFF.cleftpeakDeflect],
+  receives: [BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
   triggersBuffs: [BUFF.throatPierced],
   castFrames: 113,
   triggerable: true,

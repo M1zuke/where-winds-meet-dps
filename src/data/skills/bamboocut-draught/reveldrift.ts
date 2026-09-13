@@ -3,7 +3,7 @@ import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL, STATUS } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 // A staggered target — read as the Qi-break window — grants 50 Binge Points
 // once per 3 s. Hit frames: in-game animation colliders, 2026-09-05.
@@ -44,7 +44,7 @@ export const reveldrift = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.reveldrift,
-  receives: CLASS_RECEIVES,
+  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
   castFrames: 66,

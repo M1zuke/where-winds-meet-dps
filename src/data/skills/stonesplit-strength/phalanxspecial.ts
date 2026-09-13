@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 
 export const phalanxspecial = defineSkill({
   id: SKILL.phalanxspecial,
@@ -12,6 +13,7 @@ export const phalanxspecial = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxSpecial,
+  receives: PHALANXBANE_BLADE_RECEIVES,
   triggersBuffs: [BUFF.ironGuards],
   castFrames: 71,
   triggerable: true,

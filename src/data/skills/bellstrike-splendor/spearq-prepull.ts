@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 
 // Cast before the pull, so it lands no damage of its own — it is in the
 // rotation for the Endless Gale window and the Qi Imbalance it applies.
@@ -16,6 +17,7 @@ export const spearqPrepull = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
   triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.mountainsMight, BUFF.qiImbalance],
+  receives: NAMELESS_SPEAR_RECEIVES,
   castFrames: 0,
   triggerable: true,
   hits: [

@@ -1612,6 +1612,66 @@ describe("class id degrade (an unrecognised classId falls back to the default bu
   })
 })
 
+describe("the stage attack talent rows follow the stored breakthrough (additive, no version bump)", () => {
+  const PROFILES_KEY = "wwm.profiles"
+
+  beforeEach(() => {
+    localStorage.clear()
+  })
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  function storeProfileAt(breakthrough: number): void {
+    kvStore.set(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Stage test",
+            inputs: { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+  }
+
+  function swordStage(talents: Inputs["martialArtsTalents"]): { min: number; max: number } {
+    const byName = Object.fromEntries(talents.map((talent) => [talent.name, talent]))
+    return {
+      min: byName["Sword Bellstrike Attack Min"].maxBonus,
+      max: byName["Sword Bellstrike Attack Max"].maxBonus,
+    }
+  }
+
+  it("hydrates a profile stored at breakthrough 18 with the 106/212 rows", () => {
+    storeProfileAt(18)
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 106, max: 212 })
+  })
+
+  it("hydrates a profile stored at breakthrough 17 with the 98/196 rows", () => {
+    storeProfileAt(17)
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 98, max: 196 })
+  })
+
+  it("hydrating twice is idempotent", () => {
+    storeProfileAt(18)
+    const first = loadProfiles().profiles[0].inputs.martialArtsTalents
+    const second = loadProfiles().profiles[0].inputs.martialArtsTalents
+    expect(second).toEqual(first)
+  })
+
+  it("the default build still hydrates to 98/196", () => {
+    const { profiles } = loadProfiles()
+    expect(swordStage(profiles[0].inputs.martialArtsTalents)).toEqual({ min: 98, max: 196 })
+  })
+})
+
 describe("disabledTalentPoints hydration (additive, no version bump)", () => {
   const PROFILES_KEY = "wwm.profiles"
 

@@ -6,6 +6,7 @@ export interface BuffRequirements {
   minTier?: number
   set?: string
   classId?: string
+  minBreakthrough?: number
 }
 
 export interface ActiveAfterBuffEnds {

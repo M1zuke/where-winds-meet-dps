@@ -3,6 +3,7 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { DRONE_TICK } from "./droneTick"
+import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 export const umbdrone23HitTick = defineSkill({
   id: SKILL.umbdrone23Hit,
@@ -23,6 +24,7 @@ export const umbdrone23HitTick = defineSkill({
     BUFF.combo,
     BUFF.windWall,
     BUFF.trajectorySkill,
+    ...VERNAL_UMBRELLA_RECEIVES,
   ],
   elevatedAttributeMultiplier: false,
   castFrames: 0,

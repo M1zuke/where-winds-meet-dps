@@ -1,7 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { CLASS_RECEIVES } from "./receives"
+import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 const strike = (index: number) =>
   hit(index, {
@@ -26,7 +27,11 @@ export const falconsPursuit = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.falconsPursuit,
-  receives: CLASS_RECEIVES,
+  receives: [
+    ...CLASS_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.skystrikeGauntletsAdditionalAttackCoefficient,
+  ],
   triggerable: true,
   castFrames: 0,
   hits: [strike(0), strike(1), strike(2)],

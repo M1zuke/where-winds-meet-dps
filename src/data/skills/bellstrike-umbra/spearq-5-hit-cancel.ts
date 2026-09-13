@@ -3,6 +3,7 @@ import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
 export const spearq5HitCancel = defineSkill({
   id: SKILL.spearq5HitCancel,
@@ -15,7 +16,7 @@ export const spearq5HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ5HitCancel,
   triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage],
+  receives: [BUFF.wolfchasersArtMartialDamage, ...HEAVENQUAKER_SPEAR_RECEIVES],
   // A cancel form ends where the animation opens its interrupt window — 101 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 101,
   triggerable: true,

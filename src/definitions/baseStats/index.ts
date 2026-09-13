@@ -22,11 +22,11 @@ import type {
   TalentStat,
 } from "../../engine/types"
 import baseStatsJson from "../../data/baseStats/baseStats.json"
-import { ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
+import { artAttackStageAt, ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
 import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
-import { breakthroughAttributes } from "./breakthroughs"
+import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
   BODY_PER_POINT,
@@ -314,6 +314,7 @@ interface ClassSkillBoost {
   maxBonus: number
   scalesWith: keyof PlayerAttributes
   scaleMax: number
+  stage?: "min" | "max"
 }
 type ClassSkillBoosts = Record<string, ClassSkillBoost[]>
 
@@ -341,18 +342,33 @@ const STAT_TO_PATH: Readonly<Record<string, string>> = {
   attributeDamage: "attributeDamageBoost",
 }
 
-export function getDefaultTalentsForClass(classId: string): MartialArtsTalent[] {
+export function getDefaultTalentsForClass(
+  classId: string,
+  breakthrough: number = defaultBreakthrough(),
+): MartialArtsTalent[] {
   const boosts = (classSkillBoostsJson as ClassSkillBoosts)[classId]
   if (!boosts) return []
-  return boosts.map((b, i) => ({
-    id: `default-${classId}-${i}`,
-    name: b.skill,
+  const resolvedStage = artAttackStageAt(classId, breakthrough)
+  return boosts.map((boost, index) => ({
+    id: `default-${classId}-${index}`,
+    name: boost.skill,
     enabled: true,
-    stat: b.stat as TalentStat,
-    maxBonus: b.maxBonus,
-    scalesWith: b.scalesWith as ScalingSource,
-    scaleMax: b.scaleMax,
+    stat: boost.stat as TalentStat,
+    maxBonus: boost.stage ? resolvedStage[boost.stage] : boost.maxBonus,
+    scalesWith: boost.scalesWith as ScalingSource,
+    scaleMax: boost.scaleMax,
   }))
+}
+
+export function resyncDefaultTalentsForBreakthrough(inputs: Inputs): Inputs {
+  const nonDefault = inputs.martialArtsTalents.filter((talent) => !talent.id.startsWith("default-"))
+  return {
+    ...inputs,
+    martialArtsTalents: [
+      ...nonDefault,
+      ...getDefaultTalentsForClass(inputs.classId, inputs.breakthrough),
+    ],
+  }
 }
 
 export function totalPlayerAttributes(

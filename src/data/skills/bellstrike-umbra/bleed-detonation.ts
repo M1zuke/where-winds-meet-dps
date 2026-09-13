@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF as MYSTIC_DEBUFF } from "../mystic/ids"
 import { SKILL } from "./ids"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import {
   ZENITH_BAR_BUFF_ID,
   ZENITH_DETONATION_BUFF_ID,
@@ -26,6 +27,7 @@ export const bleedDetonation = defineSkill({
     BUFF.bellstrikeUmbraBleedCoefficient,
     ZENITH_BAR_BUFF_ID,
     BUFF.soulShaken,
+    ...STRATEGIC_SWORD_RECEIVES,
   ],
   castFrames: 0,
   triggerable: true,

@@ -3,7 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
 // One kick at the special skill's full share (0.9444 / 262 / 143 at skill
 // level 100, in-game damage tooltip, 2026-09-04); attribute side × 1.5. Cast
@@ -19,7 +19,11 @@ export const nightwickTipsylay = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.nightwickTipsylay,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.nonPlayerBaseDamage40,
+  ],
   triggerable: false,
   castFrames: 39,
   hits: [

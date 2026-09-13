@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { INEBRIATE_ENHANCED_RECEIVES } from "./receives"
+import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { BUFF } from "../buffs/ids"
 
 export const peakfallPrepull = defineSkill({
@@ -14,7 +14,11 @@ export const peakfallPrepull = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.peakfallPrepull,
-  receives: [...INEBRIATE_ENHANCED_RECEIVES, BUFF.nonPlayerBaseDamage40],
+  receives: [
+    ...INEBRIATE_ENHANCED_RECEIVES,
+    ...SKYSTRIKE_GAUNTLETS_RECEIVES,
+    BUFF.nonPlayerBaseDamage40,
+  ],
   triggersBuffs: [BUFF.jadeware],
   prePull: true,
   triggerable: false,
