@@ -13,7 +13,8 @@ import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/type
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
-import { CLASS_IDS } from "./definitions/classes/registry"
+import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
+import { resolveResourceSettings } from "./definitions/resources/resourceDef"
 import { SET_BY_ID } from "./definitions/sets/registry"
 import {
   innerWayIdForName,
@@ -494,6 +495,15 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.arsenalScores = healed
   }
   {
+    if (next.resourceSettings) {
+      next.resourceSettings = { ...next.resourceSettings }
+      for (const resource of classDefinition(next.classId)?.resources ?? []) {
+        next.resourceSettings[resource.id] = resolveResourceSettings(
+          resource,
+          next.resourceSettings[resource.id],
+        )
+      }
+    }
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}

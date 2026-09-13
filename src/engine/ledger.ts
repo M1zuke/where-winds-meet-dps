@@ -73,6 +73,17 @@ export class StatusLedger implements StatusView {
     this.pushWindow(id, this.spanStart, this.spanEnd)
   }
 
+  constrainWindows(id: string, intervals: readonly { start: number; end: number }[]): void {
+    this.windows.set(
+      id,
+      (this.windows.get(id) ?? []).flatMap((window) => {
+        const interval = intervals.find((candidate) => candidate.start === window.start)
+        if (!interval || interval.end <= interval.start) return []
+        return [{ ...window, end: Math.min(window.end, interval.end) }]
+      }),
+    )
+  }
+
   recordStack(id: string, frame: number, value: number, owner: number = UNOWNED): void {
     const entry = { frame, value, owner, seq: this.writeSeq++ }
     const existing = this.stacks.get(id)

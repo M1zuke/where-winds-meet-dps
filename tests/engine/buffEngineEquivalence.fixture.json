@@ -593,12 +593,7 @@
           "hasStacksFn": false,
           "duration": 2,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "damageMultiplier",
-              "factor": 2
-            }
-          ],
+          "effects": [],
           "summary": null
         },
         {
@@ -78582,12 +78577,7 @@
           "hasStacksFn": false,
           "duration": 2,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "damageMultiplier",
-              "factor": 2
-            }
-          ],
+          "effects": [],
           "summary": null
         },
         {
@@ -79655,12 +79645,7 @@
           "hasStacksFn": false,
           "duration": 2,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "damageMultiplier",
-              "factor": 2
-            }
-          ],
+          "effects": [],
           "summary": null
         },
         {
@@ -80181,7 +80166,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 51,
+        "count": 53,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -80221,11 +80206,13 @@
           "silkbindJade-perfect-dodge",
           "silkbindJade-perfect-dodge-full",
           "silkbindJade-umb-heavylight",
+          "silkbindJade-umbdrone",
           "silkbindJade-umbdrone-12hit",
           "silkbindJade-umbdrone-16hit",
           "silkbindJade-umbdrone-20hit",
           "silkbindJade-umbdrone-23hit",
           "silkbindJade-umbdrone-26hit",
+          "silkbindJade-umbdronelaunch",
           "silkbindJade-umbdronelaunch-12hit",
           "silkbindJade-umbdronelaunch-16hit",
           "silkbindJade-umbdronelaunch-20hit",
@@ -80235,23 +80222,24 @@
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull"
         ],
-        "digest": "04bd4bda4d6372744b0e74aa8d8f9e34537fea2923fb1f8b5ecb797370a8b9e2"
+        "digest": "4b3f1232babe70862d6dedcb939c9d900db8c8b00f684a255fec12859cb4e74e"
       },
       "debuffs": {
-        "count": 10,
+        "count": 11,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-silkbindJade-bitter-season-tick",
+          "debuff-silkbindJade-umbdrone",
           "debuff-silkbindJade-umbdrone-12hit",
           "debuff-silkbindJade-umbdrone-16hit",
           "debuff-silkbindJade-umbdrone-20hit",
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "c75f7a7a116f5362808c8e7d304125136d6a929a2089807bccc87c89f4098a15"
+        "digest": "08cc89c07bb4c01929627d9449a77a5621fe7db075680e15e44ad0fb3fe9ba43"
       },
       "buffs": [
         {
@@ -80286,7 +80274,7 @@
         },
         {
           "id": "comboUmbLightBonus",
-          "name": "Combo (UmbLight)",
+          "name": "Combo (Spring Away / Unfading Flower)",
           "classBuff": false,
           "requires": {
             "param": "blossomBarrage",
@@ -80306,14 +80294,8 @@
           "hasStacksFn": false,
           "duration": 15,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "allDamageBoost",
-              "amount": 0.1
-            }
-          ],
-          "summary": null
+          "effects": "[fn]",
+          "summary": "+5% damage against your Combo target; +10% while Exhausted (PvE)"
         },
         {
           "id": "starReacher",
@@ -80802,12 +80784,7 @@
           "hasStacksFn": false,
           "duration": 2,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "damageMultiplier",
-              "factor": 2
-            }
-          ],
+          "effects": [],
           "summary": null
         },
         {
@@ -81226,7 +81203,7 @@
       ]
     },
     "dynamic": {
-      "digest": "285e616dc65962b5381788270c6228b20b7417d882a48d43e5094f285e773c02"
+      "digest": "18c7153052a0c78c0b5214eeb8bce263a5f2be146d4f376cb31950ce89d9e045"
     }
   },
   "bamboocutDraught": {
@@ -81885,12 +81862,7 @@
           "hasStacksFn": false,
           "duration": 2,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "damageMultiplier",
-              "factor": 2
-            }
-          ],
+          "effects": [],
           "summary": null
         },
         {

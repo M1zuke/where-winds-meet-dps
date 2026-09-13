@@ -160,7 +160,23 @@ export const bitterSeasonTick = defineDebuff({
   receives: [BUFF.soulShaken],
 })
 
+export const umbdrone = defineDebuff({
+  ...umbdrone20Hit,
+  id: DEBUFF.umbdrone,
+  name: "UmbDrone",
+  durationFrames: 3600 * 60,
+  dot: {
+    ...umbdrone20Hit.dot,
+    // Provisional cadence from https://medal.tv/games/where-winds-meet/clips/nhIubYLFVfAg-vpqX:
+    // paired impacts approximately 0.15 s apart, repeating every 0.5 s.
+    tickIntervalFrames: 30,
+    firstTickOffsetFrames: 21,
+    additionalTicks: { offsetsFrames: [9], requiresBuff: BUFF.lingeringBone },
+  },
+})
+
 export const DEBUFFS: readonly Debuff[] = [
+  umbdrone,
   umbdrone12Hit,
   umbdrone16Hit,
   umbdrone20Hit,

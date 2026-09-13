@@ -1,0 +1,86 @@
+@use "breakpoints";
+
+.planner {
+  margin-top: 16px;
+  p {
+    color: var(--color-text-dim);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+  svg {
+    width: 100%;
+    margin-top: 12px;
+  }
+  text {
+    fill: var(--color-text-dim);
+    font-size: 10px;
+  }
+}
+
+.fields {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  label {
+    display: grid;
+    gap: 6px;
+    font-size: 0.85em;
+  }
+  input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@include breakpoints.below(breakpoints.$bp-560) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 0.85em;
+}
+.readout {
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.axis {
+  stroke: var(--color-border-strong);
+  fill: none;
+}
+.threshold {
+  stroke: var(--color-border-strong);
+  stroke-dasharray: 5 5;
+}
+.curve {
+  stroke: var(--color-accent);
+  stroke-width: 2;
+  fill: none;
+}
+
+.breakWindow {
+  fill: var(--color-accent);
+  opacity: 0.12;
+}
+
+.planner details {
+  margin: 14px 0;
+  font-size: 0.85em;
+}
+
+.planner button {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 5px;
+  color: var(--color-accent);
+  background: transparent;
+  cursor: pointer;
+}

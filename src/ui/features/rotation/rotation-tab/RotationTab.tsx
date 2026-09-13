@@ -4,6 +4,8 @@ import { RotationOptionsPanel } from "../rotation-options-panel/RotationOptionsP
 import { RotationBreakdownPanel } from "../rotation-breakdown-panel/RotationBreakdownPanel"
 import { RotationDpsGraphPanel } from "../rotation-dps-graph-panel/RotationDpsGraphPanel"
 import { RotationTimelinePanel } from "../rotation-timeline-panel/RotationTimelinePanel"
+import { BlossomTimelinePanel } from "../blossom-timeline-panel/BlossomTimelinePanel"
+import { BlossomPanel } from "../../overview/blossom-panel/BlossomPanel"
 import styles from "./RotationTab.module.scss"
 
 export function RotationTab({
@@ -38,6 +40,15 @@ export function RotationTab({
           <h2>{t("rotation.dpsGraph")}</h2>
           <RotationDpsGraphPanel result={result} />
         </div>
+        {inputs.classId === "silkbindJade" && (
+          <div className={`panel ${styles.spanColumns}`}>
+            <BlossomTimelinePanel result={result} />
+            <details>
+              <summary>{t("overview.blossoms.assumptions")}</summary>
+              <BlossomPanel inputs={inputs} onChange={onChange} />
+            </details>
+          </div>
+        )}
         <div className={`panel ${styles.spanColumns}`}>
           <h2>{t("rotation.castTimeline")}</h2>
           <RotationTimelinePanel result={result} />

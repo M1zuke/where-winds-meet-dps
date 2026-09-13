@@ -302,6 +302,19 @@ a refactor.
 
 ## Checklist
 
+- Declare resource capacity, launch identity, upkeep and gain rules on the owning
+  class definition; keep resource names and values out of the engine.
+- Gate resource-controlled ticks before their damage or buff triggers. A depleted
+  launch must not revive from later refunds. Each new launch starts its own cadence.
+- Distribute declared whole-skill resource gains over authored hits; credit only
+  executed damaging hits, and keep once-per-cast bonuses independent.
+- Gate conditional additional pulse impacts at execution time, so status extensions
+  from earlier accepted impacts can affect later impacts.
+- Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
+  must not grant a hit refund. Clamp balances and use the encounter's phase clock.
+- Expose uncertain gain amounts as persisted, hydrated inputs. Report actual funded
+  windows and rejected launches, and distinguish assumptions from measured anchors.
+
 1. English identifiers only.
 2. Coefficients, frames and `castFrames` set per hit.
 3. `skillType` correct — it selects the boost bucket and the sustain branch.

@@ -2062,8 +2062,8 @@
     "digest": "912bceaa7460aa43a272169cac77ff18f6d8b2b7b75d20e51aae756d1227a448"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 48664.86,
-    "totalDamage": 2910158.38,
+    "dps": 48561.55,
+    "totalDamage": 2903980.54,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2096,7 +2096,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 81081.01,
+        "expectedDamage": 74903.17,
         "castCount": 0
       },
       {
@@ -2225,11 +2225,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "10b26bc0f69bfadaa7f65700a1bf4d50c9a69957a61b9d056d450266a4454348"
+    "digest": "014a34929e2b784c23c998bced422dba77a11cce6b7438871a5a4e9241dec3ad"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47742.42,
-    "totalDamage": 2854996.72,
+    "dps": 47639.11,
+    "totalDamage": 2848818.88,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2262,7 +2262,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 79555.46,
+        "expectedDamage": 73377.62,
         "castCount": 0
       },
       {
@@ -2391,11 +2391,11 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "5323e0311ee32a6ceb3649d1a21b37ad37bb02a4eccf907f57f518111adc905c"
+    "digest": "04face0fd578070c42b5702ab4563152ce967b712224b16631b0806fb9cc83d7"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 47285.96,
-    "totalDamage": 2827700.67,
+    "dps": 47188.91,
+    "totalDamage": 2821896.66,
     "rotationDuration": 59.8,
     "warnings": [],
     "perSkill": [
@@ -2428,7 +2428,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 74660.45,
+        "expectedDamage": 68856.44,
         "castCount": 0
       },
       {
@@ -2557,7 +2557,7 @@
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "d9a59281639d64a091521c8964dcb93bbf3ec60c02b85ee5676ae621ae6b55ce"
+    "digest": "ad6538956d478477951c94e28efc9c8730cadaacfbfe11dfeec567ad95f09693"
   },
   "anchor:noSet": {
     "dps": 69691.99,

@@ -54,7 +54,8 @@ import {
 } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
-import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import { CombatResource } from "./resources"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
 import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
@@ -638,6 +639,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   })()
 
+  const resources = (classDefinition(inputs.classId)?.resources ?? [])
+    .filter((definition) =>
+      laidSteps.some((step) => step.resolved.skill.id === definition.launchSkillId),
+    )
+    .map(
+      (definition) =>
+        new CombatResource(definition, inputs.resourceSettings?.[definition.id], {
+          fps: FPS,
+          startFrame: 0,
+          collect: collectDetail,
+          buffActive: (id, frame) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+          exhausted: (frame) => clockQiPhase(buffParams, frame / FPS) === "exhausted",
+          paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
+        }),
+    )
+  const resourceByDebuff = new Map(
+    resources.map((resource) => [resource.definition.debuffId, resource]),
+  )
+  const resourceByLaunch = new Map(
+    resources.map((resource) => [resource.definition.launchSkillId, resource]),
+  )
+
   const qiBreakWindow = buffEngine
     ? (() => {
         const w = buffEngine.qiBreakWindow()
@@ -814,6 +837,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   interface DotTickEntry extends DotTickPlan {
+    resourceOwner?: number
     debuff: Debuff
     debuffForTick: Debuff
     dotSkill: Skill
@@ -1174,32 +1198,49 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       : debuffKey(status.id)
     const dotType = dot.skillType || "sustain"
 
-    for (const plan of planDotTicks({
-      debuff: status,
-      dot,
-      windows: arr,
-      stacksAt: (frame) => stacksAt(buffId, frame),
-      inWindow,
-      weightAt: (frame) => {
-        for (const { mechanic, state } of mechanics) {
-          const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
-          if (weight !== null && weight !== undefined) return weight
-        }
-        return 1
-      },
-    })) {
-      const entry: DotTickEntry = {
-        ...plan,
+    const resource = resourceByDebuff.get(buffId)
+    const sortedWindows = [...arr].sort((left, right) => left.start - right.start)
+    const episodes = resource
+      ? sortedWindows.map((window, index) => [
+          {
+            ...window,
+            end: Math.min(
+              window.end,
+              sortedWindows[index + 1]?.start ?? windowFrames + 1,
+              windowFrames + 1,
+            ),
+          },
+        ])
+      : [arr]
+    for (const episode of episodes) {
+      for (const plan of planDotTicks({
         debuff: status,
-        debuffForTick,
-        dotBreakdownKey,
-        dotSkill,
-        dotName,
-        dotBreakdownName,
-        dotType,
+        dot,
+        windows: episode,
+        stacksAt: (frame) => stacksAt(buffId, frame),
+        inWindow,
+        weightAt: (frame) => {
+          for (const { mechanic, state } of mechanics) {
+            const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
+            if (weight !== null && weight !== undefined) return weight
+          }
+          return 1
+        },
+      })) {
+        const entry: DotTickEntry = {
+          ...plan,
+          resourceOwner: resource ? episode[0].start : undefined,
+          debuff: status,
+          debuffForTick,
+          dotBreakdownKey,
+          dotSkill,
+          dotName,
+          dotBreakdownName,
+          dotType,
+        }
+        dotTickEntries.push(entry)
+        mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
       }
-      dotTickEntries.push(entry)
-      mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
     }
   }
 
@@ -1257,9 +1298,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // module's `target.remainingHealthFraction` reads the true running total.
   mergedEvents.sort(byMergedOrder)
   for (const event of mergedEvents) {
+    for (const resource of resources)
+      resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
     if (event.kind === "hit") {
       const { frame, skill, hit, castFrame, extraEffects, forceGuaranteedAffinity, ledgerMark } =
         event
+      const launchResource = resourceByLaunch.get(skill.id)
+      if (
+        launchResource &&
+        inWindow(frame) &&
+        !isPrePullSkill(skill) &&
+        !launchResource.launch(frame)
+      ) {
+        continue
+      }
       const behavior = behaviorFor(skill)
       const hitInput = hitInputAt(skill, hit, frame)
       const resolveOverride: ResolveOverride | undefined =
@@ -1306,6 +1358,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const damage = rolled?.damage ?? expectedDamage
       const landsInFight = inWindow(frame) && !isPrePullSkill(skill)
       if (landsInFight) {
+        if (hitDealsDamage(hit))
+          for (const resource of resources) resource.hit(skill, frame, castFrame)
         totalDamage += damage
         if (rolled) tallyRoll(rolled, damage)
         // A hit that carries no coefficient exists to fire its triggers, and
@@ -1332,6 +1386,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       })
     } else if (event.kind === "tick") {
       const { entry } = event
+      const resource = resourceByDebuff.get(entry.debuff.id)
+      if (
+        entry.requiresBuff &&
+        !buffEngine?.isBuffActiveAtTime(entry.requiresBuff, entry.frame / FPS)
+      )
+        continue
+      if (resource && !resource.tick(entry.frame, entry.resourceOwner!)) continue
       if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
         buffEngine?.triggerDeclaredBuffs(
           entry.debuff.triggersBuffs,
@@ -1430,6 +1491,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const resourceResults = resources.map((resource) => resource.finish(windowFrames))
+  for (const resource of resources) {
+    ledger.constrainWindows(
+      resource.definition.debuffId,
+      resource.result.launches
+        .filter((launch) => launch.reason !== "insufficient")
+        .map((launch) => ({
+          start: Math.round(launch.timeSec * FPS),
+          end: Math.round(launch.endSec * FPS),
+        })),
+    )
+  }
+
   // Only now is `buffHistory` settled by every event, ticks included, so a
   // cast chip reports what a tick applied to it.
   const casts: RotationCast[] = collectDetail ? buildCasts() : []
@@ -1467,6 +1541,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   return {
     dps,
+    ...(resourceResults.length > 0 ? { resources: resourceResults } : {}),
     totalDamage,
     rotationDuration: durationSeconds,
     castDuration: castCursorFrames / FPS,

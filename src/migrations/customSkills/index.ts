@@ -21,6 +21,7 @@ import { V17__bellstrikeSplendorArtBonusAttack } from "./V17__bellstrikeSplendor
 import { V18__stonesplitStrengthArtBonusAttack } from "./V18__stonesplitStrengthArtBonusAttack"
 import { V19__bamboocutDraughtArtBonusAttack } from "./V19__bamboocutDraughtArtBonusAttack"
 import { V20__silkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAttack"
+import { V21__jadeBlossomBarrageReach } from "./V21__jadeBlossomBarrageReach"
 
 export type {
   CustomSkillMigration,
@@ -66,6 +67,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V18__stonesplitStrengthArtBonusAttack,
   V19__bamboocutDraughtArtBonusAttack,
   V20__silkbindJadeArtBonusAttack,
+  V21__jadeBlossomBarrageReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

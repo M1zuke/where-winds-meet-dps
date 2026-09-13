@@ -3186,6 +3186,770 @@
         "createdAt": "2026-08-17T00:00:00.000Z",
         "updatedAt": "2026-08-17T00:00:00.000Z",
         "description": "Standardized rotation for patch 1.7 and later. \nhttps://medal.tv/games/where-winds-meet/clips/mQxP0WDdFAYXLhUxi?invite=cr-MSxxeUssMjgxMDQ3OTk2&v=84"
+      },
+      {
+        "id": "builtin-silkbindJade-20-dh-video-60s",
+        "name": "2.0 DH",
+        "classId": "silkbindJade",
+        "steps": [
+          {
+            "skillId": "mystic-drunkenpoet-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanq-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-fire-breath-2-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-fire-breath-2-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-dragon-head-plus",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-soaring",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanheavypursuit-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "createdAt": "2026-09-13T13:46:56.672Z",
+        "updatedAt": "2026-09-13T13:47:36.327Z",
+        "openingStacks": {},
+        "qiBreak": {
+          "startSec": 31,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
+        "fixedWindowSec": 60
+      },
+      {
+        "id": "builtin-silkbindJade-30s-dummy-max",
+        "name": "30s Dummy max",
+        "classId": "silkbindJade",
+        "steps": [
+          {
+            "skillId": "silkbindJade-fanq-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-ghostly-steps",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-drunkenpoet-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-golden-body-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-soaring",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-toad-cancel",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanlightcharged",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-fire-breath-2-hit",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umb-heavylight",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-umbdronelaunch",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-golden-body-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanspecial",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-delay",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-poet1",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-poet2",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-poet3",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-poet4",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-poet-final-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "silkbindJade-fanqcancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-dragon-head-plus",
+            "hitCount": 1,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "fixedWindowSec": 30,
+        "qiBreak": {
+          "startSec": 20,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
+        "createdAt": "2026-09-13T18:00:00.000Z",
+        "updatedAt": "2026-09-13T18:00:00.000Z",
+        "description": "Source: ryvn, https://www.youtube.com/watch?v=UslxY4_kzjM (2026-08-30). Video description supplies the action order; visual review also shows a third drone launch after Q/Heavy Light, around 19 s, omitted from that description. The boss is exhausted around 20 s; that sampled timing is used for the Qi Break window. Cast/cancel durations and transition gaps remain approximate. Dragon Head lands within the 30-second window. Pre-pull actions use existing pre-pull skills. Author loadout: Rainwhisper, Wraithstrike Script; Morale Chant, Blossom Barrage, Star Reacher, Breaking Point; enhanced Dragon Breath and Dragon Head. Selecting this preset does not replace gear, Inner Ways, resource settings or Dummy mode. Blossom gains remain configurable assumptions; the video's reported 76 projectile hits are a comparison target, not a forced hit count. This preset is not DPS-validated."
       }
     ],
     "defaultRotationId": "builtin-silkbindJade-standardized-1-7"

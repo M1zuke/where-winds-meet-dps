@@ -8,6 +8,17 @@ function ledger(): StatusLedger {
   return new StatusLedger(SPAN_START, SPAN_END)
 }
 
+it("constrains resource windows without changing their ownership or write order", () => {
+  const led = ledger()
+  led.pushWindow("resource", 0, 600, 0)
+  led.pushWindow("resource", 120, 720, 120)
+  const original = led.windowsOf("resource")[0]
+  led.constrainWindows("resource", [{ start: 0, end: 90 }])
+  expect(led.windowsOf("resource")).toEqual([{ ...original, end: 90 }])
+  expect(led.throughOwner(0).isActiveAt("resource", 89)).toBe(true)
+  expect(led.isActiveAt("resource", 90)).toBe(false)
+})
+
 describe("StatusLedger — stacks", () => {
   it("reads the latest value recorded at or before the frame, and 0 before any", () => {
     const led = ledger()

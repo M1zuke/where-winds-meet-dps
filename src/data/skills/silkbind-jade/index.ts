@@ -1,4 +1,5 @@
 import type { Skill } from "../../../engine/skill"
+import { umbdronelaunch, umbdroneTick } from "./umbdronelaunch"
 import { fanheavypursuit3Hit } from "./fanheavypursuit-3-hit"
 import { fanheavypursuit5Hit } from "./fanheavypursuit-5-hit"
 import { fanlightcharged } from "./fanlightcharged"
@@ -26,6 +27,8 @@ import { umbq } from "./umbq"
 export const CLASS_ID = "silkbindJade"
 
 export const SKILLS: Skill[] = [
+  umbdronelaunch,
+  umbdroneTick,
   fanheavypursuit3Hit,
   fanheavypursuit5Hit,
   fanlightcharged,
