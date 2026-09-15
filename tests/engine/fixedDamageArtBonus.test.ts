@@ -1,7 +1,8 @@
+import { makeSkill, makeHit } from "../../src/engine/skill"
 import { describe, expect, it } from "vitest"
 import { computeSkillDamage } from "../../src/engine/formula"
 import type { FormulaContext } from "../../src/engine/formula"
-import { dotTickDamage } from "../../src/engine/dot"
+import { dotTickDamage, resolveTickDot } from "../../src/engine/dot"
 import { makeDebuff } from "../../src/engine/debuff"
 
 type Art = Parameters<typeof computeSkillDamage>[0]
@@ -158,4 +159,57 @@ describe("dotTickDamage — fixedDamagePctBonus arrives through artBonuses", () 
     const plain = dotTickDamage(flatlessDot, baseCtx, computeSkillDamage)
     expect(bonused.damage).toBeCloseTo(plain.damage, 9)
   })
+})
+
+describe("tick source attribute scaling", () => {
+  it.each([false, true, undefined])(
+    "preserves %s through source resolution and damage calculation",
+    (elevatedAttributeMultiplier) => {
+      const hit = makeHit({
+        physMultiplier: 0.2,
+        attributeMultiplier: 0.6,
+        physFixed: 25,
+        attributeFixed: 10,
+      })
+      const source = makeSkill("bamboocutDraught", {
+        attributeAttack: "Bamboocut",
+        elevatedAttributeMultiplier,
+        hits: [hit],
+        skillType: "sustain",
+      })
+      const debuff = makeDebuff("bamboocutDraught", {
+        dot: {
+          tickIntervalFrames: 60,
+          ...hit,
+          attributeAttack: "Bamboocut",
+          skillType: "sustain",
+          count: 1,
+        },
+      })
+      const ctx = { ...baseCtx, attributeFlatMultiplier: 1.5 }
+      const resolved = { ...debuff, dot: resolveTickDot(debuff, source) }
+      const tick = dotTickDamage(resolved, ctx, computeSkillDamage).damage
+      const direct = computeSkillDamage(
+        {
+          name: "Reference",
+          ...hit,
+          attributeAttack: "Bamboocut",
+          elevatedAttributeMultiplier,
+          skillType: "sustain",
+          specialTag: "sustain",
+        },
+        ctx,
+        1,
+      ).expectedDamage
+      expect(tick).toBeCloseTo(direct, 9)
+      if (elevatedAttributeMultiplier === false) {
+        const elevated = dotTickDamage(
+          { ...resolved, dot: { ...resolved.dot!, elevatedAttributeMultiplier: true } },
+          ctx,
+          computeSkillDamage,
+        ).damage
+        expect(tick).toBeLessThan(elevated)
+      }
+    },
+  )
 })

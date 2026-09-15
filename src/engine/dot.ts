@@ -42,6 +42,8 @@ export function resolveTickDot(debuff: Debuff, tickSkill: Skill | undefined): De
     attributeMultiplier: sourceHit.attributeMultiplier,
     attributeFixed: sourceHit.attributeFixed,
     extraCritDamage: sourceHit.extraCritDamage,
+    elevatedAttributeMultiplier:
+      tickSkill.elevatedAttributeMultiplier ?? base.elevatedAttributeMultiplier,
     attributeAttack: (tickSkill.attributeAttack ||
       base.attributeAttack) as DebuffDotSpec["attributeAttack"],
     weaponOrAttribute: tickSkill.weaponOrAttribute || null,
@@ -107,6 +109,7 @@ function tickArt(
     attributeFixed: shape.attributeFixed,
     attributeAttack: dot.attributeAttack || undefined,
     extraCritDamage: dot.extraCritDamage,
+    elevatedAttributeMultiplier: dot.elevatedAttributeMultiplier,
     skillType: dot.skillType || "sustain",
     specialTag: "sustain",
     guaranteedCrit: forceCrit ? 1 : undefined,
@@ -160,6 +163,7 @@ export function mergeEpisodes(windows: readonly StatusWindow[]): StatusWindow[] 
 export interface DotTickPlan {
   frame: number
   weight: number
+  requiresBuff?: string
   shape?: DotStackShape
   scale?: number
 }
@@ -189,23 +193,39 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
   for (const episode of mergeEpisodes(query.windows)) {
     // The accumulator stays exact while the frame it lands on is rounded, so a
     // fractional interval cannot compound its own rounding error.
-    for (let at = episode.start + firstOffset; at < episode.end; at += interval) {
-      const frame = Math.round(at)
-      if (frame < 0 || !query.inWindow(frame)) continue
-      const weight = query.weightAt(frame)
-      if (weight <= 0) continue
+    for (let pulse = episode.start + firstOffset; pulse < episode.end; pulse += interval) {
+      for (const offset of [0, ...(dot.additionalTicks?.offsetsFrames ?? [])]) {
+        if (offset < 0 || offset >= interval) continue
+        const at = pulse + offset
+        if (at >= episode.end) continue
+        const frame = Math.round(at)
+        const requirement = offset > 0 ? { requiresBuff: dot.additionalTicks?.requiresBuff } : {}
+        if (frame < 0 || !query.inWindow(frame)) continue
+        const weight = query.weightAt(frame)
+        if (weight <= 0) continue
 
-      if (shapes) {
-        const live = Math.max(1, query.stacksAt(frame))
-        plans.push({ frame, weight, shape: shapes[Math.min(live, shapes.length) - 1] })
-      } else if (ladder) {
-        const live = Math.max(0, query.stacksAt(frame))
-        if (live === 0) continue
-        plans.push({ frame, weight, scale: ladder[Math.min(live, ladder.length) - 1] })
-      } else {
-        const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
-        if (perStack && count === 0) continue
-        plans.push({ frame, weight, scale: count })
+        if (shapes) {
+          const live = Math.max(1, query.stacksAt(frame))
+          plans.push({
+            frame,
+            weight,
+            ...requirement,
+            shape: shapes[Math.min(live, shapes.length) - 1],
+          })
+        } else if (ladder) {
+          const live = Math.max(0, query.stacksAt(frame))
+          if (live === 0) continue
+          plans.push({
+            frame,
+            weight,
+            ...requirement,
+            scale: ladder[Math.min(live, ladder.length) - 1],
+          })
+        } else {
+          const count = perStack ? Math.max(0, query.stacksAt(frame)) : 1
+          if (perStack && count === 0) continue
+          plans.push({ frame, weight, ...requirement, scale: count })
+        }
       }
     }
   }

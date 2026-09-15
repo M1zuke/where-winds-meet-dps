@@ -9,6 +9,7 @@ import type { SkillBehaviorRegistration } from "../../engine/behavior"
 import type { InnerWayId } from "../../data/innerWays/ids"
 import type { MartialArtId } from "../../data/martialArts/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
+import type { ResourceDef } from "../resources/resourceDef"
 
 export interface RetunementPool {
   stats: readonly GearWordId[]
@@ -36,6 +37,8 @@ export interface ClassDef {
   // The other classes carry unverified imported numbers — CLASSES.md
   // § "Implemented classes" — and the UI marks them so.
   validated: boolean
+  resources?: readonly ResourceDef[]
+  legacySkillIds?: readonly string[]
   spec: string
   primaryAttribute: AttributeKey
   // In-game martial art attribute multiplier as of 2026-09-09 — a straight

@@ -84,6 +84,7 @@ export function defaultCombatSettings(): CombatSettings {
 // Numbers are stored as fractions where the panel shows percentages
 // (29.2 % → 0.292).
 export interface Inputs {
+  resourceSettings?: Record<string, import("../definitions/resources/resourceDef").ResourceSettings>
   classId: string
   breakthrough: number
   followedBreakthroughRelease?: number
@@ -335,6 +336,7 @@ export interface EngineRunOptions {
 }
 
 export interface Result {
+  resources?: import("./resources").ResourceResult[]
   dps: number
   totalDamage: number
   rotationDuration: number

@@ -12,11 +12,14 @@ import {
 } from "../../skills/silkbind-jade/buffs/additionalAttack"
 import { SILKBIND_JADE_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 
 export const silkbindJade = defineClass({
   id: CLASS_ID,
   displayName: "Silkbind Jade",
   validated: false,
+  resources: [blossomResource],
+  legacySkillIds: legacyDroneSkillIds,
   spec: "silkbind_jade",
   primaryAttribute: "Silkbind",
   attributeMultiplier: 1.5,

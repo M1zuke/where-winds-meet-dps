@@ -20,6 +20,7 @@ import { healBellstrikeSplendorArtBonusAttack } from "../../src/migrations/custo
 import { healStonesplitStrengthArtBonusAttack } from "../../src/migrations/customSkills/V18__stonesplitStrengthArtBonusAttack"
 import { healBamboocutDraughtArtBonusAttack } from "../../src/migrations/customSkills/V19__bamboocutDraughtArtBonusAttack"
 import { healSilkbindJadeArtBonusAttack } from "../../src/migrations/customSkills/V20__silkbindJadeArtBonusAttack"
+import { healJadeBlossomBarrageReach } from "../../src/migrations/customSkills/V21__jadeBlossomBarrageReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -37,6 +38,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [18, healStonesplitStrengthArtBonusAttack],
   [19, healBamboocutDraughtArtBonusAttack],
   [20, healSilkbindJadeArtBonusAttack],
+  [21, healJadeBlossomBarrageReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

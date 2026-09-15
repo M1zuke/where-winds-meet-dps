@@ -71,11 +71,11 @@ describe("lingeringBone — a drone projectile extends the mark but never opens 
   })
 })
 
-describe("lingeringBone — the doubling reaches the drone and nothing else", () => {
-  it("doubles a drone projectile while the mark is up", () => {
+describe("lingeringBone — the mark applies no direct damage multiplier", () => {
+  it("leaves projectile damage unchanged while the mark is up", () => {
     const engine = jadeEngine()
     applyMark(engine, 0)
-    expect(droneDamageFactor(engine, 1)).toBe(2)
+    expect(droneDamageFactor(engine, 1)).toBe(1)
   })
 
   it("leaves a drone projectile alone with no mark up", () => {
