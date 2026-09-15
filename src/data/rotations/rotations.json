@@ -396,6 +396,7 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "fixedWindowSec": 60,
         "qiBreak": {
           "startSec": 34,
           "durationSec": 10,
@@ -810,6 +811,7 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "fixedWindowSec": 60,
         "qiBreak": {
           "startSec": 34,
           "durationSec": 10,
@@ -1191,6 +1193,7 @@
           }
         ],
         "permanentBuffIds": [],
+        "fixedWindowSec": 60,
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
@@ -1358,6 +1361,7 @@
         "openingStacks": {
           "buff-bellstrikeUmbra-zenith-bar": 5
         },
+        "fixedWindowSec": 30,
         "qiBreak": {
           "startSec": 25,
           "durationSec": 10,
@@ -1366,6 +1370,415 @@
         "createdAt": "2026-08-08T00:00:00.000Z",
         "updatedAt": "2026-09-09T00:00:00.000Z",
         "description": "30-second Dragon Head rotation from Nox"
+      },
+      {
+        "id": "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths",
+        "name": "36 BB's | 2 Dragon Breaths",
+        "classId": "bellstrikeUmbra",
+        "steps": [
+          {
+            "skillId": "mystic-drunkenpoet-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-flute-of-the-tides-prepull",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-charge-stage-1-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-dragon-fire-smolder-2-hits",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearq-5-hit-cancel",
+            "hitCount": 5,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearspecial-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-charge-stage-1-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordqfollowup",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-martial-qqq",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-ghostly-steps",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearspecial-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearq-5-hit-cancel",
+            "hitCount": 5,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-charge-stage-1-2-hit",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordqfollowup",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-martial-qqq",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "mystic-flute-of-the-tides-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearspecial-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearq-5-hit-cancel",
+            "hitCount": 5,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-charge-stage-1-2-hit",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordqfollowup",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-martial-qqq",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearspecial-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearq-5-hit-cancel",
+            "hitCount": 5,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-4-hit",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-charge-stage-1-2-hit",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordq",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordqfollowup",
+            "hitCount": 4,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-sword-martial-qqq",
+            "hitCount": 2,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-swordspecial-3-hit",
+            "hitCount": 3,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-crosswind-blade-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-deflect-cancel",
+            "hitCount": 1,
+            "prePull": false
+          },
+          {
+            "skillId": "bellstrikeUmbra-spearspecial-1-hit-cancel",
+            "hitCount": 1,
+            "prePull": false
+          }
+        ],
+        "permanentBuffIds": [],
+        "openingStacks": {
+          "buff-bellstrikeUmbra-zenith-bar": 5
+        },
+        "fixedWindowSec": 60,
+        "qiBreak": {
+          "startSec": 34,
+          "durationSec": 10,
+          "lowQiLeadSec": 5
+        },
+        "createdAt": "2026-09-10T09:39:07.776Z",
+        "updatedAt": "2026-09-13T02:14:24.579Z"
       }
     ],
     "defaultRotationId": "builtin-bellstrikeUmbra-38-bbs"

@@ -297,9 +297,9 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(76505.88)
-    expect(round(result.totalDamage, 2)).toBe(4575051.58)
-    expect(round(result.rotationDuration, 4)).toBe(59.8)
+    expect(round(result.dps, 2)).toBe(76271.75)
+    expect(round(result.totalDamage, 2)).toBe(4576305.27)
+    expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
 
