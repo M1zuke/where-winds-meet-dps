@@ -15,7 +15,7 @@ function runWithWindow(fixedWindowSec: number | undefined): Result {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
-    activeCustomRotation: fixedWindowSec === undefined ? rotation : { ...rotation, fixedWindowSec },
+    activeCustomRotation: { ...rotation, fixedWindowSec },
   }
   return runEngine(inputs)
 }

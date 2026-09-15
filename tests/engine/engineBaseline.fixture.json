@@ -1,8 +1,8 @@
 {
   "anchor": {
-    "dps": 76505.88,
-    "totalDamage": 4575051.58,
-    "rotationDuration": 59.8,
+    "dps": 76271.75,
+    "totalDamage": 4576305.27,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -25,8 +25,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -151,16 +151,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "923e0b4d0098818f12c74acef8bd51491dfa06b0f1ef036e47835202e581f381"
+    "digest": "1bbf8b5cd7ff4afecc3428eea95722769d8e15acf061a63d6b2183a28057aa1f"
   },
   "anchor:noAttunement": {
-    "dps": 69263.58,
-    "totalDamage": 4141961.88,
-    "rotationDuration": 59.8,
+    "dps": 69053.59,
+    "totalDamage": 4143215.57,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -183,8 +183,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -309,16 +309,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "dacc0ded7bdabdb4d68f27baac3f970e5399d5c929e97606e62d7d6989067a20"
+    "digest": "23dae750896dc520ad5d2496f4df863f6cf9e04e40e404827c94621b0a76956c"
   },
   "anchor:dummyOff": {
-    "dps": 81996.86,
-    "totalDamage": 4903411.98,
-    "rotationDuration": 59.8,
+    "dps": 81746.53,
+    "totalDamage": 4904791.88,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -341,8 +341,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 80943.31,
+        "count": 60,
+        "expectedDamage": 82323.22,
         "castCount": 0
       },
       {
@@ -467,16 +467,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "34e48fbdec88dc0b816b949893b40ead0be8e8d3f35c74cd3f9824c032c42c3c"
+    "digest": "fe5ceb5d386e6aa9883baecf3139e07a2a54271b9f67c83ecad2496969a82a97"
   },
   "anchor:noQiBreak": {
-    "dps": 68313.29,
-    "totalDamage": 4085134.75,
-    "rotationDuration": 59.8,
+    "dps": 68106.47,
+    "totalDamage": 4086388.44,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -499,8 +499,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 71752.54,
+        "count": 60,
+        "expectedDamage": 73006.23,
         "castCount": 0
       },
       {
@@ -625,16 +625,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "f44e82b4c54381c018f32c3936f3f3c1ad79ae97cc532a9b0f071289f62dd6d1"
+    "digest": "b29651fc5ec20a0dd282345bc5dfad54e195f7cfd6da4a24498d072acc6cb849"
   },
   "anchor:healerBuff": {
-    "dps": 84286.53,
-    "totalDamage": 5040334.38,
-    "rotationDuration": 59.8,
+    "dps": 84029.27,
+    "totalDamage": 5041756.35,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -657,8 +657,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 83898.3,
+        "count": 60,
+        "expectedDamage": 85320.27,
         "castCount": 0
       },
       {
@@ -783,16 +783,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "92d38ac4e61939e948d7c7aebce44e7645af6c3d5192309f9922a68541f61d6c"
+    "digest": "5d677392fabdfca5dc19b5a6b056436eccbfdea50c1575fb1a28daeb4ea30e54"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 76884.47,
-    "totalDamage": 4597691.59,
-    "rotationDuration": 59.8,
+    "dps": 76649.09,
+    "totalDamage": 4598945.28,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -815,8 +815,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -941,16 +941,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "f7e2fdc2e7fddaa1ac7d2744e5bf0d36d1885a85656038240cab7c4a6e288521"
+    "digest": "e82a289190ba91c61c0e7a39b9bf0998944875fbd3daed6aadbb28d576ed036e"
   },
   "anchor:voidrotScript": {
-    "dps": 77591.48,
-    "totalDamage": 4639970.28,
-    "rotationDuration": 59.8,
+    "dps": 77353.73,
+    "totalDamage": 4641223.98,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -973,8 +973,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -1099,16 +1099,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d32f24c34b9fac39a443dbc4efda7e5c4eb5f2a21c40b179cb238d3d384843ac"
+    "digest": "15742e1362d3e1c9f61e066adad006e237eeeeddfd27fae342e2a6dbaf3c33c7"
   },
   "anchor:breakExtension": {
-    "dps": 78316.04,
-    "totalDamage": 4683298.92,
-    "rotationDuration": 59.8,
+    "dps": 78075.88,
+    "totalDamage": 4684552.61,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1131,8 +1131,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 75506.24,
+        "count": 60,
+        "expectedDamage": 76759.93,
         "castCount": 0
       },
       {
@@ -1257,16 +1257,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "c45feed5d8d3cf5885d6ff53535a9e896fc9de3ec5dcec26ea32c3640fa53475"
+    "digest": "e7e04a67f19ab4988d8618c743fa5acef0fd50bec0ca4fc21a39698ff655dd1e"
   },
   "anchor:swordHorizonT1": {
-    "dps": 54920.75,
-    "totalDamage": 3284260.77,
-    "rotationDuration": 59.8,
+    "dps": 54758.22,
+    "totalDamage": 3285493.32,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1289,8 +1289,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 72151.71,
+        "count": 60,
+        "expectedDamage": 73384.26,
         "castCount": 0
       },
       {
@@ -1415,16 +1415,16 @@
       }
     ],
     "counts": {
-      "timeline": 345,
+      "timeline": 346,
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "205cacc0335d5a7607cef7a47fdcd1adca08fc8cf2d6de4e784173cc3b363fe8"
+    "digest": "f5356ff987beb00027c44f7b680911ee296df9c8bcf95d07429fa02379ead3bb"
   },
   "anchor:noSwordHorizon": {
-    "dps": 46900.83,
-    "totalDamage": 2804669.61,
-    "rotationDuration": 59.8,
+    "dps": 46765.04,
+    "totalDamage": 2805902.15,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1447,8 +1447,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 72151.71,
+        "count": 60,
+        "expectedDamage": 73384.26,
         "castCount": 0
       },
       {
@@ -1573,16 +1573,16 @@
       }
     ],
     "counts": {
-      "timeline": 310,
+      "timeline": 311,
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "6a721f0cf6acf194b6988c1bd0febfaf4092a60eabc77775d8679410cd309d95"
+    "digest": "376a699a05abca4cfc8fbce4c34f73c1c1f58f400fbb2ecdb299fdd949581c20"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 66118.67,
-    "totalDamage": 3953896.5,
-    "rotationDuration": 59.8,
+    "dps": 65918.26,
+    "totalDamage": 3955095.36,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1605,8 +1605,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 70284.42,
+        "count": 60,
+        "expectedDamage": 71483.28,
         "castCount": 0
       },
       {
@@ -1731,16 +1731,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "0706df90d5d17f19813d89c11788fe066731759eb893b34d63cf1a54a13c2e4e"
+    "digest": "74170f915158aaf4c936582c64e6ad2b79b8faab853571d37c05251240766142"
   },
   "anchor:noMoraleChant": {
-    "dps": 69863.35,
-    "totalDamage": 4177828.2,
-    "rotationDuration": 59.8,
+    "dps": 69649.58,
+    "totalDamage": 4178974.74,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1763,8 +1763,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66991.84,
+        "count": 60,
+        "expectedDamage": 68138.37,
         "castCount": 0
       },
       {
@@ -1881,16 +1881,16 @@
       }
     ],
     "counts": {
-      "timeline": 418,
+      "timeline": 419,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "be38dbf9487827ca5439b10be64f2cb2484d86d15a8536fb7d0652697e3e0530"
+    "digest": "81db0945d630956f1500e4674f83c3c929c720a7f5ce1cf7e8543364026e578b"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 36281.39,
-    "totalDamage": 2230701.03,
-    "rotationDuration": 61.48,
+    "dps": 36328.04,
+    "totalDamage": 2179682.55,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1905,8 +1905,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 61,
-        "expectedDamage": 61369.9,
+        "count": 60,
+        "expectedDamage": 60376.55,
         "castCount": 0
       },
       {
@@ -1921,8 +1921,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 157765.37,
+        "count": 55,
+        "expectedDamage": 155624.27,
         "castCount": 0
       },
       {
@@ -1969,8 +1969,8 @@
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 28,
-        "expectedDamage": 1123435.88,
+        "count": 27,
+        "expectedDamage": 1087282.82,
         "castCount": 0
       },
       {
@@ -2001,8 +2001,8 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 60291.15,
+        "count": 16,
+        "expectedDamage": 48560.19,
         "castCount": 5
       },
       {
@@ -2055,16 +2055,16 @@
       }
     ],
     "counts": {
-      "timeline": 385,
-      "buffWindows": 118,
+      "timeline": 378,
+      "buffWindows": 114,
       "casts": 80
     },
-    "digest": "912bceaa7460aa43a272169cac77ff18f6d8b2b7b75d20e51aae756d1227a448"
+    "digest": "99007a701cbf9a60170d69b068fe6f038814b9b5f9d89e2f92d237d83bb2e518"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 48561.55,
-    "totalDamage": 2903980.54,
-    "rotationDuration": 59.8,
+    "dps": 48416.65,
+    "totalDamage": 2904998.73,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2087,8 +2087,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 60776.24,
+        "count": 60,
+        "expectedDamage": 61794.43,
         "castCount": 0
       },
       {
@@ -2221,16 +2221,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "014a34929e2b784c23c998bced422dba77a11cce6b7438871a5a4e9241dec3ad"
+    "digest": "85cf982d0d39b47cf08f335b8500174cda0408de67a1d694b511b1ca2afb86e6"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47639.11,
-    "totalDamage": 2848818.88,
-    "rotationDuration": 59.8,
+    "dps": 47496.87,
+    "totalDamage": 2849812.23,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2253,8 +2253,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 59293.9,
+        "count": 60,
+        "expectedDamage": 60287.25,
         "castCount": 0
       },
       {
@@ -2387,16 +2387,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "04face0fd578070c42b5702ab4563152ce967b712224b16631b0806fb9cc83d7"
+    "digest": "a69e518a8690d404ca44d1af86aec40f8eba29ffed50286ea992df0f335722ea"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 47188.91,
-    "totalDamage": 2821896.66,
-    "rotationDuration": 59.8,
+    "dps": 47048.17,
+    "totalDamage": 2822890.02,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2419,8 +2419,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 59293.9,
+        "count": 60,
+        "expectedDamage": 60287.25,
         "castCount": 0
       },
       {
@@ -2553,16 +2553,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "ad6538956d478477951c94e28efc9c8730cadaacfbfe11dfeec567ad95f09693"
+    "digest": "4f94d46a466e833098c7233a8e639119e9e8fcd68d56669f4236e831695e4c11"
   },
   "anchor:noSet": {
-    "dps": 69691.99,
-    "totalDamage": 4167581.09,
-    "rotationDuration": 59.8,
+    "dps": 69478.39,
+    "totalDamage": 4168703.69,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2585,8 +2585,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -2711,16 +2711,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "41f413ce235e80c288fe6d33ae6349076dacde15d461cd806619dacdf69b33dc"
+    "digest": "3e97f8a9ae995ac048b272580abd51a36992596dfed5dac2b9e83bf587c4499c"
   },
   "anchor:set-Jadeware": {
-    "dps": 73067.56,
-    "totalDamage": 4369439.99,
-    "rotationDuration": 59.8,
+    "dps": 72843.04,
+    "totalDamage": 4370582.69,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2743,8 +2743,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 67294.99,
+        "count": 60,
+        "expectedDamage": 68437.7,
         "castCount": 0
       },
       {
@@ -2869,16 +2869,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "035983764c6aba27b1faa970415e5d0f4a5ab7503e38c15d87fd0231dcc4094a"
+    "digest": "0f9f6b2c4968b4adc1b5a3f2aebeaab15033ce62008e70a1105741aa7f8c3cb1"
   },
   "anchor:set-Mistwillow": {
-    "dps": 70351.59,
-    "totalDamage": 4207025.37,
-    "rotationDuration": 59.8,
+    "dps": 70135.8,
+    "totalDamage": 4208147.97,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2901,8 +2901,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -3027,16 +3027,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d3cdb9757734c05a5607eaab2ed192d0f6d4d7df52eb6b25b847ff37cd9093ea"
+    "digest": "4a9c0fcc5e3ec727af93aaaff996fa08be9d6a1d62876d981bc39f050e5ab372"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 71307.68,
-    "totalDamage": 4264199.23,
-    "rotationDuration": 59.8,
+    "dps": 71088.7,
+    "totalDamage": 4265321.83,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3059,8 +3059,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -3185,16 +3185,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "19855574d24b94d33f0932f393b51b4dce78634b928023797254354dd6e565f9"
+    "digest": "f81be40ae0e0ef701762a63aa7a5d47aa94d99ad80f897f3a263b39a43ca8adc"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 73454.83,
-    "totalDamage": 4392599.1,
-    "rotationDuration": 59.8,
+    "dps": 73229.03,
+    "totalDamage": 4393741.81,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3217,8 +3217,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 67294.99,
+        "count": 60,
+        "expectedDamage": 68437.7,
         "castCount": 0
       },
       {
@@ -3343,16 +3343,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "be5c3a1a80c4b6cc0e1179ea2b0c270114de41d8792b0cf0917c136d7431f2de"
+    "digest": "70d4f4cd1e81c3448de5c09b8a3e426585642ee48150e3aaff6810f2b5322e58"
   },
   "defaults:umbra": {
-    "dps": 10206.01,
+    "dps": 10203.17,
     "totalDamage": 612190.24,
-    "rotationDuration": 59.98,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3505,6 +3505,6 @@
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "1db0ac4e7b4880f96344d11ab240ee5fe3842dc813ff4d543a43fbe835c76fda"
+    "digest": "0a6dd2939dc623a80b7f9b3f5e1163785c821e2f2b258d8cae9395a86397f293"
   }
 }
