@@ -1,6 +1,7 @@
 import type { GraduationBuild } from "../../../definitions/classes/classDef"
 import { SET_ID } from "../../sets/ids"
 import { createGraduationGearPiece } from "../graduationGear"
+import graduationRotation from "./rotations/tillaDummyRotation"
 
 const idPrefix = "graduation-stonesplit-strength"
 
@@ -58,4 +59,5 @@ export const STONESPLIT_STRENGTH_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.cleftpeak,
   bowSet: "crit",
   arsenal: "stonesplit",
+  rotationId: graduationRotation.id,
 }

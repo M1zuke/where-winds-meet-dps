@@ -1,6 +1,7 @@
 import type { GraduationBuild } from "../../../definitions/classes/classDef"
 import { SET_ID } from "../../sets/ids"
 import { createGraduationGearPiece } from "../graduationGear"
+import graduationRotation from "./rotations/kaezuma42Vs1Db"
 
 const idPrefix = "graduation-bellstrike-splendor"
 
@@ -61,6 +62,7 @@ export const BELLSTRIKE_SPLENDOR_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.jadeware,
   bowSet: "crit",
   arsenal: "bellstrike",
+  rotationId: graduationRotation.id,
   relayedOverrides: {
     bowSet: "affinity",
   },

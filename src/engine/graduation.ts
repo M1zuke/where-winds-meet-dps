@@ -27,6 +27,15 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
   return equipped
 }
 
+function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
+  return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: rotationId }
+}
+
+export function withGraduationRotation(inputs: Inputs): Inputs | null {
+  const build = classDefinition(inputs.classId)?.graduationBuild
+  return build ? onBuiltinRotation(inputs, build.rotationId) : null
+}
+
 export function graduationBuild(
   classId: string,
   variant: GraduationVariant,
@@ -59,7 +68,7 @@ export function graduationInputs(
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
   }))
   return {
-    ...inputs,
+    ...onBuiltinRotation(inputs, build.rotationId),
     allDamageBoost: 0,
     independentDamageBoost: 0,
     inventory,

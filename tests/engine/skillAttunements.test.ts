@@ -75,7 +75,7 @@ function runTaggedSkillAndDot(option: (typeof SKILL_ATTUNEMENTS)[number], value:
     },
   })
   const rotation = makeRotation(classId, {
-    steps: [makeStep({ skillId: directSkill.id, hitCount: 1 })],
+    steps: [makeStep({ skillId: directSkill.id })],
   })
   return simulateTimeline({
     ...defaultInputs,
@@ -123,12 +123,7 @@ describe("declarative skill attunements", () => {
 
     const run = (skillId: string, value: number) => {
       const rotation = makeRotation("stonesplitStrength", {
-        steps: [
-          makeStep({
-            skillId,
-            hitCount: skills.find((skill) => skill.id === skillId)!.hits.length,
-          }),
-        ],
+        steps: [makeStep({ skillId })],
       })
       return simulateTimeline({
         ...defaultInputs,

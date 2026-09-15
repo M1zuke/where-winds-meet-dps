@@ -2,7 +2,8 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/stonesplit-strength"
 import { DEBUFFS } from "../../skills/stonesplit-strength/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/tillaDummyRotation"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { ironGuards } from "../../skills/stonesplit-strength/buffs/ironGuards"
 import { cleftpeakDeflect } from "../../skills/stonesplit-strength/buffs/cleftpeakDeflect"
@@ -41,7 +42,8 @@ export const stonesplitStrength = defineClass({
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
   graduationBuild: STONESPLIT_STRENGTH_GRADUATION_BUILD,
   classBuffDefs: [
     ironGuards,

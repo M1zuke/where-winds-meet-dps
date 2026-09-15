@@ -469,7 +469,7 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
       customSkills: [probeSkill],
       customDebuffs: [probeDot],
       activeCustomRotation: makeRotation("bellstrikeUmbra", {
-        steps: [makeStep({ skillId: probeSkill.id, hitCount: probeHits.length })],
+        steps: [makeStep({ skillId: probeSkill.id })],
       }),
       combatSettings: { ...defaultCombatSettings(), qiBreakOverride },
     }).timeline!

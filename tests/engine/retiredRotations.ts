@@ -1,6 +1,6 @@
-// Rotations removed from `src/data/rotations/rotations.json` that tests still
-// need: a cached reference run cannot be re-measured against a rotation the
-// picker no longer offers, and no surviving built-in covers the same casts.
+// Built-in rotations removed from the picker that tests still need: a cached
+// reference run cannot be re-measured against a rotation the picker no longer
+// offers, and no surviving built-in covers the same casts.
 import type { Rotation, RotationStep } from "../../src/engine/rotation"
 import fixture from "./retiredRotations.fixture.json"
 

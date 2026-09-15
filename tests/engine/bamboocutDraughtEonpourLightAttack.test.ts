@@ -5,7 +5,9 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { makeSkill, type Skill } from "../../src/engine/skill"
+import { STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { lightAttack } from "../../src/data/skills/bamboocut-draught/light-attack"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import type { Inputs } from "../../src/engine/types"
 
@@ -20,12 +22,16 @@ function eonpourAt(tier: number): Inputs["mindMethods"] {
   ]
 }
 
-const FULL_CHAIN = 6
+const lightAttackShortOfChainEnd = makeSkill(CLASS, {
+  ...lightAttack,
+  id: "test-light-attack-short-of-chain-end",
+  hits: lightAttack.hits.slice(0, -1),
+})
 
 function runLightAttack(
   mindMethods: Inputs["mindMethods"],
   inCarouse: boolean,
-  hitCount = FULL_CHAIN,
+  lightAttackSkill: Skill = lightAttack,
 ) {
   const openingStacks: Record<string, number> = {}
   if (inCarouse) openingStacks[STATUS.carouse] = 1
@@ -34,8 +40,9 @@ function runLightAttack(
     classId: CLASS,
     set: null,
     mindMethods,
+    customSkills: [lightAttackSkill],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: SKILL.lightAttack, hitCount })],
+      steps: [makeStep({ skillId: lightAttackSkill.id })],
       openingStacks,
     }),
   })
@@ -54,9 +61,11 @@ describe("Eonpour light attack Binge Points", () => {
   })
 
   it("pays nothing while the chain is still short of its closing stage", () => {
-    const withEonpour = bingePointsAfter(runLightAttack(eonpourAt(1), false, FULL_CHAIN - 1))!
+    const withEonpour = bingePointsAfter(
+      runLightAttack(eonpourAt(1), false, lightAttackShortOfChainEnd),
+    )!
     const withoutEonpour = bingePointsAfter(
-      runLightAttack(defaultInputs.mindMethods, false, FULL_CHAIN - 1),
+      runLightAttack(defaultInputs.mindMethods, false, lightAttackShortOfChainEnd),
     )!
     expect(withEonpour - withoutEonpour).toBe(0)
   })

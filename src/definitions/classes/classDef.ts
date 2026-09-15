@@ -25,6 +25,7 @@ export interface GraduationBuild {
   set: string | null
   bowSet: BowSet
   arsenal: Arsenal
+  rotationId: string
   relayedOverrides?: Partial<Pick<GraduationBuild, "gear" | "set" | "bowSet" | "arsenal">>
 }
 

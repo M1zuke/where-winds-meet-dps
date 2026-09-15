@@ -80,7 +80,7 @@ describe("a trigger with transferFrom", () => {
     const after = probe()
     const inputs = timelineInputs(
       makeRotation(CLASS, {
-        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id })),
       }),
       [grant, convert, after],
       [source, target],
@@ -97,7 +97,7 @@ describe("a trigger with transferFrom", () => {
     const after = probe()
     const inputs = timelineInputs(
       makeRotation(CLASS, {
-        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id })),
       }),
       [grant, convert, after],
       [source, target],
@@ -114,7 +114,7 @@ describe("a trigger with transferFrom", () => {
     const after = probe()
     const inputs = timelineInputs(
       makeRotation(CLASS, {
-        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id })),
       }),
       [grant, convert, after],
       [source, target],
@@ -135,7 +135,7 @@ describe("a trigger with transferFrom", () => {
     const after = probe()
     const inputs = timelineInputs(
       makeRotation(CLASS, {
-        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+        steps: [grant, convert, after].map((skill) => makeStep({ skillId: skill.id })),
       }),
       [grant, convert, after],
       [source, target, payout],
@@ -173,7 +173,7 @@ describe("a trigger with transferFrom", () => {
     })
     const inputs = timelineInputs(
       makeRotation(CLASS, {
-        steps: [grant, convert, gated].map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+        steps: [grant, convert, gated].map((skill) => makeStep({ skillId: skill.id })),
       }),
       [grant, convert, gated],
       [source, target],

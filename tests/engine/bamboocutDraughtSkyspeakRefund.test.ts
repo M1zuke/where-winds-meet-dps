@@ -38,7 +38,7 @@ function runExpiry(mindMethods: Inputs["mindMethods"]) {
     mindMethods,
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: grantDeepdaze.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: grantDeepdaze.id })],
       openingStacks: { [STATUS.bingePoints]: 0 },
     }),
   })

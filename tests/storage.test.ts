@@ -279,7 +279,7 @@ describe("migrateSeededSkillIds — repairs pre-fix seeded-copy ids", () => {
 
     const rotation = makeRotation(CLASS, {
       name: "Custom",
-      steps: [makeStep({ skillId: stale.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: stale.id })],
     })
     saveCustomRotation(rotation)
 

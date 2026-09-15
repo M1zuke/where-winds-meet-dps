@@ -40,7 +40,7 @@ function probeInputs(
     tianGongElement: "fire",
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: skill.id, hitCount: hits.length })],
+      steps: [makeStep({ skillId: skill.id })],
     }),
     ...overrides,
   }
@@ -144,7 +144,7 @@ describe("Fire Oil Burn — pre-pull casts never open a window", () => {
       tianGongElement: "fire",
       customSkills: [prePullSkill],
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: prePullSkill.id, hitCount: 1, prePull: true })],
+        steps: [makeStep({ skillId: prePullSkill.id })],
       }),
     }
     const result = runEngine(inputs)

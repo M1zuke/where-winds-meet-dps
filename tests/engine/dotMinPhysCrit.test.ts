@@ -6,7 +6,7 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { rotationPoolFor } from "../../src/definitions/rotations/registry"
+import { rotationsFor } from "../../src/definitions/rotations/registry"
 import { DRONE_TICK } from "../../src/data/skills/silkbind-jade/droneTick"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Inputs } from "../../src/engine/types"
@@ -14,9 +14,7 @@ import type { Inputs } from "../../src/engine/types"
 const DRONE_ROW = "UmbDrone[20hit] (DoT)"
 
 function droneDamage(dropTheGate: boolean): number {
-  const rot = rotationPoolFor("silkbindJade").rotations.find(
-    (r) => r.id === "builtin-silkbindJade-t5",
-  )!
+  const rot = rotationsFor("silkbindJade").find((r) => r.id === "builtin-silkbindJade-t5")!
   const raw: Inputs = {
     ...defaultInputs,
     classId: "silkbindJade",

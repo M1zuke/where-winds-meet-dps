@@ -1,6 +1,7 @@
 import type { GraduationBuild } from "../../../definitions/classes/classDef"
 import { SET_ID } from "../../sets/ids"
 import { createGraduationGearPiece } from "../graduationGear"
+import graduationRotation from "./rotations/standardized17"
 
 const idPrefix = "graduation-silkbind-jade"
 
@@ -58,4 +59,5 @@ export const SILKBIND_JADE_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.mistwillow,
   bowSet: "precision",
   arsenal: "silkbind",
+  rotationId: graduationRotation.id,
 }

@@ -79,14 +79,14 @@ describe("hit variants — coefficient swap", () => {
     })
     const rWith = simulateTimeline(
       timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: empowered.id, hitCount: 1 })] }),
+        makeRotation(CLASS, { steps: [makeStep({ skillId: empowered.id })] }),
         [empowered],
         [gate],
       ),
     )
     const rWithout = simulateTimeline(
       timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: plain.id, hitCount: 1 })] }),
+        makeRotation(CLASS, { steps: [makeStep({ skillId: plain.id })] }),
         [plain],
         [gate],
       ),
@@ -113,10 +113,7 @@ describe("hit variants — coefficient swap", () => {
     })
     const granter = makeGranter(gate.id)
     const rotation = makeRotation(CLASS, {
-      steps: [
-        makeStep({ skillId: granter.id, hitCount: 1 }),
-        makeStep({ skillId: empowered.id, hitCount: 1 }),
-      ],
+      steps: [makeStep({ skillId: granter.id }), makeStep({ skillId: empowered.id })],
     })
     const withVariant = simulateTimeline(
       timelineInputs(rotation, [granter, empowered], [gate]),
@@ -130,10 +127,7 @@ describe("hit variants — coefficient swap", () => {
     const controlTotal = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [
-            makeStep({ skillId: granter.id, hitCount: 1 }),
-            makeStep({ skillId: control.id, hitCount: 1 }),
-          ],
+          steps: [makeStep({ skillId: granter.id }), makeStep({ skillId: control.id })],
         }),
         [granter, control],
         [gate],
@@ -173,9 +167,9 @@ describe("hit variants — coefficient swap", () => {
 
     const rotation = makeRotation(CLASS, {
       steps: [
-        makeStep({ skillId: granter.id, hitCount: 1 }),
-        makeStep({ skillId: filler.id, hitCount: 1 }),
-        makeStep({ skillId: empowered.id, hitCount: 1 }),
+        makeStep({ skillId: granter.id }),
+        makeStep({ skillId: filler.id }),
+        makeStep({ skillId: empowered.id }),
       ],
     })
     const withExpiredGate = simulateTimeline(
@@ -184,9 +178,9 @@ describe("hit variants — coefficient swap", () => {
 
     const rotationPlain = makeRotation(CLASS, {
       steps: [
-        makeStep({ skillId: granter.id, hitCount: 1 }),
-        makeStep({ skillId: filler.id, hitCount: 1 }),
-        makeStep({ skillId: plain.id, hitCount: 1 }),
+        makeStep({ skillId: granter.id }),
+        makeStep({ skillId: filler.id }),
+        makeStep({ skillId: plain.id }),
       ],
     })
     const baseline = simulateTimeline(
@@ -226,9 +220,9 @@ describe("multi-condition trigger — AND semantics", () => {
     const granterA = makeGranter(gateA.id)
     const granterB = makeGranter(gateB.id)
     const steps = []
-    if (applyA) steps.push(makeStep({ skillId: granterA.id, hitCount: 1 }))
-    if (applyB) steps.push(makeStep({ skillId: granterB.id, hitCount: 1 }))
-    steps.push(makeStep({ skillId: main.id, hitCount: 1 }))
+    if (applyA) steps.push(makeStep({ skillId: granterA.id }))
+    if (applyB) steps.push(makeStep({ skillId: granterB.id }))
+    steps.push(makeStep({ skillId: main.id }))
     const rotation = makeRotation(CLASS, { steps })
     return simulateTimeline(
       timelineInputs(rotation, [sub, main, granterA, granterB], [gateA, gateB]),
@@ -282,10 +276,9 @@ describe("no-op regression — a skill with neither variants nor extra condition
     const hitNew = makeHit({ physMultiplier: 2, physFixed: 50 })
     const skillNew = makeSkill(CLASS, { name: "Plain", castFrames: 60, hits: [hitNew] })
     const r = simulateTimeline(
-      timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: skillNew.id, hitCount: 1 })] }),
-        [skillNew],
-      ),
+      timelineInputs(makeRotation(CLASS, { steps: [makeStep({ skillId: skillNew.id })] }), [
+        skillNew,
+      ]),
     )
 
     const legacyHit = {
@@ -300,10 +293,9 @@ describe("no-op regression — a skill with neither variants nor extra condition
     }
     const legacySkill = { ...skillNew, hits: [legacyHit] }
     const r2 = simulateTimeline(
-      timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: legacySkill.id, hitCount: 1 })] }),
-        [legacySkill],
-      ),
+      timelineInputs(makeRotation(CLASS, { steps: [makeStep({ skillId: legacySkill.id })] }), [
+        legacySkill,
+      ]),
     )
 
     expect(r.totalDamage).toBeGreaterThan(0)
@@ -326,7 +318,7 @@ describe("hit variant — cast-length override", () => {
     return simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [makeStep({ skillId: skill.id, hitCount: skill.hits.length })],
+          steps: [makeStep({ skillId: skill.id })],
         }),
         [skill],
         buffs,
@@ -378,7 +370,7 @@ describe("hit variant — cast-length override", () => {
     const seconds = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [makeStep({ skillId: skill.id, hitCount: skill.hits.length })],
+          steps: [makeStep({ skillId: skill.id })],
           openingStacks: { [gate.id]: 7 },
         }),
         [skill],
@@ -455,10 +447,7 @@ describe("hit variant — cast-length override", () => {
     const seconds = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [
-            makeStep({ skillId: granter.id, hitCount: 1 }),
-            makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
-          ],
+          steps: [makeStep({ skillId: granter.id }), makeStep({ skillId: skill.id })],
         }),
         [granter, skill],
         [gate],
@@ -485,15 +474,20 @@ describe("conditional hits — a hit that occurs only when its own conditions ho
     const skill = skillWithConditionalHit([{ buffId: gate.id, op: "gte", stacks: 1 }])
     const withGate = simulateTimeline(
       timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 2 })] }),
+        makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] }),
         [skill],
         [gate],
       ),
     )
+    const firstHitOnly = makeSkill(CLASS, {
+      name: "Conditional",
+      castFrames: 60,
+      hits: [skill.hits[0]],
+    })
     const singleHitOnly = simulateTimeline(
       timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id, hitCount: 1 })] }),
-        [skill],
+        makeRotation(CLASS, { steps: [makeStep({ skillId: firstHitOnly.id })] }),
+        [firstHitOnly],
         [gate],
       ),
     )
@@ -541,9 +535,9 @@ describe("conditional hits — a hit that occurs only when its own conditions ho
       ],
     })
     const stepsWithGranter = [
-      makeStep({ skillId: granter.id, hitCount: 1 }),
-      makeStep({ skillId: skill.id, hitCount: 2 }),
-      makeStep({ skillId: reader.id, hitCount: 1 }),
+      makeStep({ skillId: granter.id }),
+      makeStep({ skillId: skill.id }),
+      makeStep({ skillId: reader.id }),
     ]
     const gateHeld = simulateTimeline(
       timelineInputs(
@@ -555,10 +549,7 @@ describe("conditional hits — a hit that occurs only when its own conditions ho
     const gateUnheld = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [
-            makeStep({ skillId: skill.id, hitCount: 2 }),
-            makeStep({ skillId: reader.id, hitCount: 1 }),
-          ],
+          steps: [makeStep({ skillId: skill.id }), makeStep({ skillId: reader.id })],
         }),
         [granter, skill, reader],
         [gate, marker],

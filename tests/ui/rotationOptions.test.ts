@@ -92,11 +92,11 @@ describe("selectedRotationOptionId", () => {
 })
 
 describe("inputsWithRotationOption", () => {
-  const multiHitSkill = builtinSkillsForClass(classId).find((skill) => skill.hits.length > 1)!
+  const skill = builtinSkillsForClass(classId)[0]
   const options = rotationOptions(classId, [
     makeRotation(classId, {
       name: "Mine",
-      steps: [makeStep({ skillId: multiHitSkill.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: skill.id })],
     }),
   ])
   const builtin = options.find((option) => option.group === "builtin")!
@@ -119,12 +119,10 @@ describe("inputsWithRotationOption", () => {
     expect(next.selectedBuiltinRotationId).toBeNull()
   })
 
-  it("re-clamps a saved step's hit count to what the skill now has", () => {
-    expect(custom.rotation!.steps[0].hitCount).toBe(1)
-
+  it("loads a saved custom rotation exactly as it was stored", () => {
     const next = inputsWithRotationOption(umbraInputs, custom)
 
-    expect(next.activeCustomRotation!.steps[0].hitCount).toBe(multiHitSkill.hits.length)
+    expect(next.activeCustomRotation).toEqual(custom.rotation)
   })
 
   it("leaves the rest of the build untouched", () => {

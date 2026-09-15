@@ -2,7 +2,8 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
 import { DEBUFFS } from "../../skills/silkbind-jade/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/standardized17"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { lowQiFollowUp } from "../../skills/silkbind-jade/buffs/lowQiFollowUp"
 import { trajectorySkill } from "../../skills/silkbind-jade/buffs/trajectorySkill"
@@ -43,7 +44,8 @@ export const silkbindJade = defineClass({
   critBoostWeaponTypes: ["Umbrella", "Fan"],
   skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
   graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
   classBuffDefs: [
     lowQiFollowUp,

@@ -10,7 +10,7 @@ import { DEBUFF as MYSTIC_DEBUFF, SKILL as MYSTIC_SKILL } from "../../src/data/s
 function rotationOf(classId: string, skillIds: string[]) {
   const steps = skillIds.map((skillId) => {
     const skill = builtinSkill(classId, skillId)
-    return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
+    return makeStep({ skillId: skill.id })
   })
   return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }

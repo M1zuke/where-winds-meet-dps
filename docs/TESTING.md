@@ -81,6 +81,8 @@ assert properties of the code rather than of a build:
   fails the suite instead of silently reaching nothing, and a module can't be both
   globally- and specifically-scoped at once
 - the `src/data` ↔ `src/definitions` boundary in both directions (CLASSES.md)
+- every built-in rotation module declaring the class whose folder holds it, and
+  every registered class offering exactly the rotations that declare it
 - every mystic art authored once under the shared class id, no class folder
   declaring one, nothing in the shared pool naming a class, and every registered
   class's composed definition carrying the whole pool (CLASSES.md § "Mystic

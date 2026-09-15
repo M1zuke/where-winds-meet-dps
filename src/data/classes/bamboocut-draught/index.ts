@@ -2,7 +2,8 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/bamboocut-draught"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../../skills/bamboocut-draught/debuffs"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/1mDummyByWindsFromCn"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { inebriateSkillCritDamage } from "../../skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
@@ -50,7 +51,8 @@ export const bamboocutDraught = defineClass({
   critBoostWeaponTypes: [],
   skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
   graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,
   classBuffDefs: [
     inebriateSkillCritDamage,

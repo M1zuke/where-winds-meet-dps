@@ -84,7 +84,7 @@ function run(
   })
   const rotation = makeRotation(classId, {
     fixedWindowSec: steps.length,
-    steps: steps.map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+    steps: steps.map((skill) => makeStep({ skillId: skill.id })),
     qiBreak: { startSec: 1, durationSec: 2, lowQiLeadSec: 0 },
   })
   return simulateTimeline({

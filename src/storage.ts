@@ -750,8 +750,6 @@ export function importCustomRotation(text: string): Rotation {
         .map((s) => ({
           id: newStepId(),
           skillId: s.skillId,
-          hitCount: typeof s.hitCount === "number" ? s.hitCount : 1,
-          prePull: typeof s.prePull === "boolean" ? s.prePull : false,
         }))
     : []
   const fresh: Rotation = {

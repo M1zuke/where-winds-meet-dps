@@ -9,7 +9,11 @@ import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
-import { graduationBuild, graduationInputs } from "../../src/engine/graduation"
+import {
+  graduationBuild,
+  graduationInputs,
+  withGraduationRotation,
+} from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { GEAR_SLOTS, type GearLevel } from "../../src/engine/types"
 
@@ -30,6 +34,15 @@ describe("graduation builds", () => {
         GEAR_SLOTS.length,
       )
       expect(classDef.graduationBuild.gear.every((piece) => piece.words.length === 5)).toBe(true)
+    },
+  )
+
+  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s benchmarks one of its own built-in rotations",
+    (_classId, classDef) => {
+      expect(classDef.rotations.map((rotation) => rotation.id)).toContain(
+        classDef.graduationBuild.rotationId,
+      )
     },
   )
 
@@ -157,13 +170,13 @@ describe("graduation build follows the current breakthrough's gear level", () =>
 
 describe("computeGraduation", () => {
   it("matches the direct benchmark pipeline and current-to-theoretical ratio", () => {
-    const currentDps = dpsFor()
+    const currentDps = dpsFor(withGraduationRotation(defaultInputs)!)
     const benchmarkInputs = graduationInputs(defaultInputs)
     expect(benchmarkInputs).not.toBeNull()
     const theoreticalDps = dpsFor(benchmarkInputs!)
     expect(theoreticalDps).toBeGreaterThan(currentDps)
 
-    const response = computeGraduation({ reqId: 17, inputs: defaultInputs, currentDps })
+    const response = computeGraduation({ reqId: 17, inputs: defaultInputs })
 
     expect(response.reqId).toBe(17)
     expect(response.theoreticalDps).toBe(theoreticalDps)
@@ -173,14 +186,28 @@ describe("computeGraduation", () => {
   })
 
   it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
-    const currentDps = dpsFor()
+    const currentDps = dpsFor(withGraduationRotation(defaultInputs)!)
     const relayedInputs = graduationInputs(defaultInputs, "relayed")
     expect(relayedInputs).not.toBeNull()
 
-    const response = computeGraduation({ reqId: 18, inputs: defaultInputs, currentDps })
+    const response = computeGraduation({ reqId: 18, inputs: defaultInputs })
 
     expect(response.relayedTheoreticalDps).toBe(dpsFor(relayedInputs!))
     expect(response.relayedTheoreticalDps!).toBeLessThan(response.theoreticalDps!)
     expect(response.graduationRate).toBe(currentDps / response.theoreticalDps!)
+  })
+
+  it("rates the build and the benchmark on the graduation rotation, whichever rotation the build has selected", () => {
+    const classDef = classDefinition(defaultInputs.classId)!
+    const otherRotation = classDef.rotations.find(
+      (rotation) => rotation.id !== classDef.graduationBuild.rotationId,
+    )!
+    const selectingOther = { ...defaultInputs, selectedBuiltinRotationId: otherRotation.id }
+    expect(dpsFor(selectingOther)).not.toBe(dpsFor(defaultInputs))
+
+    const onOther = computeGraduation({ reqId: 19, inputs: selectingOther })
+    const onGraduation = computeGraduation({ reqId: 19, inputs: defaultInputs })
+
+    expect(onOther).toEqual(onGraduation)
   })
 })

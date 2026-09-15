@@ -75,10 +75,7 @@ function buildScenario(withTriggers: boolean) {
   })
 
   const rotation = makeRotation(CLASS, {
-    steps: [
-      makeStep({ skillId: skillApplyB.id, hitCount: 1 }),
-      makeStep({ skillId: skillApplyA.id, hitCount: 1 }),
-    ],
+    steps: [makeStep({ skillId: skillApplyB.id }), makeStep({ skillId: skillApplyA.id })],
   })
 
   return simulateTimeline(timelineInputs(rotation, [skillApplyB, skillApplyA], [debuffA, debuffB]))
@@ -106,10 +103,7 @@ describe("Debuff.triggersBuffs — DoT ticks trigger declared buffs", () => {
     const probeHit = makeHit({ frame: 0, physMultiplier: 2, physFixed: 100 })
     const skillProbe = makeSkill(CLASS, { name: "Probe", castFrames: 60, hits: [probeHit] })
     const rotation = makeRotation(CLASS, {
-      steps: [
-        makeStep({ skillId: skillApplyA.id, hitCount: 1 }),
-        makeStep({ skillId: skillProbe.id, hitCount: 1 }),
-      ],
+      steps: [makeStep({ skillId: skillApplyA.id }), makeStep({ skillId: skillProbe.id })],
     })
     const skills = [skillApplyA, skillProbe]
     const inputs = { ...timelineInputs(rotation, skills, [debuffA]), set: null }

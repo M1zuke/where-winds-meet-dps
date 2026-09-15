@@ -18,7 +18,7 @@ describe("a resource gate's cast chip carries its description", () => {
       classId: CLASS,
       set: null,
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.lightAttack, hitCount: 1 })],
+        steps: [makeStep({ skillId: SKILL.lightAttack })],
         openingStacks: { [STATUS.carouse]: 1 },
       }),
     })

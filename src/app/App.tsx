@@ -136,7 +136,7 @@ function AppInner() {
   }, [configuredInputs])
 
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
-  const graduation = useGraduationRate(configuredInputs, result.dps)
+  const graduation = useGraduationRate(configuredInputs)
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],

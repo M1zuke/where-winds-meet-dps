@@ -2,7 +2,8 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/bellstrike-umbra"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
 import { DEBUFFS } from "../../skills/bellstrike-umbra/debuffs"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/38Bbs"
 import { bellstrikeUmbraBleedPen } from "../../skills/bellstrike-umbra/buffs/bleedPen"
 import { bellstrikeUmbraBleedingDamage } from "../../skills/bellstrike-umbra/buffs/bleedingDamage"
 import {
@@ -37,7 +38,8 @@ export const bellstrikeUmbra = defineClass({
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
   graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
   classBuffDefs: [
     bellstrikeUmbraBleedPen,
