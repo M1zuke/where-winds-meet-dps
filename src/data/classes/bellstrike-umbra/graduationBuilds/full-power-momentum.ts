@@ -13,7 +13,7 @@ export default defineGraduationBuild({
     createGraduationGearPiece({
       idPrefix,
       slot: "leftWeapon",
-      words: ["maxPhys", "maxPhys", "power", "momentum", "swordBoost"],
+      words: ["maxPhys", "maxPhys", "power", "swordBoost", "momentum"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
@@ -25,7 +25,7 @@ export default defineGraduationBuild({
     createGraduationGearPiece({
       idPrefix,
       slot: "disc",
-      words: ["maxPhys", "power", "maxPhys", "allMartialBoost", "momentum"],
+      words: ["maxPhys", "maxPhys", "power", "allMartialBoost", "momentum"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
@@ -49,7 +49,7 @@ export default defineGraduationBuild({
     createGraduationGearPiece({
       idPrefix,
       slot: "greaves",
-      words: ["power", "power", "maxPhys", "damageVsBoss", "affinity"],
+      words: ["power", "power", "maxPhys", "damageVsBoss", "momentum"],
       attunement: "bleedingDamage",
     }),
     createGraduationGearPiece({
@@ -63,5 +63,4 @@ export default defineGraduationBuild({
   bowSet: "crit",
   arsenal: "bellstrike",
   rotationId: thirtyEightBBs.id,
-  relayedOverrides: { bowSet: "affinity" },
 })
