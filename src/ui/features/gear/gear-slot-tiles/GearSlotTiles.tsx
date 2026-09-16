@@ -13,6 +13,7 @@ import styles from "./GearSlotTiles.module.scss"
 interface Props {
   inventory: GearPiece[]
   classId: string
+  graduationBuildId?: string | null
   equipped: Record<GearSlot, string | null>
   selectedPieceId: string | null
   selectedSlot: GearSlot | null
@@ -43,6 +44,7 @@ function signClass(delta: number): string {
 export function GearSlotTiles({
   inventory,
   classId,
+  graduationBuildId,
   equipped,
   selectedPieceId,
   selectedSlot,
@@ -62,8 +64,8 @@ export function GearSlotTiles({
           slot === selectedSlot ||
           (selectedPieceId !== null && piece !== null && piece.id === selectedPieceId)
         const delta = piece ? dpsDeltas[piece.id] : undefined
-        const heirloom = piece ? heirloomMatch(piece, classId) : null
-        const isHeirloom = (heirloom?.builds.length ?? 0) > 0
+        const heirloom = piece ? heirloomMatch(piece, classId, graduationBuildId) : null
+        const isHeirloom = heirloom?.followed ?? false
         return (
           <button
             type="button"

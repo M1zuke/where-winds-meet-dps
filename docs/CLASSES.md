@@ -100,6 +100,11 @@ the retunement advisor ranks that swap above its best-DPS swap. On a piece that
 already matches, the advisor withholds its best-DPS recommendation altogether:
 a swap that ends the match is never advised, whatever it would gain.
 
+**An equipped piece carries the heirloom treatment only for the build the
+profile follows**, an unequipped one for any build of the class. A match against
+a build the profile does not follow is still a match — it is named as such
+rather than dropped.
+
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build
 is allowlisted as content rather than logic.

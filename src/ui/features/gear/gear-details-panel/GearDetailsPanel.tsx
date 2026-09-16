@@ -64,12 +64,13 @@ export function GearDetailsPanel({
     )
   }
 
-  const heirloom = heirloomMatch(piece, inputs.classId)
+  const heirloom = heirloomMatch(piece, inputs.classId, inputs.graduationBuildId)
   const isHeirloom = heirloom.builds.length > 0
+  const shines = isEquipped ? heirloom.followed : isHeirloom
 
   return (
-    <div className={`panel ${styles.gearDetails}${isHeirloom ? ` ${styles.isHeirloom}` : ""}`}>
-      {isHeirloom && <HeirloomShine rarity={piece.rarity} />}
+    <div className={`panel ${styles.gearDetails}${shines ? ` ${styles.isHeirloom}` : ""}`}>
+      {shines && <HeirloomShine rarity={piece.rarity} />}
       <div className="toolbar">
         <span className="toolbar-label">{t("gear.details.gearDetails")}</span>
         <div className="spacer" />
@@ -112,6 +113,11 @@ export function GearDetailsPanel({
                   .map((build) => t(graduationBuildKey(build.id), build.name))
                   .join(" · ")}
               </b>
+            </span>
+          )}
+          {isHeirloom && !heirloom.followed && (
+            <span className={styles.heirloomUnfollowed}>
+              {t("gear.details.notTheBuildYouFollow")}
             </span>
           )}
         </div>

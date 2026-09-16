@@ -1,6 +1,7 @@
 import { classDefinition } from "../definitions/classes/registry"
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
 import type { GearPiece, GearWordId } from "./types"
+import { followedGraduationBuildAmong } from "./graduation"
 import { ALL_REROLLABLE_SLOTS, retunedOutWordsOf } from "./retunement"
 
 export interface HeirloomSwap {
@@ -11,10 +12,11 @@ export interface HeirloomSwap {
 
 export interface HeirloomMatch {
   builds: readonly GraduationBuild[]
+  followed: boolean
   swap: HeirloomSwap | null
 }
 
-const NO_MATCH: HeirloomMatch = { builds: [], swap: null }
+const NO_MATCH: HeirloomMatch = { builds: [], followed: false, swap: null }
 
 function wordIds(piece: Pick<GearPiece, "words">): string[] {
   return piece.words.map((word) => word.word)
@@ -53,7 +55,11 @@ function canStillRetune(piece: GearPiece, slotIndex: number, word: GearWordId): 
   return !retunedOutWordsOf(piece).has(word)
 }
 
-export function heirloomMatch(piece: GearPiece, classId: string): HeirloomMatch {
+export function heirloomMatch(
+  piece: GearPiece,
+  classId: string,
+  graduationBuildId?: string | null,
+): HeirloomMatch {
   const builds = classDefinition(classId)?.graduationBuilds ?? []
   if (builds.length === 0 || piece.words.some((word) => !word.word)) return NO_MATCH
 
@@ -70,7 +76,13 @@ export function heirloomMatch(piece: GearPiece, classId: string): HeirloomMatch 
     const candidate = singleSwapTo(piece, target)
     if (candidate && canStillRetune(piece, candidate.slotIndex, candidate.word)) swap = candidate
   }
-  return perfect.length > 0 ? { builds: perfect, swap: null } : { builds: [], swap }
+  if (perfect.length === 0) return { builds: [], followed: false, swap }
+  const followed = followedGraduationBuildAmong(builds, graduationBuildId)
+  return {
+    builds: perfect,
+    followed: perfect.some((build) => build.id === followed?.id),
+    swap: null,
+  }
 }
 
 export function isHeirloom(piece: GearPiece, classId: string): boolean {

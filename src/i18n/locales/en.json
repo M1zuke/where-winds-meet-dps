@@ -714,6 +714,7 @@
   "gear.details.equipped": "Equipped",
   "gear.details.gearDetails": "Gear details",
   "gear.details.matchingTheBuild": "matching",
+  "gear.details.notTheBuildYouFollow": "Not the build you follow right now",
   "gear.details.pieceNamePlaceholder": "e.g. Retune slot 3",
   "gear.details.pieceNote": "Note",
   "gear.details.pieceNotePlaceholder": "e.g. From the raid, keep",

@@ -200,6 +200,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
         <GearSlotTiles
           inventory={inventory}
           classId={inputs.classId}
+          graduationBuildId={inputs.graduationBuildId}
           equipped={equipped}
           selectedPieceId={liveSelectedPieceId}
           selectedSlot={selectedSlot}

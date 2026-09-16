@@ -714,6 +714,7 @@
   "gear.details.equipped": "장착 중",
   "gear.details.gearDetails": "장비 상세",
   "gear.details.matchingTheBuild": "",
+  "gear.details.notTheBuildYouFollow": "",
   "gear.details.pieceNamePlaceholder": "예: 전율 3번 부위",
   "gear.details.pieceNote": "메모",
   "gear.details.pieceNotePlaceholder": "예: 레이드에서 획득, 보관",

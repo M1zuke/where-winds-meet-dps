@@ -60,6 +60,11 @@
   font-weight: 600;
 }
 
+.heirloomUnfollowed {
+  color: var(--color-text-faint);
+  font-style: italic;
+}
+
 .identity {
   display: flex;
   flex-direction: column;

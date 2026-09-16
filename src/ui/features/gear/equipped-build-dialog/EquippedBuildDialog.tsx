@@ -104,7 +104,12 @@ export function EquippedBuildDialog({ inputs, currentDps, onClose }: Props) {
                 {GEAR_SLOTS.map((slot) => {
                   const piece = piecesBySlot.get(slot)
                   return piece ? (
-                    <BuildPieceCard key={slot} piece={piece} />
+                    <BuildPieceCard
+                      key={slot}
+                      piece={piece}
+                      classId={inputs.classId}
+                      graduationBuildId={inputs.graduationBuildId}
+                    />
                   ) : (
                     <EmptySlotCard key={slot} slot={slot} />
                   )

@@ -72,6 +72,29 @@ describe("heirloom — the same stat lines as a graduation build's piece", () =>
   })
 })
 
+describe("heirloom — the build the profile follows", () => {
+  const builds = classDefinition(MULTI_BUILD_CLASS)!.graduationBuilds
+  const target = helmOf(MULTI_BUILD_CLASS)
+  const perfect = wordsOf(target)
+
+  it("follows the match when the profile follows the build the piece is perfect for", () => {
+    const match = heirloomMatch(pieceFrom(target, perfect), MULTI_BUILD_CLASS, builds[0].id)
+    expect(match.followed).toBe(true)
+  })
+
+  it("keeps the match but not the follow while the profile follows another build", () => {
+    const match = heirloomMatch(pieceFrom(target, perfect), MULTI_BUILD_CLASS, builds[1].id)
+    expect(match.builds.map((build) => build.id)).toEqual([builds[0].id])
+    expect(match.followed).toBe(false)
+  })
+
+  it("follows the sole build of a single-build class without being told which", () => {
+    const sole = helmOf(SINGLE_BUILD_CLASS)
+    const match = heirloomMatch(pieceFrom(sole, wordsOf(sole)), SINGLE_BUILD_CLASS, null)
+    expect(match.followed).toBe(true)
+  })
+})
+
 describe("heirloom — one retune away", () => {
   const target = helmOf(SINGLE_BUILD_CLASS)
   const perfect = wordsOf(target)
