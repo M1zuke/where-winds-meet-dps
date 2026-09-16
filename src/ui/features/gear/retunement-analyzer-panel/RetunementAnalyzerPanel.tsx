@@ -3,6 +3,7 @@ import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
 import { statLineLabel } from "../../../../data/stats/statLines"
+import { heirloomMatch } from "../../../../engine/heirloom"
 import { retuneAttemptBudget } from "../../../../engine/retunement"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -11,6 +12,7 @@ import retunement from "../shared/retunement.module.scss"
 
 interface Props {
   piece: GearPiece | null
+  classId: string
   rows: RetunementRow[]
   reason: RetunementReason
   isPending: boolean
@@ -57,8 +59,12 @@ function fmtPercent(value: number | null): string {
   return value === null ? "—" : `${(value * 100).toFixed(1)} %`
 }
 
-export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Props) {
+export function RetunementAnalyzerPanel({ piece, classId, rows, reason, isPending }: Props) {
   const { t } = useI18n()
+
+  const heirloom = useMemo(() => (piece ? heirloomMatch(piece, classId) : null), [piece, classId])
+  const isHeirloom = (heirloom?.builds.length ?? 0) > 0
+  const heirloomSwap = heirloom?.swap ?? null
 
   const countBySlot = useMemo(() => {
     const counts = new Map<number, number>()
@@ -181,7 +187,43 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
         <div className="hint">{t("gear.retunementAnalyzer.computing")}</div>
       )}
 
-      {best && (
+      {isHeirloom && (
+        <div className={`${retunement.best} ${retunement.heirloomPick}`}>
+          <div className={retunement.bestRow}>
+            <span className={retunement.bestLabel}>
+              {t("gear.retunementAnalyzer.alreadyAnHeirloom")}
+            </span>
+            <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>
+          </div>
+          <div className={retunement.heirloomNote}>
+            {t("gear.retunementAnalyzer.keepItRetuningCanOnly")}
+          </div>
+        </div>
+      )}
+
+      {heirloomSwap && (
+        <div className={`${retunement.best} ${retunement.heirloomPick}`}>
+          <div className={retunement.bestRow}>
+            <span className={retunement.bestLabel}>
+              {t("gear.retunementAnalyzer.makesItAnHeirloom")}
+            </span>
+            <span className={retunement.bestSlot}>
+              {t("gear.retunementAnalyzer.slot") + (heirloomSwap.slotIndex + 1)}
+              {heirloomSwap.currentWord
+                ? ` (${t("common.active")}: ${t(statLineKey(heirloomSwap.currentWord), statLineLabel(heirloomSwap.currentWord))})`
+                : ""}
+              {" → "}
+              <strong>{t(statLineKey(heirloomSwap.word), statLineLabel(heirloomSwap.word))}</strong>
+            </span>
+            <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>
+          </div>
+          <div className={retunement.heirloomNote}>
+            {t("gear.retunementAnalyzer.worthMoreThanTheDpsPick")}
+          </div>
+        </div>
+      )}
+
+      {best && !isHeirloom && (
         <div className={retunement.best}>
           <div className={retunement.bestRow}>
             <span className={retunement.bestLabel}>
@@ -254,6 +296,10 @@ export function RetunementAnalyzerPanel({ piece, rows, reason, isPending }: Prop
             <div key={`${candidate.slotIndex}-${candidate.word}`} style={{ display: "contents" }}>
               <div className={retunement.cell}>
                 {t(statLineKey(candidate.word), statLineLabel(candidate.word))}
+                {heirloomSwap?.slotIndex === candidate.slotIndex &&
+                  heirloomSwap.word === candidate.word && (
+                    <span className={retunement.heirloomTag}>{t("common.heirloom")}</span>
+                  )}
               </div>
               <div className={`${retunement.cell} ${deltaSignClass(candidate.deltaDps)}`}>
                 {fmtDpsDelta(candidate.deltaDps)}

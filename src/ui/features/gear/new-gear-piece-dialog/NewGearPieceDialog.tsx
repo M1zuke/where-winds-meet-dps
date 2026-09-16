@@ -3,6 +3,8 @@ import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../.
 import { emptyGearWords } from "../../../../engine/types"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { newGearPieceId } from "../../../../storage"
+import { heirloomMatch } from "../../../../engine/heirloom"
+import { graduationBuildKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import { GearPieceForm, type ScanMarkField, type ScanMarks } from "../gear-piece-form/GearPieceForm"
@@ -92,6 +94,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
   )
 
   const flaggedCount = Object.keys(marks).length
+  const draftHeirloom = heirloomMatch(draft, inputs.classId)
 
   function handleMarkCleared(field: ScanMarkField): void {
     setClearedMarks((previous) => (previous.includes(field) ? previous : [...previous, field]))
@@ -135,6 +138,19 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
         </div>
       </DialogBody>
       <DialogFooter>
+        {(draftHeirloom.builds.length > 0 || draftHeirloom.swap) && (
+          <span
+            className={
+              draftHeirloom.builds.length > 0 ? styles.heirloomMark : styles.heirloomReadyMark
+            }
+          >
+            {draftHeirloom.builds.length > 0
+              ? `${t("common.heirloom")} · ${draftHeirloom.builds
+                  .map((build) => t(graduationBuildKey(build.id), build.name))
+                  .join(" · ")}`
+              : t("common.oneRetuneAway")}
+          </span>
+        )}
         <button type="button" className="btn" onClick={onCancel}>
           {t("common.cancel")}
         </button>

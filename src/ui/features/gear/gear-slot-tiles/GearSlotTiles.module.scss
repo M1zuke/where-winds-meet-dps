@@ -58,6 +58,63 @@
   border-color: var(--color-accent);
 }
 
+.gearTile.isHeirloom {
+  isolation: isolate;
+  text-shadow:
+    0 1px 2px var(--color-bg),
+    0 0 8px var(--color-bg);
+}
+
+.gearTile.isHeirloom .gearTileNoteMarker,
+.gearTile.isHeirloom .gearTileHeirloomReady {
+  text-shadow: none;
+}
+
+.gearTile.rarityLegendary {
+  --tile-rarity-color: var(--color-rarity-legendary);
+}
+
+.gearTile.rarityEpic {
+  --tile-rarity-color: var(--color-rarity-epic);
+}
+
+.gearTile.isSelected.isHeirloom {
+  background: var(--color-surface-inset);
+  border-color: var(--tile-rarity-color);
+  box-shadow:
+    0 0 0 1px var(--tile-rarity-color),
+    0 0 14px -4px var(--tile-rarity-color);
+}
+
+.gearTile.isSelected.isHeirloom::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 0;
+  border-top: 14px solid var(--tile-rarity-color);
+  border-left: 14px solid transparent;
+  border-top-right-radius: 3px;
+}
+
+.gearTileHeirloomReady {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bg);
+  color: var(--color-accent);
+  border: 1px dashed var(--color-accent);
+  font-size: 0.55em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 1;
+}
+
 .gearTile.empty {
   border-style: dashed;
   border-left-style: solid;

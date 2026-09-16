@@ -1,6 +1,8 @@
 import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { rarityKey } from "../../../../i18n/contentKeys"
+import { heirloomMatch } from "../../../../engine/heirloom"
+import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDelta } from "../../../../engine/dpsWorker"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
@@ -11,6 +13,7 @@ import styles from "./GearInventoryPanel.module.scss"
 
 interface Props {
   rows: InventoryRow[]
+  classId: string
   selectedPieceId: string | null
   onSelect(row: InventoryRow): void
   slotFilter: GearSlot | null
@@ -40,6 +43,7 @@ function signClass(delta: number): string {
 
 export function GearInventoryPanel({
   rows,
+  classId,
   selectedPieceId,
   onSelect,
   slotFilter,
@@ -62,6 +66,8 @@ export function GearInventoryPanel({
     const delta: DpsDelta | undefined = dpsDeltas[piece.id]
     const slotLabel = t(GEAR_SLOT_KEYS[piece.slot])
     const rarityLabel = t(rarityKey(piece.rarity), piece.rarity)
+    const heirloom = heirloomMatch(piece, classId)
+    const isHeirloom = heirloom.builds.length > 0
     return (
       <button
         type="button"
@@ -69,10 +75,15 @@ export function GearInventoryPanel({
         className={
           styles.gearInvTile +
           ` ${RARITY[piece.rarity]}` +
-          (isSelected ? ` ${styles.isSelected}` : "")
+          (isSelected ? ` ${styles.isSelected}` : "") +
+          (isHeirloom ? ` ${styles.isHeirloom}` : "")
         }
         onClick={() => onSelect(row)}
       >
+        {isHeirloom && <HeirloomShine rarity={piece.rarity} />}
+        {heirloom.swap && (
+          <span className={styles.gearInvTileHeirloomReady}>{t("common.oneRetuneAway")}</span>
+        )}
         {piece.isNew && <span className={styles.gearInvTileNew}>{t("common.new")}</span>}
         {piece.note && (
           <span

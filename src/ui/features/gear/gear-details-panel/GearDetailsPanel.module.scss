@@ -1,5 +1,64 @@
 @use "mixins";
 
+.isHeirloom {
+  position: relative;
+  isolation: isolate;
+  text-shadow:
+    0 1px 2px var(--color-bg),
+    0 0 8px var(--color-bg);
+}
+
+.isHeirloom :global(.btn:not(:where(.is-on, .primary, .secondary))) {
+  background: var(--color-surface-inset);
+}
+
+.isHeirloom input,
+.isHeirloom select,
+.isHeirloom :global(.btn) {
+  text-shadow: none;
+}
+
+.heirloomLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: -4px 0 10px;
+  font-size: 0.8em;
+  color: var(--color-text-muted);
+}
+
+.heirloomChip,
+.heirloomReadyChip {
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heirloomChip {
+  border: 1px solid var(--color-rarity-legendary);
+  color: var(--color-rarity-legendary);
+  background: var(--color-surface-selected);
+}
+
+.rarityEpic .heirloomChip {
+  border-color: var(--color-rarity-epic);
+  color: var(--color-rarity-epic);
+}
+
+.heirloomReadyChip {
+  border: 1px dashed var(--color-accent);
+  color: var(--color-accent);
+}
+
+.heirloomFor b {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 .identity {
   display: flex;
   flex-direction: column;

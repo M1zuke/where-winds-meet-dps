@@ -199,6 +199,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
         </div>
         <GearSlotTiles
           inventory={inventory}
+          classId={inputs.classId}
           equipped={equipped}
           selectedPieceId={liveSelectedPieceId}
           selectedSlot={selectedSlot}
@@ -223,6 +224,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
           />
           <RetunementAnalyzerPanel
             piece={retuneTargetId ? selectedPiece : null}
+            classId={inputs.classId}
             rows={retuneRowsMatch ? retunement.rows : []}
             reason={!retuneTargetId ? "no-selection" : retuneRowsMatch ? retunement.reason : "ok"}
             isPending={retunement.isPending || !retuneRowsMatch}
@@ -257,6 +259,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
               {sub === "inventory" && (
                 <GearInventoryPanel
                   rows={visibleRows}
+                  classId={inputs.classId}
                   selectedPieceId={liveSelectedPieceId}
                   onSelect={selectInventoryRow}
                   slotFilter={selectedSlot}

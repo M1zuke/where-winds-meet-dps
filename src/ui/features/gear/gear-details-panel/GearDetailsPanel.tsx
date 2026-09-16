@@ -2,8 +2,10 @@ import type { GearPiece } from "../../../../engine/types"
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { rarityKey } from "../../../../i18n/contentKeys"
+import { graduationBuildKey, rarityKey } from "../../../../i18n/contentKeys"
+import { heirloomMatch } from "../../../../engine/heirloom"
 import { sanitizeGearPieceText } from "../../../../storage"
+import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
 import { TextInput } from "../../../components/text-input/TextInput"
 import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
@@ -62,8 +64,12 @@ export function GearDetailsPanel({
     )
   }
 
+  const heirloom = heirloomMatch(piece, inputs.classId)
+  const isHeirloom = heirloom.builds.length > 0
+
   return (
-    <div className={`panel ${styles.gearDetails}`}>
+    <div className={`panel ${styles.gearDetails}${isHeirloom ? ` ${styles.isHeirloom}` : ""}`}>
+      {isHeirloom && <HeirloomShine rarity={piece.rarity} />}
       <div className="toolbar">
         <span className="toolbar-label">{t("gear.details.gearDetails")}</span>
         <div className="spacer" />
@@ -92,6 +98,24 @@ export function GearDetailsPanel({
           {isEquipped && <span className={styles.identityBadge}>{t("gear.details.equipped")}</span>}
         </div>
       </div>
+
+      {(isHeirloom || heirloom.swap) && (
+        <div className={styles.heirloomLine}>
+          <span className={isHeirloom ? styles.heirloomChip : styles.heirloomReadyChip}>
+            {isHeirloom ? t("common.heirloom") : t("common.oneRetuneAway")}
+          </span>
+          {isHeirloom && (
+            <span className={styles.heirloomFor}>
+              {t("gear.details.matchingTheBuild")}{" "}
+              <b>
+                {heirloom.builds
+                  .map((build) => t(graduationBuildKey(build.id), build.name))
+                  .join(" · ")}
+              </b>
+            </span>
+          )}
+        </div>
+      )}
 
       <div className={styles.pieceTextFields}>
         <label className={styles.pieceTextField}>

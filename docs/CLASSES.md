@@ -92,6 +92,14 @@ choice.
 - A class change clears the pick. A stored id naming another class's build is
   cleared on load; an id this build does not know is kept as stored.
 
+**A gear piece is an heirloom when its five stat lines are the ones some
+graduation build's piece for that slot carries** — any build of the class, in
+any order, whatever the rolled values, rarity, level or relayed state. A piece
+one line short is heirloom-ready only while that one retune is still legal, and
+the retunement advisor ranks that swap above its best-DPS swap. On a piece that
+already matches, the advisor withholds its best-DPS recommendation altogether:
+a swap that ends the match is never advised, whatever it would gain.
+
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build
 is allowlisted as content rather than logic.
@@ -100,13 +108,13 @@ Whatever a class does beyond data reaches the engine through registrations
 declared as fields on its own definition, which one registry loop reads:
 
 | the class needs                          | it declares            |
-| ----------------------------------------- | ----------------------- |
-| state markers the timeline reads         | gate buffs              |
-| a counter the rotation editor opens with | opening-stack buff ids  |
-| a stochastic or stateful mechanic        | mechanics               |
-| procedural behaviour on one skill        | skill behaviours        |
-| a Skill Editor "is this active" gate     | display gates           |
-| a poison/DoT extension window            | poison extensions       |
+| ---------------------------------------- | ---------------------- |
+| state markers the timeline reads         | gate buffs             |
+| a counter the rotation editor opens with | opening-stack buff ids |
+| a stochastic or stateful mechanic        | mechanics              |
+| procedural behaviour on one skill        | skill behaviours       |
+| a Skill Editor "is this active" gate     | display gates          |
+| a poison/DoT extension window            | poison extensions      |
 
 An inner way, a gear set or a consumable declares mechanics the same way, read
 by its own registry. `declareMechanic` is the one contract every owner uses,
