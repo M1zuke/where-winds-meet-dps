@@ -12,12 +12,74 @@ import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-p
 import { GraduationBuildDialog } from "../../src/ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
+vi.mock("../../src/definitions/graduationBuilds/registry", async (importOriginal) => {
+  const testClassId = "bellstrikeUmbra"
+  type Registry = typeof import("../../src/definitions/graduationBuilds/registry")
+  const actual = await importOriginal<Registry>()
+  const { defineGraduationBuild } =
+    await import("../../src/definitions/graduationBuilds/graduationBuildDef")
+  const { createGraduationGearPiece } = await import("../../src/data/classes/graduationGear")
+  const { SET_ID } = await import("../../src/data/sets/ids")
+  const rotation = (await import("../../src/data/classes/bellstrike-umbra/rotations/38Bbs")).default
+
+  const gearFor = (idPrefix: string) =>
+    (
+      [
+        ["leftWeapon", ["maxPhys", "maxPhys", "power", "swordBoost", "momentum"], "physPen"],
+        ["rightWeapon", ["maxPhys", "maxPhys", "power", "affinity", "momentum"], "physPen"],
+        ["disc", ["maxPhys", "maxPhys", "power", "allMartialBoost", "momentum"], "physPen"],
+        ["pendant", ["maxPhys", "maxPhys", "power", "allMartialBoost", "momentum"], "physPen"],
+        ["helm", ["affinity", "affinity", "power", "maxPhys", "momentum"], "bleedingDamage"],
+        ["armor", ["affinity", "affinity", "power", "maxPhys", "momentum"], "bleedingDamage"],
+        ["greaves", ["power", "power", "maxPhys", "damageVsBoss", "momentum"], "bleedingDamage"],
+        ["bracer", ["power", "power", "maxPhys", "damageVsBoss", "momentum"], "bleedingDamage"],
+      ] as const
+    ).map(([slot, words, attunement]) =>
+      createGraduationGearPiece({ idPrefix, slot, words, attunement }),
+    )
+
+  const relayedBowSet = defineGraduationBuild({
+    id: "graduation-bellstrikeUmbra-test-relayed-bow-set",
+    name: "Test Relayed Bow Set",
+    classId: testClassId,
+    gear: gearFor("graduation-test-relayed"),
+    set: SET_ID.hawkwing,
+    bowSet: "crit",
+    arsenal: "bellstrike",
+    rotationId: rotation.id,
+    relayedOverrides: { bowSet: "affinity" },
+  })
+
+  const plain = defineGraduationBuild({
+    id: "graduation-bellstrikeUmbra-test-plain",
+    name: "Test Plain",
+    classId: testClassId,
+    gear: gearFor("graduation-test-plain"),
+    set: SET_ID.hawkwing,
+    bowSet: "crit",
+    arsenal: "bellstrike",
+    rotationId: rotation.id,
+  })
+
+  const builds = [relayedBowSet, plain]
+
+  return {
+    ...actual,
+    allGraduationBuilds: () => [
+      ...builds,
+      ...actual.allGraduationBuilds().filter((build) => build.classId !== testClassId),
+    ],
+    graduationBuildsFor: (classId: string) =>
+      classId === testClassId ? builds : actual.graduationBuildsFor(classId),
+  }
+})
+
 // The dialog's word/base-stat literals below are the level-96 ladder values,
 // so breakthrough 16 (gear level 96) keeps them meaningful.
 const inputs = {
   ...defaultInputs,
   breakthrough: 16,
-  graduationBuildId: classDefinition(defaultInputs.classId)!.graduationBuilds[0].id,
+  graduationBuildId: "graduation-bellstrikeUmbra-test-relayed-bow-set",
 }
 
 describe("GraduationBuildDialog", () => {
