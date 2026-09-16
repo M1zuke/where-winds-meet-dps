@@ -317,10 +317,7 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
       customSkills: [soleHit, pad],
       activeCustomRotation: makeRotation("bellstrikeUmbra", {
         name: "single-low-probability-hit",
-        steps: [
-          makeStep({ skillId: soleHit.id, hitCount: 1 }),
-          makeStep({ skillId: pad.id, hitCount: 1 }),
-        ],
+        steps: [makeStep({ skillId: soleHit.id }), makeStep({ skillId: pad.id })],
       }),
     }
     const result = simulateTimeline(inputs)

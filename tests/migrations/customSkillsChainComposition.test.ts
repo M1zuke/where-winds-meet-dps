@@ -15,6 +15,12 @@ import { healWolfchasersArtSwordOverreach } from "../../src/migrations/customSki
 import { healSpearMistwillowReach } from "../../src/migrations/customSkills/V11__spearMistwillowReach"
 import { healDragonHeadLowHpReach } from "../../src/migrations/customSkills/V12__dragonHeadLowHpReach"
 import { healSpearHeavyChargedCoefficients } from "../../src/migrations/customSkills/V13__spearHeavyChargedCoefficients"
+import { healBellstrikeUmbraArtBonusAttack } from "../../src/migrations/customSkills/V16__bellstrikeUmbraArtBonusAttack"
+import { healBellstrikeSplendorArtBonusAttack } from "../../src/migrations/customSkills/V17__bellstrikeSplendorArtBonusAttack"
+import { healStonesplitStrengthArtBonusAttack } from "../../src/migrations/customSkills/V18__stonesplitStrengthArtBonusAttack"
+import { healBamboocutDraughtArtBonusAttack } from "../../src/migrations/customSkills/V19__bamboocutDraughtArtBonusAttack"
+import { healSilkbindJadeArtBonusAttack } from "../../src/migrations/customSkills/V20__silkbindJadeArtBonusAttack"
+import { healJadeBlossomBarrageReach } from "../../src/migrations/customSkills/V21__jadeBlossomBarrageReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -27,6 +33,12 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [11, healSpearMistwillowReach],
   [12, healDragonHeadLowHpReach],
   [13, healSpearHeavyChargedCoefficients],
+  [16, healBellstrikeUmbraArtBonusAttack],
+  [17, healBellstrikeSplendorArtBonusAttack],
+  [18, healStonesplitStrengthArtBonusAttack],
+  [19, healBamboocutDraughtArtBonusAttack],
+  [20, healSilkbindJadeArtBonusAttack],
+  [21, healJadeBlossomBarrageReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

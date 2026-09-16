@@ -14,6 +14,7 @@ export interface DebuffDotSpec {
   // separate number from the interval, and a DoT whose first tick lands on
   // application carries 0. Absent, the first tick falls one interval in.
   firstTickOffsetFrames?: number | null
+  additionalTicks?: { offsetsFrames: readonly number[]; requiresBuff: string }
   // Whether each tick schedules the next one, which is what makes the interval
   // run long (see `dot.ts`'s tick-timer factor). False for a DoT that pulses on
   // a fixed schedule instead. Absent means it has not been established for this
@@ -23,6 +24,7 @@ export interface DebuffDotSpec {
   physFixed: number
   attributeMultiplier: number
   attributeFixed: number
+  elevatedAttributeMultiplier?: boolean
   extraCritDamage?: number
   attributeAttack: AttributeKey | ""
   skillType: string

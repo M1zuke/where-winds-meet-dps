@@ -25,7 +25,7 @@ let comboUmbLightBonusMinTier: number | undefined
 export function comboUmbLightBonusBuffDef(): BuffModule {
   return defineBuff({
     id: BUFF.comboUmbLightBonus,
-    name: "Combo (UmbLight)",
+    name: "Combo (Spring Away / Unfading Flower)",
     requires: {
       param: PARAM.blossomBarrage,
       get minTier(): number {
@@ -37,6 +37,8 @@ export function comboUmbLightBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    effects: [stat("allDamageBoost", 0.1)],
+    // Global 2.0: https://www.wherewindsmeetgame.com/news/official/723update.html
+    summary: "+5% damage against your Combo target; +10% while Exhausted (PvE)",
+    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
   })
 }

@@ -111,7 +111,8 @@ describe("paramsFromInputs — build derivation", () => {
         param === "spec" ||
         param === "belowQiTime" ||
         param === "minPhysAttack" ||
-        param === "targetMaxHp"
+        param === "targetMaxHp" ||
+        param === "breakthrough"
       )
         continue
       expect(def).toBeFalsy()
@@ -144,10 +145,7 @@ describe("build-driven enablement moves timeline DPS", () => {
       hits: [makeHit({ frame: 0, physMultiplier: 3, physFixed: 100 })],
     })
     const rotation = makeRotation("bellstrikeUmbra", {
-      steps: [
-        makeStep({ skillId: trigger.id, hitCount: 1 }),
-        makeStep({ skillId: follow.id, hitCount: 1 }),
-      ],
+      steps: [makeStep({ skillId: trigger.id }), makeStep({ skillId: follow.id })],
     })
     const inputs: Inputs = {
       ...defaultInputs,

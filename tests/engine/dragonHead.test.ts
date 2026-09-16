@@ -179,10 +179,7 @@ describe("neverAbrades — abrasion mass becomes normal, crit still gated by pre
 })
 
 function rotationOf(classId: string, skillIds: string[]) {
-  const steps = skillIds.map((skillId) => {
-    const skill = builtinSkill(classId, skillId)
-    return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
-  })
+  const steps = skillIds.map((skillId) => makeStep({ skillId: builtinSkill(classId, skillId).id }))
   return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }
 

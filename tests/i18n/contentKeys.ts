@@ -16,6 +16,7 @@ import {
   debuffBreakdownKey,
   debuffEchoKey,
   debuffKey,
+  graduationBuildKey,
   hitVariantKey,
   innerWayKey,
   innerWayTierKey,
@@ -69,6 +70,7 @@ export function collectContentKeys(): Record<string, string> {
     for (const talent of getDefaultTalentsForClass(definition.id))
       add(talentKey(talent), talent.name)
     for (const rotation of definition.rotations) add(rotationKey(rotation.id), rotation.name)
+    for (const build of definition.graduationBuilds) add(graduationBuildKey(build.id), build.name)
     for (const debuff of definition.debuffs) {
       add(debuffKey(debuff.id), debuff.name)
       add(debuffBreakdownKey(debuff.id), debuff.breakdownName)

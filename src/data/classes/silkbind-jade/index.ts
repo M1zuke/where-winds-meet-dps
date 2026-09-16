@@ -2,17 +2,24 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/silkbind-jade"
 import { DEBUFFS } from "../../skills/silkbind-jade/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/standardized17"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { lowQiFollowUp } from "../../skills/silkbind-jade/buffs/lowQiFollowUp"
 import { trajectorySkill } from "../../skills/silkbind-jade/buffs/trajectorySkill"
-import { SILKBIND_JADE_GRADUATION_BUILD } from "./graduationBuild"
+import {
+  inkwellFanAdditionalAttack,
+  vernalUmbrellaAdditionalAttack,
+} from "../../skills/silkbind-jade/buffs/additionalAttack"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 
 export const silkbindJade = defineClass({
   id: CLASS_ID,
   displayName: "Silkbind Jade",
   validated: false,
+  resources: [blossomResource],
+  legacySkillIds: legacyDroneSkillIds,
   spec: "silkbind_jade",
   primaryAttribute: "Silkbind",
   attributeMultiplier: 1.5,
@@ -36,9 +43,14 @@ export const silkbindJade = defineClass({
   critBoostWeaponTypes: ["Umbrella", "Fan"],
   skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
-  graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
-  classBuffDefs: [lowQiFollowUp, trajectorySkill],
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
+  classBuffDefs: [
+    lowQiFollowUp,
+    trajectorySkill,
+    inkwellFanAdditionalAttack,
+    vernalUmbrellaAdditionalAttack,
+  ],
   gateBuffs: [],
   mechanics: [],
   skillBehaviors: [],

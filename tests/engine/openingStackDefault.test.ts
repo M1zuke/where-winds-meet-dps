@@ -24,7 +24,7 @@ function fillerRotationResult(openingStacks?: Record<string, number>) {
     set: null,
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: skill.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: skill.id })],
       ...(openingStacks ? { openingStacks } : {}),
     }),
   }
@@ -78,7 +78,7 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
       set: null,
       customSkills: [skill],
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: skill.id, hitCount: 1 })],
+        steps: [makeStep({ skillId: skill.id })],
       }),
     }
     expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo(30 / FPS, 10)

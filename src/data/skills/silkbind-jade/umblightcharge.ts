@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 // The reference def carries these as ONE cast total spread over six hits, not
 // as a per-hit value: every other multi-hit skill in the reference set — 31 of
@@ -55,6 +56,7 @@ export const umblightcharge = defineSkill({
     BUFF.trajectorySkill,
     BUFF.thunderousBloom,
     BUFF.springThunder,
+    ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castFrames: 147,
   triggerable: true,

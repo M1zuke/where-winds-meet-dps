@@ -71,7 +71,13 @@ function renderTab() {
   render(
     <I18nProvider>
       <ConfirmProvider>
-        <GearTab inputs={inputs} engineInputs={inputs} onChange={() => {}} currentDps={40000} />
+        <GearTab
+          inputs={inputs}
+          engineInputs={inputs}
+          customGraduationBuild={null}
+          onChange={() => {}}
+          currentDps={40000}
+        />
       </ConfirmProvider>
     </I18nProvider>,
   )

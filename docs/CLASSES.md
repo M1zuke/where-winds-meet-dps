@@ -52,8 +52,16 @@ Test-suite consequences are in TESTING.md § "Class scoping".
   § "Mystic arts".
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
-  ways, martial arts, classes. There is no JSON authoring format: the only JSON
-  under `src/data/` is lookup tables with no contract to check.
+  ways, martial arts, rotations, graduation builds, classes. There is no JSON
+  authoring format: the only JSON under `src/data/` is lookup tables with no
+  contract to check.
+- **A built-in rotation is one module in its class folder's rotations folder**,
+  default-exporting its `defineRotation` call. Its class id is its only
+  registration: never list a rotation in a barrel.
+- **A graduation build is one module in its class folder's graduation builds
+  folder**, default-exporting its `defineGraduationBuild` call, and carries a
+  name. Its class id is its only registration, and its id is what a profile
+  stores: renaming the id is a storage change, renaming the name never is.
 - Nothing under `src/data/` may declare a `define*` contract or call a
   `register*` entry point.
 - Nothing under `src/definitions/` may reach past a `src/data/` folder barrel, an
@@ -68,8 +76,41 @@ is camelCase.
 
 One accessor answers what a class is made of — spec, primary attribute, inner
 ways, class-specific attunement ids, skills, debuffs, buffs, rotations and
-default, graduation build, attunements, retunement pool. **Reach for it rather
+default, graduation builds, attunements, retunement pool. **Reach for it rather
 than the individual registries.**
+
+**A profile follows one graduation build, and the graduation rate simulates both
+sides on that build's rotation** — the user's build and the benchmark alike,
+never the rotation the user has selected — so it compares gear, not rotation
+choice.
+
+- A class with a single graduation build follows it without a choice, and a
+  loaded profile stores it.
+- A class with several follows none until the profile picks one; while none is
+  followed there is no rate, and the app asks for one rather than leaving the
+  choice to be discovered.
+- A class change clears the pick. A stored id naming another class's build is
+  cleared on load; an id this build does not know is kept as stored.
+
+**A profile may follow a build the user authored instead of a shipped one.** It
+lives in its own store and never in the profile blob, reaching the engine the
+way every other user-authored entity does: injected at the boundary and filtered
+by class. Only its stat lines and attunements are chosen — every value is the
+maximum for the gear level, as a benchmark's is. A class carries at most one,
+and it stands beside the shipped builds everywhere those are listed.
+
+**A gear piece is an heirloom when its five stat lines are the ones some
+graduation build's piece for that slot carries** — any build of the class, in
+any order, whatever the rolled values, rarity, level or relayed state. A piece
+one line short is heirloom-ready only while that one retune is still legal, and
+the retunement advisor ranks that swap above its best-DPS swap. On a piece that
+already matches, the advisor withholds its best-DPS recommendation altogether:
+a swap that ends the match is never advised, whatever it would gain.
+
+**An equipped piece carries the heirloom treatment only for the build the
+profile follows**, an unequipped one for any build of the class. A match against
+a build the profile does not follow is still a match — it is named as such
+rather than dropped.
 
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build
@@ -79,13 +120,13 @@ Whatever a class does beyond data reaches the engine through registrations
 declared as fields on its own definition, which one registry loop reads:
 
 | the class needs                          | it declares            |
-| ----------------------------------------- | ----------------------- |
-| state markers the timeline reads         | gate buffs              |
-| a counter the rotation editor opens with | opening-stack buff ids  |
-| a stochastic or stateful mechanic        | mechanics               |
-| procedural behaviour on one skill        | skill behaviours        |
-| a Skill Editor "is this active" gate     | display gates           |
-| a poison/DoT extension window            | poison extensions       |
+| ---------------------------------------- | ---------------------- |
+| state markers the timeline reads         | gate buffs             |
+| a counter the rotation editor opens with | opening-stack buff ids |
+| a stochastic or stateful mechanic        | mechanics              |
+| procedural behaviour on one skill        | skill behaviours       |
+| a Skill Editor "is this active" gate     | display gates          |
+| a poison/DoT extension window            | poison extensions      |
 
 An inner way, a gear set or a consumable declares mechanics the same way, read
 by its own registry. `declareMechanic` is the one contract every owner uses,

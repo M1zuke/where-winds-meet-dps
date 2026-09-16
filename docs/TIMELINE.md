@@ -93,6 +93,17 @@ the skill could ever land.
   and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
   negative frames — but it adds nothing to the total, the breakdown or an echo
   bank, whatever its coefficients say, and its frames stay out of the duration.
+- **A rotation step performs every hit its skill has.** A step names a skill and
+  nothing else; a cast cut short is authored as its own skill carrying only the
+  hits it lands, never as a count on the step.
+- **A rotation may fix its own window** (`fixedWindowSec`): the run then lasts
+  exactly that long, and DPS divides by it. Casts shorter than the window are
+  followed by idle time in which every status keeps its own schedule — a
+  damage-over-time effect still up keeps ticking and still counts. A cast that
+  runs past the window keeps only the hits inside it, for damage and for the
+  triggers and status writes those hits make alike; nothing outside the window
+  fires, scores or opens a window. The cast length is still reported beside the
+  run length, and a rotation with no window is exactly as long as its casts.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the
@@ -270,6 +281,12 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
 - **A module's `effects` may read the target's remaining health from
   context**, as a fraction of its max that falls with the damage dealt so far
   in time order — never re-derived from a hit count or a display value.
+- **A module's `effects` may read the build's breakthrough from its
+  context**, the same way it reads min physical attack. A module that only
+  exists from some breakthrough on declares that minimum in `requires` rather
+  than returning no effects below it — the catalog and the display gates read
+  `requires` without executing anything, so a gate hidden inside `effects`
+  never reaches them.
 
 ## Procedural behaviour
 
@@ -287,6 +304,19 @@ shaped that way. Merging them needs a per-status policy — a design decision, n
 a refactor.
 
 ## Checklist
+
+- Declare resource capacity, launch identity, upkeep and gain rules on the owning
+  class definition; keep resource names and values out of the engine.
+- Gate resource-controlled ticks before their damage or buff triggers. A depleted
+  launch must not revive from later refunds. Each new launch starts its own cadence.
+- Distribute declared whole-skill resource gains over authored hits; credit only
+  executed damaging hits, and keep once-per-cast bonuses independent.
+- Gate conditional additional pulse impacts at execution time, so status extensions
+  from earlier accepted impacts can affect later impacts.
+- Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
+  must not grant a hit refund. Clamp balances and use the encounter's phase clock.
+- Expose uncertain gain amounts as persisted, hydrated inputs. Report actual funded
+  windows and rejected launches, and distinguish assumptions from measured anchors.
 
 1. English identifiers only.
 2. Coefficients, frames and `castFrames` set per hit.

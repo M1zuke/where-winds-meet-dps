@@ -42,7 +42,7 @@ export function SimulationParseLadderPanel({ sorted }: { sorted: readonly ParseR
     <table className={`ranking-table skill-table ${styles.ladder}`}>
       <thead>
         <tr>
-          <th>{t("simulation.parseLadder.rank")}</th>
+          <th>{t("common.rank")}</th>
           <th className={styles.centered}>{t("common.dps")}</th>
           <th className={styles.centered}>{t("common.damage")}</th>
           <th className="bar-col">

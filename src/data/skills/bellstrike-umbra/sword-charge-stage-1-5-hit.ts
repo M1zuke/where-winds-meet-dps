@@ -2,6 +2,7 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORD_CHARGE_STAGE_1_HITS } from "./sword-charge-stage-1-hits"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const swordChargeStage15Hit = defineSkill({
   id: SKILL.swordChargeStage15Hit,
@@ -13,6 +14,7 @@ export const swordChargeStage15Hit = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordChargeStage15Hit,
+  receives: STRATEGIC_SWORD_RECEIVES,
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 121,
   triggerable: true,

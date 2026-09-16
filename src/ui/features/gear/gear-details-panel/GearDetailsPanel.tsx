@@ -2,8 +2,10 @@ import type { GearPiece } from "../../../../engine/types"
 import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { rarityKey } from "../../../../i18n/contentKeys"
+import { graduationBuildKey, rarityKey } from "../../../../i18n/contentKeys"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { sanitizeGearPieceText } from "../../../../storage"
+import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
 import { TextInput } from "../../../components/text-input/TextInput"
 import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
@@ -21,6 +23,7 @@ interface Props {
   piece: GearPiece | null
   isEquipped: boolean
   inputs: Inputs
+  profile: HeirloomProfile
   onChange(piece: GearPiece): void
   onEquip(): void
   onUnequip(): void
@@ -33,6 +36,7 @@ export function GearDetailsPanel({
   piece,
   isEquipped,
   inputs,
+  profile,
   onChange,
   onEquip,
   onUnequip,
@@ -62,8 +66,13 @@ export function GearDetailsPanel({
     )
   }
 
+  const heirloom = heirloomMatch(piece, profile)
+  const isHeirloom = heirloom.builds.length > 0
+  const shines = isEquipped ? heirloom.followed : isHeirloom
+
   return (
-    <div className={`panel ${styles.gearDetails}`}>
+    <div className={`panel ${styles.gearDetails}${shines ? ` ${styles.isHeirloom}` : ""}`}>
+      {shines && <HeirloomShine rarity={piece.rarity} />}
       <div className="toolbar">
         <span className="toolbar-label">{t("gear.details.gearDetails")}</span>
         <div className="spacer" />
@@ -93,27 +102,38 @@ export function GearDetailsPanel({
         </div>
       </div>
 
-      <div className={styles.pieceTextFields}>
-        <label className={styles.pieceTextField}>
-          <span className={styles.pieceTextFieldLabel}>{t("common.name")}</span>
-          <TextInput
-            value={piece.label ?? ""}
-            maxLength={LABEL_MAX_LENGTH}
-            placeholder={t("gear.details.pieceNamePlaceholder")}
-            onChange={(event) => patchText("label", event.target.value, LABEL_MAX_LENGTH)}
-          />
-        </label>
-        <label className={styles.pieceTextField}>
-          <span className={styles.pieceTextFieldLabel}>{t("gear.details.pieceNote")}</span>
-          <textarea
-            className={styles.pieceNoteInput}
-            value={piece.note ?? ""}
-            maxLength={NOTE_MAX_LENGTH}
-            placeholder={t("gear.details.pieceNotePlaceholder")}
-            onChange={(event) => patchText("note", event.target.value, NOTE_MAX_LENGTH)}
-          />
-        </label>
-      </div>
+      {(isHeirloom || heirloom.swap) && (
+        <div className={styles.heirloomLine}>
+          <span className={isHeirloom ? styles.heirloomChip : styles.heirloomReadyChip}>
+            {isHeirloom ? t("common.heirloom") : t("common.oneRetuneAway")}
+          </span>
+          {isHeirloom && (
+            <span className={styles.heirloomFor}>
+              {t("gear.details.matchingTheBuild")}{" "}
+              <b>
+                {heirloom.builds
+                  .map((build) => t(graduationBuildKey(build.id), build.name))
+                  .join(" · ")}
+              </b>
+            </span>
+          )}
+          {isHeirloom && !heirloom.followed && (
+            <span className={styles.heirloomUnfollowed}>
+              {t("gear.details.notTheBuildYouFollow")}
+            </span>
+          )}
+        </div>
+      )}
+
+      <label className={`${styles.pieceTextField} ${styles.pieceNameField}`}>
+        <span className={styles.pieceTextFieldLabel}>{t("common.name")}</span>
+        <TextInput
+          value={piece.label ?? ""}
+          maxLength={LABEL_MAX_LENGTH}
+          placeholder={t("gear.details.pieceNamePlaceholder")}
+          onChange={(event) => patchText("label", event.target.value, LABEL_MAX_LENGTH)}
+        />
+      </label>
 
       <GearPieceForm
         piece={piece}
@@ -122,6 +142,17 @@ export function GearDetailsPanel({
         wordMaxRows={wordMaxRows}
         wordMaxPending={wordMaxPending}
       />
+
+      <label className={`${styles.pieceTextField} ${styles.pieceNoteField}`}>
+        <span className={styles.pieceTextFieldLabel}>{t("gear.details.pieceNote")}</span>
+        <textarea
+          className={styles.pieceNoteInput}
+          value={piece.note ?? ""}
+          maxLength={NOTE_MAX_LENGTH}
+          placeholder={t("gear.details.pieceNotePlaceholder")}
+          onChange={(event) => patchText("note", event.target.value, NOTE_MAX_LENGTH)}
+        />
+      </label>
     </div>
   )
 }

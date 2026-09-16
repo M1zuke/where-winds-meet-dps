@@ -150,10 +150,10 @@ describe("the Primepick follow-up", () => {
   function runFollowUp(withDeepdaze: boolean) {
     const steps = withDeepdaze
       ? [
-          makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
-          makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 3 }),
+          makeStep({ skillId: grantDeepdaze.id }),
+          makeStep({ skillId: SKILL.nightwickPrimepickFollowUp }),
         ]
-      : [makeStep({ skillId: SKILL.nightwickPrimepickFollowUp, hitCount: 3 })]
+      : [makeStep({ skillId: SKILL.nightwickPrimepickFollowUp })]
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
@@ -211,10 +211,8 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
 
   function runPeakfall(withEonpour: boolean, alreadyInDeepdaze: boolean, peakfalls = 1) {
     const steps = [
-      ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id, hitCount: 1 })] : []),
-      ...Array.from({ length: peakfalls }, () =>
-        makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
-      ),
+      ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id })] : []),
+      ...Array.from({ length: peakfalls }, () => makeStep({ skillId: SKILL.peakfall })),
     ]
     return runEngine({
       ...defaultInputs,
@@ -262,10 +260,7 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
         { name: "", stacks: "" },
       ],
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [
-          makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
-          makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
-        ],
+        steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
         qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
       }),
       set: null,
@@ -291,7 +286,7 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       classId: CLASS,
       mindMethods: eonpourTier6,
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.castlink, hitCount: 4 })],
+        steps: [makeStep({ skillId: SKILL.castlink })],
         qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
       }),
       set: null,
@@ -306,10 +301,7 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       classId: CLASS,
       mindMethods: eonpourTier6,
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [
-          makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
-          makeStep({ skillId: SKILL.castlink, hitCount: 4 }),
-        ],
+        steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
         qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
       }),
       set: null,

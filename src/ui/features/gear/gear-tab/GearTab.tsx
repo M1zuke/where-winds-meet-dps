@@ -22,16 +22,25 @@ import { useEquippedDpsDeltas } from "../../../hooks/useEquippedDpsDeltas"
 import { useRetunementAnalysis } from "../../../hooks/useRetunementAnalysis"
 import { useReattunementAnalysis } from "../../../hooks/useReattunementAnalysis"
 import { useWordMaxAnalysis } from "../../../hooks/useWordMaxAnalysis"
+import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
+import type { HeirloomProfile } from "../../../../engine/heirloom"
 import styles from "./GearTab.module.scss"
 
 interface Props {
   inputs: Inputs
   engineInputs: Inputs
+  customGraduationBuild: CustomGraduationBuild | null
   onChange(next: Inputs): void
   currentDps: number
 }
 
-export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
+export function GearTab({
+  inputs,
+  engineInputs,
+  customGraduationBuild,
+  onChange,
+  currentDps,
+}: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
   const [selectedPieceId, setSelectedPieceId] = useState<string | null>(null)
@@ -43,6 +52,11 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
 
   const inventory = inputs.inventory
   const equipped = inputs.equipped
+  const heirloomProfile: HeirloomProfile = {
+    classId: inputs.classId,
+    graduationBuildId: inputs.graduationBuildId,
+    customGraduationBuild,
+  }
 
   const visibleRows: InventoryRow[] = inventory.map((piece) => ({
     piece,
@@ -199,6 +213,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
         </div>
         <GearSlotTiles
           inventory={inventory}
+          profile={heirloomProfile}
           equipped={equipped}
           selectedPieceId={liveSelectedPieceId}
           selectedSlot={selectedSlot}
@@ -214,6 +229,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
             piece={selectedPiece}
             isEquipped={isEquipped}
             inputs={inputs}
+            profile={heirloomProfile}
             onChange={updatePiece}
             onEquip={equipSelected}
             onUnequip={unequipSelected}
@@ -223,6 +239,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
           />
           <RetunementAnalyzerPanel
             piece={retuneTargetId ? selectedPiece : null}
+            profile={heirloomProfile}
             rows={retuneRowsMatch ? retunement.rows : []}
             reason={!retuneTargetId ? "no-selection" : retuneRowsMatch ? retunement.reason : "ok"}
             isPending={retunement.isPending || !retuneRowsMatch}
@@ -257,6 +274,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
               {sub === "inventory" && (
                 <GearInventoryPanel
                   rows={visibleRows}
+                  profile={heirloomProfile}
                   selectedPieceId={liveSelectedPieceId}
                   onSelect={selectInventoryRow}
                   slotFilter={selectedSlot}
@@ -283,6 +301,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
         <NewGearPieceDialog
           initialSlot={selectedSlot ?? "leftWeapon"}
           inputs={inputs}
+          profile={heirloomProfile}
           onCancel={() => setNewPieceOpen(false)}
           onSave={handleCreateSave}
         />
@@ -299,6 +318,7 @@ export function GearTab({ inputs, engineInputs, onChange, currentDps }: Props) {
       {summaryOpen && (
         <EquippedBuildDialog
           inputs={inputs}
+          profile={heirloomProfile}
           currentDps={currentDps}
           onClose={() => setSummaryOpen(false)}
         />

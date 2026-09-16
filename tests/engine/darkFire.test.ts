@@ -23,11 +23,8 @@ const skillOf = (skillId: string) => builtinSkill(CLASS, skillId)
 const PAD = makeSkill(CLASS, { name: "Pad", castFrames: 1200, hits: [makeHit({ frame: 0 })] })
 
 function run(skillIds: string[]): ReturnType<typeof simulateTimeline> {
-  const steps = skillIds.map((skillId) => {
-    const skill = skillOf(skillId)
-    return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
-  })
-  steps.push(makeStep({ skillId: PAD.id, hitCount: 1 }))
+  const steps = skillIds.map((skillId) => makeStep({ skillId: skillOf(skillId).id }))
+  steps.push(makeStep({ skillId: PAD.id }))
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
@@ -163,10 +160,7 @@ describe("Smolder duration", () => {
         customSkills: [pad],
         activeCustomRotation: makeRotation(CLASS, {
           name: "pad-" + skillId,
-          steps: [
-            makeStep({ skillId: skill.id, hitCount: skill.hits.length }),
-            makeStep({ skillId: pad.id, hitCount: 1 }),
-          ],
+          steps: [makeStep({ skillId: skill.id }), makeStep({ skillId: pad.id })],
         }),
       }
       const r = simulateTimeline(inputs)
@@ -205,11 +199,9 @@ describe("Zenith detonation extends Smolder", () => {
     const smolder = skillOf(TWO_HITS)
     const filler = skillOf(SKILL.soaring)
     const ticksFor = (detonations: number) => {
-      const steps = [makeStep({ skillId: smolder.id, hitCount: smolder.hits.length })]
-      for (let i = 0; i < detonations; i++)
-        steps.push(makeStep({ skillId: detonation.id, hitCount: 1 }))
-      for (let i = 0; i < 20; i++)
-        steps.push(makeStep({ skillId: filler.id, hitCount: filler.hits.length }))
+      const steps = [makeStep({ skillId: smolder.id })]
+      for (let i = 0; i < detonations; i++) steps.push(makeStep({ skillId: detonation.id }))
+      for (let i = 0; i < 20; i++) steps.push(makeStep({ skillId: filler.id }))
       const inputs: Inputs = {
         ...defaultInputs,
         classId: CLASS,
@@ -241,12 +233,9 @@ describe("Zenith detonation extends Smolder", () => {
     const filler = skillOf(SKILL.soaring)
     const ticksFor = (smolderCasts: number, detonations: number) => {
       const steps: ReturnType<typeof makeStep>[] = []
-      for (let i = 0; i < smolderCasts; i++)
-        steps.push(makeStep({ skillId: smolder.id, hitCount: smolder.hits.length }))
-      for (let i = 0; i < detonations; i++)
-        steps.push(makeStep({ skillId: detonation.id, hitCount: 1 }))
-      for (let i = 0; i < 30; i++)
-        steps.push(makeStep({ skillId: filler.id, hitCount: filler.hits.length }))
+      for (let i = 0; i < smolderCasts; i++) steps.push(makeStep({ skillId: smolder.id }))
+      for (let i = 0; i < detonations; i++) steps.push(makeStep({ skillId: detonation.id }))
+      for (let i = 0; i < 30; i++) steps.push(makeStep({ skillId: filler.id }))
       const inputs: Inputs = {
         ...defaultInputs,
         classId: CLASS,

@@ -100,6 +100,11 @@ demotes both terms together, never one without the other.
 non-zero from breakthrough 20 on.** It is read off the target's own
 breakthrough, the same way its defense is.
 
+**A per-hit bonus that scales a row's flat terms scales the physical and
+attribute flat term alike, and applies before the martial art's
+attribute-flat multiplier** so the two compose multiplicatively in that
+order. It never reaches either coefficient term.
+
 ### Sources of truth
 
 These external sources are authoritative. On conflicts **between** sources,

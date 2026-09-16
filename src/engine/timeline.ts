@@ -54,7 +54,8 @@ import {
 } from "./behavior"
 import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
-import { grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
+import { CombatResource } from "./resources"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
 import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
@@ -377,8 +378,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   // The largest cast length any of a step's hit variants could select.
   function upperBoundCastFrames(rs: ResolvedStep): number {
-    const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
-    const performedHits = rs.skill.hits.slice(0, hitCount)
+    const performedHits = rs.skill.hits
     const naturalMaxFrame =
       performedHits.length > 0 ? Math.max(...performedHits.map((h) => h.frame)) : -1
     let bound = rs.skill.castFrames || naturalMaxFrame + 1
@@ -455,6 +455,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const windowFramesOverride =
+    rotation.fixedWindowSec === undefined ? null : Math.round(rotation.fixedWindowSec * FPS)
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
@@ -463,9 +465,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const startFrame = prePull ? preCursor : activeCursor
     layoutWriter.processExpiries(startFrame)
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
-    const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
-    const performedHits = rs.skill.hits.slice(0, hitCount)
-    const occurringHits = performedHits.filter((h) => (h.conditions ?? []).every(holdsHere))
+    const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
     const castLen = prePull
       ? upperBoundCastFrames(rs)
       : (() => {
@@ -478,12 +478,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })()
     if (prePull) preCursor += castLen
     else activeCursor += castLen
-    seedStepTriggers(occurringHits, startFrame)
-    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: occurringHits })
+    const landedHits =
+      prePull || windowFramesOverride === null
+        ? occurringHits
+        : occurringHits.filter((h) => startFrame + h.frame <= windowFramesOverride)
+    seedStepTriggers(landedHits, startFrame)
+    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: landedHits })
   }
-  const durationFrames = activeCursor
+  const castCursorFrames = activeCursor
+  const windowFrames = windowFramesOverride ?? castCursorFrames
   const spanStart = Math.min(0, -prePullBound)
-  const rotationDurationSec = durationFrames / FPS
+  const rotationDurationSec = windowFrames / FPS
 
   const damagingHitTimesSec: number[] = []
   const weaponHitTimesSec: number[] = []
@@ -499,7 +504,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
 
-  const inWindow = (frame: number): boolean => frame <= durationFrames
+  const inWindow = (frame: number): boolean => frame <= windowFrames
 
   const castCounts = new Map<string, number>()
   for (const ls of laidSteps) {
@@ -507,7 +512,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
   }
 
-  const ledger = new StatusLedger(spanStart, durationFrames)
+  const ledger = new StatusLedger(spanStart, windowFrames)
   const recordStack = (id: string, frame: number, value: number, owner = UNOWNED) =>
     ledger.recordStack(id, frame, value, owner)
   const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
@@ -630,6 +635,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return null
     }
   })()
+
+  const resources = (classDefinition(inputs.classId)?.resources ?? [])
+    .filter((definition) =>
+      laidSteps.some((step) => step.resolved.skill.id === definition.launchSkillId),
+    )
+    .map(
+      (definition) =>
+        new CombatResource(definition, inputs.resourceSettings?.[definition.id], {
+          fps: FPS,
+          startFrame: 0,
+          collect: collectDetail,
+          buffActive: (id, frame) => buffEngine?.isBuffActiveAtTime(id, frame / FPS) ?? false,
+          exhausted: (frame) => clockQiPhase(buffParams, frame / FPS) === "exhausted",
+          paramTier: (id) => (paramOnOf(buffParams, id) ? paramTierOf(buffParams, id) : 0),
+        }),
+    )
+  const resourceByDebuff = new Map(
+    resources.map((resource) => [resource.definition.debuffId, resource]),
+  )
+  const resourceByLaunch = new Map(
+    resources.map((resource) => [resource.definition.launchSkillId, resource]),
+  )
 
   const qiBreakWindow = buffEngine
     ? (() => {
@@ -807,6 +834,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   interface DotTickEntry extends DotTickPlan {
+    resourceOwner?: number
     debuff: Debuff
     debuffForTick: Debuff
     dotSkill: Skill
@@ -1065,7 +1093,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
-  liveWriter.processExpiries(durationFrames)
+  liveWriter.processExpiries(windowFrames)
 
   // Zenith extension events only exist for a Sword Horizon build (the only
   // build whose crosswind tracker pushes ZENITH_DETONATION_BUFF_ID windows),
@@ -1167,32 +1195,49 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       : debuffKey(status.id)
     const dotType = dot.skillType || "sustain"
 
-    for (const plan of planDotTicks({
-      debuff: status,
-      dot,
-      windows: arr,
-      stacksAt: (frame) => stacksAt(buffId, frame),
-      inWindow,
-      weightAt: (frame) => {
-        for (const { mechanic, state } of mechanics) {
-          const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
-          if (weight !== null && weight !== undefined) return weight
-        }
-        return 1
-      },
-    })) {
-      const entry: DotTickEntry = {
-        ...plan,
+    const resource = resourceByDebuff.get(buffId)
+    const sortedWindows = [...arr].sort((left, right) => left.start - right.start)
+    const episodes = resource
+      ? sortedWindows.map((window, index) => [
+          {
+            ...window,
+            end: Math.min(
+              window.end,
+              sortedWindows[index + 1]?.start ?? windowFrames + 1,
+              windowFrames + 1,
+            ),
+          },
+        ])
+      : [arr]
+    for (const episode of episodes) {
+      for (const plan of planDotTicks({
         debuff: status,
-        debuffForTick,
-        dotBreakdownKey,
-        dotSkill,
-        dotName,
-        dotBreakdownName,
-        dotType,
+        dot,
+        windows: episode,
+        stacksAt: (frame) => stacksAt(buffId, frame),
+        inWindow,
+        weightAt: (frame) => {
+          for (const { mechanic, state } of mechanics) {
+            const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
+            if (weight !== null && weight !== undefined) return weight
+          }
+          return 1
+        },
+      })) {
+        const entry: DotTickEntry = {
+          ...plan,
+          resourceOwner: resource ? episode[0].start : undefined,
+          debuff: status,
+          debuffForTick,
+          dotBreakdownKey,
+          dotSkill,
+          dotName,
+          dotBreakdownName,
+          dotType,
+        }
+        dotTickEntries.push(entry)
+        mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
       }
-      dotTickEntries.push(entry)
-      mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
     }
   }
 
@@ -1238,7 +1283,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (!isDebuffStatus(status) || !status.echo) continue
     const windows = ledger.windowsOf(debuffId)
     if (windows.length === 0) continue
-    for (const frame of coverageEnds(windows).filter((end) => end <= durationFrames))
+    for (const frame of coverageEnds(windows).filter((end) => end <= windowFrames))
       mergedEvents.push({ kind: "echoRelease", frame, seq: mergedSeq++, debuffId })
   }
 
@@ -1250,9 +1295,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // module's `target.remainingHealthFraction` reads the true running total.
   mergedEvents.sort(byMergedOrder)
   for (const event of mergedEvents) {
+    for (const resource of resources)
+      resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
     if (event.kind === "hit") {
       const { frame, skill, hit, castFrame, extraEffects, forceGuaranteedAffinity, ledgerMark } =
         event
+      const launchResource = resourceByLaunch.get(skill.id)
+      if (
+        launchResource &&
+        inWindow(frame) &&
+        !isPrePullSkill(skill) &&
+        !launchResource.launch(frame)
+      ) {
+        continue
+      }
       const behavior = behaviorFor(skill)
       const hitInput = hitInputAt(skill, hit, frame)
       const resolveOverride: ResolveOverride | undefined =
@@ -1299,6 +1355,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const damage = rolled?.damage ?? expectedDamage
       const landsInFight = inWindow(frame) && !isPrePullSkill(skill)
       if (landsInFight) {
+        if (hitDealsDamage(hit))
+          for (const resource of resources) resource.hit(skill, frame, castFrame)
         totalDamage += damage
         if (rolled) tallyRoll(rolled, damage)
         // A hit that carries no coefficient exists to fire its triggers, and
@@ -1325,6 +1383,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       })
     } else if (event.kind === "tick") {
       const { entry } = event
+      const resource = resourceByDebuff.get(entry.debuff.id)
+      if (
+        entry.requiresBuff &&
+        !buffEngine?.isBuffActiveAtTime(entry.requiresBuff, entry.frame / FPS)
+      )
+        continue
+      if (resource && !resource.tick(entry.frame, entry.resourceOwner!)) continue
       if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
         buffEngine?.triggerDeclaredBuffs(
           entry.debuff.triggersBuffs,
@@ -1423,6 +1488,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  const resourceResults = resources.map((resource) => resource.finish(windowFrames))
+  for (const resource of resources) {
+    ledger.constrainWindows(
+      resource.definition.debuffId,
+      resource.result.launches
+        .filter((launch) => launch.reason !== "insufficient")
+        .map((launch) => ({
+          start: Math.round(launch.timeSec * FPS),
+          end: Math.round(launch.endSec * FPS),
+        })),
+    )
+  }
+
   // Only now is `buffHistory` settled by every event, ticks included, so a
   // cast chip reports what a tick applied to it.
   const casts: RotationCast[] = collectDetail ? buildCasts() : []
@@ -1441,9 +1519,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     castCount: castCounts.get(name) ?? 0,
   }))
 
-  const durationSeconds = durationFrames / FPS
+  const durationSeconds = windowFrames / FPS
   const dps = durationSeconds > 0 ? totalDamage / durationSeconds : 0
-  if (durationFrames <= 0)
+  if (castCursorFrames <= 0)
     warnings.push("Timeline has no in-window skills — duration and DPS are 0.")
 
   const rolledHits = OUTCOME_KEYS.reduce((sum, outcome) => sum + outcomeTally[outcome], 0)
@@ -1460,8 +1538,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   return {
     dps,
+    ...(resourceResults.length > 0 ? { resources: resourceResults } : {}),
     totalDamage,
     rotationDuration: durationSeconds,
+    castDuration: castCursorFrames / FPS,
     graduationRate: null,
     perSkill,
     ranking: [],
@@ -1482,6 +1562,7 @@ function emptyResult(warnings: string[]): Result {
     dps: 0,
     totalDamage: 0,
     rotationDuration: 0,
+    castDuration: 0,
     graduationRate: null,
     perSkill: [],
     ranking: [],

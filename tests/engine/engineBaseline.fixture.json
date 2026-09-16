@@ -1,8 +1,8 @@
 {
   "anchor": {
-    "dps": 77715.24,
-    "totalDamage": 4647371.62,
-    "rotationDuration": 59.8,
+    "dps": 76271.75,
+    "totalDamage": 4576305.27,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -18,15 +18,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 293338.56,
+        "expectedDamage": 284794.72,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -74,7 +74,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2189649.7,
+        "expectedDamage": 2125873.49,
         "castCount": 0
       },
       {
@@ -151,16 +151,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "5fde0afdc30ffa065a6752b4811e41c776b9ad3dc800666ebb292c3a814a0af3"
+    "digest": "1bbf8b5cd7ff4afecc3428eea95722769d8e15acf061a63d6b2183a28057aa1f"
   },
   "anchor:noAttunement": {
-    "dps": 70255.67,
-    "totalDamage": 4201289.24,
-    "rotationDuration": 59.8,
+    "dps": 69053.59,
+    "totalDamage": 4143215.57,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -176,15 +176,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 240638.69,
+        "expectedDamage": 233629.79,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -232,7 +232,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1796267.18,
+        "expectedDamage": 1743948.72,
         "castCount": 0
       },
       {
@@ -309,16 +309,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "27c849a37f73380d91bf6da264dff9df60561eeae6ce1915bfedabb792b3560b"
+    "digest": "23dae750896dc520ad5d2496f4df863f6cf9e04e40e404827c94621b0a76956c"
   },
   "anchor:dummyOff": {
-    "dps": 83288.18,
-    "totalDamage": 4980633.23,
-    "rotationDuration": 59.8,
+    "dps": 81746.53,
+    "totalDamage": 4904791.88,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -334,15 +334,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 315476.01,
+        "expectedDamage": 306287.39,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 80943.31,
+        "count": 60,
+        "expectedDamage": 82323.22,
         "castCount": 0
       },
       {
@@ -390,7 +390,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2335787.01,
+        "expectedDamage": 2267754.38,
         "castCount": 0
       },
       {
@@ -467,16 +467,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "b6bb4e1c1ace02990ddb550cbec88031f17ea5d674446c1bccabb2157a97a1f7"
+    "digest": "fe5ceb5d386e6aa9883baecf3139e07a2a54271b9f67c83ecad2496969a82a97"
   },
   "anchor:noQiBreak": {
-    "dps": 69503.78,
-    "totalDamage": 4156326.03,
-    "rotationDuration": 59.8,
+    "dps": 68106.47,
+    "totalDamage": 4086388.44,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -492,15 +492,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 287717.73,
+        "expectedDamage": 279337.6,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 71752.54,
+        "count": 60,
+        "expectedDamage": 73006.23,
         "castCount": 0
       },
       {
@@ -548,7 +548,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2156516.14,
+        "expectedDamage": 2093704.99,
         "castCount": 0
       },
       {
@@ -625,16 +625,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "be976c680becc23200d845990c9be5a8f4f700e0db51cb77172785ea31fb403b"
+    "digest": "b29651fc5ec20a0dd282345bc5dfad54e195f7cfd6da4a24498d072acc6cb849"
   },
   "anchor:healerBuff": {
-    "dps": 85608.94,
-    "totalDamage": 5119414.42,
-    "rotationDuration": 59.8,
+    "dps": 84029.27,
+    "totalDamage": 5041756.35,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -650,15 +650,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 324054.79,
+        "expectedDamage": 314616.3,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 83898.3,
+        "count": 60,
+        "expectedDamage": 85320.27,
         "castCount": 0
       },
       {
@@ -706,7 +706,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2391026.49,
+        "expectedDamage": 2321384.95,
         "castCount": 0
       },
       {
@@ -783,16 +783,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "a9584c55f1de56e097a7736e86e32849b1f19b27289d9e492b2c0a79751aa63e"
+    "digest": "5d677392fabdfca5dc19b5a6b056436eccbfdea50c1575fb1a28daeb4ea30e54"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 78097.07,
-    "totalDamage": 4670204.61,
-    "rotationDuration": 59.8,
+    "dps": 76649.09,
+    "totalDamage": 4598945.28,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -808,15 +808,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 294463.03,
+        "expectedDamage": 285886.44,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -864,7 +864,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2195150.51,
+        "expectedDamage": 2131214.08,
         "castCount": 0
       },
       {
@@ -941,16 +941,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "113d7e68289f02c9ee48d90abcf68ef25f2fd23e4eecd6128f943dadf89198ea"
+    "digest": "e82a289190ba91c61c0e7a39b9bf0998944875fbd3daed6aadbb28d576ed036e"
   },
   "anchor:voidrotScript": {
-    "dps": 78812.2,
-    "totalDamage": 4712969.63,
-    "rotationDuration": 59.8,
+    "dps": 77353.73,
+    "totalDamage": 4641223.98,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -966,15 +966,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 296152.17,
+        "expectedDamage": 287526.38,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 73456.87,
+        "count": 60,
+        "expectedDamage": 74710.56,
         "castCount": 0
       },
       {
@@ -1022,7 +1022,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2210158.7,
+        "expectedDamage": 2145785.14,
         "castCount": 0
       },
       {
@@ -1099,16 +1099,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "51472c3520e64dd7ac376628f0175b64f3b8963f208ebd7341ee41d5872c0873"
+    "digest": "15742e1362d3e1c9f61e066adad006e237eeeeddfd27fae342e2a6dbaf3c33c7"
   },
   "anchor:breakExtension": {
-    "dps": 79561.74,
-    "totalDamage": 4757792.22,
-    "rotationDuration": 59.8,
+    "dps": 78075.88,
+    "totalDamage": 4684552.61,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1124,15 +1124,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 301647.43,
+        "expectedDamage": 292861.58,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 75506.24,
+        "count": 60,
+        "expectedDamage": 76759.93,
         "castCount": 0
       },
       {
@@ -1180,7 +1180,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2255956.04,
+        "expectedDamage": 2190248.58,
         "castCount": 0
       },
       {
@@ -1257,16 +1257,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "29478e992ab893afead80a306e38a8dd0e14b4d23b28ad518757ff1fc3c4ceb5"
+    "digest": "e7e04a67f19ab4988d8618c743fa5acef0fd50bec0ca4fc21a39698ff655dd1e"
   },
   "anchor:swordHorizonT1": {
-    "dps": 55641.21,
-    "totalDamage": 3327344.26,
-    "rotationDuration": 59.8,
+    "dps": 54758.22,
+    "totalDamage": 3285493.32,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1282,15 +1282,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 212174.94,
+        "expectedDamage": 205995.09,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 72151.71,
+        "count": 60,
+        "expectedDamage": 73384.26,
         "castCount": 0
       },
       {
@@ -1338,7 +1338,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 20,
-        "expectedDamage": 1267024.8,
+        "expectedDamage": 1230121.16,
         "castCount": 0
       },
       {
@@ -1415,16 +1415,16 @@
       }
     ],
     "counts": {
-      "timeline": 345,
+      "timeline": 346,
       "buffWindows": 132,
       "casts": 73
     },
-    "digest": "3ab559836b4c53805cd4ea9d2b653a100a5f5f5cdf0ad8e04c4d1a10a53a04e7"
+    "digest": "f5356ff987beb00027c44f7b680911ee296df9c8bcf95d07429fa02379ead3bb"
   },
   "anchor:noSwordHorizon": {
-    "dps": 46900.83,
-    "totalDamage": 2804669.61,
-    "rotationDuration": 59.8,
+    "dps": 46765.04,
+    "totalDamage": 2805902.15,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1447,8 +1447,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 72151.71,
+        "count": 60,
+        "expectedDamage": 73384.26,
         "castCount": 0
       },
       {
@@ -1573,16 +1573,16 @@
       }
     ],
     "counts": {
-      "timeline": 310,
+      "timeline": 311,
       "buffWindows": 128,
       "casts": 73
     },
-    "digest": "538bb3d6142f5bee0bbdef17efe89eeb33aa8fb699a82e3c6689fb2c22ed8cbe"
+    "digest": "376a699a05abca4cfc8fbce4c34f73c1c1f58f400fbb2ecdb299fdd949581c20"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 67125.11,
-    "totalDamage": 4014081.58,
-    "rotationDuration": 59.8,
+    "dps": 65918.26,
+    "totalDamage": 3955095.36,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1598,15 +1598,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 252335.53,
+        "expectedDamage": 244985.96,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 70284.42,
+        "count": 60,
+        "expectedDamage": 71483.28,
         "castCount": 0
       },
       {
@@ -1654,7 +1654,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1814018.86,
+        "expectedDamage": 1761183.36,
         "castCount": 0
       },
       {
@@ -1731,16 +1731,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "4d8aa8b7d43094038a1d4cfdf4793c9922c12c7403cc5fcec725be4ec7c61f12"
+    "digest": "74170f915158aaf4c936582c64e6ad2b79b8faab853571d37c05251240766142"
   },
   "anchor:noMoraleChant": {
-    "dps": 70988.14,
-    "totalDamage": 4245090.9,
-    "rotationDuration": 59.8,
+    "dps": 69649.58,
+    "totalDamage": 4178974.74,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1756,15 +1756,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 271417.2,
+        "expectedDamage": 263511.84,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66991.84,
+        "count": 60,
+        "expectedDamage": 68138.37,
         "castCount": 0
       },
       {
@@ -1812,7 +1812,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2037935.58,
+        "expectedDamage": 1978578.23,
         "castCount": 0
       },
       {
@@ -1881,16 +1881,16 @@
       }
     ],
     "counts": {
-      "timeline": 418,
+      "timeline": 419,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "b3778cd1d74e317e1f6e10a289373eefe2fe483c4296f6302555923f5cf9cc2d"
+    "digest": "81db0945d630956f1500e4674f83c3c929c720a7f5ce1cf7e8543364026e578b"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 36906.54,
-    "totalDamage": 2269137.06,
-    "rotationDuration": 61.48,
+    "dps": 36328.04,
+    "totalDamage": 2179682.55,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -1905,8 +1905,8 @@
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 61,
-        "expectedDamage": 61369.9,
+        "count": 60,
+        "expectedDamage": 60376.55,
         "castCount": 0
       },
       {
@@ -1921,8 +1921,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 56,
-        "expectedDamage": 162498.33,
+        "count": 55,
+        "expectedDamage": 155624.27,
         "castCount": 0
       },
       {
@@ -1969,8 +1969,8 @@
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 28,
-        "expectedDamage": 1157138.95,
+        "count": 27,
+        "expectedDamage": 1087282.82,
         "castCount": 0
       },
       {
@@ -2001,8 +2001,8 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 60291.15,
+        "count": 16,
+        "expectedDamage": 48560.19,
         "castCount": 5
       },
       {
@@ -2055,16 +2055,16 @@
       }
     ],
     "counts": {
-      "timeline": 385,
-      "buffWindows": 118,
+      "timeline": 378,
+      "buffWindows": 114,
       "casts": 80
     },
-    "digest": "f68e87f7619796f3b5ff70f13ae1c95517659d8b8b029605d57982bb39e14726"
+    "digest": "99007a701cbf9a60170d69b068fe6f038814b9b5f9d89e2f92d237d83bb2e518"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 49259.95,
-    "totalDamage": 2945745.23,
-    "rotationDuration": 59.8,
+    "dps": 48416.65,
+    "totalDamage": 2904998.73,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2080,15 +2080,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 176133.99,
+        "expectedDamage": 171003.87,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 60776.24,
+        "count": 60,
+        "expectedDamage": 61794.43,
         "castCount": 0
       },
       {
@@ -2096,7 +2096,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 81081.01,
+        "expectedDamage": 74903.17,
         "castCount": 0
       },
       {
@@ -2144,7 +2144,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1045681.13,
+        "expectedDamage": 1015224.4,
         "castCount": 0
       },
       {
@@ -2221,16 +2221,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "4516bd9526876fc6495c25f041db0b6e5e5f5efe3ec005c3ac68204bc8258dc0"
+    "digest": "85cf982d0d39b47cf08f335b8500174cda0408de67a1d694b511b1ca2afb86e6"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 48326.3,
-    "totalDamage": 2889913.02,
-    "rotationDuration": 59.8,
+    "dps": 47496.87,
+    "totalDamage": 2849812.23,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2246,15 +2246,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 172830.78,
+        "expectedDamage": 167796.88,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 59293.9,
+        "count": 60,
+        "expectedDamage": 60287.25,
         "castCount": 0
       },
       {
@@ -2262,7 +2262,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 79555.46,
+        "expectedDamage": 73377.62,
         "castCount": 0
       },
       {
@@ -2310,7 +2310,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1025962.23,
+        "expectedDamage": 996079.83,
         "castCount": 0
       },
       {
@@ -2387,16 +2387,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "62c1b43033435add07ad6f46e6671c1d9742d1740539629e14df454cbf9fcb6a"
+    "digest": "a69e518a8690d404ca44d1af86aec40f8eba29ffed50286ea992df0f335722ea"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 47864.92,
-    "totalDamage": 2862322.09,
-    "rotationDuration": 59.8,
+    "dps": 47048.17,
+    "totalDamage": 2822890.02,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2412,15 +2412,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 170845.76,
+        "expectedDamage": 165869.67,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 59293.9,
+        "count": 60,
+        "expectedDamage": 60287.25,
         "castCount": 0
       },
       {
@@ -2428,7 +2428,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 74660.45,
+        "expectedDamage": 68856.44,
         "castCount": 0
       },
       {
@@ -2476,7 +2476,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 25,
-        "expectedDamage": 1017822.92,
+        "expectedDamage": 988177.6,
         "castCount": 0
       },
       {
@@ -2553,16 +2553,16 @@
       }
     ],
     "counts": {
-      "timeline": 458,
+      "timeline": 459,
       "buffWindows": 110,
       "casts": 73
     },
-    "digest": "b3a88d18150ccec51a0ef5087c24815f42b3e62b2e9d1d8c669c6d00423aa4f5"
+    "digest": "4f94d46a466e833098c7233a8e639119e9e8fcd68d56669f4236e831695e4c11"
   },
   "anchor:noSet": {
-    "dps": 70792.32,
-    "totalDamage": 4233380.7,
-    "rotationDuration": 59.8,
+    "dps": 69478.39,
+    "totalDamage": 4168703.69,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2578,15 +2578,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 265972.25,
+        "expectedDamage": 258225.48,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -2634,7 +2634,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1993147.66,
+        "expectedDamage": 1935094.81,
         "castCount": 0
       },
       {
@@ -2711,16 +2711,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "7418eaa6f15b52b8dceb9a37ab0ceb9fdda03a4f1bea63a4ee615cdab17be147"
+    "digest": "3e97f8a9ae995ac048b272580abd51a36992596dfed5dac2b9e83bf587c4499c"
   },
   "anchor:set-Jadeware": {
-    "dps": 74232.74,
-    "totalDamage": 4439118.12,
-    "rotationDuration": 59.8,
+    "dps": 72843.04,
+    "totalDamage": 4370582.69,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2736,15 +2736,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 280143.3,
+        "expectedDamage": 271983.78,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 67294.99,
+        "count": 60,
+        "expectedDamage": 68437.7,
         "castCount": 0
       },
       {
@@ -2792,7 +2792,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2112139.23,
+        "expectedDamage": 2050620.61,
         "castCount": 0
       },
       {
@@ -2869,16 +2869,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "61f2d172130d843b54f22a4f501e02d05bafa3091f392e78b951b97d0e0c480e"
+    "digest": "0f9f6b2c4968b4adc1b5a3f2aebeaab15033ce62008e70a1105741aa7f8c3cb1"
   },
   "anchor:set-Mistwillow": {
-    "dps": 71462.36,
-    "totalDamage": 4273449.01,
-    "rotationDuration": 59.8,
+    "dps": 70135.8,
+    "totalDamage": 4208147.97,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -2894,15 +2894,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 269513.14,
+        "expectedDamage": 261663.24,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -2950,7 +2950,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2011031.9,
+        "expectedDamage": 1952458.15,
         "castCount": 0
       },
       {
@@ -3027,16 +3027,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "05a5a169870b6c1e5049e6f39e1a4329579bc03c0c7db789ecf6cb35bfec8aa5"
+    "digest": "4a9c0fcc5e3ec727af93aaaff996fa08be9d6a1d62876d981bc39f050e5ab372"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 72431.32,
-    "totalDamage": 4331393.23,
-    "rotationDuration": 59.8,
+    "dps": 71088.7,
+    "totalDamage": 4265321.83,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3052,15 +3052,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 273760.24,
+        "expectedDamage": 265786.65,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 66107.82,
+        "count": 60,
+        "expectedDamage": 67230.42,
         "castCount": 0
       },
       {
@@ -3108,7 +3108,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2033233.85,
+        "expectedDamage": 1974013.45,
         "castCount": 0
       },
       {
@@ -3185,16 +3185,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "d7da0ea5036901b1647edf0254eae82096b7620210ff3212a0c7072c3b2acdd4"
+    "digest": "f81be40ae0e0ef701762a63aa7a5d47aa94d99ad80f897f3a263b39a43ca8adc"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 74615.32,
-    "totalDamage": 4461996.3,
-    "rotationDuration": 59.8,
+    "dps": 73229.03,
+    "totalDamage": 4393741.81,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3210,15 +3210,15 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 280985.88,
+        "expectedDamage": 272801.82,
         "castCount": 0
       },
       {
         "name": "Divinecraft - Fire",
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
-        "count": 59,
-        "expectedDamage": 67294.99,
+        "count": 60,
+        "expectedDamage": 68437.7,
         "castCount": 0
       },
       {
@@ -3266,7 +3266,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2101651.33,
+        "expectedDamage": 2040438.19,
         "castCount": 0
       },
       {
@@ -3343,16 +3343,16 @@
       }
     ],
     "counts": {
-      "timeline": 424,
+      "timeline": 425,
       "buffWindows": 135,
       "casts": 73
     },
-    "digest": "8161bb9f07c47644eb4063b2bff9dee5e326a764576ba0cd2064780be8a3d9b2"
+    "digest": "70d4f4cd1e81c3448de5c09b8a3e426585642ee48150e3aaff6810f2b5322e58"
   },
   "defaults:umbra": {
-    "dps": 10206.01,
+    "dps": 10203.17,
     "totalDamage": 612190.24,
-    "rotationDuration": 59.98,
+    "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
       {
@@ -3505,6 +3505,6 @@
       "buffWindows": 112,
       "casts": 79
     },
-    "digest": "c60a72daf112f9c44a5c2549a3bc169d8e7a37cc4e24949e9d0cca2c4dbfa338"
+    "digest": "0a6dd2939dc623a80b7f9b3f5e1163785c821e2f2b258d8cae9395a86397f293"
   }
 }

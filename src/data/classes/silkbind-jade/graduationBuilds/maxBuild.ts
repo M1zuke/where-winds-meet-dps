@@ -1,10 +1,14 @@
-import type { GraduationBuild } from "../../../definitions/classes/classDef"
-import { SET_ID } from "../../sets/ids"
-import { createGraduationGearPiece } from "../graduationGear"
+import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
+import { SET_ID } from "../../../sets/ids"
+import { createGraduationGearPiece } from "../../graduationGear"
+import graduationRotation from "../rotations/standardized17"
 
 const idPrefix = "graduation-silkbind-jade"
 
-export const SILKBIND_JADE_GRADUATION_BUILD: GraduationBuild = {
+export default defineGraduationBuild({
+  id: "graduation-silkbindJade-mistwillow-precision",
+  name: "Max Build",
+  classId: "silkbindJade",
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -58,4 +62,5 @@ export const SILKBIND_JADE_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.mistwillow,
   bowSet: "precision",
   arsenal: "silkbind",
-}
+  rotationId: graduationRotation.id,
+})

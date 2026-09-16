@@ -137,6 +137,8 @@ export class BuffEngine {
 
   private requirementsMet(requires: BuffRequirements | undefined): boolean {
     if (requires?.classId && requires.classId !== this.params.classId) return false
+    if (requires?.minBreakthrough && this.paramNum("breakthrough") < requires.minBreakthrough)
+      return false
     if (!requires?.param) return true
     if (!this.paramOn(requires.param)) return false
     if (requires.minTier && this.paramTier(requires.param) < requires.minTier) return false
@@ -204,6 +206,7 @@ export class BuffEngine {
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
       minPhysAttack: this.paramNum("minPhysAttack"),
+      breakthrough: this.paramNum("breakthrough"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
       paramValue: (id) => this.paramNum(id),

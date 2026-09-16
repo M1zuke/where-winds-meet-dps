@@ -22,6 +22,7 @@ function resultWith(timeline: TimelineEvent[], rotationDuration: number): Result
     dps: rotationDuration > 0 ? totalDamage / rotationDuration : 0,
     totalDamage,
     rotationDuration,
+    castDuration: rotationDuration,
     graduationRate: null,
     perSkill: [],
     ranking: [],

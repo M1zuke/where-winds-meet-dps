@@ -21,17 +21,16 @@ describe("makeRotation / makeStep — defaults", () => {
     expect(isRotation(r)).toBe(true)
   })
 
-  it("makeStep defaults hitCount to 1 and prePull to false", () => {
+  it("makeStep carries only an id and the skill it casts", () => {
     const s = makeStep({ skillId: "sk-1" })
-    expect(s.hitCount).toBe(1)
-    expect(s.prePull).toBe(false)
+    expect(Object.keys(s).sort()).toEqual(["id", "skillId"])
   })
 })
 
 describe("isRotation — validation", () => {
   it("rejects a rotation with a malformed step", () => {
     const r = makeRotation(CLASS, {
-      steps: [{ ...makeStep(), hitCount: "1" as unknown as number }],
+      steps: [{ ...makeStep(), skillId: 1 as unknown as string }],
     })
     expect(isRotation(r)).toBe(false)
   })
@@ -58,7 +57,7 @@ describe("resolveRotation — binding + diagnostics", () => {
     const a = makeSkill(CLASS, { name: "A" })
     const b = makeSkill(CLASS, { name: "B" })
     const rotation = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: a.id, hitCount: 1 }), makeStep({ skillId: b.id, hitCount: 2 })],
+      steps: [makeStep({ skillId: a.id }), makeStep({ skillId: b.id })],
     })
     const { steps, warnings } = resolveRotation(rotation, [a, b], [])
     expect(steps).toHaveLength(2)
@@ -112,15 +111,13 @@ describe("storage round-trip", () => {
   it("save → load preserves steps + permanentBuffIds", () => {
     const r = makeRotation(CLASS, {
       name: "Saved Rotation",
-      steps: [makeStep({ skillId: "sk-a", hitCount: 3, prePull: true })],
+      steps: [makeStep({ skillId: "sk-a" })],
       permanentBuffIds: ["bf-a"],
     })
     saveCustomRotation(r)
     const loaded = loadCustomRotations().find((x) => x.id === r.id)
     expect(loaded).toBeTruthy()
     expect(loaded!.steps[0].skillId).toBe("sk-a")
-    expect(loaded!.steps[0].hitCount).toBe(3)
-    expect(loaded!.steps[0].prePull).toBe(true)
     expect(loaded!.permanentBuffIds).toEqual(["bf-a"])
   })
 
@@ -146,6 +143,34 @@ describe("storage round-trip", () => {
     saveCustomRotation(corrupt as never)
     const loaded = loadCustomRotations().find((x) => x.id === corrupt.id)!
     expect(loaded.openingStacks).toEqual({ "buff-b": 2 })
+  })
+
+  it("save → load preserves fixedWindowSec", () => {
+    const r = makeRotation(CLASS, { name: "Windowed", fixedWindowSec: 60 })
+    saveCustomRotation(r)
+    const loaded = loadCustomRotations().find((x) => x.id === r.id)!
+    expect(loaded.fixedWindowSec).toBe(60)
+  })
+
+  it.each([
+    ["0", 0],
+    ["-5", -5],
+    ["a string", "60"],
+    ["NaN", Number.NaN],
+  ])(
+    "heals an unreadable fixedWindowSec (%s) to no window instead of dropping the rotation",
+    (_label, stored) => {
+      const corrupt = { ...makeRotation(CLASS, { name: "Corrupt" }), fixedWindowSec: stored }
+      saveCustomRotation(corrupt as never)
+      const loaded = loadCustomRotations().find((x) => x.id === corrupt.id)!
+      expect("fixedWindowSec" in loaded).toBe(false)
+    },
+  )
+
+  it("isRotation rejects a fixedWindowSec that is not a positive number", () => {
+    expect(isRotation(makeRotation(CLASS, { fixedWindowSec: 0 }))).toBe(false)
+    expect(isRotation({ ...makeRotation(CLASS), fixedWindowSec: "60" })).toBe(false)
+    expect(isRotation(makeRotation(CLASS, { fixedWindowSec: 60 }))).toBe(true)
   })
 
   it("export → import carries openingStacks across", () => {

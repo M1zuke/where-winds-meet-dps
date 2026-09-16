@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
+import { NAMELESS_SWORD_RECEIVES } from "./receives"
 
 export const swordSpecialDeflect = defineSkill({
   id: SKILL.swordSpecialDeflect,
@@ -12,6 +13,7 @@ export const swordSpecialDeflect = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecialDeflect,
+  receives: NAMELESS_SWORD_RECEIVES,
   castFrames: 51,
   triggerable: true,
   hits: [

@@ -1,0 +1,73 @@
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.veins path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.skin {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%);
+}
+
+.legendary {
+  --heirloom-glow: var(--color-rarity-legendary);
+  --heirloom-lift: #f3ddad;
+}
+
+.epic {
+  --heirloom-glow: var(--color-rarity-epic);
+  --heirloom-lift: #e6d6fb;
+}
+
+.legendary .skin,
+.epic .skin {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 34%),
+    color-mix(in srgb, var(--heirloom-glow) 5%, transparent);
+}
+
+.glowNear {
+  stop-color: var(--heirloom-glow);
+  stop-opacity: 0.34;
+}
+
+.glowMid {
+  stop-color: var(--heirloom-glow);
+  stop-opacity: 0.1;
+}
+
+.glowFar {
+  stop-color: var(--heirloom-glow);
+  stop-opacity: 0;
+}
+
+.veinNear {
+  stop-color: var(--heirloom-lift);
+  stop-opacity: 1;
+}
+
+.veinMid {
+  stop-color: var(--heirloom-lift);
+  stop-opacity: 0.35;
+}
+
+.veinFar {
+  stop-color: var(--heirloom-lift);
+  stop-opacity: 0;
+}

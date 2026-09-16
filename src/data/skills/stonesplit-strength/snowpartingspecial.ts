@@ -3,6 +3,7 @@ import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
+import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
 export const snowpartingspecial = defineSkill({
   id: SKILL.snowpartingspecial,
@@ -13,6 +14,7 @@ export const snowpartingspecial = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingSpecial,
+  receives: SNOWPARTING_BLADE_RECEIVES,
   triggersBuffs: [BUFF.innerPassion, BUFF.jadeware],
   castFrames: 125,
   triggerable: true,

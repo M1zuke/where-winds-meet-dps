@@ -2,6 +2,8 @@ import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { rarityKey } from "../../../../i18n/contentKeys"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
+import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
@@ -10,6 +12,7 @@ import styles from "./GearSlotTiles.module.scss"
 
 interface Props {
   inventory: GearPiece[]
+  profile: HeirloomProfile
   equipped: Record<GearSlot, string | null>
   selectedPieceId: string | null
   selectedSlot: GearSlot | null
@@ -39,6 +42,7 @@ function signClass(delta: number): string {
 
 export function GearSlotTiles({
   inventory,
+  profile,
   equipped,
   selectedPieceId,
   selectedSlot,
@@ -58,6 +62,8 @@ export function GearSlotTiles({
           slot === selectedSlot ||
           (selectedPieceId !== null && piece !== null && piece.id === selectedPieceId)
         const delta = piece ? dpsDeltas[piece.id] : undefined
+        const heirloom = piece ? heirloomMatch(piece, profile) : null
+        const isHeirloom = heirloom?.followed ?? false
         return (
           <button
             type="button"
@@ -65,10 +71,15 @@ export function GearSlotTiles({
             className={
               styles.gearTile +
               (piece ? ` ${RARITY[piece.rarity]}` : ` ${styles.empty}`) +
-              (isSelected ? ` ${styles.isSelected}` : "")
+              (isSelected ? ` ${styles.isSelected}` : "") +
+              (isHeirloom ? ` ${styles.isHeirloom}` : "")
             }
             onClick={() => onSelectSlot(slot, piece?.id ?? null)}
           >
+            {piece && isHeirloom && <HeirloomShine rarity={piece.rarity} />}
+            {heirloom?.swap && (
+              <span className={styles.gearTileHeirloomReady}>{t("common.oneRetuneAway")}</span>
+            )}
             {piece?.note && (
               <span
                 className={styles.gearTileNoteMarker}

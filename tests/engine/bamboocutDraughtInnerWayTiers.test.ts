@@ -41,7 +41,7 @@ function runPeakfall(mindMethods: Inputs["mindMethods"], bingePoints = 100) {
     set: null,
     mindMethods,
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: SKILL.peakfall, hitCount: 2 })],
+      steps: [makeStep({ skillId: SKILL.peakfall })],
       openingStacks: { [STATUS.bingePoints]: bingePoints },
     }),
   })
@@ -70,9 +70,9 @@ describe("Skyspeak", () => {
       mindMethods: mindMethodsWith(INNER_WAY_ID.skyspeak, tier),
       activeCustomRotation: makeRotation(CLASS, {
         steps: [
-          makeStep({ skillId: SKILL.herosBlood, hitCount: 2 }),
-          makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
-          makeStep({ skillId: SKILL.herosBlood, hitCount: 2 }),
+          makeStep({ skillId: SKILL.herosBlood }),
+          makeStep({ skillId: SKILL.peakfall }),
+          makeStep({ skillId: SKILL.herosBlood }),
         ],
         openingStacks: { [STATUS.bingePoints]: 100 },
       }),
@@ -252,10 +252,7 @@ describe("Mistwing — the target's health follows every damage event, not just 
         [applySkill, probeSkill],
         [bigTick],
         makeRotation(CLASS, {
-          steps: [
-            makeStep({ skillId: applySkill.id, hitCount: 1 }),
-            makeStep({ skillId: probeSkill.id, hitCount: 1 }),
-          ],
+          steps: [makeStep({ skillId: applySkill.id }), makeStep({ skillId: probeSkill.id })],
         }),
       )
     }
@@ -301,12 +298,9 @@ describe("Mistwing — the target's health follows every damage event, not just 
     })
 
     function run(mindMethods: Inputs["mindMethods"], includeRelease: boolean) {
-      const steps = [
-        makeStep({ skillId: markSkill.id, hitCount: 1 }),
-        makeStep({ skillId: feedSkill.id, hitCount: 1 }),
-      ]
-      if (includeRelease) steps.push(makeStep({ skillId: releaseSkill.id, hitCount: 1 }))
-      steps.push(makeStep({ skillId: probeSkill.id, hitCount: 1 }))
+      const steps = [makeStep({ skillId: markSkill.id }), makeStep({ skillId: feedSkill.id })]
+      if (includeRelease) steps.push(makeStep({ skillId: releaseSkill.id }))
+      steps.push(makeStep({ skillId: probeSkill.id }))
       return runRotation(
         mindMethods,
         [markSkill, feedSkill, releaseSkill, probeSkill],
@@ -330,8 +324,8 @@ describe("Mistwing — the target's health follows every damage event, not just 
         castFrames: 10,
         hits: [bigPrePullHit],
       })
-      const steps = includePrePull ? [makeStep({ skillId: prePullSkill.id, hitCount: 1 })] : []
-      steps.push(makeStep({ skillId: probeSkill.id, hitCount: 1 }))
+      const steps = includePrePull ? [makeStep({ skillId: prePullSkill.id })] : []
+      steps.push(makeStep({ skillId: probeSkill.id }))
       return runRotation(
         mindMethods,
         [prePullSkill, probeSkill],
@@ -356,7 +350,7 @@ describe("Volutefit", () => {
         set: null,
         mindMethods,
         activeCustomRotation: makeRotation(CLASS, {
-          steps: [makeStep({ skillId: SKILL.herosBlood, hitCount: 2 })],
+          steps: [makeStep({ skillId: SKILL.herosBlood })],
           openingStacks: { [STATUS.bingePoints]: 100 },
         }),
       })

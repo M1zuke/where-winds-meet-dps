@@ -25,10 +25,7 @@ const EMPTY_DATA: GraduationRateData = {
   relayedTheoreticalDps: null,
 }
 
-export function useGraduationRate(
-  inputs: Inputs,
-  currentDps: number,
-): GraduationRateData & { isPending: boolean } {
+export function useGraduationRate(inputs: Inputs): GraduationRateData & { isPending: boolean } {
   const [data, setData] = useState<GraduationRateData | null>(() =>
     graduationData(retainedResponse("graduation")),
   )
@@ -39,8 +36,8 @@ export function useGraduationRate(
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "graduation", inputs, currentDps })
-  }, [inputs, currentDps])
+    postToDpsWorker({ kind: "graduation", inputs })
+  }, [inputs])
 
   return { ...(data ?? EMPTY_DATA), isPending }
 }

@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { NAMELESS_SWORD_RECEIVES } from "./receives"
 
 // The reference export gives one row for all three waves here, unlike the full
 // cast. Splitting it by the full cast's ratios would invent a distribution
@@ -26,6 +27,7 @@ export const swordHeavyChargedPrepull = defineSkill({
     BUFF.swordMorphEnduranceBoost,
     BUFF.battleAnthemChargedDamage,
     BUFF.battleAnthemEnduranceBoost,
+    ...NAMELESS_SWORD_RECEIVES,
   ],
   castFrames: 51,
   triggerable: true,

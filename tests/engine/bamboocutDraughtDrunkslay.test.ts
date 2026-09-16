@@ -134,7 +134,7 @@ function run(
     ],
     customDebuffs: debuffs,
     activeCustomRotation: makeRotation(CLASS, {
-      steps: sequence.map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+      steps: sequence.map((skill) => makeStep({ skillId: skill.id })),
     }),
     set: null,
     tianGongElement: null,

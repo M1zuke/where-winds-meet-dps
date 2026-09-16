@@ -149,6 +149,9 @@ describe("Skill Editor — Effects: Triggers / Receives columns", () => {
     expect(within(receivesColumn).queryByText("Mountain Splitter")).not.toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Save" }))
-    expect(savedAnxiSoldierMoDown().receives).toEqual(["cleftpeakDeflect"])
+    expect(savedAnxiSoldierMoDown().receives).toEqual([
+      "cleftpeakDeflect",
+      "phalanxbaneBladeAdditionalAttack",
+    ])
   })
 })

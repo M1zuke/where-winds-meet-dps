@@ -7,6 +7,7 @@ const UI_ROOT = join(SOURCE_ROOT, "ui")
 
 const DISPLAY_PROPERTIES = new Set([
   "ariaLabel",
+  "coefficientTargetsKey",
   "displayName",
   "hint",
   "label",

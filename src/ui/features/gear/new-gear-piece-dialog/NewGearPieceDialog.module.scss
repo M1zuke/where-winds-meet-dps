@@ -12,6 +12,28 @@
   min-width: 0;
 }
 
+.heirloomMark,
+.heirloomReadyMark {
+  margin-right: auto;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heirloomMark {
+  border: 1px solid var(--color-rarity-legendary);
+  color: var(--color-rarity-legendary);
+  background: var(--color-surface-selected);
+}
+
+.heirloomReadyMark {
+  border: 1px dashed var(--color-accent);
+  color: var(--color-accent);
+}
+
 @include breakpoints.below(breakpoints.$bp-900) {
   .split {
     grid-template-columns: minmax(0, 1fr);

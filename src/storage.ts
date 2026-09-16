@@ -12,8 +12,10 @@ import type {
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
+import { repairGraduationBuildId } from "./engine/graduation"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
-import { CLASS_IDS } from "./definitions/classes/registry"
+import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
+import { resolveResourceSettings } from "./definitions/resources/resourceDef"
 import { SET_BY_ID } from "./definitions/sets/registry"
 import {
   innerWayIdForName,
@@ -24,7 +26,7 @@ import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInp
 import {
   arsenalScoreCap,
   DEFAULT_ENHANCEMENT_LEVEL,
-  getDefaultTalentsForClass,
+  resyncDefaultTalentsForBreakthrough,
   DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
@@ -34,7 +36,9 @@ import {
   releasedBreakthroughs,
 } from "./definitions/baseStats/breakthroughs"
 import type { Rotation, RotationStep } from "./engine/rotation"
-import { newRotationId, newStepId, isRotation } from "./engine/rotation"
+import { newRotationId, newStepId, isRotation, readFixedWindowSec } from "./engine/rotation"
+import type { CustomGraduationBuild } from "./engine/customGraduationBuild"
+import { isCustomGraduationBuild, newCustomGraduationBuildId } from "./engine/customGraduationBuild"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
 import {
   newSkillId,
@@ -210,6 +214,11 @@ function migrateRotationIds<T>(rotation: T): T {
     if (window) next.qiBreak = window
     else delete next.qiBreak
   }
+  if (r.fixedWindowSec !== undefined) {
+    const windowSec = readFixedWindowSec(r.fixedWindowSec)
+    if (windowSec === undefined) delete next.fixedWindowSec
+    else next.fixedWindowSec = windowSec
+  }
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return migrateRotationMysticIds(next) as unknown as T
 }
@@ -276,6 +285,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // build's class rather than reaching `getSchool()`, which throws on an
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
+  next.graduationBuildId = repairGraduationBuildId(next.classId, next.graduationBuildId)
   next.selectedBuiltinRotationId = dropRetiredRotationId(
     migrateEntityId(next.selectedBuiltinRotationId),
   )
@@ -309,6 +319,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if ("customSkills" in next) next.customSkills = undefined
   if ("customBuffs" in next) next.customBuffs = undefined
   if ("customDebuffs" in next) next.customDebuffs = undefined
+  if ("customGraduationBuild" in next) next.customGraduationBuild = undefined
   if (next.activeCustomRotation != null && !isRotation(next.activeCustomRotation)) {
     next.activeCustomRotation = null
   }
@@ -416,7 +427,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
         } as Inputs["martialArtsTalents"][number]
       })
       .filter((r) => !r.id.startsWith("default-"))
-    next.martialArtsTalents = [...healed, ...getDefaultTalentsForClass(next.classId)]
+    next.martialArtsTalents = healed as Inputs["martialArtsTalents"]
+    next.martialArtsTalents = resyncDefaultTalentsForBreakthrough(next).martialArtsTalents
   }
   if (!next.oddities || typeof next.oddities !== "object" || Array.isArray(next.oddities)) {
     next.oddities = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as OddityRegions
@@ -488,6 +500,15 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.arsenalScores = healed
   }
   {
+    if (next.resourceSettings) {
+      next.resourceSettings = { ...next.resourceSettings }
+      for (const resource of classDefinition(next.classId)?.resources ?? []) {
+        next.resourceSettings[resource.id] = resolveResourceSettings(
+          resource,
+          next.resourceSettings[resource.id],
+        )
+      }
+    }
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
@@ -534,7 +555,10 @@ function followBreakthroughReleases(inputs: Inputs, now: number): Inputs {
     const supersededDefault = defaultBreakthrough(release.at - 1)
     if (breakthrough === supersededDefault) breakthrough = release.breakthrough
   }
-  return { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+  const followed = { ...inputs, breakthrough, followedBreakthroughRelease: newestRelease }
+  return breakthrough === inputs.breakthrough
+    ? followed
+    : resyncDefaultTalentsForBreakthrough(followed)
 }
 
 export function loadProfiles(): ProfilesState & { firstRun: boolean } {
@@ -731,8 +755,6 @@ export function importCustomRotation(text: string): Rotation {
         .map((s) => ({
           id: newStepId(),
           skillId: s.skillId,
-          hitCount: typeof s.hitCount === "number" ? s.hitCount : 1,
-          prePull: typeof s.prePull === "boolean" ? s.prePull : false,
         }))
     : []
   const fresh: Rotation = {
@@ -751,6 +773,81 @@ export function importCustomRotation(text: string): Rotation {
   if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
+  }
+  return fresh
+}
+
+const CUSTOM_GRADUATION_KEY = "wwm.customGraduationBuilds"
+const CUSTOM_GRADUATION_VERSION = 1
+
+interface CustomGraduationBlob {
+  v: number
+  builds: CustomGraduationBuild[]
+}
+
+export function loadCustomGraduationBuilds(): CustomGraduationBuild[] {
+  try {
+    const raw = kvStore.get(CUSTOM_GRADUATION_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as CustomGraduationBlob
+    if (parsed.v !== CUSTOM_GRADUATION_VERSION) return []
+    if (!Array.isArray(parsed.builds)) return []
+    return parsed.builds.filter(isCustomGraduationBuild)
+  } catch {
+    return []
+  }
+}
+
+function writeCustomGraduationBuilds(builds: CustomGraduationBuild[]): void {
+  try {
+    const blob: CustomGraduationBlob = { v: CUSTOM_GRADUATION_VERSION, builds }
+    kvStore.set(CUSTOM_GRADUATION_KEY, JSON.stringify(blob))
+  } catch {}
+}
+
+export function customGraduationBuildFor(classId: string): CustomGraduationBuild | null {
+  return loadCustomGraduationBuilds().find((build) => build.classId === classId) ?? null
+}
+
+export function saveCustomGraduationBuild(build: CustomGraduationBuild): CustomGraduationBuild {
+  const next: CustomGraduationBuild = { ...build, updatedAt: new Date().toISOString() }
+  const others = loadCustomGraduationBuilds().filter((saved) => saved.classId !== next.classId)
+  writeCustomGraduationBuilds([...others, next])
+  return next
+}
+
+export function deleteCustomGraduationBuild(classId: string): void {
+  const others = loadCustomGraduationBuilds().filter((saved) => saved.classId !== classId)
+  writeCustomGraduationBuilds(others)
+}
+
+export function exportCustomGraduationBuild(build: CustomGraduationBuild): string {
+  return JSON.stringify(build, null, 2)
+}
+
+export function importCustomGraduationBuild(
+  text: string,
+  targetClassId: string,
+): CustomGraduationBuild {
+  const parsed = JSON.parse(text) as unknown
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("Imported value is not an object")
+  }
+  const candidate = parsed as CustomGraduationBuild
+  const now = new Date().toISOString()
+  const fresh: CustomGraduationBuild = {
+    ...candidate,
+    id: newCustomGraduationBuildId(),
+    name:
+      typeof candidate.name === "string" && candidate.name !== ""
+        ? candidate.name
+        : "Imported build",
+    classId: targetClassId,
+    createdAt: now,
+    updatedAt: now,
+  }
+  if (!isCustomGraduationBuild(fresh)) {
+    throw new Error("Imported graduation build failed validation (missing or invalid fields)")
   }
   return fresh
 }

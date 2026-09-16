@@ -2,6 +2,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs, Result } from "../../../../engine/types"
 import { syncClassPermanent } from "../../../utils/classSetup"
+import { resyncDefaultTalentsForBreakthrough } from "../../../../definitions/baseStats"
 import { slotInnerWayId } from "../../../../definitions/innerWays/registry"
 import { useItemRanking } from "../../../hooks/useItemRanking"
 import { useSetTileDps } from "../../../hooks/useSetTileDps"
@@ -40,7 +41,9 @@ export function OverviewTab({
           />
           <BreakthroughSelect
             value={inputs.breakthrough}
-            onChange={(breakthrough) => onChange({ ...inputs, breakthrough })}
+            onChange={(breakthrough) =>
+              onChange(resyncDefaultTalentsForBreakthrough({ ...inputs, breakthrough }))
+            }
           />
         </div>
         <div className="panel">

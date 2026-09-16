@@ -72,10 +72,7 @@ function zenithStacksPerCast(opening: number): number[] {
     ] as Inputs["mindMethods"],
     activeCustomRotation: makeRotation(CLASS, {
       name: "opening-stacks",
-      steps: [
-        makeStep({ skillId: filler.id, hitCount: filler.hits.length }),
-        makeStep({ skillId: detonation.id, hitCount: detonation.hits.length }),
-      ],
+      steps: [makeStep({ skillId: filler.id }), makeStep({ skillId: detonation.id })],
       openingStacks: { [ZENITH_BAR_BUFF_ID]: opening },
     }),
   }

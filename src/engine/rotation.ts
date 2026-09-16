@@ -4,9 +4,6 @@ import type { QiBreakWindow } from "./types"
 export interface RotationStep {
   id: string
   skillId: string
-  hitCount: number
-  /** @deprecated pre-pull is now a skill property — see `isPrePullSkill` in `./skill`. */
-  prePull: boolean
 }
 
 export interface Rotation {
@@ -17,6 +14,7 @@ export interface Rotation {
   permanentBuffIds: string[]
   openingStacks?: Record<string, number>
   qiBreak?: QiBreakWindow
+  fixedWindowSec?: number
   createdAt: string
   updatedAt: string
   description?: string
@@ -40,8 +38,6 @@ export function makeStep(patch: Partial<RotationStep> = {}): RotationStep {
   return {
     id: newStepId(),
     skillId: "",
-    hitCount: 1,
-    prePull: false,
     ...patch,
   }
 }
@@ -65,8 +61,6 @@ export function isRotationStep(x: unknown): x is RotationStep {
   const s = x as Record<string, unknown>
   if (typeof s.id !== "string" || !s.id) return false
   if (typeof s.skillId !== "string") return false
-  if (typeof s.hitCount !== "number" || !Number.isFinite(s.hitCount)) return false
-  if (typeof s.prePull !== "boolean") return false
   return true
 }
 
@@ -92,6 +86,8 @@ export function isRotation(x: unknown): x is Rotation {
     }
   }
   if (r.qiBreak !== undefined && !isQiBreakWindow(r.qiBreak)) return false
+  if (r.fixedWindowSec !== undefined && readFixedWindowSec(r.fixedWindowSec) === undefined)
+    return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
   return true
@@ -105,6 +101,14 @@ export function isQiBreakWindow(x: unknown): x is QiBreakWindow {
     if (typeof value !== "number" || !Number.isFinite(value) || value < 0) return false
   }
   return true
+}
+
+export const DEFAULT_FIXED_WINDOW_SEC = 60
+const MAX_FIXED_WINDOW_SEC = 3600
+
+export function readFixedWindowSec(value: unknown): number | undefined {
+  if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) return undefined
+  return Math.min(value, MAX_FIXED_WINDOW_SEC)
 }
 
 export interface ResolvedStep {

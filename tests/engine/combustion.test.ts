@@ -15,10 +15,7 @@ import { DEBUFF, SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 import { retiredRotation } from "./retiredRotations"
 
 function rotationOf(classId: string, skillIds: string[]) {
-  const steps = skillIds.map((skillId) => {
-    const skill = builtinSkill(classId, skillId)
-    return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
-  })
+  const steps = skillIds.map((skillId) => makeStep({ skillId: builtinSkill(classId, skillId).id }))
   return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }
 

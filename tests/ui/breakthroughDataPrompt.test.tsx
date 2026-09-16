@@ -93,7 +93,7 @@ describe("asking for breakthrough data as the active class changes", () => {
 
     chooseClass(CONFIRMED_CLASS)
 
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    expect(askedClassName()).toBeNull()
   })
 
   it("does not ask twice about a class already dismissed this session", () => {
@@ -103,6 +103,6 @@ describe("asking for breakthrough data as the active class changes", () => {
 
     chooseClass(ASKED_CLASS)
 
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+    expect(askedClassName()).toBeNull()
   })
 })

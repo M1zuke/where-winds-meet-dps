@@ -1,17 +1,34 @@
 import { useId, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
+import { graduationBuildsFor } from "../../../../definitions/graduationBuilds/registry"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog } from "../../../components/dialog/Dialog"
 import { syncClassPermanent } from "../../../utils/classSetup"
 import { ClassPicker } from "../class-picker/ClassPicker"
+import { GraduationBuildPicker } from "../../gear/graduation-build-picker/GraduationBuildPicker"
 import { GearImportInstructions } from "../../gear/import-gear-dialog/GearImportInstructions"
 import { GearImportPreview } from "../../gear/import-gear-dialog/GearImportPreview"
 import { useGearImportDraft } from "../../gear/import-gear-dialog/useGearImportDraft"
 import { equippedFromImported } from "../../gear/import-gear-dialog/importedGearPieces"
 import { TextInput } from "../../../components/text-input/TextInput"
+import { wizardSteps, type WizardStep } from "./wizardSteps"
 import styles from "./SetupWizard.module.scss"
 
 export type SetupMode = "first-run" | "new-profile"
+
+const STEP_HEADING_KEYS: Record<WizardStep, string> = {
+  class: "setup.wizard.chooseYourClass",
+  graduation: "setup.wizard.chooseYourGraduationBuild",
+  import: "setup.wizard.importYourGear",
+  name: "setup.wizard.nameYourProfile",
+}
+
+const STEP_INSTRUCTION_KEYS: Record<WizardStep, string> = {
+  class: "setup.wizard.pickTheClassHint",
+  graduation: "setup.wizard.yourGraduationRateComparesHint",
+  import: "setup.wizard.pasteACaptureHint",
+  name: "setup.wizard.giveThisProfileAName",
+}
 
 interface Props {
   initialName: string
@@ -24,7 +41,7 @@ interface Props {
 export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCancel }: Props) {
   const { t } = useI18n()
   const headingId = useId()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const [step, setStep] = useState<WizardStep>("class")
   const [manual, setManual] = useState(false)
   const [name, setName] = useState(initialName)
   const [draft, setDraft] = useState<Inputs>(() =>
@@ -32,24 +49,29 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
   )
   const importDraft = useGearImportDraft(draft)
 
-  const totalSteps = manual ? 3 : 2
+  const graduationBuilds = graduationBuildsFor(draft.classId)
+  const steps = wizardSteps(graduationBuilds.length, manual)
+  const stepIndex = steps.indexOf(step)
+  const hasChosenGraduationBuild = graduationBuilds.some(
+    (build) => build.id === draft.graduationBuildId,
+  )
   const trimmedName = name.trim()
   const finishLabel =
     mode === "first-run" ? t("setup.wizard.finishSetup") : t("setup.wizard.createProfile")
 
-  function goToImportStep(): void {
-    setStep(2)
-  }
-  function backToClassStep(): void {
-    setStep(1)
+  function goForward(): void {
+    const next = steps[stepIndex + 1]
+    if (next) setStep(next)
   }
   function goManual(): void {
     setManual(true)
-    setStep(3)
+    setStep("name")
   }
-  function backToImportStep(): void {
-    setManual(false)
-    setStep(2)
+  function back(): void {
+    if (step === "name") setManual(false)
+    const previous = steps[stepIndex - 1]
+    if (previous) setStep(previous)
+    else onCancel?.()
   }
 
   function finishImportPath(): void {
@@ -70,61 +92,58 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
     onFinish(trimmedName, draft)
   }
 
-  const heading =
-    step === 1
-      ? t("setup.wizard.chooseYourClass")
-      : step === 2
-        ? t("setup.wizard.importYourGear")
-        : t("setup.wizard.nameYourProfile")
-
-  const instruction =
-    step === 1
-      ? t("setup.wizard.pickTheClassHint")
-      : step === 2
-        ? t("setup.wizard.pasteACaptureHint")
-        : t("setup.wizard.giveThisProfileAName")
-
-  const canGoBack = step > 1 || !!onCancel
-  const backLabel = step === 1 && onCancel ? t("common.cancel") : t("common.back")
-
-  function back(): void {
-    if (step === 3) backToImportStep()
-    else if (step === 2) backToClassStep()
-    else onCancel?.()
-  }
+  const canGoBack = step !== "class" || !!onCancel
+  const backLabel = step === "class" && onCancel ? t("common.cancel") : t("common.back")
+  const isLastStep = stepIndex === steps.length - 1
 
   const primaryDisabled =
-    step === 2 ? !importDraft.pieces.length : step === 3 ? !trimmedName : false
+    step === "graduation"
+      ? !hasChosenGraduationBuild
+      : step === "import"
+        ? !importDraft.pieces.length
+        : step === "name"
+          ? !trimmedName
+          : false
 
   function primaryAction(): void {
-    if (step === 1) goToImportStep()
-    else if (step === 2) finishImportPath()
-    else finishManualPath()
+    if (!isLastStep) goForward()
+    else if (manual) finishManualPath()
+    else finishImportPath()
   }
 
   return (
     <Dialog
       labelledBy={headingId}
       layer="wizard"
-      surfaceClassName={styles.wizardSurface + (step === 2 ? ` ${styles.surfaceImport}` : "")}
+      surfaceClassName={
+        styles.wizardSurface + (step === "import" ? ` ${styles.surfaceImport}` : "")
+      }
     >
       <div className={styles.wizardHeader}>
         <div className={styles.wizardStepIndicator}>
-          {t("setup.wizard.stepN").replace("{n}", `${step} / ${totalSteps}`)}
+          {t("setup.wizard.stepN").replace("{n}", `${stepIndex + 1} / ${steps.length}`)}
         </div>
-        <h2 id={headingId}>{heading}</h2>
-        <p className={styles.wizardInstruction}>{instruction}</p>
+        <h2 id={headingId}>{t(STEP_HEADING_KEYS[step])}</h2>
+        <p className={styles.wizardInstruction}>{t(STEP_INSTRUCTION_KEYS[step])}</p>
       </div>
 
       <div className={styles.wizardBody}>
-        {step === 1 && (
+        {step === "class" && (
           <ClassPicker
             value={draft.classId}
             onChange={(classId) => setDraft(syncClassPermanent(draft, classId))}
           />
         )}
 
-        {step === 2 && (
+        {step === "graduation" && (
+          <GraduationBuildPicker
+            builds={graduationBuilds}
+            followedBuildId={hasChosenGraduationBuild ? (draft.graduationBuildId ?? null) : null}
+            onFollow={(graduationBuildId) => setDraft({ ...draft, graduationBuildId })}
+          />
+        )}
+
+        {step === "import" && (
           <div className={styles.wizardImportSplit}>
             <div>
               {!importDraft.result ? (
@@ -159,7 +178,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           </div>
         )}
 
-        {step === 3 && (
+        {step === "name" && (
           <div className={`row ${styles.wizardNameRow}`}>
             <label htmlFor="wizard-name">{t("setup.wizard.profileName")}</label>
             <TextInput
@@ -181,14 +200,14 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           {backLabel}
         </button>
         <div className={styles.wizardProgress} aria-hidden="true">
-          {Array.from({ length: totalSteps }).map((_, index) => (
+          {steps.map((wizardStep, index) => (
             <span
-              key={index}
+              key={wizardStep}
               className={
                 styles.wizardDot +
-                (index + 1 === step
+                (index === stepIndex
                   ? ` ${styles.isActive}`
-                  : index + 1 < step
+                  : index < stepIndex
                     ? ` ${styles.isDone}`
                     : "")
               }
@@ -201,7 +220,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           onClick={primaryAction}
           disabled={primaryDisabled}
         >
-          {step === 1 ? t("setup.wizard.next") : finishLabel}
+          {isLastStep ? finishLabel : t("setup.wizard.next")}
         </button>
       </div>
     </Dialog>

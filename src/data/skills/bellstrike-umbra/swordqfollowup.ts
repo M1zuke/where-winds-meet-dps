@@ -3,6 +3,7 @@ import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const swordqfollowup = defineSkill({
   id: SKILL.swordqfollowup,
@@ -15,6 +16,7 @@ export const swordqfollowup = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ,
   triggersBuffs: [BUFF.jadeware],
+  receives: STRATEGIC_SWORD_RECEIVES,
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 64,
   triggerable: true,

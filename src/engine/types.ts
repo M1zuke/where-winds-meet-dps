@@ -1,4 +1,5 @@
 import type { GearWordId } from "../data/stats/statLines"
+import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
 
 export type { GearWordId } from "../data/stats/statLines"
@@ -84,6 +85,7 @@ export function defaultCombatSettings(): CombatSettings {
 // Numbers are stored as fractions where the panel shows percentages
 // (29.2 % → 0.292).
 export interface Inputs {
+  resourceSettings?: Record<string, import("../definitions/resources/resourceDef").ResourceSettings>
   classId: string
   breakthrough: number
   followedBreakthroughRelease?: number
@@ -143,9 +145,12 @@ export interface Inputs {
 
   selectedBuiltinRotationId?: string | null
 
+  graduationBuildId?: string | null
+
   // Injected at the engine boundary, not persisted on the profile blob — the
   // engine never reads storage, so locked fixtures stay byte-exact.
   activeCustomRotation?: Rotation | null
+  customGraduationBuild?: CustomGraduationBuild | null
   customSkills?: Skill[] | null
   customBuffs?: Buff[] | null
   customDebuffs?: Debuff[] | null
@@ -335,9 +340,11 @@ export interface EngineRunOptions {
 }
 
 export interface Result {
+  resources?: import("./resources").ResourceResult[]
   dps: number
   totalDamage: number
   rotationDuration: number
+  castDuration: number
   graduationRate: number | null
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]

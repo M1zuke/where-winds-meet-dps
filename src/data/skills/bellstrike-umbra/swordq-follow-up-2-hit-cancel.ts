@@ -3,6 +3,7 @@ import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
 export const swordqFollowUp2HitCancel = defineSkill({
   id: SKILL.swordqFollowUp2HitCancel,
@@ -15,6 +16,7 @@ export const swordqFollowUp2HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ2HitCancel,
   triggersBuffs: [BUFF.jadeware],
+  receives: STRATEGIC_SWORD_RECEIVES,
   // A cancel form ends where the animation opens its interrupt window — 42 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 42,
   triggerable: true,

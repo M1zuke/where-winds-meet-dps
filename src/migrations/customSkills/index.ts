@@ -16,6 +16,12 @@ import { V12__dragonHeadLowHpReach } from "./V12__dragonHeadLowHpReach"
 import { V13__spearHeavyChargedCoefficients } from "./V13__spearHeavyChargedCoefficients"
 import { V14__mysticArtIds } from "./V14__mysticArtIds"
 import { V15__neverAbrades } from "./V15__neverAbrades"
+import { V16__bellstrikeUmbraArtBonusAttack } from "./V16__bellstrikeUmbraArtBonusAttack"
+import { V17__bellstrikeSplendorArtBonusAttack } from "./V17__bellstrikeSplendorArtBonusAttack"
+import { V18__stonesplitStrengthArtBonusAttack } from "./V18__stonesplitStrengthArtBonusAttack"
+import { V19__bamboocutDraughtArtBonusAttack } from "./V19__bamboocutDraughtArtBonusAttack"
+import { V20__silkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAttack"
+import { V21__jadeBlossomBarrageReach } from "./V21__jadeBlossomBarrageReach"
 
 export type {
   CustomSkillMigration,
@@ -37,6 +43,11 @@ export {
 } from "./V13__spearHeavyChargedCoefficients"
 export { migrateMysticSkillHit } from "./V14__mysticArtIds"
 export { migrateNeverAbradesSkill } from "./V15__neverAbrades"
+export { healBellstrikeUmbraArtBonusAttack } from "./V16__bellstrikeUmbraArtBonusAttack"
+export { healBellstrikeSplendorArtBonusAttack } from "./V17__bellstrikeSplendorArtBonusAttack"
+export { healStonesplitStrengthArtBonusAttack } from "./V18__stonesplitStrengthArtBonusAttack"
+export { healBamboocutDraughtArtBonusAttack } from "./V19__bamboocutDraughtArtBonusAttack"
+export { healSilkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAttack"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -51,6 +62,12 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V13__spearHeavyChargedCoefficients,
   V14__mysticArtIds,
   V15__neverAbrades,
+  V16__bellstrikeUmbraArtBonusAttack,
+  V17__bellstrikeSplendorArtBonusAttack,
+  V18__stonesplitStrengthArtBonusAttack,
+  V19__bamboocutDraughtArtBonusAttack,
+  V20__silkbindJadeArtBonusAttack,
+  V21__jadeBlossomBarrageReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
+import { NAMELESS_SPEAR_RECEIVES } from "./receives"
 
 export const spearq0HitCancel = defineSkill({
   id: SKILL.spearq0HitCancel,
@@ -14,6 +15,7 @@ export const spearq0HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ0HitCancel,
   triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.mountainsMight, BUFF.qiImbalance],
+  receives: NAMELESS_SPEAR_RECEIVES,
   castFrames: 6,
   triggerable: true,
   hits: [

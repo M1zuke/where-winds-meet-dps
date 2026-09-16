@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { defineDebuff, defineGateBuff, defineSkill } from "../../src/definitions/skills/skillDef"
+import { defineRotation } from "../../src/definitions/rotations/rotationDef"
 
 const CLASS = "bellstrikeUmbra"
 const TIMESTAMP = "2026-01-01T00:00:00.000Z"
@@ -59,5 +60,20 @@ describe("the definers reject a key their interface does not declare", () => {
       updatedAt: TIMESTAMP,
     })
     expect(buff.id).toBe("buff-guard")
+  })
+
+  it("rejects one on a rotation", () => {
+    const rotation = defineRotation({
+      id: "builtin-guard",
+      name: "Guard",
+      classId: CLASS,
+      steps: [],
+      permanentBuffIds: [],
+      // @ts-expect-error an undeclared key must not typecheck
+      prePullHitsCount: false,
+      createdAt: TIMESTAMP,
+      updatedAt: TIMESTAMP,
+    })
+    expect(rotation.id).toBe("builtin-guard")
   })
 })

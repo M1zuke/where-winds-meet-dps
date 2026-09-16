@@ -19,6 +19,8 @@ import { loadProfiles } from "../../src/storage"
 import { newestBreakthroughRelease } from "../../src/definitions/baseStats/breakthroughs"
 import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { SET_ID } from "../../src/data/sets/ids"
+import { spearheavy } from "../../src/data/skills/bellstrike-umbra/spearheavy"
+import type { Skill } from "../../src/engine/skill"
 import type { Inputs, Result } from "../../src/engine/types"
 import anchorProfileFile from "../migrations/testProfiles/v7/bellstrikeUmbra.json"
 
@@ -80,24 +82,23 @@ function withCombat(raw: Inputs, patch: Partial<NonNullable<Inputs["combatSettin
 
 // Inserts one extra cast into whatever rotation the build already resolves to
 // (its own `activeCustomRotation`, or the class default) — for exercising a
-// skill the anchor rotation never casts on its own. Placed after the pre-pull
-// steps rather than appended, so a buff the cast grants still has most of the
-// rotation left to affect; appended at the end it would barely register.
+// skill the anchor rotation never casts on its own. Placed first rather than
+// appended, so a buff the cast grants still has most of the rotation left to
+// affect; appended at the end it would barely register. The cast lands only the
+// skill's first hit, through a same-id override that keeps its cast length.
 //
 // The step id is a literal because `makeStep` derives one from `Date.now()` and
 // `Math.random()`, and a cast's `stepId` reaches the result `digestOf` hashes —
 // a generated id makes the recorded digest unreproducible.
-function withStepAfterPrePull(raw: Inputs, skillId: string): Inputs {
+function withFirstHitCastFirst(raw: Inputs, skill: Skill): Inputs {
   const rotation = raw.activeCustomRotation ?? defaultRotationForClass(raw.classId)!
-  const steps = [...rotation.steps]
-  const firstNonPrePull = steps.findIndex((step) => !step.prePull)
-  steps.splice(firstNonPrePull < 0 ? steps.length : firstNonPrePull, 0, {
-    id: `st-baseline-${skillId}`,
-    skillId,
-    hitCount: 1,
-    prePull: false,
-  })
-  return { ...raw, activeCustomRotation: { ...rotation, steps } }
+  const steps = [{ id: `st-baseline-${skill.id}`, skillId: skill.id }, ...rotation.steps]
+  const firstHitOnly = { ...skill, hits: skill.hits.slice(0, 1) }
+  return {
+    ...raw,
+    customSkills: [...(raw.customSkills ?? []), firstHitOnly],
+    activeCustomRotation: { ...rotation, steps },
+  }
 }
 
 const ARMOUR_SETS: readonly [label: string, id: string][] = [
@@ -169,10 +170,7 @@ const CASES: { name: string; build: () => Inputs }[] = [
     name: "anchor:spearHeavyNoWolfchasersArt",
     build: () =>
       toEngineInputs(
-        withStepAfterPrePull(
-          withoutInnerWay(anchorInputs(), "Wolfchaser's Art"),
-          "bellstrikeUmbra-spearheavy",
-        ),
+        withFirstHitCastFirst(withoutInnerWay(anchorInputs(), "Wolfchaser's Art"), spearheavy),
       ),
   },
   {
@@ -297,17 +295,17 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the user-verified rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(77715.24)
-    expect(round(result.totalDamage, 2)).toBe(4647371.62)
-    expect(round(result.rotationDuration, 4)).toBe(59.8)
+    expect(round(result.dps, 2)).toBe(76271.75)
+    expect(round(result.totalDamage, 2)).toBe(4576305.27)
+    expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2189649.7)
-    expect(damageOf("Bleeding (DoT)")).toBe(293338.56)
+    expect(damageOf("Blood Burst")).toBe(2125873.49)
+    expect(damageOf("Bleeding (DoT)")).toBe(284794.72)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not

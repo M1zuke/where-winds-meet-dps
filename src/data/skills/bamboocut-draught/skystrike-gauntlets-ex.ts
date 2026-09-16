@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL, STATUS } from "./ids"
+import { SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
 // The ultimate deals no damage of its own: a big drink that fills Binge
@@ -17,7 +18,7 @@ export const skystrikeGauntletsEx = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.skystrikeGauntletsEx,
-  receives: [],
+  receives: SKYSTRIKE_GAUNTLETS_RECEIVES,
   triggerable: false,
   castFrames: 48,
   hits: [

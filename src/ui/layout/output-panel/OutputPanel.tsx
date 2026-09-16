@@ -12,6 +12,7 @@ interface MetricsCardProps {
   theoreticalDps?: number | null
   onGraduationClick?: () => void
   graduationDisabled?: boolean
+  graduationBuildName?: string | null
   rotationName?: string | null
   onRotationClick?: () => void
 }
@@ -45,10 +46,12 @@ export function MetricsCard({
   theoreticalDps = null,
   onGraduationClick,
   graduationDisabled = false,
+  graduationBuildName = null,
   rotationName = null,
   onRotationClick,
 }: MetricsCardProps) {
   const { t } = useI18n()
+  const graduationBuildText = graduationBuildName ?? t("layout.outputPanel.chooseABuild")
   const graduationText =
     result.graduationRate === null
       ? graduationPending
@@ -101,7 +104,7 @@ export function MetricsCard({
         type="button"
         className={`${styles.graduation}${graduationPending ? ` ${styles.pending}` : ""}`}
         title={graduationTitle}
-        aria-label={`${t("layout.outputPanel.graduation")}: ${graduationText}`}
+        aria-label={`${t("layout.outputPanel.graduation")}: ${graduationText} · ${graduationBuildText}`}
         aria-live="polite"
         onClick={onGraduationClick}
         disabled={graduationDisabled}
@@ -112,6 +115,14 @@ export function MetricsCard({
         <span className={styles.stat}>
           <span className={styles.label}>{t("layout.outputPanel.graduation")}</span>
           <span className={styles.value}>{graduationText}</span>
+        </span>
+        <span className={`${styles.stat} ${styles.graduationBuild}`}>
+          <span className={styles.label}>{t("common.build")}</span>
+          <span
+            className={graduationBuildName ? styles.value : `${styles.value} ${styles.chooseBuild}`}
+          >
+            {graduationBuildText}
+          </span>
         </span>
         <OpenIcon />
       </button>
