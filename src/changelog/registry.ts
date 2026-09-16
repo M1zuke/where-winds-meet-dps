@@ -2,6 +2,12 @@ import type { ChangelogEntry } from "./types"
 
 export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
   {
+    version: "0.7.2",
+    date: "2026-09-16",
+    headline: "Graduation builds you follow, heirloom gear and Blossoms",
+    loadDetails: () => import("./entries/v0-7-2").then((module) => module.details),
+  },
+  {
     version: "0.7.1",
     date: "2026-09-11",
     headline: "Retune draw chances for Bamboocut and the first line",
