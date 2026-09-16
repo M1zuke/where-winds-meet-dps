@@ -11,7 +11,9 @@
 // slottable inner way's `buffDefs` plus the class's own `classBuffDefs`),
 // and the mystic arts, which belong to no class and are appended to every
 // class's skill and debuff lists as authored. `classDefinition()` composes
-// all of them onto the declared `ClassDef` so callers read one shape either
+// all of them — and the class's graduation builds, collected by class id only
+// here because a build module's gear pulls the ranking layer back into this
+// registry at load — onto the declared `ClassDef` so callers read one shape either
 // way.
 import type { Buff } from "../../engine/buff"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -30,6 +32,8 @@ import { INNER_WAYS, innerWayDefinition } from "../innerWays/registry"
 import type { InnerWayDef } from "../innerWays/innerWayDef"
 import { martialArtDefinition } from "../martialArts/registry"
 import type { MartialArtDef } from "../martialArts/martialArtDef"
+import { graduationBuildsFor } from "../graduationBuilds/registry"
+import type { GraduationBuild } from "../graduationBuilds/graduationBuildDef"
 
 function innerWayIdsOf(classDef: ClassDef): readonly string[] {
   return [...new Set([classDef.classMindGroup, ...classDef.allowedMindMethods].filter(Boolean))]
@@ -83,6 +87,7 @@ export interface ClassDefinition extends ClassDef {
   // (`engine/buffs/data.ts`) folds in separately, between these two blocks.
   buffModules: readonly BuffModule[]
   attunements: readonly AttunementOption[]
+  graduationBuilds: readonly GraduationBuild[]
 }
 
 const cache = new Map<string, ClassDefinition | null>()
@@ -109,6 +114,7 @@ export function classDefinition(classId: string): ClassDefinition | null {
       ...classDef.classBuffDefs,
     ],
     attunements: attunementsForClass(classId),
+    graduationBuilds: graduationBuildsFor(classId),
   }
   cache.set(classId, definition)
   return definition

@@ -144,6 +144,8 @@ export interface Inputs {
 
   selectedBuiltinRotationId?: string | null
 
+  graduationBuildId?: string | null
+
   // Injected at the engine boundary, not persisted on the profile blob — the
   // engine never reads storage, so locked fixtures stay byte-exact.
   activeCustomRotation?: Rotation | null

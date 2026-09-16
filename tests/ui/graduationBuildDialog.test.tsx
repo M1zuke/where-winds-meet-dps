@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
+import { classDefinition } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
 import { graduationInputs } from "../../src/engine/graduation"
 import { statLineLabel } from "../../src/data/stats/statLines"
@@ -23,6 +24,7 @@ describe("GraduationBuildDialog", () => {
           inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -48,6 +50,7 @@ describe("GraduationBuildDialog", () => {
           inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -74,6 +77,7 @@ describe("GraduationBuildDialog", () => {
           inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -99,6 +103,7 @@ describe("GraduationBuildDialog", () => {
           inputs={inputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -134,6 +139,7 @@ describe("GraduationBuildDialog", () => {
           inputs={{ ...defaultInputs, classId: "stonesplitStrength" }}
           theoreticalDps={null}
           relayedTheoreticalDps={null}
+          onFollowBuild={() => undefined}
           onClose={onClose}
         />
       </I18nProvider>,
@@ -142,5 +148,23 @@ describe("GraduationBuildDialog", () => {
     expect(screen.getByRole("button", { name: "Close" })).toHaveFocus()
     fireEvent.keyDown(document, { key: "Escape" })
     expect(onClose).toHaveBeenCalledOnce()
+  })
+
+  it("names the only build of a single-build class and offers no build choice", () => {
+    const [onlyBuild] = classDefinition(inputs.classId)!.graduationBuilds
+    render(
+      <I18nProvider>
+        <GraduationBuildDialog
+          inputs={inputs}
+          theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
+          onClose={() => undefined}
+        />
+      </I18nProvider>,
+    )
+
+    expect(screen.getByText(onlyBuild.name)).toBeInTheDocument()
+    expect(screen.queryAllByRole("radio")).toHaveLength(0)
   })
 })

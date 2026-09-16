@@ -52,11 +52,16 @@ Test-suite consequences are in TESTING.md § "Class scoping".
   § "Mystic arts".
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
-  ways, martial arts, rotations, classes. There is no JSON authoring format: the
-  only JSON under `src/data/` is lookup tables with no contract to check.
+  ways, martial arts, rotations, graduation builds, classes. There is no JSON
+  authoring format: the only JSON under `src/data/` is lookup tables with no
+  contract to check.
 - **A built-in rotation is one module in its class folder's rotations folder**,
   default-exporting its `defineRotation` call. Its class id is its only
   registration: never list a rotation in a barrel.
+- **A graduation build is one module in its class folder's graduation builds
+  folder**, default-exporting its `defineGraduationBuild` call, and carries a
+  name. Its class id is its only registration, and its id is what a profile
+  stores: renaming the id is a storage change, renaming the name never is.
 - Nothing under `src/data/` may declare a `define*` contract or call a
   `register*` entry point.
 - Nothing under `src/definitions/` may reach past a `src/data/` folder barrel, an
@@ -71,12 +76,20 @@ is camelCase.
 
 One accessor answers what a class is made of — spec, primary attribute, inner
 ways, class-specific attunement ids, skills, debuffs, buffs, rotations and
-default, graduation build, attunements, retunement pool. **Reach for it rather
+default, graduation builds, attunements, retunement pool. **Reach for it rather
 than the individual registries.**
 
-**The graduation rate simulates both sides on the rotation its graduation build
-names** — the user's build and the benchmark alike, never the rotation the user
-has selected — so it compares gear, not rotation choice.
+**A profile follows one graduation build, and the graduation rate simulates both
+sides on that build's rotation** — the user's build and the benchmark alike,
+never the rotation the user has selected — so it compares gear, not rotation
+choice.
+
+- A class with a single graduation build follows it without a choice, and a
+  loaded profile stores it.
+- A class with several follows none until the profile picks one; while none is
+  followed there is no rate.
+- A class change clears the pick. A stored id naming another class's build is
+  cleared on load; an id this build does not know is kept as stored.
 
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build

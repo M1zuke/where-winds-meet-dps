@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
+import type { GraduationBuild } from "../../src/definitions/graduationBuilds/graduationBuildDef"
 import { attunementMax, getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
@@ -10,8 +11,11 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
 import {
-  graduationBuild,
+  followedGraduationBuild,
+  followedGraduationBuildAmong,
+  graduationBuildAtLevel,
   graduationInputs,
+  repairGraduationBuildId,
   withGraduationRotation,
 } from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
@@ -19,38 +23,55 @@ import { GEAR_SLOTS, type GearLevel } from "../../src/engine/types"
 
 const GRADUATION_LEVEL: GearLevel = 96
 
+const BUILDS = CLASS_DEFS().flatMap((classDef) =>
+  classDefinition(classDef.id)!.graduationBuilds.map(
+    (build) => [build.id, classDef, build] as const,
+  ),
+)
+
 function dpsFor(inputs = defaultInputs): number {
   return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs)))).dps
 }
 
+function fictionalBuild(id: string): GraduationBuild {
+  return {
+    id,
+    name: id,
+    classId: "fictionalClass",
+    gear: [],
+    set: null,
+    bowSet: null,
+    arsenal: "general",
+    rotationId: "fictional-rotation",
+  }
+}
+
 describe("graduation builds", () => {
   it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+    "%s ships at least one graduation build",
+    (_classId, classDef) => {
+      expect(classDefinition(classDef.id)!.graduationBuilds.length).toBeGreaterThan(0)
+    },
+  )
+
+  it.each(BUILDS)(
     "%s defines one best-in-slot piece for every gear slot",
-    (_classId, classDef) => {
-      expect(classDef.graduationBuild.gear.map((piece) => piece.slot).sort()).toEqual(
-        [...GEAR_SLOTS].sort(),
-      )
-      expect(new Set(classDef.graduationBuild.gear.map((piece) => piece.id)).size).toBe(
-        GEAR_SLOTS.length,
-      )
-      expect(classDef.graduationBuild.gear.every((piece) => piece.words.length === 5)).toBe(true)
+    (_id, _classDef, build) => {
+      expect(build.gear.map((piece) => piece.slot).sort()).toEqual([...GEAR_SLOTS].sort())
+      expect(new Set(build.gear.map((piece) => piece.id)).size).toBe(GEAR_SLOTS.length)
+      expect(build.gear.every((piece) => piece.words.length === 5)).toBe(true)
     },
   )
 
-  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
-    "%s benchmarks one of its own built-in rotations",
-    (_classId, classDef) => {
-      expect(classDef.rotations.map((rotation) => rotation.id)).toContain(
-        classDef.graduationBuild.rotationId,
-      )
-    },
-  )
+  it.each(BUILDS)("%s benchmarks one of its own class's rotations", (_id, classDef, build) => {
+    expect(classDef.rotations.map((rotation) => rotation.id)).toContain(build.rotationId)
+  })
 
-  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+  it.each(BUILDS)(
     "%s rolls every graduation word and attunement at the catalogue's max",
-    (classId, classDef) => {
-      const specs = getWordSpecs({ ...defaultInputs, classId }, GRADUATION_LEVEL)
-      for (const piece of classDef.graduationBuild.gear) {
+    (_id, classDef, build) => {
+      const specs = getWordSpecs({ ...defaultInputs, classId: classDef.id }, GRADUATION_LEVEL)
+      for (const piece of build.gear) {
         for (const word of piece.words) {
           const spec = specs.find((candidate) => candidate.word === word.word)
           expect(
@@ -67,10 +88,10 @@ describe("graduation builds", () => {
     },
   )
 
-  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+  it.each(BUILDS)(
     "%s equips lv96 legendary base stats straight from the gear table",
-    (_classId, classDef) => {
-      for (const piece of classDef.graduationBuild.gear) {
+    (_id, _classDef, build) => {
+      for (const piece of build.gear) {
         expect(piece.level).toBe(96)
         expect(piece.rarity).toBe("legendary")
         expect(piece).toMatchObject(gearBaseStatsFor(piece))
@@ -78,13 +99,12 @@ describe("graduation builds", () => {
     },
   )
 
-  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+  it.each(BUILDS)(
     "%s relays every graduation word to the shared relayed cap and keeps its attunement at max",
-    (classId, classDef) => {
-      const relayed = graduationBuild(classId, "relayed", GRADUATION_LEVEL)
-      expect(relayed).not.toBeNull()
+    (_id, _classDef, build) => {
+      const relayed = graduationBuildAtLevel(build, "relayed", GRADUATION_LEVEL)
 
-      for (const piece of relayed!.gear) {
+      for (const piece of relayed.gear) {
         expect(piece.relayed).toBe(true)
         for (const word of piece.words) {
           if (!word.word) continue
@@ -100,30 +120,28 @@ describe("graduation builds", () => {
           attunement ? attunementMax(attunement, GRADUATION_LEVEL) : undefined,
         )
       }
-      expect(relayed!.gear.map((piece) => piece.id)).toEqual(
-        classDef.graduationBuild.gear.map((piece) => piece.id),
-      )
+      expect(relayed.gear.map((piece) => piece.id)).toEqual(build.gear.map((piece) => piece.id))
     },
   )
 
-  it.each(CLASS_DEFS().map((classDef) => [classDef.id, classDef] as const))(
+  it.each(BUILDS)(
     "%s takes its relayed set, bow set and arsenal from the relayed overrides",
-    (classId, classDef) => {
-      const build = classDef.graduationBuild
+    (_id, _classDef, build) => {
       const overrides = build.relayedOverrides ?? {}
-      const relayed = graduationBuild(classId, "relayed", GRADUATION_LEVEL)
+      const relayed = graduationBuildAtLevel(build, "relayed", GRADUATION_LEVEL)
 
-      expect(relayed!.set).toBe(overrides.set ?? build.set)
-      expect(relayed!.bowSet).toBe(overrides.bowSet ?? build.bowSet)
-      expect(relayed!.arsenal).toBe(overrides.arsenal ?? build.arsenal)
+      expect(relayed.set).toBe(overrides.set ?? build.set)
+      expect(relayed.bowSet).toBe(overrides.bowSet ?? build.bowSet)
+      expect(relayed.arsenal).toBe(overrides.arsenal ?? build.arsenal)
     },
   )
 
   it("leaves the max-roll variant untouched by the relayed overrides", () => {
-    const build = graduationBuild("bellstrikeUmbra", "maxRolls", GRADUATION_LEVEL)
-    expect(build!.gear).toEqual(classDefinition("bellstrikeUmbra")!.graduationBuild.gear)
-    expect(build!.bowSet).toBe("crit")
-    expect(graduationBuild("bellstrikeUmbra", "relayed", GRADUATION_LEVEL)!.bowSet).toBe("affinity")
+    const followed = followedGraduationBuild(defaultInputs)!
+    const build = graduationBuildAtLevel(followed, "maxRolls", GRADUATION_LEVEL)
+    expect(build.gear).toEqual(followed.gear)
+    expect(build.bowSet).toBe("crit")
+    expect(graduationBuildAtLevel(followed, "relayed", GRADUATION_LEVEL).bowSet).toBe("affinity")
   })
 
   it("always enables every class talent and oddity", () => {
@@ -139,10 +157,47 @@ describe("graduation builds", () => {
   })
 })
 
+describe("following a graduation build", () => {
+  const first = fictionalBuild("first")
+  const second = fictionalBuild("second")
+
+  it("follows the chosen build among several", () => {
+    expect(followedGraduationBuildAmong([first, second], "second")).toBe(second)
+  })
+
+  it("follows nothing among several until one is chosen", () => {
+    expect(followedGraduationBuildAmong([first, second], null)).toBeNull()
+    expect(followedGraduationBuildAmong([first, second], "an-unknown-build")).toBeNull()
+  })
+
+  it("follows a class's only build without a choice", () => {
+    expect(followedGraduationBuildAmong([first], null)).toBe(first)
+    expect(followedGraduationBuildAmong([first], "an-unknown-build")).toBe(first)
+  })
+
+  it("stores a single-build class's only build when the profile names none", () => {
+    const [onlyBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
+    expect(repairGraduationBuildId("bellstrikeUmbra", undefined)).toBe(onlyBuild.id)
+    expect(repairGraduationBuildId("bellstrikeUmbra", "")).toBe(onlyBuild.id)
+  })
+
+  it("keeps a stored build id this build does not know", () => {
+    expect(repairGraduationBuildId("bellstrikeUmbra", "graduation-from-a-newer-build")).toBe(
+      "graduation-from-a-newer-build",
+    )
+  })
+
+  it("drops another class's build and falls back to this class's only build", () => {
+    const [umbraBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
+    const [otherBuild] = classDefinition("stonesplitStrength")!.graduationBuilds
+    expect(repairGraduationBuildId("bellstrikeUmbra", otherBuild.id)).toBe(umbraBuild.id)
+  })
+})
+
 describe("graduation build follows the current breakthrough's gear level", () => {
   it("BT18 (level 100) rolls every word and attunement at the level-100 ceiling", () => {
     const inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 18 }
-    const build = graduationBuild(inputs.classId, "maxRolls", 100)!
+    const build = graduationBuildAtLevel(followedGraduationBuild(inputs)!, "maxRolls", 100)
     const specs = getWordSpecs(inputs, 100)
 
     for (const piece of build.gear) {
@@ -199,8 +254,9 @@ describe("computeGraduation", () => {
 
   it("rates the build and the benchmark on the graduation rotation, whichever rotation the build has selected", () => {
     const classDef = classDefinition(defaultInputs.classId)!
+    const followed = followedGraduationBuild(defaultInputs)!
     const otherRotation = classDef.rotations.find(
-      (rotation) => rotation.id !== classDef.graduationBuild.rotationId,
+      (rotation) => rotation.id !== followed.rotationId,
     )!
     const selectingOther = { ...defaultInputs, selectedBuiltinRotationId: otherRotation.id }
     expect(dpsFor(selectingOther)).not.toBe(dpsFor(defaultInputs))

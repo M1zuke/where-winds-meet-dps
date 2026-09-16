@@ -12,6 +12,7 @@ import type {
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
+import { repairGraduationBuildId } from "./engine/graduation"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
 import { resolveResourceSettings } from "./definitions/resources/resourceDef"
@@ -282,6 +283,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // build's class rather than reaching `getSchool()`, which throws on an
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
+  next.graduationBuildId = repairGraduationBuildId(next.classId, next.graduationBuildId)
   next.selectedBuiltinRotationId = dropRetiredRotationId(
     migrateEntityId(next.selectedBuiltinRotationId),
   )

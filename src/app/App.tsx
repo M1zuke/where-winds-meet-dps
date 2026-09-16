@@ -34,6 +34,8 @@ import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/S
 import { BreakthroughDataDialog } from "../ui/layout/breakthrough-data-dialog/BreakthroughDataDialog"
 import { breakthroughDataRequestFor } from "../ui/layout/breakthrough-data-dialog/breakthroughDataRequest"
 import { activeRotationName } from "../ui/features/rotation/rotationOptions"
+import { followedGraduationBuild } from "../engine/graduation"
+import { graduationBuildKey } from "../i18n/contentKeys"
 import { useI18n } from "../i18n/i18nContext"
 import { I18nProvider } from "../i18n/I18nProvider"
 import { ConfirmProvider } from "../ui/components/confirm-dialog/ConfirmDialog"
@@ -137,6 +139,7 @@ function AppInner() {
 
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
   const graduation = useGraduationRate(configuredInputs)
+  const followedBuild = followedGraduationBuild(inputs)
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
@@ -327,6 +330,7 @@ function AppInner() {
           inputs={configuredInputs}
           theoreticalDps={graduation.theoreticalDps}
           relayedTheoreticalDps={graduation.relayedTheoreticalDps}
+          onFollowBuild={(graduationBuildId) => setInputs({ ...inputs, graduationBuildId })}
           onClose={() => setGraduationDialogOpen(false)}
         />
       )}
@@ -368,6 +372,9 @@ function AppInner() {
           theoreticalDps={graduation.theoreticalDps}
           onGraduationClick={() => setGraduationDialogOpen(true)}
           graduationDisabled={isSimulationRunning}
+          graduationBuildName={
+            followedBuild ? t(graduationBuildKey(followedBuild.id), followedBuild.name) : null
+          }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
         />

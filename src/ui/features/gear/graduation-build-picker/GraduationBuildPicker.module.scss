@@ -1,0 +1,106 @@
+@use "breakpoints";
+
+.picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font-size: 0.75em;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+
+@include breakpoints.hoverable {
+  .option:hover {
+    border-color: var(--color-border-hover);
+    background: var(--color-surface-inset-hover);
+  }
+}
+
+.option:focus-within {
+  border-color: var(--color-border-hover);
+}
+
+.option.followed {
+  border-color: var(--color-accent);
+  background: var(--color-surface-selected);
+}
+
+.option input {
+  flex: 0 0 auto;
+  margin: 3px 0 0;
+  accent-color: var(--color-accent);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.following {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  font-size: 0.68em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-bright);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: 0.78em;
+  color: var(--color-text-muted);
+}
+
+.factValue {
+  color: var(--color-text-dim);
+}

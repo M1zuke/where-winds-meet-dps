@@ -13,7 +13,6 @@ import {
   snowpartingBladeAdditionalAttack,
 } from "../../skills/stonesplit-strength/buffs/additionalAttack"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
-import { STONESPLIT_STRENGTH_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
 export const stonesplitStrength = defineClass({
@@ -44,7 +43,6 @@ export const stonesplitStrength = defineClass({
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
-  graduationBuild: STONESPLIT_STRENGTH_GRADUATION_BUILD,
   classBuffDefs: [
     ironGuards,
     cleftpeakDeflect,

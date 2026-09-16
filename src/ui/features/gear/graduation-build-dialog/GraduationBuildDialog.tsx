@@ -3,11 +3,15 @@ import { classDefinition } from "../../../../definitions/classes/registry"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/breakthroughs"
 import { RELAYED_FACTOR } from "../../../../engine/gearStats"
-import { graduationBuild, graduationInputs } from "../../../../engine/graduation"
+import {
+  followedGraduationBuild,
+  graduationBuildAtLevel,
+  graduationInputs,
+} from "../../../../engine/graduation"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
-import { classKey, setKey } from "../../../../i18n/contentKeys"
+import { classKey, graduationBuildKey, setKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -15,6 +19,7 @@ import { SubTabPanel } from "../../../components/sub-tabs/SubTabPanel"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
 import { BuildPieceCard } from "../build-piece-card/BuildPieceCard"
 import { BuildSummary, type BuildSummaryItem } from "../build-summary/BuildSummary"
+import { GraduationBuildPicker } from "../graduation-build-picker/GraduationBuildPicker"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import previewStyles from "../shared/gearPreview.module.scss"
@@ -24,6 +29,7 @@ interface Props {
   inputs: Inputs
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
+  onFollowBuild(graduationBuildId: string): void
   onClose(): void
 }
 
@@ -39,6 +45,7 @@ export function GraduationBuildDialog({
   inputs,
   theoreticalDps,
   relayedTheoreticalDps,
+  onFollowBuild,
   onClose,
 }: Props) {
   const { t } = useI18n()
@@ -50,28 +57,31 @@ export function GraduationBuildDialog({
   const variant = relayed ? "relayed" : "maxRolls"
   const classDef = classDefinition(inputs.classId)
   const level = gearLevelForBreakthrough(inputs.breakthrough)
+  const followed = followedGraduationBuild(inputs)
   const build = useMemo(
-    () => graduationBuild(inputs.classId, variant, level),
-    [inputs.classId, variant, level],
+    () => (followed ? graduationBuildAtLevel(followed, variant, level) : null),
+    [followed, variant, level],
   )
   const benchmarkInputs = useMemo(() => graduationInputs(inputs, variant), [inputs, variant])
 
-  if (!classDef || !build || !benchmarkInputs) return null
-  const piecesBySlot = new Map(build.gear.map((piece) => [piece.slot, piece]))
-  const armorSet = build.set ? SET_BY_ID[build.set] : null
+  if (!classDef) return null
+  const piecesBySlot = new Map((build?.gear ?? []).map((piece) => [piece.slot, piece]))
+  const armorSet = build?.set ? SET_BY_ID[build.set] : null
 
-  const summaryItems: BuildSummaryItem[] = [
-    {
-      label: t("common.armorSet"),
-      value: armorSet ? t(setKey(armorSet.id), armorSet.name) : t("common.unselected"),
-    },
-    {
-      label: t("common.bowSet"),
-      value: build.bowSet ? t(BOW_SET_KEYS[build.bowSet]) : t("common.unselected"),
-    },
-    { label: t("common.arsenal"), value: t(ARSENAL_KEYS[build.arsenal]) },
-    { label: t("common.talentsOddities"), value: t("gear.graduationBuildDialog.allEnabled") },
-  ]
+  const summaryItems: BuildSummaryItem[] = build
+    ? [
+        {
+          label: t("common.armorSet"),
+          value: armorSet ? t(setKey(armorSet.id), armorSet.name) : t("common.unselected"),
+        },
+        {
+          label: t("common.bowSet"),
+          value: build.bowSet ? t(BOW_SET_KEYS[build.bowSet]) : t("common.unselected"),
+        },
+        { label: t("common.arsenal"), value: t(ARSENAL_KEYS[build.arsenal]) },
+        { label: t("common.talentsOddities"), value: t("gear.graduationBuildDialog.allEnabled") },
+      ]
+    : []
 
   return (
     <Dialog
@@ -86,57 +96,87 @@ export function GraduationBuildDialog({
       </DialogHeader>
 
       <DialogBody>
-        <div className={dialogChrome.intro} id={descriptionId}>
-          <span>{t(classKey(classDef.id), classDef.displayName)}</span>
-          <label className={styles.relayedToggle}>
-            <input
-              type="checkbox"
-              checked={relayed}
-              onChange={(event) => setRelayed(event.target.checked)}
+        {classDef.graduationBuilds.length > 1 && (
+          <div className={styles.pickerSection}>
+            <p className={styles.pickerHint}>
+              {t("gear.graduationBuildDialog.yourGraduationRateIsMeasured")}
+            </p>
+            <GraduationBuildPicker
+              builds={classDef.graduationBuilds}
+              followedBuildId={followed?.id ?? null}
+              onFollow={onFollowBuild}
             />
-            {t("gear.graduationBuildDialog.relayedWords")} ({RELAYED_PERCENT}%{" "}
-            {t("gear.graduationBuildDialog.ofMaxRoll")})
-          </label>
-          <span className={dialogChrome.introDps}>
-            {t("common.dps")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
+          </div>
+        )}
+
+        <div className={dialogChrome.intro} id={descriptionId}>
+          <span className={styles.identity}>
+            <span>{t(classKey(classDef.id), classDef.displayName)}</span>
+            {followed && (
+              <span className={styles.buildName}>
+                {t(graduationBuildKey(followed.id), followed.name)}
+              </span>
+            )}
           </span>
-        </div>
-
-        <SubTabs
-          active={tab}
-          onSelect={setTab}
-          tabs={[
-            { key: "build", label: t("common.build") },
-            { key: "stats", label: t("common.panelStats") },
-          ]}
-        />
-
-        <SubTabPanel>
-          {tab === "build" && (
+          {build && (
             <>
-              <BuildSummary items={summaryItems} />
-
-              <div className={previewStyles.pieceList}>
-                {GEAR_SLOTS.map((slot) => {
-                  const piece = piecesBySlot.get(slot)
-                  return piece ? <BuildPieceCard key={slot} piece={piece} /> : null
-                })}
-              </div>
+              <label className={styles.relayedToggle}>
+                <input
+                  type="checkbox"
+                  checked={relayed}
+                  onChange={(event) => setRelayed(event.target.checked)}
+                />
+                {t("gear.graduationBuildDialog.relayedWords")} ({RELAYED_PERCENT}%{" "}
+                {t("gear.graduationBuildDialog.ofMaxRoll")})
+              </label>
+              <span className={dialogChrome.introDps}>
+                {t("common.dps")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
+              </span>
             </>
           )}
+        </div>
 
-          {tab === "stats" && (
-            <div className={dialogChrome.statsPane}>
-              <div className={dialogChrome.statsMeta}>
-                {t("common.resistance")}:{" "}
-                <span className={dialogChrome.statsMetaValue}>
-                  {resistanceForInputs(benchmarkInputs)}%
-                </span>
-              </div>
-              <StatsOverviewPanel inputs={benchmarkInputs} />
-            </div>
-          )}
-        </SubTabPanel>
+        {build && benchmarkInputs ? (
+          <>
+            <SubTabs
+              active={tab}
+              onSelect={setTab}
+              tabs={[
+                { key: "build", label: t("common.build") },
+                { key: "stats", label: t("common.panelStats") },
+              ]}
+            />
+
+            <SubTabPanel>
+              {tab === "build" && (
+                <>
+                  <BuildSummary items={summaryItems} />
+
+                  <div className={previewStyles.pieceList}>
+                    {GEAR_SLOTS.map((slot) => {
+                      const piece = piecesBySlot.get(slot)
+                      return piece ? <BuildPieceCard key={slot} piece={piece} /> : null
+                    })}
+                  </div>
+                </>
+              )}
+
+              {tab === "stats" && (
+                <div className={dialogChrome.statsPane}>
+                  <div className={dialogChrome.statsMeta}>
+                    {t("common.resistance")}:{" "}
+                    <span className={dialogChrome.statsMetaValue}>
+                      {resistanceForInputs(benchmarkInputs)}%
+                    </span>
+                  </div>
+                  <StatsOverviewPanel inputs={benchmarkInputs} />
+                </div>
+              )}
+            </SubTabPanel>
+          </>
+        ) : (
+          <p className={styles.choosePrompt}>{t("gear.graduationBuildDialog.chooseABuildToSee")}</p>
+        )}
       </DialogBody>
 
       <DialogFooter>

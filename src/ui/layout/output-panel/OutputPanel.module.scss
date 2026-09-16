@@ -3,7 +3,7 @@
 /* Flex, not a fixed track list: adding/removing a stat can't leave a dead grid column. */
 .metricsCard {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 28px;
   align-items: center;
   background: var(--color-surface);
@@ -48,7 +48,8 @@
 .graduation {
   position: relative;
   z-index: 0;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -109,8 +110,27 @@
   font-variant-numeric: tabular-nums;
 }
 
+.graduationBuild {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-left: 10px;
+  border-left: 1px solid var(--color-border-strong);
+}
+
+.graduationBuild .value {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+}
+
+.graduationBuild .chooseBuild {
+  color: var(--color-accent);
+}
+
 .rotationChip {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -173,5 +193,23 @@
   }
   .subline {
     display: block;
+  }
+  .graduation {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    padding: 4px 8px;
+  }
+  .graduation .label,
+  .graduation .graduationIcon {
+    display: none;
+  }
+  .graduationBuild {
+    padding-left: 0;
+    border-left: none;
+  }
+  .graduationBuild .value {
+    max-width: 110px;
+    font-size: 0.72em;
   }
 }

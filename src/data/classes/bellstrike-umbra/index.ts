@@ -15,7 +15,6 @@ import {
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
-import { BELLSTRIKE_UMBRA_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 
 export const bellstrikeUmbra = defineClass({
@@ -40,7 +39,6 @@ export const bellstrikeUmbra = defineClass({
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
-  graduationBuild: BELLSTRIKE_UMBRA_GRADUATION_BUILD,
   classBuffDefs: [
     bellstrikeUmbraBleedPen,
     bellstrikeUmbraBleedingDamage,

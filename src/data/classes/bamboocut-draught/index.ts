@@ -14,7 +14,6 @@ import {
   skystrikeGauntletsAdditionalAttackCoefficient,
 } from "../../skills/bamboocut-draught/buffs/additionalAttack"
 import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
-import { BAMBOOCUT_DRAUGHT_GRADUATION_BUILD } from "./graduationBuild"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
@@ -53,7 +52,6 @@ export const bamboocutDraught = defineClass({
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
-  graduationBuild: BAMBOOCUT_DRAUGHT_GRADUATION_BUILD,
   classBuffDefs: [
     inebriateSkillCritDamage,
     inebriateDamageScaling,

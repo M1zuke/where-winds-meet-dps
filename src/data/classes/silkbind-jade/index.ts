@@ -11,7 +11,6 @@ import {
   inkwellFanAdditionalAttack,
   vernalUmbrellaAdditionalAttack,
 } from "../../skills/silkbind-jade/buffs/additionalAttack"
-import { SILKBIND_JADE_GRADUATION_BUILD } from "./graduationBuild"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 
@@ -46,7 +45,6 @@ export const silkbindJade = defineClass({
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
-  graduationBuild: SILKBIND_JADE_GRADUATION_BUILD,
   classBuffDefs: [
     lowQiFollowUp,
     trajectorySkill,

@@ -3,9 +3,9 @@ import {
   DEFAULT_ODDITIES,
   getDefaultTalentsForClass,
 } from "../definitions/baseStats"
-import { classDefinition } from "../definitions/classes/registry"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import type { GraduationBuild } from "../definitions/classes/classDef"
+import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
+import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import type { EquippedSlots, GearLevel, Inputs, OddityRegions } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
@@ -31,18 +31,40 @@ function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
   return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: rotationId }
 }
 
+export function followedGraduationBuildAmong(
+  builds: readonly GraduationBuild[],
+  buildId: string | null | undefined,
+): GraduationBuild | null {
+  return builds.find((build) => build.id === buildId) ?? (builds.length === 1 ? builds[0] : null)
+}
+
+export function followedGraduationBuild(
+  inputs: Pick<Inputs, "classId" | "graduationBuildId">,
+): GraduationBuild | null {
+  return followedGraduationBuildAmong(graduationBuildsFor(inputs.classId), inputs.graduationBuildId)
+}
+
+export function soleGraduationBuildId(classId: string): string | null {
+  const builds = graduationBuildsFor(classId)
+  return builds.length === 1 ? builds[0].id : null
+}
+
+export function repairGraduationBuildId(classId: string, stored: unknown): string | null {
+  if (typeof stored !== "string" || stored === "") return soleGraduationBuildId(classId)
+  const known = allGraduationBuilds().find((build) => build.id === stored)
+  return known && known.classId !== classId ? soleGraduationBuildId(classId) : stored
+}
+
 export function withGraduationRotation(inputs: Inputs): Inputs | null {
-  const build = classDefinition(inputs.classId)?.graduationBuild
+  const build = followedGraduationBuild(inputs)
   return build ? onBuiltinRotation(inputs, build.rotationId) : null
 }
 
-export function graduationBuild(
-  classId: string,
+export function graduationBuildAtLevel(
+  build: GraduationBuild,
   variant: GraduationVariant,
   level: GearLevel,
-): GraduationBuild | null {
-  const build = classDefinition(classId)?.graduationBuild
-  if (!build) return null
+): GraduationBuild {
   const leveledGear = build.gear.map((piece) => gearPieceAtGearLevel(piece, level))
   if (variant === "maxRolls") return { ...build, gear: leveledGear }
   const overrides = build.relayedOverrides ?? {}
@@ -60,9 +82,13 @@ export function graduationInputs(
   inputs: Inputs,
   variant: GraduationVariant = "maxRolls",
 ): Inputs | null {
-  const level = gearLevelForBreakthrough(inputs.breakthrough)
-  const build = graduationBuild(inputs.classId, variant, level)
-  if (!build) return null
+  const followed = followedGraduationBuild(inputs)
+  if (!followed) return null
+  const build = graduationBuildAtLevel(
+    followed,
+    variant,
+    gearLevelForBreakthrough(inputs.breakthrough),
+  )
   const inventory = build.gear.map((piece) => ({
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,

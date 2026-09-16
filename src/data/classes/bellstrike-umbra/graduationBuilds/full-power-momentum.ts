@@ -1,11 +1,14 @@
-import type { GraduationBuild } from "../../../definitions/classes/classDef"
-import { SET_ID } from "../../sets/ids"
-import { createGraduationGearPiece } from "../graduationGear"
-import graduationRotation from "./rotations/38Bbs"
+import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
+import { SET_ID } from "../../../sets/ids"
+import { createGraduationGearPiece } from "../../graduationGear"
+import thirtyEightBBs from "../rotations/38Bbs"
 
 const idPrefix = "graduation-bellstrike-umbra"
 
-export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
+export default defineGraduationBuild({
+  id: "graduation-bellstrikeUmbra-full-power-momentum",
+  name: "No ST Burst",
+  classId: "bellstrikeUmbra",
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -34,13 +37,13 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
     createGraduationGearPiece({
       idPrefix,
       slot: "helm",
-      words: ["affinity", "affinity", "power", "maxPhys", "singleTargetMysticBoost"],
+      words: ["affinity", "affinity", "power", "maxPhys", "momentum"],
       attunement: "bleedingDamage",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "armor",
-      words: ["affinity", "affinity", "power", "maxPhys", "singleTargetMysticBoost"],
+      words: ["affinity", "affinity", "power", "maxPhys", "momentum"],
       attunement: "bleedingDamage",
     }),
     createGraduationGearPiece({
@@ -59,6 +62,6 @@ export const BELLSTRIKE_UMBRA_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.hawkwing,
   bowSet: "crit",
   arsenal: "bellstrike",
-  rotationId: graduationRotation.id,
+  rotationId: thirtyEightBBs.id,
   relayedOverrides: { bowSet: "affinity" },
-}
+})
