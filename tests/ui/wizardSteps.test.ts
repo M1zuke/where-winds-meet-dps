@@ -6,12 +6,12 @@ describe("wizardSteps", () => {
     expect(wizardSteps(1, false)).toEqual(["class", "import"])
   })
 
-  it("asks for the graduation build right after the class when the class has several", () => {
-    expect(wizardSteps(2, false)).toEqual(["class", "graduation", "import"])
+  it("asks for the graduation build after the gear import", () => {
+    expect(wizardSteps(2, false)).toEqual(["class", "import", "graduation"])
   })
 
-  it("adds the name step only on the manual path", () => {
+  it("asks for it last on the manual path, after the profile name", () => {
     expect(wizardSteps(1, true)).toEqual(["class", "import", "name"])
-    expect(wizardSteps(3, true)).toEqual(["class", "graduation", "import", "name"])
+    expect(wizardSteps(3, true)).toEqual(["class", "import", "name", "graduation"])
   })
 })

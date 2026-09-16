@@ -19,9 +19,10 @@ import {
   withGraduationRotation,
 } from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { GEAR_SLOTS, type GearLevel } from "../../src/engine/types"
+import { GEAR_SLOTS, type GearLevel, type Inputs } from "../../src/engine/types"
 
 const GRADUATION_LEVEL: GearLevel = 96
+const SINGLE_BUILD_CLASS = "stonesplitStrength"
 
 const BUILDS = CLASS_DEFS().flatMap((classDef) =>
   classDefinition(classDef.id)!.graduationBuilds.map(
@@ -29,7 +30,12 @@ const BUILDS = CLASS_DEFS().flatMap((classDef) =>
   ),
 )
 
-function dpsFor(inputs = defaultInputs): number {
+const FOLLOWING: Inputs = {
+  ...defaultInputs,
+  graduationBuildId: classDefinition(defaultInputs.classId)!.graduationBuilds[0].id,
+}
+
+function dpsFor(inputs = FOLLOWING): number {
   return runEngine(applyBowSet(applyArmorSet(withDerivedStats(inputs)))).dps
 }
 
@@ -137,15 +143,14 @@ describe("graduation builds", () => {
   )
 
   it("leaves the max-roll variant untouched by the relayed overrides", () => {
-    const followed = followedGraduationBuild(defaultInputs)!
+    const followed = followedGraduationBuild(FOLLOWING)!
     const build = graduationBuildAtLevel(followed, "maxRolls", GRADUATION_LEVEL)
     expect(build.gear).toEqual(followed.gear)
-    expect(build.bowSet).toBe("crit")
-    expect(graduationBuildAtLevel(followed, "relayed", GRADUATION_LEVEL).bowSet).toBe("affinity")
+    expect(build.bowSet).toBe(followed.bowSet)
   })
 
   it("always enables every class talent and oddity", () => {
-    const benchmarkInputs = graduationInputs(defaultInputs)
+    const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     expect(benchmarkInputs!.martialArtsTalents.length).toBeGreaterThan(0)
     expect(benchmarkInputs!.martialArtsTalents.every((talent) => talent.enabled)).toBe(true)
@@ -154,6 +159,15 @@ describe("graduation builds", () => {
         .flat()
         .every((oddity) => oddity.enabled),
     ).toBe(true)
+  })
+
+  it("benchmarks nothing while the profile follows no build", () => {
+    const unchosen = { ...defaultInputs, graduationBuildId: null }
+
+    expect(followedGraduationBuild(unchosen)).toBeNull()
+    expect(graduationInputs(unchosen)).toBeNull()
+    expect(withGraduationRotation(unchosen)).toBeNull()
+    expect(computeGraduation({ reqId: 20, inputs: unchosen }).graduationRate).toBeNull()
   })
 })
 
@@ -176,27 +190,31 @@ describe("following a graduation build", () => {
   })
 
   it("stores a single-build class's only build when the profile names none", () => {
-    const [onlyBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
-    expect(repairGraduationBuildId("bellstrikeUmbra", undefined)).toBe(onlyBuild.id)
-    expect(repairGraduationBuildId("bellstrikeUmbra", "")).toBe(onlyBuild.id)
+    const [onlyBuild] = classDefinition(SINGLE_BUILD_CLASS)!.graduationBuilds
+    expect(repairGraduationBuildId(SINGLE_BUILD_CLASS, undefined)).toBe(onlyBuild.id)
+    expect(repairGraduationBuildId(SINGLE_BUILD_CLASS, "")).toBe(onlyBuild.id)
+  })
+
+  it("leaves a multi-build class unchosen when the profile names none", () => {
+    expect(repairGraduationBuildId(defaultInputs.classId, undefined)).toBeNull()
   })
 
   it("keeps a stored build id this build does not know", () => {
-    expect(repairGraduationBuildId("bellstrikeUmbra", "graduation-from-a-newer-build")).toBe(
+    expect(repairGraduationBuildId(SINGLE_BUILD_CLASS, "graduation-from-a-newer-build")).toBe(
       "graduation-from-a-newer-build",
     )
   })
 
   it("drops another class's build and falls back to this class's only build", () => {
-    const [umbraBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
-    const [otherBuild] = classDefinition("stonesplitStrength")!.graduationBuilds
-    expect(repairGraduationBuildId("bellstrikeUmbra", otherBuild.id)).toBe(umbraBuild.id)
+    const [onlyBuild] = classDefinition(SINGLE_BUILD_CLASS)!.graduationBuilds
+    const [otherBuild] = classDefinition(defaultInputs.classId)!.graduationBuilds
+    expect(repairGraduationBuildId(SINGLE_BUILD_CLASS, otherBuild.id)).toBe(onlyBuild.id)
   })
 })
 
 describe("graduation build follows the current breakthrough's gear level", () => {
   it("BT18 (level 100) rolls every word and attunement at the level-100 ceiling", () => {
-    const inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 18 }
+    const inputs = { ...FOLLOWING, breakthrough: 18 }
     const build = graduationBuildAtLevel(followedGraduationBuild(inputs)!, "maxRolls", 100)
     const specs = getWordSpecs(inputs, 100)
 
@@ -214,10 +232,8 @@ describe("graduation build follows the current breakthrough's gear level", () =>
   })
 
   it("BT18's benchmark differs from BT17's — the ceilings are not silently shared", () => {
-    const bt17Inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 17 }
-    const bt18Inputs = { ...defaultInputs, classId: "bellstrikeUmbra", breakthrough: 18 }
-    const bt17Benchmark = withDerivedStats(graduationInputs(bt17Inputs)!)
-    const bt18Benchmark = withDerivedStats(graduationInputs(bt18Inputs)!)
+    const bt17Benchmark = withDerivedStats(graduationInputs({ ...FOLLOWING, breakthrough: 17 })!)
+    const bt18Benchmark = withDerivedStats(graduationInputs({ ...FOLLOWING, breakthrough: 18 })!)
 
     expect(bt18Benchmark.phys.max).toBeGreaterThan(bt17Benchmark.phys.max)
   })
@@ -225,13 +241,13 @@ describe("graduation build follows the current breakthrough's gear level", () =>
 
 describe("computeGraduation", () => {
   it("matches the direct benchmark pipeline and current-to-theoretical ratio", () => {
-    const currentDps = dpsFor(withGraduationRotation(defaultInputs)!)
-    const benchmarkInputs = graduationInputs(defaultInputs)
+    const currentDps = dpsFor(withGraduationRotation(FOLLOWING)!)
+    const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     const theoreticalDps = dpsFor(benchmarkInputs!)
     expect(theoreticalDps).toBeGreaterThan(currentDps)
 
-    const response = computeGraduation({ reqId: 17, inputs: defaultInputs })
+    const response = computeGraduation({ reqId: 17, inputs: FOLLOWING })
 
     expect(response.reqId).toBe(17)
     expect(response.theoreticalDps).toBe(theoreticalDps)
@@ -241,11 +257,11 @@ describe("computeGraduation", () => {
   })
 
   it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
-    const currentDps = dpsFor(withGraduationRotation(defaultInputs)!)
-    const relayedInputs = graduationInputs(defaultInputs, "relayed")
+    const currentDps = dpsFor(withGraduationRotation(FOLLOWING)!)
+    const relayedInputs = graduationInputs(FOLLOWING, "relayed")
     expect(relayedInputs).not.toBeNull()
 
-    const response = computeGraduation({ reqId: 18, inputs: defaultInputs })
+    const response = computeGraduation({ reqId: 18, inputs: FOLLOWING })
 
     expect(response.relayedTheoreticalDps).toBe(dpsFor(relayedInputs!))
     expect(response.relayedTheoreticalDps!).toBeLessThan(response.theoreticalDps!)
@@ -253,16 +269,16 @@ describe("computeGraduation", () => {
   })
 
   it("rates the build and the benchmark on the graduation rotation, whichever rotation the build has selected", () => {
-    const classDef = classDefinition(defaultInputs.classId)!
-    const followed = followedGraduationBuild(defaultInputs)!
+    const classDef = classDefinition(FOLLOWING.classId)!
+    const followed = followedGraduationBuild(FOLLOWING)!
     const otherRotation = classDef.rotations.find(
       (rotation) => rotation.id !== followed.rotationId,
     )!
-    const selectingOther = { ...defaultInputs, selectedBuiltinRotationId: otherRotation.id }
-    expect(dpsFor(selectingOther)).not.toBe(dpsFor(defaultInputs))
+    const selectingOther = { ...FOLLOWING, selectedBuiltinRotationId: otherRotation.id }
+    expect(dpsFor(selectingOther)).not.toBe(dpsFor(FOLLOWING))
 
     const onOther = computeGraduation({ reqId: 19, inputs: selectingOther })
-    const onGraduation = computeGraduation({ reqId: 19, inputs: defaultInputs })
+    const onGraduation = computeGraduation({ reqId: 19, inputs: FOLLOWING })
 
     expect(onOther).toEqual(onGraduation)
   })

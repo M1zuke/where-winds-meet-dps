@@ -6,6 +6,7 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import type { Inputs } from "../../src/engine/types"
 import { getAttunement } from "../../src/engine/attunements"
+import { classDefinition } from "../../src/definitions/classes/registry"
 import { SET_BY_ID } from "../../src/definitions/sets/registry"
 import { statLineLabel } from "../../src/data/stats/statLines"
 import enCatalogue from "../../src/i18n/locales/en.json"
@@ -21,7 +22,10 @@ vi.mock("../../src/ui/hooks/useGearAnalysis", () => ({
   useGearAnalysis: () => ({ rows: [], isPending: false }),
 }))
 
-const fixture = graduationInputs(defaultInputs)!
+const fixture = graduationInputs({
+  ...defaultInputs,
+  graduationBuildId: classDefinition(defaultInputs.classId)!.graduationBuilds[0].id,
+})!
 
 function renderDialog(inputs: Inputs = fixture, currentDps = 54321.1) {
   render(

@@ -87,7 +87,8 @@ choice.
 - A class with a single graduation build follows it without a choice, and a
   loaded profile stores it.
 - A class with several follows none until the profile picks one; while none is
-  followed there is no rate.
+  followed there is no rate, and the app asks for one rather than leaving the
+  choice to be discovered.
 - A class change clears the pick. A stored id naming another class's build is
   cleared on load; an id this build does not know is kept as stored.
 

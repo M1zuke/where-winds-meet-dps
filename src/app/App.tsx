@@ -140,6 +140,7 @@ function AppInner() {
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
   const graduation = useGraduationRate(configuredInputs)
   const followedBuild = followedGraduationBuild(inputs)
+  const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
@@ -325,13 +326,13 @@ function AppInner() {
           }
         />
       )}
-      {graduationDialogOpen && (
+      {(graduationDialogOpen || mustChooseGraduationBuild) && (
         <GraduationBuildDialog
           inputs={configuredInputs}
           theoreticalDps={graduation.theoreticalDps}
           relayedTheoreticalDps={graduation.relayedTheoreticalDps}
           onFollowBuild={(graduationBuildId) => setInputs({ ...inputs, graduationBuildId })}
-          onClose={() => setGraduationDialogOpen(false)}
+          onClose={mustChooseGraduationBuild ? undefined : () => setGraduationDialogOpen(false)}
         />
       )}
       <div className={styles.appHeader}>

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { classDefinition } from "../src/definitions/classes/registry"
 import { loadProfiles } from "../src/storage"
-import capturedProfileFile from "./migrations/testProfiles/v25/bellstrikeUmbra.json"
+import capturedProfileFile from "./migrations/testProfiles/v25/stonesplitStrength.json"
 
 interface ProfileFile {
   v: number
@@ -9,9 +9,13 @@ interface ProfileFile {
 }
 
 const CAPTURED = capturedProfileFile as unknown as ProfileFile
+const SINGLE_BUILD_CLASS = "stonesplitStrength"
 
 function loadWithGraduationBuildId(graduationBuildId: unknown) {
-  const inputs = { ...CAPTURED.profile.inputs }
+  const inputs: Record<string, unknown> = {
+    ...CAPTURED.profile.inputs,
+    classId: SINGLE_BUILD_CLASS,
+  }
   if (graduationBuildId === undefined) delete inputs.graduationBuildId
   else inputs.graduationBuildId = graduationBuildId
   const profile = { ...CAPTURED.profile, inputs }
@@ -26,7 +30,7 @@ describe("loading a saved profile — the followed graduation build", () => {
   beforeEach(() => localStorage.clear())
 
   it("stores a single-build class's only build on a profile saved before builds could be chosen", () => {
-    const [onlyBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
+    const [onlyBuild] = classDefinition(SINGLE_BUILD_CLASS)!.graduationBuilds
 
     expect(loadWithGraduationBuildId(undefined).graduationBuildId).toBe(onlyBuild.id)
   })
@@ -38,9 +42,24 @@ describe("loading a saved profile — the followed graduation build", () => {
   })
 
   it("replaces another class's build with this class's only build", () => {
-    const [umbraBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
-    const [otherBuild] = classDefinition("stonesplitStrength")!.graduationBuilds
+    const [onlyBuild] = classDefinition(SINGLE_BUILD_CLASS)!.graduationBuilds
+    const [otherBuild] = classDefinition("bellstrikeUmbra")!.graduationBuilds
 
-    expect(loadWithGraduationBuildId(otherBuild.id).graduationBuildId).toBe(umbraBuild.id)
+    expect(loadWithGraduationBuildId(otherBuild.id).graduationBuildId).toBe(onlyBuild.id)
+  })
+
+  it("leaves a multi-build class following nothing until the user picks", () => {
+    const inputs: Record<string, unknown> = {
+      ...CAPTURED.profile.inputs,
+      classId: "bellstrikeUmbra",
+    }
+    delete inputs.graduationBuildId
+    const profile = { ...CAPTURED.profile, inputs }
+    localStorage.setItem(
+      "wwm.profiles",
+      JSON.stringify({ v: CAPTURED.v, profiles: [profile], activeId: profile.id }),
+    )
+
+    expect(loadProfiles().profiles[0].inputs.graduationBuildId).toBeNull()
   })
 })

@@ -30,7 +30,9 @@ interface Props {
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
   onFollowBuild(graduationBuildId: string): void
-  onClose(): void
+  // Absent while the profile follows no build: the dialog then cannot be
+  // dismissed until one is chosen.
+  onClose?: () => void
 }
 
 const RELAYED_PERCENT = Math.round(RELAYED_FACTOR * 100)
@@ -89,7 +91,7 @@ export function GraduationBuildDialog({
       describedBy={descriptionId}
       onClose={onClose}
       surfaceClassName={dialogChrome.wide}
-      initialFocusRef={closeButtonRef}
+      initialFocusRef={onClose ? closeButtonRef : undefined}
     >
       <DialogHeader>
         <h2 id={titleId}>{t("gear.graduationBuildDialog.graduationBuild")}</h2>
@@ -98,8 +100,10 @@ export function GraduationBuildDialog({
       <DialogBody>
         {classDef.graduationBuilds.length > 1 && (
           <div className={styles.pickerSection}>
-            <p className={styles.pickerHint}>
-              {t("gear.graduationBuildDialog.yourGraduationRateIsMeasured")}
+            <p className={onClose ? styles.pickerHint : styles.pickerDemand}>
+              {onClose
+                ? t("gear.graduationBuildDialog.yourGraduationRateIsMeasured")
+                : t("gear.graduationBuildDialog.chooseABuildToContinue")}
             </p>
             <GraduationBuildPicker
               builds={classDef.graduationBuilds}
@@ -179,11 +183,13 @@ export function GraduationBuildDialog({
         )}
       </DialogBody>
 
-      <DialogFooter>
-        <button ref={closeButtonRef} type="button" className="btn primary" onClick={onClose}>
-          {t("common.close")}
-        </button>
-      </DialogFooter>
+      {onClose && (
+        <DialogFooter>
+          <button ref={closeButtonRef} type="button" className="btn primary" onClick={onClose}>
+            {t("common.close")}
+          </button>
+        </DialogFooter>
+      )}
     </Dialog>
   )
 }

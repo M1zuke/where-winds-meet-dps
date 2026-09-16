@@ -94,7 +94,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
 
   const canGoBack = step !== "class" || !!onCancel
   const backLabel = step === "class" && onCancel ? t("common.cancel") : t("common.back")
-  const isForwardStep = step === "class" || step === "graduation"
+  const isLastStep = stepIndex === steps.length - 1
 
   const primaryDisabled =
     step === "graduation"
@@ -106,9 +106,9 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           : false
 
   function primaryAction(): void {
-    if (isForwardStep) goForward()
-    else if (step === "import") finishImportPath()
-    else finishManualPath()
+    if (!isLastStep) goForward()
+    else if (manual) finishManualPath()
+    else finishImportPath()
   }
 
   return (
@@ -220,7 +220,7 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           onClick={primaryAction}
           disabled={primaryDisabled}
         >
-          {isForwardStep ? t("setup.wizard.next") : finishLabel}
+          {isLastStep ? finishLabel : t("setup.wizard.next")}
         </button>
       </div>
     </Dialog>

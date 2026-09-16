@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { defaultInputs } from "../../src/engine/defaults"
@@ -14,7 +14,11 @@ import { fmt } from "../../src/ui/utils/statFormatting"
 
 // The dialog's word/base-stat literals below are the level-96 ladder values,
 // so breakthrough 16 (gear level 96) keeps them meaningful.
-const inputs = { ...defaultInputs, breakthrough: 16 }
+const inputs = {
+  ...defaultInputs,
+  breakthrough: 16,
+  graduationBuildId: classDefinition(defaultInputs.classId)!.graduationBuilds[0].id,
+}
 
 describe("GraduationBuildDialog", () => {
   it("shows the class benchmark summary and all eight gear pieces", () => {
@@ -56,13 +60,14 @@ describe("GraduationBuildDialog", () => {
       </I18nProvider>,
     )
 
-    expect(screen.getByText("Bow Set").nextElementSibling).toHaveTextContent("Crit")
+    const summary = () => within(screen.getByRole("tabpanel")).getByText("Bow Set")
+    expect(summary().nextElementSibling).toHaveTextContent("Crit")
     expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent("77.8")
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
 
     expect(screen.getByText("DPS 11,111.11")).toBeInTheDocument()
-    expect(screen.getByText("Bow Set").nextElementSibling).toHaveTextContent("Affinity")
+    expect(summary().nextElementSibling).toHaveTextContent("Affinity")
 
     const relayedWeapon = screen.getByRole("article", { name: "Left Weapon" })
     expect(relayedWeapon).toHaveTextContent("73.13")
@@ -150,12 +155,42 @@ describe("GraduationBuildDialog", () => {
     expect(onClose).toHaveBeenCalledOnce()
   })
 
-  it("names the only build of a single-build class and offers no build choice", () => {
-    const [onlyBuild] = classDefinition(inputs.classId)!.graduationBuilds
+  it("cannot be dismissed while the profile follows no build", () => {
+    const onFollowBuild = vi.fn()
+    const builds = classDefinition(inputs.classId)!.graduationBuilds
     render(
       <I18nProvider>
         <GraduationBuildDialog
-          inputs={inputs}
+          inputs={{ ...inputs, graduationBuildId: null }}
+          theoreticalDps={null}
+          relayedTheoreticalDps={null}
+          onFollowBuild={onFollowBuild}
+        />
+      </I18nProvider>,
+    )
+
+    expect(screen.queryByRole("button", { name: "Close" })).toBeNull()
+    expect(
+      screen.getByText("Choose the build your graduation rate is measured against to continue."),
+    ).toBeInTheDocument()
+    fireEvent.keyDown(document, { key: "Escape" })
+    expect(screen.getByRole("dialog", { name: "Graduation build" })).toBeInTheDocument()
+
+    const radio = screen
+      .getAllByRole("radio")
+      .find((option) => (option as HTMLInputElement).value === builds[0].id)!
+    fireEvent.click(radio)
+
+    expect(onFollowBuild).toHaveBeenCalledWith(builds[0].id)
+  })
+
+  it("names the only build of a single-build class and offers no build choice", () => {
+    const singleBuildInputs = { ...inputs, classId: "stonesplitStrength" }
+    const [onlyBuild] = classDefinition(singleBuildInputs.classId)!.graduationBuilds
+    render(
+      <I18nProvider>
+        <GraduationBuildDialog
+          inputs={singleBuildInputs}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
