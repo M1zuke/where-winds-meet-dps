@@ -79,6 +79,12 @@
   gap: 4px;
 }
 
+.attunementLine {
+  margin-top: 3px;
+  padding-top: 7px;
+  border-top: 1px dashed var(--color-border);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

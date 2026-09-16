@@ -290,12 +290,14 @@ export function CustomGraduationBuildEditor({
                   aria-label={`${t(GEAR_SLOT_KEYS[entry.slot])} ${lineIndex + 1}`}
                 />
               ))}
-              <Combobox
-                value={entry.attunement}
-                options={attunementOptions(entry.slot)}
-                onChange={(value) => patchSlot(entry.slot, { attunement: value })}
-                aria-label={`${t(GEAR_SLOT_KEYS[entry.slot])} ${t("common.attunement")}`}
-              />
+              <div className={styles.attunementLine}>
+                <Combobox
+                  value={entry.attunement}
+                  options={attunementOptions(entry.slot)}
+                  onChange={(value) => patchSlot(entry.slot, { attunement: value })}
+                  aria-label={`${t(GEAR_SLOT_KEYS[entry.slot])} ${t("common.attunement")}`}
+                />
+              </div>
             </div>
           </div>
         ))}
