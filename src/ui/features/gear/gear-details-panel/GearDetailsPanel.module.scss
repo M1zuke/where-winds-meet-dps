@@ -14,6 +14,7 @@
 
 .isHeirloom input,
 .isHeirloom select,
+.isHeirloom textarea,
 .isHeirloom :global(.btn) {
   text-shadow: none;
 }
@@ -123,11 +124,12 @@
   text-transform: uppercase;
 }
 
-.pieceTextFields {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.pieceNameField {
   margin-bottom: 12px;
+}
+
+.pieceNoteField {
+  margin-top: 12px;
 }
 
 .pieceTextField {

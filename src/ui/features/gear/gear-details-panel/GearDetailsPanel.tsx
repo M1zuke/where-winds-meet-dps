@@ -117,27 +117,15 @@ export function GearDetailsPanel({
         </div>
       )}
 
-      <div className={styles.pieceTextFields}>
-        <label className={styles.pieceTextField}>
-          <span className={styles.pieceTextFieldLabel}>{t("common.name")}</span>
-          <TextInput
-            value={piece.label ?? ""}
-            maxLength={LABEL_MAX_LENGTH}
-            placeholder={t("gear.details.pieceNamePlaceholder")}
-            onChange={(event) => patchText("label", event.target.value, LABEL_MAX_LENGTH)}
-          />
-        </label>
-        <label className={styles.pieceTextField}>
-          <span className={styles.pieceTextFieldLabel}>{t("gear.details.pieceNote")}</span>
-          <textarea
-            className={styles.pieceNoteInput}
-            value={piece.note ?? ""}
-            maxLength={NOTE_MAX_LENGTH}
-            placeholder={t("gear.details.pieceNotePlaceholder")}
-            onChange={(event) => patchText("note", event.target.value, NOTE_MAX_LENGTH)}
-          />
-        </label>
-      </div>
+      <label className={`${styles.pieceTextField} ${styles.pieceNameField}`}>
+        <span className={styles.pieceTextFieldLabel}>{t("common.name")}</span>
+        <TextInput
+          value={piece.label ?? ""}
+          maxLength={LABEL_MAX_LENGTH}
+          placeholder={t("gear.details.pieceNamePlaceholder")}
+          onChange={(event) => patchText("label", event.target.value, LABEL_MAX_LENGTH)}
+        />
+      </label>
 
       <GearPieceForm
         piece={piece}
@@ -146,6 +134,17 @@ export function GearDetailsPanel({
         wordMaxRows={wordMaxRows}
         wordMaxPending={wordMaxPending}
       />
+
+      <label className={`${styles.pieceTextField} ${styles.pieceNoteField}`}>
+        <span className={styles.pieceTextFieldLabel}>{t("gear.details.pieceNote")}</span>
+        <textarea
+          className={styles.pieceNoteInput}
+          value={piece.note ?? ""}
+          maxLength={NOTE_MAX_LENGTH}
+          placeholder={t("gear.details.pieceNotePlaceholder")}
+          onChange={(event) => patchText("note", event.target.value, NOTE_MAX_LENGTH)}
+        />
+      </label>
     </div>
   )
 }
