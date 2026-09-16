@@ -12,7 +12,7 @@ import type { GearPiece, Inputs } from "../../src/engine/types"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { StatsOverviewPanel } from "../../src/ui/components/stats-overview-panel/StatsOverviewPanel"
-import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
+import { finalHitOutcomeRates } from "../../src/ui/components/stats-overview-panel/finalHitOutcomeRates"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
 function withFormlessAndBellstrikeWeapon(formlessMaxRoll: number): Inputs {
@@ -43,9 +43,9 @@ function withFormlessAndBellstrikeWeapon(formlessMaxRoll: number): Inputs {
   }
 }
 
-describe("finalCritAffinityRates", () => {
+describe("finalHitOutcomeRates", () => {
   it("uses the full crit rate when crit and affinity total less than 100 percent", () => {
-    const rates = finalCritAffinityRates({
+    const rates = finalHitOutcomeRates({
       precision: 0.8,
       critRate: 0.4,
       directCritRate: 0.1,
@@ -58,7 +58,7 @@ describe("finalCritAffinityRates", () => {
   })
 
   it("limits crit to the rate left after affinity when their total exceeds 100 percent", () => {
-    const rates = finalCritAffinityRates({
+    const rates = finalHitOutcomeRates({
       precision: 0.8,
       critRate: 0.7,
       directCritRate: 0.1,
@@ -69,13 +69,127 @@ describe("finalCritAffinityRates", () => {
     expect(rates.critRate).toBeCloseTo(0.56)
     expect(rates.affinityRate).toBeCloseTo(0.3)
   })
+
+  it("scales the crit chance by no more than 100 percent precision", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 1.0101,
+      critRate: 0.6973,
+      directCritRate: 0.046,
+      affinityRate: 0,
+      directAffinityRate: 0,
+    })
+
+    expect(rates.critRate).toBeCloseTo(0.7433, 4)
+    expect(rates.critRate).toBeLessThan(0.7433 * 1.0101)
+  })
+
+  it("leaves the crit chance untouched while precision sits below the cap", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 0.9,
+      critRate: 0.5,
+      directCritRate: 0,
+      affinityRate: 0,
+      directAffinityRate: 0,
+    })
+
+    expect(rates.critRate).toBeCloseTo(0.45, 9)
+  })
+
+  it("caps the panel crit rate before the direct crit rate is added on top", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 1,
+      critRate: 0.95,
+      directCritRate: 0.05,
+      affinityRate: 0,
+      directAffinityRate: 0,
+    })
+
+    expect(rates.critRate).toBeCloseTo(0.85, 9)
+  })
+
+  it("caps the panel affinity rate before the direct affinity rate is added on top", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 1,
+      critRate: 0,
+      directCritRate: 0,
+      affinityRate: 0.6,
+      directAffinityRate: 0.05,
+    })
+
+    expect(rates.affinityRate).toBeCloseTo(0.45, 9)
+  })
+
+  it("reports the affinity chance independent of precision", () => {
+    const lowPrecision = finalHitOutcomeRates({
+      precision: 0.5,
+      critRate: 0.3,
+      directCritRate: 0,
+      affinityRate: 0.3,
+      directAffinityRate: 0,
+    })
+    const highPrecision = finalHitOutcomeRates({
+      precision: 1,
+      critRate: 0.3,
+      directCritRate: 0,
+      affinityRate: 0.3,
+      directAffinityRate: 0,
+    })
+
+    expect(lowPrecision.affinityRate).toBeCloseTo(0.3, 9)
+    expect(highPrecision.affinityRate).toBeCloseTo(0.3, 9)
+  })
+
+  it("scales abrasion by the precision miss and the room left by affinity", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 0.8,
+      critRate: 0.5,
+      directCritRate: 0,
+      affinityRate: 0.2,
+      directAffinityRate: 0,
+    })
+
+    expect(rates.critRate).toBeCloseTo(0.4, 9)
+    expect(rates.affinityRate).toBeCloseTo(0.2, 9)
+    expect(rates.abrasionRate).toBeCloseTo(0.16, 9)
+    expect(rates.normalRate).toBeCloseTo(0.24, 9)
+  })
+
+  it("leaves no abrasion once precision reaches its cap", () => {
+    const rates = finalHitOutcomeRates({
+      precision: 1.2,
+      critRate: 0.5,
+      directCritRate: 0,
+      affinityRate: 0.2,
+      directAffinityRate: 0,
+    })
+
+    expect(rates.abrasionRate).toBeCloseTo(0, 9)
+  })
+
+  it("splits every roll into four outcomes that add up to one", () => {
+    for (const precision of [0.5, 0.85, 1, 1.25]) {
+      for (const affinityRate of [0, 0.2, 0.6]) {
+        const rates = finalHitOutcomeRates({
+          precision,
+          critRate: 0.5,
+          directCritRate: 0.05,
+          affinityRate,
+          directAffinityRate: 0.05,
+        })
+
+        expect(
+          rates.critRate + rates.affinityRate + rates.abrasionRate + rates.normalRate,
+        ).toBeCloseTo(1, 9)
+      }
+    }
+  })
 })
 
 describe("StatsOverviewPanel", () => {
-  it("shows final crit and affinity rates separately", () => {
+  it("shows every hit outcome as its own row, alongside the combined crit and affinity", () => {
     const withSets = applyBowSet(applyArmorSet(withDerivedStats(defaultInputs)))
     const effective = effectiveRates(withSets)
-    const finalRates = finalCritAffinityRates({
+    const finalRates = finalHitOutcomeRates({
       precision: effective.precision,
       critRate: effective.critRate,
       directCritRate: withSets.directCritRate,
@@ -95,7 +209,15 @@ describe("StatsOverviewPanel", () => {
     expect(screen.getByText("Final Affinity").parentElement).toHaveTextContent(
       fmt(finalRates.affinityRate, true),
     )
-    expect(screen.queryByText("Final Crit/Affinity")).not.toBeInTheDocument()
+    expect(screen.getByText("Final Crit & Affinity").parentElement).toHaveTextContent(
+      fmt(finalRates.critRate + finalRates.affinityRate, true),
+    )
+    expect(screen.getByText("Final Abrasion").parentElement).toHaveTextContent(
+      fmt(finalRates.abrasionRate, true),
+    )
+    expect(screen.getByText("Final Normal").parentElement).toHaveTextContent(
+      fmt(finalRates.normalRate, true),
+    )
   })
 
   it("reads Formless attack out of the primary attribute row and onto its own", () => {

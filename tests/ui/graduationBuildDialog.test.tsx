@@ -8,7 +8,7 @@ import { getAttunement } from "../../src/engine/attunements"
 import { applyArmorSet, applyBowSet, effectiveRates } from "../../src/engine/panel"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
-import { finalCritAffinityRates } from "../../src/ui/components/stats-overview-panel/finalCritAffinityRates"
+import { finalHitOutcomeRates } from "../../src/ui/components/stats-overview-panel/finalHitOutcomeRates"
 import { GraduationBuildDialog } from "../../src/ui/features/gear/graduation-build-dialog/GraduationBuildDialog"
 import { fmt } from "../../src/ui/utils/statFormatting"
 
@@ -186,7 +186,7 @@ describe("GraduationBuildDialog", () => {
 
     const benchmark = applyBowSet(applyArmorSet(withDerivedStats(graduationInputs(inputs)!)))
     const effective = effectiveRates(benchmark)
-    const finalRates = finalCritAffinityRates({
+    const finalRates = finalHitOutcomeRates({
       precision: effective.precision,
       critRate: effective.critRate,
       directCritRate: benchmark.directCritRate,
