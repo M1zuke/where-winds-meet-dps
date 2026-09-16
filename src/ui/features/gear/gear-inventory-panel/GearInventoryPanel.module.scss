@@ -92,25 +92,6 @@
   --tile-rarity-color: var(--color-rarity-epic);
 }
 
-.gearInvTile.isSelected.isHeirloom {
-  background: var(--color-surface-inset);
-  border-color: var(--tile-rarity-color);
-  box-shadow:
-    0 0 0 1px var(--tile-rarity-color),
-    0 0 16px -4px var(--tile-rarity-color);
-}
-
-.gearInvTile.isSelected.isHeirloom::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  z-index: 0;
-  border-top: 17px solid var(--tile-rarity-color);
-  border-left: 17px solid transparent;
-  border-top-right-radius: 3px;
-}
-
 .gearInvTileHeirloomReady {
   position: absolute;
   top: -7px;
@@ -175,8 +156,21 @@
 }
 
 .gearInvTile.isSelected {
-  background: var(--color-surface-selected);
-  border-color: var(--color-accent);
+  border-color: var(--tile-rarity-color, var(--color-accent));
+  box-shadow:
+    0 0 0 1px var(--tile-rarity-color, var(--color-accent)),
+    0 0 16px -4px var(--tile-rarity-color, var(--color-accent));
+}
+
+.gearInvTile.isSelected::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 0;
+  border-top: 17px solid var(--tile-rarity-color, var(--color-accent));
+  border-left: 17px solid transparent;
+  border-top-right-radius: 3px;
 }
 
 .gearInvTile.isForeign {
