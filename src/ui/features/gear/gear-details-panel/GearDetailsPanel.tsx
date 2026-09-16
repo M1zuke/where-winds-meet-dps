@@ -3,7 +3,7 @@ import type { Inputs } from "../../../../engine/types"
 import type { WordMaxRow } from "../../../../engine/dpsWorker"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { graduationBuildKey, rarityKey } from "../../../../i18n/contentKeys"
-import { heirloomMatch } from "../../../../engine/heirloom"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { sanitizeGearPieceText } from "../../../../storage"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import { GearPieceForm } from "../gear-piece-form/GearPieceForm"
@@ -23,6 +23,7 @@ interface Props {
   piece: GearPiece | null
   isEquipped: boolean
   inputs: Inputs
+  profile: HeirloomProfile
   onChange(piece: GearPiece): void
   onEquip(): void
   onUnequip(): void
@@ -35,6 +36,7 @@ export function GearDetailsPanel({
   piece,
   isEquipped,
   inputs,
+  profile,
   onChange,
   onEquip,
   onUnequip,
@@ -64,7 +66,7 @@ export function GearDetailsPanel({
     )
   }
 
-  const heirloom = heirloomMatch(piece, inputs.classId, inputs.graduationBuildId)
+  const heirloom = heirloomMatch(piece, profile)
   const isHeirloom = heirloom.builds.length > 0
   const shines = isEquipped ? heirloom.followed : isHeirloom
 

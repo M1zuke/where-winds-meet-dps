@@ -37,6 +37,8 @@ import {
 } from "./definitions/baseStats/breakthroughs"
 import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation, readFixedWindowSec } from "./engine/rotation"
+import type { CustomGraduationBuild } from "./engine/customGraduationBuild"
+import { isCustomGraduationBuild, newCustomGraduationBuildId } from "./engine/customGraduationBuild"
 import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
 import {
   newSkillId,
@@ -317,6 +319,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if ("customSkills" in next) next.customSkills = undefined
   if ("customBuffs" in next) next.customBuffs = undefined
   if ("customDebuffs" in next) next.customDebuffs = undefined
+  if ("customGraduationBuild" in next) next.customGraduationBuild = undefined
   if (next.activeCustomRotation != null && !isRotation(next.activeCustomRotation)) {
     next.activeCustomRotation = null
   }
@@ -770,6 +773,81 @@ export function importCustomRotation(text: string): Rotation {
   if (importedQiBreak) fresh.qiBreak = importedQiBreak
   if (!isRotation(fresh)) {
     throw new Error("Imported rotation failed validation (missing or invalid fields)")
+  }
+  return fresh
+}
+
+const CUSTOM_GRADUATION_KEY = "wwm.customGraduationBuilds"
+const CUSTOM_GRADUATION_VERSION = 1
+
+interface CustomGraduationBlob {
+  v: number
+  builds: CustomGraduationBuild[]
+}
+
+export function loadCustomGraduationBuilds(): CustomGraduationBuild[] {
+  try {
+    const raw = kvStore.get(CUSTOM_GRADUATION_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as CustomGraduationBlob
+    if (parsed.v !== CUSTOM_GRADUATION_VERSION) return []
+    if (!Array.isArray(parsed.builds)) return []
+    return parsed.builds.filter(isCustomGraduationBuild)
+  } catch {
+    return []
+  }
+}
+
+function writeCustomGraduationBuilds(builds: CustomGraduationBuild[]): void {
+  try {
+    const blob: CustomGraduationBlob = { v: CUSTOM_GRADUATION_VERSION, builds }
+    kvStore.set(CUSTOM_GRADUATION_KEY, JSON.stringify(blob))
+  } catch {}
+}
+
+export function customGraduationBuildFor(classId: string): CustomGraduationBuild | null {
+  return loadCustomGraduationBuilds().find((build) => build.classId === classId) ?? null
+}
+
+export function saveCustomGraduationBuild(build: CustomGraduationBuild): CustomGraduationBuild {
+  const next: CustomGraduationBuild = { ...build, updatedAt: new Date().toISOString() }
+  const others = loadCustomGraduationBuilds().filter((saved) => saved.classId !== next.classId)
+  writeCustomGraduationBuilds([...others, next])
+  return next
+}
+
+export function deleteCustomGraduationBuild(classId: string): void {
+  const others = loadCustomGraduationBuilds().filter((saved) => saved.classId !== classId)
+  writeCustomGraduationBuilds(others)
+}
+
+export function exportCustomGraduationBuild(build: CustomGraduationBuild): string {
+  return JSON.stringify(build, null, 2)
+}
+
+export function importCustomGraduationBuild(
+  text: string,
+  targetClassId: string,
+): CustomGraduationBuild {
+  const parsed = JSON.parse(text) as unknown
+  if (!parsed || typeof parsed !== "object") {
+    throw new Error("Imported value is not an object")
+  }
+  const candidate = parsed as CustomGraduationBuild
+  const now = new Date().toISOString()
+  const fresh: CustomGraduationBuild = {
+    ...candidate,
+    id: newCustomGraduationBuildId(),
+    name:
+      typeof candidate.name === "string" && candidate.name !== ""
+        ? candidate.name
+        : "Imported build",
+    classId: targetClassId,
+    createdAt: now,
+    updatedAt: now,
+  }
+  if (!isCustomGraduationBuild(fresh)) {
+    throw new Error("Imported graduation build failed validation (missing or invalid fields)")
   }
   return fresh
 }

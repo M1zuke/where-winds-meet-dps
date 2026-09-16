@@ -44,7 +44,7 @@ function renderPanel(piece: GearPiece, rows: RetunementRow[]) {
     <I18nProvider>
       <RetunementAnalyzerPanel
         piece={piece}
-        classId={CLASS}
+        profile={{ classId: CLASS }}
         rows={rows}
         reason="ok"
         isPending={false}

@@ -2,7 +2,7 @@ import type { GearPiece, GearSlot } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { rarityKey } from "../../../../i18n/contentKeys"
-import { heirloomMatch } from "../../../../engine/heirloom"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
@@ -12,8 +12,7 @@ import styles from "./GearSlotTiles.module.scss"
 
 interface Props {
   inventory: GearPiece[]
-  classId: string
-  graduationBuildId?: string | null
+  profile: HeirloomProfile
   equipped: Record<GearSlot, string | null>
   selectedPieceId: string | null
   selectedSlot: GearSlot | null
@@ -43,8 +42,7 @@ function signClass(delta: number): string {
 
 export function GearSlotTiles({
   inventory,
-  classId,
-  graduationBuildId,
+  profile,
   equipped,
   selectedPieceId,
   selectedSlot,
@@ -64,7 +62,7 @@ export function GearSlotTiles({
           slot === selectedSlot ||
           (selectedPieceId !== null && piece !== null && piece.id === selectedPieceId)
         const delta = piece ? dpsDeltas[piece.id] : undefined
-        const heirloom = piece ? heirloomMatch(piece, classId, graduationBuildId) : null
+        const heirloom = piece ? heirloomMatch(piece, profile) : null
         const isHeirloom = heirloom?.followed ?? false
         return (
           <button

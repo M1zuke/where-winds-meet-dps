@@ -1,0 +1,93 @@
+@use "breakpoints";
+
+.start {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.startHint {
+  margin: 0;
+  color: var(--color-text-dim);
+  font-size: 0.9em;
+}
+
+.startRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: 0.7em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: var(--color-surface-inset);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border-strong);
+  border-radius: 4px;
+}
+
+.slotName {
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-rarity-legendary);
+}
+
+.lines {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+@include breakpoints.below(breakpoints.$bp-900) {
+  .slots {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -7,7 +7,7 @@ const idPrefix = "graduation-bamboocut-draught"
 
 export default defineGraduationBuild({
   id: "graduation-bamboocutDraught-tiltrim-crit",
-  name: "Tiltrim Crit",
+  name: "Min Build",
   classId: "bamboocutDraught",
   gear: [
     createGraduationGearPiece({

@@ -6,8 +6,10 @@ import { RELAYED_FACTOR } from "../../../../engine/gearStats"
 import {
   followedGraduationBuild,
   graduationBuildAtLevel,
+  graduationBuildsForProfile,
   graduationInputs,
 } from "../../../../engine/graduation"
+import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
@@ -20,6 +22,7 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../compone
 import { BuildPieceCard } from "../build-piece-card/BuildPieceCard"
 import { BuildSummary, type BuildSummaryItem } from "../build-summary/BuildSummary"
 import { GraduationBuildPicker } from "../graduation-build-picker/GraduationBuildPicker"
+import { CustomGraduationBuildEditor } from "../custom-graduation-build-editor/CustomGraduationBuildEditor"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
 import previewStyles from "../shared/gearPreview.module.scss"
@@ -30,6 +33,7 @@ interface Props {
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
   onFollowBuild(graduationBuildId: string): void
+  onCustomBuildsChanged(builds: CustomGraduationBuild[]): void
   // Absent while the profile follows no build: the dialog then cannot be
   // dismissed until one is chosen.
   onClose?: () => void
@@ -48,6 +52,7 @@ export function GraduationBuildDialog({
   theoreticalDps,
   relayedTheoreticalDps,
   onFollowBuild,
+  onCustomBuildsChanged,
   onClose,
 }: Props) {
   const { t } = useI18n()
@@ -56,6 +61,8 @@ export function GraduationBuildDialog({
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
   const [tab, setTab] = useState<"build" | "stats">("build")
   const [relayed, setRelayed] = useState(false)
+  const [editingCustom, setEditingCustom] = useState(false)
+  const offeredBuilds = graduationBuildsForProfile(inputs)
   const variant = relayed ? "relayed" : "maxRolls"
   const classDef = classDefinition(inputs.classId)
   const level = gearLevelForBreakthrough(inputs.breakthrough)
@@ -98,20 +105,40 @@ export function GraduationBuildDialog({
       </DialogHeader>
 
       <DialogBody>
-        {classDef.graduationBuilds.length > 1 && (
-          <div className={styles.pickerSection}>
-            <p className={onClose ? styles.pickerHint : styles.pickerDemand}>
-              {onClose
-                ? t("gear.graduationBuildDialog.yourGraduationRateIsMeasured")
-                : t("gear.graduationBuildDialog.chooseABuildToContinue")}
-            </p>
-            <GraduationBuildPicker
-              builds={classDef.graduationBuilds}
-              followedBuildId={followed?.id ?? null}
+        <div className={styles.pickerSection}>
+          {offeredBuilds.length > 1 && (
+            <>
+              <p className={onClose ? styles.pickerHint : styles.pickerDemand}>
+                {onClose
+                  ? t("gear.graduationBuildDialog.yourGraduationRateIsMeasured")
+                  : t("gear.graduationBuildDialog.chooseABuildToContinue")}
+              </p>
+              <GraduationBuildPicker
+                builds={offeredBuilds}
+                followedBuildId={followed?.id ?? null}
+                onFollow={onFollowBuild}
+              />
+            </>
+          )}
+          <button
+            type="button"
+            className="btn"
+            aria-expanded={editingCustom}
+            onClick={() => setEditingCustom((open) => !open)}
+          >
+            {t("gear.customGraduationBuild.custom")}
+          </button>
+          {editingCustom && (
+            <CustomGraduationBuildEditor
+              classId={inputs.classId}
+              level={level}
+              saved={inputs.customGraduationBuild ?? null}
+              copyFrom={classDef.graduationBuilds}
+              onChanged={onCustomBuildsChanged}
               onFollow={onFollowBuild}
             />
-          </div>
-        )}
+          )}
+        </div>
 
         <div className={dialogChrome.intro} id={descriptionId}>
           <span className={styles.identity}>

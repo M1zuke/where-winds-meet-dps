@@ -3,7 +3,7 @@ import type { GearLevel, GearPiece, GearRarity, GearSlot, Inputs } from "../../.
 import { emptyGearWords } from "../../../../engine/types"
 import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { newGearPieceId } from "../../../../storage"
-import { heirloomMatch } from "../../../../engine/heirloom"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { graduationBuildKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../components/dialog/Dialog"
@@ -20,6 +20,7 @@ import styles from "./NewGearPieceDialog.module.scss"
 interface Props {
   initialSlot: GearSlot
   inputs: Inputs
+  profile: HeirloomProfile
   onCancel(): void
   onSave(piece: GearPiece, mode: "store" | "equip"): void
 }
@@ -53,7 +54,7 @@ function imageFileFromClipboard(items: DataTransferItemList | null): File | null
   return null
 }
 
-export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Props) {
+export function NewGearPieceDialog({ initialSlot, inputs, profile, onCancel, onSave }: Props) {
   const { t } = useI18n()
   const titleId = useId()
   const [draft, setDraft] = useState<GearPiece>(() => makeDraft(initialSlot))
@@ -94,7 +95,7 @@ export function NewGearPieceDialog({ initialSlot, inputs, onCancel, onSave }: Pr
   )
 
   const flaggedCount = Object.keys(marks).length
-  const draftHeirloom = heirloomMatch(draft, inputs.classId)
+  const draftHeirloom = heirloomMatch(draft, profile)
 
   function handleMarkCleared(field: ScanMarkField): void {
     setClearedMarks((previous) => (previous.includes(field) ? previous : [...previous, field]))

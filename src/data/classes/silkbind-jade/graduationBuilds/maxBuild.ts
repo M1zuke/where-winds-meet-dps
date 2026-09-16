@@ -7,7 +7,7 @@ const idPrefix = "graduation-silkbind-jade"
 
 export default defineGraduationBuild({
   id: "graduation-silkbindJade-mistwillow-precision",
-  name: "Mistwillow Precision",
+  name: "Max Build",
   classId: "silkbindJade",
   gear: [
     createGraduationGearPiece({

@@ -7,7 +7,7 @@ const idPrefix = "graduation-stonesplit-strength"
 
 export default defineGraduationBuild({
   id: "graduation-stonesplitStrength-cleftpeak-crit",
-  name: "Cleftpeak Crit",
+  name: "Min Build",
   classId: "stonesplitStrength",
   gear: [
     createGraduationGearPiece({

@@ -92,6 +92,13 @@ choice.
 - A class change clears the pick. A stored id naming another class's build is
   cleared on load; an id this build does not know is kept as stored.
 
+**A profile may follow a build the user authored instead of a shipped one.** It
+lives in its own store and never in the profile blob, reaching the engine the
+way every other user-authored entity does: injected at the boundary and filtered
+by class. Only its stat lines and attunements are chosen — every value is the
+maximum for the gear level, as a benchmark's is. A class carries at most one,
+and it stands beside the shipped builds everywhere those are listed.
+
 **A gear piece is an heirloom when its five stat lines are the ones some
 graduation build's piece for that slot carries** — any build of the class, in
 any order, whatever the rolled values, rarity, level or relayed state. A piece

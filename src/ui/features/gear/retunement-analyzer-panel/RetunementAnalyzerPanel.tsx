@@ -3,7 +3,7 @@ import type { GearPiece } from "../../../../engine/types"
 import type { RetunementRow } from "../../../../engine/dpsWorker"
 import type { RetunementReason } from "../../../hooks/useRetunementAnalysis"
 import { statLineLabel } from "../../../../data/stats/statLines"
-import { heirloomMatch } from "../../../../engine/heirloom"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { retuneAttemptBudget } from "../../../../engine/retunement"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { useI18n } from "../../../../i18n/i18nContext"
@@ -12,7 +12,7 @@ import retunement from "../shared/retunement.module.scss"
 
 interface Props {
   piece: GearPiece | null
-  classId: string
+  profile: HeirloomProfile
   rows: RetunementRow[]
   reason: RetunementReason
   isPending: boolean
@@ -59,10 +59,10 @@ function fmtPercent(value: number | null): string {
   return value === null ? "—" : `${(value * 100).toFixed(1)} %`
 }
 
-export function RetunementAnalyzerPanel({ piece, classId, rows, reason, isPending }: Props) {
+export function RetunementAnalyzerPanel({ piece, profile, rows, reason, isPending }: Props) {
   const { t } = useI18n()
 
-  const heirloom = useMemo(() => (piece ? heirloomMatch(piece, classId) : null), [piece, classId])
+  const heirloom = useMemo(() => (piece ? heirloomMatch(piece, profile) : null), [piece, profile])
   const isHeirloom = (heirloom?.builds.length ?? 0) > 0
   const heirloomSwap = heirloom?.swap ?? null
 

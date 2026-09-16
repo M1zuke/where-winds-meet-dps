@@ -7,6 +7,7 @@ import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
+import { graduationBuildFromCustom } from "./customGraduationBuild"
 import type { EquippedSlots, GearLevel, Inputs, OddityRegions } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
 
@@ -38,10 +39,19 @@ export function followedGraduationBuildAmong(
   return builds.find((build) => build.id === buildId) ?? (builds.length === 1 ? builds[0] : null)
 }
 
+export function graduationBuildsForProfile(
+  inputs: Pick<Inputs, "classId" | "customGraduationBuild">,
+): readonly GraduationBuild[] {
+  const builtin = graduationBuildsFor(inputs.classId)
+  const custom = inputs.customGraduationBuild
+  if (!custom || custom.classId !== inputs.classId) return builtin
+  return [...builtin, graduationBuildFromCustom(custom)]
+}
+
 export function followedGraduationBuild(
-  inputs: Pick<Inputs, "classId" | "graduationBuildId">,
+  inputs: Pick<Inputs, "classId" | "graduationBuildId" | "customGraduationBuild">,
 ): GraduationBuild | null {
-  return followedGraduationBuildAmong(graduationBuildsFor(inputs.classId), inputs.graduationBuildId)
+  return followedGraduationBuildAmong(graduationBuildsForProfile(inputs), inputs.graduationBuildId)
 }
 
 export function soleGraduationBuildId(classId: string): string | null {

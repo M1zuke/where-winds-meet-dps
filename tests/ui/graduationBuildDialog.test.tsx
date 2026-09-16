@@ -91,6 +91,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -117,6 +118,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -145,6 +147,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -171,6 +174,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,
@@ -207,6 +211,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={null}
           relayedTheoreticalDps={null}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={onClose}
         />
       </I18nProvider>,
@@ -227,6 +232,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={null}
           relayedTheoreticalDps={null}
           onFollowBuild={onFollowBuild}
+          onCustomBuildsChanged={() => undefined}
         />
       </I18nProvider>,
     )
@@ -256,6 +262,7 @@ describe("GraduationBuildDialog", () => {
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
           onClose={() => undefined}
         />
       </I18nProvider>,

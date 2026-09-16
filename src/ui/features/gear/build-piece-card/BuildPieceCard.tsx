@@ -2,7 +2,7 @@ import { attunementLabel, attunementLabelKey, getAttunement } from "../../../../
 import type { GearPiece } from "../../../../engine/types"
 import { isWeaponSlot } from "../../../../engine/types"
 import { statLineLabel } from "../../../../data/stats/statLines"
-import { heirloomMatch } from "../../../../engine/heirloom"
+import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom"
 import { graduationBuildKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
@@ -23,16 +23,14 @@ function baseStatsLabel(piece: GearPiece, t: (key: string, fallback?: string) =>
 
 export function BuildPieceCard({
   piece,
-  classId,
-  graduationBuildId,
+  profile,
 }: {
   piece: GearPiece
-  classId?: string
-  graduationBuildId?: string | null
+  profile?: HeirloomProfile
 }) {
   const { t } = useI18n()
   const attunement = getAttunement(piece.attunement)
-  const heirloom = classId ? heirloomMatch(piece, classId, graduationBuildId) : null
+  const heirloom = profile ? heirloomMatch(piece, profile) : null
   const heirloomBuilds = heirloom?.builds ?? []
   const isHeirloom = heirloom?.followed ?? false
 

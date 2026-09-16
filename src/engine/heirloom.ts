@@ -1,7 +1,6 @@
-import { classDefinition } from "../definitions/classes/registry"
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
-import type { GearPiece, GearWordId } from "./types"
-import { followedGraduationBuildAmong } from "./graduation"
+import type { GearPiece, GearWordId, Inputs } from "./types"
+import { followedGraduationBuildAmong, graduationBuildsForProfile } from "./graduation"
 import { ALL_REROLLABLE_SLOTS, retunedOutWordsOf } from "./retunement"
 
 export interface HeirloomSwap {
@@ -9,6 +8,11 @@ export interface HeirloomSwap {
   currentWord: GearWordId | ""
   word: GearWordId
 }
+
+export type HeirloomProfile = Pick<
+  Inputs,
+  "classId" | "graduationBuildId" | "customGraduationBuild"
+>
 
 export interface HeirloomMatch {
   builds: readonly GraduationBuild[]
@@ -55,12 +59,8 @@ function canStillRetune(piece: GearPiece, slotIndex: number, word: GearWordId): 
   return !retunedOutWordsOf(piece).has(word)
 }
 
-export function heirloomMatch(
-  piece: GearPiece,
-  classId: string,
-  graduationBuildId?: string | null,
-): HeirloomMatch {
-  const builds = classDefinition(classId)?.graduationBuilds ?? []
+export function heirloomMatch(piece: GearPiece, profile: HeirloomProfile): HeirloomMatch {
+  const builds = graduationBuildsForProfile(profile)
   if (builds.length === 0 || piece.words.some((word) => !word.word)) return NO_MATCH
 
   const perfect: GraduationBuild[] = []
@@ -77,7 +77,7 @@ export function heirloomMatch(
     if (candidate && canStillRetune(piece, candidate.slotIndex, candidate.word)) swap = candidate
   }
   if (perfect.length === 0) return { builds: [], followed: false, swap }
-  const followed = followedGraduationBuildAmong(builds, graduationBuildId)
+  const followed = followedGraduationBuildAmong(builds, profile.graduationBuildId)
   return {
     builds: perfect,
     followed: perfect.some((build) => build.id === followed?.id),
@@ -85,10 +85,10 @@ export function heirloomMatch(
   }
 }
 
-export function isHeirloom(piece: GearPiece, classId: string): boolean {
-  return heirloomMatch(piece, classId).builds.length > 0
+export function isHeirloom(piece: GearPiece, profile: HeirloomProfile): boolean {
+  return heirloomMatch(piece, profile).builds.length > 0
 }
 
-export function heirloomSwapFor(piece: GearPiece, classId: string): HeirloomSwap | null {
-  return heirloomMatch(piece, classId).swap
+export function heirloomSwapFor(piece: GearPiece, profile: HeirloomProfile): HeirloomSwap | null {
+  return heirloomMatch(piece, profile).swap
 }

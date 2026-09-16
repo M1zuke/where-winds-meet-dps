@@ -47,10 +47,12 @@ import {
   loadCustomSkills,
   loadCustomBuffs,
   loadCustomDebuffs,
+  loadCustomGraduationBuilds,
   migrateSeededSkillIds,
   migrateDotStandinOverrides,
   type ProfilesState,
 } from "../storage"
+import type { CustomGraduationBuild } from "../engine/customGraduationBuild"
 import type { Skill } from "../engine/skill"
 import type { Buff } from "../engine/buff"
 import type { Debuff } from "../engine/debuff"
@@ -126,10 +128,21 @@ function AppInner() {
 
   const [customBuffs] = useState<Buff[]>(() => loadCustomBuffs())
   const [customDebuffs] = useState<Debuff[]>(() => loadCustomDebuffs())
+  const [customGraduationBuilds, setCustomGraduationBuilds] = useState<CustomGraduationBuild[]>(
+    () => loadCustomGraduationBuilds(),
+  )
+
+  const customGraduationBuild = useMemo(
+    () => customGraduationBuilds.find((build) => build.classId === inputs.classId) ?? null,
+    [customGraduationBuilds, inputs.classId],
+  )
 
   const configuredInputs = useMemo(
-    () => withCustomContent(inputs, customSkills, customBuffs, customDebuffs),
-    [inputs, customSkills, customBuffs, customDebuffs],
+    () => ({
+      ...withCustomContent(inputs, customSkills, customBuffs, customDebuffs),
+      customGraduationBuild,
+    }),
+    [inputs, customSkills, customBuffs, customDebuffs, customGraduationBuild],
   )
 
   const engineInputs = useMemo(() => {
@@ -139,7 +152,7 @@ function AppInner() {
 
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
   const graduation = useGraduationRate(configuredInputs)
-  const followedBuild = followedGraduationBuild(inputs)
+  const followedBuild = followedGraduationBuild(configuredInputs)
   const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
@@ -332,6 +345,7 @@ function AppInner() {
           theoreticalDps={graduation.theoreticalDps}
           relayedTheoreticalDps={graduation.relayedTheoreticalDps}
           onFollowBuild={(graduationBuildId) => setInputs({ ...inputs, graduationBuildId })}
+          onCustomBuildsChanged={setCustomGraduationBuilds}
           onClose={mustChooseGraduationBuild ? undefined : () => setGraduationDialogOpen(false)}
         />
       )}
@@ -374,7 +388,11 @@ function AppInner() {
           onGraduationClick={() => setGraduationDialogOpen(true)}
           graduationDisabled={isSimulationRunning}
           graduationBuildName={
-            followedBuild ? t(graduationBuildKey(followedBuild.id), followedBuild.name) : null
+            followedBuild
+              ? followedBuild.id === customGraduationBuild?.id
+                ? `${t("gear.customGraduationBuild.custom")} - ${followedBuild.name}`
+                : t(graduationBuildKey(followedBuild.id), followedBuild.name)
+              : null
           }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
@@ -423,6 +441,7 @@ function AppInner() {
                 <GearTab
                   inputs={inputs}
                   engineInputs={engineInputs}
+                  customGraduationBuild={customGraduationBuild}
                   onChange={setInputs}
                   currentDps={result.dps}
                 />

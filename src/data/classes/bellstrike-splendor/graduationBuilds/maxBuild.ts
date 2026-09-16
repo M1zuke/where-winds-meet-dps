@@ -10,7 +10,7 @@ const idPrefix = "graduation-bellstrike-splendor"
 // runs it. Nothing measured backs the word choices themselves.
 export default defineGraduationBuild({
   id: "graduation-bellstrikeSplendor-jadeware-crit",
-  name: "Jadeware Crit",
+  name: "Max Build",
   classId: "bellstrikeSplendor",
   gear: [
     createGraduationGearPiece({

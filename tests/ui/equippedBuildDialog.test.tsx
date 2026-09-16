@@ -30,7 +30,12 @@ const fixture = graduationInputs({
 function renderDialog(inputs: Inputs = fixture, currentDps = 54321.1) {
   render(
     <I18nProvider>
-      <EquippedBuildDialog inputs={inputs} currentDps={currentDps} onClose={() => undefined} />
+      <EquippedBuildDialog
+        inputs={inputs}
+        profile={{ classId: inputs.classId }}
+        currentDps={currentDps}
+        onClose={() => undefined}
+      />
     </I18nProvider>,
   )
 }
@@ -112,7 +117,12 @@ describe("EquippedBuildDialog", () => {
     const onClose = vi.fn()
     render(
       <I18nProvider>
-        <EquippedBuildDialog inputs={fixture} currentDps={54321.1} onClose={onClose} />
+        <EquippedBuildDialog
+          inputs={fixture}
+          profile={{ classId: fixture.classId }}
+          currentDps={54321.1}
+          onClose={onClose}
+        />
       </I18nProvider>,
     )
 
@@ -130,6 +140,7 @@ describe("GearTab build summary button", () => {
           <GearTab
             inputs={fixture}
             engineInputs={fixture}
+            customGraduationBuild={null}
             onChange={() => {}}
             currentDps={54321.1}
           />

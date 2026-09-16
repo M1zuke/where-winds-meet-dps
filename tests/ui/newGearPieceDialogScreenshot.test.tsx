@@ -38,6 +38,7 @@ function renderDialog(onCancel = vi.fn(), onSave = vi.fn()) {
       <NewGearPieceDialog
         initialSlot="leftWeapon"
         inputs={inputs}
+        profile={{ classId: inputs.classId }}
         onCancel={onCancel}
         onSave={onSave}
       />
@@ -61,6 +62,7 @@ describe("NewGearPieceDialog screenshot import", () => {
           <GearTab
             inputs={defaultInputs}
             engineInputs={defaultInputs}
+            customGraduationBuild={null}
             onChange={() => {}}
             currentDps={40000}
           />
