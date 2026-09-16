@@ -49,7 +49,7 @@ describe("Morale Chant phys-penetration term", () => {
       hits,
     })
     const rotation = makeRotation("bellstrikeUmbra", {
-      steps: [makeStep({ skillId: skill.id, hitCount: 3 })],
+      steps: [makeStep({ skillId: skill.id })],
     })
     const inputs: Inputs = {
       ...baseInputs("bellstrikeUmbra", [
@@ -108,7 +108,7 @@ describe("Morale Chant phys-penetration term", () => {
       hits: [hit],
     })
     const rotation = makeRotation("bellstrikeUmbra", {
-      steps: [makeStep({ skillId: skill.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: skill.id })],
     })
     const inputs: Inputs = {
       ...baseInputs("bellstrikeUmbra", [
@@ -153,7 +153,7 @@ describe("Morale Chant phys-penetration term", () => {
       hits: [hit],
     })
     const rotation = makeRotation("bellstrikeUmbra", {
-      steps: [makeStep({ skillId: skill.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: skill.id })],
     })
     const inputs: Inputs = {
       ...baseInputs("bellstrikeUmbra", [

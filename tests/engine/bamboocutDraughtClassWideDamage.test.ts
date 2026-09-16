@@ -18,7 +18,7 @@ function runFlute(openingStacks: Record<string, number>) {
     classId: CLASS,
     set: null,
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: MYSTIC_SKILL.fluteOfTheTidesFull, hitCount: 2 })],
+      steps: [makeStep({ skillId: MYSTIC_SKILL.fluteOfTheTidesFull })],
       openingStacks,
     }),
   })

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import type { Inputs, Result, CastBuffTag, RotationCast } from "../../../../engine/types"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
@@ -201,21 +201,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
 
-  useEffect(() => {
-    if (!isCustom || !activeRotation) return
-    let changed = false
-    const steps = activeRotation.steps.map((step) => {
-      const skill = skillsById.get(step.skillId)
-      if (skill && step.hitCount !== skill.hits.length) {
-        changed = true
-        return { ...step, hitCount: skill.hits.length }
-      }
-      return step
-    })
-    if (changed) onChange({ ...inputs, activeCustomRotation: { ...activeRotation, steps } })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeRotation?.id, skillsById])
-
   const computedDurationSec = useMemo(
     () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
     [activeRotation, skillsById, result],
@@ -271,28 +256,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     const first = classSkills[0]
     commitRotation((rotation) => ({
       ...rotation,
-      steps: [
-        ...rotation.steps,
-        {
-          id: newStepId(),
-          skillId: first?.id ?? "",
-          hitCount: first?.hits.length ?? 1,
-          prePull: false,
-        },
-      ],
+      steps: [...rotation.steps, { id: newStepId(), skillId: first?.id ?? "" }],
     }))
   }
   function addStepAfter(idx: number) {
     commitRotation((rotation) => {
       const sourceStep = rotation.steps[idx]
-      const skill = sourceStep ? skillsById.get(sourceStep.skillId) : undefined
       const nextSteps = rotation.steps.slice()
-      nextSteps.splice(idx + 1, 0, {
-        id: newStepId(),
-        skillId: sourceStep?.skillId ?? "",
-        hitCount: skill?.hits.length ?? sourceStep?.hitCount ?? 1,
-        prePull: false,
-      })
+      nextSteps.splice(idx + 1, 0, { id: newStepId(), skillId: sourceStep?.skillId ?? "" })
       return { ...rotation, steps: nextSteps }
     })
   }
@@ -339,10 +310,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     if (!activeRotation) return
     const copy = makeRotation(inputs.classId, {
       name: activeRotation.name,
-      steps: activeRotation.steps.map((step) => {
-        const skill = skillsById.get(step.skillId)
-        return { ...step, id: newStepId(), hitCount: skill ? skill.hits.length : step.hitCount }
-      }),
+      steps: activeRotation.steps.map((step) => ({ ...step, id: newStepId() })),
       permanentBuffIds: [...activeRotation.permanentBuffIds],
       openingStacks: { ...activeRotation.openingStacks },
       qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
@@ -584,10 +552,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                     <Combobox
                       value={step.skillId}
                       options={skillOpts}
-                      onChange={(skillId) => {
-                        const nextSkill = skillsById.get(skillId)
-                        updateStep(idx, { skillId, hitCount: nextSkill?.hits.length ?? 1 })
-                      }}
+                      onChange={(skillId) => updateStep(idx, { skillId })}
                       placeholder={t("rotation.editor.selectSkill")}
                     />
                   ) : (

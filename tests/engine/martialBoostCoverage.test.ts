@@ -19,7 +19,7 @@ function rotationOf(skillNames: string[]) {
   const steps = skillNames.map((name) => {
     const skill = skills.find((s) => s.name === name)
     if (!skill) throw new Error(`no built-in skill "${name}" for bellstrikeUmbra`)
-    return makeStep({ skillId: skill.id, hitCount: skill.hits.length })
+    return makeStep({ skillId: skill.id })
   })
   return makeRotation("bellstrikeUmbra", { name: `test-${skillNames.join("+")}`, steps })
 }

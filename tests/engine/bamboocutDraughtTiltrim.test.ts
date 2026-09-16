@@ -5,8 +5,10 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { makeHit, makeSkill } from "../../src/engine/skill"
+import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { castlink } from "../../src/data/skills/bamboocut-draught/castlink"
+import { herosBlood } from "../../src/data/skills/bamboocut-draught/heros-blood"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { SET_ID } from "../../src/data/sets/ids"
 
@@ -18,18 +20,16 @@ function runHerosBlood(bingePoints: number) {
     classId: CLASS,
     set: SET_ID.tiltrim,
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: SKILL.herosBlood, hitCount: 2 })],
+      steps: [makeStep({ skillId: SKILL.herosBlood })],
       openingStacks: { [STATUS.bingePoints]: bingePoints },
     }),
   })
 }
 
-function primeAndMeasure(primerCasts: number, measuredSkillId: string, measuredHitCount: number) {
+function primeAndMeasure(primerCasts: number, measuredSkill: Skill) {
   const steps = [
-    ...Array.from({ length: primerCasts }, () =>
-      makeStep({ skillId: SKILL.peakfall, hitCount: 2 }),
-    ),
-    makeStep({ skillId: measuredSkillId, hitCount: measuredHitCount }),
+    ...Array.from({ length: primerCasts }, () => makeStep({ skillId: SKILL.peakfall })),
+    makeStep({ skillId: measuredSkill.id }),
   ]
   const result = runEngine({
     ...defaultInputs,
@@ -40,9 +40,10 @@ function primeAndMeasure(primerCasts: number, measuredSkillId: string, measuredH
       openingStacks: { [STATUS.bingePoints]: 100 },
     }),
   })
-  const skillName = measuredSkillId === SKILL.castlink ? "Castlink" : "Twinblade Special"
-  const measuredEvents = result.timeline!.filter((event) => event.skillName === skillName)
-  return measuredEvents.slice(-measuredHitCount).reduce((sum, event) => sum + event.damage, 0)
+  const measuredEvents = result.timeline!.filter((event) => event.skillName === measuredSkill.name)
+  return measuredEvents
+    .slice(-measuredSkill.hits.length)
+    .reduce((sum, event) => sum + event.damage, 0)
 }
 
 describe("Tiltrim", () => {
@@ -80,10 +81,7 @@ describe("Tiltrim", () => {
         set,
         customSkills: [probe],
         activeCustomRotation: makeRotation(CLASS, {
-          steps: [
-            makeStep({ skillId: probe.id, hitCount: 1 }),
-            makeStep({ skillId: probe.id, hitCount: 1 }),
-          ],
+          steps: [makeStep({ skillId: probe.id }), makeStep({ skillId: probe.id })],
           openingStacks: { [STATUS.bingePoints]: 100 },
         }),
       })
@@ -99,10 +97,10 @@ describe("Tiltrim", () => {
   it("the 5-stack bonus reaches only Inebriate-enhanced skills", () => {
     // 0 primers never lift a 4-hit measured cast past 4 stacks; 3 primers
     // (6 damaging hits) already sit at the 5-stack cap before it starts.
-    const castlinkFresh = primeAndMeasure(0, SKILL.castlink, 4)
-    const castlinkCapped = primeAndMeasure(3, SKILL.castlink, 4)
-    const herosBloodFresh = primeAndMeasure(0, SKILL.herosBlood, 2)
-    const herosBloodCapped = primeAndMeasure(3, SKILL.herosBlood, 2)
+    const castlinkFresh = primeAndMeasure(0, castlink)
+    const castlinkCapped = primeAndMeasure(3, castlink)
+    const herosBloodFresh = primeAndMeasure(0, herosBlood)
+    const herosBloodCapped = primeAndMeasure(3, herosBlood)
 
     const castlinkGrowth = castlinkCapped / castlinkFresh
     const herosBloodGrowth = herosBloodCapped / herosBloodFresh

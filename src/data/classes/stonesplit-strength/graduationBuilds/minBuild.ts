@@ -1,10 +1,14 @@
-import type { GraduationBuild } from "../../../definitions/classes/classDef"
-import { SET_ID } from "../../sets/ids"
-import { createGraduationGearPiece } from "../graduationGear"
+import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
+import { SET_ID } from "../../../sets/ids"
+import { createGraduationGearPiece } from "../../graduationGear"
+import graduationRotation from "../rotations/tillaDummyRotation"
 
 const idPrefix = "graduation-stonesplit-strength"
 
-export const STONESPLIT_STRENGTH_GRADUATION_BUILD: GraduationBuild = {
+export default defineGraduationBuild({
+  id: "graduation-stonesplitStrength-cleftpeak-crit",
+  name: "Min Build",
+  classId: "stonesplitStrength",
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -58,4 +62,5 @@ export const STONESPLIT_STRENGTH_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.cleftpeak,
   bowSet: "crit",
   arsenal: "stonesplit",
-}
+  rotationId: graduationRotation.id,
+})

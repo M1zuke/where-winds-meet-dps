@@ -20,7 +20,7 @@ describe("the cast-chip tooltip shows a gate's description", () => {
       classId: "bamboocutDraught",
       set: null,
       activeCustomRotation: makeRotation("bamboocutDraught", {
-        steps: [makeStep({ skillId: SKILL.lightAttack, hitCount: 1 })],
+        steps: [makeStep({ skillId: SKILL.lightAttack })],
         openingStacks: { [STATUS.carouse]: 1 },
       }),
     }

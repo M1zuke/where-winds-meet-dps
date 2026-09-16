@@ -28,10 +28,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     )!
     expect(swordSpecial3).toBeTruthy()
     const rotation = makeRotation("bellstrikeUmbra", {
-      steps: [
-        makeStep({ skillId: swordSpecial3.id, hitCount: 3 }),
-        makeStep({ skillId: swordSpecial3.id, hitCount: 3 }),
-      ],
+      steps: [makeStep({ skillId: swordSpecial3.id }), makeStep({ skillId: swordSpecial3.id })],
     })
     const inputs: Inputs = {
       ...defaultInputs,
@@ -58,9 +55,9 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
     )!
     const rotation = makeRotation("bellstrikeUmbra", {
       steps: [
-        makeStep({ skillId: swordSpecial3.id, hitCount: 3 }),
-        makeStep({ skillId: swordSpecial3.id, hitCount: 3 }),
-        makeStep({ skillId: swordSpecial3.id, hitCount: 3 }),
+        makeStep({ skillId: swordSpecial3.id }),
+        makeStep({ skillId: swordSpecial3.id }),
+        makeStep({ skillId: swordSpecial3.id }),
       ],
     })
     const below6: Inputs = {
@@ -143,10 +140,7 @@ describe("bleed detonation — bellstrikeUmbra default rotation", () => {
 
 describe("bleed detonation — Sword Martial QQQ", () => {
   const detonations = (names: string[]) => {
-    const steps = names.map((n) => {
-      const s = skillOf(n)
-      return makeStep({ skillId: s.id, hitCount: s.hits.length })
-    })
+    const steps = names.map((name) => makeStep({ skillId: skillOf(name).id }))
     const inputs: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",
@@ -215,10 +209,9 @@ describe("Sword R Charge follow-up", () => {
   })
 
   it("detonates once the bleed stacks it adds carry the debuff to 5", () => {
-    const steps = [SKILL.swordqfollowup, FULL].map((n) => {
-      const s = skillOf(n)
-      return makeStep({ skillId: s.id, hitCount: s.hits.length })
-    })
+    const steps = [SKILL.swordqfollowup, FULL].map((name) =>
+      makeStep({ skillId: skillOf(name).id }),
+    )
     const inputs: Inputs = {
       ...defaultInputs,
       classId: "bellstrikeUmbra",

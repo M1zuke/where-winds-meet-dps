@@ -1,13 +1,17 @@
-import type { GraduationBuild } from "../../../definitions/classes/classDef"
-import { SET_ID } from "../../sets/ids"
-import { createGraduationGearPiece } from "../graduationGear"
+import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
+import { SET_ID } from "../../../sets/ids"
+import { createGraduationGearPiece } from "../../graduationGear"
+import graduationRotation from "../rotations/kaezuma42Vs1Db"
 
 const idPrefix = "graduation-bellstrike-splendor"
 
 // Momentum where Umbra's build takes Power, because Nameless Sword and Spear
 // scale off Momentum, and Jadeware because every row of the reference rotation
 // runs it. Nothing measured backs the word choices themselves.
-export const BELLSTRIKE_SPLENDOR_GRADUATION_BUILD: GraduationBuild = {
+export default defineGraduationBuild({
+  id: "graduation-bellstrikeSplendor-jadeware-crit",
+  name: "Max Build",
+  classId: "bellstrikeSplendor",
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -61,7 +65,8 @@ export const BELLSTRIKE_SPLENDOR_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.jadeware,
   bowSet: "crit",
   arsenal: "bellstrike",
+  rotationId: graduationRotation.id,
   relayedOverrides: {
     bowSet: "affinity",
   },
-}
+})

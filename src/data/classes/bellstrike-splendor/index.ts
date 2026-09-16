@@ -2,10 +2,10 @@ import { defineClass } from "../../../definitions/classes/classDef"
 import { CLASS_ID, SKILLS } from "../../skills/bellstrike-splendor"
 import { DEBUFFS } from "../../skills/bellstrike-splendor/debuffs"
 import { withUniversalSkills } from "../../../definitions/skills/universalSkills"
-import { rotationPoolFor } from "../../../definitions/rotations/registry"
+import { rotationsFor } from "../../../definitions/rotations/registry"
+import defaultRotation from "./rotations/kaezuma42Vs1Db"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
-import { BELLSTRIKE_SPLENDOR_GRADUATION_BUILD } from "./graduationBuild"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
 import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
 import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
@@ -44,8 +44,8 @@ export const bellstrikeSplendor = defineClass({
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,
-  ...rotationPoolFor(CLASS_ID),
-  graduationBuild: BELLSTRIKE_SPLENDOR_GRADUATION_BUILD,
+  rotations: rotationsFor(CLASS_ID),
+  defaultRotationId: defaultRotation.id,
   classBuffDefs: [
     endlessGale,
     swordSlashDamageBoost,

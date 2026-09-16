@@ -1,11 +1,6 @@
 import type { Inputs } from "../../../engine/types"
 import type { Rotation } from "../../../engine/rotation"
-import {
-  builtinRotationsForClass,
-  builtinSkillsForClass,
-  defaultRotationForClass,
-} from "../../../engine/builtinLibrary"
-import { loadCustomSkillsForClass } from "../../../storage"
+import { builtinRotationsForClass, defaultRotationForClass } from "../../../engine/builtinLibrary"
 
 export const NO_ROTATION_OPTION_ID = ""
 
@@ -62,26 +57,13 @@ export function activeRotationName(inputs: Inputs): string | null {
   return defaultRotationForClass(inputs.classId)?.name ?? null
 }
 
-function withCurrentHitCounts(rotation: Rotation, classId: string): Rotation {
-  const hitCounts = new Map<string, number>()
-  for (const skill of builtinSkillsForClass(classId)) hitCounts.set(skill.id, skill.hits.length)
-  for (const skill of loadCustomSkillsForClass(classId)) hitCounts.set(skill.id, skill.hits.length)
-  return {
-    ...rotation,
-    steps: rotation.steps.map((step) => {
-      const hitCount = hitCounts.get(step.skillId)
-      return hitCount === undefined ? step : { ...step, hitCount }
-    }),
-  }
-}
-
 export function inputsWithRotationOption(inputs: Inputs, option: RotationOption): Inputs {
   if (option.group === "builtin") {
     return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: option.id }
   }
   return {
     ...inputs,
-    activeCustomRotation: withCurrentHitCounts(option.rotation, inputs.classId),
+    activeCustomRotation: option.rotation,
     selectedBuiltinRotationId: null,
   }
 }

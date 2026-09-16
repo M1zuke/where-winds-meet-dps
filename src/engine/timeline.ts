@@ -378,8 +378,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   // The largest cast length any of a step's hit variants could select.
   function upperBoundCastFrames(rs: ResolvedStep): number {
-    const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
-    const performedHits = rs.skill.hits.slice(0, hitCount)
+    const performedHits = rs.skill.hits
     const naturalMaxFrame =
       performedHits.length > 0 ? Math.max(...performedHits.map((h) => h.frame)) : -1
     let bound = rs.skill.castFrames || naturalMaxFrame + 1
@@ -466,9 +465,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const startFrame = prePull ? preCursor : activeCursor
     layoutWriter.processExpiries(startFrame)
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
-    const hitCount = clamp(rs.step.hitCount, 0, rs.skill.hits.length)
-    const performedHits = rs.skill.hits.slice(0, hitCount)
-    const occurringHits = performedHits.filter((h) => (h.conditions ?? []).every(holdsHere))
+    const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
     const castLen = prePull
       ? upperBoundCastFrames(rs)
       : (() => {

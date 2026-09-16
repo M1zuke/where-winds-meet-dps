@@ -1,11 +1,13 @@
 import type { Inputs } from "../../engine/types"
 import { allowedInnerWaysForClass, defaultArsenalForClass, swapArsenal } from "../../engine/panel"
+import { soleGraduationBuildId } from "../../engine/graduation"
 import { slotInnerWayId } from "../../definitions/innerWays/registry"
 import { getDefaultTalentsForClass } from "../../definitions/baseStats"
 
 export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
+  const sameClass = inputs.classId === classId
   const talents =
-    inputs.classId === classId && inputs.martialArtsTalents.length > 0
+    sameClass && inputs.martialArtsTalents.length > 0
       ? inputs.martialArtsTalents
       : getDefaultTalentsForClass(classId, inputs.breakthrough)
   const withArsenal = swapArsenal(inputs, defaultArsenalForClass(classId))
@@ -23,5 +25,9 @@ export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
       return slot
     }) as Inputs["mindMethods"],
     martialArtsTalents: talents,
+    graduationBuildId:
+      sameClass && inputs.graduationBuildId
+        ? inputs.graduationBuildId
+        : soleGraduationBuildId(classId),
   }
 }

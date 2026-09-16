@@ -34,7 +34,7 @@ function runDodges(steps: RotationStep[], inCarouse: boolean) {
     set: null,
     customSkills: [idlePad, observer],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [...steps, makeStep({ skillId: observer.id, hitCount: 1 })],
+      steps: [...steps, makeStep({ skillId: observer.id })],
       openingStacks,
     }),
   })
@@ -48,10 +48,10 @@ function bingePointsAtObserver(result: Result): number {
 describe("Perfect Dodge Binge Points in Carouse", () => {
   it("one Perfect Dodge in Carouse raises Binge Points by 5 against the same rotation outside Carouse", () => {
     const withCarouse = bingePointsAtObserver(
-      runDodges([makeStep({ skillId: SKILL.perfectDodge, hitCount: 1 })], true),
+      runDodges([makeStep({ skillId: SKILL.perfectDodge })], true),
     )
     const withoutCarouse = bingePointsAtObserver(
-      runDodges([makeStep({ skillId: SKILL.perfectDodge, hitCount: 1 })], false),
+      runDodges([makeStep({ skillId: SKILL.perfectDodge })], false),
     )
     expect(withCarouse - withoutCarouse).toBe(5)
   })
@@ -59,7 +59,7 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
   it("outside Carouse it raises Binge Points by 0", () => {
     const baseline = bingePointsAtObserver(runDodges([], false))
     const afterDodge = bingePointsAtObserver(
-      runDodges([makeStep({ skillId: SKILL.perfectDodge, hitCount: 1 })], false),
+      runDodges([makeStep({ skillId: SKILL.perfectDodge })], false),
     )
     expect(afterDodge - baseline).toBe(0)
   })
@@ -69,8 +69,8 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
     const afterTwoDodges = bingePointsAtObserver(
       runDodges(
         [
-          makeStep({ skillId: SKILL.perfectDodgeFull, hitCount: 1 }),
-          makeStep({ skillId: SKILL.perfectDodgeFull, hitCount: 1 }),
+          makeStep({ skillId: SKILL.perfectDodgeFull }),
+          makeStep({ skillId: SKILL.perfectDodgeFull }),
         ],
         true,
       ),
@@ -82,10 +82,7 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
     const baseline = bingePointsAtObserver(runDodges([], true))
     const afterTwoDodges = bingePointsAtObserver(
       runDodges(
-        [
-          makeStep({ skillId: SKILL.perfectDodgeFull, hitCount: 1 }),
-          makeStep({ skillId: SKILL.perfectDodge, hitCount: 1 }),
-        ],
+        [makeStep({ skillId: SKILL.perfectDodgeFull }), makeStep({ skillId: SKILL.perfectDodge })],
         true,
       ),
     )
@@ -97,9 +94,9 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
     const afterTwoDodges = bingePointsAtObserver(
       runDodges(
         [
-          makeStep({ skillId: SKILL.perfectDodgeFull, hitCount: 1 }),
-          makeStep({ skillId: idlePad.id, hitCount: 1 }),
-          makeStep({ skillId: SKILL.perfectDodgeFull, hitCount: 1 }),
+          makeStep({ skillId: SKILL.perfectDodgeFull }),
+          makeStep({ skillId: idlePad.id }),
+          makeStep({ skillId: SKILL.perfectDodgeFull }),
         ],
         true,
       ),
@@ -110,7 +107,7 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
   it("the class's Deflect Cancel grants none", () => {
     const baseline = bingePointsAtObserver(runDodges([], true))
     const afterDeflectCancel = bingePointsAtObserver(
-      runDodges([makeStep({ skillId: SKILL.deflectCancel, hitCount: 1 })], true),
+      runDodges([makeStep({ skillId: SKILL.deflectCancel })], true),
     )
     expect(afterDeflectCancel - baseline).toBe(0)
   })

@@ -93,6 +93,9 @@ the skill could ever land.
   and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
   negative frames — but it adds nothing to the total, the breakdown or an echo
   bank, whatever its coefficients say, and its frames stay out of the duration.
+- **A rotation step performs every hit its skill has.** A step names a skill and
+  nothing else; a cast cut short is authored as its own skill carrying only the
+  hits it lands, never as a count on the step.
 - **A rotation may fix its own window** (`fixedWindowSec`): the run then lasts
   exactly that long, and DPS divides by it. Casts shorter than the window are
   followed by idle time in which every status keeps its own schedule — a

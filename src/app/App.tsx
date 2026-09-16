@@ -34,6 +34,8 @@ import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/S
 import { BreakthroughDataDialog } from "../ui/layout/breakthrough-data-dialog/BreakthroughDataDialog"
 import { breakthroughDataRequestFor } from "../ui/layout/breakthrough-data-dialog/breakthroughDataRequest"
 import { activeRotationName } from "../ui/features/rotation/rotationOptions"
+import { followedGraduationBuild } from "../engine/graduation"
+import { graduationBuildKey } from "../i18n/contentKeys"
 import { useI18n } from "../i18n/i18nContext"
 import { I18nProvider } from "../i18n/I18nProvider"
 import { ConfirmProvider } from "../ui/components/confirm-dialog/ConfirmDialog"
@@ -45,10 +47,12 @@ import {
   loadCustomSkills,
   loadCustomBuffs,
   loadCustomDebuffs,
+  loadCustomGraduationBuilds,
   migrateSeededSkillIds,
   migrateDotStandinOverrides,
   type ProfilesState,
 } from "../storage"
+import type { CustomGraduationBuild } from "../engine/customGraduationBuild"
 import type { Skill } from "../engine/skill"
 import type { Buff } from "../engine/buff"
 import type { Debuff } from "../engine/debuff"
@@ -124,10 +128,21 @@ function AppInner() {
 
   const [customBuffs] = useState<Buff[]>(() => loadCustomBuffs())
   const [customDebuffs] = useState<Debuff[]>(() => loadCustomDebuffs())
+  const [customGraduationBuilds, setCustomGraduationBuilds] = useState<CustomGraduationBuild[]>(
+    () => loadCustomGraduationBuilds(),
+  )
+
+  const customGraduationBuild = useMemo(
+    () => customGraduationBuilds.find((build) => build.classId === inputs.classId) ?? null,
+    [customGraduationBuilds, inputs.classId],
+  )
 
   const configuredInputs = useMemo(
-    () => withCustomContent(inputs, customSkills, customBuffs, customDebuffs),
-    [inputs, customSkills, customBuffs, customDebuffs],
+    () => ({
+      ...withCustomContent(inputs, customSkills, customBuffs, customDebuffs),
+      customGraduationBuild,
+    }),
+    [inputs, customSkills, customBuffs, customDebuffs, customGraduationBuild],
   )
 
   const engineInputs = useMemo(() => {
@@ -136,7 +151,9 @@ function AppInner() {
   }, [configuredInputs])
 
   const result = useMemo(() => runEngine(engineInputs), [engineInputs])
-  const graduation = useGraduationRate(configuredInputs, result.dps)
+  const graduation = useGraduationRate(configuredInputs)
+  const followedBuild = followedGraduationBuild(configuredInputs)
+  const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
@@ -322,12 +339,14 @@ function AppInner() {
           }
         />
       )}
-      {graduationDialogOpen && (
+      {(graduationDialogOpen || mustChooseGraduationBuild) && (
         <GraduationBuildDialog
           inputs={configuredInputs}
           theoreticalDps={graduation.theoreticalDps}
           relayedTheoreticalDps={graduation.relayedTheoreticalDps}
-          onClose={() => setGraduationDialogOpen(false)}
+          onFollowBuild={(graduationBuildId) => setInputs({ ...inputs, graduationBuildId })}
+          onCustomBuildsChanged={setCustomGraduationBuilds}
+          onClose={mustChooseGraduationBuild ? undefined : () => setGraduationDialogOpen(false)}
         />
       )}
       <div className={styles.appHeader}>
@@ -368,6 +387,13 @@ function AppInner() {
           theoreticalDps={graduation.theoreticalDps}
           onGraduationClick={() => setGraduationDialogOpen(true)}
           graduationDisabled={isSimulationRunning}
+          graduationBuildName={
+            followedBuild
+              ? followedBuild.id === customGraduationBuild?.id
+                ? `${t("gear.customGraduationBuild.custom")} - ${followedBuild.name}`
+                : t(graduationBuildKey(followedBuild.id), followedBuild.name)
+              : null
+          }
           rotationName={rotationName}
           onRotationClick={goToRotationTab}
         />
@@ -415,6 +441,7 @@ function AppInner() {
                 <GearTab
                   inputs={inputs}
                   engineInputs={engineInputs}
+                  customGraduationBuild={customGraduationBuild}
                   onChange={setInputs}
                   currentDps={result.dps}
                 />

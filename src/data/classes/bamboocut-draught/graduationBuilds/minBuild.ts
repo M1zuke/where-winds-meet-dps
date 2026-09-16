@@ -1,10 +1,14 @@
-import type { GraduationBuild } from "../../../definitions/classes/classDef"
-import { SET_ID } from "../../sets/ids"
-import { createGraduationGearPiece } from "../graduationGear"
+import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
+import { SET_ID } from "../../../sets/ids"
+import { createGraduationGearPiece } from "../../graduationGear"
+import graduationRotation from "../rotations/1mDummyByWindsFromCn"
 
 const idPrefix = "graduation-bamboocut-draught"
 
-export const BAMBOOCUT_DRAUGHT_GRADUATION_BUILD: GraduationBuild = {
+export default defineGraduationBuild({
+  id: "graduation-bamboocutDraught-tiltrim-crit",
+  name: "Min Build",
+  classId: "bamboocutDraught",
   gear: [
     createGraduationGearPiece({
       idPrefix,
@@ -58,4 +62,5 @@ export const BAMBOOCUT_DRAUGHT_GRADUATION_BUILD: GraduationBuild = {
   set: SET_ID.tiltrim,
   bowSet: "crit",
   arsenal: "bamboocut",
-}
+  rotationId: graduationRotation.id,
+})

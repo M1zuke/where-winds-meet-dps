@@ -19,9 +19,9 @@ const skillsById = new Map([
 ])
 const rotation = makeRotation(CLASS, {
   steps: [
-    makeStep({ id: "s0", skillId: prepull.id, hitCount: 1 }),
-    makeStep({ id: "s1", skillId: short.id, hitCount: 1 }),
-    makeStep({ id: "s2", skillId: short.id, hitCount: 1 }),
+    makeStep({ id: "s0", skillId: prepull.id }),
+    makeStep({ id: "s1", skillId: short.id }),
+    makeStep({ id: "s2", skillId: short.id }),
   ],
 })
 

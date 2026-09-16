@@ -1,13 +1,11 @@
-import type { Rotation, RotationStep } from "../../../../engine/rotation"
+import type { Rotation } from "../../../../engine/rotation"
 import type { RotationCast } from "../../../../engine/types"
 import { FPS } from "../../../../engine/timeline"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 
-export function stepCastFrames(step: RotationStep, skill: Skill | undefined): number {
+export function stepCastFrames(skill: Skill | undefined): number {
   if (!skill) return 0
-  const hitCount = Math.max(0, Math.min(step.hitCount, skill.hits.length))
-  const performed = skill.hits.slice(0, hitCount)
-  const maxFrame = performed.length > 0 ? Math.max(...performed.map((hit) => hit.frame)) : -1
+  const maxFrame = skill.hits.length > 0 ? Math.max(...skill.hits.map((hit) => hit.frame)) : -1
   return skill.castFrames || maxFrame + 1
 }
 
@@ -30,6 +28,6 @@ export function rotationDurationSec(
       const skill = skillsById.get(step.skillId)
       return !skill || !isPrePullSkill(skill)
     })
-    .reduce((sum, step) => sum + stepCastFrames(step, skillsById.get(step.skillId)), 0)
+    .reduce((sum, step) => sum + stepCastFrames(skillsById.get(step.skillId)), 0)
   return frames / FPS
 }

@@ -4,9 +4,6 @@ import type { QiBreakWindow } from "./types"
 export interface RotationStep {
   id: string
   skillId: string
-  hitCount: number
-  /** @deprecated pre-pull is now a skill property — see `isPrePullSkill` in `./skill`. */
-  prePull: boolean
 }
 
 export interface Rotation {
@@ -41,8 +38,6 @@ export function makeStep(patch: Partial<RotationStep> = {}): RotationStep {
   return {
     id: newStepId(),
     skillId: "",
-    hitCount: 1,
-    prePull: false,
     ...patch,
   }
 }
@@ -66,8 +61,6 @@ export function isRotationStep(x: unknown): x is RotationStep {
   const s = x as Record<string, unknown>
   if (typeof s.id !== "string" || !s.id) return false
   if (typeof s.skillId !== "string") return false
-  if (typeof s.hitCount !== "number" || !Number.isFinite(s.hitCount)) return false
-  if (typeof s.prePull !== "boolean") return false
   return true
 }
 

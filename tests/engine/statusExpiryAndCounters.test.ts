@@ -76,9 +76,9 @@ describe("onExpire — a lapsing window resets another status", () => {
       timelineInputs(
         makeRotation(CLASS, {
           steps: [
-            makeStep({ skillId: opener.id, hitCount: 1 }),
-            makeStep({ skillId: gated.id, hitCount: 1 }),
-            makeStep({ skillId: gated.id, hitCount: 1 }),
+            makeStep({ skillId: opener.id }),
+            makeStep({ skillId: gated.id }),
+            makeStep({ skillId: gated.id }),
           ],
         }),
         [opener, gated],
@@ -98,10 +98,10 @@ describe("onExpire — a lapsing window resets another status", () => {
       timelineInputs(
         makeRotation(CLASS, {
           steps: [
-            makeStep({ skillId: opener.id, hitCount: 1 }),
-            makeStep({ skillId: refresher.id, hitCount: 1 }),
-            makeStep({ skillId: gated.id, hitCount: 1 }),
-            makeStep({ skillId: gated.id, hitCount: 1 }),
+            makeStep({ skillId: opener.id }),
+            makeStep({ skillId: refresher.id }),
+            makeStep({ skillId: gated.id }),
+            makeStep({ skillId: gated.id }),
           ],
         }),
         [opener, refresher, gated],
@@ -123,7 +123,7 @@ describe("stacksPerDamagingHit — a counter built by direct damage", () => {
       stacksPerDamagingHit: { cooldownFrames: 100 },
     })
     const quick = filler("Quick", 30)
-    const steps = Array.from({ length: 12 }, () => makeStep({ skillId: quick.id, hitCount: 1 }))
+    const steps = Array.from({ length: 12 }, () => makeStep({ skillId: quick.id }))
     const result = simulateTimeline(
       timelineInputs(makeRotation(CLASS, { steps }), [quick], [counter]),
     )
@@ -149,7 +149,7 @@ describe("stacksPerDamagingHit — a counter built by direct damage", () => {
     ])
     const result = simulateTimeline(
       timelineInputs(
-        makeRotation(CLASS, { steps: [makeStep({ skillId: reader.id, hitCount: 1 })] }),
+        makeRotation(CLASS, { steps: [makeStep({ skillId: reader.id })] }),
         [reader],
         [counter, marker],
       ),
@@ -193,10 +193,10 @@ describe("onMaxStacks — a counter pays out at its cap", () => {
       timelineInputs(
         makeRotation(CLASS, {
           steps: [
-            makeStep({ skillId: timer.id, hitCount: 1 }),
-            makeStep({ skillId: quick.id, hitCount: 1 }),
-            makeStep({ skillId: quick.id, hitCount: 1 }),
-            makeStep({ skillId: quick.id, hitCount: 1 }),
+            makeStep({ skillId: timer.id }),
+            makeStep({ skillId: quick.id }),
+            makeStep({ skillId: quick.id }),
+            makeStep({ skillId: quick.id }),
           ],
         }),
         [quick, timer],
@@ -224,7 +224,7 @@ describe("onMaxStacks — a counter pays out at its cap", () => {
       makeTrigger({ kind: "applyBuff", targetId: counter.id, stacks: -2 }),
     ]
     const quick = filler("Quick", 30)
-    const steps = Array.from({ length: 5 }, () => makeStep({ skillId: quick.id, hitCount: 1 }))
+    const steps = Array.from({ length: 5 }, () => makeStep({ skillId: quick.id }))
     const result = simulateTimeline(
       timelineInputs(makeRotation(CLASS, { steps }), [quick], [counter, payout]),
     )
@@ -240,7 +240,7 @@ describe("onMaxStacks — a counter pays out at its cap", () => {
     const result = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [makeStep({ skillId: quick.id, hitCount: 1 })],
+          steps: [makeStep({ skillId: quick.id })],
           openingStacks: { [counter.id]: 3 },
         }),
         [quick],

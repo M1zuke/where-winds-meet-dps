@@ -44,7 +44,7 @@ function runEntry(mindMethods: Inputs["mindMethods"]) {
     mindMethods,
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [makeStep({ skillId: grantDeepdaze.id, hitCount: 1 })],
+      steps: [makeStep({ skillId: grantDeepdaze.id })],
       openingStacks: { [STATUS.bingePoints]: 200 },
     }),
   })
@@ -79,9 +79,9 @@ describe("Inebriate - Deepdaze duration", () => {
       customSkills: [grantDeepdaze, idlePad],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [
-          makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
-          makeStep({ skillId: idlePad.id, hitCount: 1 }),
-          makeStep({ skillId: SKILL.herosBlood, hitCount: 2 }),
+          makeStep({ skillId: grantDeepdaze.id }),
+          makeStep({ skillId: idlePad.id }),
+          makeStep({ skillId: SKILL.herosBlood }),
         ],
         openingStacks: { [STATUS.bingePoints]: 200 },
       }),
@@ -97,7 +97,7 @@ describe("Inebriate - Deepdaze duration", () => {
       set: null,
       mindMethods: skyspeakAt(3),
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.skystrikeGauntletsEx, hitCount: 1 })],
+        steps: [makeStep({ skillId: SKILL.skystrikeGauntletsEx })],
       }),
     })
     const window = deepdazeWindow(result)
@@ -135,9 +135,9 @@ describe("Inebriate - Deepdaze duration", () => {
         customSkills: [grantDeepdaze, extend, idlePad],
         activeCustomRotation: makeRotation(CLASS, {
           steps: [
-            makeStep({ skillId: grantDeepdaze.id, hitCount: 1 }),
-            ...Array.from({ length: 4 }, () => makeStep({ skillId: extend.id, hitCount: 1 })),
-            makeStep({ skillId: idlePad.id, hitCount: 1 }),
+            makeStep({ skillId: grantDeepdaze.id }),
+            ...Array.from({ length: 4 }, () => makeStep({ skillId: extend.id })),
+            makeStep({ skillId: idlePad.id }),
           ],
           openingStacks: { [STATUS.bingePoints]: 200 },
         }),

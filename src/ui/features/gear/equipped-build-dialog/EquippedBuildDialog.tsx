@@ -1,5 +1,6 @@
 import { useId, useMemo, useRef, useState } from "react"
 import { classDefinition } from "../../../../definitions/classes/registry"
+import type { HeirloomProfile } from "../../../../engine/heirloom"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { GearPiece, GearSlot, Inputs } from "../../../../engine/types"
@@ -20,11 +21,12 @@ import previewStyles from "../shared/gearPreview.module.scss"
 
 interface Props {
   inputs: Inputs
+  profile: HeirloomProfile
   currentDps: number
   onClose(): void
 }
 
-export function EquippedBuildDialog({ inputs, currentDps, onClose }: Props) {
+export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Props) {
   const { t } = useI18n()
   const titleId = useId()
   const descriptionId = useId()
@@ -104,7 +106,7 @@ export function EquippedBuildDialog({ inputs, currentDps, onClose }: Props) {
                 {GEAR_SLOTS.map((slot) => {
                   const piece = piecesBySlot.get(slot)
                   return piece ? (
-                    <BuildPieceCard key={slot} piece={piece} />
+                    <BuildPieceCard key={slot} piece={piece} profile={profile} />
                   ) : (
                     <EmptySlotCard key={slot} slot={slot} />
                   )

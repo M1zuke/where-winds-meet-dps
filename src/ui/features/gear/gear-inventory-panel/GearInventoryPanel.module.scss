@@ -71,6 +71,45 @@
     transform 0.05s;
 }
 
+.gearInvTile.isHeirloom {
+  isolation: isolate;
+  text-shadow:
+    0 1px 2px var(--color-bg),
+    0 0 8px var(--color-bg);
+}
+
+.gearInvTile.isHeirloom .gearInvTileNew,
+.gearInvTile.isHeirloom .gearInvTileNoteMarker,
+.gearInvTile.isHeirloom .gearInvTileHeirloomReady {
+  text-shadow: none;
+}
+
+.gearInvTile.rarityLegendary {
+  --tile-rarity-color: var(--color-rarity-legendary);
+}
+
+.gearInvTile.rarityEpic {
+  --tile-rarity-color: var(--color-rarity-epic);
+}
+
+.gearInvTileHeirloomReady {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bg);
+  color: var(--color-accent);
+  border: 1px dashed var(--color-accent);
+  font-size: 0.58em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 1;
+}
+
 .gearInvTileNew {
   position: absolute;
   top: -7px;
@@ -117,8 +156,21 @@
 }
 
 .gearInvTile.isSelected {
-  background: var(--color-surface-selected);
-  border-color: var(--color-accent);
+  border-color: var(--tile-rarity-color, var(--color-accent));
+  box-shadow:
+    0 0 0 1px var(--tile-rarity-color, var(--color-accent)),
+    0 0 16px -4px var(--tile-rarity-color, var(--color-accent));
+}
+
+.gearInvTile.isSelected::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 0;
+  border-top: 17px solid var(--tile-rarity-color, var(--color-accent));
+  border-left: 17px solid transparent;
+  border-top-right-radius: 3px;
 }
 
 .gearInvTile.isForeign {

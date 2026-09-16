@@ -1,4 +1,5 @@
 import type { GearWordId } from "../data/stats/statLines"
+import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
 
 export type { GearWordId } from "../data/stats/statLines"
@@ -144,9 +145,12 @@ export interface Inputs {
 
   selectedBuiltinRotationId?: string | null
 
+  graduationBuildId?: string | null
+
   // Injected at the engine boundary, not persisted on the profile blob — the
   // engine never reads storage, so locked fixtures stay byte-exact.
   activeCustomRotation?: Rotation | null
+  customGraduationBuild?: CustomGraduationBuild | null
   customSkills?: Skill[] | null
   customBuffs?: Buff[] | null
   customDebuffs?: Debuff[] | null

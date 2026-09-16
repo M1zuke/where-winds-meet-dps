@@ -55,9 +55,9 @@ function rotationWeapons(inputs: Inputs): WeaponName[] {
 
   const { steps } = resolveRotation(rotation, pool, [])
   const counts: Record<string, number> = {}
-  for (const { step, skill } of steps) {
+  for (const { skill } of steps) {
     if (skill.weaponOrAttribute)
-      counts[skill.weaponOrAttribute] = (counts[skill.weaponOrAttribute] ?? 0) + step.hitCount
+      counts[skill.weaponOrAttribute] = (counts[skill.weaponOrAttribute] ?? 0) + skill.hits.length
   }
   return Object.entries(counts)
     .sort((first, second) => second[1] - first[1])

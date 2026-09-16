@@ -47,7 +47,13 @@ function Harness({ initialInventory }: { initialInventory: GearPiece[] }) {
   return (
     <I18nProvider>
       <ConfirmProvider>
-        <GearTab inputs={inputs} engineInputs={inputs} onChange={setInputs} currentDps={40000} />
+        <GearTab
+          inputs={inputs}
+          engineInputs={inputs}
+          customGraduationBuild={null}
+          onChange={setInputs}
+          currentDps={40000}
+        />
       </ConfirmProvider>
     </I18nProvider>
   )

@@ -47,6 +47,10 @@ export function rotationKey(rotationId: string): string {
   return `content.rotation.${rotationId}`
 }
 
+export function graduationBuildKey(graduationBuildId: string): string {
+  return `content.graduationBuild.${graduationBuildId}`
+}
+
 export function innerWayKey(innerWayId: string): string {
   return `content.innerWay.${innerWayId}`
 }

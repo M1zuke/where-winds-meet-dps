@@ -36,7 +36,7 @@ function timelineInputs(
 
 function rotationOf(skills: Skill[], patch: Partial<Rotation> = {}): Rotation {
   return makeRotation(CLASS, {
-    steps: skills.map((skill) => makeStep({ skillId: skill.id, hitCount: 1 })),
+    steps: skills.map((skill) => makeStep({ skillId: skill.id })),
     ...patch,
   })
 }
