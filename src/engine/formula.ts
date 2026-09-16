@@ -20,6 +20,11 @@ export const CRIT_DAMAGE_MULTIPLIER_MAX = 2.5
 export const AFFINITY_DAMAGE_MULTIPLIER_MIN = 1.2
 export const AFFINITY_DAMAGE_MULTIPLIER_MAX = 2.3
 
+// In-game rate caps as of 2026-09-16.
+export const PRECISION_RATE_CAP = 1
+export const CRIT_RATE_CAP = 0.8
+export const AFFINITY_RATE_CAP = 0.4
+
 export function effectivePhysRange(
   minPhys: number,
   maxPhys: number,
@@ -201,7 +206,7 @@ export function computeSkillDamage(
       AFFINITY_DAMAGE_MULTIPLIER_MAX,
     ) - 1
 
-  const precisionRate = isTianGong ? 1 : Math.min(ctx.precisionPanel, 1)
+  const precisionRate = isTianGong ? 1 : Math.min(ctx.precisionPanel, PRECISION_RATE_CAP)
 
   // `ctx.critPanel`/`ctx.affinityPanel` arrive already resisted from
   // `panel.ts`'s white→yellow conversion, so they are never divided here. A
@@ -210,13 +215,15 @@ export function computeSkillDamage(
   // the direct rate is added after the cap. In-game as of 2026-09-10.
   const critRate = isTianGong
     ? 0
-    : Math.min(Math.max(ctx.critPanel + numberOrZero(art.extraCritRate), 0), 0.8) +
+    : Math.min(Math.max(ctx.critPanel + numberOrZero(art.extraCritRate), 0), CRIT_RATE_CAP) +
       ctx.directCritPanel
 
   const affinityRate = isTianGong
     ? 0
-    : Math.min(Math.max(ctx.affinityPanel + numberOrZero(art.extraAffinityRate), 0), 0.4) +
-      ctx.directAffinityPanel
+    : Math.min(
+        Math.max(ctx.affinityPanel + numberOrZero(art.extraAffinityRate), 0),
+        AFFINITY_RATE_CAP,
+      ) + ctx.directAffinityPanel
 
   const setPhysBoost = ctx.hawkwingPhysBonus ?? setFormulaBonus(ctx.set, "physBoost")
   const effectivePhys = effectivePhysRange(ctx.smallPhys, ctx.largePhys, ctx.food)

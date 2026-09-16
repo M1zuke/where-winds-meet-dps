@@ -13,7 +13,7 @@ import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../
 import { resolveEnginePath } from "../../../engine/statPaths"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
-import { finalCritAffinityRates } from "./finalCritAffinityRates"
+import { finalHitOutcomeRates } from "./finalHitOutcomeRates"
 import styles from "./StatsOverviewPanel.module.scss"
 
 interface Props {
@@ -77,7 +77,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const withSets = applyBowSet(applyArmorSet(derived))
 
   const eff = effectiveRates(withSets)
-  const finalRates = finalCritAffinityRates({
+  const finalRates = finalHitOutcomeRates({
     precision: eff.precision,
     critRate: eff.critRate,
     directCritRate: withSets.directCritRate,
@@ -138,6 +138,13 @@ export function StatsOverviewPanel({ inputs }: Props) {
     row(statPathLabel("directAffinityRate", t), withSets.directAffinityRate, true),
     row(t("components.statsOverviewPanel.finalCrit"), finalRates.critRate, true),
     row(t("components.statsOverviewPanel.finalAffinity"), finalRates.affinityRate, true),
+    row(
+      t("components.statsOverviewPanel.finalCritAffinity"),
+      finalRates.critRate + finalRates.affinityRate,
+      true,
+    ),
+    row(t("components.statsOverviewPanel.finalAbrasion"), finalRates.abrasionRate, true),
+    row(t("components.statsOverviewPanel.finalNormal"), finalRates.normalRate, true),
   ]
 
   const physMin = readPath(withSets, "phys.min")
