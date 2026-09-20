@@ -11,6 +11,9 @@
 // and tick inside the break window.
 // Re-baselined again: the stored Fire Oil setting now also applies its Burn
 // DoT, not just its flat damage bonus.
+// Re-baselined again: the talent board follows the profile's breakthrough, and
+// this build stands at 16, so the nodes behind Solo Mode Level 17 no longer
+// count towards it.
 import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -22,8 +25,16 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(62987.17932653259)
-    expect(result.totalDamage).toBe(3747737.169928689)
+    expect(result.dps).toBe(62550.02134472498)
+    expect(result.totalDamage).toBe(3721726.2700111363)
+  })
+
+  it("takes the board's last segment once the build reaches breakthrough 17", () => {
+    const profile = importProfile(JSON.stringify(profileFile))
+    const raised = { ...profile.inputs, breakthrough: 17 }
+    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
+    expect(result.dps).toBe(63463.3522162738)
+    expect(result.totalDamage).toBe(3776069.4568682914)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

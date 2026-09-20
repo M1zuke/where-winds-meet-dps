@@ -1697,26 +1697,30 @@ describe("disabledTalentPoints hydration (additive, no version bump)", () => {
     return loadProfiles().profiles[0].inputs
   }
 
-  it("gives a profile saved before the field every talent point on", () => {
+  it("gives a profile saved before the field every talent node on", () => {
     const legacy = { ...defaultInputs } as Record<string, unknown>
-    delete legacy.disabledTalentPoints
-    expect(loadFirstWith(legacy).disabledTalentPoints).toEqual({})
+    delete legacy.disabledTalentNodes
+    expect(loadFirstWith(legacy).disabledTalentNodes).toEqual([])
   })
 
   it("keeps a stored selection, sorted and deduplicated", () => {
-    const stored = { ...defaultInputs, disabledTalentPoints: { "95.1": [3, 1, 3] } }
-    expect(
-      loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentPoints,
-    ).toEqual({ "95.1": [1, 3] })
+    const stored = { ...defaultInputs, disabledTalentNodes: [101501, 101071, 101501] }
+    expect(loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentNodes).toEqual(
+      [101071, 101501],
+    )
   })
 
-  it("drops a tier whose stored ids are unusable rather than failing the load", () => {
-    const stored = {
-      ...defaultInputs,
-      disabledTalentPoints: { "95.1": ["1"], "95.2": null, "100.1": [2] },
-    }
-    expect(
-      loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentPoints,
-    ).toEqual({ "100.1": [2] })
+  it("closes the chain over a stored node, so nothing behind it stays on", () => {
+    const stored = { ...defaultInputs, disabledTalentNodes: [101401] }
+    expect(loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentNodes).toEqual(
+      [101401, 101412, 101423, 101434],
+    )
+  })
+
+  it("keeps an id this build does not define rather than failing the load", () => {
+    const stored = { ...defaultInputs, disabledTalentNodes: ["1", null, 999999] }
+    expect(loadFirstWith(stored as unknown as Record<string, unknown>).disabledTalentNodes).toEqual(
+      [999999],
+    )
   })
 })

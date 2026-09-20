@@ -4,7 +4,11 @@ import { MARTIAL_ARTS } from "../../src/definitions/martialArts/registry"
 import { SET_DEFS } from "../../src/definitions/sets/registry"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import { STAT_LINES } from "../../src/data/stats/statLines"
-import { DEFAULT_ODDITIES, getDefaultTalentsForClass } from "../../src/definitions/baseStats"
+import {
+  DEFAULT_ODDITIES,
+  TALENT_BOARD_CELLS,
+  getDefaultTalentsForClass,
+} from "../../src/definitions/baseStats"
 import { GEAR_RARITIES } from "../../src/engine/types"
 import {
   attributeAttackKey,
@@ -30,6 +34,8 @@ import {
   skillTypeKey,
   statLineKey,
   talentKey,
+  talentNodeDescriptionKey,
+  talentNodeKey,
   weaponKey,
 } from "../../src/i18n/contentKeys"
 
@@ -61,6 +67,11 @@ export function collectContentKeys(): Record<string, string> {
       add(innerWayTierKey(`tier ${tier}`), `tier ${tier}`)
   }
   for (const region of Object.keys(DEFAULT_ODDITIES)) add(oddityRegionKey(region), region)
+  for (const cell of TALENT_BOARD_CELLS)
+    for (const node of cell.ranks) {
+      add(talentNodeKey(node), node.name)
+      add(talentNodeDescriptionKey(node), node.description)
+    }
   for (const rarity of GEAR_RARITIES) add(rarityKey(rarity), capitalize(rarity))
 
   for (const declared of CLASS_DEFS()) {

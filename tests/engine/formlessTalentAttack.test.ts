@@ -3,13 +3,14 @@ import { formlessAttack, getConfiguredBase } from "../../src/definitions/baseSta
 import { defaultInputs } from "../../src/engine/defaults"
 import type { Inputs } from "../../src/engine/types"
 
-const BREAKTHROUGH = defaultInputs.breakthrough
+const BREAKTHROUGH = 17
 
 // The `general` arsenal feeds `phys`, so nothing but the talent tables' own
 // Formless attack is left on the primary attribute block.
 function withNothingElseOnThePrimaryBlock(classId: string): Inputs {
   return {
     ...defaultInputs,
+    breakthrough: BREAKTHROUGH,
     classId,
     arsenal: "general",
     martialArtsTalents: [],

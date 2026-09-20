@@ -12,7 +12,7 @@ import { DEFAULT_ARSENAL_SCORES } from "./arsenal"
 import type {
   ArsenalScores,
   AttributeKey,
-  DisabledTalentPoints,
+  DisabledTalentNodes,
   EnhancementLevels,
   GearPiece,
   Inputs,
@@ -25,11 +25,9 @@ import {
   BASE_STAT_LEVELS,
   CLASS_SKILL_BOOSTS,
   ODDITIES,
-  TALENT_POINTS,
-  TALENT_POINT_TIERS,
+  TALENT_BOARD,
 } from "../../data/baseStats"
-import type { TalentPointDef } from "./talentPointDef"
-import { isTalentPointEnabled } from "./talentPointGroups"
+import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
@@ -46,10 +44,16 @@ import {
   enhancementPhysDefTotal,
 } from "./enhancements"
 
-export * from "./talentPointGroups"
+export * from "./talentBoardGraph"
 export * from "./enhancements"
 export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
+export {
+  defineTalentNode,
+  type TalentGate,
+  type TalentGateKind,
+  type TalentNodeDef,
+} from "./talentNodeDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
 
@@ -159,28 +163,21 @@ function applyAll(acc: BaseAccumulator, entries: readonly BaseEntry[] | undefine
   for (const entry of entries) applyEntry(acc, entry)
 }
 
-function applyTalentPoints(
-  acc: BaseAccumulator,
-  tier: string,
-  points: readonly TalentPointDef[],
-  disabled: DisabledTalentPoints | undefined,
-): void {
-  for (const point of points) {
-    if (!isTalentPointEnabled(disabled, tier, point.id)) continue
-    for (const [stat, value] of Object.entries(point.effects)) {
-      applyEntry(acc, { id: point.id, stat, value })
+function applyTalentBoard(acc: BaseAccumulator, disabled: DisabledTalentNodes): void {
+  for (const node of TALENT_BOARD) {
+    if (!node.effects || !isTalentNodeTaken(disabled, node.id)) continue
+    for (const [stat, value] of Object.entries(node.effects)) {
+      applyEntry(acc, { id: node.id, stat, value })
     }
   }
 }
 
 function buildAccumulator(
   breakthrough: number,
-  disabled: DisabledTalentPoints | undefined,
+  disabled: DisabledTalentNodes | undefined,
 ): BaseAccumulator {
   const acc = readBaseLevel()
-  for (const tier of TALENT_POINT_TIERS) {
-    applyTalentPoints(acc, tier, TALENT_POINTS[tier], disabled)
-  }
+  applyTalentBoard(acc, effectiveDisabledTalentNodes(disabled, breakthrough))
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
 }
@@ -199,12 +196,9 @@ const GLOBAL_BASE_BY_SELECTION = new Map<string, Readonly<Record<string, number>
 
 const MAX_CACHED_SELECTIONS = 64
 
-function selectionKey(breakthrough: number, disabled: DisabledTalentPoints | undefined): string {
-  const tiers = Object.entries(disabled ?? {})
-    .filter(([, ids]) => ids.length > 0)
-    .sort(([left], [right]) => (left < right ? -1 : 1))
-    .map(([tier, ids]) => `${tier}:${[...ids].sort((left, right) => left - right).join(",")}`)
-  return `${breakthrough}|${tiers.join(";")}`
+function selectionKey(breakthrough: number, disabled: DisabledTalentNodes | undefined): string {
+  const ids = [...(disabled ?? [])].sort((left, right) => left - right)
+  return `${breakthrough}|${ids.join(",")}`
 }
 
 function cached<T>(store: Map<string, T>, key: string, build: () => T): T {
@@ -216,7 +210,7 @@ function cached<T>(store: Map<string, T>, key: string, build: () => T): T {
   return built
 }
 
-function accumulatorFor(breakthrough: number, disabled?: DisabledTalentPoints): BaseAccumulator {
+function accumulatorFor(breakthrough: number, disabled?: DisabledTalentNodes): BaseAccumulator {
   return cached(ACCUMULATOR_BY_SELECTION, selectionKey(breakthrough, disabled), () =>
     buildAccumulator(breakthrough, disabled),
   )
@@ -224,7 +218,7 @@ function accumulatorFor(breakthrough: number, disabled?: DisabledTalentPoints): 
 
 export function playerAttributes(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<PlayerAttributes> {
   return cached(ATTRIBUTES_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
@@ -245,7 +239,7 @@ export interface FormlessAttack {
 
 export function formlessAttack(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<FormlessAttack> {
   const acc = accumulatorFor(breakthrough, disabled)
   return { min: acc.minFormless, max: acc.maxFormless }
@@ -257,14 +251,14 @@ export function totalFormlessAttack(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[],
 ): Readonly<FormlessAttack> {
-  const fromTalents = formlessAttack(inputs.breakthrough, inputs.disabledTalentPoints)
+  const fromTalents = formlessAttack(inputs.breakthrough, inputs.disabledTalentNodes)
   const fromGear = formlessWordTotals(equippedPieces, inputs)
   return { min: fromTalents.min + fromGear.min, max: fromTalents.max + fromGear.max }
 }
 
 export function globalBase(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<Record<string, number>> {
   return cached(GLOBAL_BASE_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
@@ -365,7 +359,7 @@ export function resyncDefaultTalentsForBreakthrough(inputs: Inputs): Inputs {
 export function totalPlayerAttributes(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<PlayerAttributes> {
   const fromBreakthrough = playerAttributes(breakthrough, disabled)
   const gear = gearAttributeTotals(equippedPieces)
@@ -381,7 +375,7 @@ export function totalPlayerAttributes(
 export function totalMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
   oddities: OddityRegions = DEFAULT_ODDITIES,
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
@@ -402,7 +396,7 @@ export function totalMaxHp(
 export function effectiveMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
   oddities: OddityRegions = DEFAULT_ODDITIES,
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
@@ -421,7 +415,7 @@ export function effectiveMaxHp(
 export function totalPhysDef(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
   oddities: OddityRegions = DEFAULT_ODDITIES,
 ): number {
@@ -489,7 +483,7 @@ export function buildScalingSources(
   const totals = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
   )
   return {
     power: totals.power,
@@ -518,9 +512,9 @@ export function getConfiguredBase(
   equippedPieces: readonly GearPiece[] = [],
 ): Readonly<Record<string, number>> {
   const key = primaryAttackKey(inputs.classId)
-  const formless = formlessAttack(inputs.breakthrough, inputs.disabledTalentPoints)
+  const formless = formlessAttack(inputs.breakthrough, inputs.disabledTalentNodes)
   const base: Record<string, number> = {
-    ...globalBase(inputs.breakthrough, inputs.disabledTalentPoints),
+    ...globalBase(inputs.breakthrough, inputs.disabledTalentNodes),
     [`${key}.min`]: CLASS_PRIMARY_BASE.min + formless.min,
     [`${key}.max`]: CLASS_PRIMARY_BASE.max + formless.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,

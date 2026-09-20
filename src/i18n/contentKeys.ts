@@ -101,6 +101,14 @@ export function rarityKey(rarity: string): string {
   return `content.rarity.${rarity}`
 }
 
+export function talentNodeKey(node: { id: number }): string {
+  return `content.talentNode.${node.id}`
+}
+
+export function talentNodeDescriptionKey(node: { id: number }): string {
+  return `content.talentNode.${node.id}.description`
+}
+
 const DEFAULT_TALENT_ID = /^default-(.+)-(\d+)$/
 
 export function talentKey(talent: { id: string }): string {

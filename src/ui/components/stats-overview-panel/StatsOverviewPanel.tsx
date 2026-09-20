@@ -89,12 +89,12 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const attrs = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
   )
   const maxHp = totalMaxHp(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
     inputs.enhancements,
     inputs.oddities,
     inputs.arsenalScores,
@@ -102,7 +102,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const maxHpEffective = effectiveMaxHp(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
     inputs.enhancements,
     inputs.oddities,
     inputs.arsenalScores,
@@ -110,7 +110,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
   const physDef = totalPhysDef(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
     inputs.enhancements,
     inputs.oddities,
   )

@@ -14,7 +14,9 @@ import {
   getConfiguredBase,
   oddityHpTotal,
   playerAttributes,
-  TALENT_POINT_GROUPS,
+  closeDisabledTalentNodes,
+  effectiveDisabledTalentNodes,
+  talentBoardTotals,
   totalMaxHp,
   totalPhysDef,
 } from "../../src/definitions/baseStats"
@@ -22,26 +24,22 @@ import {
   BODY_PER_POINT,
   DEFENSE_PER_POINT,
 } from "../../src/definitions/baseStats/attributeConversion"
-import { BASE_STAT_LEVELS, TALENT_POINTS, TALENT_POINT_TIERS } from "../../src/data/baseStats"
+import { BASE_STAT_LEVELS, TALENT_BOARD } from "../../src/data/baseStats"
 import { arsenalHp } from "../../src/engine/panel"
 import { gearHpTotal } from "../../src/engine/gearStats"
 import { APP_PLAYER_LEVEL } from "../../src/engine/buffs/levelAttributeBonus"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
-import type { DisabledTalentPoints, GearPiece, Inputs } from "../../src/engine/types"
+import type { DisabledTalentNodes, GearPiece, Inputs } from "../../src/engine/types"
 
 function talentStatTotal(stat: "maxHp" | "physDef"): number {
-  return TALENT_POINT_TIERS.flatMap((tier) => TALENT_POINTS[tier]).reduce(
-    (total, point) => total + (point.effects[stat] ?? 0),
-    0,
-  )
+  return talentBoardTotals([])[stat] ?? 0
 }
 
-function disableTalentGroup(stat: "maxHp" | "physDef"): DisabledTalentPoints {
-  const group = TALENT_POINT_GROUPS.find((candidate) => candidate.stats[0] === stat)!
-  const out: DisabledTalentPoints = {}
-  for (const member of group.members) out[member.tier] = [...(out[member.tier] ?? []), member.id]
-  return out
+function disableTalentGroup(stat: "maxHp" | "physDef"): DisabledTalentNodes {
+  return closeDisabledTalentNodes(
+    TALENT_BOARD.filter((node) => node.effects && stat in node.effects).map((node) => node.id),
+  )
 }
 
 const SELECTABLE = BREAKTHROUGH_TIERS.map((tier) => tier.breakthrough)
@@ -77,11 +75,14 @@ describe("breakthrough drives the player's base attributes", () => {
     expect(higher.precision).toBeGreaterThan(lower.precision)
   })
 
-  it("shifts each attribute by exactly the difference between the two tiers' rows", () => {
+  it("shifts each attribute by the tiers' row difference plus the board nodes the higher tier opens", () => {
     for (const stat of ["power", "agility", "momentum", "body", "defense"] as const) {
       const rowDelta = attributeValue(17, stat) - attributeValue(15, stat)
+      const boardDelta =
+        (talentBoardTotals(effectiveDisabledTalentNodes([], 17))[stat] ?? 0) -
+        (talentBoardTotals(effectiveDisabledTalentNodes([], 15))[stat] ?? 0)
       const derivedDelta = playerAttributes(17)[stat] - playerAttributes(15)[stat]
-      expect(derivedDelta).toBeCloseTo(rowDelta, 10)
+      expect(derivedDelta).toBeCloseTo(rowDelta + boardDelta, 10)
     }
   })
 

@@ -1,4 +1,4 @@
-export { TALENT_POINTS, TALENT_POINT_TIERS, type TalentPointTier } from "./talentPoints"
+export { TALENT_BOARD } from "./talentBoard"
 export { artAttackStageAt, type ArtAttackStage } from "./artAttackStages"
 export { ARSENAL_STORES } from "./arsenal"
 export { BASE_STAT_LEVELS } from "./levels"

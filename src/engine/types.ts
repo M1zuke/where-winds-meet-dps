@@ -166,7 +166,7 @@ export interface Inputs {
 
   oddities: OddityRegions
 
-  disabledTalentPoints: DisabledTalentPoints
+  disabledTalentNodes: DisabledTalentNodes
 
   enhancements: EnhancementLevels
 }
@@ -236,7 +236,7 @@ export interface OddityNode {
 
 export type OddityRegions = Record<string, OddityNode[]>
 
-export type DisabledTalentPoints = Record<string, number[]>
+export type DisabledTalentNodes = readonly number[]
 
 export type GearSlot =
   "leftWeapon" | "rightWeapon" | "disc" | "pendant" | "helm" | "armor" | "greaves" | "bracer"

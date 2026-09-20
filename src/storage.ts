@@ -1,6 +1,5 @@
 import type {
   ArsenalScores,
-  DisabledTalentPoints,
   EnhancementLevels,
   GearPiece,
   Inputs,
@@ -25,6 +24,7 @@ import {
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import {
   arsenalScoreCap,
+  closeDisabledTalentNodes,
   DEFAULT_ENHANCEMENT_LEVEL,
   resyncDefaultTalentsForBreakthrough,
   DEFAULT_ODDITIES,
@@ -452,18 +452,11 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.oddities = healed
   }
   {
-    const stored = next.disabledTalentPoints as unknown
-    const healed: DisabledTalentPoints = {}
-    if (stored && typeof stored === "object" && !Array.isArray(stored)) {
-      for (const [tier, ids] of Object.entries(stored as Record<string, unknown>)) {
-        if (!Array.isArray(ids)) continue
-        const numeric = [...new Set(ids.filter((id): id is number => typeof id === "number"))].sort(
-          (left, right) => left - right,
-        )
-        if (numeric.length > 0) healed[tier] = numeric
-      }
-    }
-    next.disabledTalentPoints = healed
+    const stored = next.disabledTalentNodes as unknown
+    const ids = Array.isArray(stored)
+      ? stored.filter((id): id is number => typeof id === "number")
+      : []
+    next.disabledTalentNodes = closeDisabledTalentNodes(ids)
   }
   {
     const stored = next.enhancements as unknown

@@ -89,7 +89,7 @@ export const defaultInputs: Inputs = {
 
   oddities: DEFAULT_ODDITIES,
 
-  disabledTalentPoints: {},
+  disabledTalentNodes: [],
 
   enhancements: { ...DEFAULT_ENHANCEMENTS },
 
