@@ -19,11 +19,15 @@ import type {
   MartialArtsTalent,
   OddityRegions,
   ScalingSource,
-  TalentStat,
 } from "../../engine/types"
-import baseStatsJson from "../../data/baseStats/baseStats.json"
-import { artAttackStageAt, ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
-import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
+import {
+  artAttackStageAt,
+  BASE_STAT_LEVELS,
+  CLASS_SKILL_BOOSTS,
+  ODDITIES,
+  TALENT_POINTS,
+  TALENT_POINT_TIERS,
+} from "../../data/baseStats"
 import type { TalentPointDef } from "./talentPointDef"
 import { isTalentPointEnabled } from "./talentPointGroups"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
@@ -48,8 +52,6 @@ export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-
-type BaseStatsByLevel = Record<string, Record<string, number>>
 
 interface BaseEntry {
   id: number
@@ -77,17 +79,16 @@ interface BaseAccumulator {
 }
 
 function readBaseLevel(): BaseAccumulator {
-  const row = (baseStatsJson as BaseStatsByLevel)[String(BASE_LEVEL)]
-  if (!row) throw new Error(`baseStats.json missing Level ${BASE_LEVEL}`)
-  const get = (key: string) => row[key] ?? 0
+  const row = BASE_STAT_LEVELS[BASE_LEVEL]
+  if (!row) throw new Error(`No base stat row for level ${BASE_LEVEL}`)
   return {
-    minPhys: get("MIN_W_ATK"),
-    maxPhys: get("MAX_W_ATK"),
-    precision: get("ACR_PROB"),
-    critRate: get("CRI_PROB"),
-    affinityRate: get("BASH_PROB"),
-    critDamageBoost: get("W_ATK_CRI_UP"),
-    affinityDamageBoost: get("BASH_UP"),
+    minPhys: row.minPhys,
+    maxPhys: row.maxPhys,
+    precision: row.precisionRate,
+    critRate: row.critRate,
+    affinityRate: row.affinityRate,
+    critDamageBoost: row.critDamage,
+    affinityDamageBoost: row.affinityDamage,
     minFormless: 0,
     maxFormless: 0,
     power: 0,
@@ -95,8 +96,8 @@ function readBaseLevel(): BaseAccumulator {
     momentum: 0,
     body: 0,
     defense: 0,
-    hp: get("HP_MAX"),
-    physDef: get("W_DEF"),
+    hp: row.maxHp,
+    physDef: row.physDef,
   }
 }
 
@@ -308,16 +309,6 @@ const PRIMARY_ATTACK_KEY: Readonly<Record<AttributeKey, string>> = {
   Bamboocut: "bamboocut",
 }
 
-interface ClassSkillBoost {
-  skill: string
-  stat: string
-  maxBonus: number
-  scalesWith: keyof PlayerAttributes
-  scaleMax: number
-  stage?: "min" | "max"
-}
-type ClassSkillBoosts = Record<string, ClassSkillBoost[]>
-
 const STAT_TO_PATH: Readonly<Record<string, string>> = {
   minPhys: "phys.min",
   maxPhys: "phys.max",
@@ -346,16 +337,16 @@ export function getDefaultTalentsForClass(
   classId: string,
   breakthrough: number = defaultBreakthrough(),
 ): MartialArtsTalent[] {
-  const boosts = (classSkillBoostsJson as ClassSkillBoosts)[classId]
+  const boosts = CLASS_SKILL_BOOSTS[classId]
   if (!boosts) return []
   const resolvedStage = artAttackStageAt(classId, breakthrough)
   return boosts.map((boost, index) => ({
     id: `default-${classId}-${index}`,
     name: boost.skill,
     enabled: true,
-    stat: boost.stat as TalentStat,
+    stat: boost.stat,
     maxBonus: boost.stage ? resolvedStage[boost.stage] : boost.maxBonus,
-    scalesWith: boost.scalesWith as ScalingSource,
+    scalesWith: boost.scalesWith,
     scaleMax: boost.scaleMax,
   }))
 }

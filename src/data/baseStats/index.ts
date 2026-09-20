@@ -1,6 +1,9 @@
 export { TALENT_POINTS, TALENT_POINT_TIERS, type TalentPointTier } from "./talentPoints"
 export { artAttackStageAt, type ArtAttackStage } from "./artAttackStages"
 export { ARSENAL_STORES } from "./arsenal"
+export { BASE_STAT_LEVELS } from "./levels"
+export { BREAKTHROUGH_TIER_DEFS } from "./breakthroughTiers"
+export { CLASS_SKILL_BOOSTS } from "./classSkillBoosts"
 export { ODDITIES, ODDITY_REGIONS, type OddityRegionKey } from "./oddities"
 export {
   AVERAGE_ENHANCEMENT_BONUS_LEVELS,

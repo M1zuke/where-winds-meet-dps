@@ -28,9 +28,14 @@ vi.mock("../../src/definitions/innerWays/registry", async (importOriginal) => {
 const { defaultInputs } = await import("../../src/engine/defaults")
 const { saveProfiles } = await import("../../src/storage")
 const { BREAKTHROUGH_RELEASES } = await import("../../src/definitions/baseStats/breakthroughs")
+const { INNER_WAYS } = await import("../../src/definitions/innerWays/registry")
 const { App } = await import("../../src/app/App")
 
-const AFTER_EVERY_RELEASE = BREAKTHROUGH_RELEASES[BREAKTHROUGH_RELEASES.length - 1].at
+const HIGHEST_CONFIRMED = Math.max(...INNER_WAYS.map((innerWay) => innerWay.confirmedBreakthrough))
+
+const AT_CONFIRMED_BREAKTHROUGH = BREAKTHROUGH_RELEASES.filter(
+  (release) => release.breakthrough <= HIGHEST_CONFIRMED,
+).reduce((latest, release) => (release.at > latest.at ? release : latest)).at
 
 const ASKED_CLASS = "Stonesplit Strength"
 const CONFIRMED_CLASS = "Bellstrike Umbra"
@@ -56,7 +61,7 @@ beforeEach(() => {
   localStorage.clear()
   window.location.hash = ""
   vi.useFakeTimers()
-  vi.setSystemTime(AFTER_EVERY_RELEASE)
+  vi.setSystemTime(AT_CONFIRMED_BREAKTHROUGH)
   vi.spyOn(document, "hasFocus").mockReturnValue(true)
   saveProfiles({
     profiles: [

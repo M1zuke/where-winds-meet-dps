@@ -1,8 +1,8 @@
 // Mechanically holds the promise that implementing a class touches only
 // `src/data/`: nothing under `src/data/` may declare a `define*` contract or
 // call a registration entry point, and nothing under `src/definitions/` may
-// reach past a `src/data/` folder barrel, `ids.ts` or JSON table into an
-// individual content module.
+// reach past a `src/data/` folder barrel or `ids.ts` into an individual
+// content module.
 import { describe, expect, it } from "vitest"
 import { readFileSync, readdirSync, statSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
@@ -77,7 +77,7 @@ describe("src/data/ contains no definition machinery", () => {
 })
 
 describe("src/definitions/ never reaches past a src/data/ barrel", () => {
-  it("every import into src/data/ targets a folder barrel, ids.ts, or a JSON table", () => {
+  it("every import into src/data/ targets a folder barrel or ids.ts", () => {
     const dataRoot = DATA_DIR.split("\\").join("/")
     const offenders: string[] = []
     for (const path of tsFiles(DEFINITIONS_DIR)) {
@@ -85,8 +85,7 @@ describe("src/definitions/ never reaches past a src/data/ barrel", () => {
       for (const specifier of importSpecifiers(text)) {
         const target = resolvedTarget(path, specifier)
         if (!target || !target.startsWith(`${dataRoot}/`)) continue
-        const isAllowed =
-          target.endsWith(".json") || target.endsWith("/index.ts") || target.endsWith("/ids.ts")
+        const isAllowed = target.endsWith("/index.ts") || target.endsWith("/ids.ts")
         if (!isAllowed) offenders.push(`${repoRelative(path)} -> ${repoRelative(target)}`)
       }
     }
