@@ -1,10 +1,6 @@
 import type { Inputs } from "./types"
 import { EMPTY_EQUIPPED, defaultCombatSettings } from "./types"
-import {
-  DEFAULT_ARSENAL_SCORES,
-  DEFAULT_ENHANCEMENTS,
-  DEFAULT_ODDITIES,
-} from "../definitions/baseStats"
+import { DEFAULT_ARSENAL_SCORES, DEFAULT_ENHANCEMENTS } from "../definitions/baseStats"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -87,7 +83,7 @@ export const defaultInputs: Inputs = {
 
   martialArtsTalents: [],
 
-  oddities: DEFAULT_ODDITIES,
+  unclaimedOddityNodes: {},
 
   disabledTalentNodes: [],
 

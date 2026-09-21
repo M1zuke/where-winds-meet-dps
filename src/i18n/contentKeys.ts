@@ -89,6 +89,18 @@ export function oddityRegionKey(region: string): string {
   return `content.oddityRegion.${camelCaseSegment(region)}`
 }
 
+export function oddityChapterKey(chapter: string): string {
+  return `content.oddityChapter.${camelCaseSegment(chapter)}`
+}
+
+export function oddityNodeKey(node: { id: number }): string {
+  return `content.oddityNode.${node.id}`
+}
+
+export function oddityNodeDescriptionKey(node: { id: number }): string {
+  return `content.oddityNode.${node.id}.description`
+}
+
 export function skillTypeKey(skillType: string): string {
   return `content.skillType.${skillType}`
 }

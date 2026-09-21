@@ -17,17 +17,17 @@ import type {
   GearPiece,
   Inputs,
   MartialArtsTalent,
-  OddityRegions,
   ScalingSource,
+  UnclaimedOddityNodes,
 } from "../../engine/types"
 import {
   artAttackStageAt,
   BASE_STAT_LEVELS,
   CLASS_SKILL_BOOSTS,
-  ODDITIES,
   TALENT_BOARD,
 } from "../../data/baseStats"
 import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
+import { ODDITY_BOARD, isOddityNodeClaimed } from "./oddityBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
@@ -45,6 +45,13 @@ import {
 } from "./enhancements"
 
 export * from "./talentBoardGraph"
+export * from "./oddityBoardGraph"
+export {
+  defineOddityRegion,
+  type OddityNodeDef,
+  type OddityNodeKind,
+  type OddityStat,
+} from "./oddityNodeDef"
 export * from "./enhancements"
 export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
@@ -282,14 +289,6 @@ export function globalBase(
   })
 }
 
-export const DEFAULT_ODDITIES: OddityRegions = (() => {
-  const out: OddityRegions = {}
-  for (const [region, nodes] of Object.entries(ODDITIES)) {
-    out[region] = nodes.map((node) => ({ ...node, enabled: true }))
-  }
-  return out
-})()
-
 export const CLASS_PRIMARY_BASE = {
   min: 0,
   max: 0,
@@ -377,7 +376,7 @@ export function totalMaxHp(
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
@@ -389,7 +388,7 @@ export function totalMaxHp(
     arsenalHp(breakthrough, arsenalScores) +
     enhancementHpTotal(enhancements) +
     averageEnhancementBonus(enhancements).maxHp +
-    oddityHpTotal(oddities)
+    oddityHpTotal(unclaimedOddityNodes)
   )
 }
 
@@ -398,7 +397,7 @@ export function effectiveMaxHp(
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const raw = totalMaxHp(
@@ -406,7 +405,7 @@ export function effectiveMaxHp(
     equippedPieces,
     disabled,
     enhancements,
-    oddities,
+    unclaimedOddityNodes,
     arsenalScores,
   )
   return raw * (1 + averageEnhancementBonus(enhancements).percent)
@@ -417,7 +416,7 @@ export function totalPhysDef(
   equippedPieces: readonly GearPiece[],
   disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
   return (
@@ -425,7 +424,7 @@ export function totalPhysDef(
     gearPhysDefTotal(equippedPieces) +
     acc.defense * DEFENSE_PER_POINT.physDef +
     enhancementPhysDefTotal(enhancements) +
-    oddityPhysDefTotal(oddities)
+    oddityPhysDefTotal(unclaimedOddityNodes)
   )
 }
 
@@ -446,34 +445,37 @@ export function userTalentContributions(
   return out
 }
 
-export function oddityContributions(oddities: OddityRegions): Record<string, number> {
+export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const nodes of Object.values(oddities)) {
-    for (const n of nodes) {
-      if (!n.enabled || !n.value || n.stat === "maxHp" || n.stat === "physDef") continue
-      const path = STAT_TO_PATH[n.stat] ?? n.stat
-      out[path] = (out[path] ?? 0) + n.value
+  for (const region of ODDITY_BOARD) {
+    for (const node of region.nodes) {
+      if (!node.value || node.stat === undefined) continue
+      if (node.stat === "maxHp" || node.stat === "physDef") continue
+      if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
+      const path = STAT_TO_PATH[node.stat] ?? node.stat
+      out[path] = (out[path] ?? 0) + node.value
     }
   }
   return out
 }
 
-function oddityStatTotal(oddities: OddityRegions, stat: "maxHp" | "physDef"): number {
+function oddityStatTotal(unclaimed: UnclaimedOddityNodes, stat: "maxHp" | "physDef"): number {
   let total = 0
-  for (const nodes of Object.values(oddities)) {
-    for (const n of nodes) {
-      if (n.enabled && n.stat === stat) total += n.value
+  for (const region of ODDITY_BOARD) {
+    for (const node of region.nodes) {
+      if (node.stat !== stat || !node.value) continue
+      if (isOddityNodeClaimed(unclaimed, region.key, node.id)) total += node.value
     }
   }
   return total
 }
 
-export function oddityHpTotal(oddities: OddityRegions): number {
-  return oddityStatTotal(oddities, "maxHp")
+export function oddityHpTotal(unclaimed: UnclaimedOddityNodes): number {
+  return oddityStatTotal(unclaimed, "maxHp")
 }
 
-export function oddityPhysDefTotal(oddities: OddityRegions): number {
-  return oddityStatTotal(oddities, "physDef")
+export function oddityPhysDefTotal(unclaimed: UnclaimedOddityNodes): number {
+  return oddityStatTotal(unclaimed, "physDef")
 }
 
 export function buildScalingSources(
@@ -530,8 +532,9 @@ export function getConfiguredBase(
   )) {
     base[path] = (base[path] ?? 0) + amount
   }
-  const oddities = inputs.oddities ?? DEFAULT_ODDITIES
-  for (const [path, amount] of Object.entries(oddityContributions(oddities))) {
+  for (const [path, amount] of Object.entries(
+    oddityContributions(inputs.unclaimedOddityNodes ?? {}),
+  )) {
     base[path] = (base[path] ?? 0) + amount
   }
   const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS

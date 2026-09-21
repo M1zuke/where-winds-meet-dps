@@ -14,7 +14,7 @@ function withNothingElseOnThePrimaryBlock(classId: string): Inputs {
     classId,
     arsenal: "general",
     martialArtsTalents: [],
-    oddities: {},
+    unclaimedOddityNodes: {},
   }
 }
 

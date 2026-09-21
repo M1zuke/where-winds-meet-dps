@@ -8,7 +8,7 @@ import {
 import {
   averageEnhancementBonus,
   DEFAULT_ENHANCEMENTS,
-  DEFAULT_ODDITIES,
+  ODDITY_BOARD,
   effectiveMaxHp,
   enhancementHpTotal,
   getConfiguredBase,
@@ -118,7 +118,7 @@ describe("Max HP", () => {
       attrs.defense * DEFENSE_PER_POINT.hp +
       enhancementHpTotal(DEFAULT_ENHANCEMENTS) +
       bonus.maxHp +
-      oddityHpTotal(DEFAULT_ODDITIES)
+      oddityHpTotal({})
     expect(totalMaxHp(17, [])).toBeCloseTo(expected, 9)
   })
 
@@ -165,7 +165,10 @@ describe("the character-level row's Physical Defense column", () => {
       Object.keys(DEFAULT_ENHANCEMENTS).map((slot) => [slot, 0]),
     ) as typeof DEFAULT_ENHANCEMENTS
     const disabledPhysDef = disableTalentGroup("physDef")
-    const withoutOddities = totalPhysDef(17, [], disabledPhysDef, zeroEnhancements, {})
+    const released = Object.fromEntries(
+      ODDITY_BOARD.map((region) => [region.key, region.nodes.map((node) => node.id)]),
+    )
+    const withoutOddities = totalPhysDef(17, [], disabledPhysDef, zeroEnhancements, released)
     const row = BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!
     const attrs = playerAttributes(17, disabledPhysDef)
     expect(withoutOddities - attrs.defense * DEFENSE_PER_POINT.physDef).toBeCloseTo(row.physDef, 9)

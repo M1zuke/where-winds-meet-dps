@@ -1,8 +1,6 @@
-// Additive field, no version bump — see CLAUDE.md → "localStorage migrations".
 import { beforeEach, describe, expect, it } from "vitest"
 import { kvStore } from "../../src/kvStore"
 import { loadProfiles, saveProfiles } from "../../src/storage"
-import { DEFAULT_ODDITIES } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
 import { LATEST_PROFILES_VERSION } from "../../src/migrations"
 import type { Inputs } from "../../src/engine/types"
@@ -10,11 +8,11 @@ import type { Inputs } from "../../src/engine/types"
 const PROFILES_KEY = "wwm.profiles"
 
 function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
-  const inputs: Omit<Inputs, "oddities"> & { oddities?: unknown } = {
+  const inputs: Omit<Inputs, "unclaimedOddityNodes"> & { unclaimedOddityNodes?: unknown } = {
     ...defaultInputs,
     ...inputsOverrides,
   }
-  if (!("oddities" in inputsOverrides)) delete inputs.oddities
+  if (!("unclaimedOddityNodes" in inputsOverrides)) delete inputs.unclaimedOddityNodes
   kvStore.set(
     PROFILES_KEY,
     JSON.stringify({
@@ -25,62 +23,44 @@ function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   )
 }
 
-describe("oddities migration (additive field, no version bump)", () => {
+describe("stored oddity board state", () => {
   beforeEach(() => {
     try {
       kvStore.remove(PROFILES_KEY)
     } catch {}
   })
 
-  it("seeds DEFAULT_ODDITIES when the stored blob has no `oddities` key", () => {
+  it("claims every melody when the stored blob has no `unclaimedOddityNodes` key", () => {
     writeProfilesBlob({})
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.oddities).toEqual(DEFAULT_ODDITIES)
+    expect(profiles[0].inputs.unclaimedOddityNodes).toEqual({})
   })
 
-  it("preserves a custom `oddities` table already on the blob (idempotent)", () => {
-    const custom = {
-      Qinghe: [{ id: 1, stat: "maxPhys" as const, value: 999, enabled: false }],
-    }
-    writeProfilesBlob({ oddities: custom })
+  it("keeps a stored region's released ids, closed over the chain, across a save", () => {
+    writeProfilesBlob({ unclaimedOddityNodes: { Qinghe: [102] } })
     const first = loadProfiles()
-    expect(first.profiles[0].inputs.oddities.Qinghe).toEqual(custom.Qinghe)
-    const expectedKeys = new Set(Object.keys(DEFAULT_ODDITIES))
-    expect(new Set(Object.keys(first.profiles[0].inputs.oddities))).toEqual(expectedKeys)
+    const stored = first.profiles[0].inputs.unclaimedOddityNodes.Qinghe
+    expect(stored).toContain(102)
+    expect(stored).toContain(105)
 
     saveProfiles({ profiles: first.profiles, activeId: first.activeId })
     const second = loadProfiles()
-    expect(second.profiles[0].inputs.oddities).toEqual(first.profiles[0].inputs.oddities)
-  })
-
-  it("merges regions added to oddities.ts after the profile was saved", () => {
-    const stored = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as Inputs["oddities"]
-    delete stored["Hidden Mountain: Suixiang"]
-    stored.Qinghe[0] = { ...stored.Qinghe[0], enabled: false }
-    writeProfilesBlob({ oddities: stored })
-
-    const { profiles } = loadProfiles()
-    const oddities = profiles[0].inputs.oddities
-    expect(oddities["Hidden Mountain: Suixiang"]).toEqual(
-      DEFAULT_ODDITIES["Hidden Mountain: Suixiang"],
+    expect(second.profiles[0].inputs.unclaimedOddityNodes).toEqual(
+      first.profiles[0].inputs.unclaimedOddityNodes,
     )
-    expect(oddities.Qinghe[0].enabled).toBe(false)
   })
 
-  it("heals a malformed `oddities` value back to the default", () => {
-    writeProfilesBlob({ oddities: "not-an-object" as unknown as Inputs["oddities"] })
+  it("drops ids that name no melody on that region's board", () => {
+    writeProfilesBlob({ unclaimedOddityNodes: { Qinghe: [999999] } })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.oddities).toEqual(DEFAULT_ODDITIES)
+    expect(profiles[0].inputs.unclaimedOddityNodes).toEqual({})
   })
 
-  it("heals individual malformed nodes but keeps the region structure", () => {
-    const custom = {
-      Qinghe: [{ id: 1, stat: "maxPhys", value: 5 }, null],
-    }
-    writeProfilesBlob({ oddities: custom as unknown as Inputs["oddities"] })
+  it("heals a malformed value back to a fully claimed board", () => {
+    writeProfilesBlob({
+      unclaimedOddityNodes: "not-an-object" as unknown as Inputs["unclaimedOddityNodes"],
+    })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.oddities.Qinghe).toEqual([
-      { id: 1, stat: "maxPhys", value: 5, enabled: true, icon: undefined },
-    ])
+    expect(profiles[0].inputs.unclaimedOddityNodes).toEqual({})
   })
 })

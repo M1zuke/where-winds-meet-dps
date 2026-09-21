@@ -5,7 +5,7 @@ import { SET_DEFS } from "../../src/definitions/sets/registry"
 import { ATTUNEMENT_OPTIONS } from "../../src/engine/attunements"
 import { STAT_LINES } from "../../src/data/stats/statLines"
 import {
-  DEFAULT_ODDITIES,
+  ODDITY_BOARD,
   TALENT_BOARD_CELLS,
   getDefaultTalentsForClass,
 } from "../../src/definitions/baseStats"
@@ -25,6 +25,9 @@ import {
   innerWayKey,
   innerWayTierKey,
   martialArtKey,
+  oddityChapterKey,
+  oddityNodeDescriptionKey,
+  oddityNodeKey,
   oddityRegionKey,
   rarityKey,
   rotationKey,
@@ -66,7 +69,14 @@ export function collectContentKeys(): Record<string, string> {
     for (const tier of innerWay.selectableTiers)
       add(innerWayTierKey(`tier ${tier}`), `tier ${tier}`)
   }
-  for (const region of Object.keys(DEFAULT_ODDITIES)) add(oddityRegionKey(region), region)
+  for (const region of ODDITY_BOARD) {
+    add(oddityRegionKey(region.key), region.key)
+    for (const chapter of region.chapters) add(oddityChapterKey(chapter), chapter)
+    for (const node of region.nodes) {
+      add(oddityNodeKey(node), node.name)
+      add(oddityNodeDescriptionKey(node), node.description)
+    }
+  }
   for (const cell of TALENT_BOARD_CELLS)
     for (const node of cell.ranks) {
       add(talentNodeKey(node), node.name)

@@ -96,7 +96,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentNodes,
     inputs.enhancements,
-    inputs.oddities,
+    inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
   )
   const maxHpEffective = effectiveMaxHp(
@@ -104,7 +104,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentNodes,
     inputs.enhancements,
-    inputs.oddities,
+    inputs.unclaimedOddityNodes,
     inputs.arsenalScores,
   )
   const physDef = totalPhysDef(
@@ -112,7 +112,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     equippedPieces,
     inputs.disabledTalentNodes,
     inputs.enhancements,
-    inputs.oddities,
+    inputs.unclaimedOddityNodes,
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),

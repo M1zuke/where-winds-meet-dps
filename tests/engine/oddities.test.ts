@@ -1,104 +1,153 @@
 import { describe, expect, it } from "vitest"
 import {
-  oddityContributions,
-  DEFAULT_ODDITIES,
+  ODDITY_BOARD,
+  claimedOddityCost,
+  claimedOddityNodes,
+  closeUnclaimedOddityNodes,
   getConfiguredBase,
+  isOddityNodeClaimed,
+  oddityBoardTotals,
+  oddityContributions,
   oddityHpTotal,
   oddityPhysDefTotal,
+  withOddityNodeClaimed,
 } from "../../src/definitions/baseStats"
 import { defaultInputs } from "../../src/engine/defaults"
-import { ODDITIES } from "../../src/data/baseStats/oddities"
-import type { Inputs, OddityRegions } from "../../src/engine/types"
+import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
 
 function rawTotals(): { min: number; max: number } {
   let min = 0
   let max = 0
-  for (const entries of Object.values(ODDITIES)) {
-    for (const node of entries) {
-      if (node.stat === "minPhys") min += node.value
-      if (node.stat === "maxPhys") max += node.value
+  for (const region of ODDITY_BOARD) {
+    for (const node of region.nodes) {
+      if (node.stat === "minPhys") min += node.value ?? 0
+      if (node.stat === "maxPhys") max += node.value ?? 0
     }
   }
   return { min, max }
 }
 
-describe("editable oddities", () => {
-  it("oddityContributions(DEFAULT_ODDITIES) sums phys.min/phys.max to the raw JSON totals", () => {
-    const out = oddityContributions(DEFAULT_ODDITIES)
+function releasedEverywhere(): UnclaimedOddityNodes {
+  const released: UnclaimedOddityNodes = {}
+  for (const region of ODDITY_BOARD) released[region.key] = region.nodes.map((node) => node.id)
+  return released
+}
+
+describe("oddity board", () => {
+  it("sums phys.min/phys.max of a fully claimed board to the board's own totals", () => {
+    const out = oddityContributions({})
     const raw = rawTotals()
     expect(out["phys.min"]).toBeCloseTo(raw.min, 6)
     expect(out["phys.max"]).toBeCloseTo(raw.max, 6)
   })
 
-  it("disabled nodes contribute 0", () => {
-    const region = Object.keys(DEFAULT_ODDITIES)[0]
-    const disabled: OddityRegions = {
-      ...DEFAULT_ODDITIES,
-      [region]: DEFAULT_ODDITIES[region].map((n) => ({ ...n, enabled: false })),
-    }
-    const out = oddityContributions(disabled)
-    const raw = rawTotals()
-    const zeroedMin = DEFAULT_ODDITIES[region]
-      .filter((n) => n.stat === "minPhys")
-      .reduce((s, n) => s + n.value, 0)
-    const zeroedMax = DEFAULT_ODDITIES[region]
-      .filter((n) => n.stat === "maxPhys")
-      .reduce((s, n) => s + n.value, 0)
-    expect(out["phys.min"] ?? 0).toBeCloseTo(raw.min - zeroedMin, 6)
-    expect(out["phys.max"] ?? 0).toBeCloseTo(raw.max - zeroedMax, 6)
-  })
-
-  it("fully-disabled table contributes nothing", () => {
-    const disabledAll: OddityRegions = {}
-    for (const [region, nodes] of Object.entries(DEFAULT_ODDITIES)) {
-      disabledAll[region] = nodes.map((n) => ({ ...n, enabled: false }))
-    }
-    const out = oddityContributions(disabledAll)
-    expect(out["phys.min"] ?? 0).toBe(0)
-    expect(out["phys.max"] ?? 0).toBe(0)
-  })
-
-  it("getConfiguredBase seeds DEFAULT_ODDITIES when inputs.oddities is absent — value-preserving", () => {
-    const legacy = { ...defaultInputs } as Partial<Inputs>
-    delete legacy.oddities
-    const withoutField = getConfiguredBase(legacy as Inputs, [])
-    const withField = getConfiguredBase({ ...defaultInputs, oddities: DEFAULT_ODDITIES }, [])
-    expect(withoutField["phys.min"]).toBeCloseTo(withField["phys.min"], 6)
-    expect(withoutField["phys.max"]).toBeCloseTo(withField["phys.max"], 6)
-  })
-
-  it("sums every region's Max HP nodes to 8150", () => {
-    expect(oddityHpTotal(DEFAULT_ODDITIES)).toBe(8150)
-  })
-
-  it("sums every region's Physical Defense nodes to 50", () => {
-    expect(oddityPhysDefTotal(DEFAULT_ODDITIES)).toBe(50)
-  })
-
-  it("leaves the attack-node total at 124, unchanged by adding the HP and defense nodes", () => {
+  it("leaves the attack-melody total at 124", () => {
     const raw = rawTotals()
     expect(raw.min + raw.max).toBe(124)
   })
 
-  it("keeps Max HP and Physical Defense nodes off the combat base, unlike the attack nodes", () => {
-    const out = oddityContributions(DEFAULT_ODDITIES)
+  it("sums every region's Max HP melodies to 8150", () => {
+    expect(oddityHpTotal({})).toBe(8150)
+  })
+
+  it("sums every region's Physical Defense melodies to 50", () => {
+    expect(oddityPhysDefTotal({})).toBe(50)
+  })
+
+  it("keeps Max HP and Physical Defense off the combat base, unlike the attack melodies", () => {
+    const out = oddityContributions({})
     expect(out.maxHp).toBeUndefined()
     expect(out.physDef).toBeUndefined()
   })
 
-  it("toggling a node's enabled flag lowers the base by exactly that node's value", () => {
-    const region = Object.keys(DEFAULT_ODDITIES)[0]
-    const node = DEFAULT_ODDITIES[region][0]
-    const inputs: Inputs = { ...defaultInputs, oddities: DEFAULT_ODDITIES }
-    const toggledOff: OddityRegions = {
-      ...DEFAULT_ODDITIES,
-      [region]: DEFAULT_ODDITIES[region].map((n) =>
-        n.id === node.id ? { ...n, enabled: false } : n,
-      ),
+  it("contributes nothing once every region is released", () => {
+    const released = releasedEverywhere()
+    expect(oddityContributions(released)["phys.min"] ?? 0).toBe(0)
+    expect(oddityContributions(released)["phys.max"] ?? 0).toBe(0)
+    expect(oddityHpTotal(released)).toBe(0)
+    expect(oddityPhysDefTotal(released)).toBe(0)
+  })
+
+  it("seeds a fully claimed board when inputs carry no oddity field", () => {
+    const legacy = { ...defaultInputs } as Partial<Inputs>
+    delete legacy.unclaimedOddityNodes
+    const withoutField = getConfiguredBase(legacy as Inputs, [])
+    const withField = getConfiguredBase({ ...defaultInputs, unclaimedOddityNodes: {} }, [])
+    expect(withoutField["phys.min"]).toBeCloseTo(withField["phys.min"], 6)
+    expect(withoutField["phys.max"]).toBeCloseTo(withField["phys.max"], 6)
+  })
+
+  it("releasing a melody releases everything that hangs off it", () => {
+    const region = ODDITY_BOARD[0]
+    const released = withOddityNodeClaimed({}, region.key, region.nodes[0].id, false)
+    expect(released[region.key]).toHaveLength(region.nodes.length)
+    expect(claimedOddityNodes(released, region.key)).toHaveLength(0)
+    expect(claimedOddityCost(released, region.key)).toBe(0)
+  })
+
+  it("claiming a melody claims the chain in front of it", () => {
+    const region = ODDITY_BOARD[0]
+    const last = region.nodes[region.nodes.length - 1]
+    const released = withOddityNodeClaimed({}, region.key, region.nodes[0].id, false)
+    const claimed = withOddityNodeClaimed(released, region.key, last.id, true)
+
+    let cursor = last.requires
+    while (cursor !== undefined) {
+      expect(isOddityNodeClaimed(claimed, region.key, cursor)).toBe(true)
+      cursor = region.nodes.find((node) => node.id === cursor)?.requires
+    }
+    expect(isOddityNodeClaimed(claimed, region.key, last.id)).toBe(true)
+  })
+
+  it("lowers the base by exactly one melody's value when that melody is released", () => {
+    const region = ODDITY_BOARD[0]
+    const leaf = [...region.nodes]
+      .reverse()
+      .find(
+        (node) =>
+          node.stat === "maxPhys" &&
+          !region.nodes.some((candidate) => candidate.requires === node.id),
+      )!
+    const inputs: Inputs = { ...defaultInputs, unclaimedOddityNodes: {} }
+    const after = {
+      ...inputs,
+      unclaimedOddityNodes: withOddityNodeClaimed({}, region.key, leaf.id, false),
     }
     const before = getConfiguredBase(inputs, [])
-    const after = getConfiguredBase({ ...inputs, oddities: toggledOff }, [])
-    const path = node.stat === "minPhys" ? "phys.min" : "phys.max"
-    expect(before[path] - after[path]).toBeCloseTo(node.value, 6)
+    expect(before["phys.max"] - getConfiguredBase(after, [])["phys.max"]).toBeCloseTo(
+      leaf.value ?? 0,
+      6,
+    )
+  })
+
+  it("closes an unclaimed list over the melodies behind it", () => {
+    const region = ODDITY_BOARD[0]
+    const opener = region.nodes.find(
+      (node) => node.kind === "opener" && node.requires !== undefined,
+    )!
+    const closed = closeUnclaimedOddityNodes(region.key, [opener.id])
+    const children = region.nodes.filter((node) => node.requires === opener.id)
+    expect(children.length).toBeGreaterThan(0)
+    for (const child of children) expect(closed).toContain(child.id)
+  })
+
+  it("gives every melody an icon, a chapter and a cost", () => {
+    for (const region of ODDITY_BOARD) {
+      expect(region.chapters).toHaveLength(12)
+      for (const node of region.nodes) {
+        expect(node.icon).not.toBe("")
+        expect(node.chapter).toBeGreaterThanOrEqual(1)
+        expect(node.chapter).toBeLessThanOrEqual(12)
+        expect(node.cost).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it("reports the same stat totals through the board summary as through the engine helpers", () => {
+    const totals = oddityBoardTotals({})
+    expect(totals.maxHp).toBe(oddityHpTotal({}))
+    expect(totals.physDef).toBe(oddityPhysDefTotal({}))
+    expect(totals.maxPhys).toBe(rawTotals().max)
+    expect(totals.minPhys).toBe(rawTotals().min)
   })
 })

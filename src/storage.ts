@@ -3,10 +3,9 @@ import type {
   EnhancementLevels,
   GearPiece,
   Inputs,
-  OddityNode,
-  OddityRegions,
   ScriptId,
   StoredProfile,
+  UnclaimedOddityNodes,
 } from "./engine/types"
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
@@ -25,9 +24,9 @@ import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInp
 import {
   arsenalScoreCap,
   closeDisabledTalentNodes,
+  closeUnclaimedOddityNodes,
   DEFAULT_ENHANCEMENT_LEVEL,
   resyncDefaultTalentsForBreakthrough,
-  DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
 import {
@@ -430,26 +429,20 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.martialArtsTalents = healed as Inputs["martialArtsTalents"]
     next.martialArtsTalents = resyncDefaultTalentsForBreakthrough(next).martialArtsTalents
   }
-  if (!next.oddities || typeof next.oddities !== "object" || Array.isArray(next.oddities)) {
-    next.oddities = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as OddityRegions
-  } else {
-    const healed: OddityRegions = {}
-    for (const [region, nodes] of Object.entries(next.oddities as Record<string, unknown>)) {
-      if (!Array.isArray(nodes)) continue
-      healed[region] = (nodes as unknown[])
-        .filter((n): n is Record<string, unknown> => !!n && typeof n === "object")
-        .map((n, i) => ({
-          id: typeof n.id === "number" ? n.id : i + 1,
-          stat: typeof n.stat === "string" ? (n.stat as OddityNode["stat"]) : "maxPhys",
-          value: typeof n.value === "number" ? n.value : 0,
-          enabled: typeof n.enabled === "boolean" ? n.enabled : true,
-          icon: typeof n.icon === "string" ? n.icon : undefined,
-        }))
+  {
+    const stored = next.unclaimedOddityNodes as unknown
+    const healed: UnclaimedOddityNodes = {}
+    if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+      for (const [region, ids] of Object.entries(stored as Record<string, unknown>)) {
+        if (!Array.isArray(ids)) continue
+        const closed = closeUnclaimedOddityNodes(
+          region,
+          ids.filter((id): id is number => typeof id === "number"),
+        )
+        if (closed.length > 0) healed[region] = closed
+      }
     }
-    for (const [region, defNodes] of Object.entries(DEFAULT_ODDITIES)) {
-      if (!healed[region]) healed[region] = defNodes.map((n) => ({ ...n }))
-    }
-    next.oddities = healed
+    next.unclaimedOddityNodes = healed
   }
   {
     const stored = next.disabledTalentNodes as unknown

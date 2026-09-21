@@ -137,7 +137,7 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(persistedInputs.inventory).toEqual(defaultInputs.inventory)
     expect(persistedInputs.equipped).toEqual(defaultInputs.equipped)
     expect(persistedInputs.martialArtsTalents).toEqual(defaultInputs.martialArtsTalents)
-    expect(persistedInputs.oddities).toEqual(defaultInputs.oddities)
+    expect(persistedInputs.unclaimedOddityNodes).toEqual(defaultInputs.unclaimedOddityNodes)
     expect(persistedInputs.combatSettings).toEqual(defaultInputs.combatSettings)
   })
 

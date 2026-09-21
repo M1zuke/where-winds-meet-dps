@@ -164,7 +164,7 @@ export interface Inputs {
 
   martialArtsTalents: MartialArtsTalent[]
 
-  oddities: OddityRegions
+  unclaimedOddityNodes: UnclaimedOddityNodes
 
   disabledTalentNodes: DisabledTalentNodes
 
@@ -226,15 +226,7 @@ export interface MartialArtsTalent {
   scaleMax: number
 }
 
-export interface OddityNode {
-  id: number
-  stat: TalentStat
-  value: number
-  enabled: boolean
-  icon?: string
-}
-
-export type OddityRegions = Record<string, OddityNode[]>
+export type UnclaimedOddityNodes = Record<string, readonly number[]>
 
 export type DisabledTalentNodes = readonly number[]
 

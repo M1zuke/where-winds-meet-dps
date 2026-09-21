@@ -1,26 +1,13 @@
-import {
-  DEFAULT_ENHANCEMENTS,
-  DEFAULT_ODDITIES,
-  getDefaultTalentsForClass,
-} from "../definitions/baseStats"
+import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
-import type { EquippedSlots, GearLevel, Inputs, OddityRegions } from "./types"
+import type { EquippedSlots, GearLevel, Inputs } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
-
-function allOddities(): OddityRegions {
-  return Object.fromEntries(
-    Object.entries(DEFAULT_ODDITIES).map(([region, nodes]) => [
-      region,
-      nodes.map((node) => ({ ...node, enabled: true })),
-    ]),
-  )
-}
 
 function equippedSlots(build: GraduationBuild): EquippedSlots {
   const equipped = { ...EMPTY_EQUIPPED }
@@ -118,7 +105,7 @@ export function graduationInputs(
         enabled: true,
       }),
     ),
-    oddities: allOddities(),
+    unclaimedOddityNodes: {},
     enhancements: { ...DEFAULT_ENHANCEMENTS },
   }
 }
