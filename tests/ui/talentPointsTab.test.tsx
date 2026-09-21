@@ -1,15 +1,22 @@
-import { fireEvent, render, within } from "@testing-library/react"
+import { fireEvent, render } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { defaultInputs } from "../../src/engine/defaults"
-import type { DisabledTalentPoints, Inputs } from "../../src/engine/types"
-import type { TalentPointGroup } from "../../src/definitions/baseStats"
-import { TALENT_POINT_GROUPS } from "../../src/definitions/baseStats"
+import type { Inputs } from "../../src/engine/types"
+import type { TalentBoardCell } from "../../src/definitions/baseStats"
+import {
+  TALENT_BOARD_CELLS,
+  TALENT_POINT_BUDGET,
+  closeDisabledTalentNodes,
+  talentNodesAboveBreakthrough,
+} from "../../src/definitions/baseStats"
+import { TALENT_BOARD } from "../../src/data/baseStats"
 import { I18nProvider } from "../../src/i18n/I18nProvider"
 import { ConfirmProvider } from "../../src/ui/components/confirm-dialog/ConfirmDialog"
 import { TalentPointsTab } from "../../src/ui/features/talents/talent-points-tab/TalentPointsTab"
 
-const PHYS = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "minPhys")!
-const MAX_PHYS = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "maxPhys")!
+const ROOT = TALENT_BOARD_CELLS[0]
+const STACKED = TALENT_BOARD_CELLS.find((cell) => cell.ranks.length === 4)!
+const EVERY_NODE = TALENT_BOARD.map((node) => node.id)
 
 function renderTab(inputs: Inputs, onChange = vi.fn()) {
   render(
@@ -22,100 +29,102 @@ function renderTab(inputs: Inputs, onChange = vi.fn()) {
   return onChange
 }
 
-function cardFor(group: TalentPointGroup): HTMLElement {
-  return document.querySelectorAll("div.panel")[TALENT_POINT_GROUPS.indexOf(group)] as HTMLElement
+function nodes(): Element[] {
+  return [...document.querySelectorAll('g[role="button"]')]
 }
 
-function pipsIn(card: HTMLElement): HTMLElement[] {
-  return within(card)
-    .getAllByRole("button")
-    .filter((button) => button.hasAttribute("aria-pressed"))
+function nodeFor(cell: TalentBoardCell): Element {
+  return nodes()[TALENT_BOARD_CELLS.indexOf(cell)]
 }
 
-function allDisabled(group: TalentPointGroup): DisabledTalentPoints {
-  const out: DisabledTalentPoints = {}
-  for (const member of group.members) out[member.tier] = [...(out[member.tier] ?? []), member.id]
-  return out
+function disabledFrom(onChange: ReturnType<typeof vi.fn>): number[] {
+  return (onChange.mock.calls[0][0] as Inputs).disabledTalentNodes as number[]
 }
 
 describe("TalentPointsTab", () => {
-  it("renders one card per derived group rather than a hand-written list", () => {
-    renderTab(defaultInputs)
-    expect(document.querySelectorAll("div.panel")).toHaveLength(TALENT_POINT_GROUPS.length)
+  it("draws one node per grid position rather than a card per stat", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    expect(nodes()).toHaveLength(TALENT_BOARD_CELLS.length)
   })
 
-  it("gives every talent point of a group its own step", () => {
-    renderTab(defaultInputs)
-    for (const group of TALENT_POINT_GROUPS) {
-      expect(pipsIn(cardFor(group))).toHaveLength(group.members.length)
-    }
+  it("opens with every node the profile's breakthrough reaches taken", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    for (const node of nodes()) expect(node.getAttribute("data-state")).toBe("full")
   })
 
-  it("keeps min and max phys on separate cards", () => {
-    renderTab(defaultInputs)
-    expect(cardFor(PHYS)).not.toBe(cardFor(MAX_PHYS))
+  it("greys out a node behind a higher breakthrough and refuses the click", () => {
+    const gated = TALENT_BOARD_CELLS.find((cell) =>
+      talentNodesAboveBreakthrough(16).includes(cell.ranks[0].id),
+    )!
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 16 })
+    expect(nodeFor(gated).getAttribute("data-state")).toBe("gated")
+    fireEvent.click(nodeFor(gated))
+    expect(onChange).not.toHaveBeenCalled()
   })
 
-  it("opens with every step on", () => {
-    renderTab(defaultInputs)
-    for (const pip of pipsIn(cardFor(PHYS))) {
-      expect(pip).toHaveAttribute("aria-pressed", "true")
-    }
-    expect(within(cardFor(PHYS)).getByText(String(PHYS.members.length))).toBeTruthy()
+  it("takes the node itself once the breakthrough reaches it", () => {
+    const gated = TALENT_BOARD_CELLS.find((cell) =>
+      talentNodesAboveBreakthrough(16).includes(cell.ranks[0].id),
+    )!
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    expect(nodeFor(gated).getAttribute("data-state")).toBe("full")
   })
 
-  it("switches the clicked point off and leaves its neighbours alone", () => {
-    const onChange = renderTab(defaultInputs)
-    const target = PHYS.members[1]
-    fireEvent.click(pipsIn(cardFor(PHYS))[1])
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ disabledTalentPoints: { [target.tier]: [target.id] } }),
-    )
+  it("clears a full position together with everything behind it", () => {
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 17 })
+    fireEvent.click(nodeFor(ROOT))
+    expect(disabledFrom(onChange)).toHaveLength(TALENT_POINT_BUDGET)
   })
 
-  it("switches a point back on", () => {
-    const member = PHYS.members[0]
+  it("leaves the rest of the board alone when a leaf goes off", () => {
+    const leaf = TALENT_BOARD_CELLS.find(
+      (cell) =>
+        cell.ranks.length === 1 && !TALENT_BOARD.some((node) => node.requires === cell.ranks[0].id),
+    )!
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 17 })
+    fireEvent.click(nodeFor(leaf))
+    expect(disabledFrom(onChange)).toEqual([leaf.ranks[0].id])
+  })
+
+  it("takes one rank per click on a stacked position", () => {
+    const cleared = closeDisabledTalentNodes(STACKED.ranks.map((rank) => rank.id))
+    const onChange = renderTab({ ...defaultInputs, breakthrough: 17, disabledTalentNodes: cleared })
+    fireEvent.click(nodeFor(STACKED))
+    expect(disabledFrom(onChange)).toEqual(cleared.filter((id) => id !== STACKED.ranks[0].id))
+  })
+
+  it("refuses a node whose predecessor is not taken", () => {
     const onChange = renderTab({
       ...defaultInputs,
-      disabledTalentPoints: { [member.tier]: [member.id] },
+      breakthrough: 17,
+      disabledTalentNodes: EVERY_NODE,
     })
-    fireEvent.click(pipsIn(cardFor(PHYS))[0])
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ disabledTalentPoints: {} }))
+    fireEvent.click(nodeFor(STACKED))
+    expect(onChange).not.toHaveBeenCalled()
+    expect(nodeFor(STACKED).getAttribute("data-state")).toBe("locked")
   })
 
-  it("takes the last point still on when the minus button is used", () => {
-    const onChange = renderTab(defaultInputs)
-    const last = PHYS.members[PHYS.members.length - 1]
-    fireEvent.click(within(cardFor(PHYS)).getByLabelText("Disable one"))
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ disabledTalentPoints: { [last.tier]: [last.id] } }),
-    )
+  it("offers the node the cleared board starts from", () => {
+    const onChange = renderTab({
+      ...defaultInputs,
+      breakthrough: 17,
+      disabledTalentNodes: EVERY_NODE,
+    })
+    expect(nodeFor(ROOT).getAttribute("data-state")).toBe("ready")
+    fireEvent.click(nodeFor(ROOT))
+    expect(disabledFrom(onChange)).not.toContain(ROOT.ranks[0].id)
   })
 
-  it("stops the steppers at the ends of a group", () => {
-    renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
-    const card = cardFor(PHYS)
-    expect(within(card).getByLabelText("Disable one")).toBeDisabled()
-    expect(within(card).getByLabelText("Enable one more")).not.toBeDisabled()
+  it("counts the points the board has spent", () => {
+    renderTab({ ...defaultInputs, breakthrough: 17 })
+    expect(document.body.textContent).toContain(`${TALENT_POINT_BUDGET}`)
   })
 
-  it("sums only the steps left on", () => {
-    const full = PHYS.members.reduce((sum, member) => sum + (member.effects.minPhys ?? 0), 0)
-    renderTab(defaultInputs)
-    expect(within(cardFor(PHYS)).getByText(`+${Math.round(full * 10) / 10}`)).toBeTruthy()
-  })
-
-  it("states a shared total once instead of repeating it per stat", () => {
-    const attributes = TALENT_POINT_GROUPS.find((group) => group.stats[0] === "power")!
-    renderTab(defaultInputs)
-    const card = cardFor(attributes)
-    expect(within(card).getByText(`+${attributes.members.length}`)).toBeTruthy()
-  })
-
-  it("reads zero once every step of a group is off", () => {
-    renderTab({ ...defaultInputs, disabledTalentPoints: allDisabled(PHYS) })
-    const card = cardFor(PHYS)
-    expect(within(card).getByText("+0")).toBeTruthy()
-    for (const pip of pipsIn(card)) expect(pip).toHaveAttribute("aria-pressed", "false")
+  it("sums only the nodes left on", () => {
+    renderTab({
+      ...defaultInputs,
+      disabledTalentNodes: closeDisabledTalentNodes([TALENT_BOARD[0].id]),
+    })
+    expect(document.querySelectorAll("dt")).toHaveLength(0)
   })
 })

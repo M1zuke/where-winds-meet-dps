@@ -1,5 +1,5 @@
 // Additive field, no version bump — see CLAUDE.md → "localStorage migrations".
-// Also covers folding legacy `fireOil`/`vulnerability` into `tianGongElement`/
+// Also covers folding legacy `fireOil`/`vulnerability` into `divinecraft`/
 // `shareEasyHurt`, dropping the inert `formbendSet`, and keeping the removed
 // `revelryScript` field rather than stripping it.
 import { beforeEach, describe, expect, it } from "vitest"
@@ -141,22 +141,22 @@ describe("combatSettings migration (additive field, no version bump)", () => {
 
   it("folds a legacy `fireOil: true` into Divinecraft fire and drops the sub-field", () => {
     writeProfilesBlob({
-      tianGongElement: null,
+      divinecraft: null,
       combatSettings: { fireOil: true } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.tianGongElement).toBe("fire")
+    expect(profiles[0].inputs.divinecraft).toBe("fire")
     expect(profiles[0].inputs.combatSettings).toEqual(defaultCombatSettings())
     expect("fireOil" in profiles[0].inputs.combatSettings!).toBe(false)
   })
 
   it("leaves an explicit Divinecraft choice alone when folding legacy `fireOil`", () => {
     writeProfilesBlob({
-      tianGongElement: "poison",
+      divinecraft: "poison",
       combatSettings: { fireOil: true } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.tianGongElement).toBe("poison")
+    expect(profiles[0].inputs.divinecraft).toBe("poison")
   })
 
   it("folds a legacy `vulnerability: true` into the Tank Spear Debuff flag", () => {

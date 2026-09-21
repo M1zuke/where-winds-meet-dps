@@ -6,6 +6,7 @@ import { useDpsWorkerPending } from "./useDpsWorkerPending"
 
 export interface GraduationRateData {
   rate: number | null
+  currentDps: number | null
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
 }
@@ -14,6 +15,7 @@ function graduationData(response: GraduationWorkerResponse | null): GraduationRa
   if (!response) return null
   return {
     rate: response.graduationRate,
+    currentDps: response.currentDps,
     theoreticalDps: response.theoreticalDps,
     relayedTheoreticalDps: response.relayedTheoreticalDps,
   }
@@ -21,6 +23,7 @@ function graduationData(response: GraduationWorkerResponse | null): GraduationRa
 
 const EMPTY_DATA: GraduationRateData = {
   rate: null,
+  currentDps: null,
   theoreticalDps: null,
   relayedTheoreticalDps: null,
 }

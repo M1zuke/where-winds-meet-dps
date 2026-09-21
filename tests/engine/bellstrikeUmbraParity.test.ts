@@ -74,7 +74,7 @@ const inputs: Inputs = {
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
-  tianGongElement: "fire",
+  divinecraft: "fire",
   food: false,
   bossBoost: 0.0244,
   allMartialBoost: 0.04844,
@@ -93,7 +93,7 @@ const inputs: Inputs = {
   martialArtsTalents: [],
   equipped: { ...EMPTY_EQUIPPED },
   inventory: [],
-  oddities: {},
+  unclaimedOddityNodes: {},
   activeCustomRotation: retiredRotation("builtin-bellstrikeUmbra-t6-bili"),
   selectedBuiltinRotationId: null,
 }

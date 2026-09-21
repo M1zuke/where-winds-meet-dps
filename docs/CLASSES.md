@@ -53,8 +53,8 @@ Test-suite consequences are in TESTING.md § "Class scoping".
 - **Every entity is authored through a `define*` factory** from
   `src/definitions/` — skills, debuffs, gate buffs, buff modules, sets, inner
   ways, martial arts, rotations, graduation builds, classes. There is no JSON
-  authoring format: the only JSON under `src/data/` is lookup tables with no
-  contract to check.
+  authoring format, and `src/data/` carries no JSON at all — a lookup table is a
+  module whose rows go through a `define*` factory like any other entity.
 - **A built-in rotation is one module in its class folder's rotations folder**,
   default-exporting its `defineRotation` call. Its class id is its only
   registration: never list a rotation in a barrel.
@@ -64,8 +64,8 @@ Test-suite consequences are in TESTING.md § "Class scoping".
   stores: renaming the id is a storage change, renaming the name never is.
 - Nothing under `src/data/` may declare a `define*` contract or call a
   `register*` entry point.
-- Nothing under `src/definitions/` may reach past a `src/data/` folder barrel, an
-  `ids.ts` or a JSON table into an individual content module.
+- Nothing under `src/definitions/` may reach past a `src/data/` folder barrel or
+  an `ids.ts` into an individual content module.
 - Both halves are mechanically guarded (TESTING.md § "The architecture guards").
 
 Naming: per-class folders are kebab-case in both the class and the skill tree,
@@ -83,6 +83,13 @@ than the individual registries.**
 sides on that build's rotation** — the user's build and the benchmark alike,
 never the rotation the user has selected — so it compares gear, not rotation
 choice.
+
+**A build may also fix the encounter both sides are simulated in** — every
+encounter setting, plus the slotted inner ways and their tiers. A setting the
+build does not name is off, the profile's own selection is ignored on both sides
+of the rate, and every number outside the rate keeps following that selection.
+The break window is the one setting a build cannot fix: it stays the rotation's
+own. A build that fixes nothing rates the profile exactly as it is set.
 
 - A class with a single graduation build follows it without a choice, and a
   loaded profile stores it.

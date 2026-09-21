@@ -1,0 +1,25 @@
+.standardNotice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 5px;
+  background: var(--color-bg);
+}
+
+.headline {
+  margin: 0;
+  color: var(--color-accent-bright);
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.body {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.82em;
+}

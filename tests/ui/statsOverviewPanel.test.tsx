@@ -251,12 +251,12 @@ describe("StatsOverviewPanel", () => {
     const attrs = totalPlayerAttributes(
       defaultInputs.breakthrough,
       equipped,
-      defaultInputs.disabledTalentPoints,
+      defaultInputs.disabledTalentNodes,
     )
     const maxHp = totalMaxHp(
       defaultInputs.breakthrough,
       equipped,
-      defaultInputs.disabledTalentPoints,
+      defaultInputs.disabledTalentNodes,
     )
 
     render(

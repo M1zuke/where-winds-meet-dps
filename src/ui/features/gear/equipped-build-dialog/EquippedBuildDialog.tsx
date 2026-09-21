@@ -1,4 +1,5 @@
 import { useId, useMemo, useRef, useState } from "react"
+import { claimedOddityNodes, ODDITY_BOARD } from "../../../../definitions/baseStats"
 import { classDefinition } from "../../../../definitions/classes/registry"
 import type { HeirloomProfile } from "../../../../engine/heirloom"
 import { SET_BY_ID } from "../../../../definitions/sets/registry"
@@ -47,8 +48,8 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
   const armorSet = inputs.set ? SET_BY_ID[inputs.set] : null
   const enabledCount =
     inputs.martialArtsTalents.filter((talent) => talent.enabled).length +
-    Object.values(inputs.oddities).reduce(
-      (total, nodes) => total + nodes.filter((node) => node.enabled).length,
+    ODDITY_BOARD.reduce(
+      (total, region) => total + claimedOddityNodes(inputs.unclaimedOddityNodes, region.key).length,
       0,
     )
 

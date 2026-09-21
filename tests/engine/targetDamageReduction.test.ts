@@ -56,7 +56,7 @@ const baseCtx: FormulaContext = {
   hasSixHenZhi: false,
   food: false,
   set: null,
-  tianGong: null,
+  divinecraft: null,
   classSpecificAttunement: {},
   shareDebuffs: { henZhi: false, easyHurt: false },
 }

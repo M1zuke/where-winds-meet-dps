@@ -88,7 +88,7 @@ describe("V6__dropDerivedStats — called directly", () => {
     expect(after.inventory).toHaveLength(9)
     expect(after.equipped).toEqual(before.equipped)
     expect(after.mindMethods).toEqual(before.mindMethods)
-    expect(after.oddities).toEqual(before.oddities)
+    expect(after.unclaimedOddityNodes).toEqual(before.unclaimedOddityNodes)
     expect(after.martialArtsTalents).toEqual(before.martialArtsTalents)
     expect(after.combatSettings).toEqual(before.combatSettings)
     expect(after.classId).toBe(before.classId)

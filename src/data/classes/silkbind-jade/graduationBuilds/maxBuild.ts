@@ -63,4 +63,19 @@ export default defineGraduationBuild({
   bowSet: "precision",
   arsenal: "silkbind",
   rotationId: graduationRotation.id,
+  standardized: {
+    encounter: {
+      food: true,
+      dragonHeadFullStacks: true,
+      dragonHeadLowHpMaxBonus: true,
+      script: "wraithstrikeScript",
+      divinecraft: "fire",
+    },
+    innerWays: [
+      { id: "moraleChant", tier: 6 },
+      { id: "blossomBarrage", tier: 6 },
+      { id: "starReacher", tier: 6 },
+      { id: "breakingPoint", tier: 6 },
+    ],
+  },
 })

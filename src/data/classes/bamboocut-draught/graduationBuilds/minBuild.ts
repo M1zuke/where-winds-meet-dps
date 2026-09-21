@@ -63,4 +63,16 @@ export default defineGraduationBuild({
   bowSet: "crit",
   arsenal: "bamboocut",
   rotationId: graduationRotation.id,
+  standardized: {
+    encounter: {
+      food: true,
+      divinecraft: "fire",
+    },
+    innerWays: [
+      { id: "eonpour", tier: 6 },
+      { id: "skyspeak", tier: 6 },
+      { id: "mistwing", tier: 6 },
+      { id: "moraleChant", tier: 6 },
+    ],
+  },
 })

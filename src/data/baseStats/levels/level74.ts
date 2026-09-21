@@ -1,0 +1,13 @@
+import { defineBaseStatLevel } from "../../../definitions/baseStats/baseStatLevelDef"
+
+export default defineBaseStatLevel({
+  minPhys: 159,
+  maxPhys: 310,
+  precisionRate: 0.65,
+  critRate: 0,
+  affinityRate: 0,
+  critDamage: 0.35,
+  affinityDamage: 0.2,
+  maxHp: 21415,
+  physDef: 78,
+})

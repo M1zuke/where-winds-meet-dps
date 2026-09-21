@@ -124,7 +124,7 @@ describe("V7 step — v6 → v7 in isolation", () => {
     expect(after.inventory).toHaveLength(before.inventory.length)
     expect(after.equipped).toEqual(before.equipped)
     expect(after.mindMethods).toEqual(before.mindMethods)
-    expect(after.oddities).toEqual(before.oddities)
+    expect(after.unclaimedOddityNodes).toEqual(before.unclaimedOddityNodes)
     expect(after.martialArtsTalents).toEqual(before.martialArtsTalents)
     expect(after.phys).toEqual(before.phys)
     expect(after.critRate).toBe(before.critRate)

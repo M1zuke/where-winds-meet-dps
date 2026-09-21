@@ -1,13 +1,11 @@
 import type {
   ArsenalScores,
-  DisabledTalentPoints,
   EnhancementLevels,
   GearPiece,
   Inputs,
-  OddityNode,
-  OddityRegions,
   ScriptId,
   StoredProfile,
+  UnclaimedOddityNodes,
 } from "./engine/types"
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
@@ -25,9 +23,10 @@ import {
 import { withoutDerivedStats, withZeroedDerivedStats } from "./engine/derivedInputs"
 import {
   arsenalScoreCap,
+  closeDisabledTalentNodes,
+  closeUnclaimedOddityNodes,
   DEFAULT_ENHANCEMENT_LEVEL,
   resyncDefaultTalentsForBreakthrough,
-  DEFAULT_ODDITIES,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
 import {
@@ -90,6 +89,7 @@ import {
   migrateCleftpeakTag,
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
+  migrateDivinecraftField,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -276,7 +276,9 @@ function selectableSetId(stored: string | null): string | null {
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
-  const next: Inputs = { ...(rest as Inputs) }
+  const next: Inputs = migrateDivinecraftField(
+    rest as unknown as Record<string, unknown>,
+  ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
   // that reads `classId` (arsenal / inner-way allowlist / talent defaults).
@@ -430,40 +432,27 @@ function hydrateInputs(inputs: Inputs): Inputs {
     next.martialArtsTalents = healed as Inputs["martialArtsTalents"]
     next.martialArtsTalents = resyncDefaultTalentsForBreakthrough(next).martialArtsTalents
   }
-  if (!next.oddities || typeof next.oddities !== "object" || Array.isArray(next.oddities)) {
-    next.oddities = JSON.parse(JSON.stringify(DEFAULT_ODDITIES)) as OddityRegions
-  } else {
-    const healed: OddityRegions = {}
-    for (const [region, nodes] of Object.entries(next.oddities as Record<string, unknown>)) {
-      if (!Array.isArray(nodes)) continue
-      healed[region] = (nodes as unknown[])
-        .filter((n): n is Record<string, unknown> => !!n && typeof n === "object")
-        .map((n, i) => ({
-          id: typeof n.id === "number" ? n.id : i + 1,
-          stat: typeof n.stat === "string" ? (n.stat as OddityNode["stat"]) : "maxPhys",
-          value: typeof n.value === "number" ? n.value : 0,
-          enabled: typeof n.enabled === "boolean" ? n.enabled : true,
-          icon: typeof n.icon === "string" ? n.icon : undefined,
-        }))
-    }
-    for (const [region, defNodes] of Object.entries(DEFAULT_ODDITIES)) {
-      if (!healed[region]) healed[region] = defNodes.map((n) => ({ ...n }))
-    }
-    next.oddities = healed
-  }
   {
-    const stored = next.disabledTalentPoints as unknown
-    const healed: DisabledTalentPoints = {}
+    const stored = next.unclaimedOddityNodes as unknown
+    const healed: UnclaimedOddityNodes = {}
     if (stored && typeof stored === "object" && !Array.isArray(stored)) {
-      for (const [tier, ids] of Object.entries(stored as Record<string, unknown>)) {
+      for (const [region, ids] of Object.entries(stored as Record<string, unknown>)) {
         if (!Array.isArray(ids)) continue
-        const numeric = [...new Set(ids.filter((id): id is number => typeof id === "number"))].sort(
-          (left, right) => left - right,
+        const closed = closeUnclaimedOddityNodes(
+          region,
+          ids.filter((id): id is number => typeof id === "number"),
         )
-        if (numeric.length > 0) healed[tier] = numeric
+        if (closed.length > 0) healed[region] = closed
       }
     }
-    next.disabledTalentPoints = healed
+    next.unclaimedOddityNodes = healed
+  }
+  {
+    const stored = next.disabledTalentNodes as unknown
+    const ids = Array.isArray(stored)
+      ? stored.filter((id): id is number => typeof id === "number")
+      : []
+    next.disabledTalentNodes = closeDisabledTalentNodes(ids)
   }
   {
     const stored = next.enhancements as unknown
@@ -512,7 +501,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
-    if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
+    if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
     // reads — kept rather than dropped, per CLAUDE.md → "localStorage migrations".

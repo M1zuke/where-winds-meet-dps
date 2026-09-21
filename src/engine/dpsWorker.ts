@@ -31,7 +31,7 @@ import {
   defaultArsenalForClass,
   swapArsenal,
 } from "./panel"
-import { graduationInputs, withGraduationRotation } from "./graduation"
+import { graduationInputs, graduationRatedInputs } from "./graduation"
 import type { Rotation } from "./rotation"
 import type { Skill } from "./skill"
 import type { Buff } from "./buff"
@@ -827,6 +827,7 @@ export interface GraduationWorkerRequest {
 
 export interface GraduationWorkerResponse {
   reqId: number
+  currentDps: number | null
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
   graduationRate: number | null
@@ -867,23 +868,26 @@ function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
 }
 
 function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerResponse {
-  const currentInputs = withGraduationRotation(req.inputs)
+  const currentInputs = graduationRatedInputs(req.inputs)
   const benchmarkInputs = graduationInputs(req.inputs)
   const relayedInputs = graduationInputs(req.inputs, "relayed")
   if (!currentInputs || !benchmarkInputs || !relayedInputs) {
     return {
       reqId: req.reqId,
+      currentDps: null,
       theoreticalDps: null,
       relayedTheoreticalDps: null,
       graduationRate: null,
     }
   }
+  const currentDps = dpsFor(currentInputs)
   const theoreticalDps = dpsFor(benchmarkInputs)
   return {
     reqId: req.reqId,
+    currentDps,
     theoreticalDps,
     relayedTheoreticalDps: dpsFor(relayedInputs),
-    graduationRate: theoreticalDps > 0 ? dpsFor(currentInputs) / theoreticalDps : null,
+    graduationRate: theoreticalDps > 0 ? currentDps / theoreticalDps : null,
   }
 }
 

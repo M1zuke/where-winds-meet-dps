@@ -25,9 +25,8 @@ kernel consumes. Category-1 base-stat buffs belong here (BUFFS.md).
 
 - A saved profile holds **no resolved stat fields**. They are recomputed on
   every load, so never persist a derived stat.
-- Bumping a base-stat configuration means editing the JSON table **and** the
-  constant that selects which keys are summed. Adding a table key alone changes
-  nothing.
+- Bumping a base-stat configuration means editing the level row **and** the
+  summation that consumes it. Adding a row field alone changes nothing.
 - The base-stat row and the runtime level bonus must read the **same** level
   constant. Two sources drift silently.
 - A per-point attribute conversion is authored **once**, and every consumer

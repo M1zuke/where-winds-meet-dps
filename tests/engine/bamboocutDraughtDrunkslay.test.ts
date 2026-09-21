@@ -137,7 +137,7 @@ function run(
       steps: sequence.map((skill) => makeStep({ skillId: skill.id })),
     }),
     set: null,
-    tianGongElement: null,
+    divinecraft: null,
   })
 }
 

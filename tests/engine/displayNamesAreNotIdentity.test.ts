@@ -14,7 +14,7 @@ function renamedEverything(): Inputs {
     classId: CLASS,
     // Fire Oil's Burn ticks are a mechanic row, not a renameable built-in
     // skill or debuff — excluded so this guard stays scoped to renaming.
-    tianGongElement: null,
+    divinecraft: null,
     customSkills: builtinSkillsForClass(CLASS).map((skill) => ({
       ...skill,
       name: `${skill.id} renamed`,
@@ -29,7 +29,7 @@ function renamedEverything(): Inputs {
 }
 
 describe("renaming every built-in display name", () => {
-  const baseline = runEngine({ ...defaultInputs, classId: CLASS, tianGongElement: null })
+  const baseline = runEngine({ ...defaultInputs, classId: CLASS, divinecraft: null })
   const renamed = runEngine(renamedEverything())
 
   it("reaches the engine at all — every row is reported under a renamed label", () => {

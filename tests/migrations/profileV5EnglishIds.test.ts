@@ -46,7 +46,7 @@ describe("V5__englishIdsWithoutSitePrefix — called directly", () => {
     expect(after.inventory).toEqual(before.inventory)
     expect(after.equipped).toEqual(before.equipped)
     expect(after.mindMethods).toEqual(before.mindMethods)
-    expect(after.oddities).toEqual(before.oddities)
+    expect(after.unclaimedOddityNodes).toEqual(before.unclaimedOddityNodes)
   })
 
   it("does not mutate its input, and migrating twice equals migrating once", () => {
