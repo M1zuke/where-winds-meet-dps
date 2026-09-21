@@ -342,6 +342,7 @@ function AppInner() {
       {(graduationDialogOpen || mustChooseGraduationBuild) && (
         <GraduationBuildDialog
           inputs={configuredInputs}
+          currentDps={graduation.currentDps}
           theoreticalDps={graduation.theoreticalDps}
           relayedTheoreticalDps={graduation.relayedTheoreticalDps}
           onFollowBuild={(graduationBuildId) => setInputs({ ...inputs, graduationBuildId })}

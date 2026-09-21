@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest"
 import { CLASS_DEFS, classDefinition } from "../../src/definitions/classes/registry"
 import type { GraduationBuild } from "../../src/definitions/graduationBuilds/graduationBuildDef"
+import { STANDARDIZED_ENCOUNTER_OFF } from "../../src/definitions/graduationBuilds/graduationBuildDef"
+import { innerWayDefinition } from "../../src/definitions/innerWays/registry"
 import { attunementMax, getAttunement } from "../../src/engine/attunements"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearBaseStatsFor } from "../../src/data/stats/gearBaseStats"
@@ -15,11 +17,17 @@ import {
   followedGraduationBuildAmong,
   graduationBuildAtLevel,
   graduationInputs,
+  graduationRatedInputs,
   repairGraduationBuildId,
-  withGraduationRotation,
+  standardizedGraduationInputs,
 } from "../../src/engine/graduation"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
-import { GEAR_SLOTS, type GearLevel, type Inputs } from "../../src/engine/types"
+import {
+  defaultCombatSettings,
+  GEAR_SLOTS,
+  type GearLevel,
+  type Inputs,
+} from "../../src/engine/types"
 
 const GRADUATION_LEVEL: GearLevel = 96
 const SINGLE_BUILD_CLASS = "stonesplitStrength"
@@ -162,8 +170,107 @@ describe("graduation builds", () => {
 
     expect(followedGraduationBuild(unchosen)).toBeNull()
     expect(graduationInputs(unchosen)).toBeNull()
-    expect(withGraduationRotation(unchosen)).toBeNull()
-    expect(computeGraduation({ reqId: 20, inputs: unchosen }).graduationRate).toBeNull()
+    expect(graduationRatedInputs(unchosen)).toBeNull()
+    expect(computeGraduation({ reqId: 20, inputs: unchosen })).toMatchObject({
+      currentDps: null,
+      graduationRate: null,
+    })
+  })
+})
+
+describe("a standardized graduation build", () => {
+  const STANDARDIZED = BUILDS.filter(([, , build]) => build.standardized)
+
+  it.each(STANDARDIZED)(
+    "%s fixes only inner ways its class may slot, at a selectable tier, one per slot",
+    (_id, classDef, build) => {
+      const { innerWays } = build.standardized!
+      const slottable = classDefinition(classDef.id)!.innerWays
+
+      expect(innerWays.length).toBeLessThanOrEqual(4)
+      expect(new Set(innerWays.map((innerWay) => innerWay.id)).size).toBe(innerWays.length)
+      for (const { id, tier } of innerWays) {
+        expect(slottable).toContain(id)
+        expect(innerWayDefinition(id)!.selectableTiers).toContain(tier)
+      }
+    },
+  )
+
+  it.each(STANDARDIZED)(
+    "%s rates the user's build and the benchmark on one and the same encounter",
+    (id, classDef, build) => {
+      const inputs: Inputs = { ...defaultInputs, classId: classDef.id, graduationBuildId: id }
+      const rated = graduationRatedInputs(inputs)!
+      const benchmark = graduationInputs(inputs)!
+      const encounter = { ...STANDARDIZED_ENCOUNTER_OFF, ...build.standardized!.encounter }
+
+      for (const side of [rated, benchmark]) {
+        expect(side.dummyMode).toBe(encounter.dummyMode)
+        expect(side.food).toBe(encounter.food)
+        expect(side.divinecraft).toBe(encounter.divinecraft)
+        expect(side.shareDebuff5HenZhi).toBe(encounter.shareDebuff5HenZhi)
+        expect(side.shareEasyHurt).toBe(encounter.shareEasyHurt)
+        expect(side.combatSettings!.script).toBe(encounter.script)
+        expect(side.combatSettings!.dragonsBreath).toBe(encounter.dragonsBreath)
+        expect(side.combatSettings!.healerBuff).toBe(encounter.healerBuff)
+        expect(side.combatSettings!.breakExtension).toBe(encounter.breakExtension)
+        expect(side.combatSettings!.dragonHeadFullStacks).toBe(encounter.dragonHeadFullStacks)
+        expect(side.combatSettings!.dragonHeadLowHpMaxBonus).toBe(encounter.dragonHeadLowHpMaxBonus)
+        expect(side.combatSettings!.lowEndurance).toBe(encounter.lowEndurance)
+        expect(side.mindMethods.map((slot) => slot.id ?? "")).toEqual([
+          ...build.standardized!.innerWays.map((innerWay) => innerWay.id),
+          ...Array(4 - build.standardized!.innerWays.length).fill(""),
+        ])
+      }
+    },
+  )
+
+  it("leaves the break window to the rotation the build benchmarks on", () => {
+    const overridden: Inputs = {
+      ...FOLLOWING,
+      combatSettings: {
+        ...defaultCombatSettings(),
+        qiBreakOverride: { startSec: 3, durationSec: 40, lowQiLeadSec: 2 },
+      },
+    }
+
+    expect(graduationRatedInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
+    expect(graduationInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
+  })
+
+  it("rates the same however the profile's own encounter and inner ways are set", () => {
+    const tinkered: Inputs = {
+      ...FOLLOWING,
+      dummyMode: true,
+      food: false,
+      divinecraft: "poison",
+      shareDebuff5HenZhi: true,
+      shareEasyHurt: true,
+      combatSettings: {
+        ...defaultCombatSettings(),
+        script: "wraithstrikeScript",
+        dragonsBreath: true,
+        healerBuff: true,
+        breakExtension: true,
+      },
+      mindMethods: [
+        { id: "bitterSeason", name: "Bitter Season", stacks: "tier 5" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+      ],
+    }
+
+    expect(computeGraduation({ reqId: 21, inputs: tinkered })).toEqual(
+      computeGraduation({ reqId: 21, inputs: FOLLOWING }),
+    )
+  })
+
+  it("keeps the profile's own encounter and inner ways for a build that fixes none", () => {
+    const plain: GraduationBuild = { ...fictionalBuild("plain"), classId: FOLLOWING.classId }
+    const tinkered: Inputs = { ...FOLLOWING, dummyMode: true, food: false }
+
+    expect(standardizedGraduationInputs(tinkered, plain)).toBe(tinkered)
   })
 })
 
@@ -237,7 +344,7 @@ describe("graduation build follows the current breakthrough's gear level", () =>
 
 describe("computeGraduation", () => {
   it("matches the direct benchmark pipeline and current-to-theoretical ratio", () => {
-    const currentDps = dpsFor(withGraduationRotation(FOLLOWING)!)
+    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
     const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     const theoreticalDps = dpsFor(benchmarkInputs!)
@@ -246,6 +353,7 @@ describe("computeGraduation", () => {
     const response = computeGraduation({ reqId: 17, inputs: FOLLOWING })
 
     expect(response.reqId).toBe(17)
+    expect(response.currentDps).toBe(currentDps)
     expect(response.theoreticalDps).toBe(theoreticalDps)
     expect(response.graduationRate).toBe(currentDps / theoreticalDps)
     expect(response.graduationRate).toBeGreaterThan(0)
@@ -253,7 +361,7 @@ describe("computeGraduation", () => {
   })
 
   it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
-    const currentDps = dpsFor(withGraduationRotation(FOLLOWING)!)
+    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
     const relayedInputs = graduationInputs(FOLLOWING, "relayed")
     expect(relayedInputs).not.toBeNull()
 

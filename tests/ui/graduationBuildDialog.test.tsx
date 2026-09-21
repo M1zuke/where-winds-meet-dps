@@ -59,6 +59,13 @@ vi.mock("../../src/definitions/graduationBuilds/registry", async (importOriginal
     bowSet: "crit",
     arsenal: "bellstrike",
     rotationId: rotation.id,
+    standardized: {
+      encounter: { food: true },
+      innerWays: [
+        { id: "swordHorizon", tier: 6 },
+        { id: "moraleChant", tier: 5 },
+      ],
+    },
   })
 
   const builds = [relayedBowSet, plain]
@@ -82,12 +89,17 @@ const inputs = {
   graduationBuildId: "graduation-bellstrikeUmbra-test-relayed-bow-set",
 }
 
+function dpsReadout(label: string): HTMLElement {
+  return screen.getByText(label).parentElement!
+}
+
 describe("GraduationBuildDialog", () => {
   it("shows the class benchmark summary and all eight gear pieces", () => {
     render(
       <I18nProvider>
         <GraduationBuildDialog
           inputs={inputs}
+          currentDps={9876.54}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
@@ -99,7 +111,8 @@ describe("GraduationBuildDialog", () => {
 
     expect(screen.getByRole("dialog", { name: "Graduation build" })).toBeInTheDocument()
     expect(screen.getByText("Bellstrike Umbra")).toBeInTheDocument()
-    expect(screen.getByText("DPS 12,345.67")).toBeInTheDocument()
+    expect(dpsReadout("Benchmark")).toHaveTextContent("Benchmark 12,345.67")
+    expect(dpsReadout("Your build")).toHaveTextContent("Your build 9,876.54")
     expect(screen.getByText("All enabled")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
     expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
@@ -115,6 +128,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={inputs}
+          currentDps={9876.54}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
@@ -130,7 +144,8 @@ describe("GraduationBuildDialog", () => {
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
 
-    expect(screen.getByText("DPS 11,111.11")).toBeInTheDocument()
+    expect(dpsReadout("Benchmark")).toHaveTextContent("Benchmark 11,111.11")
+    expect(dpsReadout("Your build")).toHaveTextContent("Your build 9,876.54")
     expect(summary().nextElementSibling).toHaveTextContent("Affinity")
 
     const relayedWeapon = screen.getByRole("article", { name: "Left Weapon" })
@@ -144,6 +159,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={inputs}
+          currentDps={9876.54}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
@@ -171,6 +187,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={inputs}
+          currentDps={9876.54}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}
@@ -208,6 +225,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={{ ...defaultInputs, classId: "stonesplitStrength" }}
+          currentDps={null}
           theoreticalDps={null}
           relayedTheoreticalDps={null}
           onFollowBuild={() => undefined}
@@ -229,6 +247,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={{ ...inputs, graduationBuildId: null }}
+          currentDps={null}
           theoreticalDps={null}
           relayedTheoreticalDps={null}
           onFollowBuild={onFollowBuild}
@@ -252,6 +271,33 @@ describe("GraduationBuildDialog", () => {
     expect(onFollowBuild).toHaveBeenCalledWith(builds[0].id)
   })
 
+  it("gives a standardized build one card per fixed inner way, ahead of the gear summary", () => {
+    render(
+      <I18nProvider>
+        <GraduationBuildDialog
+          inputs={{ ...inputs, graduationBuildId: "graduation-bellstrikeUmbra-test-plain" }}
+          currentDps={9876.54}
+          theoreticalDps={12345.67}
+          relayedTheoreticalDps={11111.11}
+          onFollowBuild={() => undefined}
+          onCustomBuildsChanged={() => undefined}
+          onClose={() => undefined}
+        />
+      </I18nProvider>,
+    )
+
+    const panel = within(screen.getByRole("tabpanel"))
+    expect(panel.getByText("Sword Horizon").nextElementSibling).toHaveTextContent("tier 6")
+    expect(panel.getByText("Morale Chant").nextElementSibling).toHaveTextContent("tier 5")
+    expect(
+      panel.getByText("Sword Horizon").compareDocumentPosition(panel.getByText("Armor Set")) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+    expect(screen.getByText("Standardized benchmark").parentElement).not.toHaveTextContent(
+      "Sword Horizon",
+    )
+  })
+
   it("names the only build of a single-build class and offers no build choice", () => {
     const singleBuildInputs = { ...inputs, classId: "stonesplitStrength" }
     const [onlyBuild] = classDefinition(singleBuildInputs.classId)!.graduationBuilds
@@ -259,6 +305,7 @@ describe("GraduationBuildDialog", () => {
       <I18nProvider>
         <GraduationBuildDialog
           inputs={singleBuildInputs}
+          currentDps={9876.54}
           theoreticalDps={12345.67}
           relayedTheoreticalDps={11111.11}
           onFollowBuild={() => undefined}

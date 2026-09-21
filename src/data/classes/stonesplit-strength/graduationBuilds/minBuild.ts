@@ -1,7 +1,7 @@
 import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { SET_ID } from "../../../sets/ids"
 import { createGraduationGearPiece } from "../../graduationGear"
-import graduationRotation from "../rotations/tillaDummyRotation"
+import graduationRotation from "../rotations/windsFromCnSwitchNoToad"
 
 const idPrefix = "graduation-stonesplit-strength"
 
@@ -63,4 +63,16 @@ export default defineGraduationBuild({
   bowSet: "crit",
   arsenal: "stonesplit",
   rotationId: graduationRotation.id,
+  standardized: {
+    encounter: {
+      food: true,
+      divinecraft: "fire",
+    },
+    innerWays: [
+      { id: "frostCladNight", tier: 6 },
+      { id: "moraleChant", tier: 6 },
+      { id: "steadfastDevotion", tier: 6 },
+      { id: "throatPierce", tier: 6 },
+    ],
+  },
 })

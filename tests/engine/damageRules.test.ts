@@ -111,7 +111,7 @@ const baseCtx: FormulaContext = {
   hasSixHenZhi: false,
   food: false,
   set: null,
-  tianGong: null,
+  divinecraft: null,
   classSpecificAttunement: {
     "classSpecificAttunement 1": 0,
     "classSpecificAttunement 2": 0,

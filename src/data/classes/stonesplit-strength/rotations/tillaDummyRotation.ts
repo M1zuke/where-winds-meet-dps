@@ -70,4 +70,5 @@ export default defineRotation({
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-07-19T00:00:00.000Z",
   description: "Pure Hengdao rotation by Tilla from WSR Discord",
+  fixedWindowSec: 60,
 })

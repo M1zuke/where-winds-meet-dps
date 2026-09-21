@@ -65,7 +65,7 @@ export const defaultInputs: Inputs = {
   ],
 
   food: true,
-  tianGongElement: "fire",
+  divinecraft: "fire",
   set: SET_ID.hawkwing,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,

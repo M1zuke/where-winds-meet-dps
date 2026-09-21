@@ -62,7 +62,7 @@ export function fireOilBurnMechanic(): TimelineMechanic<State> {
     id: "fireOilBurn",
 
     prepare(setup) {
-      return setup.inputs.tianGongElement === "fire" ? {} : null
+      return setup.inputs.divinecraft === "fire" ? {} : null
     },
 
     extraEvents(_state, setup: MechanicSetup) {

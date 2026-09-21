@@ -73,11 +73,11 @@ function DivinecraftSegments({
   value,
   onChange,
 }: {
-  value: Inputs["tianGongElement"]
-  onChange: (next: Inputs["tianGongElement"]) => void
+  value: Inputs["divinecraft"]
+  onChange: (next: Inputs["divinecraft"]) => void
 }) {
   const { t } = useI18n()
-  const options: { value: Inputs["tianGongElement"]; label: string }[] = [
+  const options: { value: Inputs["divinecraft"]; label: string }[] = [
     { value: null, label: t("common.none2") },
     { value: "fire", label: t("overview.encounterSettings.fireOil") },
     { value: "poison", label: t("overview.encounterSettings.poison") },
@@ -146,8 +146,8 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
 
       <Section title={t("overview.encounterSettings.divinecraft")}>
         <DivinecraftSegments
-          value={inputs.tianGongElement}
-          onChange={(value) => set("tianGongElement", value)}
+          value={inputs.divinecraft}
+          onChange={(value) => set("divinecraft", value)}
         />
       </Section>
 

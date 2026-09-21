@@ -112,7 +112,7 @@ export interface FormulaContext {
   hasSixHenZhi: boolean
   food: boolean
   set: string | null
-  tianGong: "fire" | "poison" | null
+  divinecraft: "fire" | "poison" | null
   classSpecificAttunement: Record<string, number>
   // The scoped view of `classSpecificAttunement`, keyed by the `attune:` tag an
   // entity declares rather than by the stat's display name.

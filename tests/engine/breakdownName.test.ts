@@ -20,7 +20,7 @@ function castAll(skills: Skill[], debuffs: Debuff[] = []): Inputs {
       steps: skills.map((skill) => makeStep({ skillId: skill.id })),
     }),
     set: null,
-    tianGongElement: null,
+    divinecraft: null,
   }
 }
 

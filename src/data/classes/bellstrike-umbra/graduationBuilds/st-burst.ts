@@ -1,6 +1,7 @@
 import { defineGraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { SET_ID } from "../../../sets/ids"
 import { createGraduationGearPiece } from "../../graduationGear"
+import { BELLSTRIKE_UMBRA_STANDARDIZED } from "../standardizedGraduation"
 import graduationRotation from "../rotations/nox1mDh"
 
 const idPrefix = "graduation-bellstrike-umbra"
@@ -63,4 +64,12 @@ export default defineGraduationBuild({
   bowSet: "crit",
   arsenal: "bellstrike",
   rotationId: graduationRotation.id,
+  standardized: {
+    ...BELLSTRIKE_UMBRA_STANDARDIZED,
+    encounter: {
+      ...BELLSTRIKE_UMBRA_STANDARDIZED.encounter,
+      dragonHeadLowHpMaxBonus: true,
+      dragonHeadFullStacks: true,
+    },
+  },
 })
