@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
@@ -37,7 +38,7 @@ function probeInputs(
     ...defaultInputs,
     classId: CLASS,
     set: null,
-    tianGongElement: "fire",
+    divinecraft: "fire",
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
@@ -47,8 +48,8 @@ function probeInputs(
 }
 
 describe("Fire Oil Burn — ticks only with the fire oil selected", () => {
-  it.each(["poison", null] as const)("produces no ticks for tianGongElement %s", (element) => {
-    const result = runEngine(probeInputs([0, 1, 2], { tianGongElement: element }))
+  it.each(["poison", null] as const)("produces no ticks for divinecraft %s", (element) => {
+    const result = runEngine(probeInputs([0, 1, 2], { divinecraft: element }))
     expect(burnTicks(result.timeline).length).toBe(0)
   })
 
@@ -141,7 +142,7 @@ describe("Fire Oil Burn — pre-pull casts never open a window", () => {
       ...defaultInputs,
       classId: CLASS,
       set: null,
-      tianGongElement: "fire",
+      divinecraft: "fire",
       customSkills: [prePullSkill],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: prePullSkill.id })],
@@ -152,14 +153,24 @@ describe("Fire Oil Burn — pre-pull casts never open a window", () => {
   })
 })
 
-describe("Fire Oil Burn — the graduation build", () => {
-  it("the Bamboocut Draught graduation build's burn row is a real share of its total", () => {
-    const grad = graduationInputs({ ...defaultInputs, classId: "bamboocutDraught" })!
-    const toEngineInputs = (raw: Inputs) => applyBowSet(applyArmorSet(withDerivedStats(raw)))
-    const result = runEngine(toEngineInputs(grad))
-    const burnRow = result.perSkill.find((row) => row.name === BURN_NAME)
-    expect(burnRow).toBeDefined()
-    expect(burnTicks(result.timeline).length).toBeGreaterThan(0)
-    expect(burnRow!.percentOfTotal).toBeGreaterThan(0)
-  })
+describe("Fire Oil Burn — the graduation builds", () => {
+  const GRADUATION_CLASS = "bamboocutDraught"
+  const builds = classDefinition(GRADUATION_CLASS)!.graduationBuilds
+
+  it.each(builds.map((build) => [build.id] as const))(
+    "%s burns, and the row is a real share of its total",
+    (graduationBuildId) => {
+      const grad = graduationInputs({
+        ...defaultInputs,
+        classId: GRADUATION_CLASS,
+        graduationBuildId,
+      })!
+      const toEngineInputs = (raw: Inputs) => applyBowSet(applyArmorSet(withDerivedStats(raw)))
+      const result = runEngine(toEngineInputs(grad))
+      const burnRow = result.perSkill.find((row) => row.name === BURN_NAME)
+      expect(burnRow).toBeDefined()
+      expect(burnTicks(result.timeline).length).toBeGreaterThan(0)
+      expect(burnRow!.percentOfTotal).toBeGreaterThan(0)
+    },
+  )
 })

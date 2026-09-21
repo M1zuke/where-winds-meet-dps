@@ -6,56 +6,56 @@ import graduationRotation from "../rotations/1mDummyByWindsFromCn"
 const idPrefix = "graduation-bamboocut-draught"
 
 export default defineGraduationBuild({
-  id: "graduation-bamboocutDraught-tiltrim-crit",
-  name: "Min Build",
+  id: "graduation-bamboocutDraught-max-build",
+  name: "Max Build",
   classId: "bamboocutDraught",
   gear: [
     createGraduationGearPiece({
       idPrefix,
       slot: "leftWeapon",
-      words: ["minPhys", "minPhys", "dualKnivesBoost", "agility", "maxFormless"],
+      words: ["maxPhys", "maxPhys", "dualKnivesBoost", "power", "crit"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "rightWeapon",
-      words: ["minPhys", "minPhys", "gauntletsBoost", "agility", "precision"],
+      words: ["maxPhys", "maxPhys", "gauntletsBoost", "power", "agility"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "disc",
-      words: ["minPhys", "minPhys", "allMartialBoost", "agility", "maxBamboocut"],
+      words: ["maxPhys", "maxPhys", "allMartialBoost", "power", "crit"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "pendant",
-      words: ["minPhys", "minPhys", "allMartialBoost", "agility", "maxBamboocut"],
+      words: ["maxPhys", "maxPhys", "allMartialBoost", "power", "crit"],
       attunement: "physPen",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "helm",
-      words: ["crit", "agility", "minPhys", "precision", "crit"],
+      words: ["crit", "agility", "maxPhys", "precision", "crit"],
       attunement: "driftcleaveDeepdaze",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "armor",
-      words: ["crit", "agility", "minPhys", "precision", "maxBamboocut"],
+      words: ["precision", "agility", "maxPhys", "precision", "crit"],
       attunement: "driftcleaveDeepdaze",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "greaves",
-      words: ["crit", "agility", "minPhys", "damageVsBoss", "maxBamboocut"],
+      words: ["power", "power", "maxPhys", "damageVsBoss", "crit"],
       attunement: "driftcleaveDeepdaze",
     }),
     createGraduationGearPiece({
       idPrefix,
       slot: "bracer",
-      words: ["crit", "agility", "minPhys", "damageVsBoss", "maxBamboocut"],
+      words: ["power", "power", "maxPhys", "damageVsBoss", "crit"],
       attunement: "driftcleaveDeepdaze",
     }),
   ],

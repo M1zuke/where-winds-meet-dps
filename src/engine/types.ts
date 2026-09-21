@@ -55,7 +55,7 @@ export interface QiBreakWindow {
 
 // Deliberately NOT settings here, because each already has exactly one home and
 // a second would double-count it: Fire Oil is the Divinecraft fire choice
-// (`Inputs.tianGongElement`), Vulnerability is the tank spear debuff
+// (`Inputs.divinecraft`), Vulnerability is the tank spear debuff
 // (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
   /** `null` leaves each rotation running the break window it carries itself. */
@@ -130,7 +130,7 @@ export interface Inputs {
   mindMethods: [MindMethodSlot, MindMethodSlot, MindMethodSlot, MindMethodSlot]
 
   food: boolean
-  tianGongElement: "fire" | "poison" | null
+  divinecraft: "fire" | "poison" | null
   // A `SET_ID` value, never the display name.
   set: string | null
   shareDebuff5HenZhi: boolean

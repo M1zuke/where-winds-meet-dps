@@ -24,6 +24,7 @@ import { V25__addOddityHpDefenseNodes } from "./V25__addOddityHpDefenseNodes"
 import { V26__mysticArtIds } from "./V26__mysticArtIds"
 import { V27__talentBoardNodes } from "./V27__talentBoardNodes"
 import { V28__oddityBoardNodes } from "./V28__oddityBoardNodes"
+import { V29__divinecraftElement } from "./V29__divinecraftElement"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -50,6 +51,7 @@ export { addMissingOddityNodes } from "./V25__addOddityHpDefenseNodes"
 export { migrateMysticId, migrateRotationMysticIds } from "./V26__mysticArtIds"
 export { talentNodesFromLegacyPoints } from "./V27__talentBoardNodes"
 export { unclaimedOddityNodesFromLegacy } from "./V28__oddityBoardNodes"
+export { migrateDivinecraftField } from "./V29__divinecraftElement"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -76,6 +78,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V26__mysticArtIds,
   V27__talentBoardNodes,
   V28__oddityBoardNodes,
+  V29__divinecraftElement,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

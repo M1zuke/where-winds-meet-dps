@@ -74,7 +74,7 @@ const inputs: Inputs = {
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
-  tianGongElement: "fire",
+  divinecraft: "fire",
   food: false,
   bossBoost: 0.0244,
   allMartialBoost: 0.04844,

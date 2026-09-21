@@ -69,4 +69,16 @@ export default defineGraduationBuild({
   relayedOverrides: {
     bowSet: "affinity",
   },
+  standardized: {
+    encounter: {
+      food: true,
+      divinecraft: "fire",
+    },
+    innerWays: [
+      { id: "battleAnthem", tier: 6 },
+      { id: "swordMorph", tier: 6 },
+      { id: "mountainsMight", tier: 6 },
+      { id: "insightfulStrike", tier: 6 },
+    ],
+  },
 })

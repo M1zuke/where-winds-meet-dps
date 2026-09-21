@@ -89,6 +89,7 @@ import {
   migrateCleftpeakTag,
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
+  migrateDivinecraftField,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -275,7 +276,9 @@ function selectableSetId(stored: string | null): string | null {
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
-  const next: Inputs = { ...(rest as Inputs) }
+  const next: Inputs = migrateDivinecraftField(
+    rest as unknown as Record<string, unknown>,
+  ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
   // that reads `classId` (arsenal / inner-way allowlist / talent defaults).
@@ -498,7 +501,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
     const def = defaultCombatSettings()
     const raw = (next as unknown as { combatSettings?: unknown }).combatSettings
     const r = raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {}
-    if (r.fireOil === true && next.tianGongElement == null) next.tianGongElement = "fire"
+    if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
     // reads — kept rather than dropped, per CLAUDE.md → "localStorage migrations".

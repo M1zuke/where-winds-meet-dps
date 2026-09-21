@@ -1,13 +1,20 @@
 import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/baseStats"
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
-import type { GraduationBuild } from "../definitions/graduationBuilds/graduationBuildDef"
+import type {
+  GraduationBuild,
+  StandardizedGraduation,
+} from "../definitions/graduationBuilds/graduationBuildDef"
+import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
+import { innerWayName } from "../definitions/innerWays/registry"
 import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/graduationGear"
 import { graduationBuildFromCustom } from "./customGraduationBuild"
-import type { EquippedSlots, GearLevel, Inputs } from "./types"
+import type { EquippedSlots, GearLevel, Inputs, MindMethodSlot } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
 
 export type GraduationVariant = "maxRolls" | "relayed"
+
+const MIND_METHOD_SLOT_COUNT = 4
 
 function equippedSlots(build: GraduationBuild): EquippedSlots {
   const equipped = { ...EMPTY_EQUIPPED }
@@ -17,6 +24,33 @@ function equippedSlots(build: GraduationBuild): EquippedSlots {
 
 function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
   return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: rotationId }
+}
+
+function standardizedMindMethods(standardized: StandardizedGraduation): Inputs["mindMethods"] {
+  const slots: MindMethodSlot[] = standardized.innerWays
+    .slice(0, MIND_METHOD_SLOT_COUNT)
+    .map(({ id, tier }) => ({ id, name: innerWayName(id), stacks: `tier ${tier}` }))
+  while (slots.length < MIND_METHOD_SLOT_COUNT) slots.push({ name: "", stacks: "" })
+  return slots as Inputs["mindMethods"]
+}
+
+export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
+  const standardized = build.standardized
+  if (!standardized) return inputs
+  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
+    ...STANDARDIZED_ENCOUNTER_OFF,
+    ...standardized.encounter,
+  }
+  return {
+    ...inputs,
+    dummyMode,
+    food,
+    divinecraft,
+    shareDebuff5HenZhi,
+    shareEasyHurt,
+    combatSettings: { ...combat, qiBreakOverride: null },
+    mindMethods: standardizedMindMethods(standardized),
+  }
 }
 
 export function followedGraduationBuildAmong(
@@ -52,9 +86,11 @@ export function repairGraduationBuildId(classId: string, stored: unknown): strin
   return known && known.classId !== classId ? soleGraduationBuildId(classId) : stored
 }
 
-export function withGraduationRotation(inputs: Inputs): Inputs | null {
+export function graduationRatedInputs(inputs: Inputs): Inputs | null {
   const build = followedGraduationBuild(inputs)
-  return build ? onBuiltinRotation(inputs, build.rotationId) : null
+  return build
+    ? standardizedGraduationInputs(onBuiltinRotation(inputs, build.rotationId), build)
+    : null
 }
 
 export function graduationBuildAtLevel(
@@ -90,22 +126,25 @@ export function graduationInputs(
     ...piece,
     words: piece.words.map((word) => ({ ...word })) as typeof piece.words,
   }))
-  return {
-    ...onBuiltinRotation(inputs, build.rotationId),
-    allDamageBoost: 0,
-    independentDamageBoost: 0,
-    inventory,
-    equipped: equippedSlots(build),
-    set: build.set,
-    bowSet: build.bowSet,
-    arsenal: build.arsenal,
-    martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
-      (talent) => ({
-        ...talent,
-        enabled: true,
-      }),
-    ),
-    unclaimedOddityNodes: {},
-    enhancements: { ...DEFAULT_ENHANCEMENTS },
-  }
+  return standardizedGraduationInputs(
+    {
+      ...onBuiltinRotation(inputs, build.rotationId),
+      allDamageBoost: 0,
+      independentDamageBoost: 0,
+      inventory,
+      equipped: equippedSlots(build),
+      set: build.set,
+      bowSet: build.bowSet,
+      arsenal: build.arsenal,
+      martialArtsTalents: getDefaultTalentsForClass(inputs.classId, inputs.breakthrough).map(
+        (talent) => ({
+          ...talent,
+          enabled: true,
+        }),
+      ),
+      unclaimedOddityNodes: {},
+      enhancements: { ...DEFAULT_ENHANCEMENTS },
+    },
+    build,
+  )
 }

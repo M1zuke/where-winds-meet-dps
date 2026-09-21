@@ -44,6 +44,20 @@
   accent-color: var(--color-accent);
 }
 
+.dpsPair {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.dpsLabel {
+  color: var(--color-text-muted);
+  font-size: 0.8em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .choosePrompt {
   margin: 12px 0;
   color: var(--color-text-dim);

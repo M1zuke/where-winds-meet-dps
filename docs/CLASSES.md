@@ -84,6 +84,13 @@ sides on that build's rotation** — the user's build and the benchmark alike,
 never the rotation the user has selected — so it compares gear, not rotation
 choice.
 
+**A build may also fix the encounter both sides are simulated in** — every
+encounter setting, plus the slotted inner ways and their tiers. A setting the
+build does not name is off, the profile's own selection is ignored on both sides
+of the rate, and every number outside the rate keeps following that selection.
+The break window is the one setting a build cannot fix: it stays the rotation's
+own. A build that fixes nothing rates the profile exactly as it is set.
+
 - A class with a single graduation build follows it without a choice, and a
   loaded profile stores it.
 - A class with several follows none until the profile picks one; while none is

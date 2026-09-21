@@ -13,7 +13,14 @@ import type { CustomGraduationBuild } from "../../../../engine/customGraduationB
 import { resistanceForInputs } from "../../../../engine/panel"
 import type { Inputs } from "../../../../engine/types"
 import { GEAR_SLOTS } from "../../../../engine/types"
-import { classKey, graduationBuildKey, setKey } from "../../../../i18n/contentKeys"
+import { innerWayName } from "../../../../definitions/innerWays/registry"
+import {
+  classKey,
+  graduationBuildKey,
+  innerWayKey,
+  innerWayTierKey,
+  setKey,
+} from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { StatsOverviewPanel } from "../../../components/stats-overview-panel/StatsOverviewPanel"
 import { SubTabs } from "../../../components/sub-tabs/SubTabs"
@@ -22,6 +29,7 @@ import { Dialog, DialogBody, DialogFooter, DialogHeader } from "../../../compone
 import { BuildPieceCard } from "../build-piece-card/BuildPieceCard"
 import { BuildSummary, type BuildSummaryItem } from "../build-summary/BuildSummary"
 import { GraduationBuildPicker } from "../graduation-build-picker/GraduationBuildPicker"
+import { GraduationStandardNotice } from "../graduation-standard-notice/GraduationStandardNotice"
 import { CustomGraduationBuildEditor } from "../custom-graduation-build-editor/CustomGraduationBuildEditor"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
@@ -30,6 +38,7 @@ import styles from "./GraduationBuildDialog.module.scss"
 
 interface Props {
   inputs: Inputs
+  currentDps: number | null
   theoreticalDps: number | null
   relayedTheoreticalDps: number | null
   onFollowBuild(graduationBuildId: string): void
@@ -49,6 +58,7 @@ function formatDps(value: number | null): string {
 
 export function GraduationBuildDialog({
   inputs,
+  currentDps,
   theoreticalDps,
   relayedTheoreticalDps,
   onFollowBuild,
@@ -76,6 +86,13 @@ export function GraduationBuildDialog({
   if (!classDef) return null
   const piecesBySlot = new Map((build?.gear ?? []).map((piece) => [piece.slot, piece]))
   const armorSet = build?.set ? SET_BY_ID[build.set] : null
+
+  const innerWayItems: BuildSummaryItem[] = (build?.standardized?.innerWays ?? []).map(
+    ({ id, tier }) => ({
+      label: t(innerWayKey(id), innerWayName(id)),
+      value: t(innerWayTierKey(`tier ${tier}`), `tier ${tier}`),
+    }),
+  )
 
   const summaryItems: BuildSummaryItem[] = build
     ? [
@@ -105,6 +122,10 @@ export function GraduationBuildDialog({
       </DialogHeader>
 
       <DialogBody>
+        {followed?.standardized && (
+          <GraduationStandardNotice encounter={followed.standardized.encounter} />
+        )}
+
         <div className={styles.pickerSection}>
           {offeredBuilds.length > 1 && (
             <>
@@ -160,8 +181,19 @@ export function GraduationBuildDialog({
                 {t("gear.graduationBuildDialog.relayedWords")} ({RELAYED_PERCENT}%{" "}
                 {t("gear.graduationBuildDialog.ofMaxRoll")})
               </label>
-              <span className={dialogChrome.introDps}>
-                {t("common.dps")} {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
+              <span className={styles.dpsPair}>
+                <span className={dialogChrome.introDps}>
+                  <span className={styles.dpsLabel}>
+                    {t("gear.graduationBuildDialog.yourBuild")}
+                  </span>{" "}
+                  {formatDps(currentDps)}
+                </span>
+                <span className={dialogChrome.introDps}>
+                  <span className={styles.dpsLabel}>
+                    {t("gear.graduationBuildDialog.benchmark")}
+                  </span>{" "}
+                  {formatDps(relayed ? relayedTheoreticalDps : theoreticalDps)}
+                </span>
               </span>
             </>
           )}
@@ -181,6 +213,7 @@ export function GraduationBuildDialog({
             <SubTabPanel>
               {tab === "build" && (
                 <>
+                  {innerWayItems.length > 0 && <BuildSummary items={innerWayItems} />}
                   <BuildSummary items={summaryItems} />
 
                   <div className={previewStyles.pieceList}>
