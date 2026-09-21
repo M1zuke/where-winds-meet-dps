@@ -89,6 +89,18 @@ export function oddityRegionKey(region: string): string {
   return `content.oddityRegion.${camelCaseSegment(region)}`
 }
 
+export function oddityChapterKey(chapter: string): string {
+  return `content.oddityChapter.${camelCaseSegment(chapter)}`
+}
+
+export function oddityNodeKey(node: { id: number }): string {
+  return `content.oddityNode.${node.id}`
+}
+
+export function oddityNodeDescriptionKey(node: { id: number }): string {
+  return `content.oddityNode.${node.id}.description`
+}
+
 export function skillTypeKey(skillType: string): string {
   return `content.skillType.${skillType}`
 }
@@ -99,6 +111,14 @@ export function attributeAttackKey(attributeAttack: string): string {
 
 export function rarityKey(rarity: string): string {
   return `content.rarity.${rarity}`
+}
+
+export function talentNodeKey(node: { id: number }): string {
+  return `content.talentNode.${node.id}`
+}
+
+export function talentNodeDescriptionKey(node: { id: number }): string {
+  return `content.talentNode.${node.id}.description`
 }
 
 const DEFAULT_TALENT_ID = /^default-(.+)-(\d+)$/

@@ -93,7 +93,7 @@ const inputs: Inputs = {
   martialArtsTalents: [],
   equipped: { ...EMPTY_EQUIPPED },
   inventory: [],
-  oddities: {},
+  unclaimedOddityNodes: {},
   activeCustomRotation: retiredRotation("builtin-bellstrikeUmbra-t6-bili"),
   selectedBuiltinRotationId: null,
 }

@@ -12,20 +12,22 @@ import { DEFAULT_ARSENAL_SCORES } from "./arsenal"
 import type {
   ArsenalScores,
   AttributeKey,
-  DisabledTalentPoints,
+  DisabledTalentNodes,
   EnhancementLevels,
   GearPiece,
   Inputs,
   MartialArtsTalent,
-  OddityRegions,
   ScalingSource,
-  TalentStat,
+  UnclaimedOddityNodes,
 } from "../../engine/types"
-import baseStatsJson from "../../data/baseStats/baseStats.json"
-import { artAttackStageAt, ODDITIES, TALENT_POINTS, TALENT_POINT_TIERS } from "../../data/baseStats"
-import classSkillBoostsJson from "../../data/baseStats/classSkillBoosts.json"
-import type { TalentPointDef } from "./talentPointDef"
-import { isTalentPointEnabled } from "./talentPointGroups"
+import {
+  artAttackStageAt,
+  BASE_STAT_LEVELS,
+  CLASS_SKILL_BOOSTS,
+  TALENT_BOARD,
+} from "../../data/baseStats"
+import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
+import { ODDITY_BOARD, isOddityNodeClaimed } from "./oddityBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
 import {
   AGILITY_PER_POINT,
@@ -42,14 +44,25 @@ import {
   enhancementPhysDefTotal,
 } from "./enhancements"
 
-export * from "./talentPointGroups"
+export * from "./talentBoardGraph"
+export * from "./oddityBoardGraph"
+export {
+  defineOddityRegion,
+  type OddityNodeDef,
+  type OddityNodeKind,
+  type OddityStat,
+} from "./oddityNodeDef"
 export * from "./enhancements"
 export * from "./arsenal"
 export type { TalentPointStat, TalentPointEffects, TalentPointDef } from "./talentPointDef"
+export {
+  defineTalentNode,
+  type TalentGate,
+  type TalentGateKind,
+  type TalentNodeDef,
+} from "./talentNodeDef"
 
 const BASE_LEVEL = APP_PLAYER_LEVEL
-
-type BaseStatsByLevel = Record<string, Record<string, number>>
 
 interface BaseEntry {
   id: number
@@ -77,17 +90,16 @@ interface BaseAccumulator {
 }
 
 function readBaseLevel(): BaseAccumulator {
-  const row = (baseStatsJson as BaseStatsByLevel)[String(BASE_LEVEL)]
-  if (!row) throw new Error(`baseStats.json missing Level ${BASE_LEVEL}`)
-  const get = (key: string) => row[key] ?? 0
+  const row = BASE_STAT_LEVELS[BASE_LEVEL]
+  if (!row) throw new Error(`No base stat row for level ${BASE_LEVEL}`)
   return {
-    minPhys: get("MIN_W_ATK"),
-    maxPhys: get("MAX_W_ATK"),
-    precision: get("ACR_PROB"),
-    critRate: get("CRI_PROB"),
-    affinityRate: get("BASH_PROB"),
-    critDamageBoost: get("W_ATK_CRI_UP"),
-    affinityDamageBoost: get("BASH_UP"),
+    minPhys: row.minPhys,
+    maxPhys: row.maxPhys,
+    precision: row.precisionRate,
+    critRate: row.critRate,
+    affinityRate: row.affinityRate,
+    critDamageBoost: row.critDamage,
+    affinityDamageBoost: row.affinityDamage,
     minFormless: 0,
     maxFormless: 0,
     power: 0,
@@ -95,8 +107,8 @@ function readBaseLevel(): BaseAccumulator {
     momentum: 0,
     body: 0,
     defense: 0,
-    hp: get("HP_MAX"),
-    physDef: get("W_DEF"),
+    hp: row.maxHp,
+    physDef: row.physDef,
   }
 }
 
@@ -158,28 +170,21 @@ function applyAll(acc: BaseAccumulator, entries: readonly BaseEntry[] | undefine
   for (const entry of entries) applyEntry(acc, entry)
 }
 
-function applyTalentPoints(
-  acc: BaseAccumulator,
-  tier: string,
-  points: readonly TalentPointDef[],
-  disabled: DisabledTalentPoints | undefined,
-): void {
-  for (const point of points) {
-    if (!isTalentPointEnabled(disabled, tier, point.id)) continue
-    for (const [stat, value] of Object.entries(point.effects)) {
-      applyEntry(acc, { id: point.id, stat, value })
+function applyTalentBoard(acc: BaseAccumulator, disabled: DisabledTalentNodes): void {
+  for (const node of TALENT_BOARD) {
+    if (!node.effects || !isTalentNodeTaken(disabled, node.id)) continue
+    for (const [stat, value] of Object.entries(node.effects)) {
+      applyEntry(acc, { id: node.id, stat, value })
     }
   }
 }
 
 function buildAccumulator(
   breakthrough: number,
-  disabled: DisabledTalentPoints | undefined,
+  disabled: DisabledTalentNodes | undefined,
 ): BaseAccumulator {
   const acc = readBaseLevel()
-  for (const tier of TALENT_POINT_TIERS) {
-    applyTalentPoints(acc, tier, TALENT_POINTS[tier], disabled)
-  }
+  applyTalentBoard(acc, effectiveDisabledTalentNodes(disabled, breakthrough))
   applyAll(acc, breakthroughAttributes(breakthrough))
   return acc
 }
@@ -198,12 +203,9 @@ const GLOBAL_BASE_BY_SELECTION = new Map<string, Readonly<Record<string, number>
 
 const MAX_CACHED_SELECTIONS = 64
 
-function selectionKey(breakthrough: number, disabled: DisabledTalentPoints | undefined): string {
-  const tiers = Object.entries(disabled ?? {})
-    .filter(([, ids]) => ids.length > 0)
-    .sort(([left], [right]) => (left < right ? -1 : 1))
-    .map(([tier, ids]) => `${tier}:${[...ids].sort((left, right) => left - right).join(",")}`)
-  return `${breakthrough}|${tiers.join(";")}`
+function selectionKey(breakthrough: number, disabled: DisabledTalentNodes | undefined): string {
+  const ids = [...(disabled ?? [])].sort((left, right) => left - right)
+  return `${breakthrough}|${ids.join(",")}`
 }
 
 function cached<T>(store: Map<string, T>, key: string, build: () => T): T {
@@ -215,7 +217,7 @@ function cached<T>(store: Map<string, T>, key: string, build: () => T): T {
   return built
 }
 
-function accumulatorFor(breakthrough: number, disabled?: DisabledTalentPoints): BaseAccumulator {
+function accumulatorFor(breakthrough: number, disabled?: DisabledTalentNodes): BaseAccumulator {
   return cached(ACCUMULATOR_BY_SELECTION, selectionKey(breakthrough, disabled), () =>
     buildAccumulator(breakthrough, disabled),
   )
@@ -223,7 +225,7 @@ function accumulatorFor(breakthrough: number, disabled?: DisabledTalentPoints): 
 
 export function playerAttributes(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<PlayerAttributes> {
   return cached(ATTRIBUTES_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
@@ -244,7 +246,7 @@ export interface FormlessAttack {
 
 export function formlessAttack(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<FormlessAttack> {
   const acc = accumulatorFor(breakthrough, disabled)
   return { min: acc.minFormless, max: acc.maxFormless }
@@ -256,14 +258,14 @@ export function totalFormlessAttack(
   inputs: Inputs,
   equippedPieces: readonly GearPiece[],
 ): Readonly<FormlessAttack> {
-  const fromTalents = formlessAttack(inputs.breakthrough, inputs.disabledTalentPoints)
+  const fromTalents = formlessAttack(inputs.breakthrough, inputs.disabledTalentNodes)
   const fromGear = formlessWordTotals(equippedPieces, inputs)
   return { min: fromTalents.min + fromGear.min, max: fromTalents.max + fromGear.max }
 }
 
 export function globalBase(
   breakthrough: number,
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<Record<string, number>> {
   return cached(GLOBAL_BASE_BY_SELECTION, selectionKey(breakthrough, disabled), () => {
     const acc = accumulatorFor(breakthrough, disabled)
@@ -287,14 +289,6 @@ export function globalBase(
   })
 }
 
-export const DEFAULT_ODDITIES: OddityRegions = (() => {
-  const out: OddityRegions = {}
-  for (const [region, nodes] of Object.entries(ODDITIES)) {
-    out[region] = nodes.map((node) => ({ ...node, enabled: true }))
-  }
-  return out
-})()
-
 export const CLASS_PRIMARY_BASE = {
   min: 0,
   max: 0,
@@ -307,16 +301,6 @@ const PRIMARY_ATTACK_KEY: Readonly<Record<AttributeKey, string>> = {
   Silkbind: "silkbind",
   Bamboocut: "bamboocut",
 }
-
-interface ClassSkillBoost {
-  skill: string
-  stat: string
-  maxBonus: number
-  scalesWith: keyof PlayerAttributes
-  scaleMax: number
-  stage?: "min" | "max"
-}
-type ClassSkillBoosts = Record<string, ClassSkillBoost[]>
 
 const STAT_TO_PATH: Readonly<Record<string, string>> = {
   minPhys: "phys.min",
@@ -346,16 +330,16 @@ export function getDefaultTalentsForClass(
   classId: string,
   breakthrough: number = defaultBreakthrough(),
 ): MartialArtsTalent[] {
-  const boosts = (classSkillBoostsJson as ClassSkillBoosts)[classId]
+  const boosts = CLASS_SKILL_BOOSTS[classId]
   if (!boosts) return []
   const resolvedStage = artAttackStageAt(classId, breakthrough)
   return boosts.map((boost, index) => ({
     id: `default-${classId}-${index}`,
     name: boost.skill,
     enabled: true,
-    stat: boost.stat as TalentStat,
+    stat: boost.stat,
     maxBonus: boost.stage ? resolvedStage[boost.stage] : boost.maxBonus,
-    scalesWith: boost.scalesWith as ScalingSource,
+    scalesWith: boost.scalesWith,
     scaleMax: boost.scaleMax,
   }))
 }
@@ -374,7 +358,7 @@ export function resyncDefaultTalentsForBreakthrough(inputs: Inputs): Inputs {
 export function totalPlayerAttributes(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
 ): Readonly<PlayerAttributes> {
   const fromBreakthrough = playerAttributes(breakthrough, disabled)
   const gear = gearAttributeTotals(equippedPieces)
@@ -390,9 +374,9 @@ export function totalPlayerAttributes(
 export function totalMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
@@ -404,16 +388,16 @@ export function totalMaxHp(
     arsenalHp(breakthrough, arsenalScores) +
     enhancementHpTotal(enhancements) +
     averageEnhancementBonus(enhancements).maxHp +
-    oddityHpTotal(oddities)
+    oddityHpTotal(unclaimedOddityNodes)
   )
 }
 
 export function effectiveMaxHp(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const raw = totalMaxHp(
@@ -421,7 +405,7 @@ export function effectiveMaxHp(
     equippedPieces,
     disabled,
     enhancements,
-    oddities,
+    unclaimedOddityNodes,
     arsenalScores,
   )
   return raw * (1 + averageEnhancementBonus(enhancements).percent)
@@ -430,9 +414,9 @@ export function effectiveMaxHp(
 export function totalPhysDef(
   breakthrough: number,
   equippedPieces: readonly GearPiece[],
-  disabled?: DisabledTalentPoints,
+  disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
-  oddities: OddityRegions = DEFAULT_ODDITIES,
+  unclaimedOddityNodes: UnclaimedOddityNodes = {},
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
   return (
@@ -440,7 +424,7 @@ export function totalPhysDef(
     gearPhysDefTotal(equippedPieces) +
     acc.defense * DEFENSE_PER_POINT.physDef +
     enhancementPhysDefTotal(enhancements) +
-    oddityPhysDefTotal(oddities)
+    oddityPhysDefTotal(unclaimedOddityNodes)
   )
 }
 
@@ -461,34 +445,37 @@ export function userTalentContributions(
   return out
 }
 
-export function oddityContributions(oddities: OddityRegions): Record<string, number> {
+export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<string, number> {
   const out: Record<string, number> = {}
-  for (const nodes of Object.values(oddities)) {
-    for (const n of nodes) {
-      if (!n.enabled || !n.value || n.stat === "maxHp" || n.stat === "physDef") continue
-      const path = STAT_TO_PATH[n.stat] ?? n.stat
-      out[path] = (out[path] ?? 0) + n.value
+  for (const region of ODDITY_BOARD) {
+    for (const node of region.nodes) {
+      if (!node.value || node.stat === undefined) continue
+      if (node.stat === "maxHp" || node.stat === "physDef") continue
+      if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
+      const path = STAT_TO_PATH[node.stat] ?? node.stat
+      out[path] = (out[path] ?? 0) + node.value
     }
   }
   return out
 }
 
-function oddityStatTotal(oddities: OddityRegions, stat: "maxHp" | "physDef"): number {
+function oddityStatTotal(unclaimed: UnclaimedOddityNodes, stat: "maxHp" | "physDef"): number {
   let total = 0
-  for (const nodes of Object.values(oddities)) {
-    for (const n of nodes) {
-      if (n.enabled && n.stat === stat) total += n.value
+  for (const region of ODDITY_BOARD) {
+    for (const node of region.nodes) {
+      if (node.stat !== stat || !node.value) continue
+      if (isOddityNodeClaimed(unclaimed, region.key, node.id)) total += node.value
     }
   }
   return total
 }
 
-export function oddityHpTotal(oddities: OddityRegions): number {
-  return oddityStatTotal(oddities, "maxHp")
+export function oddityHpTotal(unclaimed: UnclaimedOddityNodes): number {
+  return oddityStatTotal(unclaimed, "maxHp")
 }
 
-export function oddityPhysDefTotal(oddities: OddityRegions): number {
-  return oddityStatTotal(oddities, "physDef")
+export function oddityPhysDefTotal(unclaimed: UnclaimedOddityNodes): number {
+  return oddityStatTotal(unclaimed, "physDef")
 }
 
 export function buildScalingSources(
@@ -498,7 +485,7 @@ export function buildScalingSources(
   const totals = totalPlayerAttributes(
     inputs.breakthrough,
     equippedPieces,
-    inputs.disabledTalentPoints,
+    inputs.disabledTalentNodes,
   )
   return {
     power: totals.power,
@@ -527,9 +514,9 @@ export function getConfiguredBase(
   equippedPieces: readonly GearPiece[] = [],
 ): Readonly<Record<string, number>> {
   const key = primaryAttackKey(inputs.classId)
-  const formless = formlessAttack(inputs.breakthrough, inputs.disabledTalentPoints)
+  const formless = formlessAttack(inputs.breakthrough, inputs.disabledTalentNodes)
   const base: Record<string, number> = {
-    ...globalBase(inputs.breakthrough, inputs.disabledTalentPoints),
+    ...globalBase(inputs.breakthrough, inputs.disabledTalentNodes),
     [`${key}.min`]: CLASS_PRIMARY_BASE.min + formless.min,
     [`${key}.max`]: CLASS_PRIMARY_BASE.max + formless.max,
     [`${key}.penetration`]: CLASS_PRIMARY_BASE.penetration,
@@ -545,8 +532,9 @@ export function getConfiguredBase(
   )) {
     base[path] = (base[path] ?? 0) + amount
   }
-  const oddities = inputs.oddities ?? DEFAULT_ODDITIES
-  for (const [path, amount] of Object.entries(oddityContributions(oddities))) {
+  for (const [path, amount] of Object.entries(
+    oddityContributions(inputs.unclaimedOddityNodes ?? {}),
+  )) {
     base[path] = (base[path] ?? 0) + amount
   }
   const enhancements = inputs.enhancements ?? DEFAULT_ENHANCEMENTS

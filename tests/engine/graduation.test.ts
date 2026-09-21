@@ -149,16 +149,12 @@ describe("graduation builds", () => {
     expect(build.bowSet).toBe(followed.bowSet)
   })
 
-  it("always enables every class talent and oddity", () => {
+  it("always enables every class talent and claims every oddity", () => {
     const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     expect(benchmarkInputs!.martialArtsTalents.length).toBeGreaterThan(0)
     expect(benchmarkInputs!.martialArtsTalents.every((talent) => talent.enabled)).toBe(true)
-    expect(
-      Object.values(benchmarkInputs!.oddities)
-        .flat()
-        .every((oddity) => oddity.enabled),
-    ).toBe(true)
+    expect(benchmarkInputs!.unclaimedOddityNodes).toEqual({})
   })
 
   it("benchmarks nothing while the profile follows no build", () => {

@@ -1,40 +1,16 @@
-import breakthroughTiers from "../../data/baseStats/breakthroughTiers.json"
+import { BREAKTHROUGH_TIER_DEFS } from "../../data/baseStats"
+import type { BreakthroughAttribute, BreakthroughTier } from "./breakthroughTierDef"
 import type { GearLevel } from "../../engine/types"
 
-export interface BreakthroughAttribute {
-  id: number
-  stat: string
-  value: number
-}
+export type {
+  BreakthroughAttribute,
+  BreakthroughAttributeStat,
+  BreakthroughTier,
+} from "./breakthroughTierDef"
 
-export interface BreakthroughTier {
-  breakthrough: number
-  // The practice target's in-game health pool, as of 2026-09-10.
-  targetHp: number
-  gearLevel: GearLevel
-  name: string
-  levelRange: string
-  resistance: number
-  defense: number
-  // Breakthrough 21 repeats 20's figures by the season pattern — nothing
-  // above world level 20 has shipped yet to read them from directly.
-  physPenResistance: number
-  attrPenResistance: number
-  generalDamageTaken: number
-  fatigueDamageTaken: number
-  damageReduction: number
-  physDamageBoostReduction: number
-  attrDamageBoostReduction: number
-  critDamageReduction: number
-  affinityDamageReduction: number
-  attributes?: BreakthroughAttribute[]
-  // In-game unlock instant, UTC. A tier without one is already live.
-  release?: string
-}
-
-export const BREAKTHROUGH_TIERS: readonly BreakthroughTier[] = [
-  ...(breakthroughTiers as BreakthroughTier[]),
-].sort((left, right) => left.breakthrough - right.breakthrough)
+export const BREAKTHROUGH_TIERS: readonly BreakthroughTier[] = [...BREAKTHROUGH_TIER_DEFS].sort(
+  (left, right) => left.breakthrough - right.breakthrough,
+)
 
 const DEFAULT_BREAKTHROUGH_BEFORE_ANY_RELEASE = 16
 

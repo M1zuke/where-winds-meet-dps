@@ -7,14 +7,20 @@ import {
 import { CLASS_DEFS, CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
 import { INNER_WAYS } from "../../src/definitions/innerWays/registry"
 
-const NEXT_RELEASE = BREAKTHROUGH_RELEASES[BREAKTHROUGH_RELEASES.length - 1]
+const LATEST_RELEASE = BREAKTHROUGH_RELEASES[BREAKTHROUGH_RELEASES.length - 1]
+
+const HIGHEST_CONFIRMED = Math.max(...INNER_WAYS.map((innerWay) => innerWay.confirmedBreakthrough))
+
+const FIRST_SUPERSEDING_RELEASE = BREAKTHROUGH_RELEASES.find(
+  (release) => release.breakthrough > HIGHEST_CONFIRMED,
+)!
 
 // Read off the registry rather than listed here: which inner ways still carry
 // pre-release figures is data that moves as captures land.
 function pendingIdsFor(classId: string): readonly string[] {
   return classDefinition(classId)!.innerWays.filter((innerWayId) => {
     const innerWay = INNER_WAYS.find((candidate) => candidate.id === innerWayId)
-    return !!innerWay && innerWay.confirmedBreakthrough < NEXT_RELEASE.breakthrough
+    return !!innerWay && innerWay.confirmedBreakthrough < LATEST_RELEASE.breakthrough
   })
 }
 
@@ -23,21 +29,21 @@ const CLASSES_WITH_PENDING_DATA = CLASS_IDS().filter((classId) => pendingIdsFor(
 describe("breakthroughDataRequestFor", () => {
   it("asks for nothing while every inner way is confirmed at the live breakthrough", () => {
     for (const classId of CLASS_IDS())
-      expect(breakthroughDataRequestFor(classId, NEXT_RELEASE.at - 1)).toBeNull()
+      expect(breakthroughDataRequestFor(classId, FIRST_SUPERSEDING_RELEASE.at - 1)).toBeNull()
   })
 
   it("names the class it is asking, and the breakthrough that superseded its data", () => {
     for (const classDef of CLASS_DEFS()) {
       if (pendingIdsFor(classDef.id).length === 0) continue
-      const request = breakthroughDataRequestFor(classDef.id, NEXT_RELEASE.at)
+      const request = breakthroughDataRequestFor(classDef.id, LATEST_RELEASE.at)
       expect(request?.className).toBe(classDef.displayName)
-      expect(request?.liveBreakthrough).toBe(NEXT_RELEASE.breakthrough)
+      expect(request?.liveBreakthrough).toBe(LATEST_RELEASE.breakthrough)
     }
   })
 
   it("lists the inner ways the class slots whose data the release superseded, signature one first", () => {
     for (const classDef of CLASS_DEFS()) {
-      const request = breakthroughDataRequestFor(classDef.id, NEXT_RELEASE.at)
+      const request = breakthroughDataRequestFor(classDef.id, LATEST_RELEASE.at)
       expect(request?.pendingInnerWays.map((innerWay) => innerWay.id) ?? [], classDef.id).toEqual(
         pendingIdsFor(classDef.id),
       )
@@ -47,13 +53,13 @@ describe("breakthroughDataRequestFor", () => {
   it("asks a class nothing once every inner way it slots is confirmed", () => {
     for (const classId of CLASS_IDS()) {
       if (pendingIdsFor(classId).length > 0) continue
-      expect(breakthroughDataRequestFor(classId, NEXT_RELEASE.at), classId).toBeNull()
+      expect(breakthroughDataRequestFor(classId, LATEST_RELEASE.at), classId).toBeNull()
     }
   })
 
   it("carries each pending inner way's own name and stale breakthrough", () => {
     for (const classId of CLASSES_WITH_PENDING_DATA) {
-      const request = breakthroughDataRequestFor(classId, NEXT_RELEASE.at)
+      const request = breakthroughDataRequestFor(classId, LATEST_RELEASE.at)
       for (const pending of request!.pendingInnerWays) {
         const innerWay = INNER_WAYS.find((candidate) => candidate.id === pending.id)!
         expect(pending.name).toBe(innerWay.name)
@@ -63,7 +69,7 @@ describe("breakthroughDataRequestFor", () => {
   })
 
   it("asks for nothing on a class id it does not know", () => {
-    expect(breakthroughDataRequestFor("noSuchClass", NEXT_RELEASE.at)).toBeNull()
+    expect(breakthroughDataRequestFor("noSuchClass", LATEST_RELEASE.at)).toBeNull()
   })
 
   it("never claims a breakthrough that has not been released", () => {

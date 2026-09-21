@@ -6,6 +6,7 @@ import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import type { Inputs } from "../../src/engine/types"
 import { getAttunement } from "../../src/engine/attunements"
+import { ODDITY_BOARD, claimedOddityNodes } from "../../src/definitions/baseStats"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { SET_BY_ID } from "../../src/definitions/sets/registry"
 import { statLineLabel } from "../../src/data/stats/statLines"
@@ -79,8 +80,9 @@ describe("EquippedBuildDialog", () => {
     const armorSet = fixture.set ? SET_BY_ID[fixture.set] : null
     const enabledCount =
       fixture.martialArtsTalents.filter((talent) => talent.enabled).length +
-      Object.values(fixture.oddities).reduce(
-        (total, nodes) => total + nodes.filter((node) => node.enabled).length,
+      ODDITY_BOARD.reduce(
+        (total, region) =>
+          total + claimedOddityNodes(fixture.unclaimedOddityNodes, region.key).length,
         0,
       )
 

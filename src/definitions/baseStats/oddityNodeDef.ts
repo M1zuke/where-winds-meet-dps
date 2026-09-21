@@ -1,9 +1,20 @@
 export type OddityStat = "minPhys" | "maxPhys" | "maxHp" | "physDef"
 
+export type OddityNodeKind = "opener" | "reward" | "final"
+
 export interface OddityNodeDef {
   readonly id: number
-  readonly stat: OddityStat
-  readonly value: number
+  readonly chapter: number
+  readonly x: number
+  readonly y: number
+  readonly cost: number
+  readonly kind: OddityNodeKind
+  readonly requires?: number
+  readonly icon: string
+  readonly name: string
+  readonly description: string
+  readonly stat?: OddityStat
+  readonly value?: number
 }
 
 type UniqueOddityIds<
