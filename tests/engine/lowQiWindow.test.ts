@@ -158,8 +158,8 @@ describe("Endless Gale's window", () => {
   }
 
   // Mountain's Might extends it; on its own the spear talent's window is shorter.
-  it("is 8s alone and 10s with Mountain's Might", () => {
-    expect(durationWith({})).toBe(8)
+  it("is 5s alone and 10s with Mountain's Might", () => {
+    expect(durationWith({})).toBe(5)
     expect(durationWith({ mountainsMight: true })).toBe(10)
   })
 })

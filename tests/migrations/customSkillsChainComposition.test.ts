@@ -29,6 +29,7 @@ import {
 import { healSkill as healUmbraValueFixes } from "../../src/migrations/customSkills/V24__umbraValueFixes"
 import { healBamboocutDraughtValuesGatesReach } from "../../src/migrations/customSkills/V25__bamboocutDraughtValuesGatesReach"
 import { healStonesplitStrengthValuesGatesReach } from "../../src/migrations/customSkills/V26__stonesplitStrengthValuesGatesReach"
+import { healBellstrikeSplendorValuesGatesReach } from "../../src/migrations/customSkills/V27__bellstrikeSplendorValuesGatesReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -67,6 +68,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [24, healUmbraValueFixes],
   [25, healBamboocutDraughtValuesGatesReach],
   [26, healStonesplitStrengthValuesGatesReach],
+  [27, healBellstrikeSplendorValuesGatesReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

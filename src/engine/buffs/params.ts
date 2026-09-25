@@ -1,6 +1,7 @@
 import { defaultCombatSettings, type Inputs, type QiBreakWindow } from "../types"
 import type { BuffParams } from "./buffEngine"
 import type { QiPhase } from "../effects/context"
+import { PARAM } from "../../data/skills/buffs/ids"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
@@ -83,6 +84,10 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   params.breakthrough = inputs.breakthrough
   params.distanceMeters =
     inputs.combatSettings?.distanceToTargetMeters ?? defaultCombatSettings().distanceToTargetMeters
+  params[PARAM.missingEnduranceAtHit] =
+    inputs.combatSettings?.missingEnduranceAtHit ?? defaultCombatSettings().missingEnduranceAtHit
+  params[PARAM.enduranceAtRelease] =
+    inputs.combatSettings?.enduranceAtRelease ?? defaultCombatSettings().enduranceAtRelease
 
   return params
 }

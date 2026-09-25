@@ -116,6 +116,8 @@ describe("paramsFromInputs — build derivation", () => {
         param === "targetMaxHp" ||
         param === "breakthrough" ||
         param === "distanceMeters" ||
+        param === "missingEnduranceAtHit" ||
+        param === "enduranceAtRelease" ||
         // Divinecraft: Fire is the default consumable choice.
         param === "divinecraftFire"
       )

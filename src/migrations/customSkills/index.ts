@@ -27,6 +27,7 @@ import { V23__drunkenHazeExplosion } from "./V23__drunkenHazeExplosion"
 import { V24__umbraValueFixes } from "./V24__umbraValueFixes"
 import { V25__bamboocutDraughtValuesGatesReach } from "./V25__bamboocutDraughtValuesGatesReach"
 import { V26__stonesplitStrengthValuesGatesReach } from "./V26__stonesplitStrengthValuesGatesReach"
+import { V27__bellstrikeSplendorValuesGatesReach } from "./V27__bellstrikeSplendorValuesGatesReach"
 
 export type {
   CustomSkillMigration,
@@ -71,6 +72,7 @@ export {
 } from "./V24__umbraValueFixes"
 export { healBamboocutDraughtValuesGatesReach } from "./V25__bamboocutDraughtValuesGatesReach"
 export { healStonesplitStrengthValuesGatesReach } from "./V26__stonesplitStrengthValuesGatesReach"
+export { healBellstrikeSplendorValuesGatesReach } from "./V27__bellstrikeSplendorValuesGatesReach"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -96,6 +98,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V24__umbraValueFixes,
   V25__bamboocutDraughtValuesGatesReach,
   V26__stonesplitStrengthValuesGatesReach,
+  V27__bellstrikeSplendorValuesGatesReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

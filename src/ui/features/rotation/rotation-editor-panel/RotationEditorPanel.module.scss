@@ -96,6 +96,14 @@
   opacity: 0.85;
 }
 
+.entryInvalid {
+  border-color: #553030;
+}
+
+.entryInvalid .time {
+  color: #c87878;
+}
+
 .skillStatic {
   color: #ddd;
   font-size: 0.88em;

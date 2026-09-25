@@ -176,6 +176,26 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             onChange={(value) => setCombat("lowEndurance", value)}
           />
         </div>
+        <div className={styles.inlineFields}>
+          <label className={styles.inlineField}>
+            {t("overview.encounterSettings.missingEnduranceAtHit")}
+            <NumInput
+              value={settings.missingEnduranceAtHit}
+              onChange={(value) =>
+                setCombat("missingEnduranceAtHit", Math.min(100, Math.max(0, value)))
+              }
+            />
+          </label>
+          <label className={styles.inlineField}>
+            {t("overview.encounterSettings.enduranceAtRelease")}
+            <NumInput
+              value={settings.enduranceAtRelease}
+              onChange={(value) =>
+                setCombat("enduranceAtRelease", Math.min(100, Math.max(0, value)))
+              }
+            />
+          </label>
+        </div>
       </Section>
 
       <Section title={t("overview.encounterSettings.script")}>

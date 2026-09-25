@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 
@@ -13,7 +14,13 @@ export const swordSpecial = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial,
-  receives: NAMELESS_SWORD_RECEIVES,
+  triggersBuffs: [BUFF.swordSlashDamageBoost],
+  receives: [
+    BUFF.swordSlashDamageBoost,
+    BUFF.swordEnergyEnhancement,
+    BUFF.swordEnergyHpDamage,
+    ...NAMELESS_SWORD_RECEIVES,
+  ],
   castFrames: 24,
   triggerable: true,
   hits: [
@@ -21,8 +28,8 @@ export const swordSpecial = defineSkill({
       frame: 0,
       physMultiplier: 1.767,
       attributeMultiplier: 2.6505,
-      physFixed: 409,
-      attributeFixed: 228,
+      physFixed: 490,
+      attributeFixed: 267,
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

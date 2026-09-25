@@ -3,6 +3,7 @@ import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { energySurgeConsumeTrigger, energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
 
 export const energySurge = defineSkill({
   id: SKILL.energySurge,
@@ -15,6 +16,7 @@ export const energySurge = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.energySurge,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
+  castConditions: [{ buffId: BUFF.energySurgeGrant, op: "gte", stacks: 1 }],
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
@@ -33,22 +35,23 @@ export const energySurge = defineSkill({
       frame: 0,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
-      physFixed: 302,
-      attributeFixed: 168,
+      physFixed: 361.6,
+      attributeFixed: 197.2,
+      triggers: [energySurgeConsumeTrigger, energySurgeReleaseTrigger],
     }),
     hit(1, {
       frame: 17,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
-      physFixed: 362,
-      attributeFixed: 202,
+      physFixed: 433.92,
+      attributeFixed: 236.64,
     }),
     hit(2, {
       frame: 34,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
-      physFixed: 422,
-      attributeFixed: 236,
+      physFixed: 506.24,
+      attributeFixed: 276.08,
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

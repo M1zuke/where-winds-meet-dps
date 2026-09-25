@@ -20,9 +20,12 @@ export const belowSixtyEndurance = defineClassBuff({
   name: "Below 60% Endurance",
   requires: { param: PARAM.lowEndurance },
   affectsAll: true,
+  reachesDotTicks: false,
   alwaysActive: true,
   duration: 9999,
   summary: "affinityDmg +18%, except while Endless Gale already grants it",
   effects: (ctx) =>
-    ctx.status.isActive(BUFF.endlessGale) ? [] : [stat("affinityDamageBoost", 0.18)],
+    ctx.status.isActive(BUFF.endlessGale) || ctx.status.isActive(BUFF.endlessGaleAtStart)
+      ? []
+      : [stat("affinityDamageBoost", 0.18)],
 })

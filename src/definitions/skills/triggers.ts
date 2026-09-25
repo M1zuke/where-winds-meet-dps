@@ -13,6 +13,9 @@ interface TriggerSpec {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
+  cooldownDecayFramesPerAttempt?: number
+  cooldownFloorFrames?: number
+  cooldownGroup?: string
   durationFrames?: number
   requiresParam?: string
   requiresMinTier?: number
@@ -28,6 +31,13 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.transferFrom !== undefined ? { transferFrom: spec.transferFrom } : {}),
     ...(spec.phase !== undefined ? { phase: spec.phase } : {}),
     ...(spec.cooldownFrames !== undefined ? { cooldownFrames: spec.cooldownFrames } : {}),
+    ...(spec.cooldownDecayFramesPerAttempt !== undefined
+      ? { cooldownDecayFramesPerAttempt: spec.cooldownDecayFramesPerAttempt }
+      : {}),
+    ...(spec.cooldownFloorFrames !== undefined
+      ? { cooldownFloorFrames: spec.cooldownFloorFrames }
+      : {}),
+    ...(spec.cooldownGroup !== undefined ? { cooldownGroup: spec.cooldownGroup } : {}),
     ...(spec.durationFrames !== undefined ? { durationFrames: spec.durationFrames } : {}),
     ...(spec.extendFrames !== undefined ? { extendFrames: spec.extendFrames } : {}),
     ...(spec.extendOnly !== undefined ? { extendOnly: spec.extendOnly } : {}),

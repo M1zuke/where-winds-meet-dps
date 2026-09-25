@@ -47,6 +47,9 @@ export interface HitTrigger {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
+  cooldownDecayFramesPerAttempt?: number
+  cooldownFloorFrames?: number
+  cooldownGroup?: string
   // Opens the granted window at this length instead of the target status's
   // own `durationFrames`.
   durationFrames?: number
@@ -83,6 +86,7 @@ export interface Skill {
   receives?: string[]
   triggersBuffs?: string[]
   hits: SkillHit[]
+  castConditions?: TriggerCondition[]
   castFrames: number
   triggerable: boolean
   elevatedAttributeMultiplier?: boolean
@@ -233,6 +237,22 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       t.durationFrames <= 0)
   )
     return false
+  if (
+    t.cooldownDecayFramesPerAttempt !== undefined &&
+    (typeof t.cooldownDecayFramesPerAttempt !== "number" ||
+      !Number.isFinite(t.cooldownDecayFramesPerAttempt) ||
+      t.cooldownDecayFramesPerAttempt < 0)
+  )
+    return false
+  if (
+    t.cooldownFloorFrames !== undefined &&
+    (typeof t.cooldownFloorFrames !== "number" ||
+      !Number.isFinite(t.cooldownFloorFrames) ||
+      t.cooldownFloorFrames < 0)
+  )
+    return false
+  if (t.cooldownGroup !== undefined && (typeof t.cooldownGroup !== "string" || !t.cooldownGroup))
+    return false
   if (t.requiresParam !== undefined && (typeof t.requiresParam !== "string" || !t.requiresParam))
     return false
   if (t.requiresMinTier !== undefined) {
@@ -349,6 +369,12 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.updatedAt !== "string") return false
   if (s.receives !== undefined && !isStringArray(s.receives)) return false
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
+  if (s.castConditions !== undefined) {
+    if (!Array.isArray(s.castConditions)) return false
+    for (const condition of s.castConditions) {
+      if (!isHitOrVariantCondition(condition)) return false
+    }
+  }
   return true
 }
 
@@ -396,6 +422,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
+    castConditions: src.castConditions?.map((condition) => ({ ...condition })),
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

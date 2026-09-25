@@ -16,7 +16,7 @@ export const spearqPrepull = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
-  triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.mountainsMight, BUFF.qiImbalance],
+  triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.endlessGaleAtStart, BUFF.mountainsMight],
   receives: NAMELESS_SPEAR_RECEIVES,
   castFrames: 0,
   triggerable: true,

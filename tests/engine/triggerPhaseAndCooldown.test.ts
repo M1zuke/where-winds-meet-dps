@@ -183,6 +183,115 @@ describe("a trigger with its own cooldown", () => {
   })
 })
 
+describe("a trigger with a decaying cooldown", () => {
+  it("fails to clear the second grant once the decay is dropped", () => {
+    const BASE_COOLDOWN = 200
+    const DECAY_PER_ATTEMPT = 80
+    const gate = makeGate()
+    const grant = granter(
+      makeTrigger({
+        kind: "applyBuff",
+        targetId: gate.id,
+        stacks: 1,
+        cooldownFrames: BASE_COOLDOWN,
+        cooldownDecayFramesPerAttempt: DECAY_PER_ATTEMPT,
+      }),
+    )
+    const skills = [grant, grant, grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(2)
+  })
+
+  it("keeps the second grant blocked once the floor is dropped", () => {
+    const BASE_COOLDOWN = 100
+    const DECAY_PER_ATTEMPT = 40
+    const FLOOR = 50
+    const UNFLOORED_WAIT = BASE_COOLDOWN - DECAY_PER_ATTEMPT * 2
+    const GAP_AT_SECOND_ATTEMPT = 30
+    expect(UNFLOORED_WAIT).toBeLessThan(GAP_AT_SECOND_ATTEMPT)
+    expect(GAP_AT_SECOND_ATTEMPT).toBeLessThan(FLOOR)
+
+    const gate = makeGate()
+    const trigger = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: BASE_COOLDOWN,
+      cooldownDecayFramesPerAttempt: DECAY_PER_ATTEMPT,
+      cooldownFloorFrames: FLOOR,
+    })
+    const first = makeSkill(CLASS, {
+      name: "First",
+      castFrames: 10,
+      hits: [makeHit({ frame: 0, triggers: [trigger] })],
+    })
+    const second = makeSkill(CLASS, {
+      name: "Second",
+      castFrames: GAP_AT_SECOND_ATTEMPT - 10,
+      hits: [makeHit({ frame: 0, triggers: [trigger] })],
+    })
+    const third = makeSkill(CLASS, {
+      name: "Third",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, triggers: [trigger] })],
+    })
+    const skills = [first, second, third, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+  })
+
+  it("resets the schedule back to the base cooldown once it fires again", () => {
+    const gate = makeGate()
+    const grant = granter(
+      makeTrigger({
+        kind: "applyBuff",
+        targetId: gate.id,
+        stacks: 1,
+        cooldownFrames: 200,
+        cooldownDecayFramesPerAttempt: 50,
+        cooldownFloorFrames: 60,
+      }),
+    )
+    const skills = [grant, grant, grant, grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 4, gate.id)).toBe(2)
+  })
+
+  it("shares one clock across every site the same exported trigger reaches", () => {
+    const gate = makeGate()
+    const shared = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+    })
+    const skills = [granter(shared, "A"), granter(shared, "B"), probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 2, gate.id)).toBe(1)
+  })
+
+  it("shares one clock across two triggers naming the same cooldownGroup", () => {
+    const gate = makeGate()
+    const first = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+      cooldownGroup: "shared-group",
+    })
+    const second = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+      cooldownGroup: "shared-group",
+    })
+    const skills = [granter(first, "A"), granter(second, "B"), probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 2, gate.id)).toBe(1)
+  })
+})
+
 describe("a marker with requiresMinTier", () => {
   const param = "testMarkerParam"
 

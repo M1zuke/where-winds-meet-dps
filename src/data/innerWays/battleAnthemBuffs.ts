@@ -21,14 +21,25 @@ export const battleAnthemChargedDamage = defineBuff({
 
 // Tier 6: "if the target is a boss, deals bonus damage based on the Endurance
 // you have consumed: 2% bonus damage for every 10 Endurance consumed, up to
-// 10%" (in-game tier panel, 2026-08-15). Carried at the cap, the way the
-// reference workbook's speed rotation runs it.
+// 10%" (in-game tier panel, 2026-08-15). "Consumed" reads as missing from a
+// full bar.
 export const battleAnthemEnduranceBoost = defineBuff({
   id: BUFF.battleAnthemEnduranceBoost,
   name: "Battle Anthem (Endurance consumed)",
   requires: { param: PARAM.battleAnthem, minTier: 6 },
   alwaysActive: true,
   duration: 9999,
-  summary: "allDamageBoost +10%",
-  effects: (ctx) => (ctx.self.reachesEvent ? [stat("allDamageBoost", 0.1)] : []),
+  summary: "allDamageBoost +2%/10 missing Endurance, cap 10%",
+  effects: (ctx) =>
+    ctx.self.reachesEvent
+      ? [
+          stat(
+            "allDamageBoost",
+            Math.min(
+              0.1,
+              0.02 * Math.floor(ctx.build.paramValue(PARAM.missingEnduranceAtHit) / 10),
+            ),
+          ),
+        ]
+      : [],
 })

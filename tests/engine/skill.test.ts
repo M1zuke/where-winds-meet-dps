@@ -300,6 +300,24 @@ describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
     expect(src.hits[0].variants![0].physMultiplier).toBe(2)
     expect(src.hits[0].variants![0].conditions).toHaveLength(1)
   })
+
+  it("copies castConditions, detached from the source", () => {
+    const src = makeSkill(CLASS, {
+      name: "Test",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    const s = seedSkillFromBuiltin(CLASS, src)
+    expect(s.castConditions).toEqual(src.castConditions)
+    expect(s.castConditions).not.toBe(src.castConditions)
+    s.castConditions![0].stacks = 99
+    expect(src.castConditions![0].stacks).toBe(1)
+  })
+
+  it("leaves castConditions undefined when the source has none", () => {
+    const src = makeSkill(CLASS, { name: "Test" })
+    const s = seedSkillFromBuiltin(CLASS, src)
+    expect(s.castConditions).toBeUndefined()
+  })
 })
 
 describe("storage round-trip", () => {
@@ -430,6 +448,51 @@ describe("storage round-trip", () => {
     })
     expect(imported.hits[0].triggers[0].requiresParam).toBe("someParam")
     expect(imported.hits[0].triggers[0].requiresMinTier).toBe(3)
+  })
+
+  it("export → import carries castConditions through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedCastSkill",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("save → load carries castConditions through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedSavedSkill",
+      castConditions: [{ buffId: "bf-gate", op: "gte", stacks: 1 }],
+    })
+    saveCustomSkill(s)
+    const found = loadCustomSkillsForClass(CLASS).find((x) => x.id === s.id)
+    expect(found?.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("export → import carries a decaying cooldown and its group through", () => {
+    const s = makeSkill(CLASS, {
+      name: "DecayingCooldownSkill",
+      hits: [
+        makeHit({
+          triggers: [
+            makeTrigger({
+              kind: "applyBuff",
+              targetId: "bf-grant",
+              cooldownFrames: 100,
+              cooldownDecayFramesPerAttempt: 10,
+              cooldownFloorFrames: 20,
+              cooldownGroup: "shared-grant",
+            }),
+          ],
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    const trigger = imported.hits[0].triggers[0]
+    expect(trigger.cooldownFrames).toBe(100)
+    expect(trigger.cooldownDecayFramesPerAttempt).toBe(10)
+    expect(trigger.cooldownFloorFrames).toBe(20)
+    expect(trigger.cooldownGroup).toBe("shared-grant")
   })
 
   it("a stale v1 (customSkill) blob is dropped on load", () => {

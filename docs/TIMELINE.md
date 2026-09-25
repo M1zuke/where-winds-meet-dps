@@ -70,6 +70,19 @@ threshold, rather than as a separate module per hit count. A cast's length
 must be derived only from the hits that actually occur, never from every hit
 the skill could ever land.
 
+### Cast legality
+
+A skill may carry its own ANDed ledger conditions (`castConditions`), checked
+once at layout time, at the same point and against the same incrementally
+built ledger state as a conditional hit. A step whose conditions fail is
+flagged and reported, never removed or reshaped: it still lays out, lands
+every hit its skill has and fires every trigger, exactly as it would if the
+conditions had held — the flag changes nothing about the simulation, only
+what gets reported alongside it. A `castConditions` entry never carries
+`source: "buffEngine"` — the same restriction as a hit's or a variant's own
+conditions. This flags a rotation step only — a `castSkill`-generated cast
+skips straight to its own hits, unflagged.
+
 ## Identity and tags
 
 - **Ids are matched, names are not.** A buff reaches or is triggered by a skill
@@ -179,7 +192,12 @@ Rules:
   the same trigger fires again only after that many frames. The first firing
   is never held back, a firing blocked by its conditions or phase does not
   start the cooldown, and every pass counts on its own, so the layout pass
-  and the event loop agree.
+  and the event loop agree. That cooldown may itself shrink with every blocked
+  attempt since the last firing (`cooldownDecayFramesPerAttempt`), down to a
+  floor (`cooldownFloorFrames`) it never crosses; both are ignored without
+  `cooldownFrames`. A trigger may also name a `cooldownGroup`: every trigger
+  carrying the same group string, on any hit or skill, shares one cooldown
+  clock — a trigger with no group is scoped to itself.
 - **A trigger may release a debuff's echo** (`releaseEcho`): everything the
   target debuff has banked since its last release is dealt at that hit's frame
   as one event on the echo's own row. It carries no share and no name — both

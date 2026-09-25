@@ -72,6 +72,8 @@ const inputs: Inputs = {
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
     distanceToTargetMeters: 3,
+    missingEnduranceAtHit: 0,
+    enduranceAtRelease: 100,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,

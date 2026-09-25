@@ -111162,7 +111162,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "6f624d241ce2a502d40593401f96006f77d6e406035b32c75964323909f24298"
+        "digest": "2d2b3a662373cab3c98b7e0b4dfa5ec885a9863b7f5b53a260ed0d69b0996ced"
       },
       "debuffs": {
         "count": 5,
@@ -111223,14 +111223,15 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +10%"
+          "summary": "allDamageBoost +2%/10 missing Endurance, cap 10%"
         },
         {
           "id": "mountainsMight",
           "name": "Mountain's Might",
           "classBuff": false,
           "requires": {
-            "param": "mountainsMight"
+            "param": "mountainsMight",
+            "minTier": 4
           },
           "affectsAll": true,
           "alwaysActive": false,
@@ -111244,7 +111245,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 8,
+          "duration": 10,
           "maxStacks": null,
           "effects": [
             {
@@ -111308,7 +111309,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +30%"
+          "summary": "allDamageBoost +1.5%/Endurance spent, cap 30%"
         },
         {
           "id": "disintegration",
@@ -112139,6 +112140,28 @@
           "summary": "affinityDmg +18%"
         },
         {
+          "id": "endlessGaleAtStart",
+          "name": "Endless Gale (from the cast's start)",
+          "classBuff": true,
+          "requires": null,
+          "affectsAll": true,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 5,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "affinityDmg +18%, except while the cast-end copy already grants it"
+        },
+        {
           "id": "swordSlashDamageBoost",
           "name": "Sword Slash Damage Boost",
           "classBuff": true,
@@ -112155,10 +112178,10 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 15,
+          "duration": 8,
           "maxStacks": 3,
           "effects": "[fn]",
-          "summary": "+8.0% all/stack, +10.0% while Exhausted"
+          "summary": "+10.0% all/stack"
         },
         {
           "id": "swordEnergyEnhancement",
@@ -112325,7 +112348,7 @@
       ]
     },
     "dynamic": {
-      "digest": "af2f6b7e93689549427d183f68219ea31a523eb73d0ee4c45e4726aebaa779b6"
+      "digest": "ad8ce6d5eaad4ba061b1fbaf5b2758bde56db6defb21da245d9e9464dc279a1d"
     }
   },
   "silkbindJade": {

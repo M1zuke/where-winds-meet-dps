@@ -531,6 +531,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.distanceToTargetMeters === "number" && Number.isFinite(r.distanceToTargetMeters)
           ? r.distanceToTargetMeters
           : def.distanceToTargetMeters,
+      missingEnduranceAtHit:
+        typeof r.missingEnduranceAtHit === "number" && Number.isFinite(r.missingEnduranceAtHit)
+          ? Math.min(100, Math.max(0, r.missingEnduranceAtHit))
+          : def.missingEnduranceAtHit,
+      enduranceAtRelease:
+        typeof r.enduranceAtRelease === "number" && Number.isFinite(r.enduranceAtRelease)
+          ? Math.min(100, Math.max(0, r.enduranceAtRelease))
+          : def.enduranceAtRelease,
     }
   }
   return withZeroedDerivedStats(next)
@@ -1149,6 +1157,9 @@ function hydrateSkill(s: Skill): Skill {
     tags: healedTags,
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
+    castConditions: Array.isArray(s.castConditions)
+      ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      : s.castConditions,
     ...healSkillReach(id, s, reachTags),
   }
 }
@@ -1388,6 +1399,20 @@ function importedTrigger(t: unknown): HitTrigger {
     c.cooldownFrames >= 0
   )
     trigger.cooldownFrames = c.cooldownFrames
+  if (
+    typeof c.cooldownDecayFramesPerAttempt === "number" &&
+    Number.isFinite(c.cooldownDecayFramesPerAttempt) &&
+    c.cooldownDecayFramesPerAttempt >= 0
+  )
+    trigger.cooldownDecayFramesPerAttempt = c.cooldownDecayFramesPerAttempt
+  if (
+    typeof c.cooldownFloorFrames === "number" &&
+    Number.isFinite(c.cooldownFloorFrames) &&
+    c.cooldownFloorFrames >= 0
+  )
+    trigger.cooldownFloorFrames = c.cooldownFloorFrames
+  if (typeof c.cooldownGroup === "string" && c.cooldownGroup)
+    trigger.cooldownGroup = c.cooldownGroup
   if (typeof c.requiresParam === "string" && c.requiresParam) {
     trigger.requiresParam = c.requiresParam
     if (typeof c.requiresMinTier === "number" && Number.isFinite(c.requiresMinTier))
@@ -1454,6 +1479,9 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
       : undefined,
     triggersBuffs: Array.isArray(c.triggersBuffs)
       ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
+      : undefined,
+    castConditions: Array.isArray(c.castConditions)
+      ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
       : undefined,
     createdAt: now,
     updatedAt: now,

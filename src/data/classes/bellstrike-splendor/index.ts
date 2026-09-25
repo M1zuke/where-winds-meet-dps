@@ -6,8 +6,9 @@ import { rotationsFor } from "../../../definitions/rotations/registry"
 import defaultRotation from "./rotations/kaezuma42Vs1Db"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { BELLSTRIKE_SPLENDOR_GATES } from "./gates"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
-import { endlessGale } from "../../skills/bellstrike-splendor/buffs/endlessGale"
+import { endlessGale, endlessGaleAtStart } from "../../skills/bellstrike-splendor/buffs/endlessGale"
 import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
 import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
@@ -33,13 +34,7 @@ export const bellstrikeSplendor = defineClass({
     INNER_WAY_ID.bitterSeason,
     INNER_WAY_ID.breakingPoint,
   ],
-  classSpecificAttunements: [
-    "swordQ",
-    "swordCharged",
-    "swordSpecial",
-    "spearCharged",
-    "spearSpecial",
-  ],
+  classSpecificAttunements: ["swordQ", "swordCharged", "swordSpecial", "spearSpecial"],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
@@ -48,6 +43,7 @@ export const bellstrikeSplendor = defineClass({
   defaultRotationId: defaultRotation.id,
   classBuffDefs: [
     endlessGale,
+    endlessGaleAtStart,
     swordSlashDamageBoost,
     swordEnergyEnhancement,
     swordEnergyHpDamage,
@@ -56,7 +52,7 @@ export const bellstrikeSplendor = defineClass({
     namelessSwordAdditionalAttack,
     namelessSpearAdditionalAttack,
   ],
-  gateBuffs: [],
+  gateBuffs: BELLSTRIKE_SPLENDOR_GATES,
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

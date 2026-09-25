@@ -221,6 +221,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     for (const cast of result.casts ?? []) map.set(cast.stepIndex, cast)
     return map
   }, [result.casts])
+  const invalidStepIds = useMemo(
+    () => new Set(result.invalidStepIds ?? []),
+    [result.invalidStepIds],
+  )
 
   const hiddenBuffIds = useMemo(() => hiddenTimelineBuffIds(inputs.classId), [inputs.classId])
   const buffOrder = useMemo(
@@ -538,15 +542,24 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               const skill = skillsById.get(step.skillId)
               const maxHits = Math.max(1, skill?.hits.length ?? 1)
               const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
+              const invalid = invalidStepIds.has(step.id)
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
               return (
                 <div
                   key={step.id}
-                  className={styles.entry + (isCustom ? "" : ` ${styles.entryReadonly}`)}
+                  className={
+                    styles.entry +
+                    (isCustom ? "" : ` ${styles.entryReadonly}`) +
+                    (invalid ? ` ${styles.entryInvalid}` : "")
+                  }
                 >
                   <div className={styles.idx}>{idx + 1}</div>
-                  <span className={styles.time}>
+                  <span
+                    className={styles.time}
+                    title={invalid ? t("rotation.editor.invalidInGameTitle") : undefined}
+                  >
                     {cast ? `${Math.max(0, cast.timeSec).toFixed(2)}s` : "—"}
+                    {invalid ? " ⚠" : ""}
                   </span>
                   {isCustom ? (
                     <Combobox

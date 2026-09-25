@@ -13,7 +13,7 @@ export const battleAnthem = defineInnerWay({
   confirmedBreakthrough: 17,
   buffParam: PARAM.battleAnthem,
   tiers: {
-    3: { ladder: INNER_WAY_LADDER.affinityRateFourStar },
+    2: { ladder: INNER_WAY_LADDER.affinityRateFourStar },
     5: { panelStats: { affinityDamageBoost: 0.052 } },
     6: { nodes: [INNER_WAY_NODE.battleAnthemEnduranceBonus] },
   },

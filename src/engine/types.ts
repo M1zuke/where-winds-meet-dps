@@ -68,6 +68,8 @@ export interface CombatSettings {
   dragonHeadLowHpMaxBonus: boolean
   lowEndurance: boolean
   distanceToTargetMeters: number
+  missingEnduranceAtHit: number
+  enduranceAtRelease: number
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -81,6 +83,8 @@ export function defaultCombatSettings(): CombatSettings {
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
     distanceToTargetMeters: 3,
+    missingEnduranceAtHit: 0,
+    enduranceAtRelease: 100,
   }
 }
 
@@ -348,6 +352,7 @@ export interface Result {
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]
   warnings: string[]
+  invalidStepIds?: string[]
   timeline?: TimelineEvent[]
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null

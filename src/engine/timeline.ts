@@ -197,9 +197,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     ...debuffs,
   ])
   const warnings: string[] = [...rotationWarnings]
+  const invalidStepIds: string[] = []
 
   interface LaidStep {
     resolved: ResolvedStep
+    stepIndex: number
     prePull: boolean
     startFrame: number
     castLen: number
@@ -224,7 +226,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   function triggerGate(
     holds: (condition: TriggerCondition, frame: number) => boolean,
   ): (trigger: HitTrigger, frame: number) => boolean {
-    const lastFiredFrame = new Map<HitTrigger, number>()
+    const lastFiredFrame = new Map<string, number>()
+    const attemptsSinceFired = new Map<string, number>()
+    const ownGroupKeys = new WeakMap<HitTrigger, string>()
+    let nextOwnGroupKey = 0
+    const groupKeyOf = (trigger: HitTrigger): string => {
+      if (trigger.cooldownGroup !== undefined) return trigger.cooldownGroup
+      const existing = ownGroupKeys.get(trigger)
+      if (existing !== undefined) return existing
+      const generated = `#${nextOwnGroupKey++}`
+      ownGroupKeys.set(trigger, generated)
+      return generated
+    }
     return (trigger, frame) => {
       if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
       if (trigger.phase !== undefined && clockQiPhase(buffParams, frame / FPS) !== trigger.phase)
@@ -238,9 +251,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           return false
       }
       if (trigger.cooldownFrames === undefined) return true
-      const lastFired = lastFiredFrame.get(trigger)
-      if (lastFired !== undefined && frame - lastFired < trigger.cooldownFrames) return false
-      lastFiredFrame.set(trigger, frame)
+      const groupKey = groupKeyOf(trigger)
+      const lastFired = lastFiredFrame.get(groupKey)
+      if (lastFired !== undefined) {
+        const attempts = (attemptsSinceFired.get(groupKey) ?? 0) + 1
+        attemptsSinceFired.set(groupKey, attempts)
+        const requiredWait = Math.max(
+          trigger.cooldownFloorFrames ?? 0,
+          trigger.cooldownFrames - (trigger.cooldownDecayFramesPerAttempt ?? 0) * attempts,
+        )
+        if (frame - lastFired < requiredWait) return false
+      }
+      lastFiredFrame.set(groupKey, frame)
+      attemptsSinceFired.set(groupKey, 0)
       return true
     }
   }
@@ -493,13 +516,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
-  for (const rs of resolvedSteps) {
+  for (const [stepIndex, rs] of resolvedSteps.entries()) {
     const prePull = isPrePullSkill(rs.skill)
     const cursor = prePull ? preCursor : activeCursor
     const exactStart = cursor + (waitsForRoundTrip(rs.skill) ? roundTripFrames : 0)
     const startFrame = Math.round(exactStart)
     layoutWriter.processExpiries(startFrame)
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
+    if (!(rs.skill.castConditions ?? []).every(holdsHere)) {
+      invalidStepIds.push(rs.step.id)
+      warnings.push(
+        `${rs.skill.name || rs.skill.id} at ${(startFrame / FPS).toFixed(2)}s would be illegal in the game: its cast conditions are not met.`,
+      )
+    }
     const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
     const nominalCastLen = prePull
       ? upperBoundCastFrames(rs)
@@ -520,7 +549,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         ? occurringHits
         : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
     seedStepTriggers(landedHits, startFrame)
-    laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: landedHits })
+    laidSteps.push({
+      resolved: rs,
+      stepIndex,
+      prePull,
+      startFrame,
+      castLen,
+      performedHits: landedHits,
+    })
   }
   const castCursorFrames = activeCursor
   const windowFrames = windowFramesOverride ?? castCursorFrames
@@ -1166,7 +1202,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   ledger.sortWindows()
 
   function buildCasts(): RotationCast[] {
-    const castsUnsorted: RotationCast[] = laidSteps.map((ls, i) => {
+    const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
       const lastHitFrame =
         ls.performedHits.length > 0 ? Math.max(...ls.performedHits.map((h) => h.frame)) : 0
       const queryFrame = Math.max(
@@ -1207,7 +1243,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return {
         index: 0,
         stepId: ls.resolved.step.id,
-        stepIndex: i,
+        stepIndex: ls.stepIndex,
         skillName: ls.resolved.skill.name,
         timeSec: ls.startFrame / FPS,
         inWindow: inWindow(ls.startFrame),
@@ -1599,6 +1635,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     perSkill,
     ranking: [],
     warnings,
+    ...(invalidStepIds.length > 0 ? { invalidStepIds } : {}),
     timeline,
     buffWindows,
     qiBreakWindow,

@@ -72,8 +72,8 @@ describe("inner-way breakthrough ladders", () => {
   })
 
   it("a ladder line is absent below the tier that unlocks it", () => {
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2").affinityRate ?? 0).toBe(0)
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 3").affinityRate).toBeCloseTo(
+    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 1").affinityRate ?? 0).toBe(0)
+    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2").affinityRate).toBeCloseTo(
       INNER_WAY_LADDERS.affinityRateFourStar[17].affinityRate!,
       10,
     )
