@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
@@ -9,7 +9,7 @@ export const spearheavy1HitPrepull = defineSkill({
   classId: "bellstrikeUmbra",
   breakdownName: "Drifting Thrust",
   name: "SpearHeavy 1-Hit Prepull",
-  tags: [WEAPON.spear, ATTACK.heavy, ATTUNE.spearCharged],
+  tags: [WEAPON.spear, ATTUNE.spearCharged],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",

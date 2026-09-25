@@ -46,9 +46,18 @@ describe("custom-skills v4 fixture", () => {
   })
 })
 
+const SPEARSPECIAL_1_HIT_CANCEL = `${CLASS}-spearspecial-1-hit-cancel`
+// This hop's own frozen target row for Spear Special (1 Hit Cancel)'s one
+// damage hit — the live built-in gained a zero-damage Shattered Stone hit
+// ahead of it since (Sweep All's payload fix), so this can no longer be read
+// off `builtinSkillsForClass`.
+const SPEARSPECIAL_1_HIT_CANCEL_ROW = [0.6848704, 1.0273056, 189.76, 103.36]
+
 describe("umbraHitSwapsFor", () => {
   it("names only built-in Umbra skills and lands every row on the built-in's current hit", () => {
-    const covered = builtinSkillsForClass(CLASS).filter((skill) => umbraHitSwapsFor(skill.id))
+    const covered = builtinSkillsForClass(CLASS).filter(
+      (skill) => skill.id !== SPEARSPECIAL_1_HIT_CANCEL && umbraHitSwapsFor(skill.id),
+    )
     expect(covered.length).toBeGreaterThan(0)
     for (const skill of covered) {
       const swaps = umbraHitSwapsFor(skill.id)!
@@ -63,6 +72,12 @@ describe("umbraHitSwapsFor", () => {
         })
       })
     }
+  })
+
+  it("names Spear Special (1 Hit Cancel)'s one damage hit — no longer hit 0 on the live built-in", () => {
+    const swaps = umbraHitSwapsFor(SPEARSPECIAL_1_HIT_CANCEL)!
+    expect(swaps).toHaveLength(1)
+    expect([...swaps[0].to]).toEqual(SPEARSPECIAL_1_HIT_CANCEL_ROW)
   })
 
   it("knows nothing about a user-authored id", () => {

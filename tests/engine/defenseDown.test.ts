@@ -4,8 +4,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { applyBuffEffects } from "../../src/engine/statRegistry"
 import { getBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
 import { builtinDebuffsForClass, builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { SPEAR_SPECIAL_COOLDOWN_BUFF_ID } from "../../src/data/innerWays/wolfchasersArtGates"
-import { BUFF } from "../../src/data/skills/buffs/ids"
+import { SPRING_SURGE_BUFF_ID } from "../../src/data/innerWays/wolfchasersArtGates"
 import { DEBUFF } from "../../src/data/skills/bellstrike-umbra/ids"
 import type { Inputs } from "../../src/engine/types"
 
@@ -65,25 +64,26 @@ describe("Defense Down — the Spear Special's target defense reduction", () => 
     expect(debuff.effects).toEqual([{ statKey: "target.defensePct", amount: -0.05 }])
   })
 
-  it("is applied by every hit of both Spear Special variants, gated on River Flow up and the cooldown down", () => {
+  it("is applied once per cast of both Spear Special variants, on the zero-damage hit ahead of the payload, gated on Spring Surge or higher", () => {
     const skills = builtinSkillsForClass(CLASS)
     for (const id of SPEAR_SPECIAL_IDS) {
       const skill = skills.find((s) => s.id === id)!
-      expect(skill.hits.length).toBeGreaterThan(0)
-      for (const hit of skill.hits) {
-        const applied = hit.triggers.filter(
-          (t) => t.kind === "applyDebuff" && t.targetId === DEBUFF.defenseDown,
-        )
-        expect(applied).toHaveLength(1)
-        expect(applied[0].condition).toEqual({
-          buffId: BUFF.potentRiverFlow,
-          op: "gte",
-          stacks: 1,
-        })
-        expect(applied[0].conditions).toEqual([
-          { buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 },
-        ])
-      }
+      const appliers = skill.hits.filter((hit) =>
+        hit.triggers.some((t) => t.kind === "applyDebuff" && t.targetId === DEBUFF.defenseDown),
+      )
+      expect(appliers).toHaveLength(1)
+      const [shatteredStoneHit] = appliers
+      expect(shatteredStoneHit.frame).toBe(0)
+      const applied = shatteredStoneHit.triggers.filter(
+        (t) => t.kind === "applyDebuff" && t.targetId === DEBUFF.defenseDown,
+      )
+      expect(applied).toHaveLength(1)
+      expect(applied[0].condition).toEqual({
+        buffId: SPRING_SURGE_BUFF_ID,
+        op: "gte",
+        stacks: 1,
+      })
+      expect(applied[0].conditions).toBeUndefined()
     }
   })
 

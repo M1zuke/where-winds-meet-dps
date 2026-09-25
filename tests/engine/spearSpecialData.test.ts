@@ -1,9 +1,14 @@
 import { describe, expect, it } from "vitest"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import {
+  EMPOWERED_RIVER_FLOW_BUFF_ID,
+  RIVER_FLOW_BASE_DURATION_FRAMES,
   RIVER_FLOW_DURATION_FRAMES,
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_FRAMES,
+  SPRING_SURGE_BUFF_ID,
+  WATER_DROP_BUFF_ID,
+  WOLFCHASERS_ART_SLOTTED_BUFF_ID,
 } from "../../src/data/innerWays/wolfchasersArtGates"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import {
@@ -29,8 +34,22 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancel).toHaveLength(1)
   })
 
-  it("base + River Flow variant coefficients split 0.40 / 0.60 across Spear Special's two hits; the cancel shares hit 1", () => {
-    const [first, second] = spearSpecial[0].hits
+  it("hit 0 is a zero-damage Shattered Stone hit gated on Spring Surge or higher", () => {
+    for (const s of [spearSpecial[0], cancel[0]]) {
+      const [shatteredStoneHit] = s.hits
+      expect(shatteredStoneHit.frame).toBe(0)
+      expect(shatteredStoneHit.physMultiplier).toBe(0)
+      expect(shatteredStoneHit.attributeMultiplier).toBe(0)
+      expect(shatteredStoneHit.triggers).toHaveLength(1)
+      const [trigger] = shatteredStoneHit.triggers
+      expect(trigger.kind).toBe("applyDebuff")
+      expect(trigger.targetId).toBe("debuff-bellstrikeUmbra-defense-down")
+      expect(trigger.condition).toEqual({ buffId: SPRING_SURGE_BUFF_ID, op: "gte", stacks: 1 })
+    }
+  })
+
+  it("base + River Flow + Spring Surge variant coefficients split 0.32/0.48/0.40/0.60 across Spear Special's two damage hits; the cancel shares hit 1", () => {
+    const [, first, second] = spearSpecial[0].hits
     const total = (
       field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
     ) => first[field] + second[field]
@@ -42,44 +61,66 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(first.physMultiplier / total("physMultiplier")).toBeCloseTo(0.4, 6)
     expect(second.physMultiplier / total("physMultiplier")).toBeCloseTo(0.6, 6)
 
-    const totalVariant = (
-      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
-    ) => first.variants![0][field] + second.variants![0][field]
-    expect(totalVariant("physMultiplier")).toBeCloseTo(2.568264, 10)
-    expect(totalVariant("attributeMultiplier")).toBeCloseTo(3.852396, 10)
-    expect(totalVariant("physFixed")).toBeCloseTo(711.6, 10)
-    expect(totalVariant("attributeFixed")).toBeCloseTo(387.6, 10)
+    const riverFlowVariant = (hit: typeof first) =>
+      hit.variants!.find((v) => v.label === "River Flow")!
+    const springSurgeVariant = (hit: typeof first) =>
+      hit.variants!.find((v) => v.label === "Spring Surge")!
 
-    expect(cancel[0].hits).toEqual([first])
+    const totalRiverFlow = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => riverFlowVariant(first)[field] + riverFlowVariant(second)[field]
+    expect(totalRiverFlow("physMultiplier")).toBeCloseTo(2.568264, 10)
+    expect(totalRiverFlow("attributeMultiplier")).toBeCloseTo(3.852396, 10)
+    expect(totalRiverFlow("physFixed")).toBeCloseTo(711.6, 10)
+    expect(totalRiverFlow("attributeFixed")).toBeCloseTo(387.6, 10)
+
+    const totalSpringSurge = (
+      field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
+    ) => springSurgeVariant(first)[field] + springSurgeVariant(second)[field]
+    expect(totalSpringSurge("physMultiplier")).toBeCloseTo(2.14022, 6)
+    expect(totalSpringSurge("physFixed")).toBeCloseTo(593, 6)
+
+    // River Flow before Spring Surge: `selectHitVariant` takes the first
+    // matching variant, and River Flow implies Spring Surge is granted too.
+    expect(first.variants!.indexOf(riverFlowVariant(first))).toBeLessThan(
+      first.variants!.indexOf(springSurgeVariant(first)),
+    )
+
+    expect(cancel[0].hits).toEqual([spearSpecial[0].hits[0], first])
   })
 
-  it("hit-0's six triggers: 3×applyDot(bleed), 1×castSkill(Blood Burst), 1×applyDebuff(Defense Down), 1×applyBuff(cooldown) LAST — never detonateDot — all gated by both River Flow ≥ 1 and cooldown = 0", () => {
+  it("each damage hit's five triggers: 1×applyDot(bleed) on River Flow alone, 2×applyDot(bleed) + 1×castSkill(Blood Burst) + 1×applyBuff(cooldown) LAST on Empowered + cooldown = 0 — never detonateDot", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
-    const defenseDownId = "debuff-bellstrikeUmbra-defense-down"
+    const riverFlowCondition = { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }
+    const empoweredCondition = { buffId: EMPOWERED_RIVER_FLOW_BUFF_ID, op: "gte", stacks: 1 }
+    const cooldownCondition = { buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 }
     for (const s of [spearSpecial[0], cancel[0]]) {
-      const triggers = s.hits[0].triggers
-      expect(triggers).toHaveLength(6)
+      const [, damageHit] = s.hits
+      const triggers = damageHit.triggers
+      expect(triggers).toHaveLength(5)
       expect(triggers.some((t) => t.kind === "detonateDot")).toBe(false)
-      const applyDots = triggers.filter((t) => t.kind === "applyDot")
-      expect(applyDots).toHaveLength(3)
+
+      const [firstBleed, ...rest] = triggers
+      expect(firstBleed.kind).toBe("applyDot")
+      expect(firstBleed.targetId).toBe(bleedId)
+      expect(firstBleed.condition).toEqual(riverFlowCondition)
+      expect(firstBleed.conditions).toBeUndefined()
+
+      for (const t of rest) {
+        expect(t.condition).toEqual(empoweredCondition)
+        expect(t.conditions).toEqual([cooldownCondition])
+      }
+      const applyDots = rest.filter((t) => t.kind === "applyDot")
+      expect(applyDots).toHaveLength(2)
       for (const t of applyDots) expect(t.targetId).toBe(bleedId)
-      const casts = triggers.filter((t) => t.kind === "castSkill")
+      const casts = rest.filter((t) => t.kind === "castSkill")
       expect(casts).toHaveLength(1)
       expect(casts[0].targetId).toBe(detonationId)
-      const applyDebuffs = triggers.filter((t) => t.kind === "applyDebuff")
-      expect(applyDebuffs).toHaveLength(1)
-      expect(applyDebuffs[0].targetId).toBe(defenseDownId)
-      const applyBuffs = triggers.filter((t) => t.kind === "applyBuff")
+      const applyBuffs = rest.filter((t) => t.kind === "applyBuff")
       expect(applyBuffs).toHaveLength(1)
       expect(applyBuffs[0].targetId).toBe(SPEAR_SPECIAL_COOLDOWN_BUFF_ID)
       expect(triggers[triggers.length - 1]).toBe(applyBuffs[0])
-      for (const t of triggers) {
-        expect(t.condition).toEqual({ buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 })
-        expect(t.conditions).toEqual([
-          { buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq", stacks: 0 },
-        ])
-      }
     }
   })
 })
@@ -166,23 +207,35 @@ describe("built-in data — one file per skill", () => {
 })
 
 describe("builtinBuffsForClass", () => {
-  it("bellstrikeUmbra carries River Flow with its own magnitude, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
+  it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
-    expect(buffs).toHaveLength(4)
+    expect(buffs).toHaveLength(8)
+    const slotted = buffs.find((b) => b.id === WOLFCHASERS_ART_SLOTTED_BUFF_ID)!
+    const waterDrop = buffs.find((b) => b.id === WATER_DROP_BUFF_ID)!
+    const springSurge = buffs.find((b) => b.id === SPRING_SURGE_BUFF_ID)!
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
+    const empowered = buffs.find((b) => b.id === EMPOWERED_RIVER_FLOW_BUFF_ID)!
     const cooldown = buffs.find((b) => b.id === SPEAR_SPECIAL_COOLDOWN_BUFF_ID)!
     const zenith = buffs.find((b) => b.id === ZENITH_DETONATION_BUFF_ID)!
-    expect(riverFlow).toBeTruthy()
-    expect(cooldown).toBeTruthy()
-    expect(zenith).toBeTruthy()
+    for (const b of [slotted, waterDrop, springSurge, riverFlow, empowered, cooldown, zenith])
+      expect(b).toBeTruthy()
+    expect(slotted.name).toBe("Wolfchaser's Art Slotted")
+    expect(waterDrop.name).toBe("Water Drop")
+    expect(springSurge.name).toBe("Spring Surge")
     expect(riverFlow.name).toBe("River Flow")
+    expect(empowered.name).toBe("Empowered River Flow")
     expect(cooldown.name).toBe("Spear Special Cooldown")
     expect(zenith.name).toBe("Zenith Detonation")
-    expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.25 }])
-    for (const b of [cooldown, zenith]) {
+    // Each tier carries only its own additional amount on top of the tier
+    // below it, so the sum matches the tier actually reached: 10 / 15 / 20 / 25 %.
+    expect(waterDrop.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.1 }])
+    expect(springSurge.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
+    expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
+    expect(empowered.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
+    for (const b of [slotted, cooldown, zenith]) {
       expect(b.effects).toEqual([])
     }
-    for (const b of [riverFlow, cooldown, zenith]) {
+    for (const b of [slotted, waterDrop, springSurge, riverFlow, empowered, cooldown, zenith]) {
       expect(b.maxStacks).toBe(1)
       expect(b.activation).toBe("triggered")
       expect(b.scope).toBe("player")
@@ -193,7 +246,10 @@ describe("builtinBuffsForClass", () => {
     expect(bar.effects).toEqual([])
     expect(bar.activation).toBe("permanent")
     expect(bar.maxStacks).toBe(5)
-    expect(riverFlow.durationFrames).toBe(RIVER_FLOW_DURATION_FRAMES)
+    for (const b of [riverFlow, empowered])
+      expect(b.durationFrames).toBe(RIVER_FLOW_DURATION_FRAMES)
+    for (const b of [waterDrop, springSurge])
+      expect(b.durationFrames).toBe(RIVER_FLOW_BASE_DURATION_FRAMES)
     expect(cooldown.durationFrames).toBe(SPEAR_SPECIAL_COOLDOWN_FRAMES)
     expect(zenith.durationFrames).toBe(ZENITH_DETONATION_FRAMES)
   })

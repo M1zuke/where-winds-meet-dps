@@ -6,10 +6,30 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
 import { builtinSkill } from "../builtins"
-import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { ZENITH_DETONATION_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 
 const CLASS = "bellstrikeUmbra"
 const skillOf = (skillId: string) => builtinSkill(CLASS, skillId)
+
+describe("bleed detonation — forced-Affinity extension reaches Bleeding too", () => {
+  it("extends Bleeding on the same condition and terms as the shared Smolder/poison extension", () => {
+    const [hit] = skillOf(SKILL.bleedDetonation).hits
+    const bleedExtend = hit.triggers.find(
+      (t) => t.kind === "applyDebuff" && t.targetId === DEBUFF.bleedTick,
+    )!
+    expect(bleedExtend).toBeTruthy()
+    expect(bleedExtend.condition).toEqual({
+      buffId: ZENITH_DETONATION_BUFF_ID,
+      op: "gte",
+      stacks: 1,
+    })
+    expect(bleedExtend.extendOnly).toBe(true)
+    const smolderExtend = hit.triggers.find((t) => t.kind === "applyDebuff" && t !== bleedExtend)!
+    expect(bleedExtend.extendFrames).toBe(smolderExtend.extendFrames)
+    expect(bleedExtend.maxExtendedDurationFrames).toBe(smolderExtend.maxExtendedDurationFrames)
+  })
+})
 
 describe("bleed detonation — bellstrikeUmbra default rotation", () => {
   it("fires at least one Blood Burst hit", () => {

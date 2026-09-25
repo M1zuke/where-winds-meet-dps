@@ -893,7 +893,11 @@ function builtinStartLatencyFor(id: string): Skill["startLatency"] | undefined {
 function healSkillTags(id: string, tags: string[]): string[] {
   const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
   const healed = new Set(renamed)
-  for (const tag of builtinTagsFor(id)) healed.add(tag)
+  const hasOwnAttuneTag = renamed.some((tag) => tag.startsWith("attune:"))
+  for (const tag of builtinTagsFor(id)) {
+    if (tag.startsWith("attune:") && hasOwnAttuneTag) continue
+    healed.add(tag)
+  }
   if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
   const unchanged =
     healed.size === tags.length && renamed.every((tag, index) => tag === tags[index])

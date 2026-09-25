@@ -165,7 +165,11 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(builtinBuffsForClass("bellstrikeUmbra").map((buff) => buff.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Wolfchaser's Art Slotted",
+      "Water Drop",
+      "Spring Surge",
       "River Flow",
+      "Empowered River Flow",
       "Spear Special Cooldown",
     ])
   })

@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CROSSWIND_BLADE_HITS } from "./crosswind-blade-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
@@ -9,7 +9,9 @@ export const crosswindBlade = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Crosswind Blade",
   breakdownName: "Crisscross - Inner Balance III",
-  tags: [WEAPON.sword],
+  // In-game values as of 2026-09-24: the Special attunement reaches
+  // Crisscross - Inner Balance III too.
+  tags: [WEAPON.sword, ATTUNE.swordSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",

@@ -2,8 +2,23 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { SKILL } from "./ids"
+import { SKILL, DEBUFF } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import {
+  EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST,
+  EMPOWERED_RIVER_FLOW_BUFF_ID,
+  RIVER_FLOW_MIN_BLEEDING_STACKS,
+  RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
+  SPRING_SURGE_BUFF_ID,
+  WATER_DROP_BUFF_ID,
+  WOLFCHASERS_ART_SLOTTED_BUFF_ID,
+} from "../../innerWays/wolfchasersArtGates"
+
+const WOLFCHASERS_ART_SLOTTED_CONDITION = {
+  buffId: WOLFCHASERS_ART_SLOTTED_BUFF_ID,
+  op: "gte" as const,
+  stacks: 1,
+}
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -55,7 +70,42 @@ export const spearq = defineSkill({
       attributeMultiplier: 0.4815495,
       physFixed: 88.95,
       attributeFixed: 48.45,
-      triggers: [applyBuff({ target: BUFF.potentRiverFlow, appliesOnCastEnd: true })],
+      // In-game values as of 2026-09-24: the tier is Sober Sorrow's combo
+      // count (its own 6 hits plus the target's Bleeding stacks) — see the
+      // rule in `wolfchasersArtGates.ts`.
+      triggers: [
+        applyBuff({ target: WOLFCHASERS_ART_SLOTTED_BUFF_ID, appliesOnCastEnd: true }),
+        applyBuff({ target: WATER_DROP_BUFF_ID, appliesOnCastEnd: true }),
+        applyBuff({
+          target: WATER_DROP_BUFF_ID,
+          appliesOnCastEnd: true,
+          condition: WOLFCHASERS_ART_SLOTTED_CONDITION,
+          extendFrames: RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
+          extendOnly: true,
+        }),
+        applyBuff({ target: SPRING_SURGE_BUFF_ID, appliesOnCastEnd: true }),
+        applyBuff({
+          target: SPRING_SURGE_BUFF_ID,
+          appliesOnCastEnd: true,
+          condition: WOLFCHASERS_ART_SLOTTED_CONDITION,
+          extendFrames: RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
+          extendOnly: true,
+        }),
+        applyBuff({
+          target: BUFF.potentRiverFlow,
+          appliesOnCastEnd: true,
+          condition: { buffId: DEBUFF.bleedTick, op: "gte", stacks: RIVER_FLOW_MIN_BLEEDING_STACKS },
+        }),
+        applyBuff({
+          target: EMPOWERED_RIVER_FLOW_BUFF_ID,
+          appliesOnCastEnd: true,
+          condition: {
+            buffId: DEBUFF.bleedTick,
+            op: "gte",
+            stacks: EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST,
+          },
+        }),
+      ],
     }),
     hit(5, {
       frame: 98,
@@ -66,5 +116,5 @@ export const spearq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-25T00:00:00.000Z",
 })

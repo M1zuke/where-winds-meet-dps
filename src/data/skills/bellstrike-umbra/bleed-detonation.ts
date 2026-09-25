@@ -3,13 +3,13 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { DEBUFF as MYSTIC_DEBUFF } from "../mystic/ids"
-import { SKILL } from "./ids"
+import { DEBUFF, SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import {
   ZENITH_BAR_BUFF_ID,
   ZENITH_DETONATION_BUFF_ID,
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
-  ZENITH_SMOLDER_EXTEND_FRAMES,
+  ZENITH_DOT_EXTEND_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
 
 export const bleedDetonation = defineSkill({
@@ -38,12 +38,22 @@ export const bleedDetonation = defineSkill({
       attributeMultiplier: 3.6,
       physFixed: 0,
       attributeFixed: 0,
+      // In-game values as of 2026-09-24: a forced-Affinity burst extends
+      // Bleeding too, on top of the shared Smolder/poison DoT extension.
       triggers: [
         applyDebuff({
           target: MYSTIC_DEBUFF.smolder,
           stacks: 0,
           condition: { buffId: ZENITH_DETONATION_BUFF_ID, op: "gte", stacks: 1 },
-          extendFrames: ZENITH_SMOLDER_EXTEND_FRAMES,
+          extendFrames: ZENITH_DOT_EXTEND_FRAMES,
+          extendOnly: true,
+          maxExtendedDurationFrames: ZENITH_MAX_EXTENDED_DURATION_FRAMES,
+        }),
+        applyDebuff({
+          target: DEBUFF.bleedTick,
+          stacks: 0,
+          condition: { buffId: ZENITH_DETONATION_BUFF_ID, op: "gte", stacks: 1 },
+          extendFrames: ZENITH_DOT_EXTEND_FRAMES,
           extendOnly: true,
           maxExtendedDurationFrames: ZENITH_MAX_EXTENDED_DURATION_FRAMES,
         }),

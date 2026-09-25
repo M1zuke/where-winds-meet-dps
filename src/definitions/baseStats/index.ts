@@ -26,6 +26,7 @@ import {
   CLASS_SKILL_BOOSTS,
   TALENT_BOARD,
 } from "../../data/baseStats"
+import { resolvedMaxBonus, resolvedScaleMax } from "./classSkillBoostDef"
 import { effectiveDisabledTalentNodes, isTalentNodeTaken } from "./talentBoardGraph"
 import { ODDITY_BOARD, isOddityNodeClaimed } from "./oddityBoardGraph"
 import { breakthroughAttributes, defaultBreakthrough } from "./breakthroughs"
@@ -338,9 +339,9 @@ export function getDefaultTalentsForClass(
     name: boost.skill,
     enabled: true,
     stat: boost.stat,
-    maxBonus: boost.stage ? resolvedStage[boost.stage] : boost.maxBonus,
+    maxBonus: boost.stage ? resolvedStage[boost.stage] : resolvedMaxBonus(boost, breakthrough),
     scalesWith: boost.scalesWith,
-    scaleMax: boost.scaleMax,
+    scaleMax: boost.stage ? boost.scaleMax : resolvedScaleMax(boost, breakthrough),
   }))
 }
 

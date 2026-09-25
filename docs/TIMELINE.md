@@ -300,6 +300,12 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
 - **A module's `effects` may read the encounter's distance to the target from
   context**, the same way it reads remaining health — a persisted, hydrated
   input, never a per-skill guess.
+- **A module may open its window a fixed offset after the triggering cast's
+  start** instead of at the trigger hit's own frame, when the source it models
+  opens on an in-progress hit rather than the first or the last one. Author
+  that offset on the module, never as a per-skill adjustment to the trigger's
+  own frame; it is ignored once the module (or the trigger) already applies on
+  cast end.
 
 ## Procedural behaviour
 

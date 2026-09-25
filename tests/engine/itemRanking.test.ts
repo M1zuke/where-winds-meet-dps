@@ -73,8 +73,6 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   })
 })
 
-// Eleven rather than ten: the bleed attunement row lands third on this build,
-// pushing Max Phys one place down without changing any word's own lift.
 describe("computeRanking — top-rank consistency", () => {
   const base = runEngine(umbraInputs)
   const rows = computeRanking(umbraInputs, base.dps)

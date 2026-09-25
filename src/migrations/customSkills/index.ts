@@ -24,6 +24,7 @@ import { V20__silkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAtta
 import { V21__jadeBlossomBarrageReach } from "./V21__jadeBlossomBarrageReach"
 import { V22__sharedMysticCoefficients } from "./V22__sharedMysticCoefficients"
 import { V23__drunkenHazeExplosion } from "./V23__drunkenHazeExplosion"
+import { V24__umbraValueFixes } from "./V24__umbraValueFixes"
 
 export type {
   CustomSkillMigration,
@@ -55,6 +56,17 @@ export {
   addDrunkenHazeExplosionHits,
   addFinalStrikeExplosionTrigger,
 } from "./V23__drunkenHazeExplosion"
+export {
+  healSpearqRiverFlowTiers,
+  healSpearq5HitCancelRiverFlowTiers,
+  healSweepAllHits,
+  healBleedDetonationHits,
+  healSpearheavyHits,
+  healSpearheavyCastFrames,
+  healSpearheavyStage2Tags,
+  healCrosswindBladeTags,
+  healHeavyAttackTag,
+} from "./V24__umbraValueFixes"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -77,6 +89,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V21__jadeBlossomBarrageReach,
   V22__sharedMysticCoefficients,
   V23__drunkenHazeExplosion,
+  V24__umbraValueFixes,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

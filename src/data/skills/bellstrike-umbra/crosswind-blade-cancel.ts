@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CROSSWIND_BLADE_HITS } from "./crosswind-blade-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
@@ -9,7 +9,7 @@ export const crosswindBladeCancel = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Crosswind Blade [cancel]",
   breakdownName: "Crisscross - Inner Balance III",
-  tags: [WEAPON.sword],
+  tags: [WEAPON.sword, ATTUNE.swordSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",

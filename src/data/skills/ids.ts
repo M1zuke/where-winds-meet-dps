@@ -98,6 +98,7 @@ export const CAST = {
   soaring: "cast:soaring",
   soaring1Hit: "cast:soaring1Hit",
   spearHeavy: "cast:spearHeavy",
+  spearHeavyStage1: "cast:spearHeavyStage1",
   spearHeavy1Hit: "cast:spearHeavy1Hit",
   spearHeavy1HitPrepull: "cast:spearHeavy1HitPrepull",
   spearQ: "cast:spearQ",

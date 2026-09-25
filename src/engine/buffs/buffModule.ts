@@ -54,6 +54,10 @@ export interface BuffMeta {
   affectsAll?: boolean
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean
+  // Opens the window this many seconds after the triggering cast's start
+  // instead of at the trigger hit's own frame. Ignored when
+  // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
+  buffAppliesAfterSec?: number
   maxStacks?: number
   cooldown?: number
   rateLimit?: { count: number; window: number }

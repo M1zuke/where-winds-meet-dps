@@ -578,7 +578,7 @@ export class BuffEngine {
     const applyTime =
       module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
         ? time + (props.castTime ?? 1)
-        : time
+        : time + (module.buffAppliesAfterSec ?? 0)
 
     if (!this.canGrantTrigger(module, applyTime)) return
 

@@ -23,7 +23,8 @@ export function wineGuBuffDef() {
     // attack, and leaves a damage-over-time tick alone.
     reachesDotTicks: false,
     duration: 15,
-    buffAppliesOnCastEnd: true,
+    // In-game values as of 2026-09-24: Sober Sorrow's 3rd hit (45.4 frames in) opens the window.
+    buffAppliesAfterSec: 45.4 / 60,
     effects: [stat("allDamageBoost", 0.05)],
   })
 }

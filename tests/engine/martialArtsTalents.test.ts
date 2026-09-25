@@ -107,7 +107,7 @@ describe("user-defined martial-arts talents", () => {
       expect(phys.scaleMax).toBe(280)
       const affinity = byName["Affinity Rate UP"]
       expect(affinity.stat).toBe("affinityRate")
-      expect(affinity.maxBonus).toBeCloseTo(0.043, 6)
+      expect(affinity.maxBonus).toBeCloseTo(0.04256, 6)
       expect(affinity.scalesWith).toBe("power")
       expect(affinity.scaleMax).toBe(280)
       const swordMinBell = byName["Sword Bellstrike Attack Min"]
@@ -151,7 +151,7 @@ describe("user-defined martial-arts talents", () => {
       expect(contributions["bellstrike.max"]).toBe(392)
     })
 
-    it("the stage attack rows follow the breakthrough, and nothing else moves", () => {
+    it("the stage attack rows follow the breakthrough, and nothing unrelated moves", () => {
       const at17 = getDefaultTalentsForClass("bellstrikeUmbra", 17)
       const at18 = getDefaultTalentsForClass("bellstrikeUmbra", 18)
       const byName17 = Object.fromEntries(at17.map((d) => [d.name, d]))
@@ -162,13 +162,87 @@ describe("user-defined martial-arts talents", () => {
       expect(byName18["Sword Bellstrike Attack Max"].maxBonus).toBe(212)
       expect(byName18["Spear Bellstrike Attack Min"].maxBonus).toBe(106)
       expect(byName18["Spear Bellstrike Attack Max"].maxBonus).toBe(212)
-      for (const name of [
-        "Affinity Rate UP",
-        "Physical Attack UP",
-        "Bellstrike Penetration Scale",
-        "Attribute Damage Scale",
-      ]) {
-        expect(byName18[name]).toEqual(byName17[name])
+      for (const name of ["Sword Bellstrike Attack Min", "Sword Bellstrike Attack Max"]) {
+        expect(byName18[name].scalesWith).toEqual(byName17[name].scalesWith)
+        expect(byName18[name].scaleMax).toEqual(byName17[name].scaleMax)
+      }
+    })
+
+    // In-game talent caps as of 2026-09-24: node 1 and node 3 of both arts
+    // raise their Power/Max-Bellstrike-Attack threshold and cap at breakthrough
+    // 18-21, on top of the stage-13 values live at 16-17.
+    it("the talent caps that scale with a resource stat rise at breakthrough 18-21", () => {
+      const byBreakthrough = (breakthrough: number) =>
+        Object.fromEntries(
+          getDefaultTalentsForClass("bellstrikeUmbra", breakthrough).map((d) => [d.name, d]),
+        )
+      const at17 = byBreakthrough(17)
+      expect(at17["Affinity Rate UP"].maxBonus).toBeCloseTo(0.04256, 6)
+      expect(at17["Affinity Rate UP"].scaleMax).toBe(280)
+      expect(at17["Physical Attack UP"].maxBonus).toBe(73.9)
+      expect(at17["Physical Attack UP"].scaleMax).toBe(280)
+      expect(at17["Bellstrike Penetration Scale"].maxBonus).toBeCloseTo(0.22, 6)
+      expect(at17["Bellstrike Penetration Scale"].scaleMax).toBe(655)
+      expect(at17["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.11, 6)
+      expect(at17["Attribute Damage Scale"].scaleMax).toBe(655)
+
+      const expectedByBreakthrough: Record<
+        number,
+        Record<string, number> & { resourceScaleMax: number; attributeScaleMax: number }
+      > = {
+        18: {
+          affinity: 0.0456,
+          phys: 79.2,
+          pen: 0.236,
+          attr: 0.118,
+          resourceScaleMax: 300,
+          attributeScaleMax: 702.4,
+        },
+        19: {
+          affinity: 0.0494,
+          phys: 85.8,
+          pen: 0.252,
+          attr: 0.126,
+          resourceScaleMax: 325,
+          attributeScaleMax: 750,
+        },
+        20: {
+          affinity: 0.05548,
+          phys: 96.36,
+          pen: 0.276,
+          attr: 0.138,
+          resourceScaleMax: 365,
+          attributeScaleMax: 821.4,
+        },
+        21: {
+          affinity: 0.06156,
+          phys: 106.92,
+          pen: 0.296,
+          attr: 0.148,
+          resourceScaleMax: 405,
+          attributeScaleMax: 881,
+        },
+      }
+      for (const [breakthrough, expected] of Object.entries(expectedByBreakthrough)) {
+        const byName = byBreakthrough(Number(breakthrough))
+        expect(byName["Affinity Rate UP"].maxBonus, breakthrough).toBeCloseTo(expected.affinity, 6)
+        expect(byName["Affinity Rate UP"].scaleMax, breakthrough).toBe(expected.resourceScaleMax)
+        expect(byName["Physical Attack UP"].maxBonus, breakthrough).toBeCloseTo(expected.phys, 6)
+        expect(byName["Physical Attack UP"].scaleMax, breakthrough).toBe(expected.resourceScaleMax)
+        expect(byName["Bellstrike Penetration Scale"].maxBonus, breakthrough).toBeCloseTo(
+          expected.pen,
+          6,
+        )
+        expect(byName["Bellstrike Penetration Scale"].scaleMax, breakthrough).toBe(
+          expected.attributeScaleMax,
+        )
+        expect(byName["Attribute Damage Scale"].maxBonus, breakthrough).toBeCloseTo(
+          expected.attr,
+          6,
+        )
+        expect(byName["Attribute Damage Scale"].scaleMax, breakthrough).toBe(
+          expected.attributeScaleMax,
+        )
       }
     })
   })

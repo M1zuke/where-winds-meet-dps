@@ -57,11 +57,13 @@ describe("Bellstrike Umbra bleed buff-defs — BuffEngine unit", () => {
     })
   })
 
-  it("with no swordHorizon param, neither Umbra buff is seeded (alwaysActive gated off)", () => {
+  // In-game talent gating as of 2026-09-24: neither talent has an inner-way
+  // condition, so both stay active with no Sword Horizon param at all.
+  it("with no swordHorizon param, both Umbra buffs still apply — neither is gated on Sword Horizon", () => {
     expect(sumsFor({}, ["bellstrikeUmbraBleedPen", "bellstrikeUmbraBleedingDamage"])).toEqual({
-      affinityDamageBoost: 0,
-      "phys.penetration": 0,
-      "bellstrike.penetration": 0,
+      affinityDamageBoost: 0.18,
+      "phys.penetration": 0.15,
+      "bellstrike.penetration": 0.15,
     })
   })
 })

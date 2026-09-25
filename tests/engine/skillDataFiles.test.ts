@@ -8,7 +8,7 @@ import { MYSTIC_ARTS_CLASS_ID, belongsToClass } from "../../src/engine/skill"
 
 // Scoped to Bellstrike Umbra — see CLAUDE.md § "Implemented classes".
 const EXPECTED_COUNTS: Record<string, number> = {
-  bellstrikeUmbra: 56,
+  bellstrikeUmbra: 57,
 }
 
 describe("per-class skill file coverage", () => {

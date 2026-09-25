@@ -8,9 +8,12 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
     {
       skill: "Affinity Rate UP",
       stat: "affinityRate",
-      maxBonus: 0.043,
+      maxBonus: 0.04256,
       scalesWith: "power",
       scaleMax: 280,
+      // In-game talent caps as of 2026-09-24.
+      maxBonusByBreakthrough: { 18: 0.0456, 19: 0.0494, 20: 0.05548, 21: 0.06156 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Physical Attack UP",
@@ -18,6 +21,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 73.9,
       scalesWith: "power",
       scaleMax: 280,
+      // In-game talent caps as of 2026-09-24.
+      maxBonusByBreakthrough: { 18: 79.2, 19: 85.8, 20: 96.36, 21: 106.92 },
+      scaleMaxByBreakthrough: { 18: 300, 19: 325, 20: 365, 21: 405 },
     },
     {
       skill: "Sword Bellstrike Attack Min",
@@ -53,6 +59,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.22,
       scalesWith: "bellstrike.max",
       scaleMax: 655,
+      // In-game talent caps as of 2026-09-24.
+      maxBonusByBreakthrough: { 18: 0.236, 19: 0.252, 20: 0.276, 21: 0.296 },
+      scaleMaxByBreakthrough: { 18: 702.4, 19: 750, 20: 821.4, 21: 881 },
     },
     {
       skill: "Attribute Damage Scale",
@@ -60,6 +69,9 @@ export const CLASS_SKILL_BOOSTS: Readonly<Record<string, readonly ClassSkillBoos
       maxBonus: 0.11,
       scalesWith: "bellstrike.max",
       scaleMax: 655,
+      // In-game talent caps as of 2026-09-24.
+      maxBonusByBreakthrough: { 18: 0.118, 19: 0.126, 20: 0.138, 21: 0.148 },
+      scaleMaxByBreakthrough: { 18: 702.4, 19: 750, 20: 821.4, 21: 881 },
     },
   ]),
   bellstrikeSplendor: defineClassSkillBoosts([

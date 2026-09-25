@@ -1,5 +1,5 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
@@ -9,7 +9,8 @@ export const spearspecial = defineSkill({
   classId: "bellstrikeUmbra",
   name: "Spear Special",
   breakdownName: "Sweep All",
-  tags: [WEAPON.spear, ATTACK.heavy, ATTUNE.spearSpecial],
+  // Not a Heavy Attack for Mistwillow: in-game values as of 2026-09-24.
+  tags: [WEAPON.spear, ATTUNE.spearSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",

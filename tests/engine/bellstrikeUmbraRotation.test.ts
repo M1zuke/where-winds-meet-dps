@@ -26,6 +26,7 @@ import { spearspecial } from "../../src/data/skills/bellstrike-umbra/spearspecia
 import { spearspecial1HitCancel } from "../../src/data/skills/bellstrike-umbra/spearspecial-1-hit-cancel"
 import { dragonFireSmolder1Hit } from "../../src/data/skills/mystic/dragon-fire-smolder-1-hit"
 import { dragonFireSmolder2Hits } from "../../src/data/skills/mystic/dragon-fire-smolder-2-hits"
+import { ATTUNE } from "../../src/data/skills/ids"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -123,14 +124,19 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     expect(spearq5HitCancel.castFrames).toBeLessThan(spearq.castFrames)
   })
 
-  it("Spear Special (1 Hit Cancel) keeps Sweep All's first hit, ending before its own cast", () => {
-    expect(spearspecial1HitCancel.hits).toEqual([spearspecial.hits[0]])
+  it("Spear Special (1 Hit Cancel) keeps Sweep All's Shattered Stone hit and its first damage hit, ending before its own cast", () => {
+    expect(spearspecial1HitCancel.hits).toEqual(spearspecial.hits.slice(0, 2))
     expect(spearspecial1HitCancel.castFrames).toBeLessThan(spearspecial.castFrames)
   })
 
   it("Crosswind Blade [cancel] keeps the full form's only hit, ending before its own cast", () => {
     expect(crosswindBladeCancel.hits).toEqual([crosswindBlade.hits[0]])
     expect(crosswindBladeCancel.castFrames).toBeLessThan(crosswindBlade.castFrames)
+  })
+
+  it("Crosswind Blade and its cancel form both reach the Special attunement", () => {
+    expect(crosswindBlade.tags).toContain(ATTUNE.swordSpecial)
+    expect(crosswindBladeCancel.tags).toContain(ATTUNE.swordSpecial)
   })
 
   it("SwordSpecial's four player-ended forms each keep the next one's hits, each over a shorter cast", () => {
@@ -144,14 +150,15 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
   })
 })
 
-describe("Sweep All lands two hits", () => {
-  it("Spear Special carries both hits, 42 frames apart", () => {
-    expect(spearspecial.hits).toHaveLength(2)
-    expect(spearspecial.hits[1].frame - spearspecial.hits[0].frame).toBe(42)
+describe("Sweep All lands a Shattered Stone hit and two damage hits, 42 frames apart", () => {
+  it("Spear Special carries all three hits", () => {
+    expect(spearspecial.hits).toHaveLength(3)
+    const [, first, second] = spearspecial.hits
+    expect(second.frame - first.frame).toBe(42)
   })
 
-  it("the two hits' coefficients split 0.40 / 0.60 of the whole skill", () => {
-    const [first, second] = spearspecial.hits
+  it("the two damage hits' coefficients split 0.40 / 0.60 of the whole skill", () => {
+    const [, first, second] = spearspecial.hits
     const total = (
       field: "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed",
     ) => first[field] + second[field]

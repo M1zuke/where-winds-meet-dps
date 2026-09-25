@@ -4,6 +4,7 @@ export const SKILL = {
   swordq: "bellstrikeUmbra-swordq",
   swordqfollowup: "bellstrikeUmbra-swordqfollowup",
   spearheavy: "bellstrikeUmbra-spearheavy",
+  spearheavyStage1: "bellstrikeUmbra-spearheavy-stage-1",
   spearq: "bellstrikeUmbra-spearq",
   swordspecial3Hit: "bellstrikeUmbra-swordspecial-3-hit",
   crosswindBlade: "bellstrikeUmbra-crosswind-blade",

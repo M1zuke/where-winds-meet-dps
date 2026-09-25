@@ -2,6 +2,7 @@ import type { Skill } from "../../../engine/skill"
 import { swordq } from "./swordq"
 import { swordqfollowup } from "./swordqfollowup"
 import { spearheavy } from "./spearheavy"
+import { spearheavyStage1 } from "./spearheavy-stage-1"
 import { spearq } from "./spearq"
 import { swordspecial3Hit } from "./swordspecial-3-hit"
 import { crosswindBlade } from "./crosswind-blade"
@@ -33,6 +34,7 @@ export const SKILLS: Skill[] = [
   swordq,
   swordqfollowup,
   spearheavy,
+  spearheavyStage1,
   spearq,
   swordspecial3Hit,
   crosswindBlade,

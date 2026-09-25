@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 56,
+        "count": 57,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -20,6 +20,7 @@
           "bellstrikeUmbra-spearheavy",
           "bellstrikeUmbra-spearheavy-1-hit",
           "bellstrikeUmbra-spearheavy-1-hit-prepull",
+          "bellstrikeUmbra-spearheavy-stage-1",
           "bellstrikeUmbra-spearq",
           "bellstrikeUmbra-spearq-5-hit-cancel",
           "bellstrikeUmbra-spearspecial",
@@ -61,7 +62,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "e04ce9fcddf4fbec8efab8696de9db24ed4f2913e748ec0d51fa0e3e717f4584"
+        "digest": "a8eaeb6e269c094875dea80d028ac09e537d51eebc3ce5672e92b48c06add6a0"
       },
       "debuffs": {
         "count": 7,
@@ -117,7 +118,7 @@
           },
           "affectsAll": true,
           "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
+          "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
           "stackRateLimit": null,
@@ -992,9 +993,7 @@
           "id": "bellstrikeUmbraBleedPen",
           "name": "Bleed penetration Enhancement",
           "classBuff": true,
-          "requires": {
-            "param": "swordHorizon"
-          },
+          "requires": null,
           "affectsAll": false,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
@@ -1016,9 +1015,7 @@
           "id": "bellstrikeUmbraBleedingDamage",
           "name": "Damage Over Time",
           "classBuff": true,
-          "requires": {
-            "param": "swordHorizon"
-          },
+          "requires": null,
           "affectsAll": false,
           "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
@@ -99552,7 +99549,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99564,7 +99561,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -99630,7 +99627,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99642,7 +99639,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -99708,7 +99705,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99720,7 +99717,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -99786,7 +99783,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99798,7 +99795,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -99876,7 +99873,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99888,7 +99885,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -99978,7 +99975,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -99990,7 +99987,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100080,7 +100077,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100092,7 +100089,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100182,7 +100179,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100194,7 +100191,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100284,7 +100281,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100296,7 +100293,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100402,7 +100399,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100414,7 +100411,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100520,7 +100517,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100532,7 +100529,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100638,7 +100635,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100650,7 +100647,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100756,7 +100753,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100768,7 +100765,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100874,7 +100871,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100886,7 +100883,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -100976,7 +100973,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -100988,7 +100985,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101090,7 +101087,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101102,7 +101099,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101204,7 +101201,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101216,7 +101213,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101318,7 +101315,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101330,7 +101327,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101448,7 +101445,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101460,7 +101457,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101585,7 +101582,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101597,7 +101594,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101722,7 +101719,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101734,7 +101731,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101859,7 +101856,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101871,7 +101868,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -101984,7 +101981,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -101996,7 +101993,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102109,7 +102106,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102121,7 +102118,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102246,7 +102243,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102258,7 +102255,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102390,7 +102387,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102402,7 +102399,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102558,7 +102555,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102570,7 +102567,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102714,7 +102711,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102726,7 +102723,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -102854,7 +102851,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -102866,7 +102863,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103006,7 +103003,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103018,7 +103015,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103158,7 +103155,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103170,7 +103167,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103310,7 +103307,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103322,7 +103319,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103450,7 +103447,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103462,7 +103459,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103602,7 +103599,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103614,7 +103611,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103754,7 +103751,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103766,7 +103763,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -103918,7 +103915,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -103930,7 +103927,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104063,7 +104060,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104075,7 +104072,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104220,7 +104217,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104232,7 +104229,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104365,7 +104362,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104377,7 +104374,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104517,7 +104514,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104529,7 +104526,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104669,7 +104666,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104681,7 +104678,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104802,7 +104799,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104814,7 +104811,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -104942,7 +104939,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -104954,7 +104951,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105082,7 +105079,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105094,7 +105091,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105215,7 +105212,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105227,7 +105224,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105348,7 +105345,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105360,7 +105357,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105481,7 +105478,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105493,7 +105490,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105614,7 +105611,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105626,7 +105623,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105735,7 +105732,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105747,7 +105744,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105856,7 +105853,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105868,7 +105865,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -105977,7 +105974,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -105989,7 +105986,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106086,7 +106083,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106098,7 +106095,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106188,7 +106185,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106200,7 +106197,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106278,7 +106275,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106290,7 +106287,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106368,7 +106365,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106380,7 +106377,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106458,7 +106455,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106470,7 +106467,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106536,7 +106533,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106548,7 +106545,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106614,7 +106611,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106626,7 +106623,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106692,7 +106689,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106704,7 +106701,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106770,7 +106767,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106782,7 +106779,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106848,7 +106845,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106860,7 +106857,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -106926,7 +106923,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -106938,7 +106935,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107004,7 +107001,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107016,7 +107013,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107094,7 +107091,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107106,7 +107103,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107184,7 +107181,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107196,7 +107193,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107274,7 +107271,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107286,7 +107283,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107364,7 +107361,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107376,7 +107373,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107461,7 +107458,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107473,7 +107470,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107558,7 +107555,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107570,7 +107567,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107655,7 +107652,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107667,7 +107664,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107752,7 +107749,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107764,7 +107761,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107849,7 +107846,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107861,7 +107858,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -107946,7 +107943,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -107958,7 +107955,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108043,7 +108040,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108055,7 +108052,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108133,7 +108130,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108145,7 +108142,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108223,7 +108220,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108235,7 +108232,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108313,7 +108310,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108325,7 +108322,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108403,7 +108400,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108415,7 +108412,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108493,7 +108490,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108505,7 +108502,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108583,7 +108580,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108595,7 +108592,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108673,7 +108670,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108685,7 +108682,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108763,7 +108760,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108775,7 +108772,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108853,7 +108850,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108865,7 +108862,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -108943,7 +108940,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -108955,7 +108952,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109045,7 +109042,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109057,7 +109054,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109147,7 +109144,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109159,7 +109156,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109237,7 +109234,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109249,7 +109246,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109327,7 +109324,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109339,7 +109336,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109417,7 +109414,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109429,7 +109426,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109507,7 +109504,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109519,7 +109516,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109597,7 +109594,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109609,7 +109606,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109687,7 +109684,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109699,7 +109696,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
@@ -109777,7 +109774,7 @@
                 "amount": 0.15
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "bellstrikeUmbraBleedingDamage",
@@ -109789,7 +109786,7 @@
                 "amount": 0.18
               }
             ],
-            "requires": "swordHorizon"
+            "requires": null
           },
           {
             "id": "buff-bellstrikeUmbra-zenith-bar",
