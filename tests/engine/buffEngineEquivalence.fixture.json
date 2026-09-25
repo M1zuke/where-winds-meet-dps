@@ -113468,9 +113468,10 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 55,
+        "count": 56,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
+          "bamboocutDraught-bloombreak",
           "bamboocutDraught-boundvessel",
           "bamboocutDraught-castlink",
           "bamboocutDraught-deflect-cancel",
@@ -113526,7 +113527,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "ef28fa65c46fccd19989f72ee5199176dbd43f2d23eeefa7613f763f786b731b"
+        "digest": "fb61af7f68e56dadafb49da9fe25917a945775e53871760438b3f81532048a92"
       },
       "debuffs": {
         "count": 8,
@@ -113717,6 +113718,31 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate"
+        },
+        {
+          "id": "mistwingLowTierTargetHealthPenetration",
+          "name": "Mistwing T1 (Target Health Penetration)",
+          "classBuff": false,
+          "requires": {
+            "param": "mistwing",
+            "minTier": 1
+          },
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate from tier 3"
         },
         {
           "id": "volutefitWineboundDamage",
@@ -114659,7 +114685,7 @@
       ]
     },
     "dynamic": {
-      "digest": "accf3c313a5c7b664e4740ee89508507d68a1312e2433687dee7de8bf0a4c972"
+      "digest": "2c17227aa16805d58e61ae67e966857d6e7664d198b821162fac2d9e292abd67"
     }
   }
 }

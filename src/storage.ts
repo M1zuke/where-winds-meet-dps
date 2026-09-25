@@ -1504,6 +1504,25 @@ function withRenamedStatKeys(effects: BuffStatEffect[]): BuffStatEffect[] {
   )
 }
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// Deepdaze now resets Binge Points to 0 when it lapses without Skyspeak's
+// refund gate, not to whatever the counter already read; a copy seeded
+// before that carries the old onExpire with no elseStacks. Only an onExpire
+// still identical to what was seeded is rewritten.
+const INEBRIATE_DEEPDAZE_ID = "buff-bamboocutDraught-inebriate-deepdaze"
+const BINGE_POINTS_ID = "buff-bamboocutDraught-binge-points"
+
+function healInebriateDeepdazeElseStacks(id: string, onExpire: Buff["onExpire"]): Buff["onExpire"] {
+  if (id !== INEBRIATE_DEEPDAZE_ID || !onExpire) return onExpire
+  const seeded =
+    onExpire.targetId === BINGE_POINTS_ID &&
+    onExpire.stacks === 60 &&
+    onExpire.requiresBuffId === "skyspeakDeepdazeRefund" &&
+    onExpire.elseStacks === undefined
+  return seeded ? { ...onExpire, elseStacks: 0 } : onExpire
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateBuff(b: Buff): Buff {
   const { dot: _drop, ...rest0 } = b as Buff & { dot?: unknown }
@@ -1517,7 +1536,10 @@ function hydrateBuff(b: Buff): Buff {
     effects: withRenamedStatKeys(b.effects),
   }
   if (b.onExpire)
-    hydrated.onExpire = { ...b.onExpire, targetId: migrateMysticId(b.onExpire.targetId) }
+    hydrated.onExpire = healInebriateDeepdazeElseStacks(rest.id, {
+      ...b.onExpire,
+      targetId: migrateMysticId(b.onExpire.targetId),
+    })
   if (Array.isArray(b.onMaxStacks)) hydrated.onMaxStacks = b.onMaxStacks.map(hydrateHitTrigger)
   return hydrated
 }

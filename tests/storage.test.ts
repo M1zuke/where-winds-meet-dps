@@ -857,6 +857,102 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("Inebriate - Deepdaze's onExpire elseStacks heal", () => {
+  const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
+  const CUSTOM_BUFFS_VERSION = 3
+
+  function seededDeepdazeGate(onExpire: Record<string, unknown>) {
+    return {
+      id: "buff-bamboocutDraught-inebriate-deepdaze",
+      classId: "bamboocutDraught",
+      name: "Inebriate - Deepdaze",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 300,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire,
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+  }
+
+  afterEach(() => {
+    try {
+      kvStore.remove(CUSTOM_BUFFS_KEY)
+    } catch {}
+  })
+
+  it("adds elseStacks: 0 to a copy still identical to what was seeded", () => {
+    const seeded = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [seeded] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs).toHaveLength(1)
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 0,
+    })
+  })
+
+  it("leaves a copy that already declares its own elseStacks alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 40,
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBe(40)
+  })
+
+  it("leaves an edited copy whose stacks no longer match the seed alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 100,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBeUndefined()
+  })
+
+  it("leaves another buff's onExpire alone", () => {
+    const unrelated = {
+      id: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+      classId: "bamboocutDraught",
+      name: "Eonpour - Exhausted Cooldown",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 3600,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire: { targetId: "buff-bamboocutDraught-binge-points", stacks: 60 },
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [unrelated] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+    })
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
 describe("GearPiece.isNew hydration (additive, no version bump)", () => {
   const PROFILES_KEY = "wwm.profiles"
   const PROFILES_VERSION = 4

@@ -27,6 +27,7 @@ import {
   addFinalStrikeExplosionTrigger,
 } from "../../src/migrations/customSkills/V23__drunkenHazeExplosion"
 import { healSkill as healUmbraValueFixes } from "../../src/migrations/customSkills/V24__umbraValueFixes"
+import { healBamboocutDraughtValuesGatesReach } from "../../src/migrations/customSkills/V25__bamboocutDraughtValuesGatesReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -63,6 +64,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [22, healSharedMysticCoefficients],
   [23, healDrunkenHazeExplosion],
   [24, healUmbraValueFixes],
+  [25, healBamboocutDraughtValuesGatesReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
