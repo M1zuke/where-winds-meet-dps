@@ -8,23 +8,19 @@ import { INKWELL_FAN_RECEIVES } from "./receives"
 // value — the reference def states it per hit. Kept as total ÷ hits so the
 // number the source actually carries stays legible.
 const CAST_HITS = 5
+// In-game values as of 2026-09-24.
 const CAST_TOTAL = {
-  physMultiplier: 4.376825,
-  attributeMultiplier: 6.56531,
-  physFixed: 1210.75,
-  attributeFixed: 659.75,
+  physMultiplier: 3.0185,
+  attributeMultiplier: 4.5278,
+  physFixed: 835,
+  attributeFixed: 455,
 }
 
-// The cast total also carries the breakthrough-14 multiplier the engine never
-// applies (`targetMultiplier` is set in panel.ts and read nowhere) — a uniform
-// 1.450 against the reference def on all four tracks, same as FanLightCharged.
-const BREAKTHROUGH_SCALE = 1.45
-
 const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS / BREAKTHROUGH_SCALE,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS / BREAKTHROUGH_SCALE,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS / BREAKTHROUGH_SCALE,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS / BREAKTHROUGH_SCALE,
+  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
+  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
+  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
   extraCritDamage: 1,
 }
 
@@ -53,6 +49,7 @@ export const fanheavypursuit5Hit = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
+    BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.pursuitChargedBoost],

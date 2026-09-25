@@ -1,7 +1,11 @@
 import { defineInnerWay, type InnerWayDef } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_LADDER, INNER_WAY_NODE } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
-import { comboBuffDef, comboUmbLightBonusBuffDef } from "./blossomBarrageBuffs"
+import {
+  comboBuffDef,
+  comboSpringAwayBonusBuffDef,
+  comboUmbLightBonusBuffDef,
+} from "./blossomBarrageBuffs"
 
 // The imported 20% / 15s Combo ladder is not fully verified for lower tiers.
 // Global 2.0 T4/T5: https://www.wherewindsmeetgame.com/news/official/723update.html
@@ -16,5 +20,5 @@ export const blossomBarrage: InnerWayDef = defineInnerWay({
     4: { nodes: [INNER_WAY_NODE.blossomBarrageSpringAwayBonus] },
     5: { panelStats: { directCritRate: 0.046 } },
   },
-  buffDefs: [comboBuffDef(), comboUmbLightBonusBuffDef()],
+  buffDefs: [comboBuffDef(), comboUmbLightBonusBuffDef(), comboSpringAwayBonusBuffDef()],
 })

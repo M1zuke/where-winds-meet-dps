@@ -14,7 +14,7 @@ export const fanqcancel = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.fanQCancel,
   receives: INKWELL_FAN_RECEIVES,
-  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
+  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.springThunder],
   castFrames: 6,
   triggerable: true,
   hits: [

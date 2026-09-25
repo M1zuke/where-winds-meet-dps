@@ -16,16 +16,19 @@ export function comboBuffDef(): BuffModule {
     name: "Combo",
     requires: { param: PARAM.blossomBarrage },
     duration: 15,
+    buffAppliesOnCastEnd: true,
     effects: [stat("allDamageBoost", 0.2)],
   })
 }
 
 let comboUmbLightBonusMinTier: number | undefined
 
+// In-game values as of 2026-09-24: only the +5% branch reaches the floating
+// umbrella's projectiles, and only against your Combo target's Qi break.
 export function comboUmbLightBonusBuffDef(): BuffModule {
   return defineBuff({
     id: BUFF.comboUmbLightBonus,
-    name: "Combo (Spring Away / Unfading Flower)",
+    name: "Combo (Floating Umbrella)",
     requires: {
       param: PARAM.blossomBarrage,
       get minTier(): number {
@@ -37,8 +40,31 @@ export function comboUmbLightBonusBuffDef(): BuffModule {
     },
     requiresBuffActive: BUFF.combo,
     duration: 15,
-    // Global 2.0: https://www.wherewindsmeetgame.com/news/official/723update.html
-    summary: "+5% damage against your Combo target; +10% while Exhausted (PvE)",
-    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.1 : 0.05)],
+    buffAppliesOnCastEnd: true,
+    summary: "+5% damage against your Combo target while Exhausted (PvE)",
+    effects: (ctx) => (ctx.phase === "exhausted" ? [stat("allDamageBoost", 0.05)] : []),
+  })
+}
+
+let comboSpringAwayBonusMinTier: number | undefined
+
+export function comboSpringAwayBonusBuffDef(): BuffModule {
+  return defineBuff({
+    id: BUFF.comboSpringAwayBonus,
+    name: "Combo (Spring Away)",
+    requires: {
+      param: PARAM.blossomBarrage,
+      get minTier(): number {
+        return (comboSpringAwayBonusMinTier ??= requireInnerWayNodeTier(
+          blossomBarrage,
+          INNER_WAY_NODE.blossomBarrageSpringAwayBonus,
+        ))
+      },
+    },
+    requiresBuffActive: BUFF.combo,
+    duration: 15,
+    buffAppliesOnCastEnd: true,
+    summary: "+10% Spring Away damage against your Combo target; +15% while Exhausted (PvE)",
+    effects: (ctx) => [stat("allDamageBoost", ctx.phase === "exhausted" ? 0.15 : 0.1)],
   })
 }

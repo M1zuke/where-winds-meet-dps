@@ -21,6 +21,7 @@ export interface ResourceDef {
   launchSkillId: string
   debuffId: string
   drainPerSecond: number
+  regenPerSecond?: number
   enhancedBuffId: string
   enhancedExtraDrainPerSecond: number
   endRefund: number
@@ -44,21 +45,27 @@ export function resolveResourceSettings(
   definition: ResourceDef,
   raw?: Partial<ResourceSettings>,
 ): ResourceSettings {
-  const finite = (value: unknown, fallback: number, maximum: number) =>
+  const finite = (value: unknown, fallback: number, minimum: number, maximum: number) =>
     typeof value === "number" && Number.isFinite(value)
-      ? Math.max(0, Math.min(maximum, value))
+      ? Math.max(minimum, Math.min(maximum, value))
       : fallback
   return {
-    opening: finite(raw?.opening, definition.defaultOpening, definition.capacity),
+    opening: finite(raw?.opening, definition.defaultOpening, 0, definition.capacity),
     gains: Object.fromEntries(
       definition.gains.map((rule) => [
         rule.id,
-        finite(raw?.gains?.[rule.id], rule.defaultAmount, definition.capacity),
+        finite(
+          raw?.gains?.[rule.id],
+          rule.defaultAmount,
+          Math.min(0, rule.defaultAmount),
+          definition.capacity,
+        ),
       ]),
     ),
     exhaustedGainPerTick: finite(
       raw?.exhaustedGainPerTick,
       definition.defaultExhaustedGainPerTick ?? 0,
+      0,
       definition.capacity,
     ),
   }

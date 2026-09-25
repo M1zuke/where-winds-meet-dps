@@ -1,25 +1,20 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// The reference def carries these as ONE cast total spread over six hits, not
-// as a per-hit value: every other multi-hit skill in the reference set — 31 of
-// them across five specs — has a per-hit coefficient equal to its cast total
-// divided by its hit count, and the ÷3 ones still carry the repeating decimal
-// that proves it. This is the only multi-hit def whose value was left undivided,
-// which is why its 1.7173 sits alongside SINGLE-hit skills (FanLightCharged
-// 1.9039, UmbQ 2.3389) instead of below them.
-//
-// Kept as total ÷ hits rather than six decimals, so the number the reference
-// actually states stays legible.
+// The authored value is the whole cast spread over its hits, not a per-hit
+// value — the reference def states it per hit. Kept as total ÷ hits so the
+// number the source actually carries stays legible.
 const CAST_HITS = 6
+// In-game values as of 2026-09-24 (level 100).
 const CAST_TOTAL = {
   physMultiplier: 1.7173,
   attributeMultiplier: 2.576,
-  physFixed: 396,
-  attributeFixed: 221,
+  physFixed: 79.16 * CAST_HITS,
+  attributeFixed: 43.16 * CAST_HITS,
 }
 
 const COEFFICIENTS = {
@@ -50,12 +45,13 @@ export const umblightcharge = defineSkill({
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
     BUFF.combo,
-    BUFF.comboUmbLightBonus,
+    BUFF.comboSpringAwayBonus,
     BUFF.windWall,
     BUFF.pursuitChargedBoost,
     BUFF.trajectorySkill,
     BUFF.thunderousBloom,
     BUFF.springThunder,
+    BUFF.nonPlayerBaseDamage125,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castFrames: 147,
@@ -63,7 +59,11 @@ export const umblightcharge = defineSkill({
   hits: [
     hit(0, { frame: 0, ...COEFFICIENTS }),
     hit(1, { frame: 10, ...COEFFICIENTS }),
-    hit(2, { frame: 20, ...COEFFICIENTS }),
+    hit(2, {
+      frame: 20,
+      ...COEFFICIENTS,
+      triggers: [castSkill({ target: SKILL.umblightchargeLift })],
+    }),
     hit(3, { frame: 30, ...COEFFICIENTS }),
     hit(4, { frame: 40, ...COEFFICIENTS }),
     hit(5, { frame: 50, ...COEFFICIENTS }),

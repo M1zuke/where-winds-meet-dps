@@ -245,5 +245,88 @@ describe("user-defined martial-arts talents", () => {
         )
       }
     })
+
+    // In-game talent caps as of 2026-09-24.
+    it("silkbindJade's talent caps rise at breakthrough 18-21 too", () => {
+      const byBreakthrough = (breakthrough: number) =>
+        Object.fromEntries(
+          getDefaultTalentsForClass("silkbindJade", breakthrough).map((d) => [d.name, d]),
+        )
+      const at17 = byBreakthrough(17)
+      expect(at17["Critical Rate UP"].maxBonus).toBeCloseTo(0.085, 6)
+      expect(at17["Critical Rate UP"].scaleMax).toBe(280)
+      expect(at17["Physical Attack UP"].maxBonus).toBe(73.9)
+      expect(at17["Physical Attack UP"].scaleMax).toBe(280)
+      expect(at17["Silkbind Penetration Scale"].maxBonus).toBeCloseTo(0.22, 6)
+      expect(at17["Silkbind Penetration Scale"].scaleMax).toBe(328)
+      expect(at17["Attribute Damage Scale"].maxBonus).toBeCloseTo(0.11, 6)
+      expect(at17["Attribute Damage Scale"].scaleMax).toBe(328)
+
+      const expectedByBreakthrough: Record<
+        number,
+        {
+          crit: number
+          phys: number
+          pen: number
+          attr: number
+          agilityScaleMax: number
+          silkbindScaleMax: number
+        }
+      > = {
+        18: {
+          crit: 0.0912,
+          phys: 79.2,
+          pen: 0.236,
+          attr: 0.118,
+          agilityScaleMax: 300,
+          silkbindScaleMax: 351.2,
+        },
+        19: {
+          crit: 0.0988,
+          phys: 85.8,
+          pen: 0.252,
+          attr: 0.126,
+          agilityScaleMax: 325,
+          silkbindScaleMax: 375.0,
+        },
+        20: {
+          crit: 0.111,
+          phys: 96.36,
+          pen: 0.276,
+          attr: 0.138,
+          agilityScaleMax: 365,
+          silkbindScaleMax: 410.7,
+        },
+        21: {
+          crit: 0.1231,
+          phys: 106.92,
+          pen: 0.296,
+          attr: 0.148,
+          agilityScaleMax: 405,
+          silkbindScaleMax: 440.5,
+        },
+      }
+      for (const [breakthrough, expected] of Object.entries(expectedByBreakthrough)) {
+        const byName = byBreakthrough(Number(breakthrough))
+        expect(byName["Critical Rate UP"].maxBonus, breakthrough).toBeCloseTo(expected.crit, 6)
+        expect(byName["Critical Rate UP"].scaleMax, breakthrough).toBe(expected.agilityScaleMax)
+        expect(byName["Physical Attack UP"].maxBonus, breakthrough).toBeCloseTo(expected.phys, 6)
+        expect(byName["Physical Attack UP"].scaleMax, breakthrough).toBe(expected.agilityScaleMax)
+        expect(byName["Silkbind Penetration Scale"].maxBonus, breakthrough).toBeCloseTo(
+          expected.pen,
+          6,
+        )
+        expect(byName["Silkbind Penetration Scale"].scaleMax, breakthrough).toBe(
+          expected.silkbindScaleMax,
+        )
+        expect(byName["Attribute Damage Scale"].maxBonus, breakthrough).toBeCloseTo(
+          expected.attr,
+          6,
+        )
+        expect(byName["Attribute Damage Scale"].scaleMax, breakthrough).toBe(
+          expected.silkbindScaleMax,
+        )
+      }
+    })
   })
 })

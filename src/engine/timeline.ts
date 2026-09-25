@@ -71,6 +71,10 @@ import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
+import {
+  HEALER_BUFF_AMOUNT,
+  HEALER_BUFF_PANACEA_FAN_AMOUNT,
+} from "../data/skills/buffs/healerBuffAmounts"
 import { resolveAverageFps, resolvePingMs } from "./pingFps"
 
 export const FPS = 60
@@ -892,7 +896,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         sig += "~qiBreakBoost"
       }
       if (combat?.healerBuff) {
-        const healerAmount = 0.2 + (qiPhaseHere === "exhausted" ? 0.05 : 0)
+        const healerAmount = combat.healerPanaceaFan
+          ? HEALER_BUFF_PANACEA_FAN_AMOUNT
+          : HEALER_BUFF_AMOUNT
         effects.push({ statKey: "allDamageBoost", amount: healerAmount })
         sig += `~healerBuff:${healerAmount}`
       }

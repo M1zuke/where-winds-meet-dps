@@ -4,12 +4,6 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 
-// The authored row carries the breakthrough-14 multiplier that the engine
-// does not apply — `FormulaContext.targetMultiplier` is set in panel.ts and
-// read nowhere. Measured against the reference def it is a uniform 1.4504 on
-// all four coefficient tracks, which is that multiplier to four figures.
-const BREAKTHROUGH_SCALE = 1.45
-
 export const fanlightcharged = defineSkill({
   id: SKILL.fanlightcharged,
   classId: "silkbindJade",
@@ -26,6 +20,7 @@ export const fanlightcharged = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
+    BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.lingeringBone],
@@ -34,11 +29,12 @@ export const fanlightcharged = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 2.76138 / BREAKTHROUGH_SCALE,
-      attributeMultiplier: 4.14207 / BREAKTHROUGH_SCALE,
-      physFixed: 764.15 / BREAKTHROUGH_SCALE,
-      attributeFixed: 416.15 / BREAKTHROUGH_SCALE,
-      extraCritDamage: 1,
+      // In-game values as of 2026-09-24.
+      physMultiplier: 1.9044,
+      attributeMultiplier: 2.8566,
+      physFixed: 527,
+      attributeFixed: 287,
+      extraCritDamage: 0,
     }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",

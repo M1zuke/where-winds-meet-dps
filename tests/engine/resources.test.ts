@@ -222,6 +222,63 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(simulation.result.launches[0].reason).toBe("depleted")
   })
 
+  it("regenerates at a flat per-second rate, capped at capacity", () => {
+    const simulation = new CombatResource(
+      { ...definition, regenPerSecond: 6 },
+      { opening: 40 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffActive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.advance(60)
+    expect(amount(simulation)).toBeCloseTo(46)
+    simulation.advance(660)
+    expect(amount(simulation)).toBe(100)
+  })
+
+  it("regenerates against the drain while a launch is active", () => {
+    const simulation = new CombatResource(
+      { ...definition, regenPerSecond: 4 },
+      { opening: 60 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffActive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.launch(0)
+    simulation.advance(60)
+    expect(amount(simulation)).toBeCloseTo(54)
+  })
+
+  it("never lets a negative gain push the balance below zero", () => {
+    const simulation = new CombatResource(
+      {
+        ...definition,
+        gains: [{ id: "cost", name: "Cost", defaultAmount: -50, skillIds: ["fictional-cost"] }],
+      },
+      { opening: 10 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffActive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.hit(makeSkill("fictional", { id: "fictional-cost" }), 0, 0)
+    expect(amount(simulation)).toBe(0)
+  })
+
   it("defaults unknown refill to zero and sanitizes invalid saved settings", () => {
     expect(resolveResourceSettings(definition).exhaustedGainPerTick).toBe(0)
     expect(

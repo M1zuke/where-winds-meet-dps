@@ -237,6 +237,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             onChange={(value) => setCombat("healerBuff", value)}
           />
           <SwitchRow
+            label={t("overview.encounterSettings.healerPanaceaFan")}
+            checked={settings.healerPanaceaFan}
+            onChange={(value) => setCombat("healerPanaceaFan", value)}
+          />
+          <SwitchRow
             label={t("overview.encounterSettings.breakExtension")}
             checked={settings.breakExtension}
             onChange={(value) => setCombat("breakExtension", value)}

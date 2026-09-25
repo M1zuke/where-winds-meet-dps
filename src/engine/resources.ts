@@ -72,7 +72,7 @@ export class CombatResource {
   }
 
   private credit(amount: number) {
-    this.amount = Math.min(this.definition.capacity, this.amount + amount)
+    this.amount = Math.max(0, Math.min(this.definition.capacity, this.amount + amount))
   }
 
   advance(toFrame: number) {
@@ -84,8 +84,12 @@ export class CombatResource {
             ? this.definition.enhancedExtraDrainPerSecond
             : 0)
         : 0
+      const regen = this.definition.regenPerSecond ?? 0
       this.frame++
-      this.amount = Math.max(0, this.amount - drain / this.context.fps)
+      this.amount = Math.max(
+        0,
+        Math.min(this.definition.capacity, this.amount + (regen - drain) / this.context.fps),
+      )
       if (wasActive && this.amount < 1e-8) {
         this.amount = 0
         this.stop("depleted")

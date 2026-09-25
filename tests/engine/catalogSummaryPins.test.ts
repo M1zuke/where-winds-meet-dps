@@ -70,7 +70,7 @@ describe("catalog summary pins — healerBuff", () => {
   // so no Receives/Applies/Class-Buffs row ever renders it. Pin the module's
   // own summary directly; it is the only text this buff carries.
   it("carries the (team) marker, the only signal it's a groupDamage bonus", () => {
-    expect(healerBuff.summary).toBe("+20.0% all (team)")
+    expect(healerBuff.summary).toBe("+10.0% all (team)")
   })
 })
 

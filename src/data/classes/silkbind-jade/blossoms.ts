@@ -13,14 +13,14 @@ export const BLOSSOMS = {
   endRefundCooldownSeconds: 5,
 } as const
 
-const PROVISIONAL_BASE_GAIN = 25
-
 export const blossomResource = defineResource({
   id: "blossoms",
   name: "Blossoms",
   capacity: BLOSSOMS.capacity,
   defaultOpening: BLOSSOMS.capacity,
   defaultExhaustedGainPerTick: 3,
+  // In-game values as of 2026-09-24.
+  regenPerSecond: 0.3,
   launchMinimum: BLOSSOMS.launchMinimum,
   launchSkillId: SKILL.umbdronelaunch,
   debuffId: DEBUFF.umbdrone,
@@ -30,17 +30,25 @@ export const blossomResource = defineResource({
   endRefund: BLOSSOMS.endRefund,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,
   gains: [
+    {
+      id: "launchCost",
+      name: "Unfading Flower cost",
+      defaultAmount: -10,
+      skillIds: [SKILL.umbdronelaunch],
+    },
     { id: "directHit", name: "Umbrella hit", defaultAmount: 0, tag: WEAPON.umbrella },
     {
       id: "qHit",
       name: "Spring Sorrow base gain",
-      defaultAmount: PROVISIONAL_BASE_GAIN,
+      // In-game values as of 2026-09-24.
+      defaultAmount: 20,
       skillIds: [SKILL.umbq],
     },
     {
       id: "heavyLightCast",
       name: "Heavy Light base gain",
-      defaultAmount: PROVISIONAL_BASE_GAIN,
+      // In-game values as of 2026-09-24.
+      defaultAmount: 45,
       skillIds: [SKILL.umbHeavylight],
       divideAcrossSkillHits: true,
     },

@@ -1,6 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
-import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { ATTACK, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
@@ -10,14 +10,7 @@ export const umbdronelaunch26Hit = defineSkill({
   classId: "silkbindJade",
   name: "UmbDroneLaunch[26hit]",
   breakdownName: "Umbrella Launch",
-  tags: [
-    PROP.hasQiBreakPhysPen,
-    WEAPON.umbrella,
-    ATTACK.heavy,
-    ATTUNE.umbFrequentProjectile,
-    ROLE.umbDrone,
-    ROLE.umbDroneLaunch,
-  ],
+  tags: [PROP.hasQiBreakPhysPen, WEAPON.umbrella, ATTACK.heavy, ROLE.umbDrone, ROLE.umbDroneLaunch],
   skillType: "weapon",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
@@ -36,9 +29,10 @@ export const umbdronelaunch26Hit = defineSkill({
       frame: 0,
       physMultiplier: 0.54,
       attributeMultiplier: 0.81,
-      physFixed: 148,
+      // In-game values as of 2026-09-24.
+      physFixed: 149.4,
       attributeFixed: 81.5,
-      extraCritDamage: 1,
+      extraCritDamage: 0,
       triggers: [applyDebuff({ target: DEBUFF.umbdrone26Hit })],
     }),
   ],

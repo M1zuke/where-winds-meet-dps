@@ -25,6 +25,7 @@ export const umbdrone26HitTick = defineSkill({
     BUFF.comboUmbLightBonus,
     BUFF.windWall,
     BUFF.trajectorySkill,
+    BUFF.nonPlayerBaseDamage115,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
   elevatedAttributeMultiplier: false,

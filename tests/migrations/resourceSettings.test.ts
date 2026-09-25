@@ -33,8 +33,50 @@ describe("additive saved resource settings", () => {
     )
     expect(profile.inputs.resourceSettings?.blossoms).toEqual({
       opening: 100,
-      gains: { directHit: 7, qHit: 25, heavyLightCast: 25, chargedHit: 0, tier6: 25 },
+      gains: {
+        launchCost: -10,
+        directHit: 7,
+        qHit: 20,
+        heavyLightCast: 45,
+        chargedHit: 0,
+        tier6: 25,
+      },
       exhaustedGainPerTick: 4,
     })
+  })
+
+  it("keeps a negative resource cost through a save/load round trip", () => {
+    const saved = importProfile(
+      JSON.stringify({
+        id: "test",
+        name: "Test",
+        inputs: {
+          ...defaultInputs,
+          classId: "silkbindJade",
+          resourceSettings: {
+            blossoms: { opening: 100, gains: { launchCost: -10 }, exhaustedGainPerTick: 3 },
+          },
+        },
+      }),
+    )
+    const reloaded = importProfile(
+      JSON.stringify({ id: "test", name: "Test", inputs: saved.inputs }),
+    )
+    expect(reloaded.inputs.resourceSettings?.blossoms.gains.launchCost).toBe(-10)
+  })
+
+  it("clamps a gain no lower than its own negative default", () => {
+    const profile = importProfile(
+      JSON.stringify({
+        id: "test",
+        name: "Test",
+        inputs: {
+          ...defaultInputs,
+          classId: "silkbindJade",
+          resourceSettings: { blossoms: { gains: { launchCost: -50 } } },
+        },
+      }),
+    )
+    expect(profile.inputs.resourceSettings?.blossoms.gains.launchCost).toBe(-10)
   })
 })

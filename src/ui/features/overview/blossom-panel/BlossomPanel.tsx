@@ -9,6 +9,7 @@ import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import styles from "./BlossomPanel.module.scss"
 
 const GAIN_KEYS = {
+  launchCost: "overview.blossoms.launchCost",
   directHit: "overview.blossoms.directHit",
   qHit: "overview.blossoms.qHit",
   heavyLightCast: "overview.blossoms.heavyLightCast",
@@ -55,7 +56,7 @@ export function BlossomPanel({
             {t(GAIN_KEYS[rule.id])}
             <NumInput
               value={settings.gains[rule.id]}
-              min={0}
+              min={Math.min(0, rule.defaultAmount)}
               max={100}
               onChange={(value) => update({ gains: { ...settings.gains, [rule.id]: value } })}
             />

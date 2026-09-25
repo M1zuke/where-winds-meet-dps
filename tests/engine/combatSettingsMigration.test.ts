@@ -54,6 +54,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       qiBreakOverride: { startSec: 30, durationSec: 12, lowQiLeadSec: 3 },
       dragonsBreath: false,
       healerBuff: true,
+      healerPanaceaFan: true,
       breakExtension: false,
       script: "wraithstrikeScript" as const,
       dragonHeadFullStacks: false,

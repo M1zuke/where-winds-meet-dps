@@ -309,7 +309,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(boosted).toBeGreaterThan(plain)
   })
 
-  // Cross-checked against the Healer Buff toggle, a known +0.20 into the same
+  // Cross-checked against the Healer Buff toggle, a known +0.10 into the same
   // additive pool (frame 0 sits outside the default Qi break, so its bonus is
   // the flat, unboosted amount): it fixes the pool size independently, which
   // then predicts the 0.45.
@@ -327,7 +327,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
       MYSTIC_SKILL.dragonHeadPlus,
     )
 
-    const pool = 0.2 / (healed / plain - 1)
+    const pool = 0.1 / (healed / plain - 1)
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
@@ -344,6 +344,55 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
       MYSTIC_SKILL.dragonHead,
     )
     expect(withBonus).toBeGreaterThan(alone)
+  })
+})
+
+describe("Healer Buff toggle", () => {
+  const withHealerBuff = (panaceaFan = false): Partial<Inputs> => ({
+    combatSettings: { ...defaultCombatSettings(), healerBuff: true, healerPanaceaFan: panaceaFan },
+  })
+  const inTheBreak = (): Partial<Inputs> => ({
+    combatSettings: {
+      ...defaultCombatSettings(),
+      qiBreakOverride: { startSec: 0, durationSec: 999, lowQiLeadSec: 0 },
+    },
+  })
+  const withHealerBuffInTheBreak = (): Partial<Inputs> => ({
+    combatSettings: {
+      ...defaultCombatSettings(),
+      healerBuff: true,
+      qiBreakOverride: { startSec: 0, durationSec: 999, lowQiLeadSec: 0 },
+    },
+  })
+
+  it("adds the same bonus whether or not the target is in its Qi break", () => {
+    const plain = skillDamage(simulate([MYSTIC_SKILL.dragonHeadPlus]), MYSTIC_SKILL.dragonHeadPlus)
+    const healed = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const plainInBreak = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], inTheBreak()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const healedInBreak = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuffInTheBreak()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    expect(healedInBreak / plainInBreak).toBeCloseTo(healed / plain, 6)
+  })
+
+  it("raises the bonus from 10% to 24% when the healer carries Panacea Fan", () => {
+    const plain = skillDamage(simulate([MYSTIC_SKILL.dragonHeadPlus]), MYSTIC_SKILL.dragonHeadPlus)
+    const healed = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const healedWithPanaceaFan = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff(true)),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    expect((healedWithPanaceaFan / plain - 1) / (healed / plain - 1)).toBeCloseTo(0.24 / 0.1, 6)
   })
 })
 

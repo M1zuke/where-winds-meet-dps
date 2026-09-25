@@ -10,6 +10,7 @@ import { fanspecial } from "./fanspecial"
 import { healerBuff } from "./healer-buff"
 import { healerExtension } from "./healer-extension"
 import { umbHeavylight } from "./umb-heavylight"
+import { umbHeavylightHeavyShare } from "./umb-heavylight-heavyshare"
 import { umbdrone12HitTick } from "./umbdrone-12hit"
 import { umbdrone16HitTick } from "./umbdrone-16hit"
 import { umbdrone20HitTick } from "./umbdrone-20hit"
@@ -21,6 +22,7 @@ import { umbdronelaunch20Hit } from "./umbdronelaunch-20hit"
 import { umbdronelaunch23Hit } from "./umbdronelaunch-23hit"
 import { umbdronelaunch26Hit } from "./umbdronelaunch-26hit"
 import { umblightcharge } from "./umblightcharge"
+import { umblightchargeLift } from "./umblightcharge-lift"
 import { umbqPrepull } from "./umbq-prepull"
 import { umbq } from "./umbq"
 
@@ -39,6 +41,7 @@ export const SKILLS: Skill[] = [
   healerBuff,
   healerExtension,
   umbHeavylight,
+  umbHeavylightHeavyShare,
   umbdrone12HitTick,
   umbdrone16HitTick,
   umbdrone20HitTick,
@@ -50,6 +53,7 @@ export const SKILLS: Skill[] = [
   umbdronelaunch23Hit,
   umbdronelaunch26Hit,
   umblightcharge,
+  umblightchargeLift,
   umbqPrepull,
   umbq,
 ]

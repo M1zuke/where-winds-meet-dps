@@ -62,6 +62,7 @@ export interface CombatSettings {
   qiBreakOverride: QiBreakWindow | null
   dragonsBreath: boolean
   healerBuff: boolean
+  healerPanaceaFan: boolean
   breakExtension: boolean
   script: ScriptId | null
   dragonHeadFullStacks: boolean
@@ -77,6 +78,7 @@ export function defaultCombatSettings(): CombatSettings {
     qiBreakOverride: null,
     dragonsBreath: false,
     healerBuff: false,
+    healerPanaceaFan: false,
     breakExtension: false,
     script: null,
     dragonHeadFullStacks: false,

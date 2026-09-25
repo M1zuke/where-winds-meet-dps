@@ -115,7 +115,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 41-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 44-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "wineGu",
@@ -148,6 +148,9 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "clashToastDamage",
       "nonPlayerBaseDamage40",
       "nonPlayerBaseDamage50",
+      "nonPlayerBaseDamage115",
+      "nonPlayerBaseDamage125",
+      "nonPlayerBaseDamage145",
       "poetFinalStrikeStack",
       "divinecraftFire",
       "fluteArrival",

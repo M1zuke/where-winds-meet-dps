@@ -1,18 +1,19 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// The authored value is the whole cast spread over its hits, not a per-hit
-// value — the reference def states it per hit. Kept as total ÷ hits so the
-// number the source actually carries stays legible.
+// Colorful Phoenix's own share of the cast total — the heavy attack's first
+// stage is a separate, non-attuned share (`umb-heavylight-heavyshare.ts`).
+// In-game values as of 2026-09-24.
 const CAST_HITS = 3
 const CAST_TOTAL = {
-  physMultiplier: 1.7001,
-  attributeMultiplier: 2.5502,
-  physFixed: 471,
-  attributeFixed: 256,
+  physMultiplier: 1.1604,
+  attributeMultiplier: 1.1604 * 1.5,
+  physFixed: 322,
+  attributeFixed: 175,
 }
 
 const COEFFICIENTS = {
@@ -36,14 +37,17 @@ export const umbHeavylight = defineSkill({
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
-    BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
   castFrames: 75,
   triggerable: true,
   hits: [
-    hit(0, { frame: 0, ...COEFFICIENTS }),
+    hit(0, {
+      frame: 0,
+      ...COEFFICIENTS,
+      triggers: [castSkill({ target: SKILL.umbHeavylightHeavyShare })],
+    }),
     hit(1, { frame: 25, ...COEFFICIENTS }),
     hit(2, { frame: 50, ...COEFFICIENTS }),
   ],

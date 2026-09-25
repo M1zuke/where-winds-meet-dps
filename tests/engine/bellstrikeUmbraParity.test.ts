@@ -66,6 +66,7 @@ const inputs: Inputs = {
     qiBreakOverride: { startSec: 25, durationSec: 10, lowQiLeadSec: 0 },
     dragonsBreath: false,
     healerBuff: false,
+    healerPanaceaFan: false,
     breakExtension: false,
     script: null,
     dragonHeadFullStacks: false,

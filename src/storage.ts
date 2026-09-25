@@ -515,6 +515,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
       qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
+      healerPanaceaFan:
+        typeof r.healerPanaceaFan === "boolean" ? r.healerPanaceaFan : def.healerPanaceaFan,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
       // Kept as stored even when unrecognised, same as `bowSet`/`arsenal` above.
       script: typeof r.script === "string" && r.script !== "" ? (r.script as ScriptId) : def.script,

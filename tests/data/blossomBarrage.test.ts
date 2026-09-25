@@ -8,6 +8,7 @@ import { PROP } from "../../src/data/skills/ids"
 
 describe("Blossom Barrage Global 2.0 PvE", () => {
   const charged = SKILLS.find((skill) => skill.id === "silkbindJade-umblightcharge")!
+  const drone = SKILLS.find((skill) => skill.id === "silkbindJade-umbdrone-20hit")!
   function engine(tier: number, marked = true) {
     const result = new BuffEngine(
       { blossomBarrage: true, blossomBarrageTier: tier, qiBreakTime: 5, bossBreakDuration: 5 },
@@ -18,33 +19,51 @@ describe("Blossom Barrage Global 2.0 PvE", () => {
       0,
       {},
       false,
-      marked ? [BUFF.combo, BUFF.comboUmbLightBonus] : [BUFF.comboUmbLightBonus],
+      marked
+        ? [BUFF.combo, BUFF.comboUmbLightBonus, BUFF.comboSpringAwayBonus]
+        : [BUFF.comboUmbLightBonus, BUFF.comboSpringAwayBonus],
     )
     return result
   }
-  it("applies the sourced 5% outside Exhaustion and 10% during Exhaustion", () => {
+  it("grants the drone 0% outside Exhaustion and 5% during Exhaustion", () => {
     const buffs = engine(4)
-    expect(buffs.calculateDamageEffects(charged, 1).effects).toContainEqual({
+    expect(buffs.calculateDamageEffects(drone, 1).effects).not.toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.05,
     })
-    expect(buffs.calculateDamageEffects(charged, 6).effects).toContainEqual({
+    expect(buffs.calculateDamageEffects(drone, 6).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.05,
+    })
+  })
+  it("grants Spring Away 10% outside Exhaustion and 15% during Exhaustion", () => {
+    const buffs = engine(4)
+    expect(buffs.calculateDamageEffects(charged, 1).effects).toContainEqual({
       statKey: "allDamageBoost",
       amount: 0.1,
+    })
+    expect(buffs.calculateDamageEffects(charged, 6).effects).toContainEqual({
+      statKey: "allDamageBoost",
+      amount: 0.15,
     })
   })
   it("requires Tier 4 and the caster's Combo mark", () => {
     for (const buffs of [engine(2), engine(4, false)]) {
       expect(buffs.calculateDamageEffects(charged, 1).effects).not.toContainEqual({
         statKey: "allDamageBoost",
+        amount: 0.1,
+      })
+      expect(buffs.calculateDamageEffects(drone, 6).effects).not.toContainEqual({
+        statKey: "allDamageBoost",
         amount: 0.05,
       })
     }
   })
-  it("reaches every drone variant as well as Spring Away", () => {
+  it("reaches every drone variant, and Spring Away separately", () => {
     const drones = SKILLS.filter((skill) => skill.tags?.includes(PROP.isDrone))
     expect(drones).toHaveLength(6)
-    for (const skill of [charged, ...drones])
-      expect(skill.receives).toContain(BUFF.comboUmbLightBonus)
+    for (const skill of drones) expect(skill.receives).toContain(BUFF.comboUmbLightBonus)
+    expect(charged.receives).toContain(BUFF.comboSpringAwayBonus)
+    expect(charged.receives).not.toContain(BUFF.comboUmbLightBonus)
   })
 })

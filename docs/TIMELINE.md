@@ -374,6 +374,10 @@ a refactor.
   from earlier accepted impacts can affect later impacts.
 - Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
   must not grant a hit refund. Clamp balances and use the encounter's phase clock.
+- Declare passive regeneration as a flat per-second rate on the resource, netted
+  against drain every frame and clamped to `[0, capacity]`. A gain rule's negative
+  default is a cost, not a refill — persisting it keeps its sign, clamped no
+  higher than zero.
 - Expose uncertain gain amounts as persisted, hydrated inputs. Report actual funded
   windows and rejected launches, and distinguish assumptions from measured anchors.
 

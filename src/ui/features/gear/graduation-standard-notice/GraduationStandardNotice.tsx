@@ -17,6 +17,7 @@ const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   shareEasyHurt: "overview.encounterSettings.tankSpearDebuffVulnerability",
   dragonsBreath: "overview.encounterSettings.dragonSBreath",
   healerBuff: "overview.encounterSettings.healerBuff",
+  healerPanaceaFan: "overview.encounterSettings.healerPanaceaFan",
   breakExtension: "overview.encounterSettings.breakExtension",
   dragonHeadFullStacks: "overview.encounterSettings.40StacksDragonHead",
 }

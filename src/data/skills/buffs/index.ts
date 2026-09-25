@@ -24,7 +24,13 @@ import { tiltrimInebriateBonus } from "./tiltrimInebriateBonus"
 import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
 import { clashToastDamage } from "./clashToastDamage"
-import { nonPlayerBaseDamage40, nonPlayerBaseDamage50 } from "./nonPlayerBaseDamage"
+import {
+  nonPlayerBaseDamage40,
+  nonPlayerBaseDamage50,
+  nonPlayerBaseDamage115,
+  nonPlayerBaseDamage125,
+  nonPlayerBaseDamage145,
+} from "./nonPlayerBaseDamage"
 import { poetFinalStrikeStack } from "./poetFinalStrikeStack"
 import { divinecraftFire } from "./divinecraftFire"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
@@ -60,6 +66,9 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   clashToastDamage,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
+  nonPlayerBaseDamage115,
+  nonPlayerBaseDamage125,
+  nonPlayerBaseDamage145,
   poetFinalStrikeStack,
   divinecraftFire,
   fluteArrival,

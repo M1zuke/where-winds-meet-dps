@@ -41,6 +41,7 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   script: null,
   dragonsBreath: false,
   healerBuff: false,
+  healerPanaceaFan: false,
   breakExtension: false,
   dragonHeadFullStacks: false,
   dragonHeadLowHpMaxBonus: false,
