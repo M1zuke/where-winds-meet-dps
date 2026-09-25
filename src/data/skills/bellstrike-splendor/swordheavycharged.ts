@@ -14,6 +14,7 @@ export const swordHeavyCharged = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyCharged,
+  startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.mistwillowLightBuff,

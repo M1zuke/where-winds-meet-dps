@@ -5,6 +5,14 @@ import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
+import {
+  AVERAGE_FPS_MAX,
+  AVERAGE_FPS_MIN,
+  DEFAULT_AVERAGE_FPS,
+  DEFAULT_PING_MS,
+  PING_MS_MAX,
+  PING_MS_MIN,
+} from "../../../../engine/pingFps"
 import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
 import styles from "./EncounterSettingsPanel.module.scss"
 
@@ -118,6 +126,27 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
           label={t("overview.encounterSettings.enableDummy")}
           onChange={(value) => set("dummyMode", value)}
         />
+        <div className={styles.inlineFields}>
+          <label className={styles.inlineField}>
+            {t("common.pingMs")}
+            <NumInput
+              value={inputs.pingMs ?? DEFAULT_PING_MS}
+              onChange={(value) =>
+                set("pingMs", Math.min(PING_MS_MAX, Math.max(PING_MS_MIN, Math.round(value))))
+              }
+            />
+          </label>
+          <label className={styles.inlineField}>
+            {t("common.averageFps")}
+            <NumInput
+              value={inputs.averageFps ?? DEFAULT_AVERAGE_FPS}
+              onChange={(value) =>
+                set("averageFps", Math.min(AVERAGE_FPS_MAX, Math.max(AVERAGE_FPS_MIN, value)))
+              }
+            />
+          </label>
+        </div>
+        <p className={styles.inlineHint}>{t("overview.encounterSettings.averageFpsHint")}</p>
       </div>
 
       <Section title={t("overview.encounterSettings.consumablesSelf")}>
@@ -202,15 +231,15 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
           />
         </div>
         {override ? (
-          <div className={styles.qiBreakFields}>
-            <label className={styles.qiBreakField}>
+          <div className={styles.inlineFields}>
+            <label className={styles.inlineField}>
               {t("common.startS")}
               <NumInput
                 value={override.startSec}
                 onChange={(value) => setCombat("qiBreakOverride", { ...override, startSec: value })}
               />
             </label>
-            <label className={styles.qiBreakField}>
+            <label className={styles.inlineField}>
               {t("common.durationS")}
               <NumInput
                 value={override.durationSec}
@@ -219,7 +248,7 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
                 }
               />
             </label>
-            <label className={styles.qiBreakField}>
+            <label className={styles.inlineField}>
               {t("common.lowQiLeadS")}
               <NumInput
                 value={override.lowQiLeadSec}
@@ -230,7 +259,7 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             </label>
           </div>
         ) : (
-          <p className={styles.qiBreakHint}>
+          <p className={styles.inlineHint}>
             {t("overview.encounterSettings.eachRotationRunsItsOwnBreakWindow")}
           </p>
         )}

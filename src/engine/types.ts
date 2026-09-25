@@ -141,6 +141,11 @@ export interface Inputs {
   arsenalScores: ArsenalScores
   dummyMode: boolean
 
+  // `null` = not set yet; the engine reads that as 0 ms / 60 fps
+  // (`resolvePingMs` / `resolveAverageFps`, `src/engine/pingFps.ts`).
+  pingMs: number | null
+  averageFps: number | null
+
   rotation: string | null
 
   selectedBuiltinRotationId?: string | null

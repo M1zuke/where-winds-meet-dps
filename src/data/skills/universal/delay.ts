@@ -11,6 +11,7 @@ export const delay = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.delay,
+  startLatency: "none",
   castFrames: 6,
   triggerable: true,
   hits: [hit(0, { frame: 0, physMultiplier: 0, attributeMultiplier: 0, physFixed: 0, attributeFixed: 0 })],

@@ -37,7 +37,16 @@ function standardizedMindMethods(standardized: StandardizedGraduation): Inputs["
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
   const standardized = build.standardized
   if (!standardized) return inputs
-  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
+  const {
+    dummyMode,
+    food,
+    divinecraft,
+    shareDebuff5HenZhi,
+    shareEasyHurt,
+    pingMs,
+    averageFps,
+    ...combat
+  } = {
     ...STANDARDIZED_ENCOUNTER_OFF,
     ...standardized.encounter,
   }
@@ -48,6 +57,8 @@ export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBu
     divinecraft,
     shareDebuff5HenZhi,
     shareEasyHurt,
+    pingMs,
+    averageFps,
     combatSettings: { ...combat, qiBreakOverride: null },
     mindMethods: standardizedMindMethods(standardized),
   }

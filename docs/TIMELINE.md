@@ -31,6 +31,13 @@ on the 60 fps grid. Rules:
   hit that fails precision still cannot crit. `guaranteedNormal` means the hit
   can trigger none of crit, affinity or abrasion and always deals the normal
   row.
+- Every authored `frame` and `castFrames` is the nominal 60 fps value,
+  regardless of `startLatency`. A skill's `startLatency` states how its start
+  relates to the server: waiting for the round trip (the default), skipping
+  that wait only in dummy mode, or never waiting because the step is not a
+  real skill request. The engine adds the resolved start latency ahead of a
+  cast and quantises every cast's start, length and hit offset to the input
+  frame rate on top of the authored data — never baked into a skill module.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 
 ### Hit variants

@@ -8,7 +8,13 @@ export interface StandardizedInnerWay {
 
 export type StandardizedEncounter = Pick<
   Inputs,
-  "dummyMode" | "food" | "divinecraft" | "shareDebuff5HenZhi" | "shareEasyHurt"
+  | "dummyMode"
+  | "food"
+  | "divinecraft"
+  | "shareDebuff5HenZhi"
+  | "shareEasyHurt"
+  | "pingMs"
+  | "averageFps"
 > &
   Omit<CombatSettings, "qiBreakOverride">
 
@@ -23,6 +29,8 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   divinecraft: null,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
+  pingMs: 0,
+  averageFps: 60,
   script: null,
   dragonsBreath: false,
   healerBuff: false,

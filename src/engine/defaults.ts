@@ -74,6 +74,9 @@ export const defaultInputs: Inputs = {
   arsenalScores: { ...DEFAULT_ARSENAL_SCORES },
   dummyMode: false,
 
+  pingMs: 0,
+  averageFps: 60,
+
   rotation: null,
 
   activeCustomRotation: null,

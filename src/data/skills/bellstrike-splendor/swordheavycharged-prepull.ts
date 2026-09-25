@@ -17,6 +17,7 @@ export const swordHeavyChargedPrepull = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyChargedPrepull,
+  startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.mistwillowLightBuff,

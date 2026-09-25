@@ -311,6 +311,8 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
+  if (typeof next.pingMs !== "number") next.pingMs = null
+  if (typeof next.averageFps !== "number") next.averageFps = null
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
   if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
@@ -870,6 +872,20 @@ function builtinTagsFor(id: string): string[] {
   return builtinTagsById.get(id) ?? []
 }
 
+// `startLatency` is authored on the built-in module, never edited in the
+// Skill Editor, so a stored copy always takes the built-in's current value by
+// id — the way `receives` falls back to a derived value below.
+let builtinStartLatencyById: Map<string, Skill["startLatency"]> | null = null
+function builtinStartLatencyFor(id: string): Skill["startLatency"] | undefined {
+  if (!builtinStartLatencyById) {
+    builtinStartLatencyById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.startLatency) builtinStartLatencyById.set(skill.id, skill.startLatency)
+  }
+  return builtinStartLatencyById.get(id)
+}
+
 function healSkillTags(id: string, tags: string[]): string[] {
   const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
   const healed = new Set(renamed)
@@ -1059,6 +1075,7 @@ function hydrateSkill(s: Skill): Skill {
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
     tags: healedTags,
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
+    startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     ...healSkillReach(id, s, reachTags),
   }
 }

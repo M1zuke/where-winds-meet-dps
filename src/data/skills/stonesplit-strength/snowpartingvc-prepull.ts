@@ -21,6 +21,7 @@ export const snowpartingvcPrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
+  startLatency: "noWaitOnDummy",
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,

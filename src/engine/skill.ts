@@ -8,6 +8,8 @@ export type TriggerKind =
   "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot" | "releaseEcho"
 export type TriggerOp = "gte" | "gt" | "eq"
 
+export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
+
 export interface TriggerCondition {
   buffId: string
   op: TriggerOp
@@ -85,6 +87,7 @@ export interface Skill {
   guaranteedNormal?: boolean
   prePull?: boolean
   isDotTick?: boolean
+  startLatency?: StartLatency
   createdAt: string
   updatedAt: string
 }
@@ -362,6 +365,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     neverAbrades: src.neverAbrades,
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
+    startLatency: src.startLatency,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,

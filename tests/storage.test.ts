@@ -251,6 +251,40 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
   })
 
+  it("loadProfiles heals a profile saved before pingMs/averageFps existed to null, not a default", () => {
+    const { pingMs: _droppedPing, averageFps: _droppedFps, ...withoutPingFps } = defaultInputs
+    void _droppedPing
+    void _droppedFps
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Ping", inputs: withoutPingFps }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.pingMs).toBeNull()
+    expect(profiles[0].inputs.averageFps).toBeNull()
+  })
+
+  it("loadProfiles keeps a stored pingMs/averageFps number as-is", () => {
+    const inputs: Inputs = { ...defaultInputs, pingMs: 80, averageFps: 144 }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Configured", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.pingMs).toBe(80)
+    expect(profiles[0].inputs.averageFps).toBe(144)
+  })
+
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),

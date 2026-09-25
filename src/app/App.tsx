@@ -33,6 +33,8 @@ import { GraduationBuildDialog } from "../ui/features/gear/graduation-build-dial
 import { SetupWizard, type SetupMode } from "../ui/features/setup/setup-wizard/SetupWizard"
 import { BreakthroughDataDialog } from "../ui/layout/breakthrough-data-dialog/BreakthroughDataDialog"
 import { breakthroughDataRequestFor } from "../ui/layout/breakthrough-data-dialog/breakthroughDataRequest"
+import { PingFpsRequiredDialog } from "../ui/layout/ping-fps-required-dialog/PingFpsRequiredDialog"
+import { hasValidPingAndFps } from "../engine/pingFps"
 import { activeRotationName } from "../ui/features/rotation/rotationOptions"
 import { followedGraduationBuild } from "../engine/graduation"
 import { graduationBuildKey } from "../i18n/contentKeys"
@@ -154,6 +156,8 @@ function AppInner() {
   const graduation = useGraduationRate(configuredInputs)
   const followedBuild = followedGraduationBuild(configuredInputs)
   const mustChooseGraduationBuild = !followedBuild && !wizard && !isSimulationRunning
+  const mustSetPingFps =
+    !hasValidPingAndFps(inputs.pingMs, inputs.averageFps) && !wizard && !isSimulationRunning
   const headerResult = useMemo(
     () => ({ ...result, graduationRate: graduation.rate }),
     [result, graduation.rate],
@@ -329,6 +333,13 @@ function AppInner() {
           initialInputs={blankInputs}
           onFinish={handleWizardFinish}
           onCancel={wizard.mode === "new-profile" ? () => setWizard(null) : undefined}
+        />
+      )}
+      {mustSetPingFps && (
+        <PingFpsRequiredDialog
+          pingMs={inputs.pingMs}
+          averageFps={inputs.averageFps}
+          onConfirm={(pingMs, averageFps) => setInputs({ ...inputs, pingMs, averageFps })}
         />
       )}
       {breakthroughAsk && (

@@ -217,6 +217,8 @@ describe("a standardized graduation build", () => {
         expect(side.combatSettings!.dragonHeadFullStacks).toBe(encounter.dragonHeadFullStacks)
         expect(side.combatSettings!.dragonHeadLowHpMaxBonus).toBe(encounter.dragonHeadLowHpMaxBonus)
         expect(side.combatSettings!.lowEndurance).toBe(encounter.lowEndurance)
+        expect(side.pingMs).toBe(encounter.pingMs)
+        expect(side.averageFps).toBe(encounter.averageFps)
         expect(side.mindMethods.map((slot) => slot.id ?? "")).toEqual([
           ...build.standardized!.innerWays.map((innerWay) => innerWay.id),
           ...Array(4 - build.standardized!.innerWays.length).fill(""),

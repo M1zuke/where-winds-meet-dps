@@ -71,8 +71,16 @@ import { castTagOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
+import { resolveAverageFps, resolvePingMs } from "./pingFps"
 
 export const FPS = 60
+
+// A keyframe due at `value` fires on the first rendered frame at or after it,
+// so it lands on the next multiple of the render period at or above `value`.
+function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
+  if (renderPeriodFrames <= 0) return value
+  return Math.ceil(value / renderPeriodFrames - 1e-9) * renderPeriodFrames
+}
 
 const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
 
@@ -428,7 +436,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // engine, which itself can only be built once the whole layout is known.
   function seedStepTriggers(hits: readonly SkillHit[], stepStart: number): void {
     for (const skillHit of hits) {
-      const hitFrame = stepStart + skillHit.frame
+      const hitFrame = hitLandingFrame(stepStart, skillHit.frame)
       layoutWriter.processExpiries(hitFrame)
       if (hitDealsDamage(skillHit)) layoutWriter.onDamagingHit(hitFrame, stepStart)
       for (const trigger of skillHit.triggers) {
@@ -457,16 +465,33 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   const windowFramesOverride =
     rotation.fixedWindowSec === undefined ? null : Math.round(rotation.fixedWindowSec * FPS)
+
+  const renderPeriodFrames = FPS / resolveAverageFps(inputs.averageFps)
+  const roundTripFrames = quantiseToRenderFrame(
+    (resolvePingMs(inputs.pingMs) * FPS) / 1000,
+    renderPeriodFrames,
+  )
+  const waitsForRoundTrip = (skill: Skill): boolean => {
+    const latency = skill.startLatency ?? "serverRoundTrip"
+    if (latency === "none") return false
+    if (latency === "noWaitOnDummy") return !inputs.dummyMode
+    return true
+  }
+  const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
+    Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
+
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
   for (const rs of resolvedSteps) {
     const prePull = isPrePullSkill(rs.skill)
-    const startFrame = prePull ? preCursor : activeCursor
+    const cursor = prePull ? preCursor : activeCursor
+    const exactStart = cursor + (waitsForRoundTrip(rs.skill) ? roundTripFrames : 0)
+    const startFrame = Math.round(exactStart)
     layoutWriter.processExpiries(startFrame)
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
     const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
-    const castLen = prePull
+    const nominalCastLen = prePull
       ? upperBoundCastFrames(rs)
       : (() => {
           const maxFrame =
@@ -476,12 +501,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             (rs.skill.castFrames || maxFrame + 1)
           )
         })()
-    if (prePull) preCursor += castLen
-    else activeCursor += castLen
+    const castLen = quantiseToRenderFrame(nominalCastLen, renderPeriodFrames)
+    const nextCursor = exactStart + castLen
+    if (prePull) preCursor = nextCursor
+    else activeCursor = nextCursor
     const landedHits =
       prePull || windowFramesOverride === null
         ? occurringHits
-        : occurringHits.filter((h) => startFrame + h.frame <= windowFramesOverride)
+        : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
     seedStepTriggers(landedHits, startFrame)
     laidSteps.push({ resolved: rs, prePull, startFrame, castLen, performedHits: landedHits })
   }
@@ -496,7 +523,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     if (ls.prePull) continue
     for (const hit of ls.performedHits) {
       if (!hitDealsDamage(hit)) continue
-      const timeSec = (ls.startFrame + hit.frame) / FPS
+      const timeSec = hitLandingFrame(ls.startFrame, hit.frame) / FPS
       damagingHitTimesSec.push(timeSec)
       if (ls.resolved.skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
     }
@@ -609,7 +636,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
         }
         for (const hit of cast.skill.hits) {
-          const hitFrame = cast.frame + hit.frame
+          const hitFrame = cast.generated
+            ? cast.frame + hit.frame
+            : hitLandingFrame(cast.frame, hit.frame)
           if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
@@ -902,7 +931,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const ls of laidSteps) {
     for (const hit of ls.performedHits) {
       queue.push({
-        frame: ls.startFrame + hit.frame,
+        frame: hitLandingFrame(ls.startFrame, hit.frame),
         seq: seq++,
         skill: ls.resolved.skill,
         hit,

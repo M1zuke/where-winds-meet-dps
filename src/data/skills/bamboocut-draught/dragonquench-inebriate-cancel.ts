@@ -20,6 +20,7 @@ export const dragonquenchInebriateCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateCancel,
+  startLatency: "noWaitOnDummy",
   neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,

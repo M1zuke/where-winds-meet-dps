@@ -14,6 +14,7 @@ export const swordq2nd = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordQ2nd,
+  startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
   receives: NAMELESS_SWORD_RECEIVES,
   castFrames: 26,
