@@ -178,9 +178,11 @@ describe("bitterSeasonTuningAtTier", () => {
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
-  it("upgrades procChance at tier 4", () => {
+  it("holds procChance at 0.1 through tiers 4-5, and upgrades it only at tier 6", () => {
     expect(bitterSeasonTuningAtTier(3).procChance).toBe(0.1)
-    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.15)
+    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(5).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(6).procChance).toBe(0.15)
   })
 
   it("upgrades physPenetrationAtMaxStacks only at tier 6", () => {

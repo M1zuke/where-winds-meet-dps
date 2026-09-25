@@ -52,9 +52,9 @@ describe("Smolder debuff data", () => {
 
   it("carries the DoT row recalibrated to the mystic art's actual reachable rank", () => {
     const dot = darkFire!.dot!
-    expect(dot.physMultiplier).toBeCloseTo(0.24991, 10)
-    expect(dot.attributeMultiplier).toBeCloseTo(0.374865, 10)
-    expect(dot.physFixed).toBeCloseTo(37.74, 10)
+    expect(dot.physMultiplier).toBeCloseTo(0.23578, 10)
+    expect(dot.attributeMultiplier).toBeCloseTo(0.35367, 10)
+    expect(dot.physFixed).toBeCloseTo(35.95, 10)
     expect(dot.attributeFixed).toBe(0)
     expect(dot.tickIntervalFrames).toBe(30)
     expect(darkFire!.maxStacks).toBe(1)
@@ -63,7 +63,7 @@ describe("Smolder debuff data", () => {
 })
 
 describe("Dragon Fire (Smolder) skills", () => {
-  it("both exist and carry the workbook's Smolder coefficients", () => {
+  it("both exist and carry the in-game level-171 Smolder coefficients", () => {
     const one = skillOf(ONE_HIT)
     const two = skillOf(TWO_HITS)
 
@@ -71,17 +71,17 @@ describe("Dragon Fire (Smolder) skills", () => {
       s.hits.reduce((a, h) => a + h[field], 0)
 
     expect(one.hits.length).toBe(1)
-    expect(sum(one, "physMultiplier")).toBeCloseTo(1.36064, 10)
-    expect(sum(one, "attributeMultiplier")).toBeCloseTo(2.04096, 10)
-    expect(sum(one, "physFixed")).toBeCloseTo(205.5, 10)
+    expect(sum(one, "physMultiplier")).toBeCloseTo(1.28367, 10)
+    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925505, 10)
+    expect(sum(one, "physFixed")).toBeCloseTo(195.71, 10)
 
     expect(two.hits.length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(4.22076, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(6.33114, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(637.47, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(3.98199, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.972985, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(607.11, 10)
   })
 
-  it("apply Combustion, never Smolder, even though the coefficients now match", () => {
+  it("apply Combustion, never Smolder", () => {
     const fb1 = skillOf(SKILL.fireBreath1Hit)
     const fb2 = skillOf(SKILL.fireBreath2Hit)
     expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36064, 10)

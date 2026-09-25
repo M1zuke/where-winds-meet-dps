@@ -285,6 +285,43 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.averageFps).toBe(144)
   })
 
+  it("loadProfiles heals a profile saved before distanceToTargetMeters existed to the default 3 m", () => {
+    const { combatSettings, ...rest } = defaultInputs
+    const { distanceToTargetMeters: _droppedDistance, ...combatSettingsWithoutDistance } =
+      combatSettings!
+    void _droppedDistance
+    const inputs = { ...rest, combatSettings: combatSettingsWithoutDistance } as Inputs
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Distance", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings?.distanceToTargetMeters).toBe(3)
+  })
+
+  it("loadProfiles keeps a stored distanceToTargetMeters as-is", () => {
+    const inputs: Inputs = {
+      ...defaultInputs,
+      combatSettings: { ...defaultInputs.combatSettings!, distanceToTargetMeters: 7 },
+    }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Configured Distance", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings?.distanceToTargetMeters).toBe(7)
+  })
+
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),
@@ -1414,6 +1451,129 @@ describe("seeded-skill set-buff trigger heal (no version bump)", () => {
     const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq2nd)
     saveCustomSkill(current)
     expect(reload(current.id).triggersBuffs).toEqual(builtinSwordq2nd.triggersBuffs)
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("seeded-skill Wolfchaser's Art sword reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSwordq = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === "bellstrikeUmbra-swordq",
+  )!
+
+  const staleCopy = (receives: string[]) => ({
+    ...seedSkillFromBuiltin(CLASS_ID, builtinSwordq),
+    receives,
+  })
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy seeded before the app reached every Martial Art skill's hit", () => {
+    const stale = staleCopy(["strategicSwordAdditionalAttack"])
+    saveCustomSkill(stale)
+    expect(reload(stale.id).receives).toEqual([
+      "wolfchasersArtMartialDamage",
+      "strategicSwordAdditionalAttack",
+    ])
+  })
+
+  it("leaves a curated list alone rather than guessing which entry is stale", () => {
+    const curated = staleCopy(["strategicSwordAdditionalAttack", "someOtherBuff"])
+    saveCustomSkill(curated)
+    expect(reload(curated.id).receives).toEqual(["strategicSwordAdditionalAttack", "someOtherBuff"])
+  })
+
+  it("round-trips a current copy without listing the buff twice", () => {
+    const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq)
+    saveCustomSkill(current)
+    expect(reload(current.id).receives).toEqual(builtinSwordq.receives)
+  })
+})
+
+describe("seeded-skill Flute Arrival trigger heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each([
+    "mystic-flute-of-the-tides-cancel",
+    "mystic-flute-of-the-tides-full",
+    "mystic-flute-of-the-tides-prepull",
+  ])("adds fluteArrival to a copy of %s seeded before it was modeled", (id) => {
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(id).triggersBuffs).toEqual(["fluteArrival"])
+  })
+})
+
+describe("seeded-skill Poet final-strike stack reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each(["mystic-poet1", "mystic-poet2", "mystic-poet3", "mystic-poet4"])(
+    "adds the trigger to a copy of %s seeded before the stack buff was modeled",
+    (id) => {
+      const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+      const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+      void _triggersBuffs
+      saveCustomSkill(stale)
+      expect(reload(id).triggersBuffs).toEqual(["poetFinalStrikeStack"])
+    },
+  )
+
+  it("adds the receive to a copy of the final strike seeded before the stack buff was modeled", () => {
+    const id = "mystic-poet-final-hit-cancel"
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { receives: _receives, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _receives
+    saveCustomSkill(stale)
+    expect(reload(id).receives).toEqual(["poetFinalStrikeStack"])
+  })
+})
+
+describe("seeded-skill Cleftpeak deflect-grant trigger heal (no version bump)", () => {
+  const reload = (classId: string, id: string) =>
+    loadCustomSkillsForClass(classId).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy of Stonesplit Strength's own deflect seeded before it was modeled", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const stale = { ...seedSkillFromBuiltin(classId, builtin), triggersBuffs: ["forgetfulness"] }
+    saveCustomSkill(stale)
+    expect(reload(classId, stale.id).triggersBuffs).toEqual([
+      "forgetfulness",
+      "cleftpeakDeflectGrant",
+    ])
+  })
+
+  it("leaves a curated deflect list alone rather than guessing which entry is stale", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const curated = {
+      ...seedSkillFromBuiltin(classId, builtin),
+      triggersBuffs: ["forgetfulness", "someOtherBuff"],
+    }
+    saveCustomSkill(curated)
+    expect(reload(classId, curated.id).triggersBuffs).toEqual(["forgetfulness", "someOtherBuff"])
+  })
+
+  it.each([
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel"],
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel-prepull"],
+    ["bamboocutDraught", "bamboocutDraught-deflect-cancel"],
+  ])("adds the buff to a copy of %s's %s seeded before it was modeled", (classId, id) => {
+    const builtin = builtinSkillsForClass(classId).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(classId, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(classId, id).triggersBuffs).toEqual(["cleftpeakDeflectGrant"])
   })
 })
 

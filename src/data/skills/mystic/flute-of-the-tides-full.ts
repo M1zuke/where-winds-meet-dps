@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { BUFF } from "../buffs/ids"
 
 export const fluteOfTheTidesFull = defineSkill({
   id: SKILL.fluteOfTheTidesFull,
@@ -16,6 +17,7 @@ export const fluteOfTheTidesFull = defineSkill({
   castTag: CAST.fluteOfTheTidesFull,
   castFrames: 162,
   triggerable: true,
+  triggersBuffs: [BUFF.fluteArrival],
   hits: [
     hit(0, {
       frame: 0,

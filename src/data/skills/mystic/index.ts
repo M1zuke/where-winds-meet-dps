@@ -11,6 +11,7 @@ import { fluteOfTheTidesCancel } from "./flute-of-the-tides-cancel"
 import { fluteOfTheTidesFull } from "./flute-of-the-tides-full"
 import { fluteOfTheTidesPrepull } from "./flute-of-the-tides-prepull"
 import { poetFinalHitCancel } from "./poet-final-hit-cancel"
+import { poetFinalHitCancelExplosion } from "./poet-final-hit-cancel-explosion"
 import { poet1 } from "./poet1"
 import { poet2 } from "./poet2"
 import { poet3 } from "./poet3"
@@ -34,6 +35,7 @@ export const MYSTIC_SKILLS: readonly Skill[] = [
   fluteOfTheTidesFull,
   fluteOfTheTidesPrepull,
   poetFinalHitCancel,
+  poetFinalHitCancelExplosion,
   poet1,
   poet2,
   poet3,

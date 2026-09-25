@@ -28,6 +28,7 @@ export interface DebuffDotSpec {
   extraCritDamage?: number
   attributeAttack: AttributeKey | ""
   skillType: string
+  directHit?: boolean
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
   attuneTag?: string | null

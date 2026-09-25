@@ -22,6 +22,8 @@ import { V18__stonesplitStrengthArtBonusAttack } from "./V18__stonesplitStrength
 import { V19__bamboocutDraughtArtBonusAttack } from "./V19__bamboocutDraughtArtBonusAttack"
 import { V20__silkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAttack"
 import { V21__jadeBlossomBarrageReach } from "./V21__jadeBlossomBarrageReach"
+import { V22__sharedMysticCoefficients } from "./V22__sharedMysticCoefficients"
+import { V23__drunkenHazeExplosion } from "./V23__drunkenHazeExplosion"
 
 export type {
   CustomSkillMigration,
@@ -48,6 +50,11 @@ export { healBellstrikeSplendorArtBonusAttack } from "./V17__bellstrikeSplendorA
 export { healStonesplitStrengthArtBonusAttack } from "./V18__stonesplitStrengthArtBonusAttack"
 export { healBamboocutDraughtArtBonusAttack } from "./V19__bamboocutDraughtArtBonusAttack"
 export { healSilkbindJadeArtBonusAttack } from "./V20__silkbindJadeArtBonusAttack"
+export { recalibrateSharedMysticHits } from "./V22__sharedMysticCoefficients"
+export {
+  addDrunkenHazeExplosionHits,
+  addFinalStrikeExplosionTrigger,
+} from "./V23__drunkenHazeExplosion"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -68,6 +75,8 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V19__bamboocutDraughtArtBonusAttack,
   V20__silkbindJadeArtBonusAttack,
   V21__jadeBlossomBarrageReach,
+  V22__sharedMysticCoefficients,
+  V23__drunkenHazeExplosion,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

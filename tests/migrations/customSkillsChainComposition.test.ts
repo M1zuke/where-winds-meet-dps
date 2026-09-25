@@ -21,9 +21,29 @@ import { healStonesplitStrengthArtBonusAttack } from "../../src/migrations/custo
 import { healBamboocutDraughtArtBonusAttack } from "../../src/migrations/customSkills/V19__bamboocutDraughtArtBonusAttack"
 import { healSilkbindJadeArtBonusAttack } from "../../src/migrations/customSkills/V20__silkbindJadeArtBonusAttack"
 import { healJadeBlossomBarrageReach } from "../../src/migrations/customSkills/V21__jadeBlossomBarrageReach"
+import { recalibrateSharedMysticHits } from "../../src/migrations/customSkills/V22__sharedMysticCoefficients"
+import {
+  addDrunkenHazeExplosionHits,
+  addFinalStrikeExplosionTrigger,
+} from "../../src/migrations/customSkills/V23__drunkenHazeExplosion"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
+
+function healSharedMysticCoefficients(skill: unknown): unknown {
+  if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
+  const { id, hits } = skill as Skill
+  return { ...skill, hits: recalibrateSharedMysticHits(id, hits) }
+}
+
+function healDrunkenHazeExplosion(skill: unknown): unknown {
+  if (!skill || typeof skill !== "object" || typeof (skill as Skill).id !== "string") return skill
+  const { id, hits } = skill as Skill
+  return {
+    ...skill,
+    hits: addFinalStrikeExplosionTrigger(id, addDrunkenHazeExplosionHits(id, hits)),
+  }
+}
 
 const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [6, healBleedRowDefaults],
@@ -39,6 +59,8 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [19, healBamboocutDraughtArtBonusAttack],
   [20, healSilkbindJadeArtBonusAttack],
   [21, healJadeBlossomBarrageReach],
+  [22, healSharedMysticCoefficients],
+  [23, healDrunkenHazeExplosion],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

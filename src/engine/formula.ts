@@ -99,7 +99,6 @@ export interface FormulaContext {
   affinityDmgBoostPanel: number
   attributeDmgBoostPanel: number
   sustainDmgBoostPanel: number
-  dotDamageMultiplier?: number
   allDamageBoost?: number
   independentDamageBoost?: number
   allMartialBoost?: number
@@ -500,7 +499,6 @@ export function computeSkillDamage(
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
-  const dotMultiplier = ctx.dotDamageMultiplier ?? 1
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
@@ -534,8 +532,7 @@ export function computeSkillDamage(
     (1 + independentDamageBoost) *
     count *
     correction *
-    (1 + attuneBoost) *
-    dotMultiplier
+    (1 + attuneBoost)
   const expectedDamage = withTail(selectedRowTotal)
 
   function rollHit(draw: () => number): RolledHit {

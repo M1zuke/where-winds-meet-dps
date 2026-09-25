@@ -244,6 +244,9 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A DoT is authored on a debuff's `dot`, and nowhere else.** A `sustain`
   skill type is a scaling tag on one hit, not a DoT. Each tick runs through the
   kernel like any hit.
+- **A `dot` may declare `directHit`**: its pulse is a direct hit rather than a
+  damage-over-time tick, so the row carries no `isDotTick` flag, takes no
+  DoT-only effect, and reaches no sustain routing.
 - A stacking DoT's detonation spec is the single source of truth for its
   threshold behaviour — see Triggers above.
 
@@ -294,6 +297,9 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   than returning no effects below it — the catalog and the display gates read
   `requires` without executing anything, so a gate hidden inside `effects`
   never reaches them.
+- **A module's `effects` may read the encounter's distance to the target from
+  context**, the same way it reads remaining health — a persisted, hydrated
+  input, never a per-skill guess.
 
 ## Procedural behaviour
 

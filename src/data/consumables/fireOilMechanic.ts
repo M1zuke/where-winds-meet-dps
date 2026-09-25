@@ -7,6 +7,9 @@ const BURN_WINDOW_SEC = 4
 const TICK_INTERVAL_SEC = 1
 const FIRST_TICK_LEAD_SEC = 0.5
 const BURN_PHYS_MULTIPLIER = 0.26
+// In-game values as of 2026-09-24: the enchant lasts 30 s, 40 s with its
+// level-5 extra effect, from an application just before the pull.
+export const FIRE_ENCHANT_SEC = 40
 
 type State = Record<string, never>
 
@@ -67,7 +70,10 @@ export function fireOilBurnMechanic(): TimelineMechanic<State> {
 
     extraEvents(_state, setup: MechanicSetup) {
       const skill = burnSkill(setup.classId)
-      return burnTickTimesSec(setup.hitTimesSec, setup.rotationDurationSec).map(
+      const enchantedHitTimesSec = setup.hitTimesSec.filter(
+        (hitTimeSec) => hitTimeSec < FIRE_ENCHANT_SEC,
+      )
+      return burnTickTimesSec(enchantedHitTimesSec, setup.rotationDurationSec).map(
         (tickTimeSec): MechanicEvent => ({
           frame: Math.round(tickTimeSec * setup.fps),
           skill,

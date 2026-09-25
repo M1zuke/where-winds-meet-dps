@@ -36,12 +36,11 @@ export interface MechanicSetup {
   rng?: () => number
 }
 
-// Two of the formula's inputs are not `{statKey, amount}` deltas and so cannot
-// travel as effects — they reach `buildContext` directly. Named for what the
-// formula calls them rather than for the mechanic that supplies them.
+// `hawkwingPhysBonus` is not a `{statKey, amount}` delta and so cannot travel
+// as an effect — it reaches `buildContext` directly. Named for what the
+// formula calls it rather than for the mechanic that supplies it.
 export interface ContextPatch {
   hawkwingPhysBonus?: number
-  dotDamageMultiplier?: number
 }
 
 export interface MechanicContribution {

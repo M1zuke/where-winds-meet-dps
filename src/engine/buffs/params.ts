@@ -1,4 +1,4 @@
-import type { Inputs, QiBreakWindow } from "../types"
+import { defaultCombatSettings, type Inputs, type QiBreakWindow } from "../types"
 import type { BuffParams } from "./buffEngine"
 import type { QiPhase } from "../effects/context"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
@@ -73,11 +73,14 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.combatSettings?.lowEndurance) params.lowEndurance = true
+  if (inputs.divinecraft === "fire") params.divinecraftFire = true
 
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 
   params.minPhysAttack = inputs.phys.min
   params.breakthrough = inputs.breakthrough
+  params.distanceMeters =
+    inputs.combatSettings?.distanceToTargetMeters ?? defaultCombatSettings().distanceToTargetMeters
 
   return params
 }

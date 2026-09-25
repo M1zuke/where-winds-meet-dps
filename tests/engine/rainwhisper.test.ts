@@ -44,6 +44,13 @@ describe("rainwhisper — 4-piece crit damage", () => {
     expect(critDamageAt(engine, SHIELD_DURATION + 1)).toBe(0.1)
   })
 
+  it("gives 25% for 10 s after Golden Body's cast, not the marker's 12 s", () => {
+    const engine = engineWithSet(rainwhisper.siteKey)
+    engine.processSkillCast("cast:goldenBodyCancel", 0, {}, false, [BUFF.rainwhisperShield])
+    expect(critDamageAt(engine, 10)).toBe(0.25)
+    expect(critDamageAt(engine, 10.5)).toBe(0.1)
+  })
+
   it("is inert without the rainwhisper set, shield or not", () => {
     const engine = engineWithSet()
     expect(critDamageAt(engine, 0)).toBeUndefined()

@@ -16,7 +16,7 @@ import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 describe("Dragon Head registry — shared mystic art, both versions", () => {
-  it("Bellstrike Umbra exposes both versions with the workbook coefficients", () => {
+  it("Bellstrike Umbra exposes both versions with the in-game coefficients", () => {
     const base = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHead)
     const plus = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHeadPlus)
     expect(base).toBeTruthy()
@@ -32,12 +32,14 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
-    expect(plusHit.physMultiplier).toBeCloseTo(17.34049, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(26.010735, 9)
-    expect(plusHit.physFixed).toBeCloseTo(2608.52, 9)
-    expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
-    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 2)
+    // Plain reads 1.1 × its own level-71 row; Plus reads 0.77 × the level-171
+    // row instead, so the two are no longer a fixed ratio of one another.
+    expect(baseHit.physMultiplier).toBeCloseTo(19.07454, 9)
+    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61181, 9)
+    expect(baseHit.physFixed).toBeCloseTo(2869.37, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(12.59654, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(18.89481, 9)
+    expect(plusHit.physFixed).toBeCloseTo(1912.3, 9)
   })
 
   it("both versions receive the same buffs, so the pair cannot drift apart again", () => {

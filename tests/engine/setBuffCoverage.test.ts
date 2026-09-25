@@ -8,7 +8,6 @@ import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkill } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-splendor/ids"
-import type { QiPhase } from "../../src/engine/effects/context"
 
 const UNIVERSAL_SET_BUFFS = [BUFF.jadeware]
 
@@ -33,21 +32,11 @@ describe("every Martial Art skill activates Jadeware", () => {
   })
 })
 
-describe("Jadeware pays out against low-Qi targets only", () => {
-  const effectsAt = (phase: QiPhase) => {
+describe("Jadeware pays out both bonuses for the whole window", () => {
+  it("gives both bonuses unconditionally", () => {
     const effects = jadeware.effects
-    if (typeof effects !== "function") throw new Error("expected a context-dependent effect list")
-    return effects({ phase } as never)
-  }
-
-  it("gives only the unconditional affinity-damage bonus while the target's Qi is untouched", () => {
-    expect(effectsAt("normal")).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-    ])
-  })
-
-  it.each(["below30", "exhausted"] as const)("gives both bonuses while %s", (phase) => {
-    expect(effectsAt(phase)).toEqual([
+    if (typeof effects !== "function") throw new Error("expected a function effect list")
+    expect((effects as () => unknown[])()).toEqual([
       { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
       { kind: "stat", statKey: "directAffinityRate", amount: 0.075 },
     ])
@@ -65,15 +54,15 @@ describe("Jadeware pays out against low-Qi targets only", () => {
       .breakdown[BUFF.jadeware]
   }
 
-  it("contributes only the unconditional affinity-damage bonus while the target is at full Qi", () => {
-    expect(contributionAt(engineWithSet("jadeware"), 24.5)).toBeCloseTo(0.1, 10)
+  it("opens the window at the triggering cast's end, not at the trigger frame", () => {
+    expect(contributionAt(engineWithSet("jadeware"), 24.5)).toBeUndefined()
   })
 
-  it("contributes both bonuses once the same window overlaps the break", () => {
-    expect(contributionAt(engineWithSet("jadeware"), 26)).toBeCloseTo(0.175, 10)
+  it("contributes both bonuses once the window has opened", () => {
+    expect(contributionAt(engineWithSet("jadeware"), 25.5)).toBeCloseTo(0.175, 10)
   })
 
   it("contributes nothing without the set equipped", () => {
-    expect(contributionAt(engineWithSet("hawkwing"), 26)).toBeUndefined()
+    expect(contributionAt(engineWithSet("hawkwing"), 25.5)).toBeUndefined()
   })
 })

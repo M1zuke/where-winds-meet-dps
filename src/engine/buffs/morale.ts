@@ -18,11 +18,11 @@ function baseMoraleStacks(tSec: number): number {
   return Math.min(MORALE_MAX_STACKS, 1 + Math.floor(tSec / 2))
 }
 
-export function moraleStacksAtTime(tSec: number, inQiBreak: boolean): number {
+export function moraleStacksAtTime(tSec: number, controlled: boolean): number {
   const base = baseMoraleStacks(tSec)
-  return inQiBreak ? Math.min(MORALE_MAX_STACKS, base * 2) : base
+  return controlled ? Math.min(MORALE_MAX_STACKS, base * 2) : base
 }
 
-export function moraleDmgPerStack(inQiBreak: boolean): number {
-  return inQiBreak ? MORALE_DMG_PER_STACK_QI_BREAK : MORALE_DMG_PER_STACK
+export function moraleDmgPerStack(controlled: boolean): number {
+  return controlled ? MORALE_DMG_PER_STACK_QI_BREAK : MORALE_DMG_PER_STACK
 }

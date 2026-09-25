@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
+import { BUFF } from "../buffs/ids"
 
 // The guard that ends a cancelled recovery, 26 frames for this class: the
 // value that puts the logged one-minute dummy run at 59.5 s once the
@@ -17,6 +18,7 @@ export const deflectCancel = defineSkill({
   castTag: CAST.deflectCancel,
   castFrames: 26,
   triggerable: true,
+  triggersBuffs: [BUFF.cleftpeakDeflectGrant],
   hits: [
     hit(0, {
       frame: 0,

@@ -32,10 +32,15 @@ function receivedBuffIds(): Set<string> {
 // `mountainsMightQiImbalance` carries no stat effect either: it exists so an
 // inner way can gate which skills inflict a status the class also inflicts
 // ungated, and its only effect applies that status.
+// `fluteArrival` is a pure state marker read via `activeAfterBuffEnds`, never
+// received directly. `cleftpeakDeflectGrant` only ever fires `applyBuff`
+// effects onto the two Cleftpeak buffs, so nothing needs to receive it either.
 const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mirage",
   "rainwhisperShield",
   "mountainsMightQiImbalance",
+  "fluteArrival",
+  "cleftpeakDeflectGrant",
 ])
 
 describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {

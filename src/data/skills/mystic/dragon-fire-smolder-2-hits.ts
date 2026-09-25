@@ -18,28 +18,29 @@ export const dragonFireSmolder2Hits = defineSkill({
   // dragon-fire-smolder-1-hit.ts.
   castFrames: 137,
   triggerable: true,
+  // In-game values as of 2026-09-24.
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.32733,
+      attributeMultiplier: 1.990995,
+      physFixed: 202.37,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(1, {
       frame: 102,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.32733,
+      attributeMultiplier: 1.990995,
+      physFixed: 202.37,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),
     hit(2, {
       frame: 108,
-      physMultiplier: 1.40692,
-      attributeMultiplier: 2.11038,
-      physFixed: 212.49,
+      physMultiplier: 1.32733,
+      attributeMultiplier: 1.990995,
+      physFixed: 202.37,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),

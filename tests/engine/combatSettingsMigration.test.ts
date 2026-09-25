@@ -59,6 +59,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       dragonHeadFullStacks: false,
       dragonHeadLowHpMaxBonus: false,
       lowEndurance: false,
+      distanceToTargetMeters: 3,
     }
     writeProfilesBlob({ combatSettings: custom })
     const first = loadProfiles()

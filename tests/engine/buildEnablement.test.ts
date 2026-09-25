@@ -112,7 +112,10 @@ describe("paramsFromInputs — build derivation", () => {
         param === "belowQiTime" ||
         param === "minPhysAttack" ||
         param === "targetMaxHp" ||
-        param === "breakthrough"
+        param === "breakthrough" ||
+        param === "distanceMeters" ||
+        // Divinecraft: Fire is the default consumable choice.
+        param === "divinecraftFire"
       )
         continue
       expect(def).toBeFalsy()

@@ -300,7 +300,6 @@ export function buildContext(
   inputs: Inputs,
   targetOverride?: TargetOverride,
   hawkwingPhysBonus?: number,
-  dotDamageMultiplier?: number,
 ): FormulaContext {
   const school = getSchool(inputs.classId)
   const baseTarget = getBreakthrough(inputs.breakthrough)
@@ -342,7 +341,6 @@ export function buildContext(
     innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
     (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
-    (inputs.divinecraft === "fire" ? 0.015 : 0) +
     (inputs.divinecraft === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
     (school.generalDamageBoost ?? 0)
@@ -426,7 +424,6 @@ export function buildContext(
     critDamageReduction: targetCritDamageReduction,
     affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus,
-    dotDamageMultiplier,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

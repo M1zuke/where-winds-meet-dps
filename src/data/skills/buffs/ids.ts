@@ -98,6 +98,11 @@ export const BUFF = {
   wineGu: "wineGu",
   wolfchasersArtMartialDamage: "wolfchasersArtMartialDamage",
   wraithstrikeScript: "wraithstrikeScript",
+  poetFinalStrikeStack: "poetFinalStrikeStack",
+  divinecraftFire: "divinecraftFire",
+  fluteArrival: "fluteArrival",
+  fluteDistanceBonus: "fluteDistanceBonus",
+  cleftpeakDeflectGrant: "cleftpeakDeflectGrant",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across
@@ -110,6 +115,7 @@ export const PARAM = {
   blossomBarrage: "blossomBarrage",
   breakingPoint: "breakingPoint",
   dragonHeadLowHpMaxBonus: "dragonHeadLowHpMaxBonus",
+  divinecraftFire: "divinecraftFire",
   eonpour: "eonpour",
   frostCladNight: "frostCladNight",
   insightfulStrike: "insightfulStrike",

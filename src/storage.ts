@@ -526,6 +526,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
       lowEndurance: typeof r.lowEndurance === "boolean" ? r.lowEndurance : def.lowEndurance,
+      distanceToTargetMeters:
+        typeof r.distanceToTargetMeters === "number" && Number.isFinite(r.distanceToTargetMeters)
+          ? r.distanceToTargetMeters
+          : def.distanceToTargetMeters,
     }
   }
   return withZeroedDerivedStats(next)
@@ -979,6 +983,15 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
   "cast:umbrellaQ": ["jadeware"],
   "cast:umbrellaQEmpoweredPerfectCatch": ["jadeware"],
   "cast:umbrellaQPerfectCatch": ["jadeware"],
+  "cast:fluteOfTheTidesCancel": ["fluteArrival"],
+  "cast:fluteOfTheTidesFull": ["fluteArrival"],
+  "cast:fluteOfTheTidesPrepull": ["fluteArrival"],
+  "cast:poet1": ["poetFinalStrikeStack"],
+  "cast:poet2": ["poetFinalStrikeStack"],
+  "cast:poet3": ["poetFinalStrikeStack"],
+  "cast:poet4": ["poetFinalStrikeStack"],
+  "cast:deflectCancel": ["cleftpeakDeflectGrant"],
+  "cast:deflectCancelPrepull": ["cleftpeakDeflectGrant"],
 }
 
 const MIGRATED_LEGACY_AFFECTS = new Map(
@@ -1017,6 +1030,49 @@ function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
 //
+// A successful deflect now also grants Cleftpeak's full 5 stacks; a copy
+// seeded before that still lists only the deflect's other trigger. Only a
+// list still identical to what was seeded is rewritten, same reason as the
+// trigger repair above.
+const TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT: Record<string, readonly string[]> = {
+  "stonesplitStrength-deflect": ["forgetfulness"],
+}
+
+function healCleftpeakDeflectGrantTrigger(id: string, triggersBuffs: string[]): string[] {
+  const seeded = TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT[id]
+  if (!seeded) return triggersBuffs
+  const untouched =
+    triggersBuffs.length === seeded.length &&
+    seeded.every((buffId, index) => triggersBuffs[index] === buffId)
+  return untouched ? [...triggersBuffs, "cleftpeakDeflectGrant"] : triggersBuffs
+}
+
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// In-game rule as of 2026-09-24: Wolfchaser's Art rank 3 also reaches every
+// Martial Art skill's hit, which for Bellstrike Umbra includes the Strategic
+// Sword Q family (Sober Sorrow, the spear chain, already carried it). A copy
+// seeded while the app still withheld it lists only the Strategic Sword's
+// own set buff. Only a list still identical to what was seeded is rewritten,
+// same reason as the trigger repair above.
+const RECEIVES_BEFORE_WOLFCHASERS_ART_SWORD_REACH: Record<string, readonly string[]> = {
+  "bellstrikeUmbra-swordq": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordqfollowup": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordq-follow-up-1-hit-cancel": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordq-follow-up-2-hit-cancel": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-sword-martial-qqq": ["strategicSwordAdditionalAttack"],
+}
+
+function healWolfchasersArtSwordReach(id: string, receives: string[]): string[] {
+  const seeded = RECEIVES_BEFORE_WOLFCHASERS_ART_SWORD_REACH[id]
+  if (!seeded) return receives
+  const untouched =
+    receives.length === seeded.length && seeded.every((buffId, index) => receives[index] === buffId)
+  return untouched ? ["wolfchasersArtMartialDamage", ...receives] : receives
+}
+
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
 // Wolfchaser's Art rank 3 raises these seven skills' damage; a copy seeded
 // before that bonus was modeled has no `receives` field at all, so it is not
 // caught by the `Array.isArray` branch below.
@@ -1030,6 +1086,12 @@ const RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE = new Set([
   "bellstrikeUmbra-spearq-5-hit-cancel",
 ])
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The Poet chain's final strike now stacks its own damage bonus; a copy
+// seeded before that was modeled has no `receives` field at all.
+const RECEIVES_BEFORE_POET_FINAL_STRIKE_STACK = new Set(["mystic-poet-final-hit-cancel"])
+
 // A skill's `type:<skillType>` tag is derived, never stored, so it is added
 // back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
 function healSkillReach(
@@ -1039,16 +1101,22 @@ function healSkillReach(
 ): Pick<Skill, "receives" | "triggersBuffs"> {
   const legacyTags = skill.skillType ? [...tags, `type:${skill.skillType}`] : tags
   const receives = Array.isArray(skill.receives)
-    ? skill.receives
+    ? healWolfchasersArtSwordReach(id, skill.receives)
     : RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE.has(id)
       ? ["wolfchasersArtMartialDamage"]
-      : legacyReceives(legacyTags)
+      : RECEIVES_BEFORE_POET_FINAL_STRIKE_STACK.has(id)
+        ? ["poetFinalStrikeStack"]
+        : legacyReceives(legacyTags)
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
+  const healedTriggersBuffs = healCleftpeakDeflectGrantTrigger(
+    id,
+    healJadewareTrigger(id, triggersBuffs),
+  )
   return {
     receives: receives.map(migrateBuffId),
-    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateBuffId),
+    triggersBuffs: healedTriggersBuffs.map(migrateBuffId),
   }
 }
 

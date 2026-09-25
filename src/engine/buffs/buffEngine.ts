@@ -218,6 +218,7 @@ export class BuffEngine {
       target: {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
+        distanceMeters: this.paramNum("distanceMeters"),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),

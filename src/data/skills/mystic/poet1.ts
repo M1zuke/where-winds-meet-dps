@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { BUFF } from "../buffs/ids"
 
 export const poet1 = defineSkill({
   id: SKILL.poet1,
@@ -15,6 +16,7 @@ export const poet1 = defineSkill({
   castTag: CAST.poet1,
   castFrames: 29,
   triggerable: true,
+  triggersBuffs: [BUFF.poetFinalStrikeStack],
   hits: [
     hit(0, {
       frame: 0,

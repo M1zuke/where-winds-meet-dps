@@ -332,6 +332,9 @@ function makeSwordQQN(bleedId: string, n: number): Skill {
   return makeSkill(CLASS, { name: `SwordQQ${n}`, castFrames: lastFrame + 150, hits })
 }
 
+// Callers pass `divinecraft: null` — a bare `buildContext` call never sees the
+// buff-engine's Divinecraft: Fire contribution, same as the fixture-safety
+// test above.
 function expectedRowDamage(inputs: Inputs, row: DotStackShape, buffName: string): number {
   const ctx = buildContext(inputs)
   const art = {
@@ -352,7 +355,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(5, 5)
     const sword = makeSwordQQN(bleed.id, 3)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     expect(dotRow?.count).toBe(1)
@@ -365,7 +372,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(10, 5)
     const sword = makeSwordQQN(bleed.id, 8)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     const expected = expectedRowDamage(inputs, bleed.dot!.perStackShapes![4], bleed.name)
@@ -377,7 +388,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(5, 5)
     const sword = makeSwordQQN(bleed.id, 1)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     const expected = expectedRowDamage(inputs, bleed.dot!.perStackShapes![0], bleed.name)

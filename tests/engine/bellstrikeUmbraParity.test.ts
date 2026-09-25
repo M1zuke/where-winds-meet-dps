@@ -71,6 +71,7 @@ const inputs: Inputs = {
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
+    distanceToTargetMeters: 3,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
@@ -147,21 +148,21 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(43845)
-    expect(result.dps).toBeLessThan(43995)
-    expect(result.totalDamage).toBeGreaterThan(2966000)
-    expect(result.totalDamage).toBeLessThan(2980000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1514000)
-    expect(detonation?.expectedDamage).toBeLessThan(1527000)
+    expect(result.dps).toBeGreaterThan(42010)
+    expect(result.dps).toBeLessThan(42160)
+    expect(result.totalDamage).toBeGreaterThan(2841500)
+    expect(result.totalDamage).toBeLessThan(2855500)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1434500)
+    expect(detonation?.expectedDamage).toBeLessThan(1447500)
 
-    // dps sits ~9.2 % below the cached target while total damage sits above
+    // dps now sits ~13 % below the cached target and total damage ~3 % below
     // it: the animation-accurate cast lengths lengthen the rotation by
     // several seconds, so the same hits land over a longer clock.
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.904)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.912)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.008)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.017)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.959)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.968)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.866)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.874)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.9655)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(0.9745)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.9085)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.9175)
   })
 })

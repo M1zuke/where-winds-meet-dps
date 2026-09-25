@@ -145,6 +145,15 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
               }
             />
           </label>
+          <label className={styles.inlineField}>
+            {t("overview.encounterSettings.distanceToTargetM")}
+            <NumInput
+              value={settings.distanceToTargetMeters}
+              onChange={(value) =>
+                setCombat("distanceToTargetMeters", Math.min(20, Math.max(0, value)))
+              }
+            />
+          </label>
         </div>
         <p className={styles.inlineHint}>{t("overview.encounterSettings.averageFpsHint")}</p>
       </div>

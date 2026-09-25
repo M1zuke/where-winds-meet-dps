@@ -839,12 +839,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let r = stateMemo.get(sig)
     if (!r) {
       const { inputs: effInputs, targetOverride } = applyBuffEffects(inputs, effects)
-      const ctx = buildContext(
-        effInputs,
-        targetOverride,
-        contextPatch.hawkwingPhysBonus,
-        contextPatch.dotDamageMultiplier,
-      )
+      const ctx = buildContext(effInputs, targetOverride, contextPatch.hawkwingPhysBonus)
       if (override?.forceGuaranteedAffinity) {
         ctx.affinityPanel = 0
         ctx.directAffinityPanel = 1

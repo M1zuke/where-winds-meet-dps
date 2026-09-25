@@ -106,11 +106,14 @@ describe("Debuff.triggersBuffs — DoT ticks trigger declared buffs", () => {
       steps: [makeStep({ skillId: skillApplyA.id }), makeStep({ skillId: skillProbe.id })],
     })
     const skills = [skillApplyA, skillProbe]
-    const inputs = { ...timelineInputs(rotation, skills, [debuffA]), set: null }
+    // divinecraft: null — a bare `buildContext` call below never sees the
+    // buff-engine's Divinecraft: Fire contribution.
+    const inputs = { ...timelineInputs(rotation, skills, [debuffA]), set: null, divinecraft: null }
     const r = simulateTimeline(inputs)
     const untriggered = simulateTimeline({
       ...timelineInputs(rotation, skills, [{ ...debuffA, triggersBuffs: undefined }]),
       set: null,
+      divinecraft: null,
     })
 
     const tickAt = (result: typeof r, frame: number) =>

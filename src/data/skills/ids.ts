@@ -77,6 +77,7 @@ export const CAST = {
   poet3: "cast:poet3",
   poet4: "cast:poet4",
   poetFinalHitCancel: "cast:poetFinalHitCancel",
+  poetFinalHitCancelExplosion: "cast:poetFinalHitCancelExplosion",
   quickDrink: "cast:quickDrink",
   quickDrinkCancel: "cast:quickDrinkCancel",
   realmplay: "cast:realmplay",

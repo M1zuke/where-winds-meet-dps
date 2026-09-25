@@ -60,12 +60,15 @@ describe("Fire Oil Burn — ticks only with the fire oil selected", () => {
 })
 
 describe("Fire Oil Burn — schedule", () => {
-  it("a hit every second for 60 s ticks exactly 60 times, the first at 0.5 s", () => {
+  it("a hit every second for 60 s ticks only while the 40 s enchant lasts, the first at 0.5 s", () => {
     const seconds = Array.from({ length: 60 }, (_, index) => index)
     const result = runEngine(probeInputs(seconds, {}, 60 * 60))
     const ticks = burnTicks(result.timeline)
-    expect(ticks.length).toBe(60)
+    // The last enchanted hit is at 39 s, opening a window to 43 s: ticks run
+    // every second from 0.5 s through 42.5 s.
+    expect(ticks.length).toBe(43)
     expect(ticks[0].timeSec).toBeCloseTo(0.5, 9)
+    expect(ticks[ticks.length - 1].timeSec).toBeCloseTo(42.5, 9)
   })
 
   it("a gap longer than 4 s stops the ticks and the next hit restarts the grid", () => {

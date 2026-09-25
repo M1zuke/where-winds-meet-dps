@@ -22,9 +22,10 @@ export const dragonFireSmolder1Hit = defineSkill({
   hits: [
     hit(0, {
       frame: 36,
-      physMultiplier: 1.36064,
-      attributeMultiplier: 2.04096,
-      physFixed: 205.5,
+      // In-game values as of 2026-09-24.
+      physMultiplier: 1.28367,
+      attributeMultiplier: 1.925505,
+      physFixed: 195.71,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.smolder, extendFrames: 240 })],
     }),

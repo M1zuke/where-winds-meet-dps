@@ -9,11 +9,11 @@ import { jadeware as jadewareSet } from "../../sets/jadeware"
 // lasts 10s and can only trigger once every 12s." (in-game set tooltip, as of
 // 15 Aug 2026)
 //
-// The tooltip reads as if both bonuses were gated on the target's Qi; the
-// buff itself carries `affinityDamageBoost` unconditionally for the
-// whole window, and only `directAffinityRate` asks about the target. Every
-// low-Qi source the sim models — the lead-in window, Qi Imbalance, and the
-// broken bar during qi-break — reports a non-`normal` phase.
+// In-game rule as of 2026-09-24: the direct-affinity bonus also pays out
+// whenever the target's Qi percentage is below the owner's own — a training
+// stake never attacks, so its Qi only ever falls, which holds for practically
+// the whole fight. The sim has no continuous target-Qi tracking to gate on,
+// so the direct-affinity term is unconditional here, matching that reach.
 export const jadeware = defineBuff({
   id: BUFF.jadeware,
   name: "Jadeware",
@@ -21,9 +21,7 @@ export const jadeware = defineBuff({
   affectsAll: true,
   duration: 10,
   cooldown: 12,
-  summary: "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
-  effects: (ctx) => [
-    stat("affinityDamageBoost", 0.1),
-    ...(ctx.phase === "normal" ? [] : [stat("directAffinityRate", 0.075)]),
-  ],
+  buffAppliesOnCastEnd: true,
+  summary: "affinityDmg +10% for the whole window, directAffinity +7.5% for the whole window",
+  effects: () => [stat("affinityDamageBoost", 0.1), stat("directAffinityRate", 0.075)],
 })

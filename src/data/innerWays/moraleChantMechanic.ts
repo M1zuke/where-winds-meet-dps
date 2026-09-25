@@ -22,14 +22,16 @@ import { moraleChant } from "./moraleChant"
 
 type State = { tier: number }
 
-function stacksAt(setup: MechanicSetup, timeSec: number): [number, boolean] {
-  const inQiBreak = setup.qiPhaseAt(timeSec) === "exhausted"
-  return [moraleStacksAtTime(timeSec, inQiBreak), inQiBreak]
+// In-game rule as of 2026-09-24: the doubling needs a controlled target, and
+// a training stake is never one.
+function stacksAt(_setup: MechanicSetup, timeSec: number): [number, boolean] {
+  const controlled = false
+  return [moraleStacksAtTime(timeSec, controlled), controlled]
 }
 
-function effectsFor(stacks: number, inQiBreak: boolean) {
+function effectsFor(stacks: number, controlled: boolean) {
   return [
-    { statKey: "allDamageBoost" as const, amount: stacks * moraleDmgPerStack(inQiBreak) },
+    { statKey: "allDamageBoost" as const, amount: stacks * moraleDmgPerStack(controlled) },
     { statKey: "phys.penetration" as const, amount: stacks * MORALE_PEN_PER_STACK },
   ]
 }
@@ -48,9 +50,9 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
     },
 
     contributeAt(_state, frame, _skill, setup) {
-      const [stacks, inQiBreak] = stacksAt(setup, frame / setup.fps)
+      const [stacks, controlled] = stacksAt(setup, frame / setup.fps)
       if (stacks <= 0) return null
-      return { effects: effectsFor(stacks, inQiBreak) }
+      return { effects: effectsFor(stacks, controlled) }
     },
 
     extraEvents(state, setup) {
@@ -93,7 +95,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
     },
 
     display(_state, timeSec, _prePull, setup) {
-      const [stacks, inQiBreak] = stacksAt(setup, timeSec)
+      const [stacks, controlled] = stacksAt(setup, timeSec)
       if (stacks <= 0) return []
       return [
         {
@@ -101,7 +103,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           name: "Morale Chant",
           stacks,
           maxStacks: MORALE_MAX_STACKS,
-          effects: effectsFor(stacks, inQiBreak),
+          effects: effectsFor(stacks, controlled),
         },
       ]
     },

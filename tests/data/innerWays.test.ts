@@ -134,7 +134,7 @@ describe("INNER_WAY_NODE — every node is declared by exactly one def, at the t
     [INNER_WAY_ID.insightfulStrike, INNER_WAY_NODE.concentrationSustainPair, 6],
     [INNER_WAY_ID.moraleChant, INNER_WAY_NODE.yiRiver, 6],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction, 1],
-    [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 4],
+    [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonImprovedProcChance, 6],
     [INNER_WAY_ID.bitterSeason, INNER_WAY_NODE.bitterSeasonMaxStackPenetration, 6],
     [INNER_WAY_ID.breakingPoint, INNER_WAY_NODE.breakingPointPerfectDodgeStacks, 6],
   ])("%s.%s unlocks at tier %d", (id, node, tier) => {

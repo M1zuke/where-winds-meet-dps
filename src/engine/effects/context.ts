@@ -17,6 +17,8 @@ export interface TargetView {
   isTrainingDummy: boolean
   // 1 at full health, falling to 0 as the target is worn down.
   remainingHealthFraction: number
+  // Centre-to-centre distance to the target, in metres.
+  distanceMeters: number
 }
 
 export interface StatusView {

@@ -67,6 +67,7 @@ export interface CombatSettings {
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
   lowEndurance: boolean
+  distanceToTargetMeters: number
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -79,6 +80,7 @@ export function defaultCombatSettings(): CombatSettings {
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     lowEndurance: false,
+    distanceToTargetMeters: 3,
   }
 }
 

@@ -11,6 +11,7 @@ export const SKILL = {
   fluteOfTheTidesFull: "mystic-flute-of-the-tides-full",
   fluteOfTheTidesPrepull: "mystic-flute-of-the-tides-prepull",
   poetFinalHitCancel: "mystic-poet-final-hit-cancel",
+  poetFinalHitCancelExplosion: "mystic-poet-final-hit-cancel-explosion",
   poet1: "mystic-poet1",
   poet2: "mystic-poet2",
   poet3: "mystic-poet3",
