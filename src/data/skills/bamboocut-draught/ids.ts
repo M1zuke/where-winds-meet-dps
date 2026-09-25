@@ -1,5 +1,6 @@
 export const SKILL = {
   lightAttack: "bamboocutDraught-light-attack",
+  bloombreak: "bamboocutDraught-bloombreak",
   falconsPursuit: "bamboocutDraught-falcons-pursuit",
   whaledraft: "bamboocutDraught-whaledraft",
   quickDrink: "bamboocutDraught-quick-drink",
@@ -40,9 +41,16 @@ export const DEBUFF = {
 export const STATUS = {
   bingePoints: "buff-bamboocutDraught-binge-points",
   bingeMarks: "buff-bamboocutDraught-binge-marks",
+  skillBingePointAccumulation: "buff-bamboocutDraught-skill-binge-point-accumulation",
   inebriateDeepdaze: "buff-bamboocutDraught-inebriate-deepdaze",
+  enhanceSpecialSkill: "buff-bamboocutDraught-enhance-special-skill",
   carouse: "buff-bamboocutDraught-carouse",
   clashToast: "buff-bamboocutDraught-clash-toast",
   cloudvault: "buff-bamboocutDraught-cloudvault",
   eonpourExhaustedCooldown: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+  consecutivePunches: "buff-bamboocutDraught-consecutive-punches",
+  peakfallCooldown: "buff-bamboocutDraught-peakfall-cooldown",
+  tipsylayCooldown: "buff-bamboocutDraught-tipsylay-cooldown",
+  castlinkCooldown: "buff-bamboocutDraught-castlink-cooldown",
+  herosBloodCooldown: "buff-bamboocutDraught-heros-blood-cooldown",
 } as const

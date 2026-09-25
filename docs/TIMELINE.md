@@ -214,8 +214,9 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
   once. The reset lands in the layout pass and the event loop alike, so a hit
   variant or cast length gated on the target sees it from that frame on. It
   may also declare `requiresBuffId`: the reset only lands if that other
-  status has a live window at the same frame, so the same lapse silently
-  does nothing without it.
+  status has a live window at the same frame. When that status is absent the
+  lapse resets nothing, unless `elseStacks` is set, in which case it resets to
+  that value.
 - **A buff may count damaging hits** (`stacksPerDamagingHit`): every damaging
   hit from any skill grants one stack, at most once per its cooldown, clamped
   to `maxStacks` and opening the buff's own window. The granting hit's own

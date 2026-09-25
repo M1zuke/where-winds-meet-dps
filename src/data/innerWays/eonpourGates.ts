@@ -39,7 +39,7 @@ export const EONPOUR_GATES: readonly InnerWayGateBuff[] = [
   }),
   defineInnerWayGateBuff({
     id: BUFF.eonpourLightAttackPoints,
-    name: "Eonpour - Light Attack Binge Points",
+    name: "Eonpour - Light Attack Binge Marks",
     scope: "player",
     activation: "permanent",
     durationFrames: 0,
@@ -53,7 +53,7 @@ export const EONPOUR_GATES: readonly InnerWayGateBuff[] = [
   }),
   defineInnerWayGateBuff({
     id: BUFF.eonpourCarousePoints,
-    name: "Eonpour - Carouse Light Attack Points",
+    name: "Eonpour - Carouse Light Attack Marks",
     scope: "player",
     activation: "permanent",
     durationFrames: 0,

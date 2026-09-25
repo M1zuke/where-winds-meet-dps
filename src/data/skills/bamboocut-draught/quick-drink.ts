@@ -3,12 +3,12 @@ import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
-import { perfectDrinkGrants } from "./whaledraft"
+import { drinkGrants } from "./whaledraft"
 
 // The drink at the perfect moment after a skill also unleashes Falcon's
 // Pursuit (in-game skill text, 2026-09-05).
 export const perfectQuickDrinkTriggers = [
-  ...perfectDrinkGrants,
+  ...drinkGrants,
   castSkill({ target: SKILL.falconsPursuit }),
 ]
 

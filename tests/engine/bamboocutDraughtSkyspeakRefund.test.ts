@@ -20,12 +20,7 @@ const grantDeepdaze = makeSkill(CLASS, {
   hits: [
     makeHit({
       frame: 0,
-      triggers: [
-        makeTrigger({ kind: "applyBuff", targetId: STATUS.inebriateDeepdaze, stacks: 1 }),
-        // A zero-stack grant still opens Binge Points' permanent window, so its
-        // later value is visible on the cast even though it opens at 0.
-        makeTrigger({ kind: "applyBuff", targetId: STATUS.bingePoints, stacks: 0 }),
-      ],
+      triggers: [makeTrigger({ kind: "applyBuff", targetId: STATUS.inebriateDeepdaze, stacks: 1 })],
     }),
   ],
 })
@@ -39,13 +34,13 @@ function runExpiry(mindMethods: Inputs["mindMethods"]) {
     customSkills: [grantDeepdaze],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: grantDeepdaze.id })],
-      openingStacks: { [STATUS.bingePoints]: 0 },
+      openingStacks: { [STATUS.bingePoints]: 200 },
     }),
   })
 }
 
 function bingePointsAfter(result: ReturnType<typeof runExpiry>): number | undefined {
-  const cast = result.casts!.find((c) => c.skillName === "Test Deepdaze Entry")!
+  const cast = result.casts!.find((castRow) => castRow.skillName === "Test Deepdaze Entry")!
   return cast.buffs.find((buff) => buff.id === STATUS.bingePoints)?.stacks
 }
 

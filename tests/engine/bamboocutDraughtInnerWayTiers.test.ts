@@ -60,18 +60,27 @@ describe("Eonpour", () => {
 })
 
 describe("Skyspeak", () => {
+  const idlePastHerosBloodCooldown = makeSkill(CLASS, {
+    name: "Test Idle",
+    castFrames: 720,
+    hits: [makeHit({ frame: 0 })],
+  })
+
   // Hero's Blood marks and releases; Peakfall in between is the
-  // Inebriate-enhanced hit that feeds the echo while the mark is up.
+  // Inebriate-enhanced hit that feeds the echo while the mark is up. The idle
+  // pad clears Hero's Blood's own cooldown before the release cast.
   function runHerosBloodMarkFeedRelease(tier: number) {
     return runEngine({
       ...defaultInputs,
       classId: CLASS,
       set: null,
       mindMethods: mindMethodsWith(INNER_WAY_ID.skyspeak, tier),
+      customSkills: [idlePastHerosBloodCooldown],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [
           makeStep({ skillId: SKILL.herosBlood }),
           makeStep({ skillId: SKILL.peakfall }),
+          makeStep({ skillId: idlePastHerosBloodCooldown.id }),
           makeStep({ skillId: SKILL.herosBlood }),
         ],
         openingStacks: { [STATUS.bingePoints]: 100 },

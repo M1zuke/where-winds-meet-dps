@@ -1,32 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
-import type { HitTrigger } from "../../../engine/skill"
+import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
-import { SKILL, STATUS } from "./ids"
+import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
-
-const inCarouse = [{ buffId: STATUS.carouse, op: "gte" as const, stacks: 1 }]
-const eonpourLightAttackPoints = [
-  { buffId: BUFF.eonpourLightAttackPoints, op: "gte" as const, stacks: 1 },
-]
-const eonpourCarouseTier4 = [
-  { buffId: STATUS.carouse, op: "gte" as const, stacks: 1 },
-  { buffId: BUFF.eonpourCarousePoints, op: "gte" as const, stacks: 1 },
-]
-
-const onLanding = (): HitTrigger[] => [
-  applyBuff({ target: STATUS.bingeMarks, stacks: 2 }),
-  applyBuff({ target: STATUS.bingeMarks, stacks: 3, conditions: inCarouse }),
-]
-
-// Only the stage that closes the chain pays Binge Points, and Eonpour's
-// Carouse rung pays a second helping on top of the first.
-const onChainEnd = (): HitTrigger[] => [
-  ...onLanding(),
-  applyBuff({ target: STATUS.bingePoints, stacks: 5, conditions: eonpourLightAttackPoints }),
-  applyBuff({ target: STATUS.bingePoints, stacks: 5, conditions: eonpourCarouseTier4 }),
-]
+import {
+  lightAttackMarkTriggers,
+  lightAttackStageFiveSecondColliderTriggers,
+} from "./buffs/lightAttackMarks"
 
 const stage = (
   index: number,
@@ -34,7 +14,7 @@ const stage = (
   physMultiplier: number,
   physFixed: number,
   attributeFixed: number,
-  triggers: HitTrigger[],
+  closesChain = false,
 ) =>
   hit(index, {
     frame,
@@ -42,12 +22,14 @@ const stage = (
     attributeMultiplier: physMultiplier * 1.5,
     physFixed,
     attributeFixed,
-    triggers,
+    triggers: closesChain
+      ? [...lightAttackMarkTriggers(true), castSkill({ target: SKILL.falconsPursuit })]
+      : lightAttackMarkTriggers(),
   })
 
-// One hit per stage, the six played back to back; Bloombreak, the Inebriate
-// form, shares the coefficients. Each landing grants 2 Binge Marks, 5 during
-// Carouse, and the sixth stage closes the chain and unleashes Falcon's Pursuit.
+// The chain Skystrike Gauntlets plays outside Inebriate: six stages, stages 2
+// and 5 landing twice; the sixth unleashes Falcon's Pursuit. In-game values
+// as of 2026-09-16.
 export const lightAttack = defineSkill({
   id: SKILL.lightAttack,
   classId: "bamboocutDraught",
@@ -60,14 +42,30 @@ export const lightAttack = defineSkill({
   castTag: CAST.lightAttack,
   receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
-  castFrames: 154,
+  castFrames: 187,
   hits: [
-    stage(0, 12, 0.34392, 96, 52, onLanding()),
-    stage(1, 35, 0.22728, 64, 35, onLanding()),
-    stage(2, 60, 0.36725, 103, 56, onLanding()),
-    stage(3, 84, 0.32992, 92, 50, onLanding()),
-    stage(4, 108, 0.46445, 130, 70, onLanding()),
-    stage(5, 131, 0.65496, 182, 99, [...onChainEnd(), castSkill({ target: SKILL.falconsPursuit })]),
+    stage(0, 13, 0.35636, 100, 54),
+    stage(1, 37, 0.156852, 44, 23.6),
+    hit(2, {
+      frame: 47,
+      physMultiplier: 0.235278,
+      attributeMultiplier: 0.352917,
+      physFixed: 66,
+      attributeFixed: 35.4,
+      triggers: [],
+    }),
+    stage(3, 71, 0.25294, 71, 39),
+    stage(4, 87, 0.31826, 89, 48),
+    stage(5, 113, 0.186944, 52, 28.4),
+    hit(6, {
+      frame: 126,
+      physMultiplier: 0.280416,
+      attributeMultiplier: 0.420624,
+      physFixed: 78,
+      attributeFixed: 42.6,
+      triggers: lightAttackStageFiveSecondColliderTriggers,
+    }),
+    stage(7, 147, 0.8202, 228, 124, true),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-04T00:00:00.000Z",

@@ -30,6 +30,7 @@ export const BUFF = {
   mistwingAllTypePenetration: "mistwingAllTypePenetration",
   mistwingInebriatePenetration: "mistwingInebriatePenetration",
   mistwingTargetHealthPenetration: "mistwingTargetHealthPenetration",
+  mistwingLowTierTargetHealthPenetration: "mistwingLowTierTargetHealthPenetration",
   mountainsMight: "mountainsMight",
   mountainsMightQiImbalance: "mountainsMightQiImbalance",
   namelessSpearAdditionalAttack: "namelessSpearAdditionalAttack",

@@ -1,9 +1,12 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { DEBUFF, SKILL } from "./ids"
+import { DEBUFF, SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
+
+// In-game values as of 2026-09-16.
+const REQUIRES_COOLDOWN_CLEAR = [{ buffId: STATUS.tipsylayCooldown, op: "eq" as const, stacks: 0 }]
 
 // One kick at the special skill's full share (0.9444 / 262 / 143 at skill
 // level 100, in-game damage tooltip, 2026-09-04); attribute side × 1.5. Cast
@@ -33,7 +36,11 @@ export const nightwickTipsylay = defineSkill({
       attributeMultiplier: 1.4166,
       physFixed: 262,
       attributeFixed: 143,
-      triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
+      conditions: REQUIRES_COOLDOWN_CLEAR,
+      triggers: [
+        applyDebuff({ target: DEBUFF.wildstride, stacks: 1 }),
+        applyBuff({ target: STATUS.tipsylayCooldown, stacks: 1 }),
+      ],
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",

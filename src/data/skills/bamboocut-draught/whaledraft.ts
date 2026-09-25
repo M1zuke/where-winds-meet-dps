@@ -5,22 +5,15 @@ import { SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { deepdazeEntryTriggers } from "./buffs/deepdazeEntry"
 
-const noMarks = [{ buffId: STATUS.bingeMarks, op: "eq" as const, stacks: 0 }]
-const inCarouse = { buffId: STATUS.carouse, op: "gte" as const, stacks: 1 }
-
-// Whaledraft chained after a skill grants 25 Binge Points, 50 in Carouse, at
-// the perfect moment and 5, 10 in Carouse, otherwise; after a Light Attack
-// instead every Binge Mark one for one (in-game skill text, 2026-09-05). The
-// grants run before the Deepdaze threshold check on the same hit.
-const drinkGrants = (points: number) => [
-  applyBuff({ target: STATUS.bingePoints, stacks: points, conditions: noMarks }),
-  applyBuff({ target: STATUS.bingePoints, stacks: points, conditions: [...noMarks, inCarouse] }),
+// Converts whatever the preceding skill accumulated, not a flat amount — a
+// drink after a skill that grants no accumulation converts nothing. "Perfect"
+// only adds the falcon and Tenacity. The transfers run before the Deepdaze
+// threshold check on the same hit. In-game values as of 2026-09-16.
+export const drinkGrants = [
+  applyBuff({ target: STATUS.bingePoints, transferFrom: STATUS.skillBingePointAccumulation }),
   applyBuff({ target: STATUS.bingePoints, transferFrom: STATUS.bingeMarks }),
   ...deepdazeEntryTriggers(),
 ]
-
-export const perfectDrinkGrants = drinkGrants(25)
-export const plainDrinkGrants = drinkGrants(5)
 
 // The drink deals nothing; its grants fire on the first frame and the cast
 // runs to the earliest next input (in-game animation, 2026-09-05).
@@ -44,7 +37,7 @@ export const whaledraft = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: plainDrinkGrants,
+      triggers: drinkGrants,
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",

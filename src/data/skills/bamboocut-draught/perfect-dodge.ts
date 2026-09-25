@@ -5,12 +5,16 @@ import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 
 // In-game talent text, 2026-09-06: a Perfect Dodge restores 5 Binge Points
-// while Carouse is up, at most once per second — shared by both dodge
-// variants so the cooldown (keyed by trigger identity) holds across them.
+// while Carouse and Binge Points ≥ 100 both hold (in-game values as of
+// 2026-09-16), at most once per second — shared by both dodge variants so
+// the cooldown (keyed by trigger identity) holds across them.
 export const bingePointDodgeGrant = applyBuff({
   target: STATUS.bingePoints,
   stacks: 5,
-  condition: { buffId: STATUS.carouse, op: "gte", stacks: 1 },
+  conditions: [
+    { buffId: STATUS.carouse, op: "gte", stacks: 1 },
+    { buffId: STATUS.bingePoints, op: "gte", stacks: 100 },
+  ],
   cooldownFrames: 60,
 })
 

@@ -1,5 +1,6 @@
 import type { Skill } from "../../../engine/skill"
 import { lightAttack } from "./light-attack"
+import { bloombreak } from "./bloombreak"
 import { falconsPursuit } from "./falcons-pursuit"
 import { whaledraft } from "./whaledraft"
 import { quickDrink } from "./quick-drink"
@@ -33,6 +34,7 @@ export const CLASS_ID = "bamboocutDraught"
 
 export const SKILLS: Skill[] = [
   lightAttack,
+  bloombreak,
   falconsPursuit,
   whaledraft,
   quickDrink,

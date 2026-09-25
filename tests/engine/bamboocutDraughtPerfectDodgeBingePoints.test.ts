@@ -25,8 +25,8 @@ const observer = makeSkill(CLASS, {
   hits: [makeHit({ frame: 0 })],
 })
 
-function runDodges(steps: RotationStep[], inCarouse: boolean) {
-  const openingStacks: Record<string, number> = {}
+function runDodges(steps: RotationStep[], inCarouse: boolean, bingePoints = 100) {
+  const openingStacks: Record<string, number> = { [STATUS.bingePoints]: bingePoints }
   if (inCarouse) openingStacks[STATUS.carouse] = 1
   return runEngine({
     ...defaultInputs,
@@ -54,6 +54,14 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
       runDodges([makeStep({ skillId: SKILL.perfectDodge })], false),
     )
     expect(withCarouse - withoutCarouse).toBe(5)
+  })
+
+  it("below Binge 100 it raises Binge Points by 0, even in Carouse", () => {
+    const baseline = bingePointsAtObserver(runDodges([], true, 99))
+    const afterDodge = bingePointsAtObserver(
+      runDodges([makeStep({ skillId: SKILL.perfectDodge })], true, 99),
+    )
+    expect(afterDodge - baseline).toBe(0)
   })
 
   it("outside Carouse it raises Binge Points by 0", () => {

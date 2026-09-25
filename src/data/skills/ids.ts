@@ -16,6 +16,7 @@ export const CAST = {
   blockPerception: "cast:blockPerception",
   bleedDetonation: "cast:bleedDetonation",
   bleedTick: "cast:bleedTick",
+  bloombreak: "cast:bloombreak",
   boundvessel: "cast:boundvessel",
   castlink: "cast:castlink",
   crosswindBlade: "cast:crosswindBlade",

@@ -23,18 +23,15 @@ const stage = (
     conditions: UNLOCKED,
   })
 
-const finisherThird = (index: number, frame: number) =>
-  stage(index, frame, 1.82136 / 3, 505 / 3, 275 / 3)
-
-// The finisher lands three strikes that share its stage total; their split is
-// not published, equal thirds are assumed.
+// The finisher's three strikes split its total 0.3 / 0.3 / 0.4, not evenly.
+// In-game values as of 2026-09-16.
 export const dragonquenchStagesAt = (frames: readonly number[]) => [
   stage(0, frames[0], 0.68814, 191, 104),
   stage(1, frames[1], 0.66144, 184, 100),
   stage(2, frames[2], 0.80698, 224, 122),
-  finisherThird(3, frames[3]),
-  finisherThird(4, frames[4]),
-  finisherThird(5, frames[5]),
+  stage(3, frames[3], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
+  stage(4, frames[4], 1.82136 * 0.3, 505 * 0.3, 275 * 0.3),
+  stage(5, frames[5], 1.82136 * 0.4, 505 * 0.4, 275 * 0.4),
 ]
 
 export const DRAGONQUENCH_TAGS = [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze]

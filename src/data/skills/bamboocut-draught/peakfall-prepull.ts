@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { SKILL } from "./ids"
+import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { BUFF } from "../buffs/ids"
 
@@ -30,6 +31,10 @@ export const peakfallPrepull = defineSkill({
       attributeMultiplier: 1.37901,
       physFixed: 255,
       attributeFixed: 139,
+      triggers: [
+        applyBuff({ target: STATUS.consecutivePunches, stacks: 1 }),
+        applyBuff({ target: STATUS.peakfallCooldown, stacks: 1 }),
+      ],
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",

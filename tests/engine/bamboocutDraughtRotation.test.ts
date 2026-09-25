@@ -163,29 +163,24 @@ describe("the Primepick follow-up", () => {
     })
   }
 
-  it("applies Wildstride on its thrust and lands both Deepdaze-only strikes only in Deepdaze", () => {
-    const withDeepdaze = runFollowUp(true)
-    const withoutDeepdaze = runFollowUp(false)
+  it("applies Wildstride and lands Nightwick - Primepick's single hit, Deepdaze or not", () => {
+    for (const withDeepdaze of [true, false]) {
+      const result = runFollowUp(withDeepdaze)
 
-    const rowIn = (result: ReturnType<typeof runEngine>) =>
-      result.perSkill.find((row) => row.breakdownName === "Nightwick - Primepick")!
-
-    expect(rowIn(withDeepdaze).count).toBe(3)
-    expect(rowIn(withoutDeepdaze).count).toBe(1)
-
-    for (const result of [withDeepdaze, withoutDeepdaze]) {
+      const skillRow = result.perSkill.find((row) => row.breakdownName === "Nightwick - Primepick")!
+      expect(skillRow.count).toBe(1)
       expect(result.buffWindows!.some((window) => window.id === DEBUFF.wildstride)).toBe(true)
     }
   })
 
-  it("pins the three Deepdaze hits' coefficients and frames", () => {
-    expect(nightwickPrimepickFollowUp.hits.map((hit) => hit.frame)).toEqual([20, 49, 76])
-    for (const hit of nightwickPrimepickFollowUp.hits) {
-      expect(hit.physMultiplier).toBe(0.859716)
-      expect(hit.physFixed).toBe(237.93)
-      expect(hit.attributeMultiplier).toBe(1.289574)
-      expect(hit.attributeFixed).toBe(129.69)
-    }
+  it("pins the hit's coefficients and frame", () => {
+    expect(nightwickPrimepickFollowUp.hits).toHaveLength(1)
+    const [hit] = nightwickPrimepickFollowUp.hits
+    expect(hit.frame).toBe(20)
+    expect(hit.physMultiplier).toBe(0.64565)
+    expect(hit.physFixed).toBe(180)
+    expect(hit.attributeMultiplier).toBe(0.968475)
+    expect(hit.attributeFixed).toBe(98)
   })
 })
 
@@ -288,6 +283,7 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.castlink })],
         qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+        openingStacks: { [STATUS.consecutivePunches]: 1 },
       }),
       set: null,
     })
@@ -314,10 +310,19 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
 })
 
 describe("the pre-pull Peakfall", () => {
-  it("sits before frame 0 and carries no Exhausted-window triggers", () => {
+  it("sits before frame 0, opens Castlink, starts its cooldown and carries no Exhausted-window triggers", () => {
     expect(peakfallPrepull.prePull).toBe(true)
     expect(peakfallPrepull.castFrames).toBe(0)
     expect(peakfallPrepull.hits).toHaveLength(1)
-    expect(peakfallPrepull.hits[0].triggers).toHaveLength(0)
+    const [hit] = peakfallPrepull.hits
+    expect(hit.triggers).toHaveLength(2)
+    expect(hit.triggers.map((trigger) => trigger.targetId)).toEqual([
+      STATUS.consecutivePunches,
+      STATUS.peakfallCooldown,
+    ])
+    expect(hit.triggers.some((trigger) => trigger.targetId === STATUS.inebriateDeepdaze)).toBe(
+      false,
+    )
+    expect(hit.triggers.some((trigger) => trigger.targetId === DEBUFF.wildstride)).toBe(false)
   })
 })

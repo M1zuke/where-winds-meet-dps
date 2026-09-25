@@ -104,6 +104,27 @@ describe("Inebriate - Deepdaze duration", () => {
     expect(window.endSec - window.startSec).toBeCloseTo(10, 1)
   })
 
+  it("the ultimate restarts a Deepdaze already running instead of leaving it alone", () => {
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      set: null,
+      customSkills: [grantDeepdaze, idlePad],
+      activeCustomRotation: makeRotation(CLASS, {
+        steps: [
+          makeStep({ skillId: grantDeepdaze.id }),
+          makeStep({ skillId: idlePad.id }),
+          makeStep({ skillId: SKILL.skystrikeGauntletsEx }),
+        ],
+        openingStacks: { [STATUS.bingePoints]: 200 },
+      }),
+    })
+    const windows = result.buffWindows!.filter((window) => window.id === STATUS.inebriateDeepdaze)
+    const idleEndSec = 12 / 60 + 180 / 60
+    const restarted = windows.find((window) => window.startSec >= idleEndSec)!
+    expect(restarted.endSec - restarted.startSec).toBeCloseTo(5, 1)
+  })
+
   it("caps what an extension may leave running, so repeated extensions stop growing it", () => {
     const extender = (name: string, capped: boolean) =>
       makeSkill(CLASS, {

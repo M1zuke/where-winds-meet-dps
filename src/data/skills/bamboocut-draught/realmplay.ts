@@ -5,7 +5,7 @@ import { DEBUFF, SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
 // The airborne follow-up of Reveldrift. Coefficients: the in-game level-100
-// row (0.804 / 223 / 122, 2026-09-04) at the tooltip's full ratio as one hit;
+// row (0.804 / 223 / 122, 2026-09-04) splits into two hits of 0.5 each;
 // attribute side × 1.5. Cast length and hit frame: in-game animation,
 // 2026-09-05.
 export const realmplay = defineSkill({
@@ -23,10 +23,18 @@ export const realmplay = defineSkill({
   hits: [
     hit(0, {
       frame: 10,
-      physMultiplier: 0.804,
-      attributeMultiplier: 1.206,
-      physFixed: 223,
-      attributeFixed: 122,
+      physMultiplier: 0.402,
+      attributeMultiplier: 0.603,
+      physFixed: 111.5,
+      attributeFixed: 61,
+      triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
+    }),
+    hit(1, {
+      frame: 10,
+      physMultiplier: 0.402,
+      attributeMultiplier: 0.603,
+      physFixed: 111.5,
+      attributeFixed: 61,
       triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
     }),
   ],

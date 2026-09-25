@@ -4,6 +4,7 @@ import { PARAM } from "../skills/buffs/ids"
 import {
   mistwingAllTypePenetration,
   mistwingInebriatePenetration,
+  mistwingLowTierTargetHealthPenetration,
   mistwingPhysicalPenetration,
   mistwingTargetHealthPenetration,
 } from "./mistwingBuffs"
@@ -26,5 +27,6 @@ export const mistwing = defineInnerWay({
     mistwingAllTypePenetration,
     mistwingInebriatePenetration,
     mistwingTargetHealthPenetration,
+    mistwingLowTierTargetHealthPenetration,
   ],
 })

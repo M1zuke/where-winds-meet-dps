@@ -343,14 +343,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             )
             if (refreshed) continue
             const reset = status.onExpire!
-            if (
-              reset.requiresBuffId &&
-              !target.longestActiveWindow(reset.requiresBuffId, window.end)
-            )
-              continue
+            const requirementMet =
+              !reset.requiresBuffId || target.longestActiveWindow(reset.requiresBuffId, window.end)
+            if (!requirementMet && reset.elseStacks === undefined) continue
             const resetTarget = statusById.get(reset.targetId)
             if (!resetTarget) continue
-            const next = clamp(reset.stacks, 0, capOf(resetTarget))
+            const next = clamp(
+              requirementMet ? reset.stacks : reset.elseStacks!,
+              0,
+              capOf(resetTarget),
+            )
             write(resetTarget, window.end, next, UNOWNED, false, true)
           }
         }

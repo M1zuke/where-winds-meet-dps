@@ -1,4 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, ATTUNE, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
@@ -6,6 +7,7 @@ import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./rec
 import { eonpourExhaustedTriggers } from "./buffs/eonpourExhausted"
 
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
+const REQUIRES_COOLDOWN_CLEAR = [{ buffId: STATUS.peakfallCooldown, op: "eq" as const, stacks: 0 }]
 
 // Cast length to the earliest next input and hit frames: in-game animation,
 // 2026-09-05.
@@ -34,7 +36,12 @@ export const peakfall = defineSkill({
       attributeMultiplier: 1.37901,
       physFixed: 255,
       attributeFixed: 139,
-      triggers: eonpourExhaustedTriggers,
+      conditions: REQUIRES_COOLDOWN_CLEAR,
+      triggers: [
+        ...eonpourExhaustedTriggers,
+        applyBuff({ target: STATUS.consecutivePunches, stacks: 1 }),
+        applyBuff({ target: STATUS.peakfallCooldown, stacks: 1 }),
+      ],
       variants: [
         {
           id: "hv-peakfall-jadeflush",
@@ -54,7 +61,7 @@ export const peakfall = defineSkill({
       attributeMultiplier: 1.18173,
       physFixed: 218.5,
       attributeFixed: 119,
-      conditions: JADEFLUSH,
+      conditions: [...JADEFLUSH, ...REQUIRES_COOLDOWN_CLEAR],
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",

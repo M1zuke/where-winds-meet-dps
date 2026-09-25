@@ -22,16 +22,22 @@ function eonpourAt(tier: number): Inputs["mindMethods"] {
   ]
 }
 
-const lightAttackShortOfChainEnd = makeSkill(CLASS, {
+const singleLanding = makeSkill(CLASS, {
   ...lightAttack,
-  id: "test-light-attack-short-of-chain-end",
-  hits: lightAttack.hits.slice(0, -1),
+  id: "test-light-attack-single-landing",
+  hits: [lightAttack.hits[0]],
+})
+
+const closingLanding = makeSkill(CLASS, {
+  ...lightAttack,
+  id: "test-light-attack-closing-landing",
+  hits: [lightAttack.hits[lightAttack.hits.length - 1]],
 })
 
 function runLightAttack(
   mindMethods: Inputs["mindMethods"],
   inCarouse: boolean,
-  lightAttackSkill: Skill = lightAttack,
+  lightAttackSkill: Skill,
 ) {
   const openingStacks: Record<string, number> = {}
   if (inCarouse) openingStacks[STATUS.carouse] = 1
@@ -48,33 +54,29 @@ function runLightAttack(
   })
 }
 
-function bingePointsAfter(result: ReturnType<typeof runLightAttack>): number | undefined {
-  const cast = result.casts!.find((c) => c.skillName === "Gauntlet Light Attack")!
-  return cast.buffs.find((buff) => buff.id === STATUS.bingePoints)?.stacks
+function bingeMarksAfter(result: ReturnType<typeof runLightAttack>): number | undefined {
+  const cast = result.casts!.find((castRow) => castRow.skillName === "Gauntlet Light Attack")!
+  return cast.buffs.find((buff) => buff.id === STATUS.bingeMarks)?.stacks
 }
 
-describe("Eonpour light attack Binge Points", () => {
-  it("pays 5 Binge Points once the chain closes, with Eonpour slotted and none without", () => {
-    const withEonpour = bingePointsAfter(runLightAttack(eonpourAt(1), false))!
-    const withoutEonpour = bingePointsAfter(runLightAttack(defaultInputs.mindMethods, false))!
-    expect(withEonpour - withoutEonpour).toBe(5)
+describe("Eonpour light attack Binge Marks", () => {
+  it("grants 2 extra Binge Marks per landing with Eonpour tier 1, none without", () => {
+    const withEonpour = bingeMarksAfter(runLightAttack(eonpourAt(1), false, singleLanding))!
+    const withoutEonpour = bingeMarksAfter(
+      runLightAttack(defaultInputs.mindMethods, false, singleLanding),
+    )!
+    expect(withEonpour - withoutEonpour).toBe(2)
   })
 
-  it("pays nothing while the chain is still short of its closing stage", () => {
-    const withEonpour = bingePointsAfter(
-      runLightAttack(eonpourAt(1), false, lightAttackShortOfChainEnd),
-    )!
-    const withoutEonpour = bingePointsAfter(
-      runLightAttack(defaultInputs.mindMethods, false, lightAttackShortOfChainEnd),
-    )!
-    expect(withEonpour - withoutEonpour).toBe(0)
-  })
+  it("grants a Carouse top-up only from Eonpour tier 4, 3 on the stage that closes the chain", () => {
+    const atTier1 = bingeMarksAfter(runLightAttack(eonpourAt(1), true, singleLanding))!
+    const atTier3 = bingeMarksAfter(runLightAttack(eonpourAt(3), true, singleLanding))!
+    const atTier4 = bingeMarksAfter(runLightAttack(eonpourAt(4), true, singleLanding))!
+    expect(atTier3 - atTier1).toBe(0)
+    expect(atTier4 - atTier1).toBe(1)
 
-  it("pays a second helping in Carouse only from Eonpour tier 4", () => {
-    const withoutEonpour = bingePointsAfter(runLightAttack(defaultInputs.mindMethods, true))!
-    const atTier3 = bingePointsAfter(runLightAttack(eonpourAt(3), true))!
-    const atTier4 = bingePointsAfter(runLightAttack(eonpourAt(4), true))!
-    expect(atTier3 - withoutEonpour).toBe(5)
-    expect(atTier4 - withoutEonpour).toBe(10)
+    const atTier1Closing = bingeMarksAfter(runLightAttack(eonpourAt(1), true, closingLanding))!
+    const atTier4Closing = bingeMarksAfter(runLightAttack(eonpourAt(4), true, closingLanding))!
+    expect(atTier4Closing - atTier1Closing).toBe(3)
   })
 })

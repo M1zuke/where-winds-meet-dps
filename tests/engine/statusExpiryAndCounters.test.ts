@@ -112,6 +112,37 @@ describe("onExpire — a lapsing window resets another status", () => {
     expect(stacksOnCast(result, 3, counter.id)).toBe(60)
     expect(result.rotationDuration).toBeCloseTo((60 + 60 + 30 + 90) / FPS, 10)
   })
+
+  it("elseStacks resets to a different value when requiresBuffId is not held", () => {
+    const requiredCounter = gate({ name: "Counter", durationFrames: 36000, maxStacks: 200 })
+    const requiredGate = gate({ name: "RequiredGate", durationFrames: 36000, maxStacks: 1 })
+    const stateWithElse = gate({
+      name: "StateWithElse",
+      durationFrames: 80,
+      maxStacks: 1,
+      onExpire: {
+        targetId: requiredCounter.id,
+        stacks: 60,
+        requiresBuffId: requiredGate.id,
+        elseStacks: 0,
+      },
+    })
+    const openerWithoutGate = filler("OpenerWithoutGate", 60, [
+      makeTrigger({ kind: "applyBuff", targetId: requiredCounter.id, stacks: 200 }),
+      makeTrigger({ kind: "applyBuff", targetId: stateWithElse.id, stacks: 1 }),
+    ])
+    const idle = filler("Idle", 90)
+    const result = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [makeStep({ skillId: openerWithoutGate.id }), makeStep({ skillId: idle.id })],
+        }),
+        [openerWithoutGate, idle],
+        [requiredCounter, requiredGate, stateWithElse],
+      ),
+    )
+    expect(stacksOnCast(result, 1, requiredCounter.id)).toBe(0)
+  })
 })
 
 describe("stacksPerDamagingHit — a counter built by direct damage", () => {

@@ -18,11 +18,13 @@ const rapidSlash = (index: number, frame: number) =>
     conditions: INEBRIATE,
   })
 
-// Coefficients at skill level 100 (in-game damage tooltip, 2026-09-04): first
-// heavy 0.60053 / 167 / 91, rapid slash 1.7436 / 483 / 263 at 0.091 per hit,
-// the two finishing slashes 0.5772 / 161 / 87 at a fifth and at the full
-// share; attribute side × 1.5. Eleven rapid slashes fill the 1.5 s hold
-// (11 × 0.091 ≈ 1), a provisional count. The completed hold grants Cloudvault
+// Coefficients at skill level 100 (in-game damage tooltip, 2026-09-04): the
+// press splits its 0.60053 / 167 / 91 total into two hits of 0.5 each; rapid
+// slash 1.7436 / 483 / 263 at 0.091 per hit; the two finishing slashes split
+// 0.2 and 0.4 of 0.5772 / 161 / 87; attribute side × 1.5. Eight rapid slashes
+// is the bound for a full hold at base speed (in-game values as of
+// 2026-09-16) — the app plays the loop at that speed, so 8 is used rather
+// than the up-to-60%-faster upper end. The completed hold grants Cloudvault
 // (in-game skill text, 2026-09-04). Cast length and the first and finishing
 // hit frames: in-game animation, 2026-09-05; the rapid slashes divide the
 // hold evenly.
@@ -46,10 +48,18 @@ export const boundvessel = defineSkill({
   hits: [
     hit(0, {
       frame: 24,
-      physMultiplier: 0.60053,
-      attributeMultiplier: 0.900795,
-      physFixed: 167,
-      attributeFixed: 91,
+      physMultiplier: 0.300265,
+      attributeMultiplier: 0.4503975,
+      physFixed: 83.5,
+      attributeFixed: 45.5,
+      conditions: INEBRIATE,
+    }),
+    hit(14, {
+      frame: 24,
+      physMultiplier: 0.300265,
+      attributeMultiplier: 0.4503975,
+      physFixed: 83.5,
+      attributeFixed: 45.5,
       conditions: INEBRIATE,
     }),
     rapidSlash(1, 36),
@@ -60,9 +70,6 @@ export const boundvessel = defineSkill({
     rapidSlash(6, 76),
     rapidSlash(7, 84),
     rapidSlash(8, 92),
-    rapidSlash(9, 100),
-    rapidSlash(10, 108),
-    rapidSlash(11, 116),
     hit(12, {
       frame: 124,
       physMultiplier: 0.11544,
@@ -73,10 +80,10 @@ export const boundvessel = defineSkill({
     }),
     hit(13, {
       frame: 140,
-      physMultiplier: 0.5772,
-      attributeMultiplier: 0.8658,
-      physFixed: 161,
-      attributeFixed: 87,
+      physMultiplier: 0.23088,
+      attributeMultiplier: 0.34632,
+      physFixed: 64.4,
+      attributeFixed: 34.8,
       conditions: INEBRIATE,
       triggers: [applyBuff({ target: STATUS.cloudvault, stacks: 1 })],
     }),
