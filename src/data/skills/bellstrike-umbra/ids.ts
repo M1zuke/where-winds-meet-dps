@@ -12,6 +12,7 @@ export const SKILL = {
   spearheavy1HitPrepull: "bellstrikeUmbra-spearheavy-1-hit-prepull",
   spearq5HitCancel: "bellstrikeUmbra-spearq-5-hit-cancel",
   swordspecial4Hit: "bellstrikeUmbra-swordspecial-4-hit",
+  swordspecial4HitFinal: "bellstrikeUmbra-swordspecial-4-hit-final",
   swordspecial1Hit: "bellstrikeUmbra-swordspecial-1-hit",
   swordspecial2Hit: "bellstrikeUmbra-swordspecial-2-hit",
   swordChargeStage11Hit: "bellstrikeUmbra-sword-charge-stage-1-1-hit",

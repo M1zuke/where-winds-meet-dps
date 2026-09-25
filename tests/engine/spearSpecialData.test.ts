@@ -8,7 +8,6 @@ import {
   SPEAR_SPECIAL_COOLDOWN_FRAMES,
   SPRING_SURGE_BUFF_ID,
   WATER_DROP_BUFF_ID,
-  WOLFCHASERS_ART_SLOTTED_BUFF_ID,
 } from "../../src/data/innerWays/wolfchasersArtGates"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import {
@@ -209,17 +208,15 @@ describe("built-in data — one file per skill", () => {
 describe("builtinBuffsForClass", () => {
   it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
-    expect(buffs).toHaveLength(8)
-    const slotted = buffs.find((b) => b.id === WOLFCHASERS_ART_SLOTTED_BUFF_ID)!
+    expect(buffs).toHaveLength(7)
     const waterDrop = buffs.find((b) => b.id === WATER_DROP_BUFF_ID)!
     const springSurge = buffs.find((b) => b.id === SPRING_SURGE_BUFF_ID)!
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!
     const empowered = buffs.find((b) => b.id === EMPOWERED_RIVER_FLOW_BUFF_ID)!
     const cooldown = buffs.find((b) => b.id === SPEAR_SPECIAL_COOLDOWN_BUFF_ID)!
     const zenith = buffs.find((b) => b.id === ZENITH_DETONATION_BUFF_ID)!
-    for (const b of [slotted, waterDrop, springSurge, riverFlow, empowered, cooldown, zenith])
+    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith])
       expect(b).toBeTruthy()
-    expect(slotted.name).toBe("Wolfchaser's Art Slotted")
     expect(waterDrop.name).toBe("Water Drop")
     expect(springSurge.name).toBe("Spring Surge")
     expect(riverFlow.name).toBe("River Flow")
@@ -232,10 +229,10 @@ describe("builtinBuffsForClass", () => {
     expect(springSurge.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
     expect(riverFlow.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
     expect(empowered.effects).toEqual([{ statKey: "allDamageBoost", amount: 0.05 }])
-    for (const b of [slotted, cooldown, zenith]) {
+    for (const b of [cooldown, zenith]) {
       expect(b.effects).toEqual([])
     }
-    for (const b of [slotted, waterDrop, springSurge, riverFlow, empowered, cooldown, zenith]) {
+    for (const b of [waterDrop, springSurge, riverFlow, empowered, cooldown, zenith]) {
       expect(b.maxStacks).toBe(1)
       expect(b.activation).toBe("triggered")
       expect(b.scope).toBe("player")

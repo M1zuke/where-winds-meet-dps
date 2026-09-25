@@ -10,6 +10,7 @@ import { crosswindBladeCancel } from "./crosswind-blade-cancel"
 import { spearheavy1HitPrepull } from "./spearheavy-1-hit-prepull"
 import { spearq5HitCancel } from "./spearq-5-hit-cancel"
 import { swordspecial4Hit } from "./swordspecial-4-hit"
+import { swordspecial4HitFinal } from "./swordspecial-4-hit-final"
 import { swordspecial1Hit } from "./swordspecial-1-hit"
 import { swordspecial2Hit } from "./swordspecial-2-hit"
 import { swordChargeStage11Hit } from "./sword-charge-stage-1-1-hit"
@@ -42,6 +43,7 @@ export const SKILLS: Skill[] = [
   spearheavy1HitPrepull,
   spearq5HitCancel,
   swordspecial4Hit,
+  swordspecial4HitFinal,
   swordspecial1Hit,
   swordspecial2Hit,
   swordChargeStage11Hit,

@@ -5,7 +5,13 @@ import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 export type TriggerKind =
-  "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot" | "releaseEcho"
+  | "applyBuff"
+  | "applyDebuff"
+  | "castSkill"
+  | "applyDot"
+  | "detonateDot"
+  | "releaseEcho"
+  | "clearStatus"
 export type TriggerOp = "gte" | "gt" | "eq"
 
 export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
@@ -202,7 +208,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "castSkill" &&
     t.kind !== "applyDot" &&
     t.kind !== "detonateDot" &&
-    t.kind !== "releaseEcho"
+    t.kind !== "releaseEcho" &&
+    t.kind !== "clearStatus"
   )
     return false
   if (typeof t.targetId !== "string") return false

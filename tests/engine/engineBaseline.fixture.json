@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 69329.92,
-    "totalDamage": 4159795.06,
+    "dps": 69332.72,
+    "totalDamage": 4159963.24,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -18,7 +18,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 270200.21,
+        "expectedDamage": 270208.72,
         "castCount": 0
       },
       {
@@ -26,7 +26,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50495.68,
+        "expectedDamage": 50495.78,
         "castCount": 0
       },
       {
@@ -42,7 +42,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 436600.34,
+        "expectedDamage": 436608.07,
         "castCount": 0
       },
       {
@@ -66,7 +66,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99047,
+        "expectedDamage": 99048.43,
         "castCount": 10
       },
       {
@@ -74,7 +74,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2054122.2,
+        "expectedDamage": 2054254.23,
         "castCount": 0
       },
       {
@@ -90,7 +90,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51425.59,
+        "expectedDamage": 51433.05,
         "castCount": 4
       },
       {
@@ -98,16 +98,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57751.54,
+        "expectedDamage": 57757.65,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61389.5,
+        "count": 12,
+        "expectedDamage": 40927.7,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20466.64,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -152,14 +160,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "11bcc270a8cbded9dfd042a805516e37878acaecccb383eaea8d6a0a5fdea7db"
+    "digest": "93f6a7a6bb6f92ddceff6e7aad0ae85b051774465954c6e88ff7d7d70aa482eb"
   },
   "anchor:noAttunement": {
-    "dps": 62370.3,
-    "totalDamage": 3742217.86,
+    "dps": 62372.68,
+    "totalDamage": 3742360.8,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -176,7 +184,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 221657.27,
+        "expectedDamage": 221664.25,
         "castCount": 0
       },
       {
@@ -184,7 +192,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50495.68,
+        "expectedDamage": 50495.78,
         "castCount": 0
       },
       {
@@ -200,7 +208,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 436600.34,
+        "expectedDamage": 436608.07,
         "castCount": 0
       },
       {
@@ -224,7 +232,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99047,
+        "expectedDamage": 99048.43,
         "castCount": 10
       },
       {
@@ -232,7 +240,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1685087.94,
+        "expectedDamage": 1685196.25,
         "castCount": 0
       },
       {
@@ -248,7 +256,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51425.59,
+        "expectedDamage": 51433.05,
         "castCount": 4
       },
       {
@@ -256,16 +264,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57751.54,
+        "expectedDamage": 57757.65,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61389.5,
+        "count": 12,
+        "expectedDamage": 40927.7,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20466.64,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -310,14 +326,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "e9f55fa44bbd5607b7acaef6a1a5fda6a1147aba94d4dfa6fb4d38798ed0177f"
+    "digest": "c59c73d7506ba3a33914b7a40fe21e94463e7d566d0121a52b44024ac307b378"
   },
   "anchor:dummyOff": {
-    "dps": 74244.97,
-    "totalDamage": 4454697.95,
+    "dps": 74247.88,
+    "totalDamage": 4454873.07,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -334,7 +350,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 289748.43,
+        "expectedDamage": 289757.2,
         "castCount": 0
       },
       {
@@ -342,7 +358,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 55672.83,
+        "expectedDamage": 55672.92,
         "castCount": 0
       },
       {
@@ -358,7 +374,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 466766.84,
+        "expectedDamage": 466774.8,
         "castCount": 0
       },
       {
@@ -382,7 +398,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 108374.27,
+        "expectedDamage": 108375.81,
         "castCount": 10
       },
       {
@@ -390,7 +406,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2185587.05,
+        "expectedDamage": 2185723.87,
         "castCount": 0
       },
       {
@@ -406,7 +422,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 56442.62,
+        "expectedDamage": 56450.69,
         "castCount": 4
       },
       {
@@ -414,16 +430,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 63722.77,
+        "expectedDamage": 63729.4,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 67151.76,
+        "count": 12,
+        "expectedDamage": 44769.31,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 22387.67,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -468,14 +492,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "5ef34d5cf154b3032eda43ae7cbfe812adc57230e1856f2b71165b82148ea3fb"
+    "digest": "5bbea2dad3a0ef3a953fc0a6d3ea2ea6d1017c7b5b2592659de26e907c75de5b"
   },
   "anchor:breakthrough17": {
-    "dps": 70533.37,
-    "totalDamage": 4232002.36,
+    "dps": 70536.22,
+    "totalDamage": 4232172.97,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -492,7 +516,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 275321.47,
+        "expectedDamage": 275330.12,
         "castCount": 0
       },
       {
@@ -500,7 +524,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 51232.95,
+        "expectedDamage": 51233.05,
         "castCount": 0
       },
       {
@@ -516,7 +540,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 444605.9,
+        "expectedDamage": 444613.75,
         "castCount": 0
       },
       {
@@ -540,7 +564,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100758.01,
+        "expectedDamage": 100759.45,
         "castCount": 10
       },
       {
@@ -548,7 +572,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2088938.78,
+        "expectedDamage": 2089072.73,
         "castCount": 0
       },
       {
@@ -564,7 +588,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52312.43,
+        "expectedDamage": 52319.97,
         "castCount": 4
       },
       {
@@ -572,16 +596,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58825.1,
+        "expectedDamage": 58831.28,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 62448.05,
+        "count": 12,
+        "expectedDamage": 41633.42,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20819.53,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -626,14 +658,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "d479eee797eb5c11d660cc579524e95b7556deb1499bee2737a75c278b288938"
+    "digest": "700dd1957ff0f9ef22e229abfa6096001e9045f21e3358b65cf6c2c2fc056020"
   },
   "anchor:noQiBreak": {
-    "dps": 63622.49,
-    "totalDamage": 3817349.27,
+    "dps": 63625.3,
+    "totalDamage": 3817517.76,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -650,7 +682,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 266146.04,
+        "expectedDamage": 266154.66,
         "castCount": 0
       },
       {
@@ -658,7 +690,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 49623.03,
+        "expectedDamage": 49623.13,
         "castCount": 0
       },
       {
@@ -674,7 +706,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 429052.13,
+        "expectedDamage": 429060.06,
         "castCount": 0
       },
       {
@@ -698,7 +730,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99047,
+        "expectedDamage": 99048.43,
         "castCount": 10
       },
       {
@@ -706,7 +738,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2029791.69,
+        "expectedDamage": 2029923.72,
         "castCount": 0
       },
       {
@@ -722,7 +754,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 50172.05,
+        "expectedDamage": 50179.5,
         "castCount": 4
       },
       {
@@ -730,16 +762,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 56777.25,
+        "expectedDamage": 56783.36,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 59897.66,
+        "count": 12,
+        "expectedDamage": 39933.13,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19969.36,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -784,14 +824,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "0cf80ccdd0e7a182d022e92761e31749811ac11b548253d91b1fba1e2de2c70a"
+    "digest": "64f4183327e3b2d4b07f5a3a0be714559839d2300d4c322c85e318555217d0ef"
   },
   "anchor:healerBuff": {
-    "dps": 72606.62,
-    "totalDamage": 4356396.99,
+    "dps": 72609.5,
+    "totalDamage": 4356569.79,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -808,7 +848,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 283232.36,
+        "expectedDamage": 283241.04,
         "castCount": 0
       },
       {
@@ -816,7 +856,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 53947.11,
+        "expectedDamage": 53947.21,
         "castCount": 0
       },
       {
@@ -832,7 +872,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 456711.34,
+        "expectedDamage": 456719.22,
         "castCount": 0
       },
       {
@@ -856,7 +896,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 105265.18,
+        "expectedDamage": 105266.68,
         "castCount": 10
       },
       {
@@ -864,7 +904,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2141765.44,
+        "expectedDamage": 2141900.66,
         "castCount": 0
       },
       {
@@ -880,7 +920,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 54770.28,
+        "expectedDamage": 54778.15,
         "castCount": 4
       },
       {
@@ -888,16 +928,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 61732.36,
+        "expectedDamage": 61738.82,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 65231.01,
+        "count": 12,
+        "expectedDamage": 43488.77,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 21747.33,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -942,14 +990,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "f81cb14c3a9514ab88e010043378c8376dd6251d5ea4b04bce7ef34834f155b2"
+    "digest": "a0f91197d9ba02cdde11d8ed7b1d9efd4aefffda998f57d02b63381a5553a106"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 69622.09,
-    "totalDamage": 4177325.13,
+    "dps": 69624.89,
+    "totalDamage": 4177493.29,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -966,7 +1014,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 271209.07,
+        "expectedDamage": 271217.56,
         "castCount": 0
       },
       {
@@ -974,7 +1022,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50495.68,
+        "expectedDamage": 50495.78,
         "castCount": 0
       },
       {
@@ -990,7 +1038,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 438363.3,
+        "expectedDamage": 438371.01,
         "castCount": 0
       },
       {
@@ -1014,7 +1062,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99359.45,
+        "expectedDamage": 99360.87,
         "castCount": 10
       },
       {
@@ -1022,7 +1070,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2058271.12,
+        "expectedDamage": 2058403.14,
         "castCount": 0
       },
       {
@@ -1038,7 +1086,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51642.76,
+        "expectedDamage": 51650.21,
         "castCount": 4
       },
       {
@@ -1046,16 +1094,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 57915.46,
+        "expectedDamage": 57921.57,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 61647.94,
+        "count": 12,
+        "expectedDamage": 41099.99,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20552.79,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -1100,14 +1156,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "4bd20b4a492831c2d940b0048842c890f7450df4cc365215e9bcaf019478510d"
+    "digest": "2cff22bba4b5bdc9cc0dfcb820af4cf8441dd8aea24b58f443cc6147428e8c47"
   },
   "anchor:voidrotScript": {
-    "dps": 70264.74,
-    "totalDamage": 4215884.34,
+    "dps": 70267.54,
+    "totalDamage": 4216052.46,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1124,7 +1180,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 272745.66,
+        "expectedDamage": 272754.14,
         "castCount": 0
       },
       {
@@ -1132,7 +1188,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50495.68,
+        "expectedDamage": 50495.78,
         "castCount": 0
       },
       {
@@ -1148,7 +1204,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 440978.66,
+        "expectedDamage": 440986.35,
         "castCount": 0
       },
       {
@@ -1172,7 +1228,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99852.92,
+        "expectedDamage": 99854.34,
         "castCount": 10
       },
       {
@@ -1180,7 +1236,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2075206.07,
+        "expectedDamage": 2075338.1,
         "castCount": 0
       },
       {
@@ -1196,7 +1252,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51985.27,
+        "expectedDamage": 51992.72,
         "castCount": 4
       },
       {
@@ -1204,16 +1260,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58197.55,
+        "expectedDamage": 58203.65,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 62055.57,
+        "count": 12,
+        "expectedDamage": 41371.75,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20688.67,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -1258,14 +1322,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "7ffccaad96aaf8ac70e234c7e0dae71f389ec76162ea29dfd7984f8c46934067"
+    "digest": "dec25c864bf20bff10e6344cb8fceeb2f7224c444ea01e4d25d0024402054796"
   },
   "anchor:breakExtension": {
-    "dps": 70644.09,
-    "totalDamage": 4238645.27,
+    "dps": 70646.92,
+    "totalDamage": 4238815.04,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1282,7 +1346,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 276167.37,
+        "expectedDamage": 276175.94,
         "castCount": 0
       },
       {
@@ -1290,7 +1354,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50495.68,
+        "expectedDamage": 50495.78,
         "castCount": 0
       },
       {
@@ -1306,7 +1370,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 445708.66,
+        "expectedDamage": 445716.52,
         "castCount": 0
       },
       {
@@ -1330,7 +1394,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 101983.28,
+        "expectedDamage": 101984.84,
         "castCount": 10
       },
       {
@@ -1338,7 +1402,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2102570.52,
+        "expectedDamage": 2102703.8,
         "castCount": 0
       },
       {
@@ -1354,7 +1418,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52666.88,
+        "expectedDamage": 52674.34,
         "castCount": 4
       },
       {
@@ -1362,16 +1426,24 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58548.31,
+        "expectedDamage": 58554.41,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 62867.29,
+        "count": 12,
+        "expectedDamage": 41912.89,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 20959.24,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -1416,14 +1488,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "65ff4f9ca315ed6e148cfa39bb97aa5c682556945747f7f36e58a2197faa9a11"
+    "digest": "ac200a7e5536ff30e555451746583b86e83bb7631dec5058b69e8992159f8ddf"
   },
   "anchor:swordHorizonT1": {
-    "dps": 44509.46,
-    "totalDamage": 2670567.87,
+    "dps": 44516.66,
+    "totalDamage": 2670999.49,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1432,7 +1504,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52775.35,
+        "expectedDamage": 52776.81,
         "castCount": 4
       },
       {
@@ -1440,7 +1512,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 185832.08,
+        "expectedDamage": 185844.68,
         "castCount": 0
       },
       {
@@ -1448,7 +1520,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47823.28,
+        "expectedDamage": 47823.47,
         "castCount": 0
       },
       {
@@ -1464,7 +1536,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 210866.58,
+        "expectedDamage": 210879.76,
         "castCount": 0
       },
       {
@@ -1472,7 +1544,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 72651.8,
+        "expectedDamage": 72654.21,
         "castCount": 0
       },
       {
@@ -1488,7 +1560,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91738.47,
+        "expectedDamage": 91739.75,
         "castCount": 10
       },
       {
@@ -1496,7 +1568,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 982896.39,
+        "expectedDamage": 983043.09,
         "castCount": 0
       },
       {
@@ -1512,7 +1584,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 41524.44,
+        "expectedDamage": 41535.09,
         "castCount": 4
       },
       {
@@ -1520,23 +1592,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53760.31,
+        "expectedDamage": 53769.02,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56669.82,
+        "count": 12,
+        "expectedDamage": 37781.3,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18893.84,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27723.93,
+        "expectedDamage": 27724.96,
         "castCount": 4
       },
       {
@@ -1544,7 +1624,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110494.39,
+        "expectedDamage": 110722.47,
         "castCount": 4
       },
       {
@@ -1574,14 +1654,14 @@
     ],
     "counts": {
       "timeline": 328,
-      "buffWindows": 130,
+      "buffWindows": 126,
       "casts": 73
     },
-    "digest": "1b8a23a280d6b33b0f079ac991162b74d50f2f81f4503f8dc7286a993e254120"
+    "digest": "1f8512dddf752bb27acce9a2f3fef8f31dd0acc7f4837db3ae246222b44f1dec"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39724.35,
-    "totalDamage": 2383460.85,
+    "dps": 39731.45,
+    "totalDamage": 2383887.14,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1590,7 +1670,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52775.35,
+        "expectedDamage": 52776.81,
         "castCount": 4
       },
       {
@@ -1598,7 +1678,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 185832.08,
+        "expectedDamage": 185844.68,
         "castCount": 0
       },
       {
@@ -1606,7 +1686,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47823.28,
+        "expectedDamage": 47823.47,
         "castCount": 0
       },
       {
@@ -1622,7 +1702,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 79659.28,
+        "expectedDamage": 79672.46,
         "castCount": 0
       },
       {
@@ -1630,7 +1710,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 72651.8,
+        "expectedDamage": 72654.21,
         "castCount": 0
       },
       {
@@ -1646,7 +1726,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91738.47,
+        "expectedDamage": 91739.75,
         "castCount": 10
       },
       {
@@ -1654,7 +1734,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 826996.68,
+        "expectedDamage": 827138.05,
         "castCount": 0
       },
       {
@@ -1670,7 +1750,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 41524.44,
+        "expectedDamage": 41535.09,
         "castCount": 4
       },
       {
@@ -1678,23 +1758,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53760.31,
+        "expectedDamage": 53769.02,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56669.82,
+        "count": 12,
+        "expectedDamage": 37781.3,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18893.84,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27723.93,
+        "expectedDamage": 27724.96,
         "castCount": 4
       },
       {
@@ -1702,7 +1790,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 110494.39,
+        "expectedDamage": 110722.47,
         "castCount": 4
       },
       {
@@ -1732,10 +1820,10 @@
     ],
     "counts": {
       "timeline": 293,
-      "buffWindows": 126,
+      "buffWindows": 122,
       "casts": 73
     },
-    "digest": "6252f4ae97833d9eef838679cbd6ddec485af9a1619636208f1a87b9ce7e5b0c"
+    "digest": "a9c5de82528c9882ebc65697995ab468386bcc74c8c4f8f3962637149ea34a7c"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61684.98,
@@ -1843,9 +1931,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 55744.23,
+        "count": 12,
+        "expectedDamage": 37162.82,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18581.41,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -1890,14 +1986,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "ca88dfdabaa4d4fcc8788c02d375d0011b77bf035807e13c0e9d66e14eb9d5ff"
+    "digest": "9d551a1873c6b6a81417f45daa8e8ffcf0b728f1315299708a29782a0e665c08"
   },
   "anchor:noMoraleChant": {
-    "dps": 63676.47,
-    "totalDamage": 3820588.44,
+    "dps": 63679.03,
+    "totalDamage": 3820742.05,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1914,7 +2010,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 251311.87,
+        "expectedDamage": 251319.92,
         "castCount": 0
       },
       {
@@ -1922,7 +2018,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 46428.44,
+        "expectedDamage": 46428.53,
         "castCount": 0
       },
       {
@@ -1938,7 +2034,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 405605.26,
+        "expectedDamage": 405612.55,
         "castCount": 0
       },
       {
@@ -1962,7 +2058,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91269.67,
+        "expectedDamage": 91271,
         "castCount": 10
       },
       {
@@ -1970,7 +2066,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1920628.96,
+        "expectedDamage": 1920754.25,
         "castCount": 0
       },
       {
@@ -1986,16 +2082,24 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47417.67,
+        "expectedDamage": 47424.71,
         "castCount": 4
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56505.56,
+        "count": 12,
+        "expectedDamage": 37671.64,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18838.43,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -2040,14 +2144,14 @@
     ],
     "counts": {
       "timeline": 404,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "4faf46272a163aa7d0fab9b064c0c3ac39ab97325b89e9949d6af87ec2fea4dc"
+    "digest": "1478ac10d713d6db025a4ad5779c549ac198adec452a250bce84b4be23f21674"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40095.99,
-    "totalDamage": 2405759.49,
+    "dps": 40513.93,
+    "totalDamage": 2430835.71,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2088,7 +2192,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 54,
-        "expectedDamage": 163393.59,
+        "expectedDamage": 166096.22,
         "castCount": 0
       },
       {
@@ -2104,7 +2208,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 106,
-        "expectedDamage": 297636.29,
+        "expectedDamage": 302290.42,
         "castCount": 0
       },
       {
@@ -2128,7 +2232,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 27,
-        "expectedDamage": 1163899.43,
+        "expectedDamage": 1181618.89,
         "castCount": 0
       },
       {
@@ -2159,9 +2263,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 53985.11,
+        "count": 12,
+        "expectedDamage": 35986.59,
         "castCount": 5
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 17998.52,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -2217,7 +2329,7 @@
       "buffWindows": 125,
       "casts": 80
     },
-    "digest": "0551343914f44464e5133f41ff3975f3682f562594a3c1f769d3bc2049575c6e"
+    "digest": "2c3e24bf6cd2cce8a5c28f05a820be65ded29903f3a1d3905c85c04e9b44cce4"
   },
   "anchor:bitterSeasonT6": {
     "dps": 47759.49,
@@ -2333,9 +2445,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 55331.23,
+        "count": 12,
+        "expectedDamage": 36884.61,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18446.62,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -2383,7 +2503,7 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "f15481ffa730e261c3bdb9d2246c53530b87ba7aad40f84d52cee003472a8034"
+    "digest": "111ec0cf19e1476b9de7b0f3abe5c4979e2142b53c9a1368c90f6f60f64935e4"
   },
   "anchor:bitterSeasonT4": {
     "dps": 46845.69,
@@ -2499,9 +2619,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 54313.11,
+        "count": 12,
+        "expectedDamage": 36205.92,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18107.19,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -2549,7 +2677,7 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "b0a555fee122165ddb7d6c1a088a2d0894fd3071038063eb84894f8cabde8801"
+    "digest": "4a8aa250cafd517143fd0f9c6ea7568bf0f8029bfb2f42b77a772aa955323e13"
   },
   "anchor:bitterSeasonT1": {
     "dps": 46466.35,
@@ -2665,9 +2793,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 53725.11,
+        "count": 12,
+        "expectedDamage": 35813.91,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 17911.2,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -2715,11 +2851,11 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "8bf3f64680caf2cc6c55fd0e69c0a641ca3588eccaf9519b2f82e4a2b100d8d8"
+    "digest": "7b33400531b7c62f4b36b20259fd031b6411f8599cad2d09cb5852c3f7dfef13"
   },
   "anchor:noSet": {
-    "dps": 63149.41,
-    "totalDamage": 3788964.79,
+    "dps": 63153.05,
+    "totalDamage": 3789183.18,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2728,7 +2864,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52161.24,
+        "expectedDamage": 52162.62,
         "castCount": 4
       },
       {
@@ -2736,7 +2872,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 244663.13,
+        "expectedDamage": 244675.26,
         "castCount": 0
       },
       {
@@ -2744,7 +2880,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45451.85,
+        "expectedDamage": 45452.03,
         "castCount": 0
       },
       {
@@ -2760,7 +2896,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 396361.99,
+        "expectedDamage": 396373.63,
         "castCount": 0
       },
       {
@@ -2768,7 +2904,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68960.55,
+        "expectedDamage": 68962.82,
         "castCount": 0
       },
       {
@@ -2784,7 +2920,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 90708.64,
+        "expectedDamage": 90709.95,
         "castCount": 10
       },
       {
@@ -2792,7 +2928,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1871011.97,
+        "expectedDamage": 1871177.2,
         "castCount": 0
       },
       {
@@ -2808,7 +2944,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47023.6,
+        "expectedDamage": 47033.68,
         "castCount": 4
       },
       {
@@ -2816,23 +2952,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 51868.19,
+        "expectedDamage": 51876.35,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56136.43,
+        "count": 12,
+        "expectedDamage": 37425.63,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18715.84,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27485.59,
+        "expectedDamage": 27486.57,
         "castCount": 4
       },
       {
@@ -2870,14 +3014,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "a10e57629e6d0575397c5ab060e518a770aeba1f4930fdb3acc2a32e3f247286"
+    "digest": "f412190b1e108d975422fbd68125ddae0f18c680bd55423e189c0110a3106675"
   },
   "anchor:set-Jadeware": {
-    "dps": 67916.31,
-    "totalDamage": 4074978.84,
+    "dps": 67920.49,
+    "totalDamage": 4075229.28,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2886,7 +3030,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 55900.33,
+        "expectedDamage": 55901.94,
         "castCount": 4
       },
       {
@@ -2894,7 +3038,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 266259.32,
+        "expectedDamage": 266273.62,
         "castCount": 0
       },
       {
@@ -2902,7 +3046,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 46270.82,
+        "expectedDamage": 46271,
         "castCount": 0
       },
       {
@@ -2918,7 +3062,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 429640.03,
+        "expectedDamage": 429653.87,
         "castCount": 0
       },
       {
@@ -2926,7 +3070,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 74990.24,
+        "expectedDamage": 74992.89,
         "castCount": 0
       },
       {
@@ -2942,7 +3086,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 98747,
+        "expectedDamage": 98748.52,
         "castCount": 10
       },
       {
@@ -2950,7 +3094,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2033186.1,
+        "expectedDamage": 2033374.17,
         "castCount": 0
       },
       {
@@ -2966,7 +3110,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51343.52,
+        "expectedDamage": 51355.27,
         "castCount": 4
       },
       {
@@ -2974,23 +3118,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 56556.76,
+        "expectedDamage": 56566.28,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 60817.97,
+        "count": 12,
+        "expectedDamage": 40868.34,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19955.49,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 29309.14,
+        "expectedDamage": 29310.28,
         "castCount": 4
       },
       {
@@ -3028,14 +3180,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "d0af3137d4a2cc14cf6edc12032ce478411cbdb303f1ca9a42ed68e850e1b818"
+    "digest": "483343299959493e73af7db4db5ea4e67b4417051d6bb75059ae889dd57f96c1"
   },
   "anchor:set-Mistwillow": {
-    "dps": 63736.98,
-    "totalDamage": 3824218.55,
+    "dps": 63740.62,
+    "totalDamage": 3824437.21,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3044,7 +3196,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52824.64,
+        "expectedDamage": 52826.01,
         "castCount": 4
       },
       {
@@ -3052,7 +3204,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 247933.46,
+        "expectedDamage": 247945.68,
         "castCount": 0
       },
       {
@@ -3060,7 +3212,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45451.85,
+        "expectedDamage": 45452.03,
         "castCount": 0
       },
       {
@@ -3076,7 +3228,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 401527.87,
+        "expectedDamage": 401539.6,
         "castCount": 0
       },
       {
@@ -3084,7 +3236,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69873.29,
+        "expectedDamage": 69875.55,
         "castCount": 0
       },
       {
@@ -3100,7 +3252,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 91842.79,
+        "expectedDamage": 91844.09,
         "castCount": 10
       },
       {
@@ -3108,7 +3260,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1886165.67,
+        "expectedDamage": 1886331.12,
         "castCount": 0
       },
       {
@@ -3124,7 +3276,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47610.67,
+        "expectedDamage": 47620.72,
         "castCount": 4
       },
       {
@@ -3132,23 +3284,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 52573.65,
+        "expectedDamage": 52581.77,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 56837.08,
+        "count": 12,
+        "expectedDamage": 37892.72,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 18949.37,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27828.55,
+        "expectedDamage": 27829.53,
         "castCount": 4
       },
       {
@@ -3186,14 +3346,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "c63b8b3cb6c7c0a444a38d7e16d196894461e8734ee9e44187b700b2ca576b94"
+    "digest": "d472bfbe3d306e2613db0f099247517f60d16d16fb8025846cda6d9cbfe8b0d5"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 64559.12,
-    "totalDamage": 3873547.45,
+    "dps": 64562.79,
+    "totalDamage": 3873767.36,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3202,7 +3362,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53719.71,
+        "expectedDamage": 53721.09,
         "castCount": 4
       },
       {
@@ -3210,7 +3370,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 251816.23,
+        "expectedDamage": 251828.56,
         "castCount": 0
       },
       {
@@ -3218,7 +3378,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45451.85,
+        "expectedDamage": 45452.03,
         "castCount": 0
       },
       {
@@ -3234,7 +3394,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 407871.35,
+        "expectedDamage": 407883.18,
         "castCount": 0
       },
       {
@@ -3242,7 +3402,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71040.02,
+        "expectedDamage": 71042.29,
         "castCount": 0
       },
       {
@@ -3258,7 +3418,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 93381.05,
+        "expectedDamage": 93382.35,
         "castCount": 10
       },
       {
@@ -3266,7 +3426,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1904788.55,
+        "expectedDamage": 1904954.98,
         "castCount": 0
       },
       {
@@ -3282,7 +3442,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48408.3,
+        "expectedDamage": 48418.36,
         "castCount": 4
       },
       {
@@ -3290,23 +3450,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53426.63,
+        "expectedDamage": 53434.77,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 57788.99,
+        "count": 12,
+        "expectedDamage": 38527.33,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19266.68,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28294.53,
+        "expectedDamage": 28295.51,
         "castCount": 4
       },
       {
@@ -3344,14 +3512,14 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "d9ddea7119fc6f3d25c96e8721bd40f2d27c74bb1c087b0eb57a31d56140c9c5"
+    "digest": "645e42a0a411c6d60e8a572ab25bd9d4671fd0448609849e48bc000282482a02"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 64961.97,
-    "totalDamage": 3897718.28,
+    "dps": 64965.66,
+    "totalDamage": 3897939.74,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3360,7 +3528,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53974.85,
+        "expectedDamage": 53976.26,
         "castCount": 4
       },
       {
@@ -3368,7 +3536,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 252130.58,
+        "expectedDamage": 252142.87,
         "castCount": 0
       },
       {
@@ -3376,7 +3544,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47824.84,
+        "expectedDamage": 47825.02,
         "castCount": 0
       },
       {
@@ -3392,7 +3560,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 407986.24,
+        "expectedDamage": 407998.04,
         "castCount": 0
       },
       {
@@ -3400,7 +3568,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71846.62,
+        "expectedDamage": 71848.96,
         "castCount": 0
       },
       {
@@ -3416,7 +3584,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 94082.31,
+        "expectedDamage": 94083.65,
         "castCount": 10
       },
       {
@@ -3424,7 +3592,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1918263.51,
+        "expectedDamage": 1918430.76,
         "castCount": 0
       },
       {
@@ -3440,7 +3608,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48825.19,
+        "expectedDamage": 48835.53,
         "castCount": 4
       },
       {
@@ -3448,23 +3616,31 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54029.35,
+        "expectedDamage": 54037.71,
         "castCount": 0
       },
       {
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 16,
-        "expectedDamage": 58217.65,
+        "count": 12,
+        "expectedDamage": 38813.14,
         "castCount": 4
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 4,
+        "expectedDamage": 19409.67,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 28455.54,
+        "expectedDamage": 28456.54,
         "castCount": 4
       },
       {
@@ -3502,10 +3678,10 @@
     ],
     "counts": {
       "timeline": 410,
-      "buffWindows": 153,
+      "buffWindows": 149,
       "casts": 73
     },
-    "digest": "f546cee31bf1a9c59f4069b38c988814fca01350eb5a8a9f8bed83d53ea86649"
+    "digest": "8ae5023c1c163e5604043e5fcd73ca630f96f1a8d945b4e7b04c2ba50a3d7b53"
   },
   "defaults:umbra": {
     "dps": 11651.64,
@@ -3605,9 +3781,17 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 20,
-        "expectedDamage": 35054.67,
+        "count": 15,
+        "expectedDamage": 23544.82,
         "castCount": 5
+      },
+      {
+        "name": "SwordSpecial 4-Hit (Hit 4)",
+        "breakdownName": "Inner Balance Strike III",
+        "type": "weapon",
+        "count": 5,
+        "expectedDamage": 11509.85,
+        "castCount": 0
       },
       {
         "name": "Sword Martial Q",
@@ -3663,6 +3847,6 @@
       "buffWindows": 123,
       "casts": 79
     },
-    "digest": "81cbb18a91a6cdb3bdb368bd4c1489d9df0040a82c91e4d20d0ba2ad1a8dbf84"
+    "digest": "1e94a20f2458fa49edea59e1a47cbc5861d3efbb571546cdd2f4a976be7d0dcf"
   }
 }

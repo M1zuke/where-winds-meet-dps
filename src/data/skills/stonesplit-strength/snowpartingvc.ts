@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, castSkill } from "../../../definitions/skills/triggers"
+import { applyBuff, castSkill, clearStatus } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
@@ -31,7 +31,7 @@ export const snowpartingvc = defineSkill({
     BUFF.cleftpeakDeflect,
     ...SNOWPARTING_BLADE_RECEIVES,
   ],
-  triggersBuffs: [BUFF.throatPierced, BUFF.forgetfulness],
+  triggersBuffs: [BUFF.throatPierced],
   castFrames: 52,
   triggerable: true,
   hits: [
@@ -42,6 +42,7 @@ export const snowpartingvc = defineSkill({
       physFixed: 575,
       attributeFixed: 313,
       triggers: [
+        applyBuff({ target: BUFF.snowbreakSpringCooldown, requiresParam: PARAM.frostCladNight }),
         castSkill({
           target: SKILL.anxisoldierheng,
           stacks: 0,
@@ -54,6 +55,18 @@ export const snowpartingvc = defineSkill({
           stacks: 0,
           extendFrames: 120,
           extendOnly: true,
+          phase: "exhausted",
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 6,
+        }),
+        applyBuff({
+          target: BUFF.forgetfulness,
+          condition: { buffId: BUFF.forgetfulnessCooldown, op: "eq", stacks: 0 },
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 6,
+        }),
+        clearStatus({
+          target: BUFF.forgetfulnessCooldown,
           phase: "exhausted",
           requiresParam: PARAM.frostCladNight,
           requiresMinTier: 6,

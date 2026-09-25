@@ -140,13 +140,23 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
   })
 
   it("SwordSpecial's four player-ended forms each keep the next one's hits, each over a shorter cast", () => {
-    const chain = [swordspecial1Hit, swordspecial2Hit, swordspecial3Hit, swordspecial4Hit]
+    const chain = [swordspecial1Hit, swordspecial2Hit, swordspecial3Hit]
     for (let index = 0; index < chain.length - 1; index++) {
       const shorter = chain[index]
       const longer = chain[index + 1]
       expect(shorter.hits).toEqual(longer.hits.slice(0, shorter.hits.length))
       expect(shorter.castFrames).toBeLessThan(longer.castFrames)
     }
+    expect(swordspecial3Hit.castFrames).toBeLessThan(swordspecial4Hit.castFrames)
+  })
+
+  it("SwordSpecial 4-Hit's hit 3 matches the 3-Hit cancel's own hit 3 except for the companion-cast trigger", () => {
+    const [hit0, hit1, hit2] = swordspecial4Hit.hits
+    expect([hit0, hit1]).toEqual(swordspecial3Hit.hits.slice(0, 2))
+    const [, , cancelHit2] = swordspecial3Hit.hits
+    expect(hit2.triggers.slice(0, cancelHit2.triggers.length)).toEqual(cancelHit2.triggers)
+    expect(hit2.triggers.length).toBe(cancelHit2.triggers.length + 1)
+    expect(hit2.triggers.at(-1)!.kind).toBe("castSkill")
   })
 })
 

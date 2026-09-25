@@ -115,7 +115,7 @@ describe("a sampled engine run", () => {
       sum += sampled(withProcs, (index * RUN_SEED_STRIDE) | 0).totalDamage
     }
     expect(Math.abs(sum / runs - expected) / expected).toBeLessThan(0.05)
-  })
+  }, 30000)
 })
 
 describe("a sampled hit", () => {

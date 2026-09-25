@@ -63,6 +63,7 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     name: module.name,
     classBuff: "classBuff" in module,
     requires: module.requires ?? null,
+    grantRequires: module.grantRequires ?? null,
     affectsAll: !!module.affectsAll,
     alwaysActive: !!module.alwaysActive,
     buffAppliesOnCastEnd: !!module.buffAppliesOnCastEnd,
@@ -168,9 +169,12 @@ function dynamicDumpFor(classId: string) {
   // could reach, not just whatever the default build happens to enable.
   const params: Record<string, unknown> = { armorSet: "jadeware" }
   for (const module of allModules) {
-    if (module.requires?.param) {
-      params[module.requires.param] = true
-      params[module.requires.param + "Tier"] = 6
+    const requirements = [module.requires, ...Object.values(module.grantRequires ?? {})]
+    for (const requires of requirements) {
+      if (requires?.param) {
+        params[requires.param] = true
+        params[requires.param + "Tier"] = 6
+      }
     }
   }
 

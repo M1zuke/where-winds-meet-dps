@@ -1,5 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { CAST } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -50,21 +51,25 @@ export function wolfchasersArtMartialDamageBuffDef() {
 // re-run `requireInnerWayNodeTier`'s tier-table scan on every read.
 let soulShakenMinTier: number | undefined
 
-// Hand-authored port of the reference site's "mechanic list" Soul Shaken def
-// (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
-// Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way.
+// In-game values as of 2026-09-24: Spear Heavy's stacks (Drifting Thrust)
+// carry no inner-way requirement of their own; only Spear Q's (Sober Sorrow)
+// need Wolfchaser's Art at this tier.
 export function soulShakenBuffDef(): BuffModule {
+  const soberSorrowRequires = {
+    param: PARAM.wolfchasersArt,
+    get minTier(): number {
+      return (soulShakenMinTier ??= requireInnerWayNodeTier(
+        wolfchasersArt,
+        INNER_WAY_NODE.soulShaken,
+      ))
+    },
+  }
   return defineBuff({
     id: BUFF.soulShaken,
     name: "Soul Shaken",
-    requires: {
-      param: PARAM.wolfchasersArt,
-      get minTier(): number {
-        return (soulShakenMinTier ??= requireInnerWayNodeTier(
-          wolfchasersArt,
-          INNER_WAY_NODE.soulShaken,
-        ))
-      },
+    grantRequires: {
+      [CAST.spearQ]: soberSorrowRequires,
+      [CAST.spearQ5HitCancel]: soberSorrowRequires,
     },
     duration: 18,
     maxStacks: 5,

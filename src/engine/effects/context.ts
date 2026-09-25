@@ -28,6 +28,7 @@ export interface StatusView {
   stacks(id: string): number
   appliedAt(id: string): number | null
   expiresAt(id: string): number | null
+  secondsSinceLastEnd(id: string): number | null
 }
 
 type PropKey<Tag> = Tag extends `prop:${infer Suffix}` ? Suffix : never

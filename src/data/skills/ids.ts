@@ -131,6 +131,7 @@ export const CAST = {
   swordSpecial2nd: "cast:swordSpecial2nd",
   swordSpecial3Hit: "cast:swordSpecial3Hit",
   swordSpecial4Hit: "cast:swordSpecial4Hit",
+  swordSpecial4HitFinal: "cast:swordSpecial4HitFinal",
   swordSpecialDeflect: "cast:swordSpecialDeflect",
   toadCancel: "cast:toadCancel",
   umbDroneTick12hit: "cast:umbDroneTick12hit",

@@ -145,7 +145,14 @@ export class BuffEngine {
     return true
   }
 
-  private gateOk(module: BuffModule): boolean {
+  private gateOk(module: BuffModule, castTag?: string): boolean {
+    if (
+      castTag !== undefined &&
+      module.grantRequires &&
+      Object.hasOwn(module.grantRequires, castTag)
+    ) {
+      return this.requirementsMet(module.grantRequires[castTag])
+    }
     return this.requirementsMet(module.requires)
   }
 
@@ -184,6 +191,24 @@ export class BuffEngine {
     const view = statusesView ?? this.statuses?.view
     const fps = this.statuses?.fps
     return view && fps ? view.conditionStacksAt(id, Math.round(time * fps)) : 0
+  }
+
+  private secondsSinceLastEnd(id: string, time: number, statusesView?: StatusView): number | null {
+    if (this.definitions.has(id)) {
+      let latestExpiry: number | undefined
+      for (const historyEntry of this.buffHistory) {
+        if (historyEntry.buffType !== id || historyEntry.action !== "apply") continue
+        if (historyEntry.expiresAt > time) continue
+        if (latestExpiry === undefined || historyEntry.expiresAt > latestExpiry)
+          latestExpiry = historyEntry.expiresAt
+      }
+      return latestExpiry === undefined ? null : time - latestExpiry
+    }
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const framesSince = view.framesSinceLastEnd(id, Math.round(time * fps))
+    return framesSince === undefined ? null : framesSince / fps
   }
 
   private remainingHealthFraction(damageSoFar: number): number {
@@ -227,6 +252,7 @@ export class BuffEngine {
         stacks: (id) => this.statusStacks(id, time, statusesView),
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
+        secondsSinceLastEnd: (id) => this.secondsSinceLastEnd(id, time, statusesView),
       },
       self: {
         stacks: selfStacks,
@@ -570,7 +596,7 @@ export class BuffEngine {
     props: SkillProperties,
     fromGeneratedSkill: boolean,
   ): void {
-    if (!this.gateOk(module)) return
+    if (!this.gateOk(module, castTag)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
     if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) return
     if (

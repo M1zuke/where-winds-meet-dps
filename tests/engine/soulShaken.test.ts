@@ -48,12 +48,26 @@ describe("Soul Shaken — BuffEngine unit", () => {
     expect(result.effects).toHaveLength(0)
   })
 
-  it("neither SpearHeavy nor SpearQ grants a stack without wolfchasersArt tier 6 — one shared gate", () => {
+  it("SpearHeavy grants a stack with no wolfchasersArt requirement — the Drifting Thrust path is ungated", () => {
+    const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
+    engine.processSkillCast("cast:spearHeavy1Hit", 0, {}, false, ["soulShaken"])
+    const result = engine.calculateDamageEffects(bleedTick(), 0.1)
+    expect(allDamageBoostSum(result.effects)).toBeCloseTo(0.1, 6)
+  })
+
+  it("SpearQ grants no stack without wolfchasersArt tier 6 — the Sober Sorrow path is gated", () => {
+    const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
+    engine.processSkillCast("cast:spearQ", 0, {}, false, ["soulShaken"])
+    const result = engine.calculateDamageEffects(bleedTick(), 0.1)
+    expect(result.effects).toHaveLength(0)
+  })
+
+  it("SpearHeavy's ungated grant and SpearQ's gated attempt still write into the same Soul Shaken stack pool", () => {
     const engine = new BuffEngine({}, [], [soulShakenBuffDef()])
     engine.processSkillCast("cast:spearHeavy1Hit", 0, {}, false, ["soulShaken"])
     engine.processSkillCast("cast:spearQ", 1, {}, false, ["soulShaken"])
     const result = engine.calculateDamageEffects(bleedTick(), 1.1)
-    expect(result.effects).toHaveLength(0)
+    expect(allDamageBoostSum(result.effects)).toBeCloseTo(0.1, 6)
   })
 
   it("SpearHeavy and SpearQ casts stack into the same Soul Shaken window", () => {

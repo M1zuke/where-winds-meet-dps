@@ -25,6 +25,145 @@ const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 const skillIn = (blob: RawCustomSkillsBlob, id: string) =>
   (blob.skills as Record<string, unknown>[]).find((skill) => skill.id === id)!
 
+const SPEARQ_V24_LEADING_HITS = [
+  {
+    id: "hit-0",
+    frame: 14,
+    physMultiplier: 0.321033,
+    attributeMultiplier: 0.4815495,
+    physFixed: 88.95,
+    attributeFixed: 48.45,
+    extraCritDamage: 0,
+    triggers: [],
+  },
+  {
+    id: "hit-1",
+    frame: 31,
+    physMultiplier: 0.321033,
+    attributeMultiplier: 0.4815495,
+    physFixed: 88.95,
+    attributeFixed: 48.45,
+    extraCritDamage: 0,
+    triggers: [],
+  },
+  {
+    id: "hit-2",
+    frame: 45,
+    physMultiplier: 0.321033,
+    attributeMultiplier: 0.4815495,
+    physFixed: 88.95,
+    attributeFixed: 48.45,
+    extraCritDamage: 0,
+    triggers: [],
+  },
+  {
+    id: "hit-3",
+    frame: 62,
+    physMultiplier: 0.321033,
+    attributeMultiplier: 0.4815495,
+    physFixed: 88.95,
+    attributeFixed: 48.45,
+    extraCritDamage: 0,
+    triggers: [],
+  },
+]
+
+function spearqV24RiverFlowTierHit(empoweredStacks: number) {
+  return {
+    id: "hit-4",
+    frame: 82,
+    physMultiplier: 0.321033,
+    attributeMultiplier: 0.4815495,
+    physFixed: 88.95,
+    attributeFixed: 48.45,
+    extraCritDamage: 0,
+    triggers: [
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-wolfchasers-art-slotted",
+        stacks: 1,
+        condition: null,
+        appliesOnCastEnd: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-water-drop",
+        stacks: 1,
+        condition: null,
+        appliesOnCastEnd: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-water-drop",
+        stacks: 1,
+        condition: {
+          buffId: "buff-bellstrikeUmbra-wolfchasers-art-slotted",
+          op: "gte",
+          stacks: 1,
+        },
+        appliesOnCastEnd: true,
+        extendFrames: 180,
+        extendOnly: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-spring-surge",
+        stacks: 1,
+        condition: null,
+        appliesOnCastEnd: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-spring-surge",
+        stacks: 1,
+        condition: {
+          buffId: "buff-bellstrikeUmbra-wolfchasers-art-slotted",
+          op: "gte",
+          stacks: 1,
+        },
+        appliesOnCastEnd: true,
+        extendFrames: 180,
+        extendOnly: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "potentRiverFlow",
+        stacks: 1,
+        condition: { buffId: "debuff-bellstrikeUmbra-bleed-tick", op: "gte", stacks: 1 },
+        appliesOnCastEnd: true,
+      },
+      {
+        kind: "applyBuff",
+        targetId: "buff-bellstrikeUmbra-empowered-river-flow",
+        stacks: 1,
+        condition: {
+          buffId: "debuff-bellstrikeUmbra-bleed-tick",
+          op: "gte",
+          stacks: empoweredStacks,
+        },
+        appliesOnCastEnd: true,
+      },
+    ],
+  }
+}
+
+const SPEARQ_V24_HITS = [
+  ...SPEARQ_V24_LEADING_HITS,
+  spearqV24RiverFlowTierHit(1),
+  {
+    id: "hit-5",
+    frame: 98,
+    physMultiplier: 0.535055,
+    attributeMultiplier: 0.8025825,
+    physFixed: 148.25,
+    attributeFixed: 80.75,
+    extraCritDamage: 0,
+    triggers: [],
+  },
+]
+
+const SPEARQ_5_HIT_CANCEL_V24_HITS = [...SPEARQ_V24_LEADING_HITS, spearqV24RiverFlowTierHit(4)]
+
 const oldRiverFlowHit = () => ({
   id: "hit-4",
   frame: 82,
@@ -388,7 +527,7 @@ describe("V24__umbraValueFixes migration step", () => {
     expect(spearheavy.tags).toEqual(["weapon:Spear"])
   })
 
-  it("lands every pristine copy it targets on exactly the live built-in's hits, tags and castFrames", () => {
+  it("lands every pristine copy it targets on exactly the live built-in's tags and castFrames", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 24 })!
     const builtins = builtinSkillsForClass("bellstrikeUmbra")
     for (const id of [
@@ -402,10 +541,33 @@ describe("V24__umbraValueFixes migration step", () => {
     ]) {
       const healed = skillIn(result.blob, id)
       const builtin = builtins.find((skill) => skill.id === id)!
-      expect(healed.hits, id).toEqual(builtin.hits)
       expect(healed.tags, id).toEqual(builtin.tags)
       expect(healed.castFrames, id).toEqual(builtin.castFrames)
     }
+  })
+
+  it("lands every pristine copy it targets on exactly the live built-in's hits", () => {
+    const result = runCustomSkillMigrations(clone(STORE), { toVersion: 24 })!
+    const builtins = builtinSkillsForClass("bellstrikeUmbra")
+    for (const id of [
+      "bellstrikeUmbra-bleed-detonation",
+      "bellstrikeUmbra-crosswind-blade",
+      "bellstrikeUmbra-crosswind-blade-cancel",
+      "bellstrikeUmbra-spearheavy",
+      "bellstrikeUmbra-spearspecial-1-hit-cancel",
+    ]) {
+      const healed = skillIn(result.blob, id)
+      const builtin = builtins.find((skill) => skill.id === id)!
+      expect(healed.hits, id).toEqual(builtin.hits)
+    }
+  })
+
+  it("lands SpearQ and SpearQ 5-Hit Cancel on this hop's own frozen River Flow tier shape", () => {
+    const result = runCustomSkillMigrations(clone(STORE), { toVersion: 24 })!
+    expect(skillIn(result.blob, "bellstrikeUmbra-spearq").hits).toEqual(SPEARQ_V24_HITS)
+    expect(skillIn(result.blob, "bellstrikeUmbra-spearq-5-hit-cancel").hits).toEqual(
+      SPEARQ_5_HIT_CANCEL_V24_HITS,
+    )
   })
 
   it("does not mutate its input", () => {

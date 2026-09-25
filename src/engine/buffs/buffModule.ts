@@ -43,14 +43,18 @@ export interface PerCastConsume {
   phaseAlternative?: { phase: QiPhase | readonly QiPhase[]; requires?: BuffRequirements }
 }
 
+// Mutually exclusive — see TIMELINE.md § "The class-buff system".
+export type BuffGate =
+  | { requires?: BuffRequirements; grantRequires?: undefined }
+  | { requires?: undefined; grantRequires: Record<string, BuffRequirements> }
+
 // The declarative core: the Skill Editor catalog derives `bonus`, `enabledParam`,
 // `minTier` and the Receives / Applies / Class Buffs rows from these fields, and
 // `displayGates.ts` filters on them, so they must stay readable without
 // executing anything.
-export interface BuffMeta {
+export type BuffMeta = BuffGate & {
   id: string
   name: string
-  requires?: BuffRequirements
   affectsAll?: boolean
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean

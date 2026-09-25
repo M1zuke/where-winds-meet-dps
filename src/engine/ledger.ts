@@ -24,7 +24,20 @@ export interface StatusView {
   stacksAt(id: string, frame: number): number
   conditionStacksAt(id: string, frame: number): number
   remainingFramesAt(id: string, frame: number): number | undefined
+  framesSinceLastEnd(id: string, frame: number): number | undefined
   windowsOf(id: string): readonly StatusWindow[]
+}
+
+// The latest window end at or before `frame` — an in-progress window (its own
+// end past `frame`) does not count, so this reads "since it last closed", not
+// "since it last opened".
+function latestEndAt(windows: Iterable<StatusWindow>, frame: number): number | undefined {
+  let latestEnd: number | undefined
+  for (const window of windows) {
+    const endHere = windowEndAt(window, frame)
+    if (endHere <= frame && (latestEnd === undefined || endHere > latestEnd)) latestEnd = endHere
+  }
+  return latestEnd
 }
 
 // An extension applied after `frame` has not happened yet from that frame's
@@ -155,6 +168,11 @@ export class StatusLedger implements StatusView {
     return end === undefined ? undefined : end - frame
   }
 
+  framesSinceLastEnd(id: string, frame: number): number | undefined {
+    const latestEnd = latestEndAt(this.windows.get(id) ?? [], frame)
+    return latestEnd === undefined ? undefined : frame - latestEnd
+  }
+
   windowsOf(id: string): readonly StatusWindow[] {
     return this.windows.get(id) ?? []
   }
@@ -198,6 +216,10 @@ export class StatusLedger implements StatusView {
             end = endHere
         }
         return end === undefined ? undefined : end - frame
+      },
+      framesSinceLastEnd: (id, frame) => {
+        const latestEnd = latestEndAt(windowsFor(id), frame)
+        return latestEnd === undefined ? undefined : frame - latestEnd
       },
       windowsOf: windowsFor,
     }

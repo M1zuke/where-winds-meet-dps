@@ -19,11 +19,6 @@ export const SPEAR_SPECIAL_COOLDOWN_BUFF_ID = "buff-bellstrikeUmbra-spear-specia
 export const WATER_DROP_BUFF_ID = "buff-bellstrikeUmbra-water-drop"
 export const SPRING_SURGE_BUFF_ID = "buff-bellstrikeUmbra-spring-surge"
 export const EMPOWERED_RIVER_FLOW_BUFF_ID = "buff-bellstrikeUmbra-empowered-river-flow"
-// A permanent, effect-less marker for "Wolfchaser's Art is slotted at any
-// tier" — grant it alongside Water Drop / Spring Surge to condition their
-// +3 s inner-way extension on it, without a live param read at trigger-author
-// time.
-export const WOLFCHASERS_ART_SLOTTED_BUFF_ID = "buff-bellstrikeUmbra-wolfchasers-art-slotted"
 
 // In-game values as of 2026-09-24: each Sober Sorrow hit on a Bleeding target
 // adds a second combo with a 60/70/80/90/100 % chance at 1–5 stacks; each
@@ -39,19 +34,6 @@ export const RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES =
 export const SPEAR_SPECIAL_COOLDOWN_FRAMES = 720
 
 export const WOLFCHASERS_ART_GATES: readonly InnerWayGateBuff[] = [
-  defineInnerWayGateBuff({
-    id: WOLFCHASERS_ART_SLOTTED_BUFF_ID,
-    name: "Wolfchaser's Art Slotted",
-    scope: "player",
-    activation: "triggered",
-    durationFrames: 9999 * 60,
-    effects: [],
-    maxStacks: 1,
-    stackScaling: "flat",
-    requiresParam: PARAM.wolfchasersArt,
-    createdAt: "2026-09-25T00:00:00.000Z",
-    updatedAt: "2026-09-25T00:00:00.000Z",
-  }),
   defineInnerWayGateBuff({
     id: WATER_DROP_BUFF_ID,
     name: "Water Drop",

@@ -43,6 +43,22 @@ const USER_AUTHORED_ID = "sk-user-authored-stonesplit-slash"
 
 const CHECKED_FIELDS = ["tags", "receives", "triggersBuffs", "hits"] as const
 
+// SnowpartingVC/Prepull's `hits`/`triggersBuffs`, and the `hits` of every
+// Snowbreak Spring availability grant source, move again at later hops (the
+// Forgetfulness cooldown marker, then the Snowbreak Spring availability
+// gate), so they no longer equal the LIVE built-in once stopped at v26.
+const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS)[number][]>> = {
+  "stonesplitStrength-snowpartingvc": ["hits", "triggersBuffs"],
+  "stonesplitStrength-snowpartingvc-prepull": ["hits", "triggersBuffs"],
+  "stonesplitStrength-snowpartingcharged": ["hits"],
+  "stonesplitStrength-snowpartingcharged-forgetfulness": ["hits"],
+  "stonesplitStrength-snowpartingdual": ["hits"],
+  "stonesplitStrength-snowpartingdual-prepull": ["hits"],
+  "stonesplitStrength-deflect": ["hits"],
+}
+const fieldsStillMatchingLiveBuiltin = (id: string) =>
+  CHECKED_FIELDS.filter((field) => !(MOVED_AGAIN_FIELDS[id] ?? []).includes(field))
+
 const STORE = storeV25File as unknown as RawCustomSkillsBlob & { skills: Skill[] }
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
@@ -72,7 +88,7 @@ describe("healStonesplitStrengthValuesGatesReach", () => {
     for (const id of HEALED_IDS) {
       const healed = healStonesplitStrengthValuesGatesReach(clone(skillIn(STORE, id))) as Skill
       const builtin = builtinOf(id)
-      for (const field of CHECKED_FIELDS)
+      for (const field of fieldsStillMatchingLiveBuiltin(id))
         expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
     }
   })
@@ -97,7 +113,7 @@ describe("V26__stonesplitStrengthValuesGatesReach — called directly", () => {
     expect(after.v).toBe(26)
     for (const id of HEALED_IDS) {
       const builtin = builtinOf(id)
-      for (const field of CHECKED_FIELDS)
+      for (const field of fieldsStillMatchingLiveBuiltin(id))
         expect(skillIn(after, id)[field], `${id}.${field}`).toEqual(builtin[field])
     }
     for (const skill of STORE.skills) {
@@ -134,7 +150,7 @@ describe("every healed skill survives the hydrator too", () => {
     for (const id of HEALED_IDS) {
       const skill = loaded.find((candidate) => candidate.id === id)!
       const builtin = builtinOf(id)
-      for (const field of CHECKED_FIELDS) {
+      for (const field of fieldsStillMatchingLiveBuiltin(id)) {
         // The hydrator normalizes tags/receives/triggersBuffs to `[]` when a
         // built-in never authors the field at all — the migration's own scope
         // is what this suite checks elsewhere, not the hydrator's defaulting.

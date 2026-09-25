@@ -172,8 +172,10 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   single trajectory instead of averaging its own fixed-seed sweep; without one it
   averages as before. A schedule that ignores the generator keeps reporting an
   expectation on a run that has none, and understates the spread.
-- **Only hits laid by the rotation roll a proc.** DoT ticks and
-  trigger-enqueued hits do not. This is structural; do not work around it per
+- **A hit rolls a proc whether it is laid by the rotation or summoned by a
+  trigger — a DoT tick does not.** A mechanic that builds its schedule from hit
+  times reads every hit-driven schedule the engine exposes, not only the
+  rotation's own laid hits. This is structural; do not work around it per
   mechanic.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two

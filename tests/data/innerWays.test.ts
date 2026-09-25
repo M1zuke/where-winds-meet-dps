@@ -17,6 +17,7 @@ import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { bleedTick } from "../../src/data/skills/bellstrike-umbra/debuffs"
 import { soulShakenBuffDef } from "../../src/data/innerWays/wolfchasersArtBuffs"
+import { CAST } from "../../src/data/skills/ids"
 import { ZENITH_BAR_BUFF_ID } from "../../src/data/innerWays/swordHorizonZenith"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { hiddenTimelineBuffIds } from "../../src/engine/buffs/catalog"
@@ -157,8 +158,9 @@ describe("a tier-6 node resolves to 6, never undefined, feeding buffEngineEquiva
     expect(bleedTick.detonation?.retainMinTier).toBe(6)
   })
 
-  it("Soul Shaken's requires.minTier is the number 6", () => {
-    expect(soulShaken.requires?.minTier).toBe(6)
+  it("Soul Shaken's Sober Sorrow grantRequires.minTier is the number 6", () => {
+    expect(soulShaken.grantRequires?.[CAST.spearQ]?.minTier).toBe(6)
+    expect(soulShaken.grantRequires?.[CAST.spearQ5HitCancel]?.minTier).toBe(6)
   })
 })
 
@@ -213,12 +215,11 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
     }
   })
 
-  it("builtinBuffsForClass('bellstrikeUmbra') returns the eight gates in pinned order, each carrying its class id", () => {
+  it("builtinBuffsForClass('bellstrikeUmbra') returns the seven gates in pinned order, each carrying its class id", () => {
     const buffs = builtinBuffsForClass("bellstrikeUmbra")
     expect(buffs.map((buff) => buff.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
-      "Wolfchaser's Art Slotted",
       "Water Drop",
       "Spring Surge",
       "River Flow",

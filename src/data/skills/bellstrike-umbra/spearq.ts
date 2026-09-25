@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 import {
@@ -11,14 +11,7 @@ import {
   RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
   SPRING_SURGE_BUFF_ID,
   WATER_DROP_BUFF_ID,
-  WOLFCHASERS_ART_SLOTTED_BUFF_ID,
 } from "../../innerWays/wolfchasersArtGates"
-
-const WOLFCHASERS_ART_SLOTTED_CONDITION = {
-  buffId: WOLFCHASERS_ART_SLOTTED_BUFF_ID,
-  op: "gte" as const,
-  stacks: 1,
-}
 
 export const spearq = defineSkill({
   id: SKILL.spearq,
@@ -74,12 +67,11 @@ export const spearq = defineSkill({
       // count (its own 6 hits plus the target's Bleeding stacks) — see the
       // rule in `wolfchasersArtGates.ts`.
       triggers: [
-        applyBuff({ target: WOLFCHASERS_ART_SLOTTED_BUFF_ID, appliesOnCastEnd: true }),
         applyBuff({ target: WATER_DROP_BUFF_ID, appliesOnCastEnd: true }),
         applyBuff({
           target: WATER_DROP_BUFF_ID,
           appliesOnCastEnd: true,
-          condition: WOLFCHASERS_ART_SLOTTED_CONDITION,
+          requiresParam: PARAM.wolfchasersArt,
           extendFrames: RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
           extendOnly: true,
         }),
@@ -87,7 +79,7 @@ export const spearq = defineSkill({
         applyBuff({
           target: SPRING_SURGE_BUFF_ID,
           appliesOnCastEnd: true,
-          condition: WOLFCHASERS_ART_SLOTTED_CONDITION,
+          requiresParam: PARAM.wolfchasersArt,
           extendFrames: RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES,
           extendOnly: true,
         }),

@@ -95,6 +95,18 @@ skips straight to its own hits, unflagged.
   membership**. Express a family by giving every member the family tag _as
   well as_ its own — never by one name being a stem of another. A skill may
   then belong to several families, which a prefix cannot express.
+- **A weapon or mystic-category boost and a class-specific attunement's
+  `attune:` tag reach every hit of the skill that carries it — there is no
+  per-hit override.** A cast whose hits are reached unevenly is authored as
+  two skills sharing one `breakdownName`, the tag only on the one whose hits
+  are actually reached, the other's hits summoned from the first through a
+  `castSkill` trigger at the right frame offset — never a tag scoped to one
+  hit inside a single skill.
+- **A summoned hit counts as a hit for every hit-driven schedule** — proc
+  mechanics, the layout ledger a later step's conditions read — the same as a
+  laid one. A `castSkill` trigger's own hits are not a separate category from
+  the rotation's own once they land; see CALCULATION.md § "Mechanic rules" for
+  the proc side of this.
 - **"Every damage-over-time row" is a structural check, not a tag list.** A
   DoT tick's synthetic skill carries `isDotTick`; a mechanic that must reach
   every such row tests that field, never a role tag or an enumerated list of
@@ -205,6 +217,12 @@ Rules:
   without it refreshes the mark and keeps banking; a pot no trigger releases
   is dealt when the debuff's coverage lapses, and never after the rotation
   ends.
+- **A trigger may close a status window outright** (`clearStatus`): the
+  longest window covering this frame ends at this frame and the stack count
+  resets to 0, the same write a cooldown-marker grant undoes when a separate
+  event resets it early. It reads its own `condition`/`conditions`, `phase`
+  and `requiresParam` exactly as every other trigger kind does; a status with
+  no window covering this frame is left alone.
 
 **Linking to a stacking DoT is logic-free.** The kinds that add a stack and that
 flag a detonation carry no thresholds of their own: the max stacks, the shared
@@ -301,6 +319,16 @@ for applying, `receives` for boosting — never by the module itself.
   `requiresActiveBuffOnTrigger`, `requires`) gates a tick exactly as it gates a
   cast, so a def that should fire once per application still needs that gate
   authored on the module, not assumed from the trigger site.
+- **A module granted from several cast tags may gate each one differently**
+  (`grantRequires`, keyed by the granting cast's own tag) **instead of a single
+  `requires`** — the two are mutually exclusive on one module. A tag present
+  in the map uses its own requirement, the same shape `requires` itself takes,
+  an armor set included, for that one grant; a tag the map does not mention
+  grants with no gate at all. Every source still writes the same id's one
+  stack pool and shares its duration and cap; only which sources may grant at
+  all differs. Every other gate — the damage query, the catalog, the timeline
+  display — reads the module's own `requires`, so a `grantRequires` module
+  reads as ungated everywhere but the grant itself.
 - **A buff a debuff's tick applies reaches every damage event that comes after
   it in time** — a later tick of the same or a different debuff, a mechanic's
   own extra event, the chips of any cast resolving after it, and a regular hit
@@ -340,6 +368,11 @@ for applying, `receives` for boosting — never by the module itself.
 - **A module's `effects` may read the encounter's distance to the target from
   context**, the same way it reads remaining health — a persisted, hydrated
   input, never a per-skill guess.
+- **A module's `effects` may read how long it has been since another status's
+  last window closed** (`ctx.status.secondsSinceLastEnd`), `null` before that
+  status has ever applied. A currently-active window has not closed, so a
+  module paying out both while the source is active and for a while after
+  checks `isActive` first and falls back to this only once it is false.
 - **A module may open its window a fixed offset after the triggering cast's
   start** instead of at the trigger hit's own frame, when the source it models
   opens on an in-progress hit rather than the first or the last one. Author

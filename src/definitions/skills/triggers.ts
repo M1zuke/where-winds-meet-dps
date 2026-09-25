@@ -56,3 +56,4 @@ export const applyBuff = (spec: TriggerSpec): HitTrigger => trigger("applyBuff",
 export const castSkill = (spec: TriggerSpec): HitTrigger => trigger("castSkill", spec)
 export const detonateDot = (spec: TriggerSpec): HitTrigger => trigger("detonateDot", spec)
 export const releaseEcho = (spec: TriggerSpec): HitTrigger => trigger("releaseEcho", spec)
+export const clearStatus = (spec: TriggerSpec): HitTrigger => trigger("clearStatus", spec)

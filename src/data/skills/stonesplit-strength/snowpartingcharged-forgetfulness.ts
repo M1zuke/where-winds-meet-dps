@@ -1,5 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -23,6 +25,18 @@ export const snowpartingchargedForgetfulness = defineSkill({
       attributeMultiplier: 0.734867,
       physFixed: 135.6,
       attributeFixed: 73.8,
+      triggers: [
+        applyBuff({
+          target: BUFF.forgetfulnessCooldown,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 6,
+        }),
+        applyBuff({
+          target: BUFF.snowbreakSpringAvailable,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
+        }),
+      ],
     }),
     hit(1, {
       frame: 14,

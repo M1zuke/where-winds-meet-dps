@@ -29,6 +29,10 @@ import { V25__bamboocutDraughtValuesGatesReach } from "./V25__bamboocutDraughtVa
 import { V26__stonesplitStrengthValuesGatesReach } from "./V26__stonesplitStrengthValuesGatesReach"
 import { V27__bellstrikeSplendorValuesGatesReach } from "./V27__bellstrikeSplendorValuesGatesReach"
 import { V28__silkbindJadeValuesGatesReach } from "./V28__silkbindJadeValuesGatesReach"
+import { V29__soberSorrowExtendUsesParam } from "./V29__soberSorrowExtendUsesParam"
+import { V30__swordSpecial4HitAttunementReach } from "./V30__swordSpecial4HitAttunementReach"
+import { V31__forgetfulnessCooldownMarker } from "./V31__forgetfulnessCooldownMarker"
+import { V32__snowbreakSpringAvailability } from "./V32__snowbreakSpringAvailability"
 
 export type {
   CustomSkillMigration,
@@ -75,6 +79,13 @@ export { healBamboocutDraughtValuesGatesReach } from "./V25__bamboocutDraughtVal
 export { healStonesplitStrengthValuesGatesReach } from "./V26__stonesplitStrengthValuesGatesReach"
 export { healBellstrikeSplendorValuesGatesReach } from "./V27__bellstrikeSplendorValuesGatesReach"
 export { healSilkbindJadeValuesGatesReach } from "./V28__silkbindJadeValuesGatesReach"
+export {
+  healSpearqExtendParam,
+  healSpearq5HitCancelExtendParam,
+} from "./V29__soberSorrowExtendUsesParam"
+export { healSwordspecial4HitAttunementReach } from "./V30__swordSpecial4HitAttunementReach"
+export { healSkill as healForgetfulnessCooldownMarker } from "./V31__forgetfulnessCooldownMarker"
+export { healSkill as healSnowbreakSpringAvailability } from "./V32__snowbreakSpringAvailability"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -102,6 +113,10 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V26__stonesplitStrengthValuesGatesReach,
   V27__bellstrikeSplendorValuesGatesReach,
   V28__silkbindJadeValuesGatesReach,
+  V29__soberSorrowExtendUsesParam,
+  V30__swordSpecial4HitAttunementReach,
+  V31__forgetfulnessCooldownMarker,
+  V32__snowbreakSpringAvailability,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -336,6 +336,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       owner: number,
       fireMaxStacks: boolean,
     ): void {
+      if (trigger.kind === "clearStatus") {
+        if (!fires(trigger, frame)) return
+        const status = statusById.get(trigger.targetId)
+        if (!status) return
+        const activeWindow = target.longestActiveWindow(status.id, frame)
+        if (activeWindow) activeWindow.end = frame
+        target.recordStack(status.id, frame, 0, owner)
+        return
+      }
       if (trigger.kind !== "applyBuff" && trigger.kind !== "applyDebuff") return
       if (!fires(trigger, frame)) return
       const status = statusById.get(trigger.targetId)
@@ -468,35 +477,98 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return null
   }
 
-  // `castSkill` and a DoT's detonation are skipped here and left to the real
-  // event loop below — chasing a generated sub-cast would need the buff
-  // engine, which itself can only be built once the whole layout is known.
-  function seedStepTriggers(hits: readonly SkillHit[], stepStart: number): void {
-    for (const skillHit of hits) {
-      const hitFrame = hitLandingFrame(stepStart, skillHit.frame)
-      layoutWriter.processExpiries(hitFrame)
-      if (hitDealsDamage(skillHit)) layoutWriter.onDamagingHit(hitFrame, stepStart)
-      for (const trigger of skillHit.triggers) {
-        if (trigger.kind === "castSkill" || trigger.kind === "detonateDot") continue
-        if (trigger.kind === "applyDot") {
-          if (!layoutWriter.fires(trigger, hitFrame)) continue
-          const status = statusById.get(trigger.targetId)
-          if (!status || !isDebuffStatus(status)) continue
-          const maxStacks = Math.max(1, status.maxStacks)
-          const next = clamp(layoutLedger.stacksAt(status.id, hitFrame) + 1, 0, maxStacks)
-          layoutLedger.recordStack(status.id, hitFrame, next, stepStart)
-          if (status.activation === "permanent") layoutLedger.openPermanent(status.id)
-          else
-            layoutLedger.pushWindow(
-              status.id,
-              hitFrame,
-              hitFrame + Math.max(1, status.durationFrames),
-              stepStart,
-            )
-          continue
-        }
-        layoutWriter.applyTrigger(trigger, hitFrame, stepStart)
+  // A summoned hit counts as a hit for every hit-driven schedule (proc
+  // mechanics, the layout ledger), the same as a laid one — the frame it
+  // lands at is all that distinguishes them. `detonateDot`'s own sub-cast
+  // stays out of the layout ledger: chasing it needs the retained-stack
+  // build param, which the buff engine alone resolves.
+  const damagingHitTimesSec: number[] = []
+  const weaponHitTimesSec: number[] = []
+
+  interface PendingLayoutHit {
+    skill: Skill
+    hit: SkillHit
+    frame: number
+    owner: number
+    prePull: boolean
+    sequence: number
+  }
+  let layoutHitSequence = 0
+
+  // Iterative and frame-ordered rather than recursive, like the prepass below
+  // it mirrors: a self-referential `castSkill` chain must hit `EVENT_CAP`
+  // rather than the call stack, and every write lands in the frame order
+  // `StatusLedger`'s own lookups assume.
+  function seedHitTriggers(current: PendingLayoutHit, pending: PendingLayoutHit[]): void {
+    const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
+    layoutWriter.processExpiries(hitFrame)
+    if (hitDealsDamage(skillHit)) {
+      layoutWriter.onDamagingHit(hitFrame, owner)
+      if (!prePull) {
+        const timeSec = hitFrame / FPS
+        damagingHitTimesSec.push(timeSec)
+        if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
       }
+    }
+    for (const trigger of skillHit.triggers) {
+      if (trigger.kind === "detonateDot") continue
+      if (trigger.kind === "applyDot") {
+        if (!layoutWriter.fires(trigger, hitFrame)) continue
+        const status = statusById.get(trigger.targetId)
+        if (!status || !isDebuffStatus(status)) continue
+        const maxStacks = Math.max(1, status.maxStacks)
+        const next = clamp(layoutLedger.stacksAt(status.id, hitFrame) + 1, 0, maxStacks)
+        layoutLedger.recordStack(status.id, hitFrame, next, owner)
+        if (status.activation === "permanent") layoutLedger.openPermanent(status.id)
+        else
+          layoutLedger.pushWindow(
+            status.id,
+            hitFrame,
+            hitFrame + Math.max(1, status.durationFrames),
+            owner,
+          )
+        continue
+      }
+      if (trigger.kind === "castSkill") {
+        if (!layoutWriter.fires(trigger, hitFrame)) continue
+        const sub = skillsById.get(trigger.targetId)
+        if (!sub) continue
+        for (const subHit of sub.hits) {
+          pending.push({
+            skill: sub,
+            hit: subHit,
+            frame: hitLandingFrame(hitFrame, subHit.frame),
+            owner,
+            prePull,
+            sequence: layoutHitSequence++,
+          })
+        }
+        continue
+      }
+      layoutWriter.applyTrigger(trigger, hitFrame, owner)
+    }
+  }
+
+  function seedStepTriggers(
+    skill: Skill,
+    hits: readonly SkillHit[],
+    stepStart: number,
+    prePull: boolean,
+  ): void {
+    const pending: PendingLayoutHit[] = hits.map((hit) => ({
+      skill,
+      hit,
+      frame: hitLandingFrame(stepStart, hit.frame),
+      owner: stepStart,
+      prePull,
+      sequence: layoutHitSequence++,
+    }))
+    let processed = 0
+    while (pending.length > 0 && processed < EVENT_CAP) {
+      pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
+      const next = pending.shift()!
+      processed++
+      seedHitTriggers(next, pending)
     }
   }
 
@@ -552,7 +624,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       prePull || windowFramesOverride === null
         ? occurringHits
         : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
-    seedStepTriggers(landedHits, startFrame)
+    seedStepTriggers(rs.skill, landedHits, startFrame, prePull)
     laidSteps.push({
       resolved: rs,
       stepIndex,
@@ -567,17 +639,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const spanStart = Math.min(0, -prePullBound)
   const rotationDurationSec = windowFrames / FPS
 
-  const damagingHitTimesSec: number[] = []
-  const weaponHitTimesSec: number[] = []
-  for (const ls of laidSteps) {
-    if (ls.prePull) continue
-    for (const hit of ls.performedHits) {
-      if (!hitDealsDamage(hit)) continue
-      const timeSec = hitLandingFrame(ls.startFrame, hit.frame) / FPS
-      damagingHitTimesSec.push(timeSec)
-      if (ls.resolved.skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
-    }
-  }
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
 
@@ -699,9 +760,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
         }
         for (const hit of cast.skill.hits) {
-          const hitFrame = cast.generated
-            ? cast.frame + hit.frame
-            : hitLandingFrame(cast.frame, hit.frame)
+          const hitFrame = hitLandingFrame(cast.frame, hit.frame)
           if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
@@ -1125,7 +1184,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           })
         continue
       }
-      if (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") {
+      if (
+        trigger.kind === "applyBuff" ||
+        trigger.kind === "applyDebuff" ||
+        trigger.kind === "clearStatus"
+      ) {
         liveWriter.applyTrigger(
           trigger,
           trigger.appliesOnCastEnd ? castEndFrame(skill, castFrame) : frame,
@@ -1177,7 +1240,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (!sub) continue
       for (const subHit of sub.hits) {
         queue.push({
-          frame: frame + subHit.frame,
+          frame: hitLandingFrame(frame, subHit.frame),
           seq: seq++,
           skill: sub,
           hit: subHit,

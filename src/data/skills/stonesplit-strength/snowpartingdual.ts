@@ -1,5 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -23,6 +25,13 @@ export const snowpartingdual = defineSkill({
       attributeMultiplier: 0.9729,
       physFixed: 180,
       attributeFixed: 98,
+      triggers: [
+        applyBuff({
+          target: BUFF.snowbreakSpringAvailable,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
+        }),
+      ],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
