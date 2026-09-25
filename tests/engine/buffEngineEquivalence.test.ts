@@ -66,7 +66,12 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     affectsAll: !!module.affectsAll,
     alwaysActive: !!module.alwaysActive,
     buffAppliesOnCastEnd: !!module.buffAppliesOnCastEnd,
-    cooldown: module.cooldown ?? null,
+    cooldown:
+      module.cooldown === undefined
+        ? null
+        : typeof module.cooldown === "number"
+          ? module.cooldown
+          : "[fn]",
     rateLimit: module.rateLimit ?? null,
     stackRateLimit: module.stackRateLimit ?? null,
     stacksPerHit: !!module.stacksPerHit,

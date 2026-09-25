@@ -404,6 +404,34 @@ describe("storage round-trip", () => {
     ])
   })
 
+  it("export → import carries a buff-engine-sourced condition and a param/tier requirement through", () => {
+    const s = makeSkill(CLASS, {
+      name: "GatedByBuildRequirement",
+      hits: [
+        makeHit({
+          triggers: [
+            makeTrigger({
+              kind: "castSkill",
+              targetId: "sk-x",
+              condition: { buffId: "bf-active", op: "gte", stacks: 1, source: "buffEngine" },
+              requiresParam: "someParam",
+              requiresMinTier: 3,
+            }),
+          ],
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.hits[0].triggers[0].condition).toEqual({
+      buffId: "bf-active",
+      op: "gte",
+      stacks: 1,
+      source: "buffEngine",
+    })
+    expect(imported.hits[0].triggers[0].requiresParam).toBe("someParam")
+    expect(imported.hits[0].triggers[0].requiresMinTier).toBe(3)
+  })
+
   it("a stale v1 (customSkill) blob is dropped on load", () => {
     kvStore.set(
       "wwm.customSkills",

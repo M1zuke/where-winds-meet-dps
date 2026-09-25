@@ -7,6 +7,8 @@ export interface BuildView {
   spec: string | undefined
   armorSet: string | undefined
   minPhysAttack: number
+  maxPhysAttack: number
+  whiteCritRate: number
   breakthrough: number
   param(id: string): boolean
   paramTier(id: string): number

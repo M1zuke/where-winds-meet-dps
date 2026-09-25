@@ -109855,7 +109855,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 51,
+        "count": 52,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -109878,6 +109878,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
           "stonesplitStrength-anxisoldierheng",
+          "stonesplitStrength-anxisoldierheng-stab",
           "stonesplitStrength-anxisoldiermodown",
           "stonesplitStrength-anxisoldiermojump",
           "stonesplitStrength-anxisoldiermosweep",
@@ -109909,7 +109910,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "15637f954e5a0c8a0a1a416cd963ffa8a7ec95293d0d536ca742414bdab1e949"
+        "digest": "1f1a4a0c5cdd8c7e911280d38c25ddf755c1b821ea7baf5cca59440c72343f17"
       },
       "debuffs": {
         "count": 5,
@@ -109967,7 +109968,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "allDamageBoost +36%"
+          "summary": "Snowbreak Spring ×1.36 against non-player targets"
         },
         {
           "id": "frostCladSnowbreakT6",
@@ -110017,7 +110018,7 @@
           "duration": 0,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "bossBoost +40% on a cast that consumes Inner Passion"
+          "summary": "Snowbreak Spring ×1.76 instead of ×1.36 on a cast that consumes Inner Passion"
         },
         {
           "id": "forgetfulness",
@@ -110070,6 +110071,31 @@
           "summary": "critDamageBoost +10%, and a guaranteed crit at 75% or higher"
         },
         {
+          "id": "mountainSplitterExhausted",
+          "name": "Mountain Splitter (Exhausted target)",
+          "classBuff": false,
+          "requires": {
+            "param": "steadfastDevotion",
+            "minTier": 6
+          },
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "on an Exhausted target without Mountain Splitter: critDamageBoost +10% and a guaranteed crit"
+        },
+        {
           "id": "chargeEnhancement",
           "name": "Charge Enhancement",
           "classBuff": false,
@@ -110080,11 +110106,8 @@
           "affectsAll": true,
           "alwaysActive": false,
           "buffAppliesOnCastEnd": true,
-          "cooldown": null,
-          "rateLimit": {
-            "count": 3,
-            "window": 30
-          },
+          "cooldown": 30,
+          "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
           "seedAtStart": false,
@@ -110141,7 +110164,7 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 15,
+          "duration": "[fn]",
           "maxStacks": 5,
           "effects": "[fn]",
           "summary": "per stack: physPen +3 / critDmg +3% on the applying skills, +2 / +2% elsewhere"
@@ -110954,7 +110977,7 @@
           "affectsAll": true,
           "alwaysActive": false,
           "buffAppliesOnCastEnd": false,
-          "cooldown": 20,
+          "cooldown": "[fn]",
           "rateLimit": null,
           "stackRateLimit": null,
           "stacksPerHit": false,
@@ -110963,26 +110986,10 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 40,
+          "duration": "[fn]",
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "allDamageBoost",
-              "amount": 0.08
-            },
-            {
-              "kind": "stat",
-              "statKey": "phys.penetration",
-              "amount": 0.12
-            },
-            {
-              "kind": "stat",
-              "statKey": "stonesplit.penetration",
-              "amount": 0.12
-            }
-          ],
-          "summary": "allDamageBoost +8%, physPen +12, stonesplitPen +12"
+          "effects": "[fn]",
+          "summary": "allDamageBoost +8%, physPen/stonesplitPen +1 per full 62.5 Max Physical Attack (cap 12)"
         },
         {
           "id": "cleftpeakDeflect",
@@ -111027,14 +111034,8 @@
           "hasStacksFn": false,
           "duration": 9999,
           "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "critDamageBoost",
-              "amount": 0.21
-            }
-          ],
-          "summary": null
+          "effects": "[fn]",
+          "summary": "critDamageBoost +1.4% per full 4% white Critical Rate, cap 21%"
         },
         {
           "id": "phalanxbaneBladeAdditionalAttack",
@@ -111111,7 +111112,7 @@
       ]
     },
     "dynamic": {
-      "digest": "52acfaae8cb0da1262b1d01baa36dc888eae9342f9701ed6fa72ad6e8427e58f"
+      "digest": "3d04a418b28f6bb7256c9a03958e983d03e69736f46f5b69d2f37855a2e5a240"
     }
   },
   "bellstrikeSplendor": {

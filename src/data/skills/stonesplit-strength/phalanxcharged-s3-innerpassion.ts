@@ -22,7 +22,12 @@ export const phalanxchargedS3Innerpassion = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3InnerPassion,
-  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
+  receives: [
+    BUFF.mountainSplitter,
+    BUFF.mountainSplitterExhausted,
+    BUFF.cleftpeakDeflect,
+    ...PHALANXBANE_BLADE_RECEIVES,
+  ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 138,
   triggerable: true,
@@ -44,6 +49,7 @@ export const phalanxchargedS3Innerpassion = defineSkill({
         castSkill({
           target: SKILL.anxisoldiermodown,
           stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
         }),
       ],
     }),

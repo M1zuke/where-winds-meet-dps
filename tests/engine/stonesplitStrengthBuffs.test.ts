@@ -4,7 +4,7 @@ import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { BUFF } from "../../src/data/skills/buffs/ids"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { CAST, PROP, ROLE, WEAPON } from "../../src/data/skills/ids"
 import { SKILL, STATUS } from "../../src/data/skills/stonesplit-strength/ids"
 import {
@@ -103,6 +103,31 @@ describe("Throat-Pierced", () => {
     ])
     expect(statOf(unslotted, applying(), 1.5, "phys.penetration")).toBe(0)
   })
+
+  it("pays every hit the same 2 points a stack below tier 3, applying families included", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 2 })
+    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
+    expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBeCloseTo(0.1, 9)
+    expect(statOf(pierced, bystander(), 1.5, "phys.penetration")).toBeCloseTo(0.1, 9)
+  })
+
+  it("lasts 8 s at rank 0, 15 s from tier 1", () => {
+    const rankZero = engine({ throatPierced: true, throatPiercedTier: 0 })
+    rankZero.processSkillCast(CAST.phalanxQ, 0, { hitCount: 1, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
+    expect(rankZero.isBuffActiveAtTime(BUFF.throatPierced, 7)).toBe(true)
+    expect(rankZero.isBuffActiveAtTime(BUFF.throatPierced, 9)).toBe(false)
+
+    const tierOne = engine({ throatPierced: true, throatPiercedTier: 1 })
+    tierOne.processSkillCast(CAST.phalanxQ, 0, { hitCount: 1, castTime: 1, duration: 1 }, false, [
+      BUFF.throatPierced,
+    ])
+    expect(tierOne.isBuffActiveAtTime(BUFF.throatPierced, 14)).toBe(true)
+    expect(tierOne.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
+  })
 })
 
 describe("Cleftpeak", () => {
@@ -150,23 +175,78 @@ describe("Iron Guards", () => {
   const any = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
 
   it("pays damage and both penetrations off Phalanx Special, on a 20-second cooldown", () => {
-    const guarded = engine()
+    const guarded = engine({ maxPhysAttack: 750 })
     guarded.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
     expect(statOf(guarded, any(), 1, "allDamageBoost")).toBeCloseTo(0.08, 9)
     expect(statOf(guarded, any(), 1, "phys.penetration")).toBeCloseTo(0.12, 9)
     expect(statOf(guarded, any(), 1, "stonesplit.penetration")).toBeCloseTo(0.12, 9)
     expect(statOf(guarded, any(), 41, "allDamageBoost")).toBe(0)
   })
+
+  it("scales penetration by 1 point per full 62.5 Max Physical Attack, capped at 12", () => {
+    const below = engine({ maxPhysAttack: 400 })
+    below.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
+    expect(statOf(below, any(), 1, "phys.penetration")).toBeCloseTo(0.06, 9)
+
+    const overCap = engine({ maxPhysAttack: 2000 })
+    overCap.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [BUFF.ironGuards])
+    expect(statOf(overCap, any(), 1, "phys.penetration")).toBeCloseTo(0.12, 9)
+  })
+
+  it("lasts 30 s on a 20 s cooldown without Steadfast Devotion, 40 s on a 1 s cooldown with it", () => {
+    const withoutSteadfastDevotion = engine({ maxPhysAttack: 750 })
+    withoutSteadfastDevotion.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [
+      BUFF.ironGuards,
+    ])
+    expect(withoutSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 29)).toBe(true)
+    expect(withoutSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 31)).toBe(false)
+    withoutSteadfastDevotion.processSkillCast(CAST.phalanxSpecial, 19, { castTime: 1 }, false, [
+      BUFF.ironGuards,
+    ])
+    expect(withoutSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 32)).toBe(false)
+
+    const withSteadfastDevotion = engine({
+      maxPhysAttack: 750,
+      [PARAM.steadfastDevotion]: true,
+      steadfastDevotionTier: 1,
+    })
+    withSteadfastDevotion.processSkillCast(CAST.phalanxSpecial, 0, { castTime: 1 }, false, [
+      BUFF.ironGuards,
+    ])
+    expect(withSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 39)).toBe(true)
+    expect(withSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 41)).toBe(false)
+    withSteadfastDevotion.processSkillCast(CAST.phalanxSpecial, 2, { castTime: 1 }, false, [
+      BUFF.ironGuards,
+    ])
+    expect(withSteadfastDevotion.isBuffActiveAtTime(BUFF.ironGuards, 41)).toBe(true)
+  })
 })
 
-describe("the class's flat skill crit damage", () => {
-  it("is always on, and reaches everything", () => {
-    const plainEngine = engine()
-    const target = skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
-    expect(share(plainEngine, target, 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(
+describe("the class's skill critical damage — steps by white Critical Rate", () => {
+  const target = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+
+  it("is always on and reaches everything, at whatever the build's white Critical Rate scales to", () => {
+    const plainEngine = engine({ whiteCritRate: 0.6 })
+    expect(share(plainEngine, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(
       0.21,
       9,
     )
+  })
+
+  it("steps by 1.4% per full 4% white Critical Rate below the cap", () => {
+    const low = engine({ whiteCritRate: 0.2 })
+    expect(share(low, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.07, 9)
+
+    const mid = engine({ whiteCritRate: 0.43 })
+    expect(share(mid, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.14, 9)
+  })
+
+  it("caps at 21% from 60% white Critical Rate on, and contributes nothing at 0", () => {
+    const capped = engine({ whiteCritRate: 1.33 })
+    expect(share(capped, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.21, 9)
+
+    const none = engine()
+    expect(share(none, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
   })
 })
 
@@ -209,11 +289,11 @@ describe("what lays the two gate buffs", () => {
 
   // The stab EXTENDS Dread rather than reopening it — without `extendOnly` the
   // window collapses from thirteen seconds to seven.
-  it("the stab extends Dread by six seconds and lays Fearful Blade", () => {
+  it("the stab extends Dread by two seconds and lays Fearful Blade", () => {
     const stab = triggersOf(SKILL.snowpartingqStab)
     const extension = stab.find((trigger) => trigger.targetId === STATUS.dread)!
     expect(extension.stacks).toBe(0)
-    expect(extension.extendFrames).toBe(360)
+    expect(extension.extendFrames).toBe(120)
     expect(extension.extendOnly).toBe(true)
 
     const fearful = stab.find((trigger) => trigger.targetId === STATUS.fearfulBlade)!

@@ -1,6 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -14,7 +13,7 @@ export const snowpartingcharged = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingCharged,
   receives: SNOWPARTING_BLADE_RECEIVES,
-  triggersBuffs: [BUFF.forgetfulness],
+  triggersBuffs: [],
   castFrames: 97,
   triggerable: true,
   hits: [
@@ -22,29 +21,29 @@ export const snowpartingcharged = defineSkill({
       frame: 0,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
-      physFixed: 135.3333,
-      attributeFixed: 73.6667,
+      physFixed: 135.6,
+      attributeFixed: 73.8,
     }),
     hit(1, {
       frame: 24,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
-      physFixed: 135.3333,
-      attributeFixed: 73.6667,
+      physFixed: 135.6,
+      attributeFixed: 73.8,
     }),
     hit(2, {
       frame: 48,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
-      physFixed: 135.3333,
-      attributeFixed: 73.6667,
+      physFixed: 135.6,
+      attributeFixed: 73.8,
     }),
     hit(3, {
       frame: 72,
       physMultiplier: 0.9798,
       attributeMultiplier: 1.4697,
-      physFixed: 271,
-      attributeFixed: 147,
+      physFixed: 271.2,
+      attributeFixed: 147.6,
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

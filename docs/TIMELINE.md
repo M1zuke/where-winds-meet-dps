@@ -158,6 +158,23 @@ Rules:
   clock-driven phase at its frame — the rotation's Qi-break window and its
   low-Qi lead, never a status — is the named one. A stagger or control state
   the source material gates on is expressed as the `exhausted` phase.
+- **A trigger may require a build-level param and tier** (`requiresParam`,
+  `requiresMinTier`): it fires only while the build carries that param, and at
+  or above that tier when given — the per-trigger counterpart of a status's
+  own `requiresParam`/`requiresMinTier`, for a build requirement that gates
+  one trigger rather than the whole status.
+- **Only a `castSkill` trigger's condition may read the class-buff engine
+  instead of the status ledger** (`source: "buffEngine"` on a
+  `TriggerCondition`): the two are separate stores (see § "Procedural
+  behaviour"), and gating a generated cast on a class-buff module's active
+  window — something the ledger never records — sets this on its condition
+  rather than duplicating that module as a ledger status. Every other
+  trigger kind keeps reading the ledger; authoring `source: "buffEngine"` on
+  one is invalid. A buff-engine-sourced condition only sees a module granted
+  through that module's own `triggersBuffs`/`receives` wiring at the frame it
+  is checked — one granted through `stackOnDamage` is not yet recorded when
+  the generated-cast walk that decides whether to spawn the cast runs, since
+  that walk finishes before damage hits are folded into the buff engine.
 - **A trigger may carry its own cooldown** (`cooldownFrames`): once it fires,
   the same trigger fires again only after that many frames. The first firing
   is never held back, a firing blocked by its conditions or phase does not
@@ -255,9 +272,11 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 
 Id-referenced, not tag-matched. A module declares its **activation policy**
 (always-active, or gated by `requires`, a cooldown, a rate limit) and its
-**magnitude** as effects. Who applies it and who it boosts are declared by the
-skill or debuff that owns that direction — `triggersBuffs` for applying,
-`receives` for boosting — never by the module itself.
+**magnitude** as effects. `duration` and `cooldown` may each be a function of
+the build rather than a fixed number, for a policy whose length genuinely
+depends on a build param's tier. Who applies it and who it boosts are
+declared by the skill or debuff that owns that direction — `triggersBuffs`
+for applying, `receives` for boosting — never by the module itself.
 
 - A debuff's `triggersBuffs` fires on every tick of its `dot`, not once per
   window — the module's own policy (`cooldown`, a rate limit, `triggerPhase`,
@@ -285,10 +304,12 @@ skill or debuff that owns that direction — `triggersBuffs` for applying,
   effects from the module side; only the module may author a magnitude, and the
   gate's `requiresParam` must match the module's own requirement or the state
   opens for a build the module never reaches.
-- **A module's `effects` may read the build's min physical attack from its
-  context, alongside the fight state.** It is the same value the damage kernel
-  takes as base min phys, and a magnitude that scales with it is computed in
-  the module — never re-derived in the UI or hardcoded in the timeline.
+- **A module's `effects` may read the build's min or max physical attack, or
+  its white critical rate, from its context, alongside the fight state.** Each
+  is the same value the damage kernel takes as base min/max phys or as the
+  pre-resistance critical rate, and a magnitude that scales with it is
+  computed in the module — never re-derived in the UI or hardcoded in the
+  timeline.
 - **A module's `effects` may read the target's remaining health from
   context**, as a fraction of its max that falls with the damage dealt so far
   in time order — never re-derived from a hit count or a display value.

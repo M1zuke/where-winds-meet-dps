@@ -20,13 +20,14 @@ export const throatPierced = defineBuff({
   requires: { param: PARAM.throatPierced },
   triggersFromGeneratedSkills: true,
   affectsAll: true,
-  duration: 15,
+  duration: (ctx) => (ctx.build.paramTier(PARAM.throatPierced) >= 1 ? 15 : 8),
   maxStacks: 5,
   stacksPerHit: true,
   summary: "per stack: physPen +3 / critDmg +3% on the applying skills, +2 / +2% elsewhere",
   effects: (ctx) => {
     if (ctx.event.kind !== "damage") return []
-    const matched = matchesAnyTag(ctx.event.tags, MATCHED)
+    const matched =
+      ctx.build.paramTier(PARAM.throatPierced) >= 3 && matchesAnyTag(ctx.event.tags, MATCHED)
     const stacks = ctx.self.stacks
     return [
       stat("phys.penetration", (matched ? 0.03 : 0.02) * stacks),

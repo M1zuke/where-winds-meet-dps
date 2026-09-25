@@ -1,5 +1,5 @@
 import type { Skill } from "../../../engine/skill"
-import { anxisoldierheng } from "./anxisoldierheng"
+import { anxisoldierheng, anxisoldierhengStab } from "./anxisoldierheng"
 import { anxisoldiermodown } from "./anxisoldiermodown"
 import { anxisoldiermojump } from "./anxisoldiermojump"
 import { anxisoldiermosweep } from "./anxisoldiermosweep"
@@ -26,6 +26,7 @@ export const CLASS_ID = "stonesplitStrength"
 
 export const SKILLS: Skill[] = [
   anxisoldierheng,
+  anxisoldierhengStab,
   anxisoldiermodown,
   anxisoldiermojump,
   anxisoldiermosweep,

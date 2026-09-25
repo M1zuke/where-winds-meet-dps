@@ -14,6 +14,7 @@ export interface TriggerCondition {
   buffId: string
   op: TriggerOp
   stacks: number
+  source?: "buffEngine"
 }
 
 export interface HitVariant {
@@ -49,6 +50,8 @@ export interface HitTrigger {
   // Opens the granted window at this length instead of the target status's
   // own `durationFrames`.
   durationFrames?: number
+  requiresParam?: string
+  requiresMinTier?: number
 }
 
 export interface SkillHit {
@@ -164,7 +167,18 @@ export function isTriggerCondition(x: unknown): x is TriggerCondition {
   if (typeof c.buffId !== "string") return false
   if (c.op !== "gte" && c.op !== "gt" && c.op !== "eq") return false
   if (typeof c.stacks !== "number" || !Number.isFinite(c.stacks)) return false
+  if (c.source !== undefined && c.source !== "buffEngine") return false
   return true
+}
+
+// `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
+// condition — a hit's or a variant's condition never gates a generated cast.
+function hasBuffEngineSource(x: unknown): boolean {
+  return !!x && typeof x === "object" && (x as Record<string, unknown>).source === "buffEngine"
+}
+
+export function isHitOrVariantCondition(x: unknown): x is TriggerCondition {
+  return isTriggerCondition(x) && !hasBuffEngineSource(x)
 }
 
 export function conditionSatisfiedByStacks(condition: TriggerCondition, stacks: number): boolean {
@@ -196,6 +210,10 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       if (!isTriggerCondition(c)) return false
     }
   }
+  if (t.kind !== "castSkill") {
+    if (hasBuffEngineSource(t.condition)) return false
+    if (Array.isArray(t.conditions) && t.conditions.some(hasBuffEngineSource)) return false
+  }
   if (t.transferFrom !== undefined) {
     if (typeof t.transferFrom !== "string" || !t.transferFrom) return false
     if (t.extendFrames !== undefined) return false
@@ -215,6 +233,12 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       t.durationFrames <= 0)
   )
     return false
+  if (t.requiresParam !== undefined && (typeof t.requiresParam !== "string" || !t.requiresParam))
+    return false
+  if (t.requiresMinTier !== undefined) {
+    if (typeof t.requiresMinTier !== "number" || !Number.isFinite(t.requiresMinTier)) return false
+    if (typeof t.requiresParam !== "string" || !t.requiresParam) return false
+  }
   return true
 }
 
@@ -229,7 +253,7 @@ export function isHitVariant(x: unknown): x is HitVariant {
   if (typeof v.label !== "string") return false
   if (!Array.isArray(v.conditions)) return false
   for (const c of v.conditions) {
-    if (!isTriggerCondition(c)) return false
+    if (!isHitOrVariantCondition(c)) return false
   }
   for (const k of ["physMultiplier", "attributeMultiplier", "physFixed", "attributeFixed"]) {
     if (typeof v[k] !== "number" || !Number.isFinite(v[k] as number)) return false
@@ -267,7 +291,7 @@ export function isSkillHit(x: unknown): x is SkillHit {
   if (h.conditions !== undefined) {
     if (!Array.isArray(h.conditions)) return false
     for (const c of h.conditions) {
-      if (!isTriggerCondition(c)) return false
+      if (!isHitOrVariantCondition(c)) return false
     }
   }
   return true

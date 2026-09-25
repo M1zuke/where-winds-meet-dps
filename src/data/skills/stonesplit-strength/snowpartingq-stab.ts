@@ -26,11 +26,15 @@ export const snowpartingqStab = defineSkill({
       physFixed: 590,
       attributeFixed: 322,
       triggers: [
-        castSkill({ target: SKILL.anxisoldierheng, stacks: 0 }),
+        castSkill({
+          target: SKILL.anxisoldierhengStab,
+          stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
+        }),
         applyBuff({
           target: STATUS.dread,
           stacks: 0,
-          extendFrames: 360,
+          extendFrames: 120,
           extendOnly: true,
         }),
         applyBuff({ target: STATUS.fearfulBlade }),

@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -37,14 +37,17 @@ export const snowpartingvcPrepull = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 2.0764,
-      attributeMultiplier: 3.1145,
-      physFixed: 480,
-      attributeFixed: 268,
+      physMultiplier: 2.07686,
+      attributeMultiplier: 3.11529,
+      physFixed: 575,
+      attributeFixed: 313,
       triggers: [
         castSkill({
           target: SKILL.anxisoldierheng,
           stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 1,
         }),
       ],
     }),

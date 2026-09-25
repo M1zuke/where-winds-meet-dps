@@ -12,6 +12,7 @@ export const phalanxchargedS3 = defineSkill({
   tags: [
     PROP.isCharged,
     PROP.cleftpeakBoost,
+    PROP.consumesInnerPassionBurningHeart,
     WEAPON.moBlade,
     ATTACK.charge,
     ATTUNE.phalanxbaneCharged,
@@ -21,7 +22,12 @@ export const phalanxchargedS3 = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.phalanxChargedS3,
-  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
+  receives: [
+    BUFF.mountainSplitter,
+    BUFF.mountainSplitterExhausted,
+    BUFF.cleftpeakDeflect,
+    ...PHALANXBANE_BLADE_RECEIVES,
+  ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
   castFrames: 188,
   triggerable: true,
@@ -39,7 +45,13 @@ export const phalanxchargedS3 = defineSkill({
       attributeMultiplier: 6.0196,
       physFixed: 1110,
       attributeFixed: 604,
-      triggers: [castSkill({ target: SKILL.anxisoldiermodown, stacks: 0 })],
+      triggers: [
+        castSkill({
+          target: SKILL.anxisoldiermodown,
+          stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
+        }),
+      ],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

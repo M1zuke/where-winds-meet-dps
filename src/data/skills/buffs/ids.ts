@@ -24,6 +24,7 @@ export const BUFF = {
   innerPassion: "innerPassion",
   ironGuards: "ironGuards",
   mountainSplitter: "mountainSplitter",
+  mountainSplitterExhausted: "mountainSplitterExhausted",
   nonPlayerBaseDamage40: "nonPlayerBaseDamage40",
   nonPlayerBaseDamage50: "nonPlayerBaseDamage50",
   mistwingPhysicalPenetration: "mistwingPhysicalPenetration",

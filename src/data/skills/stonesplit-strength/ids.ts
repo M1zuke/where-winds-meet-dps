@@ -2,6 +2,7 @@
 // this file PINS ids, it does not mint new ones.
 export const SKILL = {
   anxisoldierheng: "stonesplitStrength-anxisoldierheng",
+  anxisoldierhengStab: "stonesplitStrength-anxisoldierheng-stab",
   anxisoldiermodown: "stonesplitStrength-anxisoldiermodown",
   anxisoldiermojump: "stonesplitStrength-anxisoldiermojump",
   anxisoldiermosweep: "stonesplitStrength-anxisoldiermosweep",

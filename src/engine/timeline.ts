@@ -229,6 +229,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
       if (trigger.phase !== undefined && clockQiPhase(buffParams, frame / FPS) !== trigger.phase)
         return false
+      if (trigger.requiresParam !== undefined) {
+        if (!paramOnOf(buffParams, trigger.requiresParam)) return false
+        if (
+          trigger.requiresMinTier !== undefined &&
+          paramTierOf(buffParams, trigger.requiresParam) < trigger.requiresMinTier
+        )
+          return false
+      }
       if (trigger.cooldownFrames === undefined) return true
       const lastFired = lastFiredFrame.get(trigger)
       if (lastFired !== undefined && frame - lastFired < trigger.cooldownFrames) return false
@@ -550,6 +558,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const openPermanent = (id: string) => ledger.openPermanent(id)
   const conditionHolds = (c: TriggerCondition, frame: number): boolean =>
     conditionSatisfiedByStacks(c, ledger.conditionStacksAt(c.buffId, frame))
+  // A `castSkill` condition's buff-engine source reads whichever engine
+  // instance the caller passes — the prepass's own in-progress one while it
+  // builds, the fully-resolved one once pass 1 runs.
+  const castConditionHoldsFor =
+    (engineForGate: BuffEngine | null) =>
+    (condition: TriggerCondition, frame: number): boolean =>
+      condition.source === "buffEngine"
+        ? !!engineForGate &&
+          conditionSatisfiedByStacks(
+            condition,
+            engineForGate.getHistoricalBuffStacks(condition.buffId, frame / FPS),
+          )
+        : conditionHolds(condition, frame)
   const liveWriter = statusWriter(ledger, conditionHolds)
   seedOpeningState(liveWriter, spanStart)
 
@@ -605,7 +626,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     try {
       const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
       engine.attachStatuses({ view: ledger, fps: FPS })
-      const castTriggerFires = triggerGate(conditionHolds)
+      const castTriggerFires = triggerGate(castConditionHoldsFor(engine))
       let sequence = 0
       const pending: PendingCast[] = laidSteps.map((ls) => ({
         frame: ls.startFrame,
@@ -666,6 +687,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return null
     }
   })()
+
+  const castSkillFiresInPass1 = triggerGate(castConditionHoldsFor(buffEngine))
 
   const resources = (classDefinition(inputs.classId)?.resources ?? [])
     .filter((definition) =>
@@ -1068,7 +1091,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         )
         continue
       }
-      if (!liveWriter.fires(trigger, frame)) continue
+      const triggerFires =
+        trigger.kind === "castSkill"
+          ? castSkillFiresInPass1(trigger, frame)
+          : liveWriter.fires(trigger, frame)
+      if (!triggerFires) continue
       if (trigger.kind === "applyDot") {
         const status = statusById.get(trigger.targetId)
         if (!status || !isDebuffStatus(status)) continue

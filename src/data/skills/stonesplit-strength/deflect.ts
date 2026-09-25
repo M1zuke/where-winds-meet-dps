@@ -11,7 +11,7 @@ export const deflect = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "Stonesplit",
   castTag: CAST.deflect,
-  triggersBuffs: [BUFF.forgetfulness, BUFF.cleftpeakDeflectGrant],
+  triggersBuffs: [BUFF.cleftpeakDeflectGrant],
   castFrames: 25,
   triggerable: true,
   hits: [

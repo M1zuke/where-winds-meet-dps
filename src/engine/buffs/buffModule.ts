@@ -59,7 +59,7 @@ export interface BuffMeta {
   // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
   buffAppliesAfterSec?: number
   maxStacks?: number
-  cooldown?: number
+  cooldown?: number | ((ctx: EffectContext) => number)
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean

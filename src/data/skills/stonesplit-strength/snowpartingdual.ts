@@ -1,6 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTUNE, CAST, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 
@@ -8,13 +7,13 @@ export const snowpartingdual = defineSkill({
   id: SKILL.snowpartingdual,
   classId: "stonesplitStrength",
   name: "SnowpartingDual",
-  tags: [WEAPON.hengBlade, ATTUNE.snowpartingVariedCombo],
+  tags: [WEAPON.hengBlade],
   skillType: "weapon",
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingDual,
   receives: SNOWPARTING_BLADE_RECEIVES,
-  triggersBuffs: [BUFF.forgetfulness],
+  triggersBuffs: [],
   castFrames: 35,
   triggerable: true,
   hits: [

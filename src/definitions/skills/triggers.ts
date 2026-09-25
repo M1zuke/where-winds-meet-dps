@@ -14,6 +14,8 @@ interface TriggerSpec {
   phase?: QiPhase
   cooldownFrames?: number
   durationFrames?: number
+  requiresParam?: string
+  requiresMinTier?: number
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -33,6 +35,8 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
       ? { maxExtendedDurationFrames: spec.maxExtendedDurationFrames }
       : {}),
     ...(spec.appliesOnCastEnd !== undefined ? { appliesOnCastEnd: spec.appliesOnCastEnd } : {}),
+    ...(spec.requiresParam !== undefined ? { requiresParam: spec.requiresParam } : {}),
+    ...(spec.requiresMinTier !== undefined ? { requiresMinTier: spec.requiresMinTier } : {}),
   }
 }
 

@@ -25,7 +25,13 @@ export const phalanxq = defineSkill({
       attributeMultiplier: 2.8422,
       physFixed: 525,
       attributeFixed: 286,
-      triggers: [castSkill({ target: SKILL.anxisoldiermosweep, stacks: 0 })],
+      triggers: [
+        castSkill({
+          target: SKILL.anxisoldiermosweep,
+          stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
+        }),
+      ],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

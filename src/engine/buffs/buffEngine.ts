@@ -206,6 +206,8 @@ export class BuffEngine {
       spec: this.params.spec as string | undefined,
       armorSet: this.params.armorSet as string | undefined,
       minPhysAttack: this.paramNum("minPhysAttack"),
+      maxPhysAttack: this.paramNum("maxPhysAttack"),
+      whiteCritRate: this.paramNum("whiteCritRate"),
       breakthrough: this.paramNum("breakthrough"),
       param: (id) => this.paramOn(id),
       paramTier: (id) => this.paramTier(id),
@@ -243,6 +245,12 @@ export class BuffEngine {
   ): number {
     if (typeof module.duration === "number") return module.duration
     return module.duration(this.buildContext(time, event, 0, module))
+  }
+
+  private resolveCooldown(module: BuffModule, time: number): number {
+    if (module.cooldown === undefined) return 0
+    if (typeof module.cooldown === "number") return module.cooldown
+    return module.cooldown(this.buildContext(time, { kind: "display" }, 0, module))
   }
 
   // What is left of the window the caller is standing in, never the def's own
@@ -571,9 +579,9 @@ export class BuffEngine {
     )
       return
     if (this.triggerOnlyExtends(module, props) && !this.isBuffActiveAtTime(module.id, time)) return
-    if (module.cooldown) {
+    if (module.cooldown !== undefined) {
       const last = this.activeBuffs.get(module.id)
-      if (last && time - last.appliedAt < module.cooldown) return
+      if (last && time - last.appliedAt < this.resolveCooldown(module, time)) return
     }
     const applyTime =
       module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
@@ -809,7 +817,8 @@ export class BuffEngine {
   private refreshMistwillowThrottled(id: string, time: number): void {
     const active = this.activeBuffs.get(id)
     if (!active || time < active.appliedAt || time >= active.expiresAt) return
-    const cooldown = this.definitions.get(id)?.cooldown ?? 0
+    const module = this.definitions.get(id)
+    const cooldown = module ? this.resolveCooldown(module, time) : 0
     if (time - active.appliedAt < cooldown) return
     this.applyBuff(id, time)
   }

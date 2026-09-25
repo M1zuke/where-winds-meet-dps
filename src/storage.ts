@@ -47,6 +47,7 @@ import {
   isHitVariant,
   isQiPhase,
   isTriggerCondition,
+  isHitOrVariantCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
@@ -1158,7 +1159,7 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   if (Array.isArray(h.variants)) {
     hit.variants = h.variants.filter(isHitVariant).map((v) => ({
       ...v,
-      conditions: v.conditions.filter(isTriggerCondition).map(migrateTriggerCondition),
+      conditions: v.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition),
     }))
   } else {
     delete hit.variants
@@ -1167,7 +1168,7 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
     hit.triggers = h.triggers.map((tr) => hydrateHitTrigger(tr))
   }
   if (Array.isArray(h.conditions)) {
-    hit.conditions = h.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
+    hit.conditions = h.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
   } else {
     delete hit.conditions
   }
@@ -1180,13 +1181,15 @@ function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition 
 
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
+  const conditionIsValid = tr.kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition
   const trigger: HitTrigger = {
     ...tr,
     targetId: migrateMysticId(migrateBuffId(migrateEntityId(tr.targetId))),
-    condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
+    condition:
+      tr.condition && conditionIsValid(tr.condition) ? migrateTriggerCondition(tr.condition) : null,
   }
   if (Array.isArray(tr.conditions)) {
-    trigger.conditions = tr.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
+    trigger.conditions = tr.conditions.filter(conditionIsValid).map(migrateTriggerCondition)
   } else {
     delete trigger.conditions
   }
@@ -1352,6 +1355,7 @@ export function migrateDotStandinOverrides(): void {
 
 function importedTrigger(t: unknown): HitTrigger {
   const c = (t && typeof t === "object" ? t : {}) as Partial<HitTrigger>
+  const kind = c.kind === "castSkill" ? "castSkill" : "applyBuff"
   const rawCondition = c.condition as Partial<TriggerCondition> | null | undefined
   const condition: TriggerCondition | null =
     rawCondition && typeof rawCondition === "object" && typeof rawCondition.buffId === "string"
@@ -1359,16 +1363,21 @@ function importedTrigger(t: unknown): HitTrigger {
           buffId: rawCondition.buffId,
           op: rawCondition.op === "gt" || rawCondition.op === "eq" ? rawCondition.op : "gte",
           stacks: typeof rawCondition.stacks === "number" ? rawCondition.stacks : 1,
+          ...(kind === "castSkill" && rawCondition.source === "buffEngine"
+            ? { source: "buffEngine" as const }
+            : {}),
         }
       : null
   const trigger: HitTrigger = {
-    kind: c.kind === "castSkill" ? "castSkill" : "applyBuff",
+    kind,
     targetId: typeof c.targetId === "string" ? c.targetId : "",
     stacks: typeof c.stacks === "number" ? c.stacks : 1,
     condition,
   }
   if (Array.isArray(c.conditions)) {
-    trigger.conditions = c.conditions.filter(isTriggerCondition)
+    trigger.conditions = c.conditions.filter(
+      kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition,
+    )
   }
   if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
   if (typeof c.transferFrom === "string" && c.transferFrom) trigger.transferFrom = c.transferFrom
@@ -1379,12 +1388,17 @@ function importedTrigger(t: unknown): HitTrigger {
     c.cooldownFrames >= 0
   )
     trigger.cooldownFrames = c.cooldownFrames
+  if (typeof c.requiresParam === "string" && c.requiresParam) {
+    trigger.requiresParam = c.requiresParam
+    if (typeof c.requiresMinTier === "number" && Number.isFinite(c.requiresMinTier))
+      trigger.requiresMinTier = c.requiresMinTier
+  }
   return trigger
 }
 
 function importedVariant(v: unknown): HitVariant | null {
   if (!isHitVariant(v)) return null
-  return { ...v, id: newVariantId(), conditions: v.conditions.filter(isTriggerCondition) }
+  return { ...v, id: newVariantId(), conditions: v.conditions.filter(isHitOrVariantCondition) }
 }
 
 function importedHit(h: unknown): SkillHit {
@@ -1404,7 +1418,7 @@ function importedHit(h: unknown): SkillHit {
     if (variants.length > 0) hit.variants = variants
   }
   if (Array.isArray(c.conditions)) {
-    const conditions = c.conditions.filter(isTriggerCondition)
+    const conditions = c.conditions.filter(isHitOrVariantCondition)
     if (conditions.length > 0) hit.conditions = conditions
   }
   return hit

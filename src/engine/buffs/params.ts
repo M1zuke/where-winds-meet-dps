@@ -78,6 +78,8 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 
   params.minPhysAttack = inputs.phys.min
+  params.maxPhysAttack = inputs.phys.max
+  params.whiteCritRate = inputs.critRate
   params.breakthrough = inputs.breakthrough
   params.distanceMeters =
     inputs.combatSettings?.distanceToTargetMeters ?? defaultCombatSettings().distanceToTargetMeters
