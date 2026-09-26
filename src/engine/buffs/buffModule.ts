@@ -1,5 +1,6 @@
 import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
+import type { BuffParams } from "./buffEngine"
 
 export interface BuffRequirements {
   param?: string
@@ -48,6 +49,12 @@ export type BuffGate =
   | { requires?: BuffRequirements; grantRequires?: undefined }
   | { requires?: undefined; grantRequires: Record<string, BuffRequirements> }
 
+// A `grantRequires` key reserved for "every source this map does not name" —
+// a tag family never collides with it, since every real tag carries its own
+// namespace prefix. Absent, an unmapped source still grants ungated, same as
+// before this key existed.
+export const GRANT_REQUIRES_DEFAULT = "grantRequires:default"
+
 // The declarative core: the Skill Editor catalog derives `bonus`, `enabledParam`,
 // `minTier` and the Receives / Applies / Class Buffs rows from these fields, and
 // `displayGates.ts` filters on them, so they must stay readable without
@@ -62,7 +69,9 @@ export type BuffMeta = BuffGate & {
   // instead of at the trigger hit's own frame. Ignored when
   // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
   buffAppliesAfterSec?: number
-  maxStacks?: number
+  // Unlike `duration`/`cooldown`, a function here resolves once at
+  // registration rather than being re-read per event.
+  maxStacks?: number | ((params: BuffParams) => number)
   cooldown?: number | ((ctx: EffectContext) => number)
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }

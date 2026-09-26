@@ -22,6 +22,7 @@ export const snowpartingvcPrepull = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
   startLatency: "noWaitOnDummy",
+  castConditions: [{ buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 }],
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,

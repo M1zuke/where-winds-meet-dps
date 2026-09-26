@@ -142,6 +142,7 @@ describe("Mistwing — target health penetration", () => {
     conditionStacksAt: (id) => (id === STATUS.bingePoints ? 100 : 0),
     remainingFramesAt: () => undefined,
     framesSinceLastEnd: () => undefined,
+    framesSinceStacksBelowThreshold: () => undefined,
     windowsOf: () => [],
   }
 

@@ -1,6 +1,7 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
@@ -22,7 +23,23 @@ export const swordspecial4Hit = defineSkill({
   castFrames: 84,
   triggerable: true,
   hits: [
-    SWORDSPECIAL_HITS[0]!,
+    {
+      ...SWORDSPECIAL_HITS[0]!,
+      // In-game cast length as of 2026-09-24: Sword Horizon cuts the
+      // animation short into the Crisscross - Inner Balance III follow-up.
+      variants: [
+        {
+          id: "hv-swordspecial-4-hit-hit-0-sword-horizon",
+          label: "Sword Horizon",
+          conditions: [{ param: PARAM.swordHorizon }],
+          physMultiplier: SWORDSPECIAL_HITS[0]!.physMultiplier,
+          attributeMultiplier: SWORDSPECIAL_HITS[0]!.attributeMultiplier,
+          physFixed: SWORDSPECIAL_HITS[0]!.physFixed,
+          attributeFixed: SWORDSPECIAL_HITS[0]!.attributeFixed,
+          castFrames: 77,
+        },
+      ],
+    },
     SWORDSPECIAL_HITS[1]!,
     {
       ...SWORDSPECIAL_HITS[2]!,

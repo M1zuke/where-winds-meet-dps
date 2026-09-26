@@ -21,6 +21,7 @@ export interface Buff {
   durationFrames: number
   effects: BuffStatEffect[]
   maxStacks: number
+  maxStacksByTier?: { param: string; byTier: Record<number, number> }
   stackScaling: StackScaling
   requiresParam?: string
   requiresMinTier?: number
@@ -63,6 +64,17 @@ export function isBuff(x: unknown): x is Buff {
   if (b.requiresMinTier !== undefined) {
     if (typeof b.requiresMinTier !== "number" || !Number.isFinite(b.requiresMinTier)) return false
     if (typeof b.requiresParam !== "string" || !b.requiresParam) return false
+  }
+  if (b.maxStacksByTier !== undefined) {
+    const byTierSpec = b.maxStacksByTier as Record<string, unknown> | null
+    if (!byTierSpec || typeof byTierSpec !== "object") return false
+    if (typeof byTierSpec.param !== "string" || !byTierSpec.param) return false
+    const byTier = byTierSpec.byTier as Record<string, unknown> | null
+    if (!byTier || typeof byTier !== "object") return false
+    for (const [tier, cap] of Object.entries(byTier)) {
+      if (!Number.isFinite(Number(tier))) return false
+      if (typeof cap !== "number" || !Number.isFinite(cap) || cap <= 0) return false
+    }
   }
   if (b.onExpire !== undefined) {
     const onExpire = b.onExpire as Record<string, unknown> | null

@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
 
 export const swordHeavyChargedPrepull = defineSkill({
   id: SKILL.swordHeavyChargedPrepull,
@@ -37,7 +38,7 @@ export const swordHeavyChargedPrepull = defineSkill({
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
       attributeFixed: 197.2,
-      triggers: [energySurgeReleaseTrigger],
+      triggers: [energySurgeReleaseTrigger, multiWaveWindowReleaseGrantTrigger],
     }),
     hit(1, {
       frame: 17,

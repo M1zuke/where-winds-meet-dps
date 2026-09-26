@@ -17,6 +17,7 @@ function statusView(active: boolean): StatusView {
     conditionStacksAt: (id) => (active && id === GATE ? 1 : 0),
     remainingFramesAt: () => undefined,
     framesSinceLastEnd: () => undefined,
+    framesSinceStacksBelowThreshold: () => undefined,
     windowsOf: () => [],
   }
 }

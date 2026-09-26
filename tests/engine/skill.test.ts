@@ -11,6 +11,7 @@ import {
   triggerConditions,
   newVariantId,
   type HitVariant,
+  type StatusCondition,
 } from "../../src/engine/skill"
 import {
   saveCustomSkill,
@@ -309,8 +310,8 @@ describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
     const s = seedSkillFromBuiltin(CLASS, src)
     expect(s.castConditions).toEqual(src.castConditions)
     expect(s.castConditions).not.toBe(src.castConditions)
-    s.castConditions![0].stacks = 99
-    expect(src.castConditions![0].stacks).toBe(1)
+    ;(s.castConditions![0] as StatusCondition).stacks = 99
+    expect((src.castConditions![0] as StatusCondition).stacks).toBe(1)
   })
 
   it("leaves castConditions undefined when the source has none", () => {
@@ -467,6 +468,31 @@ describe("storage round-trip", () => {
     saveCustomSkill(s)
     const found = loadCustomSkillsForClass(CLASS).find((x) => x.id === s.id)
     expect(found?.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("export → import carries a param condition and an anyOf castCondition through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "OrGatedCastSkill",
+      castConditions: [
+        { param: "someInnerWay", minTier: 3 },
+        { anyOf: [{ buffId: "bf-gate", op: "gte", stacks: 1 }, { param: "someInnerWay" }] },
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.castConditions).toEqual(skill.castConditions)
+  })
+
+  it("save → load carries a param condition and an anyOf castCondition through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "OrGatedSavedSkill",
+      castConditions: [
+        { param: "someInnerWay", minTier: 3 },
+        { anyOf: [{ buffId: "bf-gate", op: "gte", stacks: 1 }, { param: "someInnerWay" }] },
+      ],
+    })
+    saveCustomSkill(skill)
+    const found = loadCustomSkillsForClass(CLASS).find((candidate) => candidate.id === skill.id)
+    expect(found?.castConditions).toEqual(skill.castConditions)
   })
 
   it("export → import carries a decaying cooldown and its group through", () => {

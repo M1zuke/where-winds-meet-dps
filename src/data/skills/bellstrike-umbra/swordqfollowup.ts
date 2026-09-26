@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
@@ -28,6 +28,20 @@ export const swordqfollowup = defineSkill({
       physFixed: 150.6,
       attributeFixed: 82,
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
+      // In-game cast length as of 2026-09-24: Sword Horizon cuts the animation
+      // short into the Crisscross - Inner Track follow-up.
+      variants: [
+        {
+          id: "hv-swordqfollowup-hit-0-sword-horizon",
+          label: "Sword Horizon",
+          conditions: [{ param: PARAM.swordHorizon }],
+          physMultiplier: 0.544068,
+          attributeMultiplier: 0.816102,
+          physFixed: 150.6,
+          attributeFixed: 82,
+          castFrames: 61,
+        },
+      ],
     }),
     hit(1, {
       frame: 23,

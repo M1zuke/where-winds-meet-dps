@@ -22,6 +22,7 @@ export const snowpartingvc = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVC,
   startLatency: "noWaitOnDummy",
+  castConditions: [{ buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 }],
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,

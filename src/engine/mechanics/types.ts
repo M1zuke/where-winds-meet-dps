@@ -21,6 +21,10 @@ export interface MechanicSetup {
   // ascending — what a proc schedule is built from.
   hitTimesSec: readonly number[]
   weaponHitTimesSec: readonly number[]
+  // Every DoT tick the layout pass's own ledger produces, in seconds and
+  // ascending — a proc schedule opts into these alongside `hitTimesSec`. Its
+  // limits: `docs/CALCULATION.md` § "Mechanic rules".
+  dotTickTimesSec: readonly number[]
   qiPhaseAt(timeSec: number): QiPhase
   // The resolved buff-engine params, so a mechanic gates on exactly what the
   // engine gated on rather than re-deriving it from `mindMethods`.

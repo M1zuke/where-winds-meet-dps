@@ -48,6 +48,8 @@ import {
   isQiPhase,
   isTriggerCondition,
   isHitOrVariantCondition,
+  isAnyOfCondition,
+  isParamCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
@@ -1189,6 +1191,8 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
 }
 
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
+  if (isAnyOfCondition(condition)) return { anyOf: condition.anyOf.map(migrateTriggerCondition) }
+  if (isParamCondition(condition)) return condition
   return { ...condition, buffId: migrateMysticId(migrateBuffId(condition.buffId)) }
 }
 
@@ -1366,21 +1370,35 @@ export function migrateDotStandinOverrides(): void {
   } catch {}
 }
 
+function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondition | null {
+  if (!raw || typeof raw !== "object") return null
+  const record = raw as Record<string, unknown>
+  if (Array.isArray(record.anyOf)) {
+    const clauses = record.anyOf
+      .map((clause) => importedCondition(clause, kind))
+      .filter((clause): clause is TriggerCondition => clause !== null)
+    return clauses.length > 0 ? { anyOf: clauses } : null
+  }
+  if (typeof record.param === "string" && record.param) {
+    return typeof record.minTier === "number" && Number.isFinite(record.minTier)
+      ? { param: record.param, minTier: record.minTier }
+      : { param: record.param }
+  }
+  if (typeof record.buffId !== "string") return null
+  return {
+    buffId: record.buffId,
+    op: record.op === "gt" || record.op === "eq" ? record.op : "gte",
+    stacks: typeof record.stacks === "number" ? record.stacks : 1,
+    ...(kind === "castSkill" && record.source === "buffEngine"
+      ? { source: "buffEngine" as const }
+      : {}),
+  }
+}
+
 function importedTrigger(t: unknown): HitTrigger {
   const c = (t && typeof t === "object" ? t : {}) as Partial<HitTrigger>
   const kind = c.kind === "castSkill" ? "castSkill" : "applyBuff"
-  const rawCondition = c.condition as Partial<TriggerCondition> | null | undefined
-  const condition: TriggerCondition | null =
-    rawCondition && typeof rawCondition === "object" && typeof rawCondition.buffId === "string"
-      ? {
-          buffId: rawCondition.buffId,
-          op: rawCondition.op === "gt" || rawCondition.op === "eq" ? rawCondition.op : "gte",
-          stacks: typeof rawCondition.stacks === "number" ? rawCondition.stacks : 1,
-          ...(kind === "castSkill" && rawCondition.source === "buffEngine"
-            ? { source: "buffEngine" as const }
-            : {}),
-        }
-      : null
+  const condition = importedCondition(c.condition, kind)
   const trigger: HitTrigger = {
     kind,
     targetId: typeof c.targetId === "string" ? c.targetId : "",
@@ -1577,6 +1595,7 @@ function hydrateBuff(b: Buff): Buff {
     scope: b.scope === "team" ? "team" : "player",
     stackScaling: b.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof b.maxStacks === "number" && b.maxStacks > 0 ? b.maxStacks : 1,
+    maxStacksByTier: importedMaxStacksByTier(b.maxStacksByTier),
     effects: withRenamedStatKeys(b.effects),
   }
   if (b.onExpire)
@@ -1723,6 +1742,25 @@ export function exportCustomBuff(b: Buff): string {
   return JSON.stringify(b, null, 2)
 }
 
+function importedMaxStacksByTier(raw: unknown): Buff["maxStacksByTier"] {
+  if (!raw || typeof raw !== "object") return undefined
+  const spec = raw as Record<string, unknown>
+  if (typeof spec.param !== "string" || !spec.param) return undefined
+  if (!spec.byTier || typeof spec.byTier !== "object") return undefined
+  const byTier: Record<number, number> = {}
+  for (const [tier, cap] of Object.entries(spec.byTier as Record<string, unknown>)) {
+    if (
+      !Number.isFinite(Number(tier)) ||
+      typeof cap !== "number" ||
+      !Number.isFinite(cap) ||
+      cap <= 0
+    )
+      continue
+    byTier[Number(tier)] = cap
+  }
+  return Object.keys(byTier).length > 0 ? { param: spec.param, byTier } : undefined
+}
+
 export function importCustomBuff(text: string, targetClassId: string): Buff {
   const parsed = JSON.parse(text) as unknown
   if (!parsed || typeof parsed !== "object") {
@@ -1740,6 +1778,7 @@ export function importCustomBuff(text: string, targetClassId: string): Buff {
     durationFrames: typeof c.durationFrames === "number" ? c.durationFrames : 600,
     effects,
     maxStacks: typeof c.maxStacks === "number" && c.maxStacks > 0 ? c.maxStacks : 1,
+    maxStacksByTier: importedMaxStacksByTier(c.maxStacksByTier),
     stackScaling: c.stackScaling === "perStack" ? "perStack" : "flat",
   })
   if (!isBuff(fresh)) {

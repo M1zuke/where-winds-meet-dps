@@ -33,6 +33,11 @@ import { V29__soberSorrowExtendUsesParam } from "./V29__soberSorrowExtendUsesPar
 import { V30__swordSpecial4HitAttunementReach } from "./V30__swordSpecial4HitAttunementReach"
 import { V31__forgetfulnessCooldownMarker } from "./V31__forgetfulnessCooldownMarker"
 import { V32__snowbreakSpringAvailability } from "./V32__snowbreakSpringAvailability"
+import { V33__snowbreakSpringGrantTiming } from "./V33__snowbreakSpringGrantTiming"
+import { V34__herosBloodInebriateConditionalNoAbrasion } from "./V34__herosBloodInebriateConditionalNoAbrasion"
+import { V35__swordHorizonCrisscrossGates } from "./V35__swordHorizonCrisscrossGates"
+import { V36__swordMorphMultiWaveWindow } from "./V36__swordMorphMultiWaveWindow"
+import { V37__anxiSoldierHengSnowbreakTag } from "./V37__anxiSoldierHengSnowbreakTag"
 
 export type {
   CustomSkillMigration,
@@ -86,6 +91,11 @@ export {
 export { healSwordspecial4HitAttunementReach } from "./V30__swordSpecial4HitAttunementReach"
 export { healSkill as healForgetfulnessCooldownMarker } from "./V31__forgetfulnessCooldownMarker"
 export { healSkill as healSnowbreakSpringAvailability } from "./V32__snowbreakSpringAvailability"
+export { healSkill as healSnowbreakSpringGrantTiming } from "./V33__snowbreakSpringGrantTiming"
+export { healSkill as healHerosBloodInebriateConditionalNoAbrasion } from "./V34__herosBloodInebriateConditionalNoAbrasion"
+export { healSkill as healSwordHorizonCrisscrossGates } from "./V35__swordHorizonCrisscrossGates"
+export { healSkill as healSwordMorphMultiWaveWindow } from "./V36__swordMorphMultiWaveWindow"
+export { healSkill as healAnxiSoldierHengSnowbreakTag } from "./V37__anxiSoldierHengSnowbreakTag"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -117,6 +127,11 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V30__swordSpecial4HitAttunementReach,
   V31__forgetfulnessCooldownMarker,
   V32__snowbreakSpringAvailability,
+  V33__snowbreakSpringGrantTiming,
+  V34__herosBloodInebriateConditionalNoAbrasion,
+  V35__swordHorizonCrisscrossGates,
+  V36__swordMorphMultiWaveWindow,
+  V37__anxiSoldierHengSnowbreakTag,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

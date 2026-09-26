@@ -10,7 +10,7 @@ import { builtinDebuff, builtinSkill, dotRow } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
 import { SKILL as UMBRA_SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { makeSkill, makeHit } from "../../src/engine/skill"
+import { makeSkill, makeHit, type StatusCondition } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
@@ -185,7 +185,9 @@ describe("Zenith detonation extends Smolder", () => {
     expect(t).toBeTruthy()
     expect(t!.extendFrames).toBe(600)
     expect(t!.extendOnly).toBe(true)
-    expect(t!.condition?.buffId).toBe("buff-bellstrikeUmbra-zenith-detonation")
+    expect((t!.condition as StatusCondition | null)?.buffId).toBe(
+      "buff-bellstrikeUmbra-zenith-detonation",
+    )
   })
 
   it("a zenith detonation lengthens an active window; a non-zenith one does not", () => {

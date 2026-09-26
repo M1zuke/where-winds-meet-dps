@@ -155,4 +155,47 @@ describe("Tiltrim", () => {
     expect(withinGrace).toBeGreaterThan(baselineWithinGrace)
     expect(afterGrace).toBeCloseTo(baselineAfterGrace, 6)
   })
+
+  it("keeps paying the per-stack bonus for up to 5.1s after Binge Points fall below Tipsy's threshold", () => {
+    const tipsyDrop = makeSkill(CLASS, {
+      name: "Tipsy Drop",
+      castFrames: 1,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          triggers: [applyBuff({ target: STATUS.bingePoints, stacks: -100 })],
+        }),
+      ],
+    })
+    const probe = makeSkill(CLASS, {
+      name: "Late Probe",
+      castFrames: 700,
+      hits: [
+        makeHit({ frame: 30, physMultiplier: 1 }), // 0.5s after the drop: within the 5.1s grace
+        makeHit({ frame: 400, physMultiplier: 1 }), // 6.7s after the drop: the grace has elapsed
+      ],
+    })
+    const run = (set: string | null) =>
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        set,
+        customSkills: [tipsyDrop, probe],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: tipsyDrop.id }), makeStep({ skillId: probe.id })],
+          openingStacks: { [STATUS.bingePoints]: 150 },
+        }),
+      })
+    const damageOf = (result: ReturnType<typeof run>) =>
+      result
+        .timeline!.filter((event) => event.skillName === probe.name)
+        .map((event) => event.damage)
+
+    const [withinGrace, afterGrace] = damageOf(run(SET_ID.tiltrim))
+    const [baselineWithinGrace, baselineAfterGrace] = damageOf(run(null))
+
+    expect(withinGrace).toBeGreaterThan(baselineWithinGrace)
+    expect(afterGrace).toBeCloseTo(baselineAfterGrace, 6)
+  })
 })

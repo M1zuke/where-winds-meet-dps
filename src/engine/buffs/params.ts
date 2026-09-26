@@ -9,20 +9,10 @@ import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
 import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
 
-// The one place `Inputs.buffParams`' `<param>Tier` wire-key convention is
-// written — every reader goes through `paramOnOf`/`paramTierOf` instead of
-// rebuilding the key itself.
+export { paramOnOf, paramTierOf } from "./paramTier"
+
 function tierKey(param: string): string {
   return param + "Tier"
-}
-
-export function paramOnOf(params: BuffParams, param: string): boolean {
-  return !!params[param]
-}
-
-export function paramTierOf(params: BuffParams, param: string): number {
-  const tier = params[tierKey(param)]
-  return typeof tier === "number" ? tier : 0
 }
 
 export function clockQiPhase(params: BuffParams, timeSec: number): QiPhase {

@@ -10,7 +10,12 @@
 import type { Skill } from "../skill"
 import type { StatKey } from "../statRegistry"
 import type { StatusView } from "../ledger"
-import type { BuffModule, BuffRequirements, ConditionalFinalCrit } from "./buffModule"
+import {
+  GRANT_REQUIRES_DEFAULT,
+  type BuffModule,
+  type BuffRequirements,
+  type ConditionalFinalCrit,
+} from "./buffModule"
 
 // What a cast carries away from the buff engine: ids that count as active for
 // that cast alone, and the subset its generated skills inherit.
@@ -59,6 +64,7 @@ export type { QiPhase }
 export interface DamageEffectsResult {
   effects: { statKey: StatKey; amount: number }[]
   forceCrit: boolean
+  forceNoAbrasion: boolean
   // Post-formula, so it multiplies the finished number rather than joining the
   // stat sum — 1 when no active def contributes one.
   damageFactor: number
@@ -94,6 +100,7 @@ function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
 export class BuffEngine {
   params: BuffParams
   definitions = new Map<string, BuffModule>()
+  private maxStacksById = new Map<string, number>()
   private activeBuffs = new Map<string, ActiveBuff>()
   private buffHistory: HistoryEntry[] = []
   private grantTimes = new Map<string, number[]>()
@@ -113,6 +120,12 @@ export class BuffEngine {
     const register = (module: BuffModule) => {
       if (module.requires?.set && module.requires.set !== this.params.armorSet) return
       this.definitions.set(module.id, module)
+      if (module.maxStacks !== undefined) {
+        this.maxStacksById.set(
+          module.id,
+          typeof module.maxStacks === "function" ? module.maxStacks(this.params) : module.maxStacks,
+        )
+      }
     }
     for (const module of modules) register(module)
     for (const module of groupModules) register(module)
@@ -145,13 +158,18 @@ export class BuffEngine {
     return true
   }
 
-  private gateOk(module: BuffModule, castTag?: string): boolean {
-    if (
-      castTag !== undefined &&
-      module.grantRequires &&
-      Object.hasOwn(module.grantRequires, castTag)
-    ) {
-      return this.requirementsMet(module.grantRequires[castTag])
+  private gateOk(module: BuffModule, castTag?: string, tagSet?: ReadonlySet<string>): boolean {
+    if (module.grantRequires) {
+      if (castTag !== undefined && Object.hasOwn(module.grantRequires, castTag))
+        return this.requirementsMet(module.grantRequires[castTag])
+      if (tagSet) {
+        for (const tag of Object.keys(module.grantRequires)) {
+          if (tag !== GRANT_REQUIRES_DEFAULT && tagSet.has(tag))
+            return this.requirementsMet(module.grantRequires[tag])
+        }
+      }
+      if (Object.hasOwn(module.grantRequires, GRANT_REQUIRES_DEFAULT))
+        return this.requirementsMet(module.grantRequires[GRANT_REQUIRES_DEFAULT])
     }
     return this.requirementsMet(module.requires)
   }
@@ -211,6 +229,21 @@ export class BuffEngine {
     return framesSince === undefined ? null : framesSince / fps
   }
 
+  // Reads the ledger's counter-stack history — the only StatusView carries
+  // one, a permanent-activation gate buff never being a registered module.
+  private secondsSinceStacksBelowThreshold(
+    id: string,
+    time: number,
+    threshold: number,
+    statusesView?: StatusView,
+  ): number | null {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    if (!view || !fps) return null
+    const framesSince = view.framesSinceStacksBelowThreshold(id, Math.round(time * fps), threshold)
+    return framesSince === undefined ? null : framesSince / fps
+  }
+
   private remainingHealthFraction(damageSoFar: number): number {
     const targetMaxHp = this.paramNum("targetMaxHp")
     if (targetMaxHp <= 0) return 1
@@ -253,6 +286,8 @@ export class BuffEngine {
         appliedAt: (id) => this.historicalApplyAt(id, time)?.time ?? null,
         expiresAt: (id) => this.historicalApplyAt(id, time)?.expiresAt ?? null,
         secondsSinceLastEnd: (id) => this.secondsSinceLastEnd(id, time, statusesView),
+        secondsSinceStacksBelowThreshold: (id, threshold) =>
+          this.secondsSinceStacksBelowThreshold(id, time, threshold, statusesView),
       },
       self: {
         stacks: selfStacks,
@@ -279,6 +314,10 @@ export class BuffEngine {
     return module.cooldown(this.buildContext(time, { kind: "display" }, 0, module))
   }
 
+  private maxStacksOf(id: string): number | undefined {
+    return this.maxStacksById.get(id)
+  }
+
   // What is left of the window the caller is standing in, never the def's own
   // `duration`: an extension moves `expiresAt` and this has to follow it, and
   // an `alwaysActive` def's duration is a stand-in for "on for the fight"
@@ -292,7 +331,7 @@ export class BuffEngine {
   displayEffectsFor(
     module: BuffModule,
     time: number,
-    stacks: number = module.maxStacks ?? 1,
+    stacks: number = this.maxStacksOf(module.id) ?? 1,
   ): Effect[] {
     const asDamage: EffectEvent = { kind: "damage", castTag: "", tags: new Set() }
     const ctx = this.buildContext(time, asDamage, stacks, module, true)
@@ -356,7 +395,7 @@ export class BuffEngine {
         id,
         name: module?.name ?? id,
         stacks: Math.max(1, stacks),
-        maxStacks: module?.maxStacks ?? 1,
+        maxStacks: (module && this.maxStacksOf(module.id)) ?? 1,
         effects: stats,
         extras,
         requires: module?.requires?.set ?? module?.requires?.param,
@@ -369,7 +408,10 @@ export class BuffEngine {
       if (module?.activeAfterBuffEnds) continue
       if (module && !this.gateOk(module)) continue
       if (!this.isBuffActiveAtTime(id, time)) continue
-      const stacks = module?.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      const stacks =
+        module && this.maxStacksOf(module.id) !== undefined
+          ? this.getHistoricalBuffStacks(id, time)
+          : 1
       push(id, module, stacks)
     }
     for (const [id, module] of this.definitions) {
@@ -426,8 +468,8 @@ export class BuffEngine {
     const duration =
       durationOverride ?? (module ? this.resolveDuration(module, time) : DEFAULT_DURATION)
     let stacks: number | undefined
-    if (module?.maxStacks !== undefined) {
-      const max = module.maxStacks
+    const max = module ? this.maxStacksOf(module.id) : undefined
+    if (max !== undefined) {
       const cur = this.activeBuffs.get(id)
       if (cur && time >= cur.appliedAt && time < cur.expiresAt)
         stacks = Math.min((cur.stacks || 1) + stacksToAdd, max)
@@ -464,6 +506,7 @@ export class BuffEngine {
       damageMultiplier: () => {},
       setStatus: () => {},
       echo: () => {},
+      finalCritAtLeast: () => {},
       applyBuff: (id, stacks, durationSec) => {
         const target = this.definitions.get(id)
         if (target && !this.gateOk(target)) return
@@ -550,12 +593,13 @@ export class BuffEngine {
     props: SkillProperties = {},
     fromGeneratedSkill = false,
     declaredBuffIds: readonly string[] = [],
+    tagSet?: ReadonlySet<string>,
   ): CastBuffResult {
     const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
     if (props.noBuffTrigger) return result
     if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
 
-    this.triggerDeclaredBuffs(declaredBuffIds, castTag, time, props, fromGeneratedSkill)
+    this.triggerDeclaredBuffs(declaredBuffIds, castTag, time, props, fromGeneratedSkill, tagSet)
 
     for (const [id, module] of this.definitions) {
       if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
@@ -572,13 +616,15 @@ export class BuffEngine {
     time: number,
     props: SkillProperties = {},
     fromGeneratedSkill = false,
+    tagSet?: ReadonlySet<string>,
   ): void {
     const triggered = new Set<string>()
     for (const buffId of declaredBuffIds) {
       if (triggered.has(buffId)) continue
       triggered.add(buffId)
       const module = this.definitions.get(buffId)
-      if (module) this.applyTriggeredModule(module, castTag, time, props, fromGeneratedSkill)
+      if (module)
+        this.applyTriggeredModule(module, castTag, time, props, fromGeneratedSkill, tagSet)
     }
   }
 
@@ -595,8 +641,9 @@ export class BuffEngine {
     time: number,
     props: SkillProperties,
     fromGeneratedSkill: boolean,
+    tagSet?: ReadonlySet<string>,
   ): void {
-    if (!this.gateOk(module, castTag)) return
+    if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
     if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) return
     if (
@@ -707,7 +754,7 @@ export class BuffEngine {
     const window = this.latestApplyAt(module.id, time)
     if (!window || time >= window.expiresAt) return
     const before = window.stacks ?? 1
-    if (before <= 0 || before >= (module.maxStacks ?? 1)) return
+    if (before <= 0 || before >= (this.maxStacksOf(module.id) ?? 1)) return
     if (!this.canGrantDamageStack(module, time)) return
     this.buffHistory.push({
       time,
@@ -866,6 +913,7 @@ export class BuffEngine {
     const breakdown: Record<string, number> = {}
     let forceCrit = false
     let damageFactor = 1
+    let forceNoAbrasion = false
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     const artBonuses: Partial<Record<ArtBonusField, number>> = {}
     const echoFeeds: { debuffId: string }[] = []
@@ -878,6 +926,7 @@ export class BuffEngine {
       },
       forceOutcome(outcome) {
         if (outcome === "crit") forceCrit = true
+        if (outcome === "noAbrasion") forceNoAbrasion = true
       },
       applyBuff: () => {},
       consumeStacks: () => {},
@@ -890,6 +939,9 @@ export class BuffEngine {
       setStatus: () => {},
       echo(debuffId) {
         echoFeeds.push({ debuffId })
+      },
+      finalCritAtLeast(threshold, bonusBelowThreshold) {
+        conditionalFinalCrit = { threshold, bonusBelowThreshold }
       },
     }
 
@@ -916,7 +968,8 @@ export class BuffEngine {
       if (!reaches(tagSet, module)) continue
       if (module.reachesDotTicks === false && skill.isDotTick) continue
 
-      const stacks = module.maxStacks !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
+      const stacks =
+        this.maxStacksOf(module.id) !== undefined ? this.getHistoricalBuffStacks(id, time) : 1
       const ctx = this.buildContext(
         time,
         { kind: "damage", castTag, tags: tagSet },
@@ -927,13 +980,17 @@ export class BuffEngine {
         statusesView,
       )
       currentId = id
-      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
+      // The declarative field first, so a `finalCritAtLeast` effect this same
+      // module returns — genuinely scoped, unlike the whole-module field —
+      // always wins if a module somehow carried both.
       if (module.conditionalFinalCrit) conditionalFinalCrit = module.conditionalFinalCrit
+      for (const effect of resolveEffects(module, ctx)) applyEffect(sink, effect)
     }
 
     return {
       effects,
       forceCrit,
+      forceNoAbrasion,
       damageFactor,
       conditionalFinalCrit,
       artBonuses,

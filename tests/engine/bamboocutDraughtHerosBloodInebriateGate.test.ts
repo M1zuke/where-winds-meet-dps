@@ -10,6 +10,9 @@ import { makeHit, makeSkill } from "../../src/engine/skill"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { deepdazeEntryTriggers } from "../../src/data/skills/bamboocut-draught/buffs/deepdazeEntry"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
+import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { buffDefsForClass } from "../../src/engine/buffs/data"
+import { herosBloodInebriate } from "../../src/data/skills/bamboocut-draught/heros-blood-inebriate"
 import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bamboocutDraught"
@@ -79,6 +82,41 @@ describe("Hero's Blood - Inebriate is castable once per Deepdaze entry", () => {
       set: null,
     })
     expect(totalHerosBloodInebriateHits(result)).toBe(22)
+  })
+})
+
+describe("Hero's Blood - Inebriate cannot trigger Abrasion, only at 200+ Binge Points", () => {
+  const bingePointsStandIn = {
+    id: STATUS.bingePoints,
+    name: "Binge Points",
+    duration: 9999,
+    maxStacks: 300,
+    effects: [],
+  }
+
+  function engineWithBinge(stacks: number): BuffEngine {
+    const engine = new BuffEngine({ classId: "bamboocutDraught" }, [
+      bingePointsStandIn,
+      ...buffDefsForClass("bamboocutDraught"),
+    ])
+    engine.applyBuff(STATUS.bingePoints, 0, 9999, stacks)
+    return engine
+  }
+
+  it("forces no abrasion once Binge Points reaches 200", () => {
+    const engine = engineWithBinge(200)
+    expect(engine.calculateDamageEffects(herosBloodInebriate, 0.1).forceNoAbrasion).toBe(true)
+  })
+
+  it("does not force it below 200", () => {
+    const engine = engineWithBinge(150)
+    expect(engine.calculateDamageEffects(herosBloodInebriate, 0.1).forceNoAbrasion).toBe(false)
+  })
+
+  it("does not reach a skill that does not receive it", () => {
+    const engine = engineWithBinge(200)
+    const unrelated = makeSkill("bamboocutDraught", { name: "Unrelated", castTag: "unrelated" })
+    expect(engine.calculateDamageEffects(unrelated, 0.1).forceNoAbrasion).toBe(false)
   })
 })
 

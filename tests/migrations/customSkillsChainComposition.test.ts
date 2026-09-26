@@ -35,6 +35,11 @@ import { healSkill as healSoberSorrowExtendParam } from "../../src/migrations/cu
 import { healSkill as healSwordSpecial4HitAttunementReach } from "../../src/migrations/customSkills/V30__swordSpecial4HitAttunementReach"
 import { healSkill as healForgetfulnessCooldownMarker } from "../../src/migrations/customSkills/V31__forgetfulnessCooldownMarker"
 import { healSkill as healSnowbreakSpringAvailability } from "../../src/migrations/customSkills/V32__snowbreakSpringAvailability"
+import { healSkill as healSnowbreakSpringGrantTiming } from "../../src/migrations/customSkills/V33__snowbreakSpringGrantTiming"
+import { healSkill as healHerosBloodInebriateConditionalNoAbrasion } from "../../src/migrations/customSkills/V34__herosBloodInebriateConditionalNoAbrasion"
+import { healSkill as healSwordHorizonCrisscrossGates } from "../../src/migrations/customSkills/V35__swordHorizonCrisscrossGates"
+import { healSkill as healSwordMorphMultiWaveWindow } from "../../src/migrations/customSkills/V36__swordMorphMultiWaveWindow"
+import { healSkill as healAnxiSoldierHengSnowbreakTag } from "../../src/migrations/customSkills/V37__anxiSoldierHengSnowbreakTag"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -79,6 +84,11 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [30, healSwordSpecial4HitAttunementReach],
   [31, healForgetfulnessCooldownMarker],
   [32, healSnowbreakSpringAvailability],
+  [33, healSnowbreakSpringGrantTiming],
+  [34, healHerosBloodInebriateConditionalNoAbrasion],
+  [35, healSwordHorizonCrisscrossGates],
+  [36, healSwordMorphMultiWaveWindow],
+  [37, healAnxiSoldierHengSnowbreakTag],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

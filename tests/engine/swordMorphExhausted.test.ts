@@ -25,7 +25,13 @@ const buildAt = (tier: number | null): BuildView => ({
 })
 
 const hitInput = (skill: Skill, index: number): HitInput =>
-  ({ skill, hit: skill.hits[index]!, frame: 0, build: buildAt(6) }) as unknown as HitInput
+  ({
+    skill,
+    hit: skill.hits[index]!,
+    frame: 0,
+    build: buildAt(6),
+    holds: () => false,
+  }) as unknown as HitInput
 
 const contextAt = (phase: QiPhase): HitContext => ({
   phase,

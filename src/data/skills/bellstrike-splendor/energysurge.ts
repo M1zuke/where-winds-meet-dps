@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeConsumeTrigger, energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
 
 export const energySurge = defineSkill({
   id: SKILL.energySurge,
@@ -37,7 +38,11 @@ export const energySurge = defineSkill({
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
       attributeFixed: 197.2,
-      triggers: [energySurgeConsumeTrigger, energySurgeReleaseTrigger],
+      triggers: [
+        energySurgeConsumeTrigger,
+        energySurgeReleaseTrigger,
+        multiWaveWindowReleaseGrantTrigger,
+      ],
     }),
     hit(1, {
       frame: 17,

@@ -1,5 +1,17 @@
-import type { Skill } from "../../engine/skill"
+import {
+  isAnyOfCondition,
+  isParamCondition,
+  type Skill,
+  type TriggerCondition,
+} from "../../engine/skill"
 import { UNIVERSAL_SKILLS } from "../../data/skills/universal"
+
+function retargetCondition(condition: TriggerCondition, classId: string): TriggerCondition {
+  if (isAnyOfCondition(condition))
+    return { anyOf: condition.anyOf.map((clause) => retargetCondition(clause, classId)) }
+  if (isParamCondition(condition)) return condition
+  return { ...condition, buffId: retargetId(condition.buffId, classId) }
+}
 
 // Universal skills live once in src/data/skills/universal, carrying a
 // "universal" id segment. Each class receives its own instance with
@@ -20,21 +32,15 @@ function instantiateUniversal(skill: Skill, classId: string, primaryAttribute: s
       ...hit,
       variants: hit.variants?.map((variant) => ({
         ...variant,
-        conditions: variant.conditions.map((cond) => ({
-          ...cond,
-          buffId: retargetId(cond.buffId, classId),
-        })),
+        conditions: variant.conditions.map((cond) => retargetCondition(cond, classId)),
       })),
       triggers: hit.triggers.map((trigger) => ({
         ...trigger,
         targetId: retargetId(trigger.targetId, classId),
         condition: trigger.condition
-          ? { ...trigger.condition, buffId: retargetId(trigger.condition.buffId, classId) }
+          ? retargetCondition(trigger.condition, classId)
           : trigger.condition,
-        conditions: trigger.conditions?.map((cond) => ({
-          ...cond,
-          buffId: retargetId(cond.buffId, classId),
-        })),
+        conditions: trigger.conditions?.map((cond) => retargetCondition(cond, classId)),
       })),
     })),
   }

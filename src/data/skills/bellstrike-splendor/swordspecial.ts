@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { multiWaveWindowBootstrapTrigger } from "./buffs/multiWaveWindowGrant"
 
 export const swordSpecial = defineSkill({
   id: SKILL.swordSpecial,
@@ -30,6 +31,7 @@ export const swordSpecial = defineSkill({
       attributeMultiplier: 2.6505,
       physFixed: 490,
       attributeFixed: 267,
+      triggers: [multiWaveWindowBootstrapTrigger],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

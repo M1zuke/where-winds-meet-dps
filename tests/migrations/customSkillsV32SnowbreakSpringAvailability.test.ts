@@ -148,6 +148,10 @@ describe("V32__snowbreakSpringAvailability — through the chain", () => {
   })
 })
 
+// loadCustomSkills walks the full chain, so its result also reflects V33's
+// later relocation of these two skills' grant off cast start.
+const RELOCATED_BY_LATER_STEP = new Set([SNOWPARTING_CHARGED_ID, FREE_GRAVE_FROST_ID])
+
 describe("every healed skill survives the hydrator too", () => {
   beforeEach(() => localStorage.clear())
 
@@ -156,6 +160,15 @@ describe("every healed skill survives the hydrator too", () => {
     const loaded = loadCustomSkills()
     for (const id of HEALED_IDS) {
       const skill = loaded.find((candidate) => candidate.id === id)!
+      if (RELOCATED_BY_LATER_STEP.has(id)) {
+        expect(
+          skill.hits
+            .flatMap((hit) => hit.triggers)
+            .some((trigger) => trigger.targetId === "snowbreakSpringAvailable"),
+          id,
+        ).toBe(true)
+        continue
+      }
       expectHealed(id, skill)
     }
   })

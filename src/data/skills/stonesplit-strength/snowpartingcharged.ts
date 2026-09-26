@@ -25,13 +25,6 @@ export const snowpartingcharged = defineSkill({
       attributeMultiplier: 0.734867,
       physFixed: 135.6,
       attributeFixed: 73.8,
-      triggers: [
-        applyBuff({
-          target: BUFF.snowbreakSpringAvailable,
-          requiresParam: PARAM.frostCladNight,
-          requiresMinTier: 3,
-        }),
-      ],
     }),
     hit(1, {
       frame: 24,
@@ -53,6 +46,14 @@ export const snowpartingcharged = defineSkill({
       attributeMultiplier: 1.4697,
       physFixed: 271.2,
       attributeFixed: 147.6,
+      // In-game grant frame as of 2026-09-26: 82.6 f from the press, nearest this hit.
+      triggers: [
+        applyBuff({
+          target: BUFF.snowbreakSpringAvailable,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
+        }),
+      ],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

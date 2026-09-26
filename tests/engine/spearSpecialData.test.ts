@@ -16,6 +16,7 @@ import {
   ZENITH_BAR_BUFF_ID,
 } from "../../src/data/innerWays/swordHorizonZenith"
 import { builtinBuffsForClass } from "../../src/engine/builtinLibrary"
+import { isStatusCondition } from "../../src/engine/skill"
 import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
 import { MYSTIC_SKILLS } from "../../src/data/skills/mystic"
@@ -143,7 +144,7 @@ describe("built-in data — referential integrity", () => {
         }
         for (const v of hit.variants ?? []) {
           for (const c of v.conditions) {
-            expect(statusIds.has(c.buffId)).toBe(true)
+            if (isStatusCondition(c)) expect(statusIds.has(c.buffId)).toBe(true)
           }
         }
       }

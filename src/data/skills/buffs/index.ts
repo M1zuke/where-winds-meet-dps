@@ -23,6 +23,7 @@ import { tiltrimStack } from "./tiltrimStack"
 import { tiltrimInebriateBonus } from "./tiltrimInebriateBonus"
 import { inebriateCritDamage } from "./inebriateCritDamage"
 import { cloudvault } from "./cloudvault"
+import { herosBloodInebriateNoAbrasion } from "./herosBloodInebriateNoAbrasion"
 import { clashToastDamage } from "./clashToastDamage"
 import {
   nonPlayerBaseDamage40,
@@ -63,6 +64,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   tiltrimInebriateBonus,
   inebriateCritDamage,
   cloudvault,
+  herosBloodInebriateNoAbrasion,
   clashToastDamage,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,

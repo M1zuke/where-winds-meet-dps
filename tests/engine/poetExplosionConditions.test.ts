@@ -4,7 +4,7 @@ import { poet3 } from "../../src/data/skills/mystic/poet3"
 import { poet4 } from "../../src/data/skills/mystic/poet4"
 import { poetFinalHitCancelExplosion } from "../../src/data/skills/mystic/poet-final-hit-cancel-explosion"
 import { DEBUFF } from "../../src/data/skills/mystic/ids"
-import type { Skill } from "../../src/engine/skill"
+import { isStatusCondition, type Skill } from "../../src/engine/skill"
 
 const EXPLODING_SKILLS: readonly [string, Skill][] = [
   ["poet2", poet2],
@@ -18,7 +18,9 @@ describe("a Drunken Aura explosion prefers Smolder over Combustion", () => {
     "%s's Combustion explosion only fires with Smolder inactive",
     (_name, skill) => {
       const combustionHit = skill.hits.find((candidate) =>
-        candidate.conditions?.some((condition) => condition.buffId === DEBUFF.combustion),
+        candidate.conditions?.some(
+          (condition) => isStatusCondition(condition) && condition.buffId === DEBUFF.combustion,
+        ),
       )!
       expect(combustionHit.conditions).toContainEqual({
         buffId: DEBUFF.combustion,
@@ -38,7 +40,10 @@ describe("a Drunken Aura explosion prefers Smolder over Combustion", () => {
     (_name, skill) => {
       const smolderHit = skill.hits.find((candidate) =>
         candidate.conditions?.some(
-          (condition) => condition.buffId === DEBUFF.smolder && condition.op === "gte",
+          (condition) =>
+            isStatusCondition(condition) &&
+            condition.buffId === DEBUFF.smolder &&
+            condition.op === "gte",
         ),
       )!
       expect(smolderHit.conditions).toEqual([{ buffId: DEBUFF.smolder, op: "gte", stacks: 1 }])

@@ -16,12 +16,23 @@ export type TriggerOp = "gte" | "gt" | "eq"
 
 export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
 
-export interface TriggerCondition {
+export interface StatusCondition {
   buffId: string
   op: TriggerOp
   stacks: number
   source?: "buffEngine"
 }
+
+export interface ParamCondition {
+  param: string
+  minTier?: number
+}
+
+export interface AnyOfCondition {
+  anyOf: TriggerCondition[]
+}
+
+export type TriggerCondition = StatusCondition | ParamCondition | AnyOfCondition
 
 export interface HitVariant {
   id: string
@@ -171,32 +182,73 @@ export function makeSkill(classId: string, patch: Partial<Skill> = {}): Skill {
   }
 }
 
-export function isTriggerCondition(x: unknown): x is TriggerCondition {
-  if (!x || typeof x !== "object") return false
-  const c = x as Record<string, unknown>
-  if (typeof c.buffId !== "string") return false
-  if (c.op !== "gte" && c.op !== "gt" && c.op !== "eq") return false
-  if (typeof c.stacks !== "number" || !Number.isFinite(c.stacks)) return false
-  if (c.source !== undefined && c.source !== "buffEngine") return false
+export function isStatusCondition(value: unknown): value is StatusCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (typeof record.buffId !== "string") return false
+  if (record.op !== "gte" && record.op !== "gt" && record.op !== "eq") return false
+  if (typeof record.stacks !== "number" || !Number.isFinite(record.stacks)) return false
+  if (record.source !== undefined && record.source !== "buffEngine") return false
   return true
+}
+
+export function isParamCondition(value: unknown): value is ParamCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (typeof record.param !== "string" || !record.param) return false
+  if (
+    record.minTier !== undefined &&
+    (typeof record.minTier !== "number" || !Number.isFinite(record.minTier))
+  )
+    return false
+  return true
+}
+
+export function isAnyOfCondition(value: unknown): value is AnyOfCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  return (
+    Array.isArray(record.anyOf) &&
+    record.anyOf.length > 0 &&
+    record.anyOf.every((clause) => isTriggerCondition(clause))
+  )
+}
+
+export function isTriggerCondition(value: unknown): value is TriggerCondition {
+  return isStatusCondition(value) || isParamCondition(value) || isAnyOfCondition(value)
 }
 
 // `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
 // condition — a hit's or a variant's condition never gates a generated cast.
-function hasBuffEngineSource(x: unknown): boolean {
-  return !!x && typeof x === "object" && (x as Record<string, unknown>).source === "buffEngine"
+function hasBuffEngineSource(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (record.source === "buffEngine") return true
+  return Array.isArray(record.anyOf) && record.anyOf.some(hasBuffEngineSource)
 }
 
-export function isHitOrVariantCondition(x: unknown): x is TriggerCondition {
-  return isTriggerCondition(x) && !hasBuffEngineSource(x)
+export function isHitOrVariantCondition(value: unknown): value is TriggerCondition {
+  return isTriggerCondition(value) && !hasBuffEngineSource(value)
 }
 
-export function conditionSatisfiedByStacks(condition: TriggerCondition, stacks: number): boolean {
+export function conditionSatisfiedByStacks(condition: StatusCondition, stacks: number): boolean {
   return condition.op === "gte"
     ? stacks >= condition.stacks
     : condition.op === "gt"
       ? stacks > condition.stacks
       : stacks === condition.stacks
+}
+
+export function conditionIds(condition: TriggerCondition): string[] {
+  if (isAnyOfCondition(condition)) return condition.anyOf.flatMap(conditionIds)
+  if (isParamCondition(condition)) return [condition.param]
+  return [condition.buffId]
+}
+
+export function cloneTriggerCondition(condition: TriggerCondition): TriggerCondition {
+  return isAnyOfCondition(condition)
+    ? { anyOf: condition.anyOf.map(cloneTriggerCondition) }
+    : { ...condition }
 }
 
 export function isHitTrigger(x: unknown): x is HitTrigger {
@@ -429,19 +481,20 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
-    castConditions: src.castConditions?.map((condition) => ({ ...condition })),
+    castConditions: src.castConditions?.map(cloneTriggerCondition),
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),
       variants: h.variants?.map((v) => ({
         ...v,
         id: newVariantId(),
-        conditions: v.conditions.map((c) => ({ ...c })),
+        conditions: v.conditions.map(cloneTriggerCondition),
       })),
-      conditions: h.conditions?.map((c) => ({ ...c })),
+      conditions: h.conditions?.map(cloneTriggerCondition),
       triggers: h.triggers.map((tr) => ({
         ...tr,
-        conditions: tr.conditions ? tr.conditions.map((c) => ({ ...c })) : undefined,
+        condition: tr.condition ? cloneTriggerCondition(tr.condition) : null,
+        conditions: tr.conditions ? tr.conditions.map(cloneTriggerCondition) : undefined,
       })),
     })),
   })

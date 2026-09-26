@@ -1,11 +1,7 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
-import { forceOutcome, stat } from "../../../engine/effects/effect"
+import { finalCritAtLeast, stat } from "../../../engine/effects/effect"
 
-// The forced crit needs a final crit rate of at least 70%; every built-in
-// Burning Heart build clears it, so the crit is forced unconditionally rather
-// than through `conditionalFinalCrit` — that field applies module-wide, not
-// scoped to this phase-and-state condition.
 export const mountainSplitterExhausted = defineBuff({
   id: BUFF.mountainSplitterExhausted,
   name: "Mountain Splitter (Exhausted target)",
@@ -13,11 +9,11 @@ export const mountainSplitterExhausted = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary:
-    "on an Exhausted target without Mountain Splitter: critDamageBoost +10% and a guaranteed crit",
+    "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 70% final crit rate or higher, else +15% crit rate",
   effects: (ctx) =>
     ctx.self.reachesEvent &&
     ctx.phase === "exhausted" &&
     !ctx.status.isActive(BUFF.mountainSplitter)
-      ? [stat("critDamageBoost", 0.1), forceOutcome("crit")]
+      ? [stat("critDamageBoost", 0.1), finalCritAtLeast(0.7, 0.15)]
       : [],
 })

@@ -4,6 +4,13 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { multiWaveWindowSustainTrigger } from "./buffs/multiWaveWindowGrant"
+
+const MULTI_WAVE_WINDOW_ACTIVE = {
+  buffId: BUFF.swordMorphMultiWaveWindow,
+  op: "gte" as const,
+  stacks: 1,
+}
 
 export const swordHeavyCharged = defineSkill({
   id: SKILL.swordHeavyCharged,
@@ -28,16 +35,30 @@ export const swordHeavyCharged = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 140,
+  // In-game values as of 2026-09-24: without Sword Morph's multi-wave window
+  // this is the single-bolt level-2 release, not the three-wave one below.
+  castFrames: 126,
   triggerable: true,
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.3066,
-      attributeMultiplier: 1.9598,
-      physFixed: 361.6,
-      attributeFixed: 197.2,
-      triggers: [energySurgeReleaseTrigger],
+      physMultiplier: 3.2664,
+      attributeMultiplier: 4.8996,
+      physFixed: 904,
+      attributeFixed: 493,
+      triggers: [energySurgeReleaseTrigger, multiWaveWindowSustainTrigger],
+      variants: [
+        {
+          id: "hv-swordheavycharged-hit-0-multi-wave-window",
+          label: "Multi-Wave Window",
+          conditions: [MULTI_WAVE_WINDOW_ACTIVE],
+          physMultiplier: 1.3066,
+          attributeMultiplier: 1.9598,
+          physFixed: 361.6,
+          attributeFixed: 197.2,
+          castFrames: 140,
+        },
+      ],
     }),
     hit(1, {
       frame: 46,
@@ -45,6 +66,7 @@ export const swordHeavyCharged = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
+      conditions: [MULTI_WAVE_WINDOW_ACTIVE],
     }),
     hit(2, {
       frame: 92,
@@ -52,6 +74,7 @@ export const swordHeavyCharged = defineSkill({
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
       attributeFixed: 276.08,
+      conditions: [MULTI_WAVE_WINDOW_ACTIVE],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

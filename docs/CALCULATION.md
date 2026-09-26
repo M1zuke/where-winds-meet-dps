@@ -173,10 +173,18 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   averages as before. A schedule that ignores the generator keeps reporting an
   expectation on a run that has none, and understates the spread.
 - **A hit rolls a proc whether it is laid by the rotation or summoned by a
-  trigger — a DoT tick does not.** A mechanic that builds its schedule from hit
-  times reads every hit-driven schedule the engine exposes, not only the
-  rotation's own laid hits. This is structural; do not work around it per
-  mechanic.
+  trigger.** A mechanic that builds its schedule from hit times reads every
+  hit-driven schedule the engine exposes, not only the rotation's own laid
+  hits. This is structural; do not work around it per mechanic.
+- **A DoT tick may feed a proc schedule too**, opted into separately from a
+  hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
+  from the same layout pass, at each debuff's own tick interval, through the
+  one function pass 1's own tick entries walk too, so the two cannot diverge.
+  It carries the layout pass's own limit: a detonation's sub-cast and a DoT a
+  `castSkill` trigger summons are not on it, the same gap `hitTimesSec` has
+  for a summoned hit's own detonation follow-up — and a resource-gated DoT's
+  ticks are an upper bound rather than exact, since the resource's own
+  sequential consumption check cannot run ahead of pass 1 without corrupting it.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two
   are numerically identical.

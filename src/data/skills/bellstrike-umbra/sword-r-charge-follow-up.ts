@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
+import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
@@ -14,6 +15,8 @@ export const swordRChargeFollowUp = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordRChargeFollowUp,
+  // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
+  castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 86,

@@ -46,7 +46,9 @@ const CHECKED_FIELDS = ["tags", "receives", "triggersBuffs", "hits"] as const
 // SnowpartingVC/Prepull's `hits`/`triggersBuffs`, and the `hits` of every
 // Snowbreak Spring availability grant source, move again at later hops (the
 // Forgetfulness cooldown marker, then the Snowbreak Spring availability
-// gate), so they no longer equal the LIVE built-in once stopped at v26.
+// gate); AnxiSoldierHeng's `tags` gains Snowbreak Spring's own stack-family
+// tag at a later hop too — none of these equal the LIVE built-in once
+// stopped at v26.
 const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS)[number][]>> = {
   "stonesplitStrength-snowpartingvc": ["hits", "triggersBuffs"],
   "stonesplitStrength-snowpartingvc-prepull": ["hits", "triggersBuffs"],
@@ -55,6 +57,7 @@ const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS
   "stonesplitStrength-snowpartingdual": ["hits"],
   "stonesplitStrength-snowpartingdual-prepull": ["hits"],
   "stonesplitStrength-deflect": ["hits"],
+  "stonesplitStrength-anxisoldierheng": ["tags"],
 }
 const fieldsStillMatchingLiveBuiltin = (id: string) =>
   CHECKED_FIELDS.filter((field) => !(MOVED_AGAIN_FIELDS[id] ?? []).includes(field))
@@ -137,7 +140,10 @@ describe("V26__stonesplitStrengthValuesGatesReach — through the chain", () => 
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 26 })!
     expect(result.applied).toEqual(["V26__stonesplitStrengthValuesGatesReach"])
     expect(result.blob.v).toBe(26)
-    for (const id of HEALED_IDS) expect(skillIn(result.blob, id).tags).toEqual(builtinOf(id).tags)
+    for (const id of HEALED_IDS) {
+      if (!fieldsStillMatchingLiveBuiltin(id).includes("tags")) continue
+      expect(skillIn(result.blob, id).tags).toEqual(builtinOf(id).tags)
+    }
   })
 })
 

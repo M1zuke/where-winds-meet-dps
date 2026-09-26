@@ -41,6 +41,7 @@ function setupFor(mindMethods: Inputs["mindMethods"]): MechanicSetup {
     // stays empty so the mechanic would starve if it read the wrong array.
     hitTimesSec: weaponHitTrain(60),
     weaponHitTimesSec: [],
+    dotTickTimesSec: [],
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,

@@ -31,11 +31,6 @@ export const snowpartingchargedForgetfulness = defineSkill({
           requiresParam: PARAM.frostCladNight,
           requiresMinTier: 6,
         }),
-        applyBuff({
-          target: BUFF.snowbreakSpringAvailable,
-          requiresParam: PARAM.frostCladNight,
-          requiresMinTier: 3,
-        }),
       ],
     }),
     hit(1, {
@@ -58,6 +53,14 @@ export const snowpartingchargedForgetfulness = defineSkill({
       attributeMultiplier: 1.4697,
       physFixed: 271.2,
       attributeFixed: 147.6,
+      // In-game grant frame as of 2026-09-24: partway through the cast, not at its start.
+      triggers: [
+        applyBuff({
+          target: BUFF.snowbreakSpringAvailable,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
+        }),
+      ],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

@@ -4,9 +4,11 @@ import { buffDefsForClass, groupBuffDefs } from "../../src/engine/buffs/data"
 import { makeSkill } from "../../src/engine/skill"
 import { builtinBuffsForClass } from "../../src/engine/builtinBuffs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { skillTagsOf } from "../../src/engine/buffs/tags"
 import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { CAST, PROP, ROLE, WEAPON } from "../../src/data/skills/ids"
 import { SKILL, STATUS } from "../../src/data/skills/stonesplit-strength/ids"
+import { anxisoldierheng } from "../../src/data/skills/stonesplit-strength/anxisoldierheng"
 import {
   DREAD_DURATION_FRAMES,
   FEARFUL_BLADE_DURATION_FRAMES,
@@ -50,13 +52,31 @@ const statOf = (
 
 describe("Throat-Pierced", () => {
   const applying = () => skill("PhalanxQ", [WEAPON.moBlade, ROLE.phalanxQ], CAST.phalanxQ)
+  const snowbreak = () =>
+    skill("SnowpartingVC", [WEAPON.hengBlade, ROLE.snowpartingVC], CAST.snowpartingVC)
   const bystander = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+
+  const ROLE_OF: Record<string, string> = {
+    [CAST.anxiSoldierHeng]: ROLE.anxiSoldier,
+    [CAST.anxiSoldierMoDown]: ROLE.anxiSoldier,
+    [CAST.anxiSoldierMoJump]: ROLE.anxiSoldier,
+    [CAST.anxiSoldierMoSweep]: ROLE.anxiSoldier,
+    [CAST.snowpartingQStab]: ROLE.snowpartingQStab,
+    [CAST.snowpartingVC]: ROLE.snowpartingVC,
+    [CAST.phalanxChargedS3]: ROLE.phalanxCharged,
+    [CAST.phalanxQ]: ROLE.phalanxQ,
+  }
 
   it("stacks once per hit of an applying cast, to a ceiling of five", () => {
     const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 3, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
+    pierced.processSkillCast(
+      CAST.phalanxQ,
+      0,
+      { hitCount: 3, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.phalanxQ]),
+    )
     expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(3)
     pierced.processSkillCast(
       CAST.snowpartingQStab,
@@ -64,32 +84,36 @@ describe("Throat-Pierced", () => {
       { hitCount: 4, castTime: 1, duration: 1 },
       false,
       [BUFF.throatPierced],
+      new Set([ROLE.snowpartingQStab]),
     )
     expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 3.5)).toBe(5)
   })
 
-  it("takes stacks from every family that applies it, generated attacks included", () => {
-    for (const castTag of [
-      CAST.anxiSoldierHeng,
-      CAST.anxiSoldierMoDown,
-      CAST.anxiSoldierMoJump,
-      CAST.anxiSoldierMoSweep,
-      CAST.snowpartingQStab,
-      CAST.snowpartingVC,
-      CAST.phalanxChargedS3,
-      CAST.phalanxQ,
-    ]) {
+  it("takes stacks from every family that applies it at tier 6, generated attacks included", () => {
+    for (const castTag of Object.keys(ROLE_OF)) {
       const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-      pierced.processSkillCast(castTag, 0, { castTime: 1 }, true, [BUFF.throatPierced])
+      pierced.processSkillCast(
+        castTag,
+        0,
+        { castTime: 1 },
+        true,
+        [BUFF.throatPierced],
+        new Set([ROLE_OF[castTag]]),
+      )
       expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5), castTag).toBe(1)
     }
   })
 
-  it("pays the applying families 3 points a stack and everything else 2", () => {
+  it("pays the applying families 3 points a stack and everything else 2, at tier 6", () => {
     const pierced = engine({ throatPierced: true, throatPiercedTier: 6 })
-    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
+    pierced.processSkillCast(
+      CAST.phalanxQ,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.phalanxQ]),
+    )
 
     expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBeCloseTo(0.15, 9)
     expect(share(pierced, applying(), 1.5, BUFF.throatPierced)).toBeCloseTo(0.15 + 0.15, 9)
@@ -98,33 +122,106 @@ describe("Throat-Pierced", () => {
 
   it("contributes nothing without the inner way slotted", () => {
     const unslotted = engine()
-    unslotted.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
+    unslotted.processSkillCast(
+      CAST.phalanxQ,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.phalanxQ]),
+    )
     expect(statOf(unslotted, applying(), 1.5, "phys.penetration")).toBe(0)
   })
 
-  it("pays every hit the same 2 points a stack below tier 3, applying families included", () => {
-    const pierced = engine({ throatPierced: true, throatPiercedTier: 2 })
-    pierced.processSkillCast(CAST.phalanxQ, 0, { hitCount: 5, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
-    expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBeCloseTo(0.1, 9)
-    expect(statOf(pierced, bystander(), 1.5, "phys.penetration")).toBeCloseTo(0.1, 9)
+  it("below tier 6, only Snowbreak Spring stacks it, and keeps the larger per-stack cut", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 5 })
+    pierced.processSkillCast(
+      CAST.snowpartingVC,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.snowpartingVC]),
+    )
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(5)
+    expect(statOf(pierced, snowbreak(), 1.5, "phys.penetration")).toBeCloseTo(0.15, 9)
+  })
+
+  it("below tier 6, the extended family (Stab, the soldiers, Burning Heart, Total Annihilation) does not stack it at all", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 5 })
+    pierced.processSkillCast(
+      CAST.phalanxQ,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.phalanxQ]),
+    )
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(0)
+    expect(statOf(pierced, applying(), 1.5, "phys.penetration")).toBe(0)
+  })
+
+  it("below tier 6, the Heng soldier Snowbreak Spring calls still stacks it, carrying Snowbreak Spring's own family tag too", () => {
+    const pierced = engine({ throatPierced: true, throatPiercedTier: 5 })
+    pierced.processSkillCast(
+      CAST.anxiSoldierHeng,
+      0,
+      { hitCount: 4, castTime: 1, duration: 1 },
+      true,
+      [BUFF.throatPierced],
+      skillTagsOf(anxisoldierheng),
+    )
+    expect(pierced.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(4)
+    const soldierHit = skill("AnxiSoldierHeng", [...anxisoldierheng.tags], CAST.anxiSoldierHeng)
+    expect(statOf(pierced, soldierHit, 1.5, "phys.penetration")).toBeCloseTo(0.12, 9)
+  })
+
+  it("caps at three stacks below tier 4, five from tier 4 on", () => {
+    const belowTier4 = engine({ throatPierced: true, throatPiercedTier: 3 })
+    belowTier4.processSkillCast(
+      CAST.snowpartingVC,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.snowpartingVC]),
+    )
+    expect(belowTier4.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(3)
+
+    const atTier4 = engine({ throatPierced: true, throatPiercedTier: 4 })
+    atTier4.processSkillCast(
+      CAST.snowpartingVC,
+      0,
+      { hitCount: 5, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.snowpartingVC]),
+    )
+    expect(atTier4.getHistoricalBuffStacks(BUFF.throatPierced, 1.5)).toBe(5)
   })
 
   it("lasts 8 s at rank 0, 15 s from tier 1", () => {
     const rankZero = engine({ throatPierced: true, throatPiercedTier: 0 })
-    rankZero.processSkillCast(CAST.phalanxQ, 0, { hitCount: 1, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
+    rankZero.processSkillCast(
+      CAST.snowpartingVC,
+      0,
+      { hitCount: 1, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.snowpartingVC]),
+    )
     expect(rankZero.isBuffActiveAtTime(BUFF.throatPierced, 7)).toBe(true)
     expect(rankZero.isBuffActiveAtTime(BUFF.throatPierced, 9)).toBe(false)
 
     const tierOne = engine({ throatPierced: true, throatPiercedTier: 1 })
-    tierOne.processSkillCast(CAST.phalanxQ, 0, { hitCount: 1, castTime: 1, duration: 1 }, false, [
-      BUFF.throatPierced,
-    ])
+    tierOne.processSkillCast(
+      CAST.snowpartingVC,
+      0,
+      { hitCount: 1, castTime: 1, duration: 1 },
+      false,
+      [BUFF.throatPierced],
+      new Set([ROLE.snowpartingVC]),
+    )
     expect(tierOne.isBuffActiveAtTime(BUFF.throatPierced, 14)).toBe(true)
     expect(tierOne.isBuffActiveAtTime(BUFF.throatPierced, 16)).toBe(false)
   })

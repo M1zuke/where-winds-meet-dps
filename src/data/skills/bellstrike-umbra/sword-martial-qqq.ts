@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
@@ -15,6 +15,8 @@ export const swordMartialQqq = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQQ,
+  // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
+  castConditions: [{ param: PARAM.swordHorizon }],
   triggersBuffs: [BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, ...STRATEGIC_SWORD_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.

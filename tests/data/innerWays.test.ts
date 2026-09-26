@@ -262,6 +262,7 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
       rotationDurationSec: 10,
       hitTimesSec: [0],
       weaponHitTimesSec: [0],
+      dotTickTimesSec: [],
       qiPhaseAt: () => "normal",
       paramOn: () => false,
       paramTier: () => 0,

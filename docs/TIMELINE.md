@@ -70,6 +70,17 @@ threshold, rather than as a separate module per hit count. A cast's length
 must be derived only from the hits that actually occur, never from every hit
 the skill could ever land.
 
+### Condition clauses
+
+A condition — on a hit, a variant, a cast (`castConditions`) or a trigger — is
+one of three shapes, evaluated by one shared function everywhere a condition
+is checked: a status stack threshold (a buff or debuff id, a comparison and a
+stack count); a build param, with an optional minimum tier, the same pair a
+trigger's own `requiresParam`/`requiresMinTier` reads; or an OR-group of
+further clauses of either shape, recursively, holding when at least one member
+does. An OR-group's members are never individually restricted to only one of
+the other two shapes.
+
 ### Cast legality
 
 A skill may carry its own ANDed ledger conditions (`castConditions`), checked
@@ -254,6 +265,12 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A state marker that only exists from some tier of that param declares
   `requiresMinTier`** next to `requiresParam`, and is dropped below that tier
   exactly as it is when the param is off. It is invalid without `requiresParam`.
+- **A buff whose stack cap itself grows with a build param's tier declares
+  `maxStacksByTier`** (a param and a tier-to-cap table) instead of hardcoding
+  the largest cap: resolved once per run against the build, the highest
+  threshold at or below the param's own tier wins, and below every threshold
+  the buff's authored `maxStacks` stands. Independent of `requiresParam` — the
+  buff may exist unconditionally while only its cap scales.
 - **A buff a rotation may open the fight already holding some of can declare
   its own starting count**, read only when the rotation carries no explicit
   opening entry of its own. Never written back into stored rotation data — a
@@ -310,7 +327,9 @@ Id-referenced, not tag-matched. A module declares its **activation policy**
 (always-active, or gated by `requires`, a cooldown, a rate limit) and its
 **magnitude** as effects. `duration` and `cooldown` may each be a function of
 the build rather than a fixed number, for a policy whose length genuinely
-depends on a build param's tier. Who applies it and who it boosts are
+depends on a build param's tier; `maxStacks` may be one too, but — the
+params being fixed for the whole run — it resolves once at registration
+rather than being re-read on every query. Who applies it and who it boosts are
 declared by the skill or debuff that owns that direction — `triggersBuffs`
 for applying, `receives` for boosting — never by the module itself.
 
@@ -324,11 +343,20 @@ for applying, `receives` for boosting — never by the module itself.
   `requires`** — the two are mutually exclusive on one module. A tag present
   in the map uses its own requirement, the same shape `requires` itself takes,
   an armor set included, for that one grant; a tag the map does not mention
-  grants with no gate at all. Every source still writes the same id's one
-  stack pool and shares its duration and cap; only which sources may grant at
-  all differs. Every other gate — the damage query, the catalog, the timeline
-  display — reads the module's own `requires`, so a `grantRequires` module
-  reads as ungated everywhere but the grant itself.
+  grants with no gate at all, unless the map carries the reserved
+  `GRANT_REQUIRES_DEFAULT` key, checked last — that key's requirement then
+  applies to every source none of the other keys matched, so an untagged or
+  mis-authored source still cannot grant an unslotted param's buff. A key may
+  also name any tag the granting skill carries, not only its own cast tag — a
+  tag family several skills share reads one gate under one key, checked only
+  once the cast's own tag finds no entry. Every source still writes the same
+  id's one stack pool and shares its duration and cap; only which sources may
+  grant at all differs. A default entry gates the same check the grant, the
+  damage query and an `alwaysActive`/`seedAtStart` registration all share, so
+  it closes those paths too; without one, a `grantRequires` module's own
+  `requires` is `undefined`, so it reads as ungated everywhere but a named
+  grant — the catalog's display falls back to the default entry, where one
+  exists.
 - **A buff a debuff's tick applies reaches every damage event that comes after
   it in time** — a later tick of the same or a different debuff, a mechanic's
   own extra event, the chips of any cast resolving after it, and a regular hit
@@ -373,12 +401,26 @@ for applying, `receives` for boosting — never by the module itself.
   status has ever applied. A currently-active window has not closed, so a
   module paying out both while the source is active and for a while after
   checks `isActive` first and falls back to this only once it is false.
+- **A module's `effects` may read how long it has been since a permanent
+  counter status last fell below a threshold**
+  (`ctx.status.secondsSinceStacksBelowThreshold`), `null` before it has ever
+  crossed. A permanent-activation counter (a running point total, never
+  windowed) has no "last window closed" for `secondsSinceLastEnd` to read, so
+  this reads the same question off its stack history instead.
 - **A module may open its window a fixed offset after the triggering cast's
   start** instead of at the trigger hit's own frame, when the source it models
   opens on an in-progress hit rather than the first or the last one. Author
   that offset on the module, never as a per-skill adjustment to the trigger's
   own frame; it is ignored once the module (or the trigger) already applies on
   cast end.
+- **A module's `effects` may return `forceOutcome("noAbrasion")` or
+  `finalCritAtLeast({ threshold, bonusBelowThreshold })`**, scoped by whatever
+  the function already reads off its context — a phase, another status, a
+  tag — for a rule the module's own activation window cannot express by
+  itself. `finalCritAtLeast` is the effect-returned counterpart of the
+  module's declarative `conditionalFinalCrit` field: use the field when the
+  module's own active window already is the whole condition, the effect when
+  it needs to read further state to decide.
 
 ## Procedural behaviour
 

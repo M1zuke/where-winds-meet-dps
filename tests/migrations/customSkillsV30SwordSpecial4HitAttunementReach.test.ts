@@ -106,9 +106,30 @@ const HEALED_HITS: SkillHit[] = [
   },
 ]
 
+// This hop's own output never produces hit 0's `variants` array; the live
+// built-in and the full hydrator chain do, from a later hop.
+const CURRENT_HITS: SkillHit[] = [
+  {
+    ...HEALED_HITS[0]!,
+    variants: [
+      {
+        id: "hv-swordspecial-4-hit-hit-0-sword-horizon",
+        label: "Sword Horizon",
+        conditions: [{ param: "swordHorizon" }],
+        physMultiplier: 0.196354,
+        attributeMultiplier: 0.294531,
+        physFixed: 54.4,
+        attributeFixed: 29.6,
+        castFrames: 77,
+      },
+    ],
+  },
+  ...HEALED_HITS.slice(1),
+]
+
 describe("frozen hits match the live built-in", () => {
   it("SwordSpecial 4-Hit still matches the shape this hop's tests freeze", () => {
-    expect(HEALED_HITS).toEqual(builtin(SWORDSPECIAL_4_HIT_ID).hits)
+    expect(CURRENT_HITS).toEqual(builtin(SWORDSPECIAL_4_HIT_ID).hits)
   })
 })
 
@@ -203,6 +224,6 @@ describe("every healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === SWORDSPECIAL_4_HIT_ID)!
-    expect(skill.hits).toEqual(HEALED_HITS)
+    expect(skill.hits).toEqual(CURRENT_HITS)
   })
 })

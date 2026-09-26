@@ -116,6 +116,49 @@ describe("StatusLedger — framesSinceLastEnd", () => {
   })
 })
 
+describe("StatusLedger — framesSinceStacksBelowThreshold", () => {
+  it("is undefined for a status with no recorded stack history", () => {
+    const led = ledger()
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBeUndefined()
+  })
+
+  it("is undefined while the stacks have never crossed the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 80)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBeUndefined()
+  })
+
+  it("counts from the frame the stacks fell below the threshold, not from when they rose to it", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBe(0)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBe(50)
+  })
+
+  it("picks the latest of several drops, even while currently back above the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    led.recordStack("points", 400, 60)
+    expect(led.framesSinceStacksBelowThreshold("points", 500, 60)).toBe(200)
+  })
+
+  it("hides a drop recorded at or after the mark, through asOf", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    const mark = led.mark()
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    expect(led.asOf(mark).framesSinceStacksBelowThreshold("points", 400, 60)).toBe(300)
+    expect(led.framesSinceStacksBelowThreshold("points", 400, 60)).toBe(100)
+  })
+})
+
 describe("StatusLedger — asOf hides writes at or after a mark", () => {
   it("hides a window pushed at or after the mark, keeps one pushed before it", () => {
     const led = ledger()

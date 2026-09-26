@@ -1,5 +1,6 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
+import { PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { CROSSWIND_BLADE_HITS } from "./crosswind-blade-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
@@ -14,6 +15,8 @@ export const crosswindBladeCancel = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.crosswindBladeCancel,
+  // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
+  castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,
   // A cancel form ends where the animation opens its interrupt window — 35 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 35,

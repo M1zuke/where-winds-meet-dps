@@ -1,12 +1,17 @@
 import { useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
-import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
   belongsToClass,
+  cloneTriggerCondition,
   makeSkill,
   makeHit,
   seedSkillFromBuiltin,
   triggerConditions,
+  type Skill,
+  type SkillHit,
+  type HitTrigger,
+  type HitVariant,
+  type TriggerKind,
 } from "../../../../engine/skill"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
@@ -318,15 +323,14 @@ export function SkillsTab({
         ...hit,
         triggers: hit.triggers.map((trigger) => ({
           ...trigger,
-          conditions: trigger.conditions
-            ? trigger.conditions.map((condition) => ({ ...condition }))
-            : undefined,
+          condition: trigger.condition ? cloneTriggerCondition(trigger.condition) : null,
+          conditions: trigger.conditions?.map(cloneTriggerCondition),
         })),
         variants: hit.variants?.map((variant) => ({
           ...variant,
-          conditions: variant.conditions.map((condition) => ({ ...condition })),
+          conditions: variant.conditions.map(cloneTriggerCondition),
         })),
-        conditions: hit.conditions?.map((condition) => ({ ...condition })),
+        conditions: hit.conditions?.map(cloneTriggerCondition),
       })),
     }
     setDraft(cloned)
@@ -600,7 +604,7 @@ export function SkillsTab({
   function conditionsClause(trigger: TriggerDraft): string {
     const conds = triggerConditions(trigger)
     if (conds.length === 0) return ""
-    return `${t("skills.when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name)}`
+    return `${t("skills.when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name, t)}`
   }
 
   function summarizeTriggerDraft(trigger: TriggerDraft): { label: string; effect: string } {
@@ -789,7 +793,8 @@ export function SkillsTab({
     const texts = new Set<string>()
     for (const hit of draft.hits) {
       const variant = (hit.variants ?? []).find((candidate) => candidate.label === label)
-      if (variant) texts.add(formatConditions(variant.conditions, (id) => resolveStatus(id)?.name))
+      if (variant)
+        texts.add(formatConditions(variant.conditions, (id) => resolveStatus(id)?.name, t))
     }
     return Array.from(texts)
   }

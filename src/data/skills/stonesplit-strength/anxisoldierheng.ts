@@ -12,12 +12,12 @@ const SOLDIER_HIT = {
   attributeFixed: 0,
 }
 
-function hengSoldier(id: string, name: string, attunement: string) {
+function hengSoldier(id: string, name: string, attunement: string, extraTags: string[] = []) {
   return defineSkill({
     id,
     classId: "stonesplitStrength",
     name,
-    tags: [WEAPON.hengBlade, PROP.cleftpeakBoost, ROLE.anxiSoldier, attunement],
+    tags: [WEAPON.hengBlade, PROP.cleftpeakBoost, ROLE.anxiSoldier, attunement, ...extraTags],
     skillType: "weapon",
     weaponOrAttribute: "Hengdao",
     attributeAttack: "Stonesplit",
@@ -32,10 +32,13 @@ function hengSoldier(id: string, name: string, attunement: string) {
   })
 }
 
+// In-game values as of 2026-09-24: this soldier carries Snowbreak Spring's
+// own stack-family tag too, unlike the Stab-triggered copy below.
 export const anxisoldierheng = hengSoldier(
   SKILL.anxisoldierheng,
   "AnxiSoldierHeng",
   ATTUNE.snowpartingVariedCombo,
+  [ROLE.snowpartingVC],
 )
 
 export const anxisoldierhengStab = hengSoldier(

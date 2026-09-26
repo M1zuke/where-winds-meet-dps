@@ -29,6 +29,9 @@ export interface StatusView {
   appliedAt(id: string): number | null
   expiresAt(id: string): number | null
   secondsSinceLastEnd(id: string): number | null
+  // For a permanent-activation counter with no window to close — see
+  // docs/TIMELINE.md § "The class-buff system — buff modules".
+  secondsSinceStacksBelowThreshold(id: string, threshold: number): number | null
 }
 
 type PropKey<Tag> = Tag extends `prop:${infer Suffix}` ? Suffix : never

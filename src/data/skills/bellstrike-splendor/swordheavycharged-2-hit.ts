@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { multiWaveWindowSustainTrigger } from "./buffs/multiWaveWindowGrant"
 
 export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
@@ -16,6 +17,9 @@ export const swordHeavyCharged2Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyCharged2Hit,
   startLatency: "noWaitOnDummy",
+  // In-game values as of 2026-09-24: a Deflect-cancelled 2nd wave of a
+  // three-wave release only exists while Sword Morph's multi-wave window holds.
+  castConditions: [{ buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 }],
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
     BUFF.mistwillowLightBuff,
@@ -37,7 +41,7 @@ export const swordHeavyCharged2Hit = defineSkill({
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
       attributeFixed: 197.2,
-      triggers: [energySurgeReleaseTrigger],
+      triggers: [energySurgeReleaseTrigger, multiWaveWindowSustainTrigger],
     }),
     hit(1, {
       frame: 58,

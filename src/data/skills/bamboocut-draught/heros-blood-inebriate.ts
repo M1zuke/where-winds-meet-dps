@@ -41,7 +41,6 @@ const dashHalf = {
   conditions: UNLOCKED,
 }
 
-// Cannot trigger Abrasion per the talent "Increased Binge Point Gain" rank 2.
 // Carouse is granted at the cast, not on the launch (in-game skill text,
 // 2026-09-16); the dash ends the cast and with it Cloudvault. Cast length to
 // the earliest next input and hit frames: in-game animation, 2026-09-05.
@@ -55,12 +54,12 @@ export const herosBloodInebriate = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.herosBloodInebriate,
-  neverAbrades: true,
   receives: [
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.cloudvault,
     BUFF.nonPlayerBaseDamage50,
+    BUFF.herosBloodInebriateNoAbrasion,
   ],
   triggerable: false,
   castFrames: 177,

@@ -82,7 +82,12 @@ function describeModule(module: BuffModule): Record<string, unknown> {
     activeAfterBuffEnds: module.activeAfterBuffEnds ?? null,
     hasStacksFn: typeof module.stacks === "function",
     duration: typeof module.duration === "number" ? module.duration : "[fn]",
-    maxStacks: module.maxStacks ?? null,
+    maxStacks:
+      module.maxStacks === undefined
+        ? null
+        : typeof module.maxStacks === "number"
+          ? module.maxStacks
+          : "[fn]",
     effects: Array.isArray(module.effects) ? module.effects : "[fn]",
     summary: module.summary ?? null,
   }

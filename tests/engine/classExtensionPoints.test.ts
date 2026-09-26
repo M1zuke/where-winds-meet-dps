@@ -55,6 +55,7 @@ function setupFor(classId: string): MechanicSetup {
     rotationDurationSec: 10,
     hitTimesSec: [0, 1, 2],
     weaponHitTimesSec: [0, 1],
+    dotTickTimesSec: [],
     qiPhaseAt: () => "normal",
     paramOn: () => false,
     paramTier: () => 0,

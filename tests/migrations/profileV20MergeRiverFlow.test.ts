@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { makeRotation } from "../../src/engine/rotation"
-import { makeSkill, makeHit } from "../../src/engine/skill"
+import { makeSkill, makeHit, type StatusCondition } from "../../src/engine/skill"
 import type { StoredProfile } from "../../src/engine/types"
 import { runProfileMigrations, type RawProfilesBlob } from "../../src/migrations"
 import {
@@ -73,9 +73,9 @@ describe("V20__mergeRiverFlowIntoWolfchasersArt — called directly", () => {
     const hit = profileOf(V20__mergeRiverFlowIntoWolfchasersArt.migrate(blobOf(profile))).inputs
       .customSkills![0].hits[0]
     expect(hit.triggers[0].targetId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.triggers[0].condition!.buffId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.triggers[0].conditions![0].buffId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.variants![0].conditions[0].buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.triggers[0].condition as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.triggers[0].conditions![0] as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.variants![0].conditions[0] as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
   })
 
   it("renames it on a saved rotation's permanent buffs and opening stacks", () => {
@@ -134,8 +134,8 @@ describe("through the chain and the hydrator", () => {
     )
     const hit = loadCustomSkills()[0].hits[0]
     expect(hit.triggers[0].targetId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.triggers[0].condition!.buffId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.triggers[0].conditions![0].buffId).toBe(RIVER_FLOW_BUFF_ID)
-    expect(hit.variants![0].conditions[0].buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.triggers[0].condition as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.triggers[0].conditions![0] as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
+    expect((hit.variants![0].conditions[0] as StatusCondition).buffId).toBe(RIVER_FLOW_BUFF_ID)
   })
 })

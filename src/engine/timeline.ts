@@ -9,7 +9,7 @@ import type {
   TimelineEvent,
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
-import type { Debuff } from "./debuff"
+import type { Debuff, DebuffDotSpec } from "./debuff"
 import type { HitTrigger, Skill, SkillHit, TriggerCondition } from "./skill"
 import {
   breakdownNameOf,
@@ -19,6 +19,7 @@ import {
   selectHitVariant,
   triggerConditions,
 } from "./skill"
+import { unionConditionHolds } from "./buffs/conditions"
 import {
   debuffBreakdownKey,
   debuffEchoKey,
@@ -67,7 +68,7 @@ import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { clockQiPhase, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
-import { castTagOf, WEAPON_TAG } from "./buffs/tags"
+import { castTagOf, skillTagsOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
@@ -96,6 +97,17 @@ type EchoFeed = DamageEffectsResult["echoFeeds"][number]
 
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
+}
+
+function resolveMaxStacksByTier(buff: Buff, buffParams: ReturnType<typeof paramsFromInputs>): Buff {
+  if (!buff.maxStacksByTier) return buff
+  const { param, byTier } = buff.maxStacksByTier
+  const tier = paramTierOf(buffParams, param)
+  const applicable = Object.entries(byTier)
+    .map(([thresholdKey, cap]) => [Number(thresholdKey), cap] as const)
+    .filter(([threshold]) => tier >= threshold)
+    .sort((left, right) => right[0] - left[0])
+  return applicable.length > 0 ? { ...buff, maxStacks: applicable[0][1] } : buff
 }
 
 function castEndFrame(skill: Skill, castFrame: number): number {
@@ -180,12 +192,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const buffsMap = new Map<string, Buff>()
   for (const b of builtinBuffsForClass(inputs.classId)) buffsMap.set(b.id, b)
   for (const b of inputs.customBuffs ?? []) buffsMap.set(b.id, b)
-  const buffs = [...buffsMap.values()].filter(
-    (b) =>
-      !b.requiresParam ||
-      (paramOnOf(buffParams, b.requiresParam) &&
-        paramTierOf(buffParams, b.requiresParam) >= (b.requiresMinTier ?? 0)),
-  )
+  const buffs = [...buffsMap.values()]
+    .filter(
+      (b) =>
+        !b.requiresParam ||
+        (paramOnOf(buffParams, b.requiresParam) &&
+          paramTierOf(buffParams, b.requiresParam) >= (b.requiresMinTier ?? 0)),
+    )
+    .map((buff) => resolveMaxStacksByTier(buff, buffParams))
   const debuffsMap = new Map<string, Debuff>()
   for (const d of builtinDebuffsForClass(inputs.classId)) debuffsMap.set(d.id, d)
   for (const d of inputs.customDebuffs ?? []) debuffsMap.set(d.id, d)
@@ -246,14 +260,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
       if (trigger.phase !== undefined && clockQiPhase(buffParams, frame / FPS) !== trigger.phase)
         return false
-      if (trigger.requiresParam !== undefined) {
-        if (!paramOnOf(buffParams, trigger.requiresParam)) return false
-        if (
-          trigger.requiresMinTier !== undefined &&
-          paramTierOf(buffParams, trigger.requiresParam) < trigger.requiresMinTier
+      if (
+        trigger.requiresParam !== undefined &&
+        !unionConditionHolds(
+          { param: trigger.requiresParam, minTier: trigger.requiresMinTier },
+          frame,
+          buffParams,
+          () => false,
         )
-          return false
-      }
+      )
+        return false
       if (trigger.cooldownFrames === undefined) return true
       const groupKey = groupKeyOf(trigger)
       const lastFired = lastFiredFrame.get(groupKey)
@@ -462,7 +478,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   )
   const layoutLedger = new StatusLedger(Math.min(0, -prePullBound), activeUpperBound)
   const layoutHolds = (condition: TriggerCondition, frame: number): boolean =>
-    conditionSatisfiedByStacks(condition, layoutLedger.conditionStacksAt(condition.buffId, frame))
+    unionConditionHolds(condition, frame, buffParams, (status, atFrame) =>
+      conditionSatisfiedByStacks(status, layoutLedger.conditionStacksAt(status.buffId, atFrame)),
+    )
   const layoutWriter = statusWriter(layoutLedger, layoutHolds)
   seedOpeningState(layoutWriter, Math.min(0, -prePullBound))
 
@@ -658,20 +676,24 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     ledger.pushWindow(id, start, end, owner)
   const openPermanent = (id: string) => ledger.openPermanent(id)
   const conditionHolds = (c: TriggerCondition, frame: number): boolean =>
-    conditionSatisfiedByStacks(c, ledger.conditionStacksAt(c.buffId, frame))
+    unionConditionHolds(c, frame, buffParams, (status, atFrame) =>
+      conditionSatisfiedByStacks(status, ledger.conditionStacksAt(status.buffId, atFrame)),
+    )
   // A `castSkill` condition's buff-engine source reads whichever engine
   // instance the caller passes — the prepass's own in-progress one while it
   // builds, the fully-resolved one once pass 1 runs.
   const castConditionHoldsFor =
     (engineForGate: BuffEngine | null) =>
     (condition: TriggerCondition, frame: number): boolean =>
-      condition.source === "buffEngine"
-        ? !!engineForGate &&
-          conditionSatisfiedByStacks(
-            condition,
-            engineForGate.getHistoricalBuffStacks(condition.buffId, frame / FPS),
-          )
-        : conditionHolds(condition, frame)
+      unionConditionHolds(condition, frame, buffParams, (status, atFrame) =>
+        status.source === "buffEngine"
+          ? !!engineForGate &&
+            conditionSatisfiedByStacks(
+              status,
+              engineForGate.getHistoricalBuffStacks(status.buffId, atFrame / FPS),
+            )
+          : conditionHolds(status, atFrame),
+      )
   const liveWriter = statusWriter(ledger, conditionHolds)
   seedOpeningState(liveWriter, spanStart)
 
@@ -753,6 +775,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             propsOfSkill(cast.skill, cast.hitCount),
             cast.generated,
             cast.skill.triggersBuffs ?? [],
+            skillTagsOf(cast.skill),
           )
           const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
           propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
@@ -825,6 +848,91 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       })()
     : null
 
+  interface PlannedDotTick {
+    buffId: string
+    status: Debuff
+    dot: DebuffDotSpec
+    tickSkill: Skill | undefined
+    resource: CombatResource | undefined
+    episodeStart: number
+    plan: DotTickPlan
+  }
+
+  // The one walk from a ledger's windows to a DoT's tick frames, shared by the
+  // layout pass's own schedule and pass 1's real tick entries — a
+  // resource-owning debuff's per-window split (`resourceByDebuff`) cannot
+  // drift between the two this way. `resource.tick`'s own consumption check
+  // is sequential and stateful, so it only runs where pass 1 calls it, in the
+  // real simulation order — a resource-gated DoT's frames from here are an
+  // upper bound the layout pass cannot narrow further.
+  function plannedDotTicks(
+    ledgerEntries: Iterable<[string, readonly StatusWindow[]]>,
+    stacksAt: (buffId: string, frame: number) => number,
+    weightAt: (buffId: string, frame: number) => number,
+  ): PlannedDotTick[] {
+    const planned: PlannedDotTick[] = []
+    for (const [buffId, arr] of ledgerEntries) {
+      const status = statusById.get(buffId)
+      if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
+        continue
+      const tickSkill = skillsById.get(tickSourceSkillId(status) ?? "")
+      const dot = resolveTickDot(status, tickSkill)
+      if (!dot) continue
+      const resource = resourceByDebuff.get(buffId)
+      const sortedWindows = [...arr].sort((left, right) => left.start - right.start)
+      const episodes = resource
+        ? sortedWindows.map((window, index) => [
+            {
+              ...window,
+              end: Math.min(
+                window.end,
+                sortedWindows[index + 1]?.start ?? windowFrames + 1,
+                windowFrames + 1,
+              ),
+            },
+          ])
+        : [arr]
+      for (const episode of episodes) {
+        for (const plan of planDotTicks({
+          debuff: status,
+          dot,
+          windows: episode,
+          stacksAt: (frame) => stacksAt(buffId, frame),
+          inWindow,
+          weightAt: (frame) => weightAt(buffId, frame),
+        })) {
+          planned.push({
+            buffId,
+            status,
+            dot,
+            tickSkill,
+            resource,
+            episodeStart: episode[0].start,
+            plan,
+          })
+        }
+      }
+    }
+    return planned
+  }
+
+  // Weighted at 1 throughout: this schedule feeds a mechanic's own `prepare`,
+  // which runs before any mechanic can weigh a tick's true uptime.
+  const dotTickTimesSec: number[] = []
+  for (const { plan } of plannedDotTicks(
+    layoutLedger.entries(),
+    (buffId, frame) => layoutLedger.stacksAt(buffId, frame),
+    () => 1,
+  )) {
+    if (
+      plan.requiresBuff &&
+      !(buffEngine?.isBuffActiveAtTime(plan.requiresBuff, plan.frame / FPS) ?? false)
+    )
+      continue
+    dotTickTimesSec.push(plan.frame / FPS)
+  }
+  dotTickTimesSec.sort((left, right) => left - right)
+
   const { precision, critRate, affinityRate } = effectiveRates(inputs)
   const mechanicSetup: MechanicSetup = {
     inputs,
@@ -833,6 +941,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     rotationDurationSec,
     hitTimesSec: damagingHitTimesSec,
     weaponHitTimesSec,
+    dotTickTimesSec,
     qiPhaseAt: (timeSec) => buffEngine?.qiPhase(timeSec) ?? "normal",
     paramOn: (name) => buffEngine?.paramOn(name) ?? false,
     paramTier: (name) => buffEngine?.paramTier(name) ?? 0,
@@ -865,6 +974,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     statusesView: StatusView = ledger,
   ): Resolved & {
     forceCrit: boolean
+    forceNoAbrasion: boolean
     damageFactor: number
     conditionalFinalCrit: ConditionalFinalCrit | null
     artBonuses: Partial<Record<ArtBonusField, number>>
@@ -887,6 +997,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
     let sig = sigParts.sort().join("|")
     let forceCritFromBuff = false
+    let forceNoAbrasionFromBuff = false
     let damageFactor = 1
     let conditionalFinalCrit: ConditionalFinalCrit | null = null
     let artBonuses: Partial<Record<ArtBonusField, number>> = {}
@@ -910,6 +1021,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             .join(",")
       }
       if (site.forceCrit) forceCritFromBuff = true
+      if (site.forceNoAbrasion) forceNoAbrasionFromBuff = true
       damageFactor = site.damageFactor
       conditionalFinalCrit = site.conditionalFinalCrit
       artBonuses = site.artBonuses
@@ -976,6 +1088,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     return {
       ...r,
       forceCrit: forceCritFromBuff,
+      forceNoAbrasion: forceNoAbrasionFromBuff,
       damageFactor,
       conditionalFinalCrit,
       artBonuses,
@@ -1151,6 +1264,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       artBonus: () => {},
       damageMultiplier: () => {},
       echo: () => {},
+      finalCritAtLeast: () => {},
     }
     for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
     const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
@@ -1337,66 +1451,30 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   const dotTickEntries: DotTickEntry[] = []
-  for (const [buffId, arr] of ledger.entries()) {
-    const status = statusById.get(buffId)
-    if (!status || !isDebuffStatus(status) || !status.dot || status.dot.tickIntervalFrames <= 0)
-      continue
-    const tickSkill = skillsById.get(tickSourceSkillId(status) ?? "")
-    const dot = resolveTickDot(status, tickSkill)
-    if (!dot) continue
-    const dotSkill = dotTickSkill(status, tickSkill)
-    const debuffForTick: Debuff = { ...status, dot }
-    const dotName = dotRowName(status)
-    const dotBreakdownName = breakdownNameOf(status.breakdownName, status.name)
-    const dotBreakdownKey = status.breakdownName
-      ? debuffBreakdownKey(status.id)
-      : debuffKey(status.id)
-    const dotType = dot.skillType || "sustain"
-
-    const resource = resourceByDebuff.get(buffId)
-    const sortedWindows = [...arr].sort((left, right) => left.start - right.start)
-    const episodes = resource
-      ? sortedWindows.map((window, index) => [
-          {
-            ...window,
-            end: Math.min(
-              window.end,
-              sortedWindows[index + 1]?.start ?? windowFrames + 1,
-              windowFrames + 1,
-            ),
-          },
-        ])
-      : [arr]
-    for (const episode of episodes) {
-      for (const plan of planDotTicks({
-        debuff: status,
-        dot,
-        windows: episode,
-        stacksAt: (frame) => stacksAt(buffId, frame),
-        inWindow,
-        weightAt: (frame) => {
-          for (const { mechanic, state } of mechanics) {
-            const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
-            if (weight !== null && weight !== undefined) return weight
-          }
-          return 1
-        },
-      })) {
-        const entry: DotTickEntry = {
-          ...plan,
-          resourceOwner: resource ? episode[0].start : undefined,
-          debuff: status,
-          debuffForTick,
-          dotBreakdownKey,
-          dotSkill,
-          dotName,
-          dotBreakdownName,
-          dotType,
-        }
-        dotTickEntries.push(entry)
-        mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
+  for (const { status, dot, tickSkill, resource, episodeStart, plan } of plannedDotTicks(
+    ledger.entries(),
+    (buffId, frame) => stacksAt(buffId, frame),
+    (buffId, frame) => {
+      for (const { mechanic, state } of mechanics) {
+        const weight = mechanic.tickWeightAt?.(state, buffId, frame, mechanicSetup)
+        if (weight !== null && weight !== undefined) return weight
       }
+      return 1
+    },
+  )) {
+    const entry: DotTickEntry = {
+      ...plan,
+      resourceOwner: resource ? episodeStart : undefined,
+      debuff: status,
+      debuffForTick: { ...status, dot },
+      dotBreakdownKey: status.breakdownName ? debuffBreakdownKey(status.id) : debuffKey(status.id),
+      dotSkill: dotTickSkill(status, tickSkill),
+      dotName: dotRowName(status),
+      dotBreakdownName: breakdownNameOf(status.breakdownName, status.name),
+      dotType: dot.skillType || "sustain",
     }
+    dotTickEntries.push(entry)
+    mergedEvents.push({ kind: "tick", frame: entry.frame, seq: mergedSeq++, entry })
   }
 
   // A tick carries the same `extraCritDamage` sentinel a regular hit does, but
@@ -1488,6 +1566,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       const art = behavior.buildArt(hitInput, hitContext)
       if (st.forceCrit) art.guaranteedCrit = 1
+      if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
       const artSink: EffectSink = {
         stat: () => {},
         forceOutcome: () => {},
@@ -1501,6 +1580,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           art.correction = (art.correction ?? 1) * factor
         },
         echo: () => {},
+        finalCritAtLeast: () => {},
       }
       for (const effect of behavior.patchArt(hitInput, hitContext)) applyEffect(artSink, effect)
       for (const [field, amount] of Object.entries(st.artBonuses)) {
@@ -1554,6 +1634,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           castTagOf(entry.dotSkill),
           entry.frame / FPS,
           propsOfSkill(entry.dotSkill, 1),
+          false,
+          skillTagsOf(entry.dotSkill),
         )
       }
       const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
@@ -1593,6 +1675,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       )
       const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
       if (st.forceCrit) art.guaranteedCrit = 1
+      if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
       const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
       const damage = rolled?.damage ?? expectedDamage
       totalDamage += damage
