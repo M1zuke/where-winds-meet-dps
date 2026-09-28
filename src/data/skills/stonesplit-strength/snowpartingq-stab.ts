@@ -16,19 +16,29 @@ export const snowpartingqStab = defineSkill({
   castTag: CAST.snowpartingQStab,
   receives: [BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
   triggersBuffs: [BUFF.throatPierced],
-  castFrames: 113,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 69,
   triggerable: true,
   // In-game values as of 2026-09-28: 4.5 m approach reach, plus a further
   // 1.75 m shrink-only pull once in range.
   reachMeters: 4.5,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
+  // The strike splits 0.4 / 0.6 across two colliders (in-game animation,
+  // 2026-09-24).
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 2.1324,
-      attributeMultiplier: 3.1986,
-      physFixed: 590,
-      attributeFixed: 322,
+      frame: 14,
+      physMultiplier: 0.85296,
+      attributeMultiplier: 1.27944,
+      physFixed: 236,
+      attributeFixed: 128.8,
+    }),
+    hit(1, {
+      frame: 48,
+      physMultiplier: 1.27944,
+      attributeMultiplier: 1.91916,
+      physFixed: 354,
+      attributeFixed: 193.2,
       triggers: [
         castSkill({
           target: SKILL.anxisoldierhengStab,

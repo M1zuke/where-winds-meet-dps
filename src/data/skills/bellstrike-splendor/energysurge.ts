@@ -49,7 +49,7 @@ export const energySurge = defineSkill({
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 6,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
@@ -64,14 +64,14 @@ export const energySurge = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 17,
+      frame: 16,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
     }),
     hit(2, {
-      frame: 34,
+      frame: 45,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
       physFixed: 506.24,

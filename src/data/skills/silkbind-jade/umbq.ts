@@ -35,7 +35,10 @@ export const umbq = defineSkill({
     BUFF.comboSpringAwayBonus,
     BUFF.springThunder,
   ],
-  castFrames: 75,
+  // Cast length to the earliest next input with Blossom Barrage tier 3+
+  // (in-game values as of 2026-09-24) — the shorter of the class's two
+  // clips, and the one this app's graduation build carries.
+  castFrames: 67,
   triggerable: true,
   // In-game values as of 2026-09-28: 20 m approach reach — a companion
   // projectile rides the swing 30 m further (50 m), not modelled separately.
@@ -44,7 +47,9 @@ export const umbq = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 0,
+      // In-game values as of 2026-09-24: the bullet launch frame on the
+      // Blossom Barrage tier 3+ clip.
+      frame: 50,
       physMultiplier: 2.3397,
       attributeMultiplier: 3.5095,
       physFixed: 648,

@@ -5,14 +5,9 @@ import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
 import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
 
-const SOLDIER_HIT = {
-  frame: 0,
-  physMultiplier: 0.35,
-  attributeMultiplier: 0.525,
-  physFixed: 0,
-  attributeFixed: 0,
-  triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
-}
+// Relative to the parent hit landing this soldier's cast (in-game animation,
+// 2026-09-24).
+const SOLDIER_HIT_FRAMES = [10, 24, 28, 42]
 
 function hengSoldier(id: string, name: string, attunement: string, extraTags: string[] = []) {
   return defineSkill({
@@ -26,9 +21,18 @@ function hengSoldier(id: string, name: string, attunement: string, extraTags: st
     castTag: CAST.anxiSoldierHeng,
     receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
     triggersBuffs: [BUFF.throatPierced],
-    castFrames: 0,
+    castFrames: 42,
     triggerable: true,
-    hits: [0, 1, 2, 3].map((index) => hit(index, SOLDIER_HIT)),
+    hits: SOLDIER_HIT_FRAMES.map((frame, index) =>
+      hit(index, {
+        frame,
+        physMultiplier: 0.35,
+        attributeMultiplier: 0.525,
+        physFixed: 0,
+        attributeFixed: 0,
+        triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
+      }),
+    ),
     createdAt: "2026-07-19T00:00:00.000Z",
     updatedAt: "2026-07-19T00:00:00.000Z",
   })

@@ -12,6 +12,7 @@ import { healSkill as healSwordMorphMultiWaveWindow } from "../../src/migrations
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
+import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -51,8 +52,10 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids these later hops don't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healMountainsMightAndQiImbalanceMarker(
-    healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+  healStonesplitSplendorJadeTimingRepairs(
+    healMountainsMightAndQiImbalanceMarker(
+      healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+    ),
   ) as Skill
 
 describe("custom-skills v26 fixture", () => {

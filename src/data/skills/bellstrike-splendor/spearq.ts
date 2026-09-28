@@ -37,7 +37,9 @@ export const spearq = defineSkill({
   },
   hits: [
     hit(0, {
-      frame: 0,
+      // In-game values as of 2026-09-24: the launch frame (cast length
+      // already matches).
+      frame: 18,
       physMultiplier: 0.5732,
       attributeMultiplier: 0.8598,
       physFixed: 160,

@@ -13,7 +13,10 @@ export const deflect = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.deflect,
   triggersBuffs: [BUFF.cleftpeakDeflectGrant],
-  castFrames: 25,
+  // Cast length to the earliest next input with Snowparting Blade drawn: the
+  // player deflects with that art equipped in every rotation this app
+  // carries (in-game animation, 2026-09-24).
+  castFrames: 15,
   triggerable: true,
   // In-game values as of 2026-09-28: no approach, confirmed — a large reach
   // keeps this stationary, non-damaging cast from capping the live distance.

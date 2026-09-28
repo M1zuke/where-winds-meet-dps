@@ -1,21 +1,6 @@
 // The acceptance anchor for Stonesplit Strength: a captured build, asserted
 // exactly. A change that moves either number has changed the engine's answer,
-// not just its shape. Re-baselined for the Cleftpeak 4-piece correction: 5.1s
-// (not 5), a stacking ×(1 + 1%/stack) ramp multiplied with a separate ×1.08 at
-// five stacks (not a flat +5% always-on plus an additive +8% at max stacks).
-// Re-baselined again, in the last floating-point place only: the engine now
-// sums every damage event into the total in one time-ordered pass, which
-// reorders the same floating-point additions.
-// Re-baselined again: the Exhausted (Qi-break) bonus now multiplies outside
-// the additive boost bracket instead of folding into it, raising every hit
-// and tick inside the break window.
-// Re-baselined again: the stored Fire Oil setting now also applies its Burn
-// DoT, not just its flat damage bonus.
-// Re-baselined again: the talent board follows the profile's breakthrough, and
-// this build stands at 16, so the nodes behind Solo Mode Level 17 no longer
-// count towards it.
-// Re-baselined again: the target distance now simulates per cast instead of
-// holding one fixed value, and this build's rotation casts Flute of the Tides.
+// not just its shape.
 import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -27,16 +12,16 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(59071.528917396274)
-    expect(result.totalDamage).toBe(3544291.735043776)
+    expect(result.dps).toBe(58743.344961569295)
+    expect(result.totalDamage).toBe(3524600.6976941577)
   })
 
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const raised = { ...profile.inputs, breakthrough: 17 }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
-    expect(result.dps).toBe(59934.341697699434)
-    expect(result.totalDamage).toBe(3596060.501861966)
+    expect(result.dps).toBe(59584.8761276892)
+    expect(result.totalDamage).toBe(3575092.567661352)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

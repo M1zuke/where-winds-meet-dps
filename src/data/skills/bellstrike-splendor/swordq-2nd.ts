@@ -18,17 +18,27 @@ export const swordq2nd = defineSkill({
   startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
   receives: NAMELESS_SWORD_RECEIVES,
-  castFrames: 26,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 60,
   triggerable: true,
   // In-game values as of 2026-09-28: 3 m approach reach.
   reachMeters: 3,
+  // Two slashes of 0.15 each, not Daunting Strike's own single 0.2 (in-game
+  // animation, 2026-09-24).
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 1.0253,
-      attributeMultiplier: 1.538,
-      physFixed: 283.6,
-      attributeFixed: 154.6,
+      frame: 7,
+      physMultiplier: 0.768985,
+      attributeMultiplier: 1.153478,
+      physFixed: 212.7,
+      attributeFixed: 115.95,
+    }),
+    hit(1, {
+      frame: 48,
+      physMultiplier: 0.768985,
+      attributeMultiplier: 1.153478,
+      physFixed: 212.7,
+      attributeFixed: 115.95,
       triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
   ],

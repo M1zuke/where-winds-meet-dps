@@ -1,3 +1,4 @@
+import type { MeterDrain } from "../../../engine/skill"
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
@@ -13,6 +14,13 @@ import {
 } from "./buffs/vagrantSwordEndurance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
+
+// A hold whose drain would empty before the level-2 threshold never reaches
+// a second wave at all — it releases onto the single-bolt form instead.
+const DRAIN_WITH_CHARGE_RELEASE: MeterDrain[] = VAGRANT_SWORD_DRAIN.map((drain) => ({
+  ...drain,
+  chargeRelease: { fallbackSkillId: SKILL.swordHeavyCharged },
+}))
 
 export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
@@ -40,14 +48,17 @@ export const swordHeavyCharged2Hit = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 117,
-  meterDrains: VAGRANT_SWORD_DRAIN,
+  // Cast length to the earliest next input: Deflect ends the release right
+  // after the second wave's own launch, after an ≥84 f hold to the level-2
+  // threshold (in-game values as of 2026-09-24).
+  castFrames: 101,
+  meterDrains: DRAIN_WITH_CHARGE_RELEASE,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 90,
       physMultiplier: 1.3066,
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
@@ -61,7 +72,7 @@ export const swordHeavyCharged2Hit = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 58,
+      frame: 100,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,

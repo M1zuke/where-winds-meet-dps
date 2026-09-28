@@ -40,19 +40,20 @@ export const umbHeavylight = defineSkill({
     BUFF.mistwillowBuff,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
-  castFrames: 75,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 78,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 6,
       ...COEFFICIENTS,
       triggers: [castSkill({ target: SKILL.umbHeavylightHeavyShare })],
     }),
-    hit(1, { frame: 25, ...COEFFICIENTS }),
-    hit(2, { frame: 50, ...COEFFICIENTS }),
+    hit(1, { frame: 31, ...COEFFICIENTS }),
+    hit(2, { frame: 56, ...COEFFICIENTS }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",

@@ -9,6 +9,7 @@ import {
   healSilkbindJadeValuesGatesReach,
 } from "../../src/migrations/customSkills/V28__silkbindJadeValuesGatesReach"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
+import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -54,7 +55,8 @@ const builtinOf = (id: string): Skill =>
 
 // A no-op on the ids V38 doesn't touch — composing it is what keeps this
 // hop's own output lined up with the live built-in.
-const throughLaterHops = (skill: unknown): Skill => healMeterFieldsAndGains(skill) as Skill
+const throughLaterHops = (skill: unknown): Skill =>
+  healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)) as Skill
 
 describe("custom-skills v27 fixture", () => {
   it("is v27 and still stores the pre-V28 shape for every healed skill", () => {

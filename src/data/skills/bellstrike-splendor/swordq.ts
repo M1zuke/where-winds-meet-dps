@@ -25,7 +25,9 @@ export const swordq = defineSkill({
   reachMeters: 12,
   hits: [
     hit(0, {
-      frame: 0,
+      // In-game values as of 2026-09-24: the flying sword launches at
+      // 17.58 f and lands after its own flight time, ≈ 22 f at melee range.
+      frame: 22,
       physMultiplier: 1.0253,
       attributeMultiplier: 1.538,
       physFixed: 283.6,

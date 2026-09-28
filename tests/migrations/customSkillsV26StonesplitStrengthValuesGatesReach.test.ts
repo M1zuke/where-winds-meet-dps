@@ -61,6 +61,10 @@ const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS
   "stonesplitStrength-anxisoldierheng": ["tags", "hits"],
   "stonesplitStrength-anxisoldiermosweep": ["hits"],
   "stonesplitStrength-anxisoldiermodown": ["hits"],
+  "stonesplitStrength-snowpartingq-stab": ["hits"],
+  "stonesplitStrength-phalanxcharged-s3": ["hits"],
+  "stonesplitStrength-phalanxcharged-s3-innerpassion": ["hits"],
+  "stonesplitStrength-snowpartingspecial": ["hits"],
 }
 const fieldsStillMatchingLiveBuiltin = (id: string) =>
   CHECKED_FIELDS.filter((field) => !(MOVED_AGAIN_FIELDS[id] ?? []).includes(field))

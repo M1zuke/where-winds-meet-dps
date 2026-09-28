@@ -3731,8 +3731,8 @@
     "digest": "987cf6b59b5d00f32b09933d72638e37d4f69ba2255ed4420a9eb4140742d8bb"
   },
   "defaults:umbra": {
-    "dps": 12079.19,
-    "totalDamage": 724751.47,
+    "dps": 12094.47,
+    "totalDamage": 725668.25,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.98s would be illegal in the game: its cast conditions are not met.",
@@ -3844,7 +3844,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 22976.03,
+        "expectedDamage": 23892.81,
         "castCount": 5
       },
       {
@@ -3925,6 +3925,6 @@
       "buffWindows": 127,
       "casts": 79
     },
-    "digest": "1c9a889048f9b8b20a6cb1c8dbe409917a2d2a94c3c2d57e041bf813f07e8128"
+    "digest": "fc8391a05b26aefe4e8775649ca19fe2b25a3937b8a9b02f7bbaece11e2af292"
   }
 }

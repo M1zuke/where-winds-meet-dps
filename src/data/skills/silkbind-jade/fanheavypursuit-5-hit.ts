@@ -53,18 +53,19 @@ export const fanheavypursuit5Hit = defineSkill({
     ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.pursuitChargedBoost],
-  castFrames: 150,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 146,
   triggerable: true,
   // In-game values as of 2026-09-28: 9 m approach reach; the cast's own
   // segments then teleport to about 1.5 m from the target, along its facing.
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 0, ...COEFFICIENTS }),
-    hit(1, { frame: 30, ...COEFFICIENTS }),
-    hit(2, { frame: 60, ...COEFFICIENTS }),
-    hit(3, { frame: 90, ...COEFFICIENTS }),
-    hit(4, { frame: 120, ...COEFFICIENTS }),
+    hit(0, { frame: 14, ...COEFFICIENTS }),
+    hit(1, { frame: 33, ...COEFFICIENTS }),
+    hit(2, { frame: 69, ...COEFFICIENTS }),
+    hit(3, { frame: 84, ...COEFFICIENTS }),
+    hit(4, { frame: 112, ...COEFFICIENTS }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
   updatedAt: "2026-08-17T00:00:00.000Z",

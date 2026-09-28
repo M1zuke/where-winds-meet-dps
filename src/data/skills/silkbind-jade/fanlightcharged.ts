@@ -30,15 +30,18 @@ export const fanlightcharged = defineSkill({
   // the hold, stopping 0.55 s later; frozen for the whole hold otherwise.
   meterDrains: [{ meterId: enduranceMeter.id, perSecond: 30, fromFrame: 14.4, stopAfterSec: 0.55 }],
   meterFreezes: [{ meterId: enduranceMeter.id, fromFrame: 0 }],
-  castFrames: 75,
+  // Cast length to the earliest next input for the shortest hold (in-game
+  // values as of 2026-09-24).
+  castFrames: 98,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 0,
-      // In-game values as of 2026-09-24.
+      // In-game values as of 2026-09-24: the whirlwind launch frame for the
+      // shortest hold.
+      frame: 71,
       physMultiplier: 1.9044,
       attributeMultiplier: 2.8566,
       physFixed: 527,

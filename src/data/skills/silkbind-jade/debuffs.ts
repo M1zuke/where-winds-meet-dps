@@ -3,7 +3,12 @@ import { ATTUNE } from "../ids"
 import { BUFF } from "../buffs/ids"
 import type { Debuff } from "../../../engine/debuff"
 import { DEBUFF } from "./ids"
-import { DRONE_INTERVAL_FRAMES, DRONE_TICK, droneWindowFrames } from "./droneTick"
+import {
+  DRONE_FIRST_TICK_OFFSET_FRAMES,
+  DRONE_INTERVAL_FRAMES,
+  DRONE_TICK,
+  droneWindowFrames,
+} from "./droneTick"
 
 const CLASS_ID = "silkbindJade"
 
@@ -17,6 +22,7 @@ export const umbdrone12Hit = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
+    firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -42,6 +48,7 @@ export const umbdrone16Hit = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
+    firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -67,6 +74,7 @@ export const umbdrone20Hit = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
+    firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -92,6 +100,7 @@ export const umbdrone23Hit = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
+    firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -117,6 +126,7 @@ export const umbdrone26Hit = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
+    firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
     ...DRONE_TICK,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -168,10 +178,6 @@ export const umbdrone = defineDebuff({
   durationFrames: 3600 * 60,
   dot: {
     ...umbdrone20Hit.dot,
-    // Provisional cadence from https://medal.tv/games/where-winds-meet/clips/nhIubYLFVfAg-vpqX:
-    // paired impacts approximately 0.15 s apart, repeating every 0.5 s.
-    tickIntervalFrames: 30,
-    firstTickOffsetFrames: 21,
     additionalTicks: { offsetsFrames: [9], requiresBuff: BUFF.lingeringBone },
   },
 })

@@ -1098,13 +1098,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   const behaviorFor = buildBehaviors(buildView)
 
-  const hitInputAt = (skill: Skill, hit: SkillHit, frame: number): HitInput => ({
+  const hitInputAt = (
+    skill: Skill,
+    hit: SkillHit,
+    frame: number,
+    castStartFrame: number,
+  ): HitInput => ({
     skill,
     hit,
     frame,
     statuses: ledger,
     build: buildView,
-    holds: (condition) => conditionHolds(condition, frame),
+    holds: (condition) => conditionHolds(condition, castStartFrame),
   })
 
   const propsOfSkill = (skill: Skill, hitCount = skill.hits.length): SkillProperties => {
@@ -1633,7 +1638,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     liveWriter.processExpiries(frame)
 
     const behavior = behaviorFor(skill)
-    const hitInput = hitInputAt(skill, hit, frame)
+    const hitInput = hitInputAt(skill, hit, frame, castFrame)
     const extraEffects: BuffStatEffect[] = []
     let forceGuaranteedAffinity = false
     const hitSink: EffectSink = {
@@ -1961,7 +1966,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         continue
       }
       const behavior = behaviorFor(skill)
-      const hitInput = hitInputAt(skill, hit, frame)
+      const hitInput = hitInputAt(skill, hit, frame, castFrame)
       const resolveOverride: ResolveOverride | undefined =
         extraEffects.length > 0 || forceGuaranteedAffinity
           ? { extraEffects, forceGuaranteedAffinity }

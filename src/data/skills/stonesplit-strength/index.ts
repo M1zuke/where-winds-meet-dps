@@ -5,6 +5,7 @@ import { anxisoldiermojump } from "./anxisoldiermojump"
 import { anxisoldiermosweep } from "./anxisoldiermosweep"
 import { blockperception } from "./blockperception"
 import { deflect } from "./deflect"
+import { deflectCancel } from "./deflect-cancel"
 import { phalanxchargedS3Innerpassion } from "./phalanxcharged-s3-innerpassion"
 import { phalanxchargedS3 } from "./phalanxcharged-s3"
 import { phalanxq } from "./phalanxq"
@@ -32,6 +33,7 @@ export const SKILLS: Skill[] = [
   anxisoldiermosweep,
   blockperception,
   deflect,
+  deflectCancel,
   phalanxchargedS3Innerpassion,
   phalanxchargedS3,
   phalanxq,

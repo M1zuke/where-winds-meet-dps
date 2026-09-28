@@ -73,12 +73,16 @@ export const swordHeavyCharged = defineSkill({
           attributeMultiplier: 1.9598,
           physFixed: 361.6,
           attributeFixed: 197.2,
-          castFrames: 140,
+          // Cast length to the earliest next input for a full ≥84 f hold to
+          // the level-2 threshold plus the three-wave release's own cast
+          // length (in-game values as of 2026-09-24).
+          castFrames: 135,
+          frame: 90,
         },
       ],
     }),
     hit(1, {
-      frame: 46,
+      frame: 100,
       physMultiplier: 1.5679,
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
@@ -86,7 +90,7 @@ export const swordHeavyCharged = defineSkill({
       conditions: [MULTI_WAVE_WINDOW_ACTIVE],
     }),
     hit(2, {
-      frame: 92,
+      frame: 129,
       physMultiplier: 1.8292,
       attributeMultiplier: 2.7438,
       physFixed: 506.24,

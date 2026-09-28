@@ -1,7 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
-import { BUFF, PARAM } from "../buffs/ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
 import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
@@ -32,16 +31,7 @@ export const anxisoldiermodown = defineSkill({
       attributeMultiplier: 0.75,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [
-        castSkill({
-          target: SKILL.anxisoldiermojump,
-          stacks: 0,
-          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
-          requiresParam: PARAM.steadfastDevotion,
-          requiresMinTier: 1,
-        }),
-        ANXI_SOLDIER_BLADE_MOMENTUM_GAIN,
-      ],
+      triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

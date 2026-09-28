@@ -11,6 +11,7 @@ import { V6__bleedCoefficientReach } from "./V6__bleedCoefficientReach"
 import { V7__dotTickCadence } from "./V7__dotTickCadence"
 import { V8__mysticArtIds } from "./V8__mysticArtIds"
 import { V9__sharedDotRecalibration } from "./V9__sharedDotRecalibration"
+import { V10__droneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 
 export type {
   CustomDebuffMigration,
@@ -24,6 +25,7 @@ export { healBleedCoefficientReceives } from "./V6__bleedCoefficientReach"
 export { healDotTickCadence } from "./V7__dotTickCadence"
 export { migrateMysticDebuffReferences } from "./V8__mysticArtIds"
 export { recalibrateSharedDot } from "./V9__sharedDotRecalibration"
+export { healDroneIntervalAndOffset } from "./V10__droneIntervalAndOffset"
 
 export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V3__umbraBleedTick,
@@ -33,6 +35,7 @@ export const CUSTOM_DEBUFF_MIGRATIONS: readonly CustomDebuffMigration[] = [
   V7__dotTickCadence,
   V8__mysticArtIds,
   V9__sharedDotRecalibration,
+  V10__droneIntervalAndOffset,
 ]
 
 // The store's version before it had a chain; a v1 blob is the mixed buff store

@@ -27,7 +27,8 @@ export const swordSpecial = defineSkill({
   // start.
   castConditions: [enduranceRequires("gte", 30)],
   meterCosts: [enduranceCost(25)],
-  castFrames: 24,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 44,
   triggerable: true,
   // In-game values as of 2026-09-28: 12.8 m reach on its own companion
   // projectile, plus a further 1 m shrink-only pull once in range.
@@ -35,7 +36,9 @@ export const swordSpecial = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
-      frame: 0,
+      // In-game values as of 2026-09-24: the bolt launches at 17.24 f and
+      // lands after its own flight time, ≈ 23 f at melee range.
+      frame: 23,
       physMultiplier: 1.767,
       attributeMultiplier: 2.6505,
       physFixed: 490,

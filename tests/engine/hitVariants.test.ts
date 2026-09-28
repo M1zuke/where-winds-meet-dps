@@ -190,6 +190,55 @@ describe("hit variants — coefficient swap", () => {
 
     expect(withExpiredGate).toBeCloseTo(baseline, 10)
   })
+
+  it("a gate active at the cast's own start but expired by the hit's own landing frame still selects the variant", () => {
+    const gate = makeGate({ durationFrames: 40 })
+    const variant: HitVariant = {
+      id: "hv-4",
+      label: "Empowered",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 1 }],
+      physMultiplier: 5,
+      attributeMultiplier: 0,
+      physFixed: 500,
+      attributeFixed: 0,
+    }
+    const empowered = makeSkill(CLASS, {
+      name: "Empowered",
+      castFrames: 60,
+      hits: [makeHit({ frame: 35, physMultiplier: 1, physFixed: 100, variants: [variant] })],
+    })
+    const plain = makeSkill(CLASS, {
+      name: "Empowered",
+      castFrames: 60,
+      hits: [makeHit({ frame: 35, physMultiplier: 5, physFixed: 500 })],
+    })
+    const granter = makeSkill(CLASS, {
+      name: "Granter",
+      castFrames: 10,
+      hits: [
+        makeHit({
+          frame: 0,
+          triggers: [makeTrigger({ kind: "applyBuff", targetId: gate.id, stacks: 1 })],
+        }),
+      ],
+    })
+
+    const rotation = makeRotation(CLASS, {
+      steps: [makeStep({ skillId: granter.id }), makeStep({ skillId: empowered.id })],
+    })
+    const withLateLandingHit = simulateTimeline(
+      timelineInputs(rotation, [granter, empowered], [gate]),
+    ).totalDamage
+
+    const rotationPlain = makeRotation(CLASS, {
+      steps: [makeStep({ skillId: granter.id }), makeStep({ skillId: plain.id })],
+    })
+    const empoweredBaseline = simulateTimeline(
+      timelineInputs(rotationPlain, [granter, plain], [gate]),
+    ).totalDamage
+
+    expect(withLateLandingHit).toBeCloseTo(empoweredBaseline, 10)
+  })
 })
 
 describe("multi-condition trigger — AND semantics", () => {

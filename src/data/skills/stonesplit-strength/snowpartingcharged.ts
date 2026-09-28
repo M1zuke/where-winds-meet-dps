@@ -32,7 +32,7 @@ export const snowpartingcharged = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 50,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
       physFixed: 135.6,
@@ -40,7 +40,7 @@ export const snowpartingcharged = defineSkill({
       triggers: [GRAVE_FROST_HIT],
     }),
     hit(1, {
-      frame: 24,
+      frame: 63,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
       physFixed: 135.6,
@@ -48,20 +48,12 @@ export const snowpartingcharged = defineSkill({
       triggers: [GRAVE_FROST_HIT],
     }),
     hit(2, {
-      frame: 48,
+      frame: 70,
       physMultiplier: 0.4899,
       attributeMultiplier: 0.734867,
       physFixed: 135.6,
       attributeFixed: 73.8,
-      triggers: [GRAVE_FROST_HIT],
-    }),
-    hit(3, {
-      frame: 72,
-      physMultiplier: 0.9798,
-      attributeMultiplier: 1.4697,
-      physFixed: 271.2,
-      attributeFixed: 147.6,
-      // In-game grant frame as of 2026-09-26: 82.6 f from the press, nearest this hit.
+      // In-game grant frame as of 2026-09-24: 82.64 f from the press, nearest this hit.
       triggers: [
         applyBuff({
           target: BUFF.snowbreakSpringAvailable,
@@ -70,6 +62,14 @@ export const snowpartingcharged = defineSkill({
         }),
         GRAVE_FROST_HIT,
       ],
+    }),
+    hit(3, {
+      frame: 96,
+      physMultiplier: 0.9798,
+      attributeMultiplier: 1.4697,
+      physFixed: 271.2,
+      attributeFixed: 147.6,
+      triggers: [GRAVE_FROST_HIT],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
