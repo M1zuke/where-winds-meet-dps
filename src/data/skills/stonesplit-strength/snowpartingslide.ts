@@ -15,6 +15,10 @@ export const snowpartingslide = defineSkill({
   receives: SNOWPARTING_BLADE_RECEIVES,
   castFrames: 42,
   triggerable: true,
+  // In-game values as of 2026-09-28: 8 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 8,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

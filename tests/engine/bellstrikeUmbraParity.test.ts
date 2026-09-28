@@ -71,7 +71,7 @@ const inputs: Inputs = {
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    distanceToTargetMeters: 3,
+    preferredDistanceMeters: 3,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,

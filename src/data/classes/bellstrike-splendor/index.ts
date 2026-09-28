@@ -38,6 +38,10 @@ export const bellstrikeSplendor = defineClass({
   ],
   classSpecificAttunements: ["swordQ", "swordCharged", "swordSpecial", "spearSpecial"],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Relentless Chase) — an assumption for every skill with no reach
+  // of its own.
+  defaultMeleeReachMeters: 3,
   meters: [enduranceMeterWithNamelessSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),

@@ -55,6 +55,10 @@ export const fanheavypursuit3Hit = defineSkill({
   triggersBuffs: [BUFF.pursuitChargedBoost],
   castFrames: 90,
   triggerable: true,
+  // In-game values as of 2026-09-28: 9 m approach reach; the cast's own
+  // segments then teleport to about 1.5 m from the target, along its facing.
+  reachMeters: 9,
+  displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
     hit(0, { frame: 0, ...COEFFICIENTS }),
     hit(1, { frame: 30, ...COEFFICIENTS }),

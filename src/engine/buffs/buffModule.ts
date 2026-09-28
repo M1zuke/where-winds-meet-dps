@@ -116,6 +116,10 @@ export type BuffMeta = BuffGate & {
   // this module yet, and it keeps reaching ticks exactly as it does today.
   // Only an explicit `false` excludes them.
   reachesDotTicks?: boolean
+  // Whether this module's `effects` read `ctx.target.distanceMeters` — the
+  // Encounter Settings panel shows the distance input only while the build
+  // carries a module or mechanic that declares this.
+  readsTargetDistance?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

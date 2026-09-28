@@ -65,7 +65,8 @@ import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
 import { applyBuffEffects } from "./statRegistry"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
-import { BuffEngine, type DamageEffectsResult } from "./buffs/buffEngine"
+import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
+import { distanceAtCastStart } from "./distance"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
@@ -501,7 +502,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     whiteAffinityRate: inputs.affinityRate,
   }
   const meterStartFrame = Math.min(0, -prePullBound)
-  const meters = (classDefinition(inputs.classId)?.meters ?? []).map(
+  const classDef = classDefinition(inputs.classId)
+  const meters = (classDef?.meters ?? []).map(
     (definition) =>
       new MeterEngine(
         definition,
@@ -522,6 +524,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   )
   const meterById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
   for (const meter of meters) buffParams[meterMaxParamKey(meter.def.id)] = meter.capacity
+
+  // Ground distance to the target simulates once here too, replayed onto the
+  // real ledger the same way a meter is — docs/TIMELINE.md § "Target distance".
+  const preferredDistanceMeters = paramNumOf(buffParams, "distanceMeters")
+  const defaultMeleeReachMeters = classDef?.defaultMeleeReachMeters ?? 0
+  let currentDistanceMeters = preferredDistanceMeters
+  layoutLedger.openPermanent(TARGET_DISTANCE_STATUS)
+  layoutLedger.recordStack(TARGET_DISTANCE_STATUS, meterStartFrame, currentDistanceMeters)
+
   const runEffectiveRates = effectiveRates(inputs)
 
   function meterModifierMultiplier(
@@ -851,6 +862,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         `${rs.skill.name || rs.skill.id} at ${(startFrame / FPS).toFixed(2)}s would be illegal in the game: its cast conditions are not met.`,
       )
     }
+    // A pre-pull cast never touches the target distance either — see the
+    // meter-cost note below, the same real-world-gap reasoning applies.
+    if (!prePull) {
+      currentDistanceMeters = distanceAtCastStart(
+        rs.skill,
+        defaultMeleeReachMeters,
+        preferredDistanceMeters,
+        currentDistanceMeters,
+      )
+      layoutLedger.recordStack(TARGET_DISTANCE_STATUS, startFrame, currentDistanceMeters)
+    }
     const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
     const nominalCastLen = prePull
       ? upperBoundCastFrames(rs)
@@ -925,6 +947,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const sample of layoutLedger.stackHistory(meter.statusId))
       ledger.recordStack(meter.statusId, sample.frame, sample.value)
   }
+  ledger.openPermanent(TARGET_DISTANCE_STATUS)
+  for (const sample of layoutLedger.stackHistory(TARGET_DISTANCE_STATUS))
+    ledger.recordStack(TARGET_DISTANCE_STATUS, sample.frame, sample.value)
   const recordSpendStatusIds = new Set(
     skills.flatMap((candidate) =>
       candidate.hits.flatMap((skillHit) =>
@@ -1711,6 +1736,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 capacity: meter.capacity,
               }))
             : undefined,
+        distanceMeters: layoutLedger.stacksAt(TARGET_DISTANCE_STATUS, ls.startFrame),
       }
     })
     castsUnsorted.sort((a, b) => a.timeSec - b.timeSec)

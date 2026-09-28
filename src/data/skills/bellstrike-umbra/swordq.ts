@@ -20,6 +20,8 @@ export const swordq = defineSkill({
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 18,
   triggerable: true,
+  // In-game values as of 2026-09-28: 4 m approach reach.
+  reachMeters: 4,
   hits: [
     hit(0, {
       frame: 10,

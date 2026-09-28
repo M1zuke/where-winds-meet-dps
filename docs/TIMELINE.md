@@ -511,6 +511,34 @@ works unchanged.
   own frame instead and surfaces a warning, rather than corrupting the meter's
   forward-only simulation.
 
+## Target distance
+
+The player's ground distance to a stationary target simulates **once**, in the
+layout pass's own sequential cursor, beside the meter simulation, and is
+replayed onto the real ledger as a permanent counter status the same way a
+meter is — every reader of `ctx.target.distanceMeters` then works unchanged.
+There is no second simulation and no per-module distance logic.
+
+- **A cast sets the distance at its own start**, after that step's cast
+  conditions are checked, to `min(preferred distance, reach)` — the player
+  stands as far away as the skill's own `reachMeters` allows. A skill with no
+  authored `reachMeters` uses its class's `defaultMeleeReachMeters`. A
+  `stationary` skill has no approach and instead caps the **current**
+  distance at its own reach, never pulling toward the preferred distance.
+- **A displacement applies after the approach**, against the distance it
+  left: `towardTarget` shrinks by a reference amount, floored at zero;
+  `toTarget` snaps to a fixed distance from the target; `selfForward` is a
+  fixed dash, the resulting distance the magnitude of the difference;
+  `byDistance` picks a band by the live distance at that same point and
+  applies that band's own displacement, recursively, falling back to an
+  `otherwise` displacement when no band matches.
+- **A pre-pull cast never touches the distance**, the same reasoning a meter
+  is never touched by one — a real-world gap of unknown length compressed
+  into a few negative frames has no faithful placement for an approach.
+- **Every hit and every DoT tick reads the distance at its own frame.** It
+  holds the last cast-set value until the next cast changes it, exactly as a
+  meter's level does between costs.
+
 ## Procedural behaviour
 
 A skill with genuinely procedural behaviour registers a **factory** against its

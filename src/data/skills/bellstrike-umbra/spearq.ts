@@ -28,6 +28,10 @@ export const spearq = defineSkill({
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 120,
   triggerable: true,
+  // In-game values as of 2026-09-28: 3 m approach reach, plus a further 1.75 m
+  // shrink-only pull once in range.
+  reachMeters: 3,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 14,

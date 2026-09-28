@@ -19,6 +19,11 @@ export const perfectDodgeFull = defineSkill({
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 50,
   triggerable: true,
+  // In-game values as of 2026-09-28: dodge and Perfect Dodge move in the
+  // player's own input direction — modelled as no change, an assumption. A
+  // large reach keeps this stationary cast from capping the live distance.
+  reachMeters: 100,
+  approach: "stationary",
   castConditions: [enduranceRequires("gte", 15)],
   meterCosts: [enduranceCost(15)],
   hits: [

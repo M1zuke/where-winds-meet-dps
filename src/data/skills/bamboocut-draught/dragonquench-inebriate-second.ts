@@ -2,6 +2,8 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
 import {
+  DRAGONQUENCH_DISPLACEMENT,
+  DRAGONQUENCH_REACH_METERS,
   DRAGONQUENCH_RECEIVES,
   DRAGONQUENCH_TAGS,
   dragonquenchStagesAt,
@@ -27,6 +29,8 @@ export const dragonquenchInebriateSecond = defineSkill({
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 123,
+  reachMeters: DRAGONQUENCH_REACH_METERS,
+  displacement: DRAGONQUENCH_DISPLACEMENT,
   hits: dragonquenchSecondStages,
   createdAt: "2026-09-05T00:00:00.000Z",
   updatedAt: "2026-09-06T00:00:00.000Z",

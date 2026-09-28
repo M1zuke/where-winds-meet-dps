@@ -285,9 +285,9 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.averageFps).toBe(144)
   })
 
-  it("loadProfiles heals a profile saved before distanceToTargetMeters existed to the default 3 m", () => {
+  it("loadProfiles heals a profile saved before preferredDistanceMeters existed to the default 3 m", () => {
     const { combatSettings, ...rest } = defaultInputs
-    const { distanceToTargetMeters: _droppedDistance, ...combatSettingsWithoutDistance } =
+    const { preferredDistanceMeters: _droppedDistance, ...combatSettingsWithoutDistance } =
       combatSettings!
     void _droppedDistance
     const inputs = { ...rest, combatSettings: combatSettingsWithoutDistance } as Inputs
@@ -301,13 +301,13 @@ describe("profiles carry selections only — derived stats are never persisted",
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings?.distanceToTargetMeters).toBe(3)
+    expect(profiles[0].inputs.combatSettings?.preferredDistanceMeters).toBe(3)
   })
 
-  it("loadProfiles keeps a stored distanceToTargetMeters as-is", () => {
+  it("loadProfiles keeps a stored preferredDistanceMeters as-is", () => {
     const inputs: Inputs = {
       ...defaultInputs,
-      combatSettings: { ...defaultInputs.combatSettings!, distanceToTargetMeters: 7 },
+      combatSettings: { ...defaultInputs.combatSettings!, preferredDistanceMeters: 7 },
     }
     localStorage.setItem(
       PROFILES_KEY,
@@ -319,7 +319,7 @@ describe("profiles carry selections only — derived stats are never persisted",
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings?.distanceToTargetMeters).toBe(7)
+    expect(profiles[0].inputs.combatSettings?.preferredDistanceMeters).toBe(7)
   })
 
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {

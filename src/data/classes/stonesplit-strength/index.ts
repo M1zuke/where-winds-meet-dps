@@ -41,6 +41,10 @@ export const stonesplitStrength = defineClass({
     "snowpartingVariedCombo",
   ],
   weapons: [MARTIAL_ART_ID.snowpartingBlade, MARTIAL_ART_ID.phalanxbaneBlade],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Grave Frost) — an assumption for every skill with no reach of
+  // its own.
+  defaultMeleeReachMeters: 4,
   meters: [enduranceMeter, bladeMomentumMeter],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),

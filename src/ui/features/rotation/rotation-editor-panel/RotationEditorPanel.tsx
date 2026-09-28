@@ -28,7 +28,7 @@ import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../eng
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { classDefinition } from "../../../../definitions/classes/registry"
-import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
+import { buildReadsTargetDistance, hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
   buffChipAbbreviation,
@@ -157,6 +157,15 @@ function MeterLevelChip({ level }: { level: CastMeterLevel }) {
   )
 }
 
+function DistanceChip({ distanceMeters }: { distanceMeters: number }) {
+  const { t } = useI18n()
+  return (
+    <span className={styles.meterLevel}>
+      {t("rotation.editor.distanceM")} {distanceMeters.toFixed(1)}
+    </span>
+  )
+}
+
 export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -247,6 +256,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     () => castBuffDisplayOrder(result.casts, hiddenBuffIds),
     [result.casts, hiddenBuffIds],
   )
+  const showDistance = useMemo(() => buildReadsTargetDistance(inputs), [inputs])
 
   function selectRotation(id: string) {
     const option = options.find((candidate) => candidate.id === id)
@@ -607,6 +617,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                     {cast?.meterLevels?.map((level) => (
                       <MeterLevelChip key={level.id} level={level} />
                     ))}
+                    {showDistance && cast ? (
+                      <DistanceChip distanceMeters={cast.distanceMeters} />
+                    ) : null}
                   </div>
                   {isCustom && (
                     <div className={styles.rowActions}>

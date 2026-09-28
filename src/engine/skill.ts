@@ -1,6 +1,9 @@
 import type { computeSkillDamage } from "./formula"
 import type { QiPhase } from "./effects/context"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+import { isDisplacement, isSkillApproach, type Displacement, type SkillApproach } from "./distance"
+
+export type { Displacement, SkillApproach } from "./distance"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
@@ -142,6 +145,11 @@ export interface Skill {
   castConditions?: TriggerCondition[]
   castFrames: number
   triggerable: boolean
+  // Target-distance simulation — docs/TIMELINE.md § "Target distance".
+  // Absent `reachMeters` falls back to the class's `defaultMeleeReachMeters`.
+  reachMeters?: number
+  approach?: SkillApproach
+  displacement?: Displacement
   elevatedAttributeMultiplier?: boolean
   neverAbrades?: boolean
   guaranteedNormal?: boolean
@@ -547,6 +555,13 @@ export function isSkill(x: unknown): x is Skill {
         return false
     }
   }
+  if (
+    s.reachMeters !== undefined &&
+    (typeof s.reachMeters !== "number" || !Number.isFinite(s.reachMeters))
+  )
+    return false
+  if (s.approach !== undefined && !isSkillApproach(s.approach)) return false
+  if (s.displacement !== undefined && !isDisplacement(s.displacement)) return false
   return true
 }
 
@@ -598,6 +613,9 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
     meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),
     meterFreezes: src.meterFreezes?.map((freeze) => ({ ...freeze })),
+    reachMeters: src.reachMeters,
+    approach: src.approach,
+    displacement: src.displacement,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

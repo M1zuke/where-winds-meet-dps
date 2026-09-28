@@ -18,6 +18,9 @@ export const dragonFireSmolder2Hits = defineSkill({
   // dragon-fire-smolder-1-hit.ts.
   castFrames: 137,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   // In-game values as of 2026-09-24.
   hits: [
     hit(0, {

@@ -40,6 +40,7 @@ export const fluteDistanceBonus = defineBuff({
   affectsAll: true,
   duration: 12.4,
   activeAfterBuffEnds: { buffId: BUFF.fluteArrival },
+  readsTargetDistance: true,
   summary: "allDamageBoost by distance to target, every hit including ticks",
   effects: (ctx) => [stat("allDamageBoost", distanceBonus(ctx.target.distanceMeters))],
 })

@@ -35,6 +35,7 @@ function cast(stepId: string, stepIndex: number): RotationCast {
     inWindow: true,
     prePull: false,
     buffs: [],
+    distanceMeters: 0,
   }
 }
 

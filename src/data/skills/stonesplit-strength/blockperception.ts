@@ -12,6 +12,10 @@ export const blockperception = defineSkill({
   castTag: CAST.blockPerception,
   castFrames: 15,
   triggerable: true,
+  // In-game values as of 2026-09-28: a defensive stance, not independently
+  // confirmed against reach — both segments carry a further 1 m
+  // shrink-only pull once in range.
+  displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
       frame: 0,

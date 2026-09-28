@@ -14,6 +14,8 @@
 // Re-baselined again: the talent board follows the profile's breakthrough, and
 // this build stands at 16, so the nodes behind Solo Mode Level 17 no longer
 // count towards it.
+// Re-baselined again: the target distance now simulates per cast instead of
+// holding one fixed value, and this build's rotation casts Flute of the Tides.
 import { describe, expect, it } from "vitest"
 import { importProfile } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -25,16 +27,16 @@ describe("Stonesplit Strength — the captured build", () => {
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(59166.61215631613)
-    expect(result.totalDamage).toBe(3549996.7293789675)
+    expect(result.dps).toBe(58801.91370047199)
+    expect(result.totalDamage).toBe(3528114.8220283194)
   })
 
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const raised = { ...profile.inputs, breakthrough: 17 }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
-    expect(result.dps).toBe(60028.764485971784)
-    expect(result.totalDamage).toBe(3601725.869158307)
+    expect(result.dps).toBe(59658.84517894205)
+    expect(result.totalDamage).toBe(3579530.710736523)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

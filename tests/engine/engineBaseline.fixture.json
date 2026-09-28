@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 69372.9,
-    "totalDamage": 4162374.29,
+    "dps": 69327.11,
+    "totalDamage": 4159626.39,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -10,7 +10,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56403.67,
+        "expectedDamage": 56211.37,
         "castCount": 4
       },
       {
@@ -18,7 +18,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 258662.15,
+        "expectedDamage": 258454.64,
         "castCount": 0
       },
       {
@@ -26,7 +26,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50625.17,
+        "expectedDamage": 50526.64,
         "castCount": 0
       },
       {
@@ -34,7 +34,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -42,7 +42,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 437085.97,
+        "expectedDamage": 436698.8,
         "castCount": 0
       },
       {
@@ -50,7 +50,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -58,7 +58,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105122.66,
+        "expectedDamage": 104795.28,
         "castCount": 4
       },
       {
@@ -74,7 +74,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2063257.73,
+        "expectedDamage": 2062787.54,
         "castCount": 0
       },
       {
@@ -90,7 +90,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59373.01,
+        "expectedDamage": 59242.48,
         "castCount": 0
       },
       {
@@ -98,7 +98,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51573.29,
+        "expectedDamage": 51410.15,
         "castCount": 4
       },
       {
@@ -163,11 +163,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "b456ecea81f5566d4dcd03c20172501eed3dab06139c00603eb705111276197d"
+    "digest": "8eb080759670786cf7c79a207956c06424eccf8b2977337bccff05bd1a5a131f"
   },
   "anchor:noAttunement": {
-    "dps": 62420.48,
-    "totalDamage": 3745228.71,
+    "dps": 62376.71,
+    "totalDamage": 3742602.57,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -176,7 +176,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56403.67,
+        "expectedDamage": 56211.37,
         "castCount": 4
       },
       {
@@ -184,7 +184,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 212192.08,
+        "expectedDamage": 212021.85,
         "castCount": 0
       },
       {
@@ -192,7 +192,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50625.17,
+        "expectedDamage": 50526.64,
         "castCount": 0
       },
       {
@@ -200,7 +200,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -208,7 +208,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 437085.97,
+        "expectedDamage": 436698.8,
         "castCount": 0
       },
       {
@@ -216,7 +216,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -224,7 +224,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105122.66,
+        "expectedDamage": 104795.28,
         "castCount": 4
       },
       {
@@ -240,7 +240,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1692582.22,
+        "expectedDamage": 1692196.5,
         "castCount": 0
       },
       {
@@ -256,7 +256,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59373.01,
+        "expectedDamage": 59242.48,
         "castCount": 0
       },
       {
@@ -264,7 +264,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51573.29,
+        "expectedDamage": 51410.15,
         "castCount": 4
       },
       {
@@ -329,11 +329,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "e6d8a6fc9f9e31b364eaca0f9b7d01238e82d47ec656fd0974af85aca7f99e05"
+    "digest": "dd7c1ed28b2904062f66f08f83ff33e77f90b825d6a4dffe275d035e90ea719f"
   },
   "anchor:dummyOff": {
-    "dps": 74291.17,
-    "totalDamage": 4457470.2,
+    "dps": 74245.37,
+    "totalDamage": 4454722.31,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -342,7 +342,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 61972.43,
+        "expectedDamage": 61780.14,
         "castCount": 4
       },
       {
@@ -350,7 +350,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 277451.97,
+        "expectedDamage": 277244.46,
         "castCount": 0
       },
       {
@@ -358,7 +358,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 55817.8,
+        "expectedDamage": 55719.26,
         "castCount": 0
       },
       {
@@ -366,7 +366,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 39533.37,
+        "expectedDamage": 39177.8,
         "castCount": 1
       },
       {
@@ -374,7 +374,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 467326.79,
+        "expectedDamage": 466939.63,
         "castCount": 0
       },
       {
@@ -382,7 +382,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 83775.67,
+        "expectedDamage": 83360.1,
         "castCount": 0
       },
       {
@@ -390,7 +390,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 115210.64,
+        "expectedDamage": 114883.26,
         "castCount": 4
       },
       {
@@ -406,7 +406,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2195290.36,
+        "expectedDamage": 2194820.17,
         "castCount": 0
       },
       {
@@ -422,7 +422,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 65343.85,
+        "expectedDamage": 65213.32,
         "castCount": 0
       },
       {
@@ -430,7 +430,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 56596.73,
+        "expectedDamage": 56433.59,
         "castCount": 4
       },
       {
@@ -495,11 +495,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "7555b5959ecc7cb877dcbc45df5d1f71255da251288295f70a0ca864d9a380dc"
+    "digest": "c4ee4b7912aa04b1093ebdcce34d9eb96a70242975aa700e055d383ae8001541"
   },
   "anchor:breakthrough17": {
-    "dps": 70576.67,
-    "totalDamage": 4234600.02,
+    "dps": 70530.04,
+    "totalDamage": 4231802.13,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -508,7 +508,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57382.37,
+        "expectedDamage": 57186.77,
         "castCount": 4
       },
       {
@@ -516,7 +516,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 263563.16,
+        "expectedDamage": 263351.69,
         "castCount": 0
       },
       {
@@ -524,7 +524,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 51364.09,
+        "expectedDamage": 51264.11,
         "castCount": 0
       },
       {
@@ -532,7 +532,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36267.91,
+        "expectedDamage": 35905.61,
         "castCount": 1
       },
       {
@@ -540,7 +540,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 445098.1,
+        "expectedDamage": 444703.8,
         "castCount": 0
       },
       {
@@ -548,7 +548,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 77102.26,
+        "expectedDamage": 76679,
         "castCount": 0
       },
       {
@@ -556,7 +556,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106944.35,
+        "expectedDamage": 106611.25,
         "castCount": 4
       },
       {
@@ -572,7 +572,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2098230.19,
+        "expectedDamage": 2097751.23,
         "castCount": 0
       },
       {
@@ -588,7 +588,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60476.83,
+        "expectedDamage": 60343.87,
         "castCount": 0
       },
       {
@@ -596,7 +596,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52462.64,
+        "expectedDamage": 52296.68,
         "castCount": 4
       },
       {
@@ -661,11 +661,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "9b1e59b91ee8ee4b8628259a8108da2009e5385df2bc49817250ea94b11ffbd2"
+    "digest": "18d5b9ff3d19cd5e8a59be4e0935a55d8be59e8bc93ebd249e16e1142149bbce"
   },
   "anchor:noQiBreak": {
-    "dps": 63571.57,
-    "totalDamage": 3814294.43,
+    "dps": 63525.78,
+    "totalDamage": 3811546.54,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -674,7 +674,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56403.67,
+        "expectedDamage": 56211.37,
         "castCount": 4
       },
       {
@@ -682,7 +682,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 254790.23,
+        "expectedDamage": 254582.72,
         "castCount": 0
       },
       {
@@ -690,7 +690,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 49752.53,
+        "expectedDamage": 49654,
         "castCount": 0
       },
       {
@@ -698,7 +698,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -706,7 +706,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 429509.75,
+        "expectedDamage": 429122.59,
         "castCount": 0
       },
       {
@@ -714,7 +714,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -722,7 +722,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105122.66,
+        "expectedDamage": 104795.28,
         "castCount": 4
       },
       {
@@ -738,7 +738,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2033351.72,
+        "expectedDamage": 2032881.53,
         "castCount": 0
       },
       {
@@ -754,7 +754,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58398.72,
+        "expectedDamage": 58268.19,
         "castCount": 0
       },
       {
@@ -762,7 +762,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 50319.75,
+        "expectedDamage": 50156.6,
         "castCount": 4
       },
       {
@@ -827,11 +827,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "36ec545ce3a4e0703ba35de06ca1934cb3afe06a3838ac1f387322781cb82420"
+    "digest": "2122fb5d36703dd01e9ed810440188d413f3efd7a1773e0bc2674bcafb7dd2da"
   },
   "anchor:healerBuff": {
-    "dps": 72651.75,
-    "totalDamage": 4359104.9,
+    "dps": 72605.95,
+    "totalDamage": 4356357,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -840,7 +840,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 60116.18,
+        "expectedDamage": 59923.89,
         "castCount": 4
       },
       {
@@ -848,7 +848,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 271188.7,
+        "expectedDamage": 270981.19,
         "castCount": 0
       },
       {
@@ -856,7 +856,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 54086.92,
+        "expectedDamage": 53988.39,
         "castCount": 0
       },
       {
@@ -864,7 +864,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 38219.48,
+        "expectedDamage": 37863.91,
         "castCount": 1
       },
       {
@@ -872,7 +872,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 457246.52,
+        "expectedDamage": 456859.35,
         "castCount": 0
       },
       {
@@ -880,7 +880,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 81089.48,
+        "expectedDamage": 80673.9,
         "castCount": 0
       },
       {
@@ -888,7 +888,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 111847.98,
+        "expectedDamage": 111520.6,
         "castCount": 4
       },
       {
@@ -904,7 +904,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2151279.48,
+        "expectedDamage": 2150809.29,
         "castCount": 0
       },
       {
@@ -920,7 +920,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 63353.57,
+        "expectedDamage": 63223.04,
         "castCount": 0
       },
       {
@@ -928,7 +928,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 54922.25,
+        "expectedDamage": 54759.11,
         "castCount": 4
       },
       {
@@ -993,11 +993,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "793e84c5941edfbd6528073e8432ee7e2515484663c38ddfcd7dfbce19b6f0b2"
+    "digest": "aaa7a7575c1148dab086beb05da4e2fad147022c257e243e064f020dcbc39501"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 69665.33,
-    "totalDamage": 4179919.86,
+    "dps": 69619.53,
+    "totalDamage": 4177171.97,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1006,7 +1006,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56403.67,
+        "expectedDamage": 56211.37,
         "castCount": 4
       },
       {
@@ -1014,7 +1014,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 259661.15,
+        "expectedDamage": 259453.65,
         "castCount": 0
       },
       {
@@ -1022,7 +1022,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50625.17,
+        "expectedDamage": 50526.64,
         "castCount": 0
       },
       {
@@ -1030,7 +1030,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -1038,7 +1038,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 438853.8,
+        "expectedDamage": 438466.63,
         "castCount": 0
       },
       {
@@ -1046,7 +1046,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -1054,7 +1054,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 105559.51,
+        "expectedDamage": 105232.13,
         "castCount": 4
       },
       {
@@ -1070,7 +1070,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2067498.68,
+        "expectedDamage": 2067028.49,
         "castCount": 0
       },
       {
@@ -1086,7 +1086,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59536.93,
+        "expectedDamage": 59406.4,
         "castCount": 0
       },
       {
@@ -1094,7 +1094,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51790.46,
+        "expectedDamage": 51627.31,
         "castCount": 4
       },
       {
@@ -1159,11 +1159,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "a2a69487f536043fcc6d5f1e088c2e1e92ac0e96b9f7ac323e4e5bb6c1239d1c"
+    "digest": "cf4721bf4cfbd33bd023795c170a5ffaf6d625b047ebf368691fd7981f8d6e34"
   },
   "anchor:voidrotScript": {
-    "dps": 70308.41,
-    "totalDamage": 4218504.89,
+    "dps": 70262.62,
+    "totalDamage": 4215757,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1172,7 +1172,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 56403.67,
+        "expectedDamage": 56211.37,
         "castCount": 4
       },
       {
@@ -1180,7 +1180,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 261182.69,
+        "expectedDamage": 260975.18,
         "castCount": 0
       },
       {
@@ -1188,7 +1188,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50625.17,
+        "expectedDamage": 50526.64,
         "castCount": 0
       },
       {
@@ -1196,7 +1196,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -1204,7 +1204,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 441476.33,
+        "expectedDamage": 441089.17,
         "castCount": 0
       },
       {
@@ -1212,7 +1212,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -1220,7 +1220,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 106249.52,
+        "expectedDamage": 105922.14,
         "castCount": 4
       },
       {
@@ -1236,7 +1236,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2084589.79,
+        "expectedDamage": 2084119.6,
         "castCount": 0
       },
       {
@@ -1252,7 +1252,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59819.02,
+        "expectedDamage": 59688.48,
         "castCount": 0
       },
       {
@@ -1260,7 +1260,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52132.97,
+        "expectedDamage": 51969.82,
         "castCount": 4
       },
       {
@@ -1325,11 +1325,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "03021af8646951ddb4c7701705040193888ba623829435582193921aedc5a6f6"
+    "digest": "6bff9d23c39a307ab6d829e2a0cfd42267108a93d35de1735668fac566c4445e"
   },
   "anchor:breakExtension": {
-    "dps": 70671.13,
-    "totalDamage": 4240267.72,
+    "dps": 70625.33,
+    "totalDamage": 4237519.82,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1338,7 +1338,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 57919.88,
+        "expectedDamage": 57727.59,
         "castCount": 4
       },
       {
@@ -1346,7 +1346,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 263976.04,
+        "expectedDamage": 263768.53,
         "castCount": 0
       },
       {
@@ -1354,7 +1354,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 50625.17,
+        "expectedDamage": 50526.64,
         "castCount": 0
       },
       {
@@ -1362,7 +1362,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35591.7,
+        "expectedDamage": 35236.13,
         "castCount": 1
       },
       {
@@ -1370,7 +1370,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 446163.2,
+        "expectedDamage": 445776.03,
         "castCount": 0
       },
       {
@@ -1378,7 +1378,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 75717.09,
+        "expectedDamage": 75301.51,
         "castCount": 0
       },
       {
@@ -1386,7 +1386,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 107841.48,
+        "expectedDamage": 107514.1,
         "castCount": 4
       },
       {
@@ -1402,7 +1402,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2111793.28,
+        "expectedDamage": 2111323.09,
         "castCount": 0
       },
       {
@@ -1418,7 +1418,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60332.38,
+        "expectedDamage": 60201.85,
         "castCount": 0
       },
       {
@@ -1426,7 +1426,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 52814.58,
+        "expectedDamage": 52651.44,
         "castCount": 4
       },
       {
@@ -1491,11 +1491,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "99afa57b1e5ab6ba4470e1b90f43e3d78fb8bb027d6b918509570bea2071a04a"
+    "digest": "5e79dfa9f9e3074bc78ff1dfdfc2d031494b00ddd0d9787806095bc49bfc986e"
   },
   "anchor:swordHorizonT1": {
-    "dps": 44724.52,
-    "totalDamage": 2683471.37,
+    "dps": 44680.13,
+    "totalDamage": 2680807.52,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1504,7 +1504,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52809.31,
+        "expectedDamage": 52623.01,
         "castCount": 4
       },
       {
@@ -1512,7 +1512,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 41,
-        "expectedDamage": 183052.62,
+        "expectedDamage": 182840.68,
         "castCount": 0
       },
       {
@@ -1520,7 +1520,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47977.06,
+        "expectedDamage": 47880.2,
         "castCount": 0
       },
       {
@@ -1528,7 +1528,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34430.51,
+        "expectedDamage": 34086.66,
         "castCount": 1
       },
       {
@@ -1536,7 +1536,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 58,
-        "expectedDamage": 211337.8,
+        "expectedDamage": 210964.62,
         "castCount": 0
       },
       {
@@ -1544,7 +1544,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 73021.99,
+        "expectedDamage": 72623.41,
         "castCount": 0
       },
       {
@@ -1552,7 +1552,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98503.07,
+        "expectedDamage": 98186.73,
         "castCount": 4
       },
       {
@@ -1568,7 +1568,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 986303.32,
+        "expectedDamage": 985850.37,
         "castCount": 0
       },
       {
@@ -1584,7 +1584,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54697.26,
+        "expectedDamage": 54571.39,
         "castCount": 0
       },
       {
@@ -1592,7 +1592,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 41667.18,
+        "expectedDamage": 41509.19,
         "castCount": 4
       },
       {
@@ -1657,11 +1657,11 @@
       "buffWindows": 126,
       "casts": 73
     },
-    "digest": "29a181981983d60e058408253b7c78d03f3a0b8b9972a238a3d7c92aff86a316"
+    "digest": "0e00d8694f94a69243745ba3623a2d2df52a5037ce8f80b2fd104bd2aafd4dc5"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39965.94,
-    "totalDamage": 2397956.36,
+    "dps": 39921.18,
+    "totalDamage": 2395270.7,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.68s would be illegal in the game: its cast conditions are not met.",
@@ -1686,7 +1686,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52809.31,
+        "expectedDamage": 52623.01,
         "castCount": 4
       },
       {
@@ -1694,7 +1694,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 42,
-        "expectedDamage": 186660.29,
+        "expectedDamage": 186424.08,
         "castCount": 0
       },
       {
@@ -1702,7 +1702,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47977.06,
+        "expectedDamage": 47880.2,
         "castCount": 0
       },
       {
@@ -1710,7 +1710,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34430.51,
+        "expectedDamage": 34086.66,
         "castCount": 1
       },
       {
@@ -1718,7 +1718,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 23,
-        "expectedDamage": 80136.77,
+        "expectedDamage": 79763.57,
         "castCount": 0
       },
       {
@@ -1726,7 +1726,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 73021.99,
+        "expectedDamage": 72623.41,
         "castCount": 0
       },
       {
@@ -1734,7 +1734,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98626.25,
+        "expectedDamage": 98309.92,
         "castCount": 4
       },
       {
@@ -1750,7 +1750,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 829457.85,
+        "expectedDamage": 829006.84,
         "castCount": 0
       },
       {
@@ -1766,7 +1766,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 41535.09,
+        "expectedDamage": 41377.81,
         "castCount": 4
       },
       {
@@ -1774,7 +1774,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53769.02,
+        "expectedDamage": 53643.01,
         "castCount": 0
       },
       {
@@ -1839,11 +1839,11 @@
       "buffWindows": 122,
       "casts": 73
     },
-    "digest": "1c4d005c3a601718a03420cf0b226d5a069019e809e16e543ab74630eed74cd2"
+    "digest": "3a96aa186c61af418246c53705ed89ebb89750d278635b78ab1f6eb1b66aa499"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 61719.92,
-    "totalDamage": 3703195.3,
+    "dps": 61676.95,
+    "totalDamage": 3700617.01,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1852,7 +1852,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51910.94,
+        "expectedDamage": 51734.7,
         "castCount": 4
       },
       {
@@ -1860,7 +1860,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 232289.18,
+        "expectedDamage": 232091.55,
         "castCount": 0
       },
       {
@@ -1868,7 +1868,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 48437.14,
+        "expectedDamage": 48341.99,
         "castCount": 0
       },
       {
@@ -1876,7 +1876,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34411.17,
+        "expectedDamage": 34067.84,
         "castCount": 1
       },
       {
@@ -1884,7 +1884,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 392683.59,
+        "expectedDamage": 392315.7,
         "castCount": 0
       },
       {
@@ -1892,7 +1892,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69391,
+        "expectedDamage": 68998.62,
         "castCount": 0
       },
       {
@@ -1900,7 +1900,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 95933.23,
+        "expectedDamage": 95626.61,
         "castCount": 4
       },
       {
@@ -1916,7 +1916,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1796372.82,
+        "expectedDamage": 1795942.59,
         "castCount": 0
       },
       {
@@ -1932,7 +1932,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53523.53,
+        "expectedDamage": 53404.48,
         "castCount": 0
       },
       {
@@ -1940,7 +1940,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 46830.13,
+        "expectedDamage": 46680.34,
         "castCount": 4
       },
       {
@@ -2005,11 +2005,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "3ed9d34569ef106ae9aad9d0571cc976a382d42cad79a9f3bb1e72f93231fe99"
+    "digest": "0bf6894bcabd08d0e67be5856c477a0f9d3ddd692b895e02d923da98b23446ec"
   },
   "anchor:noMoraleChant": {
-    "dps": 63680.59,
-    "totalDamage": 3820835.29,
+    "dps": 63638.8,
+    "totalDamage": 3818328.21,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2018,7 +2018,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52361.14,
+        "expectedDamage": 52178.43,
         "castCount": 4
       },
       {
@@ -2026,7 +2026,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 240593.86,
+        "expectedDamage": 240394.64,
         "castCount": 0
       },
       {
@@ -2034,7 +2034,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 46551.39,
+        "expectedDamage": 46456.99,
         "castCount": 0
       },
       {
@@ -2042,7 +2042,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33974.84,
+        "expectedDamage": 33631.82,
         "castCount": 1
       },
       {
@@ -2050,7 +2050,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 406048.93,
+        "expectedDamage": 405678.11,
         "castCount": 0
       },
       {
@@ -2058,7 +2058,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 70283.42,
+        "expectedDamage": 69883.61,
         "castCount": 0
       },
       {
@@ -2066,7 +2066,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97314.13,
+        "expectedDamage": 96999.09,
         "castCount": 4
       },
       {
@@ -2082,7 +2082,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1928624.93,
+        "expectedDamage": 1928177.9,
         "castCount": 0
       },
       {
@@ -2098,7 +2098,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47412.4,
+        "expectedDamage": 47257.38,
         "castCount": 4
       },
       {
@@ -2163,11 +2163,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "bbffbb8aa89530e534fdb871c24222c4e8c6916b5d469e0df7c320a13ba3674e"
+    "digest": "1a34bbf257466afc5e6fcb41034e0ff1922db16e7f28c853e56cccf07b7760d4"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 39828.32,
-    "totalDamage": 2389699.22,
+    "dps": 39775.66,
+    "totalDamage": 2386539.52,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.58s would be illegal in the game: its cast conditions are not met.",
@@ -2187,7 +2187,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 44,
-        "expectedDamage": 48511.45,
+        "expectedDamage": 48376.82,
         "castCount": 0
       },
       {
@@ -2195,7 +2195,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 143201.49,
+        "expectedDamage": 142351.2,
         "castCount": 0
       },
       {
@@ -2203,7 +2203,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 24243.54,
+        "expectedDamage": 23894.93,
         "castCount": 2
       },
       {
@@ -2211,7 +2211,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 54,
-        "expectedDamage": 162889.06,
+        "expectedDamage": 162632.9,
         "castCount": 0
       },
       {
@@ -2219,7 +2219,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 11301.19,
+        "expectedDamage": 11137.43,
         "castCount": 1
       },
       {
@@ -2227,7 +2227,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 106,
-        "expectedDamage": 302669.81,
+        "expectedDamage": 302171.48,
         "castCount": 0
       },
       {
@@ -2235,7 +2235,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 47882.06,
+        "expectedDamage": 47378.65,
         "castCount": 3
       },
       {
@@ -2275,7 +2275,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 32135.03,
+        "expectedDamage": 31888.74,
         "castCount": 5
       },
       {
@@ -2331,7 +2331,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 32399.82,
+        "expectedDamage": 32241.62,
         "castCount": 3
       },
       {
@@ -2348,11 +2348,11 @@
       "buffWindows": 124,
       "casts": 80
     },
-    "digest": "b431e7b6de27ae5180fff4dc754bb10e1ea59143c35ecdd9125497a57cfcfdcf"
+    "digest": "e3754c938a7035a761cf69bdba2955a685c0668f05b3b21e19bf566e823c7ba6"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 48074.26,
-    "totalDamage": 2884455.66,
+    "dps": 48036.61,
+    "totalDamage": 2882196.56,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
@@ -2364,7 +2364,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 51814.76,
+        "expectedDamage": 51623.54,
         "castCount": 4
       },
       {
@@ -2372,7 +2372,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 181645.2,
+        "expectedDamage": 181432.72,
         "castCount": 0
       },
       {
@@ -2380,7 +2380,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 46614.6,
+        "expectedDamage": 46513.6,
         "castCount": 0
       },
       {
@@ -2388,7 +2388,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 10840.2,
+        "expectedDamage": 10825.23,
         "castCount": 0
       },
       {
@@ -2396,7 +2396,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35443.74,
+        "expectedDamage": 35089.72,
         "castCount": 1
       },
       {
@@ -2404,7 +2404,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 316538.34,
+        "expectedDamage": 316153.38,
         "castCount": 0
       },
       {
@@ -2412,7 +2412,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69684.91,
+        "expectedDamage": 69274.61,
         "castCount": 0
       },
       {
@@ -2420,7 +2420,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 83584.37,
+        "expectedDamage": 83259.39,
         "castCount": 4
       },
       {
@@ -2452,7 +2452,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 51248.14,
+        "expectedDamage": 51118.15,
         "castCount": 0
       },
       {
@@ -2460,7 +2460,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 38584.95,
+        "expectedDamage": 38449.75,
         "castCount": 4
       },
       {
@@ -2525,11 +2525,11 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "272074c522e26b1db3242b43fad99338ba89d3f6ae0f1bab4907ea0190e513ad"
+    "digest": "13529c57aa5d4a882e70b86736dd685d90dfd1d49900e3c4fa864137acaa556f"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47153.01,
-    "totalDamage": 2829180.75,
+    "dps": 47116.12,
+    "totalDamage": 2826967.04,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
@@ -2541,7 +2541,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50867.26,
+        "expectedDamage": 50679.55,
         "castCount": 4
       },
       {
@@ -2549,7 +2549,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 178217.62,
+        "expectedDamage": 178009.14,
         "castCount": 0
       },
       {
@@ -2557,7 +2557,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45477.66,
+        "expectedDamage": 45379.13,
         "castCount": 0
       },
       {
@@ -2565,7 +2565,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 10284.64,
+        "expectedDamage": 10272.16,
         "castCount": 0
       },
       {
@@ -2573,7 +2573,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34775.26,
+        "expectedDamage": 34427.95,
         "castCount": 1
       },
       {
@@ -2581,7 +2581,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 310483.07,
+        "expectedDamage": 310105.44,
         "castCount": 0
       },
       {
@@ -2589,7 +2589,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68350.27,
+        "expectedDamage": 67947.78,
         "castCount": 0
       },
       {
@@ -2597,7 +2597,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 82050.24,
+        "expectedDamage": 81731.2,
         "castCount": 4
       },
       {
@@ -2629,7 +2629,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 50199.68,
+        "expectedDamage": 50072.35,
         "castCount": 0
       },
       {
@@ -2637,7 +2637,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 37875.01,
+        "expectedDamage": 37742.3,
         "castCount": 4
       },
       {
@@ -2702,11 +2702,11 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "3dfbfac75e3d7674d46a74a351b72c5bb17c159bd0dceecf419d1ad6c785c1c0"
+    "digest": "d69b7aadb56d4490c8c5e9063e49cb2eec1f241a72c704a4e04b5744d4ae4253"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 46771.53,
-    "totalDamage": 2806291.75,
+    "dps": 46735.04,
+    "totalDamage": 2804102.51,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
@@ -2718,7 +2718,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 50306.1,
+        "expectedDamage": 50120.43,
         "castCount": 4
       },
       {
@@ -2726,7 +2726,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 176167.92,
+        "expectedDamage": 175961.86,
         "castCount": 0
       },
       {
@@ -2734,7 +2734,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45477.66,
+        "expectedDamage": 45379.13,
         "castCount": 0
       },
       {
@@ -2742,7 +2742,7 @@
         "breakdownName": "Bitter Season Tick",
         "type": "sustain",
         "count": 59,
-        "expectedDamage": 10165.26,
+        "expectedDamage": 10152.92,
         "castCount": 0
       },
       {
@@ -2750,7 +2750,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34344.48,
+        "expectedDamage": 34001.46,
         "castCount": 1
       },
       {
@@ -2758,7 +2758,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 306994.85,
+        "expectedDamage": 306621.52,
         "castCount": 0
       },
       {
@@ -2766,7 +2766,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 67567.75,
+        "expectedDamage": 67170.03,
         "castCount": 0
       },
       {
@@ -2774,7 +2774,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 81152.49,
+        "expectedDamage": 80837.04,
         "castCount": 4
       },
       {
@@ -2806,7 +2806,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 49611.84,
+        "expectedDamage": 49486.01,
         "castCount": 0
       },
       {
@@ -2814,7 +2814,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 37464.8,
+        "expectedDamage": 37333.53,
         "castCount": 4
       },
       {
@@ -2879,11 +2879,11 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "7ac1a49b72ac1c0aac4cc92d6c4baa33f9bd880bd2f9da4b42f2633af26fa4e5"
+    "digest": "515b69382de7534acdfe338648876f4b09ef96eae68650234d7d806809882e3e"
   },
   "anchor:noSet": {
-    "dps": 63079.16,
-    "totalDamage": 3784749.63,
+    "dps": 63037.47,
+    "totalDamage": 3782248.34,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2892,7 +2892,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52162.62,
+        "expectedDamage": 51986.8,
         "castCount": 4
       },
       {
@@ -2900,7 +2900,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 233634.42,
+        "expectedDamage": 233446.58,
         "castCount": 0
       },
       {
@@ -2908,7 +2908,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45452.03,
+        "expectedDamage": 45363.55,
         "castCount": 0
       },
       {
@@ -2916,7 +2916,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33147.7,
+        "expectedDamage": 32819.91,
         "castCount": 1
       },
       {
@@ -2924,7 +2924,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 395957.73,
+        "expectedDamage": 395605.86,
         "castCount": 0
       },
       {
@@ -2932,7 +2932,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 68962.82,
+        "expectedDamage": 68582.67,
         "castCount": 0
       },
       {
@@ -2940,7 +2940,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 96048.94,
+        "expectedDamage": 95750.36,
         "castCount": 4
       },
       {
@@ -2956,7 +2956,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1876601.7,
+        "expectedDamage": 1876177.27,
         "castCount": 0
       },
       {
@@ -2972,7 +2972,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53325.53,
+        "expectedDamage": 53208.34,
         "castCount": 0
       },
       {
@@ -2980,7 +2980,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47158.64,
+        "expectedDamage": 47009.52,
         "castCount": 4
       },
       {
@@ -3045,11 +3045,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "53800ccd573bffe4116b3a5cb5a230ef3fdc4a0b3581811c46d2d0464ff097b4"
+    "digest": "6aaabce519ad8c986574d5113b69ca033d59a9b81af265ed505436795b4faa6e"
   },
   "anchor:set-Jadeware": {
-    "dps": 67825.04,
-    "totalDamage": 4069502.62,
+    "dps": 67780.69,
+    "totalDamage": 4066841.14,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3058,7 +3058,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 55901.94,
+        "expectedDamage": 55704.91,
         "castCount": 4
       },
       {
@@ -3066,7 +3066,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 253715.94,
+        "expectedDamage": 253518.53,
         "castCount": 0
       },
       {
@@ -3074,7 +3074,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 46271,
+        "expectedDamage": 46180.92,
         "castCount": 0
       },
       {
@@ -3082,7 +3082,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33631.01,
+        "expectedDamage": 33298.44,
         "castCount": 1
       },
       {
@@ -3090,7 +3090,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 429183.61,
+        "expectedDamage": 428807.67,
         "castCount": 0
       },
       {
@@ -3098,7 +3098,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 74992.89,
+        "expectedDamage": 74607.24,
         "castCount": 0
       },
       {
@@ -3106,7 +3106,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100020.81,
+        "expectedDamage": 99718.2,
         "castCount": 4
       },
       {
@@ -3122,7 +3122,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2038940.2,
+        "expectedDamage": 2038459.56,
         "castCount": 0
       },
       {
@@ -3138,7 +3138,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58204.79,
+        "expectedDamage": 58072.3,
         "castCount": 0
       },
       {
@@ -3146,7 +3146,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 51495.3,
+        "expectedDamage": 51328.22,
         "castCount": 4
       },
       {
@@ -3211,11 +3211,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "373deaf2fb50d409f036c36d14ea1647133d7a5beb3fa629eb8a44cbffd2269d"
+    "digest": "908bdc4582f7f31d12fba25437e9bc033dcf5db7865cfa14e18ab8d134672e26"
   },
   "anchor:set-Mistwillow": {
-    "dps": 63665.69,
-    "totalDamage": 3819941.52,
+    "dps": 63623.47,
+    "totalDamage": 3817408.28,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3224,7 +3224,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52826.01,
+        "expectedDamage": 52648,
         "castCount": 4
       },
       {
@@ -3232,7 +3232,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 236757.65,
+        "expectedDamage": 236567.26,
         "castCount": 0
       },
       {
@@ -3240,7 +3240,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45452.03,
+        "expectedDamage": 45363.55,
         "castCount": 0
       },
       {
@@ -3248,7 +3248,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33623.42,
+        "expectedDamage": 33290.95,
         "castCount": 1
       },
       {
@@ -3256,7 +3256,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 401118.32,
+        "expectedDamage": 400761.82,
         "castCount": 0
       },
       {
@@ -3264,7 +3264,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 69875.55,
+        "expectedDamage": 69490.18,
         "castCount": 0
       },
       {
@@ -3272,7 +3272,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 97259.58,
+        "expectedDamage": 96957.12,
         "castCount": 4
       },
       {
@@ -3288,7 +3288,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1891824.01,
+        "expectedDamage": 1891394.23,
         "castCount": 0
       },
       {
@@ -3304,7 +3304,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54050.91,
+        "expectedDamage": 53932.11,
         "castCount": 0
       },
       {
@@ -3312,7 +3312,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 47747.5,
+        "expectedDamage": 47596.52,
         "castCount": 4
       },
       {
@@ -3377,11 +3377,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "ab6a33da484bfae8fe64d67177e7c19f546cc192f6e7b1e5e7a90e9a490c3b55"
+    "digest": "5e6b164e1606bb11313940b4f21a8acc83fdbdb57b6ee8283e44d574cb2a01fe"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 64486.67,
-    "totalDamage": 3869200.1,
+    "dps": 64443.78,
+    "totalDamage": 3866626.62,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3390,7 +3390,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53721.09,
+        "expectedDamage": 53540.09,
         "castCount": 4
       },
       {
@@ -3398,7 +3398,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 240465.53,
+        "expectedDamage": 240272.12,
         "castCount": 0
       },
       {
@@ -3406,7 +3406,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 45452.03,
+        "expectedDamage": 45363.55,
         "castCount": 0
       },
       {
@@ -3414,7 +3414,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34208.24,
+        "expectedDamage": 33870,
         "castCount": 1
       },
       {
@@ -3422,7 +3422,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 407455.3,
+        "expectedDamage": 407093.09,
         "castCount": 0
       },
       {
@@ -3430,7 +3430,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71042.29,
+        "expectedDamage": 70650.35,
         "castCount": 0
       },
       {
@@ -3438,7 +3438,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 98895.24,
+        "expectedDamage": 98587.61,
         "castCount": 4
       },
       {
@@ -3454,7 +3454,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1910531.36,
+        "expectedDamage": 1910095.04,
         "castCount": 0
       },
       {
@@ -3470,7 +3470,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54927.86,
+        "expectedDamage": 54807.13,
         "castCount": 0
       },
       {
@@ -3478,7 +3478,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48547.45,
+        "expectedDamage": 48393.94,
         "castCount": 4
       },
       {
@@ -3543,11 +3543,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "bdc0f5b1a0da66e210a24845d8f92aea4586b54680c34962d9196a6f3200d6a4"
+    "digest": "70ad431cc5c110e10878be19f2aa677906159e912fb29a0c7e133e06ad65c727"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 64889.14,
-    "totalDamage": 3893348.53,
+    "dps": 64847.18,
+    "totalDamage": 3890830.72,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3556,7 +3556,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 53976.26,
+        "expectedDamage": 53799.45,
         "castCount": 4
       },
       {
@@ -3564,7 +3564,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 240784.17,
+        "expectedDamage": 240595.11,
         "castCount": 0
       },
       {
@@ -3572,7 +3572,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 41,
-        "expectedDamage": 47825.02,
+        "expectedDamage": 47734.94,
         "castCount": 0
       },
       {
@@ -3580,7 +3580,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34603.07,
+        "expectedDamage": 34273.09,
         "castCount": 1
       },
       {
@@ -3588,7 +3588,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 407579.51,
+        "expectedDamage": 407225.46,
         "castCount": 0
       },
       {
@@ -3596,7 +3596,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 5,
-        "expectedDamage": 71848.96,
+        "expectedDamage": 71466.38,
         "castCount": 0
       },
       {
@@ -3604,7 +3604,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99684.1,
+        "expectedDamage": 99383.77,
         "castCount": 4
       },
       {
@@ -3620,7 +3620,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1924000.17,
+        "expectedDamage": 1923573.21,
         "castCount": 0
       },
       {
@@ -3636,7 +3636,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 55496.82,
+        "expectedDamage": 55378.81,
         "castCount": 0
       },
       {
@@ -3644,7 +3644,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 48963.12,
+        "expectedDamage": 48813.16,
         "castCount": 4
       },
       {
@@ -3709,11 +3709,11 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "677069144252ad97968734f6e2970c3116e20dbbc622e414cb8f854cc854bef2"
+    "digest": "b4f1a4dd69a885eb79ff6aacee85045f0d6527a5a952dad4ba0d58921539f170"
   },
   "defaults:umbra": {
-    "dps": 11877.83,
-    "totalDamage": 712669.74,
+    "dps": 11857.4,
+    "totalDamage": 711444.28,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.65s would be illegal in the game: its cast conditions are not met.",
@@ -3747,7 +3747,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 13401.94,
+        "expectedDamage": 13292.71,
         "castCount": 2
       },
       {
@@ -3755,7 +3755,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 48,
-        "expectedDamage": 57651.5,
+        "expectedDamage": 57548.97,
         "castCount": 0
       },
       {
@@ -3763,7 +3763,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 43,
-        "expectedDamage": 33517.87,
+        "expectedDamage": 33433.8,
         "castCount": 0
       },
       {
@@ -3779,7 +3779,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 8,
-        "expectedDamage": 9421.69,
+        "expectedDamage": 9366.07,
         "castCount": 0
       },
       {
@@ -3787,7 +3787,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 26796.89,
+        "expectedDamage": 26531.77,
         "castCount": 3
       },
       {
@@ -3795,7 +3795,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 81098.46,
+        "expectedDamage": 80721.37,
         "castCount": 0
       },
       {
@@ -3827,7 +3827,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 22590.76,
+        "expectedDamage": 22451.86,
         "castCount": 5
       },
       {
@@ -3883,7 +3883,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 17369.59,
+        "expectedDamage": 17276.68,
         "castCount": 3
       },
       {
@@ -3900,6 +3900,6 @@
       "buffWindows": 123,
       "casts": 79
     },
-    "digest": "5015270925f9a9950de1e9709a330411f1d304f230fa03af4f40433f1d5ca18c"
+    "digest": "19c6564c5cc28377f6f5344b437c8531218bbd6bda68cbcaf0110237cfc96992"
   }
 }

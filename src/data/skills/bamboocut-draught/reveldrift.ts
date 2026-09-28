@@ -39,6 +39,10 @@ export const reveldrift = defineSkill({
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
   castFrames: 66,
+  // In-game values as of 2026-09-28: 18 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 18,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: reveldriftHits,
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

@@ -76,6 +76,10 @@ export interface MechanicCatalogRow {
 
 export interface TimelineMechanic<State = unknown> {
   id: string
+  // Whether this mechanic's `contributeAt` reads the encounter's target
+  // distance — the same visibility declaration a `BuffModule` makes with its
+  // own `readsTargetDistance`.
+  readsTargetDistance?: boolean
   catalogRow?: MechanicCatalogRow
   // Returning null means "not in this build" — how a mechanic gates itself
   // without the timeline knowing why.

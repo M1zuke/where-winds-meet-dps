@@ -32,6 +32,9 @@ export const spearheavyStage1 = defineSkill({
   meterFreezes: DRIFTING_THRUST_FREEZE,
   castFrames: 90,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   // 0.60 of the full-charge coefficient — in-game values as of 2026-09-24.
   hits: [
     ...DRILL_FRAMES.map((frame, index) => hit(index, { frame, ...DRILL_HIT })),

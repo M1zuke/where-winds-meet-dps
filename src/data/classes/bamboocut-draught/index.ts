@@ -49,6 +49,10 @@ export const bamboocutDraught = defineClass({
     "driftcleaveDeepdaze",
   ],
   weapons: [MARTIAL_ART_ID.skystrikeGauntlets, MARTIAL_ART_ID.rivenTwinblades],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Bloombreak / the Nightwick family) — an assumption for every
+  // skill with no reach of its own.
+  defaultMeleeReachMeters: 4,
   meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: skillsWithClassOverrides,

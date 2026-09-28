@@ -21,6 +21,15 @@ export const spearspecial1HitCancel = defineSkill({
   // A cancel form ends where the animation opens its interrupt window — 35 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 35,
   triggerable: true,
+  // In-game values as of 2026-09-28: 3 m approach reach; once between 1.5
+  // and 4.5 m the cast's own segment teleports 1.5 m behind the target,
+  // otherwise no further scripted motion.
+  reachMeters: 3,
+  displacement: {
+    kind: "byDistance",
+    bands: [{ minMeters: 1.5, maxMeters: 4.5, then: { kind: "toTarget", meters: 1.5 } }],
+    otherwise: { kind: "towardTarget", referenceMeters: 0 },
+  },
   hits: SPEARSPECIAL_HITS.slice(0, 2),
   createdAt: "2026-07-30T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",

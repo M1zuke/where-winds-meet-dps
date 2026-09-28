@@ -28,6 +28,15 @@ export const spearqPrepull = defineSkill({
   receives: NAMELESS_SPEAR_RECEIVES,
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-09-28: 5 m approach reach; once between 1.5
+  // and 4.5 m the cast's own segment teleports 1.5 m behind the target,
+  // otherwise no further scripted motion.
+  reachMeters: 5,
+  displacement: {
+    kind: "byDistance",
+    bands: [{ minMeters: 1.5, maxMeters: 4.5, then: { kind: "toTarget", meters: 1.5 } }],
+    otherwise: { kind: "towardTarget", referenceMeters: 0 },
+  },
   hits: [
     hit(0, {
       frame: 0,

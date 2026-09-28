@@ -14,6 +14,10 @@ export const soaring = defineSkill({
   castTag: CAST.soaring,
   castFrames: 120,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 15 m engagement
+  // range — confirmed no scripted displacement despite the visible dash-in.
+  reachMeters: 15,
+  approach: "stationary",
   hits: evenlySpacedHits({
     count: 2,
     everyFrames: 60,

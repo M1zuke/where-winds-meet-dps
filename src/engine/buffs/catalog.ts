@@ -24,6 +24,7 @@ import { tickSourceSkillId } from "../dot"
 import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/classes/registry"
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
+import { resolveRotation } from "../rotation"
 
 function skillsInScope(classId: string | undefined, inputs: Inputs | undefined): Skill[] {
   return [...builtinSkillsForClass(classId ?? ""), ...(inputs?.customSkills ?? [])]
@@ -372,4 +373,51 @@ export function alwaysActiveClassBuffs(inputs: Inputs): ClassBuffRow[] {
     })
   }
   return rows
+}
+
+// Whether some skill's own cast, or one of its hits, can grant the named
+// status — directly, or one level through an `activeAfterBuffEnds` chain
+// (a module whose own activation rides another buff's window closing, the
+// way the Flute of the Tides distance bonus rides its own arrival timer).
+function grantsStatus(skill: Skill, id: string): boolean {
+  if (skill.triggersBuffs?.includes(id)) return true
+  return skill.hits.some((skillHit) =>
+    skillHit.triggers.some(
+      (trigger) =>
+        (trigger.kind === "applyBuff" || trigger.kind === "applyDebuff") && trigger.targetId === id,
+    ),
+  )
+}
+
+// Whether the current rotation could ever grant a module or reach a mechanic
+// that declares `readsTargetDistance` — the Encounter Settings panel's gate
+// on showing the distance input (docs/TIMELINE.md § "Target distance").
+export function buildReadsTargetDistance(inputs: Inputs): boolean {
+  const classDef = classDefinition(inputs.classId)
+  const rotation = inputs.activeCustomRotation
+  if (!classDef || !rotation || rotation.classId !== inputs.classId) return false
+  const skills = skillsInScope(inputs.classId, inputs)
+  const statuses = [
+    ...builtinBuffsForClass(inputs.classId),
+    ...(inputs.customBuffs ?? []),
+    ...builtinDebuffsForClass(inputs.classId),
+    ...(inputs.customDebuffs ?? []),
+  ]
+  const { steps } = resolveRotation(rotation, skills, statuses)
+  const params = paramsFromInputs(inputs)
+  for (const module of catalogBuffDefs(inputs.classId)) {
+    if (!module.readsTargetDistance) continue
+    if (!buffGateSatisfied(module, params)) continue
+    if (module.alwaysActive) return true
+    const grantingIds = module.activeAfterBuffEnds
+      ? [module.id, module.activeAfterBuffEnds.buffId]
+      : [module.id]
+    if (steps.some(({ skill }) => grantingIds.some((id) => grantsStatus(skill, id)))) return true
+  }
+  for (const registration of classDef.mechanics) {
+    if (!registration.mechanic.readsTargetDistance) continue
+    if (!registration.mechanic.catalogRow || registration.mechanic.catalogRow.available(inputs))
+      return true
+  }
+  return false
 }

@@ -42,6 +42,10 @@ export const silkbindJade = defineClass({
     "fanSpecial",
   ],
   weapons: [MARTIAL_ART_ID.vernalUmbrella, MARTIAL_ART_ID.inkwellFan],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Peak's Springless Silence / Moon Shatter Spring) — an assumption
+  // for every skill with no reach of its own.
+  defaultMeleeReachMeters: 9,
   meters: [enduranceMeter],
   critBoostWeaponTypes: ["Umbrella", "Fan"],
   skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),

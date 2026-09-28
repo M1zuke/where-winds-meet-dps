@@ -18,6 +18,10 @@ export const snowpartingqStab = defineSkill({
   triggersBuffs: [BUFF.throatPierced],
   castFrames: 113,
   triggerable: true,
+  // In-game values as of 2026-09-28: 4.5 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4.5,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

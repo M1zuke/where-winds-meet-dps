@@ -18,6 +18,10 @@ export const deflectCancel = defineSkill({
   castTag: CAST.deflectCancel,
   castFrames: 26,
   triggerable: true,
+  // In-game values as of 2026-09-28: no approach, confirmed — a large reach
+  // keeps this stationary, non-damaging cast from capping the live distance.
+  reachMeters: 100,
+  approach: "stationary",
   triggersBuffs: [BUFF.cleftpeakDeflectGrant],
   hits: [
     hit(0, {

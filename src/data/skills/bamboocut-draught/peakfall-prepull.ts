@@ -24,6 +24,10 @@ export const peakfallPrepull = defineSkill({
   prePull: true,
   triggerable: false,
   castFrames: 0,
+  // In-game values as of 2026-09-28: 18 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 18,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

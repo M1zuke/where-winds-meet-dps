@@ -36,6 +36,10 @@ export const bellstrikeUmbra = defineClass({
   ],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
   weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Sober Sorrow / Sweep All) — an assumption for every skill with
+  // no reach of its own.
+  defaultMeleeReachMeters: 3,
   meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),

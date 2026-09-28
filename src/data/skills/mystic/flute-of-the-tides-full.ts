@@ -17,6 +17,9 @@ export const fluteOfTheTidesFull = defineSkill({
   castTag: CAST.fluteOfTheTidesFull,
   castFrames: 162,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.
+  reachMeters: 40,
+  approach: "stationary",
   triggersBuffs: [BUFF.fluteArrival],
   hits: [
     hit(0, {

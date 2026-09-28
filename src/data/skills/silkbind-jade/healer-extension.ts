@@ -13,6 +13,10 @@ export const healerExtension = defineSkill({
   castTag: CAST.healerExtension,
   castFrames: 180,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — not independently
+  // confirmed against the source page's Return of Spring row; a further
+  // 1.75 m shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: evenlySpacedHits({
     count: 10,
     everyFrames: 18,

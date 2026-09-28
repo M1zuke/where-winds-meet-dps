@@ -34,6 +34,9 @@ export const spearheavy = defineSkill({
   // Covers the real hit layout below; the charge hold itself is untimed here.
   castFrames: 156,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   // Stage 2 (holding to the 1.6 s charge cap): 0.995 of the full-charge
   // coefficient — in-game values as of 2026-09-24.
   hits: [

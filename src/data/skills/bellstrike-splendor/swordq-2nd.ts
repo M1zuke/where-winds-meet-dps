@@ -20,6 +20,8 @@ export const swordq2nd = defineSkill({
   receives: NAMELESS_SWORD_RECEIVES,
   castFrames: 26,
   triggerable: true,
+  // In-game values as of 2026-09-28: 3 m approach reach.
+  reachMeters: 3,
   hits: [
     hit(0, {
       frame: 0,

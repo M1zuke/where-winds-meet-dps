@@ -6,6 +6,7 @@ import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
 import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
 import {
+  VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
   VAGRANT_SWORD_FREEZE,
   SWORD_MORPH_ENDURANCE_SPEND,
@@ -40,6 +41,7 @@ export const swordHeavyChargedPrepull = defineSkill({
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
+  displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
       frame: 0,

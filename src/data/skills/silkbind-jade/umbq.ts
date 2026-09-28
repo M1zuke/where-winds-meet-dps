@@ -37,6 +37,11 @@ export const umbq = defineSkill({
   ],
   castFrames: 75,
   triggerable: true,
+  // In-game values as of 2026-09-28: 20 m approach reach — a companion
+  // projectile rides the swing 30 m further (50 m), not modelled separately.
+  // A further 1.75 m shrink-only pull once in range.
+  reachMeters: 20,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

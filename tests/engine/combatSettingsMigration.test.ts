@@ -60,7 +60,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       dragonHeadFullStacks: false,
       dragonHeadLowHpMaxBonus: false,
       lowEndurance: false,
-      distanceToTargetMeters: 3,
+      preferredDistanceMeters: 3,
       missingEnduranceAtHit: 0,
       enduranceAtRelease: 100,
     }

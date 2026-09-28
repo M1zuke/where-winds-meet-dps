@@ -1,7 +1,7 @@
 import { defineSkill } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { SWORD_CHARGE_STAGE_1_HITS } from "./sword-charge-stage-1-hits"
+import { SWORD_CHARGE_STAGE_1_DISPLACEMENT, SWORD_CHARGE_STAGE_1_HITS } from "./sword-charge-stage-1-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 import {
   SECOND_TRACK_SLASH_COST,
@@ -26,6 +26,7 @@ export const swordChargeStage14Hit = defineSkill({
   // A player-ended form: castFrames is capped where the follow-up window closes — an 11-frame margin would land past it and give the five-hit ending instead (in-game animation, 2026-09-09).
   castFrames: 56,
   triggerable: true,
+  displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
   hits: SWORD_CHARGE_STAGE_1_HITS.slice(0, 4),
   createdAt: "2026-07-19T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",

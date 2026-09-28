@@ -20,6 +20,9 @@ export const swordq = defineSkill({
   receives: NAMELESS_SWORD_RECEIVES,
   castFrames: 26,
   triggerable: true,
+  // In-game values as of 2026-09-28: 12 m approach reach — a companion
+  // projectile rides the swing 1 m further (13 m), not modelled separately.
+  reachMeters: 12,
   hits: [
     hit(0, {
       frame: 0,

@@ -303,8 +303,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(69372.9)
-    expect(round(result.totalDamage, 2)).toBe(4162374.29)
+    expect(round(result.dps, 2)).toBe(69327.11)
+    expect(round(result.totalDamage, 2)).toBe(4159626.39)
     expect(round(result.rotationDuration, 4)).toBe(60)
     // The Endurance gate on Inner Balance Strike III / Sweep All flags every
     // cast this rotation places below the threshold — damage is unaffected,
@@ -318,20 +318,20 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2063257.73)
-    expect(damageOf("Bleeding (DoT)")).toBe(258662.15)
+    expect(damageOf("Blood Burst")).toBe(2062787.54)
+    expect(damageOf("Bleeding (DoT)")).toBe(258454.64)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(437085.97)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(75717.09)
+    expect(damageOf("Smolder (DoT)")).toBe(436698.8)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(75301.51)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(59373.01)
+    expect(damageOf("Yi River")).toBe(59242.48)
   })
 })
 
@@ -341,17 +341,17 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(70576.67)
-    expect(round(result.totalDamage, 2)).toBe(4234600.02)
+    expect(round(result.dps, 2)).toBe(70530.04)
+    expect(round(result.totalDamage, 2)).toBe(4231802.13)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
-    expect(damageOf("Blood Burst")).toBe(2098230.19)
-    expect(damageOf("Bleeding (DoT)")).toBe(263563.16)
-    expect(damageOf("Smolder (DoT)")).toBe(445098.1)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(77102.26)
-    expect(damageOf("Yi River")).toBe(60476.83)
+    expect(damageOf("Blood Burst")).toBe(2097751.23)
+    expect(damageOf("Bleeding (DoT)")).toBe(263351.69)
+    expect(damageOf("Smolder (DoT)")).toBe(444703.8)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76679)
+    expect(damageOf("Yi River")).toBe(60343.87)
   })
 })

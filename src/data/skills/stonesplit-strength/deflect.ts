@@ -15,6 +15,10 @@ export const deflect = defineSkill({
   triggersBuffs: [BUFF.cleftpeakDeflectGrant],
   castFrames: 25,
   triggerable: true,
+  // In-game values as of 2026-09-28: no approach, confirmed — a large reach
+  // keeps this stationary, non-damaging cast from capping the live distance.
+  reachMeters: 100,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 0,

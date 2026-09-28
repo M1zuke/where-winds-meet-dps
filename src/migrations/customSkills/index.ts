@@ -44,6 +44,7 @@ import { V40__mountainsMightAndQiImbalanceMarker } from "./V40__mountainsMightAn
 import { V41__wolfchasersArtSweepAllEnduranceGain } from "./V41__wolfchasersArtSweepAllEnduranceGain"
 import { V42__calmwatersPerfectDodgeGain } from "./V42__calmwatersPerfectDodgeGain"
 import { V43__evasiveChargeDodgeRefund } from "./V43__evasiveChargeDodgeRefund"
+import { V44__targetDistanceReachAndDisplacement } from "./V44__targetDistanceReachAndDisplacement"
 
 export type {
   CustomSkillMigration,
@@ -107,6 +108,7 @@ export { healSkill as healMountainsMightAndQiImbalanceMarker } from "./V40__moun
 export { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "./V41__wolfchasersArtSweepAllEnduranceGain"
 export { healSkill as healCalmwatersPerfectDodgeGain } from "./V42__calmwatersPerfectDodgeGain"
 export { healSkill as healEvasiveChargeDodgeRefund } from "./V43__evasiveChargeDodgeRefund"
+export { healSkill as healTargetDistanceReachAndDisplacement } from "./V44__targetDistanceReachAndDisplacement"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -149,6 +151,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V41__wolfchasersArtSweepAllEnduranceGain,
   V42__calmwatersPerfectDodgeGain,
   V43__evasiveChargeDodgeRefund,
+  V44__targetDistanceReachAndDisplacement,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

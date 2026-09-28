@@ -13,6 +13,10 @@ export const healerBuff = defineSkill({
   castTag: CAST.healerBuff,
   castFrames: 60,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — not independently
+  // confirmed against the source page's Return of Spring row; a further
+  // 1.75 m shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
       frame: 0,

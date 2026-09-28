@@ -16,6 +16,10 @@ export const poet3 = defineSkill({
   castTag: CAST.poet3,
   castFrames: 36,
   triggerable: true,
+  // In-game values as of 2026-09-28: every other mystic art is a stationary
+  // cast, and this one carries no engagement-range field to read — reach is
+  // an assumption (the class's own default melee reach).
+  approach: "stationary",
   triggersBuffs: [BUFF.poetFinalStrikeStack],
   hits: [
     hit(0, {

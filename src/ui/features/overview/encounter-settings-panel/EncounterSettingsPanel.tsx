@@ -14,6 +14,7 @@ import {
   PING_MS_MIN,
 } from "../../../../engine/pingFps"
 import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
+import { buildReadsTargetDistance } from "../../../../engine/buffs/catalog"
 import styles from "./EncounterSettingsPanel.module.scss"
 
 const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
@@ -117,6 +118,7 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
   const setCombat = <K extends keyof typeof settings>(key: K, value: (typeof settings)[K]) =>
     onChange({ ...inputs, combatSettings: { ...settings, [key]: value } })
   const override = settings.qiBreakOverride
+  const showPreferredDistance = buildReadsTargetDistance(inputs)
 
   return (
     <div className={styles.encounterSettings}>
@@ -145,17 +147,24 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
               }
             />
           </label>
-          <label className={styles.inlineField}>
-            {t("overview.encounterSettings.distanceToTargetM")}
-            <NumInput
-              value={settings.distanceToTargetMeters}
-              onChange={(value) =>
-                setCombat("distanceToTargetMeters", Math.min(20, Math.max(0, value)))
-              }
-            />
-          </label>
+          {showPreferredDistance ? (
+            <label className={styles.inlineField}>
+              {t("overview.encounterSettings.preferredDistanceM")}
+              <NumInput
+                value={settings.preferredDistanceMeters}
+                onChange={(value) =>
+                  setCombat("preferredDistanceMeters", Math.min(20, Math.max(0, value)))
+                }
+              />
+            </label>
+          ) : null}
         </div>
         <p className={styles.inlineHint}>{t("overview.encounterSettings.averageFpsHint")}</p>
+        {showPreferredDistance ? (
+          <p className={styles.inlineHint}>
+            {t("overview.encounterSettings.preferredDistanceHint")}
+          </p>
+        ) : null}
       </div>
 
       <Section title={t("overview.encounterSettings.consumablesSelf")}>

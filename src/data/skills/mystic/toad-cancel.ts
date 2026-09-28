@@ -15,6 +15,9 @@ export const toadCancel = defineSkill({
   castTag: CAST.toadCancel,
   castFrames: 72,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 0,

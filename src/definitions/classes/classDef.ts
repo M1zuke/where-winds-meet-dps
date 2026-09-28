@@ -46,6 +46,10 @@ export interface ClassDef {
   // neither of the class's weapons yet.
   weapons: readonly MartialArtId[]
   critBoostWeaponTypes: readonly string[]
+  // Target-distance simulation fallback for a skill with no authored
+  // `reachMeters` — the shortest reach read for this class's own weapons,
+  // marked as an assumption where the source page says so.
+  defaultMeleeReachMeters: number
   skills: readonly Skill[]
   debuffs: readonly Debuff[]
   rotations: readonly Rotation[]

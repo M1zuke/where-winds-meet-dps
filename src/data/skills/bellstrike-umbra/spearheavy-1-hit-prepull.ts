@@ -21,6 +21,9 @@ export const spearheavy1HitPrepull = defineSkill({
   meterFreezes: DRIFTING_THRUST_FREEZE,
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     // Coefficients: in-game values, 2026-09-10.
     hit(0, {

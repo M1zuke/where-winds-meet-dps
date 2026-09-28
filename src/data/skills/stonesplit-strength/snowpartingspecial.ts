@@ -35,6 +35,10 @@ export const snowpartingspecial = defineSkill({
   meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 5 }],
   castFrames: 125,
   triggerable: true,
+  // In-game values as of 2026-09-28: 6 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 6,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     ...SHARE_HIT_FRAMES.map((frame, index) => hit(index, { frame, ...SHARE_HIT })),
     hit(SHARE_HIT_FRAMES.length, {

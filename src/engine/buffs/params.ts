@@ -77,7 +77,8 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   params.whiteCritRate = inputs.critRate
   params.breakthrough = inputs.breakthrough
   params.distanceMeters =
-    inputs.combatSettings?.distanceToTargetMeters ?? defaultCombatSettings().distanceToTargetMeters
+    inputs.combatSettings?.preferredDistanceMeters ??
+    defaultCombatSettings().preferredDistanceMeters
 
   return params
 }

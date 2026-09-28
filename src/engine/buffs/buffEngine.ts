@@ -93,6 +93,11 @@ const MISTWILLOW_MERGED_BUFF = BUFF.mistwillowBuff
 // so the engine learns no class (docs/CLASSES.md § "One definition per class").
 export const QI_IMBALANCE_STATUS = "qiImbalance"
 
+// The layout pass's own simulated ground distance to the target, replayed
+// onto the real ledger the same way a meter is — docs/TIMELINE.md § "Target
+// distance".
+export const TARGET_DISTANCE_STATUS = "targetDistance"
+
 function resolveEffects(module: BuffModule, ctx: EffectContext): Effect[] {
   return Array.isArray(module.effects) ? module.effects : module.effects(ctx)
 }
@@ -249,6 +254,17 @@ export class BuffEngine {
     return Math.min(1, Math.max(0, 1 - damageSoFar / targetMaxHp))
   }
 
+  // Falls back to the flat `distanceMeters` param when no ledger is attached
+  // (a direct-construction caller, e.g. a fixture probe) — the same
+  // parameter `paramsFromInputs` seeds the layout pass's own simulation with.
+  private targetDistanceMeters(time: number, statusesView?: StatusView): number {
+    const view = statusesView ?? this.statuses?.view
+    const fps = this.statuses?.fps
+    return view && fps
+      ? view.stacksAt(TARGET_DISTANCE_STATUS, Math.round(time * fps))
+      : this.paramNum("distanceMeters")
+  }
+
   private buildContext(
     time: number,
     event: EffectEvent,
@@ -277,7 +293,7 @@ export class BuffEngine {
       target: {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
-        distanceMeters: this.paramNum("distanceMeters"),
+        distanceMeters: this.targetDistanceMeters(time, statusesView),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),

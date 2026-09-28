@@ -20,6 +20,8 @@ export const swordqFollowUp2HitCancel = defineSkill({
   // A cancel form ends where the animation opens its interrupt window — 42 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 42,
   triggerable: true,
+  // In-game values as of 2026-09-28: 4 m approach reach.
+  reachMeters: 4,
   hits: [
     hit(0, {
       frame: 5,

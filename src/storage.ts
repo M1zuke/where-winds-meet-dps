@@ -62,6 +62,7 @@ import {
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
+import { isDisplacement, isSkillApproach } from "./engine/distance"
 import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -544,10 +545,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
-      distanceToTargetMeters:
-        typeof r.distanceToTargetMeters === "number" && Number.isFinite(r.distanceToTargetMeters)
-          ? r.distanceToTargetMeters
-          : def.distanceToTargetMeters,
+      preferredDistanceMeters:
+        typeof r.preferredDistanceMeters === "number" && Number.isFinite(r.preferredDistanceMeters)
+          ? r.preferredDistanceMeters
+          : def.preferredDistanceMeters,
     }
   }
   return withZeroedDerivedStats(next)
@@ -1554,6 +1555,12 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
     meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,
     meterFreezes: Array.isArray(c.meterFreezes) ? c.meterFreezes.filter(isMeterFreeze) : undefined,
+    reachMeters:
+      typeof c.reachMeters === "number" && Number.isFinite(c.reachMeters)
+        ? c.reachMeters
+        : undefined,
+    approach: isSkillApproach(c.approach) ? c.approach : undefined,
+    displacement: isDisplacement(c.displacement) ? c.displacement : undefined,
     createdAt: now,
     updatedAt: now,
   }

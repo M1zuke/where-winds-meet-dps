@@ -22,6 +22,9 @@ export const skystrikeGauntletsEx = defineSkill({
   receives: SKYSTRIKE_GAUNTLETS_RECEIVES,
   triggerable: false,
   castFrames: 48,
+  // In-game values as of 2026-09-28: no approach, no engagement-range field
+  // at all — a self-centred stationary ultimate.
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 0,

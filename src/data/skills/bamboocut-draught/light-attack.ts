@@ -43,6 +43,10 @@ export const lightAttack = defineSkill({
   receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 187,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     stage(0, 13, 0.35636, 100, 54),
     stage(1, 37, 0.156852, 44, 23.6),

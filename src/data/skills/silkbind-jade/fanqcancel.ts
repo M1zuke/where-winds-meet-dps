@@ -17,6 +17,9 @@ export const fanqcancel = defineSkill({
   triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.springThunder],
   castFrames: 6,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
       frame: 0,

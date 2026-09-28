@@ -35,6 +35,10 @@ export const nightwickGrounddrift = defineSkill({
   ],
   triggerable: false,
   castFrames: 93,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     pursuit(0, 8),
     pursuit(1, 24),

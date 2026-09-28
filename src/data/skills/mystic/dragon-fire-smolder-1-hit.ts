@@ -19,6 +19,9 @@ export const dragonFireSmolder1Hit = defineSkill({
   // margin the other cut forms carry.
   castFrames: 40,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 36,

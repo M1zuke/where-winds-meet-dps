@@ -18,6 +18,11 @@ export const perfectDodgeFull = defineSkill({
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 50,
   triggerable: true,
+  // In-game values as of 2026-09-28: dodge and Perfect Dodge move in the
+  // player's own input direction — modelled as no change, an assumption. A
+  // large reach keeps this stationary cast from capping the live distance.
+  reachMeters: 100,
+  approach: "stationary",
   // In-game values as of 2026-09-26: every weapon's own dodge costs 15,
   // needing at least 15 — gauntlets' own +5 gain instead is Bamboocut
   // Draught's own override of this skill.

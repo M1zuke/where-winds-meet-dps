@@ -34,6 +34,14 @@ export const dragonquenchStagesAt = (frames: readonly number[]) => [
   stage(5, frames[5], 1.82136 * 0.4, 505 * 0.4, 275 * 0.4),
 ]
 
+// In-game values as of 2026-09-28: 4 m approach reach, plus a further
+// 1.75 m shrink-only pull once in range.
+export const DRAGONQUENCH_REACH_METERS = 4
+export const DRAGONQUENCH_DISPLACEMENT = {
+  kind: "towardTarget" as const,
+  referenceMeters: 1.75,
+}
+
 export const DRAGONQUENCH_TAGS = [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze]
 export const DRAGONQUENCH_RECEIVES = [
   ...INEBRIATE_ENHANCED_RECEIVES,
@@ -60,6 +68,8 @@ export const dragonquenchInebriate = defineSkill({
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 143,
+  reachMeters: DRAGONQUENCH_REACH_METERS,
+  displacement: DRAGONQUENCH_DISPLACEMENT,
   hits: dragonquenchStages,
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-09-06T00:00:00.000Z",

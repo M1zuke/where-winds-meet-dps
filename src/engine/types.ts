@@ -67,7 +67,10 @@ export interface CombatSettings {
   script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
-  distanceToTargetMeters: number
+  // The player's own ground distance to the target between casts — matters
+  // only for a distance-reading effect (docs/TIMELINE.md § "Target
+  // distance"), which pulls the player closer up to each skill's own reach.
+  preferredDistanceMeters: number
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -80,7 +83,7 @@ export function defaultCombatSettings(): CombatSettings {
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    distanceToTargetMeters: 3,
+    preferredDistanceMeters: 3,
   }
 }
 
@@ -391,6 +394,9 @@ export interface RotationCast {
   prePull: boolean
   buffs: CastBuffTag[]
   meterLevels?: CastMeterLevel[]
+  // The simulated ground distance to the target as of this cast's own start
+  // — docs/TIMELINE.md § "Target distance".
+  distanceMeters: number
 }
 
 export interface SkillTickResult {
