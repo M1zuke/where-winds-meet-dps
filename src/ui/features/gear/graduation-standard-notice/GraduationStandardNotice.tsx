@@ -12,7 +12,6 @@ const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   dummyMode: "overview.encounterSettings.enableDummy",
   food: "overview.encounterSettings.simmeringFishSlicesFood",
   dragonHeadLowHpMaxBonus: "overview.encounterSettings.maxLowHpBonusDragon",
-  lowEndurance: "overview.encounterSettings.below60Endurance",
   shareDebuff5HenZhi: "overview.encounterSettings.bitterSeasonFromATeammate",
   shareEasyHurt: "overview.encounterSettings.tankSpearDebuffVulnerability",
   dragonsBreath: "overview.encounterSettings.dragonSBreath",

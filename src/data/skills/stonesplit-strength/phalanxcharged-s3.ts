@@ -4,6 +4,10 @@ import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const phalanxchargedS3 = defineSkill({
   id: SKILL.phalanxchargedS3,
@@ -29,6 +33,10 @@ export const phalanxchargedS3 = defineSkill({
     ...PHALANXBANE_BLADE_RECEIVES,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
+  // In-game values as of 2026-09-25: the stage-2/3 charge is offered only
+  // above 50 Blade Momentum, and spends 50 at the release.
+  castConditions: [bladeMomentumRequires("gt", 50)],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
   castFrames: 188,
   triggerable: true,
   hits: [

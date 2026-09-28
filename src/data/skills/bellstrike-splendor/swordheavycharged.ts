@@ -3,8 +3,15 @@ import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
 import { multiWaveWindowSustainTrigger } from "./buffs/multiWaveWindowGrant"
+import {
+  VAGRANT_SWORD_DRAIN,
+  VAGRANT_SWORD_FREEZE,
+  SWORD_MORPH_ENDURANCE_SPEND,
+} from "./buffs/vagrantSwordEndurance"
+import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
+import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
 const MULTI_WAVE_WINDOW_ACTIVE = {
   buffId: BUFF.swordMorphMultiWaveWindow,
@@ -38,6 +45,8 @@ export const swordHeavyCharged = defineSkill({
   // In-game values as of 2026-09-24: without Sword Morph's multi-wave window
   // this is the single-bolt level-2 release, not the three-wave one below.
   castFrames: 126,
+  meterDrains: VAGRANT_SWORD_DRAIN,
+  meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   hits: [
     hit(0, {
@@ -46,7 +55,13 @@ export const swordHeavyCharged = defineSkill({
       attributeMultiplier: 4.8996,
       physFixed: 904,
       attributeFixed: 493,
-      triggers: [energySurgeReleaseTrigger, multiWaveWindowSustainTrigger],
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowSustainTrigger,
+        BATTLE_ANTHEM_ENDURANCE_GAIN,
+        energySurgeEnduranceGain,
+        MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+      ],
       variants: [
         {
           id: "hv-swordheavycharged-hit-0-multi-wave-window",
@@ -75,6 +90,9 @@ export const swordHeavyCharged = defineSkill({
       physFixed: 506.24,
       attributeFixed: 276.08,
       conditions: [MULTI_WAVE_WINDOW_ACTIVE],
+      // In-game values as of 2026-09-25: the Sword Morph conversion reads the
+      // Endurance the charge drain left once it stops, near this last wave.
+      triggers: [{ ...SWORD_MORPH_ENDURANCE_SPEND, condition: MULTI_WAVE_WINDOW_ACTIVE }],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

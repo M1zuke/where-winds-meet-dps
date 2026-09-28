@@ -18,6 +18,8 @@ import {
   healSkill,
 } from "../../src/migrations/customSkills/V24__umbraValueFixes"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
+import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
+import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -556,7 +558,11 @@ describe("V24__umbraValueFixes migration step", () => {
       "bellstrikeUmbra-spearheavy",
       "bellstrikeUmbra-spearspecial-1-hit-cancel",
     ]) {
-      const healed = skillIn(result.blob, id)
+      // V38 later adds an Endurance gain to Crosswind Blade's one hit, and
+      // V39 a Bleeding refund to the same hit — both a no-op on every other
+      // id here.
+      const meterHealed = healMeterFieldsAndGains(skillIn(result.blob, id))
+      const healed = healMeterModifierGains(meterHealed) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)
     }

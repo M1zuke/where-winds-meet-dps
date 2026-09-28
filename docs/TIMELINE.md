@@ -75,11 +75,12 @@ the skill could ever land.
 A condition — on a hit, a variant, a cast (`castConditions`) or a trigger — is
 one of three shapes, evaluated by one shared function everywhere a condition
 is checked: a status stack threshold (a buff or debuff id, a comparison and a
-stack count); a build param, with an optional minimum tier, the same pair a
-trigger's own `requiresParam`/`requiresMinTier` reads; or an OR-group of
-further clauses of either shape, recursively, holding when at least one member
-does. An OR-group's members are never individually restricted to only one of
-the other two shapes.
+stack count — `gte`/`gt`/`eq`/`lte`/`lt`); a build param, with an optional
+minimum tier, the same pair a trigger's own
+`requiresParam`/`requiresMinTier` reads; or an OR-group of further clauses of
+either shape, recursively, holding when at least one member does. An
+OR-group's members are never individually restricted to only one of the
+other two shapes.
 
 ### Cast legality
 
@@ -265,6 +266,11 @@ from storage inside the engine**, so locked fixtures stay byte-exact.
 - **A state marker that only exists from some tier of that param declares
   `requiresMinTier`** next to `requiresParam`, and is dropped below that tier
   exactly as it is when the param is off. It is invalid without `requiresParam`.
+- **A state marker that stops existing from some tier up instead declares
+  `requiresMaxTier`** next to `requiresParam` — the mirror of `requiresMinTier`,
+  for a mechanic a later tier replaces outright rather than builds on. Untiered
+  reads as tier 0, so a max-tier-only marker still exists for a build that
+  never slotted the param at all; the two may combine into one tier band.
 - **A buff whose stack cap itself grows with a build param's tier declares
   `maxStacksByTier`** (a param and a tier-to-cap table) instead of hardcoding
   the largest cap: resolved once per run against the build, the highest
@@ -421,6 +427,77 @@ for applying, `receives` for boosting — never by the module itself.
   module's declarative `conditionalFinalCrit` field: use the field when the
   module's own active window already is the whole condition, the effect when
   it needs to read further state to decide.
+
+## Meters
+
+A meter is a build-wide bar every skill of every class may cost from, gain into
+or gate on — a class registers one on its `ClassDef.meters`, shared by every
+skill that names its id. It is **not** a special case: it simulates once, in
+the layout pass's own sequential cursor, and is replayed onto the real ledger
+as a permanent counter status (`meter:<id>`) — every existing reader then
+works unchanged.
+
+- **A threshold requirement is an ordinary status condition** against
+  `meter:<id>`, authored on `castConditions` (a legality flag, per "Cast
+  legality" above) or on a hit's own `conditions` — never a bespoke field. A
+  meter has no separate "requires" schema.
+- **A skill's own `meterCosts` spend a fixed amount at the cast's own start**,
+  after that step's cast conditions are checked against the value the cost is
+  about to spend. A cost's own `requiresParam`/`requiresMinTier`/
+  `requiresMaxTier` waive it outside that param/tier range — untiered reads as
+  tier 0, so a cost waived only from some tier up still applies to a build
+  that never slotted the param at all.
+- **A skill's own `meterDrains` and `meterFreezes` replace natural
+  regeneration for their own interval** — a freeze drains nothing but still
+  blocks regeneration exactly as a real drain does; neither ever adds to the
+  natural rate. A drain's own stop time is authored either as an explicit
+  offset or as "to the cast's own end".
+- **A hit's own `meterDelta` trigger kind gains or spends on that hit**,
+  reusing the shared trigger gate for its conditions, tier gates and
+  cooldown — the same as every other trigger kind. `meterSpendCapToCurrent`
+  spends at most that ceiling and at most the meter's current amount, for a
+  release whose own damage reads what it is about to deduct. A meter's own
+  level is exact, fractional amounts included; only a display rounds it. A
+  chance-based grant the real game only regulates by its own cooldown (so a
+  hit inside that cooldown eventually crits or affinity-hits in every
+  validated build) is authored as its full, unscaled amount — the modal
+  outcome, not an expected value scaled by the chance itself. Its own
+  `recordSpendAsStatus` records the magnitude actually deducted (after
+  `meterSpendCapToCurrent`) onto a permanent counter status, backdated to the
+  granting cast's own start rather than this hit's frame — so a module whose
+  bonus depends on what a capped release actually spent reads the same amount
+  from every hit of that release, including one landing earlier than this one.
+- **A buff may declare `meterModifiers`**: while its window is active, it
+  scales a meter's own cost, charge-drain cost or regeneration rate by a
+  fraction, additive with every other active modifier of the same kind — the
+  ledger-native counterpart of a stat effect, since a meter simulates outside
+  the damage-kernel stat pool. A modifier sourced from the class-buff engine
+  rather than the status ledger is out of reach here, the same restriction
+  every other ledger-side mechanism has.
+- **A regeneration modifier may instead declare `belowCapacityFraction`**,
+  gating itself on the meter's own live level against that fraction of its
+  capacity rather than on a status window — a self-referential condition read
+  directly off the meter as it advances, never through the ledger, since a
+  window-based read would only see the level as of its last recorded step.
+- **A modifier may instead declare `alwaysActive`**, skipping the ledger window
+  (and `belowCapacityFraction`) check entirely — active whenever its owning
+  status is present in the run at all, for a build-tier-gated modifier with no
+  timed window or proc of its own.
+- **A meter's own capacity may be a function of the build**, resolved once and
+  exposed through the same generic build-param accessor every other
+  build-level number uses — never a bespoke context field.
+- **A meter's per-cast level is reported on the cast it belongs to**, read
+  before that cast's own cost or drain applies — "the level available when
+  the cast was placed", not the level once it resolved.
+- **A pre-pull cast never touches a meter**, the same as it never lands a hit
+  for damage — it compresses a real-world gap of unknown length into a
+  handful of negative frames, which has no faithful frame-accurate placement
+  for a cost, a drain, a freeze or a gain.
+- **A meter never rewinds its own cursor.** A cost, drain or freeze requested
+  at a frame earlier than the meter has already advanced to — a cross-step
+  interleaving artifact, not a real ordering — is processed at the cursor's
+  own frame instead and surfaces a warning, rather than corrupting the meter's
+  forward-only simulation.
 
 ## Procedural behaviour
 

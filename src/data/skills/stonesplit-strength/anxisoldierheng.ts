@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
 
 const SOLDIER_HIT = {
   frame: 0,
@@ -10,6 +11,7 @@ const SOLDIER_HIT = {
   attributeMultiplier: 0.525,
   physFixed: 0,
   attributeFixed: 0,
+  triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
 }
 
 function hengSoldier(id: string, name: string, attunement: string, extraTags: string[] = []) {

@@ -3,8 +3,15 @@ import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeConsumeTrigger, energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import {
+  energySurgeConsumeTrigger,
+  energySurgeReleaseTrigger,
+  energySurgeEnduranceGain,
+} from "./buffs/energySurgeGrant"
 import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
+import { SWORD_MORPH_ENDURANCE_SPEND } from "./buffs/vagrantSwordEndurance"
+import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 export const energySurge = defineSkill({
   id: SKILL.energySurge,
@@ -29,6 +36,8 @@ export const energySurge = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
+  // In-game values as of 2026-09-25: 1 spent at the cast's own start.
+  meterCosts: [{ meterId: enduranceMeter.id, amount: 1 }],
   castFrames: 51,
   triggerable: true,
   hits: [
@@ -42,6 +51,9 @@ export const energySurge = defineSkill({
         energySurgeConsumeTrigger,
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
+        BATTLE_ANTHEM_ENDURANCE_GAIN,
+        energySurgeEnduranceGain,
       ],
     }),
     hit(1, {

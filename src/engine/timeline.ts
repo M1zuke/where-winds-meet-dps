@@ -10,7 +10,7 @@ import type {
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff, DebuffDotSpec } from "./debuff"
-import type { HitTrigger, Skill, SkillHit, TriggerCondition } from "./skill"
+import type { HitTrigger, MeterCost, Skill, SkillHit, TriggerCondition } from "./skill"
 import {
   breakdownNameOf,
   conditionSatisfiedByStacks,
@@ -57,6 +57,8 @@ import { applyEffect, type EffectSink } from "./effects/apply"
 import type { ArtBonusField } from "./effects/effect"
 import { classDefinition, grantsMinPhysCritBoostFor } from "../definitions/classes/registry"
 import { CombatResource } from "./resources"
+import { MeterEngine } from "./meter"
+import { meterMaxParamKey, type MeterMaxContext } from "../definitions/resources/meterDef"
 import { buildContext, effectiveRates } from "./panel"
 import { computeSkillDamage, type HitOutcome, type RolledHit } from "./formula"
 import { MECHANIC_STREAM_OFFSET, mulberry32 } from "./rng"
@@ -197,7 +199,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       (b) =>
         !b.requiresParam ||
         (paramOnOf(buffParams, b.requiresParam) &&
-          paramTierOf(buffParams, b.requiresParam) >= (b.requiresMinTier ?? 0)),
+          paramTierOf(buffParams, b.requiresParam) >= (b.requiresMinTier ?? 0) &&
+          paramTierOf(buffParams, b.requiresParam) <= (b.requiresMaxTier ?? Infinity)),
     )
     .map((buff) => resolveMaxStacksByTier(buff, buffParams))
   const debuffsMap = new Map<string, Debuff>()
@@ -224,6 +227,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     startFrame: number
     castLen: number
     performedHits: SkillHit[]
+    // The layout ledger's own write mark just before this step's meter costs
+    // and drains apply — what a "level at cast start" readout means.
+    meterMarkAtStart: number
   }
 
   const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
@@ -484,6 +490,140 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const layoutWriter = statusWriter(layoutLedger, layoutHolds)
   seedOpeningState(layoutWriter, Math.min(0, -prePullBound))
 
+  // Meters (Endurance, Blade Momentum, …) simulate once here, in the same
+  // sequential cursor `castConditions` legality already reads, and are
+  // replayed onto the real ledger once it exists — see docs/TIMELINE.md §
+  // "Meters".
+  const meterMaxContext: MeterMaxContext = {
+    paramTier: (id) => paramTierOf(buffParams, id),
+    paramOn: (id) => paramOnOf(buffParams, id),
+    whiteAffinityRate: inputs.affinityRate,
+  }
+  const meterStartFrame = Math.min(0, -prePullBound)
+  const meters = (classDefinition(inputs.classId)?.meters ?? []).map(
+    (definition) =>
+      new MeterEngine(
+        definition,
+        meterMaxContext,
+        FPS,
+        layoutLedger,
+        meterStartFrame,
+        (frame, currentAmount, capacity) =>
+          meterModifierMultiplier(
+            "regen",
+            definition.id,
+            frame,
+            undefined,
+            currentAmount,
+            capacity,
+          ),
+      ),
+  )
+  const meterById = new Map(meters.map((meter) => [meter.def.id, meter] as const))
+  for (const meter of meters) buffParams[meterMaxParamKey(meter.def.id)] = meter.capacity
+  const runEffectiveRates = effectiveRates(inputs)
+
+  function meterModifierMultiplier(
+    kind: "cost" | "chargeCost" | "regen",
+    meterId: string,
+    frame: number,
+    skill?: Skill,
+    currentAmount?: number,
+    capacity?: number,
+  ): number {
+    let total = 1
+    for (const status of buffs) {
+      for (const modifier of status.meterModifiers ?? []) {
+        if (modifier.meterId !== meterId || modifier.kind !== kind) continue
+        if (modifier.tag && !(skill?.tags ?? []).includes(modifier.tag)) continue
+        const active = modifier.alwaysActive
+          ? true
+          : modifier.belowCapacityFraction !== undefined
+            ? currentAmount !== undefined &&
+              capacity !== undefined &&
+              conditionSatisfiedByStacks(
+                { buffId: status.id, op: "lt", stacks: modifier.belowCapacityFraction * capacity },
+                currentAmount,
+              )
+            : layoutLedger.isActiveAt(status.id, frame)
+        if (active) total += modifier.amount
+      }
+    }
+    return Math.max(0, total)
+  }
+
+  function advanceMeters(frame: number): void {
+    for (const meter of meters) meter.advanceTo(frame)
+  }
+
+  // Untiered (the param off entirely) reads as tier 0 rather than failing the
+  // check outright — a cost waived only from some tier up (`requiresMaxTier`)
+  // must still apply to a build that never slotted the param at all.
+  function meterCostRequirementHolds(cost: MeterCost): boolean {
+    if (!cost.requiresParam) return true
+    const tier = paramOnOf(buffParams, cost.requiresParam)
+      ? paramTierOf(buffParams, cost.requiresParam)
+      : 0
+    return tier >= (cost.requiresMinTier ?? 0) && tier <= (cost.requiresMaxTier ?? Infinity)
+  }
+
+  interface PendingMeterIntervalStart {
+    frame: number
+    register: () => void
+  }
+
+  // Costs land immediately, at the cast's own start. A freeze or drain's own
+  // start can land after one of this same cast's own hits (an early hit
+  // ahead of a later charge-drain start), so its registration is handed back
+  // rather than applied here — `seedStepTriggers` interleaves it with this
+  // step's own hits by frame, since registering it eagerly would fast-
+  // forward the meter's forward-only cursor past a hit that hasn't run yet.
+  function applyMeterCostsAndScheduleDrains(
+    skill: Skill,
+    startFrame: number,
+    castEndFrame: number,
+  ): PendingMeterIntervalStart[] {
+    for (const cost of skill.meterCosts ?? []) {
+      const meter = meterById.get(cost.meterId)
+      if (!meter) continue
+      if (!meterCostRequirementHolds(cost)) continue
+      const multiplier = meterModifierMultiplier("cost", cost.meterId, startFrame, skill)
+      meter.apply(startFrame, -cost.amount * multiplier)
+    }
+    const starts: PendingMeterIntervalStart[] = []
+    // Freezes before drains: a freeze's own fromFrame is never later than the
+    // drain it overlaps, so processing it first keeps the meter's own cursor
+    // moving forward through this same cast.
+    for (const freeze of skill.meterFreezes ?? []) {
+      const meter = meterById.get(freeze.meterId)
+      if (!meter) continue
+      const fromFrame = hitLandingFrame(startFrame, freeze.fromFrame)
+      starts.push({
+        frame: fromFrame,
+        register: () => meter.startDrain(fromFrame, castEndFrame, 0),
+      })
+    }
+    for (const drain of skill.meterDrains ?? []) {
+      const meter = meterById.get(drain.meterId)
+      if (!meter) continue
+      const fromFrame = hitLandingFrame(startFrame, drain.fromFrame)
+      // Never outlives its own cast — the graph node driving it is torn down
+      // the moment the cast ends, however long its own stop timer still had.
+      const toFrame =
+        drain.stopAfterSec !== undefined
+          ? Math.min(fromFrame + Math.round(drain.stopAfterSec * FPS), castEndFrame)
+          : castEndFrame
+      starts.push({
+        frame: fromFrame,
+        register: () =>
+          meter.startDrain(fromFrame, toFrame, drain.perSecond, (frame) =>
+            meterModifierMultiplier("chargeCost", drain.meterId, frame, skill),
+          ),
+      })
+    }
+    return starts
+  }
+
   const activeVariantCastFrames = (
     hits: readonly SkillHit[],
     holds: (condition: TriggerCondition) => boolean,
@@ -503,7 +643,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const damagingHitTimesSec: number[] = []
   const weaponHitTimesSec: number[] = []
 
-  interface PendingLayoutHit {
+  interface PendingHitEvent {
+    kind: "hit"
     skill: Skill
     hit: SkillHit
     frame: number
@@ -511,15 +652,33 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     prePull: boolean
     sequence: number
   }
+  interface PendingMeterDeltaEvent {
+    kind: "meterDelta"
+    trigger: HitTrigger
+    frame: number
+    owner: number
+    sequence: number
+  }
+  interface PendingMeterIntervalEvent {
+    kind: "meterInterval"
+    frame: number
+    register: () => void
+    sequence: number
+  }
+  type PendingLayoutEvent = PendingHitEvent | PendingMeterDeltaEvent | PendingMeterIntervalEvent
   let layoutHitSequence = 0
 
-  // Iterative and frame-ordered rather than recursive, like the prepass below
-  // it mirrors: a self-referential `castSkill` chain must hit `EVENT_CAP`
-  // rather than the call stack, and every write lands in the frame order
-  // `StatusLedger`'s own lookups assume.
-  function seedHitTriggers(current: PendingLayoutHit, pending: PendingLayoutHit[]): void {
+  // A cast's own meterDelta triggers — on-hit gains and `appliesOnCastEnd`
+  // ones alike — join the same frame-ordered queue as this step's own hits
+  // and its meter freeze/drain starts, rather than applying the moment their
+  // owning hit is processed: an on-hit gain discovered after a same- or
+  // earlier-frame cast-end gain in trigger-authoring order is still earlier
+  // in time, and resolving it eagerly would push the meter's forward-only
+  // cursor past a not-yet-processed, earlier event.
+  function seedHitTriggers(current: PendingHitEvent, pending: PendingLayoutEvent[]): void {
     const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
     layoutWriter.processExpiries(hitFrame)
+    advanceMeters(hitFrame)
     if (hitDealsDamage(skillHit)) {
       layoutWriter.onDamagingHit(hitFrame, owner)
       if (!prePull) {
@@ -553,6 +712,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (!sub) continue
         for (const subHit of sub.hits) {
           pending.push({
+            kind: "hit",
             skill: sub,
             hit: subHit,
             frame: hitLandingFrame(hitFrame, subHit.frame),
@@ -563,7 +723,38 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         continue
       }
-      layoutWriter.applyTrigger(trigger, hitFrame, owner)
+      if (trigger.kind === "meterDelta") {
+        if (prePull) continue
+        const effectiveFrame = trigger.appliesOnCastEnd ? castEndFrame(skill, owner) : hitFrame
+        pending.push({
+          kind: "meterDelta",
+          trigger,
+          frame: effectiveFrame,
+          owner,
+          sequence: layoutHitSequence++,
+        })
+        continue
+      }
+      layoutWriter.applyTrigger(
+        trigger,
+        trigger.appliesOnCastEnd ? castEndFrame(skill, owner) : hitFrame,
+        owner,
+      )
+    }
+  }
+
+  function applyMeterDeltaEvent(event: PendingMeterDeltaEvent): void {
+    const { trigger, frame, owner } = event
+    if (!layoutWriter.fires(trigger, frame)) return
+    const meter = meterById.get(trigger.targetId)
+    if (!meter) return
+    const applied = meter.apply(frame, trigger.stacks, trigger.meterSpendCapToCurrent)
+    if (trigger.recordSpendAsStatus) {
+      // Backdated to the cast's own start, not this hit's frame, so every
+      // wave of the same release — including one landing before this
+      // trigger's own hit — reads the same recorded amount.
+      layoutLedger.openPermanent(trigger.recordSpendAsStatus)
+      layoutLedger.recordStack(trigger.recordSpendAsStatus, owner, Math.abs(applied), owner)
     }
   }
 
@@ -572,21 +763,33 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     hits: readonly SkillHit[],
     stepStart: number,
     prePull: boolean,
+    meterIntervalStarts: PendingMeterIntervalStart[] = [],
   ): void {
-    const pending: PendingLayoutHit[] = hits.map((hit) => ({
-      skill,
-      hit,
-      frame: hitLandingFrame(stepStart, hit.frame),
-      owner: stepStart,
-      prePull,
-      sequence: layoutHitSequence++,
-    }))
+    const pending: PendingLayoutEvent[] = [
+      ...hits.map((hit): PendingHitEvent => ({
+        kind: "hit",
+        skill,
+        hit,
+        frame: hitLandingFrame(stepStart, hit.frame),
+        owner: stepStart,
+        prePull,
+        sequence: layoutHitSequence++,
+      })),
+      ...meterIntervalStarts.map((start): PendingMeterIntervalEvent => ({
+        kind: "meterInterval",
+        frame: start.frame,
+        register: start.register,
+        sequence: layoutHitSequence++,
+      })),
+    ]
     let processed = 0
     while (pending.length > 0 && processed < EVENT_CAP) {
       pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
       const next = pending.shift()!
       processed++
-      seedHitTriggers(next, pending)
+      if (next.kind === "meterInterval") next.register()
+      else if (next.kind === "meterDelta") applyMeterDeltaEvent(next)
+      else seedHitTriggers(next, pending)
     }
   }
 
@@ -616,6 +819,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const exactStart = cursor + (waitsForRoundTrip(rs.skill) ? roundTripFrames : 0)
     const startFrame = Math.round(exactStart)
     layoutWriter.processExpiries(startFrame)
+    advanceMeters(startFrame)
+    const meterMarkAtStart = layoutLedger.mark()
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
     if (!(rs.skill.castConditions ?? []).every(holdsHere)) {
       invalidStepIds.push(rs.step.id)
@@ -638,11 +843,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const nextCursor = exactStart + castLen
     if (prePull) preCursor = nextCursor
     else activeCursor = nextCursor
+    // A pre-pull cast never lands (TIMELINE.md § "Identity and tags") — the
+    // same holds for a meter, which has no faithful frame-accurate placement
+    // for a real-world gap of unknown length compressed into a few negative
+    // frames.
+    const meterIntervalStarts = prePull
+      ? []
+      : applyMeterCostsAndScheduleDrains(rs.skill, startFrame, startFrame + castLen)
     const landedHits =
       prePull || windowFramesOverride === null
         ? occurringHits
         : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
-    seedStepTriggers(rs.skill, landedHits, startFrame, prePull)
+    seedStepTriggers(rs.skill, landedHits, startFrame, prePull, meterIntervalStarts)
     laidSteps.push({
       resolved: rs,
       stepIndex,
@@ -650,12 +862,21 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       startFrame,
       castLen,
       performedHits: landedHits,
+      meterMarkAtStart,
     })
   }
   const castCursorFrames = activeCursor
   const windowFrames = windowFramesOverride ?? castCursorFrames
   const spanStart = Math.min(0, -prePullBound)
   const rotationDurationSec = windowFrames / FPS
+
+  for (const meter of meters) {
+    meter.advanceTo(windowFrames)
+    for (const meterWarning of meter.warnings)
+      warnings.push(
+        `${meter.def.name} at ${(meterWarning.frame / FPS).toFixed(2)}s: ${meterWarning.message}.`,
+      )
+  }
 
   damagingHitTimesSec.sort((a, b) => a - b)
   weaponHitTimesSec.sort((a, b) => a - b)
@@ -669,6 +890,23 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   const ledger = new StatusLedger(spanStart, windowFrames)
+  for (const meter of meters) {
+    ledger.openPermanent(meter.statusId)
+    for (const sample of layoutLedger.stackHistory(meter.statusId))
+      ledger.recordStack(meter.statusId, sample.frame, sample.value)
+  }
+  const recordSpendStatusIds = new Set(
+    skills.flatMap((candidate) =>
+      candidate.hits.flatMap((skillHit) =>
+        skillHit.triggers.flatMap((trigger) => trigger.recordSpendAsStatus ?? []),
+      ),
+    ),
+  )
+  for (const statusId of recordSpendStatusIds) {
+    ledger.openPermanent(statusId)
+    for (const sample of layoutLedger.stackHistory(statusId))
+      ledger.recordStack(statusId, sample.frame, sample.value)
+  }
   const recordStack = (id: string, frame: number, value: number, owner = UNOWNED) =>
     ledger.recordStack(id, frame, value, owner)
   const stacksAt = (id: string, frame: number) => ledger.stacksAt(id, frame)
@@ -933,7 +1171,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
   dotTickTimesSec.sort((left, right) => left - right)
 
-  const { precision, critRate, affinityRate } = effectiveRates(inputs)
+  const { precision, critRate, affinityRate } = runEffectiveRates
   const mechanicSetup: MechanicSetup = {
     inputs,
     classId: inputs.classId,
@@ -1432,6 +1670,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         inWindow: inWindow(ls.startFrame),
         prePull: ls.prePull,
         buffs,
+        meterLevels:
+          meters.length > 0
+            ? meters.map((meter) => ({
+                id: meter.def.id,
+                name: meter.def.name,
+                amount: layoutLedger
+                  .asOf(ls.meterMarkAtStart)
+                  .stacksAt(meter.statusId, ls.startFrame),
+                capacity: meter.capacity,
+              }))
+            : undefined,
       }
     })
     castsUnsorted.sort((a, b) => a.timeSec - b.timeSec)

@@ -125,6 +125,10 @@ export class StatusLedger implements StatusView {
     return !!history && history.length > 0
   }
 
+  stackHistory(id: string): readonly { frame: number; value: number }[] {
+    return (this.stacks.get(id) ?? []).map(({ frame, value }) => ({ frame, value }))
+  }
+
   stacksAt(id: string, frame: number): number {
     const history = this.stacks.get(id)
     if (!history || history.length === 0) return 0

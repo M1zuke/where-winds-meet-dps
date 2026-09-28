@@ -21,6 +21,7 @@ import * as bellstrikeUmbra from "../../src/data/skills/bellstrike-umbra"
 import { UNIVERSAL_SKILLS } from "../../src/data/skills/universal"
 import { MYSTIC_SKILLS } from "../../src/data/skills/mystic"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { classDefinition } from "../../src/definitions/classes/registry"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -99,7 +100,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       const [, damageHit] = s.hits
       const triggers = damageHit.triggers
       expect(triggers).toHaveLength(5)
-      expect(triggers.some((t) => t.kind === "detonateDot")).toBe(false)
+      expect(triggers.some((trigger) => trigger.kind === "detonateDot")).toBe(false)
 
       const [firstBleed, ...rest] = triggers
       expect(firstBleed.kind).toBe("applyDot")
@@ -107,17 +108,17 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       expect(firstBleed.condition).toEqual(riverFlowCondition)
       expect(firstBleed.conditions).toBeUndefined()
 
-      for (const t of rest) {
-        expect(t.condition).toEqual(empoweredCondition)
-        expect(t.conditions).toEqual([cooldownCondition])
+      for (const trigger of rest) {
+        expect(trigger.condition).toEqual(empoweredCondition)
+        expect(trigger.conditions).toEqual([cooldownCondition])
       }
-      const applyDots = rest.filter((t) => t.kind === "applyDot")
+      const applyDots = rest.filter((trigger) => trigger.kind === "applyDot")
       expect(applyDots).toHaveLength(2)
-      for (const t of applyDots) expect(t.targetId).toBe(bleedId)
-      const casts = rest.filter((t) => t.kind === "castSkill")
+      for (const trigger of applyDots) expect(trigger.targetId).toBe(bleedId)
+      const casts = rest.filter((trigger) => trigger.kind === "castSkill")
       expect(casts).toHaveLength(1)
       expect(casts[0].targetId).toBe(detonationId)
-      const applyBuffs = rest.filter((t) => t.kind === "applyBuff")
+      const applyBuffs = rest.filter((trigger) => trigger.kind === "applyBuff")
       expect(applyBuffs).toHaveLength(1)
       expect(applyBuffs[0].targetId).toBe(SPEAR_SPECIAL_COOLDOWN_BUFF_ID)
       expect(triggers[triggers.length - 1]).toBe(applyBuffs[0])
@@ -132,12 +133,15 @@ describe("built-in data — referential integrity", () => {
     const buffs = builtinBuffsForClass(CLASS)
     const skillIds = new Set(skills.map((s) => s.id))
     const statusIds = new Set([...debuffs.map((d) => d.id), ...buffs.map((b) => b.id)])
+    const meterIds = new Set((classDefinition(CLASS)?.meters ?? []).map((meter) => meter.id))
 
     for (const s of skills) {
       for (const hit of s.hits) {
         for (const tr of hit.triggers) {
           if (tr.kind === "castSkill") {
             expect(skillIds.has(tr.targetId)).toBe(true)
+          } else if (tr.kind === "meterDelta") {
+            expect(meterIds.has(tr.targetId)).toBe(true)
           } else {
             expect(statusIds.has(tr.targetId)).toBe(true)
           }
@@ -160,7 +164,7 @@ describe("built-in data — SpearQ's River Flow trigger", () => {
       expect(skill).toBeTruthy()
       skill.hits.forEach((hit, i) => {
         const hasRiverFlow = hit.triggers.some(
-          (t) => t.kind === "applyBuff" && t.targetId === BUFF.potentRiverFlow,
+          (trigger) => trigger.kind === "applyBuff" && trigger.targetId === BUFF.potentRiverFlow,
         )
         expect(hasRiverFlow).toBe(i === 4)
       })
@@ -174,12 +178,12 @@ describe("built-in data — one file per skill", () => {
     const ids = merged.map((s) => s.id)
     expect(new Set(ids).size).toBe(ids.length)
     for (const s of merged) {
-      const fromModule = bellstrikeUmbra.SKILLS.find((m) => m.id === s.id)
+      const fromModule = bellstrikeUmbra.SKILLS.find((candidate) => candidate.id === s.id)
       if (fromModule) {
         expect(fromModule).toEqual(s)
         continue
       }
-      const fromMystic = MYSTIC_SKILLS.find((m) => m.id === s.id)
+      const fromMystic = MYSTIC_SKILLS.find((candidate) => candidate.id === s.id)
       if (fromMystic) {
         expect(fromMystic).toEqual(s)
         continue
@@ -191,8 +195,10 @@ describe("built-in data — one file per skill", () => {
       expect(s.classId).toBe(CLASS)
       expect(s.attributeAttack).toBe("Bellstrike")
       expect(s.name).toBe(universal!.name)
-      expect(s.hits.map((h) => [h.physMultiplier, h.attributeMultiplier, h.physFixed])).toEqual(
-        universal!.hits.map((h) => [h.physMultiplier, h.attributeMultiplier, h.physFixed]),
+      expect(
+        s.hits.map((hit) => [hit.physMultiplier, hit.attributeMultiplier, hit.physFixed]),
+      ).toEqual(
+        universal!.hits.map((hit) => [hit.physMultiplier, hit.attributeMultiplier, hit.physFixed]),
       )
     }
   })

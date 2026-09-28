@@ -11,7 +11,7 @@ import {
 } from "../../src/migrations/customSkills/V30__swordSpecial4HitAttunementReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
-import type { Skill, SkillHit } from "../../src/engine/skill"
+import type { HitTrigger, Skill, SkillHit } from "../../src/engine/skill"
 import storeV29File from "./testCustomSkills/v29/store.json"
 
 const CLASS = "bellstrikeUmbra"
@@ -106,11 +106,35 @@ const HEALED_HITS: SkillHit[] = [
   },
 ]
 
+const BLEED_MECHANISM_ENHANCEMENT_GAIN: HitTrigger = {
+  kind: "meterDelta",
+  targetId: "endurance",
+  stacks: 10,
+  condition: { buffId: "debuff-bellstrikeUmbra-bleed-tick", op: "gte", stacks: 4 },
+  cooldownFrames: 120,
+  cooldownGroup: "bleedMechanismEnhancement-innerBalanceStrikeIII",
+}
+
+const HIT_2_TRIGGERS_WITH_CAST_LAST = [
+  ...HEALED_HITS[2]!.triggers.slice(0, 2),
+  BLEED_MECHANISM_ENHANCEMENT_GAIN,
+  HEALED_HITS[2]!.triggers[2]!,
+]
+const HIT_2_TRIGGERS_WITH_CAST_FIRST = [
+  ...HEALED_HITS[2]!.triggers,
+  BLEED_MECHANISM_ENHANCEMENT_GAIN,
+]
+
 // This hop's own output never produces hit 0's `variants` array; the live
-// built-in and the full hydrator chain do, from a later hop.
+// built-in and the full hydrator chain do, from a later hop. The live
+// built-in module authors the Bleeding refund ahead of the generated cast on
+// hit 2; a migrated copy instead appends it after, since a later hop can only
+// ever append to what an earlier one already wrote — `CURRENT_HITS` is the
+// live built-in's own order, `HYDRATED_HITS` the migration chain's.
 const CURRENT_HITS: SkillHit[] = [
   {
     ...HEALED_HITS[0]!,
+    triggers: [...HEALED_HITS[0]!.triggers, BLEED_MECHANISM_ENHANCEMENT_GAIN],
     variants: [
       {
         id: "hv-swordspecial-4-hit-hit-0-sword-horizon",
@@ -124,7 +148,14 @@ const CURRENT_HITS: SkillHit[] = [
       },
     ],
   },
-  ...HEALED_HITS.slice(1),
+  { ...HEALED_HITS[1]!, triggers: [...HEALED_HITS[1]!.triggers, BLEED_MECHANISM_ENHANCEMENT_GAIN] },
+  { ...HEALED_HITS[2]!, triggers: HIT_2_TRIGGERS_WITH_CAST_LAST },
+]
+
+const HYDRATED_HITS: SkillHit[] = [
+  CURRENT_HITS[0]!,
+  CURRENT_HITS[1]!,
+  { ...HEALED_HITS[2]!, triggers: HIT_2_TRIGGERS_WITH_CAST_FIRST },
 ]
 
 describe("frozen hits match the live built-in", () => {
@@ -224,6 +255,6 @@ describe("every healed skill survives the hydrator too", () => {
     localStorage.setItem(CUSTOM_SKILLS_KEY, JSON.stringify(STORE))
     const loaded = loadCustomSkills()
     const skill = loaded.find((candidate) => candidate.id === SWORDSPECIAL_4_HIT_ID)!
-    expect(skill.hits).toEqual(CURRENT_HITS)
+    expect(skill.hits).toEqual(HYDRATED_HITS)
   })
 })

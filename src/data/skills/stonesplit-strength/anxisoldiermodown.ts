@@ -4,6 +4,7 @@ import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
 
 export const anxisoldiermodown = defineSkill({
   id: SKILL.anxisoldiermodown,
@@ -39,6 +40,7 @@ export const anxisoldiermodown = defineSkill({
           requiresParam: PARAM.steadfastDevotion,
           requiresMinTier: 1,
         }),
+        ANXI_SOLDIER_BLADE_MOMENTUM_GAIN,
       ],
     }),
   ],

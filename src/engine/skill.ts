@@ -12,7 +12,8 @@ export type TriggerKind =
   | "detonateDot"
   | "releaseEcho"
   | "clearStatus"
-export type TriggerOp = "gte" | "gt" | "eq"
+  | "meterDelta"
+export type TriggerOp = "gte" | "gt" | "eq" | "lte" | "lt"
 
 export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
 
@@ -72,6 +73,9 @@ export interface HitTrigger {
   durationFrames?: number
   requiresParam?: string
   requiresMinTier?: number
+  // `meterDelta` only (docs/TIMELINE.md § "Meters").
+  meterSpendCapToCurrent?: number
+  recordSpendAsStatus?: string
 }
 
 export interface SkillHit {
@@ -87,6 +91,28 @@ export interface SkillHit {
   triggers: HitTrigger[]
 }
 
+export interface MeterCost {
+  meterId: string
+  amount: number
+  // docs/TIMELINE.md § "Meters".
+  requiresParam?: string
+  requiresMinTier?: number
+  requiresMaxTier?: number
+}
+
+export interface MeterDrain {
+  meterId: string
+  perSecond: number
+  fromFrame: number
+  // Absent: the drain runs to the cast's own end.
+  stopAfterSec?: number
+}
+
+export interface MeterFreeze {
+  meterId: string
+  fromFrame: number
+}
+
 export interface Skill {
   id: string
   classId: string
@@ -96,6 +122,13 @@ export interface Skill {
   attributeAttack: string
   tags?: string[]
   breakdownName?: string
+  // At the cast's own start, after this step's cast conditions are checked
+  // against the value the cost is about to spend — a threshold requirement is
+  // authored as a `castConditions` entry against `meter:<id>` instead
+  // (docs/TIMELINE.md § "Meters").
+  meterCosts?: MeterCost[]
+  meterDrains?: MeterDrain[]
+  meterFreezes?: MeterFreeze[]
   // The identity this cast presents to the buff engine and to the migration
   // that backfills `receives`/`triggersBuffs` on an old save. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
@@ -186,7 +219,14 @@ export function isStatusCondition(value: unknown): value is StatusCondition {
   if (!value || typeof value !== "object") return false
   const record = value as Record<string, unknown>
   if (typeof record.buffId !== "string") return false
-  if (record.op !== "gte" && record.op !== "gt" && record.op !== "eq") return false
+  if (
+    record.op !== "gte" &&
+    record.op !== "gt" &&
+    record.op !== "eq" &&
+    record.op !== "lte" &&
+    record.op !== "lt"
+  )
+    return false
   if (typeof record.stacks !== "number" || !Number.isFinite(record.stacks)) return false
   if (record.source !== undefined && record.source !== "buffEngine") return false
   return true
@@ -232,11 +272,18 @@ export function isHitOrVariantCondition(value: unknown): value is TriggerConditi
 }
 
 export function conditionSatisfiedByStacks(condition: StatusCondition, stacks: number): boolean {
-  return condition.op === "gte"
-    ? stacks >= condition.stacks
-    : condition.op === "gt"
-      ? stacks > condition.stacks
-      : stacks === condition.stacks
+  switch (condition.op) {
+    case "gte":
+      return stacks >= condition.stacks
+    case "gt":
+      return stacks > condition.stacks
+    case "lte":
+      return stacks <= condition.stacks
+    case "lt":
+      return stacks < condition.stacks
+    default:
+      return stacks === condition.stacks
+  }
 }
 
 export function conditionIds(condition: TriggerCondition): string[] {
@@ -261,7 +308,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "applyDot" &&
     t.kind !== "detonateDot" &&
     t.kind !== "releaseEcho" &&
-    t.kind !== "clearStatus"
+    t.kind !== "clearStatus" &&
+    t.kind !== "meterDelta"
   )
     return false
   if (typeof t.targetId !== "string") return false
@@ -318,6 +366,16 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     if (typeof t.requiresMinTier !== "number" || !Number.isFinite(t.requiresMinTier)) return false
     if (typeof t.requiresParam !== "string" || !t.requiresParam) return false
   }
+  if (
+    t.meterSpendCapToCurrent !== undefined &&
+    (typeof t.meterSpendCapToCurrent !== "number" || !Number.isFinite(t.meterSpendCapToCurrent))
+  )
+    return false
+  if (
+    t.recordSpendAsStatus !== undefined &&
+    (typeof t.recordSpendAsStatus !== "string" || !t.recordSpendAsStatus)
+  )
+    return false
   return true
 }
 
@@ -434,6 +492,53 @@ export function isSkill(x: unknown): x is Skill {
       if (!isHitOrVariantCondition(condition)) return false
     }
   }
+  if (s.meterCosts !== undefined) {
+    if (!Array.isArray(s.meterCosts)) return false
+    for (const cost of s.meterCosts) {
+      const meterCost = cost as Record<string, unknown>
+      if (typeof meterCost.meterId !== "string" || !meterCost.meterId) return false
+      if (typeof meterCost.amount !== "number" || !Number.isFinite(meterCost.amount)) return false
+      if (meterCost.requiresParam !== undefined && typeof meterCost.requiresParam !== "string")
+        return false
+      if (
+        meterCost.requiresMinTier !== undefined &&
+        (typeof meterCost.requiresMinTier !== "number" ||
+          !Number.isFinite(meterCost.requiresMinTier))
+      )
+        return false
+      if (
+        meterCost.requiresMaxTier !== undefined &&
+        (typeof meterCost.requiresMaxTier !== "number" ||
+          !Number.isFinite(meterCost.requiresMaxTier))
+      )
+        return false
+    }
+  }
+  if (s.meterDrains !== undefined) {
+    if (!Array.isArray(s.meterDrains)) return false
+    for (const drain of s.meterDrains) {
+      const meterDrain = drain as Record<string, unknown>
+      if (typeof meterDrain.meterId !== "string" || !meterDrain.meterId) return false
+      if (typeof meterDrain.perSecond !== "number" || !Number.isFinite(meterDrain.perSecond))
+        return false
+      if (typeof meterDrain.fromFrame !== "number" || !Number.isFinite(meterDrain.fromFrame))
+        return false
+      if (
+        meterDrain.stopAfterSec !== undefined &&
+        (typeof meterDrain.stopAfterSec !== "number" || !Number.isFinite(meterDrain.stopAfterSec))
+      )
+        return false
+    }
+  }
+  if (s.meterFreezes !== undefined) {
+    if (!Array.isArray(s.meterFreezes)) return false
+    for (const freeze of s.meterFreezes) {
+      const meterFreeze = freeze as Record<string, unknown>
+      if (typeof meterFreeze.meterId !== "string" || !meterFreeze.meterId) return false
+      if (typeof meterFreeze.fromFrame !== "number" || !Number.isFinite(meterFreeze.fromFrame))
+        return false
+    }
+  }
   return true
 }
 
@@ -482,6 +587,9 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
     castConditions: src.castConditions?.map(cloneTriggerCondition),
+    meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
+    meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),
+    meterFreezes: src.meterFreezes?.map((freeze) => ({ ...freeze })),
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),

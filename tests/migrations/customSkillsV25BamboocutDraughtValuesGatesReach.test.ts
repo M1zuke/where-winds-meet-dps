@@ -8,6 +8,7 @@ import {
   V25__bamboocutDraughtValuesGatesReach,
   healBamboocutDraughtValuesGatesReach,
 } from "../../src/migrations/customSkills/V25__bamboocutDraughtValuesGatesReach"
+import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -54,6 +55,14 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
 
+// Both Perfect Dodge forms gain their own Endurance meter gain at the later
+// meter hop, so their hits only match the live built-in once that hop runs
+// too.
+const GAINS_ADDED_BY_LATER_STEP = new Set([
+  "bamboocutDraught-perfect-dodge",
+  "bamboocutDraught-perfect-dodge-full",
+])
+
 describe("custom-skills v24 fixture", () => {
   it("is v24 and still stores every hop's pre-V25 shape", () => {
     expect(STORE.v).toBe(V25__bamboocutDraughtValuesGatesReach.to - 1)
@@ -77,7 +86,10 @@ describe("healBamboocutDraughtValuesGatesReach", () => {
   it("rewrites every untouched seeded copy to the current built-in's hits", () => {
     for (const id of HEALED_IDS) {
       const healed = healBamboocutDraughtValuesGatesReach(clone(skillIn(STORE, id))) as Skill
-      expect(healed.hits, id).toEqual(builtinOf(id).hits)
+      const throughLaterHops = GAINS_ADDED_BY_LATER_STEP.has(id)
+        ? (healMeterFieldsAndGains(healed) as Skill)
+        : healed
+      expect(throughLaterHops.hits, id).toEqual(builtinOf(id).hits)
     }
   })
 
@@ -96,9 +108,13 @@ describe("V25__bamboocutDraughtValuesGatesReach — called directly", () => {
     const after = V25__bamboocutDraughtValuesGatesReach.migrate(clone(STORE))
     expect(after.v).toBe(25)
     for (const id of HEALED_IDS) {
-      expect(skillIn(after, id).hits, id).toEqual(builtinOf(id).hits)
+      const afterSkill = skillIn(after, id)
+      const throughLaterHops = GAINS_ADDED_BY_LATER_STEP.has(id)
+        ? (healMeterFieldsAndGains(afterSkill) as Skill)
+        : afterSkill
+      expect(throughLaterHops.hits, id).toEqual(builtinOf(id).hits)
       const { hits: _beforeHits, ...restBefore } = skillIn(STORE, id)
-      const { hits: _afterHits, ...restAfter } = skillIn(after, id)
+      const { hits: _afterHits, ...restAfter } = afterSkill
       void _beforeHits
       void _afterHits
       expect(restAfter, id).toEqual(restBefore)

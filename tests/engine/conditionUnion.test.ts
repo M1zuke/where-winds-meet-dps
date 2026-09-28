@@ -182,6 +182,96 @@ describe("a param condition clause", () => {
   })
 })
 
+describe("a status condition's lt/lte comparison", () => {
+  it("holds a conditional hit open below the threshold and closes it at or above it", () => {
+    const counter = makeBuff(CLASS, {
+      name: "Counter",
+      activation: "triggered",
+      durationFrames: 6000,
+      effects: [],
+      maxStacks: 10,
+    })
+    const grants = (stacks: number) =>
+      makeSkill(CLASS, {
+        name: "Grants",
+        castFrames: 6,
+        hits: [makeHit({ frame: 0, triggers: [makeTrigger({ targetId: counter.id, stacks })] })],
+      })
+    const readsBelow = makeSkill(CLASS, {
+      name: "Reads Below",
+      castFrames: 30,
+      hits: [
+        makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 }),
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 100,
+          conditions: [{ buffId: counter.id, op: "lt", stacks: 3 }],
+        }),
+      ],
+    })
+    const grantsThree = grants(3)
+    const withThree = simulateTimeline(
+      timelineInputs(rotationOf([grantsThree, readsBelow]), [grantsThree, readsBelow], [counter]),
+    )
+    expect(damagingHitCount(withThree, "Reads Below")).toBe(1)
+
+    const grantsTwo = grants(2)
+    const withTwo = simulateTimeline(
+      timelineInputs(rotationOf([grantsTwo, readsBelow]), [grantsTwo, readsBelow], [counter]),
+    )
+    expect(damagingHitCount(withTwo, "Reads Below")).toBe(2)
+  })
+
+  it("holds a conditional hit open at or below the threshold and closes it above it", () => {
+    const counter = makeBuff(CLASS, {
+      name: "Counter",
+      activation: "triggered",
+      durationFrames: 6000,
+      effects: [],
+      maxStacks: 10,
+    })
+    const grants = (stacks: number) =>
+      makeSkill(CLASS, {
+        name: "Grants",
+        castFrames: 6,
+        hits: [makeHit({ frame: 0, triggers: [makeTrigger({ targetId: counter.id, stacks })] })],
+      })
+    const readsAtOrBelow = makeSkill(CLASS, {
+      name: "Reads At Or Below",
+      castFrames: 30,
+      hits: [
+        makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 }),
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 100,
+          conditions: [{ buffId: counter.id, op: "lte", stacks: 3 }],
+        }),
+      ],
+    })
+    const grantsThree = grants(3)
+    const withThree = simulateTimeline(
+      timelineInputs(
+        rotationOf([grantsThree, readsAtOrBelow]),
+        [grantsThree, readsAtOrBelow],
+        [counter],
+      ),
+    )
+    expect(damagingHitCount(withThree, "Reads At Or Below")).toBe(2)
+
+    const grantsFour = grants(4)
+    const withFour = simulateTimeline(
+      timelineInputs(
+        rotationOf([grantsFour, readsAtOrBelow]),
+        [grantsFour, readsAtOrBelow],
+        [counter],
+      ),
+    )
+    expect(damagingHitCount(withFour, "Reads At Or Below")).toBe(1)
+  })
+})
+
 describe("an anyOf condition clause", () => {
   it("holds a conditional hit open when any one member holds, and closes it when none do", () => {
     const gate = makeBuff(CLASS, {

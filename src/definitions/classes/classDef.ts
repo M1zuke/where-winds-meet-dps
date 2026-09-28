@@ -10,6 +10,7 @@ import type { InnerWayId } from "../../data/innerWays/ids"
 import type { MartialArtId } from "../../data/martialArts/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 import type { ResourceDef } from "../resources/resourceDef"
+import type { MeterDef } from "../resources/meterDef"
 
 export interface RetunementPool {
   stats: readonly GearWordId[]
@@ -30,6 +31,7 @@ export interface ClassDef {
   // § "Implemented classes" — and the UI marks them so.
   validated: boolean
   resources?: readonly ResourceDef[]
+  meters?: readonly MeterDef[]
   legacySkillIds?: readonly string[]
   spec: string
   primaryAttribute: AttributeKey

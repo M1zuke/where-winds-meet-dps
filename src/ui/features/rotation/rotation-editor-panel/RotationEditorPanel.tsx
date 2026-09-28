@@ -1,5 +1,11 @@
 import { useMemo, useRef, useState } from "react"
-import type { Inputs, Result, CastBuffTag, RotationCast } from "../../../../engine/types"
+import type {
+  Inputs,
+  Result,
+  CastBuffTag,
+  CastMeterLevel,
+  RotationCast,
+} from "../../../../engine/types"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
 import {
@@ -51,6 +57,7 @@ import {
   buffDescriptionKey,
   buffKey,
   debuffKey,
+  meterKey,
   rotationKey,
   skillKey,
 } from "../../../../i18n/contentKeys"
@@ -137,6 +144,15 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
         )}
         {tag.description && <div>{t(buffDescriptionKey(tag.id), tag.description)}</div>}
       </span>
+    </span>
+  )
+}
+
+function MeterLevelChip({ level }: { level: CastMeterLevel }) {
+  const { t } = useI18n()
+  return (
+    <span className={styles.meterLevel}>
+      {t(meterKey(level.id), level.name)} {Math.round(level.amount)}/{Math.round(level.capacity)}
     </span>
   )
 }
@@ -588,6 +604,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                     ) : (
                       shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
                     )}
+                    {cast?.meterLevels?.map((level) => (
+                      <MeterLevelChip key={level.id} level={level} />
+                    ))}
                   </div>
                   {isCustom && (
                     <div className={styles.rowActions}>

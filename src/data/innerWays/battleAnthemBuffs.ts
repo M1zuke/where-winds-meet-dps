@@ -1,6 +1,11 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
+import { meterMaxParamKey, meterStatusId } from "../../definitions/resources/meterDef"
+import { enduranceMeter } from "../resources/enduranceMeter"
+
+const ENDURANCE_STATUS_ID = meterStatusId(enduranceMeter.id)
+const ENDURANCE_MAX_PARAM = meterMaxParamKey(enduranceMeter.id)
 
 // Tier 4 raises the ladder's charged-skill bonus from 10% to 15%: "Increases
 // Charged Skills' damage against all enemies (including players with less than
@@ -22,7 +27,7 @@ export const battleAnthemChargedDamage = defineBuff({
 // Tier 6: "if the target is a boss, deals bonus damage based on the Endurance
 // you have consumed: 2% bonus damage for every 10 Endurance consumed, up to
 // 10%" (in-game tier panel, 2026-08-15). "Consumed" reads as missing from a
-// full bar.
+// full bar, read from the simulated Endurance at this hit.
 export const battleAnthemEnduranceBoost = defineBuff({
   id: BUFF.battleAnthemEnduranceBoost,
   name: "Battle Anthem (Endurance consumed)",
@@ -30,16 +35,10 @@ export const battleAnthemEnduranceBoost = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary: "allDamageBoost +2%/10 missing Endurance, cap 10%",
-  effects: (ctx) =>
-    ctx.self.reachesEvent
-      ? [
-          stat(
-            "allDamageBoost",
-            Math.min(
-              0.1,
-              0.02 * Math.floor(ctx.build.paramValue(PARAM.missingEnduranceAtHit) / 10),
-            ),
-          ),
-        ]
-      : [],
+  effects: (ctx) => {
+    if (!ctx.self.reachesEvent) return []
+    const missing =
+      ctx.build.paramValue(ENDURANCE_MAX_PARAM) - ctx.status.stacks(ENDURANCE_STATUS_ID)
+    return [stat("allDamageBoost", Math.min(0.1, 0.02 * Math.floor(missing / 10)))]
+  },
 })

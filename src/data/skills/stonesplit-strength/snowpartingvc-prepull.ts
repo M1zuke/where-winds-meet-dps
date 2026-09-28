@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, castSkill, clearStatus } from "../../../definitions/skills/triggers"
+import { applyBuff, castSkill, clearStatus, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const snowpartingvcPrepull = defineSkill({
   id: SKILL.snowpartingvcPrepull,
@@ -22,7 +26,11 @@ export const snowpartingvcPrepull = defineSkill({
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
   startLatency: "noWaitOnDummy",
-  castConditions: [{ buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 }],
+  castConditions: [
+    { buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 },
+    bladeMomentumRequires("gte", 25),
+  ],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 25 }],
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
@@ -62,6 +70,12 @@ export const snowpartingvcPrepull = defineSkill({
           phase: "exhausted",
           requiresParam: PARAM.frostCladNight,
           requiresMinTier: 6,
+        }),
+        meterDelta({
+          target: bladeMomentumMeter.id,
+          stacks: 12.5,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
         }),
       ],
     }),

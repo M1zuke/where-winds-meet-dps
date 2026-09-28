@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
 
 export const anxisoldiermojump = defineSkill({
   id: SKILL.anxisoldiermojump,
@@ -30,6 +31,7 @@ export const anxisoldiermojump = defineSkill({
       attributeMultiplier: 1.35,
       physFixed: 0,
       attributeFixed: 0,
+      triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

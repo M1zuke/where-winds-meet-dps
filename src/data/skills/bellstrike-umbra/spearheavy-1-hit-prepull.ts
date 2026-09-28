@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { DRIFTING_THRUST_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
 
 export const spearheavy1HitPrepull = defineSkill({
   id: SKILL.spearheavy1HitPrepull,
@@ -16,6 +17,8 @@ export const spearheavy1HitPrepull = defineSkill({
   castTag: CAST.spearHeavy1HitPrepull,
   triggersBuffs: [BUFF.soulShaken],
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
+  meterDrains: DRIFTING_THRUST_DRAIN,
+  meterFreezes: DRIFTING_THRUST_FREEZE,
   castFrames: 0,
   triggerable: true,
   hits: [

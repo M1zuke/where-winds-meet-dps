@@ -110,7 +110,11 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
   })
 
   it("Sword R Charge - Follow Up 1-Hit[cancel] keeps only the first hit", () => {
-    expect(swordRChargeFollowUp1HitCancel.hits).toEqual([swordRChargeFollowUp.hits[0]])
+    // The cancel form's own last hit carries the Endurance gain the full
+    // form's true last hit (hit 1, not present here) carries instead.
+    const [{ triggers: _triggers, ...cancelHit }] = swordRChargeFollowUp1HitCancel.hits
+    const { triggers: _fullTriggers, ...fullHit } = swordRChargeFollowUp.hits[0]
+    expect(cancelHit).toEqual(fullHit)
     expect(swordRChargeFollowUp1HitCancel.castFrames).toBeLessThan(swordRChargeFollowUp.castFrames)
   })
 

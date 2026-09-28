@@ -16,6 +16,7 @@ import {
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -34,6 +35,7 @@ export const bellstrikeUmbra = defineClass({
   ],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
   weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],
+  meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,

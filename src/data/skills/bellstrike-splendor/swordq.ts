@@ -3,6 +3,7 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 
 export const swordq = defineSkill({
   id: SKILL.swordq,
@@ -26,6 +27,7 @@ export const swordq = defineSkill({
       attributeMultiplier: 1.538,
       physFixed: 283.6,
       attributeFixed: 154.6,
+      triggers: [mountainsMightQiImbalanceMarkerGrant],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

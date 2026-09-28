@@ -40,6 +40,9 @@ import { healSkill as healHerosBloodInebriateConditionalNoAbrasion } from "../..
 import { healSkill as healSwordHorizonCrisscrossGates } from "../../src/migrations/customSkills/V35__swordHorizonCrisscrossGates"
 import { healSkill as healSwordMorphMultiWaveWindow } from "../../src/migrations/customSkills/V36__swordMorphMultiWaveWindow"
 import { healSkill as healAnxiSoldierHengSnowbreakTag } from "../../src/migrations/customSkills/V37__anxiSoldierHengSnowbreakTag"
+import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
+import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
+import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -89,6 +92,9 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [35, healSwordHorizonCrisscrossGates],
   [36, healSwordMorphMultiWaveWindow],
   [37, healAnxiSoldierHengSnowbreakTag],
+  [38, healMeterFieldsAndGains],
+  [39, healMeterModifierGains],
+  [40, healMountainsMightAndQiImbalanceMarker],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

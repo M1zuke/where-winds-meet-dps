@@ -25,6 +25,7 @@ import {
   innerWayKey,
   innerWayTierKey,
   martialArtKey,
+  meterKey,
   oddityChapterKey,
   oddityNodeDescriptionKey,
   oddityNodeKey,
@@ -88,6 +89,7 @@ export function collectContentKeys(): Record<string, string> {
     const definition = classDefinition(declared.id)
     if (!definition) continue
     add(classKey(definition.id), definition.displayName)
+    for (const meter of definition.meters ?? []) add(meterKey(meter.id), meter.name)
     for (const talent of getDefaultTalentsForClass(definition.id))
       add(talentKey(talent), talent.name)
     for (const rotation of definition.rotations) add(rotationKey(rotation.id), rotation.name)

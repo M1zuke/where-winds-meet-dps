@@ -4,6 +4,8 @@ import { CAST, WEAPON } from "../ids"
 import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
+import { SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND } from "./buffs/bleedMechanismEnhancement"
 
 export const swordRChargeFollowUp1HitCancel = defineSkill({
   id: SKILL.swordRChargeFollowUp1HitCancel,
@@ -34,6 +36,8 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
           target: DEBUFF.bleedTick,
           stacks: 0,
         }),
+        CRISSCROSS_ENDURANCE_GAIN,
+        SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND,
       ],
     }),
   ],

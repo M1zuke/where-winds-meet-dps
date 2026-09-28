@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const phalanxchargedS3Innerpassion = defineSkill({
   id: SKILL.phalanxchargedS3Innerpassion,
@@ -29,6 +33,22 @@ export const phalanxchargedS3Innerpassion = defineSkill({
     ...PHALANXBANE_BLADE_RECEIVES,
   ],
   triggersBuffs: [BUFF.throatPierced, BUFF.chargeEnhancement],
+  // In-game values as of 2026-09-26: with Inner Passion, Steadfast Devotion
+  // tier 4+ releases free of any Blade Momentum requirement or cost; below
+  // tier 4 the charge is offered above 25 and spends 25. Every in-app source
+  // of Charge Enhancement already requires tier 6, so the tier-4 gate alone
+  // covers it — a separate live-window check would never add a case.
+  castConditions: [
+    { anyOf: [{ param: PARAM.steadfastDevotion, minTier: 4 }, bladeMomentumRequires("gt", 25)] },
+  ],
+  meterCosts: [
+    {
+      meterId: bladeMomentumMeter.id,
+      amount: 25,
+      requiresParam: PARAM.steadfastDevotion,
+      requiresMaxTier: 3,
+    },
+  ],
   castFrames: 138,
   triggerable: true,
   hits: [

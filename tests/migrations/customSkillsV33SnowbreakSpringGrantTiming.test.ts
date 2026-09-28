@@ -131,6 +131,11 @@ describe("V33__snowbreakSpringGrantTiming — through the chain", () => {
   })
 })
 
+// loadCustomSkills walks the full chain, so its result also reflects V38's
+// later Blade Momentum gain on every hit of these two Grave Frost forms, and
+// its later Blade Momentum requirement alongside the availability gate.
+const GAINS_ADDED_BY_LATER_STEP = new Set(HEALED_HIT_IDS)
+
 describe("every healed skill survives the hydrator too", () => {
   beforeEach(() => localStorage.clear())
 
@@ -139,6 +144,21 @@ describe("every healed skill survives the hydrator too", () => {
     const loaded = loadCustomSkills()
     for (const id of [...HEALED_HIT_IDS, ...HEALED_CAST_CONDITION_IDS]) {
       const skill = loaded.find((candidate) => candidate.id === id)!
+      if (GAINS_ADDED_BY_LATER_STEP.has(id)) {
+        for (const hit of skill.hits) {
+          expect(
+            hit.triggers.some(
+              (trigger) => trigger.kind === "meterDelta" && trigger.targetId === "bladeMomentum",
+            ),
+            `${id} [${hit.id}]`,
+          ).toBe(true)
+        }
+        continue
+      }
+      if (HEALED_CAST_CONDITION_IDS.includes(id)) {
+        expect(skill.castConditions, id).toEqual(expect.arrayContaining([AVAILABLE_CAST_CONDITION]))
+        continue
+      }
       expectHealed(id, skill)
     }
   })

@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SPEARSPECIAL_HITS } from "./spearspecial-hits"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { SWEEP_ALL_COST, SWEEP_ALL_REQUIRES } from "./buffs/enduranceGates"
 
 export const spearspecial1HitCancel = defineSkill({
   id: SKILL.spearspecial1HitCancel,
@@ -15,6 +16,8 @@ export const spearspecial1HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial1HitCancel,
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
+  castConditions: [SWEEP_ALL_REQUIRES],
+  meterCosts: [SWEEP_ALL_COST],
   // A cancel form ends where the animation opens its interrupt window — 35 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
   castFrames: 35,
   triggerable: true,

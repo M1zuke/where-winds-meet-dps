@@ -321,9 +321,28 @@ describe("Iron Guards", () => {
 
 describe("the class's skill critical damage — steps by white Critical Rate", () => {
   const target = () => skill("SnowpartingSlide", [WEAPON.hengBlade], CAST.snowpartingSlide)
+  const BLADE_MOMENTUM_STATUS_ID = "meter:bladeMomentum"
 
-  it("is always on and reaches everything, at whatever the build's white Critical Rate scales to", () => {
-    const plainEngine = engine({ whiteCritRate: 0.6 })
+  function engineWithBladeMomentum(bladeMomentum: number, params: Record<string, unknown> = {}) {
+    const engineUnderTest = engine(params)
+    engineUnderTest.attachStatuses({
+      view: {
+        activeIdsAt: () => [],
+        isActiveAt: () => true,
+        stacksAt: () => bladeMomentum,
+        conditionStacksAt: (id) => (id === BLADE_MOMENTUM_STATUS_ID ? bladeMomentum : 0),
+        remainingFramesAt: () => undefined,
+        framesSinceLastEnd: () => undefined,
+        framesSinceStacksBelowThreshold: () => undefined,
+        windowsOf: () => [],
+      },
+      fps: 60,
+    })
+    return engineUnderTest
+  }
+
+  it("is always on and reaches everything while Blade Momentum holds at least 25, at whatever the build's white Critical Rate scales to", () => {
+    const plainEngine = engineWithBladeMomentum(25, { whiteCritRate: 0.6 })
     expect(share(plainEngine, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(
       0.21,
       9,
@@ -331,19 +350,24 @@ describe("the class's skill critical damage — steps by white Critical Rate", (
   })
 
   it("steps by 1.4% per full 4% white Critical Rate below the cap", () => {
-    const low = engine({ whiteCritRate: 0.2 })
+    const low = engineWithBladeMomentum(25, { whiteCritRate: 0.2 })
     expect(share(low, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.07, 9)
 
-    const mid = engine({ whiteCritRate: 0.43 })
+    const mid = engineWithBladeMomentum(25, { whiteCritRate: 0.43 })
     expect(share(mid, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.14, 9)
   })
 
   it("caps at 21% from 60% white Critical Rate on, and contributes nothing at 0", () => {
-    const capped = engine({ whiteCritRate: 1.33 })
+    const capped = engineWithBladeMomentum(25, { whiteCritRate: 1.33 })
     expect(share(capped, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBeCloseTo(0.21, 9)
 
-    const none = engine()
+    const none = engineWithBladeMomentum(25)
     expect(share(none, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
+  })
+
+  it("contributes nothing while Blade Momentum is below 25", () => {
+    const drained = engineWithBladeMomentum(24, { whiteCritRate: 0.6 })
+    expect(share(drained, target(), 0, BUFF.stonesplitStrengthSkillCritDamage)).toBe(0)
   })
 })
 

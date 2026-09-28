@@ -38,7 +38,16 @@ import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation, readFixedWindowSec } from "./engine/rotation"
 import type { CustomGraduationBuild } from "./engine/customGraduationBuild"
 import { isCustomGraduationBuild, newCustomGraduationBuildId } from "./engine/customGraduationBuild"
-import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
+import type {
+  Skill,
+  SkillHit,
+  HitTrigger,
+  TriggerCondition,
+  HitVariant,
+  MeterCost,
+  MeterDrain,
+  MeterFreeze,
+} from "./engine/skill"
 import {
   newSkillId,
   newHitId,
@@ -509,9 +518,14 @@ function hydrateInputs(inputs: Inputs): Inputs {
     if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
-    // reads — kept rather than dropped, per CLAUDE.md → "localStorage migrations".
+    // reads; `lowEndurance`, `missingEnduranceAtHit` and `enduranceAtRelease`
+    // named the manual guesses a simulated meter now replaces — all three
+    // kept rather than dropped, per CLAUDE.md → "localStorage migrations".
     const legacyFields: Record<string, unknown> = {}
     if ("revelryScript" in r) legacyFields.revelryScript = r.revelryScript
+    if ("lowEndurance" in r) legacyFields.lowEndurance = r.lowEndurance
+    if ("missingEnduranceAtHit" in r) legacyFields.missingEnduranceAtHit = r.missingEnduranceAtHit
+    if ("enduranceAtRelease" in r) legacyFields.enduranceAtRelease = r.enduranceAtRelease
     next.combatSettings = {
       ...legacyFields,
       qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
@@ -530,19 +544,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
-      lowEndurance: typeof r.lowEndurance === "boolean" ? r.lowEndurance : def.lowEndurance,
       distanceToTargetMeters:
         typeof r.distanceToTargetMeters === "number" && Number.isFinite(r.distanceToTargetMeters)
           ? r.distanceToTargetMeters
           : def.distanceToTargetMeters,
-      missingEnduranceAtHit:
-        typeof r.missingEnduranceAtHit === "number" && Number.isFinite(r.missingEnduranceAtHit)
-          ? Math.min(100, Math.max(0, r.missingEnduranceAtHit))
-          : def.missingEnduranceAtHit,
-      enduranceAtRelease:
-        typeof r.enduranceAtRelease === "number" && Number.isFinite(r.enduranceAtRelease)
-          ? Math.min(100, Math.max(0, r.enduranceAtRelease))
-          : def.enduranceAtRelease,
     }
   }
   return withZeroedDerivedStats(next)
@@ -1387,7 +1392,10 @@ function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondi
   if (typeof record.buffId !== "string") return null
   return {
     buffId: record.buffId,
-    op: record.op === "gt" || record.op === "eq" ? record.op : "gte",
+    op:
+      record.op === "gt" || record.op === "eq" || record.op === "lte" || record.op === "lt"
+        ? record.op
+        : "gte",
     stacks: typeof record.stacks === "number" ? record.stacks : 1,
     ...(kind === "castSkill" && record.source === "buffEngine"
       ? { source: "buffEngine" as const }
@@ -1397,7 +1405,8 @@ function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondi
 
 function importedTrigger(t: unknown): HitTrigger {
   const c = (t && typeof t === "object" ? t : {}) as Partial<HitTrigger>
-  const kind = c.kind === "castSkill" ? "castSkill" : "applyBuff"
+  const kind: HitTrigger["kind"] =
+    c.kind === "castSkill" || c.kind === "meterDelta" ? c.kind : "applyBuff"
   const condition = importedCondition(c.condition, kind)
   const trigger: HitTrigger = {
     kind,
@@ -1438,12 +1447,49 @@ function importedTrigger(t: unknown): HitTrigger {
     if (typeof c.requiresMinTier === "number" && Number.isFinite(c.requiresMinTier))
       trigger.requiresMinTier = c.requiresMinTier
   }
+  if (typeof c.meterSpendCapToCurrent === "number" && Number.isFinite(c.meterSpendCapToCurrent))
+    trigger.meterSpendCapToCurrent = c.meterSpendCapToCurrent
+  if (typeof c.recordSpendAsStatus === "string" && c.recordSpendAsStatus)
+    trigger.recordSpendAsStatus = c.recordSpendAsStatus
   return trigger
 }
 
 function importedVariant(v: unknown): HitVariant | null {
   if (!isHitVariant(v)) return null
   return { ...v, id: newVariantId(), conditions: v.conditions.filter(isHitOrVariantCondition) }
+}
+
+function isMeterCost(value: unknown): value is MeterCost {
+  if (!value || typeof value !== "object") return false
+  const cost = value as Record<string, unknown>
+  return (
+    typeof cost.meterId === "string" &&
+    !!cost.meterId &&
+    typeof cost.amount === "number" &&
+    (cost.requiresParam === undefined || typeof cost.requiresParam === "string") &&
+    (cost.requiresMinTier === undefined || typeof cost.requiresMinTier === "number") &&
+    (cost.requiresMaxTier === undefined || typeof cost.requiresMaxTier === "number")
+  )
+}
+
+function isMeterDrain(value: unknown): value is MeterDrain {
+  if (!value || typeof value !== "object") return false
+  const drain = value as Record<string, unknown>
+  return (
+    typeof drain.meterId === "string" &&
+    !!drain.meterId &&
+    typeof drain.perSecond === "number" &&
+    typeof drain.fromFrame === "number" &&
+    (drain.stopAfterSec === undefined || typeof drain.stopAfterSec === "number")
+  )
+}
+
+function isMeterFreeze(value: unknown): value is MeterFreeze {
+  if (!value || typeof value !== "object") return false
+  const freeze = value as Record<string, unknown>
+  return (
+    typeof freeze.meterId === "string" && !!freeze.meterId && typeof freeze.fromFrame === "number"
+  )
 }
 
 function importedHit(h: unknown): SkillHit {
@@ -1503,6 +1549,9 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     castConditions: Array.isArray(c.castConditions)
       ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
       : undefined,
+    meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
+    meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,
+    meterFreezes: Array.isArray(c.meterFreezes) ? c.meterFreezes.filter(isMeterFreeze) : undefined,
     createdAt: now,
     updatedAt: now,
   }

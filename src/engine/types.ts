@@ -67,10 +67,7 @@ export interface CombatSettings {
   script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
-  lowEndurance: boolean
   distanceToTargetMeters: number
-  missingEnduranceAtHit: number
-  enduranceAtRelease: number
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -83,10 +80,7 @@ export function defaultCombatSettings(): CombatSettings {
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    lowEndurance: false,
     distanceToTargetMeters: 3,
-    missingEnduranceAtHit: 0,
-    enduranceAtRelease: 100,
   }
 }
 
@@ -380,6 +374,13 @@ export interface CastBuffTag {
   remainingSec?: number
 }
 
+export interface CastMeterLevel {
+  id: string
+  name: string
+  amount: number
+  capacity: number
+}
+
 export interface RotationCast {
   index: number
   stepId: string
@@ -389,6 +390,7 @@ export interface RotationCast {
   inWindow: boolean
   prePull: boolean
   buffs: CastBuffTag[]
+  meterLevels?: CastMeterLevel[]
 }
 
 export interface SkillTickResult {

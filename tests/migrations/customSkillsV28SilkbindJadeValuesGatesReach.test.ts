@@ -8,6 +8,7 @@ import {
   V28__silkbindJadeValuesGatesReach,
   healSilkbindJadeValuesGatesReach,
 } from "../../src/migrations/customSkills/V28__silkbindJadeValuesGatesReach"
+import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -51,6 +52,10 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
 
+// A no-op on the ids V38 doesn't touch — composing it is what keeps this
+// hop's own output lined up with the live built-in.
+const throughLaterHops = (skill: unknown): Skill => healMeterFieldsAndGains(skill) as Skill
+
 describe("custom-skills v27 fixture", () => {
   it("is v27 and still stores the pre-V28 shape for every healed skill", () => {
     expect(STORE.v).toBe(V28__silkbindJadeValuesGatesReach.to - 1)
@@ -68,7 +73,7 @@ describe("custom-skills v27 fixture", () => {
 describe("healSilkbindJadeValuesGatesReach", () => {
   it("rewrites every untouched seeded copy to the current built-in's shape", () => {
     for (const id of HEALED_IDS) {
-      const healed = healSilkbindJadeValuesGatesReach(clone(skillIn(STORE, id))) as Skill
+      const healed = throughLaterHops(healSilkbindJadeValuesGatesReach(clone(skillIn(STORE, id))))
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
         expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
@@ -94,9 +99,10 @@ describe("V28__silkbindJadeValuesGatesReach — called directly", () => {
     const after = V28__silkbindJadeValuesGatesReach.migrate(clone(STORE))
     expect(after.v).toBe(28)
     for (const id of HEALED_IDS) {
+      const healed = throughLaterHops(skillIn(after, id))
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
-        expect(skillIn(after, id)[field], `${id}.${field}`).toEqual(builtin[field])
+        expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
     }
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
@@ -119,7 +125,8 @@ describe("V28__silkbindJadeValuesGatesReach — through the chain", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 28 })!
     expect(result.applied).toEqual(["V28__silkbindJadeValuesGatesReach"])
     expect(result.blob.v).toBe(28)
-    for (const id of HEALED_IDS) expect(skillIn(result.blob, id).hits).toEqual(builtinOf(id).hits)
+    for (const id of HEALED_IDS)
+      expect(throughLaterHops(skillIn(result.blob, id)).hits).toEqual(builtinOf(id).hits)
   })
 })
 

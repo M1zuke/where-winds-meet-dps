@@ -63,7 +63,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "72592dd60718329b7474ce9352505feadfed80087c336800060054b59eb93125"
+        "digest": "6a291ee14a8a90919d292d9867c2e2de5eb6c5c97556c2e48a0e61931309bc05"
       },
       "debuffs": {
         "count": 7,
@@ -123589,7 +123589,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "82a89eda949cbe17a446ffac93c371648bc646adca4efb258b206ca2a170d559"
+        "digest": "f58ed5809a97329ca50b5a62aae080b59cac759233decc79bec876887680c898"
       },
       "debuffs": {
         "count": 5,
@@ -124854,7 +124854,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "critDamageBoost +1.4% per full 4% white Critical Rate, cap 21%"
+          "summary": "critDamageBoost +1.4% per full 4% white Critical Rate, cap 21%, Blade Momentum >= 25"
         },
         {
           "id": "phalanxbaneBladeAdditionalAttack",
@@ -124934,7 +124934,7 @@
       ]
     },
     "dynamic": {
-      "digest": "a4e479c6d56be6c6166f93d43e93a45dd2296526fc417884cb2ac5776ab9ca69"
+      "digest": "f96398999dd74a245b671cfe0c745fce31f0fd331c792d660b8d16cce8e4adee"
     }
   },
   "bellstrikeSplendor": {
@@ -124984,7 +124984,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "b177e0f7dac7c4e2d64b0c8bf7bd7f5bd364b182d295118e7a21abb18780a99a"
+        "digest": "72a47795f469b496c25d69304cb452c09c658c1ffbf60f44e7125eb67944b368"
       },
       "debuffs": {
         "count": 5,
@@ -126071,42 +126071,13 @@
           "summary": null
         },
         {
-          "id": "endlessGale",
+          "id": "endlessGaleAffinityBoost",
           "name": "Endless Gale",
           "classBuff": true,
           "requires": null,
           "grantRequires": null,
           "affectsAll": true,
-          "alwaysActive": false,
-          "buffAppliesOnCastEnd": true,
-          "cooldown": null,
-          "rateLimit": null,
-          "stackRateLimit": null,
-          "stacksPerHit": false,
-          "seedAtStart": false,
-          "refreshOnAnyCast": false,
-          "requiresBuffActive": null,
-          "activeAfterBuffEnds": null,
-          "hasStacksFn": false,
-          "duration": "[fn]",
-          "maxStacks": null,
-          "effects": [
-            {
-              "kind": "stat",
-              "statKey": "affinityDamageBoost",
-              "amount": 0.18
-            }
-          ],
-          "summary": "affinityDmg +18%"
-        },
-        {
-          "id": "endlessGaleAtStart",
-          "name": "Endless Gale (from the cast's start)",
-          "classBuff": true,
-          "requires": null,
-          "grantRequires": null,
-          "affectsAll": true,
-          "alwaysActive": false,
+          "alwaysActive": true,
           "buffAppliesOnCastEnd": false,
           "cooldown": null,
           "rateLimit": null,
@@ -126117,7 +126088,30 @@
           "requiresBuffActive": null,
           "activeAfterBuffEnds": null,
           "hasStacksFn": false,
-          "duration": 5,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "affinityDmg +18%"
+        },
+        {
+          "id": "endlessGaleAtStartAffinityBoost",
+          "name": "Endless Gale (from the cast's start)",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "affinityDmg +18%, except while the cast-end copy already grants it"
@@ -126218,9 +126212,7 @@
           "id": "belowSixtyEndurance",
           "name": "Below 60% Endurance",
           "classBuff": true,
-          "requires": {
-            "param": "lowEndurance"
-          },
+          "requires": null,
           "grantRequires": null,
           "affectsAll": true,
           "alwaysActive": true,
@@ -126317,7 +126309,7 @@
       ]
     },
     "dynamic": {
-      "digest": "ae4b7512df84319182b03051b3ff2444107c538a2dc90374ad5d521879a1b378"
+      "digest": "8e16b9958587dada776f9ccea15f83e9e687b9228101cccb604a1ec8002cc10c"
     }
   },
   "silkbindJade": {
@@ -126382,7 +126374,7 @@
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull"
         ],
-        "digest": "74f5559f6fb200a248ddea7a0c6c6f6fe1887c7675a0c9dab79b6f3dc40f1fe5"
+        "digest": "196174732034e53a8e90d60a6822d8ae79414870e9a0a57afb57a605cc40d81f"
       },
       "debuffs": {
         "count": 11,
@@ -127690,7 +127682,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "6d4a5889bfd87a3facb99a902c48c25ba6eff4efc39a926f3742127a17af61d3"
+        "digest": "304c4dec0d45a8fceed6541c907eea23de08d666da987eddb2d2a1bebb8f9521"
       },
       "debuffs": {
         "count": 8,

@@ -134,4 +134,12 @@ describe("the class's dodge skills override the universal pair by id", () => {
       ).toBe(true)
     }
   })
+
+  it("keeps the universal dodge's own Endurance cost and requirement", () => {
+    for (const dodgeId of [SKILL.perfectDodge, SKILL.perfectDodgeFull]) {
+      const skill = classDef.skills.find((candidate) => candidate.id === dodgeId)!
+      expect(skill.meterCosts).toEqual([{ meterId: "endurance", amount: 15 }])
+      expect(skill.castConditions).toEqual([{ buffId: "meter:endurance", op: "gte", stacks: 15 }])
+    }
+  })
 })

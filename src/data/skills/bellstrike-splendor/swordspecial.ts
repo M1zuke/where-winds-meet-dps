@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { multiWaveWindowBootstrapTrigger } from "./buffs/multiWaveWindowGrant"
+import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 
 export const swordSpecial = defineSkill({
   id: SKILL.swordSpecial,
@@ -22,6 +23,10 @@ export const swordSpecial = defineSkill({
     BUFF.swordEnergyHpDamage,
     ...NAMELESS_SWORD_RECEIVES,
   ],
+  // In-game values as of 2026-09-26: needs 30, spends 25 at the cast's own
+  // start.
+  castConditions: [enduranceRequires("gte", 30)],
+  meterCosts: [enduranceCost(25)],
   castFrames: 24,
   triggerable: true,
   hits: [

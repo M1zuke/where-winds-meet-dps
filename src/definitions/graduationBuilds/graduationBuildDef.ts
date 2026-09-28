@@ -45,10 +45,7 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   breakExtension: false,
   dragonHeadFullStacks: false,
   dragonHeadLowHpMaxBonus: false,
-  lowEndurance: false,
   distanceToTargetMeters: defaultCombatSettings().distanceToTargetMeters,
-  missingEnduranceAtHit: defaultCombatSettings().missingEnduranceAtHit,
-  enduranceAtRelease: defaultCombatSettings().enduranceAtRelease,
 }
 
 export interface GraduationBuild {

@@ -2,7 +2,8 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
-import { bingePointDodgeGrant } from "./perfect-dodge"
+import { bingePointDodgeGrant, gauntletsPerfectDodgeGain } from "./perfect-dodge"
+import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 
 export const perfectDodgeFull = defineSkill({
   id: SKILL.perfectDodgeFull,
@@ -16,6 +17,8 @@ export const perfectDodgeFull = defineSkill({
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
   castFrames: 50,
   triggerable: true,
+  castConditions: [enduranceRequires("gte", 15)],
+  meterCosts: [enduranceCost(15)],
   hits: [
     hit(0, {
       frame: 0,
@@ -23,7 +26,7 @@ export const perfectDodgeFull = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [bingePointDodgeGrant],
+      triggers: [bingePointDodgeGrant, gauntletsPerfectDodgeGain],
     }),
   ],
   createdAt: "2026-09-06T00:00:00.000Z",

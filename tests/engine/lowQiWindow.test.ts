@@ -2,7 +2,9 @@ import { describe, it, expect } from "vitest"
 import { BuffEngine, QI_IMBALANCE_STATUS } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { BUFF } from "../../src/data/skills/buffs/ids"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
+import { ENDLESS_GALE_GATE } from "../../src/data/classes/bellstrike-splendor/gates"
+import { endlessGaleMountainsMightExtend } from "../../src/data/skills/bellstrike-splendor/buffs/endlessGaleCostReductionGrant"
 import { paramsFromInputs } from "../../src/engine/buffs/params"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
@@ -148,18 +150,10 @@ describe("Qi Imbalance's damage effects", () => {
 })
 
 describe("Endless Gale's window", () => {
-  const module = () =>
-    buffDefsForClass("bellstrikeSplendor").find((def) => def.id === BUFF.endlessGale)!
-
-  const durationWith = (params: Record<string, unknown>) => {
-    const duration = module().duration
-    if (typeof duration !== "function") throw new Error("expected a context-dependent duration")
-    return duration({ build: { param: (id: string) => !!params[id] } } as never)
-  }
-
   // Mountain's Might extends it; on its own the spear talent's window is shorter.
   it("is 5s alone and 10s with Mountain's Might", () => {
-    expect(durationWith({})).toBe(5)
-    expect(durationWith({ mountainsMight: true })).toBe(10)
+    expect(ENDLESS_GALE_GATE.durationFrames).toBe(300)
+    expect(endlessGaleMountainsMightExtend.extendFrames).toBe(300)
+    expect(endlessGaleMountainsMightExtend.requiresParam).toBe(PARAM.mountainsMight)
   })
 })

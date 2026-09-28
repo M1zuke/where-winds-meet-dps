@@ -14,6 +14,8 @@ import {
 } from "../../skills/stonesplit-strength/buffs/additionalAttack"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
+import { bladeMomentumMeter } from "./bladeMomentumMeter"
 
 export const stonesplitStrength = defineClass({
   id: CLASS_ID,
@@ -38,6 +40,7 @@ export const stonesplitStrength = defineClass({
     "snowpartingVariedCombo",
   ],
   weapons: [MARTIAL_ART_ID.snowpartingBlade, MARTIAL_ART_ID.phalanxbaneBlade],
+  meters: [enduranceMeter, bladeMomentumMeter],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
   debuffs: DEBUFFS,

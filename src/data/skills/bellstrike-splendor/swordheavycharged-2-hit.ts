@@ -3,8 +3,15 @@ import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
 import { multiWaveWindowSustainTrigger } from "./buffs/multiWaveWindowGrant"
+import {
+  VAGRANT_SWORD_DRAIN,
+  VAGRANT_SWORD_FREEZE,
+  SWORD_MORPH_ENDURANCE_SPEND,
+} from "./buffs/vagrantSwordEndurance"
+import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
+import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
 export const swordHeavyCharged2Hit = defineSkill({
   id: SKILL.swordHeavyCharged2Hit,
@@ -33,6 +40,8 @@ export const swordHeavyCharged2Hit = defineSkill({
     ...NAMELESS_SWORD_RECEIVES,
   ],
   castFrames: 117,
+  meterDrains: VAGRANT_SWORD_DRAIN,
+  meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   hits: [
     hit(0, {
@@ -41,7 +50,13 @@ export const swordHeavyCharged2Hit = defineSkill({
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
       attributeFixed: 197.2,
-      triggers: [energySurgeReleaseTrigger, multiWaveWindowSustainTrigger],
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowSustainTrigger,
+        BATTLE_ANTHEM_ENDURANCE_GAIN,
+        energySurgeEnduranceGain,
+        MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+      ],
     }),
     hit(1, {
       frame: 58,
@@ -49,6 +64,9 @@ export const swordHeavyCharged2Hit = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
+      // In-game values as of 2026-09-25: the Sword Morph conversion reads the
+      // Endurance the charge drain left once it stops, near this last wave.
+      triggers: [SWORD_MORPH_ENDURANCE_SPEND],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

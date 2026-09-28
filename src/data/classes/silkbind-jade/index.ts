@@ -13,6 +13,7 @@ import {
 } from "../../skills/silkbind-jade/buffs/additionalAttack"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 export const silkbindJade = defineClass({
   id: CLASS_ID,
@@ -40,6 +41,7 @@ export const silkbindJade = defineClass({
     "fanSpecial",
   ],
   weapons: [MARTIAL_ART_ID.vernalUmbrella, MARTIAL_ART_ID.inkwellFan],
+  meters: [enduranceMeter],
   critBoostWeaponTypes: ["Umbrella", "Fan"],
   skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
   debuffs: DEBUFFS,

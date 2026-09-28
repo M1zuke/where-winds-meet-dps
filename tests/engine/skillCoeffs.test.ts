@@ -11,6 +11,7 @@ import {
 } from "../../src/engine/builtinLibrary"
 import { builtinSkill } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
+import { classDefinition } from "../../src/definitions/classes/registry"
 
 const CLASS = "bellstrikeUmbra"
 
@@ -26,15 +27,17 @@ describe("built-in skill coefficient split — coeffsAreTotal only", () => {
 describe("built-in skill effect-trigger wiring", () => {
   it("a bleed-applying skill carries a per-hit applyDot trigger targeting the class's bleed debuff", () => {
     const skills = builtinSkillsForClass(CLASS)
-    const applier = skills.find((s) =>
-      s.hits.some((h) =>
-        h.triggers.some((t) => t.kind === "applyDot" && t.targetId.includes("bleed")),
+    const applier = skills.find((skill) =>
+      skill.hits.some((hit) =>
+        hit.triggers.some(
+          (trigger) => trigger.kind === "applyDot" && trigger.targetId.includes("bleed"),
+        ),
       ),
     )
     expect(applier).toBeTruthy()
     const bleedTrigger = applier!.hits
-      .flatMap((h) => h.triggers)
-      .find((t) => t.targetId.includes("bleed"))
+      .flatMap((hit) => hit.triggers)
+      .find((trigger) => trigger.targetId.includes("bleed"))
     expect(bleedTrigger?.kind).toBe("applyDot")
   })
 })
@@ -50,12 +53,18 @@ describe("built-in trigger targets all resolve", () => {
       ...builtinBuffsForClass(CLASS).map((b) => b.id),
       ...builtinDebuffsForClass(CLASS).map((d) => d.id),
     ])
+    const meterIds = new Set((classDefinition(CLASS)?.meters ?? []).map((meter) => meter.id))
 
     const dangling: string[] = []
     for (const skill of skills) {
       for (const hit of skill.hits) {
         for (const trigger of hit.triggers) {
-          const pool = trigger.kind === "castSkill" ? skillIds : statusIds
+          const pool =
+            trigger.kind === "castSkill"
+              ? skillIds
+              : trigger.kind === "meterDelta"
+                ? meterIds
+                : statusIds
           if (!pool.has(trigger.targetId)) {
             dangling.push(`${skill.name} [${hit.id}] ${trigger.kind} -> ${trigger.targetId}`)
           }

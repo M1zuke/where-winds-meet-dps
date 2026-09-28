@@ -38,6 +38,9 @@ import { V34__herosBloodInebriateConditionalNoAbrasion } from "./V34__herosBlood
 import { V35__swordHorizonCrisscrossGates } from "./V35__swordHorizonCrisscrossGates"
 import { V36__swordMorphMultiWaveWindow } from "./V36__swordMorphMultiWaveWindow"
 import { V37__anxiSoldierHengSnowbreakTag } from "./V37__anxiSoldierHengSnowbreakTag"
+import { V38__meterFieldsAndGains } from "./V38__meterFieldsAndGains"
+import { V39__meterModifierGains } from "./V39__meterModifierGains"
+import { V40__mountainsMightAndQiImbalanceMarker } from "./V40__mountainsMightAndQiImbalanceMarker"
 
 export type {
   CustomSkillMigration,
@@ -96,6 +99,8 @@ export { healSkill as healHerosBloodInebriateConditionalNoAbrasion } from "./V34
 export { healSkill as healSwordHorizonCrisscrossGates } from "./V35__swordHorizonCrisscrossGates"
 export { healSkill as healSwordMorphMultiWaveWindow } from "./V36__swordMorphMultiWaveWindow"
 export { healSkill as healAnxiSoldierHengSnowbreakTag } from "./V37__anxiSoldierHengSnowbreakTag"
+export { healSkill as healMeterModifierGains } from "./V39__meterModifierGains"
+export { healSkill as healMountainsMightAndQiImbalanceMarker } from "./V40__mountainsMightAndQiImbalanceMarker"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -132,6 +137,9 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V35__swordHorizonCrisscrossGates,
   V36__swordMorphMultiWaveWindow,
   V37__anxiSoldierHengSnowbreakTag,
+  V38__meterFieldsAndGains,
+  V39__meterModifierGains,
+  V40__mountainsMightAndQiImbalanceMarker,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -15,6 +15,7 @@ import {
 } from "../../skills/bamboocut-draught/buffs/additionalAttack"
 import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
 const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
@@ -47,6 +48,7 @@ export const bamboocutDraught = defineClass({
     "driftcleaveDeepdaze",
   ],
   weapons: [MARTIAL_ART_ID.skystrikeGauntlets, MARTIAL_ART_ID.rivenTwinblades],
+  meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,

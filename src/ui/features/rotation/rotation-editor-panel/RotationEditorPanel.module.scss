@@ -170,6 +170,19 @@
   }
 }
 
+.meterLevel {
+  display: inline-block;
+  margin: 1px 4px 1px 0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: hsla(200, 40%, 45%, 0.2);
+  border: 1px solid hsla(200, 45%, 60%, 0.45);
+  font-size: 0.78em;
+  color: hsl(200, 60%, 78%);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* Hue comes from `src/ui/features/rotation/buffChips.ts`'s `buffChipHue`
    (pinned or hashed per buff name), set as `--buff-hue` on the chip itself. */
 .castBuffTag {

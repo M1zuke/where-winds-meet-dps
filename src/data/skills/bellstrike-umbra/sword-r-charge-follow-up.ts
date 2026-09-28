@@ -4,6 +4,8 @@ import { CAST, WEAPON } from "../ids"
 import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
+import { SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND } from "./buffs/bleedMechanismEnhancement"
 
 export const swordRChargeFollowUp = defineSkill({
   id: SKILL.swordRChargeFollowUp,
@@ -28,7 +30,11 @@ export const swordRChargeFollowUp = defineSkill({
       attributeMultiplier: 0.488401,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND,
+      ],
     }),
     hit(1, {
       frame: 41,
@@ -36,7 +42,12 @@ export const swordRChargeFollowUp = defineSkill({
       attributeMultiplier: 0.732602,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        CRISSCROSS_ENDURANCE_GAIN,
+        SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND,
+      ],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

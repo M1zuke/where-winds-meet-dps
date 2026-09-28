@@ -151,6 +151,8 @@ describe("V32__snowbreakSpringAvailability — through the chain", () => {
 // loadCustomSkills walks the full chain, so its result also reflects V33's
 // later relocation of these two skills' grant off cast start.
 const RELOCATED_BY_LATER_STEP = new Set([SNOWPARTING_CHARGED_ID, FREE_GRAVE_FROST_ID])
+// ...and V38's later Blade Momentum gain on the same hit.
+const EXTENDED_BY_LATER_STEP = new Set([SNOWPARTING_VC_ID, SNOWPARTING_VC_PREPULL_ID])
 
 describe("every healed skill survives the hydrator too", () => {
   beforeEach(() => localStorage.clear())
@@ -165,6 +167,17 @@ describe("every healed skill survives the hydrator too", () => {
           skill.hits
             .flatMap((hit) => hit.triggers)
             .some((trigger) => trigger.targetId === "snowbreakSpringAvailable"),
+          id,
+        ).toBe(true)
+        continue
+      }
+      if (EXTENDED_BY_LATER_STEP.has(id)) {
+        expect(
+          skill.hits
+            .flatMap((hit) => hit.triggers)
+            .some(
+              (trigger) => trigger.kind === "meterDelta" && trigger.targetId === "bladeMomentum",
+            ),
           id,
         ).toBe(true)
         continue

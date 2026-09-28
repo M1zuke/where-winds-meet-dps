@@ -3,8 +3,15 @@ import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeReleaseTrigger } from "./buffs/energySurgeGrant"
+import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
 import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
+import {
+  VAGRANT_SWORD_DRAIN,
+  VAGRANT_SWORD_FREEZE,
+  SWORD_MORPH_ENDURANCE_SPEND,
+} from "./buffs/vagrantSwordEndurance"
+import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
+import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
 export const swordHeavyChargedPrepull = defineSkill({
   id: SKILL.swordHeavyChargedPrepull,
@@ -30,6 +37,8 @@ export const swordHeavyChargedPrepull = defineSkill({
     ...NAMELESS_SWORD_RECEIVES,
   ],
   castFrames: 51,
+  meterDrains: VAGRANT_SWORD_DRAIN,
+  meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   hits: [
     hit(0, {
@@ -38,7 +47,14 @@ export const swordHeavyChargedPrepull = defineSkill({
       attributeMultiplier: 1.9598,
       physFixed: 361.6,
       attributeFixed: 197.2,
-      triggers: [energySurgeReleaseTrigger, multiWaveWindowReleaseGrantTrigger],
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowReleaseGrantTrigger,
+        SWORD_MORPH_ENDURANCE_SPEND,
+        BATTLE_ANTHEM_ENDURANCE_GAIN,
+        energySurgeEnduranceGain,
+        MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+      ],
     }),
     hit(1, {
       frame: 17,

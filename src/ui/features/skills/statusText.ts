@@ -8,7 +8,13 @@ import { FPS } from "../../../engine/timeline"
 import { humanizeParamId } from "../../../engine/buffs/catalog"
 import { innerWayForBuffParam } from "../../../definitions/innerWays/registry"
 
-const OP_SYMBOL: Record<StatusCondition["op"], string> = { gte: "≥", gt: ">", eq: "=" }
+const OP_SYMBOL: Record<StatusCondition["op"], string> = {
+  gte: "≥",
+  gt: ">",
+  eq: "=",
+  lte: "≤",
+  lt: "<",
+}
 
 type Translate = (key: string, fallback?: string) => string
 

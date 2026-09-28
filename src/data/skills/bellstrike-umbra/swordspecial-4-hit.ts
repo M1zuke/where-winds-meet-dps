@@ -5,6 +5,7 @@ import { PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { INNER_BALANCE_STRIKE_III_COST, INNER_BALANCE_STRIKE_III_REQUIRES } from "./buffs/enduranceGates"
 
 // In-game values as of 2026-09-24: the Special attunement reaches hits 1–3
 // only — the 4th hit is `swordspecial-4-hit-final.ts`'s own skill.
@@ -19,6 +20,8 @@ export const swordspecial4Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial4Hit,
   receives: STRATEGIC_SWORD_RECEIVES,
+  castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES],
+  meterCosts: [INNER_BALANCE_STRIKE_III_COST],
   // A player-ended form: castFrames is capped at the animation's own end frame, 84 — an 11-frame margin would run past it (in-game animation, 2026-09-09).
   castFrames: 84,
   triggerable: true,

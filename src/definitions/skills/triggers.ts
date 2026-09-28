@@ -19,6 +19,8 @@ interface TriggerSpec {
   durationFrames?: number
   requiresParam?: string
   requiresMinTier?: number
+  meterSpendCapToCurrent?: number
+  recordSpendAsStatus?: string
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -47,6 +49,12 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.appliesOnCastEnd !== undefined ? { appliesOnCastEnd: spec.appliesOnCastEnd } : {}),
     ...(spec.requiresParam !== undefined ? { requiresParam: spec.requiresParam } : {}),
     ...(spec.requiresMinTier !== undefined ? { requiresMinTier: spec.requiresMinTier } : {}),
+    ...(spec.meterSpendCapToCurrent !== undefined
+      ? { meterSpendCapToCurrent: spec.meterSpendCapToCurrent }
+      : {}),
+    ...(spec.recordSpendAsStatus !== undefined
+      ? { recordSpendAsStatus: spec.recordSpendAsStatus }
+      : {}),
   }
 }
 
@@ -57,3 +65,4 @@ export const castSkill = (spec: TriggerSpec): HitTrigger => trigger("castSkill",
 export const detonateDot = (spec: TriggerSpec): HitTrigger => trigger("detonateDot", spec)
 export const releaseEcho = (spec: TriggerSpec): HitTrigger => trigger("releaseEcho", spec)
 export const clearStatus = (spec: TriggerSpec): HitTrigger => trigger("clearStatus", spec)
+export const meterDelta = (spec: TriggerSpec): HitTrigger => trigger("meterDelta", spec)

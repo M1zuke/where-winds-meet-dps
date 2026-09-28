@@ -3,6 +3,10 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const phalanxspecialPrepull = defineSkill({
   id: SKILL.phalanxspecialPrepull,
@@ -15,6 +19,8 @@ export const phalanxspecialPrepull = defineSkill({
   castTag: CAST.phalanxSpecialPrepull,
   receives: PHALANXBANE_BLADE_RECEIVES,
   triggersBuffs: [BUFF.ironGuards],
+  castConditions: [bladeMomentumRequires("gte", 50)],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
   castFrames: 0,
   triggerable: true,
   hits: [

@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { DRIFTING_THRUST_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
 
 const DRILL_HIT = {
   physMultiplier: 0.3752634,
@@ -27,6 +28,8 @@ export const spearheavyStage1 = defineSkill({
   castTag: CAST.spearHeavyStage1,
   triggersBuffs: [BUFF.soulShaken],
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
+  meterDrains: DRIFTING_THRUST_DRAIN,
+  meterFreezes: DRIFTING_THRUST_FREEZE,
   castFrames: 90,
   triggerable: true,
   // 0.60 of the full-charge coefficient — in-game values as of 2026-09-24.

@@ -3,6 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
+import { DRIFTING_THRUST_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
 
 const DRILL_HIT = {
   physMultiplier: 0.3314827,
@@ -28,6 +29,8 @@ export const spearheavy = defineSkill({
   castTag: CAST.spearHeavy,
   triggersBuffs: [BUFF.soulShaken],
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
+  meterDrains: DRIFTING_THRUST_DRAIN,
+  meterFreezes: DRIFTING_THRUST_FREEZE,
   // Covers the real hit layout below; the charge hold itself is untimed here.
   castFrames: 156,
   triggerable: true,

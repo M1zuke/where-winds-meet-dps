@@ -4,6 +4,8 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
+import { SWORD_MARTIAL_QQQ_BLEED_REFUND as BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
 export const swordMartialQqq = defineSkill({
   id: SKILL.swordMartialQqq,
@@ -29,7 +31,11 @@ export const swordMartialQqq = defineSkill({
       attributeMultiplier: 0.475366,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
     hit(1, {
       frame: 71,
@@ -37,7 +43,12 @@ export const swordMartialQqq = defineSkill({
       attributeMultiplier: 0.713049,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        CRISSCROSS_ENDURANCE_GAIN,
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

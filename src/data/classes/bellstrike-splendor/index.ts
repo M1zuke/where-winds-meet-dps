@@ -17,6 +17,7 @@ import {
   namelessSpearAdditionalAttack,
   namelessSwordAdditionalAttack,
 } from "../../skills/bellstrike-splendor/buffs/additionalAttack"
+import { enduranceMeterWithNamelessSpear } from "../../resources/enduranceMeter"
 
 export const bellstrikeSplendor = defineClass({
   id: CLASS_ID,
@@ -36,6 +37,7 @@ export const bellstrikeSplendor = defineClass({
   ],
   classSpecificAttunements: ["swordQ", "swordCharged", "swordSpecial", "spearSpecial"],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
+  meters: [enduranceMeterWithNamelessSpear],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,

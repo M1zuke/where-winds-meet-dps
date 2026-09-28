@@ -4,6 +4,10 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 const SHARE_HIT = {
   physMultiplier: 0.377968,
@@ -26,6 +30,9 @@ export const snowpartingspecial = defineSkill({
   castTag: CAST.snowpartingSpecial,
   receives: SNOWPARTING_BLADE_RECEIVES,
   triggersBuffs: [BUFF.innerPassion, BUFF.jadeware],
+  // In-game values as of 2026-09-25: needs 50, but only 5 is actually spent.
+  castConditions: [bladeMomentumRequires("gte", 50)],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 5 }],
   castFrames: 125,
   triggerable: true,
   hits: [

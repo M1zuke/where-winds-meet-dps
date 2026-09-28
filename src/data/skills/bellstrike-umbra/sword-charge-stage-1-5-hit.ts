@@ -3,6 +3,11 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORD_CHARGE_STAGE_1_HITS } from "./sword-charge-stage-1-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import {
+  SECOND_TRACK_SLASH_COST,
+  SECOND_TRACK_SLASH_DRAIN,
+  SECOND_TRACK_SLASH_FREEZE,
+} from "./buffs/secondTrackSlashEndurance"
 
 export const swordChargeStage15Hit = defineSkill({
   id: SKILL.swordChargeStage15Hit,
@@ -15,6 +20,9 @@ export const swordChargeStage15Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordChargeStage15Hit,
   receives: STRATEGIC_SWORD_RECEIVES,
+  meterCosts: [SECOND_TRACK_SLASH_COST],
+  meterDrains: SECOND_TRACK_SLASH_DRAIN,
+  meterFreezes: SECOND_TRACK_SLASH_FREEZE,
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 121,
   triggerable: true,

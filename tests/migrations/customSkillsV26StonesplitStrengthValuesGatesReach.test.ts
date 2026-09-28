@@ -47,8 +47,9 @@ const CHECKED_FIELDS = ["tags", "receives", "triggersBuffs", "hits"] as const
 // Snowbreak Spring availability grant source, move again at later hops (the
 // Forgetfulness cooldown marker, then the Snowbreak Spring availability
 // gate); AnxiSoldierHeng's `tags` gains Snowbreak Spring's own stack-family
-// tag at a later hop too — none of these equal the LIVE built-in once
-// stopped at v26.
+// tag at a later hop too. Every Anxi Soldier hit's own `hits` gains a Blade
+// Momentum gain trigger at the meter hop. None of these equal the LIVE
+// built-in once stopped at v26.
 const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS)[number][]>> = {
   "stonesplitStrength-snowpartingvc": ["hits", "triggersBuffs"],
   "stonesplitStrength-snowpartingvc-prepull": ["hits", "triggersBuffs"],
@@ -57,7 +58,9 @@ const MOVED_AGAIN_FIELDS: Partial<Record<string, readonly (typeof CHECKED_FIELDS
   "stonesplitStrength-snowpartingdual": ["hits"],
   "stonesplitStrength-snowpartingdual-prepull": ["hits"],
   "stonesplitStrength-deflect": ["hits"],
-  "stonesplitStrength-anxisoldierheng": ["tags"],
+  "stonesplitStrength-anxisoldierheng": ["tags", "hits"],
+  "stonesplitStrength-anxisoldiermosweep": ["hits"],
+  "stonesplitStrength-anxisoldiermodown": ["hits"],
 }
 const fieldsStillMatchingLiveBuiltin = (id: string) =>
   CHECKED_FIELDS.filter((field) => !(MOVED_AGAIN_FIELDS[id] ?? []).includes(field))
