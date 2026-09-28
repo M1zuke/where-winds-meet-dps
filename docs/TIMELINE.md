@@ -602,6 +602,31 @@ There is no second simulation and no per-module distance logic.
   holds the last cast-set value until the next cast changes it, exactly as a
   meter's level does between costs.
 
+## Drawn weapon
+
+Which of a class's arts is drawn simulates once, in the layout pass's own
+sequential cursor, beside the meter and distance simulations, and is
+replayed onto the real ledger as a permanent counter status per art
+(`drawn:<weapon>`) — every reader of it then works unchanged.
+
+- A skill's own weapon identity is its `weapon:` tag; a skill with none, or
+  the reserved `none` tag, neither requires nor changes the drawn weapon.
+- **A weapon-bearing step's start sets its own weapon's status and clears
+  whichever other weapon was drawn**, at that same frame — exclusive, the
+  same permanent-status pattern a meter or the target distance uses.
+  Pre-pull steps follow the same rule; the very first weapon-bearing step of
+  the run draws for free, since there is nothing to swap from yet.
+- **A weapon change between two rotation steps inserts a free direct swap**
+  ahead of the arriving step, unless that step already performs its own
+  weapon change (`isWeaponSwap`), in which case it counts as the swap and
+  nothing is inserted — a rotation step is never edited, only a fresh
+  synthetic step is ever added. The direct swap deals no damage and adds no
+  breakdown row.
+- **The direct swap's own cooldown is a separate clock from anything else
+  gated by `isWeaponSwap`.** A swap blocked by either cooldown waits as idle
+  time instead of being flagged illegal, the same as any other cast whose
+  own start is held back by a resource it cannot yet afford.
+
 ## Procedural behaviour
 
 A skill with genuinely procedural behaviour registers a **factory** against its

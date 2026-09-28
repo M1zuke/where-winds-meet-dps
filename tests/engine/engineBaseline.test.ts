@@ -302,9 +302,12 @@ describe("engine baseline — profile-v7 anchor", () => {
   const damageOf = (name: string) =>
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
+  // Re-baselined once more: a free direct weapon swap now precedes a step
+  // whose weapon differs from the one last drawn, its own 0.5 s self-debounce
+  // occasionally shifting a DoT tick's frame by a handful of ms.
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(69355.75)
-    expect(round(result.totalDamage, 2)).toBe(4161344.86)
+    expect(round(result.dps, 2)).toBe(69355.77)
+    expect(round(result.totalDamage, 2)).toBe(4161346.41)
     expect(round(result.rotationDuration, 4)).toBe(60)
     // Sweep All's own River Flow / Spring Surge hit 1 now lands 2 f later
     // (its own frame override, not the plain form's), repeated across every
@@ -317,13 +320,13 @@ describe("engine baseline — profile-v7 anchor", () => {
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
     expect(damageOf("Blood Burst")).toBe(2057226.8)
-    expect(damageOf("Bleeding (DoT)")).toBe(261067.36)
+    expect(damageOf("Bleeding (DoT)")).toBe(261068.25)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(433309.52)
+    expect(damageOf("Smolder (DoT)")).toBe(433310.17)
     expect(damageOf("Flute Ripple (DoT)")).toBe(74789.58)
   })
 
@@ -339,8 +342,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(70558.85)
-    expect(round(result.totalDamage, 2)).toBe(4233531.03)
+    expect(round(result.dps, 2)).toBe(70558.88)
+    expect(round(result.totalDamage, 2)).toBe(4233532.6)
     expect(round(result.rotationDuration, 4)).toBe(60)
     // Same cause as the breakthrough-16 block above.
     expect(result.warnings).toEqual([])
@@ -348,8 +351,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
 
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2092086.7)
-    expect(damageOf("Bleeding (DoT)")).toBe(266013.96)
-    expect(damageOf("Smolder (DoT)")).toBe(441251.71)
+    expect(damageOf("Bleeding (DoT)")).toBe(266014.87)
+    expect(damageOf("Smolder (DoT)")).toBe(441252.37)
     expect(damageOf("Flute Ripple (DoT)")).toBe(76158.76)
     expect(damageOf("Yi River")).toBe(60343.87)
   })

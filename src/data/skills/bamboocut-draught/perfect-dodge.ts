@@ -6,17 +6,20 @@ import { SKILL, STATUS } from "./ids"
 import { enduranceCost, enduranceMeter, enduranceRequires } from "../../resources/enduranceMeter"
 import { CALMWATERS_PERFECT_DODGE_GAIN } from "../universal/buffs/calmwatersPerfectDodgeGain"
 import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "../universal/buffs/evasiveChargeDodgeRefund"
+import { drawnWeaponStatusId } from "../../../engine/weaponSwap"
 
 // In-game talent text, 2026-09-06: a Perfect Dodge restores 5 Binge Points
-// while Carouse and Binge Points ≥ 100 both hold (in-game values as of
-// 2026-09-16), at most once per second — shared by both dodge variants so
-// the cooldown (keyed by trigger identity) holds across them.
+// while Carouse and Binge Points ≥ 100 both hold and the gauntlets are the
+// drawn art (in-game values as of 2026-09-28), at most once per second —
+// shared by both dodge variants so the cooldown (keyed by trigger identity)
+// holds across them.
 export const bingePointDodgeGrant = applyBuff({
   target: STATUS.bingePoints,
   stacks: 5,
   conditions: [
     { buffId: STATUS.carouse, op: "gte", stacks: 1 },
     { buffId: STATUS.bingePoints, op: "gte", stacks: 100 },
+    { buffId: drawnWeaponStatusId("Gauntlets"), op: "gte", stacks: 1 },
   ],
   cooldownFrames: 60,
 })

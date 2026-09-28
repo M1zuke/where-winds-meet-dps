@@ -1063,6 +1063,8 @@
   "content.skill.stonesplitStrength-deflect": "Deflect",
   "content.skill.stonesplitStrength-deflect-cancel": "Deflect Cancel",
   "content.skill.stonesplitStrength-deflect-cancel-prepull": "Deflect Cancel Prepull",
+  "content.skill.stonesplitStrength-deflect-cancel.variant.hv-deflect-cancel-hit-0-mo-blade-drawn": "Mo Blade Drawn",
+  "content.skill.stonesplitStrength-deflect.variant.hv-deflect-hit-0-mo-blade-drawn": "Mo Blade Drawn",
   "content.skill.stonesplitStrength-delay": "Delay",
   "content.skill.stonesplitStrength-ghostly-steps": "Ghostly Steps",
   "content.skill.stonesplitStrength-golden-body-cancel": "Golden Body Cancel",

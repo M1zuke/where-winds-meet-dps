@@ -47,6 +47,7 @@ import { V43__evasiveChargeDodgeRefund } from "./V43__evasiveChargeDodgeRefund"
 import { V44__targetDistanceReachAndDisplacement } from "./V44__targetDistanceReachAndDisplacement"
 import { V45__castLengthAndHitFrameRepairs } from "./V45__castLengthAndHitFrameRepairs"
 import { V46__stonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
+import { V47__weaponDrawnGates } from "./V47__weaponDrawnGates"
 
 export type {
   CustomSkillMigration,
@@ -113,6 +114,7 @@ export { healSkill as healEvasiveChargeDodgeRefund } from "./V43__evasiveChargeD
 export { healSkill as healTargetDistanceReachAndDisplacement } from "./V44__targetDistanceReachAndDisplacement"
 export { healSkillFrames as healCastLengthAndHitFrameRepairs } from "./V45__castLengthAndHitFrameRepairs"
 export { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
+export { healSkill as healWeaponDrawnGates } from "./V47__weaponDrawnGates"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -158,6 +160,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V44__targetDistanceReachAndDisplacement,
   V45__castLengthAndHitFrameRepairs,
   V46__stonesplitSplendorJadeTimingRepairs,
+  V47__weaponDrawnGates,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

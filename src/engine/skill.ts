@@ -170,6 +170,9 @@ export interface Skill {
   guaranteedNormal?: boolean
   prePull?: boolean
   isDotTick?: boolean
+  // This cast already performs its own weapon change — see docs/TIMELINE.md
+  // § "Drawn weapon". No separate direct swap is inserted in front of it.
+  isWeaponSwap?: boolean
   startLatency?: StartLatency
   createdAt: string
   updatedAt: string
@@ -642,6 +645,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     neverAbrades: src.neverAbrades,
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
+    isWeaponSwap: src.isWeaponSwap,
     startLatency: src.startLatency,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.

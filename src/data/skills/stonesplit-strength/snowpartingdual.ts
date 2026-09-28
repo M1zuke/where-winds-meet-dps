@@ -16,6 +16,7 @@ export const snowpartingdual = defineSkill({
   castTag: CAST.snowpartingDual,
   receives: SNOWPARTING_BLADE_RECEIVES,
   triggersBuffs: [],
+  isWeaponSwap: true,
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 34,
   triggerable: true,

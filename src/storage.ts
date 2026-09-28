@@ -1575,6 +1575,7 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     neverAbrades:
       (migrateNeverAbradesSkill(c) as Partial<Skill>).neverAbrades === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
+    isWeaponSwap: c.isWeaponSwap === true ? true : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
     receives: Array.isArray(c.receives)
       ? c.receives.filter((id): id is string => typeof id === "string")

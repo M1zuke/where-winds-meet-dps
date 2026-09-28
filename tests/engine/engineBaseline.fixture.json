@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 69355.75,
-    "totalDamage": 4161344.86,
+    "dps": 69355.77,
+    "totalDamage": 4161346.41,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -18,7 +18,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 261067.36,
+        "expectedDamage": 261068.25,
         "castCount": 0
       },
       {
@@ -42,7 +42,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 433309.52,
+        "expectedDamage": 433310.17,
         "castCount": 0
       },
       {
@@ -161,13 +161,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "15f780eacb32186c948d755a12dd03161e8f1ea7eb6e89e60f88ba063d786e61"
+    "digest": "9f8124a67a8992a46a412a37b8488d3088c5b962b819c4be61d4b0ab44087acd"
   },
   "anchor:noAttunement": {
-    "dps": 62414.18,
-    "totalDamage": 3744850.67,
+    "dps": 62414.2,
+    "totalDamage": 3744852.06,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -184,7 +184,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 214165.18,
+        "expectedDamage": 214165.91,
         "castCount": 0
       },
       {
@@ -208,7 +208,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 433309.52,
+        "expectedDamage": 433310.17,
         "castCount": 0
       },
       {
@@ -327,13 +327,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "1ff1519d9cdc53c9eba797963ef1f3fa249461f286002527674666538d9ed5a5"
+    "digest": "da7d0113c668e036820952902097b4adece9863f329cc5ba8328d5ff83496256"
   },
   "anchor:dummyOff": {
-    "dps": 74273.85,
-    "totalDamage": 4456430.74,
+    "dps": 74273.87,
+    "totalDamage": 4456432.33,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -350,7 +350,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 279999.58,
+        "expectedDamage": 280000.5,
         "castCount": 0
       },
       {
@@ -374,7 +374,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 463290.52,
+        "expectedDamage": 463291.19,
         "castCount": 0
       },
       {
@@ -493,13 +493,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "c84d2351f27c4d062be6d41666c71fee1e589d626523d8bacdff9100566c6af6"
+    "digest": "61fa1b705dd1af07472302c6de15fa40f4df0a1327e120aacb4d2605008b1cf6"
   },
   "anchor:breakthrough17": {
-    "dps": 70558.85,
-    "totalDamage": 4233531.03,
+    "dps": 70558.88,
+    "totalDamage": 4233532.6,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -516,7 +516,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 266013.96,
+        "expectedDamage": 266014.87,
         "castCount": 0
       },
       {
@@ -540,7 +540,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 441251.71,
+        "expectedDamage": 441252.37,
         "castCount": 0
       },
       {
@@ -659,13 +659,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "7d4a1d51a4e82316bb2ad59662011f8a96de1fab2a1207bdd8772b7f904e2f63"
+    "digest": "bcfb8aa7dc6ea845e6e8427cb62465e2768f0c3a614e661dbe5aa4ffe3389f88"
   },
   "anchor:noQiBreak": {
-    "dps": 63594.64,
-    "totalDamage": 3815678.67,
+    "dps": 63594.67,
+    "totalDamage": 3815680.22,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -682,7 +682,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 256596.35,
+        "expectedDamage": 256597.24,
         "castCount": 0
       },
       {
@@ -706,7 +706,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 425729.39,
+        "expectedDamage": 425730.04,
         "castCount": 0
       },
       {
@@ -825,13 +825,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "746e5d063269cffa3d9c939d5e4d99c5101757aed326bdd4226fcee07f56bbb1"
+    "digest": "e01da66a0709739f16608e0683f8c155e2f18b82ea9b5a4276798ae293a1692c"
   },
   "anchor:healerBuff": {
-    "dps": 72634.48,
-    "totalDamage": 4358068.78,
+    "dps": 72634.51,
+    "totalDamage": 4358070.36,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -848,7 +848,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 273688.84,
+        "expectedDamage": 273689.75,
         "castCount": 0
       },
       {
@@ -872,7 +872,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 453296.85,
+        "expectedDamage": 453297.52,
         "castCount": 0
       },
       {
@@ -991,13 +991,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "7eb39148ee1276d919d896c52c9a1205b9b2ee8528280222962d410e8938741f"
+    "digest": "d97fcd8f571e693484652fc5cbb08f5cfdebd20deef6bd3f36b4cafeffc694d2"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 69664.16,
-    "totalDamage": 4179849.84,
+    "dps": 69664.19,
+    "totalDamage": 4179851.38,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1014,7 +1014,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 262074.76,
+        "expectedDamage": 262075.65,
         "castCount": 0
       },
       {
@@ -1038,7 +1038,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 435077.78,
+        "expectedDamage": 435078.43,
         "castCount": 0
       },
       {
@@ -1157,13 +1157,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "8a05346fa9fd454fda03a65d6888898584273f399d902164f82df5610e7fe287"
+    "digest": "390191558c65d63c209a6a1f05376dff62ffdbac325bf1aee5a5b6c1dea659d2"
   },
   "anchor:voidrotScript": {
-    "dps": 70256.05,
-    "totalDamage": 4215363.11,
+    "dps": 70256.08,
+    "totalDamage": 4215364.66,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1180,7 +1180,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 263609.08,
+        "expectedDamage": 263609.97,
         "castCount": 0
       },
       {
@@ -1204,7 +1204,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 437700.6,
+        "expectedDamage": 437701.25,
         "castCount": 0
       },
       {
@@ -1323,13 +1323,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "acb953526dd7bef0cf25340b3137c8aa3fb6ae3dd5624e8da143c4e1b4175dad"
+    "digest": "4539e21fb5e5cdc2d961182f430d2d88fe58200099ab4c79128bed1ad5ace23d"
   },
   "anchor:breakExtension": {
-    "dps": 70815.27,
-    "totalDamage": 4248916,
+    "dps": 70676.18,
+    "totalDamage": 4240570.89,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1346,7 +1346,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 266513.02,
+        "expectedDamage": 266513.92,
         "castCount": 0
       },
       {
@@ -1370,7 +1370,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 442435.63,
+        "expectedDamage": 442436.29,
         "castCount": 0
       },
       {
@@ -1394,7 +1394,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 102928.37,
+        "expectedDamage": 102435.77,
         "castCount": 10
       },
       {
@@ -1402,7 +1402,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2113616.42,
+        "expectedDamage": 2105762.36,
         "castCount": 0
       },
       {
@@ -1489,9 +1489,9 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "9b21909d15bfc505344a6d90edcc44b7ec273366a6f7c570960a4964af135056"
+    "digest": "e9a2d58ced18648a8c20e3efc9081b7f5795927bac5efa1622d793b8930eaf85"
   },
   "anchor:swordHorizonT1": {
     "dps": 44731.8,
@@ -1655,13 +1655,13 @@
     "counts": {
       "timeline": 329,
       "buffWindows": 126,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "eaf042ba9285fe5d1e458b5820aacad5ae67a2e11fd2bab8b184833ee0b3a809"
+    "digest": "e0942be1b0792932e03ca2b725fb608d5399e21f8e5c2e312aa9145f0b2e7d0e"
   },
   "anchor:noSwordHorizon": {
-    "dps": 40152.38,
-    "totalDamage": 2409142.89,
+    "dps": 40182.91,
+    "totalDamage": 2410974.42,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 7.30s would be illegal in the game: its cast conditions are not met.",
@@ -1676,9 +1676,9 @@
       "Sword Martial QQQ at 42.03s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 44.65s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 48.43s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 53.47s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 55.58s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 58.20s would be illegal in the game: its cast conditions are not met."
+      "Crosswind Blade [cancel] at 53.65s would be illegal in the game: its cast conditions are not met.",
+      "Sword Martial QQQ at 55.77s would be illegal in the game: its cast conditions are not met.",
+      "Crosswind Blade [cancel] at 58.38s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -1694,7 +1694,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 45,
-        "expectedDamage": 197958.44,
+        "expectedDamage": 199789.97,
         "castCount": 0
       },
       {
@@ -1837,9 +1837,9 @@
     "counts": {
       "timeline": 295,
       "buffWindows": 122,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "60e88918d4399f316b049a3839f4b5817000c6e00f30245146799b56e7f76dd8"
+    "digest": "3e27c2b785e7eae7ba6ae66e8338f7aa1a5fb592e72b840931da00b0f2217e80"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61703.38,
@@ -2003,13 +2003,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "7641b0a3e26fb5d77664099fb3fd35b7fde7cb60b6326f6233d15f69b82a9fdb"
+    "digest": "e52da7d7b9f9d4726563989e39ad5e5ca7c7be55909641c9854fe19c8c045a68"
   },
   "anchor:noMoraleChant": {
-    "dps": 63657.28,
-    "totalDamage": 3819436.82,
+    "dps": 63657.3,
+    "totalDamage": 3819438.28,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2026,7 +2026,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 242704.77,
+        "expectedDamage": 242705.61,
         "castCount": 0
       },
       {
@@ -2050,7 +2050,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 402448.85,
+        "expectedDamage": 402449.46,
         "castCount": 0
       },
       {
@@ -2161,13 +2161,13 @@
     "counts": {
       "timeline": 406,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "03fcdb02b682aa869caeca251a6727568e47f969f0b8eb27218f909cb488fa09"
+    "digest": "bde0d06fb8300f4b86a0bc76739dfe7d04e82195fa8c26a72527f6901985f27a"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 41869.73,
-    "totalDamage": 2512183.85,
+    "dps": 41862.08,
+    "totalDamage": 2511724.56,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 12.87s would be illegal in the game: its cast conditions are not met.",
@@ -2176,7 +2176,7 @@
       "Spear Special (1 Hit Cancel) at 46.03s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 48.32s would be illegal in the game: its cast conditions are not met.",
       "Spear Special (1 Hit Cancel) at 57.83s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 58.12s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 4-Hit at 58.33s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2216,7 +2216,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 52,
-        "expectedDamage": 165380.98,
+        "expectedDamage": 164921.69,
         "castCount": 0
       },
       {
@@ -2359,19 +2359,19 @@
     "counts": {
       "timeline": 409,
       "buffWindows": 134,
-      "casts": 80
+      "casts": 93
     },
-    "digest": "8d782977f700e3fe0f9150cc9c1dbd51e4fcd260657c37623672f83a2ec5ea22"
+    "digest": "8949b04adfb4675b37af76b06f79dda7e00bf5a074a401f1ec91ff9dfd548487"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 48266.46,
-    "totalDamage": 2895987.71,
+    "dps": 48234.89,
+    "totalDamage": 2894093.47,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 50.60s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2387,7 +2387,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 186092.83,
+        "expectedDamage": 184198.58,
         "castCount": 0
       },
       {
@@ -2538,19 +2538,19 @@
     "counts": {
       "timeline": 463,
       "buffWindows": 124,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "667a6f0f82767a9a949c965b9fd53453199cc3a043d06c459e95be15335e5054"
+    "digest": "87093e520b66d65ec3fab014ba2e0f184ecad2199f202f4d5f0f9eba0eefd19b"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 47341.93,
-    "totalDamage": 2840515.7,
+    "dps": 47310.95,
+    "totalDamage": 2838657.24,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 50.60s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2566,7 +2566,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 182580.95,
+        "expectedDamage": 180722.5,
         "castCount": 0
       },
       {
@@ -2717,19 +2717,19 @@
     "counts": {
       "timeline": 463,
       "buffWindows": 124,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "e2e2497f3261ae53aa7ed753cc3d7419466e5132160ff22e084506f372198afb"
+    "digest": "1f5d8a70bfb639582b72d4a787f900498c9891f83e38de3e0db6ea8b8ab5c556"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 46959.54,
-    "totalDamage": 2817572.25,
+    "dps": 46928.92,
+    "totalDamage": 2815735.1,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 50.60s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2745,7 +2745,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 180481.17,
+        "expectedDamage": 178644.02,
         "castCount": 0
       },
       {
@@ -2896,13 +2896,13 @@
     "counts": {
       "timeline": 463,
       "buffWindows": 124,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "983c7520522a4d0d327d1ea036386a3e58212203103383c6c6b16f1f00701578"
+    "digest": "5bba45ebe12bf1a0e82666f1873f7b4d11b05336bb224f7a36e199da21ef7a73"
   },
   "anchor:noSet": {
-    "dps": 63069.74,
-    "totalDamage": 3784184.31,
+    "dps": 63069.76,
+    "totalDamage": 3784185.69,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2919,7 +2919,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 235806.03,
+        "expectedDamage": 235806.83,
         "castCount": 0
       },
       {
@@ -2943,7 +2943,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 392510.99,
+        "expectedDamage": 392511.57,
         "castCount": 0
       },
       {
@@ -3062,13 +3062,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "cef9063b3c6a2b17e6c2e988beeb0a1e4a683a63acae7c07bc56b08146cf1711"
+    "digest": "d49e92eb884c98577476a20cd85724b4b323004336711f25ab470707a8ada9d0"
   },
   "anchor:set-Jadeware": {
-    "dps": 67921.59,
-    "totalDamage": 4075295.15,
+    "dps": 67913.37,
+    "totalDamage": 4074802.02,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3077,7 +3077,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 54700.79,
+        "expectedDamage": 54206.05,
         "castCount": 4
       },
       {
@@ -3085,7 +3085,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 257453.8,
+        "expectedDamage": 257454.73,
         "castCount": 0
       },
       {
@@ -3109,7 +3109,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 427669.65,
+        "expectedDamage": 427670.33,
         "castCount": 0
       },
       {
@@ -3228,13 +3228,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "80f5a6e74ff812c9011c73187083b7b4d94899a7aa47d25fba162cde310887e7"
+    "digest": "5c1ae446990eac32033d5aee695316a5aed9b0a6bdcc3c0be2c6b2f05913d5f3"
   },
   "anchor:set-Mistwillow": {
-    "dps": 63654.95,
-    "totalDamage": 3819297.15,
+    "dps": 63654.98,
+    "totalDamage": 3819298.54,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3251,7 +3251,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 238958.33,
+        "expectedDamage": 238959.13,
         "castCount": 0
       },
       {
@@ -3275,7 +3275,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 397626.33,
+        "expectedDamage": 397626.92,
         "castCount": 0
       },
       {
@@ -3394,13 +3394,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "3580eec6528c6851689a841807e66866dcd6574af30070b250dd6c85fd2a45dc"
+    "digest": "a947690e7a2c299acd7c999b6e1f94fd09c53fa77602be30412b6bc008f1066b"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 64474.8,
-    "totalDamage": 3868487.87,
+    "dps": 64474.82,
+    "totalDamage": 3868489.27,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3417,7 +3417,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 242700.52,
+        "expectedDamage": 242701.33,
         "castCount": 0
       },
       {
@@ -3441,7 +3441,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 403908.15,
+        "expectedDamage": 403908.75,
         "castCount": 0
       },
       {
@@ -3560,13 +3560,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "7b65704141d6935f0fad3d9b60209d270f885ef28abd9d2716f8b526228b0271"
+    "digest": "85025e0b71eb5c6d7f847aa1e1842408796ed8559fc0375a1b915f4e7761f8c0"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 64880.48,
-    "totalDamage": 3892828.62,
+    "dps": 64880.5,
+    "totalDamage": 3892830.02,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3583,7 +3583,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 56,
-        "expectedDamage": 243012.89,
+        "expectedDamage": 243013.7,
         "castCount": 0
       },
       {
@@ -3607,7 +3607,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 109,
-        "expectedDamage": 404031.43,
+        "expectedDamage": 404032.02,
         "castCount": 0
       },
       {
@@ -3726,13 +3726,13 @@
     "counts": {
       "timeline": 412,
       "buffWindows": 149,
-      "casts": 73
+      "casts": 89
     },
-    "digest": "987cf6b59b5d00f32b09933d72638e37d4f69ba2255ed4420a9eb4140742d8bb"
+    "digest": "fc234d04578c451b8899a0f2166ce06b70762d10860e53155b8c72adf11f6fae"
   },
   "defaults:umbra": {
-    "dps": 12094.47,
-    "totalDamage": 725668.25,
+    "dps": 12117.2,
+    "totalDamage": 727032.16,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.98s would be illegal in the game: its cast conditions are not met.",
@@ -3756,7 +3756,7 @@
       "Sword Martial QQQ at 50.57s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 53.18s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 54.97s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 55.85s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 4-Hit at 56.07s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -3771,8 +3771,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 47,
-        "expectedDamage": 54634.92,
+        "count": 48,
+        "expectedDamage": 55998.83,
         "castCount": 0
       },
       {
@@ -3921,10 +3921,10 @@
       }
     ],
     "counts": {
-      "timeline": 294,
+      "timeline": 295,
       "buffWindows": 127,
-      "casts": 79
+      "casts": 91
     },
-    "digest": "fc8391a05b26aefe4e8775649ca19fe2b25a3937b8a9b02f7bbaece11e2af292"
+    "digest": "8d94783023ce02d072f46e0b60c9b46cf41fc24c024b7d1ce14d97a1dd3dce7a"
   }
 }

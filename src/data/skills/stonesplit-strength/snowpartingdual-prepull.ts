@@ -16,6 +16,7 @@ export const snowpartingdualPrepull = defineSkill({
   castTag: CAST.snowpartingDualPrepull,
   receives: SNOWPARTING_BLADE_RECEIVES,
   triggersBuffs: [],
+  isWeaponSwap: true,
   castFrames: 0,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1 m

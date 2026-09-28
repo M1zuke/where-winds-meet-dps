@@ -8,6 +8,7 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { makeHit, makeSkill } from "../../src/engine/skill"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
+import { WEAPON } from "../../src/data/skills/ids"
 import type { RotationStep } from "../../src/engine/rotation"
 import type { Result } from "../../src/engine/types"
 
@@ -25,6 +26,16 @@ const observer = makeSkill(CLASS, {
   hits: [makeHit({ frame: 0 })],
 })
 
+// Draws the gauntlets for free, so a bare dodge step further down the
+// rotation already has them drawn — matching every real rotation, where a
+// dodge never opens on an undrawn weapon.
+const gauntletsLead = makeSkill(CLASS, {
+  name: "Test Gauntlets Lead",
+  tags: [WEAPON.gauntlets],
+  castFrames: 0,
+  hits: [makeHit({ frame: 0 })],
+})
+
 function runDodges(steps: RotationStep[], inCarouse: boolean, bingePoints = 100) {
   const openingStacks: Record<string, number> = { [STATUS.bingePoints]: bingePoints }
   if (inCarouse) openingStacks[STATUS.carouse] = 1
@@ -32,9 +43,13 @@ function runDodges(steps: RotationStep[], inCarouse: boolean, bingePoints = 100)
     ...defaultInputs,
     classId: CLASS,
     set: null,
-    customSkills: [idlePad, observer],
+    customSkills: [idlePad, observer, gauntletsLead],
     activeCustomRotation: makeRotation(CLASS, {
-      steps: [...steps, makeStep({ skillId: observer.id })],
+      steps: [
+        makeStep({ skillId: gauntletsLead.id }),
+        ...steps,
+        makeStep({ skillId: observer.id }),
+      ],
       openingStacks,
     }),
   })
@@ -110,6 +125,48 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
       ),
     )
     expect(afterTwoDodges - baseline).toBe(10)
+  })
+
+  it("with the twin blades drawn instead of the gauntlets it grants 0", () => {
+    const openingStacks: Record<string, number> = {
+      [STATUS.bingePoints]: 100,
+      [STATUS.carouse]: 1,
+    }
+    const twinBladesLead = makeSkill(CLASS, {
+      name: "Test Twin Blades Lead",
+      tags: [WEAPON.twinBlades],
+      castFrames: 0,
+      hits: [makeHit({ frame: 0 })],
+    })
+    const baseline = bingePointsAtObserver(
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        set: null,
+        customSkills: [twinBladesLead, observer],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: twinBladesLead.id }), makeStep({ skillId: observer.id })],
+          openingStacks,
+        }),
+      }),
+    )
+    const afterDodge = bingePointsAtObserver(
+      runEngine({
+        ...defaultInputs,
+        classId: CLASS,
+        set: null,
+        customSkills: [twinBladesLead, observer],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: twinBladesLead.id }),
+            makeStep({ skillId: SKILL.perfectDodge }),
+            makeStep({ skillId: observer.id }),
+          ],
+          openingStacks,
+        }),
+      }),
+    )
+    expect(afterDodge - baseline).toBe(0)
   })
 
   it("the class's Deflect Cancel grants none", () => {

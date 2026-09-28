@@ -72,7 +72,13 @@ import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { clockQiPhase, paramNumOf, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
-import { castTagOf, skillTagsOf, WEAPON_TAG } from "./buffs/tags"
+import { castTagOf, skillTagsOf, weaponTagOf, WEAPON_TAG } from "./buffs/tags"
+import {
+  drawnWeaponStatusId,
+  expandStepsWithWeaponSwaps,
+  makeDirectWeaponSwapSkill,
+  weaponIdentitiesOf,
+} from "./weaponSwap"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
@@ -83,6 +89,19 @@ import {
 import { resolveAverageFps, resolvePingMs } from "./pingFps"
 
 export const FPS = 60
+
+// In-game values as of 2026-09-28: every art's own swap-in cast shares one
+// 3 s cooldown, gating every class's Dual-Weapon Skill alike.
+const SWAP_COOLDOWN_FRAMES = 3 * FPS
+
+// In-game values as of 2026-09-28: the plain weapon change (no Dual-Weapon
+// Skill, no damage) never waits on a server round trip — a skill press
+// during its own sheathe animation pre-empts it, so the next skill of the
+// other weapon starts with no added cast time. Its own 0.5 s self-debounce
+// is a separate clock from the Dual-Weapon Skill's 3 s cooldown — the two
+// never share.
+const DIRECT_SWAP_CAST_FRAMES = 0
+const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
 
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.
@@ -220,10 +239,26 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const d of debuffs) statusById.set(d.id, d)
   const isDebuffStatus = (s: Buff | Debuff): s is Debuff => "dot" in s
 
-  const { steps: resolvedSteps, warnings: rotationWarnings } = resolveRotation(rotation, skills, [
-    ...buffs,
-    ...debuffs,
-  ])
+  const { steps: rawResolvedSteps, warnings: rotationWarnings } = resolveRotation(
+    rotation,
+    skills,
+    [...buffs, ...debuffs],
+  )
+  // A generated id, never `newStepId()`'s own `Date.now()`/`Math.random()` —
+  // a cast's `stepId` reaches the digest `engineBaseline.test.ts` hashes, so
+  // a random one would make every run's fixture unreproducible.
+  let nextSwapStepIndex = 0
+  const directSwapSkills = new Set<Skill>()
+  const resolvedSteps = expandStepsWithWeaponSwaps(rawResolvedSteps, (weapon, prePull) => {
+    const skill = makeDirectWeaponSwapSkill(
+      inputs.classId,
+      weapon,
+      prePull,
+      DIRECT_SWAP_CAST_FRAMES,
+    )
+    directSwapSkills.add(skill)
+    return { step: { id: `swap-${skill.id}-${nextSwapStepIndex++}`, skillId: skill.id }, skill }
+  })
   const warnings: string[] = [...rotationWarnings]
   const invalidStepIds: string[] = []
 
@@ -539,6 +574,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   let currentDistanceMeters = preferredDistanceMeters
   layoutLedger.openPermanent(TARGET_DISTANCE_STATUS)
   layoutLedger.recordStack(TARGET_DISTANCE_STATUS, meterStartFrame, currentDistanceMeters)
+
+  // The drawn weapon simulates once here too, the same way — docs/TIMELINE.md
+  // § "Drawn weapon".
+  const weaponIdentities = weaponIdentitiesOf(skills)
+  for (const weapon of weaponIdentities) {
+    const statusId = drawnWeaponStatusId(weapon)
+    layoutLedger.openPermanent(statusId)
+    layoutLedger.recordStack(statusId, meterStartFrame, 0)
+  }
 
   const runEffectiveRates = effectiveRates(inputs)
 
@@ -916,11 +960,32 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
+  let swapReadyAtFrame = -Infinity
+  let directSwapReadyAtFrame = -Infinity
+  let drawnWeapon: string | null = null
   for (const [stepIndex, resolvedStep] of resolvedSteps.entries()) {
     const prePull = isPrePullSkill(resolvedStep.skill)
     const cursor = prePull ? preCursor : activeCursor
-    const exactStart = cursor + (waitsForRoundTrip(resolvedStep.skill) ? roundTripFrames : 0)
+    const isWeaponSwapCast = resolvedStep.skill.isWeaponSwap === true
+    const isDirectSwapCast = directSwapSkills.has(resolvedStep.skill)
+    const earliestStart = cursor + (waitsForRoundTrip(resolvedStep.skill) ? roundTripFrames : 0)
+    // A swap blocked by its own cooldown waits as idle time instead of being
+    // flagged illegal — docs/TIMELINE.md § "Drawn weapon".
+    const exactStart = isWeaponSwapCast
+      ? Math.max(earliestStart, swapReadyAtFrame)
+      : isDirectSwapCast
+        ? Math.max(earliestStart, directSwapReadyAtFrame)
+        : earliestStart
     const startFrame = Math.round(exactStart)
+    if (isWeaponSwapCast) swapReadyAtFrame = startFrame + SWAP_COOLDOWN_FRAMES
+    if (isDirectSwapCast) directSwapReadyAtFrame = startFrame + DIRECT_SWAP_COOLDOWN_FRAMES
+    const weapon = weaponTagOf(resolvedStep.skill)
+    if (weapon && weapon !== drawnWeapon) {
+      if (drawnWeapon !== null)
+        layoutLedger.recordStack(drawnWeaponStatusId(drawnWeapon), startFrame, 0)
+      layoutLedger.recordStack(drawnWeaponStatusId(weapon), startFrame, 1)
+      drawnWeapon = weapon
+    }
     layoutWriter.processExpiries(startFrame)
     flushMeterEventsUpTo(startFrame)
     advanceMeters(startFrame)
@@ -1048,6 +1113,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   ledger.openPermanent(TARGET_DISTANCE_STATUS)
   for (const sample of layoutLedger.stackHistory(TARGET_DISTANCE_STATUS))
     ledger.recordStack(TARGET_DISTANCE_STATUS, sample.frame, sample.value)
+  for (const weapon of weaponIdentities) {
+    const statusId = drawnWeaponStatusId(weapon)
+    ledger.openPermanent(statusId)
+    for (const sample of layoutLedger.stackHistory(statusId))
+      ledger.recordStack(statusId, sample.frame, sample.value)
+  }
   const recordSpendStatusIds = new Set(
     skills.flatMap((candidate) =>
       candidate.hits.flatMap((skillHit) =>
