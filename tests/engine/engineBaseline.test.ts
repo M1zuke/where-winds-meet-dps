@@ -303,30 +303,28 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(69327.11)
-    expect(round(result.totalDamage, 2)).toBe(4159626.39)
+    expect(round(result.dps, 2)).toBe(69355.75)
+    expect(round(result.totalDamage, 2)).toBe(4161344.86)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    // The Endurance gate on Inner Balance Strike III / Sweep All flags every
-    // cast this rotation places below the threshold — damage is unaffected,
-    // only the report. The anchor profile hydrates a fully claimed Oddity
-    // board (same default every profile without the field gets) and slots
-    // Wolfchaser's Art, so its own +40 Max Endurance and +20-per-Sweep-All
-    // gain together clear every one of these gates and drain warnings.
+    // Sweep All's own River Flow / Spring Surge hit 1 now lands 2 f later
+    // (its own frame override, not the plain form's), repeated across every
+    // cast this rotation makes — enough, cumulatively, that SwordSpecial
+    // 3-Hit's cast conditions are met where they weren't before.
     expect(result.warnings).toEqual([])
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2062787.54)
-    expect(damageOf("Bleeding (DoT)")).toBe(258454.64)
+    expect(damageOf("Blood Burst")).toBe(2057226.8)
+    expect(damageOf("Bleeding (DoT)")).toBe(261067.36)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(436698.8)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(75301.51)
+    expect(damageOf("Smolder (DoT)")).toBe(433309.52)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(74789.58)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
@@ -341,17 +339,18 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(70530.04)
-    expect(round(result.totalDamage, 2)).toBe(4231802.13)
+    expect(round(result.dps, 2)).toBe(70558.85)
+    expect(round(result.totalDamage, 2)).toBe(4233531.03)
     expect(round(result.rotationDuration, 4)).toBe(60)
+    // Same cause as the breakthrough-16 block above.
     expect(result.warnings).toEqual([])
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
-    expect(damageOf("Blood Burst")).toBe(2097751.23)
-    expect(damageOf("Bleeding (DoT)")).toBe(263351.69)
-    expect(damageOf("Smolder (DoT)")).toBe(444703.8)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(76679)
+    expect(damageOf("Blood Burst")).toBe(2092086.7)
+    expect(damageOf("Bleeding (DoT)")).toBe(266013.96)
+    expect(damageOf("Smolder (DoT)")).toBe(441251.71)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76158.76)
     expect(damageOf("Yi River")).toBe(60343.87)
   })
 })

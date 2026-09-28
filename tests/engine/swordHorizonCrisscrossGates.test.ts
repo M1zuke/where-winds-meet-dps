@@ -62,8 +62,8 @@ describe("Sword Horizon cuts the forced cast length on the forms that feed into 
     expect(castFramesFor(SKILL.swordqfollowup, swordHorizonSlotted)).toBeCloseTo(61, 6)
   })
 
-  it("SwordSpecial 3-Hit shortens from 57 to 64 frames", () => {
-    expect(castFramesFor(SKILL.swordspecial3Hit, defaultInputs.mindMethods)).toBeCloseTo(57, 6)
+  it("SwordSpecial 3-Hit shortens from 71 to 64 frames", () => {
+    expect(castFramesFor(SKILL.swordspecial3Hit, defaultInputs.mindMethods)).toBeCloseTo(71, 6)
     expect(castFramesFor(SKILL.swordspecial3Hit, swordHorizonSlotted)).toBeCloseTo(64, 6)
   })
 

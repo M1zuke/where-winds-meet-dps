@@ -3,7 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
-import { DRIFTING_THRUST_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
+import { DRIFTING_THRUST_STAGE_2_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
 
 const DRILL_HIT = {
   physMultiplier: 0.3314827,
@@ -12,8 +12,9 @@ const DRILL_HIT = {
   attributeFixed: 49.979,
 }
 // In-game values as of 2026-09-24: the 15 drill hits' frames from the
-// release, then the finisher.
-const DRILL_FRAMES = [5, 14, 23, 32, 41, 51, 61, 71, 81, 92, 101, 112, 123, 132, 142]
+// release, folded onto the 90 f minimum press-to-release hold for this
+// stage, then the finisher.
+const DRILL_FRAMES = [95, 104, 113, 122, 131, 141, 151, 161, 171, 182, 191, 202, 213, 222, 232]
 
 export const spearheavy = defineSkill({
   id: SKILL.spearheavy,
@@ -29,10 +30,9 @@ export const spearheavy = defineSkill({
   castTag: CAST.spearHeavy,
   triggersBuffs: [BUFF.soulShaken],
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
-  meterDrains: DRIFTING_THRUST_DRAIN,
+  meterDrains: DRIFTING_THRUST_STAGE_2_DRAIN,
   meterFreezes: DRIFTING_THRUST_FREEZE,
-  // Covers the real hit layout below; the charge hold itself is untimed here.
-  castFrames: 156,
+  castFrames: 246,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
@@ -42,7 +42,7 @@ export const spearheavy = defineSkill({
   hits: [
     ...DRILL_FRAMES.map((frame, index) => hit(index, { frame, ...DRILL_HIT })),
     hit(DRILL_FRAMES.length, {
-      frame: 155,
+      frame: 245,
       physMultiplier: 1.250878,
       attributeMultiplier: 1.876317,
       physFixed: 346,

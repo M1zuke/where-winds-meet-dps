@@ -23,11 +23,13 @@ export const swordChargeStage14Hit = defineSkill({
   meterCosts: [SECOND_TRACK_SLASH_COST],
   meterDrains: SECOND_TRACK_SLASH_DRAIN,
   meterFreezes: SECOND_TRACK_SLASH_FREEZE,
-  // A player-ended form: castFrames is capped where the follow-up window closes — an 11-frame margin would land past it and give the five-hit ending instead (in-game animation, 2026-09-09).
-  castFrames: 56,
+  // The 30 f minimum hold to reach stage 1, then castFrames capped where the
+  // follow-up window closes — an 11-frame margin would land past it and give
+  // the five-hit ending instead (in-game animation, 2026-09-24).
+  castFrames: 86,
   triggerable: true,
   displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
   hits: SWORD_CHARGE_STAGE_1_HITS.slice(0, 4),
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

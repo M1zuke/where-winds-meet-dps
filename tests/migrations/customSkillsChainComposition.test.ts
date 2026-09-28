@@ -9,6 +9,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { healBleedRowDefaults } from "../../src/migrations/customSkills/V6__bleedRowDefaults"
+import { healMysticArtRank } from "../../src/migrations/customSkills/V7__mysticArtRankRepair"
 import { healRiverFlowApplication } from "../../src/migrations/customSkills/V8__riverFlowAppliesOnCastEnd"
 import { healBleedCoefficientReach } from "../../src/migrations/customSkills/V9__bleedCoefficientReach"
 import { healWolfchasersArtSwordOverreach } from "../../src/migrations/customSkills/V10__wolfchasersArtSwordOverreach"
@@ -44,6 +45,7 @@ import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/custo
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
 import { healSkill as healTargetDistanceReachAndDisplacement } from "../../src/migrations/customSkills/V44__targetDistanceReachAndDisplacement"
+import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -65,6 +67,7 @@ function healDrunkenHazeExplosion(skill: unknown): unknown {
 
 const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [6, healBleedRowDefaults],
+  [7, healMysticArtRank],
   [8, healRiverFlowApplication],
   [9, healBleedCoefficientReach],
   [10, healWolfchasersArtSwordOverreach],
@@ -97,6 +100,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [39, healMeterModifierGains],
   [40, healMountainsMightAndQiImbalanceMarker],
   [44, healTargetDistanceReachAndDisplacement],
+  [45, healCastLengthAndHitFrameRepairs],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

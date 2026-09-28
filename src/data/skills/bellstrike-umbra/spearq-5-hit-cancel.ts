@@ -25,8 +25,8 @@ export const spearq5HitCancel = defineSkill({
   castTag: CAST.spearQ5HitCancel,
   triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, ...HEAVENQUAKER_SPEAR_RECEIVES],
-  // A cancel form ends where the animation opens its interrupt window — 101 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
-  castFrames: 101,
+  // A cancel form ends where the animation opens its interrupt window — 84 frames in (in-game animation, 2026-09-24); the parry that ends it is the next rotation step.
+  castFrames: 84,
   triggerable: true,
   // In-game values as of 2026-09-28: 3 m approach reach, plus a further 1.75 m
   // shrink-only pull once in range.
@@ -109,5 +109,5 @@ export const spearq5HitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-25T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

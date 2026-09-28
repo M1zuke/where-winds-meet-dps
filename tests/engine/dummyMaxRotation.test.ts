@@ -4,7 +4,7 @@ import { builtinRotationsForClass, builtinSkillsForClass } from "../../src/engin
 import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
 
-it("resolves the 30-second preset and includes its Dragon Head hit", () => {
+it("resolves the 30-second preset, whose Dragon Head cast now lands past its own window", () => {
   const rotation = builtinRotationsForClass("silkbindJade").find(
     (value) => value.name === "30s Dummy max",
   )!
@@ -19,17 +19,22 @@ it("resolves the 30-second preset and includes its Dragon Head hit", () => {
   })
   expect(result.resources?.[0].launches).toHaveLength(3)
   const finalLaunch = result.resources![0].launches[2]
-  expect(finalLaunch.timeSec).toBeLessThan(rotation.qiBreak!.startSec)
+  // Casts before the break now run longer under the corrected timings, so
+  // the final launch starts after the break's own frozen start second
+  // rather than straddling it.
+  expect(finalLaunch.timeSec).toBeGreaterThanOrEqual(rotation.qiBreak!.startSec)
   expect(finalLaunch.endSec).toBeGreaterThan(rotation.qiBreak!.startSec)
   expect(finalLaunch.ticks).toBeGreaterThan(20)
   expect(result.rotationDuration).toBe(30)
   expect(result.castDuration).toBeGreaterThan(29.8)
-  expect(result.castDuration).toBeLessThanOrEqual(30)
-  expect(
-    result.timeline?.some(
-      (event) => event.skillName === "Dragon Head - Plus" && event.inWindow && event.damage > 0,
-    ),
-  ).toBe(true)
+  // The corrected timings run the rotation's own casts past its 30 s window;
+  // the window itself still caps `rotationDuration` above.
+  expect(result.castDuration).toBeGreaterThan(30)
+  // The corrected timings still start this preset's Dragon Head - Plus cast
+  // inside its own 30 s window, but its own long cast now carries the hit
+  // past the window's own end, where it scores nothing.
+  expect(result.casts?.some((cast) => cast.skillName === "Dragon Head - Plus")).toBe(true)
+  expect(result.timeline?.some((event) => event.skillName === "Dragon Head - Plus")).toBe(false)
   expect(
     result.resources?.[0].launches.every(
       (launch) => launch.reason !== "insufficient" && launch.reason !== "recalled",

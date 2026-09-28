@@ -47,6 +47,9 @@ export interface HitVariant {
   physFixed: number
   attributeFixed: number
   castFrames?: number
+  // docs/TIMELINE.md § "Hit variants" — replaces the hit's own `frame` where
+  // this variant is the active one.
+  frame?: number
 }
 
 export interface HitTrigger {
@@ -95,6 +98,15 @@ export interface SkillHit {
   variants?: HitVariant[]
   conditions?: TriggerCondition[]
   triggers: HitTrigger[]
+  // docs/TIMELINE.md § "Conditional hits" — a hit whose animation only
+  // continues to land because the step immediately following it, by name,
+  // could not interrupt before this frame. Absent, this hit lands exactly as
+  // any other.
+  requiresNextStepSkillIds?: string[]
+  // Overrides the skill's own `castFrames` when this hit's own
+  // `requiresNextStepSkillIds` gate is what included it — the next-step
+  // counterpart of a hit variant's own `castFrames` override.
+  castFramesWhenGated?: number
 }
 
 export interface MeterCost {
@@ -112,6 +124,9 @@ export interface MeterDrain {
   fromFrame: number
   // Absent: the drain runs to the cast's own end.
   stopAfterSec?: number
+  // docs/TIMELINE.md § "Meters" — a charged hold releases early on an empty
+  // drain.
+  chargeRelease?: { fallbackSkillId: string }
 }
 
 export interface MeterFreeze {
@@ -414,6 +429,9 @@ export function isHitVariant(x: unknown): x is HitVariant {
   if (v.castFrames !== undefined) {
     if (typeof v.castFrames !== "number" || !Number.isFinite(v.castFrames)) return false
   }
+  if (v.frame !== undefined) {
+    if (typeof v.frame !== "number" || !Number.isFinite(v.frame)) return false
+  }
   return true
 }
 
@@ -447,6 +465,14 @@ export function isSkillHit(x: unknown): x is SkillHit {
       if (!isHitOrVariantCondition(c)) return false
     }
   }
+  if (h.requiresNextStepSkillIds !== undefined) {
+    if (!isStringArray(h.requiresNextStepSkillIds) || h.requiresNextStepSkillIds.length === 0)
+      return false
+  }
+  if (h.castFramesWhenGated !== undefined) {
+    if (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
+      return false
+  }
   return true
 }
 
@@ -465,6 +491,10 @@ export function selectHitVariant(
     if (variant.conditions.every((c) => test(c))) return variant
   }
   return null
+}
+
+export function resolvedHitFrame(hit: SkillHit, test: (c: TriggerCondition) => boolean): number {
+  return selectHitVariant(hit, test)?.frame ?? hit.frame
 }
 
 export function breakdownNameOf(breakdownName: string | undefined, fallbackName: string): string {
@@ -544,6 +574,16 @@ export function isSkill(x: unknown): x is Skill {
         (typeof meterDrain.stopAfterSec !== "number" || !Number.isFinite(meterDrain.stopAfterSec))
       )
         return false
+      if (meterDrain.chargeRelease !== undefined) {
+        const chargeRelease = meterDrain.chargeRelease as Record<string, unknown>
+        if (
+          !chargeRelease ||
+          typeof chargeRelease !== "object" ||
+          typeof chargeRelease.fallbackSkillId !== "string" ||
+          !chargeRelease.fallbackSkillId
+        )
+          return false
+      }
     }
   }
   if (s.meterFreezes !== undefined) {

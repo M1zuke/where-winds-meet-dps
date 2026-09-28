@@ -3,7 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
-import { DRIFTING_THRUST_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
+import { DRIFTING_THRUST_STAGE_1_DRAIN, DRIFTING_THRUST_FREEZE } from "./buffs/driftingThrustEndurance"
 
 const DRILL_HIT = {
   physMultiplier: 0.3752634,
@@ -12,8 +12,9 @@ const DRILL_HIT = {
   attributeFixed: 56.58,
 }
 // In-game values as of 2026-09-24: the 8 drill hits' frames from the
-// release, then the finisher.
-const DRILL_FRAMES = [5, 14, 23, 32, 41, 51, 61, 71]
+// release, folded onto the 30 f minimum press-to-release hold for this
+// stage, then the finisher.
+const DRILL_FRAMES = [35, 44, 53, 62, 71, 81, 91, 101]
 
 export const spearheavyStage1 = defineSkill({
   id: SKILL.spearheavyStage1,
@@ -28,9 +29,9 @@ export const spearheavyStage1 = defineSkill({
   castTag: CAST.spearHeavyStage1,
   triggersBuffs: [BUFF.soulShaken],
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
-  meterDrains: DRIFTING_THRUST_DRAIN,
+  meterDrains: DRIFTING_THRUST_STAGE_1_DRAIN,
   meterFreezes: DRIFTING_THRUST_FREEZE,
-  castFrames: 90,
+  castFrames: 120,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
@@ -39,7 +40,7 @@ export const spearheavyStage1 = defineSkill({
   hits: [
     ...DRILL_FRAMES.map((frame, index) => hit(index, { frame, ...DRILL_HIT })),
     hit(DRILL_FRAMES.length, {
-      frame: 87,
+      frame: 117,
       physMultiplier: 0.7505268,
       attributeMultiplier: 1.1257902,
       physFixed: 207.6,

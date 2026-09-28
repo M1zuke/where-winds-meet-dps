@@ -15,6 +15,11 @@ import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
+const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
+const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Silkbind", SKILLS).filter(
+  (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
+)
+
 export const silkbindJade = defineClass({
   id: CLASS_ID,
   displayName: "Silkbind Jade",
@@ -48,7 +53,7 @@ export const silkbindJade = defineClass({
   defaultMeleeReachMeters: 9,
   meters: [enduranceMeter],
   critBoostWeaponTypes: ["Umbrella", "Fan"],
-  skills: withUniversalSkills(CLASS_ID, "Silkbind", SKILLS),
+  skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,

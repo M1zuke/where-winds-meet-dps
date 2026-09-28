@@ -21,6 +21,7 @@ import { swordqFollowUp2HitCancel } from "./swordq-follow-up-2-hit-cancel"
 import { swordMartialQqq } from "./sword-martial-qqq"
 import { swordChargeStage13Hit } from "./sword-charge-stage-1-3-hit"
 import { swordChargeStage15Hit } from "./sword-charge-stage-1-5-hit"
+import { swordChargeStage1Level0 } from "./sword-charge-stage-1-level-0"
 import { swordRChargeFollowUp } from "./sword-r-charge-follow-up"
 import { swordRChargeFollowUp1HitCancel } from "./sword-r-charge-follow-up-1-hit-cancel"
 import { spearheavy1Hit } from "./spearheavy-1-hit"
@@ -54,6 +55,7 @@ export const SKILLS: Skill[] = [
   swordMartialQqq,
   swordChargeStage13Hit,
   swordChargeStage15Hit,
+  swordChargeStage1Level0,
   swordRChargeFollowUp,
   swordRChargeFollowUp1HitCancel,
   spearheavy1Hit,

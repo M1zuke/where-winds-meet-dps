@@ -20,8 +20,8 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
   // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
   castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,
-  // A cancel form ends where the animation opens its interrupt window — 33 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.
-  castFrames: 33,
+  // A cancel form ends where the animation opens its interrupt window — 16 frames in (in-game animation, 2026-09-24); the parry that ends it is the next rotation step.
+  castFrames: 16,
   triggerable: true,
   hits: [
     hit(0, {
@@ -42,5 +42,5 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

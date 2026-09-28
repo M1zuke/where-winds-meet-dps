@@ -11,8 +11,8 @@ describe("Bamboocut Draught — the measured build", () => {
   it("holds its dps and total damage exactly", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(67859.14763343912)
-    expect(result.totalDamage).toBe(4035357.3126018466)
+    expect(result.dps).toBe(67236.83769585499)
+    expect(result.totalDamage).toBe(4043175.17344408)
   })
 
   it.fails(

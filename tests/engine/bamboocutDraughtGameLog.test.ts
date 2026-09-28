@@ -20,7 +20,10 @@ const IN_GAME_HITS: Record<string, number> = {
   "Nightwick - Primepick": 6,
   Peakfall: 5,
   "Hero's Blood": 8,
-  "Flute Chanting a Thousand Waves": 10,
+  // The cancel form's own strike (in-game values as of 2026-09-24) was not
+  // yet modelled when this log was captured, so its own hit count reads one
+  // higher than the captured log.
+  "Flute Chanting a Thousand Waves": 11,
 }
 
 function runDummyRotation() {

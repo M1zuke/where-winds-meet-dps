@@ -60,12 +60,20 @@ const SWORDSPECIAL_4_HIT_ROWS = [
   [0.392708, 0.589062, 108.8, 59.2],
 ]
 
+const SWORD_CHARGE_STAGE_1_3_HIT = `${CLASS}-sword-charge-stage-1-3-hit`
+const SWORD_CHARGE_STAGE_1_3_HIT_ROWS = [
+  [0.402924, 0.604386, 111.6, 60.75],
+  [0.268616, 0.402924, 74.4, 40.5],
+  [0.268616, 0.402924, 74.4, 40.5],
+]
+
 describe("umbraHitSwapsFor", () => {
   it("names only built-in Umbra skills and lands every row on the built-in's current hit", () => {
     const covered = builtinSkillsForClass(CLASS).filter(
       (skill) =>
         skill.id !== SPEARSPECIAL_1_HIT_CANCEL &&
         skill.id !== SWORDSPECIAL_4_HIT &&
+        skill.id !== SWORD_CHARGE_STAGE_1_3_HIT &&
         umbraHitSwapsFor(skill.id),
     )
     expect(covered.length).toBeGreaterThan(0)
@@ -93,6 +101,13 @@ describe("umbraHitSwapsFor", () => {
   it("names SwordSpecial 4-Hit's four rows — its 4th hit no longer lives on the live built-in", () => {
     const swaps = umbraHitSwapsFor(SWORDSPECIAL_4_HIT)!
     expect(swaps.map((swap) => [...swap.to])).toEqual(SWORDSPECIAL_4_HIT_ROWS)
+  })
+
+  it("names Sword Charge Stage 1, 3-Hit's own three rows — a 4th, follow-up-gated hit was added later", () => {
+    const swaps = umbraHitSwapsFor(SWORD_CHARGE_STAGE_1_3_HIT)!
+    expect(swaps.map((swap) => [...swap.to])).toEqual(SWORD_CHARGE_STAGE_1_3_HIT_ROWS)
+    const skill = builtin(SWORD_CHARGE_STAGE_1_3_HIT)
+    swaps.forEach((swap, index) => expect(rowOf(skill.hits[index])).toEqual([...swap.to]))
   })
 
   it("knows nothing about a user-authored id", () => {

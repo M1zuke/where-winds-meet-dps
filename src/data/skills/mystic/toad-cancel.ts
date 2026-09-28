@@ -13,28 +13,30 @@ export const toadCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.toadCancel,
-  castFrames: 72,
+  // Cast length to the earliest next input and hit frames: in-game
+  // animation, 2026-09-24.
+  castFrames: 96,
   triggerable: true,
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 1.8922,
-      attributeMultiplier: 2.8383,
-      physFixed: 284.31,
+      frame: 39,
+      physMultiplier: 0.54063,
+      attributeMultiplier: 0.810945,
+      physFixed: 81.23,
       attributeFixed: 0,
     }),
     hit(1, {
-      frame: 36,
-      physMultiplier: 1.8922,
-      attributeMultiplier: 2.8383,
-      physFixed: 284.31,
+      frame: 68,
+      physMultiplier: 3.24377,
+      attributeMultiplier: 4.865655,
+      physFixed: 487.39,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.toadPoison })],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

@@ -16,6 +16,7 @@ import {
   conditionSatisfiedByStacks,
   isPrePullSkill,
   hitDealsDamage,
+  resolvedHitFrame,
   selectHitVariant,
   triggerConditions,
 } from "./skill"
@@ -113,8 +114,13 @@ function resolveMaxStacksByTier(buff: Buff, buffParams: ReturnType<typeof params
   return applicable.length > 0 ? { ...buff, maxStacks: applicable[0][1] } : buff
 }
 
-function castEndFrame(skill: Skill, castFrame: number): number {
-  const lastHitFrame = skill.hits.length > 0 ? Math.max(...skill.hits.map((h) => h.frame)) : -1
+function castEndFrame(
+  skill: Skill,
+  castFrame: number,
+  holds: (condition: TriggerCondition) => boolean,
+): number {
+  const lastHitFrame =
+    skill.hits.length > 0 ? Math.max(...skill.hits.map((hit) => resolvedHitFrame(hit, holds))) : -1
   return castFrame + (skill.castFrames || lastHitFrame + 1)
 }
 
@@ -463,6 +469,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       for (const variant of skillHit.variants ?? []) {
         if (variant.castFrames !== undefined && variant.castFrames > 0)
           bound = Math.max(bound, variant.castFrames)
+        if (variant.frame !== undefined) bound = Math.max(bound, variant.frame + 1)
       }
     }
     return bound
@@ -584,25 +591,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     register: () => void
   }
 
-  // Costs land immediately, at the cast's own start. A freeze or drain's own
-  // start can land after one of this same cast's own hits (an early hit
-  // ahead of a later charge-drain start), so its registration is handed back
-  // rather than applied here — `seedStepTriggers` interleaves it with this
-  // step's own hits by frame, since registering it eagerly would fast-
-  // forward the meter's forward-only cursor past a hit that hasn't run yet.
-  interface AppliedMeterCosts {
-    starts: PendingMeterIntervalStart[]
-    // What this same cast actually paid to each meter, after modifiers — read
-    // by a `meterDelta` trigger's own `refundFractionOfCastCost` rather than
-    // recomputing the multiplier a second time.
-    paidByMeter: Map<string, number>
-  }
-
-  function applyMeterCostsAndScheduleDrains(
-    skill: Skill,
-    startFrame: number,
-    castEndFrame: number,
-  ): AppliedMeterCosts {
+  // Costs land immediately, at the cast's own start — paid by the skill the
+  // step names, before a charge release's own projection can run against the
+  // result (docs/TIMELINE.md § "Meters").
+  function applyMeterCosts(skill: Skill, startFrame: number): Map<string, number> {
     const paidByMeter = new Map<string, number>()
     for (const cost of skill.meterCosts ?? []) {
       const meter = meterById.get(cost.meterId)
@@ -613,6 +605,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       meter.apply(startFrame, -paid)
       paidByMeter.set(cost.meterId, (paidByMeter.get(cost.meterId) ?? 0) + paid)
     }
+    return paidByMeter
+  }
+
+  // A freeze or drain's own start can land after one of this same cast's own
+  // hits (an early hit ahead of a later charge-drain start), so its
+  // registration is handed back rather than applied here — `seedStepTriggers`
+  // interleaves it with this step's own hits by frame, since registering it
+  // eagerly would fast-forward the meter's forward-only cursor past a hit
+  // that hasn't run yet.
+  function scheduleMeterDrainsAndFreezes(
+    skill: Skill,
+    startFrame: number,
+    castEndFrame: number,
+  ): PendingMeterIntervalStart[] {
     const starts: PendingMeterIntervalStart[] = []
     // Freezes before drains: a freeze's own fromFrame is never later than the
     // drain it overlaps, so processing it first keeps the meter's own cursor
@@ -644,7 +650,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           ),
       })
     }
-    return { starts, paidByMeter }
+    return starts
   }
 
   const activeVariantCastFrames = (
@@ -705,8 +711,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     paidByMeter: Map<string, number>,
   ): void {
     const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
+    const ownerHolds = (condition: TriggerCondition) => layoutHolds(condition, owner)
     layoutWriter.processExpiries(hitFrame)
-    advanceMeters(hitFrame)
     if (hitDealsDamage(skillHit)) {
       layoutWriter.onDamagingHit(hitFrame, owner)
       if (!prePull) {
@@ -738,12 +744,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (!layoutWriter.fires(trigger, hitFrame)) continue
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
+        const subHolds = (condition: TriggerCondition) => layoutHolds(condition, hitFrame)
         for (const subHit of sub.hits) {
           pending.push({
             kind: "hit",
             skill: sub,
             hit: subHit,
-            frame: hitLandingFrame(hitFrame, subHit.frame),
+            frame: hitLandingFrame(hitFrame, resolvedHitFrame(subHit, subHolds)),
             owner,
             prePull,
             sequence: layoutHitSequence++,
@@ -753,7 +760,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       if (trigger.kind === "meterDelta") {
         if (prePull) continue
-        const effectiveFrame = trigger.appliesOnCastEnd ? castEndFrame(skill, owner) : hitFrame
+        const effectiveFrame = trigger.appliesOnCastEnd
+          ? castEndFrame(skill, owner, ownerHolds)
+          : hitFrame
         pending.push({
           kind: "meterDelta",
           trigger,
@@ -766,7 +775,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
       layoutWriter.applyTrigger(
         trigger,
-        trigger.appliesOnCastEnd ? castEndFrame(skill, owner) : hitFrame,
+        trigger.appliesOnCastEnd ? castEndFrame(skill, owner, ownerHolds) : hitFrame,
         owner,
       )
     }
@@ -791,6 +800,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
   }
 
+  // A step's own generated chain (a `castSkill` sub-cast, a detonation) can
+  // land past the next rotation step's own, chronologically earlier start —
+  // draining this step's queue to completion would apply its late meter
+  // event first and drag the shared cursor past that next step's own
+  // cast-start cost. Only a meter-relevant event (`meterDelta`,
+  // `meterInterval`) is deferred here, into a queue outliving this call; a
+  // plain hit past the horizon still runs its other triggers at once, since
+  // only the meter's own forward-only cursor needs global ordering
+  // (docs/TIMELINE.md § "Meters").
+  const deferredMeterEvents: (PendingMeterDeltaEvent | PendingMeterIntervalEvent)[] = []
+
+  function flushMeterEventsUpTo(horizonFrame: number): void {
+    deferredMeterEvents.sort(
+      (left, right) => left.frame - right.frame || left.sequence - right.sequence,
+    )
+    while (deferredMeterEvents.length > 0 && deferredMeterEvents[0].frame <= horizonFrame) {
+      const next = deferredMeterEvents.shift()!
+      if (next.kind === "meterInterval") next.register()
+      else applyMeterDeltaEvent(next)
+    }
+  }
+
   function seedStepTriggers(
     skill: Skill,
     hits: readonly SkillHit[],
@@ -798,13 +829,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     prePull: boolean,
     meterIntervalStarts: PendingMeterIntervalStart[] = [],
     paidByMeter: Map<string, number> = new Map(),
+    meterHorizonFrame = Infinity,
   ): void {
     const pending: PendingLayoutEvent[] = [
       ...hits.map((hit): PendingHitEvent => ({
         kind: "hit",
         skill,
         hit,
-        frame: hitLandingFrame(stepStart, hit.frame),
+        frame: hitLandingFrame(
+          stepStart,
+          resolvedHitFrame(hit, (condition) => layoutHolds(condition, stepStart)),
+        ),
         owner: stepStart,
         prePull,
         sequence: layoutHitSequence++,
@@ -821,6 +856,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       pending.sort((left, right) => left.frame - right.frame || left.sequence - right.sequence)
       const next = pending.shift()!
       processed++
+      if (next.kind !== "hit" && next.frame > meterHorizonFrame) {
+        deferredMeterEvents.push(next)
+        continue
+      }
       if (next.kind === "meterInterval") next.register()
       else if (next.kind === "meterDelta") applyMeterDeltaEvent(next)
       else seedHitTriggers(next, pending, paidByMeter)
@@ -844,44 +883,98 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
     Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
 
+  // A charged hold's own drain, checked against the meter it names: bounded
+  // so a chain of fallbacks can only ever step down, never loop.
+  function resolveChargeRelease(resolvedStep: ResolvedStep, startFrame: number): ResolvedStep {
+    let current = resolvedStep.skill
+    for (let guard = 0; guard < skills.length + 1; guard++) {
+      const drain = (current.meterDrains ?? []).find((entry) => entry.chargeRelease)
+      if (!drain?.chargeRelease) return { step: resolvedStep.step, skill: current }
+      const meter = meterById.get(drain.meterId)
+      if (!meter) return { step: resolvedStep.step, skill: current }
+      const fromFrame = hitLandingFrame(startFrame, drain.fromFrame)
+      const toFrame =
+        drain.stopAfterSec !== undefined
+          ? fromFrame + Math.round(drain.stopAfterSec * FPS)
+          : hitLandingFrame(startFrame, current.castFrames)
+      const emptiedAt = meter.projectDrainEmptyAt(
+        fromFrame,
+        drain.perSecond,
+        Math.max(0, toFrame - fromFrame),
+      )
+      if (emptiedAt === null) return { step: resolvedStep.step, skill: current }
+      const fallback = skillsById.get(drain.chargeRelease.fallbackSkillId)
+      if (!fallback) return { step: resolvedStep.step, skill: current }
+      warnings.push(
+        `${current.name || current.id} at ${(startFrame / FPS).toFixed(2)}s released early onto ${fallback.name || fallback.id}: its ${meter.def.name} would empty before the held stage completes.`,
+      )
+      current = fallback
+    }
+    return { step: resolvedStep.step, skill: current }
+  }
+
   const laidSteps: LaidStep[] = []
   let activeCursor = 0
   let preCursor = -prePullBound
-  for (const [stepIndex, rs] of resolvedSteps.entries()) {
-    const prePull = isPrePullSkill(rs.skill)
+  for (const [stepIndex, resolvedStep] of resolvedSteps.entries()) {
+    const prePull = isPrePullSkill(resolvedStep.skill)
     const cursor = prePull ? preCursor : activeCursor
-    const exactStart = cursor + (waitsForRoundTrip(rs.skill) ? roundTripFrames : 0)
+    const exactStart = cursor + (waitsForRoundTrip(resolvedStep.skill) ? roundTripFrames : 0)
     const startFrame = Math.round(exactStart)
     layoutWriter.processExpiries(startFrame)
+    flushMeterEventsUpTo(startFrame)
     advanceMeters(startFrame)
+    // Marked before this step's own cost lands, so a cast's reported meter
+    // level is the level available when it was placed (TIMELINE.md §
+    // "Meters"), never the level once its own spend already resolved it.
     const meterMarkAtStart = layoutLedger.mark()
     const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
-    if (!(rs.skill.castConditions ?? []).every(holdsHere)) {
-      invalidStepIds.push(rs.step.id)
+    if (!(resolvedStep.skill.castConditions ?? []).every(holdsHere)) {
+      invalidStepIds.push(resolvedStep.step.id)
       warnings.push(
-        `${rs.skill.name || rs.skill.id} at ${(startFrame / FPS).toFixed(2)}s would be illegal in the game: its cast conditions are not met.`,
+        `${resolvedStep.skill.name || resolvedStep.skill.id} at ${(startFrame / FPS).toFixed(2)}s would be illegal in the game: its cast conditions are not met.`,
       )
     }
+    // A pre-pull cast never touches a meter (TIMELINE.md § "Meters"), so its
+    // cost stays unpaid and its charge drain, if any, is never in reach of an
+    // early release either. The cost is paid before the release projects,
+    // never the other way — see the "Meters" section on `chargeRelease`.
+    const paidByMeter = prePull
+      ? new Map<string, number>()
+      : applyMeterCosts(resolvedStep.skill, startFrame)
+    const castResolution = prePull ? resolvedStep : resolveChargeRelease(resolvedStep, startFrame)
     // A pre-pull cast never touches the target distance either — see the
-    // meter-cost note below, the same real-world-gap reasoning applies.
+    // meter-cost note above, the same real-world-gap reasoning applies.
     if (!prePull) {
       currentDistanceMeters = distanceAtCastStart(
-        rs.skill,
+        castResolution.skill,
         defaultMeleeReachMeters,
         preferredDistanceMeters,
         currentDistanceMeters,
       )
       layoutLedger.recordStack(TARGET_DISTANCE_STATUS, startFrame, currentDistanceMeters)
     }
-    const occurringHits = rs.skill.hits.filter((h) => (h.conditions ?? []).every(holdsHere))
+    const nextStepSkillId = resolvedSteps[stepIndex + 1]?.skill.id
+    const hitLandsByNextStep = (hit: SkillHit): boolean =>
+      !hit.requiresNextStepSkillIds ||
+      (nextStepSkillId !== undefined && hit.requiresNextStepSkillIds.includes(nextStepSkillId))
+    const occurringHits = castResolution.skill.hits.filter(
+      (hit) => (hit.conditions ?? []).every(holdsHere) && hitLandsByNextStep(hit),
+    )
     const nominalCastLen = prePull
-      ? upperBoundCastFrames(rs)
+      ? upperBoundCastFrames(castResolution)
       : (() => {
           const maxFrame =
-            occurringHits.length > 0 ? Math.max(...occurringHits.map((h) => h.frame)) : -1
+            occurringHits.length > 0
+              ? Math.max(...occurringHits.map((hit) => resolvedHitFrame(hit, holdsHere)))
+              : -1
+          const gatedCastFrames = occurringHits.find(
+            (hit) => hit.requiresNextStepSkillIds && hit.castFramesWhenGated !== undefined,
+          )?.castFramesWhenGated
           return (
             activeVariantCastFrames(occurringHits, holdsHere) ??
-            (rs.skill.castFrames || maxFrame + 1)
+            gatedCastFrames ??
+            (castResolution.skill.castFrames || maxFrame + 1)
           )
         })()
     const castLen = quantiseToRenderFrame(nominalCastLen, renderPeriodFrames)
@@ -892,23 +985,27 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // same holds for a meter, which has no faithful frame-accurate placement
     // for a real-world gap of unknown length compressed into a few negative
     // frames.
-    const appliedMeterCosts = prePull
+    const meterDrainStarts = prePull
       ? undefined
-      : applyMeterCostsAndScheduleDrains(rs.skill, startFrame, startFrame + castLen)
+      : scheduleMeterDrainsAndFreezes(castResolution.skill, startFrame, startFrame + castLen)
     const landedHits =
       prePull || windowFramesOverride === null
         ? occurringHits
-        : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
+        : occurringHits.filter(
+            (hit) =>
+              hitLandingFrame(startFrame, resolvedHitFrame(hit, holdsHere)) <= windowFramesOverride,
+          )
     seedStepTriggers(
-      rs.skill,
+      castResolution.skill,
       landedHits,
       startFrame,
       prePull,
-      appliedMeterCosts?.starts,
-      appliedMeterCosts?.paidByMeter,
+      meterDrainStarts,
+      paidByMeter,
+      prePull ? Infinity : nextCursor,
     )
     laidSteps.push({
-      resolved: rs,
+      resolved: castResolution,
       stepIndex,
       prePull,
       startFrame,
@@ -922,6 +1019,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const spanStart = Math.min(0, -prePullBound)
   const rotationDurationSec = windowFrames / FPS
 
+  flushMeterEventsUpTo(Infinity)
   for (const meter of meters) {
     meter.advanceTo(windowFrames)
     for (const meterWarning of meter.warnings)
@@ -1075,8 +1173,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           const key = castScopedKey(cast.frame, cast.skill.id)
           castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
         }
+        const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
         for (const hit of cast.skill.hits) {
-          const hitFrame = hitLandingFrame(cast.frame, hit.frame)
+          const hitFrame = hitLandingFrame(cast.frame, resolvedHitFrame(hit, castHolds))
           if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
           for (const trigger of hit.triggers) {
             if (trigger.kind !== "castSkill") continue
@@ -1458,7 +1557,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   for (const ls of laidSteps) {
     for (const hit of ls.performedHits) {
       queue.push({
-        frame: hitLandingFrame(ls.startFrame, hit.frame),
+        frame: hitLandingFrame(
+          ls.startFrame,
+          resolvedHitFrame(hit, (condition) => layoutHolds(condition, ls.startFrame)),
+        ),
         seq: seq++,
         skill: ls.resolved.skill,
         hit,
@@ -1598,7 +1700,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       ) {
         liveWriter.applyTrigger(
           trigger,
-          trigger.appliesOnCastEnd ? castEndFrame(skill, castFrame) : frame,
+          trigger.appliesOnCastEnd
+            ? castEndFrame(skill, castFrame, (condition) => conditionHolds(condition, castFrame))
+            : frame,
           stepStart,
         )
         continue
@@ -1629,10 +1733,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               : (det.retainStacks ?? 0)
           recordStack(status.id, frame, clamp(retained, 0, maxStacks), stepStart)
           const sub = skillsById.get(det.skillId)
-          if (sub)
+          if (sub) {
+            const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
             for (const subHit of sub.hits) {
               queue.push({
-                frame: frame + subHit.frame,
+                frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds)),
                 seq: seq++,
                 skill: sub,
                 hit: subHit,
@@ -1640,14 +1745,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 stepStart,
               })
             }
+          }
         }
         continue
       }
       const sub = skillsById.get(trigger.targetId)
       if (!sub) continue
+      const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
       for (const subHit of sub.hits) {
         queue.push({
-          frame: hitLandingFrame(frame, subHit.frame),
+          frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds)),
           seq: seq++,
           skill: sub,
           hit: subHit,
@@ -1679,8 +1786,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
   function buildCasts(): RotationCast[] {
     const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
+      const stepHolds = (condition: TriggerCondition) => conditionHolds(condition, ls.startFrame)
       const lastHitFrame =
-        ls.performedHits.length > 0 ? Math.max(...ls.performedHits.map((h) => h.frame)) : 0
+        ls.performedHits.length > 0
+          ? Math.max(...ls.performedHits.map((hit) => resolvedHitFrame(hit, stepHolds)))
+          : 0
       const queryFrame = Math.max(
         ls.startFrame,
         ls.startFrame + ls.castLen - 1,

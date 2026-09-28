@@ -26,6 +26,7 @@ export const SKILL = {
   swordRChargeFollowUp: "bellstrikeUmbra-sword-r-charge-follow-up",
   swordRChargeFollowUp1HitCancel: "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
   spearheavy1Hit: "bellstrikeUmbra-spearheavy-1-hit",
+  swordChargeStage1Level0: "bellstrikeUmbra-sword-charge-stage-1-level-0",
   spearspecial1HitCancel: "bellstrikeUmbra-spearspecial-1-hit-cancel",
   spearspecial: "bellstrikeUmbra-spearspecial",
   bleedTick: "bellstrikeUmbra-bleed-tick",

@@ -1193,6 +1193,21 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   } else {
     delete hit.conditions
   }
+  if (Array.isArray(h.requiresNextStepSkillIds)) {
+    const skillIds = h.requiresNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.requiresNextStepSkillIds = skillIds
+    else delete hit.requiresNextStepSkillIds
+  } else if (h.requiresNextStepSkillIds !== undefined) {
+    delete hit.requiresNextStepSkillIds
+  }
+  if (
+    h.castFramesWhenGated !== undefined &&
+    (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
+  ) {
+    delete hit.castFramesWhenGated
+  }
   return hit
 }
 
@@ -1478,12 +1493,21 @@ function isMeterCost(value: unknown): value is MeterCost {
 function isMeterDrain(value: unknown): value is MeterDrain {
   if (!value || typeof value !== "object") return false
   const drain = value as Record<string, unknown>
-  return (
+  if (!(
     typeof drain.meterId === "string" &&
     !!drain.meterId &&
     typeof drain.perSecond === "number" &&
     typeof drain.fromFrame === "number" &&
     (drain.stopAfterSec === undefined || typeof drain.stopAfterSec === "number")
+  ))
+    return false
+  if (drain.chargeRelease === undefined) return true
+  const chargeRelease = drain.chargeRelease as Record<string, unknown>
+  return (
+    !!chargeRelease &&
+    typeof chargeRelease === "object" &&
+    typeof chargeRelease.fallbackSkillId === "string" &&
+    !!chargeRelease.fallbackSkillId
   )
 }
 
@@ -1514,6 +1538,15 @@ function importedHit(h: unknown): SkillHit {
   if (Array.isArray(c.conditions)) {
     const conditions = c.conditions.filter(isHitOrVariantCondition)
     if (conditions.length > 0) hit.conditions = conditions
+  }
+  if (Array.isArray(c.requiresNextStepSkillIds)) {
+    const skillIds = c.requiresNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.requiresNextStepSkillIds = skillIds
+  }
+  if (typeof c.castFramesWhenGated === "number" && Number.isFinite(c.castFramesWhenGated)) {
+    hit.castFramesWhenGated = c.castFramesWhenGated
   }
   return hit
 }

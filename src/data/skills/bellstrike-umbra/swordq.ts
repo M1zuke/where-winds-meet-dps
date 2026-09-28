@@ -17,14 +17,15 @@ export const swordq = defineSkill({
   castTag: CAST.swordMartialQ,
   triggersBuffs: [BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, ...STRATEGIC_SWORD_RECEIVES],
-  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
-  castFrames: 18,
+  // Cast length to the earliest next input and hit frame, the dash animation
+  // running first: in-game animation, 2026-09-24.
+  castFrames: 27,
   triggerable: true,
   // In-game values as of 2026-09-28: 4 m approach reach.
   reachMeters: 4,
   hits: [
     hit(0, {
-      frame: 10,
+      frame: 20,
       physMultiplier: 0.544068,
       attributeMultiplier: 0.816102,
       physFixed: 150.6,
@@ -33,5 +34,5 @@ export const swordq = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

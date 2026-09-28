@@ -26,7 +26,7 @@ const jadeflushKick = {
 
 // Shares Peakfall's Eonpour tier-6 Exhausted trigger and its 60 s cooldown
 // (in-game text of the trigger's own cooldown state, 2026-09-06). Cast length
-// to the earliest next input and hit frames: in-game animation, 2026-09-05.
+// to the earliest next input and hit frames: in-game animation, 2026-09-24.
 export const castlink = defineSkill({
   id: SKILL.castlink,
   classId: "bamboocutDraught",
@@ -50,7 +50,7 @@ export const castlink = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 14,
+      frame: 15,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
@@ -64,7 +64,7 @@ export const castlink = defineSkill({
       variants: [{ ...jadeflushKick, castFrames: 89 }],
     }),
     hit(1, {
-      frame: 28,
+      frame: 27,
       physMultiplier: 0.616165,
       attributeMultiplier: 0.9242475,
       physFixed: 171,
@@ -92,5 +92,5 @@ export const castlink = defineSkill({
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

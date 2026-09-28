@@ -14,6 +14,7 @@ import {
 import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
+import { SET_ID } from "../../src/data/sets/ids"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -454,6 +455,129 @@ describe("hit variant — cast-length override", () => {
       ),
     ).rotationDuration
     expect(seconds).toBeCloseTo((60 + 30) / FPS, 10)
+  })
+})
+
+describe("hit variant — frame override", () => {
+  function skillWithFrameVariant(variant: HitVariant) {
+    return makeSkill(CLASS, {
+      name: "Frame carrier",
+      castFrames: 90,
+      hits: [makeHit({ frame: 10, physMultiplier: 1, physFixed: 1, variants: [variant] })],
+    })
+  }
+
+  function hitFrameOf(skill: Skill, buffs: Buff[] = [], leadingStep?: Skill) {
+    const steps = leadingStep
+      ? [makeStep({ skillId: leadingStep.id }), makeStep({ skillId: skill.id })]
+      : [makeStep({ skillId: skill.id })]
+    const skills = leadingStep ? [leadingStep, skill] : [skill]
+    const result = simulateTimeline(timelineInputs(makeRotation(CLASS, { steps }), skills, buffs))
+    return result.timeline?.find((event) => event.skillName === skill.name)?.frame
+  }
+
+  it("an active variant's frame replaces the hit's own landing frame", () => {
+    const skill = skillWithFrameVariant({
+      id: "hv-frame-1",
+      label: "Later",
+      conditions: [],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      frame: 40,
+    })
+    expect(hitFrameOf(skill)).toBe(40)
+  })
+
+  it("an unmet condition leaves the hit's own frame in force", () => {
+    const gate = makeGate({ maxStacks: 10 })
+    const skill = skillWithFrameVariant({
+      id: "hv-frame-2",
+      label: "Later",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 5 }],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      frame: 40,
+    })
+    expect(hitFrameOf(skill, [gate])).toBe(10)
+  })
+
+  it("a condition met by an earlier step's mid-fight trigger moves the hit's frame too", () => {
+    const gate = makeGate({ maxStacks: 10 })
+    const granter = makeGranter(gate.id)
+    const skill = skillWithFrameVariant({
+      id: "hv-frame-3",
+      label: "Later",
+      conditions: [{ buffId: gate.id, op: "gte", stacks: 1 }],
+      physMultiplier: 1,
+      attributeMultiplier: 0,
+      physFixed: 1,
+      attributeFixed: 0,
+      frame: 40,
+    })
+    expect(hitFrameOf(skill, [gate], granter)).toBe(60 + 40)
+  })
+})
+
+// The buff engine's prepass (docs/TIMELINE.md § "Hit variants") is fed
+// exclusively from this walk, ahead of the real simulation — the class-buff
+// system's own Cleftpeak stack (a build-wide, ungated-by-skill "every
+// damaging hit grants a stack" module) is the only externally observable
+// read of what the prepass believes a hit's own landing frame was.
+describe("hit variant frame override — seen by the buff-engine prepass", () => {
+  function skillGrantingAt(variantFrame: number): Skill {
+    return makeSkill(CLASS, {
+      name: "Prepass Frame Carrier",
+      castFrames: 110,
+      hits: [
+        makeHit({ frame: 50, physMultiplier: 1, physFixed: 1000 }),
+        makeHit({
+          frame: 10,
+          physMultiplier: 1,
+          physFixed: 1,
+          variants: [
+            {
+              id: "hv-prepass-frame",
+              label: "Later",
+              conditions: [],
+              physMultiplier: 1,
+              attributeMultiplier: 0,
+              physFixed: 1,
+              attributeFixed: 0,
+              frame: variantFrame,
+            },
+          ],
+        }),
+      ],
+    })
+  }
+
+  function damageOfFixedHit(variantFrame: number): number {
+    const skill = skillGrantingAt(variantFrame)
+    const inputs: Inputs = {
+      ...umbraInputs,
+      customSkills: [skill],
+      customBuffs: [],
+      activeCustomRotation: makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] }),
+      set: SET_ID.cleftpeak,
+    }
+    return simulateTimeline(inputs).timeline!.find((event) => event.frame === 50)!.damage
+  }
+
+  it("a later variant frame delays the stack this hit grants, so an earlier fixed hit in the same cast lands before it, unboosted", () => {
+    // Granting before frame 50 (the fixed hit) lets its stack reach that hit;
+    // granting after it, at the resolved variant frame, does not — the
+    // prepass would only blur this distinction by reading the bare frame 10
+    // (itself before 50) regardless of which case is under test.
+    const grantsBeforeFixedHit = damageOfFixedHit(5)
+    const grantsAfterFixedHit = damageOfFixedHit(100)
+    expect(grantsAfterFixedHit).toBeLessThan(grantsBeforeFixedHit)
+    const shortfall = 1 - grantsAfterFixedHit / grantsBeforeFixedHit
+    expect(shortfall).toBeGreaterThan(0.005)
+    expect(shortfall).toBeLessThan(0.02)
   })
 })
 

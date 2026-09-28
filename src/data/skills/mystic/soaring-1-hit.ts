@@ -12,7 +12,9 @@ export const soaring1Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.soaring1Hit,
-  castFrames: 60,
+  // Cast length to the earliest next input and the hit frame: in-game
+  // animation, 2026-09-24.
+  castFrames: 76,
   triggerable: true,
   // In-game values as of 2026-09-28: a stationary cast, 15 m engagement
   // range — confirmed no scripted displacement despite the visible dash-in.
@@ -20,7 +22,7 @@ export const soaring1Hit = defineSkill({
   approach: "stationary",
   hits: [
     hit(0, {
-      frame: 0,
+      frame: 48,
       physMultiplier: 3.19609,
       attributeMultiplier: 4.794135,
       physFixed: 481.53,
@@ -28,5 +30,5 @@ export const soaring1Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

@@ -108,11 +108,11 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(eff.resistance).toBeCloseTo(0.45, 3)
   })
 
-  it("runs the T6-Bili rotation (~69.4 s) and lands within a loose band of the site's target", () => {
+  it("runs the T6-Bili rotation (~68.2 s) and lands within a loose band of the site's target", () => {
     const result = runEngine(inputs)
 
-    expect(result.rotationDuration).toBeGreaterThan(69.15)
-    expect(result.rotationDuration).toBeLessThan(69.65)
+    expect(result.rotationDuration).toBeGreaterThan(67.98)
+    expect(result.rotationDuration).toBeLessThan(68.48)
 
     const detonation = result.perSkill.find(
       (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
@@ -148,21 +148,21 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(41600)
-    expect(result.dps).toBeLessThan(41730)
-    expect(result.totalDamage).toBeGreaterThan(2885250)
-    expect(result.totalDamage).toBeLessThan(2899250)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1469100)
-    expect(detonation?.expectedDamage).toBeLessThan(1482100)
+    expect(result.dps).toBeGreaterThan(42460)
+    expect(result.dps).toBeLessThan(42590)
+    expect(result.totalDamage).toBeGreaterThan(2894450)
+    expect(result.totalDamage).toBeLessThan(2908450)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1470000)
+    expect(detonation?.expectedDamage).toBeLessThan(1483000)
 
-    // dps now sits ~14 % below the cached target and total damage ~2 % below
+    // dps now sits ~12 % below the cached target and total damage ~1 % below
     // it: the animation-accurate cast lengths lengthen the rotation by
     // several seconds, so the same hits land over a longer clock.
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.8566)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.8646)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.9772)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(0.9862)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.9304)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.9394)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.8752)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.8832)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.9835)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(0.9925)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.931)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.94)
   })
 })

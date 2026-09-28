@@ -654,3 +654,46 @@ describe("a function-valued meter capacity", () => {
     expect(capacityAt(0.66)).toBe(100)
   })
 })
+
+describe("a previous step's late sub-cast hit does not delay the next step's cast-start cost", () => {
+  it("keeps the meter cursor from being dragged past the following step's own start", () => {
+    const echoed = makeSkill(CLASS, {
+      name: "Echoed",
+      castFrames: 6,
+      hits: [makeHit({ frame: 200, physMultiplier: 1, physFixed: 1 })],
+    })
+    const triggersLateEcho = makeSkill(CLASS, {
+      name: "Triggers Late Echo",
+      castFrames: 6,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 1,
+          triggers: [{ kind: "castSkill", targetId: echoed.id, stacks: 1, condition: null }],
+        }),
+      ],
+    })
+    const costsAtStart = makeSkill(CLASS, {
+      name: "Costs At Start",
+      castFrames: 6,
+      meterCosts: [{ meterId: METER_ID, amount: 20 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const observer = makeSkill(CLASS, {
+      name: "Observer",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const result = simulateTimeline(
+      timelineInputs(rotationOf([triggersLateEcho, costsAtStart, observer]), [
+        triggersLateEcho,
+        costsAtStart,
+        observer,
+        echoed,
+      ]),
+    )
+    expect(result.warnings.some((warning) => warning.includes("before the cursor"))).toBe(false)
+    expect(meterLevelsAt(result, 2)?.amount).toBe(60)
+  })
+})

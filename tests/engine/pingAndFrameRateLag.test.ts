@@ -6,6 +6,7 @@ import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import { makeDebuff, type Debuff } from "../../src/engine/debuff"
 import type { Inputs } from "../../src/engine/types"
+import { applyDot, detonateDot } from "../../src/definitions/skills/triggers"
 
 // Scoped to Bellstrike Umbra only because `buildContext` needs a registered
 // class — every skill, buff and debuff below is synthetic, not an anchor.
@@ -159,6 +160,55 @@ describe("ping and average fps — adds no round trip to idle delay steps or gen
 
     expect(spacingBetweenHits(0)).toBe(3)
     expect(spacingBetweenHits(100)).toBe(3)
+  })
+
+  it("still quantises a detonation's own offset from its detonating hit to the input frame rate", () => {
+    const detonationSkill = makeSkill(CLASS, {
+      name: "Detonation",
+      castFrames: 10,
+      triggerable: true,
+      hits: [makeHit({ frame: 5, physMultiplier: 1, physFixed: 50 })],
+    })
+    const stacker = makeDebuff(CLASS, {
+      name: "Stacker",
+      maxStacks: 1,
+      detonation: { skillId: detonationSkill.id },
+    })
+    const detonatingSkill = makeSkill(CLASS, {
+      name: "Detonating",
+      castFrames: 10,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 50,
+          triggers: [
+            applyDot({ target: stacker.id, stacks: 1, condition: null }),
+            detonateDot({ target: stacker.id, stacks: 0, condition: null }),
+          ],
+        }),
+      ],
+    })
+    const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: detonatingSkill.id })] })
+
+    const spacingBetweenHits = (averageFps: number): number => {
+      const result = simulateTimeline(
+        timelineInputs(
+          rotation,
+          [detonatingSkill, detonationSkill],
+          { pingMs: 0, averageFps },
+          [],
+          [stacker],
+        ),
+      )
+      const hitFrames = result
+        .timeline!.filter((event) => event.kind === "hit")
+        .map((event) => event.frame)
+      return hitFrames[1] - hitFrames[0]
+    }
+
+    expect(spacingBetweenHits(60)).toBe(5)
+    expect(spacingBetweenHits(30)).toBe(6)
   })
 })
 

@@ -13,14 +13,16 @@ export const fireBreath2Hit = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.dragonSBreath2Hits,
-  castFrames: 100,
+  // Cast length to the earliest next input and hit frames: in-game
+  // animation, 2026-09-24.
+  castFrames: 137,
   triggerable: true,
   // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
   hits: [
     hit(0, {
-      frame: 40,
+      frame: 36,
       physMultiplier: 1.40692,
       attributeMultiplier: 2.11038,
       physFixed: 212.49,
@@ -28,7 +30,7 @@ export const fireBreath2Hit = defineSkill({
       triggers: [applyDebuff({ target: DEBUFF.combustion, extendFrames: 90 })],
     }),
     hit(1, {
-      frame: 70,
+      frame: 102,
       physMultiplier: 1.40692,
       attributeMultiplier: 2.11038,
       physFixed: 212.49,
@@ -36,13 +38,13 @@ export const fireBreath2Hit = defineSkill({
       triggers: [
         applyDebuff({
           target: DEBUFF.combustion,
-          extendFrames: 60,
+          extendFrames: 90,
           extendOnly: true,
         }),
       ],
     }),
     hit(2, {
-      frame: 100,
+      frame: 108,
       physMultiplier: 1.40692,
       attributeMultiplier: 2.11038,
       physFixed: 212.49,
@@ -57,5 +59,5 @@ export const fireBreath2Hit = defineSkill({
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

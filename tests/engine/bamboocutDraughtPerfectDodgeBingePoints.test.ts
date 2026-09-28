@@ -15,7 +15,7 @@ const CLASS = "bamboocutDraught"
 
 const idlePad = makeSkill(CLASS, {
   name: "Test Idle",
-  castFrames: 12,
+  castFrames: 40,
   hits: [makeHit({ frame: 0 })],
 })
 

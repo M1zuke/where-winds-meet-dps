@@ -45,7 +45,7 @@ describe("extraDebuffHits wiring", () => {
       expect(h.triggers[0].extendOnly).toBe(true)
       return h.triggers[0].extendFrames
     })
-    expect(extendFrames).toEqual([Math.round(1 * FPS), Math.round(1.5 * FPS)])
+    expect(extendFrames).toEqual([Math.round(1.5 * FPS), Math.round(1.5 * FPS)])
   })
 
   // `timeline.ts` only consults `extendOnly` inside its `extendFrames != null`

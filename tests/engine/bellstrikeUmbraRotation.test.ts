@@ -30,9 +30,18 @@ import { ATTUNE } from "../../src/data/skills/ids"
 import type { SkillHit } from "../../src/engine/skill"
 
 // Each form's own Sword Horizon variant ends its own cast at a different
-// length, so it is excluded from a hits-are-a-prefix comparison.
-const withoutVariants = (hits: readonly SkillHit[]) =>
-  hits.map(({ variants: _variants, ...rest }) => rest)
+// length, and a hit cut short straight into the follow-up gates on the next
+// rotation step rather than on any of this comparison's own casts — both
+// excluded from a hits-are-a-prefix comparison.
+const withoutSituational = (hits: readonly SkillHit[]) =>
+  hits.map(
+    ({
+      variants: _variants,
+      requiresNextStepSkillIds: _requiresNextStepSkillIds,
+      castFramesWhenGated: _castFramesWhenGated,
+      ...rest
+    }) => rest,
+  )
 
 const CLASS = "bellstrikeUmbra"
 
@@ -78,17 +87,24 @@ describe("the built-in Bellstrike Umbra default rotation", () => {
     }
   })
 
+  // A hit's own `castFramesWhenGated` is the cast length it actually lands
+  // inside of — the skill's static `castFrames` is what an ungated cast of
+  // the same skill keeps instead.
+  const castLengthFor = (skill: (typeof RETIMED_SKILLS)[number], hit: SkillHit) =>
+    hit.castFramesWhenGated ?? skill.castFrames
+
   it("every hit of a retimed module lands inside its cast", () => {
     for (const skill of RETIMED_SKILLS) {
-      const maxHitFrame = Math.max(...skill.hits.map((hit) => hit.frame))
-      expect(maxHitFrame, skill.id).toBeLessThan(skill.castFrames)
+      for (const hit of skill.hits) {
+        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(castLengthFor(skill, hit))
+      }
     }
   })
 
   it("no retimed module has a hit on or past its own castFrames", () => {
     for (const skill of RETIMED_SKILLS) {
       for (const hit of skill.hits) {
-        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(skill.castFrames)
+        expect(hit.frame, `${skill.id} ${hit.id}`).toBeLessThan(castLengthFor(skill, hit))
       }
     }
   })
@@ -96,15 +112,15 @@ describe("the built-in Bellstrike Umbra default rotation", () => {
 
 describe("a cancel form shares its full form's hits over a shorter cast", () => {
   it("Sword Martial QQ 1-Hit [Cancel] keeps only the first hit", () => {
-    expect(withoutVariants(swordqFollowUp1HitCancel.hits)).toEqual(
-      withoutVariants([swordqfollowup.hits[0]]),
+    expect(withoutSituational(swordqFollowUp1HitCancel.hits)).toEqual(
+      withoutSituational([swordqfollowup.hits[0]]),
     )
     expect(swordqFollowUp1HitCancel.castFrames).toBeLessThan(swordqfollowup.castFrames)
   })
 
   it("Sword Martial QQ 2-Hit [Cancel] keeps the first two hits", () => {
-    expect(withoutVariants([swordqFollowUp2HitCancel.hits[0]])).toEqual(
-      withoutVariants([swordqfollowup.hits[0]]),
+    expect(withoutSituational([swordqFollowUp2HitCancel.hits[0]])).toEqual(
+      withoutSituational([swordqfollowup.hits[0]]),
     )
     expect(swordqFollowUp2HitCancel.castFrames).toBeLessThan(swordqfollowup.castFrames)
   })
@@ -129,7 +145,9 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     for (let index = 0; index < chain.length - 1; index++) {
       const shorter = chain[index]
       const longer = chain[index + 1]
-      expect(shorter.hits).toEqual(longer.hits.slice(0, shorter.hits.length))
+      expect(withoutSituational(shorter.hits)).toEqual(
+        withoutSituational(longer.hits.slice(0, shorter.hits.length)),
+      )
       expect(shorter.castFrames).toBeLessThan(longer.castFrames)
     }
   })
@@ -139,7 +157,18 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
   })
 
   it("Spear Special (1 Hit Cancel) keeps Sweep All's Shattered Stone hit and its first damage hit, ending before its own cast", () => {
-    expect(spearspecial1HitCancel.hits).toEqual(spearspecial.hits.slice(0, 2))
+    // The cancel form's own copy of hit 1 carries its own cast-length
+    // override on the River Flow variant, everything else shared.
+    const [shatteredStone, sharedHit] = spearspecial.hits
+    expect(spearspecial1HitCancel.hits).toEqual([
+      shatteredStone,
+      {
+        ...sharedHit,
+        variants: sharedHit.variants!.map((variant) =>
+          variant.label === "River Flow" ? { ...variant, castFrames: 19 } : variant,
+        ),
+      },
+    ])
     expect(spearspecial1HitCancel.castFrames).toBeLessThan(spearspecial.castFrames)
   })
 
@@ -158,8 +187,8 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
     for (let index = 0; index < chain.length - 1; index++) {
       const shorter = chain[index]
       const longer = chain[index + 1]
-      expect(withoutVariants(shorter.hits)).toEqual(
-        withoutVariants(longer.hits.slice(0, shorter.hits.length)),
+      expect(withoutSituational(shorter.hits)).toEqual(
+        withoutSituational(longer.hits.slice(0, shorter.hits.length)),
       )
       expect(shorter.castFrames).toBeLessThan(longer.castFrames)
     }
@@ -168,8 +197,8 @@ describe("a cancel form shares its full form's hits over a shorter cast", () => 
 
   it("SwordSpecial 4-Hit's hit 3 matches the 3-Hit cancel's own hit 3 except for the companion-cast trigger", () => {
     const [hit0, hit1, hit2] = swordspecial4Hit.hits
-    expect(withoutVariants([hit0, hit1])).toEqual(
-      withoutVariants(swordspecial3Hit.hits.slice(0, 2)),
+    expect(withoutSituational([hit0, hit1])).toEqual(
+      withoutSituational(swordspecial3Hit.hits.slice(0, 2)),
     )
     const [, , cancelHit2] = swordspecial3Hit.hits
     expect(hit2.triggers.slice(0, cancelHit2.triggers.length)).toEqual(cancelHit2.triggers)

@@ -17,7 +17,8 @@ export const perfectDodgeFull = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.perfectDodgeFull,
   triggersBuffs: [BUFF.mirageBonus, BUFF.disintegration],
-  castFrames: 50,
+  // Cast length to the earliest next input: in-game animation, 2026-09-24.
+  castFrames: 25,
   triggerable: true,
   // In-game values as of 2026-09-28: dodge and Perfect Dodge move in the
   // player's own input direction — modelled as no change, an assumption. A
@@ -42,5 +43,5 @@ export const perfectDodgeFull = defineSkill({
     }),
   ],
   createdAt: "2026-09-06T00:00:00.000Z",
-  updatedAt: "2026-09-06T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

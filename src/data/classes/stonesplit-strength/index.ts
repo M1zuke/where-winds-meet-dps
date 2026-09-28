@@ -17,6 +17,11 @@ import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import { bladeMomentumMeter } from "./bladeMomentumMeter"
 
+const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
+const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS).filter(
+  (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
+)
+
 export const stonesplitStrength = defineClass({
   id: CLASS_ID,
   displayName: "Stonesplit Strength",
@@ -47,7 +52,7 @@ export const stonesplitStrength = defineClass({
   defaultMeleeReachMeters: 4,
   meters: [enduranceMeter, bladeMomentumMeter],
   critBoostWeaponTypes: [],
-  skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
+  skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,

@@ -33,7 +33,8 @@ export const bleedDetonation = defineSkill({
   triggerable: true,
   hits: [
     hit(0, {
-      frame: 0,
+      // In-game values as of 2026-09-24: the burst lands 0.1 s after the detonating hit.
+      frame: 6,
       physMultiplier: 2.4,
       attributeMultiplier: 3.6,
       physFixed: 0,

@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 58,
+        "count": 59,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -30,6 +30,7 @@
           "bellstrikeUmbra-sword-charge-stage-1-3-hit",
           "bellstrikeUmbra-sword-charge-stage-1-4-hit",
           "bellstrikeUmbra-sword-charge-stage-1-5-hit",
+          "bellstrikeUmbra-sword-charge-stage-1-level-0",
           "bellstrikeUmbra-sword-martial-qqq",
           "bellstrikeUmbra-sword-r-charge-follow-up",
           "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
@@ -63,7 +64,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "d42eb75cde5e61e5a52325c6402ed19d99dfdd3642ca82a0840ff9986d5c67d3"
+        "digest": "7c0c51a0ba6c64703c9a01c38d99fe386c5286ba54ed730b257fca525060f3b1"
       },
       "debuffs": {
         "count": 7,
@@ -123589,7 +123590,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "8bc38f4017149ae85202ced1e8f127e5a16939f85b6e4700497f06651bfb451b"
+        "digest": "c0b61e8697541ab215eaba52fd96970da47ca10be47884c0ee563d7f74dd2a0a"
       },
       "debuffs": {
         "count": 5,
@@ -124984,7 +124985,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "f6fe670133d3e25711869d577ad283bbfdaccc20cd99fe0b97dd866bdbfd259a"
+        "digest": "a5d1a642e1d932ce87d098cf7eb1a125be40e3bab110913ec270b64a75a67636"
       },
       "debuffs": {
         "count": 5,
@@ -126374,7 +126375,7 @@
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull"
         ],
-        "digest": "372c45500b74239e95589bc5becc277fcf132eee44a3e50c04b9522e3ed339a4"
+        "digest": "d1176b82fbd87e099c549a8cc8bd0f6785b002f452cf36968e2b2bbf7214e5e2"
       },
       "debuffs": {
         "count": 11,
@@ -127682,7 +127683,7 @@
           "mystic-soaring-1-hit",
           "mystic-toad-cancel"
         ],
-        "digest": "ddabc98b56b058f45f1591283f8e5a324ea2a154e037cf329e47266cb3696a00"
+        "digest": "6928b964431f71e10c3fe2de26f0e19c784c120cd66f3d961cf1eaec1769ebb5"
       },
       "debuffs": {
         "count": 8,

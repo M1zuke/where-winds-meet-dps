@@ -37,6 +37,8 @@ interface HitSpec {
   triggers?: SkillHit["triggers"]
   variants?: HitVariant[]
   conditions?: SkillHit["conditions"]
+  requiresNextStepSkillIds?: SkillHit["requiresNextStepSkillIds"]
+  castFramesWhenGated?: SkillHit["castFramesWhenGated"]
 }
 
 // The array POSITION is the id (`hit-0`, `hit-1`, …) — verified safe: every
@@ -55,6 +57,12 @@ export function hit(index: number, spec: HitSpec): SkillHit {
     triggers: spec.triggers ?? [],
     ...(spec.variants ? { variants: spec.variants } : {}),
     ...(spec.conditions ? { conditions: spec.conditions } : {}),
+    ...(spec.requiresNextStepSkillIds
+      ? { requiresNextStepSkillIds: spec.requiresNextStepSkillIds }
+      : {}),
+    ...(spec.castFramesWhenGated !== undefined
+      ? { castFramesWhenGated: spec.castFramesWhenGated }
+      : {}),
   }
 }
 

@@ -11,6 +11,7 @@ import {
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healCalmwatersPerfectDodgeGain } from "../../src/migrations/customSkills/V42__calmwatersPerfectDodgeGain"
 import { healSkill as healEvasiveChargeDodgeRefund } from "../../src/migrations/customSkills/V43__evasiveChargeDodgeRefund"
+import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -65,10 +66,12 @@ const GAINS_ADDED_BY_LATER_STEP = new Set([
 ])
 
 function throughLaterHops(id: string, skill: Skill): Skill {
-  if (!GAINS_ADDED_BY_LATER_STEP.has(id)) return skill
-  return healEvasiveChargeDodgeRefund(
-    healCalmwatersPerfectDodgeGain(healMeterFieldsAndGains(skill)),
-  ) as Skill
+  const withGains = GAINS_ADDED_BY_LATER_STEP.has(id)
+    ? (healEvasiveChargeDodgeRefund(
+        healCalmwatersPerfectDodgeGain(healMeterFieldsAndGains(skill)),
+      ) as Skill)
+    : skill
+  return healCastLengthAndHitFrameRepairs(withGains) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {

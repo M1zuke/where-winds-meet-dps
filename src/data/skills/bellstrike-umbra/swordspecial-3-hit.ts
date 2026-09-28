@@ -19,8 +19,8 @@ export const swordspecial3Hit = defineSkill({
   receives: STRATEGIC_SWORD_RECEIVES,
   castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES],
   meterCosts: [INNER_BALANCE_STRIKE_III_COST],
-  // A player-ended form: castFrames sits 11 frames past the frame at which the animation would accept the next input (in-game animation, 2026-09-09).
-  castFrames: 57,
+  // Cast length to the earliest next input, without Sword Horizon: in-game animation, 2026-09-24.
+  castFrames: 71,
   triggerable: true,
   hits: [
     {
@@ -44,5 +44,5 @@ export const swordspecial3Hit = defineSkill({
     SWORDSPECIAL_HITS[2]!,
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

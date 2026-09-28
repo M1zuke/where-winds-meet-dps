@@ -80,7 +80,8 @@ export const SPEARSPECIAL_HITS: SkillHit[] = [
     triggers: payloadTriggers(),
     // River Flow before Spring Surge: `selectHitVariant` takes the first
     // variant whose conditions are met, and both are true once River Flow
-    // (or Empowered) is reached — see the layering note above.
+    // (or Empowered) is reached — see the layering note above. Both land 2 f
+    // later than the plain form's own hit 1: in-game animation, 2026-09-24.
     variants: [
       {
         id: "hv-spearspecial-hit-1-river-flow",
@@ -90,6 +91,7 @@ export const SPEARSPECIAL_HITS: SkillHit[] = [
         attributeMultiplier: 1.5409584,
         physFixed: 284.64,
         attributeFixed: 155.04,
+        frame: 18,
       },
       {
         id: "hv-spearspecial-hit-1-spring-surge",
@@ -99,6 +101,7 @@ export const SPEARSPECIAL_HITS: SkillHit[] = [
         attributeMultiplier: 1.284132,
         physFixed: 237.2,
         attributeFixed: 129.2,
+        frame: 18,
       },
     ],
   }),

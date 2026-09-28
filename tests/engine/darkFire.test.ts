@@ -219,8 +219,10 @@ describe("Zenith detonation extends Smolder", () => {
     // later detonation's extend-only trigger finds nothing active to extend.
     const noZenith = ticksFor(5)
     const oneZenith = ticksFor(6)
-    expect(oneZenith - noZenith).toBe(11)
-    expect(ticksFor(12) - oneZenith).toBe(0)
+    expect(oneZenith - noZenith).toBe(12)
+    // The corrected frame timings move a later detonation's own attempt one
+    // tick's width closer to the cap, close enough to still add one tick.
+    expect(ticksFor(12) - oneZenith).toBe(1)
   })
 
   it("never shortens an already-longer window — a Zenith detonation can only extend, never truncate", () => {

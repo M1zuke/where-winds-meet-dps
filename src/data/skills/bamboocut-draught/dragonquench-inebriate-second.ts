@@ -9,11 +9,11 @@ import {
   dragonquenchStagesAt,
 } from "./dragonquench-inebriate"
 
-export const dragonquenchSecondStages = dragonquenchStagesAt([16, 36, 60, 78, 84, 90])
+export const dragonquenchSecondStages = dragonquenchStagesAt([16, 36, 60, 79, 85, 91])
 
 // The second combo of a Deepdaze plays 15 % faster. Cast length (the four
 // stages to their earliest next input) and hit frames: in-game animation,
-// 2026-09-05.
+// 2026-09-24.
 export const dragonquenchInebriateSecond = defineSkill({
   id: SKILL.dragonquenchInebriateSecond,
   classId: "bamboocutDraught",
@@ -28,10 +28,10 @@ export const dragonquenchInebriateSecond = defineSkill({
   neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
-  castFrames: 123,
+  castFrames: 124,
   reachMeters: DRAGONQUENCH_REACH_METERS,
   displacement: DRAGONQUENCH_DISPLACEMENT,
   hits: dragonquenchSecondStages,
   createdAt: "2026-09-05T00:00:00.000Z",
-  updatedAt: "2026-09-06T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

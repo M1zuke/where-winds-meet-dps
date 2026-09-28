@@ -20,8 +20,8 @@ export const swordRChargeFollowUp = defineSkill({
   // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
   castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,
-  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
-  castFrames: 86,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-24.
+  castFrames: 87,
   triggerable: true,
   hits: [
     hit(0, {
@@ -37,7 +37,7 @@ export const swordRChargeFollowUp = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 41,
+      frame: 42,
       physMultiplier: 0.488401,
       attributeMultiplier: 0.732602,
       physFixed: 0,
@@ -51,5 +51,5 @@ export const swordRChargeFollowUp = defineSkill({
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

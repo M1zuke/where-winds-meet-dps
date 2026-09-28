@@ -25,6 +25,7 @@ import { umblightcharge } from "./umblightcharge"
 import { umblightchargeLift } from "./umblightcharge-lift"
 import { umbqPrepull } from "./umbq-prepull"
 import { umbq } from "./umbq"
+import { deflectCancel } from "./deflect-cancel"
 
 export const CLASS_ID = "silkbindJade"
 
@@ -56,4 +57,5 @@ export const SKILLS: Skill[] = [
   umblightchargeLift,
   umbqPrepull,
   umbq,
+  deflectCancel,
 ]

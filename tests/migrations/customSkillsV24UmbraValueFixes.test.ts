@@ -21,6 +21,7 @@ import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "../../src/migrations/customSkills/V41__wolfchasersArtSweepAllEnduranceGain"
+import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -542,7 +543,12 @@ describe("V24__umbraValueFixes migration step", () => {
       "bellstrikeUmbra-spearheavy",
       "bellstrikeUmbra-spearspecial-1-hit-cancel",
     ]) {
-      const healed = skillIn(result.blob, id)
+      // V45 later corrects a further round of cast lengths and hit frames on
+      // some of these same ids — a no-op on every id it does not target.
+      const healed = healCastLengthAndHitFrameRepairs(skillIn(result.blob, id)) as Record<
+        string,
+        unknown
+      >
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.tags, id).toEqual(builtin.tags)
       expect(healed.castFrames, id).toEqual(builtin.castFrames)
@@ -565,10 +571,8 @@ describe("V24__umbraValueFixes migration step", () => {
       // id here.
       const meterHealed = healMeterFieldsAndGains(skillIn(result.blob, id))
       const modifierHealed = healMeterModifierGains(meterHealed)
-      const healed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed) as Record<
-        string,
-        unknown
-      >
+      const enduranceHealed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed)
+      const healed = healCastLengthAndHitFrameRepairs(enduranceHealed) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)
     }

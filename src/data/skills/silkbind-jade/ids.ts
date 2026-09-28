@@ -26,6 +26,7 @@ export const SKILL = {
   fanheavypursuit5Hit: "silkbindJade-fanheavypursuit-5-hit",
   healerBuff: "silkbindJade-healer-buff",
   healerExtension: "silkbindJade-healer-extension",
+  deflectCancel: "silkbindJade-deflect-cancel",
 } as const
 
 export const DEBUFF = {

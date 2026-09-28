@@ -113,6 +113,7 @@ export const CAST = {
   swordChargeStage13Hit: "cast:swordChargeStage13Hit",
   swordChargeStage14Hit: "cast:swordChargeStage14Hit",
   swordChargeStage15Hit: "cast:swordChargeStage15Hit",
+  swordChargeStage1Level0: "cast:swordChargeStage1Level0",
   swordHeavyCharged: "cast:swordHeavyCharged",
   swordHeavyCharged2Hit: "cast:swordHeavyCharged2Hit",
   swordHeavyChargedPrepull: "cast:swordHeavyChargedPrepull",

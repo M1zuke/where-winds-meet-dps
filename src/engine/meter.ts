@@ -84,21 +84,36 @@ export class MeterEngine {
     return { rate: total, active }
   }
 
+  // Shared by `advanceTo` and `projectDrainEmptyAt` so the two can never
+  // disagree on when a drain empties the meter mid-hold.
+  private stepFrame(
+    frame: number,
+    amount: number,
+    extraDrainPerSecond: number,
+  ): { amount: number; drainRate: number; emptied: boolean } {
+    const { rate: drainRate, active } = this.drainAt(frame)
+    const regenPerSecond =
+      active || frame < this.pauseUntilFrame
+        ? 0
+        : this.def.regenPerSecond * this.regenMultiplierAt(frame, amount, this.capacity)
+    const wasDepleted = amount <= 1e-9
+    const next = Math.max(
+      0,
+      Math.min(
+        this.capacity,
+        amount + (regenPerSecond - drainRate - extraDrainPerSecond) / this.fps,
+      ),
+    )
+    return { amount: next, drainRate, emptied: !wasDepleted && next <= 1e-9 }
+  }
+
   advanceTo(toFrame: number): void {
     if (toFrame <= this.frame) return
     while (this.frame < toFrame) {
-      const { rate: drainRate, active } = this.drainAt(this.frame)
-      const regenPerSecond =
-        active || this.frame < this.pauseUntilFrame
-          ? 0
-          : this.def.regenPerSecond * this.regenMultiplierAt(this.frame, this.amount, this.capacity)
-      const wasDepleted = this.amount <= 1e-9
+      const { amount, drainRate, emptied } = this.stepFrame(this.frame, this.amount, 0)
       this.frame++
-      this.amount = Math.max(
-        0,
-        Math.min(this.capacity, this.amount + (regenPerSecond - drainRate) / this.fps),
-      )
-      if (drainRate > 0 && !wasDepleted && this.amount <= 1e-9)
+      this.amount = amount
+      if (drainRate > 0 && emptied)
         this.warnings.push({
           frame: this.frame,
           meterId: this.def.id,
@@ -125,6 +140,22 @@ export class MeterEngine {
       this.pauseUntilFrame = appliedFrame + this.def.regenPauseAfterSpendSec * this.fps
     this.record()
     return amount
+  }
+
+  // docs/TIMELINE.md § "Meters" — a probe, not a commitment: it never moves
+  // the meter's own cursor, so a hold that turns out reachable costs nothing
+  // to have checked.
+  projectDrainEmptyAt(fromFrame: number, perSecond: number, holdFrames: number): number | null {
+    let amount = this.amount
+    for (let frame = this.frame; frame < fromFrame; frame++) {
+      amount = this.stepFrame(frame, amount, 0).amount
+    }
+    for (let elapsed = 1; elapsed <= holdFrames; elapsed++) {
+      const step = this.stepFrame(fromFrame + elapsed - 1, amount, perSecond)
+      amount = step.amount
+      if (step.emptied) return elapsed
+    }
+    return null
   }
 
   startDrain(

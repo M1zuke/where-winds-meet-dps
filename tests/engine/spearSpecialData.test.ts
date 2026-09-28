@@ -87,7 +87,25 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       first.variants!.indexOf(springSurgeVariant(first)),
     )
 
-    expect(cancel[0].hits).toEqual([spearSpecial[0].hits[0], first])
+    // The cancel form's own copy of hit 1 carries its own cast-length
+    // override on the River Flow variant (its interrupt window opens later
+    // under River Flow than plain) — everything else about the hit is
+    // shared with the full form.
+    const cancelRiverFlowVariant = riverFlowVariant(cancel[0].hits[1])
+    expect(cancelRiverFlowVariant.castFrames).toBe(19)
+    expect({ ...cancelRiverFlowVariant, castFrames: undefined }).toEqual({
+      ...riverFlowVariant(first),
+      castFrames: undefined,
+    })
+    expect(cancel[0].hits).toEqual([
+      spearSpecial[0].hits[0],
+      {
+        ...first,
+        variants: first.variants!.map((variant) =>
+          variant.label === "River Flow" ? { ...variant, castFrames: 19 } : variant,
+        ),
+      },
+    ])
   })
 
   it("each damage hit's six triggers: 1×applyDot(bleed) on River Flow alone, 2×applyDot(bleed) + 1×castSkill(Blood Burst) + 1×applyBuff(cooldown, sets the marker) + 1×meterDelta(Endurance) on Empowered — never detonateDot", () => {

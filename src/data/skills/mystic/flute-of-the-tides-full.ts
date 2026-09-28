@@ -15,7 +15,9 @@ export const fluteOfTheTidesFull = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.fluteOfTheTidesFull,
-  castFrames: 162,
+  // Cast length to the earliest next input and hit frames: in-game
+  // animation, 2026-09-24.
+  castFrames: 198,
   triggerable: true,
   // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.
   reachMeters: 40,
@@ -23,21 +25,21 @@ export const fluteOfTheTidesFull = defineSkill({
   triggersBuffs: [BUFF.fluteArrival],
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 3.93721,
-      attributeMultiplier: 5.905815,
-      physFixed: 855.92,
-      attributeFixed: 0,
-    }),
-    hit(1, {
-      frame: 81,
-      physMultiplier: 3.93721,
-      attributeMultiplier: 5.905815,
-      physFixed: 855.92,
+      frame: 78,
+      physMultiplier: 1.47645,
+      attributeMultiplier: 2.214675,
+      physFixed: 320.97,
       attributeFixed: 0,
       triggers: [applyDebuff({ target: DEBUFF.fluteRipple })],
     }),
+    hit(1, {
+      frame: 192,
+      physMultiplier: 3.93721,
+      attributeMultiplier: 5.905815,
+      physFixed: 855.92,
+      attributeFixed: 0,
+    }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

@@ -93,6 +93,50 @@ describe("isSkill — validation", () => {
     void _drop
     expect(isSkill(legacy)).toBe(true)
   })
+
+  it("accepts a hit's own requiresNextStepSkillIds and castFramesWhenGated, rejects malformed ones", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Next Step Gated",
+      hits: [makeHit({ requiresNextStepSkillIds: ["sk-follow-up"], castFramesWhenGated: 86 })],
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(
+      isSkill({
+        ...skill,
+        hits: [{ ...skill.hits[0], requiresNextStepSkillIds: "sk-follow-up" }],
+      }),
+    ).toBe(false)
+    expect(isSkill({ ...skill, hits: [{ ...skill.hits[0], requiresNextStepSkillIds: [] }] })).toBe(
+      false,
+    )
+    expect(isSkill({ ...skill, hits: [{ ...skill.hits[0], castFramesWhenGated: "soon" }] })).toBe(
+      false,
+    )
+  })
+
+  it("accepts a meter drain's own chargeRelease fallback, rejects a malformed one", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Charged",
+      meterDrains: [
+        {
+          meterId: "endurance",
+          perSecond: 20,
+          fromFrame: 0,
+          chargeRelease: { fallbackSkillId: "sk-fallback" },
+        },
+      ],
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(
+      isSkill({
+        ...skill,
+        meterDrains: [{ ...skill.meterDrains![0], chargeRelease: { fallbackSkillId: "" } }],
+      }),
+    ).toBe(false)
+    expect(
+      isSkill({ ...skill, meterDrains: [{ ...skill.meterDrains![0], chargeRelease: "soon" }] }),
+    ).toBe(false)
+  })
 })
 
 describe("isHitTrigger — the two logic-free DoT link kinds", () => {
@@ -328,6 +372,42 @@ describe("storage round-trip", () => {
     } catch {}
   })
 
+  it("save → load preserves a hit's own requiresNextStepSkillIds and castFramesWhenGated", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Saved Next Step Gated Skill",
+      hits: [
+        makeHit({
+          physMultiplier: 1,
+          physFixed: 10,
+          requiresNextStepSkillIds: ["bellstrikeUmbra-follow-up"],
+          castFramesWhenGated: 86,
+        }),
+      ],
+    })
+    saveCustomSkill(skill)
+    const loaded = loadCustomSkillsForClass(CLASS)
+    const found = loaded.find((candidate) => candidate.id === skill.id)
+    expect(found!.hits[0].requiresNextStepSkillIds).toEqual(["bellstrikeUmbra-follow-up"])
+    expect(found!.hits[0].castFramesWhenGated).toBe(86)
+  })
+
+  it("load drops a stored hit's malformed requiresNextStepSkillIds and castFramesWhenGated instead of crashing", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Malformed Next Step Gated Skill",
+      hits: [makeHit({ physMultiplier: 1, physFixed: 10 })],
+    }) as unknown as Record<string, unknown>
+    const hit = (skill.hits as Record<string, unknown>[])[0]
+    hit.requiresNextStepSkillIds = "bellstrikeUmbra-follow-up"
+    hit.castFramesWhenGated = "not-a-number"
+    kvStore.set("wwm.customSkills", JSON.stringify({ v: 3, skills: [skill] }))
+    const found = loadCustomSkillsForClass(CLASS).find(
+      (candidate) => candidate.name === "Malformed Next Step Gated Skill",
+    )
+    expect(found).toBeTruthy()
+    expect(found!.hits[0].requiresNextStepSkillIds).toBeUndefined()
+    expect(found!.hits[0].castFramesWhenGated).toBeUndefined()
+  })
+
   it("save → load preserves hits + triggers", () => {
     const s = makeSkill(CLASS, {
       name: "Saved Skill",
@@ -458,6 +538,64 @@ describe("storage round-trip", () => {
     })
     const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
     expect(imported.castConditions).toEqual([{ buffId: "bf-gate", op: "gte", stacks: 1 }])
+  })
+
+  it("export → import carries a hit's own requiresNextStepSkillIds and castFramesWhenGated through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "NextStepGatedSkill",
+      hits: [
+        makeHit({
+          physMultiplier: 1,
+          physFixed: 10,
+          requiresNextStepSkillIds: ["bellstrikeUmbra-follow-up"],
+          castFramesWhenGated: 86,
+        }),
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.hits[0].requiresNextStepSkillIds).toEqual(["bellstrikeUmbra-follow-up"])
+    expect(imported.hits[0].castFramesWhenGated).toBe(86)
+  })
+
+  it("import drops a hit's malformed requiresNextStepSkillIds and castFramesWhenGated instead of crashing", () => {
+    const raw = {
+      ...makeSkill(CLASS, { name: "MalformedNextStepGatedSkill" }),
+      hits: [
+        {
+          ...makeHit({ physMultiplier: 1, physFixed: 10 }),
+          requiresNextStepSkillIds: "bellstrikeUmbra-follow-up",
+          castFramesWhenGated: "soon",
+        },
+      ],
+    }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.hits[0].requiresNextStepSkillIds).toBeUndefined()
+    expect(imported.hits[0].castFramesWhenGated).toBeUndefined()
+  })
+
+  it("export → import carries a meter drain's own chargeRelease fallback through", () => {
+    const skill = makeSkill(CLASS, {
+      name: "ChargedSkill",
+      meterDrains: [
+        {
+          meterId: "endurance",
+          perSecond: 20,
+          fromFrame: 0,
+          chargeRelease: { fallbackSkillId: "sk-fallback" },
+        },
+      ],
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.meterDrains?.[0]?.chargeRelease).toEqual({ fallbackSkillId: "sk-fallback" })
+  })
+
+  it("import drops a meter drain with a malformed chargeRelease instead of crashing", () => {
+    const raw = {
+      ...makeSkill(CLASS, { name: "MalformedChargeSkill" }),
+      meterDrains: [{ meterId: "endurance", perSecond: 20, fromFrame: 0, chargeRelease: "soon" }],
+    }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.meterDrains).toEqual([])
   })
 
   it("save → load carries castConditions through", () => {

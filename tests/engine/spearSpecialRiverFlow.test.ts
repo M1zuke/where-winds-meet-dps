@@ -162,9 +162,15 @@ function describeEmpoweredCast(
 
       // Keeps each hit's own triggers — Sweep All's first hit lands Defense Down, which
       // raises the second hit's damage within the same cast, so stripping triggers here
-      // would compare against a control that never saw that debuff.
+      // would compare against a control that never saw that debuff. Carries the River
+      // Flow variant's own cast-length override onto the skill's own castFrames too, so
+      // a cancel form whose variant runs longer isn't timed differently from the real run.
+      const riverFlowCastFrames = trueSkill.hits
+        .flatMap((hit) => hit.variants ?? [])
+        .find((variant) => variant.label === "River Flow")?.castFrames
       const stripped: Skill = {
         ...trueSkill,
+        castFrames: riverFlowCastFrames ?? trueSkill.castFrames,
         hits: trueSkill.hits.map((hit) => {
           const variant = hit.variants?.find((v) => v.label === "River Flow")
           if (!variant) return hit
@@ -190,7 +196,15 @@ function describeEmpoweredCast(
       const dets = detonationEvents(r)
       expect(dets).toHaveLength(1)
       const payloadHit = payloadHitOf(trueSkill)
-      const hitFrame = seeder.castFrames + skillOf(soberSorrowId).castFrames + payloadHit.frame
+      const riverFlowFrame = payloadHit.variants?.find((v) => v.label === "River Flow")?.frame
+      // The detonation sub-cast starts at the payload hit's own (River
+      // Flow-resolved) frame and carries its own delay to its own hit.
+      const detonationDelay = skillOf(SKILL.bleedDetonation).hits[0].frame
+      const hitFrame =
+        seeder.castFrames +
+        skillOf(soberSorrowId).castFrames +
+        (riverFlowFrame ?? payloadHit.frame) +
+        detonationDelay
       expect(dets[0].frame).toBe(hitFrame)
       expect(r.perSkill.some((p) => p.name === dotRow(CLASS, DEBUFF.bleedTick))).toBe(true)
     })
