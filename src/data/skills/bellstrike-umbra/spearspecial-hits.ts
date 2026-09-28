@@ -1,12 +1,14 @@
 import { hit } from "../../../definitions/skills/skillDef"
-import { applyBuff, applyDebuff, applyDot, castSkill } from "../../../definitions/skills/triggers"
+import { applyBuff, applyDebuff, applyDot, castSkill, meterDelta } from "../../../definitions/skills/triggers"
 import { BUFF } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import {
   EMPOWERED_RIVER_FLOW_BUFF_ID,
   SPEAR_SPECIAL_COOLDOWN_BUFF_ID,
+  SPEAR_SPECIAL_COOLDOWN_FRAMES,
   SPRING_SURGE_BUFF_ID,
 } from "../../innerWays/wolfchasersArtGates"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 import type { SkillHit } from "../../../engine/skill"
 
 const SPRING_SURGE_OR_HIGHER = { buffId: SPRING_SURGE_BUFF_ID, op: "gte" as const, stacks: 1 }
@@ -14,10 +16,29 @@ const RIVER_FLOW_CONDITION = { buffId: BUFF.potentRiverFlow, op: "gte" as const,
 const EMPOWERED_CONDITION = { buffId: EMPOWERED_RIVER_FLOW_BUFF_ID, op: "gte" as const, stacks: 1 }
 const COOLDOWN_CONDITION = { buffId: SPEAR_SPECIAL_COOLDOWN_BUFF_ID, op: "eq" as const, stacks: 0 }
 
+// In-game values as of 2026-09-28: Wolfchaser's Art tiers 4-6 grant +20
+// Endurance alongside the hidden Blood Burst, on the same Empowered River
+// Flow gate — the gate's own `requiresParam` on `EMPOWERED_RIVER_FLOW_BUFF_ID`
+// already restricts this to those tiers. A `meterDelta` trigger's own
+// condition resolves when its deferred gain is applied, not inline against
+// this hit's other triggers, so it keeps its own native cooldown rather than
+// racing the status-marker cooldown below — cooldownGroup so a Sword Horizon
+// hit-1/hit-2 pair still shares one clock.
+function wolfchasersArtEnduranceGain() {
+  return meterDelta({
+    target: enduranceMeter.id,
+    stacks: 20,
+    condition: EMPOWERED_CONDITION,
+    cooldownFrames: SPEAR_SPECIAL_COOLDOWN_FRAMES,
+    cooldownGroup: "wolfchasersArtSweepAllEnduranceGain",
+  })
+}
+
 // In-game values as of 2026-09-24: one Bleeding stack per River Flow (or
 // higher) hit on every cast, no cooldown; the non-clearing Blood Burst (plus
-// the 2 stacks Sword Horizon's retention would otherwise keep) only under
-// Empowered River Flow, on its own 12 s cooldown.
+// the 2 stacks Sword Horizon's retention would otherwise keep) and the
+// Wolfchaser's Art Endurance gain only under Empowered River Flow, on its
+// own 12 s cooldown.
 function payloadTriggers() {
   return [
     applyDot({ target: DEBUFF.bleedTick, condition: RIVER_FLOW_CONDITION }),
@@ -34,6 +55,7 @@ function payloadTriggers() {
       condition: EMPOWERED_CONDITION,
       conditions: [COOLDOWN_CONDITION],
     }),
+    wolfchasersArtEnduranceGain(),
   ]
 }
 

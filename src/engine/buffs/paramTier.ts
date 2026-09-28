@@ -18,3 +18,8 @@ export function paramTierOf(params: BuffParams, param: string): number {
   const tier = params[tierKey(param)]
   return typeof tier === "number" ? tier : 0
 }
+
+export function paramNumOf(params: BuffParams, param: string): number {
+  const value = params[param]
+  return typeof value === "number" ? value : 0
+}

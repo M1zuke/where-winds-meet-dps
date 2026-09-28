@@ -5,6 +5,7 @@ import { mistwillow } from "./mistwillow"
 import { rainwhisper } from "./rainwhisper"
 import { cleftpeak } from "./cleftpeak"
 import { tiltrim } from "./tiltrim"
+import { calmwaters } from "./calmwaters"
 
 export const SET_DEFS: readonly SetDef[] = [
   hawkwing,
@@ -13,4 +14,5 @@ export const SET_DEFS: readonly SetDef[] = [
   rainwhisper,
   cleftpeak,
   tiltrim,
+  calmwaters,
 ]

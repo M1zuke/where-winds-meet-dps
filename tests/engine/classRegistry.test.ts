@@ -79,6 +79,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "moraleChant",
       "bitterSeason",
       "breakingPoint",
+      "evasiveCharge",
     ])
     expect(umbra.innerWays).toEqual([
       "swordHorizon",
@@ -87,6 +88,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "moraleChant",
       "bitterSeason",
       "breakingPoint",
+      "evasiveCharge",
     ])
   })
 
@@ -174,6 +176,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "River Flow",
       "Empowered River Flow",
       "Spear Special Cooldown",
+      "Evasive Charge — Dodge Cost Reduction",
     ])
   })
 

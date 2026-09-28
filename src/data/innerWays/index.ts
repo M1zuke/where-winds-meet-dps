@@ -19,6 +19,7 @@ import { eonpour } from "./eonpour"
 import { skyspeak } from "./skyspeak"
 import { mistwing } from "./mistwing"
 import { volutefit } from "./volutefit"
+import { evasiveCharge } from "./evasiveCharge"
 
 // Order is load-bearing: the context-scalar sum and
 // `innerWayTargetDefenseMultiplier`'s first-match both iterate this array,
@@ -43,4 +44,5 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   skyspeak,
   mistwing,
   volutefit,
+  evasiveCharge,
 ]

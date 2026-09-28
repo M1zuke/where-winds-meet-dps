@@ -418,6 +418,7 @@ export function totalPhysDef(
   disabled?: DisabledTalentNodes,
   enhancements: EnhancementLevels = DEFAULT_ENHANCEMENTS,
   unclaimedOddityNodes: UnclaimedOddityNodes = {},
+  armorSetPhysDef = 0,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
   return (
@@ -425,7 +426,8 @@ export function totalPhysDef(
     gearPhysDefTotal(equippedPieces) +
     acc.defense * DEFENSE_PER_POINT.physDef +
     enhancementPhysDefTotal(enhancements) +
-    oddityPhysDefTotal(unclaimedOddityNodes)
+    oddityPhysDefTotal(unclaimedOddityNodes) +
+    armorSetPhysDef
   )
 }
 
@@ -451,7 +453,7 @@ export function oddityContributions(unclaimed: UnclaimedOddityNodes): Record<str
   for (const region of ODDITY_BOARD) {
     for (const node of region.nodes) {
       if (!node.value || node.stat === undefined) continue
-      if (node.stat === "maxHp" || node.stat === "physDef") continue
+      if (node.stat === "maxHp" || node.stat === "physDef" || node.stat === "endurance") continue
       if (!isOddityNodeClaimed(unclaimed, region.key, node.id)) continue
       const path = STAT_TO_PATH[node.stat] ?? node.stat
       out[path] = (out[path] ?? 0) + node.value

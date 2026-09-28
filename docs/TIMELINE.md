@@ -200,6 +200,12 @@ Rules:
   or above that tier when given — the per-trigger counterpart of a status's
   own `requiresParam`/`requiresMinTier`, for a build requirement that gates
   one trigger rather than the whole status.
+- **A build-level param may be sourced from whichever gear set is equipped**,
+  not only from a slotted inner way: a gear set may declare its own param,
+  set true only while that set is the one equipped, read by a trigger's
+  `requiresParam` or a condition exactly like an inner way's own param — the
+  class-buff engine's own set gate reaches a module only, never a hit-level
+  trigger or condition, which is what this exists for.
 - **Only a `castSkill` trigger's condition may read the class-buff engine
   instead of the status ledger** (`source: "buffEngine"` on a
   `TriggerCondition`): the two are separate stores (see § "Procedural
@@ -467,6 +473,12 @@ works unchanged.
   granting cast's own start rather than this hit's frame — so a module whose
   bonus depends on what a capped release actually spent reads the same amount
   from every hit of that release, including one landing earlier than this one.
+- **A `meterDelta` trigger's own `refundFractionOfCastCost` gains this
+  fraction of what the owning cast actually paid to its own `targetId`
+  meter**, after every cost modifier, in place of a fixed `stacks` amount —
+  for a refund defined by the game as a share of a cost the build itself can
+  change. The paid amount is read from what the cost step already recorded
+  for that cast, never recomputed a second time.
 - **A buff may declare `meterModifiers`**: while its window is active, it
   scales a meter's own cost, charge-drain cost or regeneration rate by a
   fraction, additive with every other active modifier of the same kind — the

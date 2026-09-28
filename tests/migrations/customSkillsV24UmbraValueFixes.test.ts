@@ -20,6 +20,7 @@ import {
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
+import { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "../../src/migrations/customSkills/V41__wolfchasersArtSweepAllEnduranceGain"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -558,11 +559,16 @@ describe("V24__umbraValueFixes migration step", () => {
       "bellstrikeUmbra-spearheavy",
       "bellstrikeUmbra-spearspecial-1-hit-cancel",
     ]) {
-      // V38 later adds an Endurance gain to Crosswind Blade's one hit, and
-      // V39 a Bleeding refund to the same hit — both a no-op on every other
+      // V38 later adds an Endurance gain to Crosswind Blade's one hit, V39 a
+      // Bleeding refund to the same hit, and V41 Wolfchaser's Art's own
+      // Endurance gain to Sweep All's own hit — each a no-op on every other
       // id here.
       const meterHealed = healMeterFieldsAndGains(skillIn(result.blob, id))
-      const healed = healMeterModifierGains(meterHealed) as Record<string, unknown>
+      const modifierHealed = healMeterModifierGains(meterHealed)
+      const healed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed) as Record<
+        string,
+        unknown
+      >
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)
     }

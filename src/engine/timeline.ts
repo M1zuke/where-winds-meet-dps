@@ -69,7 +69,7 @@ import { BuffEngine, type DamageEffectsResult } from "./buffs/buffEngine"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
-import { clockQiPhase, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
+import { clockQiPhase, paramNumOf, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { castTagOf, skillTagsOf, WEAPON_TAG } from "./buffs/tags"
 import { innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
@@ -497,6 +497,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   const meterMaxContext: MeterMaxContext = {
     paramTier: (id) => paramTierOf(buffParams, id),
     paramOn: (id) => paramOnOf(buffParams, id),
+    paramValue: (id) => paramNumOf(buffParams, id),
     whiteAffinityRate: inputs.affinityRate,
   }
   const meterStartFrame = Math.min(0, -prePullBound)
@@ -578,17 +579,28 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // rather than applied here — `seedStepTriggers` interleaves it with this
   // step's own hits by frame, since registering it eagerly would fast-
   // forward the meter's forward-only cursor past a hit that hasn't run yet.
+  interface AppliedMeterCosts {
+    starts: PendingMeterIntervalStart[]
+    // What this same cast actually paid to each meter, after modifiers — read
+    // by a `meterDelta` trigger's own `refundFractionOfCastCost` rather than
+    // recomputing the multiplier a second time.
+    paidByMeter: Map<string, number>
+  }
+
   function applyMeterCostsAndScheduleDrains(
     skill: Skill,
     startFrame: number,
     castEndFrame: number,
-  ): PendingMeterIntervalStart[] {
+  ): AppliedMeterCosts {
+    const paidByMeter = new Map<string, number>()
     for (const cost of skill.meterCosts ?? []) {
       const meter = meterById.get(cost.meterId)
       if (!meter) continue
       if (!meterCostRequirementHolds(cost)) continue
       const multiplier = meterModifierMultiplier("cost", cost.meterId, startFrame, skill)
-      meter.apply(startFrame, -cost.amount * multiplier)
+      const paid = cost.amount * multiplier
+      meter.apply(startFrame, -paid)
+      paidByMeter.set(cost.meterId, (paidByMeter.get(cost.meterId) ?? 0) + paid)
     }
     const starts: PendingMeterIntervalStart[] = []
     // Freezes before drains: a freeze's own fromFrame is never later than the
@@ -621,7 +633,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           ),
       })
     }
-    return starts
+    return { starts, paidByMeter }
   }
 
   const activeVariantCastFrames = (
@@ -658,6 +670,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     frame: number
     owner: number
     sequence: number
+    paidByMeter: Map<string, number>
   }
   interface PendingMeterIntervalEvent {
     kind: "meterInterval"
@@ -675,7 +688,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   // earlier-frame cast-end gain in trigger-authoring order is still earlier
   // in time, and resolving it eagerly would push the meter's forward-only
   // cursor past a not-yet-processed, earlier event.
-  function seedHitTriggers(current: PendingHitEvent, pending: PendingLayoutEvent[]): void {
+  function seedHitTriggers(
+    current: PendingHitEvent,
+    pending: PendingLayoutEvent[],
+    paidByMeter: Map<string, number>,
+  ): void {
     const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
     layoutWriter.processExpiries(hitFrame)
     advanceMeters(hitFrame)
@@ -732,6 +749,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           frame: effectiveFrame,
           owner,
           sequence: layoutHitSequence++,
+          paidByMeter,
         })
         continue
       }
@@ -744,11 +762,15 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
 
   function applyMeterDeltaEvent(event: PendingMeterDeltaEvent): void {
-    const { trigger, frame, owner } = event
+    const { trigger, frame, owner, paidByMeter } = event
     if (!layoutWriter.fires(trigger, frame)) return
     const meter = meterById.get(trigger.targetId)
     if (!meter) return
-    const applied = meter.apply(frame, trigger.stacks, trigger.meterSpendCapToCurrent)
+    const stacks =
+      trigger.refundFractionOfCastCost !== undefined
+        ? trigger.refundFractionOfCastCost * (paidByMeter.get(trigger.targetId) ?? 0)
+        : trigger.stacks
+    const applied = meter.apply(frame, stacks, trigger.meterSpendCapToCurrent)
     if (trigger.recordSpendAsStatus) {
       // Backdated to the cast's own start, not this hit's frame, so every
       // wave of the same release — including one landing before this
@@ -764,6 +786,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     stepStart: number,
     prePull: boolean,
     meterIntervalStarts: PendingMeterIntervalStart[] = [],
+    paidByMeter: Map<string, number> = new Map(),
   ): void {
     const pending: PendingLayoutEvent[] = [
       ...hits.map((hit): PendingHitEvent => ({
@@ -789,7 +812,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       processed++
       if (next.kind === "meterInterval") next.register()
       else if (next.kind === "meterDelta") applyMeterDeltaEvent(next)
-      else seedHitTriggers(next, pending)
+      else seedHitTriggers(next, pending, paidByMeter)
     }
   }
 
@@ -847,14 +870,21 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // same holds for a meter, which has no faithful frame-accurate placement
     // for a real-world gap of unknown length compressed into a few negative
     // frames.
-    const meterIntervalStarts = prePull
-      ? []
+    const appliedMeterCosts = prePull
+      ? undefined
       : applyMeterCostsAndScheduleDrains(rs.skill, startFrame, startFrame + castLen)
     const landedHits =
       prePull || windowFramesOverride === null
         ? occurringHits
         : occurringHits.filter((h) => hitLandingFrame(startFrame, h.frame) <= windowFramesOverride)
-    seedStepTriggers(rs.skill, landedHits, startFrame, prePull, meterIntervalStarts)
+    seedStepTriggers(
+      rs.skill,
+      landedHits,
+      startFrame,
+      prePull,
+      appliedMeterCosts?.starts,
+      appliedMeterCosts?.paidByMeter,
+    )
     laidSteps.push({
       resolved: rs,
       stepIndex,

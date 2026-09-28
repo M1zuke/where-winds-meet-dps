@@ -9,6 +9,8 @@ import {
   healBamboocutDraughtValuesGatesReach,
 } from "../../src/migrations/customSkills/V25__bamboocutDraughtValuesGatesReach"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
+import { healSkill as healCalmwatersPerfectDodgeGain } from "../../src/migrations/customSkills/V42__calmwatersPerfectDodgeGain"
+import { healSkill as healEvasiveChargeDodgeRefund } from "../../src/migrations/customSkills/V43__evasiveChargeDodgeRefund"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -55,13 +57,19 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
 
-// Both Perfect Dodge forms gain their own Endurance meter gain at the later
-// meter hop, so their hits only match the live built-in once that hop runs
-// too.
+// Both Perfect Dodge forms gain their own Endurance meter gains at later
+// hops, so their hits only match the live built-in once those hops run too.
 const GAINS_ADDED_BY_LATER_STEP = new Set([
   "bamboocutDraught-perfect-dodge",
   "bamboocutDraught-perfect-dodge-full",
 ])
+
+function throughLaterHops(id: string, skill: Skill): Skill {
+  if (!GAINS_ADDED_BY_LATER_STEP.has(id)) return skill
+  return healEvasiveChargeDodgeRefund(
+    healCalmwatersPerfectDodgeGain(healMeterFieldsAndGains(skill)),
+  ) as Skill
+}
 
 describe("custom-skills v24 fixture", () => {
   it("is v24 and still stores every hop's pre-V25 shape", () => {
@@ -86,10 +94,7 @@ describe("healBamboocutDraughtValuesGatesReach", () => {
   it("rewrites every untouched seeded copy to the current built-in's hits", () => {
     for (const id of HEALED_IDS) {
       const healed = healBamboocutDraughtValuesGatesReach(clone(skillIn(STORE, id))) as Skill
-      const throughLaterHops = GAINS_ADDED_BY_LATER_STEP.has(id)
-        ? (healMeterFieldsAndGains(healed) as Skill)
-        : healed
-      expect(throughLaterHops.hits, id).toEqual(builtinOf(id).hits)
+      expect(throughLaterHops(id, healed).hits, id).toEqual(builtinOf(id).hits)
     }
   })
 
@@ -109,10 +114,7 @@ describe("V25__bamboocutDraughtValuesGatesReach — called directly", () => {
     expect(after.v).toBe(25)
     for (const id of HEALED_IDS) {
       const afterSkill = skillIn(after, id)
-      const throughLaterHops = GAINS_ADDED_BY_LATER_STEP.has(id)
-        ? (healMeterFieldsAndGains(afterSkill) as Skill)
-        : afterSkill
-      expect(throughLaterHops.hits, id).toEqual(builtinOf(id).hits)
+      expect(throughLaterHops(id, afterSkill).hits, id).toEqual(builtinOf(id).hits)
       const { hits: _beforeHits, ...restBefore } = skillIn(STORE, id)
       const { hits: _afterHits, ...restAfter } = afterSkill
       void _beforeHits

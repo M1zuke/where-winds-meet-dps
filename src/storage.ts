@@ -1451,6 +1451,8 @@ function importedTrigger(t: unknown): HitTrigger {
     trigger.meterSpendCapToCurrent = c.meterSpendCapToCurrent
   if (typeof c.recordSpendAsStatus === "string" && c.recordSpendAsStatus)
     trigger.recordSpendAsStatus = c.recordSpendAsStatus
+  if (typeof c.refundFractionOfCastCost === "number" && Number.isFinite(c.refundFractionOfCastCost))
+    trigger.refundFractionOfCastCost = c.refundFractionOfCastCost
   return trigger
 }
 

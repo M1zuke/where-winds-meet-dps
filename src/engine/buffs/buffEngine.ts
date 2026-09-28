@@ -34,7 +34,7 @@ import type {
 } from "../effects/context"
 import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
-import { clockQiPhase, paramOnOf, paramTierOf } from "./params"
+import { clockQiPhase, paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
 
 export type BuffParams = Record<string, unknown>
@@ -144,8 +144,7 @@ export class BuffEngine {
     return paramTierOf(this.params, name)
   }
   paramNum(name: string): number {
-    const value = this.params[name]
-    return typeof value === "number" ? value : 0
+    return paramNumOf(this.params, name)
   }
 
   private requirementsMet(requires: BuffRequirements | undefined): boolean {

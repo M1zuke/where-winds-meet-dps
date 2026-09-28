@@ -308,18 +308,11 @@ describe("engine baseline — profile-v7 anchor", () => {
     expect(round(result.rotationDuration, 4)).toBe(60)
     // The Endurance gate on Inner Balance Strike III / Sweep All flags every
     // cast this rotation places below the threshold — damage is unaffected,
-    // only the report.
-    expect(result.warnings).toEqual([
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short.",
-    ])
+    // only the report. The anchor profile hydrates a fully claimed Oddity
+    // board (same default every profile without the field gets) and slots
+    // Wolfchaser's Art, so its own +40 Max Endurance and +20-per-Sweep-All
+    // gain together clear every one of these gates and drain warnings.
+    expect(result.warnings).toEqual([])
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
@@ -351,17 +344,7 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     expect(round(result.dps, 2)).toBe(70576.67)
     expect(round(result.totalDamage, 2)).toBe(4234600.02)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    expect(result.warnings).toEqual([
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short.",
-    ])
+    expect(result.warnings).toEqual([])
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {

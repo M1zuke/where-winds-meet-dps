@@ -31,6 +31,7 @@ export const silkbindJade = defineClass({
     INNER_WAY_ID.starReacher,
     INNER_WAY_ID.thunderousBloom,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.evasiveCharge,
   ],
   classSpecificAttunements: [
     "umbQ",

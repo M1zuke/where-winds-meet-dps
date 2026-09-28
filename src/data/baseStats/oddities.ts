@@ -36,6 +36,8 @@ const QINGHE = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Pacification II",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 102,
@@ -184,6 +186,8 @@ const QINGHE = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Merit IV",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 113,
@@ -364,6 +368,8 @@ const QINGHE = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Peace I",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 127,
@@ -530,6 +536,8 @@ const QINGHE = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Grace I",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 140,
@@ -793,6 +801,8 @@ const KAIFENG = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Harmony I",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 206,
@@ -1021,6 +1031,8 @@ const KAIFENG = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Virtue I",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 223,
@@ -1514,6 +1526,8 @@ const HEXI = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Harmony I",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 306,
@@ -1764,6 +1778,8 @@ const HEXI = defineOddityRegion([
     icon: "endurance",
     name: "Melody of Peace II",
     description: "Max Endurance +5",
+    stat: "endurance",
+    value: 5,
   },
   {
     id: 325,

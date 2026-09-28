@@ -32,6 +32,7 @@ export const bellstrikeUmbra = defineClass({
     "moraleChant",
     "bitterSeason",
     "breakingPoint",
+    "evasiveCharge",
   ],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
   weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],

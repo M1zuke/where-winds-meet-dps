@@ -1,6 +1,7 @@
 export interface MeterMaxContext {
   paramTier(id: string): number
   paramOn(id: string): boolean
+  paramValue(id: string): number
   whiteAffinityRate: number
 }
 

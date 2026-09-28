@@ -1,4 +1,4 @@
-export type OddityStat = "minPhys" | "maxPhys" | "maxHp" | "physDef"
+export type OddityStat = "minPhys" | "maxPhys" | "maxHp" | "physDef" | "endurance"
 
 export type OddityNodeKind = "opener" | "reward" | "final"
 

@@ -4,6 +4,8 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { bingePointDodgeGrant, gauntletsPerfectDodgeGain } from "./perfect-dodge"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
+import { CALMWATERS_PERFECT_DODGE_GAIN } from "../universal/buffs/calmwatersPerfectDodgeGain"
+import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "../universal/buffs/evasiveChargeDodgeRefund"
 
 export const perfectDodgeFull = defineSkill({
   id: SKILL.perfectDodgeFull,
@@ -26,7 +28,12 @@ export const perfectDodgeFull = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [bingePointDodgeGrant, gauntletsPerfectDodgeGain],
+      triggers: [
+        bingePointDodgeGrant,
+        gauntletsPerfectDodgeGain,
+        CALMWATERS_PERFECT_DODGE_GAIN,
+        ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS,
+      ],
     }),
   ],
   createdAt: "2026-09-06T00:00:00.000Z",

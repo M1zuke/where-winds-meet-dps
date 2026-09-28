@@ -21,6 +21,7 @@ interface TriggerSpec {
   requiresMinTier?: number
   meterSpendCapToCurrent?: number
   recordSpendAsStatus?: string
+  refundFractionOfCastCost?: number
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -54,6 +55,9 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
       : {}),
     ...(spec.recordSpendAsStatus !== undefined
       ? { recordSpendAsStatus: spec.recordSpendAsStatus }
+      : {}),
+    ...(spec.refundFractionOfCastCost !== undefined
+      ? { refundFractionOfCastCost: spec.refundFractionOfCastCost }
       : {}),
   }
 }

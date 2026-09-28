@@ -396,7 +396,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "static",
               textKey: "talents.effect.10MaxEnduranceAndUp",
-              subNoteKey: "talents.note.theEngineRunsHint",
+              subNoteKey: "talents.note.modelledAsTheEnduranceMeterHint",
             },
           ],
         },
@@ -410,7 +410,7 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
             {
               kind: "static",
               textKey: "talents.effect.18AffinityDmgHint",
-              subNoteKey: "talents.note.oneBonusBehindHint",
+              subNoteKey: "talents.note.modelledFromTheSimulatedEnduranceHint",
             },
           ],
         },

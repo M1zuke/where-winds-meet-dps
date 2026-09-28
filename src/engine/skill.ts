@@ -76,6 +76,9 @@ export interface HitTrigger {
   // `meterDelta` only (docs/TIMELINE.md § "Meters").
   meterSpendCapToCurrent?: number
   recordSpendAsStatus?: string
+  // `meterDelta` only: refunds this fraction of what the owning cast actually
+  // paid to `targetId`, after cost modifiers — `stacks` is ignored when set.
+  refundFractionOfCastCost?: number
 }
 
 export interface SkillHit {
@@ -374,6 +377,11 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
   if (
     t.recordSpendAsStatus !== undefined &&
     (typeof t.recordSpendAsStatus !== "string" || !t.recordSpendAsStatus)
+  )
+    return false
+  if (
+    t.refundFractionOfCastCost !== undefined &&
+    (typeof t.refundFractionOfCastCost !== "number" || !Number.isFinite(t.refundFractionOfCastCost))
   )
     return false
   return true

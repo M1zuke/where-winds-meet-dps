@@ -8,6 +8,7 @@ const FPS = 60
 const maxContext: MeterMaxContext = {
   paramTier: () => 0,
   paramOn: () => false,
+  paramValue: () => 0,
   whiteAffinityRate: 0,
 }
 

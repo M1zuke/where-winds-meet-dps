@@ -7,8 +7,10 @@ import { SET_BY_ID } from "../../definitions/sets/registry"
 import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
 import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
+import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
+import { ODDITY_MAX_ENDURANCE_PARAM } from "../../data/resources/enduranceMeter"
 
-export { paramOnOf, paramTierOf } from "./paramTier"
+export { paramNumOf, paramOnOf, paramTierOf } from "./paramTier"
 
 function tierKey(param: string): string {
   return param + "Tier"
@@ -34,8 +36,9 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
     targetMaxHp: getBreakthrough(inputs.breakthrough).targetHp,
   }
 
-  const armorSetKey = inputs.set ? SET_BY_ID[inputs.set]?.siteKey : undefined
-  if (armorSetKey) params.armorSet = armorSetKey
+  const equippedSet = inputs.set ? SET_BY_ID[inputs.set] : undefined
+  if (equippedSet?.siteKey) params.armorSet = equippedSet.siteKey
+  if (equippedSet?.buffParam) params[equippedSet.buffParam] = true
 
   const tierByInnerWayId = new Map<string, number>()
   for (const slot of inputs.mindMethods) {
@@ -63,6 +66,9 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   if (inputs.combatSettings?.dragonHeadFullStacks) params.allySurgingWaves = true
   if (inputs.combatSettings?.dragonHeadLowHpMaxBonus) params.dragonHeadLowHpMaxBonus = true
   if (inputs.divinecraft === "fire") params.divinecraftFire = true
+
+  const oddityMaxEndurance = oddityEnduranceTotal(inputs.unclaimedOddityNodes)
+  if (oddityMaxEndurance) params[ODDITY_MAX_ENDURANCE_PARAM] = oddityMaxEndurance
 
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 

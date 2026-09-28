@@ -12,10 +12,21 @@ import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation
 import type { Inputs } from "../../src/engine/types"
 import { enduranceMeter, enduranceRequires } from "../../src/data/resources/enduranceMeter"
 import { meterStatusId, meterMaxParamKey } from "../../src/definitions/resources/meterDef"
+import type { UnclaimedOddityNodes } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const METER_ID = enduranceMeter.id
 const STATUS_ID = meterStatusId(METER_ID)
+
+// `defaultInputs` assumes a fully claimed Oddity board (nothing recorded as
+// unclaimed), which now carries +40 Max Endurance (8 "Max Endurance +5"
+// nodes) — unclaiming exactly those nodes here isolates the plain meter
+// mechanics this file is about from that separately-tested contribution.
+const NO_ODDITY_ENDURANCE: UnclaimedOddityNodes = {
+  Qinghe: [101, 112, 126, 139],
+  Kaifeng: [205, 222],
+  Hexi: [305, 324],
+}
 
 function timelineInputs(
   rotation: Rotation,
@@ -30,6 +41,7 @@ function timelineInputs(
     customBuffs: buffs,
     activeCustomRotation: rotation,
     set: null,
+    unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
     ...patch,
   }
 }
@@ -360,6 +372,66 @@ describe("a meterDelta trigger's recordSpendAsStatus", () => {
   })
 })
 
+describe("a meterDelta trigger's refundFractionOfCastCost", () => {
+  it("refunds the fraction of what the cast actually paid after a cost modifier, not the nominal cost", () => {
+    const reducesCost: Buff = makeBuff(CLASS, {
+      name: "Cost Reducer",
+      activation: "triggered",
+      durationFrames: 600,
+      meterModifiers: [{ meterId: METER_ID, kind: "cost", amount: -0.5 }],
+    })
+    const grantsReducer = makeSkill(CLASS, {
+      name: "Grants Reducer",
+      castFrames: 6,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 1,
+          triggers: [{ kind: "applyBuff", targetId: reducesCost.id, stacks: 1, condition: null }],
+        }),
+      ],
+    })
+    const costsAndRefunds = makeSkill(CLASS, {
+      name: "Costs And Refunds",
+      castFrames: 12,
+      meterCosts: [{ meterId: METER_ID, amount: 40 }],
+      receives: [reducesCost.id],
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          physFixed: 1,
+          triggers: [
+            {
+              kind: "meterDelta",
+              targetId: METER_ID,
+              stacks: 0,
+              condition: null,
+              refundFractionOfCastCost: 0.5,
+            },
+          ],
+        }),
+      ],
+    })
+    const observer = makeSkill(CLASS, {
+      name: "Observer",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const result = simulateTimeline(
+      timelineInputs(
+        rotationOf([grantsReducer, costsAndRefunds, observer]),
+        [grantsReducer, costsAndRefunds, observer],
+        [reducesCost],
+      ),
+    )
+    // 40 * 0.5 (the cost modifier) = 20 actually paid; refunded at 0.5 of
+    // that = 10: 80 - 20 + 10 = 70, not 80 - 40 + 20 = 60.
+    expect(meterLevelsAt(result, 2)?.amount).toBe(70)
+  })
+})
+
 describe("a buff's meter modifier", () => {
   it("scales a cost while its window is active, additive with every other active modifier", () => {
     const reducesCost: Buff = makeBuff(CLASS, {
@@ -525,6 +597,22 @@ describe("the meter simulates once and replays onto the real ledger", () => {
     expect(meterMaxParamKey(METER_ID)).toBe(`meterMax:${METER_ID}`)
     expect(STATUS_ID).toBe(`meter:${METER_ID}`)
   })
+
+  it("adds the Oddity board's own learned Max Endurance total, flat and additive with every other bonus", () => {
+    const noop = makeSkill(CLASS, {
+      name: "Noop",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    // Claim only two of the eight "Max Endurance +5" melodies (+10), leaving
+    // the rest of the board exactly as `NO_ODDITY_ENDURANCE` leaves it.
+    const result = simulateTimeline(
+      timelineInputs(rotationOf([noop]), [noop], [], {
+        unclaimedOddityNodes: { ...NO_ODDITY_ENDURANCE, Qinghe: [126, 139] },
+      }),
+    )
+    expect(meterLevelsAt(result, 0)?.capacity).toBe(90)
+  })
 })
 
 describe("a function-valued meter capacity", () => {
@@ -544,6 +632,7 @@ describe("a function-valued meter capacity", () => {
       customBuffs: [],
       activeCustomRotation: rotation,
       set: null,
+      unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
       affinityRate,
     })
     return result.casts?.[0]?.meterLevels?.find((level) => level.id === METER_ID)?.capacity

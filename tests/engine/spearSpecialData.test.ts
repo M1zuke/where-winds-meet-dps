@@ -90,7 +90,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     expect(cancel[0].hits).toEqual([spearSpecial[0].hits[0], first])
   })
 
-  it("each damage hit's five triggers: 1×applyDot(bleed) on River Flow alone, 2×applyDot(bleed) + 1×castSkill(Blood Burst) + 1×applyBuff(cooldown) LAST on Empowered + cooldown = 0 — never detonateDot", () => {
+  it("each damage hit's six triggers: 1×applyDot(bleed) on River Flow alone, 2×applyDot(bleed) + 1×castSkill(Blood Burst) + 1×applyBuff(cooldown, sets the marker) + 1×meterDelta(Endurance) on Empowered — never detonateDot", () => {
     const bleedId = "debuff-bellstrikeUmbra-bleed-tick"
     const detonationId = "bellstrikeUmbra-bleed-detonation"
     const riverFlowCondition = { buffId: BUFF.potentRiverFlow, op: "gte", stacks: 1 }
@@ -99,7 +99,7 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
     for (const s of [spearSpecial[0], cancel[0]]) {
       const [, damageHit] = s.hits
       const triggers = damageHit.triggers
-      expect(triggers).toHaveLength(5)
+      expect(triggers).toHaveLength(6)
       expect(triggers.some((trigger) => trigger.kind === "detonateDot")).toBe(false)
 
       const [firstBleed, ...rest] = triggers
@@ -108,20 +108,38 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       expect(firstBleed.condition).toEqual(riverFlowCondition)
       expect(firstBleed.conditions).toBeUndefined()
 
-      for (const trigger of rest) {
-        expect(trigger.condition).toEqual(empoweredCondition)
+      for (const trigger of rest) expect(trigger.condition).toEqual(empoweredCondition)
+      // Every same-hit action gated on the cooldown marker itself, but the
+      // Endurance gain resolves its own gate later (a `meterDelta` trigger's
+      // condition applies when its deferred gain lands, not inline against
+      // this hit's other triggers), so it keeps its own native cooldown
+      // instead of racing the status-marker cooldown (docs/TIMELINE.md §
+      // "Triggers").
+      const statusMarkerGated = rest.filter((trigger) => trigger.kind !== "meterDelta")
+      for (const trigger of statusMarkerGated)
         expect(trigger.conditions).toEqual([cooldownCondition])
-      }
+
       const applyDots = rest.filter((trigger) => trigger.kind === "applyDot")
       expect(applyDots).toHaveLength(2)
       for (const trigger of applyDots) expect(trigger.targetId).toBe(bleedId)
       const casts = rest.filter((trigger) => trigger.kind === "castSkill")
       expect(casts).toHaveLength(1)
       expect(casts[0].targetId).toBe(detonationId)
+      const meterDeltas = rest.filter((trigger) => trigger.kind === "meterDelta")
+      expect(meterDeltas).toHaveLength(1)
+      expect(meterDeltas[0].targetId).toBe("endurance")
+      expect(meterDeltas[0].stacks).toBe(20)
+      expect(meterDeltas[0].cooldownFrames).toBe(SPEAR_SPECIAL_COOLDOWN_FRAMES)
+      expect(meterDeltas[0].cooldownGroup).toBe("wolfchasersArtSweepAllEnduranceGain")
       const applyBuffs = rest.filter((trigger) => trigger.kind === "applyBuff")
       expect(applyBuffs).toHaveLength(1)
       expect(applyBuffs[0].targetId).toBe(SPEAR_SPECIAL_COOLDOWN_BUFF_ID)
-      expect(triggers[triggers.length - 1]).toBe(applyBuffs[0])
+      // The status-marker cooldown must set last among the triggers that read
+      // it inline, but the Endurance gain reads no such marker (its own
+      // native cooldown resolves later, at its deferred gain), so it is free
+      // to sit last in authoring order without gating itself.
+      expect(triggers[triggers.length - 1]).toBe(meterDeltas[0])
+      expect(triggers[triggers.length - 2]).toBe(applyBuffs[0])
     }
   })
 })
@@ -215,7 +233,7 @@ describe("built-in data — one file per skill", () => {
 describe("builtinBuffsForClass", () => {
   it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
-    expect(buffs).toHaveLength(7)
+    expect(buffs).toHaveLength(8)
     const waterDrop = buffs.find((b) => b.id === WATER_DROP_BUFF_ID)!
     const springSurge = buffs.find((b) => b.id === SPRING_SURGE_BUFF_ID)!
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!

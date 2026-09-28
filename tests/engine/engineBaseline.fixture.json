@@ -3,17 +3,7 @@
     "dps": 69372.9,
     "totalDamage": 4162374.29,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -173,23 +163,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "6c8ece31af444275edf6b11f3c3173232477060cf3959668d310f1c6756841d1"
+    "digest": "b456ecea81f5566d4dcd03c20172501eed3dab06139c00603eb705111276197d"
   },
   "anchor:noAttunement": {
     "dps": 62420.48,
     "totalDamage": 3745228.71,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -349,23 +329,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "87049c87a066b2ed06af4455fcca52f4c1cfae7c2d6698bada77e7f756a2b81b"
+    "digest": "e6d8a6fc9f9e31b364eaca0f9b7d01238e82d47ec656fd0974af85aca7f99e05"
   },
   "anchor:dummyOff": {
     "dps": 74291.17,
     "totalDamage": 4457470.2,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -525,23 +495,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "202e2128aefe958e6e54ceea660d562df139876c0cb1a9e3bc6acb34a3050d41"
+    "digest": "7555b5959ecc7cb877dcbc45df5d1f71255da251288295f70a0ca864d9a380dc"
   },
   "anchor:breakthrough17": {
     "dps": 70576.67,
     "totalDamage": 4234600.02,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -701,23 +661,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "caebbb047f184ca8b127b620e269dd02d56a779b9769ab1978adac54ca6a0ace"
+    "digest": "9b1e59b91ee8ee4b8628259a8108da2009e5385df2bc49817250ea94b11ffbd2"
   },
   "anchor:noQiBreak": {
     "dps": 63571.57,
     "totalDamage": 3814294.43,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -877,23 +827,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "1b61e5ff491c8458d3e998daaa40df1470282847e11a82640ef17a8db38759fa"
+    "digest": "36ec545ce3a4e0703ba35de06ca1934cb3afe06a3838ac1f387322781cb82420"
   },
   "anchor:healerBuff": {
     "dps": 72651.75,
     "totalDamage": 4359104.9,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1053,23 +993,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "14638f0c7a7a2791a36da625368cde645f8997df2bd9cb73139af557c92dde32"
+    "digest": "793e84c5941edfbd6528073e8432ee7e2515484663c38ddfcd7dfbce19b6f0b2"
   },
   "anchor:wraithstrikeScript": {
     "dps": 69665.33,
     "totalDamage": 4179919.86,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1229,23 +1159,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "b509d3f2baa6314aeb3f871ede4cc1d3d8df1e42ba7b658363f1ef1375ff9391"
+    "digest": "a2a69487f536043fcc6d5f1e088c2e1e92ac0e96b9f7ac323e4e5bb6c1239d1c"
   },
   "anchor:voidrotScript": {
     "dps": 70308.41,
     "totalDamage": 4218504.89,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1405,23 +1325,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "cec0da916366fc54b62e85fd3c54fe3d21d355123ca9859a351dd9f54c52f057"
+    "digest": "03021af8646951ddb4c7701705040193888ba623829435582193921aedc5a6f6"
   },
   "anchor:breakExtension": {
     "dps": 70671.13,
     "totalDamage": 4240267.72,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1581,23 +1491,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "1a41b6cbe9f314b22afd810dd97d49f89944d3dd522055582bd0be5f50e1aa59"
+    "digest": "99afa57b1e5ab6ba4470e1b90f43e3d78fb8bb027d6b918509570bea2071a04a"
   },
   "anchor:swordHorizonT1": {
     "dps": 44724.52,
     "totalDamage": 2683471.37,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1757,7 +1657,7 @@
       "buffWindows": 126,
       "casts": 73
     },
-    "digest": "d5c25717d1df8010bce97a53a0400b844538d596d4beec2f9820542b9cc78152"
+    "digest": "29a181981983d60e058408253b7c78d03f3a0b8b9972a238a3d7c92aff86a316"
   },
   "anchor:noSwordHorizon": {
     "dps": 39965.94,
@@ -1765,29 +1665,20 @@
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.68s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 8.68s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 12.07s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 14.43s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 16.83s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 20.78s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 22.78s would be illegal in the game: its cast conditions are not met.",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 25.22s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 27.55s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 29.93s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 33.88s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 35.88s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 42.75s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 45.13s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 49.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 50.67s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.10s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 54.05s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 56.42s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 58.80s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.72s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.82s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.70s: emptied mid-drain: the in-game release would be cut short."
+      "Crosswind Blade [cancel] at 58.80s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -1948,23 +1839,13 @@
       "buffWindows": 122,
       "casts": 73
     },
-    "digest": "43ed552710ebcad7bb550da039d618da94c672d7794371a6b76833a3042be11c"
+    "digest": "1c4d005c3a601718a03420cf0b226d5a069019e809e16e543ab74630eed74cd2"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61719.92,
     "totalDamage": 3703195.3,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -2124,23 +2005,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "29300a3bd4ae30af321443022e567671439e5307a8a160fed8db4bc556f88957"
+    "digest": "3ed9d34569ef106ae9aad9d0571cc976a382d42cad79a9f3bb1e72f93231fe99"
   },
   "anchor:noMoraleChant": {
     "dps": 63680.59,
     "totalDamage": 3820835.29,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -2292,21 +2163,15 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "287d26c232dbeee61b4be69c5aaca1684cf51f98bdc86fd09481e1b064c88ab9"
+    "digest": "bbffbb8aa89530e534fdb871c24222c4e8c6916b5d469e0df7c320a13ba3674e"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 39828.32,
     "totalDamage": 2389699.22,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 4-Hit at 9.37s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 11.58s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 38.00s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 61.68s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 11.20s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 40.12s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 53.08s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 4-Hit at 61.68s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2483,22 +2348,15 @@
       "buffWindows": 124,
       "casts": 80
     },
-    "digest": "53475b1763a991de813bf3ce18facff01d61db7c6a0bc55737084915223c3c4a"
+    "digest": "b431e7b6de27ae5180fff4dc754bb10e1ea59143c35ecdd9125497a57cfcfdcf"
   },
   "anchor:bitterSeasonT6": {
     "dps": 48074.26,
     "totalDamage": 2884455.66,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2667,22 +2525,15 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "da25f9e540c3ad96b8b4c449c6debb315ae7e4fb5fd6b2d7c93740b4de0e2928"
+    "digest": "272074c522e26b1db3242b43fad99338ba89d3f6ae0f1bab4907ea0190e513ad"
   },
   "anchor:bitterSeasonT4": {
     "dps": 47153.01,
     "totalDamage": 2829180.75,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2851,22 +2702,15 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "c721430b090f4601b37edb8c2473a4dcf70923abcc5039134049aa08e0308d50"
+    "digest": "3dfbfac75e3d7674d46a74a351b72c5bb17c159bd0dceecf419d1ad6c785c1c0"
   },
   "anchor:bitterSeasonT1": {
     "dps": 46771.53,
     "totalDamage": 2806291.75,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
+      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -3035,23 +2879,13 @@
       "buffWindows": 124,
       "casts": 73
     },
-    "digest": "9b4530a26ee4b07122b113b3776d269b5db630319f5daf9c922548eaef8ab7b5"
+    "digest": "7ac1a49b72ac1c0aac4cc92d6c4baa33f9bd880bd2f9da4b42f2633af26fa4e5"
   },
   "anchor:noSet": {
     "dps": 63079.16,
     "totalDamage": 3784749.63,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3211,23 +3045,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "35821a8cb8ef440248878455fa9d5ec52833849565eaa355a74e46be87cf1566"
+    "digest": "53800ccd573bffe4116b3a5cb5a230ef3fdc4a0b3581811c46d2d0464ff097b4"
   },
   "anchor:set-Jadeware": {
     "dps": 67825.04,
     "totalDamage": 4069502.62,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3387,23 +3211,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "c951175db0d767643a0861dd871998ca7ed7e5e997f8c63b647d0fdf7f8b02f8"
+    "digest": "373deaf2fb50d409f036c36d14ea1647133d7a5beb3fa629eb8a44cbffd2269d"
   },
   "anchor:set-Mistwillow": {
     "dps": 63665.69,
     "totalDamage": 3819941.52,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3563,23 +3377,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "73bdbe4886be7cd23f9970982c863772c98f9d0b2780569b5e3054d3d5ed4dc8"
+    "digest": "ab6a33da484bfae8fe64d67177e7c19f546cc192f6e7b1e5e7a90e9a490c3b55"
   },
   "anchor:set-Rainwhisper": {
     "dps": 64486.67,
     "totalDamage": 3869200.1,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3739,23 +3543,13 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "631d3fc5df716debcfc64ec4916e2a776fc7266a6ededf729ac7b1210142b56b"
+    "digest": "bdc0f5b1a0da66e210a24845d8f92aea4586b54680c34962d9196a6f3200d6a4"
   },
   "anchor:set-Cleftpeak": {
     "dps": 64889.14,
     "totalDamage": 3893348.53,
     "rotationDuration": 60,
-    "warnings": [
-      "SwordSpecial 4-Hit at 8.80s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 11.12s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.25s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 51.10s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.42s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 10.63s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 24.92s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 52.93s: emptied mid-drain: the in-game release would be cut short."
-    ],
+    "warnings": [],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3915,7 +3709,7 @@
       "buffWindows": 149,
       "casts": 73
     },
-    "digest": "a87c65252128cb0d7cc8f1dcd75d4152d9a5663ddef194367da0e5ca851455e2"
+    "digest": "677069144252ad97968734f6e2970c3116e20dbbc622e414cb8f854cc854bef2"
   },
   "defaults:umbra": {
     "dps": 11877.83,
@@ -3923,7 +3717,6 @@
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.65s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 6.65s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 8.98s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 9.93s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 12.30s would be illegal in the game: its cast conditions are not met.",
@@ -3945,9 +3738,7 @@
       "Crosswind Blade [cancel] at 55.05s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 57.00s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 58.58s would be illegal in the game: its cast conditions are not met.",
-      "Endurance at 8.68s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 23.33s: emptied mid-drain: the in-game release would be cut short.",
-      "Endurance at 37.07s: emptied mid-drain: the in-game release would be cut short.",
+      "Endurance at 37.15s: emptied mid-drain: the in-game release would be cut short.",
       "Endurance at 50.10s: emptied mid-drain: the in-game release would be cut short."
     ],
     "perSkill": [
@@ -4109,6 +3900,6 @@
       "buffWindows": 123,
       "casts": 79
     },
-    "digest": "654f767707592cefd151960d4b225515b45cdfc119ee614d6fb7cd5dd362fef9"
+    "digest": "5015270925f9a9950de1e9709a330411f1d304f230fa03af4f40433f1d5ca18c"
   }
 }

@@ -4,6 +4,8 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { enduranceCost, enduranceMeter, enduranceRequires } from "../../resources/enduranceMeter"
+import { CALMWATERS_PERFECT_DODGE_GAIN } from "../universal/buffs/calmwatersPerfectDodgeGain"
+import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "../universal/buffs/evasiveChargeDodgeRefund"
 
 // In-game talent text, 2026-09-06: a Perfect Dodge restores 5 Binge Points
 // while Carouse and Binge Points ≥ 100 both hold (in-game values as of
@@ -44,7 +46,12 @@ export const perfectDodge = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [bingePointDodgeGrant, gauntletsPerfectDodgeGain],
+      triggers: [
+        bingePointDodgeGrant,
+        gauntletsPerfectDodgeGain,
+        CALMWATERS_PERFECT_DODGE_GAIN,
+        ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS,
+      ],
     }),
   ],
   createdAt: "2026-09-06T00:00:00.000Z",
