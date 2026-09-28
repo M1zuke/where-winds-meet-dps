@@ -15,6 +15,10 @@ import {
 } from "../../../../engine/pingFps"
 import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
 import { buildReadsTargetDistance } from "../../../../engine/buffs/catalog"
+import {
+  PREFERRED_DISTANCE_METERS_MAX,
+  PREFERRED_DISTANCE_METERS_MIN,
+} from "../../../../engine/distance"
 import styles from "./EncounterSettingsPanel.module.scss"
 
 const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
@@ -153,7 +157,13 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
               <NumInput
                 value={settings.preferredDistanceMeters}
                 onChange={(value) =>
-                  setCombat("preferredDistanceMeters", Math.min(20, Math.max(0, value)))
+                  setCombat(
+                    "preferredDistanceMeters",
+                    Math.min(
+                      PREFERRED_DISTANCE_METERS_MAX,
+                      Math.max(PREFERRED_DISTANCE_METERS_MIN, value),
+                    ),
+                  )
                 }
               />
             </label>

@@ -27,8 +27,17 @@ describe("Flute of the Tides — distance bonus bands", () => {
     [5, 0.08],
     [8.9, 0.17],
     [9, 0.2],
-    [20, 0.2],
+    [19.9, 0.2],
   ])("gives the band bonus for a %s m distance", (distanceMeters, bonus) => {
+    const engine = engineAt(distanceMeters)
+    engine.processSkillCast(CAST.fluteOfTheTidesFull, 0, {}, false, [BUFF.fluteArrival])
+    expect(allDamageBoostAt(engine, 5)).toBeCloseTo(bonus, 10)
+  })
+
+  it.each([
+    [20, 0],
+    [25, 0],
+  ])("gives no bonus at %s m, past the table's last band", (distanceMeters, bonus) => {
     const engine = engineAt(distanceMeters)
     engine.processSkillCast(CAST.fluteOfTheTidesFull, 0, {}, false, [BUFF.fluteArrival])
     expect(allDamageBoostAt(engine, 5)).toBeCloseTo(bonus, 10)

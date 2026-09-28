@@ -13,25 +13,28 @@ export const fluteArrival = defineBuff({
   effects: [],
 })
 
-// In-game values as of 2026-09-24: +1 %/m up to 5 m, then +3 %/m, capped at
-// +20 % from 9 m on, up to the table's own 20 m bound (centre-to-centre
-// distance).
-const DISTANCE_BANDS: readonly { belowMeters: number; bonus: number }[] = [
-  { belowMeters: 1, bonus: 0.01 },
-  { belowMeters: 2, bonus: 0.02 },
-  { belowMeters: 3, bonus: 0.03 },
-  { belowMeters: 4, bonus: 0.04 },
-  { belowMeters: 5, bonus: 0.05 },
-  { belowMeters: 6, bonus: 0.08 },
-  { belowMeters: 7, bonus: 0.11 },
-  { belowMeters: 8, bonus: 0.14 },
-  { belowMeters: 9, bonus: 0.17 },
+// In-game values as of 2026-09-28: +1 %/m up to 5 m, then +3 %/m, capped at
+// +20 % from 9 m to 20 m (centre-to-centre distance). No band covers 20 m or
+// beyond, so the bonus is 0 there.
+const DISTANCE_BANDS: readonly { minMeters: number; maxMeters: number; bonus: number }[] = [
+  { minMeters: 0, maxMeters: 1, bonus: 0.01 },
+  { minMeters: 1, maxMeters: 2, bonus: 0.02 },
+  { minMeters: 2, maxMeters: 3, bonus: 0.03 },
+  { minMeters: 3, maxMeters: 4, bonus: 0.04 },
+  { minMeters: 4, maxMeters: 5, bonus: 0.05 },
+  { minMeters: 5, maxMeters: 6, bonus: 0.08 },
+  { minMeters: 6, maxMeters: 7, bonus: 0.11 },
+  { minMeters: 7, maxMeters: 8, bonus: 0.14 },
+  { minMeters: 8, maxMeters: 9, bonus: 0.17 },
+  { minMeters: 9, maxMeters: 10, bonus: 0.2 },
+  { minMeters: 10, maxMeters: 20, bonus: 0.2 },
 ]
-const DISTANCE_BONUS_CAP = 0.2
 
 function distanceBonus(distanceMeters: number): number {
-  const band = DISTANCE_BANDS.find((candidate) => distanceMeters < candidate.belowMeters)
-  return band ? band.bonus : DISTANCE_BONUS_CAP
+  const band = DISTANCE_BANDS.find(
+    (candidate) => distanceMeters >= candidate.minMeters && distanceMeters < candidate.maxMeters,
+  )
+  return band?.bonus ?? 0
 }
 
 export const fluteDistanceBonus = defineBuff({

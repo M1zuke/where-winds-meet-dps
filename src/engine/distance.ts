@@ -4,6 +4,11 @@
 
 export type SkillApproach = "approach" | "stationary"
 
+// 40 m matches the longest `reachMeters` authored on any skill so far (the
+// mystic Flute of the Tides casts).
+export const PREFERRED_DISTANCE_METERS_MIN = 0
+export const PREFERRED_DISTANCE_METERS_MAX = 40
+
 export interface DistanceBand {
   minMeters: number
   maxMeters: number
