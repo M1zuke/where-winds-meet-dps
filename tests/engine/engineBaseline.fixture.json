@@ -2166,16 +2166,16 @@
     "digest": "d6752e0eaab3a2ea59238032e6e82592978e298a324153e9ea33f1f2f43d58b1"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 41862.08,
-    "totalDamage": 2511724.56,
+    "dps": 41158.7,
+    "totalDamage": 2469521.88,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 12.87s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 23.67s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 36.52s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 48.32s would be illegal in the game: its cast conditions are not met.",
-      "Spear Special (1 Hit Cancel) at 57.83s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 58.33s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 4-Hit at 37.12s would be illegal in the game: its cast conditions are not met.",
+      "SwordSpecial 4-Hit at 49.52s would be illegal in the game: its cast conditions are not met.",
+      "Spear Special (1 Hit Cancel) at 59.03s would be illegal in the game: its cast conditions are not met.",
+      "SwordSpecial 4-Hit at 59.53s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -2191,7 +2191,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 42,
-        "expectedDamage": 46657.18,
+        "expectedDamage": 46518.77,
         "castCount": 0
       },
       {
@@ -2215,7 +2215,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 52,
-        "expectedDamage": 164921.69,
+        "expectedDamage": 166058.76,
         "castCount": 0
       },
       {
@@ -2231,23 +2231,23 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 102,
-        "expectedDamage": 292723.22,
+        "expectedDamage": 292120.88,
         "castCount": 0
       },
       {
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 48798.78,
-        "castCount": 3
+        "count": 5,
+        "expectedDamage": 14495.94,
+        "castCount": 1
       },
       {
         "name": "Yi River",
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 51474.17,
+        "expectedDamage": 51568.01,
         "castCount": 0
       },
       {
@@ -2255,15 +2255,15 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 87470.54,
+        "expectedDamage": 87189.16,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 28,
-        "expectedDamage": 1227615.7,
+        "count": 27,
+        "expectedDamage": 1187684.77,
         "castCount": 0
       },
       {
@@ -2271,7 +2271,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 62530.31,
+        "expectedDamage": 61704.05,
         "castCount": 10
       },
       {
@@ -2286,16 +2286,16 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 44640.78,
+        "count": 12,
+        "expectedDamage": 36029.96,
         "castCount": 5
       },
       {
         "name": "SwordSpecial 4-Hit (Hit 4)",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 5,
-        "expectedDamage": 22325.61,
+        "count": 4,
+        "expectedDamage": 18020.2,
         "castCount": 0
       },
       {
@@ -2326,9 +2326,9 @@
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 6,
-        "expectedDamage": 20202.34,
-        "castCount": 1
+        "count": 18,
+        "expectedDamage": 65803.79,
+        "castCount": 3
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -2343,7 +2343,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 9981.71,
+        "expectedDamage": 9945.04,
         "castCount": 3
       },
       {
@@ -2356,11 +2356,11 @@
       }
     ],
     "counts": {
-      "timeline": 409,
-      "buffWindows": 135,
+      "timeline": 406,
+      "buffWindows": 131,
       "casts": 93
     },
-    "digest": "169e00ef6fff705f9db1eb00294c3fac410daf3f047fe6018b383ec91317df4e"
+    "digest": "23b740aae403274ea7ab2c3c481174ed6eced53dc693ffc6387014c40e122ace"
   },
   "anchor:bitterSeasonT6": {
     "dps": 48234.89,
@@ -3724,8 +3724,8 @@
     "digest": "d8ea0ec47de622109f0da8f6db5bcaa050cada366ab0a826068f387ff7958f76"
   },
   "defaults:umbra": {
-    "dps": 12117.2,
-    "totalDamage": 727032.16,
+    "dps": 12218.02,
+    "totalDamage": 733081.36,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.98s would be illegal in the game: its cast conditions are not met.",
@@ -3739,15 +3739,15 @@
       "Sword Martial QQQ at 25.12s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 29.38s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 31.17s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 36.28s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 38.37s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 40.98s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 42.77s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 48.48s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 50.57s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 53.18s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 54.97s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 56.07s would be illegal in the game: its cast conditions are not met."
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 36.88s would be illegal in the game: its cast conditions are not met.",
+      "Sword Martial QQQ at 38.97s would be illegal in the game: its cast conditions are not met.",
+      "Crosswind Blade [cancel] at 41.58s would be illegal in the game: its cast conditions are not met.",
+      "Crosswind Blade [cancel] at 43.37s would be illegal in the game: its cast conditions are not met.",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 49.68s would be illegal in the game: its cast conditions are not met.",
+      "Sword Martial QQQ at 51.77s would be illegal in the game: its cast conditions are not met.",
+      "Crosswind Blade [cancel] at 54.38s would be illegal in the game: its cast conditions are not met.",
+      "Crosswind Blade [cancel] at 56.17s would be illegal in the game: its cast conditions are not met.",
+      "SwordSpecial 4-Hit at 57.27s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
       {
@@ -3763,7 +3763,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 48,
-        "expectedDamage": 55998.83,
+        "expectedDamage": 56702.53,
         "castCount": 0
       },
       {
@@ -3771,7 +3771,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 43,
-        "expectedDamage": 33806.22,
+        "expectedDamage": 33833.76,
         "castCount": 0
       },
       {
@@ -3794,16 +3794,16 @@
         "name": "SpearQ 5-Hit Cancel",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 26314.24,
-        "castCount": 3
+        "count": 5,
+        "expectedDamage": 8290.44,
+        "castCount": 1
       },
       {
         "name": "Flute Ripple (DoT)",
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 81327.49,
+        "expectedDamage": 81459.2,
         "castCount": 0
       },
       {
@@ -3811,7 +3811,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 47776.89,
+        "expectedDamage": 47619.56,
         "castCount": 10
       },
       {
@@ -3819,7 +3819,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 233256.42,
+        "expectedDamage": 233393.17,
         "castCount": 0
       },
       {
@@ -3827,7 +3827,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 30827.61,
+        "expectedDamage": 30751.89,
         "castCount": 10
       },
       {
@@ -3835,7 +3835,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 23892.81,
+        "expectedDamage": 23389.93,
         "castCount": 5
       },
       {
@@ -3843,7 +3843,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 23842.98,
+        "expectedDamage": 23963.19,
         "castCount": 5
       },
       {
@@ -3859,7 +3859,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 13402.53,
+        "expectedDamage": 13451.85,
         "castCount": 4
       },
       {
@@ -3875,16 +3875,16 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 16049.79,
+        "expectedDamage": 16020.41,
         "castCount": 4
       },
       {
         "name": "SpearQ",
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
-        "count": 6,
-        "expectedDamage": 11200.97,
-        "castCount": 1
+        "count": 18,
+        "expectedDamage": 34870.05,
+        "castCount": 3
       },
       {
         "name": "Sword Charge Stage 1, 3-Hit",
@@ -3912,10 +3912,10 @@
       }
     ],
     "counts": {
-      "timeline": 295,
+      "timeline": 297,
       "buffWindows": 128,
       "casts": 91
     },
-    "digest": "79c553d737703b6e540337613396813dbec90a32b843fecce37a6914970dec5c"
+    "digest": "f7fcb1137fde04ce8eefc212fa036f1a78fafe2c2c8a39c3de47ba465227f1d0"
   }
 }

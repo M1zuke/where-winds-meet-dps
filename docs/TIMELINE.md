@@ -33,11 +33,21 @@ on the 60 fps grid. Rules:
   row.
 - Every authored `frame` and `castFrames` is the nominal 60 fps value,
   regardless of `startLatency`. A skill's `startLatency` states how its start
-  relates to the server: waiting for the round trip (the default), skipping
-  that wait only in dummy mode, or never waiting because the step is not a
-  real skill request. The engine adds the resolved start latency ahead of a
-  cast and quantises every cast's start, length and hit offset to the input
-  frame rate on top of the authored data — never baked into a skill module.
+  relates to the server: waiting for the round trip plus a fixed server
+  processing time plus one input-frame-rate frame (the default), skipping the
+  round trip and the server processing time only in dummy mode while still
+  paying the one frame, or never waiting because the step is not a real skill
+  request. A zero-length round trip is the app's own no-latency baseline, not
+  a real connection, so it waives the server processing time and the one
+  frame too — every added wait here is a true no-op at it, not only the round
+  trip itself. **A skill may separately declare how many further server round
+  trips its own timeline waits for, beyond the start wait** — each one adds
+  the same round-trip-plus-server-processing delay, at the cast's own start,
+  and lengthens the cast by that amount; absent means none, and the same
+  zero-round-trip waiver applies. The engine adds every resolved wait ahead of
+  or within a cast and quantises every cast's start, length and hit offset to
+  the input frame rate on top of the authored data — never baked into a skill
+  module.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 - **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
   a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage

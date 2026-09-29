@@ -33,6 +33,9 @@ export const swordHeavyCharged2Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordHeavyCharged2Hit,
   startLatency: "noWaitOnDummy",
+  // In-game values as of 2026-09-30: this press locks onto its target online,
+  // a second server wait beyond the input's own before the release plays.
+  serverWaitsInCast: 1,
   // In-game values as of 2026-09-24: a Deflect-cancelled 2nd wave of a
   // three-wave release only exists while Sword Morph's multi-wave window holds.
   castConditions: [{ buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 }],

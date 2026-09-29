@@ -918,6 +918,20 @@ function builtinStartLatencyFor(id: string): Skill["startLatency"] | undefined {
   return builtinStartLatencyById.get(id)
 }
 
+// `serverWaitsInCast` is authored on the built-in module, never edited in the
+// Skill Editor, the same reasoning as `startLatency` above.
+let builtinServerWaitsInCastById: Map<string, number> | null = null
+function builtinServerWaitsInCastFor(id: string): number | undefined {
+  if (!builtinServerWaitsInCastById) {
+    builtinServerWaitsInCastById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.serverWaitsInCast)
+          builtinServerWaitsInCastById.set(skill.id, skill.serverWaitsInCast)
+  }
+  return builtinServerWaitsInCastById.get(id)
+}
+
 function healSkillTags(id: string, tags: string[]): string[] {
   const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
   const healed = new Set(renamed)
@@ -1176,6 +1190,7 @@ function hydrateSkill(s: Skill): Skill {
     tags: healedTags,
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
+    serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
     castConditions: Array.isArray(s.castConditions)
       ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)

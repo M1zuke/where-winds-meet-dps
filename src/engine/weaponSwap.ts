@@ -69,6 +69,7 @@ export function makeDirectWeaponSwapSkill(
     castFrames,
     triggerable: false,
     prePull,
+    startLatency: "none",
     // Stationary with a large reach: a weapon change never pulls the player
     // toward the target, and a default melee reach would wrongly shrink a
     // live ranged distance every time it fires.

@@ -197,6 +197,9 @@ export interface Skill {
   // § "Drawn weapon". No separate direct swap is inserted in front of it.
   isWeaponSwap?: boolean
   startLatency?: StartLatency
+  // A count of further server round trips this cast's own timeline waits for,
+  // beyond the start wait — docs/TIMELINE.md § "Coefficients". Absent means 0.
+  serverWaitsInCast?: number
   createdAt: string
   updatedAt: string
 }
@@ -662,6 +665,13 @@ export function isSkill(x: unknown): x is Skill {
     return false
   if (s.approach !== undefined && !isSkillApproach(s.approach)) return false
   if (s.displacement !== undefined && !isDisplacement(s.displacement)) return false
+  if (
+    s.serverWaitsInCast !== undefined &&
+    (typeof s.serverWaitsInCast !== "number" ||
+      !Number.isInteger(s.serverWaitsInCast) ||
+      s.serverWaitsInCast < 0)
+  )
+    return false
   return true
 }
 
@@ -711,6 +721,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     prePull: src.prePull,
     isWeaponSwap: src.isWeaponSwap,
     startLatency: src.startLatency,
+    serverWaitsInCast: src.serverWaitsInCast,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,

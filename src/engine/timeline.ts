@@ -118,6 +118,10 @@ const SWAP_COOLDOWN_FRAMES = 3 * FPS
 const DIRECT_SWAP_CAST_FRAMES = 0
 const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
 
+// Calibrated from an in-game run at 10 ms / 250 fps, 2026-09-30: the fixed
+// processing time a server-wait cast pays alongside its round trip.
+const SERVER_PROCESSING_MS = 24
+
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.
 function quantiseToRenderFrame(value: number, renderPeriodFrames: number): number {
@@ -334,6 +338,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // The layout ledger's own write mark just before this step's meter costs
       // and drains apply — what a "level at cast start" readout means.
       meterMarkAtStart: number
+      // This step's own further in-cast server waits, already resolved to
+      // frames — every later reader of a performed hit's frame adds it, the
+      // same way `hitLandingFrame` itself is shared rather than reimplemented.
+      midCastExtraFrames: number
     }
 
     const openingBuffsById = new Map(buffs.map((b) => [b.id, b] as const))
@@ -557,6 +565,42 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
+    const renderPeriodFrames = FPS / resolveAverageFps(inputs.averageFps)
+    const oneClientFrameFrames = renderPeriodFrames
+    const pingRoundTripFrames = (resolvePingMs(inputs.pingMs) * FPS) / 1000
+    const serverProcessingFrames = (SERVER_PROCESSING_MS * FPS) / 1000
+    // `pingMs` at 0 is the app's own "assume no latency" baseline, not a
+    // literal zero-latency connection — a real server always takes some
+    // processing time — so every added wait below stays a genuine no-op
+    // there, exactly as the plain round trip already was, rather than
+    // pinning every default run to a server processing time nothing set it
+    // to.
+    const hasPing = pingRoundTripFrames > 0
+    // Summed before quantising, not quantised term by term (docs/TIMELINE.md
+    // § "Coefficients").
+    const roundTripFrames = hasPing
+      ? quantiseToRenderFrame(
+          pingRoundTripFrames + serverProcessingFrames + oneClientFrameFrames,
+          renderPeriodFrames,
+        )
+      : 0
+    const clientFrameOnlyFrames = hasPing
+      ? quantiseToRenderFrame(oneClientFrameFrames, renderPeriodFrames)
+      : 0
+    // A skill's own further in-cast server wait lands mid-graph, not at a
+    // fresh input, so it skips the extra client frame `roundTripFrames` pays.
+    const midCastWaitFrames = hasPing
+      ? quantiseToRenderFrame(pingRoundTripFrames + serverProcessingFrames, renderPeriodFrames)
+      : 0
+    const startLatencyFrames = (skill: Skill): number => {
+      const latency = skill.startLatency ?? "serverRoundTrip"
+      if (latency === "none") return 0
+      if (latency === "noWaitOnDummy" && inputs.dummyMode) return clientFrameOnlyFrames
+      return roundTripFrames
+    }
+    const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
+      Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
+
     // The largest cast length any of a step's hit variants could select.
     function upperBoundCastFrames(rs: ResolvedStep): number {
       const performedHits = rs.skill.hits
@@ -573,19 +617,39 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return bound
     }
 
+    // The largest start-wait plus in-cast-wait a step could pay — the worst
+    // case a dummy-mode skip could still be waived, so every reader of this
+    // bound stays a true upper bound regardless of `inputs.dummyMode`. Rounded
+    // up to a whole frame: this bound also sizes the meter engine's own
+    // starting frame, and a render-quantised fraction there would desync its
+    // internal cursor from every (already-rounded) hit-derived frame it is
+    // later compared against.
+    function upperBoundLatencyFrames(rs: ResolvedStep): number {
+      const start = (rs.skill.startLatency ?? "serverRoundTrip") === "none" ? 0 : roundTripFrames
+      return Math.ceil(start + (rs.skill.serverWaitsInCast ?? 0) * midCastWaitFrames)
+    }
+
     // A cast's length can't be resolved from the live status ledger, because
     // that ledger needs every cast's length to size itself first. This
     // throwaway ledger breaks the cycle: sized against the worst case up front,
     // then filled incrementally as each step is laid out, so a later step's
     // conditions see every earlier step's triggers but never its own. Prepull
     // casts take the upper bound as their real length outright — none
-    // currently gate a hit or a variant's cast length on a condition.
+    // currently gate a hit or a variant's cast length on a condition. Every
+    // step's own worst-case latency is added too, or a heavily lagged run can
+    // land a cast past a permanent status's own bound-sized window.
     const prePullBound = resolvedSteps.reduce(
-      (sum, rs) => (isPrePullSkill(rs.skill) ? sum + upperBoundCastFrames(rs) : sum),
+      (sum, rs) =>
+        isPrePullSkill(rs.skill)
+          ? sum + upperBoundCastFrames(rs) + upperBoundLatencyFrames(rs)
+          : sum,
       0,
     )
     const activeUpperBound = resolvedSteps.reduce(
-      (sum, rs) => (isPrePullSkill(rs.skill) ? sum : sum + upperBoundCastFrames(rs)),
+      (sum, rs) =>
+        isPrePullSkill(rs.skill)
+          ? sum
+          : sum + upperBoundCastFrames(rs) + upperBoundLatencyFrames(rs),
       0,
     )
     const layoutLedger = new StatusLedger(Math.min(0, -prePullBound), activeUpperBound)
@@ -987,6 +1051,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       meterIntervalStarts: PendingMeterIntervalStart[] = [],
       paidByMeter: Map<string, number> = new Map(),
       meterHorizonFrame = Infinity,
+      midCastExtraFrames = 0,
     ): void {
       const pending: PendingLayoutEvent[] = [
         ...hits.map((hit): PendingHitEvent => ({
@@ -999,7 +1064,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               hit,
               (condition) => layoutHolds(condition, stepStart),
               targetDistanceAt(stepStart),
-            ),
+            ) + midCastExtraFrames,
           ),
           owner: stepStart,
           prePull,
@@ -1029,20 +1094,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     const windowFramesOverride =
       rotation.fixedWindowSec === undefined ? null : Math.round(rotation.fixedWindowSec * FPS)
-
-    const renderPeriodFrames = FPS / resolveAverageFps(inputs.averageFps)
-    const roundTripFrames = quantiseToRenderFrame(
-      (resolvePingMs(inputs.pingMs) * FPS) / 1000,
-      renderPeriodFrames,
-    )
-    const waitsForRoundTrip = (skill: Skill): boolean => {
-      const latency = skill.startLatency ?? "serverRoundTrip"
-      if (latency === "none") return false
-      if (latency === "noWaitOnDummy") return !inputs.dummyMode
-      return true
-    }
-    const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
-      Math.round(stepStart + quantiseToRenderFrame(hitFrame, renderPeriodFrames))
 
     // A charged hold's own drain, checked against the meter it names: bounded
     // so a chain of fallbacks can only ever step down, never loop.
@@ -1085,7 +1136,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const cursor = prePull ? preCursor : activeCursor
       const isWeaponSwapCast = resolvedStep.skill.isWeaponSwap === true
       const isDirectSwapCast = directSwapSkills.has(resolvedStep.skill)
-      const earliestStart = cursor + (waitsForRoundTrip(resolvedStep.skill) ? roundTripFrames : 0)
+      const earliestStart = cursor + startLatencyFrames(resolvedStep.skill)
       // A swap blocked by its own cooldown waits as idle time instead of being
       // flagged illegal — docs/TIMELINE.md § "Drawn weapon".
       const exactStart = isWeaponSwapCast
@@ -1143,24 +1194,26 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const occurringHits = castResolution.skill.hits.filter(
         (hit) => (hit.conditions ?? []).every(holdsHere) && hitLandsByNextStep(hit),
       )
+      // A skill's own further in-cast server waits never reach a pre-pull cast
+      // — the same real-world-gap reasoning that keeps one off every other
+      // frame-accurate mechanic (TIMELINE.md § "Meters").
+      const midCastExtraFrames = prePull
+        ? 0
+        : (castResolution.skill.serverWaitsInCast ?? 0) * midCastWaitFrames
+      const layoutHitFrame = (hit: SkillHit): number =>
+        resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)) + midCastExtraFrames
       const nominalCastLen = prePull
         ? upperBoundCastFrames(castResolution)
         : (() => {
             const maxFrame =
-              occurringHits.length > 0
-                ? Math.max(
-                    ...occurringHits.map((hit) =>
-                      resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)),
-                    ),
-                  )
-                : -1
+              occurringHits.length > 0 ? Math.max(...occurringHits.map(layoutHitFrame)) : -1
             const gatedCastFrames = occurringHits.find(
               (hit) => hit.requiresNextStepSkillIds && hit.castFramesWhenGated !== undefined,
             )?.castFramesWhenGated
             return (
-              activeVariantCastFrames(occurringHits, holdsHere) ??
-              gatedCastFrames ??
-              (castResolution.skill.castFrames || maxFrame + 1)
+              (activeVariantCastFrames(occurringHits, holdsHere) ??
+                gatedCastFrames ??
+                (castResolution.skill.castFrames || maxFrame + 1)) + midCastExtraFrames
             )
           })()
       const castLen = quantiseToRenderFrame(nominalCastLen, renderPeriodFrames)
@@ -1178,11 +1231,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         prePull || windowFramesOverride === null
           ? occurringHits
           : occurringHits.filter(
-              (hit) =>
-                hitLandingFrame(
-                  startFrame,
-                  resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)),
-                ) <= windowFramesOverride,
+              (hit) => hitLandingFrame(startFrame, layoutHitFrame(hit)) <= windowFramesOverride,
             )
       seedStepTriggers(
         castResolution.skill,
@@ -1192,6 +1241,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         meterDrainStarts,
         paidByMeter,
         prePull ? Infinity : nextCursor,
+        midCastExtraFrames,
       )
       laidSteps.push({
         resolved: castResolution,
@@ -1201,6 +1251,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         castLen,
         performedHits: landedHits,
         meterMarkAtStart,
+        midCastExtraFrames,
       })
     }
     const castCursorFrames = activeCursor
@@ -1331,6 +1382,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       hitCount: number
       generated: boolean
       inheritedBuffIds: readonly string[]
+      // 0 for a generated cast — a skill's own further in-cast server waits
+      // never reach a hit it merely triggers (§ "Coefficients").
+      midCastExtraFrames: number
     }
 
     // The prepass. It walks the whole cast graph — the rotation's casts and every
@@ -1350,6 +1404,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           hitCount: ls.performedHits.length,
           generated: false,
           inheritedBuffIds: [],
+          midCastExtraFrames: ls.midCastExtraFrames,
         }))
         const damageHits: { frame: number; skill: Skill }[] = []
 
@@ -1388,7 +1443,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           for (const hit of cast.skill.hits) {
             const hitFrame = hitLandingFrame(
               cast.frame,
-              resolvedHitFrame(hit, castHolds, castDistanceMeters),
+              resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
             )
             if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
             for (const trigger of hit.triggers) {
@@ -1403,6 +1458,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 hitCount: generatedSkill.hits.length,
                 generated: true,
                 inheritedBuffIds: propagated,
+                midCastExtraFrames: 0,
               })
             }
           }
@@ -1780,7 +1836,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               hit,
               (condition) => layoutHolds(condition, ls.startFrame),
               stepDistanceMeters,
-            ),
+            ) + ls.midCastExtraFrames,
           ),
           seq: seq++,
           skill: ls.resolved.skill,
@@ -2023,8 +2079,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const lastHitFrame =
           ls.performedHits.length > 0
             ? Math.max(
-                ...ls.performedHits.map((hit) =>
-                  resolvedHitFrame(hit, stepHolds, stepDistanceMeters),
+                ...ls.performedHits.map(
+                  (hit) =>
+                    resolvedHitFrame(hit, stepHolds, stepDistanceMeters) + ls.midCastExtraFrames,
                 ),
               )
             : 0

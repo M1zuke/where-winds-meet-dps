@@ -26,6 +26,9 @@ export const energySurge = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.energySurge,
+  // In-game values as of 2026-09-30: this release locks onto its target
+  // online, a second server wait beyond the input's own before it plays.
+  serverWaitsInCast: 1,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   castConditions: [{ buffId: BUFF.energySurgeGrant, op: "gte", stacks: 1 }],
   receives: [
