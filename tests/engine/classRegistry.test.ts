@@ -117,7 +117,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 54-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 55-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "wineGu",
@@ -168,6 +168,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "etherwrathPenetrationBoost",
       "swallowcallLightAttackBoost",
       "swiftGaleAirborneHeavyBoost",
+      "totalAnnihilationSupremeShield",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
       "bellstrikeUmbraBleedCoefficient",

@@ -3,12 +3,14 @@ import { anxisoldierheng, anxisoldierhengStab } from "./anxisoldierheng"
 import { anxisoldiermodown } from "./anxisoldiermodown"
 import { anxisoldiermojump } from "./anxisoldiermojump"
 import { anxisoldiermosweep } from "./anxisoldiermosweep"
+import { anxisoldiermosweepSupreme } from "./anxisoldiermosweep-supreme"
 import { blockperception } from "./blockperception"
 import { deflect } from "./deflect"
 import { deflectCancel } from "./deflect-cancel"
 import { phalanxchargedS3Innerpassion } from "./phalanxcharged-s3-innerpassion"
 import { phalanxchargedS3 } from "./phalanxcharged-s3"
 import { phalanxq } from "./phalanxq"
+import { phalanxqSupreme } from "./phalanxq-supreme"
 import { phalanxspecialPrepull } from "./phalanxspecial-prepull"
 import { phalanxspecial } from "./phalanxspecial"
 import { snowpartingchargedForgetfulness } from "./snowpartingcharged-forgetfulness"
@@ -31,12 +33,14 @@ export const SKILLS: Skill[] = [
   anxisoldiermodown,
   anxisoldiermojump,
   anxisoldiermosweep,
+  anxisoldiermosweepSupreme,
   blockperception,
   deflect,
   deflectCancel,
   phalanxchargedS3Innerpassion,
   phalanxchargedS3,
   phalanxq,
+  phalanxqSupreme,
   phalanxspecialPrepull,
   phalanxspecial,
   snowpartingchargedForgetfulness,

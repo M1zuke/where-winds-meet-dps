@@ -70,7 +70,7 @@ export const WEAPON_ART_ATTUNEMENTS = [
     min: SKILL_BOOST_MIN,
     max: SKILL_BOOST_MAX,
     slots: ARMOR_SLOTS,
-    classIds: ["bellstrikeUmbra"],
+    classIds: ["bellstrikeUmbra", "bellstrikeSplendor"],
     enginePath: "classSpecificAttunement.spearCharged",
     affectsTag: "attune:spearCharged",
   },

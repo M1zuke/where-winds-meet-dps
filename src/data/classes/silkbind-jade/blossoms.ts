@@ -59,6 +59,22 @@ export const blossomResource = defineResource({
       skillIds: [SKILL.umblightcharge],
     },
     {
+      id: "apricotHeavenHit",
+      name: "Apricot Heaven gain",
+      // In-game values as of 2026-09-24: +4 per hit, 2 hits per cast.
+      defaultAmount: 8,
+      skillIds: [SKILL.apricotHeavenNormal, SKILL.apricotHeavenEnhanced],
+      divideAcrossSkillHits: true,
+    },
+    {
+      id: "bambooBreezeHit",
+      name: "Bamboo Breeze gain",
+      // In-game values as of 2026-09-24: +3 per hit, 2 hits per cast.
+      defaultAmount: 6,
+      skillIds: [SKILL.bambooBreeze],
+      divideAcrossSkillHits: true,
+    },
+    {
       id: "tier6",
       name: "Blossom Barrage T6",
       defaultAmount: 25,

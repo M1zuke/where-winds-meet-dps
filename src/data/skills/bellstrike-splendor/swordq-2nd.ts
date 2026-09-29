@@ -1,9 +1,18 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { applyBuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
+
+// In-game values as of 2026-09-29: granted 0.01 s after the cast starts —
+// approximated on this cast's own earliest hit, 6 s, unlocking Relentless
+// Chase's second strike in the Q slot.
+const relentlessChaseWindowGrant = applyBuff({
+  target: BUFF.relentlessChaseWindow,
+  durationFrames: 360,
+})
 
 export const swordq2nd = defineSkill({
   id: SKILL.swordq2nd,
@@ -32,6 +41,7 @@ export const swordq2nd = defineSkill({
       attributeMultiplier: 1.153478,
       physFixed: 212.7,
       attributeFixed: 115.95,
+      triggers: [relentlessChaseWindowGrant],
     }),
     hit(1, {
       frame: 48,

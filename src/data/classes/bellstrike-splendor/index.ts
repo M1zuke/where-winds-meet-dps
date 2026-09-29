@@ -37,7 +37,13 @@ export const bellstrikeSplendor = defineClass({
     INNER_WAY_ID.breakingPoint,
     INNER_WAY_ID.evasiveCharge,
   ],
-  classSpecificAttunements: ["swordQ", "swordCharged", "swordSpecial", "spearSpecial"],
+  classSpecificAttunements: [
+    "swordQ",
+    "swordCharged",
+    "swordSpecial",
+    "spearCharged",
+    "spearSpecial",
+  ],
   weapons: [MARTIAL_ART_ID.namelessSword, MARTIAL_ART_ID.namelessSpear],
   // In-game values as of 2026-09-28: the shortest read reach on either
   // weapon (Relentless Chase) — an assumption for every skill with no reach

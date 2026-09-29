@@ -6,6 +6,11 @@ import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
+// In-game values as of 2026-09-24: Flying Tornado shortens the charge level
+// from 0.55 s to 0.36 s (−11.4 f); the entry hold and the release clip are
+// unchanged.
+const FLYING_TORNADO_ACTIVE = { buffId: BUFF.gourdTossFlyingTornado, op: "gte" as const, stacks: 1 }
+
 export const fanlightcharged = defineSkill({
   id: SKILL.fanlightcharged,
   classId: "silkbindJade",
@@ -55,6 +60,19 @@ export const fanlightcharged = defineSkill({
       // the hold's own drain, not while the meter still sits at its cast-start
       // level.
       triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10, appliesOnCastEnd: true })],
+      variants: [
+        {
+          id: "hv-fanlightcharged-hit-0-flying-tornado",
+          label: "Flying Tornado",
+          conditions: [FLYING_TORNADO_ACTIVE],
+          physMultiplier: 1.9044,
+          attributeMultiplier: 2.8566,
+          physFixed: 527,
+          attributeFixed: 287,
+          frame: 60,
+          castFrames: 86,
+        },
+      ],
     }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",

@@ -27,6 +27,8 @@ export const SKILL = {
   boundvessel: "bamboocutDraught-boundvessel",
   bladeVessel: "bamboocutDraught-blade-vessel",
   whaledraftTap: "bamboocutDraught-whaledraft-tap",
+  whaledraftHold: "bamboocutDraught-whaledraft-hold",
+  whaledraftHoldShort: "bamboocutDraught-whaledraft-hold-short",
   dualBladesLightAttack1: "bamboocutDraught-dual-blades-light-attack-1",
   dualBladesLightAttack2: "bamboocutDraught-dual-blades-light-attack-2",
   dualBladesLightAttack3: "bamboocutDraught-dual-blades-light-attack-3",

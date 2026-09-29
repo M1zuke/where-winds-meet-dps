@@ -23,6 +23,20 @@ import { umbdronelaunch23Hit } from "./umbdronelaunch-23hit"
 import { umbdronelaunch26Hit } from "./umbdronelaunch-26hit"
 import { umblightcharge } from "./umblightcharge"
 import { umblightchargeLift } from "./umblightcharge-lift"
+import { apricotHeavenNormal } from "./apricot-heaven-normal"
+import { apricotHeavenEnhanced } from "./apricot-heaven-enhanced"
+import { glowAndFlowStage1 } from "./glow-and-flow-stage-1"
+import { glowAndFlowStage2 } from "./glow-and-flow-stage-2"
+import { bambooBreeze } from "./bamboo-breeze"
+import { hiddenSwordLight1 } from "./hidden-sword-light-1"
+import { hiddenSwordLight2 } from "./hidden-sword-light-2"
+import { hiddenSwordLight3 } from "./hidden-sword-light-3"
+import { hiddenSwordLight4 } from "./hidden-sword-light-4"
+import { hiddenSwordLight5 } from "./hidden-sword-light-5"
+import { hiddenSwordHeavy1 } from "./hidden-sword-heavy-1"
+import { hiddenSwordHeavy2 } from "./hidden-sword-heavy-2"
+import { hiddenSwordHeavy3 } from "./hidden-sword-heavy-3"
+import { hiddenSwordHeavyAlt } from "./hidden-sword-heavy-alt"
 import { umbqPrepull } from "./umbq-prepull"
 import { umbq } from "./umbq"
 import { deflectCancel } from "./deflect-cancel"
@@ -55,6 +69,20 @@ export const SKILLS: Skill[] = [
   umbdronelaunch26Hit,
   umblightcharge,
   umblightchargeLift,
+  apricotHeavenNormal,
+  apricotHeavenEnhanced,
+  glowAndFlowStage1,
+  glowAndFlowStage2,
+  bambooBreeze,
+  hiddenSwordLight1,
+  hiddenSwordLight2,
+  hiddenSwordLight3,
+  hiddenSwordLight4,
+  hiddenSwordLight5,
+  hiddenSwordHeavy1,
+  hiddenSwordHeavy2,
+  hiddenSwordHeavy3,
+  hiddenSwordHeavyAlt,
   umbqPrepull,
   umbq,
   deflectCancel,

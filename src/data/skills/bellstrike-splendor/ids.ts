@@ -11,6 +11,14 @@ export const SKILL = {
   spearq: "bellstrikeSplendor-spearq",
   spearqPrepull: "bellstrikeSplendor-spearq-prepull",
   spearq0HitCancel: "bellstrikeSplendor-spearq-0-hit-cancel",
+  swordq3rd: "bellstrikeSplendor-swordq-3rd",
+  legionCrusher: "bellstrikeSplendor-legioncrusher",
+  stormDanceStage1: "bellstrikeSplendor-stormdance-stage-1",
+  stormDanceStage1Spin: "bellstrikeSplendor-stormdance-stage-1-spin",
+  stormDanceStage1Wushuang: "bellstrikeSplendor-stormdance-stage-1-wushuang",
+  stormDanceStage1WushuangSpin: "bellstrikeSplendor-stormdance-stage-1-wushuang-spin",
+  stormDanceStage2: "bellstrikeSplendor-stormdance-stage-2",
+  stormDanceStage2Wushuang: "bellstrikeSplendor-stormdance-stage-2-wushuang",
 } as const
 
 export const DEBUFF = {

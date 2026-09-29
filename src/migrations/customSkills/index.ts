@@ -51,6 +51,10 @@ import { V47__weaponDrawnGates } from "./V47__weaponDrawnGates"
 import { V48__qiRateDefaults } from "./V48__qiRateDefaults"
 import { V49__perGrantSiteDelayAndSetReach } from "./V49__perGrantSiteDelayAndSetReach"
 import { V50__etherwrathPenetrationReach } from "./V50__etherwrathPenetrationReach"
+import { V51__relentlessChaseSecondStrike } from "./V51__relentlessChaseSecondStrike"
+import { V52__gourdTossThunder } from "./V52__gourdTossThunder"
+import { V53__gourdTossFlyingTornado } from "./V53__gourdTossFlyingTornado"
+import { V54__swallowcallColorfulPhoenixReach } from "./V54__swallowcallColorfulPhoenixReach"
 
 export type {
   CustomSkillMigration,
@@ -168,6 +172,10 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V48__qiRateDefaults,
   V49__perGrantSiteDelayAndSetReach,
   V50__etherwrathPenetrationReach,
+  V51__relentlessChaseSecondStrike,
+  V52__gourdTossThunder,
+  V53__gourdTossFlyingTornado,
+  V54__swallowcallColorfulPhoenixReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

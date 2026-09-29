@@ -78,4 +78,11 @@ describe("inner-way breakthrough ladders", () => {
       10,
     )
   })
+
+  it("Gourd Toss carries the rank-2+ four-star Precision ladder, like its siblings", () => {
+    expect(contributions(INNER_WAY_ID.gourdToss, 17, "tier 6").precision).toBeCloseTo(
+      INNER_WAY_LADDERS.precisionFourStar[17].precision!,
+      10,
+    )
+  })
 })

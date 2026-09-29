@@ -187,6 +187,59 @@ export const QI_IMBALANCE_MARKER_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-26T00:00:00.000Z",
 })
 
+// In-game values as of 2026-09-29: Relentless Chase's second strike is only
+// offered while this 6 s window (granted by the first strike) holds.
+export const RELENTLESS_CHASE_WINDOW_GATE: Buff = defineGateBuff({
+  id: BUFF.relentlessChaseWindow,
+  classId: CLASS_ID,
+  name: "Relentless Chase Available",
+  description: "Granted by Relentless Chase's first strike; spent by casting its second.",
+  scope: "player",
+  activation: "triggered",
+  durationFrames: 360,
+  effects: [],
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
+})
+
+// In-game values as of 2026-09-29: a defensive marker only — a Vagrant Sword
+// pressed while it holds fires the same three-wave release the timed
+// multi-wave window already models, so this buff itself carries no further
+// reads.
+export const QI_SHIELD_GATE: Buff = defineGateBuff({
+  id: BUFF.qiShield,
+  classId: CLASS_ID,
+  name: "Qi Shield",
+  description: "Granted by Relentless Chase's second strike; a defensive marker.",
+  scope: "player",
+  activation: "triggered",
+  durationFrames: 180,
+  effects: [],
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
+})
+
+// In-game values as of 2026-09-29: granted by a Legion Crusher hit; read by
+// the Wushuang-Stance-accelerated Storm Dance forms' own `castConditions`.
+export const WUSHUANG_STANCE_GATE: Buff = defineGateBuff({
+  id: BUFF.wushuangStance,
+  classId: CLASS_ID,
+  name: "Wushuang Stance",
+  description: "Granted by a Legion Crusher hit; speeds up the next Storm Dance.",
+  scope: "player",
+  activation: "triggered",
+  durationFrames: 180,
+  effects: [],
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
+})
+
 export const BELLSTRIKE_SPLENDOR_GATES: readonly Buff[] = [
   ENERGY_SURGE_GRANT_GATE,
   MULTI_WAVE_WINDOW_GATE,
@@ -196,4 +249,7 @@ export const BELLSTRIKE_SPLENDOR_GATES: readonly Buff[] = [
   ENDLESS_GALE_COST_REDUCTION_END_GATE,
   BATTLE_ANTHEM_CHARGE_COST_INCREASE_GATE,
   QI_IMBALANCE_MARKER_GATE,
+  RELENTLESS_CHASE_WINDOW_GATE,
+  QI_SHIELD_GATE,
+  WUSHUANG_STANCE_GATE,
 ]

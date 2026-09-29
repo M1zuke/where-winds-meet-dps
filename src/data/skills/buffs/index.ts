@@ -45,6 +45,7 @@ import { etherwrathAttackBoost } from "./etherwrathAttackBoost"
 import { etherwrathPenetrationBoost } from "./etherwrathPenetrationBoost"
 import { swallowcallLightAttackBoost } from "./swallowcallLightAttackBoost"
 import { swiftGaleAirborneHeavyBoost } from "./swiftGaleAirborneHeavyBoost"
+import { totalAnnihilationSupremeShield } from "./totalAnnihilationSupremeShield"
 
 // Order is load-bearing (float addition is not associative): the globals that
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
@@ -94,6 +95,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   etherwrathPenetrationBoost,
   swallowcallLightAttackBoost,
   swiftGaleAirborneHeavyBoost,
+  totalAnnihilationSupremeShield,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

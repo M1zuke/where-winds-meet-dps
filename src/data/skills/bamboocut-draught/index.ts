@@ -27,6 +27,8 @@ import { realmplay } from "./realmplay"
 import { boundvessel } from "./boundvessel"
 import { bladeVessel } from "./blade-vessel"
 import { whaledraftTap } from "./whaledraft-tap"
+import { whaledraftHold } from "./whaledraft-hold"
+import { whaledraftHoldShort } from "./whaledraft-hold-short"
 import { dualBladesLightAttack1 } from "./dual-blades-light-attack-1"
 import { dualBladesLightAttack2 } from "./dual-blades-light-attack-2"
 import { dualBladesLightAttack3 } from "./dual-blades-light-attack-3"
@@ -67,6 +69,8 @@ export const SKILLS: Skill[] = [
   boundvessel,
   bladeVessel,
   whaledraftTap,
+  whaledraftHold,
+  whaledraftHoldShort,
   dualBladesLightAttack1,
   dualBladesLightAttack2,
   dualBladesLightAttack3,

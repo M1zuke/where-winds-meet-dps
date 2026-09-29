@@ -14,6 +14,7 @@ import { healSkill as healMeterModifierGains } from "../../src/migrations/custom
 import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
 import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
+import { healSkill as healRelentlessChaseSecondStrike } from "../../src/migrations/customSkills/V51__relentlessChaseSecondStrike"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -60,10 +61,12 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids these later hops don't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healPerGrantSiteDelayAndSetReach(
-    healStonesplitSplendorJadeTimingRepairs(
-      healMountainsMightAndQiImbalanceMarker(
-        healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+  healRelentlessChaseSecondStrike(
+    healPerGrantSiteDelayAndSetReach(
+      healStonesplitSplendorJadeTimingRepairs(
+        healMountainsMightAndQiImbalanceMarker(
+          healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+        ),
       ),
     ),
   ) as Skill

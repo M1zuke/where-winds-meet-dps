@@ -3,6 +3,7 @@ import { battleAnthem } from "./battleAnthem"
 export { INNER_WAY_LADDERS } from "./breakthroughLadders"
 import { bitterSeason } from "./bitterSeason"
 import { frostCladNight } from "./frostCladNight"
+import { gourdToss } from "./gourdToss"
 import { insightfulStrike } from "./insightfulStrike"
 import { moraleChant } from "./moraleChant"
 import { mountainsMight } from "./mountainsMight"
@@ -28,6 +29,7 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   battleAnthem,
   bitterSeason,
   frostCladNight,
+  gourdToss,
   insightfulStrike,
   moraleChant,
   mountainsMight,

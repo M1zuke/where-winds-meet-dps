@@ -10,6 +10,7 @@ export const INNER_WAY_ID = {
   eonpour: "eonpour",
   evasiveCharge: "evasiveCharge",
   frostCladNight: "frostCladNight",
+  gourdToss: "gourdToss",
   insightfulStrike: "insightfulStrike",
   mistwing: "mistwing",
   moraleChant: "moraleChant",

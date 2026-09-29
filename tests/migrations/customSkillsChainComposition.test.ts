@@ -49,6 +49,10 @@ import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/m
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
 import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
 import { healSkill as healEtherwrathPenetrationReach } from "../../src/migrations/customSkills/V50__etherwrathPenetrationReach"
+import { healSkill as healRelentlessChaseSecondStrike } from "../../src/migrations/customSkills/V51__relentlessChaseSecondStrike"
+import { healSkill as healGourdTossThunder } from "../../src/migrations/customSkills/V52__gourdTossThunder"
+import { healSkill as healGourdTossFlyingTornado } from "../../src/migrations/customSkills/V53__gourdTossFlyingTornado"
+import { healSkill as healSwallowcallColorfulPhoenixReach } from "../../src/migrations/customSkills/V54__swallowcallColorfulPhoenixReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -107,6 +111,10 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [46, healStonesplitSplendorJadeTimingRepairs],
   [49, healPerGrantSiteDelayAndSetReach],
   [50, healEtherwrathPenetrationReach],
+  [51, healRelentlessChaseSecondStrike],
+  [52, healGourdTossThunder],
+  [53, healGourdTossFlyingTornado],
+  [54, healSwallowcallColorfulPhoenixReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

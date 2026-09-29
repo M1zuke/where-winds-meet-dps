@@ -14,6 +14,8 @@ const GAIN_KEYS = {
   qHit: "overview.blossoms.qHit",
   heavyLightCast: "overview.blossoms.heavyLightCast",
   chargedHit: "overview.blossoms.chargedHit",
+  apricotHeavenHit: "overview.blossoms.apricotHeavenHit",
+  bambooBreezeHit: "overview.blossoms.bambooBreezeHit",
   tier6: "overview.blossoms.tier6",
 } as const
 

@@ -34,6 +34,7 @@ export const umbHeavylight = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.umbHeavyLight,
   receives: [
+    BUFF.swallowcallLightAttackBoost,
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,

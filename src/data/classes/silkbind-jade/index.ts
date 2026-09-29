@@ -14,6 +14,7 @@ import {
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { blossomResource, legacyDroneSkillIds } from "./blossoms"
 import { enduranceMeter } from "../../resources/enduranceMeter"
+import { SILKBIND_JADE_GATES } from "./gates"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
 const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Silkbind", SKILLS).filter(
@@ -37,9 +38,11 @@ export const silkbindJade = defineClass({
     INNER_WAY_ID.thunderousBloom,
     INNER_WAY_ID.breakingPoint,
     INNER_WAY_ID.evasiveCharge,
+    INNER_WAY_ID.gourdToss,
   ],
   classSpecificAttunements: [
     "umbQ",
+    "umbCharged",
     "umbFrequentProjectile",
     "umbLightHeavyVariedCombo",
     "fanQ",
@@ -63,7 +66,7 @@ export const silkbindJade = defineClass({
     inkwellFanAdditionalAttack,
     vernalUmbrellaAdditionalAttack,
   ],
-  gateBuffs: [],
+  gateBuffs: SILKBIND_JADE_GATES,
   mechanics: [],
   skillBehaviors: [],
   displayGates: [],

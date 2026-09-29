@@ -39,6 +39,8 @@ describe("additive saved resource settings", () => {
         qHit: 20,
         heavyLightCast: 45,
         chargedHit: 0,
+        apricotHeavenHit: 8,
+        bambooBreezeHit: 6,
         tier6: 25,
       },
       exhaustedGainPerTick: 4,
