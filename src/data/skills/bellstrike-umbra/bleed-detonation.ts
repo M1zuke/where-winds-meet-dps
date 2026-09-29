@@ -39,6 +39,8 @@ export const bleedDetonation = defineSkill({
       attributeMultiplier: 3.6,
       physFixed: 0,
       attributeFixed: 0,
+      // In-game values as of 2026-09-25.
+      qiRate: 0.2,
       // In-game values as of 2026-09-24: a forced-Affinity burst extends
       // Bleeding too, on top of the shared Smolder/poison DoT extension.
       triggers: [

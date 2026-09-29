@@ -29,6 +29,7 @@ import {
   resyncDefaultTalentsForBreakthrough,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
+import { isQiTargetId } from "./definitions/baseStats/qiTargetDef"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -328,6 +329,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.averageFps !== "number") next.averageFps = null
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
+  if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0
+  if (typeof next.qiRateAdd !== "number") next.qiRateAdd = 0
+  if (typeof next.qiDamageIndexMultiplier !== "number") next.qiDamageIndexMultiplier = 0
+  if (!isQiTargetId(next.qiTarget)) next.qiTarget = "swordTrial"
   if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
   delete (next as unknown as Record<string, unknown>).singleBurstBoost
   delete (next as unknown as Record<string, unknown>).singleControlBoost
@@ -1208,6 +1213,12 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   ) {
     delete hit.castFramesWhenGated
   }
+  if (h.qiRate !== undefined && (typeof h.qiRate !== "number" || !Number.isFinite(h.qiRate))) {
+    delete hit.qiRate
+  }
+  if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat))) {
+    delete hit.qiFlat
+  }
   return hit
 }
 
@@ -1547,6 +1558,12 @@ function importedHit(h: unknown): SkillHit {
   }
   if (typeof c.castFramesWhenGated === "number" && Number.isFinite(c.castFramesWhenGated)) {
     hit.castFramesWhenGated = c.castFramesWhenGated
+  }
+  if (typeof c.qiRate === "number" && Number.isFinite(c.qiRate)) {
+    hit.qiRate = c.qiRate
+  }
+  if (typeof c.qiFlat === "number" && Number.isFinite(c.qiFlat)) {
+    hit.qiFlat = c.qiFlat
   }
   return hit
 }
@@ -1944,6 +1961,16 @@ function hydrateDebuff(d: Debuff): Debuff {
         ...d.dot,
         perStackShapes: sanitizePerStackShapes(d.dot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(d.dot.perStackMultipliers),
+        qiRate:
+          typeof d.dot.qiRate === "number" && Number.isFinite(d.dot.qiRate)
+            ? d.dot.qiRate
+            : undefined,
+        qiFlat:
+          typeof d.dot.qiFlat === "number" && Number.isFinite(d.dot.qiFlat)
+            ? d.dot.qiFlat
+            : undefined,
+        qiHitKind:
+          d.dot.qiHitKind === "direct" || d.dot.qiHitKind === "dot" ? d.dot.qiHitKind : undefined,
       }
     : null
   const rawDetonation = d.detonation as unknown
@@ -2055,6 +2082,18 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
         count: typeof rawDot.count === "number" ? rawDot.count : 1,
         perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(rawDot.perStackMultipliers),
+        qiRate:
+          typeof rawDot.qiRate === "number" && Number.isFinite(rawDot.qiRate)
+            ? rawDot.qiRate
+            : undefined,
+        qiFlat:
+          typeof rawDot.qiFlat === "number" && Number.isFinite(rawDot.qiFlat)
+            ? rawDot.qiFlat
+            : undefined,
+        qiHitKind:
+          rawDot.qiHitKind === "direct" || rawDot.qiHitKind === "dot"
+            ? rawDot.qiHitKind
+            : undefined,
       }
     : null
   const fresh = makeDebuff(targetClassId, {

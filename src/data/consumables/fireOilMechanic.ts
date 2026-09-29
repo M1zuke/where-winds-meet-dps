@@ -88,6 +88,9 @@ export function fireOilBurnMechanic(): TimelineMechanic<State> {
           },
           name: BURN_NAME,
           type: "mindMethod",
+          // In-game values as of 2026-09-25: a tick, not a direct hit.
+          qiRate: 0.6,
+          qiHitKind: "dot",
         }),
       )
     },

@@ -13,4 +13,8 @@ export const DRONE_TICK = {
   attributeMultiplier: 0.766243,
   attributeFixed: 77,
   extraCritDamage: 1,
+  // In-game hit type as of 2026-09-25: a direct hit, not a DoT tick — decides
+  // the post-break 4 s immunity only; the app still types the damage itself
+  // as a DoT tick (docs/TIMELINE.md § "Qi bar").
+  qiHitKind: "direct" as const,
 }

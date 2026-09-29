@@ -10,7 +10,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
-import { runEngine } from "../../src/engine/dps"
+import { activeRotationForInputs, runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
@@ -57,8 +57,23 @@ function anchorInputs(): Inputs {
   return loadProfiles().profiles[0].inputs
 }
 
+// Manual mode, pinned to whatever window the pre-simulated default engine
+// would have used (an explicit override kept as-is, else the resolved
+// rotation's own authored window) — every locked case below stays byte-exact
+// under the new simulated default (docs/TIMELINE.md § "Qi bar").
+function pinnedQiBreakOverride(raw: Inputs) {
+  const explicit = raw.combatSettings?.qiBreakOverride
+  if (explicit) return explicit
+  const rotation = activeRotationForInputs(raw)
+  return rotation?.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
+}
+
 function toEngineInputs(raw: Inputs): Inputs {
-  return applyBowSet(applyArmorSet(withDerivedStats(raw)))
+  const pinned = {
+    ...raw,
+    combatSettings: { ...raw.combatSettings!, qiBreakOverride: pinnedQiBreakOverride(raw) },
+  }
+  return applyBowSet(applyArmorSet(withDerivedStats(pinned)))
 }
 
 function withInnerWay(
@@ -213,7 +228,16 @@ const CASES: { name: string; build: () => Inputs }[] = [
     build: () => toEngineInputs({ ...anchorInputs(), set: id }),
   })),
   // A second rotation, so the guard is not tied to one cast list.
-  { name: "defaults:umbra", build: () => ({ ...defaultInputs, classId: "bellstrikeUmbra" }) },
+  {
+    name: "defaults:umbra",
+    build: () => {
+      const raw: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+      return {
+        ...raw,
+        combatSettings: { ...raw.combatSettings!, qiBreakOverride: pinnedQiBreakOverride(raw) },
+      }
+    },
+  },
 ]
 
 function round(value: number, places: number): number {

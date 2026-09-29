@@ -39,6 +39,11 @@ on the 60 fps grid. Rules:
   cast and quantises every cast's start, length and hit offset to the input
   frame rate on top of the authored data — never baked into a skill module.
 - **Identifiers are English only** (CLAUDE.md § "Language").
+- **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
+  a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage
+  kernel — docs/CALCULATION.md § "Qi damage". Absent means rate 1, flat 0, the
+  in-game default. **An echo release deals no Qi**, whatever its own debuff's
+  rate: it is a banked payout, not a fresh damage event.
 
 ### Hit variants
 
@@ -214,9 +219,10 @@ Rules:
   never extends; the target write fires the cap payout like any other write,
   and both passes resolve it against the same ledger state.
 - **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
-  clock-driven phase at its frame — the rotation's Qi-break window and its
-  low-Qi lead, never a status — is the named one. A stagger or control state
-  the source material gates on is expressed as the `exhausted` phase.
+  Qi schedule's phase at its frame — the simulated bar's own break and low-Qi
+  span in the default mode, the fixed clock window in manual mode, never a
+  status — is the named one. A stagger or control state the source material
+  gates on is expressed as the `exhausted` phase.
 - **A trigger may require a build-level param and tier** (`requiresParam`,
   `requiresMinTier`): it fires only while the build carries that param, and at
   or above that tier when given — the per-trigger counterpart of a status's
@@ -626,6 +632,48 @@ replayed onto the real ledger as a permanent counter status per art
   gated by `isWeaponSwap`.** A swap blocked by either cooldown waits as idle
   time instead of being flagged illegal, the same as any other cast whose
   own start is held back by a resource it cannot yet afford.
+
+## Qi bar
+
+The target's Qi bar is a damage-driven meter with no regeneration: every
+scored event's own finished damage — the same value the breakdown and the
+total tally read, crit/affinity/abrasion/broken bonus included — feeds a
+formula that yields that event's Qi, which the bar spends. It cannot simulate
+in the layout pass the way a meter or the target distance does, since it needs
+a hit's damage before that damage itself exists; instead it is computed in
+pass 2, in time order, alongside `totalDamage`.
+
+- **A schedule, never the live bar, is what every gate reads.** The layout
+  pass, the buff-engine prepass and pass 1 all need the break before pass 2's
+  damage exists, so they read a `QiSchedule` — the target's break windows, a
+  step function of its Qi fraction, and the compatibility phase view. Pass 2
+  may additionally read the bar's own live state for the event it is scoring
+  (`ctx.target.qiFraction`, `ctx.target.qiBroken`).
+- **The circularity resolves by a fixed-point iteration**: the whole run
+  simulates with one schedule, the bar it produces becomes the next schedule,
+  and the run repeats until the break frames stop moving or a small iteration
+  cap is reached — seeded from the rotation's own authored break, which
+  already sits close in every validated case. A run that reaches the cap
+  without converging keeps the last schedule and reports a warning, never an
+  error.
+- **A non-null encounter override means manual mode**: one fixed window, no
+  iteration, and every gate that phase-checks time reads the clock-driven view
+  of it — deterministic and reproducible for a fixture. Null means simulated,
+  the default.
+- **The bar starts at its capacity; a hit landing while it is at zero deals
+  no Qi**, the mass lost outright. The event that brings it to zero opens a
+  timed break; at the break's end the bar is set back to a refill value and,
+  for a further fixed span, a direct hit deals no Qi while a tick still does.
+  Breaks repeat without limit and nothing regenerates between hits.
+- **The target the bar belongs to is a choice, not a constant**: its own
+  capacity, refill, break length, post-break immunity and the index the
+  formula reads off it are the chosen target's own data, next to its HP.
+- **A gate that keys on a Qi phase may instead key on a genuine fraction
+  threshold** (a `qiBelow` gate, alongside the phase itself wherever a phase
+  gate is authored): it holds once the bar's own fraction crosses under that
+  threshold, broken included — an in-game rule stated as a percentage reads
+  its own number this way, rather than through the compatibility phase
+  window's approximation of it.
 
 ## Procedural behaviour
 

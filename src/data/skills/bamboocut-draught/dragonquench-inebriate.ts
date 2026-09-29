@@ -1,6 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
@@ -20,6 +20,8 @@ const stage = (
     attributeMultiplier: physMultiplier * 1.5,
     physFixed,
     attributeFixed,
+    // In-game values as of 2026-09-25, before the class's own Qi bonuses.
+    qiRate: 0.65,
     conditions: UNLOCKED,
   })
 
@@ -42,7 +44,11 @@ export const DRAGONQUENCH_DISPLACEMENT = {
   referenceMeters: 1.75,
 }
 
-export const DRAGONQUENCH_TAGS = [WEAPON.gauntlets, ATTUNE.driftcleaveDeepdaze]
+export const DRAGONQUENCH_TAGS = [
+  WEAPON.gauntlets,
+  ATTUNE.driftcleaveDeepdaze,
+  ROLE.dragonquenchInebriate,
+]
 export const DRAGONQUENCH_RECEIVES = [
   ...INEBRIATE_ENHANCED_RECEIVES,
   ...SKYSTRIKE_GAUNTLETS_RECEIVES,

@@ -26,8 +26,7 @@ export const starReacherBuffDef = defineBuff({
     // The talent panel's own +25% branch needs an airborne launch, which a
     // training stake never takes — this phase reads the Lingering-Bone-gated
     // +15% branch instead. In-game values as of 2026-09-24.
-    if (ctx.phase === "below30" || ctx.phase === "exhausted")
-      return [...physicalAttackPercent(0.15), ...marked]
+    if (ctx.target.qiFraction < 0.3) return [...physicalAttackPercent(0.15), ...marked]
     return [...physicalAttackPercent(0.075), ...marked]
   },
 })

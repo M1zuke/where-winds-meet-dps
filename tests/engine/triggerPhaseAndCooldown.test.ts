@@ -11,7 +11,7 @@ import {
 } from "../../src/engine/skill"
 import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
 import { isBuff, makeBuff, type Buff } from "../../src/engine/buff"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const EXHAUSTED_FROM_SEC = 1
@@ -41,8 +41,17 @@ function rotationOf(skills: Skill[], patch: Partial<Rotation> = {}): Rotation {
   })
 }
 
-const withBreakWindow: Partial<Rotation> = {
-  qiBreak: { startSec: EXHAUSTED_FROM_SEC, durationSec: EXHAUSTED_FOR_SEC, lowQiLeadSec: 0 },
+// Manual mode: a fixed, clock-driven exhausted window, deterministic
+// regardless of this synthetic rotation's own (near-zero) damage.
+const withBreakWindow: Partial<Inputs> = {
+  combatSettings: {
+    ...defaultCombatSettings(),
+    qiBreakOverride: {
+      startSec: EXHAUSTED_FROM_SEC,
+      durationSec: EXHAUSTED_FOR_SEC,
+      lowQiLeadSec: 0,
+    },
+  },
 }
 
 function makeGate(patch: Partial<Buff> = {}): Buff {
@@ -86,7 +95,7 @@ describe("a trigger bound to a Qi phase", () => {
     const beforeBreak = probe()
     const duringBreak = probe()
     const skills = [grant, beforeBreak, grant, duringBreak]
-    const inputs = timelineInputs(rotationOf(skills, withBreakWindow), skills, [gate])
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate], withBreakWindow)
     expect(chipStacks(inputs, 1, gate.id)).toBe(0)
     expect(chipStacks(inputs, 3, gate.id)).toBe(1)
   })
@@ -120,7 +129,7 @@ describe("a trigger bound to a Qi phase", () => {
       ],
     })
     const skills = [grant, gated, grant, gated]
-    const inputs = timelineInputs(rotationOf(skills, withBreakWindow), skills, [gate])
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate], withBreakWindow)
     expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 90 + 60 + 30) / FPS, 10)
   })
 })

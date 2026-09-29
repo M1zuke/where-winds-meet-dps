@@ -38,6 +38,9 @@ export const defaultInputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
   independentDamageBoost: 0,
+  qiDamageBoost: 0,
+  qiRateAdd: 0,
+  qiDamageIndexMultiplier: 0,
 
   allMartialBoost: 0,
   swordBoost: 0,
@@ -117,6 +120,9 @@ export const blankInputs: Inputs = {
   sustainDamageBoost: 0,
   allDamageBoost: 0,
   independentDamageBoost: 0,
+  qiDamageBoost: 0,
+  qiRateAdd: 0,
+  qiDamageIndexMultiplier: 0,
 
   classSpecificAttunement: {},
 

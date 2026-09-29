@@ -13,7 +13,7 @@ import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { herosBloodInebriate } from "../../src/data/skills/bamboocut-draught/heros-blood-inebriate"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 
 const CLASS = "bamboocutDraught"
 
@@ -76,9 +76,14 @@ describe("Hero's Blood - Inebriate is castable once per Deepdaze entry", () => {
           makeStep({ skillId: SKILL.peakfall }),
           makeStep({ skillId: SKILL.herosBloodInebriate }),
         ],
-        qiBreak: { startSec: 0, durationSec: 30, lowQiLeadSec: 0 },
         openingStacks: { [STATUS.bingePoints]: 200 },
       }),
+      // Manual mode: an exhausted window from the fight's very first frame,
+      // deterministic regardless of this synthetic rotation's own damage.
+      combatSettings: {
+        ...defaultCombatSettings(),
+        qiBreakOverride: { startSec: 0, durationSec: 30, lowQiLeadSec: 0 },
+      },
       set: null,
     })
     expect(totalHerosBloodInebriateHits(result)).toBe(22)

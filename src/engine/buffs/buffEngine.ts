@@ -15,6 +15,7 @@ import {
   type BuffModule,
   type BuffRequirements,
   type ConditionalFinalCrit,
+  type QiGate,
 } from "./buffModule"
 
 // What a cast carries away from the buff engine: ids that count as active for
@@ -34,8 +35,9 @@ import type {
 } from "../effects/context"
 import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
-import { clockQiPhase, paramNumOf, paramOnOf, paramTierOf } from "./params"
+import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
+import { manualQiSchedule, type QiSchedule } from "../qiBar"
 
 export type BuffParams = Record<string, unknown>
 
@@ -111,9 +113,39 @@ export class BuffEngine {
   private grantTimes = new Map<string, number[]>()
   private consumeEvents = new Set<string>()
   private statuses: TimelineStatuses | null = null
+  private qiSchedule: QiSchedule | null = null
+  private defaultQiSchedule: QiSchedule | null = null
 
   attachStatuses(statuses: TimelineStatuses): void {
     this.statuses = statuses
+  }
+
+  // Absent — the case for a fixture or a unit test that probes `qiPhase`
+  // directly off `params` — the manual-mode factory stands in, built from the
+  // same clock-style params `paramsFromInputs` still seeds either way.
+  attachQiSchedule(schedule: QiSchedule): void {
+    this.qiSchedule = schedule
+  }
+
+  private scheduleOrDefault(): QiSchedule {
+    if (this.qiSchedule) return this.qiSchedule
+    if (!this.defaultQiSchedule) {
+      const params = this.params
+      const qiBreakTime = (params.qiBreakTime as number) ?? 25
+      const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
+      const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
+      const healerExt = (params.healerBreakExtension as number) ?? 0
+      const fps = this.statuses?.fps ?? 60
+      this.defaultQiSchedule = manualQiSchedule(
+        {
+          startSec: qiBreakTime,
+          durationSec: bossBreakDuration + healerExt,
+          lowQiLeadSec: qiBreakTime - belowQiTime,
+        },
+        fps,
+      )
+    }
+    return this.defaultQiSchedule
   }
 
   constructor(
@@ -179,26 +211,29 @@ export class BuffEngine {
   }
 
   qiPhase(time: number): QiPhase {
-    const clockPhase = clockQiPhase(this.params, time)
-    if (clockPhase !== "normal") return clockPhase
+    const schedulePhase = this.scheduleOrDefault().phaseAt(time)
+    if (schedulePhase !== "normal") return schedulePhase
     return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
-  qiBreakWindow(): { start: number; end: number } {
-    const params = this.params
-    const qiBreakTime = (params.qiBreakTime as number) ?? 25
-    const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
-    const healerExt = (params.healerBreakExtension as number) ?? 0
-    return { start: qiBreakTime, end: qiBreakTime + bossBreakDuration + healerExt }
+  qiFraction(time: number): number {
+    return this.scheduleOrDefault().fractionAt(time)
   }
 
-  // Clock-driven lead-in only: the timeline already draws a Qi Imbalance
-  // window in its own lane, so folding it in here would show the span twice.
+  qiBroken(time: number): boolean {
+    return this.scheduleOrDefault().isBroken(time)
+  }
+
+  qiBreakWindow(): { start: number; end: number } | null {
+    const first = this.scheduleOrDefault().breaks[0]
+    return first ? { start: first.startSec, end: first.endSec } : null
+  }
+
+  // The Qi Imbalance window is already its own lane in the timeline; this is
+  // the schedule's own low-Qi lead before the first break.
   lowQiWindow(): { start: number; end: number } | null {
-    const params = this.params
-    const qiBreakTime = (params.qiBreakTime as number) ?? 25
-    const belowQiTime = (params.belowQiTime as number) ?? qiBreakTime
-    return belowQiTime < qiBreakTime ? { start: belowQiTime, end: qiBreakTime } : null
+    const span = this.scheduleOrDefault().firstLowQiSpan()
+    return span ? { start: span.startSec, end: span.endSec } : null
   }
 
   private statusActive(id: string, time: number, statusesView?: StatusView): boolean {
@@ -294,6 +329,8 @@ export class BuffEngine {
         isTrainingDummy: !!this.params.isTrainingDummy,
         remainingHealthFraction: this.remainingHealthFraction(damageSoFar),
         distanceMeters: this.targetDistanceMeters(time, statusesView),
+        qiFraction: this.qiFraction(time),
+        qiBroken: this.qiBroken(time),
       },
       status: {
         isActive: (id) => this.statusActive(id, time, statusesView),
@@ -740,11 +777,17 @@ export class BuffEngine {
     }
   }
 
+  private static qiGateHolds(gate: QiGate, phase: QiPhase, fraction: number): boolean {
+    return typeof gate === "object" ? fraction < gate.qiBelow : gate === phase
+  }
+
   private stackOnDamagePhaseHolds(module: BuffModule, time: number): boolean {
-    const phase = module.stackOnDamagePhase
-    if (!phase) return true
-    const current = this.qiPhase(time)
-    return Array.isArray(phase) ? phase.includes(current) : phase === current
+    const gate = module.stackOnDamagePhase
+    if (!gate) return true
+    const phase = this.qiPhase(time)
+    const fraction = this.qiFraction(time)
+    const gates: readonly QiGate[] = Array.isArray(gate) ? gate : [gate as QiGate]
+    return gates.some((g) => BuffEngine.qiGateHolds(g, phase, fraction))
   }
 
   private canGrantDamageStack(module: BuffModule, time: number): boolean {

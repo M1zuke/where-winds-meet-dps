@@ -12,6 +12,7 @@ export const toadPoison = defineDebuff({
   activation: "triggered",
   durationFrames: 601,
   effects: [],
+  tags: [ROLE.toadVenom],
   dot: {
     tickIntervalFrames: 300,
     physMultiplier: 1.62189,
@@ -54,6 +55,8 @@ export const combustion = defineDebuff({
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.6,
     count: 1,
     perStackShapes: null,
   },
@@ -87,6 +90,8 @@ export const smolder = defineDebuff({
     attributeAttack: "",
     skillType: "sustain",
     mysticCategory: "burst",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.6,
     count: 1,
     perStackShapes: null,
     perStackMultipliers: null,

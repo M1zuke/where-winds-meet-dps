@@ -555,6 +555,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               window={resolveQiBreakWindow(inputs.combatSettings, activeRotation.qiBreak)}
               overridden={!!inputs.combatSettings?.qiBreakOverride}
               onChange={isCustom ? setQiBreak : null}
+              computedFirstBreakSec={result.qiBreaks?.[0]?.startSec ?? null}
             />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
@@ -732,10 +733,12 @@ function QiBreakRow({
   window,
   overridden,
   onChange,
+  computedFirstBreakSec,
 }: {
   window: QiBreakWindow
   overridden: boolean
   onChange: ((patch: Partial<QiBreakWindow>) => void) | null
+  computedFirstBreakSec: number | null
 }) {
   const { t } = useI18n()
   const editable = onChange !== null && !overridden
@@ -779,6 +782,14 @@ function QiBreakRow({
         {field(t("common.startS"), window.startSec, (next) => ({ startSec: next }))}
         {field(t("common.durationS"), window.durationSec, (next) => ({ durationSec: next }))}
         {field(t("common.lowQiLeadS"), window.lowQiLeadSec, (next) => ({ lowQiLeadSec: next }))}
+        <span className={styles.headField}>
+          <span className={styles.headCap}>{t("rotation.editor.computedFirstBreak")}</span>
+          <span className={styles.durationDisplay}>
+            {computedFirstBreakSec === null
+              ? t("rotation.editor.computedFirstBreakNone")
+              : `${computedFirstBreakSec.toFixed(1)} s`}
+          </span>
+        </span>
       </div>
       <div className={styles.rowActions} />
     </div>

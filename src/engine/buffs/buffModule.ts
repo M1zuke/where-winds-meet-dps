@@ -2,6 +2,11 @@ import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
 import type { BuffParams } from "./buffEngine"
 
+// A phase, or a genuine target-Qi-fraction threshold — for a gate the game
+// keys to a real percentage rather than to the compatibility phase window
+// (docs/TIMELINE.md § "Qi bar").
+export type QiGate = QiPhase | { qiBelow: number }
+
 export interface BuffRequirements {
   param?: string
   minTier?: number
@@ -77,10 +82,10 @@ export type BuffMeta = BuffGate & {
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
   stackOnDamage?: boolean
-  // Restricts `stackOnDamage` to the listed Qi phases; a damaging hit outside
+  // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.
-  stackOnDamagePhase?: QiPhase | readonly QiPhase[]
+  stackOnDamagePhase?: QiGate | readonly QiGate[]
   // Restricts `stackOnDamage` to hits from skills that reach this def — the
   // same `reaches` predicate the damage query uses.
   stackOnDamageScoped?: boolean

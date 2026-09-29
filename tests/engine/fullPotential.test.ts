@@ -15,6 +15,8 @@ import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
+import { engineRunOptionsFrom } from "../../src/engine/qiBar"
+import { FPS } from "../../src/engine/timeline"
 
 import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
 
@@ -392,6 +394,11 @@ describe("FT variant selection", () => {
           ).map((piece) => ({ piece, level: breakthroughLevel })),
         ]
 
+    // Warm-starts every candidate below the same way the production sweeps do
+    // (docs/UI.md § "The rules") — pure perf, no effect on the asserted value.
+    const seedRun = runEngine(applyPieceContribution(slotEmpty, candidate, +1))
+    const options = engineRunOptionsFrom(seedRun.qiBreaks, FPS)
+
     let best = -Infinity
     for (const { piece, level } of reachablePieces) {
       for (const attunement of [null, ...attunements]) {
@@ -402,7 +409,10 @@ describe("FT variant selection", () => {
               attunementValue: attunementMax(attunement, level),
             }
           : piece
-        best = Math.max(best, runEngine(applyPieceContribution(slotEmpty, reachable, +1)).dps)
+        best = Math.max(
+          best,
+          runEngine(applyPieceContribution(slotEmpty, reachable, +1), options).dps,
+        )
       }
     }
     return best

@@ -3,7 +3,6 @@ import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { PROP } from "../../src/data/skills/ids"
-import { jadeware } from "../../src/data/skills/buffs/jadeware"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { buffDefsForClass } from "../../src/engine/buffs/data"
 import { builtinSkill } from "../builtins"
@@ -33,25 +32,20 @@ describe("every Martial Art skill activates Jadeware", () => {
 })
 
 describe("Jadeware pays out both bonuses for the whole window", () => {
-  it("gives both bonuses unconditionally", () => {
-    const effects = jadeware.effects
-    if (typeof effects !== "function") throw new Error("expected a function effect list")
-    expect((effects as () => unknown[])()).toEqual([
-      { kind: "stat", statKey: "affinityDamageBoost", amount: 0.1 },
-      { kind: "stat", statKey: "directAffinityRate", amount: 0.075 },
-    ])
-  })
-
   const engineWithSet = (armorSet: string) =>
     new BuffEngine(
       { classId: "bellstrikeSplendor", armorSet, qiBreakTime: 25, bossBreakDuration: 10 },
       buffDefsForClass("bellstrikeSplendor"),
     )
 
-  const contributionAt = (engine: BuffEngine, time: number) => {
+  const contributionAt = (engine: BuffEngine, time: number, damageSoFar = 0) => {
     engine.triggerDeclaredBuffs([BUFF.jadeware], "cast:swordQ", 24)
-    return engine.calculateDamageEffects(builtinSkill("bellstrikeSplendor", SKILL.swordq), time)
-      .breakdown[BUFF.jadeware]
+    return engine.calculateDamageEffects(
+      builtinSkill("bellstrikeSplendor", SKILL.swordq),
+      time,
+      [],
+      damageSoFar,
+    ).breakdown[BUFF.jadeware]
   }
 
   it("opens the window at the triggering cast's end, not at the trigger frame", () => {
@@ -60,6 +54,34 @@ describe("Jadeware pays out both bonuses for the whole window", () => {
 
   it("contributes both bonuses once the window has opened", () => {
     expect(contributionAt(engineWithSet("jadeware"), 25.5)).toBeCloseTo(0.175, 10)
+  })
+
+  it("contributes both bonuses well outside any break, once the target has taken any Qi damage", () => {
+    const engine = new BuffEngine(
+      {
+        classId: "bellstrikeSplendor",
+        armorSet: "jadeware",
+        qiBreakTime: 100,
+        bossBreakDuration: 10,
+        targetMaxHp: 100,
+      },
+      buffDefsForClass("bellstrikeSplendor"),
+    )
+    expect(contributionAt(engine, 25.5, 1)).toBeCloseTo(0.175, 10)
+  })
+
+  it("contributes nothing outside any break while the target is still at full Qi", () => {
+    const engine = new BuffEngine(
+      {
+        classId: "bellstrikeSplendor",
+        armorSet: "jadeware",
+        qiBreakTime: 100,
+        bossBreakDuration: 10,
+        targetMaxHp: 100,
+      },
+      buffDefsForClass("bellstrikeSplendor"),
+    )
+    expect(contributionAt(engine, 25.5, 0)).toBeUndefined()
   })
 
   it("contributes nothing without the set equipped", () => {

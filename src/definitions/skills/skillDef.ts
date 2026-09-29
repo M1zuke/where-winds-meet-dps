@@ -39,6 +39,8 @@ interface HitSpec {
   conditions?: SkillHit["conditions"]
   requiresNextStepSkillIds?: SkillHit["requiresNextStepSkillIds"]
   castFramesWhenGated?: SkillHit["castFramesWhenGated"]
+  qiRate?: SkillHit["qiRate"]
+  qiFlat?: SkillHit["qiFlat"]
 }
 
 // The array POSITION is the id (`hit-0`, `hit-1`, …) — verified safe: every
@@ -63,6 +65,8 @@ export function hit(index: number, spec: HitSpec): SkillHit {
     ...(spec.castFramesWhenGated !== undefined
       ? { castFramesWhenGated: spec.castFramesWhenGated }
       : {}),
+    ...(spec.qiRate !== undefined ? { qiRate: spec.qiRate } : {}),
+    ...(spec.qiFlat !== undefined ? { qiFlat: spec.qiFlat } : {}),
   }
 }
 

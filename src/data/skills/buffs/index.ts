@@ -36,6 +36,7 @@ import { poetFinalStrikeStack } from "./poetFinalStrikeStack"
 import { divinecraftFire } from "./divinecraftFire"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
 import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
+import { toadVenomQiBonus } from "./toadVenomQiBonus"
 
 // Order is load-bearing (float addition is not associative): the globals that
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
@@ -76,6 +77,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   fluteArrival,
   fluteDistanceBonus,
   cleftpeakDeflectGrant,
+  toadVenomQiBonus,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

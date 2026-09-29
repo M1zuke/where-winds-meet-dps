@@ -101,7 +101,7 @@ describe("Fire Oil Burn — always the plain row", () => {
     const seconds = Array.from({ length: 40 }, (_, index) => index)
     const withBreak = runEngine(
       probeInputs(seconds, {
-        combatSettings: { ...defaultCombatSettings(), qiBreakOverride: null },
+        combatSettings: { ...defaultCombatSettings(), qiBreakOverride: DEFAULT_QI_BREAK_WINDOW },
       }),
     )
     const withoutBreak = runEngine(

@@ -107,6 +107,12 @@ export interface SkillHit {
   // `requiresNextStepSkillIds` gate is what included it — the next-step
   // counterpart of a hit variant's own `castFrames` override.
   castFramesWhenGated?: number
+  // The hit's own Qi rate, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means 1, the in-game default.
+  qiRate?: number
+  // The flat Qi channel no modelled hit uses; kept for completeness. Absent
+  // means 0.
+  qiFlat?: number
 }
 
 export interface MeterCost {
@@ -476,6 +482,10 @@ export function isSkillHit(x: unknown): x is SkillHit {
     if (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
       return false
   }
+  if (h.qiRate !== undefined && (typeof h.qiRate !== "number" || !Number.isFinite(h.qiRate)))
+    return false
+  if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat)))
+    return false
   return true
 }
 

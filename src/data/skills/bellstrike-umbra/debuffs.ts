@@ -29,6 +29,8 @@ export const bleedTick = defineDebuff({
     attributeAttack: "Bellstrike",
     skillType: "sustain",
     weaponOrAttribute: "Sword",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.2,
     count: 1,
     perStackShapes: null,
     perStackMultipliers: [2, 2.5, 3, 4, 5],

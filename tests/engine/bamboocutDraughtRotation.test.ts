@@ -19,7 +19,14 @@ import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocu
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+
+// Manual mode: a fixed exhausted window from the fight's very first frame,
+// deterministic regardless of these synthetic rotations' own damage.
+const EXHAUSTED_FROM_START_COMBAT_SETTINGS = {
+  ...defaultCombatSettings(),
+  qiBreakOverride: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+}
 
 const CLASS = "bamboocutDraught"
 
@@ -55,6 +62,9 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
         { name: "", stacks: "" },
       ],
       activeCustomRotation: rotation,
+      // Manual mode: this rotation's own authored break, so the frame
+      // assertions below stay pinned to a known second.
+      combatSettings: { ...defaultCombatSettings(), qiBreakOverride: rotation.qiBreak! },
       set: null,
     })
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
@@ -214,10 +224,8 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       classId: CLASS,
       customSkills: [grantDeepdaze],
       mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps,
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
-      }),
+      activeCustomRotation: makeRotation(CLASS, { steps }),
+      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
       set: null,
     })
   }
@@ -256,8 +264,8 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       ],
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
       }),
+      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
       set: null,
     })
     const windows = deepdazeWindows(result)
@@ -282,9 +290,9 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       mindMethods: eonpourTier6,
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.castlink })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
         openingStacks: { [STATUS.consecutivePunches]: 1 },
       }),
+      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
       set: null,
     })
     expect(deepdazeWindows(castlinkOnly)).toHaveLength(1)
@@ -298,8 +306,8 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       mindMethods: eonpourTier6,
       activeCustomRotation: makeRotation(CLASS, {
         steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
-        qiBreak: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
       }),
+      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
       set: null,
     })
     expect(deepdazeWindows(peakfallThenCastlink)).toHaveLength(1)

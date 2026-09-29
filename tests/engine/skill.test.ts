@@ -442,6 +442,16 @@ describe("storage round-trip", () => {
     expect(imported.hits[0].triggers[0].targetId).toBe("sk-x")
   })
 
+  it("export → import carries a non-default Qi rate and flat channel through unchanged", () => {
+    const s = makeSkill(CLASS, {
+      name: "ExportQiSkill",
+      hits: [makeHit({ physMultiplier: 1, qiRate: 0.4, qiFlat: 12 })],
+    })
+    const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
+    expect(imported.hits[0].qiRate).toBe(0.4)
+    expect(imported.hits[0].qiFlat).toBe(12)
+  })
+
   it("export → import carries an explicit receives/triggersBuffs through unchanged", () => {
     const skill = makeSkill(CLASS, {
       name: "ExportReachSkill",

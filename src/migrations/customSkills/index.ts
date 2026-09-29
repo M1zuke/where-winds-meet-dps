@@ -48,6 +48,7 @@ import { V44__targetDistanceReachAndDisplacement } from "./V44__targetDistanceRe
 import { V45__castLengthAndHitFrameRepairs } from "./V45__castLengthAndHitFrameRepairs"
 import { V46__stonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
 import { V47__weaponDrawnGates } from "./V47__weaponDrawnGates"
+import { V48__qiRateDefaults } from "./V48__qiRateDefaults"
 
 export type {
   CustomSkillMigration,
@@ -115,6 +116,7 @@ export { healSkill as healTargetDistanceReachAndDisplacement } from "./V44__targ
 export { healSkillFrames as healCastLengthAndHitFrameRepairs } from "./V45__castLengthAndHitFrameRepairs"
 export { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
 export { healSkill as healWeaponDrawnGates } from "./V47__weaponDrawnGates"
+export { healQiRateDefault } from "./V48__qiRateDefaults"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -161,6 +163,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V45__castLengthAndHitFrameRepairs,
   V46__stonesplitSplendorJadeTimingRepairs,
   V47__weaponDrawnGates,
+  V48__qiRateDefaults,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

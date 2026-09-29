@@ -10,6 +10,7 @@ import { BELLSTRIKE_SPLENDOR_GATES } from "./gates"
 import { belowSixtyEndurance } from "../../skills/bellstrike-splendor/buffs/belowSixtyEndurance"
 import { endlessGale, endlessGaleAtStart } from "../../skills/bellstrike-splendor/buffs/endlessGale"
 import { qiImbalance } from "../../skills/bellstrike-splendor/buffs/qiImbalance"
+import { qiStruggleEnhancement } from "../../skills/bellstrike-splendor/buffs/qiStruggleEnhancement"
 import { swordEnergyEnhancement } from "../../skills/bellstrike-splendor/buffs/swordEnergyEnhancement"
 import { swordEnergyHpDamage } from "../../skills/bellstrike-splendor/buffs/swordEnergyHpDamage"
 import { swordSlashDamageBoost } from "../../skills/bellstrike-splendor/buffs/swordSlashDamageBoost"
@@ -55,6 +56,7 @@ export const bellstrikeSplendor = defineClass({
     swordEnergyEnhancement,
     swordEnergyHpDamage,
     qiImbalance,
+    qiStruggleEnhancement,
     belowSixtyEndurance,
     namelessSwordAdditionalAttack,
     namelessSpearAdditionalAttack,

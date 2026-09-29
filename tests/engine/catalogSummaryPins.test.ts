@@ -97,7 +97,9 @@ describe("catalog summary pins — bellstrikeUmbraBleedPen", () => {
 describe("catalog summary pins — soulShaken", () => {
   it("Applies row on SpearQ reads the pre-conversion per-stack text", () => {
     const rows = appliesForSkill(builtinSkill(CLASS, SKILL.spearq), CLASS)
-    expect(rows.find((row) => row.id === "soulShaken")!.effect).toBe("+10.0% all/stack")
+    expect(rows.find((row) => row.id === "soulShaken")!.effect).toBe(
+      "+10.0% all/stack; against a Soul-Shaken target, Bleeding's Qi rate +0.4 and Qi index ×3, Blood Burst's Qi rate +0.3",
+    )
   })
 })
 

@@ -8,6 +8,7 @@ import { makeDebuff } from "../../src/engine/debuff"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
+import { defaultCombatSettings } from "../../src/engine/types"
 
 const classId = "fictionalResourceClass"
 const resource = defineResource({
@@ -85,7 +86,6 @@ function run(
   const rotation = makeRotation(classId, {
     fixedWindowSec: steps.length,
     steps: steps.map((skill) => makeStep({ skillId: skill.id })),
-    qiBreak: { startSec: 1, durationSec: 2, lowQiLeadSec: 0 },
   })
   return simulateTimeline({
     ...defaultInputs,
@@ -94,6 +94,12 @@ function run(
     customSkills: [launch, filler, tick],
     customDebuffs: [projectileDebuff],
     resourceSettings: { energy: { opening, gains: {}, exhaustedGainPerTick: refund } },
+    // Manual mode: a fixed, clock-driven exhausted window, deterministic
+    // regardless of this fictional rotation's own (near-zero) damage.
+    combatSettings: {
+      ...defaultCombatSettings(),
+      qiBreakOverride: { startSec: 1, durationSec: 2, lowQiLeadSec: 0 },
+    },
   })
 }
 

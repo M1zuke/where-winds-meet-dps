@@ -19,11 +19,18 @@ import {
   PREFERRED_DISTANCE_METERS_MAX,
   PREFERRED_DISTANCE_METERS_MIN,
 } from "../../../../engine/distance"
+import { QI_TARGET_IDS, type QiTargetId } from "../../../../definitions/baseStats/qiTargetDef"
 import styles from "./EncounterSettingsPanel.module.scss"
 
 const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
   wraithstrikeScript: "overview.encounterSettings.wraithstrikeScript",
   voidrotScript: "overview.encounterSettings.voidrotScript",
+}
+
+const QI_TARGET_LABEL_KEYS: Record<QiTargetId, string> = {
+  swordTrial: "overview.encounterSettings.qiTargetSwordTrial",
+  swordTrialResistanceUp: "overview.encounterSettings.qiTargetSwordTrialResistanceUp",
+  herosRealm: "overview.encounterSettings.qiTargetHerosRealm",
 }
 
 interface Props {
@@ -95,6 +102,18 @@ function DivinecraftSegments({
     { value: "fire", label: t("overview.encounterSettings.fireOil") },
     { value: "poison", label: t("overview.encounterSettings.poison") },
   ]
+  return <SegmentedControl value={value} options={options} onChange={onChange} />
+}
+
+function QiTargetSegments({
+  value,
+  onChange,
+}: {
+  value: QiTargetId
+  onChange: (next: QiTargetId) => void
+}) {
+  const { t } = useI18n()
+  const options = QI_TARGET_IDS.map((id) => ({ value: id, label: t(QI_TARGET_LABEL_KEYS[id]) }))
   return <SegmentedControl value={value} options={options} onChange={onChange} />
 }
 
@@ -288,9 +307,16 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
           </div>
         ) : (
           <p className={styles.inlineHint}>
-            {t("overview.encounterSettings.eachRotationRunsItsOwnBreakWindow")}
+            {t("overview.encounterSettings.qiBreakSimulatedHint")}
           </p>
         )}
+      </Section>
+
+      <Section title={t("overview.encounterSettings.qiTarget")}>
+        <QiTargetSegments
+          value={inputs.qiTarget ?? "swordTrial"}
+          onChange={(value) => set("qiTarget", value)}
+        />
       </Section>
     </div>
   )

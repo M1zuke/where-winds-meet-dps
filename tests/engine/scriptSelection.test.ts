@@ -113,13 +113,22 @@ function inputsWithScript(
   }
 }
 
+// The rotation's own authored window (`38Bbs.ts`) — pinned as an explicit
+// override so this magnitude check stays a fixed-window fact rather than
+// riding a bare, unbuilt `defaultInputs` character's own simulated schedule,
+// which (correctly) may never reach a break at all.
+const UMBRA_DEFAULT_QI_BREAK_OVERRIDE = { startSec: 34, durationSec: 10, lowQiLeadSec: 5 }
+
 describe("script selection — end to end on the class default rotation", () => {
   it("selecting a script raises total damage; selecting none changes nothing", () => {
     const baseline = runEngine(defaultInputs).totalDamage
     const none = runEngine(inputsWithScript(null)).totalDamage
-    const wraith = runEngine(inputsWithScript("wraithstrikeScript")).totalDamage
     expect(none).toBeCloseTo(baseline, 6)
-    expect(wraith).toBeGreaterThan(none)
+
+    const withOverride = { qiBreakOverride: UMBRA_DEFAULT_QI_BREAK_OVERRIDE }
+    const noneWithBreak = runEngine(inputsWithScript(null, withOverride)).totalDamage
+    const wraith = runEngine(inputsWithScript("wraithstrikeScript", withOverride)).totalDamage
+    expect(wraith).toBeGreaterThan(noneWithBreak)
   })
 
   it("changes nothing when the rotation's Qi break window has no length", () => {
@@ -129,13 +138,14 @@ describe("script selection — end to end on the class default rotation", () => 
     expect(wraith).toBeCloseTo(none, 6)
   })
 
-  // Calibration for the default break-25s/lead-20s window: a +0.10 crit-damage
-  // script is worth roughly +1%, far short of the +4.7% an unconditional grant
-  // would be — landing near the unconditional figure means the gate isn't
-  // being applied.
+  // Calibration for the rotation's own authored break-34s/lead-5s window: a
+  // +0.10 crit-damage script is worth roughly +1%, far short of the +4.7% an
+  // unconditional grant would be — landing near the unconditional figure
+  // means the gate isn't being applied.
   it("lands near the calibrated ~1% magnitude, not the unconditional +10% grant", () => {
-    const none = runEngine(inputsWithScript(null)).totalDamage
-    const wraith = runEngine(inputsWithScript("wraithstrikeScript")).totalDamage
+    const withOverride = { qiBreakOverride: UMBRA_DEFAULT_QI_BREAK_OVERRIDE }
+    const none = runEngine(inputsWithScript(null, withOverride)).totalDamage
+    const wraith = runEngine(inputsWithScript("wraithstrikeScript", withOverride)).totalDamage
     const lift = wraith / none - 1
     expect(lift).toBeGreaterThan(0.002)
     expect(lift).toBeLessThan(0.02)

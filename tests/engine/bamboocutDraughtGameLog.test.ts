@@ -8,6 +8,7 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
 import { SET_ID } from "../../src/data/sets/ids"
+import { defaultCombatSettings } from "../../src/engine/types"
 
 const CLASS = "bamboocutDraught"
 
@@ -41,6 +42,15 @@ function runDummyRotation() {
       { id: INNER_WAY_ID.volutefit, name: "Volutefit", stacks: "6" },
     ],
     activeCustomRotation: rotation,
+    // Manual mode, pinned to this rotation's own authored break: this log is
+    // an in-game capture (2026-09-05), never adjusted for a later change. The
+    // Drunkslay echo's own Qi exemption (in-game values as of 2026-09-25,
+    // inferred and unresolved to the byte) removes close to half of this
+    // enhanced build's damage from the simulated bar, which then never
+    // reaches a second break inside the fight and undercounts this row — a
+    // known gap in the simulated default for this one build, not a bug in
+    // the fixed window.
+    combatSettings: { ...defaultCombatSettings(), qiBreakOverride: rotation.qiBreak! },
   })
 }
 

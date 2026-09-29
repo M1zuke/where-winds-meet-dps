@@ -32,6 +32,17 @@ export interface DebuffDotSpec {
   weaponOrAttribute?: string | null
   mysticCategory?: string | null
   attuneTag?: string | null
+  // The tick's own Qi rate, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means 1, the in-game default.
+  qiRate?: number
+  // The flat Qi channel no modelled tick uses; kept for completeness. Absent
+  // means 0.
+  qiFlat?: number
+  // Overrides the derived Qi hit kind (`directHit ? "direct" : "dot"`) for a
+  // tick the app still types as a DoT while the game treats it as a direct
+  // hit for the post-break immunity window — removed once the app's own
+  // typing is fixed instead (docs/TIMELINE.md § "Qi bar").
+  qiHitKind?: "direct" | "dot"
   // The skill whose first hit supplies this tick's coefficients. Absent, the
   // `debuff-<classId>-<slug>` id convention is used instead.
   sourceSkillId?: string | null

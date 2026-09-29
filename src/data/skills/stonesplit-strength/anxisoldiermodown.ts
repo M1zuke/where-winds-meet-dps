@@ -31,6 +31,8 @@ export const anxisoldiermodown = defineSkill({
       attributeMultiplier: 0.75,
       physFixed: 0,
       attributeFixed: 0,
+      // In-game values as of 2026-09-25: every Anxi soldier attack.
+      qiRate: 0.3,
       triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
     }),
   ],

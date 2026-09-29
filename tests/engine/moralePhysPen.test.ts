@@ -7,7 +7,8 @@ import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { defaultInputs } from "../../src/engine/defaults"
 
 import { moraleDmgPerStack, moraleStacksAtTime } from "../../src/engine/buffs/morale"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -64,6 +65,9 @@ describe("Morale Chant phys-penetration term", () => {
       ]),
       customSkills: [skill],
       activeCustomRotation: rotation,
+      // Manual mode: a fixed, clock-driven break window, deterministic
+      // regardless of this synthetic rotation's own damage.
+      combatSettings: { ...defaultCombatSettings(), qiBreakOverride: DEFAULT_QI_BREAK_WINDOW },
     }
 
     const result = simulateTimeline(inputs)

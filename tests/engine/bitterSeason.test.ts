@@ -22,7 +22,8 @@ import { seedSkillFromBuiltin, makeSkill, makeHit } from "../../src/engine/skill
 import { makeRotation, makeStep } from "../../src/engine/rotation"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 
 describe("bitterSeasonPoisonSchedule", () => {
   it("stays active for the poison duration after a single guaranteed proc", () => {
@@ -362,17 +363,23 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
   })
 
   it("suppresses the defense/penetration contribution (not the DoT) once the party-applied debuff is active", () => {
+    // Manual mode: a fixed Qi break window, so the two runs' own damage
+    // differences (Bitter Season Poison's own Qi) cannot move which hit lands
+    // inside the break and so incidentally moves an unrelated row.
+    const combatSettings = { ...defaultCombatSettings(), qiBreakOverride: DEFAULT_QI_BREAK_WINDOW }
     const withoutBitterSeason = runEngine({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       mindMethods: UMBRA_BASE_MIND_METHODS,
       shareDebuff5HenZhi: true,
+      combatSettings,
     })
     const withBitterSeason = runEngine({
       ...defaultInputs,
       classId: "bellstrikeUmbra",
       mindMethods: withBitterSeasonAt("tier 6"),
       shareDebuff5HenZhi: true,
+      combatSettings,
     })
     for (const row of withoutBitterSeason.perSkill) {
       const match = withBitterSeason.perSkill.find((candidateRow) => candidateRow.name === row.name)

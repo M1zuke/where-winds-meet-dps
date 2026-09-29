@@ -11,7 +11,11 @@ export interface GearAnalysisResult {
 
 const NO_ROWS: GearSlotAnalysisRow[] = []
 
-export function useGearAnalysis(engineInputs: Inputs, baselineDps: number): GearAnalysisResult {
+export function useGearAnalysis(
+  engineInputs: Inputs,
+  baselineDps: number,
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
+): GearAnalysisResult {
   const [received, setReceived] = useState<GearSlotAnalysisRow[] | null>(
     () => retainedResponse("gearAnalysis")?.rows ?? null,
   )
@@ -22,8 +26,8 @@ export function useGearAnalysis(engineInputs: Inputs, baselineDps: number): Gear
   }, [])
 
   useEffect(() => {
-    postToDpsWorker({ kind: "gearAnalysis", inputs: engineInputs, baselineDps })
-  }, [engineInputs, baselineDps])
+    postToDpsWorker({ kind: "gearAnalysis", inputs: engineInputs, baselineDps, baselineQiBreaks })
+  }, [engineInputs, baselineDps, baselineQiBreaks])
 
   return { rows: received ?? NO_ROWS, isPending }
 }

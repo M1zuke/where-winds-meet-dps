@@ -115,4 +115,11 @@ export interface MechanicEvent {
   art: Record<string, unknown>
   name: string
   type: string
+  // The event's own Qi rate/flat channel, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means rate 1, flat 0.
+  qiRate?: number
+  qiFlat?: number
+  // Absent means "direct" — the post-break immunity window only ever exempts
+  // a tick.
+  qiHitKind?: "direct" | "dot"
 }

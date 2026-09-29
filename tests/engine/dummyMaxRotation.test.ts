@@ -16,6 +16,9 @@ it("resolves the 30-second preset, whose Dragon Head cast now lands past its own
     classId: "silkbindJade",
     activeCustomRotation: rotation,
     buffParams: { blossomBarrage: true, blossomBarrageTier: 6 },
+    // Manual mode: this preset's own authored break, so the scheduling
+    // assertions below stay pinned to a known second.
+    combatSettings: { ...defaultInputs.combatSettings!, qiBreakOverride: rotation.qiBreak! },
   })
   expect(result.resources?.[0].launches).toHaveLength(3)
   const finalLaunch = result.resources![0].launches[2]

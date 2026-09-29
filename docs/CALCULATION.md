@@ -68,6 +68,34 @@ anything rate-shaped. Two rules bind here:
   tail every row passes through, never an addend in the additive boost
   total.**
 
+## Qi damage
+
+Qi is a second, independent number the kernel produces alongside HP damage —
+never the other way around, and never in its own pass. For every scored
+event, after the kernel's own HP damage is finished (the rolled value when
+seeded, the expectation when not):
+
+```
+qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMultiplier) × target.qiTakenIndex )
+     × (qiRate + qiRateAdd)
+     × (1 + qiDamageBoost + targetQiDamageTaken)
+   + qiFlat × (1 + qiDamageBoost + targetQiDamageTaken)
+```
+
+- **Qi reads the event's finished damage** — crit, affinity, abrasion and the
+  broken-target HP bonus all already folded in, because that is the only
+  damage value that ever existed for the event. A pre-pull cast and anything
+  outside a fixed window deal no Qi, exactly as they deal no damage.
+- **The broken-target HP bonus is its own factor in the shared damage tail**,
+  the same way an independent damage boost is (above) — never an addend in
+  the additive boost total, and it reaches a damage-over-time tick exactly as
+  it reaches an ordinary hit.
+- `player.qiIndex` and the broken-target bonus's own size are base-stat data,
+  not engine literals — read next to the other per-level base-stat values.
+- docs/TIMELINE.md § "Qi bar" has the bar itself: where the state lives, the
+  break rules, and the schedule every earlier pass reads instead of the live
+  bar.
+
 ## Calculation rules
 
 Three corrections apply **unconditionally**, from the external sources below.

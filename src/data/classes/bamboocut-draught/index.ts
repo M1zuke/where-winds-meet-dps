@@ -8,6 +8,7 @@ import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { inebriateSkillCritDamage } from "../../skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
 import { inebriateDamageScaling } from "../../skills/bamboocut-draught/buffs/inebriateDamageScaling"
+import { draughtQiBonuses } from "../../skills/bamboocut-draught/buffs/qiBonuses"
 import {
   rivenTwinbladesAdditionalAttack,
   skystrikeGauntletsAdditionalAttack,
@@ -65,6 +66,7 @@ export const bamboocutDraught = defineClass({
     skystrikeGauntletsAdditionalAttack,
     rivenTwinbladesAdditionalAttack,
     skystrikeGauntletsAdditionalAttackCoefficient,
+    draughtQiBonuses,
   ],
   gateBuffs: BAMBOOCUT_DRAUGHT_GATES,
   openingStackBuffIds: [STATUS.bingePoints],

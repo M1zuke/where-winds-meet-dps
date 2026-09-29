@@ -136,13 +136,18 @@ describe("Qi Imbalance's damage effects", () => {
     return effects({ phase } as never)
   }
 
-  it("leaves its Qi damage clause out of every damage stat, in every phase", () => {
-    expect(effectsAt("normal")).toEqual([])
-    expect(effectsAt("below30")).toEqual([])
+  it("carries its own +10% Qi damage taken in every phase", () => {
+    expect(effectsAt("normal")).toEqual([
+      { kind: "stat", statKey: "target.qiDamageTaken", amount: 0.1 },
+    ])
+    expect(effectsAt("below30")).toEqual([
+      { kind: "stat", statKey: "target.qiDamageTaken", amount: 0.1 },
+    ])
   })
 
   it("raises HP damage and Bellstrike damage together, only inside the break window", () => {
     expect(effectsAt("exhausted")).toEqual([
+      { kind: "stat", statKey: "target.qiDamageTaken", amount: 0.1 },
       { kind: "damageMultiplier", factor: 1.1 },
       { kind: "stat", statKey: "attributeDamageBoost", amount: 0.1 },
     ])

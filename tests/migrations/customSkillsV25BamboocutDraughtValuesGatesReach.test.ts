@@ -13,6 +13,7 @@ import { healSkill as healCalmwatersPerfectDodgeGain } from "../../src/migration
 import { healSkill as healEvasiveChargeDodgeRefund } from "../../src/migrations/customSkills/V43__evasiveChargeDodgeRefund"
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healSkill as healWeaponDrawnGates } from "../../src/migrations/customSkills/V47__weaponDrawnGates"
+import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -73,7 +74,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
       ) as Skill)
     : skill
   const withFrames = healCastLengthAndHitFrameRepairs(withGains) as Skill
-  return healWeaponDrawnGates(withFrames) as Skill
+  const withDrawnGates = healWeaponDrawnGates(withFrames) as Skill
+  return healQiRateDefault(withDrawnGates) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {

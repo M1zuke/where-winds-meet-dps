@@ -1,6 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
-import { CAST } from "../skills/ids"
+import { CAST, ROLE } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -74,9 +74,23 @@ export function soulShakenBuffDef(): BuffModule {
     duration: 18,
     maxStacks: 5,
     stacksPerHit: true,
-    summary: "+10.0% all/stack",
-    // Omit the effect at 0 stacks rather than a no-op stat, matching the
-    // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.
-    effects: (ctx) => (ctx.self.stacks > 0 ? [stat("allDamageBoost", 0.1 * ctx.self.stacks)] : []),
+    summary:
+      "+10.0% all/stack; against a Soul-Shaken target, Bleeding's Qi rate +0.4 and Qi index ×3, Blood Burst's Qi rate +0.3",
+    effects: (ctx) => {
+      const effects = []
+      // Omit the effect at 0 stacks rather than a no-op stat, matching the
+      // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.
+      if (ctx.self.stacks > 0) effects.push(stat("allDamageBoost", 0.1 * ctx.self.stacks))
+      // In-game values as of 2026-09-25: Strategic Sword's own always-on
+      // Bleed passive reads the target's own Soul-Shaken stacks rather than
+      // this module's per-source grant.
+      if (ctx.event.kind === "damage" && ctx.event.tags.has(ROLE.bleedTick)) {
+        effects.push(stat("qiRateAdd", 0.4), stat("qiDamageIndexMultiplier", 2))
+      }
+      if (ctx.event.kind === "damage" && ctx.event.tags.has(ROLE.bleedDetonation)) {
+        effects.push(stat("qiRateAdd", 0.3))
+      }
+      return effects
+    },
   })
 }

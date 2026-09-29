@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { CAST, WEAPON } from "../ids"
+import { CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
@@ -11,6 +11,8 @@ const strike = (index: number) =>
     attributeMultiplier: 0.731808,
     physFixed: 0,
     attributeFixed: 0,
+    // In-game values as of 2026-09-25, before the class's own Qi bonuses.
+    qiRate: 0.4,
   })
 
 // The falcon the sixth light attack or a perfect drink unleashes: three
@@ -24,7 +26,7 @@ export const falconsPursuit = defineSkill({
   classId: "bamboocutDraught",
   name: "Falcon's Pursuit",
   breakdownName: "Whaledraft",
-  tags: [WEAPON.gauntlets],
+  tags: [WEAPON.gauntlets, ROLE.falconsPursuit],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",

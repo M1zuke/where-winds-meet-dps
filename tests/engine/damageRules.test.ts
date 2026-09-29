@@ -476,7 +476,7 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
   }
 
   it("scales every probe event inside the break window by 1.1, and leaves the rest untouched", () => {
-    const withBreak = probeRun(null)
+    const withBreak = probeRun(DEFAULT_QI_BREAK_WINDOW)
     const withoutBreak = probeRun({ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 })
     const probeEvents = (timeline: TimelineEvent[]) =>
       timeline.filter(

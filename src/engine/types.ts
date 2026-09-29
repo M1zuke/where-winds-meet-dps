@@ -1,6 +1,7 @@
 import type { GearWordId } from "../data/stats/statLines"
 import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
+import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
 
 export type { GearWordId } from "../data/stats/statLines"
 import type { HitOutcome } from "./formula"
@@ -94,6 +95,9 @@ export interface Inputs {
   classId: string
   breakthrough: number
   followedBreakthroughRelease?: number
+  // The Qi bar's own stake choice — absent means the default Sword Trial
+  // stake (docs/TIMELINE.md § "Qi bar").
+  qiTarget?: QiTargetId
 
   phys: AttackBlock
   bellstrike: AttackBlock
@@ -114,6 +118,12 @@ export interface Inputs {
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
   independentDamageBoost?: number
+  // Qi-only stat keys — read by the Qi formula, not by the HP-damage kernel
+  // (docs/CALCULATION.md § "Qi damage"). Injected at the engine boundary, not
+  // persisted.
+  qiDamageBoost?: number
+  qiRateAdd?: number
+  qiDamageIndexMultiplier?: number
 
   allMartialBoost: number
   swordBoost: number
@@ -339,6 +349,14 @@ export type OutcomeCounts = Record<HitOutcome, number>
 export interface EngineRunOptions {
   seed?: number
   collect?: "full" | "totals"
+  // A prior run's own converged Qi breaks (docs/UI.md § "The rules",
+  // "warm-start") — seeds the first pass of the fixed-point iteration instead
+  // of the rotation's authored window. Ignored in manual mode.
+  qiScheduleSeedBreaks?: readonly {
+    startFrame: number
+    endFrame: number
+    immuneUntilFrame: number
+  }[]
 }
 
 export interface Result {
@@ -356,6 +374,15 @@ export interface Result {
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null
   lowQiWindow?: { startSec: number; endSec: number } | null
+  // Every break the Qi bar's own trace recorded this run — docs/TIMELINE.md
+  // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
+  qiBreaks?: readonly { startSec: number; endSec: number }[]
+  // A coarse, sampled Qi fraction over time, for a future chart — never
+  // persisted.
+  qiTrace?: readonly { timeSec: number; fraction: number }[]
+  // How many fixed-point passes the simulated schedule took to converge (1 in
+  // manual mode).
+  qiIterations?: number
   casts?: RotationCast[]
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.
