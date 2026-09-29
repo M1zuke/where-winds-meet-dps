@@ -554,6 +554,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.preferredDistanceMeters === "number" && Number.isFinite(r.preferredDistanceMeters)
           ? r.preferredDistanceMeters
           : def.preferredDistanceMeters,
+      fragrantOrchidBathBean:
+        typeof r.fragrantOrchidBathBean === "boolean"
+          ? r.fragrantOrchidBathBean
+          : def.fragrantOrchidBathBean,
     }
   }
   return withZeroedDerivedStats(next)

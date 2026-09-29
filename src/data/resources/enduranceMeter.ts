@@ -10,12 +10,23 @@ import type { MeterCost, TriggerCondition, TriggerOp } from "../../engine/skill"
 // flat and additive, no cap).
 export const ODDITY_MAX_ENDURANCE_PARAM = "oddityMaxEnduranceBonus"
 
+// The build param the Fragrant Orchid Bath Bean encounter setting exposes its
+// flat Max Endurance bonus under (in-game values as of 2026-09-29: +20 for
+// 30 min, the top of its rank ladder).
+export const FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM = "fragrantOrchidMaxEnduranceBonus"
+
+function additiveMaxEnduranceBonus(ctx: MeterMaxContext): number {
+  return (
+    ctx.paramValue(ODDITY_MAX_ENDURANCE_PARAM) + ctx.paramValue(FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM)
+  )
+}
+
 // In-game values as of 2026-09-25: 80 base, 10 / s regeneration in combat,
 // paused 1.2 s after every instant spend.
 export const enduranceMeter = defineMeter({
   id: "endurance",
   name: "Endurance",
-  capacity: (ctx: MeterMaxContext) => 80 + ctx.paramValue(ODDITY_MAX_ENDURANCE_PARAM),
+  capacity: (ctx: MeterMaxContext) => 80 + additiveMaxEnduranceBonus(ctx),
   start: "full",
   regenPerSecond: 10,
   regenPauseAfterSpendSec: 1.2,
@@ -33,7 +44,7 @@ function namelessSpearMaxBonus(whiteAffinityRate: number): number {
 export const enduranceMeterWithNamelessSpear = defineMeter({
   ...enduranceMeter,
   capacity: (ctx: MeterMaxContext) =>
-    80 + namelessSpearMaxBonus(ctx.whiteAffinityRate) + ctx.paramValue(ODDITY_MAX_ENDURANCE_PARAM),
+    80 + namelessSpearMaxBonus(ctx.whiteAffinityRate) + additiveMaxEnduranceBonus(ctx),
 })
 
 export function enduranceRequires(op: TriggerOp, stacks: number): TriggerCondition {

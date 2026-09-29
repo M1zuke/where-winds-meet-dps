@@ -72,6 +72,7 @@ const inputs: Inputs = {
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     preferredDistanceMeters: 3,
+    fragrantOrchidBathBean: false,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,

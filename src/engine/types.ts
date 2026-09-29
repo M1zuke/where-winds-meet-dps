@@ -72,6 +72,7 @@ export interface CombatSettings {
   // only for a distance-reading effect (docs/TIMELINE.md § "Target
   // distance"), which pulls the player closer up to each skill's own reach.
   preferredDistanceMeters: number
+  fragrantOrchidBathBean: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
@@ -85,6 +86,7 @@ export function defaultCombatSettings(): CombatSettings {
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
     preferredDistanceMeters: 3,
+    fragrantOrchidBathBean: false,
   }
 }
 

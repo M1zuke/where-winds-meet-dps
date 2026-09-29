@@ -1797,6 +1797,8 @@
   "overview.encounterSettings.dragonSBreath": "신룡의 화염",
   "overview.encounterSettings.enableDummy": "허수아비 활성화",
   "overview.encounterSettings.fireOil": "취화유",
+  "overview.encounterSettings.fragrantOrchidBathBean": "",
+  "overview.encounterSettings.fragrantOrchidBathBeanHint": "",
   "overview.encounterSettings.healerBuff": "힐우산 버프",
   "overview.encounterSettings.healerPanaceaFan": "",
   "overview.encounterSettings.maxLowHpBonusDragon": "용의 진노 저체력 최대 보너스",

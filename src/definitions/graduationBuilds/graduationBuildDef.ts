@@ -46,6 +46,7 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   dragonHeadFullStacks: false,
   dragonHeadLowHpMaxBonus: false,
   preferredDistanceMeters: defaultCombatSettings().preferredDistanceMeters,
+  fragrantOrchidBathBean: false,
 }
 
 export interface GraduationBuild {

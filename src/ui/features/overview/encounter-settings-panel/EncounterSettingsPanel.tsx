@@ -211,6 +211,19 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
         </div>
       </Section>
 
+      <Section title={t("overview.encounterSettings.fragrantOrchidBathBean")}>
+        <div className={styles.switchGrid}>
+          <SwitchRow
+            label={t("overview.encounterSettings.fragrantOrchidBathBean")}
+            checked={settings.fragrantOrchidBathBean}
+            onChange={(value) => setCombat("fragrantOrchidBathBean", value)}
+          />
+        </div>
+        <p className={styles.inlineHint}>
+          {t("overview.encounterSettings.fragrantOrchidBathBeanHint")}
+        </p>
+      </Section>
+
       <Section title={t("overview.encounterSettings.script")}>
         <ScriptSegments value={settings.script} onChange={(value) => setCombat("script", value)} />
       </Section>

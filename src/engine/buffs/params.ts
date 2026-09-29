@@ -8,7 +8,10 @@ import { getBreakthrough } from "../../definitions/baseStats/breakthroughs"
 import { specForClass } from "./data"
 import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow, sameQiBreakWindow } from "../qiBreak"
 import { oddityEnduranceTotal } from "../../definitions/baseStats/oddityBoardGraph"
-import { ODDITY_MAX_ENDURANCE_PARAM } from "../../data/resources/enduranceMeter"
+import {
+  FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM,
+  ODDITY_MAX_ENDURANCE_PARAM,
+} from "../../data/resources/enduranceMeter"
 
 export { paramNumOf, paramOnOf, paramTierOf } from "./paramTier"
 
@@ -69,6 +72,8 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
 
   const oddityMaxEndurance = oddityEnduranceTotal(inputs.unclaimedOddityNodes)
   if (oddityMaxEndurance) params[ODDITY_MAX_ENDURANCE_PARAM] = oddityMaxEndurance
+  if (inputs.combatSettings?.fragrantOrchidBathBean)
+    params[FRAGRANT_ORCHID_MAX_ENDURANCE_PARAM] = 20
 
   if (inputs.buffParams) Object.assign(params, inputs.buffParams)
 

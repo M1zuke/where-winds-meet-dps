@@ -9,7 +9,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
 import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
-import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
 import { enduranceMeter, enduranceRequires } from "../../src/data/resources/enduranceMeter"
 import { meterStatusId, meterMaxParamKey } from "../../src/definitions/resources/meterDef"
 import type { UnclaimedOddityNodes } from "../../src/engine/types"
@@ -612,6 +612,22 @@ describe("the meter simulates once and replays onto the real ledger", () => {
       }),
     )
     expect(meterLevelsAt(result, 0)?.capacity).toBe(90)
+  })
+
+  it("raises the capacity by exactly 20 while the Fragrant Orchid Bath Bean toggle is on", () => {
+    const noop = makeSkill(CLASS, {
+      name: "Noop",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const off = simulateTimeline(timelineInputs(rotationOf([noop]), [noop]))
+    const on = simulateTimeline(
+      timelineInputs(rotationOf([noop]), [noop], [], {
+        combatSettings: { ...defaultCombatSettings(), fragrantOrchidBathBean: true },
+      }),
+    )
+    expect(meterLevelsAt(off, 0)?.capacity).toBe(80)
+    expect(meterLevelsAt(on, 0)?.capacity).toBe(100)
   })
 })
 

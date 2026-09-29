@@ -1797,6 +1797,8 @@
   "overview.encounterSettings.dragonSBreath": "Dragon's Breath",
   "overview.encounterSettings.enableDummy": "Enable Dummy",
   "overview.encounterSettings.fireOil": "Fire Oil",
+  "overview.encounterSettings.fragrantOrchidBathBean": "Fragrant Orchid Bath Bean",
+  "overview.encounterSettings.fragrantOrchidBathBeanHint": "Max Endurance +20 for 30 min; the jump cost reduction does not affect a dummy fight.",
   "overview.encounterSettings.healerBuff": "Healer Buff",
   "overview.encounterSettings.healerPanaceaFan": "Healer carries Panacea Fan",
   "overview.encounterSettings.maxLowHpBonusDragon": "Max Low-HP Bonus (Dragon Head)",

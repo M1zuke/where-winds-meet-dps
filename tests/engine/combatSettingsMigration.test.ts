@@ -63,6 +63,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       preferredDistanceMeters: 3,
       missingEnduranceAtHit: 0,
       enduranceAtRelease: 100,
+      fragrantOrchidBathBean: false,
     }
     writeProfilesBlob({ combatSettings: custom })
     const first = loadProfiles()
@@ -205,5 +206,23 @@ describe("combatSettings migration (additive field, no version bump)", () => {
 
     expect(runEngine(withField).totalDamage).toBeCloseTo(runEngine(withoutField).totalDamage, 9)
     expect(runEngine(withField).warnings).toEqual(runEngine(withoutField).warnings)
+  })
+
+  it("defaults the Fragrant Orchid Bath Bean toggle to off when the stored blob has no combatSettings key", () => {
+    writeProfilesBlob({})
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.combatSettings!.fragrantOrchidBathBean).toBe(false)
+  })
+
+  it("persists and hydrates a stored Fragrant Orchid Bath Bean toggle", () => {
+    writeProfilesBlob({
+      combatSettings: { ...defaultCombatSettings(), fragrantOrchidBathBean: true },
+    })
+    const first = loadProfiles()
+    expect(first.profiles[0].inputs.combatSettings!.fragrantOrchidBathBean).toBe(true)
+
+    saveProfiles({ profiles: first.profiles, activeId: first.activeId })
+    const second = loadProfiles()
+    expect(second.profiles[0].inputs.combatSettings!.fragrantOrchidBathBean).toBe(true)
   })
 })

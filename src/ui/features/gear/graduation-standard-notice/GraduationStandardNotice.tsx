@@ -19,6 +19,7 @@ const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   healerPanaceaFan: "overview.encounterSettings.healerPanaceaFan",
   breakExtension: "overview.encounterSettings.breakExtension",
   dragonHeadFullStacks: "overview.encounterSettings.40StacksDragonHead",
+  fragrantOrchidBathBean: "overview.encounterSettings.fragrantOrchidBathBean",
 }
 
 const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
