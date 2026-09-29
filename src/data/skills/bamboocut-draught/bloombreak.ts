@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import type { TriggerCondition } from "../../../engine/skill"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import { lightAttackMarkTriggers } from "./buffs/lightAttackMarks"
@@ -38,7 +39,7 @@ export const bloombreak = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.bloombreak,
-  receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
+  receives: [BUFF.swallowcallLightAttackBoost, ...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 154,
   hits: [

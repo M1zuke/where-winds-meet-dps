@@ -169,7 +169,7 @@ describe("Perfect Dodge Binge Points in Carouse", () => {
     expect(afterDodge - baseline).toBe(0)
   })
 
-  it("the class's Deflect Cancel grants none", () => {
+  it("the class's Deflect Cancel grants no Binge Points on a dummy — its talent needs a successful parry a dummy never attempts", () => {
     const baseline = bingePointsAtObserver(runDodges([], true))
     const afterDeflectCancel = bingePointsAtObserver(
       runDodges([makeStep({ skillId: SKILL.deflectCancel })], true),

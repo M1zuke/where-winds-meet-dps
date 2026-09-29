@@ -25,7 +25,7 @@ export const spearqPrepull = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
-  receives: NAMELESS_SPEAR_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 0,
   triggerable: true,
   // In-game values as of 2026-09-28: 5 m approach reach; once between 1.5

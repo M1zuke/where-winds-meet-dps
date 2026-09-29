@@ -25,6 +25,12 @@ import { reveldrift } from "./reveldrift"
 import { reveldriftCancel } from "./reveldrift-cancel"
 import { realmplay } from "./realmplay"
 import { boundvessel } from "./boundvessel"
+import { bladeVessel } from "./blade-vessel"
+import { whaledraftTap } from "./whaledraft-tap"
+import { dualBladesLightAttack1 } from "./dual-blades-light-attack-1"
+import { dualBladesLightAttack2 } from "./dual-blades-light-attack-2"
+import { dualBladesLightAttack3 } from "./dual-blades-light-attack-3"
+import { dualBladesLightAttack4 } from "./dual-blades-light-attack-4"
 import { skystrikeGauntletsEx } from "./skystrike-gauntlets-ex"
 import { deflectCancel } from "./deflect-cancel"
 import { perfectDodge } from "./perfect-dodge"
@@ -59,6 +65,12 @@ export const SKILLS: Skill[] = [
   reveldriftCancel,
   realmplay,
   boundvessel,
+  bladeVessel,
+  whaledraftTap,
+  dualBladesLightAttack1,
+  dualBladesLightAttack2,
+  dualBladesLightAttack3,
+  dualBladesLightAttack4,
   skystrikeGauntletsEx,
   deflectCancel,
   perfectDodge,

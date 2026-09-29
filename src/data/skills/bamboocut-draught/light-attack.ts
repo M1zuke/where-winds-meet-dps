@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { castSkill } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { CLASS_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 import {
@@ -40,7 +41,7 @@ export const lightAttack = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.lightAttack,
-  receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
+  receives: [BUFF.swallowcallLightAttackBoost, ...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 187,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further

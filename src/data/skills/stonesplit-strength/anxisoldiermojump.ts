@@ -20,7 +20,12 @@ export const anxisoldiermojump = defineSkill({
   weaponOrAttribute: "Modao",
   attributeAttack: "Stonesplit",
   castTag: CAST.anxiSoldierMoJump,
-  receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...PHALANXBANE_BLADE_RECEIVES],
+  receives: [
+    BUFF.mountainSplitter,
+    BUFF.cleftpeakDeflect,
+    BUFF.etherwrathPenetrationBoost,
+    ...PHALANXBANE_BLADE_RECEIVES,
+  ],
   triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
   castFrames: 0,
   triggerable: true,

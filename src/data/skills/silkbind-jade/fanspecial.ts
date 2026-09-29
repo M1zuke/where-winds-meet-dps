@@ -34,6 +34,9 @@ export const fanspecial = defineSkill({
   castTag: CAST.fanSpecial,
   receives: INKWELL_FAN_RECEIVES,
   triggersBuffs: [BUFF.lingeringBone],
+  // In-game values as of 2026-09-28: granted at its own hit, not at the
+  // cast's start.
+  triggersBuffsAtFrame: { [BUFF.lingeringBone]: 33 },
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 67,
   triggerable: true,

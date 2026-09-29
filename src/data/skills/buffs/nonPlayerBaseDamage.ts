@@ -2,6 +2,18 @@ import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF } from "./ids"
 import { damageMultiplier } from "../../../engine/effects/effect"
 
+// In-game values as of 2026-09-24: the Dual Blades Light Attack chain deals
+// an extra 10% damage against non-player targets.
+export const nonPlayerBaseDamage10 = defineBuff({
+  id: BUFF.nonPlayerBaseDamage10,
+  name: "Non-Player Base DMG +10%",
+  requires: { classId: "bamboocutDraught" },
+  alwaysActive: true,
+  duration: 9999,
+  summary: "damage ×1.1 against non-player units on the Dual Blades Light Attack chain",
+  effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.1)] : []),
+})
+
 // "Deals 40% more base damage to non-player units" on Peakfall, Castlink,
 // their Jadeflush forms and Dragonquench - Inebriate; the Nightwick series
 // carries the same factor. A factor on the skill's own coefficient, so it

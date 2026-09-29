@@ -13,6 +13,7 @@ import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/custo
 import { healSkill as healMeterModifierGains } from "../../src/migrations/customSkills/V39__meterModifierGains"
 import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/migrations/customSkills/V40__mountainsMightAndQiImbalanceMarker"
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
+import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -43,6 +44,13 @@ const STORE = storeV26File as unknown as RawCustomSkillsBlob & { skills: Skill[]
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
+// `receives` is an unordered id set (docs/TIMELINE.md § "Identity and tags"):
+// a later hop that appends an id to the end still reaches every skill the
+// built-in itself lists, whatever position the built-in's own literal puts it
+// at — this compares membership, never array position, for that field alone.
+const normalizedField = (value: unknown, field: string): unknown =>
+  field === "receives" && Array.isArray(value) ? [...value].sort() : value
+
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
@@ -52,9 +60,11 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids these later hops don't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healStonesplitSplendorJadeTimingRepairs(
-    healMountainsMightAndQiImbalanceMarker(
-      healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+  healPerGrantSiteDelayAndSetReach(
+    healStonesplitSplendorJadeTimingRepairs(
+      healMountainsMightAndQiImbalanceMarker(
+        healMeterModifierGains(healMeterFieldsAndGains(healSwordMorphMultiWaveWindow(skill))),
+      ),
     ),
   ) as Skill
 
@@ -80,7 +90,9 @@ describe("healBellstrikeSplendorValuesGatesReach", () => {
       )
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
-        expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
+        expect(normalizedField(healed[field], field), `${id}.${field}`).toEqual(
+          normalizedField(builtin[field], field),
+        )
     }
   })
 
@@ -103,7 +115,9 @@ describe("V27__bellstrikeSplendorValuesGatesReach — called directly", () => {
       const healed = throughLaterHops(skillIn(after, id))
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
-        expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
+        expect(normalizedField(healed[field], field), `${id}.${field}`).toEqual(
+          normalizedField(builtin[field], field),
+        )
     }
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
@@ -146,7 +160,9 @@ describe("every healed skill survives the hydrator too", () => {
         // suite checks elsewhere, not the hydrator's defaulting.
         const expected =
           field === "hits" || field === "castConditions" ? builtin[field] : (builtin[field] ?? [])
-        expect(skill[field], `${id}.${field}`).toEqual(expected)
+        expect(normalizedField(skill[field], field), `${id}.${field}`).toEqual(
+          normalizedField(expected, field),
+        )
       }
     }
   })

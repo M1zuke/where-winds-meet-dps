@@ -47,6 +47,8 @@ import { healSkill as healMountainsMightAndQiImbalanceMarker } from "../../src/m
 import { healSkill as healTargetDistanceReachAndDisplacement } from "../../src/migrations/customSkills/V44__targetDistanceReachAndDisplacement"
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
+import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
+import { healSkill as healEtherwrathPenetrationReach } from "../../src/migrations/customSkills/V50__etherwrathPenetrationReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -103,6 +105,8 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [44, healTargetDistanceReachAndDisplacement],
   [45, healCastLengthAndHitFrameRepairs],
   [46, healStonesplitSplendorJadeTimingRepairs],
+  [49, healPerGrantSiteDelayAndSetReach],
+  [50, healEtherwrathPenetrationReach],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

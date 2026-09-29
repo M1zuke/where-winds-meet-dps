@@ -17,7 +17,7 @@ export const swordq2nd = defineSkill({
   castTag: CAST.swordQ2nd,
   startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
-  receives: NAMELESS_SWORD_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SWORD_RECEIVES],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 60,
   triggerable: true,

@@ -17,7 +17,7 @@ export const swordq = defineSkill({
   castTag: CAST.swordQ,
   startLatency: "noWaitOnDummy",
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMightQiImbalance],
-  receives: NAMELESS_SWORD_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SWORD_RECEIVES],
   castFrames: 26,
   triggerable: true,
   // In-game values as of 2026-09-28: 12 m approach reach — a companion

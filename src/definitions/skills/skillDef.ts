@@ -41,6 +41,7 @@ interface HitSpec {
   castFramesWhenGated?: SkillHit["castFramesWhenGated"]
   qiRate?: SkillHit["qiRate"]
   qiFlat?: SkillHit["qiFlat"]
+  projectile?: SkillHit["projectile"]
 }
 
 // The array POSITION is the id (`hit-0`, `hit-1`, …) — verified safe: every
@@ -67,6 +68,7 @@ export function hit(index: number, spec: HitSpec): SkillHit {
       : {}),
     ...(spec.qiRate !== undefined ? { qiRate: spec.qiRate } : {}),
     ...(spec.qiFlat !== undefined ? { qiFlat: spec.qiFlat } : {}),
+    ...(spec.projectile ? { projectile: spec.projectile } : {}),
   }
 }
 

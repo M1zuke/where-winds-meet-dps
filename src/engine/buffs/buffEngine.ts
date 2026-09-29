@@ -646,12 +646,21 @@ export class BuffEngine {
     fromGeneratedSkill = false,
     declaredBuffIds: readonly string[] = [],
     tagSet?: ReadonlySet<string>,
+    grantAtSec?: ReadonlyMap<string, number>,
   ): CastBuffResult {
     const result: CastBuffResult = { buffIds: [], propagatedBuffIds: [] }
     if (props.noBuffTrigger) return result
     if (!fromGeneratedSkill) this.processPerCastConsume(castTag, time, props, result)
 
-    this.triggerDeclaredBuffs(declaredBuffIds, castTag, time, props, fromGeneratedSkill, tagSet)
+    this.triggerDeclaredBuffs(
+      declaredBuffIds,
+      castTag,
+      time,
+      props,
+      fromGeneratedSkill,
+      tagSet,
+      grantAtSec,
+    )
 
     for (const [id, module] of this.definitions) {
       if (module.refreshOnAnyCast && this.gateOk(module) && this.isBuffActive(id, time)) {
@@ -662,6 +671,10 @@ export class BuffEngine {
     return result
   }
 
+  // `grantAtSec` overrides a listed id's own grant time to a fixed offset from
+  // this cast's start — the per-grant-site counterpart of a module's own
+  // `buffAppliesAfterSec`, for a grant whose timing depends on which skill
+  // fired it rather than on the module alone (docs/TIMELINE.md § "Triggers").
   triggerDeclaredBuffs(
     declaredBuffIds: readonly string[],
     castTag: string,
@@ -669,6 +682,7 @@ export class BuffEngine {
     props: SkillProperties = {},
     fromGeneratedSkill = false,
     tagSet?: ReadonlySet<string>,
+    grantAtSec?: ReadonlyMap<string, number>,
   ): void {
     const triggered = new Set<string>()
     for (const buffId of declaredBuffIds) {
@@ -676,7 +690,15 @@ export class BuffEngine {
       triggered.add(buffId)
       const module = this.definitions.get(buffId)
       if (module)
-        this.applyTriggeredModule(module, castTag, time, props, fromGeneratedSkill, tagSet)
+        this.applyTriggeredModule(
+          module,
+          castTag,
+          time,
+          props,
+          fromGeneratedSkill,
+          tagSet,
+          grantAtSec?.get(buffId),
+        )
     }
   }
 
@@ -694,6 +716,7 @@ export class BuffEngine {
     props: SkillProperties,
     fromGeneratedSkill: boolean,
     tagSet?: ReadonlySet<string>,
+    grantAtSec?: number,
   ): void {
     if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
@@ -709,9 +732,11 @@ export class BuffEngine {
       if (last && time - last.appliedAt < this.resolveCooldown(module, time)) return
     }
     const applyTime =
-      module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
-        ? time + (props.castTime ?? 1)
-        : time + (module.buffAppliesAfterSec ?? 0)
+      grantAtSec !== undefined
+        ? time + grantAtSec
+        : module.buffAppliesOnCastEnd || props.buffAppliesOnCastEnd
+          ? time + (props.castTime ?? 1)
+          : time + (module.buffAppliesAfterSec ?? 0)
 
     if (!this.canGrantTrigger(module, applyTime)) return
 

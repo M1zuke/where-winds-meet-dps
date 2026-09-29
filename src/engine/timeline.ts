@@ -152,9 +152,12 @@ function castEndFrame(
   skill: Skill,
   castFrame: number,
   holds: (condition: TriggerCondition) => boolean,
+  distanceMeters?: number,
 ): number {
   const lastHitFrame =
-    skill.hits.length > 0 ? Math.max(...skill.hits.map((hit) => resolvedHitFrame(hit, holds))) : -1
+    skill.hits.length > 0
+      ? Math.max(...skill.hits.map((hit) => resolvedHitFrame(hit, holds, distanceMeters)))
+      : -1
   return castFrame + (skill.castFrames || lastHitFrame + 1)
 }
 
@@ -634,6 +637,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let currentDistanceMeters = preferredDistanceMeters
     layoutLedger.openPermanent(TARGET_DISTANCE_STATUS)
     layoutLedger.recordStack(TARGET_DISTANCE_STATUS, meterStartFrame, currentDistanceMeters)
+    // A projectile hit's own landing frame reads this — the one target-distance
+    // simulation every other reader of it uses, queried at whatever frame the
+    // hit itself resolves from.
+    const targetDistanceAt = (frame: number): number =>
+      layoutLedger.stacksAt(TARGET_DISTANCE_STATUS, frame)
 
     // The drawn weapon simulates once here too, the same way — docs/TIMELINE.md
     // § "Drawn weapon".
@@ -858,7 +866,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               kind: "hit",
               skill: sub,
               hit: subHit,
-              frame: hitLandingFrame(hitFrame, resolvedHitFrame(subHit, subHolds)),
+              frame: hitLandingFrame(
+                hitFrame,
+                resolvedHitFrame(subHit, subHolds, targetDistanceAt(hitFrame)),
+              ),
               owner,
               prePull,
               sequence: layoutHitSequence++,
@@ -869,7 +880,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (trigger.kind === "meterDelta") {
           if (prePull) continue
           const effectiveFrame = trigger.appliesOnCastEnd
-            ? castEndFrame(skill, owner, ownerHolds)
+            ? castEndFrame(skill, owner, ownerHolds, targetDistanceAt(owner))
             : hitFrame
           pending.push({
             kind: "meterDelta",
@@ -883,7 +894,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         layoutWriter.applyTrigger(
           trigger,
-          trigger.appliesOnCastEnd ? castEndFrame(skill, owner, ownerHolds) : hitFrame,
+          trigger.appliesOnCastEnd
+            ? castEndFrame(skill, owner, ownerHolds, targetDistanceAt(owner))
+            : hitFrame,
           owner,
         )
       }
@@ -946,7 +959,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           hit,
           frame: hitLandingFrame(
             stepStart,
-            resolvedHitFrame(hit, (condition) => layoutHolds(condition, stepStart)),
+            resolvedHitFrame(
+              hit,
+              (condition) => layoutHolds(condition, stepStart),
+              targetDistanceAt(stepStart),
+            ),
           ),
           owner: stepStart,
           prePull,
@@ -1095,7 +1112,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         : (() => {
             const maxFrame =
               occurringHits.length > 0
-                ? Math.max(...occurringHits.map((hit) => resolvedHitFrame(hit, holdsHere)))
+                ? Math.max(
+                    ...occurringHits.map((hit) =>
+                      resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)),
+                    ),
+                  )
                 : -1
             const gatedCastFrames = occurringHits.find(
               (hit) => hit.requiresNextStepSkillIds && hit.castFramesWhenGated !== undefined,
@@ -1122,8 +1143,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           ? occurringHits
           : occurringHits.filter(
               (hit) =>
-                hitLandingFrame(startFrame, resolvedHitFrame(hit, holdsHere)) <=
-                windowFramesOverride,
+                hitLandingFrame(
+                  startFrame,
+                  resolvedHitFrame(hit, holdsHere, targetDistanceAt(startFrame)),
+                ) <= windowFramesOverride,
             )
       seedStepTriggers(
         castResolution.skill,
@@ -1302,6 +1325,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           const castTag = castTagOf(cast.skill)
           let propagated = [...cast.inheritedBuffIds]
           if (castTag) {
+            const grantAtSec = cast.skill.triggersBuffsAtFrame
+              ? new Map(
+                  Object.entries(cast.skill.triggersBuffsAtFrame).map(([id, frame]) => [
+                    id,
+                    frame / FPS,
+                  ]),
+                )
+              : undefined
             const result = engine.processSkillCast(
               castTag,
               cast.frame / FPS,
@@ -1309,6 +1340,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               cast.generated,
               cast.skill.triggersBuffs ?? [],
               skillTagsOf(cast.skill),
+              grantAtSec,
             )
             const scoped = [...new Set([...cast.inheritedBuffIds, ...result.buffIds])]
             propagated = [...new Set([...propagated, ...result.propagatedBuffIds])]
@@ -1316,8 +1348,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             castScopedBuffs.set(key, [...new Set([...(castScopedBuffs.get(key) ?? []), ...scoped])])
           }
           const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
+          const castDistanceMeters = targetDistanceAt(cast.frame)
           for (const hit of cast.skill.hits) {
-            const hitFrame = hitLandingFrame(cast.frame, resolvedHitFrame(hit, castHolds))
+            const hitFrame = hitLandingFrame(
+              cast.frame,
+              resolvedHitFrame(hit, castHolds, castDistanceMeters),
+            )
             if (hitDealsDamage(hit)) damageHits.push({ frame: hitFrame, skill: cast.skill })
             for (const trigger of hit.triggers) {
               if (trigger.kind !== "castSkill") continue
@@ -1699,11 +1735,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const queue = new EventQueue()
     let seq = 0
     for (const ls of laidSteps) {
+      const stepDistanceMeters = targetDistanceAt(ls.startFrame)
       for (const hit of ls.performedHits) {
         queue.push({
           frame: hitLandingFrame(
             ls.startFrame,
-            resolvedHitFrame(hit, (condition) => layoutHolds(condition, ls.startFrame)),
+            resolvedHitFrame(
+              hit,
+              (condition) => layoutHolds(condition, ls.startFrame),
+              stepDistanceMeters,
+            ),
           ),
           seq: seq++,
           skill: ls.resolved.skill,
@@ -1846,7 +1887,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           liveWriter.applyTrigger(
             trigger,
             trigger.appliesOnCastEnd
-              ? castEndFrame(skill, castFrame, (condition) => conditionHolds(condition, castFrame))
+              ? castEndFrame(
+                  skill,
+                  castFrame,
+                  (condition) => conditionHolds(condition, castFrame),
+                  targetDistanceAt(castFrame),
+                )
               : frame,
             stepStart,
           )
@@ -1880,9 +1926,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const sub = skillsById.get(det.skillId)
             if (sub) {
               const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
+              const subDistanceMeters = targetDistanceAt(frame)
               for (const subHit of sub.hits) {
                 queue.push({
-                  frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds)),
+                  frame: hitLandingFrame(
+                    frame,
+                    resolvedHitFrame(subHit, subHolds, subDistanceMeters),
+                  ),
                   seq: seq++,
                   skill: sub,
                   hit: subHit,
@@ -1897,9 +1947,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const sub = skillsById.get(trigger.targetId)
         if (!sub) continue
         const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
+        const subDistanceMeters = targetDistanceAt(frame)
         for (const subHit of sub.hits) {
           queue.push({
-            frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds)),
+            frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds, subDistanceMeters)),
             seq: seq++,
             skill: sub,
             hit: subHit,
@@ -1932,9 +1983,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     function buildCasts(): RotationCast[] {
       const castsUnsorted: RotationCast[] = laidSteps.map((ls) => {
         const stepHolds = (condition: TriggerCondition) => conditionHolds(condition, ls.startFrame)
+        const stepDistanceMeters = targetDistanceAt(ls.startFrame)
         const lastHitFrame =
           ls.performedHits.length > 0
-            ? Math.max(...ls.performedHits.map((hit) => resolvedHitFrame(hit, stepHolds)))
+            ? Math.max(
+                ...ls.performedHits.map((hit) =>
+                  resolvedHitFrame(hit, stepHolds, stepDistanceMeters),
+                ),
+              )
             : 0
         const queryFrame = Math.max(
           ls.startFrame,

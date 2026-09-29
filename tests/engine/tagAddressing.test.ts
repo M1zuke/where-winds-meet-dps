@@ -35,12 +35,16 @@ function receivedBuffIds(): Set<string> {
 // `fluteArrival` is a pure state marker read via `activeAfterBuffEnds`, never
 // received directly. `cleftpeakDeflectGrant` only ever fires `applyBuff`
 // effects onto the two Cleftpeak buffs, so nothing needs to receive it either.
+// `swiftGaleAirborneHeavyBoost` boosts an airborne Heavy Attack, a skill no
+// class in this app models — authored for the set it belongs to, unreachable
+// until one exists.
 const RECEIVES_NOTHING_BY_DESIGN = new Set([
   "mirage",
   "rainwhisperShield",
   "mountainsMightQiImbalance",
   "fluteArrival",
   "cleftpeakDeflectGrant",
+  "swiftGaleAirborneHeavyBoost",
 ])
 
 describe("a skill's/debuff's buff ids are addressed by id, never by display name", () => {

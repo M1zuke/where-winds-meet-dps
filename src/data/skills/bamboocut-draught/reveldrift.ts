@@ -35,7 +35,7 @@ export const reveldrift = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.reveldrift,
-  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
+  receives: [BUFF.starweaveMartialBoost, ...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,
   castFrames: 66,

@@ -315,6 +315,63 @@ describe("BuffEngine — triggerDeclaredBuffs (the DoT-tick trigger path)", () =
   })
 })
 
+describe("BuffEngine — per-grant-site delayed buff grant (grantAtSec)", () => {
+  const delayedModule: BuffModule = {
+    id: "delayed",
+    name: "Delayed",
+    duration: 100,
+    affectsAll: true,
+    summary: "test",
+    effects: [],
+  }
+
+  it("opens the window at the given offset from the cast's start, not at its start", () => {
+    const engine = new BuffEngine({}, [delayedModule])
+    engine.processSkillCast(
+      "cast:probe",
+      10,
+      {},
+      false,
+      ["delayed"],
+      undefined,
+      new Map([["delayed", 2]]),
+    )
+    expect(engine.isBuffActiveAtTime("delayed", 10)).toBe(false)
+    expect(engine.isBuffActiveAtTime("delayed", 11)).toBe(false)
+    expect(engine.isBuffActiveAtTime("delayed", 12)).toBe(true)
+  })
+
+  it("leaves an id absent from the map granting at the cast's own start", () => {
+    const engine = new BuffEngine({}, [delayedModule])
+    engine.processSkillCast(
+      "cast:probe",
+      10,
+      {},
+      false,
+      ["delayed"],
+      undefined,
+      new Map([["other", 2]]),
+    )
+    expect(engine.isBuffActiveAtTime("delayed", 10)).toBe(true)
+  })
+
+  it("overrides the module's own buffAppliesAfterSec for the overridden id only", () => {
+    const afterSecModule: BuffModule = { ...delayedModule, id: "afterSec", buffAppliesAfterSec: 5 }
+    const engine = new BuffEngine({}, [afterSecModule])
+    engine.processSkillCast(
+      "cast:probe",
+      0,
+      {},
+      false,
+      ["afterSec"],
+      undefined,
+      new Map([["afterSec", 1]]),
+    )
+    expect(engine.isBuffActiveAtTime("afterSec", 0.5)).toBe(false)
+    expect(engine.isBuffActiveAtTime("afterSec", 1)).toBe(true)
+  })
+})
+
 describe("class buff data loads", () => {
   it("bellstrikeUmbra's buff defs construct an engine without throwing", () => {
     const engine = new BuffEngine({}, buffDefsForClass("bellstrikeUmbra"), groupBuffDefs())

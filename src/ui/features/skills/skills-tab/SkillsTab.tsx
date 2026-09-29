@@ -392,11 +392,30 @@ export function SkillsTab({
     })
   }
   function removeTriggersBuff(buffId: string) {
-    setDraft((prev) =>
-      prev
-        ? { ...prev, triggersBuffs: (prev.triggersBuffs ?? []).filter((id) => id !== buffId) }
-        : prev,
-    )
+    setDraft((prev) => {
+      if (!prev) return prev
+      const triggersBuffsAtFrame = { ...prev.triggersBuffsAtFrame }
+      delete triggersBuffsAtFrame[buffId]
+      return {
+        ...prev,
+        triggersBuffs: (prev.triggersBuffs ?? []).filter((id) => id !== buffId),
+        triggersBuffsAtFrame:
+          Object.keys(triggersBuffsAtFrame).length > 0 ? triggersBuffsAtFrame : undefined,
+      }
+    })
+  }
+  function setTriggersBuffAtFrame(buffId: string, frame: number | undefined) {
+    setDraft((prev) => {
+      if (!prev) return prev
+      const triggersBuffsAtFrame = { ...prev.triggersBuffsAtFrame }
+      if (frame === undefined) delete triggersBuffsAtFrame[buffId]
+      else triggersBuffsAtFrame[buffId] = frame
+      return {
+        ...prev,
+        triggersBuffsAtFrame:
+          Object.keys(triggersBuffsAtFrame).length > 0 ? triggersBuffsAtFrame : undefined,
+      }
+    })
   }
 
   function patchHit(idx: number, patch: Partial<SkillHit>) {
@@ -1264,6 +1283,18 @@ export function SkillsTab({
                             {row.requires && (
                               <span className={styles.effectsRowRequires}>
                                 ({t("common.requires")} {row.requires})
+                              </span>
+                            )}
+                            {draft.triggersBuffs?.includes(row.id) && (
+                              <span className={styles.effectsRowRequires}>
+                                {t("skills.grantedAtFrame")}{" "}
+                                <NumInput
+                                  className={styles.cellInput}
+                                  value={draft.triggersBuffsAtFrame?.[row.id] ?? 0}
+                                  onChange={(value) =>
+                                    setTriggersBuffAtFrame(row.id, value === 0 ? undefined : value)
+                                  }
+                                />
                               </span>
                             )}
                           </div>

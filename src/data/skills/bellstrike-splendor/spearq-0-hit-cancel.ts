@@ -23,7 +23,7 @@ export const spearq0HitCancel = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ0HitCancel,
   triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
-  receives: NAMELESS_SPEAR_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 6,
   triggerable: true,
   // In-game values as of 2026-09-28: 5 m approach reach; once between 1.5

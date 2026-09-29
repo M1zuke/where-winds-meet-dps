@@ -10,6 +10,7 @@ import {
 } from "../../src/migrations/customSkills/V28__silkbindJadeValuesGatesReach"
 import { healSkill as healMeterFieldsAndGains } from "../../src/migrations/customSkills/V38__meterFieldsAndGains"
 import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../../src/migrations/customSkills/V46__stonesplitSplendorJadeTimingRepairs"
+import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -47,16 +48,25 @@ const STORE = storeV27File as unknown as RawCustomSkillsBlob & { skills: Skill[]
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
+// `receives` is an unordered id set (docs/TIMELINE.md § "Identity and tags"):
+// a later hop that appends an id to the end still reaches every skill the
+// built-in itself lists, whatever position the built-in's own literal puts it
+// at — this compares membership, never array position, for that field alone.
+const normalizedField = (value: unknown, field: string): unknown =>
+  field === "receives" && Array.isArray(value) ? [...value].sort() : value
+
 const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
   (blob.skills as Skill[]).find((skill) => skill.id === id)!
 
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
 
-// A no-op on the ids V38 doesn't touch — composing it is what keeps this
-// hop's own output lined up with the live built-in.
+// A no-op on the ids a given later hop doesn't touch — composing them is what
+// keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)) as Skill
+  healPerGrantSiteDelayAndSetReach(
+    healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+  ) as Skill
 
 describe("custom-skills v27 fixture", () => {
   it("is v27 and still stores the pre-V28 shape for every healed skill", () => {
@@ -78,7 +88,9 @@ describe("healSilkbindJadeValuesGatesReach", () => {
       const healed = throughLaterHops(healSilkbindJadeValuesGatesReach(clone(skillIn(STORE, id))))
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
-        expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
+        expect(normalizedField(healed[field], field), `${id}.${field}`).toEqual(
+          normalizedField(builtin[field], field),
+        )
     }
   })
 
@@ -104,7 +116,9 @@ describe("V28__silkbindJadeValuesGatesReach — called directly", () => {
       const healed = throughLaterHops(skillIn(after, id))
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS)
-        expect(healed[field], `${id}.${field}`).toEqual(builtin[field])
+        expect(normalizedField(healed[field], field), `${id}.${field}`).toEqual(
+          normalizedField(builtin[field], field),
+        )
     }
     for (const skill of STORE.skills) {
       if (HEALED_IDS.includes(skill.id)) continue
@@ -143,7 +157,9 @@ describe("every healed skill survives the hydrator too", () => {
       const builtin = builtinOf(id)
       for (const field of CHECKED_FIELDS) {
         const expected = field === "hits" ? builtin[field] : (builtin[field] ?? [])
-        expect(skill[field], `${id}.${field}`).toEqual(expected)
+        expect(normalizedField(skill[field], field), `${id}.${field}`).toEqual(
+          normalizedField(expected, field),
+        )
       }
     }
   })

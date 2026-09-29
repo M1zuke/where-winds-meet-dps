@@ -73,6 +73,19 @@ frame. Every reader of a hit's frame — validation, storage seed/import/
 hydrate, layout and the damage pass — resolves it through the one function
 that applies this override; none reads the hit's bare `frame` field directly.
 
+### Projectile hits
+
+A hit may declare itself a projectile: its own `frame` is when it launches,
+and its actual landing frame is that launch frame plus the live target
+distance divided by a constant travel speed, converted to frames — never a
+fixed offset, since a farther or already-closer target lands later or
+sooner. The distance read is the one target-distance simulation every other
+reader of it uses, resolved at the same point a hit variant's own override
+is. A ceiling on travel time bounds it independently of the target's
+distance, for a projectile with its own limited lifetime. Every reader of a
+hit's frame carries this the same way it carries a variant's own override —
+resolving through the one function, never a fixed value baked in separately.
+
 ### Conditional hits
 
 A hit may carry its own ANDed conditions, gating whether it occurs at all —
@@ -187,6 +200,14 @@ skips straight to its own hits, unflagged.
   module itself declares neither: it is a policy (`requires`, always-active,
   cooldown, rate limits) and a magnitude, addressed only by the id the skill or
   debuff names.
+- **A skill's own `triggersBuffs` may delay one of its listed ids to a fixed
+  frame of that cast** (`triggersBuffsAtFrame`, keyed by buff id), in place of
+  granting it at the cast's own start. This is per grant site — scoped to the
+  one skill that declares it — unlike a buff module's own
+  `buffAppliesAfterSec`, which shifts every grant of that module alike
+  regardless of which skill fired it. An id absent from the map keeps granting
+  at the cast's start; the grant still belongs to that cast for display
+  purposes.
 
 ## Triggers
 

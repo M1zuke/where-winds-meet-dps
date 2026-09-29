@@ -24,7 +24,7 @@ export const spearq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ,
   triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage, ...HEAVENQUAKER_SPEAR_RECEIVES],
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...HEAVENQUAKER_SPEAR_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 120,
   triggerable: true,

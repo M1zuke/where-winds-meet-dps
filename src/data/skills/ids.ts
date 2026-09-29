@@ -18,6 +18,12 @@ export const CAST = {
   bleedTick: "cast:bleedTick",
   bloombreak: "cast:bloombreak",
   boundvessel: "cast:boundvessel",
+  bladeVessel: "cast:bladeVessel",
+  whaledraftTap: "cast:whaledraftTap",
+  dualBladesLightAttack1: "cast:dualBladesLightAttack1",
+  dualBladesLightAttack2: "cast:dualBladesLightAttack2",
+  dualBladesLightAttack3: "cast:dualBladesLightAttack3",
+  dualBladesLightAttack4: "cast:dualBladesLightAttack4",
   castlink: "cast:castlink",
   crosswindBlade: "cast:crosswindBlade",
   crosswindBladeCancel: "cast:crosswindBladeCancel",
@@ -51,6 +57,10 @@ export const CAST = {
   fluteOfTheTidesFull: "cast:fluteOfTheTidesFull",
   fluteOfTheTidesPrepull: "cast:fluteOfTheTidesPrepull",
   falconsPursuit: "cast:falconsPursuit",
+  flamingMeteor: "cast:flamingMeteor",
+  freeMorph: "cast:freeMorph",
+  lionsRoar: "cast:lionsRoar",
+  lionsRoarThrow: "cast:lionsRoarThrow",
   ghostlySteps: "cast:ghostlySteps",
   goldenBodyCancel: "cast:goldenBodyCancel",
   goldenBodyDeflectCancel: "cast:goldenBodyDeflectCancel",
@@ -152,6 +162,7 @@ export const CAST = {
   umbQ: "cast:umbQ",
   umbQPrepull: "cast:umbQPrepull",
   whaledraft: "cast:whaledraft",
+  wolflikeFrenzy: "cast:wolflikeFrenzy",
 } as const
 
 export const ROLE = {

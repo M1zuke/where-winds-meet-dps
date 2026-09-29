@@ -35,6 +35,7 @@ export const falconsPursuit = defineSkill({
     ...CLASS_RECEIVES,
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.skystrikeGauntletsAdditionalAttackCoefficient,
+    BUFF.etherwrathPenetrationBoost,
   ],
   triggerable: true,
   castFrames: 0,

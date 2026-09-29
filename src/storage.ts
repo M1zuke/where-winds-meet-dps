@@ -1172,6 +1172,7 @@ function hydrateSkill(s: Skill): Skill {
     tags: healedTags,
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
+    triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
     castConditions: Array.isArray(s.castConditions)
       ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
       : s.castConditions,
@@ -1219,7 +1220,21 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat))) {
     delete hit.qiFlat
   }
+  if (h.projectile !== undefined && !isProjectileSpec(h.projectile)) {
+    delete hit.projectile
+  }
   return hit
+}
+
+function isProjectileSpec(value: unknown): value is SkillHit["projectile"] {
+  if (!value || typeof value !== "object") return false
+  const projectile = value as Record<string, unknown>
+  return (
+    typeof projectile.speedMetersPerSecond === "number" &&
+    projectile.speedMetersPerSecond > 0 &&
+    typeof projectile.maxTravelFrames === "number" &&
+    Number.isFinite(projectile.maxTravelFrames)
+  )
 }
 
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
@@ -1530,6 +1545,14 @@ function isMeterFreeze(value: unknown): value is MeterFreeze {
   )
 }
 
+function sanitizedFrameRecord(value: unknown): Record<string, number> | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined
+  const entries = Object.entries(value as Record<string, unknown>).filter(
+    (entry): entry is [string, number] => typeof entry[1] === "number" && Number.isFinite(entry[1]),
+  )
+  return entries.length > 0 ? Object.fromEntries(entries) : undefined
+}
+
 function importedHit(h: unknown): SkillHit {
   const c = (h && typeof h === "object" ? h : {}) as Partial<SkillHit>
   const hit: SkillHit = {
@@ -1564,6 +1587,9 @@ function importedHit(h: unknown): SkillHit {
   }
   if (typeof c.qiFlat === "number" && Number.isFinite(c.qiFlat)) {
     hit.qiFlat = c.qiFlat
+  }
+  if (isProjectileSpec(c.projectile)) {
+    hit.projectile = c.projectile
   }
   return hit
 }
@@ -1600,6 +1626,7 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     triggersBuffs: Array.isArray(c.triggersBuffs)
       ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
       : undefined,
+    triggersBuffsAtFrame: sanitizedFrameRecord(c.triggersBuffsAtFrame),
     castConditions: Array.isArray(c.castConditions)
       ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
       : undefined,

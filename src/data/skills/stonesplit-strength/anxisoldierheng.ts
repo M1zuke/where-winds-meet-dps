@@ -19,7 +19,12 @@ function hengSoldier(id: string, name: string, attunement: string, extraTags: st
     weaponOrAttribute: "Hengdao",
     attributeAttack: "Stonesplit",
     castTag: CAST.anxiSoldierHeng,
-    receives: [BUFF.mountainSplitter, BUFF.cleftpeakDeflect, ...SNOWPARTING_BLADE_RECEIVES],
+    receives: [
+      BUFF.mountainSplitter,
+      BUFF.cleftpeakDeflect,
+      BUFF.etherwrathPenetrationBoost,
+      ...SNOWPARTING_BLADE_RECEIVES,
+    ],
     triggersBuffs: [BUFF.throatPierced],
     castFrames: 42,
     triggerable: true,

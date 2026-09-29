@@ -137,6 +137,17 @@ describe("isSkill — validation", () => {
       isSkill({ ...skill, meterDrains: [{ ...skill.meterDrains![0], chargeRelease: "soon" }] }),
     ).toBe(false)
   })
+
+  it("accepts a well-formed triggersBuffsAtFrame, rejects a malformed one", () => {
+    const skill = makeSkill(CLASS, {
+      name: "Delayed Grant",
+      triggersBuffs: ["buff-a"],
+      triggersBuffsAtFrame: { "buff-a": 60 },
+    })
+    expect(isSkill(skill)).toBe(true)
+    expect(isSkill({ ...skill, triggersBuffsAtFrame: { "buff-a": "soon" } })).toBe(false)
+    expect(isSkill({ ...skill, triggersBuffsAtFrame: ["buff-a"] })).toBe(false)
+  })
 })
 
 describe("isHitTrigger — the two logic-free DoT link kinds", () => {
@@ -360,8 +371,27 @@ describe("seedSkillFromBuiltin — editable copy of a built-in skill", () => {
 
   it("leaves castConditions undefined when the source has none", () => {
     const src = makeSkill(CLASS, { name: "Test" })
-    const s = seedSkillFromBuiltin(CLASS, src)
-    expect(s.castConditions).toBeUndefined()
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.castConditions).toBeUndefined()
+  })
+
+  it("copies triggersBuffsAtFrame, detached from the source", () => {
+    const src = makeSkill(CLASS, {
+      name: "Test",
+      triggersBuffs: ["buff-a"],
+      triggersBuffsAtFrame: { "buff-a": 60 },
+    })
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.triggersBuffsAtFrame).toEqual({ "buff-a": 60 })
+    expect(seeded.triggersBuffsAtFrame).not.toBe(src.triggersBuffsAtFrame)
+    seeded.triggersBuffsAtFrame!["buff-a"] = 1
+    expect(src.triggersBuffsAtFrame).toEqual({ "buff-a": 60 })
+  })
+
+  it("leaves triggersBuffsAtFrame undefined when the source has none", () => {
+    const src = makeSkill(CLASS, { name: "Test" })
+    const seeded = seedSkillFromBuiltin(CLASS, src)
+    expect(seeded.triggersBuffsAtFrame).toBeUndefined()
   })
 })
 
@@ -461,6 +491,23 @@ describe("storage round-trip", () => {
     const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
     expect(imported.receives).toEqual(["bellstrikeUmbraBleedPen"])
     expect(imported.triggersBuffs).toEqual(["jadeware"])
+  })
+
+  it("export → import carries triggersBuffsAtFrame through unchanged", () => {
+    const skill = makeSkill(CLASS, {
+      name: "ExportDelayedGrantSkill",
+      triggersBuffs: ["jadeware"],
+      triggersBuffsAtFrame: { jadeware: 60 },
+    })
+    const imported = importCustomSkill(exportCustomSkill(skill), "bellstrikeUmbra")
+    expect(imported.triggersBuffsAtFrame).toEqual({ jadeware: 60 })
+  })
+
+  it("import drops a malformed triggersBuffsAtFrame rather than throwing", () => {
+    const skill = makeSkill(CLASS, { name: "MalformedDelayedGrantSkill" })
+    const raw = { ...skill, triggersBuffsAtFrame: { jadeware: "soon" } }
+    const imported = importCustomSkill(JSON.stringify(raw), "bellstrikeUmbra")
+    expect(imported.triggersBuffsAtFrame).toBeUndefined()
   })
 
   it("import heals triggersBuffs immediately for a name-derived cast tag, same as saveCustomSkill", () => {

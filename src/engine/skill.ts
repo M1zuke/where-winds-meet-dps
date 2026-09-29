@@ -113,6 +113,18 @@ export interface SkillHit {
   // The flat Qi channel no modelled hit uses; kept for completeness. Absent
   // means 0.
   qiFlat?: number
+  // A hit whose landing frame depends on the live target distance rather than
+  // being fixed — a thrown or fired hit travelling at a constant speed from
+  // this hit's own `frame`, resolved only through `resolvedHitFrame`. Absent
+  // means a fixed frame, the ordinary case.
+  projectile?: ProjectileSpec
+}
+
+export interface ProjectileSpec {
+  speedMetersPerSecond: number
+  // A hard ceiling on travel time, in frames from the throw — the projectile's
+  // own lifetime, independent of the skill's reach.
+  maxTravelFrames: number
 }
 
 export interface MeterCost {
@@ -162,6 +174,11 @@ export interface Skill {
   castTag?: string
   receives?: string[]
   triggersBuffs?: string[]
+  // Overrides a listed `triggersBuffs` id's grant time to this many frames
+  // into this cast, in place of the cast's own start — per grant site, unlike
+  // the module-wide `BuffModule.buffAppliesAfterSec`. An id absent from the
+  // map keeps granting at the cast's start.
+  triggersBuffsAtFrame?: Record<string, number>
   hits: SkillHit[]
   castConditions?: TriggerCondition[]
   castFrames: number
@@ -486,6 +503,20 @@ export function isSkillHit(x: unknown): x is SkillHit {
     return false
   if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat)))
     return false
+  if (h.projectile !== undefined) {
+    if (!h.projectile || typeof h.projectile !== "object") return false
+    const projectile = h.projectile as Record<string, unknown>
+    if (
+      typeof projectile.speedMetersPerSecond !== "number" ||
+      !(projectile.speedMetersPerSecond > 0)
+    )
+      return false
+    if (
+      typeof projectile.maxTravelFrames !== "number" ||
+      !Number.isFinite(projectile.maxTravelFrames)
+    )
+      return false
+  }
   return true
 }
 
@@ -498,7 +529,7 @@ export function triggerConditions(tr: HitTrigger): TriggerCondition[] {
 
 export function selectHitVariant(
   hit: SkillHit,
-  test: (c: TriggerCondition) => boolean,
+  test: (condition: TriggerCondition) => boolean,
 ): HitVariant | null {
   for (const variant of hit.variants ?? []) {
     if (variant.conditions.every((c) => test(c))) return variant
@@ -506,8 +537,22 @@ export function selectHitVariant(
   return null
 }
 
-export function resolvedHitFrame(hit: SkillHit, test: (c: TriggerCondition) => boolean): number {
-  return selectHitVariant(hit, test)?.frame ?? hit.frame
+// Authored frames are always nominal 60 fps (docs/TIMELINE.md § "Coefficients"),
+// independent of the simulation's own render frame rate.
+const NOMINAL_FPS = 60
+
+// `distanceMeters` is the live target distance at the frame this hit resolves
+// from — absent for every reader that has none available, in which case a
+// `projectile` hit falls back to its own base frame, same as one without it.
+export function resolvedHitFrame(
+  hit: SkillHit,
+  test: (condition: TriggerCondition) => boolean,
+  distanceMeters?: number,
+): number {
+  const base = selectHitVariant(hit, test)?.frame ?? hit.frame
+  if (!hit.projectile || distanceMeters === undefined) return base
+  const travelFrames = (distanceMeters / hit.projectile.speedMetersPerSecond) * NOMINAL_FPS
+  return base + Math.min(travelFrames, hit.projectile.maxTravelFrames)
 }
 
 export function breakdownNameOf(breakdownName: string | undefined, fallbackName: string): string {
@@ -545,6 +590,8 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.updatedAt !== "string") return false
   if (s.receives !== undefined && !isStringArray(s.receives)) return false
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
+  if (s.triggersBuffsAtFrame !== undefined && !isFiniteNumberRecord(s.triggersBuffsAtFrame))
+    return false
   if (s.castConditions !== undefined) {
     if (!Array.isArray(s.castConditions)) return false
     for (const condition of s.castConditions) {
@@ -622,6 +669,13 @@ function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === "string")
 }
 
+function isFiniteNumberRecord(value: unknown): value is Record<string, number> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false
+  return Object.values(value as Record<string, unknown>).every(
+    (entry) => typeof entry === "number" && Number.isFinite(entry),
+  )
+}
+
 export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
   return {
     name: skill.name,
@@ -663,6 +717,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
+    triggersBuffsAtFrame: src.triggersBuffsAtFrame ? { ...src.triggersBuffsAtFrame } : undefined,
     castConditions: src.castConditions?.map(cloneTriggerCondition),
     meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
     meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),

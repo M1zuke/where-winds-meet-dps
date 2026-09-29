@@ -20,7 +20,7 @@ export const swordMartialQqq = defineSkill({
   // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
   castConditions: [{ param: PARAM.swordHorizon }],
   triggersBuffs: [BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage, ...STRATEGIC_SWORD_RECEIVES],
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 86,
   triggerable: true,

@@ -26,6 +26,7 @@ import { cloudvault } from "./cloudvault"
 import { herosBloodInebriateNoAbrasion } from "./herosBloodInebriateNoAbrasion"
 import { clashToastDamage } from "./clashToastDamage"
 import {
+  nonPlayerBaseDamage10,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
   nonPlayerBaseDamage115,
@@ -37,6 +38,13 @@ import { divinecraftFire } from "./divinecraftFire"
 import { fluteArrival, fluteDistanceBonus } from "./fluteDistanceBonus"
 import { cleftpeakDeflectGrant } from "./cleftpeakDeflectGrant"
 import { toadVenomQiBonus } from "./toadVenomQiBonus"
+import { ivorybloomFullHpBonus } from "./ivorybloomFullHpBonus"
+import { starweaveMartialBoost } from "./starweaveMartialBoost"
+import { swayingHeightsHighHpBonus } from "./swayingHeightsHighHpBonus"
+import { etherwrathAttackBoost } from "./etherwrathAttackBoost"
+import { etherwrathPenetrationBoost } from "./etherwrathPenetrationBoost"
+import { swallowcallLightAttackBoost } from "./swallowcallLightAttackBoost"
+import { swiftGaleAirborneHeavyBoost } from "./swiftGaleAirborneHeavyBoost"
 
 // Order is load-bearing (float addition is not associative): the globals that
 // emit `allDamageBoost` sum in this order, so reorder none of them and insert
@@ -67,6 +75,7 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   cloudvault,
   herosBloodInebriateNoAbrasion,
   clashToastDamage,
+  nonPlayerBaseDamage10,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
   nonPlayerBaseDamage115,
@@ -78,6 +87,13 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   fluteDistanceBonus,
   cleftpeakDeflectGrant,
   toadVenomQiBonus,
+  ivorybloomFullHpBonus,
+  starweaveMartialBoost,
+  swayingHeightsHighHpBonus,
+  etherwrathAttackBoost,
+  etherwrathPenetrationBoost,
+  swallowcallLightAttackBoost,
+  swiftGaleAirborneHeavyBoost,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

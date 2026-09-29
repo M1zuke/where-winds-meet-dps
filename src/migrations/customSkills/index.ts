@@ -49,6 +49,8 @@ import { V45__castLengthAndHitFrameRepairs } from "./V45__castLengthAndHitFrameR
 import { V46__stonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
 import { V47__weaponDrawnGates } from "./V47__weaponDrawnGates"
 import { V48__qiRateDefaults } from "./V48__qiRateDefaults"
+import { V49__perGrantSiteDelayAndSetReach } from "./V49__perGrantSiteDelayAndSetReach"
+import { V50__etherwrathPenetrationReach } from "./V50__etherwrathPenetrationReach"
 
 export type {
   CustomSkillMigration,
@@ -164,6 +166,8 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V46__stonesplitSplendorJadeTimingRepairs,
   V47__weaponDrawnGates,
   V48__qiRateDefaults,
+  V49__perGrantSiteDelayAndSetReach,
+  V50__etherwrathPenetrationReach,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

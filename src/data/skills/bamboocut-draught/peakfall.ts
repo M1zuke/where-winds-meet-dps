@@ -25,6 +25,7 @@ export const peakfall = defineSkill({
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
+    BUFF.starweaveMartialBoost,
   ],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,

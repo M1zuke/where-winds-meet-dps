@@ -13,7 +13,7 @@ export const fanqPrepull = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQPrepull,
-  receives: INKWELL_FAN_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
   triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
   castFrames: 0,
   triggerable: true,

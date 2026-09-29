@@ -1,6 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
-import { ATTUNE, CAST, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
@@ -12,12 +13,13 @@ export const realmplay = defineSkill({
   id: SKILL.realmplay,
   classId: "bamboocutDraught",
   name: "Realmplay",
-  tags: [WEAPON.twinBlades, ATTUNE.twinbladesMartialArt],
+  tags: [WEAPON.twinBlades, ATTUNE.twinbladesMartialArt, PROP.isMartialSkillQ],
   skillType: "weapon",
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.realmplay,
-  receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
+  receives: [BUFF.starweaveMartialBoost, ...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
+  triggersBuffs: [BUFF.jadeware],
   triggerable: false,
   castFrames: 28,
   // In-game values as of 2026-09-28: 18 m approach reach, plus a further

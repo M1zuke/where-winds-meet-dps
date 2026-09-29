@@ -19,6 +19,7 @@ export const peakfallPrepull = defineSkill({
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
     BUFF.nonPlayerBaseDamage40,
+    BUFF.starweaveMartialBoost,
   ],
   triggersBuffs: [BUFF.jadeware],
   prePull: true,

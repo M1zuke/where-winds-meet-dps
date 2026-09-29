@@ -26,6 +26,9 @@ export const fanlightcharged = defineSkill({
     ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.lingeringBone],
+  // In-game values as of 2026-09-28: granted at the whirlwind's own hit, not
+  // at the cast's start.
+  triggersBuffsAtFrame: { [BUFF.lingeringBone]: 71 },
   // In-game values as of 2026-09-26: a 30 / s Endurance drain from 0.24 s of
   // the hold, stopping 0.55 s later; frozen for the whole hold otherwise.
   meterDrains: [{ meterId: enduranceMeter.id, perSecond: 30, fromFrame: 14.4, stopAfterSec: 0.55 }],

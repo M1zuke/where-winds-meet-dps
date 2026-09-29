@@ -21,13 +21,57 @@ describe("every registered class has a skill that triggers each universal set bu
   })
 })
 
+// In-game Martial Art Skill roster as of 2026-09-24, independent of which
+// built-in skill files already carry PROP.isMartialSkillQ — a skill missing
+// from the tag entirely (Realmplay, once) would otherwise never surface.
+// Stonesplit Strength's own roster is a separate, documented deviation and is
+// excluded here.
+const MARTIAL_ART_SKILL_IDS: Record<string, readonly string[]> = {
+  bellstrikeUmbra: [
+    "bellstrikeUmbra-swordq",
+    "bellstrikeUmbra-swordqfollowup",
+    "bellstrikeUmbra-swordq-follow-up-1-hit-cancel",
+    "bellstrikeUmbra-swordq-follow-up-2-hit-cancel",
+    "bellstrikeUmbra-sword-martial-qqq",
+    "bellstrikeUmbra-spearq",
+    "bellstrikeUmbra-spearq-5-hit-cancel",
+  ],
+  bellstrikeSplendor: [
+    "bellstrikeSplendor-swordq",
+    "bellstrikeSplendor-swordq-2nd",
+    "bellstrikeSplendor-spearq",
+    "bellstrikeSplendor-spearq-prepull",
+    "bellstrikeSplendor-spearq-0-hit-cancel",
+  ],
+  bamboocutDraught: [
+    "bamboocutDraught-peakfall",
+    "bamboocutDraught-peakfall-prepull",
+    "bamboocutDraught-castlink",
+    "bamboocutDraught-reveldrift",
+    "bamboocutDraught-reveldrift-cancel",
+    "bamboocutDraught-realmplay",
+  ],
+  silkbindJade: [
+    "silkbindJade-umbq",
+    "silkbindJade-umbq-prepull",
+    "silkbindJade-fanq",
+    "silkbindJade-fanq-prepull",
+    "silkbindJade-fanqcancel",
+  ],
+}
+
 describe("every Martial Art skill activates Jadeware", () => {
-  it.each(CLASS_IDS())("%s", (classId) => {
-    const silent = builtinSkillsForClass(classId)
-      .filter((skill) => skill.tags?.includes(PROP.isMartialSkillQ))
-      .filter((skill) => !skill.triggersBuffs?.includes(BUFF.jadeware))
-      .map((skill) => skill.name)
-    expect(silent).toEqual([])
+  it.each(Object.keys(MARTIAL_ART_SKILL_IDS))("%s", (classId) => {
+    const skills = builtinSkillsForClass(classId)
+    const missing = MARTIAL_ART_SKILL_IDS[classId]!.filter((id) => {
+      const skill = skills.find((candidate) => candidate.id === id)
+      return (
+        !skill ||
+        !skill.tags?.includes(PROP.isMartialSkillQ) ||
+        !skill.triggersBuffs?.includes(BUFF.jadeware)
+      )
+    })
+    expect(missing).toEqual([])
   })
 })
 

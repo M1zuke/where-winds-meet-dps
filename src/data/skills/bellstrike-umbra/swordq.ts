@@ -16,7 +16,7 @@ export const swordq = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQ,
   triggersBuffs: [BUFF.jadeware],
-  receives: [BUFF.wolfchasersArtMartialDamage, ...STRATEGIC_SWORD_RECEIVES],
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
   // Cast length to the earliest next input and hit frame, the dash animation
   // running first: in-game animation, 2026-09-24.
   castFrames: 27,

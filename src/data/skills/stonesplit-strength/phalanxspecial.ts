@@ -19,6 +19,8 @@ export const phalanxspecial = defineSkill({
   castTag: CAST.phalanxSpecial,
   receives: PHALANXBANE_BLADE_RECEIVES,
   triggersBuffs: [BUFF.ironGuards],
+  // In-game values as of 2026-09-28: granted 60 f into the cast, not at its start.
+  triggersBuffsAtFrame: { [BUFF.ironGuards]: 60 },
   castConditions: [bladeMomentumRequires("gte", 50)],
   meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 50 }],
   castFrames: 71,

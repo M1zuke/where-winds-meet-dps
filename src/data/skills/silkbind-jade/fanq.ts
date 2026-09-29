@@ -13,7 +13,7 @@ export const fanq = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQ,
-  receives: INKWELL_FAN_RECEIVES,
+  receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
   triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
   // Cast length to the earliest next input (in-game animation, 2026-09-24).
   castFrames: 61,
