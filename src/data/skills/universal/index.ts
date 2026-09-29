@@ -20,3 +20,5 @@ export const UNIVERSAL_SKILLS: Skill[] = [
   perfectDodgeFull,
   perfectDodge,
 ]
+
+export { UNIVERSAL_GATES } from "./gates"

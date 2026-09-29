@@ -530,11 +530,21 @@ works unchanged.
   for that cast, never recomputed a second time.
 - **A buff may declare `meterModifiers`**: while its window is active, it
   scales a meter's own cost, charge-drain cost or regeneration rate by a
-  fraction, additive with every other active modifier of the same kind — the
-  ledger-native counterpart of a stat effect, since a meter simulates outside
-  the damage-kernel stat pool. A modifier sourced from the class-buff engine
-  rather than the status ledger is out of reach here, the same restriction
-  every other ledger-side mechanism has.
+  fraction — the ledger-native counterpart of a stat effect, since a meter
+  simulates outside the damage-kernel stat pool. A modifier sourced from the
+  class-buff engine rather than the status ledger is out of reach here, the
+  same restriction every other ledger-side mechanism has.
+- **A `meterModifiers` entry with a `tag` is class-scoped** — only a cast
+  whose skill carries that tag pays it — **and one with no `tag` is
+  unscoped**, paid by every spend of that meter regardless of skill. Every
+  active modifier of the same kind and the same scope sums additively first;
+  the scoped sum and the unscoped sum then multiply as two separate factors,
+  never as one combined additive total, because a class-scoped cut and an
+  unscoped one are different formulas in the source game. A `chargeCost`
+  event additionally multiplies in the meter's own unscoped `cost`-kind
+  factor on top of its own `chargeCost`-kind one — the unscoped cost formula
+  is defined as covering every spend, a running charge drain included, while
+  a class-scoped cost never reaches a charge at all.
 - **A regeneration modifier may instead declare `belowCapacityFraction`**,
   gating itself on the meter's own live level against that fraction of its
   capacity rather than on a status window — a self-referential condition read

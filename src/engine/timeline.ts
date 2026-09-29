@@ -654,15 +654,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     const runEffectiveRates = effectiveRates(inputs)
 
-    function meterModifierMultiplier(
+    // docs/TIMELINE.md § "Meters": a modifier that carries a `tag` is
+    // class-scoped (only a skill carrying that tag pays it) and every other
+    // one is unscoped (every spend of the meter pays it) — two different
+    // in-game formulas, so their sums multiply rather than add.
+    function meterModifierLayerSums(
       kind: "cost" | "chargeCost" | "regen",
       meterId: string,
       frame: number,
-      skill?: Skill,
-      currentAmount?: number,
-      capacity?: number,
-    ): number {
-      let total = 1
+      skill: Skill | undefined,
+      currentAmount: number | undefined,
+      capacity: number | undefined,
+    ): { scoped: number; unscoped: number } {
+      let scoped = 0
+      let unscoped = 0
       for (const status of buffs) {
         for (const modifier of status.meterModifiers ?? []) {
           if (modifier.meterId !== meterId || modifier.kind !== kind) continue
@@ -681,10 +686,41 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   currentAmount,
                 )
               : layoutLedger.isActiveAt(status.id, frame)
-          if (active) total += modifier.amount
+          if (!active) continue
+          if (modifier.tag) scoped += modifier.amount
+          else unscoped += modifier.amount
         }
       }
-      return Math.max(0, total)
+      return { scoped, unscoped }
+    }
+
+    // A charge drain also pays whatever the meter's own unscoped `cost` layer
+    // currently charges, on top of its own dedicated `chargeCost` layer — the
+    // unscoped cost formula is defined in-game as covering every spend,
+    // continuous drains included, while the class-scoped cost layer never
+    // reaches a charge at all (docs/TIMELINE.md § "Meters").
+    function meterModifierMultiplier(
+      kind: "cost" | "chargeCost" | "regen",
+      meterId: string,
+      frame: number,
+      skill?: Skill,
+      currentAmount?: number,
+      capacity?: number,
+    ): number {
+      const own = meterModifierLayerSums(kind, meterId, frame, skill, currentAmount, capacity)
+      let multiplier = Math.max(0, 1 + own.scoped) * Math.max(0, 1 + own.unscoped)
+      if (kind === "chargeCost") {
+        const costLayer = meterModifierLayerSums(
+          "cost",
+          meterId,
+          frame,
+          skill,
+          currentAmount,
+          capacity,
+        )
+        multiplier *= Math.max(0, 1 + costLayer.unscoped)
+      }
+      return multiplier
     }
 
     function advanceMeters(frame: number): void {

@@ -68,10 +68,13 @@ export const NAMELESS_SPEAR_ENDURANCE_REGEN_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-26T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-28: Qiankun's Lock opens this 5 s window at its
+// In-game values as of 2026-09-29: Qiankun's Lock opens this 5 s window at its
 // own cast start. This gate owns the window and the -10% Endurance cost it
 // also carries; the `endlessGaleAtStart` class-buff module reads this same id
-// for its own +18% affinity damage.
+// for its own +18% affinity damage. A single unscoped `cost` entry is enough:
+// this cut covers every spend, a running charge drain included, so the
+// engine's own cross-layer rule (docs/TIMELINE.md § "Meters") already applies
+// it there without a second, duplicate `chargeCost` entry.
 export const ENDLESS_GALE_AT_START_GATE: Buff = defineGateBuff({
   id: BUFF.endlessGaleAtStart,
   classId: CLASS_ID,
@@ -83,12 +86,9 @@ export const ENDLESS_GALE_AT_START_GATE: Buff = defineGateBuff({
   effects: [],
   maxStacks: 1,
   stackScaling: "flat",
-  meterModifiers: [
-    { meterId: enduranceMeter.id, kind: "cost", amount: -0.1 },
-    { meterId: enduranceMeter.id, kind: "chargeCost", amount: -0.1 },
-  ],
+  meterModifiers: [{ meterId: enduranceMeter.id, kind: "cost", amount: -0.1 }],
   createdAt: "2026-09-26T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
 })
 
 // In-game values as of 2026-09-28: Qiankun's Lock's own end opens this window
@@ -114,15 +114,17 @@ export const ENDLESS_GALE_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-28T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-26: with Mountain's Might, Qiankun's Lock's end
-// also cuts every Endurance cost by 20%, charge and sprint a further 10% on
-// top — folded here into one -28% charge modifier (the engine composes
-// same-kind modifiers additively, so the compound 0.8 x 0.9 = 0.72 is
-// authored directly rather than as two stacked -20/-10 entries, matching the
-// reference charge cost of 17.3 from a base 24). A window of its own rather
-// than a `meterModifiers` entry on `ENDLESS_GALE_GATE`: that gate's window
-// exists at 5s without Mountain's Might too, where no cost reduction applies
-// at all.
+// In-game values as of 2026-09-29: with Mountain's Might, Qiankun's Lock's end
+// also cuts every Endurance cost by 20% (`cost`, unscoped) and Charged Skills
+// a further 10% on top (`chargeCost`, its own dedicated formula) — two real,
+// separate entries rather than one hand-multiplied -28% modifier: the
+// engine's own cross-layer rule (docs/TIMELINE.md § "Meters") already applies
+// the unscoped `cost` layer to a running charge drain too, so the two entries
+// below compose to the same 0.8 x 0.9 = 0.72 a charge actually pays, matching
+// the reference charge cost of 17.3 from a base 24. A window of its own
+// rather than a `meterModifiers` entry on `ENDLESS_GALE_GATE`: that gate's
+// window exists at 5s without Mountain's Might too, where no cost reduction
+// applies at all.
 export const ENDLESS_GALE_COST_REDUCTION_END_GATE: Buff = defineGateBuff({
   id: BUFF.endlessGaleCostReductionEnd,
   classId: CLASS_ID,
@@ -138,10 +140,10 @@ export const ENDLESS_GALE_COST_REDUCTION_END_GATE: Buff = defineGateBuff({
   requiresParam: PARAM.mountainsMight,
   meterModifiers: [
     { meterId: enduranceMeter.id, kind: "cost", amount: -0.2 },
-    { meterId: enduranceMeter.id, kind: "chargeCost", amount: -0.28 },
+    { meterId: enduranceMeter.id, kind: "chargeCost", amount: -0.1 },
   ],
   createdAt: "2026-09-26T00:00:00.000Z",
-  updatedAt: "2026-09-26T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
 })
 
 // In-game values as of 2026-09-26: Battle Anthem tiers 4-5 raise charged

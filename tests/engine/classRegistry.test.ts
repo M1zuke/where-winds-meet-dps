@@ -187,10 +187,11 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "Empowered River Flow",
       "Spear Special Cooldown",
       "Evasive Charge — Dodge Cost Reduction",
+      "Mirage — Endurance Cost Reduction",
     ])
   })
 
-  it("Umbra declares no gate buffs of its own — every one it shows is an inner way's", () => {
+  it("Umbra declares no gate buffs of its own — every one it shows is an inner way's or the shared universal set", () => {
     expect(umbra.gateBuffs).toEqual([])
   })
 

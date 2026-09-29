@@ -55,6 +55,7 @@ import { V51__relentlessChaseSecondStrike } from "./V51__relentlessChaseSecondSt
 import { V52__gourdTossThunder } from "./V52__gourdTossThunder"
 import { V53__gourdTossFlyingTornado } from "./V53__gourdTossFlyingTornado"
 import { V54__swallowcallColorfulPhoenixReach } from "./V54__swallowcallColorfulPhoenixReach"
+import { V55__ghostlyStepsEnduranceCostReduction } from "./V55__ghostlyStepsEnduranceCostReduction"
 
 export type {
   CustomSkillMigration,
@@ -176,6 +177,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V52__gourdTossThunder,
   V53__gourdTossFlyingTornado,
   V54__swallowcallColorfulPhoenixReach,
+  V55__ghostlyStepsEnduranceCostReduction,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

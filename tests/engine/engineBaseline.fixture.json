@@ -160,10 +160,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "d5e47c99b45e6a76defb75a0ce65f49b3a6fe9f18d3a9a90ae9cf0d90eaf587f"
+    "digest": "b13c342ec61ccd8e8a43de8aa9ef97f81ac0a1cd597cdd2470f66f186b7c8cde"
   },
   "anchor:noAttunement": {
     "dps": 62414.2,
@@ -326,10 +326,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "dfd3e247e748d67bc491eb5abc795662d0c4bad03587c190416a41a401733f85"
+    "digest": "2d59e738bcd0e13c0d0e7bb1fbd7e0d492d14308f716c82a4a2738144f132e3e"
   },
   "anchor:dummyOff": {
     "dps": 74273.87,
@@ -492,10 +492,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "7d68f565a362ead6f2b25d0adb9f4daa5f9b2edd57164e3bd09af806082c9ae4"
+    "digest": "7b6943cd14e4db23e5d328778f3086347167f787855af02373ccf9197774c650"
   },
   "anchor:breakthrough17": {
     "dps": 70558.88,
@@ -658,10 +658,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "de4c59cbd93a5fd4f733af96f89ef65a026a7485836904bf69282a2b1850806b"
+    "digest": "f0f4983b9c8cb35a3fd9c0d8c8949393c0d592112814e4b6d7d6b0af18c2558f"
   },
   "anchor:noQiBreak": {
     "dps": 63594.67,
@@ -824,10 +824,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "354401dc71a3c33ea5b771c75bf98dd25a5fb05e1b2c32356be9abe8fb72c5f4"
+    "digest": "e36d1385a406a4dec39142f0a5d31b50a842d248eb3319461952b89e74e36dd1"
   },
   "anchor:healerBuff": {
     "dps": 72634.51,
@@ -990,10 +990,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "7f35bb14cf69e4c3db3108b7268964fc7610bf1e81f4d744bd7e009a8851cab9"
+    "digest": "c46dc672bb7bd8e8d0dbd5563f873ad979b1d624fd30447129c338c0dd1f44bf"
   },
   "anchor:wraithstrikeScript": {
     "dps": 69664.19,
@@ -1156,10 +1156,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "c8f23b80a79bdd2623bbb8b323b50b8f8f406f29af4e3b2318d7c3c84a262d98"
+    "digest": "f5adde2e16dcd92b5b38fb813f101a8877907b7c9fb848fcbf0c94d81ad9c926"
   },
   "anchor:voidrotScript": {
     "dps": 70256.08,
@@ -1322,10 +1322,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "5eca672b3163a8cf646a01382fbcb0eddafce2d5cbde692abd7fdfd9a490f91e"
+    "digest": "e010ca3e88c1fc2999084d04d8a1e36abf236d6a155a49d5604115a958d20362"
   },
   "anchor:breakExtension": {
     "dps": 70676.18,
@@ -1488,10 +1488,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "63866c842cbaea4ce45e14b1d07dbe73d9cc096c1fc8b5a07e8255adc3ad8226"
+    "digest": "1b1e2ca64721ddeea37f380c48145fc171c9f8de9b05927076721062188ba201"
   },
   "anchor:swordHorizonT1": {
     "dps": 44731.8,
@@ -1654,10 +1654,10 @@
     ],
     "counts": {
       "timeline": 329,
-      "buffWindows": 126,
+      "buffWindows": 127,
       "casts": 89
     },
-    "digest": "9374223db761ba92c1f50a01864c749b8bf495cc1592f405cb8036497fd1e93c"
+    "digest": "26fbb52ecca9d65a6d82a50da424b1801af4fc917ada849c2588b103d10cbfdb"
   },
   "anchor:noSwordHorizon": {
     "dps": 40182.91,
@@ -1836,10 +1836,10 @@
     ],
     "counts": {
       "timeline": 295,
-      "buffWindows": 122,
+      "buffWindows": 123,
       "casts": 89
     },
-    "digest": "34d325f9ef8c4211d737d3f84ffa0e2fdfec4bdde84ebe40989c6874256b9dac"
+    "digest": "e56acfe2471ff7cf8d0fc048fcf8a99d004795a8e1065ab5346e82cb2c93017b"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61703.38,
@@ -2002,10 +2002,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "934601317ab32d83810a78647cda5cf77c6e17532065d857e2c3bd7907ea977e"
+    "digest": "b2012e0c1a65c6c59d30b11159563e8cf3ee8aedc099747364780821fbf50d1d"
   },
   "anchor:noMoraleChant": {
     "dps": 63657.3,
@@ -2160,10 +2160,10 @@
     ],
     "counts": {
       "timeline": 406,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "a009577435058683e6ab653dddfe4da07dd9f711d29c1d90942acf9ac7035b24"
+    "digest": "d6752e0eaab3a2ea59238032e6e82592978e298a324153e9ea33f1f2f43d58b1"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 41862.08,
@@ -2173,7 +2173,6 @@
       "SwordSpecial 3-Hit at 12.87s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 23.67s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 36.52s would be illegal in the game: its cast conditions are not met.",
-      "Spear Special (1 Hit Cancel) at 46.03s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 48.32s would be illegal in the game: its cast conditions are not met.",
       "Spear Special (1 Hit Cancel) at 57.83s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 4-Hit at 58.33s would be illegal in the game: its cast conditions are not met."
@@ -2358,10 +2357,10 @@
     ],
     "counts": {
       "timeline": 409,
-      "buffWindows": 134,
+      "buffWindows": 135,
       "casts": 93
     },
-    "digest": "6db00f5cb89ef2e0bf72105200c892269a05effedac07b9ad67a5868df8e0413"
+    "digest": "169e00ef6fff705f9db1eb00294c3fac410daf3f047fe6018b383ec91317df4e"
   },
   "anchor:bitterSeasonT6": {
     "dps": 48234.89,
@@ -2369,8 +2368,6 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
@@ -2537,10 +2534,10 @@
     ],
     "counts": {
       "timeline": 463,
-      "buffWindows": 124,
+      "buffWindows": 125,
       "casts": 89
     },
-    "digest": "ac96547f07070783d4af7da22ce427bd1b55db378ee9a06457f7ebc950f3d4b8"
+    "digest": "52fef50910cbb0341a9d0388713b8111b3c727fff5b89176f67e8000b970a98e"
   },
   "anchor:bitterSeasonT4": {
     "dps": 47310.95,
@@ -2548,8 +2545,6 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
@@ -2716,10 +2711,10 @@
     ],
     "counts": {
       "timeline": 463,
-      "buffWindows": 124,
+      "buffWindows": 125,
       "casts": 89
     },
-    "digest": "ecc9ce080a1668f14df41d373013f3f193ae059da2c9e7a822ed7c8dd77f633d"
+    "digest": "00c8720a655619c62d9ef90d508ad8478cdecec39a9e2d52f7843fd4525e5dff"
   },
   "anchor:bitterSeasonT1": {
     "dps": 46928.92,
@@ -2727,8 +2722,6 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.18s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 21.68s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 33.88s would be illegal in the game: its cast conditions are not met.",
       "SwordSpecial 3-Hit at 50.82s would be illegal in the game: its cast conditions are not met."
     ],
     "perSkill": [
@@ -2895,10 +2888,10 @@
     ],
     "counts": {
       "timeline": 463,
-      "buffWindows": 124,
+      "buffWindows": 125,
       "casts": 89
     },
-    "digest": "8f0158ff63de62a7697fe48b58dfeb6550f487b96eb3e595b0e68d78b1d43838"
+    "digest": "a525695d7b1972d3e400369371e6f79150bdec4a47cd75146b8406af0012d1c2"
   },
   "anchor:noSet": {
     "dps": 63069.76,
@@ -3061,10 +3054,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "f8895592195974b5136fd6275b6bf9b77228c5f507e96f79f059ac6b8e67ba51"
+    "digest": "e44e6165d1abb8a5032f8e3c90596e878fbb14ed857af9a5b0c18b0cee53b4e3"
   },
   "anchor:set-Jadeware": {
     "dps": 67913.37,
@@ -3227,10 +3220,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "c1541013a72f7bce2418a78fc9c47b5f98277760ff2fa9632742dcb526892a65"
+    "digest": "983b57828e54084c0e4ea214e44371ed2880f8bf4a420e75520dbb7f51c0afdb"
   },
   "anchor:set-Mistwillow": {
     "dps": 63654.98,
@@ -3393,10 +3386,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "e943cae5b96e3414761b9a3a99cf8eaedd4d039b4249922eb56eb380385db186"
+    "digest": "c777b015b9b4427bf75a53660e262d8fc8f2c1131a6c152063dc3f40a66d5f1a"
   },
   "anchor:set-Rainwhisper": {
     "dps": 64474.82,
@@ -3559,10 +3552,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "b018b6155c440888f5817999e064354f3045652257d0fa16901f2041876ce1f3"
+    "digest": "3d0d5321c497390e3e2351d414d98b9b6fbe1bb1051a0d9fb388ad0345e7d2ba"
   },
   "anchor:set-Cleftpeak": {
     "dps": 64880.5,
@@ -3725,10 +3718,10 @@
     ],
     "counts": {
       "timeline": 412,
-      "buffWindows": 149,
+      "buffWindows": 150,
       "casts": 89
     },
-    "digest": "19aa9ed759b00c7afb711afa6fe78b55868dcf878ba6023edbf98b9a7712a616"
+    "digest": "d8ea0ec47de622109f0da8f6db5bcaa050cada366ab0a826068f387ff7958f76"
   },
   "defaults:umbra": {
     "dps": 12117.2,
@@ -3746,12 +3739,10 @@
       "Sword Martial QQQ at 25.12s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 29.38s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 31.17s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 33.45s would be illegal in the game: its cast conditions are not met.",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 36.28s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 38.37s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 40.98s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 42.77s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 45.65s would be illegal in the game: its cast conditions are not met.",
       "Sword R Charge - Follow Up 1-Hit[cancel] at 48.48s would be illegal in the game: its cast conditions are not met.",
       "Sword Martial QQQ at 50.57s would be illegal in the game: its cast conditions are not met.",
       "Crosswind Blade [cancel] at 53.18s would be illegal in the game: its cast conditions are not met.",
@@ -3922,9 +3913,9 @@
     ],
     "counts": {
       "timeline": 295,
-      "buffWindows": 127,
+      "buffWindows": 128,
       "casts": 91
     },
-    "digest": "3212e311dfa101874eebd1837e8096c4b19fecdfa8fd1572e093dfed330192e4"
+    "digest": "79c553d737703b6e540337613396813dbec90a32b843fecce37a6914970dec5c"
   }
 }

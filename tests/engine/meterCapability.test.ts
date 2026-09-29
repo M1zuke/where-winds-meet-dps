@@ -561,6 +561,81 @@ describe("a buff's meter modifier", () => {
     // 10/s regen for the cast's remaining second: 60 + 10 = 70.
     expect(meterLevelsAt(result, 1)?.amount).toBe(70)
   })
+
+  it("multiplies a class-scoped cost modifier with an unscoped one instead of summing them into one factor", () => {
+    const TAG = "meterCapabilityTestTag"
+    const scopedAndUnscoped: Buff = makeBuff(CLASS, {
+      name: "Scoped And Unscoped Cost Reducer",
+      meterModifiers: [
+        { meterId: METER_ID, kind: "cost", amount: -0.4, tag: TAG, alwaysActive: true },
+        { meterId: METER_ID, kind: "cost", amount: -0.1, alwaysActive: true },
+      ],
+    })
+    const taggedCostly = makeSkill(CLASS, {
+      name: "Tagged Costly",
+      tags: [TAG],
+      castFrames: 6,
+      meterCosts: [{ meterId: METER_ID, amount: 50 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const untaggedCostly = makeSkill(CLASS, {
+      name: "Untagged Costly",
+      castFrames: 6,
+      meterCosts: [{ meterId: METER_ID, amount: 50 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const observer = makeSkill(CLASS, {
+      name: "Observer",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const result = simulateTimeline(
+      timelineInputs(
+        rotationOf([taggedCostly, untaggedCostly, observer]),
+        [taggedCostly, untaggedCostly, observer],
+        [scopedAndUnscoped],
+      ),
+    )
+    // 50 x 0.6 x 0.9 = 27 paid, not 50 x (1 - 0.4 - 0.1) = 25.
+    expect(meterLevelsAt(result, 1)?.amount).toBe(53)
+    // The untagged cast never pays the scoped -40%, only the unscoped -10%:
+    // 50 x 0.9 = 45 paid, not 50 x 0.5 = 25.
+    expect(meterLevelsAt(result, 2)?.amount).toBe(8)
+  })
+
+  it("multiplies a chargeCost modifier with the meter's own unscoped cost layer for a running drain", () => {
+    const reducesCost: Buff = makeBuff(CLASS, {
+      name: "Unscoped Cost Reducer",
+      meterModifiers: [{ meterId: METER_ID, kind: "cost", amount: -0.2, alwaysActive: true }],
+    })
+    const reducesChargeCost: Buff = makeBuff(CLASS, {
+      name: "Charge Cost Reducer",
+      meterModifiers: [{ meterId: METER_ID, kind: "chargeCost", amount: -0.1, alwaysActive: true }],
+    })
+    const holdsStill = makeSkill(CLASS, {
+      name: "Holds Still",
+      castFrames: 120,
+      meterDrains: [{ meterId: METER_ID, perSecond: 100, fromFrame: 0, stopAfterSec: 1 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const observer = makeSkill(CLASS, {
+      name: "Observer",
+      castFrames: 6,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const result = simulateTimeline(
+      timelineInputs(
+        rotationOf([holdsStill, observer]),
+        [holdsStill, observer],
+        [reducesCost, reducesChargeCost],
+      ),
+    )
+    // 1s of a 100/s drain cut to 0.9 x 0.8 = 0.72: 100 x 0.72 = 72 spent
+    // (80 - 72 = 8), then 1s of natural 10/s regen once the drain stops:
+    // 8 + 10 = 18, not the 100 x (1 - 0.2 - 0.1) = 70 an additive combination
+    // would spend.
+    expect(meterLevelsAt(result, 1)?.amount).toBe(18)
+  })
 })
 
 describe("the meter simulates once and replays onto the real ledger", () => {

@@ -4,8 +4,9 @@
 // `ClassDef`); the things that stay outside it are the built-in `Buff` gates
 // (registered through `engine/builtinBuffs.ts` so a class can be looked up by
 // id without importing its module directly — composed here from the class's
-// own `gateBuffs` plus the gates every inner way it can slot declares, each
-// stamped with this class's id), the attunement option list (global,
+// own `gateBuffs`, the gates every inner way it can slot declares and the
+// shared universal gates every class carries, each stamped with this class's
+// id), the attunement option list (global,
 // because a saved gear piece must resolve its attunement id regardless of
 // which class equipped it), the composed `buffModules` list (every
 // slottable inner way's `buffDefs` plus the class's own `classBuffDefs`),
@@ -24,6 +25,7 @@ import { builtinBuffsForClass, registerBuiltinBuffs } from "../../engine/builtin
 import type { ClassDef, RetunementPool } from "./classDef"
 import { CLASSES, RETUNEMENT_POOLS } from "../../data/classes"
 import { MYSTIC_DEBUFFS, MYSTIC_SKILLS } from "../../data/skills/mystic"
+import { UNIVERSAL_GATES } from "../../data/skills/universal"
 import { registerMechanic } from "../../engine/mechanics"
 import { registerSkillBehavior } from "../../engine/behavior"
 import { registerDisplayGate } from "../../engine/buffs/displayGates"
@@ -60,6 +62,7 @@ for (const classDef of CLASSES) {
     for (const gate of innerWayDefinition(innerWayId)?.gateBuffs ?? [])
       gateBuffs.push({ ...gate, classId: classDef.id })
   }
+  for (const gate of UNIVERSAL_GATES) gateBuffs.push({ ...gate, classId: classDef.id })
   registerBuiltinBuffs(classDef.id, gateBuffs)
   for (const { mechanic } of classDef.mechanics) registerMechanic(mechanic)
   for (const { skillId, factory } of classDef.skillBehaviors)
