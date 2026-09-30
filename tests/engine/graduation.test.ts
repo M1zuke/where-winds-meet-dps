@@ -216,12 +216,32 @@ describe("a standardized graduation build", () => {
         expect(side.combatSettings!.breakExtension).toBe(encounter.breakExtension)
         expect(side.combatSettings!.dragonHeadFullStacks).toBe(encounter.dragonHeadFullStacks)
         expect(side.combatSettings!.dragonHeadLowHpMaxBonus).toBe(encounter.dragonHeadLowHpMaxBonus)
-        expect(side.activeCustomRotation!.pingMs).toBe(encounter.pingMs)
-        expect(side.activeCustomRotation!.averageFps).toBe(encounter.averageFps)
         expect(side.mindMethods.map((slot) => slot.id ?? "")).toEqual([
           ...build.standardized!.innerWays.map((innerWay) => innerWay.id),
           ...Array(4 - build.standardized!.innerWays.length).fill(""),
         ])
+      }
+    },
+  )
+
+  it.each(STANDARDIZED)(
+    "%s rates both sides on the rotation's own ping and fps, the profile's override included",
+    (id, classDef) => {
+      const plain: Inputs = { ...defaultInputs, classId: classDef.id, graduationBuildId: id }
+      for (const side of [graduationRatedInputs, graduationInputs]) {
+        const plainInputs = side(plain)!
+        const rotationId = plainInputs.selectedBuiltinRotationId ?? classDef.defaultRotationId!
+        const overridden: Inputs = {
+          ...plain,
+          builtinRotationPingFpsOverrides: { [rotationId]: { pingMs: 120, averageFps: 30 } },
+        }
+        const overriddenInputs = side(overridden)!
+        expect(overriddenInputs.builtinRotationPingFpsOverrides).toEqual(
+          overridden.builtinRotationPingFpsOverrides,
+        )
+        expect(runEngine(overriddenInputs).castDuration).toBeGreaterThan(
+          runEngine(plainInputs).castDuration,
+        )
       }
     },
   )

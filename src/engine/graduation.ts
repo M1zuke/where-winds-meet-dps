@@ -11,7 +11,6 @@ import { gearPieceAtGearLevel, relayGraduationGearPiece } from "../data/classes/
 import { graduationBuildFromCustom } from "./customGraduationBuild"
 import type { EquippedSlots, GearLevel, Inputs, MindMethodSlot } from "./types"
 import { EMPTY_EQUIPPED } from "./types"
-import { activeRotationForInputs } from "./dps"
 
 export type GraduationVariant = "maxRolls" | "relayed"
 
@@ -38,20 +37,10 @@ function standardizedMindMethods(standardized: StandardizedGraduation): Inputs["
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
   const standardized = build.standardized
   if (!standardized) return inputs
-  const {
-    dummyMode,
-    food,
-    divinecraft,
-    shareDebuff5HenZhi,
-    shareEasyHurt,
-    pingMs,
-    averageFps,
-    ...combat
-  } = {
+  const { dummyMode, food, divinecraft, shareDebuff5HenZhi, shareEasyHurt, ...combat } = {
     ...STANDARDIZED_ENCOUNTER_OFF,
     ...standardized.encounter,
   }
-  const rotation = activeRotationForInputs(inputs)
   return {
     ...inputs,
     dummyMode,
@@ -61,9 +50,6 @@ export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBu
     shareEasyHurt,
     combatSettings: { ...combat },
     mindMethods: standardizedMindMethods(standardized),
-    activeCustomRotation: rotation
-      ? { ...rotation, pingMs, averageFps }
-      : inputs.activeCustomRotation,
   }
 }
 

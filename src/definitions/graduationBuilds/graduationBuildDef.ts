@@ -17,10 +17,7 @@ export type StandardizedEncounter = Pick<
   Inputs,
   "dummyMode" | "food" | "divinecraft" | "shareDebuff5HenZhi" | "shareEasyHurt"
 > &
-  CombatSettings & {
-    pingMs: number
-    averageFps: number
-  }
+  CombatSettings
 
 export interface StandardizedGraduation {
   encounter?: Partial<StandardizedEncounter>
@@ -33,8 +30,6 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   divinecraft: null,
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
-  pingMs: 0,
-  averageFps: 60,
   script: null,
   dragonsBreath: false,
   healerBuff: false,
