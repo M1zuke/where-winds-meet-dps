@@ -19,17 +19,12 @@ const TOLERANCE_SEC = 8
 // ~34 Qi/s from the first second; the shared 34 s window looks copied from
 // another class rather than observed for Splendor), and Jade's shortest
 // rotation deals too little damage in a graduation-level build to ever
-// reach a break at all. `standardized-1-7` moves far earlier as of
-// 2026-09-30: its fixed hit-count drone modules were missing the
-// Lingering-Bone extra-bullet mechanic (`additionalTicks`) the default drone
-// debuff already carried, nearly doubling this rotation's drone hit count —
-// the authored break predates that fix.
+// reach a break at all.
 const KNOWN_OUTLIERS = new Set([
   "builtin-bellstrikeSplendor-60s-78-waves-2-flute-1-frog",
   "builtin-bellstrikeSplendor-crylis-44vs-full-waves",
   "builtin-bellstrikeSplendor-kaezuma-42vs-1db",
   "builtin-silkbindJade-30s-dummy-max",
-  "builtin-silkbindJade-standardized-1-7",
 ])
 
 const CASES = CLASS_IDS().flatMap((classId) => {

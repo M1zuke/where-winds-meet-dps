@@ -23,15 +23,17 @@ export const DRONE_TICK = {
   qiHitKind: "direct" as const,
 }
 
-// In-game values as of 2026-09-30: every drone run fires one extra bullet at
-// +9 f whenever the target carries the caster's own Lingering Bone, the same
-// behaviour for every hit-count variant.
+// In-game values as of 2026-09-30: the Blossoms-gated drone fires one extra
+// bullet at +9 f whenever the target carries the caster's own Lingering
+// Bone, at double drain — the drain doubling keeps its total bullets per
+// launch bounded. The fixed hit-count variants have no drain to double
+// against, so they never get the extra bullet.
 export const DRONE_LINGERING_BONE_ADDITIONAL_TICKS = {
   offsetsFrames: [9],
   requiresBuff: BUFF.lingeringBone,
 } as const
 
-export function droneDotSpec(): DebuffDotSpec {
+export function droneDotSpec(withLingeringBoneBullet: boolean): DebuffDotSpec {
   return {
     tickIntervalFrames: DRONE_INTERVAL_FRAMES,
     firstTickOffsetFrames: DRONE_FIRST_TICK_OFFSET_FRAMES,
@@ -41,6 +43,6 @@ export function droneDotSpec(): DebuffDotSpec {
     attuneTag: ATTUNE.umbFrequentProjectile,
     count: 1,
     perStackShapes: null,
-    additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS,
+    ...(withLingeringBoneBullet ? { additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS } : {}),
   }
 }
