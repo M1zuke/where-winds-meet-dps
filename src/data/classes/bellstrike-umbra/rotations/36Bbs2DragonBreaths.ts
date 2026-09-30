@@ -31,6 +31,7 @@ export default defineRotation({
     { skillId: "bellstrikeUmbra-swordspecial-3-hit" },
     { skillId: "bellstrikeUmbra-crosswind-blade-cancel" },
     { skillId: "bellstrikeUmbra-deflect-cancel" },
+    { skillId: "bellstrikeUmbra-delay" },
     { skillId: "bellstrikeUmbra-spearspecial-1-hit-cancel" },
     { skillId: "bellstrikeUmbra-deflect-cancel" },
     { skillId: "bellstrikeUmbra-spearq-5-hit-cancel" },
