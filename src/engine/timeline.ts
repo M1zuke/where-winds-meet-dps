@@ -666,6 +666,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       damagingHitTimesSec: number[]
       weaponHitTimesSec: number[]
       discoveredFightStartFrame: number | null
+      discoveredFightEndFrame: number | null
       castCursorFrames: number
     }
 
@@ -956,6 +957,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           layoutWriter.onDamagingHit(hitFrame, owner)
           if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame)
             discoveredFightStartFrame = hitFrame
+          if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
+            discoveredFightEndFrame = hitFrame
           const timeSec = hitFrame / FPS
           damagingHitTimesSec.push(timeSec)
           if (skill.skillType === "weapon") weaponHitTimesSec.push(timeSec)
@@ -1117,12 +1120,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
       }
 
-      // The frame of the first hit anywhere in the timeline — pre-pull and
-      // summoned hits included — whose coefficients deal damage: docs/TIMELINE.md
-      // § "Fight window". Tracked as a running minimum in `seedHitTriggers`
-      // below, over every hit this run lays out, so it never depends on the
-      // order steps are authored in.
+      // The frame of the first and last hit anywhere in the timeline —
+      // pre-pull and summoned hits included — whose coefficients deal damage:
+      // docs/TIMELINE.md § "Fight window". Tracked as running extremes in
+      // `seedHitTriggers` below, over every hit this run lays out, so neither
+      // depends on the order steps are authored in.
       let discoveredFightStartFrame: number | null = null
+      let discoveredFightEndFrame: number | null = null
 
       // A charged hold's own drain, checked against the meter it names: bounded
       // so a chain of fallbacks can only ever step down, never loop.
@@ -1303,6 +1307,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         damagingHitTimesSec,
         weaponHitTimesSec,
         discoveredFightStartFrame,
+        discoveredFightEndFrame,
         castCursorFrames,
       }
     }
@@ -1386,17 +1391,30 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       flushMeterEventsUpTo,
       damagingHitTimesSec,
       weaponHitTimesSec,
+      discoveredFightEndFrame,
       castCursorFrames,
     } = layout
 
+    // docs/TIMELINE.md § "Fight window": without a fixed window, the fight ends
+    // at the last damaging hit, not at the last cast's own end — a DoT tick
+    // past it neither extends the window nor counts. A run with no damaging
+    // hit at all (every damaging event is a tick) keeps the last cast's end
+    // as its boundary, same as before this rule existed.
     const windowFrames =
-      fixedWindowFrames === null ? castCursorFrames : fightStartFrame + fixedWindowFrames
+      fixedWindowFrames === null
+        ? (discoveredFightEndFrame ?? castCursorFrames)
+        : fightStartFrame + fixedWindowFrames
+    // A cast beyond the window still lays out and still shows its own chip
+    // state (docs/TIMELINE.md § "Fight window"), so the ledger backing that
+    // display stays sized to the full laid-out run — only `inWindow` below,
+    // which gates scoring, uses the tighter `windowFrames`.
+    const ledgerSpanEnd = fixedWindowFrames === null ? castCursorFrames : windowFrames
     const spanStart = Math.min(0, -prePullBound)
     const rotationDurationSec = (windowFrames - fightStartFrame) / FPS
 
     flushMeterEventsUpTo(Infinity)
     for (const meter of meters) {
-      meter.advanceTo(windowFrames)
+      meter.advanceTo(ledgerSpanEnd)
       for (const meterWarning of meter.warnings)
         warnings.push(
           `${meter.def.name} at ${(meterWarning.frame / FPS).toFixed(2)}s: ${meterWarning.message}.`,
@@ -1411,7 +1429,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       castCounts.set(name, (castCounts.get(name) ?? 0) + 1)
     }
 
-    const ledger = new StatusLedger(spanStart, windowFrames)
+    // +1: a permanent status's own window is half-open, so its upper bound
+    // must clear the ledger's own last frame for a status still to read as
+    // active exactly there.
+    const ledger = new StatusLedger(spanStart, ledgerSpanEnd + 1)
     for (const meter of meters) {
       ledger.openPermanent(meter.statusId)
       for (const sample of layoutLedger.stackHistory(meter.statusId))

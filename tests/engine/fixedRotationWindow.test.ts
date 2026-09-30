@@ -28,9 +28,15 @@ const castSec = baseline.castDuration
 const fightStartFrame = Math.round(baseline.fightStartSec * FPS)
 
 describe("fixed rotation window — no window set", () => {
-  it("measures the DPS window from the fight start, and still reports the full cast length", () => {
+  it("measures the DPS window from the fight start to the last damaging hit, and still reports the full cast length", () => {
+    const lastHitFrame = Math.max(
+      ...baseline
+        .timeline!.filter((event) => event.kind === "hit" && event.damage > 0)
+        .map((event) => event.frame),
+    )
     expect(baseline.castDuration).toBeCloseTo(castSec, 6)
-    expect(baseline.rotationDuration).toBeCloseTo(castSec - baseline.fightStartSec, 6)
+    expect(baseline.rotationDuration).toBeCloseTo(lastHitFrame / FPS - baseline.fightStartSec, 6)
+    expect(baseline.rotationDuration).toBeLessThan(castSec - baseline.fightStartSec)
     expect(baseline.dps).toBeCloseTo(baseline.totalDamage / baseline.rotationDuration, 6)
   })
 })
@@ -57,6 +63,16 @@ describe("fixed rotation window — longer than the casts", () => {
     const tailEvents = padded.timeline!.filter((event) => event.timeSec > castSec)
     const tailDamage = tailEvents.reduce((sum, event) => sum + event.damage, 0)
     expect(padded.totalDamage - baseline.totalDamage).toBeCloseTo(tailDamage, 3)
+  })
+
+  it("runs the full fixed length regardless of where the last damaging hit lands", () => {
+    const lastHitFrame = Math.max(
+      ...padded
+        .timeline!.filter((event) => event.kind === "hit" && event.damage > 0)
+        .map((event) => event.frame),
+    )
+    expect(lastHitFrame / FPS).toBeLessThan(fightStartFrame / FPS + (castSec + 5))
+    expect(padded.rotationDuration).toBeCloseTo(castSec + 5, 1)
   })
 })
 

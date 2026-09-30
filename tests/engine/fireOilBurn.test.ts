@@ -26,6 +26,7 @@ function probeInputs(
   hitSeconds: readonly number[],
   overrides: Partial<Inputs> = {},
   castFramesOverride?: number,
+  fixedWindowSec?: number,
 ): Inputs {
   const hits = hitsAtSeconds(hitSeconds)
   const lastFrame = hits.length > 0 ? hits[hits.length - 1].frame : 0
@@ -42,6 +43,7 @@ function probeInputs(
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
+      fixedWindowSec,
     }),
     ...overrides,
   }
@@ -72,7 +74,11 @@ describe("Fire Oil Burn — schedule", () => {
   })
 
   it("a gap longer than 4 s stops the ticks and the next hit restarts the grid", () => {
-    const result = runEngine(probeInputs([0, 10], {}, 15 * 60))
+    // A fixed window: the schedule keeps ticking well past the last hit at
+    // 10 s, so the fight's own window — now the last damaging hit rather
+    // than the last cast's own end, docs/TIMELINE.md § "Fight window" —
+    // needs pinning open to still observe the later ticks.
+    const result = runEngine(probeInputs([0, 10], {}, 15 * 60, 15))
     const tickTimes = burnTicks(result.timeline).map((event) => event.timeSec)
     expect(tickTimes).toEqual([0.5, 1.5, 2.5, 3.5, 10.5, 11.5, 12.5, 13.5])
   })
@@ -134,14 +140,22 @@ describe("Fire Oil Burn — a damaging pre-pull cast opens its own window", () =
       castFrames: 60,
       hits: [makeHit({ frame: 0, physMultiplier: 0.1 })],
     })
+    // A further damaging hit: the pre-pull hit alone would close the fight's
+    // own window right where it lands, docs/TIMELINE.md § "Fight window",
+    // leaving the burn tick that follows it no room to land inside.
+    const after = makeSkill(CLASS, {
+      name: "After",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, physMultiplier: 0.1 })],
+    })
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
       set: null,
       divinecraft: "fire",
-      customSkills: [prePullSkill],
+      customSkills: [prePullSkill, after],
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: prePullSkill.id })],
+        steps: [makeStep({ skillId: prePullSkill.id }), makeStep({ skillId: after.id })],
       }),
     }
     const result = runEngine(inputs)

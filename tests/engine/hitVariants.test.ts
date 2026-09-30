@@ -374,7 +374,7 @@ describe("hit variant — cast-length override", () => {
         [skill],
         buffs,
       ),
-    ).rotationDuration
+    ).castDuration
   }
 
   it("an active variant's override drives the cast length instead of the skill-level value", () => {
@@ -427,7 +427,7 @@ describe("hit variant — cast-length override", () => {
         [skill],
         [gate],
       ),
-    ).rotationDuration
+    ).castDuration
     expect(seconds).toBeCloseTo(30 / FPS, 10)
   })
 

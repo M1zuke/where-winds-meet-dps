@@ -63,6 +63,17 @@ const idle = makeSkill(CLASS, {
   hits: [makeHit({ frame: 0 })],
 })
 
+// A trailing damaging hit, appended after every scenario whose own event of
+// interest — an echo release or lapse — is not itself a damaging hit: the
+// fight's own window now ends at the last damaging hit, docs/TIMELINE.md §
+// "Fight window", so the run needs one of its own past that event to keep it
+// in view.
+const poke = makeSkill(CLASS, {
+  name: "Test Poke",
+  castFrames: 10,
+  hits: [makeHit({ frame: 0, physMultiplier: 1 })],
+})
+
 // Wildstride and Strayhunt at the release-adjustment's own duration (1200
 // frames — `debuffs.ts`), so the window this opens stays up well past any
 // nearby release in these tests unless the case is deliberately built to
@@ -130,6 +141,7 @@ function run(
       refresher,
       feeder,
       idle,
+      poke,
       markWildstrideStrayhunt,
       markWildstrideStrayhuntBriefly,
     ],
@@ -147,17 +159,21 @@ const rowNamed = (result: ReturnType<typeof runEngine>, name: string) =>
 
 describe("the Drunkslay echo", () => {
   it("banks a fifth of the marked target's Inebriate-enhanced damage and deals it when the marking skill hits again", () => {
-    const result = run([grantDeepdaze, marker, feeder, feeder, marker])
+    const result = run([grantDeepdaze, marker, feeder, feeder, marker, poke])
     const echoRow = rowNamed(result, ECHO_ROW)!
     const fed = rowNamed(result, feeder.name)!
+    const poked = rowNamed(result, poke.name)!
     expect(echoRow.count).toBe(1)
     expect(echoRow.type).toBe("mindMethod")
     expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage, 6)
-    expect(result.totalDamage).toBeCloseTo(fed.expectedDamage + echoRow.expectedDamage, 6)
+    expect(result.totalDamage).toBeCloseTo(
+      fed.expectedDamage + echoRow.expectedDamage + poked.expectedDamage,
+      6,
+    )
   })
 
   it("deals the banked pot when the mark lapses without being re-hit", () => {
-    const result = run([grantDeepdaze, marker, feeder, idle])
+    const result = run([grantDeepdaze, marker, feeder, idle, poke])
     const echoRow = rowNamed(result, ECHO_ROW)!
     const fed = rowNamed(result, feeder.name)!
     expect(echoRow.count).toBe(1)
@@ -166,7 +182,7 @@ describe("the Drunkslay echo", () => {
   })
 
   it("keeps banking through a re-application that carries no release", () => {
-    const result = run([grantDeepdaze, marker, feeder, refresher, feeder, marker])
+    const result = run([grantDeepdaze, marker, feeder, refresher, feeder, marker, poke])
     const echoRow = rowNamed(result, ECHO_ROW)!
     const fed = rowNamed(result, feeder.name)!
     expect(fed.count).toBe(2)
@@ -181,7 +197,7 @@ describe("the Drunkslay echo", () => {
 
   it("banks from any source of the mark, whatever the inner ways are", () => {
     for (const mindMethods of [skyspeakAt(5), defaultInputs.mindMethods]) {
-      const result = run([grantDeepdaze, marker, feeder, marker], mindMethods)
+      const result = run([grantDeepdaze, marker, feeder, marker, poke], mindMethods)
       const echoRow = rowNamed(result, ECHO_ROW)!
       const fed = rowNamed(result, feeder.name)!
       expect(echoRow.count).toBe(1)
@@ -190,7 +206,7 @@ describe("the Drunkslay echo", () => {
   })
 
   it("feeds nothing from a hit landing outside the mark", () => {
-    const result = run([grantDeepdaze, feeder, marker, feeder, marker])
+    const result = run([grantDeepdaze, feeder, marker, feeder, marker, poke])
     const echoRow = rowNamed(result, ECHO_ROW)!
     const fed = rowNamed(result, feeder.name)!
     expect(echoRow.expectedDamage).toBeCloseTo(0.1 * fed.expectedDamage, 6)
@@ -198,7 +214,15 @@ describe("the Drunkslay echo", () => {
 
   describe("the Wildstride/Strayhunt release adjustment", () => {
     it("applies once, to the released total — never blended across partial banking", () => {
-      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, feeder, marker])
+      const result = run([
+        grantDeepdaze,
+        marker,
+        feeder,
+        markWildstrideStrayhunt,
+        feeder,
+        marker,
+        poke,
+      ])
       const echoRow = rowNamed(result, ECHO_ROW)!
       const fed = rowNamed(result, feeder.name)!
       const bankedPot = 0.2 * fed.expectedDamage
@@ -213,6 +237,7 @@ describe("the Drunkslay echo", () => {
         markWildstrideStrayhuntBriefly,
         feeder,
         marker,
+        poke,
       ])
       const echoRow = rowNamed(result, ECHO_ROW)!
       const fed = rowNamed(result, feeder.name)!
@@ -220,14 +245,14 @@ describe("the Drunkslay echo", () => {
     })
 
     it("applies to the whole pot when the marks arrive only after every contribution banked", () => {
-      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker])
+      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker, poke])
       const echoRow = rowNamed(result, ECHO_ROW)!
       const fed = rowNamed(result, feeder.name)!
       expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage * 1.2, 6)
     })
 
     it("applies to a lapse payout too, read at the lapse frame", () => {
-      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, idle])
+      const result = run([grantDeepdaze, marker, feeder, markWildstrideStrayhunt, idle, poke])
       const echoRow = rowNamed(result, ECHO_ROW)!
       const fed = rowNamed(result, feeder.name)!
       expect(echoRow.expectedDamage).toBeCloseTo(0.2 * fed.expectedDamage * 1.2, 6)
@@ -240,7 +265,7 @@ describe("the Drunkslay echo", () => {
         echo: { ...drunkslay.echo!, releaseAdjustment: null },
       }
       const result = run(
-        [grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker],
+        [grantDeepdaze, marker, feeder, markWildstrideStrayhunt, marker, poke],
         skyspeakAt(6),
         [drunkslayWithNoAdjustment],
       )

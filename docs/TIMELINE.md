@@ -209,9 +209,11 @@ skips straight to its own hits, unflagged.
   ticking and still counts. A cast that runs past the window keeps only the
   hits inside it, for damage and for the triggers and status writes those
   hits make alike; nothing outside the window fires, scores or opens a
-  window. The cast length is still reported beside the run length, and a
-  rotation with no fixed window runs from its own opening frame to its casts'
-  own end.
+  window. The cast length is still reported beside the run length. A rotation
+  with no fixed window runs from its own opening frame to the frame of its
+  own last damaging hit — direct, pre-pull or summoned — found the same way
+  the opening frame is; a DoT tick past that frame neither extends the window
+  nor counts, the same as a zero-damage hit past it.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the

@@ -319,9 +319,13 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
       classId: "bellstrikeUmbra",
       mindMethods: withBitterSeasonAt("tier 6"),
       customSkills: [soleHit, pad],
+      // A fixed window: the sole damaging hit alone would otherwise close the
+      // fight's own window right where it lands, docs/TIMELINE.md § "Fight
+      // window", leaving the poison's own projected uptime no runway to show.
       activeCustomRotation: makeRotation("bellstrikeUmbra", {
         name: "single-low-probability-hit",
         steps: [makeStep({ skillId: soleHit.id }), makeStep({ skillId: pad.id })],
+        fixedWindowSec: 600 / 60,
       }),
     }
     const result = simulateTimeline(inputs)

@@ -60,7 +60,9 @@ describe("a skill's cast legality flag", () => {
       "Flagged",
       "After",
     ])
-    expect(result.rotationDuration).toBeCloseTo((90 + 60 + 90 + 60) / FPS, 10)
+    // The window ends at "After"'s own hit, at its cast's start, not at its
+    // cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(result.rotationDuration).toBeCloseTo((90 + 60 + 90) / FPS, 10)
     expect(result.perSkill.find((row) => row.name === "Flagged")?.count).toBe(2)
   })
 

@@ -111,8 +111,8 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
   it("runs the T6-Bili rotation (~68.2 s) and lands within a loose band of the site's target", () => {
     const result = runEngine(inputs)
 
-    expect(result.rotationDuration).toBeGreaterThan(71.44)
-    expect(result.rotationDuration).toBeLessThan(71.94)
+    expect(result.rotationDuration).toBeGreaterThan(70.3)
+    expect(result.rotationDuration).toBeLessThan(70.8)
 
     const detonation = result.perSkill.find(
       (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
@@ -153,15 +153,19 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // A further, one-time re-center of the DPS and totalDamage bands: this
     // rotation opens on a pre-pull SpearHeavy hit, which now scores like any
     // other — docs/TIMELINE.md § "Fight window".
-    expect(result.dps).toBeGreaterThan(40270)
-    expect(result.dps).toBeLessThan(40420)
+    // A further re-center of the DPS bands only, from the same rule: the
+    // fight now ends at its last damaging hit rather than its last cast's
+    // own end, shortening the window without shortening totalDamage by the
+    // same share.
+    expect(result.dps).toBeGreaterThan(40960)
+    expect(result.dps).toBeLessThan(41110)
     expect(result.totalDamage).toBeGreaterThan(2884000)
     expect(result.totalDamage).toBeLessThan(2898400)
     expect(detonation?.expectedDamage).toBeGreaterThan(1469000)
     expect(detonation?.expectedDamage).toBeLessThan(1482000)
 
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.833)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.836)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.847)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.85)
     expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(0.983)
     expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(0.988)
     expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.9308)

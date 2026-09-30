@@ -88,7 +88,9 @@ describe("onExpire — a lapsing window resets another status", () => {
     )
     expect(stacksOnCast(result, 0, counter.id)).toBe(200)
     expect(stacksOnCast(result, 2, counter.id)).toBe(60)
-    expect(result.rotationDuration).toBeCloseTo((60 + 30 + 90) / FPS, 10)
+    // The window ends at the second "Gated"'s own hit, at its cast's start,
+    // not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(result.rotationDuration).toBeCloseTo((60 + 30) / FPS, 10)
   })
 
   it("a refreshed window does not fire; only the final lapse does", () => {
@@ -111,7 +113,9 @@ describe("onExpire — a lapsing window resets another status", () => {
     )
     expect(stacksOnCast(result, 1, counter.id)).toBe(200)
     expect(stacksOnCast(result, 3, counter.id)).toBe(60)
-    expect(result.rotationDuration).toBeCloseTo((60 + 60 + 30 + 90) / FPS, 10)
+    // The window ends at the second "Gated"'s own hit, at its cast's start,
+    // not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(result.rotationDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
   })
 
   it("elseStacks resets to a different value when requiresBuffId is not held", () => {
@@ -133,12 +137,21 @@ describe("onExpire — a lapsing window resets another status", () => {
       makeTrigger({ kind: "applyBuff", targetId: stateWithElse.id, stacks: 1 }),
     ])
     const idle = filler("Idle", 90)
+    // Past the state's own 80-frame lapse: the fight's own window now ends at
+    // the last damaging hit rather than the last cast's own end,
+    // docs/TIMELINE.md § "Fight window", so the lapse needs a hit past it to
+    // still fire.
+    const poke = filler("Poke", 10)
     const result = simulateTimeline(
       timelineInputs(
         makeRotation(CLASS, {
-          steps: [makeStep({ skillId: openerWithoutGate.id }), makeStep({ skillId: idle.id })],
+          steps: [
+            makeStep({ skillId: openerWithoutGate.id }),
+            makeStep({ skillId: idle.id }),
+            makeStep({ skillId: poke.id }),
+          ],
         }),
-        [openerWithoutGate, idle],
+        [openerWithoutGate, idle, poke],
         [requiredCounter, requiredGate, stateWithElse],
       ),
     )

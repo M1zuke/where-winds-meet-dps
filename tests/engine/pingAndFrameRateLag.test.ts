@@ -169,8 +169,16 @@ describe("ping and average fps — a skill's own further in-cast server waits le
       const rotation = makeRotation(CLASS, {
         steps: [makeStep({ skillId: prepull.id }), makeStep({ skillId: real.id })],
       })
+      // divinecraft off: Fire Oil's own burn schedule spans the fight window,
+      // which `serverWaitsInCast` now shifts by moving which hit is latest
+      // (docs/TIMELINE.md § "Fight window") — noise unrelated to what this
+      // test checks.
       return simulateTimeline(
-        timelineInputs(rotation, [prepull, real], { pingMs: 100, averageFps: 60 }),
+        timelineInputs(rotation, [prepull, real], {
+          pingMs: 100,
+          averageFps: 60,
+          divinecraft: null,
+        }),
       )
     }
     const withWait = runWith(1)

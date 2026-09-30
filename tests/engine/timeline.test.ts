@@ -101,8 +101,9 @@ describe("timeline — computed duration", () => {
     expect((r.timeline ?? []).some((e) => e.skillName === "Pre Prepull" && e.frame < 0)).toBe(true)
     // The pre-pull cast's own castFrames (90) is a genuine upper bound on how
     // far before frame 0 its single hit can land, so it opens the window
-    // exactly there.
-    expect(r.rotationDuration).toBeCloseTo((90 + 60) / FPS, 10)
+    // exactly there; the window closes at "Main"'s own hit, at its cast's
+    // start, not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(r.rotationDuration).toBeCloseTo(90 / FPS, 10)
   })
 
   it("empty rotation ⇒ dps 0 + warning", () => {
@@ -605,11 +606,25 @@ describe("timeline — combined buff + debuff rotation", () => {
       castFrames: 300,
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1000 })],
     })
-    const rotation = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: setup.id }), makeStep({ skillId: attack.id })],
+    // Past Vuln's own first tick: the fight's own window now ends at the last
+    // damaging hit rather than the last cast's own end, docs/TIMELINE.md §
+    // "Fight window", so a further hit is needed to still count a tick.
+    const poke = makeSkill(CLASS, {
+      name: "Poke",
+      castFrames: 10,
+      hits: [makeHit({ frame: 0, physMultiplier: 1 })],
     })
-    const withBoth = simulateTimeline(timelineInputs(rotation, [setup, attack], [warcry], [vuln]))
-    const withNeither = simulateTimeline(timelineInputs(rotation, [setup, attack], [], []))
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: setup.id }),
+        makeStep({ skillId: attack.id }),
+        makeStep({ skillId: poke.id }),
+      ],
+    })
+    const withBoth = simulateTimeline(
+      timelineInputs(rotation, [setup, attack, poke], [warcry], [vuln]),
+    )
+    const withNeither = simulateTimeline(timelineInputs(rotation, [setup, attack, poke], [], []))
 
     expect(withBoth.totalDamage).toBeGreaterThan(withNeither.totalDamage)
     const sum = withBoth.perSkill.reduce((s, p) => s + p.expectedDamage, 0)

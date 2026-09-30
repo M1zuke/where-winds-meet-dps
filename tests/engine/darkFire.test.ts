@@ -151,7 +151,15 @@ describe("Smolder duration", () => {
   })
 
   it("each extra hit lengthens the window by 4 s (1 hit = 4 s, 3 hits = 12 s)", () => {
-    const pad = makeSkill(CLASS, { name: "Pad", castFrames: 2000, hits: [makeHit({ frame: 0 })] })
+    // A late, damaging hit: the fight's own window now ends at the last
+    // damaging hit rather than at the last cast's own end (docs/TIMELINE.md §
+    // "Fight window"), so a zero-damage pad no longer gives Smolder's own
+    // ticks the runway to land inside it.
+    const pad = makeSkill(CLASS, {
+      name: "Pad",
+      castFrames: 2000,
+      hits: [makeHit({ frame: 1999, physMultiplier: 1 })],
+    })
     const windowSecOf = (skillId: string) => {
       const skill = skillOf(skillId)
       const inputs: Inputs = {

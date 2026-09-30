@@ -109,26 +109,119 @@ describe("the fight timer starts at the first damaging hit", () => {
     expect(result.fightStartSec).toBeCloseTo(-10 / FPS, 6)
   })
 
-  it("duration without a fixed window is measured from the first damaging hit, not from 0", () => {
+  it("duration without a fixed window runs from the first damaging hit to the last, not to the last cast's own end", () => {
     const grant = makeSkill(CLASS, { name: "Grant", castFrames: 10, hits: [makeHit({ frame: 0 })] })
+    const opener = makeSkill(CLASS, {
+      name: "Opener",
+      castFrames: 10,
+      hits: [makeHit({ frame: 0, physMultiplier: 1 })],
+    })
+    const closer = makeSkill(CLASS, {
+      name: "Closer",
+      castFrames: 20,
+      hits: [makeHit({ frame: 5, physMultiplier: 1 })],
+    })
+    const tail = makeSkill(CLASS, {
+      name: "Tail",
+      castFrames: 15,
+      hits: [makeHit({ frame: 0 })],
+    })
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: grant.id }),
+        makeStep({ skillId: opener.id }),
+        makeStep({ skillId: closer.id }),
+        makeStep({ skillId: tail.id }),
+      ],
+    })
+    const inputs: Inputs = {
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: [grant, opener, closer, tail],
+      activeCustomRotation: rotation,
+    }
+    const result = simulateTimeline(inputs)
+    // grant 0–10, opener 10–20 (hit at 10), closer 20–40 (hit at 25), tail
+    // 40–55 (no damage) — the run's cast length reaches 55, but the last
+    // damaging hit lands at 25.
+    expect(result.fightStartSec).toBeCloseTo(10 / FPS, 6)
+    expect(result.castDuration).toBeCloseTo(55 / FPS, 6)
+    expect(result.rotationDuration).toBeCloseTo((25 - 10) / FPS, 6)
+  })
+})
+
+describe("the fight timer ends at the last damaging hit", () => {
+  it("a DoT tick landing after the last damaging hit does not extend the fight or count", () => {
+    const debuff = makeDebuff(CLASS, {
+      name: "LateTick",
+      durationFrames: 60,
+      dot: {
+        tickIntervalFrames: 50,
+        physMultiplier: 1,
+        physFixed: 0,
+        attributeMultiplier: 0,
+        attributeFixed: 0,
+        attributeAttack: "",
+        skillType: "sustain",
+        count: 1,
+      },
+    })
+    const opener = makeSkill(CLASS, {
+      name: "Opener",
+      castFrames: 10,
+      hits: [
+        makeHit({
+          frame: 0,
+          physMultiplier: 1,
+          triggers: [makeTrigger({ kind: "applyDebuff", targetId: debuff.id, stacks: 1 })],
+        }),
+      ],
+    })
+    const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: opener.id })] })
+    const inputs: Inputs = {
+      ...defaultInputs,
+      classId: CLASS,
+      customSkills: [opener],
+      customDebuffs: [debuff],
+      activeCustomRotation: rotation,
+    }
+    const result = simulateTimeline(inputs)
+    // The opener's own hit at frame 0 both starts the fight and is its only
+    // damaging hit; the debuff's first tick lands at frame 50, well after it.
+    expect(result.fightStartSec).toBeCloseTo(0, 6)
+    expect(result.rotationDuration).toBeCloseTo(0, 6)
+    const tailTicks = (result.timeline ?? []).filter(
+      (event) => event.kind === "dot" && event.frame > 0,
+    )
+    expect(tailTicks).toEqual([])
+  })
+
+  it("a zero-damage hit landing after the last damaging hit does not extend the fight", () => {
     const damaging = makeSkill(CLASS, {
       name: "Damaging",
       castFrames: 10,
       hits: [makeHit({ frame: 0, physMultiplier: 1 })],
     })
+    const grantOnly = makeSkill(CLASS, {
+      name: "GrantOnly",
+      castFrames: 30,
+      hits: [makeHit({ frame: 0 })],
+    })
     const rotation = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: grant.id }), makeStep({ skillId: damaging.id })],
+      steps: [makeStep({ skillId: damaging.id }), makeStep({ skillId: grantOnly.id })],
     })
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
-      customSkills: [grant, damaging],
+      customSkills: [damaging, grantOnly],
       activeCustomRotation: rotation,
     }
     const result = simulateTimeline(inputs)
-    expect(result.castDuration).toBeCloseTo(20 / FPS, 6)
-    expect(result.rotationDuration).toBeCloseTo(result.castDuration - result.fightStartSec, 6)
-    expect(result.rotationDuration).toBeCloseTo(10 / FPS, 6)
+    // damaging: 0–10 (hit at 0), grantOnly: 10–40 (no damage) — the cast
+    // length reaches 40, but the fight ends at the one damaging hit, frame 0.
+    expect(result.fightStartSec).toBeCloseTo(0, 6)
+    expect(result.castDuration).toBeCloseTo(40 / FPS, 6)
+    expect(result.rotationDuration).toBeCloseTo(0, 6)
   })
 })
 

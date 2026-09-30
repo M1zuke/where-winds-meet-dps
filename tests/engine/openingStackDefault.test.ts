@@ -82,6 +82,6 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
         steps: [makeStep({ skillId: skill.id })],
       }),
     }
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo(30 / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo(30 / FPS, 10)
   })
 })
