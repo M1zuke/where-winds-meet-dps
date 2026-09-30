@@ -41,6 +41,10 @@ export function bitterSeasonStackSchedule(
     return ZERO_STACK_SCHEDULE
   }
 
+  // The grid starts at the first eligible hit, not the DPS timer's own start
+  // — Bitter Season reacts to hits, so relabelling where the timer opens
+  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
+  const originSec = hitTimesSec[0]
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const stackAccum = new Float64Array(steps)
   const maxStackAccum = new Float64Array(steps)
@@ -52,7 +56,7 @@ export function bitterSeasonStackSchedule(
     let windowEnd = -Infinity
     let hitIdx = 0
     for (let step = 0; step < steps; step++) {
-      const now = step * STEP_SEC
+      const now = originSec + step * STEP_SEC
       while (hitIdx < hitTimesSec.length && hitTimesSec[hitIdx] <= now) {
         const hitTime = hitTimesSec[hitIdx]
         if (stacks > 0 && hitTime >= windowEnd) stacks = 0
@@ -77,13 +81,13 @@ export function bitterSeasonStackSchedule(
 
   return {
     expectedStacksAtTime(tSec: number): number {
-      if (tSec <= 0) return expectedStacks[0]
-      const idx = Math.min(Math.floor(tSec / STEP_SEC), steps - 1)
+      if (tSec <= originSec) return expectedStacks[0]
+      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
       return expectedStacks[idx]
     },
     maxStackProbAtTime(tSec: number): number {
-      if (tSec <= 0) return maxStackProb[0]
-      const idx = Math.min(Math.floor(tSec / STEP_SEC), steps - 1)
+      if (tSec <= originSec) return maxStackProb[0]
+      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
       return maxStackProb[idx]
     },
   }
@@ -119,6 +123,10 @@ export function bitterSeasonPoisonSchedule(
     return ZERO_POISON_SCHEDULE
   }
 
+  // The grid starts at the first eligible hit, not the DPS timer's own start
+  // — the poison reacts to hits, so relabelling where the timer opens
+  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
+  const originSec = hitTimesSec[0]
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const accum = new Float64Array(steps)
   // Expected remaining active time ASSUMING NO FURTHER HITS from that step
@@ -135,7 +143,7 @@ export function bitterSeasonPoisonSchedule(
     let hitIdx = 0
     let extIdx = 0
     for (let step = 0; step < steps; step++) {
-      const now = step * STEP_SEC
+      const now = originSec + step * STEP_SEC
       for (;;) {
         const nextHitTime = hitIdx < hitTimesSec.length ? hitTimesSec[hitIdx] : Infinity
         const nextExtTime = extIdx < extensionTimesSec.length ? extensionTimesSec[extIdx] : Infinity
@@ -170,7 +178,7 @@ export function bitterSeasonPoisonSchedule(
   }
 
   const indexAt = (tSec: number): number =>
-    tSec <= 0 ? 0 : Math.min(Math.floor(tSec / STEP_SEC), steps - 1)
+    tSec <= originSec ? 0 : Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
 
   return {
     activeProbAtTime(tSec: number): number {

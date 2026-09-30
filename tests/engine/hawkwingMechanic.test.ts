@@ -8,12 +8,17 @@ import type { MechanicSetup } from "../../src/engine/mechanics/types"
 
 const CLASS = "bellstrikeUmbra"
 
-function setupWith(hitTimesSec: number[], dotTickTimesSec: number[]): MechanicSetup {
+function setupWith(
+  hitTimesSec: number[],
+  dotTickTimesSec: number[],
+  windowStartSec = 0,
+): MechanicSetup {
   return {
     inputs: { ...defaultInputs, classId: CLASS, set: SET_ID.hawkwing, directAffinityRate: 0 },
     classId: CLASS,
     fps: 60,
     rotationDurationSec: 10,
+    windowStartSec,
     hitTimesSec,
     weaponHitTimesSec: hitTimesSec,
     dotTickTimesSec,
@@ -49,6 +54,23 @@ describe("Hawkwing procs off a DoT tick, not only a cast hit", () => {
       const timeSec = step * 0.05
       expect(state.schedule.getExpectedStacksAtTime(timeSec)).toBe(
         expectedSchedule.getExpectedStacksAtTime(timeSec),
+      )
+    }
+  })
+
+  it("a later windowStartSec, hit and tick times unchanged, does not move the schedule", () => {
+    const hitTimesSec = [0.15, 0.45]
+    const dotTickTimesSec = [0.1, 0.2, 0.3, 0.4, 0.5]
+    const atZero = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(
+      setupWith(hitTimesSec, dotTickTimesSec, 0),
+    )!
+    const atLaterStart = hawkwingMechanic(SET_ID.hawkwing, "Hawkwing").prepare(
+      setupWith(hitTimesSec, dotTickTimesSec, 5),
+    )!
+    for (let step = 0; step < 200; step++) {
+      const timeSec = step * 0.05
+      expect(atLaterStart.schedule.getExpectedStacksAtTime(timeSec)).toBe(
+        atZero.schedule.getExpectedStacksAtTime(timeSec),
       )
     }
   })

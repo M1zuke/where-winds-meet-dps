@@ -79,7 +79,7 @@ describe("timeline — computed duration", () => {
     expect(r.rotationDuration).toBeCloseTo((120 + 60) / FPS, 10)
   })
 
-  it("a pre-pull cast with real coefficients lands neither damage nor a breakdown row", () => {
+  it("a pre-pull cast with real coefficients lands like any other hit, and opens the fight window", () => {
     const pre = makeSkill(CLASS, {
       name: "Pre Prepull",
       castFrames: 90,
@@ -93,16 +93,16 @@ describe("timeline — computed duration", () => {
     const withPrePull = makeRotation(CLASS, {
       steps: [makeStep({ skillId: pre.id }), makeStep({ skillId: main.id })],
     })
-    const mainOnly = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: main.id })],
-    })
     const r = simulateTimeline(timelineInputs(withPrePull, [pre, main], []))
-    const baseline = simulateTimeline(timelineInputs(mainOnly, [main], []))
 
-    expect(r.perSkill.find((s) => s.name === "Pre Prepull")).toBeUndefined()
+    const preRow = r.perSkill.find((s) => s.name === "Pre Prepull")
+    expect(preRow?.count).toBe(1)
+    expect(preRow?.expectedDamage).toBeGreaterThan(0)
     expect((r.timeline ?? []).some((e) => e.skillName === "Pre Prepull" && e.frame < 0)).toBe(true)
-    expect(r.totalDamage).toBe(baseline.totalDamage)
-    expect(r.rotationDuration).toBeCloseTo(60 / FPS, 10)
+    // The pre-pull cast's own castFrames (90) is a genuine upper bound on how
+    // far before frame 0 its single hit can land, so it opens the window
+    // exactly there.
+    expect(r.rotationDuration).toBeCloseTo((90 + 60) / FPS, 10)
   })
 
   it("empty rotation ⇒ dps 0 + warning", () => {

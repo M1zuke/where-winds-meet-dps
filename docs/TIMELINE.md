@@ -187,21 +187,31 @@ skips straight to its own hits, unflagged.
   coefficients and flat adds are all zero exists to carry triggers; it still
   fires them and still lands on the cast timeline, but it adds neither a count
   nor a row, so a grant-only cast has no breakdown row at all.
-- **A pre-pull cast sets up; it never lands.** Its hits fire their `triggers`
-  and the cast fires its `triggersBuffs`, and it sits on the cast timeline at
-  negative frames — but it adds nothing to the total, the breakdown or an echo
-  bank, whatever its coefficients say, and its frames stay out of the duration.
+- **The DPS window opens at the first scored event of any kind — a hit, a
+  DoT tick, a summoned hit or a mechanic's own event — anywhere in the run
+  and pre-pull included, whose coefficients deal damage** — the same
+  threshold "reports into the breakdown" above already uses. An event whose
+  coefficients are all zero never opens it. From that frame on, every
+  damaging event counts toward the total, the breakdown and an echo bank
+  alike, a pre-pull one included; nothing before it does. A cast, a hit's
+  `triggers` and a tick's `triggersBuffs` otherwise still fire regardless of
+  where the window sits — a pre-pull cast sits on the cast timeline at
+  negative frames whether or not any of its own hits land, and a DoT tick
+  keeps ticking and keeps writing status the same way whether or not it
+  lands before the window opens.
 - **A rotation step performs every hit its skill has.** A step names a skill and
   nothing else; a cast cut short is authored as its own skill carrying only the
   hits it lands, never as a count on the step.
 - **A rotation may fix its own window** (`fixedWindowSec`): the run then lasts
-  exactly that long, and DPS divides by it. Casts shorter than the window are
-  followed by idle time in which every status keeps its own schedule — a
-  damage-over-time effect still up keeps ticking and still counts. A cast that
-  runs past the window keeps only the hits inside it, for damage and for the
-  triggers and status writes those hits make alike; nothing outside the window
-  fires, scores or opens a window. The cast length is still reported beside the
-  run length, and a rotation with no window is exactly as long as its casts.
+  exactly that long from the window's own opening frame, and DPS divides by
+  it. Casts shorter than the window are followed by idle time in which every
+  status keeps its own schedule — a damage-over-time effect still up keeps
+  ticking and still counts. A cast that runs past the window keeps only the
+  hits inside it, for damage and for the triggers and status writes those
+  hits make alike; nothing outside the window fires, scores or opens a
+  window. The cast length is still reported beside the run length, and a
+  rotation with no fixed window runs from its own opening frame to its casts'
+  own end.
 - **A DoT row is named by its debuff, and only by its debuff** — never by the
   skill supplying the tick's coefficients. Absent or blank it falls back to the
   debuff's own `name`. **No marker is appended either way**, so a DoT and the
@@ -573,10 +583,9 @@ works unchanged.
 - **A meter's per-cast level is reported on the cast it belongs to**, read
   before that cast's own cost or drain applies — "the level available when
   the cast was placed", not the level once it resolved.
-- **A pre-pull cast never touches a meter**, the same as it never lands a hit
-  for damage — it compresses a real-world gap of unknown length into a
-  handful of negative frames, which has no faithful frame-accurate placement
-  for a cost, a drain, a freeze or a gain.
+- **A pre-pull cast never touches a meter** — it compresses a real-world gap
+  of unknown length into a handful of negative frames, which has no faithful
+  frame-accurate placement for a cost, a drain, a freeze or a gain.
 - **The meter's own cursor advances only for a meter-relevant event** — a
   cost, a drain or freeze start, a `meterDelta` — never for an ordinary hit
   that carries none of these, however far its own chain (a `castSkill`
@@ -680,12 +689,13 @@ replayed onto the real ledger as a permanent counter status per art
 ## Qi bar
 
 The target's Qi bar is a damage-driven meter with no regeneration: every
-scored event's own finished damage — the same value the breakdown and the
-total tally read, crit/affinity/abrasion/broken bonus included — feeds a
-formula that yields that event's Qi, which the bar spends. It cannot simulate
-in the layout pass the way a meter or the target distance does, since it needs
-a hit's damage before that damage itself exists; instead it is computed in
-pass 2, in time order, alongside `totalDamage`.
+damaging event's own finished damage — the same value the breakdown and the
+total tally read for one that lands inside the DPS window, crit/affinity/
+abrasion/broken bonus included — feeds a formula that yields that event's Qi,
+which the bar spends. It cannot simulate in the layout pass the way a meter or
+the target distance does, since it needs a hit's damage before that damage
+itself exists; instead it is computed in pass 2, in time order, alongside
+`totalDamage`.
 
 - **A schedule, never the live bar, is what every gate reads.** The layout
   pass, the buff-engine prepass and pass 1 all need the break before pass 2's
@@ -707,6 +717,10 @@ pass 2, in time order, alongside `totalDamage`.
   timed break; at the break's end the bar is set back to a refill value and,
   for a further fixed span, a direct hit deals no Qi while a tick still does.
   Breaks repeat without limit and nothing regenerates between hits.
+- **The bar accrues Qi from every damaging hit or tick on the target, whether
+  or not that event lands inside the DPS window.** The target takes it in
+  game regardless of where the fight-timer window sits — a pre-pull one
+  included.
 - **The target the bar belongs to is a choice, not a constant**: its own
   capacity, refill, break length, post-break immunity and the index the
   formula reads off it are the chosen target's own data, next to its HP.

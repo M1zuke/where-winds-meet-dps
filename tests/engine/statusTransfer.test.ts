@@ -179,7 +179,7 @@ describe("a trigger with transferFrom", () => {
       [grant, convert, gated],
       [source, target],
     )
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
   })
 
   it("is rejected when combined with extendFrames", () => {

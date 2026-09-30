@@ -84,8 +84,9 @@ qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMulti
 
 - **Qi reads the event's finished damage** — crit, affinity, abrasion and the
   broken-target HP bonus all already folded in, because that is the only
-  damage value that ever existed for the event. A pre-pull cast and anything
-  outside a fixed window deal no Qi, exactly as they deal no damage.
+  damage value that ever existed for the event. A zero-coefficient hit deals
+  no Qi; every other hit deals Qi whether or not it falls inside the DPS
+  window, a pre-pull one included — docs/TIMELINE.md § "Qi bar".
 - **The broken-target HP bonus is its own factor in the shared damage tail**,
   the same way an independent damage boost is (above) — never an addend in
   the additive boost total, and it reaches a damage-over-time tick exactly as
@@ -204,6 +205,13 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   trigger.** A mechanic that builds its schedule from hit times reads every
   hit-driven schedule the engine exposes, not only the rotation's own laid
   hits. This is structural; do not work around it per mechanic.
+- **A stochastic schedule's own origin is the earliest event it reacts to**,
+  never the DPS window's own start — the two coincide whenever the window
+  itself opens on that same event, but a schedule anchored to the window's
+  start instead would reshuffle itself the day an earlier event is correctly
+  found to open the window, with nothing about the rotation's own hits or
+  ticks having changed. A mechanic genuinely timed off the fight's own clock,
+  rather than off a hit it reacts to, is the one exception.
 - **A DoT tick may feed a proc schedule too**, opted into separately from a
   hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
   from the same layout pass, at each debuff's own tick interval, through the

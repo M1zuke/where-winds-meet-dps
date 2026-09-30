@@ -14,7 +14,7 @@ const REASON_KEYS = {
 export function BlossomTimelinePanel({ result }: { result: Result }) {
   const { t } = useI18n()
   const resource = result.resources?.find((value) => value.id === blossomResource.id)
-  const duration = Math.max(0.1, result.rotationDuration)
+  const duration = Math.max(0.1, result.fightStartSec + result.rotationDuration)
   const points =
     resource?.samples
       .map(({ timeSec, amount }) => `${10 + (timeSec / duration) * 380},${110 - amount}`)

@@ -566,7 +566,12 @@ export function isPrePullSkill(skill: Skill): boolean {
   return skill.prePull ?? /prepull/i.test(skill.name)
 }
 
-export function hitDealsDamage(hit: SkillHit): boolean {
+// Shared with a DoT's own coefficients (`DebuffDotSpec` carries the same four
+// fields) — docs/TIMELINE.md § "Fight window" uses the one threshold for
+// both a hit and a tick.
+export function hitDealsDamage(
+  hit: Pick<SkillHit, "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed">,
+): boolean {
   return (
     hit.physMultiplier !== 0 ||
     hit.attributeMultiplier !== 0 ||

@@ -262,6 +262,7 @@ describe("inner-way ownership — gate buffs, display gates, and the merged Zeni
       classId: "bellstrikeUmbra",
       fps: 60,
       rotationDurationSec: 10,
+      windowStartSec: 0,
       hitTimesSec: [0],
       weaponHitTimesSec: [0],
       dotTickTimesSec: [],

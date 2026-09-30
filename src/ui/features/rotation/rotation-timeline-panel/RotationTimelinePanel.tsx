@@ -7,6 +7,7 @@ import styles from "./RotationTimelinePanel.module.scss"
 export function RotationTimelinePanel({ result }: { result: Result }) {
   const { t } = useI18n()
   const duration = result.rotationDuration
+  const windowEndSec = result.fightStartSec + duration
   const events = result.timeline ?? []
 
   const lanes = useMemo(() => {
@@ -32,19 +33,19 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
   }
 
   const minTime = Math.min(0, ...events.map((event) => event.timeSec))
-  const span = Math.max(duration - minTime, 1e-6)
+  const span = Math.max(windowEndSec - minTime, 1e-6)
   const pct = (sec: number) => ((sec - minTime) / span) * 100
 
   const axisTickFractions = [0, 0.25, 0.5, 0.75, 1]
 
   const qiBreak = result.qiBreakWindow
   const qiStart = qiBreak ? Math.max(qiBreak.startSec, minTime) : 0
-  const qiEnd = qiBreak ? Math.min(qiBreak.endSec, duration) : 0
+  const qiEnd = qiBreak ? Math.min(qiBreak.endSec, windowEndSec) : 0
   const showQi = qiBreak != null && qiEnd > qiStart
 
   const lowQi = result.lowQiWindow
   const lowQiStart = lowQi ? Math.max(lowQi.startSec, minTime) : 0
-  const lowQiEnd = lowQi ? Math.min(lowQi.endSec, duration) : 0
+  const lowQiEnd = lowQi ? Math.min(lowQi.endSec, windowEndSec) : 0
   const showLowQi = lowQi != null && lowQiEnd > lowQiStart
 
   return (

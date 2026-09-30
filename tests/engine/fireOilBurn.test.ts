@@ -126,8 +126,8 @@ describe("Fire Oil Burn — always the plain row", () => {
   })
 })
 
-describe("Fire Oil Burn — pre-pull casts never open a window", () => {
-  it("a damaging pre-pull cast schedules no ticks on its own", () => {
+describe("Fire Oil Burn — a damaging pre-pull cast opens its own window", () => {
+  it("schedules a burn tick from a pre-pull hit's own time, the same as any other damaging hit", () => {
     const prePullSkill = makeSkill(CLASS, {
       name: "Prepull Hit",
       prePull: true,
@@ -145,7 +145,9 @@ describe("Fire Oil Burn — pre-pull casts never open a window", () => {
       }),
     }
     const result = runEngine(inputs)
-    expect(burnTicks(result.timeline).length).toBe(0)
+    const ticks = burnTicks(result.timeline)
+    expect(ticks.length).toBeGreaterThan(0)
+    for (const tick of ticks) expect(tick.timeSec).toBeGreaterThanOrEqual(result.fightStartSec)
   })
 })
 

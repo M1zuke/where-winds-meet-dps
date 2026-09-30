@@ -37,6 +37,7 @@ function setupFor(mindMethods: Inputs["mindMethods"]): MechanicSetup {
     classId: CLASS_ID,
     fps: FPS,
     rotationDurationSec: 60,
+    windowStartSec: 0,
     // Focus is built from every damaging hit, weapon or not — `weaponHitTimesSec`
     // stays empty so the mechanic would starve if it read the wrong array.
     hitTimesSec: weaponHitTrain(60),

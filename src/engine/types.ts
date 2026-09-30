@@ -367,6 +367,10 @@ export interface Result {
   dps: number
   totalDamage: number
   rotationDuration: number
+  // The frame of the first damaging hit, in seconds — docs/TIMELINE.md §
+  // "Fight window". May be negative when a pre-pull hit itself starts the
+  // fight.
+  fightStartSec: number
   castDuration: number
   graduationRate: number | null
   perSkill: SkillTickResult[]

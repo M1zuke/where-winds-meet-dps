@@ -503,7 +503,7 @@ describe("hit variant — cast-length override", () => {
         [granter, skill],
         [gate],
       ),
-    ).rotationDuration
+    ).castDuration
     expect(seconds).toBeCloseTo((60 + 30) / FPS, 10)
   })
 })

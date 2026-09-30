@@ -53,6 +53,7 @@ function setupFor(classId: string): MechanicSetup {
     classId,
     fps: 60,
     rotationDurationSec: 10,
+    windowStartSec: 0,
     hitTimesSec: [0, 1, 2],
     weaponHitTimesSec: [0, 1],
     dotTickTimesSec: [],

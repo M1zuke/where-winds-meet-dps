@@ -57,10 +57,11 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
 
     extraEvents(state, setup) {
       if (!innerWayHasNode(moraleChant, state.tier, INNER_WAY_NODE.yiRiver)) return []
-      const durationSec = setup.rotationDurationSec
+      const windowEndSec = setup.windowStartSec + setup.rotationDurationSec
       let first = 0
-      while (first < durationSec && stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD) first += 0.5
-      if (first > durationSec) return []
+      while (first < windowEndSec && stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD)
+        first += 0.5
+      if (first > windowEndSec) return []
 
       const skill: Skill = {
         id: "yi-river",
@@ -77,9 +78,9 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
         updatedAt: "1970-01-01T00:00:00.000Z",
       }
       const events: MechanicEvent[] = []
-      for (let t = first; t <= durationSec; t += YI_RIVER_INTERVAL_SEC) {
+      for (let tSec = first; tSec <= windowEndSec; tSec += YI_RIVER_INTERVAL_SEC) {
         events.push({
-          frame: Math.round(t * setup.fps),
+          frame: Math.round(tSec * setup.fps),
           skill,
           art: {
             name: "Yi River",

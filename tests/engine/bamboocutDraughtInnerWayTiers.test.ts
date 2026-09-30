@@ -326,7 +326,7 @@ describe("Mistwing — the target's health follows every damage event, not just 
     expect(marginWithRelease).toBeGreaterThan(marginWithoutRelease)
   })
 
-  it("a pre-pull cast's damage does not move the target's health", () => {
+  it("a pre-pull cast's damage moves the target's health, the same as any other hit", () => {
     function run(mindMethods: Inputs["mindMethods"], includePrePull: boolean) {
       const bigPrePullHit = makeHit({ frame: 0, physMultiplier: 1, physFixed: 50_000_000 })
       const prePullSkill = makeSkill(CLASS, {
@@ -348,7 +348,7 @@ describe("Mistwing — the target's health follows every damage event, not just 
     const tier6 = mindMethodsWith(INNER_WAY_ID.mistwing, 6)
     const marginWithPrePull = probeDamage(run(tier6, true)) - probeDamage(run(UNSLOTTED, true))
     const marginWithoutPrePull = probeDamage(run(tier6, false)) - probeDamage(run(UNSLOTTED, false))
-    expect(marginWithPrePull).toBeCloseTo(marginWithoutPrePull, 6)
+    expect(marginWithPrePull).not.toBeCloseTo(marginWithoutPrePull, 6)
   })
 })
 

@@ -28,10 +28,10 @@ function burnWindows(hitTimesSec: readonly number[]): BurnWindow[] {
   return windows
 }
 
-function burnTickTimesSec(hitTimesSec: readonly number[], rotationDurationSec: number): number[] {
+function burnTickTimesSec(hitTimesSec: readonly number[], fightWindowEndSec: number): number[] {
   const ticks: number[] = []
   for (const window of burnWindows(hitTimesSec)) {
-    const windowEndSec = Math.min(window.endAt, rotationDurationSec)
+    const windowEndSec = Math.min(window.endAt, fightWindowEndSec)
     for (
       let tickTimeSec = window.openAt + FIRST_TICK_LEAD_SEC;
       tickTimeSec < windowEndSec;
@@ -73,26 +73,27 @@ export function fireOilBurnMechanic(): TimelineMechanic<State> {
       const enchantedHitTimesSec = setup.hitTimesSec.filter(
         (hitTimeSec) => hitTimeSec < FIRE_ENCHANT_SEC,
       )
-      return burnTickTimesSec(enchantedHitTimesSec, setup.rotationDurationSec).map(
-        (tickTimeSec): MechanicEvent => ({
-          frame: Math.round(tickTimeSec * setup.fps),
-          skill,
-          art: {
-            name: BURN_NAME,
-            physMultiplier: BURN_PHYS_MULTIPLIER,
-            attributeMultiplier: 0,
-            physFixed: 0,
-            attributeFixed: 0,
-            guaranteedNormal: 1,
-            skillType: "mindMethod",
-          },
+      return burnTickTimesSec(
+        enchantedHitTimesSec,
+        setup.windowStartSec + setup.rotationDurationSec,
+      ).map((tickTimeSec): MechanicEvent => ({
+        frame: Math.round(tickTimeSec * setup.fps),
+        skill,
+        art: {
           name: BURN_NAME,
-          type: "mindMethod",
-          // In-game values as of 2026-09-25: a tick, not a direct hit.
-          qiRate: 0.6,
-          qiHitKind: "dot",
-        }),
-      )
+          physMultiplier: BURN_PHYS_MULTIPLIER,
+          attributeMultiplier: 0,
+          physFixed: 0,
+          attributeFixed: 0,
+          guaranteedNormal: 1,
+          skillType: "mindMethod",
+        },
+        name: BURN_NAME,
+        type: "mindMethod",
+        // In-game values as of 2026-09-25: a tick, not a direct hit.
+        qiRate: 0.6,
+        qiHitKind: "dot",
+      }))
     },
   }
 }

@@ -405,24 +405,35 @@ describe("ping and average fps — a meter's own cursor stays a clean integer fr
 })
 
 describe("ping and average fps — drops hits pushed past a fixed window", () => {
-  it("a hit the round trip pushes past the window scores nothing", () => {
+  it("a hit the round trip pushes past the window scores nothing, while the earlier hit anchoring the window still counts", () => {
+    // An early damaging hit anchors the window's own start; the hit under
+    // test only ever gets pushed past that window's end, never absorbed into
+    // anchoring a fresh one of its own — docs/TIMELINE.md § "Fight window".
+    const anchor = makeSkill(CLASS, {
+      name: "Anchor",
+      castFrames: 1,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
     const skill = makeSkill(CLASS, {
       name: "Solo",
       castFrames: 10,
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 100 })],
     })
     const rotation = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: skill.id })],
+      steps: [makeStep({ skillId: anchor.id }), makeStep({ skillId: skill.id })],
       fixedWindowSec: 5 / FPS,
     })
     const baseline = simulateTimeline(
-      timelineInputs(rotation, [skill], { pingMs: 0, averageFps: 60 }),
+      timelineInputs(rotation, [anchor, skill], { pingMs: 0, averageFps: 60 }),
     )
     const lagged = simulateTimeline(
-      timelineInputs(rotation, [skill], { pingMs: 100, averageFps: 60 }),
+      timelineInputs(rotation, [anchor, skill], { pingMs: 100, averageFps: 60 }),
     )
 
-    expect(baseline.totalDamage).toBeGreaterThan(0)
-    expect(lagged.totalDamage).toBe(0)
+    expect(baseline.perSkill.find((row) => row.name === "Solo")?.expectedDamage).toBeGreaterThan(0)
+    expect(lagged.perSkill.find((row) => row.name === "Solo")).toBeUndefined()
+    expect(lagged.totalDamage).toBe(
+      lagged.perSkill.find((row) => row.name === "Anchor")?.expectedDamage,
+    )
   })
 })

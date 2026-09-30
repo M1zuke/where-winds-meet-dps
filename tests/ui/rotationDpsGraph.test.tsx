@@ -17,12 +17,17 @@ function event(timeSec: number, damage: number): TimelineEvent {
   }
 }
 
-function resultWith(timeline: TimelineEvent[], rotationDuration: number): Result {
+function resultWith(
+  timeline: TimelineEvent[],
+  rotationDuration: number,
+  fightStartSec = 0,
+): Result {
   const totalDamage = timeline.reduce((sum, entry) => sum + entry.damage, 0)
   return {
     dps: rotationDuration > 0 ? totalDamage / rotationDuration : 0,
     totalDamage,
     rotationDuration,
+    fightStartSec,
     castDuration: rotationDuration,
     graduationRate: null,
     perSkill: [],
@@ -138,5 +143,25 @@ describe("RotationDpsGraphPanel", () => {
     renderGraph(resultWith([], 0))
 
     expect(screen.getByText("(none)")).toBeInTheDocument()
+  })
+
+  it("spans the plot from a positive fightStartSec to the rotation's end, not from zero", () => {
+    const result = resultWith([event(3, 4000), event(4, 2000), event(6, 2000)], 4, 2)
+    const container = renderGraph(result)
+    const drawn = anchors(container)
+
+    expect(drawn[0].x).toBe(0)
+    expect(drawn[drawn.length - 1].x).toBe(100)
+  })
+
+  it("reads out the pointer's own absolute time against a nonzero fightStartSec", () => {
+    const result = resultWith([event(3, 4000), event(4, 2000), event(6, 2000)], 4, 2)
+    const container = renderGraph(result)
+    const plot = container.querySelector("." + styles.plot)!
+    plot.getBoundingClientRect = () => ({ left: 0, width: 400 }) as DOMRect
+
+    fireEvent.mouseMove(plot, { clientX: 200 })
+
+    expect(screen.getByText("4.00s")).toBeInTheDocument()
   })
 })

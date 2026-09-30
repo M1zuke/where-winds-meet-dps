@@ -129,7 +129,7 @@ describe("a trigger bound to a Qi phase", () => {
     })
     const skills = [grant, gated, grant, gated]
     const inputs = timelineInputs(rotationOf(skills), skills, [gate])
-    expect(simulateTimeline(inputs, EXHAUSTED_WINDOW_OPTIONS).rotationDuration).toBeCloseTo(
+    expect(simulateTimeline(inputs, EXHAUSTED_WINDOW_OPTIONS).castDuration).toBeCloseTo(
       (60 + 90 + 60 + 30) / FPS,
       10,
     )

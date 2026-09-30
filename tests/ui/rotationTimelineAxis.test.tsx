@@ -9,6 +9,7 @@ const result: Result = {
   dps: 0,
   totalDamage: 0,
   rotationDuration: 12,
+  fightStartSec: 0,
   castDuration: 12,
   graduationRate: null,
   perSkill: [],

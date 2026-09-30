@@ -235,6 +235,11 @@ describe("target distance — a DoT tick reads the live distance, not the cast t
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
+      // Hawkwing's own proc schedule now ramps from the fight's true start
+      // rather than always from 0, so its expected bonus drifts smoothly
+      // between ticks at the same distance — set aside here so distance
+      // alone drives the comparison below.
+      set: null,
       customSkills: [filler, distanceChanger],
       activeCustomRotation: rotation,
       combatSettings: { ...defaultCombatSettings(), preferredDistanceMeters: 10 },

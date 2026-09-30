@@ -16,13 +16,18 @@ const IN_GAME_HITS: Record<string, number> = {
   Castlink: 12,
   Whaledraft: 18,
   "Nightwick - Primepick": 6,
-  Peakfall: 5,
   "Hero's Blood": 8,
   // The cancel form's own strike (in-game values as of 2026-09-24) was not
   // yet modelled when this log was captured, so its own hit count reads one
   // higher than the captured log.
   "Flute Chanting a Thousand Waves": 11,
 }
+
+// Not folded into IN_GAME_HITS: docs/TIMELINE.md § "Fight window" now scores
+// the rotation's own pre-pull Peakfall, so the model reads one higher than
+// the captured log — open owner question whether the log's 5 already
+// includes that pre-pull hit.
+const LOGGED_PEAKFALL_HITS = 5
 
 function runDummyRotation() {
   const profile = importProfile(JSON.stringify(profileFile))
@@ -63,6 +68,13 @@ describe("the dummy rotation against the in-game damage log", () => {
   it("parries Reveldrift after its first hit, where the logged run let one second hit through", () => {
     expect(hits.Reveldrift).toBe(2)
   })
+
+  it.fails(
+    "Peakfall matches the in-game log (open: does the log's 5 include the pre-pull Peakfall?)",
+    () => {
+      expect(hits.Peakfall).toBe(LOGGED_PEAKFALL_HITS)
+    },
+  )
 
   it("runs the whole rotation in about a minute, as the log did", () => {
     expect(result.rotationDuration).toBeGreaterThan(62)

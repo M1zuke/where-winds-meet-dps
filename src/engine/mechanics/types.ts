@@ -16,7 +16,11 @@ export interface MechanicSetup {
   inputs: Inputs
   classId: string
   fps: number
+  // The fight window's own length, from the first damaging hit to its end —
+  // docs/TIMELINE.md § "Fight window". Absolute bounds a schedule needs add
+  // `windowStartSec`, which may be negative for a fight a pre-pull hit starts.
   rotationDurationSec: number
+  windowStartSec: number
   // Every damaging hit, and the subset from weapon-typed skills, in seconds and
   // ascending — what a proc schedule is built from.
   hitTimesSec: readonly number[]
