@@ -29,7 +29,9 @@ describe("a mystic art is authored once and belongs to no class", () => {
 
   it("one file per mystic art, and the barrel lists every one of them", () => {
     const modules = readdirSync(MYSTIC_DIR).filter(
-      (entry) => entry.endsWith(".ts") && !["ids.ts", "index.ts", "debuffs.ts"].includes(entry),
+      (entry) =>
+        entry.endsWith(".ts") &&
+        !["ids.ts", "index.ts", "debuffs.ts", "poetStrikeHits.ts"].includes(entry),
     )
     expect(modules).toHaveLength(MYSTIC_SKILLS.length)
   })

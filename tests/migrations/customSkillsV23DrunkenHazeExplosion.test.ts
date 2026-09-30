@@ -29,6 +29,54 @@ const skillIn = (blob: RawCustomSkillsBlob, id: string): Skill =>
 const builtinOf = (id: string): Skill =>
   builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
 
+// The exact shape this hop alone produces, pinned independently of what a
+// later hop (e.g. the second Poet collider) goes on to do to the same rows —
+// this file locks V23's own behavior, not the live built-in.
+const V23_COMBUSTION_EXPLOSION_HIT = {
+  id: "hit-1",
+  frame: 0,
+  physMultiplier: 0.70166,
+  attributeMultiplier: 1.05249,
+  physFixed: 105.48,
+  attributeFixed: 0,
+  extraCritDamage: 0,
+  triggers: [],
+  conditions: [
+    { buffId: "debuff-mystic-combustion", op: "gte" as const, stacks: 1 },
+    { buffId: "debuff-mystic-smolder", op: "eq" as const, stacks: 0 },
+  ],
+}
+const V23_SMOLDER_EXPLOSION_HIT = {
+  id: "hit-2",
+  frame: 0,
+  physMultiplier: 1.60796,
+  attributeMultiplier: 2.41194,
+  physFixed: 241.72,
+  attributeFixed: 0,
+  extraCritDamage: 0,
+  triggers: [],
+  conditions: [{ buffId: "debuff-mystic-smolder", op: "gte" as const, stacks: 1 }],
+}
+const v23PoetHits = (id: string): Skill["hits"] => [
+  skillIn(STORE, id).hits[0],
+  V23_COMBUSTION_EXPLOSION_HIT,
+  V23_SMOLDER_EXPLOSION_HIT,
+]
+const v23FinalStrikeHits = (): Skill["hits"] => [
+  {
+    ...skillIn(STORE, FINAL_STRIKE).hits[0],
+    triggers: [
+      ...skillIn(STORE, FINAL_STRIKE).hits[0].triggers,
+      {
+        kind: "castSkill",
+        targetId: "mystic-poet-final-hit-cancel-explosion",
+        stacks: 1,
+        condition: null,
+      },
+    ],
+  },
+]
+
 describe("custom-skills v22 fixture", () => {
   it("is v22 and still stores the superseded, shorter Poet rows", () => {
     expect(STORE.v).toBe(V23__drunkenHazeExplosion.to - 1)
@@ -38,7 +86,7 @@ describe("custom-skills v22 fixture", () => {
   })
 
   it("stores rows the built-ins no longer carry", () => {
-    expect(builtinOf(POET2).hits).toHaveLength(3)
+    expect(builtinOf(POET2).hits).toHaveLength(6)
     expect(builtinOf(FINAL_STRIKE).hits[0].triggers).toHaveLength(2)
   })
 })
@@ -50,7 +98,7 @@ describe("addDrunkenHazeExplosionHits", () => {
         id,
         clone(skillIn(STORE, id).hits),
       ) as Skill["hits"]
-      expect(healed, id).toEqual(builtinOf(id).hits)
+      expect(healed, id).toEqual(v23PoetHits(id))
     }
   })
 
@@ -69,7 +117,7 @@ describe("addFinalStrikeExplosionTrigger", () => {
       FINAL_STRIKE,
       clone(skillIn(STORE, FINAL_STRIKE).hits),
     ) as Skill["hits"]
-    expect(healed).toEqual(builtinOf(FINAL_STRIKE).hits)
+    expect(healed).toEqual(v23FinalStrikeHits())
   })
 
   it("leaves an edited hit and another skill's hits alone", () => {
@@ -85,8 +133,10 @@ describe("V23__drunkenHazeExplosion — called directly", () => {
   it("rewrites every untouched seeded copy and nothing else", () => {
     const after = V23__drunkenHazeExplosion.migrate(clone(STORE))
     expect(after.v).toBe(23)
+    const expectedHits = (id: string): Skill["hits"] =>
+      id === FINAL_STRIKE ? v23FinalStrikeHits() : v23PoetHits(id)
     for (const id of RECALIBRATED_IDS) {
-      expect(skillIn(after, id).hits, id).toEqual(builtinOf(id).hits)
+      expect(skillIn(after, id).hits, id).toEqual(expectedHits(id))
       const { hits: _beforeHits, ...restBefore } = skillIn(STORE, id)
       const { hits: _afterHits, ...restAfter } = skillIn(after, id)
       void _beforeHits
@@ -114,6 +164,6 @@ describe("V23__drunkenHazeExplosion — through the chain", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 23 })!
     expect(result.applied).toEqual(["V23__drunkenHazeExplosion"])
     expect(result.blob.v).toBe(23)
-    expect(skillIn(result.blob, POET2).hits).toEqual(builtinOf(POET2).hits)
+    expect(skillIn(result.blob, POET2).hits).toEqual(v23PoetHits(POET2))
   })
 })

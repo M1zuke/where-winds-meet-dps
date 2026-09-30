@@ -56,6 +56,7 @@ import { V52__gourdTossThunder } from "./V52__gourdTossThunder"
 import { V53__gourdTossFlyingTornado } from "./V53__gourdTossFlyingTornado"
 import { V54__swallowcallColorfulPhoenixReach } from "./V54__swallowcallColorfulPhoenixReach"
 import { V55__ghostlyStepsEnduranceCostReduction } from "./V55__ghostlyStepsEnduranceCostReduction"
+import { V56__poetSecondCollider } from "./V56__poetSecondCollider"
 
 export type {
   CustomSkillMigration,
@@ -124,6 +125,7 @@ export { healSkillFrames as healCastLengthAndHitFrameRepairs } from "./V45__cast
 export { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "./V46__stonesplitSplendorJadeTimingRepairs"
 export { healSkill as healWeaponDrawnGates } from "./V47__weaponDrawnGates"
 export { healQiRateDefault } from "./V48__qiRateDefaults"
+export { healSkill as healPoetSecondCollider } from "./V56__poetSecondCollider"
 
 export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V4__dragonHeadCoefficients,
@@ -178,6 +180,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V53__gourdTossFlyingTornado,
   V54__swallowcallColorfulPhoenixReach,
   V55__ghostlyStepsEnduranceCostReduction,
+  V56__poetSecondCollider,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

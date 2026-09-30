@@ -558,6 +558,16 @@ export function resolvedHitFrame(
   return base + Math.min(travelFrames, hit.projectile.maxTravelFrames)
 }
 
+// The one place `SkillHit.conditions` is checked — every path that turns a
+// hit into a landed event goes through this, a step's own top-level hits and
+// a `castSkill`/`detonateDot` sub-cast's hits alike.
+export function hitConditionsHold(
+  hit: SkillHit,
+  holds: (condition: TriggerCondition) => boolean,
+): boolean {
+  return (hit.conditions ?? []).every(holds)
+}
+
 export function breakdownNameOf(breakdownName: string | undefined, fallbackName: string): string {
   return breakdownName?.trim() || fallbackName
 }

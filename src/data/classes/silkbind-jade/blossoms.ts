@@ -36,6 +36,10 @@ export const blossomResource = defineResource({
       defaultAmount: -10,
       skillIds: [SKILL.umbdronelaunch],
     },
+    // Every umbrella hit that grants Blossoms is already tied to its own named
+    // skill above; the drone's own ticks earn Blossoms only through the
+    // Qi-0 refund (`defaultExhaustedGainPerTick`). A nonzero value here would
+    // double-pay them. In-game values as of 2026-09-30.
     { id: "directHit", name: "Umbrella hit", defaultAmount: 0, tag: WEAPON.umbrella },
     {
       id: "qHit",
@@ -47,16 +51,27 @@ export const blossomResource = defineResource({
     {
       id: "heavyLightCast",
       name: "Heavy Light base gain",
-      // In-game values as of 2026-09-24.
-      defaultAmount: 45,
+      // In-game values as of 2026-09-30: heavy stage 1 (+5) + Colorful
+      // Phoenix C1 (+4) + C2 (+4), the single-cast total this module models.
+      defaultAmount: 13,
       skillIds: [SKILL.umbHeavylight],
       divideAcrossSkillHits: true,
     },
     {
       id: "chargedHit",
-      name: "Additional Spring Away gain",
-      defaultAmount: 0,
+      name: "Spring Away bullet gain",
+      // In-game values as of 2026-09-30: 3.4 per hover bullet, this module's
+      // 6 modelled hits.
+      defaultAmount: 3.4 * 6,
       skillIds: [SKILL.umblightcharge],
+      divideAcrossSkillHits: true,
+    },
+    {
+      id: "chargedHitLift",
+      name: "Spring Away lift gain",
+      // In-game values as of 2026-09-30.
+      defaultAmount: 4,
+      skillIds: [SKILL.umblightchargeLift],
     },
     {
       id: "apricotHeavenHit",

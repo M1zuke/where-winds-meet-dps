@@ -15,6 +15,7 @@ import {
   breakdownNameOf,
   conditionSatisfiedByStacks,
   isPrePullSkill,
+  hitConditionsHold,
   hitDealsDamage,
   resolvedHitFrame,
   selectHitVariant,
@@ -983,7 +984,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const sub = skillsById.get(trigger.targetId)
             if (!sub) continue
             const subHolds = (condition: TriggerCondition) => layoutHolds(condition, hitFrame)
-            for (const subHit of sub.hits) {
+            for (const subHit of sub.hits.filter((candidate) =>
+              hitConditionsHold(candidate, subHolds),
+            )) {
               pending.push({
                 kind: "hit",
                 skill: sub,
@@ -1220,7 +1223,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           !hit.requiresNextStepSkillIds ||
           (nextStepSkillId !== undefined && hit.requiresNextStepSkillIds.includes(nextStepSkillId))
         const occurringHits = castResolution.skill.hits.filter(
-          (hit) => (hit.conditions ?? []).every(holdsHere) && hitLandsByNextStep(hit),
+          (hit) => hitConditionsHold(hit, holdsHere) && hitLandsByNextStep(hit),
         )
         // A skill's own further in-cast server waits never reach a pre-pull cast
         // — the same real-world-gap reasoning that keeps one off every other
@@ -1569,7 +1572,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           }
           const castHolds = (condition: TriggerCondition) => layoutHolds(condition, cast.frame)
           const castDistanceMeters = targetDistanceAt(cast.frame)
-          for (const hit of cast.skill.hits) {
+          for (const hit of cast.skill.hits.filter((candidate) =>
+            hitConditionsHold(candidate, castHolds),
+          )) {
             const hitFrame = hitLandingFrame(
               cast.frame,
               resolvedHitFrame(hit, castHolds, castDistanceMeters) + cast.midCastExtraFrames,
@@ -2149,7 +2154,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             if (sub) {
               const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
               const subDistanceMeters = targetDistanceAt(frame)
-              for (const subHit of sub.hits) {
+              for (const subHit of sub.hits.filter((candidate) =>
+                hitConditionsHold(candidate, subHolds),
+              )) {
                 queue.push({
                   frame: hitLandingFrame(
                     frame,
@@ -2170,7 +2177,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (!sub) continue
         const subHolds = (condition: TriggerCondition) => conditionHolds(condition, frame)
         const subDistanceMeters = targetDistanceAt(frame)
-        for (const subHit of sub.hits) {
+        for (const subHit of sub.hits.filter((candidate) =>
+          hitConditionsHold(candidate, subHolds),
+        )) {
           queue.push({
             frame: hitLandingFrame(frame, resolvedHitFrame(subHit, subHolds, subDistanceMeters)),
             seq: seq++,

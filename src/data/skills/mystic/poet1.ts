@@ -1,9 +1,9 @@
-import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
+import { defineSkill } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
-import { SKILL, DEBUFF } from "./ids"
+import { SKILL } from "./ids"
 import { BUFF } from "../buffs/ids"
+import { poetFirstStrikeHits } from "./poetStrikeHits"
 
 export const poet1 = defineSkill({
   id: SKILL.poet1,
@@ -21,23 +21,7 @@ export const poet1 = defineSkill({
   // an assumption (the class's own default melee reach).
   approach: "stationary",
   triggersBuffs: [BUFF.poetFinalStrikeStack],
-  hits: [
-    hit(0, {
-      frame: 0,
-      physMultiplier: 1.02325,
-      attributeMultiplier: 1.534875,
-      physFixed: 153.82,
-      attributeFixed: 0,
-      triggers: [
-        applyDebuff({
-          target: DEBUFF.combustion,
-          stacks: 0,
-          extendFrames: 90,
-          extendOnly: true,
-        }),
-      ],
-    }),
-  ],
+  hits: poetFirstStrikeHits(),
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-30T00:00:00.000Z",
 })
