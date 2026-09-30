@@ -53,6 +53,7 @@ export default defineRotation({
     { skillId: "bellstrikeUmbra-deflect-cancel" },
     { skillId: "bellstrikeUmbra-spearspecial-1-hit-cancel" },
     { skillId: "bellstrikeUmbra-spearq-5-hit-cancel" },
+    { skillId: "bellstrikeUmbra-deflect-cancel" },
     { skillId: "bellstrikeUmbra-swordspecial-4-hit" },
     { skillId: "bellstrikeUmbra-sword-charge-stage-1-2-hit" },
     { skillId: "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel" },
