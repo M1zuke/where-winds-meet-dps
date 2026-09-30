@@ -66,7 +66,6 @@ import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
-import { rotationDurationSec } from "./rotationDuration"
 
 interface Props {
   inputs: Inputs
@@ -233,10 +232,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const effectiveAverageFps =
     pingFpsOverride?.averageFps ?? activeRotation?.averageFps ?? DEFAULT_AVERAGE_FPS
 
-  const computedDurationSec = useMemo(
-    () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
-    [activeRotation, skillsById, result],
-  )
+  const computedDurationSec = result.rotationDuration
 
   const diagnostics = useMemo(() => {
     if (!isCustom || !activeRotation) return []
