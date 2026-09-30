@@ -2,12 +2,50 @@ import { describe, expect, it } from "vitest"
 import {
   DEFAULT_AVERAGE_FPS,
   DEFAULT_PING_MS,
-  hasValidPingAndFps,
   isValidAverageFps,
   isValidPingMs,
   resolveAverageFps,
   resolvePingMs,
 } from "../../src/engine/pingFps"
+import { makeRotation } from "../../src/engine/rotation"
+import { defineRotation } from "../../src/definitions/rotations/rotationDef"
+import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
+
+describe("the ping/fps defaults every rotation of every class starts from", () => {
+  it("are 10 ms and 250 fps", () => {
+    expect(DEFAULT_PING_MS).toBe(10)
+    expect(DEFAULT_AVERAGE_FPS).toBe(250)
+  })
+
+  it("are what makeRotation fills in for a rotation with no ping/fps of its own", () => {
+    const rotation = makeRotation("bellstrikeUmbra")
+    expect(rotation.pingMs).toBe(10)
+    expect(rotation.averageFps).toBe(250)
+  })
+
+  it("are what defineRotation fills in for a built-in rotation with no ping/fps of its own", () => {
+    const rotation = defineRotation({
+      id: "test-rotation",
+      name: "Test",
+      classId: "bellstrikeUmbra",
+      steps: [],
+      permanentBuffIds: [],
+      createdAt: "",
+      updatedAt: "",
+    })
+    expect(rotation.pingMs).toBe(10)
+    expect(rotation.averageFps).toBe(250)
+  })
+
+  it("are what every built-in rotation resolves to through the registry", () => {
+    const builtins = builtinRotationsForClass("bellstrikeUmbra")
+    expect(builtins.length).toBeGreaterThan(0)
+    for (const rotation of builtins) {
+      expect(rotation.pingMs).toBe(10)
+      expect(rotation.averageFps).toBe(250)
+    }
+  })
+})
 
 describe("isValidPingMs / isValidAverageFps", () => {
   it("accepts a whole ping within range and rejects one outside it or fractional", () => {
@@ -23,23 +61,6 @@ describe("isValidPingMs / isValidAverageFps", () => {
     expect(isValidAverageFps(360)).toBe(true)
     expect(isValidAverageFps(9.9)).toBe(false)
     expect(isValidAverageFps(360.1)).toBe(false)
-  })
-})
-
-describe("hasValidPingAndFps — the shared required-input gate", () => {
-  it("is false while either value is null", () => {
-    expect(hasValidPingAndFps(null, null)).toBe(false)
-    expect(hasValidPingAndFps(50, null)).toBe(false)
-    expect(hasValidPingAndFps(null, 60)).toBe(false)
-  })
-
-  it("is false while a set value is out of range", () => {
-    expect(hasValidPingAndFps(-1, 60)).toBe(false)
-    expect(hasValidPingAndFps(50, 5)).toBe(false)
-  })
-
-  it("is true once both are set to a value in range", () => {
-    expect(hasValidPingAndFps(50, 60)).toBe(true)
   })
 })
 

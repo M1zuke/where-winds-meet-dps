@@ -15,8 +15,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
 import { makeDebuff } from "../../src/engine/debuff"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { defaultCombatSettings } from "../../src/engine/types"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import type { QiBreakWindow, TimelineEvent } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
@@ -462,17 +462,19 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
     hits: probeHits,
   })
 
-  function probeRun(qiBreakOverride: QiBreakWindow | null) {
-    return runEngine({
-      ...umbraInputs,
-      set: null,
-      customSkills: [probeSkill],
-      customDebuffs: [probeDot],
-      activeCustomRotation: makeRotation("bellstrikeUmbra", {
-        steps: [makeStep({ skillId: probeSkill.id })],
-      }),
-      combatSettings: { ...defaultCombatSettings(), qiBreakOverride },
-    }).timeline!
+  function probeRun(qiBreakWindow: QiBreakWindow) {
+    return runEngine(
+      {
+        ...umbraInputs,
+        set: null,
+        customSkills: [probeSkill],
+        customDebuffs: [probeDot],
+        activeCustomRotation: makeRotation("bellstrikeUmbra", {
+          steps: [makeStep({ skillId: probeSkill.id })],
+        }),
+      },
+      { fixedQiBreaks: [qiBreakWindow] },
+    ).timeline!
   }
 
   it("scales every probe event inside the break window by 1.1, and leaves the rest untouched", () => {

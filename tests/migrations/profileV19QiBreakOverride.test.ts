@@ -186,7 +186,7 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
     const imported = importProfile(
       JSON.stringify(profileWithQiBreak({ enabled: true, ...ROTATION_WINDOW })),
     )
-    expect(imported.inputs.combatSettings!.qiBreakOverride).toBeNull()
+    expect(legacyCombat(imported).qiBreakOverride).toBeNull()
     expect("qiBreak" in imported.inputs.combatSettings!).toBe(false)
   })
 
@@ -196,7 +196,7 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
         profileWithQiBreak({ enabled: true, startSec: 20, durationSec: 8, lowQiLeadSec: 2 }),
       ),
     )
-    expect(imported.inputs.combatSettings!.qiBreakOverride).toEqual({
+    expect(legacyCombat(imported).qiBreakOverride).toEqual({
       startSec: 20,
       durationSec: 8,
       lowQiLeadSec: 2,
@@ -209,6 +209,6 @@ describe("hydrateInputs backstop — a bare import never walks the chain", () =>
         profileWithQiBreak({ enabled: true, startSec: 25, durationSec: 10, lowQiLeadSec: 5 }),
       ),
     )
-    expect(imported.inputs.combatSettings!.qiBreakOverride).toBeNull()
+    expect(legacyCombat(imported).qiBreakOverride).toBeNull()
   })
 })

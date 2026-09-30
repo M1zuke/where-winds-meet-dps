@@ -14,7 +14,8 @@ import {
   hitDealsDamage,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff, type StackScaling } from "../../src/engine/buff"
 import { makeDebuff, type Debuff, type DotStackShape } from "../../src/engine/debuff"
 import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"

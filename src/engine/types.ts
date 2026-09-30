@@ -59,8 +59,6 @@ export interface QiBreakWindow {
 // (`Inputs.divinecraft`), Vulnerability is the tank spear debuff
 // (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
-  /** `null` leaves each rotation running the break window it carries itself. */
-  qiBreakOverride: QiBreakWindow | null
   dragonsBreath: boolean
   healerBuff: boolean
   healerPanaceaFan: boolean
@@ -77,7 +75,6 @@ export interface CombatSettings {
 
 export function defaultCombatSettings(): CombatSettings {
   return {
-    qiBreakOverride: null,
     dragonsBreath: false,
     healerBuff: false,
     healerPanaceaFan: false,
@@ -158,14 +155,14 @@ export interface Inputs {
   arsenalScores: ArsenalScores
   dummyMode: boolean
 
-  // `null` = not set yet; the engine reads that as 0 ms / 60 fps
-  // (`resolvePingMs` / `resolveAverageFps`, `src/engine/pingFps.ts`).
-  pingMs: number | null
-  averageFps: number | null
-
   rotation: string | null
 
   selectedBuiltinRotationId?: string | null
+
+  // A per-profile ping/FPS edit for a built-in rotation, keyed by that
+  // rotation's id — a built-in's own file is never edited, so the user's
+  // change lives here instead (docs/TIMELINE.md § "Coefficients").
+  builtinRotationPingFpsOverrides?: Record<string, { pingMs: number; averageFps: number }>
 
   graduationBuildId?: string | null
 
@@ -353,12 +350,16 @@ export interface EngineRunOptions {
   collect?: "full" | "totals"
   // A prior run's own converged Qi breaks (docs/UI.md § "The rules",
   // "warm-start") — seeds the first pass of the fixed-point iteration instead
-  // of the rotation's authored window. Ignored in manual mode.
+  // of the rotation's authored window.
   qiScheduleSeedBreaks?: readonly {
     startFrame: number
     endFrame: number
     immuneUntilFrame: number
   }[]
+  // Test-harness only: pins the Qi schedule to exactly these windows for a
+  // single pass, no fixed-point iteration. Never read from `Inputs`, storage
+  // or the UI.
+  fixedQiBreaks?: readonly QiBreakWindow[]
 }
 
 export interface Result {
@@ -382,8 +383,7 @@ export interface Result {
   // A coarse, sampled Qi fraction over time, for a future chart — never
   // persisted.
   qiTrace?: readonly { timeSec: number; fraction: number }[]
-  // How many fixed-point passes the simulated schedule took to converge (1 in
-  // manual mode).
+  // How many fixed-point passes the simulated schedule took to converge.
   qiIterations?: number
   casts?: RotationCast[]
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the

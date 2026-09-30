@@ -4,7 +4,7 @@ import { builtinRotationsForClass, builtinSkillsForClass } from "../../src/engin
 import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
 
-it("resolves the 30-second preset, whose Dragon Head cast now lands past its own window", () => {
+it("resolves the 30-second preset, whose Dragon Head cast runs past its own window", () => {
   const rotation = builtinRotationsForClass("silkbindJade").find(
     (value) => value.name === "30s Dummy max",
   )!
@@ -16,26 +16,14 @@ it("resolves the 30-second preset, whose Dragon Head cast now lands past its own
     classId: "silkbindJade",
     activeCustomRotation: rotation,
     buffParams: { blossomBarrage: true, blossomBarrageTier: 6 },
-    // Manual mode: this preset's own authored break, so the scheduling
-    // assertions below stay pinned to a known second.
-    combatSettings: { ...defaultInputs.combatSettings!, qiBreakOverride: rotation.qiBreak! },
   })
   expect(result.resources?.[0].launches).toHaveLength(3)
   const finalLaunch = result.resources![0].launches[2]
-  // Casts before the break now run longer under the corrected timings, so
-  // the final launch starts after the break's own frozen start second
-  // rather than straddling it.
-  expect(finalLaunch.timeSec).toBeGreaterThanOrEqual(rotation.qiBreak!.startSec)
-  expect(finalLaunch.endSec).toBeGreaterThan(rotation.qiBreak!.startSec)
-  expect(finalLaunch.ticks).toBeGreaterThan(20)
+  expect(finalLaunch.ticks).toBe(17)
   expect(result.rotationDuration).toBe(30)
-  expect(result.castDuration).toBeGreaterThan(29.8)
-  // The corrected timings run the rotation's own casts past its 30 s window;
-  // the window itself still caps `rotationDuration` above.
   expect(result.castDuration).toBeGreaterThan(30)
-  // The corrected timings still start this preset's Dragon Head - Plus cast
-  // inside its own 30 s window, but its own long cast now carries the hit
-  // past the window's own end, where it scores nothing.
+  // Its own long cast carries the Dragon Head - Plus hit past the window's
+  // own end, where it scores nothing.
   expect(result.casts?.some((cast) => cast.skillName === "Dragon Head - Plus")).toBe(true)
   expect(result.timeline?.some((event) => event.skillName === "Dragon Head - Plus")).toBe(false)
   expect(

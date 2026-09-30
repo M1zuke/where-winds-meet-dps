@@ -5,10 +5,10 @@ import { defineResource } from "../../src/definitions/resources/resourceDef"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeSkill, makeHit } from "../../src/engine/skill"
 import { makeDebuff } from "../../src/engine/debuff"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
-import { defaultCombatSettings } from "../../src/engine/types"
 
 const classId = "fictionalResourceClass"
 const resource = defineResource({
@@ -87,20 +87,19 @@ function run(
     fixedWindowSec: steps.length,
     steps: steps.map((skill) => makeStep({ skillId: skill.id })),
   })
-  return simulateTimeline({
-    ...defaultInputs,
-    classId,
-    activeCustomRotation: rotation,
-    customSkills: [launch, filler, tick],
-    customDebuffs: [projectileDebuff],
-    resourceSettings: { energy: { opening, gains: {}, exhaustedGainPerTick: refund } },
-    // Manual mode: a fixed, clock-driven exhausted window, deterministic
-    // regardless of this fictional rotation's own (near-zero) damage.
-    combatSettings: {
-      ...defaultCombatSettings(),
-      qiBreakOverride: { startSec: 1, durationSec: 2, lowQiLeadSec: 0 },
+  return simulateTimeline(
+    {
+      ...defaultInputs,
+      classId,
+      activeCustomRotation: rotation,
+      customSkills: [launch, filler, tick],
+      customDebuffs: [projectileDebuff],
+      resourceSettings: { energy: { opening, gains: {}, exhaustedGainPerTick: refund } },
     },
-  })
+    // A fixed, clock-driven exhausted window, deterministic regardless of
+    // this fictional rotation's own (near-zero) damage.
+    { fixedQiBreaks: [{ startSec: 1, durationSec: 2, lowQiLeadSec: 0 }] },
+  )
 }
 
 describe("resource-driven timeline", () => {

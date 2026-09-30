@@ -15,15 +15,12 @@ export interface StandardizedInnerWay {
 
 export type StandardizedEncounter = Pick<
   Inputs,
-  | "dummyMode"
-  | "food"
-  | "divinecraft"
-  | "shareDebuff5HenZhi"
-  | "shareEasyHurt"
-  | "pingMs"
-  | "averageFps"
+  "dummyMode" | "food" | "divinecraft" | "shareDebuff5HenZhi" | "shareEasyHurt"
 > &
-  Omit<CombatSettings, "qiBreakOverride">
+  CombatSettings & {
+    pingMs: number
+    averageFps: number
+  }
 
 export interface StandardizedGraduation {
   encounter?: Partial<StandardizedEncounter>

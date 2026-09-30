@@ -251,26 +251,23 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
   })
 
-  it("loadProfiles heals a profile saved before pingMs/averageFps existed to null, not a default", () => {
-    const { pingMs: _droppedPing, averageFps: _droppedFps, ...withoutPingFps } = defaultInputs
-    void _droppedPing
-    void _droppedFps
+  it("loadProfiles never invents pingMs/averageFps on a profile that never had them", () => {
     localStorage.setItem(
       PROFILES_KEY,
       JSON.stringify({
         v: LATEST_PROFILES_VERSION,
-        profiles: [{ id: "p1", name: "Pre-Ping", inputs: withoutPingFps }],
+        profiles: [{ id: "p1", name: "Pre-Ping", inputs: defaultInputs }],
         activeId: "p1",
       }),
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.pingMs).toBeNull()
-    expect(profiles[0].inputs.averageFps).toBeNull()
+    expect("pingMs" in profiles[0].inputs).toBe(false)
+    expect("averageFps" in profiles[0].inputs).toBe(false)
   })
 
-  it("loadProfiles keeps a stored pingMs/averageFps number as-is", () => {
-    const inputs: Inputs = { ...defaultInputs, pingMs: 80, averageFps: 144 }
+  it("loadProfiles keeps a legacy stored pingMs/averageFps number as-is, unread by the engine", () => {
+    const inputs = { ...defaultInputs, pingMs: 80, averageFps: 144 }
     localStorage.setItem(
       PROFILES_KEY,
       JSON.stringify({
@@ -281,8 +278,8 @@ describe("profiles carry selections only — derived stats are never persisted",
     )
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.pingMs).toBe(80)
-    expect(profiles[0].inputs.averageFps).toBe(144)
+    expect((profiles[0].inputs as unknown as { pingMs: number }).pingMs).toBe(80)
+    expect((profiles[0].inputs as unknown as { averageFps: number }).averageFps).toBe(144)
   })
 
   it("loadProfiles heals a profile saved before preferredDistanceMeters existed to the default 3 m", () => {
@@ -326,6 +323,79 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),
     )
+  })
+
+  it("keeps a built-in rotation ping/fps override across a save and reload, and only for its own id", () => {
+    const overrides = {
+      "builtin-a": { pingMs: 80, averageFps: 144 },
+      "builtin-b": { pingMs: 20, averageFps: 120 },
+    }
+    const profile = makeProfile("p1", {
+      ...defaultInputs,
+      builtinRotationPingFpsOverrides: overrides,
+    })
+    saveProfiles({ profiles: [profile], activeId: profile.id })
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toEqual(overrides)
+  })
+
+  it("keeps a built-in rotation ping/fps override across an export and import, and only for its own id", () => {
+    const overrides = {
+      "builtin-a": { pingMs: 80, averageFps: 144 },
+      "builtin-b": { pingMs: 20, averageFps: 120 },
+    }
+    const profile = makeProfile("p1", {
+      ...defaultInputs,
+      builtinRotationPingFpsOverrides: overrides,
+    })
+
+    const imported = importProfile(exportProfile(profile))
+
+    expect(imported.inputs.builtinRotationPingFpsOverrides).toEqual(overrides)
+  })
+
+  it("loadProfiles drops an invalid stored built-in override without touching a valid one for another id or any other profile data", () => {
+    const inputs: Inputs = {
+      ...defaultInputs,
+      breakthrough: 18,
+      builtinRotationPingFpsOverrides: {
+        "builtin-a": { pingMs: 80, averageFps: 144 },
+        "builtin-b": { pingMs: "not a number", averageFps: 999999 },
+      } as unknown as Inputs["builtinRotationPingFpsOverrides"],
+    }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Mixed Overrides", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toEqual({
+      "builtin-a": { pingMs: 80, averageFps: 144 },
+    })
+    expect(profiles[0].inputs.breakthrough).toBe(18)
+  })
+
+  it("loadProfiles heals a stored override map that isn't an object to no overrides at all", () => {
+    const inputs = {
+      ...defaultInputs,
+      builtinRotationPingFpsOverrides: "not an object",
+    } as unknown as Inputs
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Broken Overrides", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toBeUndefined()
   })
 })
 

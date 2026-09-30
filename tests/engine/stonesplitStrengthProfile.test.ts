@@ -9,22 +9,19 @@ import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import profileFile from "../migrations/testProfiles/v10/stonesplitStrength.json"
 
 describe("Stonesplit Strength — the captured build", () => {
-  // The default Qi break is the simulated schedule rather than the
-  // rotation's own fixed clock window, so this pin moves with the target's
-  // simulated Qi bar (docs/TIMELINE.md § "Qi bar").
   it("holds its measured dps and total damage", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(58971.8168715071)
-    expect(result.totalDamage).toBe(3538309.012290426)
+    expect(result.dps).toBe(58801.32830074913)
+    expect(result.totalDamage).toBe(3528079.698044948)
   })
 
   it("takes the board's last segment once the build reaches breakthrough 17", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const raised = { ...profile.inputs, breakthrough: 17 }
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(raised))))
-    expect(result.dps).toBe(59887.50145763614)
-    expect(result.totalDamage).toBe(3593250.0874581686)
+    expect(result.dps).toBe(59713.5198737863)
+    expect(result.totalDamage).toBe(3582811.1924271784)
   })
 
   it("reads the rotation and the four inner ways the profile stored", () => {

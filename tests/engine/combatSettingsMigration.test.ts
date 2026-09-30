@@ -13,6 +13,12 @@ import type { Inputs } from "../../src/engine/types"
 const PROFILES_KEY = "wwm.profiles"
 const PROFILES_VERSION = 4
 
+// A retired field, kept only as an untyped legacy value — never read by the
+// engine, but still round-tripped through storage.
+function legacyQiBreakOverride(settings: Inputs["combatSettings"]): unknown {
+  return (settings as unknown as Record<string, unknown>).qiBreakOverride
+}
+
 function writeProfilesBlob(inputsOverrides: Partial<Inputs>): void {
   const inputs: Omit<Inputs, "combatSettings"> & { combatSettings?: unknown } = {
     ...defaultInputs,
@@ -42,11 +48,11 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     expect(profiles[0].inputs.combatSettings).toEqual(defaultCombatSettings())
   })
 
-  it("leaves the Qi Break override OFF by default, so the rotation's own window runs", () => {
-    expect(defaultCombatSettings().qiBreakOverride).toBeNull()
+  it("no longer carries a Qi break override on the defaults — the rotation's own window always runs", () => {
+    expect("qiBreakOverride" in defaultCombatSettings()).toBe(false)
     writeProfilesBlob({})
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toBeNull()
+    expect("qiBreakOverride" in profiles[0].inputs.combatSettings!).toBe(false)
   })
 
   it("preserves a custom `combatSettings` object already on the blob (idempotent)", () => {
@@ -81,6 +87,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.combatSettings).toEqual({
       ...defaultCombatSettings(),
+      qiBreakOverride: null,
       revelryScript: true,
     })
   })
@@ -92,7 +99,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
+    expect(legacyQiBreakOverride(profiles[0].inputs.combatSettings)).toEqual({
       startSec: 30,
       durationSec: 12,
       lowQiLeadSec: 5,
@@ -106,7 +113,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
+    expect(legacyQiBreakOverride(profiles[0].inputs.combatSettings)).toEqual({
       startSec: 30,
       durationSec: 12,
       lowQiLeadSec: 3,
@@ -121,7 +128,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toBeNull()
+    expect(legacyQiBreakOverride(profiles[0].inputs.combatSettings)).toBeNull()
   })
 
   it("turns a legacy `enabled: false` into an active zero-length override", () => {
@@ -131,7 +138,7 @@ describe("combatSettings migration (additive field, no version bump)", () => {
       } as unknown as Inputs["combatSettings"],
     })
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings!.qiBreakOverride).toEqual({
+    expect(legacyQiBreakOverride(profiles[0].inputs.combatSettings)).toEqual({
       startSec: 25,
       durationSec: 0,
       lowQiLeadSec: 5,
@@ -151,7 +158,10 @@ describe("combatSettings migration (additive field, no version bump)", () => {
     })
     const { profiles } = loadProfiles()
     expect(profiles[0].inputs.divinecraft).toBe("fire")
-    expect(profiles[0].inputs.combatSettings).toEqual(defaultCombatSettings())
+    expect(profiles[0].inputs.combatSettings).toEqual({
+      ...defaultCombatSettings(),
+      qiBreakOverride: null,
+    })
     expect("fireOil" in profiles[0].inputs.combatSettings!).toBe(false)
   })
 

@@ -75,7 +75,8 @@ import { paramNumOf, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/pa
 import { DEFAULT_QI_BREAK_WINDOW } from "./qiBreak"
 import {
   QiBar,
-  manualQiSchedule,
+  fixedQiSchedule,
+  fixedQiScheduleFromWindows,
   qiBonusesFrom,
   qiFromDamage,
   sameQiBreaks,
@@ -247,25 +248,17 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   }
   const qiTargetHpMaxValue = qiTargetHpMax(qiTargetId, inputs.breakthrough)
 
-  // `qiBreakOverride` non-null means manual mode — one fixed window, run
-  // once. Null means simulated: the fixed-point iteration below seeds from
-  // the rotation's own authored window and re-runs until the break frames
-  // stop moving (docs/TIMELINE.md § "Qi bar", "Manual mode" / "Simulated
-  // mode").
-  const qiManualWindow = inputs.combatSettings?.qiBreakOverride ?? null
-  const qiSeedWindow = qiManualWindow ?? rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
-  const qiWarmStartBreaks = !qiManualWindow ? options?.qiScheduleSeedBreaks : undefined
-  let qiSchedule: QiSchedule = qiWarmStartBreaks
-    ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
-    : manualQiSchedule(
-        qiManualWindow
-          ? {
-              ...qiManualWindow,
-              durationSec: qiManualWindow.durationSec + qiBreakExtensionBonusSec,
-            }
-          : qiSeedWindow,
-        FPS,
-      )
+  // The fixed-point iteration below seeds from the rotation's own authored
+  // window (or a prior run's own converged breaks) and re-runs until the
+  // break frames stop moving (docs/TIMELINE.md § "Qi bar").
+  const qiSeedWindow = rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
+  const qiWarmStartBreaks = options?.qiScheduleSeedBreaks
+  const fixedQiBreaks = options?.fixedQiBreaks
+  let qiSchedule: QiSchedule = fixedQiBreaks
+    ? fixedQiScheduleFromWindows(fixedQiBreaks, FPS)
+    : qiWarmStartBreaks
+      ? warmStartQiSchedule(qiWarmStartBreaks, FPS)
+      : fixedQiSchedule(qiSeedWindow, FPS)
   // Every built-in rotation settles within 5 runs; 6 leaves one run of margin.
   const QI_MAX_ITERATIONS = 6
   // A warm-started seed is a prior run's own converged schedule, so if this
@@ -565,9 +558,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
-    const renderPeriodFrames = FPS / resolveAverageFps(inputs.averageFps)
+    const renderPeriodFrames = FPS / resolveAverageFps(rotation.averageFps)
     const oneClientFrameFrames = renderPeriodFrames
-    const pingRoundTripFrames = (resolvePingMs(inputs.pingMs) * FPS) / 1000
+    const pingRoundTripFrames = (resolvePingMs(rotation.pingMs) * FPS) / 1000
     const serverProcessingFrames = (SERVER_PROCESSING_MS * FPS) / 1000
     // `pingMs` at 0 is the app's own "assume no latency" baseline, not a
     // literal zero-latency connection — a real server always takes some
@@ -2565,11 +2558,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       qiIterations: qiIteration,
     }
 
-    // Manual mode runs exactly once — the fixed window, unchanged, is what
-    // every gate above already used. Simulated mode iterates until the break
-    // frames stop moving, seeding the next pass from this run's own bar
-    // (docs/TIMELINE.md § "Qi bar").
-    if (qiManualWindow) return result
+    if (fixedQiBreaks) return result
 
     const qiBreaksFrames = qiBar.breaksFrames()
     const qiConverged =

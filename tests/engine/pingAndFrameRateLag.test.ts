@@ -16,18 +16,23 @@ const CLASS = "bellstrikeUmbra"
 function timelineInputs(
   rotation: Rotation,
   skills: Skill[],
-  overrides: Partial<Inputs> = {},
+  overrides: Partial<Inputs> & { pingMs?: number; averageFps?: number } = {},
   buffs: Buff[] = [],
   debuffs: Debuff[] = [],
 ): Inputs {
+  const { pingMs, averageFps, ...rest } = overrides
   return {
     ...defaultInputs,
     classId: CLASS,
     customSkills: skills,
     customBuffs: buffs,
     customDebuffs: debuffs,
-    activeCustomRotation: rotation,
-    ...overrides,
+    activeCustomRotation: {
+      ...rotation,
+      ...(pingMs !== undefined ? { pingMs } : {}),
+      ...(averageFps !== undefined ? { averageFps } : {}),
+    },
+    ...rest,
   }
 }
 

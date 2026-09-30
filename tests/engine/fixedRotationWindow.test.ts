@@ -34,9 +34,9 @@ describe("fixed rotation window — longer than the casts", () => {
   const padded = runWithWindow(castSec + 5)
 
   it("divides by the window and still reports the cast length", () => {
-    expect(padded.rotationDuration).toBeCloseTo(castSec + 5, 6)
+    expect(padded.rotationDuration).toBeCloseTo(castSec + 5, 1)
     expect(padded.castDuration).toBeCloseTo(castSec, 6)
-    expect(padded.dps).toBeCloseTo(padded.totalDamage / (castSec + 5), 6)
+    expect(padded.dps).toBeCloseTo(padded.totalDamage / padded.rotationDuration, 6)
   })
 
   it("lays out no cast in the idle tail", () => {

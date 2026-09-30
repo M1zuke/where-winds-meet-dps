@@ -37,7 +37,7 @@ import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
-import { manualQiSchedule, type QiSchedule } from "../qiBar"
+import { fixedQiSchedule, type QiSchedule } from "../qiBar"
 
 export type BuffParams = Record<string, unknown>
 
@@ -121,8 +121,8 @@ export class BuffEngine {
   }
 
   // Absent — the case for a fixture or a unit test that probes `qiPhase`
-  // directly off `params` — the manual-mode factory stands in, built from the
-  // same clock-style params `paramsFromInputs` still seeds either way.
+  // directly off `params` — a fixed schedule stands in, built from the same
+  // clock-style params `paramsFromInputs` still seeds either way.
   attachQiSchedule(schedule: QiSchedule): void {
     this.qiSchedule = schedule
   }
@@ -136,7 +136,7 @@ export class BuffEngine {
       const bossBreakDuration = (params.bossBreakDuration as number) ?? 10
       const healerExt = (params.healerBreakExtension as number) ?? 0
       const fps = this.statuses?.fps ?? 60
-      this.defaultQiSchedule = manualQiSchedule(
+      this.defaultQiSchedule = fixedQiSchedule(
         {
           startSec: qiBreakTime,
           durationSec: bossBreakDuration + healerExt,

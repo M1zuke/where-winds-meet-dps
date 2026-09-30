@@ -3,12 +3,12 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
 import { makeSkill, makeHit } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { defaultInputs } from "../../src/engine/defaults"
 
 import { moraleDmgPerStack, moraleStacksAtTime } from "../../src/engine/buffs/morale"
 import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
 // § "Implemented classes").
@@ -65,9 +65,7 @@ describe("Morale Chant phys-penetration term", () => {
       ]),
       customSkills: [skill],
       activeCustomRotation: rotation,
-      // Manual mode: a fixed, clock-driven break window, deterministic
-      // regardless of this synthetic rotation's own damage.
-      combatSettings: { ...defaultCombatSettings(), qiBreakOverride: DEFAULT_QI_BREAK_WINDOW },
+      combatSettings: { ...defaultCombatSettings() },
     }
 
     const result = simulateTimeline(inputs)
@@ -75,13 +73,15 @@ describe("Morale Chant phys-penetration term", () => {
       .timeline!.filter((e) => e.skillName === "Test Weapon Hit")
       .sort((a, b) => a.frame - b.frame)
     expect(events).toHaveLength(3)
+    const breaks = result.qiBreaks ?? []
 
     for (const [i, tSec] of [T_ONE_STACK, T_FIVE_STACKS, T_QI_BREAK].entries()) {
       const stacks = moraleStacksAtTime(tSec, false)
       expect(stacks).toBeLessThanOrEqual(5)
       // The engine's own exhausted-phase independentDamageBoost is unrelated
-      // to Morale Chant and fires regardless of it.
-      const inQiBreak = tSec >= 25 && tSec < 35
+      // to Morale Chant and fires regardless of it — read off the run's own
+      // simulated breaks rather than assumed from a forced window.
+      const inQiBreak = breaks.some((qiBreak) => tSec >= qiBreak.startSec && tSec < qiBreak.endSec)
       const expected = computeSkillDamage(
         art("Test Weapon Hit") as never,
         buildContext({
@@ -98,7 +98,9 @@ describe("Morale Chant phys-penetration term", () => {
       expect(events[i].damage).toBeCloseTo(expected, 6)
     }
 
-    expect(events[2].damage).toBeGreaterThan(events[1].damage)
+    // Both samples sit at the 5-stack cap, so Morale Chant's own contribution
+    // is identical once neither is boosted by a Qi break landing on it.
+    expect(events[2].damage).toBe(events[1].damage)
   })
 
   it("does not double stacks or per-stack damage during the Qi break — the target is never controlled", () => {

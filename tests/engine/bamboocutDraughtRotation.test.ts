@@ -19,13 +19,12 @@ import { nightwickPrimepickFollowUpCancel } from "../../src/data/skills/bamboocu
 import { peakfallPrepull } from "../../src/data/skills/bamboocut-draught/peakfall-prepull"
 import { SKILL, DEBUFF, STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import type { EngineRunOptions, Inputs } from "../../src/engine/types"
 
-// Manual mode: a fixed exhausted window from the fight's very first frame,
-// deterministic regardless of these synthetic rotations' own damage.
-const EXHAUSTED_FROM_START_COMBAT_SETTINGS = {
-  ...defaultCombatSettings(),
-  qiBreakOverride: { startSec: 0, durationSec: 10, lowQiLeadSec: 0 },
+// A fixed exhausted window from the fight's very first frame, deterministic
+// regardless of these synthetic rotations' own damage.
+const EXHAUSTED_FROM_START_OPTIONS: EngineRunOptions = {
+  fixedQiBreaks: [{ startSec: 0, durationSec: 10, lowQiLeadSec: 0 }],
 }
 
 const CLASS = "bamboocutDraught"
@@ -52,21 +51,23 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
 
   it("pays the Drunkslay echo out on the second, third and fourth Hero's Blood", () => {
     const rotation = classDef.rotations.find((r) => r.id === classDef.defaultRotationId)!
-    const result = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: [
-        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
-        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-      activeCustomRotation: rotation,
-      // Manual mode: this rotation's own authored break, so the frame
-      // assertions below stay pinned to a known second.
-      combatSettings: { ...defaultCombatSettings(), qiBreakOverride: rotation.qiBreak! },
-      set: null,
-    })
+    const result = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: [
+          { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+          { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
+          { name: "", stacks: "" },
+          { name: "", stacks: "" },
+        ],
+        activeCustomRotation: rotation,
+        set: null,
+      },
+      // The rotation's own authored break, so the frame assertions below stay
+      // pinned to a known second.
+      { fixedQiBreaks: [rotation.qiBreak!] },
+    )
     const echoRow = result.perSkill.find((row) => row.name === "Drunkslay State")!
     expect(echoRow.count).toBe(3)
     const herosBloodFirstStrikeFrames = result
@@ -219,15 +220,17 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
       ...(alreadyInDeepdaze ? [makeStep({ skillId: grantDeepdaze.id })] : []),
       ...Array.from({ length: peakfalls }, () => makeStep({ skillId: SKILL.peakfall })),
     ]
-    return runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      customSkills: [grantDeepdaze],
-      mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
-      activeCustomRotation: makeRotation(CLASS, { steps }),
-      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
-      set: null,
-    })
+    return runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        customSkills: [grantDeepdaze],
+        mindMethods: withEonpour ? eonpourTier6 : defaultInputs.mindMethods,
+        activeCustomRotation: makeRotation(CLASS, { steps }),
+        set: null,
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
   }
 
   const deepdazeWindows = (result: ReturnType<typeof runEngine>) =>
@@ -252,22 +255,24 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
   })
 
   it("does not also fire Skyspeak's tier-3 grant on the same Exhausted hit that extends a running Deepdaze", () => {
-    const result = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      customSkills: [grantDeepdaze],
-      mindMethods: [
-        { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
-        { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "3" },
-        { name: "", stacks: "" },
-        { name: "", stacks: "" },
-      ],
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
-      }),
-      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
-      set: null,
-    })
+    const result = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        customSkills: [grantDeepdaze],
+        mindMethods: [
+          { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
+          { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "3" },
+          { name: "", stacks: "" },
+          { name: "", stacks: "" },
+        ],
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: grantDeepdaze.id }), makeStep({ skillId: SKILL.peakfall })],
+        }),
+        set: null,
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     const windows = deepdazeWindows(result)
     expect(windows).toHaveLength(1)
     expect(windows[0].endSec - windows[0].startSec).toBeCloseTo(11, 1)
@@ -284,32 +289,36 @@ describe("Peakfall on the Exhausted boss with Eonpour at tier 6", () => {
   })
 
   it("Castlink on the Exhausted boss fires the same trigger and shares the 60 s cooldown", () => {
-    const castlinkOnly = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: eonpourTier6,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.castlink })],
-        openingStacks: { [STATUS.consecutivePunches]: 1 },
-      }),
-      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
-      set: null,
-    })
+    const castlinkOnly = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: eonpourTier6,
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: SKILL.castlink })],
+          openingStacks: { [STATUS.consecutivePunches]: 1 },
+        }),
+        set: null,
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     expect(deepdazeWindows(castlinkOnly)).toHaveLength(1)
     expect(
       castlinkOnly.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),
     ).toHaveLength(1)
 
-    const peakfallThenCastlink = runEngine({
-      ...defaultInputs,
-      classId: CLASS,
-      mindMethods: eonpourTier6,
-      activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
-      }),
-      combatSettings: EXHAUSTED_FROM_START_COMBAT_SETTINGS,
-      set: null,
-    })
+    const peakfallThenCastlink = runEngine(
+      {
+        ...defaultInputs,
+        classId: CLASS,
+        mindMethods: eonpourTier6,
+        activeCustomRotation: makeRotation(CLASS, {
+          steps: [makeStep({ skillId: SKILL.peakfall }), makeStep({ skillId: SKILL.castlink })],
+        }),
+        set: null,
+      },
+      EXHAUSTED_FROM_START_OPTIONS,
+    )
     expect(deepdazeWindows(peakfallThenCastlink)).toHaveLength(1)
     expect(
       peakfallThenCastlink.buffWindows!.filter((window) => window.id === DEBUFF.strayhunt),

@@ -22,8 +22,7 @@ export interface TargetView {
   // Centre-to-centre distance to the target, in metres.
   distanceMeters: number
   // 1 at a full Qi bar, 0 while broken — the simulated schedule's own step
-  // function (docs/TIMELINE.md § "Qi bar"), the fixed window's synthetic one
-  // in manual mode.
+  // function (docs/TIMELINE.md § "Qi bar").
   qiFraction: number
   qiBroken: boolean
 }

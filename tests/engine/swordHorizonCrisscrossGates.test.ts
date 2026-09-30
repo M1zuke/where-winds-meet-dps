@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import type { Inputs } from "../../src/engine/types"
 

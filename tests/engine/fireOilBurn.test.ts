@@ -7,9 +7,9 @@ import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { graduationInputs } from "../../src/engine/graduation"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { makeHit, makeSkill } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { defaultCombatSettings } from "../../src/engine/types"
-import type { Inputs, QiBreakWindow, TimelineEvent } from "../../src/engine/types"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
+import type { Inputs, TimelineEvent } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const BURN_NAME = "Divinecraft - Fire"
@@ -99,19 +99,12 @@ describe("Fire Oil Burn — always the plain row", () => {
 
   it("scales by exactly the Exhausted factor when a tick lands inside the Qi-break window", () => {
     const seconds = Array.from({ length: 40 }, (_, index) => index)
-    const withBreak = runEngine(
-      probeInputs(seconds, {
-        combatSettings: { ...defaultCombatSettings(), qiBreakOverride: DEFAULT_QI_BREAK_WINDOW },
-      }),
-    )
-    const withoutBreak = runEngine(
-      probeInputs(seconds, {
-        combatSettings: {
-          ...defaultCombatSettings(),
-          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 } as QiBreakWindow,
-        },
-      }),
-    )
+    const withBreak = runEngine(probeInputs(seconds), {
+      fixedQiBreaks: [DEFAULT_QI_BREAK_WINDOW],
+    })
+    const withoutBreak = runEngine(probeInputs(seconds), {
+      fixedQiBreaks: [{ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 }],
+    })
     const withBreakTicks = burnTicks(withBreak.timeline)
     const withoutBreakTicks = burnTicks(withoutBreak.timeline)
     expect(withBreakTicks.length).toBe(withoutBreakTicks.length)

@@ -116,28 +116,46 @@ function scheduleFrom(
   }
 }
 
-// The manual-mode factory: one fixed break, from the rotation's authored
-// window or the encounter's own override — docs/TIMELINE.md § "Qi bar",
-// "Manual mode". `clockQiPhase`-equivalent, expressed as a schedule so every
-// gate reads the one interface regardless of mode.
-export function manualQiSchedule(
+// A single fixed break, from a window rather than a simulated bar —
+// `clockQiPhase`-equivalent, expressed as a schedule so every gate reads the
+// one interface. Seeds the fixed-point iteration's first pass and stands in
+// wherever no simulated schedule has been attached yet (docs/TIMELINE.md
+// § "Qi bar").
+export function fixedQiSchedule(
   window: { startSec: number; durationSec: number; lowQiLeadSec: number },
   fps: number,
 ): QiSchedule {
-  const startFrame = Math.round(window.startSec * fps)
-  const endFrame = startFrame + Math.round(Math.max(0, window.durationSec) * fps)
-  const breaks: QiBreak[] =
-    window.durationSec > 0 ? [{ startFrame, endFrame, immuneUntilFrame: endFrame }] : []
-  const lowQiStartFrame = Math.round(Math.max(0, window.startSec - window.lowQiLeadSec) * fps)
-  const hasLowQiLead = window.durationSec > 0 && window.lowQiLeadSec > 0
+  return fixedQiScheduleFromWindows([window], fps)
+}
+
+// The `EngineRunOptions.fixedQiBreaks` test harness: every window becomes its
+// own break, unioned into one schedule; only the first window contributes a
+// low-Qi lead, the same rule a single-window call already follows.
+export function fixedQiScheduleFromWindows(
+  windows: readonly { startSec: number; durationSec: number; lowQiLeadSec: number }[],
+  fps: number,
+): QiSchedule {
+  const breaks: QiBreak[] = windows
+    .filter((window) => window.durationSec > 0)
+    .map((window) => {
+      const startFrame = Math.round(window.startSec * fps)
+      const endFrame = startFrame + Math.round(window.durationSec * fps)
+      return { startFrame, endFrame, immuneUntilFrame: endFrame }
+    })
+  const [firstWindow] = windows
+  const hasLowQiLead = !!firstWindow && firstWindow.durationSec > 0 && firstWindow.lowQiLeadSec > 0
+  const firstBreakStartFrame = breaks[0]?.startFrame ?? 0
+  const lowQiStartFrame = hasLowQiLead
+    ? Math.round(Math.max(0, firstWindow.startSec - firstWindow.lowQiLeadSec) * fps)
+    : 0
   const fractionAt = (frame: number): number => {
     if (breaks.some((b) => frame >= b.startFrame && frame < b.endFrame)) return 0
-    if (hasLowQiLead && frame >= lowQiStartFrame && frame < startFrame)
+    if (hasLowQiLead && frame >= lowQiStartFrame && frame < firstBreakStartFrame)
       return COMPAT_LOW_QI_FRACTION - 0.01
     return 1
   }
   return scheduleFrom(breaks, fps, fractionAt, () =>
-    hasLowQiLead ? { startSec: lowQiStartFrame / fps, endSec: startFrame / fps } : null,
+    hasLowQiLead ? { startSec: lowQiStartFrame / fps, endSec: firstBreakStartFrame / fps } : null,
   )
 }
 

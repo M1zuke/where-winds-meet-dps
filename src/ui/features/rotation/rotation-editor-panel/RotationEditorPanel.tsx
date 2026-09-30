@@ -18,10 +18,11 @@ import {
   type Rotation,
   type RotationStep,
 } from "../../../../engine/rotation"
-import { activeRotationForInputs } from "../../../../engine/dps"
-import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engine/qiBreak"
-import type { QiBreakWindow } from "../../../../engine/types"
+import { activeRotationForInputs, builtinRotationPingFpsOverride } from "../../../../engine/dps"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
+import { DEFAULT_AVERAGE_FPS, DEFAULT_PING_MS } from "../../../../engine/pingFps"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { isPrePullSkill, type Skill } from "../../../../engine/skill"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
@@ -225,6 +226,12 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const selectedBuiltin = !isCustom
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
+  const pingFpsOverride = activeRotation
+    ? builtinRotationPingFpsOverride(inputs, activeRotation.id)
+    : null
+  const effectivePingMs = pingFpsOverride?.pingMs ?? activeRotation?.pingMs ?? DEFAULT_PING_MS
+  const effectiveAverageFps =
+    pingFpsOverride?.averageFps ?? activeRotation?.averageFps ?? DEFAULT_AVERAGE_FPS
 
   const computedDurationSec = useMemo(
     () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
@@ -309,11 +316,24 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
-  function setQiBreak(patch: Partial<typeof DEFAULT_QI_BREAK_WINDOW>) {
-    commitRotation((rotation) => ({
-      ...rotation,
-      qiBreak: { ...(rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW), ...patch },
-    }))
+  function setRotationPingFps(pingMs: number, averageFps: number) {
+    if (isCustom) {
+      commitRotation((rotation) => ({ ...rotation, pingMs, averageFps }))
+      return
+    }
+    if (!activeRotation) return
+    onChange({
+      ...inputs,
+      builtinRotationPingFpsOverrides: {
+        ...inputs.builtinRotationPingFpsOverrides,
+        [activeRotation.id]: { pingMs, averageFps },
+      },
+    })
+  }
+  function resetPingFpsOverride() {
+    if (!activeRotation) return
+    const { [activeRotation.id]: _dropped, ...rest } = inputs.builtinRotationPingFpsOverrides ?? {}
+    onChange({ ...inputs, builtinRotationPingFpsOverrides: rest })
   }
   function setFixedWindowSec(windowSec: number | undefined) {
     commitRotation((rotation) => {
@@ -345,6 +365,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       openingStacks: { ...activeRotation.openingStacks },
       qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
       fixedWindowSec: activeRotation.fixedWindowSec,
+      pingMs: effectivePingMs,
+      averageFps: effectiveAverageFps,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -508,6 +530,31 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 )}
               </span>
             </label>
+            <label className={styles.field}>
+              <span>{t("rotation.editor.pingAndFps")}</span>
+              <span className={styles.fixedWindow}>
+                <PingFpsFields
+                  pingMs={effectivePingMs}
+                  averageFps={effectiveAverageFps}
+                  onPingMsChange={(next) =>
+                    next !== null && setRotationPingFps(next, effectiveAverageFps)
+                  }
+                  onAverageFpsChange={(next) =>
+                    next !== null && setRotationPingFps(effectivePingMs, next)
+                  }
+                />
+                {pingFpsOverride && (
+                  <button
+                    type="button"
+                    className="btn icon"
+                    onClick={resetPingFpsOverride}
+                    title={t("rotation.editor.overridden")}
+                  >
+                    {t("common.resetToDefault")}
+                  </button>
+                )}
+              </span>
+            </label>
             <div className={styles.actions}>
               {isCustom ? (
                 <>
@@ -551,12 +598,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
-            <QiBreakRow
-              window={resolveQiBreakWindow(inputs.combatSettings, activeRotation.qiBreak)}
-              overridden={!!inputs.combatSettings?.qiBreakOverride}
-              onChange={isCustom ? setQiBreak : null}
-              computedFirstBreakSec={result.qiBreaks?.[0]?.startSec ?? null}
-            />
+            <QiBreakRow breaks={result.qiBreaks ?? []} />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
                 key={buff.id}
@@ -729,67 +771,36 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 }
 
-function QiBreakRow({
-  window,
-  overridden,
-  onChange,
-  computedFirstBreakSec,
-}: {
-  window: QiBreakWindow
-  overridden: boolean
-  onChange: ((patch: Partial<QiBreakWindow>) => void) | null
-  computedFirstBreakSec: number | null
-}) {
+function QiBreakRow({ breaks }: { breaks: readonly { startSec: number; endSec: number }[] }) {
   const { t } = useI18n()
-  const editable = onChange !== null && !overridden
-  const rowClassName = [styles.entry, styles.qiBreakRow, editable ? "" : styles.qiBreakRowLocked]
-    .filter(Boolean)
-    .join(" ")
-  const note = overridden
-    ? t("rotation.editor.overridden")
-    : window.durationSec === 0
-      ? t("rotation.editor.noExhaustedPhase")
-      : ""
-  const field = (label: string, value: number, patch: (next: number) => Partial<QiBreakWindow>) => (
-    <span className={styles.headField}>
-      <span className={styles.headCap}>{label}</span>
-      <NumInput value={value} onChange={(next) => onChange?.(patch(next))} disabled={!editable} />
-    </span>
-  )
+  const rowClassName = [styles.entry, styles.qiBreakRow, styles.qiBreakRowLocked].join(" ")
   return (
-    <div
-      className={rowClassName}
-      title={
-        overridden
-          ? t("rotation.editor.overriddenFromEncounterSettings")
-          : onChange
-            ? undefined
-            : t("rotation.editor.qiBreakReadonly")
-      }
-    >
+    <div className={rowClassName} title={t("rotation.editor.qiBreakReadonly")}>
       <div className={styles.idx}>—</div>
       <span className={styles.openingBadge}>{t("common.qiBreak")}</span>
       <span className={styles.skillStatic}>{t("common.qiBreakWindow")}</span>
-      {note ? (
-        <span className={overridden ? styles.overrideFlag : styles.rowNote}>{note}</span>
-      ) : (
-        <>
-          <span />
-          <span />
-        </>
-      )}
+      <span />
+      <span />
       <div className={styles.headControls}>
-        {field(t("common.startS"), window.startSec, (next) => ({ startSec: next }))}
-        {field(t("common.durationS"), window.durationSec, (next) => ({ durationSec: next }))}
-        {field(t("common.lowQiLeadS"), window.lowQiLeadSec, (next) => ({ lowQiLeadSec: next }))}
-        <span className={styles.headField}>
-          <span className={styles.headCap}>{t("rotation.editor.computedFirstBreak")}</span>
-          <span className={styles.durationDisplay}>
-            {computedFirstBreakSec === null
-              ? t("rotation.editor.computedFirstBreakNone")
-              : `${computedFirstBreakSec.toFixed(1)} s`}
+        {breaks.length === 0 ? (
+          <span className={styles.headField}>
+            <span className={styles.headCap}>{t("rotation.editor.computedBreak")}</span>
+            <span className={styles.durationDisplay}>
+              {t("rotation.editor.computedFirstBreakNone")}
+            </span>
           </span>
-        </span>
+        ) : (
+          breaks.map((qiBreak, index) => (
+            <span className={styles.headField} key={index}>
+              <span className={styles.headCap}>
+                {t("rotation.editor.computedBreak")} {index + 1}
+              </span>
+              <span className={styles.durationDisplay}>
+                {qiBreak.startSec.toFixed(1)}s – {qiBreak.endSec.toFixed(1)}s
+              </span>
+            </span>
+          ))
+        )}
       </div>
       <div className={styles.rowActions} />
     </div>

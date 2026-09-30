@@ -1,4 +1,4 @@
-import type { CombatSettings, QiBreakWindow } from "./types"
+import type { QiBreakWindow } from "./types"
 
 export const DEFAULT_QI_BREAK_WINDOW: QiBreakWindow = {
   startSec: 25,
@@ -6,11 +6,8 @@ export const DEFAULT_QI_BREAK_WINDOW: QiBreakWindow = {
   lowQiLeadSec: 5,
 }
 
-export function resolveQiBreakWindow(
-  combatSettings: CombatSettings | undefined,
-  rotationWindow: QiBreakWindow | undefined,
-): QiBreakWindow {
-  return combatSettings?.qiBreakOverride ?? rotationWindow ?? DEFAULT_QI_BREAK_WINDOW
+export function resolveQiBreakWindow(rotationWindow: QiBreakWindow | undefined): QiBreakWindow {
+  return rotationWindow ?? DEFAULT_QI_BREAK_WINDOW
 }
 
 export function sameQiBreakWindow(left: QiBreakWindow, right: QiBreakWindow): boolean {

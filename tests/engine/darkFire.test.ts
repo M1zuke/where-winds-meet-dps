@@ -6,10 +6,10 @@
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
-import { builtinDebuff, builtinSkill, dotRow } from "../builtins"
+import { builtinDebuff, builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
 import { SKILL as UMBRA_SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
 import { makeSkill, makeHit, type StatusCondition } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
 

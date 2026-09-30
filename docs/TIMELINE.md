@@ -47,7 +47,11 @@ on the 60 fps grid. Rules:
   zero-round-trip waiver applies. The engine adds every resolved wait ahead of
   or within a cast and quantises every cast's start, length and hit offset to
   the input frame rate on top of the authored data — never baked into a skill
-  module.
+  module. The round trip and the input frame rate both come from the active
+  rotation's own connection fields, never from the profile: every rotation
+  carries its own ping and average frame rate, a built-in rotation's own
+  values overridable per profile, and the engine reads nothing else for
+  either.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 - **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
   a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage
@@ -251,9 +255,8 @@ Rules:
   and both passes resolve it against the same ledger state.
 - **A trigger may be bound to a Qi phase** (`phase`): it fires only when the
   Qi schedule's phase at its frame — the simulated bar's own break and low-Qi
-  span in the default mode, the fixed clock window in manual mode, never a
-  status — is the named one. A stagger or control state the source material
-  gates on is expressed as the `exhausted` phase.
+  span, never a status — is the named one. A stagger or control state the
+  source material gates on is expressed as the `exhausted` phase.
 - **A trigger may require a build-level param and tier** (`requiresParam`,
   `requiresMinTier`): it fires only while the build carries that param, and at
   or above that tier when given — the per-trigger counterpart of a status's
@@ -696,11 +699,9 @@ pass 2, in time order, alongside `totalDamage`.
   cap is reached — seeded from the rotation's own authored break, which
   already sits close in every validated case. A run that reaches the cap
   without converging keeps the last schedule and reports a warning, never an
-  error.
-- **A non-null encounter override means manual mode**: one fixed window, no
-  iteration, and every gate that phase-checks time reads the clock-driven view
-  of it — deterministic and reproducible for a fixture. Null means simulated,
-  the default.
+  error. A test-harness-only run option may pin the schedule to an exact set
+  of windows for one pass with no iteration; it is never read from `Inputs`,
+  storage or the UI.
 - **The bar starts at its capacity; a hit landing while it is at zero deals
   no Qi**, the mass lost outright. The event that brings it to zero opens a
   timed break; at the break's end the bar is set back to a refill value and,

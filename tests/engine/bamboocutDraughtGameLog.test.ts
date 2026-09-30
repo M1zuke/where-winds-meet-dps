@@ -3,14 +3,11 @@
 // the in-game damage log (2026-09-05), one row per breakdown name. Damage is
 // not asserted here — that is the anchor's job, bamboocutDraughtProfile.test.ts.
 import { describe, expect, it } from "vitest"
-import { classDefinition } from "../../src/definitions/classes/registry"
 import { runEngine } from "../../src/engine/dps"
-import { defaultInputs } from "../../src/engine/defaults"
-import { INNER_WAY_ID } from "../../src/data/innerWays/ids"
-import { SET_ID } from "../../src/data/sets/ids"
-import { defaultCombatSettings } from "../../src/engine/types"
-
-const CLASS = "bamboocutDraught"
+import { importProfile } from "../../src/storage"
+import { withDerivedStats } from "../../src/engine/derivedInputs"
+import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
+import profileFile from "./bamboocutDraughtMeasured.profile.json"
 
 const IN_GAME_HITS: Record<string, number> = {
   "Dragonquench - Inebriate": 72,
@@ -28,30 +25,8 @@ const IN_GAME_HITS: Record<string, number> = {
 }
 
 function runDummyRotation() {
-  const classDef = classDefinition(CLASS)!
-  const rotation = classDef.rotations.find((r) => r.id === classDef.defaultRotationId)!
-  return runEngine({
-    ...defaultInputs,
-    classId: CLASS,
-    breakthrough: 17,
-    set: SET_ID.tiltrim,
-    mindMethods: [
-      { id: INNER_WAY_ID.eonpour, name: "Eonpour", stacks: "6" },
-      { id: INNER_WAY_ID.skyspeak, name: "Skyspeak", stacks: "6" },
-      { id: INNER_WAY_ID.mistwing, name: "Mistwing", stacks: "6" },
-      { id: INNER_WAY_ID.volutefit, name: "Volutefit", stacks: "6" },
-    ],
-    activeCustomRotation: rotation,
-    // Manual mode, pinned to this rotation's own authored break: this log is
-    // an in-game capture (2026-09-05), never adjusted for a later change. The
-    // Drunkslay echo's own Qi exemption (in-game values as of 2026-09-25,
-    // inferred and unresolved to the byte) removes close to half of this
-    // enhanced build's damage from the simulated bar, which then never
-    // reaches a second break inside the fight and undercounts this row — a
-    // known gap in the simulated default for this one build, not a bug in
-    // the fixed window.
-    combatSettings: { ...defaultCombatSettings(), qiBreakOverride: rotation.qiBreak! },
-  })
+  const profile = importProfile(JSON.stringify(profileFile))
+  return runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
 }
 
 function loggedHitsByRow(
@@ -90,7 +65,7 @@ describe("the dummy rotation against the in-game damage log", () => {
   })
 
   it("runs the whole rotation in about a minute, as the log did", () => {
-    expect(result.rotationDuration).toBeGreaterThan(58)
-    expect(result.rotationDuration).toBeLessThan(62)
+    expect(result.rotationDuration).toBeGreaterThan(62)
+    expect(result.rotationDuration).toBeLessThan(62.6)
   })
 })

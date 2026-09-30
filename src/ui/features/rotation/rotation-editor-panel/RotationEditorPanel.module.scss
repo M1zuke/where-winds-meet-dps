@@ -391,26 +391,3 @@
 .openingRowReadonly .headCap {
   opacity: 0.55;
 }
-
-.rowNote,
-.overrideFlag {
-  grid-column: 4 / 6;
-  justify-self: start;
-  white-space: nowrap;
-}
-
-.rowNote {
-  font-size: 0.76em;
-  color: var(--color-text-faint);
-}
-
-.overrideFlag {
-  font-size: 0.7em;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-accent-bright);
-  border: 1px solid rgba(192, 160, 96, 0.5);
-  background: rgba(192, 160, 96, 0.1);
-  border-radius: 3px;
-  padding: 1px 6px;
-}

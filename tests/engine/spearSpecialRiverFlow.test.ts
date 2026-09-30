@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
 import { hitDealsDamage, makeSkill, makeHit, type Skill } from "../../src/engine/skill"
 import {
   EMPOWERED_MIN_BLEEDING_STACKS_FIVE_HIT_CANCEL,
@@ -13,7 +13,7 @@ import {
   SPRING_SURGE_BUFF_ID,
 } from "../../src/data/innerWays/wolfchasersArtGates"
 import type { Inputs, Result } from "../../src/engine/types"
-import { builtinSkill, dotRow } from "../builtins"
+import { builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { retiredRotation } from "./retiredRotations"
 import { BUFF } from "../../src/data/skills/buffs/ids"

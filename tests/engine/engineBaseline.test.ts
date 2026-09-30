@@ -10,7 +10,7 @@ import { existsSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 import { writeFixture } from "../writeFixture"
-import { activeRotationForInputs, runEngine } from "../../src/engine/dps"
+import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
@@ -21,7 +21,7 @@ import { defaultRotationForClass } from "../../src/engine/builtinLibrary"
 import { SET_ID } from "../../src/data/sets/ids"
 import { spearheavy } from "../../src/data/skills/bellstrike-umbra/spearheavy"
 import type { Skill } from "../../src/engine/skill"
-import type { Inputs, Result } from "../../src/engine/types"
+import type { Inputs, QiBreakWindow, Result } from "../../src/engine/types"
 import anchorProfileFile from "../migrations/testProfiles/v7/bellstrikeUmbra.json"
 
 // `import.meta.url` is an http URL under the jsdom environment, so the fixture
@@ -57,23 +57,16 @@ function anchorInputs(): Inputs {
   return loadProfiles().profiles[0].inputs
 }
 
-// Manual mode, pinned to whatever window the pre-simulated default engine
-// would have used (an explicit override kept as-is, else the resolved
-// rotation's own authored window) — every locked case below stays byte-exact
-// under the new simulated default (docs/TIMELINE.md § "Qi bar").
-function pinnedQiBreakOverride(raw: Inputs) {
-  const explicit = raw.combatSettings?.qiBreakOverride
-  if (explicit) return explicit
-  const rotation = activeRotationForInputs(raw)
-  return rotation?.qiBreak ?? DEFAULT_QI_BREAK_WINDOW
+function toEngineInputs(raw: Inputs): Inputs {
+  return applyBowSet(applyArmorSet(withDerivedStats(raw)))
 }
 
-function toEngineInputs(raw: Inputs): Inputs {
-  const pinned = {
-    ...raw,
-    combatSettings: { ...raw.combatSettings!, qiBreakOverride: pinnedQiBreakOverride(raw) },
-  }
-  return applyBowSet(applyArmorSet(withDerivedStats(pinned)))
+// Forces the resolved rotation's own seed window, for a case that needs a
+// specific Qi break shape rather than whatever the build naturally converges
+// to (docs/TIMELINE.md § "Qi bar").
+function withRotationQiBreak(raw: Inputs, qiBreak: QiBreakWindow): Inputs {
+  const rotation = raw.activeCustomRotation ?? defaultRotationForClass(raw.classId)!
+  return { ...raw, activeCustomRotation: { ...rotation, qiBreak } }
 }
 
 function withInnerWay(
@@ -140,9 +133,7 @@ const CASES: { name: string; build: () => Inputs }[] = [
     name: "anchor:noQiBreak",
     build: () =>
       toEngineInputs(
-        withCombat(anchorInputs(), {
-          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 },
-        }),
+        withRotationQiBreak(anchorInputs(), { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 }),
       ),
   },
   {
@@ -230,13 +221,7 @@ const CASES: { name: string; build: () => Inputs }[] = [
   // A second rotation, so the guard is not tied to one cast list.
   {
     name: "defaults:umbra",
-    build: () => {
-      const raw: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
-      return {
-        ...raw,
-        combatSettings: { ...raw.combatSettings!, qiBreakOverride: pinnedQiBreakOverride(raw) },
-      }
-    },
+    build: () => ({ ...defaultInputs, classId: "bellstrikeUmbra" }),
   },
 ]
 
@@ -326,37 +311,30 @@ describe("engine baseline — profile-v7 anchor", () => {
   const damageOf = (name: string) =>
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
-  // Re-baselined once more: a free direct weapon swap now precedes a step
-  // whose weapon differs from the one last drawn, its own 0.5 s self-debounce
-  // occasionally shifting a DoT tick's frame by a handful of ms.
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(69355.77)
-    expect(round(result.totalDamage, 2)).toBe(4161346.41)
+    expect(round(result.dps, 2)).toBe(69315.77)
+    expect(round(result.totalDamage, 2)).toBe(4158946.27)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    // Sweep All's own River Flow / Spring Surge hit 1 now lands 2 f later
-    // (its own frame override, not the plain form's), repeated across every
-    // cast this rotation makes — enough, cumulatively, that SwordSpecial
-    // 3-Hit's cast conditions are met where they weren't before.
     expect(result.warnings).toEqual([])
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2057226.8)
-    expect(damageOf("Bleeding (DoT)")).toBe(261068.25)
+    expect(damageOf("Blood Burst")).toBe(2062802.72)
+    expect(damageOf("Bleeding (DoT)")).toBe(261631.16)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(433310.17)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(74789.58)
+    expect(damageOf("Smolder (DoT)")).toBe(433353.17)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(74935.67)
   })
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(59242.48)
+    expect(damageOf("Yi River")).toBe(59371.71)
   })
 })
 
@@ -366,18 +344,17 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(70558.88)
-    expect(round(result.totalDamage, 2)).toBe(4233532.6)
+    expect(round(result.dps, 2)).toBe(70626.01)
+    expect(round(result.totalDamage, 2)).toBe(4237560.58)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    // Same cause as the breakthrough-16 block above.
     expect(result.warnings).toEqual([])
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
-    expect(damageOf("Blood Burst")).toBe(2092086.7)
-    expect(damageOf("Bleeding (DoT)")).toBe(266014.87)
-    expect(damageOf("Smolder (DoT)")).toBe(441252.37)
-    expect(damageOf("Flute Ripple (DoT)")).toBe(76158.76)
-    expect(damageOf("Yi River")).toBe(60343.87)
+    expect(damageOf("Blood Burst")).toBe(2103359.06)
+    expect(damageOf("Bleeding (DoT)")).toBe(267131.68)
+    expect(damageOf("Smolder (DoT)")).toBe(441297.23)
+    expect(damageOf("Flute Ripple (DoT)")).toBe(76307.94)
+    expect(damageOf("Yi River")).toBe(60475.52)
   })
 })

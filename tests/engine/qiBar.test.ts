@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   QiBar,
   ZERO_QI_BONUSES,
-  manualQiSchedule,
+  fixedQiSchedule,
   qiBonusesFrom,
   qiFromDamage,
   sameQiBreaks,
@@ -219,9 +219,9 @@ describe("the compatibility schedule view", () => {
   })
 })
 
-describe("manual mode", () => {
+describe("the fixed-window schedule factory", () => {
   it("reproduces the clock-driven phase exactly", () => {
-    const schedule = manualQiSchedule({ startSec: 25, durationSec: 10, lowQiLeadSec: 5 }, FPS)
+    const schedule = fixedQiSchedule({ startSec: 25, durationSec: 10, lowQiLeadSec: 5 }, FPS)
     expect(schedule.phaseAt(19.9)).toBe("normal")
     expect(schedule.phaseAt(20)).toBe("below30")
     expect(schedule.phaseAt(24.9)).toBe("below30")
@@ -231,7 +231,7 @@ describe("manual mode", () => {
   })
 
   it("a zero-length window leaves no break at all", () => {
-    const schedule = manualQiSchedule({ startSec: 25, durationSec: 0, lowQiLeadSec: 5 }, FPS)
+    const schedule = fixedQiSchedule({ startSec: 25, durationSec: 0, lowQiLeadSec: 5 }, FPS)
     expect(schedule.breaks).toEqual([])
     expect(schedule.isBroken(25)).toBe(false)
   })

@@ -18,15 +18,19 @@ function renderPanel(inputs: typeof defaultInputs) {
   return result
 }
 
-describe("the rotation editor's Qi break row shows the computed first break beside the authored one", () => {
-  it("renders the computed first break in seconds when the simulated schedule has one", () => {
+describe("the rotation editor's Qi break row shows every computed break, read only", () => {
+  it("renders each computed break's span when the simulated schedule has one", () => {
     const result = renderPanel(defaultInputs)
-    const computedStartSec = result.qiBreaks?.[0]?.startSec
-    expect(screen.getByText("Computed first break")).toBeInTheDocument()
-    if (computedStartSec !== undefined) {
-      expect(screen.getByText(`${computedStartSec.toFixed(1)} s`)).toBeInTheDocument()
-    } else {
+    const breaks = result.qiBreaks ?? []
+    if (breaks.length === 0) {
       expect(screen.getByText("No break")).toBeInTheDocument()
+      return
+    }
+    for (const [index, qiBreak] of breaks.entries()) {
+      expect(screen.getByText(`Computed break ${index + 1}`)).toBeInTheDocument()
+      expect(
+        screen.getByText(`${qiBreak.startSec.toFixed(1)}s – ${qiBreak.endSec.toFixed(1)}s`),
+      ).toBeInTheDocument()
     }
   })
 })

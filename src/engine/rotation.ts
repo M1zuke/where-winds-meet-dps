@@ -1,5 +1,6 @@
 import type { Skill } from "./skill"
 import type { QiBreakWindow } from "./types"
+import { DEFAULT_AVERAGE_FPS, DEFAULT_PING_MS, isValidAverageFps, isValidPingMs } from "./pingFps"
 
 export interface RotationStep {
   id: string
@@ -15,6 +16,11 @@ export interface Rotation {
   openingStacks?: Record<string, number>
   qiBreak?: QiBreakWindow
   fixedWindowSec?: number
+  // The rotation's own connection assumptions (docs/TIMELINE.md § "Coefficients").
+  // A built-in rotation always carries both; a per-profile override for it lives
+  // on `Inputs.builtinRotationPingFpsOverrides`, keyed by this rotation's id.
+  pingMs: number
+  averageFps: number
   createdAt: string
   updatedAt: string
   description?: string
@@ -50,6 +56,8 @@ export function makeRotation(classId: string, patch: Partial<Rotation> = {}): Ro
     classId,
     steps: [],
     permanentBuffIds: [],
+    pingMs: DEFAULT_PING_MS,
+    averageFps: DEFAULT_AVERAGE_FPS,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -88,6 +96,8 @@ export function isRotation(x: unknown): x is Rotation {
   if (r.qiBreak !== undefined && !isQiBreakWindow(r.qiBreak)) return false
   if (r.fixedWindowSec !== undefined && readFixedWindowSec(r.fixedWindowSec) === undefined)
     return false
+  if (typeof r.pingMs !== "number" || !isValidPingMs(r.pingMs)) return false
+  if (typeof r.averageFps !== "number" || !isValidAverageFps(r.averageFps)) return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false
   return true

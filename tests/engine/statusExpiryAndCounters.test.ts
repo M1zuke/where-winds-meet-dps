@@ -8,7 +8,8 @@ import {
   type HitVariant,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 

@@ -31,7 +31,7 @@ export function clockQiPhase(params: BuffParams, timeSec: number): QiPhase {
 }
 
 export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow): BuffParams {
-  const qiBreak = resolveQiBreakWindow(inputs.combatSettings, rotationQiBreak)
+  const qiBreak = resolveQiBreakWindow(rotationQiBreak)
   const params: BuffParams = {
     isTrainingDummy: !!inputs.dummyMode,
     classId: inputs.classId,

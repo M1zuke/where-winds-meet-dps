@@ -1,10 +1,8 @@
 import { useId, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
 import { graduationBuildsFor } from "../../../../definitions/graduationBuilds/registry"
-import { hasValidPingAndFps } from "../../../../engine/pingFps"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { Dialog } from "../../../components/dialog/Dialog"
-import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { syncClassPermanent } from "../../../utils/classSetup"
 import { ClassPicker } from "../class-picker/ClassPicker"
 import { GraduationBuildPicker } from "../../gear/graduation-build-picker/GraduationBuildPicker"
@@ -20,7 +18,6 @@ export type SetupMode = "first-run" | "new-profile"
 
 const STEP_HEADING_KEYS: Record<WizardStep, string> = {
   class: "setup.wizard.chooseYourClass",
-  pingFps: "setup.wizard.connectionAndPerformance",
   graduation: "setup.wizard.chooseYourGraduationBuild",
   import: "setup.wizard.importYourGear",
   name: "setup.wizard.nameYourProfile",
@@ -28,7 +25,6 @@ const STEP_HEADING_KEYS: Record<WizardStep, string> = {
 
 const STEP_INSTRUCTION_KEYS: Record<WizardStep, string> = {
   class: "setup.wizard.pickTheClassHint",
-  pingFps: "setup.wizard.enterYourPingAndAverageFpsHint",
   graduation: "setup.wizard.yourGraduationRateComparesHint",
   import: "setup.wizard.pasteACaptureHint",
   name: "setup.wizard.giveThisProfileAName",
@@ -48,13 +44,9 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
   const [step, setStep] = useState<WizardStep>("class")
   const [manual, setManual] = useState(false)
   const [name, setName] = useState(initialName)
-  const [draft, setDraft] = useState<Inputs>(() => ({
-    ...syncClassPermanent(initialInputs, initialInputs.classId),
-    // A new profile must go through the required step below, even though
-    // `initialInputs` (a built-in input builder) carries concrete defaults.
-    pingMs: null,
-    averageFps: null,
-  }))
+  const [draft, setDraft] = useState<Inputs>(() =>
+    syncClassPermanent(initialInputs, initialInputs.classId),
+  )
   const importDraft = useGearImportDraft(draft)
 
   const graduationBuilds = graduationBuildsFor(draft.classId)
@@ -105,15 +97,13 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
   const isLastStep = stepIndex === steps.length - 1
 
   const primaryDisabled =
-    step === "pingFps"
-      ? !hasValidPingAndFps(draft.pingMs, draft.averageFps)
-      : step === "graduation"
-        ? !hasChosenGraduationBuild
-        : step === "import"
-          ? !importDraft.pieces.length
-          : step === "name"
-            ? !trimmedName
-            : false
+    step === "graduation"
+      ? !hasChosenGraduationBuild
+      : step === "import"
+        ? !importDraft.pieces.length
+        : step === "name"
+          ? !trimmedName
+          : false
 
   function primaryAction(): void {
     if (!isLastStep) goForward()
@@ -142,15 +132,6 @@ export function SetupWizard({ initialName, initialInputs, mode, onFinish, onCanc
           <ClassPicker
             value={draft.classId}
             onChange={(classId) => setDraft(syncClassPermanent(draft, classId))}
-          />
-        )}
-
-        {step === "pingFps" && (
-          <PingFpsFields
-            pingMs={draft.pingMs}
-            averageFps={draft.averageFps}
-            onPingMsChange={(pingMs) => setDraft({ ...draft, pingMs })}
-            onAverageFpsChange={(averageFps) => setDraft({ ...draft, averageFps })}
           />
         )}
 

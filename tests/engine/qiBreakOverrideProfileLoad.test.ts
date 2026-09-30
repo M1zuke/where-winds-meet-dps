@@ -1,6 +1,6 @@
-// docs/MIGRATIONS.md — the Qi bar's mode is derived from `qiBreakOverride`,
-// never stored as its own field: a saved profile with an explicit override
-// and one with `null` both have to load and run unchanged.
+// A stored `qiBreakOverride` is a legacy field only — docs/MIGRATIONS.md.
+// It survives the load and reload round trip, but the engine no longer reads
+// it: the simulated Qi bar runs identically with or without it.
 import { beforeEach, describe, expect, it } from "vitest"
 import { importProfile, loadProfiles } from "../../src/storage"
 import { runEngine } from "../../src/engine/dps"
@@ -11,9 +11,7 @@ import type { Inputs } from "../../src/engine/types"
 
 const PROFILES_KEY = "wwm.profiles"
 
-function profileFileWith(
-  qiBreakOverride: NonNullable<Inputs["combatSettings"]>["qiBreakOverride"],
-) {
+function profileFileWith(qiBreakOverride: unknown) {
   return {
     v: 4,
     profile: {
@@ -31,29 +29,29 @@ function engineInputsFrom(inputs: Inputs) {
   return applyBowSet(applyArmorSet(withDerivedStats(inputs)))
 }
 
-describe("a stored profile with a Qi break override and one with null both load", () => {
+describe("a stored Qi break override no longer changes what the engine runs", () => {
   beforeEach(() => localStorage.clear())
 
-  it("loads and runs with an explicit override, in manual (single-pass) mode", () => {
+  it("keeps the field through import, but scores identically with or without it", () => {
     const override = { startSec: 30, durationSec: 12, lowQiLeadSec: 3 }
     const imported = importProfile(JSON.stringify(profileFileWith(override)))
-    expect(imported.inputs.combatSettings?.qiBreakOverride).toEqual(override)
+    expect(
+      (imported.inputs.combatSettings as unknown as { qiBreakOverride: unknown }).qiBreakOverride,
+    ).toEqual(override)
 
-    const result = runEngine(engineInputsFrom(imported.inputs))
-    expect(Number.isFinite(result.dps)).toBe(true)
-    expect(result.qiIterations).toBe(1)
+    const { qiBreakOverride: _dropped, ...rest } = imported.inputs
+      .combatSettings as unknown as Record<string, unknown>
+    const withoutOverride: Inputs = {
+      ...imported.inputs,
+      combatSettings: rest as unknown as Inputs["combatSettings"],
+    }
+
+    const withOverride = runEngine(engineInputsFrom(imported.inputs))
+    const withoutOverrideResult = runEngine(engineInputsFrom(withoutOverride))
+    expect(withOverride.totalDamage).toBeCloseTo(withoutOverrideResult.totalDamage, 9)
   })
 
-  it("loads and runs with `null`, in simulated mode", () => {
-    const imported = importProfile(JSON.stringify(profileFileWith(null)))
-    expect(imported.inputs.combatSettings?.qiBreakOverride).toBeNull()
-
-    const result = runEngine(engineInputsFrom(imported.inputs))
-    expect(Number.isFinite(result.dps)).toBe(true)
-    expect(result.qiIterations).toBeGreaterThanOrEqual(1)
-  })
-
-  it("re-saving and reloading the override profile leaves its numbers unchanged", () => {
+  it("re-saving and reloading a profile with the field leaves its numbers unchanged", () => {
     const override = { startSec: 30, durationSec: 12, lowQiLeadSec: 3 }
     localStorage.setItem(
       PROFILES_KEY,
@@ -78,5 +76,12 @@ describe("a stored profile with a Qi break override and one with null both load"
     const after = runEngine(engineInputsFrom(second)).dps
 
     expect(after).toBe(before)
+  })
+
+  it("every run iterates the simulated Qi bar — no single-pass manual mode exists", () => {
+    const override = { startSec: 30, durationSec: 12, lowQiLeadSec: 3 }
+    const imported = importProfile(JSON.stringify(profileFileWith(override)))
+    const result = runEngine(engineInputsFrom(imported.inputs))
+    expect(result.qiIterations).toBeGreaterThanOrEqual(2)
   })
 })

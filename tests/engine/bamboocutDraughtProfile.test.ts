@@ -8,14 +8,11 @@ import profileFile from "./bamboocutDraughtMeasured.profile.json"
 const MEASURED_ONE_MINUTE_TOTAL_MEAN = 4152000
 
 describe("Bamboocut Draught — the measured build", () => {
-  // Re-baselined once: the default Qi break is now the simulated schedule
-  // rather than the rotation's own fixed clock window, moving the exhausted
-  // window's own start by a couple of seconds (docs/TIMELINE.md § "Qi bar").
   it("holds its dps and total damage exactly", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(67405.64204872282)
-    expect(result.totalDamage).toBe(4053325.9418631988)
+    expect(result.dps).toBe(64988.86913979898)
+    expect(result.totalDamage).toBe(4048286.636456357)
   })
 
   it.fails(

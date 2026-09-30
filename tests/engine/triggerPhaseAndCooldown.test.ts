@@ -9,9 +9,10 @@ import {
   type HitTrigger,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { isBuff, makeBuff, type Buff } from "../../src/engine/buff"
-import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import type { EngineRunOptions, Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const EXHAUSTED_FROM_SEC = 1
@@ -41,17 +42,10 @@ function rotationOf(skills: Skill[], patch: Partial<Rotation> = {}): Rotation {
   })
 }
 
-// Manual mode: a fixed, clock-driven exhausted window, deterministic
-// regardless of this synthetic rotation's own (near-zero) damage.
-const withBreakWindow: Partial<Inputs> = {
-  combatSettings: {
-    ...defaultCombatSettings(),
-    qiBreakOverride: {
-      startSec: EXHAUSTED_FROM_SEC,
-      durationSec: EXHAUSTED_FOR_SEC,
-      lowQiLeadSec: 0,
-    },
-  },
+const EXHAUSTED_WINDOW_OPTIONS: EngineRunOptions = {
+  fixedQiBreaks: [
+    { startSec: EXHAUSTED_FROM_SEC, durationSec: EXHAUSTED_FOR_SEC, lowQiLeadSec: 0 },
+  ],
 }
 
 function makeGate(patch: Partial<Buff> = {}): Buff {
@@ -81,8 +75,13 @@ function probe(): Skill {
   })
 }
 
-function chipStacks(inputs: Inputs, castIndex: number, buffId: string): number {
-  const cast = (simulateTimeline(inputs).casts ?? [])[castIndex]
+function chipStacks(
+  inputs: Inputs,
+  castIndex: number,
+  buffId: string,
+  options?: EngineRunOptions,
+): number {
+  const cast = (simulateTimeline(inputs, options).casts ?? [])[castIndex]
   return cast?.buffs.find((buff) => buff.id === buffId)?.stacks ?? 0
 }
 
@@ -95,9 +94,9 @@ describe("a trigger bound to a Qi phase", () => {
     const beforeBreak = probe()
     const duringBreak = probe()
     const skills = [grant, beforeBreak, grant, duringBreak]
-    const inputs = timelineInputs(rotationOf(skills), skills, [gate], withBreakWindow)
-    expect(chipStacks(inputs, 1, gate.id)).toBe(0)
-    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 1, gate.id, EXHAUSTED_WINDOW_OPTIONS)).toBe(0)
+    expect(chipStacks(inputs, 3, gate.id, EXHAUSTED_WINDOW_OPTIONS)).toBe(1)
   })
 
   it("the layout pass sees the phase-gated grant when sizing a cast", () => {
@@ -129,8 +128,11 @@ describe("a trigger bound to a Qi phase", () => {
       ],
     })
     const skills = [grant, gated, grant, gated]
-    const inputs = timelineInputs(rotationOf(skills), skills, [gate], withBreakWindow)
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 90 + 60 + 30) / FPS, 10)
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(simulateTimeline(inputs, EXHAUSTED_WINDOW_OPTIONS).rotationDuration).toBeCloseTo(
+      (60 + 90 + 60 + 30) / FPS,
+      10,
+    )
   })
 })
 

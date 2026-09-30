@@ -10,6 +10,12 @@ import type {
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
+import {
+  DEFAULT_AVERAGE_FPS,
+  DEFAULT_PING_MS,
+  isValidAverageFps,
+  isValidPingMs,
+} from "./engine/pingFps"
 import { repairGraduationBuildId } from "./engine/graduation"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
@@ -233,6 +239,11 @@ function migrateRotationIds<T>(rotation: T): T {
     if (windowSec === undefined) delete next.fixedWindowSec
     else next.fixedWindowSec = windowSec
   }
+  // additive — a stored custom rotation from before the rotation carried its
+  // own connection assumptions gets the same default a fresh one would.
+  if (typeof next.pingMs !== "number" || !isValidPingMs(next.pingMs)) next.pingMs = DEFAULT_PING_MS
+  if (typeof next.averageFps !== "number" || !isValidAverageFps(next.averageFps))
+    next.averageFps = DEFAULT_AVERAGE_FPS
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return migrateRotationMysticIds(next) as unknown as T
 }
@@ -267,6 +278,22 @@ function repairGearWord(entry: unknown): unknown {
 function sanitizeRetunedOutWords(value: unknown): string[] {
   if (!Array.isArray(value)) return []
   return value.filter((entry): entry is string => typeof entry === "string" && entry !== "")
+}
+
+// additive — see CLAUDE.md → "localStorage migrations"
+function sanitizeBuiltinRotationPingFpsOverrides(
+  stored: unknown,
+): Record<string, { pingMs: number; averageFps: number }> | undefined {
+  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return undefined
+  const healed: Record<string, { pingMs: number; averageFps: number }> = {}
+  for (const [rotationId, value] of Object.entries(stored as Record<string, unknown>)) {
+    if (!value || typeof value !== "object") continue
+    const { pingMs, averageFps } = value as Record<string, unknown>
+    if (typeof pingMs !== "number" || !isValidPingMs(pingMs)) continue
+    if (typeof averageFps !== "number" || !isValidAverageFps(averageFps)) continue
+    healed[rotationId] = { pingMs, averageFps }
+  }
+  return Object.keys(healed).length > 0 ? healed : undefined
 }
 
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
@@ -325,8 +352,9 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
-  if (typeof next.pingMs !== "number") next.pingMs = null
-  if (typeof next.averageFps !== "number") next.averageFps = null
+  next.builtinRotationPingFpsOverrides = sanitizeBuiltinRotationPingFpsOverrides(
+    next.builtinRotationPingFpsOverrides,
+  )
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
   if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0
@@ -525,16 +553,18 @@ function hydrateInputs(inputs: Inputs): Inputs {
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
     // reads; `lowEndurance`, `missingEnduranceAtHit` and `enduranceAtRelease`
-    // named the manual guesses a simulated meter now replaces — all three
-    // kept rather than dropped, per CLAUDE.md → "localStorage migrations".
+    // named the manual guesses a simulated meter now replaces; `qiBreakOverride`
+    // named the Qi break's retired manual mode — all four kept rather than
+    // dropped, per CLAUDE.md → "localStorage migrations".
     const legacyFields: Record<string, unknown> = {}
     if ("revelryScript" in r) legacyFields.revelryScript = r.revelryScript
     if ("lowEndurance" in r) legacyFields.lowEndurance = r.lowEndurance
     if ("missingEnduranceAtHit" in r) legacyFields.missingEnduranceAtHit = r.missingEnduranceAtHit
     if ("enduranceAtRelease" in r) legacyFields.enduranceAtRelease = r.enduranceAtRelease
+    if ("qiBreakOverride" in r || "qiBreak" in r)
+      legacyFields.qiBreakOverride = qiBreakOverrideFrom(r, rotationWindowOf(next))
     next.combatSettings = {
       ...legacyFields,
-      qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
       healerPanaceaFan:
@@ -789,6 +819,14 @@ export function importCustomRotation(text: string): Rotation {
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
     openingStacks: sanitizeOpeningStacks(candidate.openingStacks),
+    pingMs:
+      typeof candidate.pingMs === "number" && isValidPingMs(candidate.pingMs)
+        ? candidate.pingMs
+        : DEFAULT_PING_MS,
+    averageFps:
+      typeof candidate.averageFps === "number" && isValidAverageFps(candidate.averageFps)
+        ? candidate.averageFps
+        : DEFAULT_AVERAGE_FPS,
     createdAt: now,
     updatedAt: now,
   }
