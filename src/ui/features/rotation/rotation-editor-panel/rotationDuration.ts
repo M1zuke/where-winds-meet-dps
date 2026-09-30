@@ -13,8 +13,11 @@ export function castsCoverRotation(
   rotation: Rotation,
   casts: readonly RotationCast[] | undefined,
 ): boolean {
-  if (!casts || casts.length !== rotation.steps.length) return false
-  return rotation.steps.every((step, index) => casts[index]?.stepId === step.id)
+  if (!casts) return false
+  const rotationStepIds = new Set(rotation.steps.map((step) => step.id))
+  const rotationCasts = casts.filter((cast) => rotationStepIds.has(cast.stepId))
+  if (rotationCasts.length !== rotation.steps.length) return false
+  return rotation.steps.every((step, index) => rotationCasts[index]?.stepId === step.id)
 }
 
 export function rotationDurationSec(

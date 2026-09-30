@@ -48,6 +48,14 @@ describe("the editor's computed duration", () => {
     expect(rotationDurationSec(rotation, skillsById, simulated)).toBe(1.7)
   })
 
+  it("still takes the simulated duration when the engine laid out extra direct weapon swaps between the steps", () => {
+    const simulated = {
+      castDuration: 2.2,
+      casts: [cast("s0", 0), cast("s1", 1), cast("swap-direct-swap-0", 2), cast("s2", 3)],
+    }
+    expect(rotationDurationSec(rotation, skillsById, simulated)).toBe(2.2)
+  })
+
   it("falls back to the modules' cast frames, pre-pull steps excluded, when the result belongs to another rotation", () => {
     const simulated = {
       castDuration: 9,
