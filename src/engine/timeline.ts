@@ -107,6 +107,7 @@ import {
   makeDirectWeaponSwapSkill,
   weaponIdentitiesOf,
 } from "./weaponSwap"
+import { deflectCancelSkillId, expandStepsWithDeflectCancels } from "./deflectCancels"
 import { innerWayForBuffParam, innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
@@ -318,9 +319,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // A generated id, never `newStepId()`'s own `Date.now()`/`Math.random()` —
     // a cast's `stepId` reaches the digest `engineBaseline.test.ts` hashes, so
     // a random one would make every run's fixture unreproducible.
+    const deflectCancelAttachedToStepId = new Map<string, string>()
+    const deflectCancelSkill = skillsById.get(deflectCancelSkillId(inputs.classId))
+    const stepsWithDeflectCancels = deflectCancelSkill
+      ? expandStepsWithDeflectCancels(rawResolvedSteps, deflectCancelSkill, (parentStepId) => {
+          const stepId = `deflect-cancel-${parentStepId}`
+          deflectCancelAttachedToStepId.set(stepId, parentStepId)
+          return { step: { id: stepId, skillId: deflectCancelSkill.id }, skill: deflectCancelSkill }
+        })
+      : rawResolvedSteps
     let nextSwapStepIndex = 0
     const directSwapSkills = new Set<Skill>()
-    const resolvedSteps = expandStepsWithWeaponSwaps(rawResolvedSteps, (weapon, prePull) => {
+    const resolvedSteps = expandStepsWithWeaponSwaps(stepsWithDeflectCancels, (weapon, prePull) => {
       const skill = makeDirectWeaponSwapSkill(
         inputs.classId,
         weapon,
@@ -572,7 +582,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
 
     const renderPeriodFrames = FPS / resolveAverageFps(rotation.averageFps)
-    const oneClientFrameFrames = renderPeriodFrames
+    const oneRenderFrameFrames = renderPeriodFrames
     const pingRoundTripFrames = (resolvePingMs(rotation.pingMs) * FPS) / 1000
     const serverProcessingFrames = (SERVER_PROCESSING_MS * FPS) / 1000
     // `pingMs` at 0 is the app's own "assume no latency" baseline, not a
@@ -586,22 +596,22 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // § "Coefficients").
     const roundTripFrames = hasPing
       ? quantiseToRenderFrame(
-          pingRoundTripFrames + serverProcessingFrames + oneClientFrameFrames,
+          pingRoundTripFrames + serverProcessingFrames + oneRenderFrameFrames,
           renderPeriodFrames,
         )
       : 0
-    const clientFrameOnlyFrames = hasPing
-      ? quantiseToRenderFrame(oneClientFrameFrames, renderPeriodFrames)
+    const renderFrameOnlyFrames = hasPing
+      ? quantiseToRenderFrame(oneRenderFrameFrames, renderPeriodFrames)
       : 0
     // A skill's own further in-cast server wait lands mid-graph, not at a
-    // fresh input, so it skips the extra client frame `roundTripFrames` pays.
+    // fresh input, so it skips the extra render frame `roundTripFrames` pays.
     const midCastWaitFrames = hasPing
       ? quantiseToRenderFrame(pingRoundTripFrames + serverProcessingFrames, renderPeriodFrames)
       : 0
     const startLatencyFrames = (skill: Skill): number => {
       const latency = skill.startLatency ?? "serverRoundTrip"
       if (latency === "none") return 0
-      if (latency === "noWaitOnDummy" && inputs.dummyMode) return clientFrameOnlyFrames
+      if (latency === "noWaitOnDummy" && inputs.dummyMode) return renderFrameOnlyFrames
       return roundTripFrames
     }
     const hitLandingFrame = (stepStart: number, hitFrame: number): number =>
@@ -2385,6 +2395,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           timeSec: ls.startFrame / FPS,
           inWindow: inWindow(ls.startFrame),
           prePull: ls.prePull,
+          attachedToStepId: deflectCancelAttachedToStepId.get(ls.resolved.step.id),
           buffs,
           meterLevels:
             meters.length > 0

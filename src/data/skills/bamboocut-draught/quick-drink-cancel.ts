@@ -17,6 +17,7 @@ export const quickDrinkCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.quickDrinkCancel,
+  cancelledBy: "deflectCancel",
   receives: [...CLASS_RECEIVES, ...SKYSTRIKE_GAUNTLETS_RECEIVES],
   triggerable: false,
   castFrames: 24,

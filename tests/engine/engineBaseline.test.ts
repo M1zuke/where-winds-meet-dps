@@ -312,8 +312,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(69461.34)
-    expect(round(result.totalDamage, 2)).toBe(4167680.14)
+    expect(round(result.dps, 2)).toBe(69505.67)
+    expect(round(result.totalDamage, 2)).toBe(4170340.37)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
@@ -322,7 +322,7 @@ describe("engine baseline — profile-v7 anchor", () => {
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
     expect(damageOf("Blood Burst")).toBe(2062568.42)
-    expect(damageOf("Bleeding (DoT)")).toBe(266878.21)
+    expect(damageOf("Bleeding (DoT)")).toBe(269538.44)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
@@ -344,15 +344,15 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(70774.33)
-    expect(round(result.totalDamage, 2)).toBe(4246459.85)
+    expect(round(result.dps, 2)).toBe(70819.51)
+    expect(round(result.totalDamage, 2)).toBe(4249170.39)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2103121.51)
-    expect(damageOf("Bleeding (DoT)")).toBe(272478.51)
+    expect(damageOf("Bleeding (DoT)")).toBe(275189.04)
     expect(damageOf("Smolder (DoT)")).toBe(445291.2)
     expect(damageOf("Flute Ripple (DoT)")).toBe(76307.94)
     expect(damageOf("Yi River")).toBe(60475.52)

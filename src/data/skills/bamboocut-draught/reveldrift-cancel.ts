@@ -18,6 +18,7 @@ export const reveldriftCancel = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.reveldriftCancel,
+  cancelledBy: "deflectCancel",
   receives: [BUFF.starweaveMartialBoost, ...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggersBuffs: [BUFF.jadeware],
   triggerable: false,

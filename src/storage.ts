@@ -68,7 +68,8 @@ import {
   isParamCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
-import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
+import { belongsToClass, cancelledByOf, seedSkillFromBuiltin } from "./engine/skill"
+import { deflectCancelSkillId } from "./engine/deflectCancels"
 import { isDisplacement, isSkillApproach } from "./engine/distance"
 import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
@@ -779,6 +780,33 @@ interface CustomBlob {
   rotations: Rotation[]
 }
 
+// The engine now adds a cancel-form step's Deflect Cancel automatically, so a
+// stored manual step for the same cast directly after it would double it —
+// docs/TIMELINE.md § "Identity and tags".
+function healDeflectCancelSteps(rotation: Rotation): Rotation {
+  if (!rotation || typeof rotation.classId !== "string" || !Array.isArray(rotation.steps))
+    return rotation
+  const skillsById = new Map<string, Skill>()
+  for (const skill of builtinSkillsForClass(rotation.classId)) skillsById.set(skill.id, skill)
+  for (const skill of loadCustomSkillsForClass(rotation.classId)) skillsById.set(skill.id, skill)
+  const deflectCancelId = deflectCancelSkillId(rotation.classId)
+  const steps: RotationStep[] = []
+  for (const step of rotation.steps) {
+    const skillId =
+      step && typeof step === "object" ? (step as { skillId?: unknown }).skillId : undefined
+    const previousSkill = skillsById.get(steps[steps.length - 1]?.skillId ?? "")
+    if (
+      skillId === deflectCancelId &&
+      previousSkill &&
+      cancelledByOf(previousSkill) === "deflectCancel"
+    ) {
+      continue
+    }
+    steps.push(step)
+  }
+  return steps.length === rotation.steps.length ? rotation : { ...rotation, steps }
+}
+
 export function loadCustomRotations(): Rotation[] {
   try {
     const raw = kvStore.get(CUSTOM_KEY)
@@ -786,7 +814,9 @@ export function loadCustomRotations(): Rotation[] {
     const parsed = JSON.parse(raw) as CustomBlob
     if (parsed.v !== CUSTOM_VERSION) return []
     if (!Array.isArray(parsed.rotations)) return []
-    return parsed.rotations.map((r) => migrateRotationIds(r)).filter(isRotation)
+    return parsed.rotations
+      .map((r) => healDeflectCancelSteps(migrateRotationIds(r)))
+      .filter(isRotation)
   } catch {
     return []
   }
@@ -996,6 +1026,20 @@ function builtinServerWaitsInCastFor(id: string): number | undefined {
           builtinServerWaitsInCastById.set(skill.id, skill.serverWaitsInCast)
   }
   return builtinServerWaitsInCastById.get(id)
+}
+
+// `cancelledBy` is authored on the built-in module, never edited in the
+// Skill Editor, the same reasoning as `startLatency` above — a renamed copy
+// of a cancel-form skill keeps its Deflect Cancel.
+let builtinCancelledByById: Map<string, Skill["cancelledBy"]> | null = null
+function builtinCancelledByFor(id: string): Skill["cancelledBy"] | undefined {
+  if (!builtinCancelledByById) {
+    builtinCancelledByById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.cancelledBy) builtinCancelledByById.set(skill.id, skill.cancelledBy)
+  }
+  return builtinCancelledByById.get(id)
 }
 
 function healSkillTags(id: string, tags: string[]): string[] {
@@ -1257,6 +1301,8 @@ function hydrateSkill(s: Skill): Skill {
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
+    cancelledBy:
+      builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
     castConditions: Array.isArray(s.castConditions)
       ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
@@ -1309,6 +1355,10 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
     delete hit.projectile
   }
   return hit
+}
+
+function isCancelledByValue(value: unknown): value is Skill["cancelledBy"] {
+  return value === "deflectCancel" || value === "nextSkill"
 }
 
 function isProjectileSpec(value: unknown): value is SkillHit["projectile"] {
@@ -1704,6 +1754,7 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
       (migrateNeverAbradesSkill(c) as Partial<Skill>).neverAbrades === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
     isWeaponSwap: c.isWeaponSwap === true ? true : undefined,
+    cancelledBy: isCancelledByValue(c.cancelledBy) ? c.cancelledBy : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
     receives: Array.isArray(c.receives)
       ? c.receives.filter((id): id is string => typeof id === "string")

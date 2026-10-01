@@ -224,6 +224,9 @@ export interface Skill {
   // This cast already performs its own weapon change — see docs/TIMELINE.md
   // § "Drawn weapon". No separate direct swap is inserted in front of it.
   isWeaponSwap?: boolean
+  // What makes this a cancel-form skill — docs/TIMELINE.md § "Identity and
+  // tags". Absent means this skill is not a cancel form at all.
+  cancelledBy?: "deflectCancel" | "nextSkill"
   startLatency?: StartLatency
   // A count of further server round trips this cast's own timeline waits for,
   // beyond the start wait — docs/TIMELINE.md § "Coefficients". Absent means 0.
@@ -604,6 +607,14 @@ export function isPrePullSkill(skill: Skill): boolean {
   return skill.prePull ?? /prepull/i.test(skill.name)
 }
 
+// What cancels a cancel-form skill, read only from its own `cancelledBy` —
+// docs/TIMELINE.md § "Identity and tags". Never derived from the name: a
+// Skill Editor rename must not add or remove a Deflect Cancel. `null` on a
+// skill that is not a cancel form at all.
+export function cancelledByOf(skill: Skill): "deflectCancel" | "nextSkill" | null {
+  return skill.cancelledBy ?? null
+}
+
 // Shared with a DoT's own coefficients (`DebuffDotSpec` carries the same four
 // fields) — docs/TIMELINE.md § "Fight window" uses the one threshold for
 // both a hit and a tick.
@@ -715,6 +726,12 @@ export function isSkill(x: unknown): x is Skill {
       s.serverWaitsInCast < 0)
   )
     return false
+  if (
+    s.cancelledBy !== undefined &&
+    s.cancelledBy !== "deflectCancel" &&
+    s.cancelledBy !== "nextSkill"
+  )
+    return false
   return true
 }
 
@@ -763,6 +780,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
     isWeaponSwap: src.isWeaponSwap,
+    cancelledBy: src.cancelledBy,
     startLatency: src.startLatency,
     serverWaitsInCast: src.serverWaitsInCast,
     tags: [...(src.tags ?? [])],

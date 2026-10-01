@@ -23,6 +23,7 @@ export const spearq5HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQ5HitCancel,
+  cancelledBy: "deflectCancel",
   triggersBuffs: [BUFF.wineGu, BUFF.soulShaken, BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...HEAVENQUAKER_SPEAR_RECEIVES],
   // A cancel form ends where the animation opens its interrupt window — 84 frames in (in-game animation, 2026-09-24); the parry that ends it is the next rotation step.

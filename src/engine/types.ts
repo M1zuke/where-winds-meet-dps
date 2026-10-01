@@ -433,6 +433,9 @@ export interface RotationCast {
   // The simulated ground distance to the target as of this cast's own start
   // — docs/TIMELINE.md § "Target distance".
   distanceMeters: number
+  // Set on an automatic Deflect Cancel: the `stepId` of the cancel-form cast
+  // it is attached to — docs/TIMELINE.md § "Identity and tags".
+  attachedToStepId?: string
 }
 
 export interface SkillTickResult {

@@ -15,6 +15,7 @@ export const fluteOfTheTidesCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.fluteOfTheTidesCancel,
+  cancelledBy: "deflectCancel",
   castFrames: 81,
   triggerable: true,
   // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.

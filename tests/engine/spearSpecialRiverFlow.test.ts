@@ -3,7 +3,14 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { makeStep } from "../../src/engine/rotation"
-import { hitDealsDamage, makeSkill, makeHit, type Skill } from "../../src/engine/skill"
+import {
+  cancelledByOf,
+  hitDealsDamage,
+  makeSkill,
+  makeHit,
+  type Skill,
+} from "../../src/engine/skill"
+import { deflectCancelSkillId } from "../../src/engine/deflectCancels"
 import {
   EMPOWERED_MIN_BLEEDING_STACKS_FIVE_HIT_CANCEL,
   EMPOWERED_MIN_BLEEDING_STACKS_FULL_CAST,
@@ -200,9 +207,17 @@ function describeEmpoweredCast(
       // The detonation sub-cast starts at the payload hit's own (River
       // Flow-resolved) frame and carries its own delay to its own hit.
       const detonationDelay = skillOf(SKILL.bleedDetonation).hits[0].frame
+      // A cancel-form `soberSorrowId` now carries its own automatic
+      // interrupt-recovery cast right after it, pushing `id`'s own start by
+      // that cast's length too.
+      const autoCastGap =
+        cancelledByOf(skillOf(soberSorrowId)) === "deflectCancel"
+          ? skillOf(deflectCancelSkillId(CLASS)).castFrames
+          : 0
       const hitFrame =
         seeder.castFrames +
         skillOf(soberSorrowId).castFrames +
+        autoCastGap +
         (riverFlowFrame ?? payloadHit.frame) +
         detonationDelay
       expect(dets[0].frame).toBe(hitFrame)

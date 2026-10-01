@@ -36,7 +36,7 @@ function timelineInputs(
   }
 }
 
-describe("ping and average fps — delays every cast's start by the quantised round trip plus the server processing time plus one client frame", () => {
+describe("ping and average fps — delays every cast's start by the quantised round trip plus the server processing time plus one render frame", () => {
   it("adds the same round-trip-plus-server-processing-plus-one-frame delay before every cast in the rotation", () => {
     const firstSkill = makeSkill(CLASS, { name: "First", castFrames: 60, hits: [makeHit()] })
     const secondSkill = makeSkill(CLASS, { name: "Second", castFrames: 60, hits: [makeHit()] })
@@ -50,7 +50,7 @@ describe("ping and average fps — delays every cast's start by the quantised ro
     const result = simulateTimeline(inputs)
 
     // 100 ms ping (6 f) + the calibrated server processing time (24 ms, 1.44 f)
-    // + one 60 fps client frame (1 f), rounded up to the next render frame: 9 f.
+    // + one 60 fps render frame (1 f), rounded up to the next render frame: 9 f.
     const [castA, castB] = result.casts!
     expect(castA.timeSec).toBeCloseTo(9 / FPS, 10)
     expect(castB.timeSec).toBeCloseTo(78 / FPS, 10)
@@ -101,7 +101,7 @@ describe("ping and average fps — quantises cast length and hit offsets to the 
   })
 })
 
-describe("ping and average fps — skips the round trip and the server processing time only in dummy mode for no-wait skills, but still pays the client frame", () => {
+describe("ping and average fps — skips the round trip and the server processing time only in dummy mode for no-wait skills, but still pays the render frame", () => {
   const skill = makeSkill(CLASS, {
     name: "NoWaitOnDummy",
     castFrames: 30,
@@ -110,7 +110,7 @@ describe("ping and average fps — skips the round trip and the server processin
   })
   const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
 
-  it("still pays one client frame in dummy mode", () => {
+  it("still pays one render frame in dummy mode", () => {
     const result = simulateTimeline(
       timelineInputs(rotation, [skill], { pingMs: 100, averageFps: 60, dummyMode: true }),
     )

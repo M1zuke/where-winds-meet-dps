@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 69461.34,
-    "totalDamage": 4167680.14,
+    "dps": 69505.67,
+    "totalDamage": 4170340.37,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -18,7 +18,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 266878.21,
+        "expectedDamage": 269538.44,
         "castCount": 0
       },
       {
@@ -159,15 +159,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "48930e3ec0aafafd30e0f63f74cebe40c0288d6637429b27ecdebbcb416b551c"
+    "digest": "bf7ac89a99b40eae25b0a7b471899469dd41ec151f00cf402f7acfe1b517983f"
   },
   "anchor:noAttunement": {
-    "dps": 62300.38,
-    "totalDamage": 3738022.91,
+    "dps": 62336.75,
+    "totalDamage": 3740205.21,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -184,7 +184,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 219303.91,
+        "expectedDamage": 221486.21,
         "castCount": 0
       },
       {
@@ -325,15 +325,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "801a9dcc5eadcde90e02466ed689dd3b4495ca090ad413ba05bd7e890ab72f0d"
+    "digest": "9d6aa784b80cff7c537c5caf1a729b36d2bc2e3a59dc245bb7110852e3f0683b"
   },
   "anchor:dummyOff": {
-    "dps": 74396.32,
-    "totalDamage": 4463779.02,
+    "dps": 74443.8,
+    "totalDamage": 4466628.19,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -350,7 +350,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 286864.44,
+        "expectedDamage": 289713.61,
         "castCount": 0
       },
       {
@@ -491,15 +491,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "920215847b6c40b61fbd22c72694206e014d364e0d8881ed5ca5838f1479f556"
+    "digest": "7532522df0e2311f6f921ce4ac373372952f43618809930f955d51115eb038e1"
   },
   "anchor:breakthrough17": {
-    "dps": 70774.33,
-    "totalDamage": 4246459.85,
+    "dps": 70819.51,
+    "totalDamage": 4249170.39,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -516,7 +516,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 272478.51,
+        "expectedDamage": 275189.04,
         "castCount": 0
       },
       {
@@ -657,15 +657,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "15b18f382b4d67c2a5cf6b807a392b751312b8ad95d3e80150aea229a1a6a374"
+    "digest": "11f75b5b6c57675d604be8c38f3f613c87ac0e9ff4867a6bfa60d25f1f96c9ae"
   },
   "anchor:noQiBreak": {
-    "dps": 68114.28,
-    "totalDamage": 4086856.9,
+    "dps": 68213.01,
+    "totalDamage": 4092780.86,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -682,7 +682,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 277519.33,
+        "expectedDamage": 284214.2,
         "castCount": 0
       },
       {
@@ -690,7 +690,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 43,
-        "expectedDamage": 53875.59,
+        "expectedDamage": 53894.05,
         "castCount": 0
       },
       {
@@ -706,7 +706,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 446552.16,
+        "expectedDamage": 446474.82,
         "castCount": 0
       },
       {
@@ -746,7 +746,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 71091.75,
+        "expectedDamage": 70379.72,
         "castCount": 10
       },
       {
@@ -839,15 +839,15 @@
       }
     ],
     "counts": {
-      "timeline": 434,
+      "timeline": 436,
       "buffWindows": 167,
-      "casts": 90
+      "casts": 92
     },
-    "digest": "f62ee377465af8c65a80d1520e53394ef86cf1e4da623e96ea06ef811d1a8344"
+    "digest": "bd775978cb2a8619f5f6604526fd622be34ab501b1ca6cb9dbb02227da95a064"
   },
   "anchor:healerBuff": {
-    "dps": 72775.87,
-    "totalDamage": 4366552.47,
+    "dps": 72822.31,
+    "totalDamage": 4369338.66,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -864,7 +864,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 280539.39,
+        "expectedDamage": 283325.58,
         "castCount": 0
       },
       {
@@ -1005,15 +1005,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "a36ba68984bb9d303c09332e261afb2279ef556fdc6fe1ee92db077a1d7494f8"
+    "digest": "0f902149e1f8adf0b3caada28bf3191ea9ba0fde5bbd7ad13367a1ab9ec4fc18"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 69889.49,
-    "totalDamage": 4193369.29,
+    "dps": 69933.83,
+    "totalDamage": 4196029.52,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1030,7 +1030,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 268366.14,
+        "expectedDamage": 271026.37,
         "castCount": 0
       },
       {
@@ -1171,15 +1171,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "1cb3670f7caad076bce65e7d61ef2bc2d8d8a3f6759c285c1398850b1d5b681c"
+    "digest": "df788df64b5e8289c2a9823c40c12210a5c009083457399dbf81a40858a0c41e"
   },
   "anchor:voidrotScript": {
-    "dps": 70934.36,
-    "totalDamage": 4256061.31,
+    "dps": 70978.69,
+    "totalDamage": 4258721.54,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1196,7 +1196,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 271184.9,
+        "expectedDamage": 273845.13,
         "castCount": 0
       },
       {
@@ -1337,15 +1337,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "f809a5c022405a2bc8ed775faf842f93c240a04081cf478c191e575429ae6d5c"
+    "digest": "6ce94a8dabf7c27b24f71f145c6da5edb10c488bb106a39438562b83e6a01e06"
   },
   "anchor:breakExtension": {
-    "dps": 70795.32,
-    "totalDamage": 4247718.92,
+    "dps": 70844.09,
+    "totalDamage": 4250645.18,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1362,7 +1362,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 272653.81,
+        "expectedDamage": 275580.06,
         "castCount": 0
       },
       {
@@ -1503,15 +1503,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "11d792f418ad1b55984c1efca18a3c959415992e6e48b201e66a2efd108c253e"
+    "digest": "43925ff6cbf012dc2e6379aaa3f202b0ad7db137c314a603a94ce5e3a22f61a1"
   },
   "anchor:swordHorizonT1": {
-    "dps": 44543.72,
-    "totalDamage": 2672623.39,
+    "dps": 44584.77,
+    "totalDamage": 2675086.08,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1528,7 +1528,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 40,
-        "expectedDamage": 167908.94,
+        "expectedDamage": 170595.19,
         "castCount": 0
       },
       {
@@ -1616,7 +1616,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37775.76,
+        "expectedDamage": 37552.21,
         "castCount": 4
       },
       {
@@ -1669,15 +1669,15 @@
       }
     ],
     "counts": {
-      "timeline": 325,
+      "timeline": 326,
       "buffWindows": 127,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "b1d4a60baff7126da42b96918655af125909278de05352d90bddd92226b18eb3"
+    "digest": "f871b035f91b9f43f26906d1914fed2c9559c9cf8163ab09e1c97646697a76f8"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39172.01,
-    "totalDamage": 2350320.88,
+    "dps": 39120.85,
+    "totalDamage": 2347251.28,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.92s would be illegal in the game: needs Sword Horizon active (not active).",
@@ -1692,9 +1692,9 @@
       "Sword Martial QQQ at 43.37s would be illegal in the game: needs Sword Horizon active (not active).",
       "Crosswind Blade [cancel] at 46.07s would be illegal in the game: needs Sword Horizon active (not active).",
       "Crosswind Blade [cancel] at 50.00s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 55.43s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 57.72s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 60.42s would be illegal in the game: needs Sword Horizon active (not active)."
+      "Crosswind Blade [cancel] at 55.63s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 57.90s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 60.60s would be illegal in the game: needs Sword Horizon active (not active)."
     ],
     "perSkill": [
       {
@@ -1710,7 +1710,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 44,
-        "expectedDamage": 190164.73,
+        "expectedDamage": 189554.22,
         "castCount": 0
       },
       {
@@ -1757,8 +1757,8 @@
         "name": "SwordSpecial 3-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 30,
-        "expectedDamage": 93681.34,
+        "count": 29,
+        "expectedDamage": 91445.81,
         "castCount": 10
       },
       {
@@ -1798,7 +1798,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37101.55,
+        "expectedDamage": 36878,
         "castCount": 4
       },
       {
@@ -1852,14 +1852,14 @@
     ],
     "counts": {
       "timeline": 292,
-      "buffWindows": 122,
-      "casts": 89
+      "buffWindows": 121,
+      "casts": 90
     },
-    "digest": "8cbceae2ce90b695415a4bc4fdc2830d6d788eee57a9c5b4d253a5195acc6d57"
+    "digest": "9d35e8d3bac898f0ccdfc200b87c6ac8084ef0824f54eb43aea4c489a8feebd6"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 61596.58,
-    "totalDamage": 3695794.94,
+    "dps": 61636.26,
+    "totalDamage": 3698175.38,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1876,7 +1876,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 240085.26,
+        "expectedDamage": 242465.71,
         "castCount": 0
       },
       {
@@ -2017,15 +2017,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "0f21c49cd259ab15f075b4f701cc493ead560149e4b4574b4befcd1201745665"
+    "digest": "8b28d0bdf0cd7456102a276b64bdd5e1714ebcdfcbcc71a7706c8b2dae47b979"
   },
   "anchor:noMoraleChant": {
-    "dps": 63660.4,
-    "totalDamage": 3819623.92,
+    "dps": 63701.54,
+    "totalDamage": 3822092.48,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2042,7 +2042,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 248044.86,
+        "expectedDamage": 250513.42,
         "castCount": 0
       },
       {
@@ -2175,20 +2175,20 @@
       }
     ],
     "counts": {
-      "timeline": 404,
+      "timeline": 405,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "f38f202aad078904cc9eb749bb29f00e71ed27b878b571d43f4b5beba5858c14"
+    "digest": "a447b235d7b3a347d7a70764999d2766a7ccbf539a8daded2c714bf5cccafde3"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40258.71,
-    "totalDamage": 2415522.74,
+    "dps": 40252.1,
+    "totalDamage": 2415125.84,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.78s would be illegal in the game: needs Endurance ≥ 50 (has 26.6).",
       "SwordSpecial 4-Hit at 23.03s would be illegal in the game: needs Endurance ≥ 50 (has 48.5).",
-      "SwordSpecial 4-Hit at 60.48s would be illegal in the game: needs Endurance ≥ 50 (has 37.94)."
+      "SwordSpecial 4-Hit at 61.00s would be illegal in the game: needs Endurance ≥ 50 (has 41.44)."
     ],
     "perSkill": [
       {
@@ -2228,7 +2228,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 54,
-        "expectedDamage": 165317.27,
+        "expectedDamage": 164644.89,
         "castCount": 0
       },
       {
@@ -2244,7 +2244,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 105,
-        "expectedDamage": 293938.13,
+        "expectedDamage": 294213.62,
         "castCount": 0
       },
       {
@@ -2370,10 +2370,10 @@
     ],
     "counts": {
       "timeline": 409,
-      "buffWindows": 131,
-      "casts": 92
+      "buffWindows": 130,
+      "casts": 94
     },
-    "digest": "77b935520a50a2d70fbf61c4232f2f26bf1624043a5f4b6074abc681ea7d3016"
+    "digest": "b7cf21b54cfeb4a4c4c290e8897e3086a742adf33df3f72b597ab19eb1513a10"
   },
   "anchor:bitterSeasonT6": {
     "dps": 43134.65,
@@ -2381,7 +2381,7 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
-      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
+      "SwordSpecial 3-Hit at 52.72s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2546,11 +2546,11 @@
       }
     ],
     "counts": {
-      "timeline": 462,
+      "timeline": 463,
       "buffWindows": 125,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "565434cf9fa4cdad7be03f14d3fbf135068ac02c1f023e3eaa3a0d2d4f7a1a29"
+    "digest": "5d29c4856f5b56e3c7ea4b6b1310cca154b3ca6e0132c0a6c603d939250bd7c3"
   },
   "anchor:bitterSeasonT4": {
     "dps": 42308.7,
@@ -2558,7 +2558,7 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
-      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
+      "SwordSpecial 3-Hit at 52.72s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2723,11 +2723,11 @@
       }
     ],
     "counts": {
-      "timeline": 462,
+      "timeline": 463,
       "buffWindows": 125,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "9c1975f3d0e23b43e408025857afe1a911359acc0fa64914006b177ecd5fa045"
+    "digest": "4d08464807f97524c0607a36faaeabfaaf06a87f30c11fb2a98030c30eb69cfd"
   },
   "anchor:bitterSeasonT1": {
     "dps": 41946.73,
@@ -2735,7 +2735,7 @@
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
-      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
+      "SwordSpecial 3-Hit at 52.72s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2900,15 +2900,15 @@
       }
     ],
     "counts": {
-      "timeline": 462,
+      "timeline": 463,
       "buffWindows": 125,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "4cf6dd98a7e95d4ae7b0b03397d55351a2b8b9fc6ac1084b67446d6192f6cfe4"
+    "digest": "94e12c006fc4bc68cfc3b25ffb8113386d079065ca58cde113f675385b873845"
   },
   "anchor:noSet": {
-    "dps": 63074.74,
-    "totalDamage": 3784484.39,
+    "dps": 63114.76,
+    "totalDamage": 3786885.8,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2925,7 +2925,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 241021.2,
+        "expectedDamage": 243422.6,
         "castCount": 0
       },
       {
@@ -3066,15 +3066,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "b04239aa163026d2b315d3cd0f63f7d1eee34359d05954f1d189f9e65b622c09"
+    "digest": "a0227b54e82fc47815cec9b9b10456a34f1b28e9a9aa999b2da2719cb7250964"
   },
   "anchor:set-Jadeware": {
-    "dps": 67912.37,
-    "totalDamage": 4074742.35,
+    "dps": 67949.68,
+    "totalDamage": 4076981.02,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3091,7 +3091,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 261464.56,
+        "expectedDamage": 264185.43,
         "castCount": 0
       },
       {
@@ -3187,7 +3187,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 20437.69,
+        "expectedDamage": 19955.49,
         "castCount": 0
       },
       {
@@ -3232,15 +3232,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "ce877e3a336efc754afdf131946f9fd2ea9c63ac553e12b186bd16a8400b1be9"
+    "digest": "9fb978c80ec7874cceef184fc2307dc23c1f21b7feaf7cb3a177e59046097e63"
   },
   "anchor:set-Mistwillow": {
-    "dps": 63661.69,
-    "totalDamage": 3819701.37,
+    "dps": 63702.25,
+    "totalDamage": 3822134.79,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3257,7 +3257,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 244243.32,
+        "expectedDamage": 246676.74,
         "castCount": 0
       },
       {
@@ -3398,15 +3398,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "7dc60ad9aeb73792a0002e406ab4c82cc38fcbd1d57d6561664eb67df93c39d8"
+    "digest": "c6543b720a7844e8350b915f6123e62e09c4399d0c129bbce34bc615f4ece581"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 64483.07,
-    "totalDamage": 3868984.21,
+    "dps": 64524.26,
+    "totalDamage": 3871455.7,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3423,7 +3423,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 248068.26,
+        "expectedDamage": 250539.74,
         "castCount": 0
       },
       {
@@ -3564,15 +3564,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "870e41bb6665f7278dc9d1bb5b46a8b74f8deab108848a748e3bcfd6a82b83e4"
+    "digest": "96be71c69370de3acefbd0cf27df0aec32a0ae20cc91e090b333677ec0e02e65"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 64875.91,
-    "totalDamage": 3892554.59,
+    "dps": 64917.14,
+    "totalDamage": 3895028.49,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3589,7 +3589,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 248363.24,
+        "expectedDamage": 250837.14,
         "castCount": 0
       },
       {
@@ -3730,15 +3730,15 @@
       }
     ],
     "counts": {
-      "timeline": 410,
+      "timeline": 411,
       "buffWindows": 150,
-      "casts": 89
+      "casts": 90
     },
-    "digest": "5c3593b7c660e23187eaf5173aa8e20bba436ed6baa86c67a5c6f707c8cd9cfb"
+    "digest": "92c21a6a17f7d75a5579951acba9019d26904c25e69ed1ce01165cef32f93860"
   },
   "defaults:umbra": {
-    "dps": 11796.83,
-    "totalDamage": 707809.69,
+    "dps": 11546.32,
+    "totalDamage": 692779.32,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 4.60s would be illegal in the game: needs Sword Horizon active (not active).",
@@ -3751,14 +3751,14 @@
       "Sword Martial QQQ at 25.67s would be illegal in the game: needs Sword Horizon active (not active).",
       "Crosswind Blade [cancel] at 30.10s would be illegal in the game: needs Sword Horizon active (not active).",
       "Crosswind Blade [cancel] at 32.00s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 37.97s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 40.22s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 42.92s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 44.82s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.12s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 53.37s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 56.07s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 57.97s would be illegal in the game: needs Sword Horizon active (not active)."
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.30s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 40.55s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 43.25s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 45.17s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.47s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 53.70s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 56.40s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 58.32s would be illegal in the game: needs Sword Horizon active (not active)."
     ],
     "perSkill": [
       {
@@ -3773,8 +3773,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 47,
-        "expectedDamage": 53920.95,
+        "count": 49,
+        "expectedDamage": 55892.02,
         "castCount": 0
       },
       {
@@ -3782,7 +3782,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 43,
-        "expectedDamage": 32694.47,
+        "expectedDamage": 32692.6,
         "castCount": 0
       },
       {
@@ -3829,8 +3829,8 @@
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 18,
-        "expectedDamage": 225432.54,
+        "count": 17,
+        "expectedDamage": 213033.36,
         "castCount": 0
       },
       {
@@ -3838,7 +3838,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 29578.9,
+        "expectedDamage": 29628.35,
         "castCount": 10
       },
       {
@@ -3853,8 +3853,8 @@
         "name": "SwordSpecial 4-Hit",
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
-        "count": 15,
-        "expectedDamage": 23454.44,
+        "count": 12,
+        "expectedDamage": 18841.26,
         "castCount": 5
       },
       {
@@ -3878,7 +3878,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52190.41,
+        "expectedDamage": 52153.75,
         "castCount": 4
       },
       {
@@ -3923,10 +3923,10 @@
       }
     ],
     "counts": {
-      "timeline": 295,
-      "buffWindows": 127,
-      "casts": 90
+      "timeline": 294,
+      "buffWindows": 123,
+      "casts": 92
     },
-    "digest": "74297cdb28909e54b575e124640b14dbc628864a960a923b6c0d09638b344f28"
+    "digest": "a9d43c5b07b138924391131332fb876a8b9e905aed075e1e70bcfb1b8c1677f3"
   }
 }

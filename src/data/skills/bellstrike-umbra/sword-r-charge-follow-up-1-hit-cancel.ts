@@ -17,6 +17,7 @@ export const swordRChargeFollowUp1HitCancel = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordRChargeFollowUp1HitCancel,
+  cancelledBy: "deflectCancel",
   // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
   castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,

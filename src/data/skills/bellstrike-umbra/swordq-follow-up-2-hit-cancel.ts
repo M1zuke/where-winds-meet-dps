@@ -15,6 +15,7 @@ export const swordqFollowUp2HitCancel = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ2HitCancel,
+  cancelledBy: "deflectCancel",
   triggersBuffs: [BUFF.jadeware],
   receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
   // A cancel form ends where the animation opens its interrupt window — 42 frames in (in-game animation, 2026-09-09); the parry that ends it is the next rotation step.

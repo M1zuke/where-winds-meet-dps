@@ -14,6 +14,7 @@ export const poetFinalHitCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.poetFinalHitCancel,
+  cancelledBy: "deflectCancel",
   castFrames: 47,
   triggerable: true,
   // In-game values as of 2026-09-28: every other mystic art is a stationary

@@ -29,6 +29,7 @@ export const spearspecial1HitCancel = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearSpecial1HitCancel,
+  cancelledBy: "deflectCancel",
   receives: HEAVENQUAKER_SPEAR_RECEIVES,
   castConditions: [SWEEP_ALL_REQUIRES],
   meterCosts: [SWEEP_ALL_COST],

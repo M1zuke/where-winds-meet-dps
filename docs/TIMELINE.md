@@ -204,6 +204,12 @@ once at that same layout-time check — never re-evaluated by a display.
 - **A rotation step performs every hit its skill has.** A step names a skill and
   nothing else; a cast cut short is authored as its own skill carrying only the
   hits it lands, never as a count on the step.
+- **A cancel-form skill brings its own interrupt-recovery cast.** A skill is
+  one only by authoring its own `cancelledBy`; absent, it is not a cancel
+  form at all, regardless of what its name reads as. The engine inserts the
+  class's own such cast right after it, as a real cast of its own, unless
+  `cancelledBy` names the next rotation step instead. A manual step for the
+  same cast directly after it is never doubled.
 - **A rotation may fix its own window** (`fixedWindowSec`): the run then lasts
   exactly that long from the window's own opening frame, and DPS divides by
   it. Casts shorter than the window are followed by idle time in which every

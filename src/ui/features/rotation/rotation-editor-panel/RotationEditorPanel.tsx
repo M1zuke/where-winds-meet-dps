@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react"
+import { Fragment, useMemo, useRef, useState } from "react"
 import type {
   Inputs,
   Result,
@@ -24,7 +24,8 @@ import { DEFAULT_AVERAGE_FPS, DEFAULT_PING_MS } from "../../../../engine/pingFps
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
-import { isPrePullSkill, type Skill } from "../../../../engine/skill"
+import { isPrePullSkill, type ConditionFailureReason, type Skill } from "../../../../engine/skill"
+import { deflectCancelSkillId } from "../../../../engine/deflectCancels"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
@@ -251,6 +252,14 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     for (const cast of result.casts ?? []) map.set(cast.stepIndex, cast)
     return map
   }, [result.casts])
+  const attachedCastsByParentStepId = useMemo(() => {
+    const map = new Map<string, RotationCast>()
+    for (const cast of result.casts ?? []) {
+      if (cast.attachedToStepId) map.set(cast.attachedToStepId, cast)
+    }
+    return map
+  }, [result.casts])
+  const deflectCancelSkill = skillsById.get(deflectCancelSkillId(inputs.classId))
   const invalidStepIds = useMemo(
     () => new Set(result.invalidStepIds ?? []),
     [result.invalidStepIds],
@@ -623,94 +632,108 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                   : t("rotation.editor.invalidInGameTitle")
                 : undefined
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
+              const attachedCast = attachedCastsByParentStepId.get(step.id)
               return (
-                <div
-                  key={step.id}
-                  className={
-                    styles.entry +
-                    (isCustom ? "" : ` ${styles.entryReadonly}`) +
-                    (invalid ? ` ${styles.entryInvalid}` : "")
-                  }
-                >
-                  <div className={styles.idx}>{idx + 1}</div>
-                  <span className={styles.time} title={invalidTitle}>
-                    {cast ? `${fightClockSec(result, cast.timeSec).toFixed(2)}s` : "—"}
-                    {invalid ? " ⚠" : ""}
-                  </span>
-                  {isCustom ? (
-                    <Combobox
-                      value={step.skillId}
-                      options={skillOpts}
-                      onChange={(skillId) => updateStep(idx, { skillId })}
-                      placeholder={t("rotation.editor.selectSkill")}
-                    />
-                  ) : (
-                    <span className={styles.skillStatic}>
-                      {skill ? t(skillKey(skill), skill.name) : step.skillId}
-                    </span>
-                  )}
-                  <span className={styles.castReadonly}>
-                    {maxHits} {t("common.hits")}
-                  </span>
-                  <span
-                    className={styles.prepull}
-                    title={t("rotation.editor.prePullExcludedFromDuration")}
+                <Fragment key={step.id}>
+                  <div
+                    className={
+                      styles.entry +
+                      (isCustom ? "" : ` ${styles.entryReadonly}`) +
+                      (invalid ? ` ${styles.entryInvalid}` : "")
+                    }
                   >
-                    {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
-                  </span>
-                  <div className={styles.buffsCell}>
-                    {shownBuffs.length === 0 ? (
-                      <span className="muted">—</span>
+                    <div className={styles.idx}>{idx + 1}</div>
+                    <span className={styles.time} title={invalidTitle}>
+                      {cast ? `${fightClockSec(result, cast.timeSec).toFixed(2)}s` : "—"}
+                      {invalid ? " ⚠" : ""}
+                    </span>
+                    {isCustom ? (
+                      <Combobox
+                        value={step.skillId}
+                        options={skillOpts}
+                        onChange={(skillId) => updateStep(idx, { skillId })}
+                        placeholder={t("rotation.editor.selectSkill")}
+                      />
                     ) : (
-                      shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      <span className={styles.skillStatic}>
+                        {skill ? t(skillKey(skill), skill.name) : step.skillId}
+                      </span>
                     )}
-                    {cast?.meterLevels?.map((level) => (
-                      <MeterLevelChip key={level.id} level={level} />
-                    ))}
-                    {showDistance && cast ? (
-                      <DistanceChip distanceMeters={cast.distanceMeters} />
-                    ) : null}
-                  </div>
-                  {isCustom && (
-                    <div className={styles.rowActions}>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => addStepAfter(idx)}
-                        title={t("rotation.editor.addSkillAfterThisLine")}
-                        aria-label="add after"
-                      >
-                        +
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, -1)}
-                        disabled={idx === 0}
-                        aria-label="move up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, 1)}
-                        disabled={idx === steps.length - 1}
-                        aria-label="move down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon danger"
-                        onClick={() => removeStep(idx)}
-                        aria-label="remove"
-                      >
-                        ×
-                      </button>
+                    <span className={styles.castReadonly}>
+                      {maxHits} {t("common.hits")}
+                    </span>
+                    <span
+                      className={styles.prepull}
+                      title={t("rotation.editor.prePullExcludedFromDuration")}
+                    >
+                      {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
+                    </span>
+                    <div className={styles.buffsCell}>
+                      {shownBuffs.length === 0 ? (
+                        <span className="muted">—</span>
+                      ) : (
+                        shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      )}
+                      {cast?.meterLevels?.map((level) => (
+                        <MeterLevelChip key={level.id} level={level} />
+                      ))}
+                      {showDistance && cast ? (
+                        <DistanceChip distanceMeters={cast.distanceMeters} />
+                      ) : null}
                     </div>
+                    {isCustom && (
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => addStepAfter(idx)}
+                          title={t("rotation.editor.addSkillAfterThisLine")}
+                          aria-label="add after"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, -1)}
+                          disabled={idx === 0}
+                          aria-label="move up"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, 1)}
+                          disabled={idx === steps.length - 1}
+                          aria-label="move down"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon danger"
+                          onClick={() => removeStep(idx)}
+                          aria-label="remove"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {attachedCast && (
+                    <AttachedDeflectCancelRow
+                      cast={attachedCast}
+                      skill={deflectCancelSkill}
+                      invalid={invalidStepIds.has(attachedCast.stepId)}
+                      invalidReasons={invalidStepReasons[attachedCast.stepId]}
+                      hiddenBuffIds={hiddenBuffIds}
+                      buffOrder={buffOrder}
+                      showDistance={showDistance}
+                      result={result}
+                    />
                   )}
-                </div>
+                </Fragment>
               )
             })}
             {steps.length === 0 && <div className={styles.entriesEmpty}>{t("common.none")}</div>}
@@ -774,6 +797,64 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className="hint">{t("rotation.editor.eachStepPicksHint")}</div>
         </div>
       )}
+    </div>
+  )
+}
+
+function AttachedDeflectCancelRow({
+  cast,
+  skill,
+  invalid,
+  invalidReasons,
+  hiddenBuffIds,
+  buffOrder,
+  showDistance,
+  result,
+}: {
+  cast: RotationCast
+  skill: Skill | undefined
+  invalid: boolean
+  invalidReasons?: ConditionFailureReason[]
+  hiddenBuffIds: ReadonlySet<string>
+  buffOrder: ReadonlyMap<string, number>
+  showDistance: boolean
+  result: Result
+}) {
+  const { t } = useI18n()
+  const invalidTitle = invalid
+    ? invalidReasons && invalidReasons.length > 0
+      ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+      : t("rotation.editor.invalidInGameTitle")
+    : undefined
+  const shownBuffs = visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder)
+  const rowClassName = [styles.entry, styles.entryReadonly, styles.entryAttached]
+    .concat(invalid ? styles.entryInvalid : "")
+    .filter(Boolean)
+    .join(" ")
+  return (
+    <div className={rowClassName}>
+      <div className={styles.idx}>—</div>
+      <span className={styles.time} title={invalidTitle}>
+        {`${fightClockSec(result, cast.timeSec).toFixed(2)}s`}
+        {invalid ? " ⚠" : ""}
+      </span>
+      <span className={styles.skillStatic}>
+        {skill ? t(skillKey(skill), skill.name) : cast.skillName}
+      </span>
+      <span className={styles.castReadonly} />
+      <span className={styles.prepull} />
+      <div className={styles.buffsCell}>
+        {shownBuffs.length === 0 ? (
+          <span className="muted">—</span>
+        ) : (
+          shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+        )}
+        {cast.meterLevels?.map((level) => (
+          <MeterLevelChip key={level.id} level={level} />
+        ))}
+        {showDistance ? <DistanceChip distanceMeters={cast.distanceMeters} /> : null}
+      </div>
+      <div className={styles.rowActions} />
     </div>
   )
 }

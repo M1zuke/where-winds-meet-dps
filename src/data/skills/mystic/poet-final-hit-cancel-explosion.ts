@@ -18,6 +18,7 @@ export const poetFinalHitCancelExplosion = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.poetFinalHitCancelExplosion,
+  cancelledBy: "deflectCancel",
   castFrames: 0,
   triggerable: true,
   hits: [

@@ -1357,6 +1357,29 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
   })
 })
 
+describe("seeded-skill cancelledBy heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSpearq5HitCancel = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === `${CLASS_ID}-spearq-5-hit-cancel`,
+  )!
+
+  it("restores a cancel-form skill's cancelledBy on a copy seeded before the field existed, renamed or not", () => {
+    const stale = { ...seedSkillFromBuiltin(CLASS_ID, builtinSpearq5HitCancel), name: "Renamed" }
+    delete stale.cancelledBy
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.cancelledBy).toBe("deflectCancel")
+  })
+
+  it("leaves a genuinely custom skill without cancelledBy alone", () => {
+    const ownSkill = makeSkill(CLASS_ID, { name: "Something [cancel]" })
+    saveCustomSkill(ownSkill)
+    const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === ownSkill.id)!
+    expect(reloaded.cancelledBy).toBeUndefined()
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". A
 // skill/debuff saved while a buff def still declared `affects`/`triggeredBy`
 // itself carries neither `receives` nor `triggersBuffs` — recovered here from

@@ -13,6 +13,7 @@ export const toadCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.toadCancel,
+  cancelledBy: "deflectCancel",
   // Cast length to the earliest next input and hit frames: in-game
   // animation, 2026-09-24.
   castFrames: 96,

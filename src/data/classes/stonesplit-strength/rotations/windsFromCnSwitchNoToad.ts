@@ -35,7 +35,6 @@ export default defineRotation({
     { skillId: "stonesplitStrength-phalanxcharged-s3-innerpassion" },
     { skillId: "stonesplitStrength-snowpartingslide" },
     { skillId: "mystic-flute-of-the-tides-cancel" },
-    { skillId: "stonesplitStrength-deflect" },
     { skillId: "stonesplitStrength-snowpartingspecial" },
     { skillId: "stonesplitStrength-snowpartingq-stab" },
     { skillId: "stonesplitStrength-phalanxcharged-s3-innerpassion" },

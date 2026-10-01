@@ -12,6 +12,7 @@ export const goldenBodyCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.goldenBodyCancel,
+  cancelledBy: "deflectCancel",
   triggersBuffs: [BUFF.rainwhisperShield],
   // Cast length to the earliest next input, no earlier window: in-game
   // animation, 2026-09-24.

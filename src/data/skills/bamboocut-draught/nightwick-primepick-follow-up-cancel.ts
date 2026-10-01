@@ -18,6 +18,7 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.nightwickPrimepickFollowUpCancel,
+  cancelledBy: "nextSkill",
   receives: [
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...SKYSTRIKE_GAUNTLETS_RECEIVES,
