@@ -1680,21 +1680,21 @@
     "totalDamage": 2350320.88,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 7.55s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 13.17s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 15.45s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 18.20s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 22.15s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 26.55s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 28.80s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 31.50s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 35.43s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 44.00s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 46.70s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 50.63s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 56.07s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 58.35s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 61.05s would be illegal in the game: its cast conditions are not met."
+      "Crosswind Blade [cancel] at 6.92s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 12.53s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 14.82s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 17.57s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 21.52s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 25.92s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 28.17s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 30.87s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 34.80s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 43.37s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 46.07s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 50.00s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 55.43s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 57.72s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 60.42s would be illegal in the game: needs Sword Horizon active (not active)."
     ],
     "perSkill": [
       {
@@ -1855,7 +1855,7 @@
       "buffWindows": 122,
       "casts": 89
     },
-    "digest": "4fed30b960846a75317378e7d181d9c61da3cd9f056abe088fc55fb42ee95d72"
+    "digest": "8cbceae2ce90b695415a4bc4fdc2830d6d788eee57a9c5b4d253a5195acc6d57"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61596.58,
@@ -2186,9 +2186,9 @@
     "totalDamage": 2415522.74,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 13.40s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 24.65s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 4-Hit at 62.10s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 11.78s would be illegal in the game: needs Endurance ≥ 50 (has 26.6).",
+      "SwordSpecial 4-Hit at 23.03s would be illegal in the game: needs Endurance ≥ 50 (has 48.5).",
+      "SwordSpecial 4-Hit at 60.48s would be illegal in the game: needs Endurance ≥ 50 (has 37.94)."
     ],
     "perSkill": [
       {
@@ -2373,15 +2373,15 @@
       "buffWindows": 131,
       "casts": 92
     },
-    "digest": "9422caa169d39f3848a252e6c246a848e3d6f0bd7e1c98071e8cefbd53c6445f"
+    "digest": "77b935520a50a2d70fbf61c4232f2f26bf1624043a5f4b6074abc681ea7d3016"
   },
   "anchor:bitterSeasonT6": {
     "dps": 43134.65,
     "totalDamage": 2588078.91,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.67s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.18s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
+      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2550,15 +2550,15 @@
       "buffWindows": 125,
       "casts": 89
     },
-    "digest": "e313470a516c481d002ce1d2a059c81a328fa51739c28ef74af4defe54ce7da2"
+    "digest": "565434cf9fa4cdad7be03f14d3fbf135068ac02c1f023e3eaa3a0d2d4f7a1a29"
   },
   "anchor:bitterSeasonT4": {
     "dps": 42308.7,
     "totalDamage": 2538522.27,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.67s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.18s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
+      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2727,15 +2727,15 @@
       "buffWindows": 125,
       "casts": 89
     },
-    "digest": "ce792986fc8e1b54b2677fe738818eaecaeaa897dc8f4d2deb01e781254020dd"
+    "digest": "9c1975f3d0e23b43e408025857afe1a911359acc0fa64914006b177ecd5fa045"
   },
   "anchor:bitterSeasonT1": {
     "dps": 41946.73,
     "totalDamage": 2516803.67,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.67s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 53.18s would be illegal in the game: its cast conditions are not met."
+      "SwordSpecial 3-Hit at 11.03s would be illegal in the game: needs Endurance ≥ 50 (has 36.13).",
+      "SwordSpecial 3-Hit at 52.55s would be illegal in the game: needs Endurance ≥ 50 (has 36.3)."
     ],
     "perSkill": [
       {
@@ -2904,7 +2904,7 @@
       "buffWindows": 125,
       "casts": 89
     },
-    "digest": "ebcdeccadee726a6e51106473bbc838dbf52809b6e630af61bca1760614e7b9b"
+    "digest": "4cf6dd98a7e95d4ae7b0b03397d55351a2b8b9fc6ac1084b67446d6192f6cfe4"
   },
   "anchor:noSet": {
     "dps": 63074.74,
@@ -3741,24 +3741,24 @@
     "totalDamage": 707809.69,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 5.23s would be illegal in the game: its cast conditions are not met.",
-      "SwordSpecial 3-Hit at 9.48s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 10.72s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 13.00s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 15.75s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 17.65s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 24.05s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 26.30s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 30.73s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 32.63s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.60s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 40.85s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 43.55s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 45.45s would be illegal in the game: its cast conditions are not met.",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.75s would be illegal in the game: its cast conditions are not met.",
-      "Sword Martial QQQ at 54.00s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 56.70s would be illegal in the game: its cast conditions are not met.",
-      "Crosswind Blade [cancel] at 58.60s would be illegal in the game: its cast conditions are not met."
+      "Crosswind Blade [cancel] at 4.60s would be illegal in the game: needs Sword Horizon active (not active).",
+      "SwordSpecial 3-Hit at 8.85s would be illegal in the game: needs Endurance ≥ 50 (has 37.47).",
+      "Crosswind Blade [cancel] at 10.08s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 12.37s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 15.12s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 17.02s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 23.42s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 25.67s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 30.10s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 32.00s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 37.97s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 40.22s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 42.92s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 44.82s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.12s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Sword Martial QQQ at 53.37s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 56.07s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 57.97s would be illegal in the game: needs Sword Horizon active (not active)."
     ],
     "perSkill": [
       {
@@ -3927,6 +3927,6 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "8c07f6eccf377c8c93ed0243dbd118b00127d92ba9cc50fe223f578c74dea4b7"
+    "digest": "74297cdb28909e54b575e124640b14dbc628864a960a923b6c0d09638b344f28"
   }
 }

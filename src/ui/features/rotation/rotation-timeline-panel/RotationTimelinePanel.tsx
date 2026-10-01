@@ -2,13 +2,16 @@ import { useMemo } from "react"
 import type { Result, TimelineEvent } from "../../../../engine/types"
 import { breakdownNameOf } from "../../../../engine/skill"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { fightClockSec } from "../fightClock"
 import styles from "./RotationTimelinePanel.module.scss"
 
 export function RotationTimelinePanel({ result }: { result: Result }) {
   const { t } = useI18n()
   const duration = result.rotationDuration
-  const windowEndSec = result.fightStartSec + duration
-  const events = result.timeline ?? []
+  const events = (result.timeline ?? []).map((event) => ({
+    ...event,
+    timeSec: fightClockSec(result, event.timeSec),
+  }))
 
   const lanes = useMemo(() => {
     const laneOf = new Map(
@@ -18,7 +21,8 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
       ]),
     )
     const byName = new Map<string, { key: string; events: TimelineEvent[] }>()
-    for (const event of result.timeline ?? []) {
+    for (const rawEvent of result.timeline ?? []) {
+      const event = { ...rawEvent, timeSec: fightClockSec(result, rawEvent.timeSec) }
       const lane = laneOf.get(event.skillName)
       const name = lane?.name ?? event.skillName
       const existing = byName.get(name)
@@ -26,26 +30,26 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
       else byName.set(name, { key: lane?.key ?? name, events: [event] })
     }
     return byName
-  }, [result.timeline, result.perSkill])
+  }, [result])
 
   if (events.length === 0 || duration <= 0) {
     return <div className="empty-tab">{t("common.none")}</div>
   }
 
   const minTime = Math.min(0, ...events.map((event) => event.timeSec))
-  const span = Math.max(windowEndSec - minTime, 1e-6)
+  const span = Math.max(duration - minTime, 1e-6)
   const pct = (sec: number) => ((sec - minTime) / span) * 100
 
   const axisTickFractions = [0, 0.25, 0.5, 0.75, 1]
 
   const qiBreak = result.qiBreakWindow
-  const qiStart = qiBreak ? Math.max(qiBreak.startSec, minTime) : 0
-  const qiEnd = qiBreak ? Math.min(qiBreak.endSec, windowEndSec) : 0
+  const qiStart = qiBreak ? Math.max(fightClockSec(result, qiBreak.startSec), minTime) : 0
+  const qiEnd = qiBreak ? Math.min(fightClockSec(result, qiBreak.endSec), duration) : 0
   const showQi = qiBreak != null && qiEnd > qiStart
 
   const lowQi = result.lowQiWindow
-  const lowQiStart = lowQi ? Math.max(lowQi.startSec, minTime) : 0
-  const lowQiEnd = lowQi ? Math.min(lowQi.endSec, windowEndSec) : 0
+  const lowQiStart = lowQi ? Math.max(fightClockSec(result, lowQi.startSec), minTime) : 0
+  const lowQiEnd = lowQi ? Math.min(fightClockSec(result, lowQi.endSec), duration) : 0
   const showLowQi = lowQi != null && lowQiEnd > lowQiStart
 
   return (
@@ -103,7 +107,7 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
                       (!event.inWindow ? ` ${styles.outOfWindow}` : "")
                     }
                     style={{ left: pct(event.timeSec) + "%" }}
-                    title={`${event.skillName} — ${Math.max(0, event.timeSec).toFixed(2)}s — ${Math.round(event.damage).toLocaleString()}`}
+                    title={`${event.skillName} — ${event.timeSec.toFixed(2)}s — ${Math.round(event.damage).toLocaleString()}`}
                   />
                 ))}
               </div>
@@ -126,7 +130,7 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
                   className={styles.timelineAxisTick + alignment}
                   style={{ left: pct(sec) + "%" }}
                 >
-                  {Math.max(0, sec).toFixed(1)}s
+                  {sec.toFixed(1)}s
                 </span>
               )
             })}

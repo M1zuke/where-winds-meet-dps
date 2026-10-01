@@ -104,21 +104,21 @@ describe("dpsSeries", () => {
     expect(dpsSeries(resultWith([], 4))).toEqual(empty)
   })
 
-  it("starts and buckets the series at a positive fightStartSec, not at zero", () => {
+  it("buckets on the absolute clock but reports fight-clock zero for a positive fightStartSec", () => {
     const result = resultWith([event(2.5, 90), event(4.5, 60)], 3, 2)
     const { perSecond, cumulative } = dpsSeries(result)
 
-    expect(perSecond.map((sample) => sample.timeSec)).toEqual([2, 3, 4, 5])
+    expect(perSecond.map((sample) => sample.timeSec)).toEqual([0, 1, 2, 3])
     expect(perSecond.map((sample) => sample.dps)).toEqual([0, 90, 0, 60])
     expect(cumulative.map((sample) => sample.dps)).toEqual([0, 90, 45, 50])
     expect(cumulative[cumulative.length - 1].dps).toBeCloseTo(result.dps, 10)
   })
 
-  it("starts and buckets the series at a negative fightStartSec, not at zero", () => {
+  it("buckets on the absolute clock but reports fight-clock zero for a negative fightStartSec", () => {
     const result = resultWith([event(-0.5, 80), event(1.5, 40)], 3, -1)
     const { perSecond, cumulative } = dpsSeries(result)
 
-    expect(perSecond.map((sample) => sample.timeSec)).toEqual([-1, 0, 1, 2])
+    expect(perSecond.map((sample) => sample.timeSec)).toEqual([0, 1, 2, 3])
     expect(perSecond.map((sample) => sample.dps)).toEqual([0, 80, 0, 40])
     expect(cumulative.map((sample) => sample.dps)).toEqual([0, 80, 40, 40])
     expect(cumulative[cumulative.length - 1].dps).toBeCloseTo(result.dps, 10)

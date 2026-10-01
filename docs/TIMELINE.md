@@ -147,7 +147,9 @@ conditions had held — the flag changes nothing about the simulation, only
 what gets reported alongside it. A `castConditions` entry never carries
 `source: "buffEngine"` — the same restriction as a hit's or a variant's own
 conditions. This flags a rotation step only — a `castSkill`-generated cast
-skips straight to its own hits, unflagged.
+skips straight to its own hits, unflagged. The flag also carries which of the
+step's own conditions failed and the ledger's actual value for each, decided
+once at that same layout-time check — never re-evaluated by a display.
 
 ## Identity and tags
 

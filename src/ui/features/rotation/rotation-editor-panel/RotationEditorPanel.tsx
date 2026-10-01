@@ -37,6 +37,8 @@ import {
   castBuffDisplayOrder,
   visibleCastBuffs,
 } from "../buffChips"
+import { fightClockSec } from "../fightClock"
+import { conditionFailureReasonsText } from "../../skills/statusText"
 import {
   inputsWithRotationOption,
   rotationOptions,
@@ -253,6 +255,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     () => new Set(result.invalidStepIds ?? []),
     [result.invalidStepIds],
   )
+  const invalidStepReasons = result.invalidStepReasons ?? {}
 
   const hiddenBuffIds = useMemo(() => hiddenTimelineBuffIds(inputs.classId), [inputs.classId])
   const buffOrder = useMemo(
@@ -594,7 +597,12 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
-            <QiBreakRow breaks={result.qiBreaks ?? []} />
+            <QiBreakRow
+              breaks={(result.qiBreaks ?? []).map((qiBreak) => ({
+                startSec: fightClockSec(result, qiBreak.startSec),
+                endSec: fightClockSec(result, qiBreak.endSec),
+              }))}
+            />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
                 key={buff.id}
@@ -608,6 +616,12 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               const maxHits = Math.max(1, skill?.hits.length ?? 1)
               const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
               const invalid = invalidStepIds.has(step.id)
+              const invalidReasons = invalidStepReasons[step.id]
+              const invalidTitle = invalid
+                ? invalidReasons && invalidReasons.length > 0
+                  ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+                  : t("rotation.editor.invalidInGameTitle")
+                : undefined
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
               return (
                 <div
@@ -619,11 +633,8 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                   }
                 >
                   <div className={styles.idx}>{idx + 1}</div>
-                  <span
-                    className={styles.time}
-                    title={invalid ? t("rotation.editor.invalidInGameTitle") : undefined}
-                  >
-                    {cast ? `${Math.max(0, cast.timeSec).toFixed(2)}s` : "—"}
+                  <span className={styles.time} title={invalidTitle}>
+                    {cast ? `${fightClockSec(result, cast.timeSec).toFixed(2)}s` : "—"}
                     {invalid ? " ⚠" : ""}
                   </span>
                   {isCustom ? (

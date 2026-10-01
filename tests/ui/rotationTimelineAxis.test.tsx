@@ -72,4 +72,27 @@ describe("RotationTimelinePanel axis", () => {
     expect((first as HTMLElement).style.left).toBe("0%")
     expect((last as HTMLElement).style.left).toBe("100%")
   })
+
+  it("starts the axis at 0 at the fight start, not at a nonzero fightStartSec", () => {
+    const shifted: Result = {
+      ...result,
+      fightStartSec: 2,
+      timeline: result.timeline!.map((event) => ({ ...event, timeSec: event.timeSec + 2 })),
+    }
+
+    const { container } = render(
+      <I18nProvider>
+        <RotationTimelinePanel result={shifted} />
+      </I18nProvider>,
+    )
+
+    const ticks = container.querySelectorAll("." + styles.timelineAxisTick)
+    expect([...ticks].map((tick) => tick.textContent)).toEqual([
+      "0.0s",
+      "3.0s",
+      "6.0s",
+      "9.0s",
+      "12.0s",
+    ])
+  })
 })

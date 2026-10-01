@@ -1,20 +1,14 @@
 import {
   isAnyOfCondition,
   isParamCondition,
-  type StatusCondition,
+  OP_SYMBOL,
+  type ConditionFailureReason,
   type TriggerCondition,
 } from "../../../engine/skill"
 import { FPS } from "../../../engine/timeline"
 import { humanizeParamId } from "../../../engine/buffs/catalog"
 import { innerWayForBuffParam } from "../../../definitions/innerWays/registry"
-
-const OP_SYMBOL: Record<StatusCondition["op"], string> = {
-  gte: "≥",
-  gt: ">",
-  eq: "=",
-  lte: "≤",
-  lt: "<",
-}
+import { buffKey, debuffKey, innerWayKey, meterKey, weaponKey } from "../../../i18n/contentKeys"
 
 type Translate = (key: string, fallback?: string) => string
 
@@ -50,6 +44,51 @@ export function formatConditions(
   return conditions
     .map((condition) => formatCondition(condition, nameOf, paramNameOf, t))
     .join(" · ")
+}
+
+function conditionFailureText(reason: ConditionFailureReason, t: Translate): string {
+  const needs = t("rotation.editor.reasonNeeds", "needs")
+  const has = t("rotation.editor.reasonHas", "has")
+  const active = t("rotation.editor.reasonActive", "active")
+  const notActive = t("rotation.editor.reasonNotActive", "not active")
+  const tier = t("common.tier", "tier")
+  const drawn = t("rotation.editor.reasonDrawn", "drawn")
+  switch (reason.kind) {
+    case "anyOf": {
+      const joiner = ` ${t("skills.status.anyOfJoiner", "or")} `
+      return `(${reason.reasons.map((clause) => conditionFailureText(clause, t)).join(joiner)})`
+    }
+    case "weapon": {
+      const needed = t(weaponKey(reason.id), reason.name)
+      const actual = reason.actualId ? t(weaponKey(reason.actualId), reason.actualName) : notActive
+      return `${t("rotation.editor.reasonNeedsThe", "needs the")} ${needed} ${drawn} (${actual} ${drawn})`
+    }
+    case "param": {
+      const label = reason.innerWayId ? t(innerWayKey(reason.innerWayId), reason.name) : reason.name
+      if (reason.minTier === undefined)
+        return `${needs} ${label} ${active} (${reason.actualOn ? active : notActive})`
+      const actual = reason.actualOn ? `${tier} ${reason.actualTier}` : notActive
+      return `${needs} ${label} ${tier} ${reason.minTier}+ (${actual})`
+    }
+    default: {
+      const key =
+        reason.kind === "meter"
+          ? meterKey(reason.id)
+          : reason.kind === "debuff"
+            ? debuffKey(reason.id)
+            : buffKey(reason.id)
+      const label = t(key, reason.name)
+      return `${needs} ${label} ${OP_SYMBOL[reason.op]} ${reason.required} (${has} ${reason.actual})`
+    }
+  }
+}
+
+export function conditionFailureReasonsText(
+  reasons: readonly ConditionFailureReason[],
+  t: Translate,
+): string {
+  const joiner = ` ${t("rotation.editor.reasonAnd", "and")} `
+  return reasons.map((reason) => conditionFailureText(reason, t)).join(joiner)
 }
 
 export function statusTooltip(name: string, t: Translate, durationFrames?: number): string {

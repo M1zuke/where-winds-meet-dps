@@ -117,6 +117,12 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
 
 Follow the nearest existing worker hook rather than inventing a new shape.
 
+## Fight clock
+
+Every time a view renders is fight-clock seconds — counted from the fight's
+own start, the first damaging hit — through the one shared `fightClockSec`
+conversion, never recomputed per view.
+
 ## Component layout
 
 - Every component lives in its own kebab-case folder beside the file it belongs

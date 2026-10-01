@@ -10,13 +10,23 @@ import type {
 } from "./types"
 import type { Buff, BuffStatEffect } from "./buff"
 import type { Debuff, DebuffDotSpec } from "./debuff"
-import type { HitTrigger, MeterCost, Skill, SkillHit, TriggerCondition } from "./skill"
+import type {
+  ConditionFailureReason,
+  HitTrigger,
+  MeterCost,
+  Skill,
+  SkillHit,
+  TriggerCondition,
+} from "./skill"
 import {
   breakdownNameOf,
   conditionSatisfiedByStacks,
+  isAnyOfCondition,
+  isParamCondition,
   isPrePullSkill,
   hitConditionsHold,
   hitDealsDamage,
+  OP_SYMBOL,
   resolvedHitFrame,
   selectHitVariant,
   triggerConditions,
@@ -91,12 +101,13 @@ import { QI_TARGETS, qiTargetHpMax } from "../data/baseStats/qiTargets"
 import { PLAYER_QI_DAMAGE_INDEX, QI_BREAK_HP_DAMAGE_BONUS } from "../data/baseStats/qiConstants"
 import { castTagOf, skillTagsOf, weaponTagOf, WEAPON_TAG } from "./buffs/tags"
 import {
+  DRAWN_STATUS_PREFIX,
   drawnWeaponStatusId,
   expandStepsWithWeaponSwaps,
   makeDirectWeaponSwapSkill,
   weaponIdentitiesOf,
 } from "./weaponSwap"
-import { innerWayTier } from "../definitions/innerWays/registry"
+import { innerWayForBuffParam, innerWayTier } from "../definitions/innerWays/registry"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
 import {
@@ -321,6 +332,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     })
     const warnings: string[] = [...rotationWarnings]
     const invalidStepIds: string[] = []
+    const invalidStepReasons: Record<string, ConditionFailureReason[]> = {}
 
     interface LaidStep {
       resolved: ResolvedStep
@@ -676,8 +688,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // no-ops instead of surfacing a warning the real run didn't make.
     function layoutRotation(
       truncateAfterFrame: number | null,
-      warn: (message: string) => void,
-      markInvalid: (stepId: string) => void,
+      warn: (frame: number, build: (relSec: number) => string) => void,
+      markInvalid: (stepId: string, reasons: ConditionFailureReason[]) => void,
     ): LayoutRun {
       const layoutLedger = new StatusLedger(Math.min(0, -prePullBound), activeUpperBound)
       const layoutHolds = (condition: TriggerCondition, frame: number): boolean =>
@@ -740,6 +752,67 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const statusId = drawnWeaponStatusId(weapon)
         layoutLedger.openPermanent(statusId)
         layoutLedger.recordStack(statusId, meterStartFrame, 0)
+      }
+
+      // docs/TIMELINE.md § "Cast legality": resolves one failed condition
+      // into its readable kind, name and actual ledger value — the one place
+      // that decides this, never re-derived by a display.
+      function describeConditionFailure(
+        condition: TriggerCondition,
+        frame: number,
+      ): ConditionFailureReason {
+        if (isAnyOfCondition(condition))
+          return {
+            kind: "anyOf",
+            reasons: condition.anyOf.map((clause) => describeConditionFailure(clause, frame)),
+          }
+        if (isParamCondition(condition)) {
+          const on = paramOnOf(buffParams, condition.param)
+          const innerWay = innerWayForBuffParam(condition.param)
+          return {
+            kind: "param",
+            id: condition.param,
+            name: innerWay ? innerWay.name : humanizedParamName(condition.param),
+            innerWayId: innerWay?.id,
+            minTier: condition.minTier,
+            actualOn: on,
+            actualTier: on ? paramTierOf(buffParams, condition.param) : 0,
+          }
+        }
+        if (condition.buffId.startsWith(DRAWN_STATUS_PREFIX)) {
+          const requiredWeapon = condition.buffId.slice(DRAWN_STATUS_PREFIX.length)
+          const actualWeapon =
+            [...weaponIdentities].find(
+              (weapon) => layoutLedger.conditionStacksAt(drawnWeaponStatusId(weapon), frame) > 0,
+            ) ?? ""
+          return {
+            kind: "weapon",
+            id: requiredWeapon,
+            name: requiredWeapon,
+            actualId: actualWeapon,
+            actualName: actualWeapon,
+          }
+        }
+        const actual = layoutLedger.conditionStacksAt(condition.buffId, frame)
+        const meter = meters.find((candidate) => candidate.statusId === condition.buffId)
+        if (meter)
+          return {
+            kind: "meter",
+            id: meter.def.id,
+            name: meter.def.name,
+            op: condition.op,
+            required: condition.stacks,
+            actual,
+          }
+        const status = statusById.get(condition.buffId)
+        return {
+          kind: status && isDebuffStatus(status) ? "debuff" : "buff",
+          id: condition.buffId,
+          name: status?.name ?? condition.buffId,
+          op: condition.op,
+          required: condition.stacks,
+          actual,
+        }
       }
 
       // docs/TIMELINE.md § "Meters": a modifier that carries a `tag` is
@@ -1150,8 +1223,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           if (emptiedAt === null) return { step: resolvedStep.step, skill: current }
           const fallback = skillsById.get(drain.chargeRelease.fallbackSkillId)
           if (!fallback) return { step: resolvedStep.step, skill: current }
+          const releasedName = current.name || current.id
+          const fallbackName = fallback.name || fallback.id
+          const meterName = meter.def.name
           warn(
-            `${current.name || current.id} at ${(startFrame / FPS).toFixed(2)}s released early onto ${fallback.name || fallback.id}: its ${meter.def.name} would empty before the held stage completes.`,
+            startFrame,
+            (relSec) =>
+              `${releasedName} at ${relSec.toFixed(2)}s released early onto ${fallbackName}: its ${meterName} would empty before the held stage completes.`,
           )
           current = fallback
         }
@@ -1195,10 +1273,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         // "Meters"), never the level once its own spend already resolved it.
         const meterMarkAtStart = layoutLedger.mark()
         const holdsHere = (condition: TriggerCondition) => layoutHolds(condition, startFrame)
-        if (!(resolvedStep.skill.castConditions ?? []).every(holdsHere)) {
-          markInvalid(resolvedStep.step.id)
+        const failedCastConditions = (resolvedStep.skill.castConditions ?? []).filter(
+          (condition) => !holdsHere(condition),
+        )
+        if (failedCastConditions.length > 0) {
+          const reasons = failedCastConditions.map((condition) =>
+            describeConditionFailure(condition, startFrame),
+          )
+          markInvalid(resolvedStep.step.id, reasons)
           warn(
-            `${resolvedStep.skill.name || resolvedStep.skill.id} at ${(startFrame / FPS).toFixed(2)}s would be illegal in the game: its cast conditions are not met.`,
+            startFrame,
+            (relSec) =>
+              `${resolvedStep.skill.name || resolvedStep.skill.id} at ${relSec.toFixed(2)}s would be illegal in the game: ${reasons.map(englishConditionFailure).join(" and ")}.`,
           )
         }
         // A pre-pull cast never touches a meter (TIMELINE.md § "Meters"), so its
@@ -1347,11 +1433,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       return earliest
     }
 
-    const recordWarning = (message: string): void => {
-      warnings.push(message)
+    // A warning timed to a step's own frame cannot render its fight-clock
+    // text until `fightStartFrame` below is known, so its builder is held
+    // here and only resolved once that frame is final.
+    const timedWarnings: { frame: number; build: (relSec: number) => string }[] = []
+    const recordTimedWarning = (frame: number, build: (relSec: number) => string): void => {
+      timedWarnings.push({ frame, build })
     }
-    const recordInvalidStep = (stepId: string): void => {
+    const recordInvalidStep = (stepId: string, reasons: ConditionFailureReason[]): void => {
       invalidStepIds.push(stepId)
+      invalidStepReasons[stepId] = reasons
     }
 
     // docs/TIMELINE.md § "Fight window": the fight starts at the earliest
@@ -1363,7 +1454,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     let layout: LayoutRun
     let fightStartFrame: number
     if (fixedWindowFrames === null) {
-      layout = layoutRotation(null, recordWarning, recordInvalidStep)
+      layout = layoutRotation(null, recordTimedWarning, recordInvalidStep)
       fightStartFrame =
         combineEarliestFrame(
           layout.discoveredFightStartFrame,
@@ -1380,8 +1471,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           discovery.discoveredFightStartFrame,
           earliestDotTickFrame(discovery.layoutLedger),
         ) ?? 0
-      layout = layoutRotation(fightStartFrame + fixedWindowFrames, recordWarning, recordInvalidStep)
+      layout = layoutRotation(
+        fightStartFrame + fixedWindowFrames,
+        recordTimedWarning,
+        recordInvalidStep,
+      )
     }
+    const fightStartSec = fightStartFrame / FPS
+    for (const { frame, build } of timedWarnings) warnings.push(build(frame / FPS - fightStartSec))
     const {
       laidSteps,
       layoutLedger,
@@ -1417,7 +1514,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       meter.advanceTo(ledgerSpanEnd)
       for (const meterWarning of meter.warnings)
         warnings.push(
-          `${meter.def.name} at ${(meterWarning.frame / FPS).toFixed(2)}s: ${meterWarning.message}.`,
+          `${meter.def.name} at ${(meterWarning.frame / FPS - fightStartSec).toFixed(2)}s: ${meterWarning.message}.`,
         )
     }
 
@@ -1756,7 +1853,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       classId: inputs.classId,
       fps: FPS,
       rotationDurationSec,
-      windowStartSec: fightStartFrame / FPS,
+      windowStartSec: fightStartSec,
       hitTimesSec: damagingHitTimesSec,
       weaponHitTimesSec,
       dotTickTimesSec,
@@ -2721,13 +2818,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       ...(resourceResults.length > 0 ? { resources: resourceResults } : {}),
       totalDamage,
       rotationDuration: rotationDurationSec,
-      fightStartSec: fightStartFrame / FPS,
+      fightStartSec,
       castDuration: castCursorFrames / FPS,
       graduationRate: null,
       perSkill,
       ranking: [],
       warnings,
       ...(invalidStepIds.length > 0 ? { invalidStepIds } : {}),
+      ...(Object.keys(invalidStepReasons).length > 0 ? { invalidStepReasons } : {}),
       timeline,
       buffWindows,
       qiBreakWindow,
@@ -2756,6 +2854,37 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
     qiPreviousBreaksFrames = qiBreaksFrames
     qiSchedule = qiComputedSchedule
+  }
+}
+
+// A build param with no owning inner way falls back to this reading of its
+// bare camelCase id — not imported from the catalog module, which pulls in
+// the class registry and would cycle back here through it.
+function humanizedParamName(param: string): string {
+  const spaced = param.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+  return spaced
+    .split(" ")
+    .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word))
+    .join(" ")
+}
+
+// Plain-English rendering for `result.warnings`, which carries no locale of
+// its own (docs/TIMELINE.md § "Cast legality"). The same structured reason
+// renders through the locale catalogue wherever the UI shows it instead.
+function englishConditionFailure(reason: ConditionFailureReason): string {
+  switch (reason.kind) {
+    case "anyOf":
+      return `(${reason.reasons.map(englishConditionFailure).join(" or ")})`
+    case "weapon":
+      return `needs the ${reason.name} drawn (${reason.actualName || "nothing"} drawn)`
+    case "param":
+      if (reason.minTier === undefined)
+        return `needs ${reason.name} active (${reason.actualOn ? "active" : "not active"})`
+      return `needs ${reason.name} tier ${reason.minTier}+ (has ${
+        reason.actualOn ? `tier ${reason.actualTier}` : "not active"
+      })`
+    default:
+      return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${reason.required} (has ${reason.actual})`
   }
 }
 

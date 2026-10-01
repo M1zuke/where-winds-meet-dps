@@ -38,6 +38,34 @@ export interface AnyOfCondition {
 
 export type TriggerCondition = StatusCondition | ParamCondition | AnyOfCondition
 
+export const OP_SYMBOL: Record<TriggerOp, string> = {
+  gte: "≥",
+  gt: ">",
+  eq: "=",
+  lte: "≤",
+  lt: "<",
+}
+
+// A step the engine flags illegal (docs/TIMELINE.md § "Cast legality")
+// carries one of these per failed `castConditions` entry, decided once where
+// the step is flagged — a display never re-evaluates the condition itself,
+// only renders this.
+export type ConditionFailureReason =
+  | { kind: "buff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "debuff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "meter"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "weapon"; id: string; name: string; actualId: string; actualName: string }
+  | {
+      kind: "param"
+      id: string
+      name: string
+      innerWayId?: string
+      minTier?: number
+      actualOn: boolean
+      actualTier: number
+    }
+  | { kind: "anyOf"; reasons: ConditionFailureReason[] }
+
 export interface HitVariant {
   id: string
   label: string

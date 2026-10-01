@@ -369,7 +369,9 @@ export interface Result {
   rotationDuration: number
   // The frame of the first damaging hit, in seconds — docs/TIMELINE.md §
   // "Fight window". May be negative when a pre-pull hit itself starts the
-  // fight.
+  // fight. Every other second below stays on this same absolute clock; a
+  // display converts to fight-clock seconds (0 here) through
+  // `fightClockSec` — docs/UI.md § "Fight clock".
   fightStartSec: number
   castDuration: number
   graduationRate: number | null
@@ -377,6 +379,7 @@ export interface Result {
   ranking: ItemRankingRow[]
   warnings: string[]
   invalidStepIds?: string[]
+  invalidStepReasons?: Record<string, import("./skill").ConditionFailureReason[]>
   timeline?: TimelineEvent[]
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null

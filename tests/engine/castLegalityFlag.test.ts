@@ -5,11 +5,26 @@ import { makeHit, makeSkill, makeTrigger, type Skill } from "../../src/engine/sk
 import { makeStep, type Rotation } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
-import type { Inputs } from "../../src/engine/types"
+import { enduranceRequires } from "../../src/data/resources/enduranceMeter"
+import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 
-function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inputs {
+// Unclaims the Oddity board's own Endurance nodes, isolating the plain meter
+// mechanics a legality test is about from that separately-tested contribution
+// (mirrors `meterCapability.test.ts`).
+const NO_ODDITY_ENDURANCE: UnclaimedOddityNodes = {
+  Qinghe: [101, 112, 126, 139],
+  Kaifeng: [205, 222],
+  Hexi: [305, 324],
+}
+
+function timelineInputs(
+  rotation: Rotation,
+  skills: Skill[],
+  buffs: Buff[],
+  patch: Partial<Inputs> = {},
+): Inputs {
   return {
     ...defaultInputs,
     classId: CLASS,
@@ -17,6 +32,7 @@ function timelineInputs(rotation: Rotation, skills: Skill[], buffs: Buff[]): Inp
     customBuffs: buffs,
     activeCustomRotation: rotation,
     set: null,
+    ...patch,
   }
 }
 
@@ -124,5 +140,131 @@ describe("a skill's cast legality flag", () => {
     const result = simulateTimeline(inputs)
 
     expect(result.invalidStepIds ?? []).toEqual([])
+  })
+})
+
+describe("a warning's own time", () => {
+  it("reports the fight clock, not the engine's absolute seconds", () => {
+    const buffOnly = makeSkill(CLASS, { name: "Buff Only", castFrames: 60, hits: [makeHit()] })
+    const opener = makeSkill(CLASS, {
+      name: "Opener",
+      castFrames: 30,
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const gate = makeBuff(CLASS, {
+      name: "Gate",
+      activation: "triggered",
+      durationFrames: 6000,
+      effects: [],
+      maxStacks: 1,
+    })
+    const flagged = makeSkill(CLASS, {
+      name: "Flagged",
+      castFrames: 30,
+      castConditions: [{ buffId: gate.id, op: "gte", stacks: 1 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const skills = [buffOnly, opener, flagged]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    const result = simulateTimeline(inputs)
+
+    // Opener's own hit is the fight's first damaging hit, at absolute 1.00s —
+    // Flagged lands half a second later, at absolute 1.50s but fight-clock 0.50s.
+    expect(result.fightStartSec).toBeCloseTo(1, 10)
+    expect(result.warnings.some((warning) => warning.includes("0.50s"))).toBe(true)
+    expect(result.warnings.some((warning) => warning.includes("1.50s"))).toBe(false)
+  })
+})
+
+describe("an illegal step's reported reason", () => {
+  it("names an Endurance-short cast's requirement and its actual value", () => {
+    const gated = makeSkill(CLASS, {
+      name: "Gated by Meter",
+      castFrames: 30,
+      castConditions: [enduranceRequires("gte", 200)],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const inputs = timelineInputs(rotationOf([gated]), [gated], [], {
+      unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
+    })
+    const result = simulateTimeline(inputs)
+
+    const [stepId] = result.invalidStepIds!
+    const [reason] = result.invalidStepReasons![stepId]
+    expect(reason).toEqual({
+      kind: "meter",
+      id: "endurance",
+      name: "Endurance",
+      op: "gte",
+      required: 200,
+      actual: 80,
+    })
+    expect(
+      result.warnings.some(
+        (warning) =>
+          warning.includes("Endurance") && warning.includes("200") && warning.includes("80"),
+      ),
+    ).toBe(true)
+  })
+
+  it("names a missing buff a cast's condition requires", () => {
+    const gate = makeBuff(CLASS, {
+      name: "River Flow",
+      activation: "triggered",
+      durationFrames: 6000,
+      effects: [],
+      maxStacks: 1,
+    })
+    const flagged = makeSkill(CLASS, {
+      name: "Flagged",
+      castFrames: 30,
+      castConditions: [{ buffId: gate.id, op: "gte", stacks: 1 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const inputs = timelineInputs(rotationOf([flagged]), [flagged], [gate])
+    const result = simulateTimeline(inputs)
+
+    const [stepId] = result.invalidStepIds!
+    const [reason] = result.invalidStepReasons![stepId]
+    expect(reason).toEqual({
+      kind: "buff",
+      id: gate.id,
+      name: "River Flow",
+      op: "gte",
+      required: 1,
+      actual: 0,
+    })
+    expect(result.warnings.some((warning) => warning.includes("River Flow"))).toBe(true)
+  })
+
+  it("names both conditions a cast fails at once", () => {
+    const gate = makeBuff(CLASS, {
+      name: "River Flow",
+      activation: "triggered",
+      durationFrames: 6000,
+      effects: [],
+      maxStacks: 1,
+    })
+    const flagged = makeSkill(CLASS, {
+      name: "Flagged",
+      castFrames: 30,
+      castConditions: [enduranceRequires("gte", 200), { buffId: gate.id, op: "gte", stacks: 1 }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const inputs = timelineInputs(rotationOf([flagged]), [flagged], [gate], {
+      unclaimedOddityNodes: NO_ODDITY_ENDURANCE,
+    })
+    const result = simulateTimeline(inputs)
+
+    const [stepId] = result.invalidStepIds!
+    const reasons = result.invalidStepReasons![stepId]
+    expect(reasons).toEqual([
+      { kind: "meter", id: "endurance", name: "Endurance", op: "gte", required: 200, actual: 80 },
+      { kind: "buff", id: gate.id, name: "River Flow", op: "gte", required: 1, actual: 0 },
+    ])
+    const [warning] = result.warnings
+    expect(warning).toContain("Endurance")
+    expect(warning).toContain("River Flow")
+    expect(warning).toContain(" and ")
   })
 })

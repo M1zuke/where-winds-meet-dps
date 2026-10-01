@@ -34,8 +34,8 @@ export function RotationDpsGraphPanel({ result }: { result: Result }) {
     return <div className="empty-tab">{t("common.none")}</div>
   }
 
-  const windowStartSec = result.fightStartSec
-  const windowEndSec = windowStartSec + result.rotationDuration
+  const windowStartSec = 0
+  const windowEndSec = result.rotationDuration
   const windowLengthSec = windowEndSec - windowStartSec
   const peakDps = Math.max(...perSecond.map((sample) => sample.dps))
   const axisTop = niceCeiling(peakDps)
