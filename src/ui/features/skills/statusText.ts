@@ -3,14 +3,60 @@ import {
   isParamCondition,
   OP_SYMBOL,
   type ConditionFailureReason,
+  type ParamSourceKind,
   type TriggerCondition,
 } from "../../../engine/skill"
 import { FPS } from "../../../engine/timeline"
 import { humanizeParamId } from "../../../engine/buffs/catalog"
 import { innerWayForBuffParam } from "../../../definitions/innerWays/registry"
-import { buffKey, debuffKey, innerWayKey, meterKey, weaponKey } from "../../../i18n/contentKeys"
+import { SCRIPT_LABEL_KEYS } from "../../../data/skills/buffs/scriptOptions"
+import type { ScriptId } from "../../../engine/types"
+import {
+  buffKey,
+  debuffKey,
+  innerWayKey,
+  meterKey,
+  setKey,
+  weaponKey,
+} from "../../../i18n/contentKeys"
 
 type Translate = (key: string, fallback?: string) => string
+
+function paramSourceLabelText(kind: ParamSourceKind, t: Translate): string {
+  switch (kind) {
+    case "innerWay":
+      return t("rotation.editor.reasonInnerWay", "inner way")
+    case "set":
+      return t("rotation.editor.reasonSet", "set")
+    case "script":
+      return t("rotation.editor.reasonScript", "script")
+  }
+}
+
+function paramSourceVerbText(kind: ParamSourceKind, actualOn: boolean, t: Translate): string {
+  if (kind === "script")
+    return actualOn
+      ? t("rotation.editor.reasonSelected", "selected")
+      : t("rotation.editor.reasonNotSelected", "not selected")
+  return actualOn
+    ? t("rotation.editor.reasonEquipped", "equipped")
+    : t("rotation.editor.reasonNotEquipped", "not equipped")
+}
+
+function paramSourceName(
+  source: { kind: ParamSourceKind; id: string },
+  fallback: string,
+  t: Translate,
+): string {
+  switch (source.kind) {
+    case "innerWay":
+      return t(innerWayKey(source.id), fallback)
+    case "set":
+      return t(setKey(source.id), fallback)
+    case "script":
+      return t(SCRIPT_LABEL_KEYS[source.id as ScriptId], fallback)
+  }
+}
 
 function defaultParamNameOf(t: Translate, param: string): string {
   const innerWay = innerWayForBuffParam(param)
@@ -64,11 +110,22 @@ function conditionFailureText(reason: ConditionFailureReason, t: Translate): str
       return `${t("rotation.editor.reasonNeedsThe", "needs the")} ${needed} ${drawn} (${actual} ${drawn})`
     }
     case "param": {
-      const label = reason.innerWayId ? t(innerWayKey(reason.innerWayId), reason.name) : reason.name
+      const source = reason.source
+      if (source) {
+        const needsThe = t("rotation.editor.reasonNeedsThe", "needs the")
+        const sourceLabel = paramSourceLabelText(source.kind, t)
+        const name = paramSourceName(source, reason.name, t)
+        const verb = paramSourceVerbText(source.kind, true, t)
+        const notVerb = paramSourceVerbText(source.kind, false, t)
+        if (reason.minTier === undefined)
+          return `${needsThe} ${sourceLabel} ${name} ${verb} (${reason.actualOn ? verb : notVerb})`
+        const actual = reason.actualOn ? `${tier} ${reason.actualTier}` : notVerb
+        return `${needsThe} ${sourceLabel} ${name} ${tier} ${reason.minTier}+ (${actual})`
+      }
       if (reason.minTier === undefined)
-        return `${needs} ${label} ${active} (${reason.actualOn ? active : notActive})`
+        return `${needs} ${reason.name} ${active} (${reason.actualOn ? active : notActive})`
       const actual = reason.actualOn ? `${tier} ${reason.actualTier}` : notActive
-      return `${needs} ${label} ${tier} ${reason.minTier}+ (${actual})`
+      return `${needs} ${reason.name} ${tier} ${reason.minTier}+ (${actual})`
     }
     default: {
       const key =

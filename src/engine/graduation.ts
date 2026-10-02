@@ -2,7 +2,7 @@ import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
-  StandardizedGraduation,
+  StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
 import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
 import { allGraduationBuilds, graduationBuildsFor } from "../definitions/graduationBuilds/registry"
@@ -26,12 +26,27 @@ function onBuiltinRotation(inputs: Inputs, rotationId: string): Inputs {
   return { ...inputs, activeCustomRotation: null, selectedBuiltinRotationId: rotationId }
 }
 
-function standardizedMindMethods(standardized: StandardizedGraduation): Inputs["mindMethods"] {
-  const slots: MindMethodSlot[] = standardized.innerWays
+export function standardizedMindMethods(
+  innerWays: readonly StandardizedInnerWay[],
+): Inputs["mindMethods"] {
+  const slots: MindMethodSlot[] = innerWays
     .slice(0, MIND_METHOD_SLOT_COUNT)
     .map(({ id, tier }) => ({ id, name: innerWayName(id), stacks: `tier ${tier}` }))
   while (slots.length < MIND_METHOD_SLOT_COUNT) slots.push({ name: "", stacks: "" })
   return slots as Inputs["mindMethods"]
+}
+
+// The inner ways a class's own graduation standard runs with, for defaulting
+// a profile that has none of its own yet (`classSetup.ts`) — every build the
+// class registers names the same list, so the first one that carries it is
+// the class's list. `null` for a class with no standardized list at all.
+export function standardizedInnerWaysForClass(
+  classId: string,
+): readonly StandardizedInnerWay[] | null {
+  for (const build of graduationBuildsFor(classId)) {
+    if (build.standardized?.innerWays.length) return build.standardized.innerWays
+  }
+  return null
 }
 
 export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBuild): Inputs {
@@ -49,7 +64,7 @@ export function standardizedGraduationInputs(inputs: Inputs, build: GraduationBu
     shareDebuff5HenZhi,
     shareEasyHurt,
     combatSettings: { ...combat },
-    mindMethods: standardizedMindMethods(standardized),
+    mindMethods: standardizedMindMethods(standardized.innerWays),
   }
 }
 

@@ -93,6 +93,13 @@ own — in simulated mode the break follows the damage of the build under test,
 never a fixed number either side can carry across the comparison. A build that
 fixes nothing rates the profile exactly as it is set.
 
+**The same slotted inner ways also seed a profile that has none of its own** —
+a freshly created profile of the class, or an existing one switched into the
+class with every inner-way slot empty, starts from that list instead of blank
+slots. A slot the profile already fills with an inner way the class still
+allows is never touched, on creation or on a class switch alike; a class with
+no such list leaves an empty slot empty.
+
 - A class with a single graduation build follows it without a choice, and a
   loaded profile stores it.
 - A class with several follows none until the profile picks one; while none is

@@ -4,7 +4,7 @@ import { defaultCombatSettings } from "../../../../engine/types"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
+import { SCRIPT_IDS, SCRIPT_LABEL_KEYS } from "../../../../data/skills/buffs/scriptOptions"
 import { buildReadsTargetDistance } from "../../../../engine/buffs/catalog"
 import {
   PREFERRED_DISTANCE_METERS_MAX,
@@ -12,11 +12,6 @@ import {
 } from "../../../../engine/distance"
 import { QI_TARGET_IDS, type QiTargetId } from "../../../../definitions/baseStats/qiTargetDef"
 import styles from "./EncounterSettingsPanel.module.scss"
-
-const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
-  wraithstrikeScript: "overview.encounterSettings.wraithstrikeScript",
-  voidrotScript: "overview.encounterSettings.voidrotScript",
-}
 
 const QI_TARGET_LABEL_KEYS: Record<QiTargetId, string> = {
   swordTrial: "overview.encounterSettings.qiTargetSwordTrial",

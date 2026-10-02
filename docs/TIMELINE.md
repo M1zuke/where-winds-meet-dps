@@ -149,7 +149,12 @@ what gets reported alongside it. A `castConditions` entry never carries
 conditions. This flags a rotation step only — a `castSkill`-generated cast
 skips straight to its own hits, unflagged. The flag also carries which of the
 step's own conditions failed and the ledger's actual value for each, decided
-once at that same layout-time check — never re-evaluated by a display.
+once at that same layout-time check — never re-evaluated by a display. A
+failed param condition's reason also names the build mechanism that param
+comes from, read off the registry that actually produces it — an inner way's
+own `buffParam`, a set's own `buffParam`, a script id — never a per-param
+lookup table; a param tied to none of those falls back to its own humanized
+id.
 
 ## Identity and tags
 

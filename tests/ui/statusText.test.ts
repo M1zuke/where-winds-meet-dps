@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { formatConditions, statusTooltip } from "../../src/ui/features/skills/statusText"
-import type { TriggerCondition } from "../../src/engine/skill"
+import {
+  conditionFailureReasonsText,
+  formatConditions,
+  statusTooltip,
+} from "../../src/ui/features/skills/statusText"
+import type { ConditionFailureReason, TriggerCondition } from "../../src/engine/skill"
 
 const fakeT = (key: string, fallback?: string) => fallback ?? key
 
@@ -50,6 +54,35 @@ describe("formatConditions", () => {
   it("renders a param condition's tier through the translated abbreviation", () => {
     const cond: TriggerCondition = { param: "someParam", minTier: 3 }
     expect(formatConditions([cond], () => undefined, fakeT)).toBe("Some Param T3+")
+  })
+})
+
+describe("conditionFailureReasonsText", () => {
+  it("names the inner way a param condition's build source resolves to, not a plain buff", () => {
+    const reason: ConditionFailureReason = {
+      kind: "param",
+      id: "swordHorizon",
+      name: "Sword Horizon",
+      source: { kind: "innerWay", id: "swordHorizon" },
+      actualOn: false,
+      actualTier: 0,
+    }
+    expect(conditionFailureReasonsText([reason], fakeT)).toBe(
+      "needs the inner way Sword Horizon equipped (not equipped)",
+    )
+  })
+
+  it("falls back to the plain build-param wording when the param resolves to no known source", () => {
+    const reason: ConditionFailureReason = {
+      kind: "param",
+      id: "someParam",
+      name: "Some Param",
+      actualOn: false,
+      actualTier: 0,
+    }
+    expect(conditionFailureReasonsText([reason], fakeT)).toBe(
+      "needs Some Param active (not active)",
+    )
   })
 })
 

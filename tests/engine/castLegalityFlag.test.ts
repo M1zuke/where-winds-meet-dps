@@ -6,6 +6,7 @@ import { makeStep, type Rotation } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import { enduranceRequires } from "../../src/data/resources/enduranceMeter"
+import { PARAM } from "../../src/data/skills/buffs/ids"
 import type { Inputs, UnclaimedOddityNodes } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
@@ -266,5 +267,59 @@ describe("an illegal step's reported reason", () => {
     expect(warning).toContain("Endurance")
     expect(warning).toContain("River Flow")
     expect(warning).toContain(" and ")
+  })
+
+  it("names the inner way a param condition's build source resolves to, not a plain buff", () => {
+    const flagged = makeSkill(CLASS, {
+      name: "Flagged",
+      castFrames: 30,
+      castConditions: [{ param: PARAM.swordHorizon }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const inputs = timelineInputs(rotationOf([flagged]), [flagged], [])
+    const result = simulateTimeline(inputs)
+
+    const [stepId] = result.invalidStepIds!
+    const [reason] = result.invalidStepReasons![stepId]
+    expect(reason).toEqual({
+      kind: "param",
+      id: "swordHorizon",
+      name: "Sword Horizon",
+      source: { kind: "innerWay", id: "swordHorizon" },
+      minTier: undefined,
+      actualOn: false,
+      actualTier: 0,
+    })
+    expect(
+      result.warnings.some((warning) =>
+        warning.includes("needs the inner way Sword Horizon equipped (not equipped)"),
+      ),
+    ).toBe(true)
+  })
+
+  it("falls back to the plain build-param wording when the param resolves to no known source", () => {
+    const flagged = makeSkill(CLASS, {
+      name: "Flagged",
+      castFrames: 30,
+      castConditions: [{ param: "dragonHeadLowHpMaxBonus" }],
+      hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
+    })
+    const inputs = timelineInputs(rotationOf([flagged]), [flagged], [])
+    const result = simulateTimeline(inputs)
+
+    const [stepId] = result.invalidStepIds!
+    const [reason] = result.invalidStepReasons![stepId]
+    expect(reason).toEqual({
+      kind: "param",
+      id: "dragonHeadLowHpMaxBonus",
+      name: "Dragon Head Low Hp Max Bonus",
+      source: undefined,
+      minTier: undefined,
+      actualOn: false,
+      actualTier: 0,
+    })
+    const [warning] = result.warnings
+    expect(warning).toContain("active (not active)")
+    expect(warning).not.toContain("inner way")
   })
 })

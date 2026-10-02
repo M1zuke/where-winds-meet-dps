@@ -46,6 +46,11 @@ export const OP_SYMBOL: Record<TriggerOp, string> = {
   lt: "<",
 }
 
+// The build mechanism a `castConditions` param condition reads — resolved
+// generically from where `BuffParams` entries are produced
+// (`engine/buffs/paramSource.ts`), never hand-mapped per param.
+export type ParamSourceKind = "innerWay" | "set" | "script"
+
 // A step the engine flags illegal (docs/TIMELINE.md § "Cast legality")
 // carries one of these per failed `castConditions` entry, decided once where
 // the step is flagged — a display never re-evaluates the condition itself,
@@ -59,7 +64,7 @@ export type ConditionFailureReason =
       kind: "param"
       id: string
       name: string
-      innerWayId?: string
+      source?: { kind: ParamSourceKind; id: string }
       minTier?: number
       actualOn: boolean
       actualTier: number

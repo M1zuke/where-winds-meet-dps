@@ -1680,21 +1680,21 @@
     "totalDamage": 2348426.22,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 6.95s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 12.62s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 14.93s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 17.72s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 21.68s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 26.13s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 28.42s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 31.13s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 35.10s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 43.73s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 46.45s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 50.42s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 56.10s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 58.42s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 61.13s would be illegal in the game: needs Sword Horizon active (not active)."
+      "Crosswind Blade [cancel] at 6.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 12.62s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 14.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 17.72s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 21.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 26.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 28.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 31.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 35.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 43.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 46.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 50.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 56.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 58.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 61.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
     ],
     "perSkill": [
       {
@@ -1855,7 +1855,7 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "b41ef0934c50a0d1c5a36d8262185bc735787324a8e16620240c9c59092caba2"
+    "digest": "16bc4114845f3eb44554cf2801f9937b334b08e30c1388c14ef6098af3f405dc"
   },
   "anchor:noInsightfulStrike": {
     "dps": 61740.64,
@@ -3741,24 +3741,24 @@
     "totalDamage": 691544.72,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 4.63s would be illegal in the game: needs Sword Horizon active (not active).",
+      "Crosswind Blade [cancel] at 4.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "SwordSpecial 3-Hit at 8.93s would be illegal in the game: needs Endurance ≥ 50 (has 37.8).",
-      "Crosswind Blade [cancel] at 10.17s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 12.48s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 15.27s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 17.18s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 23.65s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 25.93s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 30.38s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 32.32s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.67s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 40.95s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 43.67s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 45.60s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.95s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Sword Martial QQQ at 54.23s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 56.95s would be illegal in the game: needs Sword Horizon active (not active).",
-      "Crosswind Blade [cancel] at 58.88s would be illegal in the game: needs Sword Horizon active (not active)."
+      "Crosswind Blade [cancel] at 10.17s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 12.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 15.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 17.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 23.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 25.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 30.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 32.32s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.67s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 40.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 43.67s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 45.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 54.23s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 56.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 58.88s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
     ],
     "perSkill": [
       {
@@ -3927,6 +3927,6 @@
       "buffWindows": 123,
       "casts": 92
     },
-    "digest": "b9668ccac3e74625c4588f6d4d3e742bba7789057d54eaa182be0a3cf1098ce3"
+    "digest": "054199b8e0bea6c342d3617757f7987ab6ba62ca6341e924ecd76335c5a86f04"
   }
 }

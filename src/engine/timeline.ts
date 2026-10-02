@@ -108,7 +108,8 @@ import {
   weaponIdentitiesOf,
 } from "./weaponSwap"
 import { deflectCancelSkillId, expandStepsWithDeflectCancels } from "./deflectCancels"
-import { innerWayForBuffParam, innerWayTier } from "../definitions/innerWays/registry"
+import { innerWayTier } from "../definitions/innerWays/registry"
+import { paramSourceOf, type ParamSource } from "./buffs/paramSource"
 import "../definitions/consumables/registry"
 import { PROP } from "../data/skills/ids"
 import {
@@ -779,12 +780,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           }
         if (isParamCondition(condition)) {
           const on = paramOnOf(buffParams, condition.param)
-          const innerWay = innerWayForBuffParam(condition.param)
+          const source = paramSourceOf(condition.param)
           return {
             kind: "param",
             id: condition.param,
-            name: innerWay ? innerWay.name : humanizedParamName(condition.param),
-            innerWayId: innerWay?.id,
+            name: source ? source.name : humanizedParamName(condition.param),
+            source: source ? { kind: source.kind, id: source.id } : undefined,
             minTier: condition.minTier,
             actualOn: on,
             actualTier: on ? paramTierOf(buffParams, condition.param) : 0,
@@ -2880,6 +2881,20 @@ function humanizedParamName(param: string): string {
     .join(" ")
 }
 
+// A param condition's failure reads as a missing build choice, not a missing
+// buff — distinct wording per `ParamSource["kind"]` (docs/TIMELINE.md § "Cast
+// legality"), never hand-mapped to one param's id.
+const PARAM_SOURCE_LABEL: Record<ParamSource["kind"], string> = {
+  innerWay: "inner way",
+  set: "set",
+  script: "script",
+}
+const PARAM_SOURCE_VERB: Record<ParamSource["kind"], string> = {
+  innerWay: "equipped",
+  set: "equipped",
+  script: "selected",
+}
+
 // Plain-English rendering for `result.warnings`, which carries no locale of
 // its own (docs/TIMELINE.md § "Cast legality"). The same structured reason
 // renders through the locale catalogue wherever the UI shows it instead.
@@ -2889,12 +2904,18 @@ function englishConditionFailure(reason: ConditionFailureReason): string {
       return `(${reason.reasons.map(englishConditionFailure).join(" or ")})`
     case "weapon":
       return `needs the ${reason.name} drawn (${reason.actualName || "nothing"} drawn)`
-    case "param":
+    case "param": {
+      const subject = reason.source
+        ? `the ${PARAM_SOURCE_LABEL[reason.source.kind]} ${reason.name}`
+        : reason.name
+      const verb = reason.source ? PARAM_SOURCE_VERB[reason.source.kind] : "active"
+      const notVerb = `not ${verb}`
       if (reason.minTier === undefined)
-        return `needs ${reason.name} active (${reason.actualOn ? "active" : "not active"})`
-      return `needs ${reason.name} tier ${reason.minTier}+ (has ${
-        reason.actualOn ? `tier ${reason.actualTier}` : "not active"
+        return `needs ${subject} ${verb} (${reason.actualOn ? verb : notVerb})`
+      return `needs ${subject} tier ${reason.minTier}+ (has ${
+        reason.actualOn ? `tier ${reason.actualTier}` : notVerb
       })`
+    }
     default:
       return `needs ${reason.name} ${OP_SYMBOL[reason.op]} ${reason.required} (has ${reason.actual})`
   }
