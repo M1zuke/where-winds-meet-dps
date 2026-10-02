@@ -132,9 +132,10 @@ const SWAP_COOLDOWN_FRAMES = 3 * FPS
 const DIRECT_SWAP_CAST_FRAMES = 0
 const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
 
-// Calibrated from an in-game run at 10 ms / 250 fps, 2026-09-30: the fixed
-// processing time a server-wait cast pays alongside its round trip.
-const SERVER_PROCESSING_MS = 24
+// Calibrated from an in-game run at 10 ms / 250 fps, 2026-10-02 (the last
+// hit of a 60 s rotation lands just inside the window): the fixed processing
+// time a server-wait cast pays alongside its round trip.
+const SERVER_PROCESSING_MS = 32
 
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.

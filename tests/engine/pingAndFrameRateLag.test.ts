@@ -406,7 +406,7 @@ describe("ping and average fps — a meter's own cursor stays a clean integer fr
     )
     expect(result.warnings.some((warning) => warning.includes("before the cursor"))).toBe(false)
     const costlyCast = result.casts!.find((cast) => cast.skillName === "Costly")!
-    expect(Math.round(costlyCast.timeSec * FPS)).toBe(2)
+    expect(Math.round(costlyCast.timeSec * FPS)).toBe(3)
     const meterLevel = costlyCast.meterLevels?.find((level) => level.id === enduranceMeter.id)
     expect(meterLevel?.amount).toBe(meterLevel?.capacity)
   })
