@@ -4,6 +4,7 @@ import { syncClassPermanent } from "../../src/ui/utils/classSetup"
 import { blankInputs, defaultInputs } from "../../src/engine/defaults"
 import { runEngine } from "../../src/engine/dps"
 import type { Inputs } from "../../src/engine/types"
+import { slotInnerWayId } from "../../src/definitions/innerWays/registry"
 
 describe("allowedInnerWaysForClass", () => {
   it("is exactly the seven Bellstrike Umbra inner ways, signature first", () => {
@@ -50,6 +51,20 @@ describe("syncClassPermanent — inner-way slots on a class switch", () => {
       "insightfulStrike",
     ])
     expect(next.mindMethods.every((slot) => slot.stacks === "tier 6")).toBe(true)
+  })
+
+  it("fills a switched-to class's empty slots with its standard inner ways, keeping what carries over", () => {
+    const before = {
+      ...withSlots(defaultInputs, ["moraleChant", "", "", ""]),
+      classId: "stonesplitStrength",
+    }
+    const next = syncClassPermanent(before, "bellstrikeUmbra")
+    expect(next.mindMethods.map((slot) => slotInnerWayId(slot))).toEqual([
+      "moraleChant",
+      "swordHorizon",
+      "wolfchasersArt",
+      "insightfulStrike",
+    ])
   })
 
   it("never overwrites an existing profile's own inner ways with the class standard", () => {

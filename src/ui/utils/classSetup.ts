@@ -8,9 +8,10 @@ import {
 import { slotInnerWayId } from "../../definitions/innerWays/registry"
 import { getDefaultTalentsForClass } from "../../definitions/baseStats"
 
-// A class's standard inner ways fill a profile's empty slots — never a slot
-// still carrying one the new class allows, so this never overwrites a choice
-// the player made. A class with no standardized list leaves empty slots empty
+// On a switch to another class, or a profile with no inner ways at all, the
+// class's standard inner ways fill the empty slots, skipping any it already
+// carries — never a slot still holding one the class allows, so this never
+// overwrites a choice the player made. A class with no standardized list leaves empty slots empty
 // (docs/MIGRATIONS.md — no migration: only creation and class switches call
 // this, never a stored profile on load).
 export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
@@ -31,13 +32,21 @@ export function syncClassPermanent(inputs: Inputs, classId: string): Inputs {
     return slot
   }) as Inputs["mindMethods"]
   const slotsAreEmpty = filteredMindMethods.every((slot) => !slotInnerWayId(slot))
-  const standardInnerWays = slotsAreEmpty ? standardizedInnerWaysForClass(classId) : null
+  const standardInnerWays =
+    !sameClass || slotsAreEmpty ? standardizedInnerWaysForClass(classId) : null
+  const standardSlots = standardInnerWays
+    ? standardizedMindMethods(standardInnerWays).filter((slot) => {
+        const innerWayId = slotInnerWayId(slot)
+        return innerWayId && !kept.has(innerWayId)
+      })
+    : []
+  const mindMethods = filteredMindMethods.map((slot) =>
+    slotInnerWayId(slot) ? slot : (standardSlots.shift() ?? slot),
+  ) as Inputs["mindMethods"]
   return {
     ...withArsenal,
     classId,
-    mindMethods: standardInnerWays
-      ? standardizedMindMethods(standardInnerWays)
-      : filteredMindMethods,
+    mindMethods,
     martialArtsTalents: talents,
     graduationBuildId:
       sameClass && inputs.graduationBuildId
