@@ -8,7 +8,7 @@ export const BLOSSOMS = {
   capacity: 100,
   launchMinimum: 50,
   drainPerSecond: 10,
-  lingeringBoneExtraDrainPerSecond: 10,
+  lingeringBoneRunCost: 5,
   endRefund: 15,
   endRefundCooldownSeconds: 5,
 } as const
@@ -25,19 +25,24 @@ export const blossomResource = defineResource({
   launchSkillId: SKILL.umbdronelaunch,
   debuffId: DEBUFF.umbdrone,
   drainPerSecond: BLOSSOMS.drainPerSecond,
-  enhancedBuffId: BUFF.lingeringBone,
-  enhancedExtraDrainPerSecond: BLOSSOMS.lingeringBoneExtraDrainPerSecond,
+  enhancedRunCost: BLOSSOMS.lingeringBoneRunCost,
+  recallTag: WEAPON.umbrella,
+  recallExemptSkillIds: [
+    SKILL.hiddenSwordLight1,
+    SKILL.hiddenSwordLight2,
+    SKILL.hiddenSwordLight3,
+    SKILL.hiddenSwordLight4,
+    SKILL.hiddenSwordLight5,
+    SKILL.hiddenSwordHeavy1,
+    SKILL.hiddenSwordHeavy2,
+    SKILL.hiddenSwordHeavy3,
+    SKILL.hiddenSwordHeavyAlt,
+  ],
   endRefund: BLOSSOMS.endRefund,
   refundCooldownSeconds: BLOSSOMS.endRefundCooldownSeconds,
   gains: [
-    {
-      id: "launchCost",
-      name: "Unfading Flower cost",
-      defaultAmount: -10,
-      skillIds: [SKILL.umbdronelaunch],
-    },
     // Every umbrella hit that grants Blossoms is already tied to its own named
-    // skill above; the drone's own ticks earn Blossoms only through the
+    // skill below; the drone's own ticks earn Blossoms only through the
     // Qi-0 refund (`defaultExhaustedGainPerTick`). A nonzero value here would
     // double-pay them. In-game values as of 2026-09-30.
     { id: "directHit", name: "Umbrella hit", defaultAmount: 0, tag: WEAPON.umbrella },
@@ -51,9 +56,10 @@ export const blossomResource = defineResource({
     {
       id: "heavyLightCast",
       name: "Heavy Light base gain",
-      // In-game values as of 2026-09-30: heavy stage 1 (+5) + Colorful
-      // Phoenix C1 (+4) + C2 (+4), the single-cast total this module models.
-      defaultAmount: 13,
+      // In-game values as of 2026-10-02: heavy stage 1 (+5), Colorful Phoenix
+      // +4 per hit over this module's 3 hits, and +4 for each of its 7 checks
+      // for an enemy within 3 m.
+      defaultAmount: 45,
       skillIds: [SKILL.umbHeavylight],
       divideAcrossSkillHits: true,
     },

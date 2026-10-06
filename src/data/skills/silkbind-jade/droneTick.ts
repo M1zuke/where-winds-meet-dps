@@ -23,11 +23,11 @@ export const DRONE_TICK = {
   qiHitKind: "direct" as const,
 }
 
-// In-game values as of 2026-09-30: the Blossoms-gated drone fires one extra
-// bullet at +9 f whenever the target carries the caster's own Lingering
-// Bone, at double drain — the drain doubling keeps its total bullets per
-// launch bounded. The fixed hit-count variants have no drain to double
-// against, so they never get the extra bullet.
+// In-game values as of 2026-10-02: the Blossoms-gated drone fires one extra
+// bullet at +9 f on a run that starts while the target carries the caster's
+// own Lingering Bone, and that run costs its own Blossoms. The fixed
+// hit-count variants have no Blossoms to pay it from, so they never get the
+// extra bullet.
 export const DRONE_LINGERING_BONE_ADDITIONAL_TICKS = {
   offsetsFrames: [9],
   requiresBuff: BUFF.lingeringBone,

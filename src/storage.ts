@@ -316,16 +316,17 @@ function selectableSetId(stored: string | null): string | null {
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
 //
-// The Blossom gains an Umb HeavyLight cast and a Spring Away bullet earned
-// before their in-game-correct totals replaced the old placeholders (45 and
-// 0). Touching any field in the Blossom planner writes the whole resolved
-// `gains` object back to the profile, so a profile that ever opened that
-// panel keeps scoring the stale totals forever, with no editor surface
-// showing the gap. Only a value still identical to what was defaulted is
-// dropped, letting the corrected default take over: `gains` is
+// The Blossom gains Spring Sorrow, an Umb HeavyLight cast and a Spring Away
+// bullet earned before their in-game-correct totals replaced the old
+// placeholders (25, 25 and 0). Touching any field in the Blossom planner
+// writes the whole resolved `gains` object back to the profile, so a profile
+// that ever opened that panel keeps scoring the stale totals forever, with no
+// editor surface showing the gap. Only a value still identical to what was
+// defaulted is dropped, letting the corrected default take over: `gains` is
 // user-editable, so a copy that differs may differ on purpose.
 const BLOSSOM_STALE_GAIN_DEFAULTS: Readonly<Record<string, number>> = {
-  heavyLightCast: 45,
+  qHit: 25,
+  heavyLightCast: 25,
   chargedHit: 0,
 }
 

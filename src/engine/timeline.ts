@@ -1852,7 +1852,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     )) {
       if (
         plan.requiresBuff &&
-        !(buffEngine?.isBuffActiveAtTime(plan.requiresBuff, plan.frame / FPS) ?? false)
+        !(
+          buffEngine?.isBuffActiveAtTime(
+            plan.requiresBuff,
+            (plan.requiresBuffAtFrame ?? plan.frame) / FPS,
+          ) ?? false
+        )
       )
         continue
       dotTickTimesSec.push(plan.frame / FPS)
@@ -2058,8 +2063,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
       | { kind: "extra"; frame: number; seq: number; event: MechanicEvent }
       | { kind: "echoRelease"; frame: number; seq: number; debuffId: string }
+      | { kind: "recall"; frame: number; seq: number; resource: CombatResource }
 
     const MERGED_KIND_PRIORITY: Record<MergedEvent["kind"], number> = {
+      recall: -1,
       hit: 0,
       tick: 1,
       extra: 2,
@@ -2506,6 +2513,13 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         mergedEvents.push({ kind: "echoRelease", frame, seq: mergedSeq++, debuffId })
     }
 
+    for (const ls of laidSteps) {
+      for (const resource of resources) {
+        if (!resource.recalledBy(ls.resolved.skill)) continue
+        mergedEvents.push({ kind: "recall", frame: ls.startFrame, seq: mergedSeq++, resource })
+      }
+    }
+
     // Pass 2: every damage event, in true time order — a hit, a tick (its
     // declared buffs applied immediately before its own damage is scored, so a
     // later event of any kind already sees them), a mechanic's extra event, and
@@ -2516,7 +2530,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     for (const event of mergedEvents) {
       for (const resource of resources)
         resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
-      if (event.kind === "hit") {
+      if (event.kind === "recall") {
+        event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
+      } else if (event.kind === "hit") {
         const { frame, skill, hit, castFrame, extraEffects, forceGuaranteedAffinity, ledgerMark } =
           event
         const launchResource = resourceByLaunch.get(skill.id)
@@ -2619,10 +2635,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const resource = resourceByDebuff.get(entry.debuff.id)
         if (
           entry.requiresBuff &&
-          !buffEngine?.isBuffActiveAtTime(entry.requiresBuff, entry.frame / FPS)
+          !buffEngine?.isBuffActiveAtTime(
+            entry.requiresBuff,
+            (entry.requiresBuffAtFrame ?? entry.frame) / FPS,
+          )
         )
           continue
         if (resource && !resource.tick(entry.frame, entry.resourceOwner!)) continue
+        if (
+          resource &&
+          entry.enhancedBy &&
+          buffEngine?.isBuffActiveAtTime(entry.enhancedBy, entry.frame / FPS)
+        )
+          resource.chargeEnhancedRun(entry.frame)
         if (entry.debuff.triggersBuffs && entry.debuff.triggersBuffs.length > 0) {
           buffEngine?.triggerDeclaredBuffs(
             entry.debuff.triggersBuffs,

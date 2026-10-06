@@ -34,10 +34,9 @@ describe("additive saved resource settings", () => {
     expect(profile.inputs.resourceSettings?.blossoms).toEqual({
       opening: 100,
       gains: {
-        launchCost: -10,
         directHit: 7,
         qHit: 20,
-        heavyLightCast: 13,
+        heavyLightCast: 45,
         chargedHit: 0,
         chargedHitLift: 4,
         apricotHeavenHit: 8,
@@ -46,26 +45,6 @@ describe("additive saved resource settings", () => {
       },
       exhaustedGainPerTick: 4,
     })
-  })
-
-  it("keeps a negative resource cost through a save/load round trip", () => {
-    const saved = importProfile(
-      JSON.stringify({
-        id: "test",
-        name: "Test",
-        inputs: {
-          ...defaultInputs,
-          classId: "silkbindJade",
-          resourceSettings: {
-            blossoms: { opening: 100, gains: { launchCost: -10 }, exhaustedGainPerTick: 3 },
-          },
-        },
-      }),
-    )
-    const reloaded = importProfile(
-      JSON.stringify({ id: "test", name: "Test", inputs: saved.inputs }),
-    )
-    expect(reloaded.inputs.resourceSettings?.blossoms.gains.launchCost).toBe(-10)
   })
 
   it("heals a Blossom gain still sitting at its old stale default to the corrected one", () => {
@@ -79,14 +58,15 @@ describe("additive saved resource settings", () => {
           resourceSettings: {
             blossoms: {
               opening: 100,
-              gains: { heavyLightCast: 45, chargedHit: 0 },
+              gains: { qHit: 25, heavyLightCast: 25, chargedHit: 0 },
               exhaustedGainPerTick: 3,
             },
           },
         },
       }),
     )
-    expect(profile.inputs.resourceSettings?.blossoms.gains.heavyLightCast).toBe(13)
+    expect(profile.inputs.resourceSettings?.blossoms.gains.qHit).toBe(20)
+    expect(profile.inputs.resourceSettings?.blossoms.gains.heavyLightCast).toBe(45)
     expect(profile.inputs.resourceSettings?.blossoms.gains.chargedHit).toBe(20.4)
   })
 
@@ -105,20 +85,5 @@ describe("additive saved resource settings", () => {
       }),
     )
     expect(profile.inputs.resourceSettings?.blossoms.gains.heavyLightCast).toBe(99)
-  })
-
-  it("clamps a gain no lower than its own negative default", () => {
-    const profile = importProfile(
-      JSON.stringify({
-        id: "test",
-        name: "Test",
-        inputs: {
-          ...defaultInputs,
-          classId: "silkbindJade",
-          resourceSettings: { blossoms: { gains: { launchCost: -50 } } },
-        },
-      }),
-    )
-    expect(profile.inputs.resourceSettings?.blossoms.gains.launchCost).toBe(-10)
   })
 })

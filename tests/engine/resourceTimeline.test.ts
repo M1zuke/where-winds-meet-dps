@@ -20,8 +20,9 @@ const resource = defineResource({
   launchSkillId: "fictional-launch",
   debuffId: "fictional-projectiles",
   drainPerSecond: 10,
-  enhancedBuffId: "fictional-enhancement",
-  enhancedExtraDrainPerSecond: 10,
+  enhancedRunCost: 5,
+  recallTag: "fictional-weapon",
+  recallExemptSkillIds: ["fictional-exempt"],
   endRefund: 15,
   refundCooldownSeconds: 5,
   gains: [],
@@ -76,6 +77,7 @@ function run(
   steps = [launch, ...Array<typeof filler>(9).fill(filler)],
   opening = 60,
   projectileDebuff = debuff,
+  extraSkills: (typeof filler)[] = [],
 ) {
   const base = registry.classDefinition(defaultInputs.classId)!
   vi.spyOn(registry, "classDefinition").mockReturnValue({
@@ -92,7 +94,7 @@ function run(
       ...defaultInputs,
       classId,
       activeCustomRotation: rotation,
-      customSkills: [launch, filler, tick],
+      customSkills: [launch, filler, tick, ...extraSkills],
       customDebuffs: [projectileDebuff],
       resourceSettings: { energy: { opening, gains: {}, exhaustedGainPerTick: refund } },
     },
@@ -103,26 +105,44 @@ function run(
 }
 
 describe("resource-driven timeline", () => {
-  it("emits extra impacts only while the required mark is active at the impact time", () => {
+  function runWithMark(isMarked: (time: number) => boolean) {
     const original = BuffEngine.prototype.isBuffActiveAtTime
     vi.spyOn(BuffEngine.prototype, "isBuffActiveAtTime").mockImplementation(function (
       this: BuffEngine,
       id,
       time,
     ) {
-      return id === "fictional-mark" ? time < 3 : original.call(this, id, time)
+      return id === "fictional-mark" ? isMarked(time) : original.call(this, id, time)
     })
-    const result = run(0, undefined, 60, {
+    return run(0, undefined, 60, {
       ...debuff,
       dot: {
         ...debuff.dot!,
         additionalTicks: { offsetsFrames: [30], requiresBuff: "fictional-mark" },
       },
     })
-    expect(
-      result.timeline!.filter((event) => event.kind === "dot").map((event) => event.timeSec),
-    ).toEqual([1, 1.5, 2, 2.5, 3, 4, 5])
-    expect(result.resources![0].launches[0].ticks).toBe(7)
+  }
+  const dotTimes = (result: ReturnType<typeof run>) =>
+    result.timeline!.filter((event) => event.kind === "dot").map((event) => event.timeSec)
+
+  it("emits an extra impact only for a pulse whose start sees the mark, and charges that run", () => {
+    const result = runWithMark((time) => time < 3)
+    expect(dotTimes(result)).toEqual([1, 1.5, 2, 2.5, 3, 4])
+    expect(result.resources![0].launches[0].ticks).toBe(6)
+  })
+  it("leaves a pulse plain when the mark lands between its start and its extra impact", () => {
+    const result = runWithMark((time) => time >= 1.2 && time < 3)
+    expect(dotTimes(result)).toEqual([1, 2, 2.5, 3, 4, 5])
+  })
+  it("recalls on a cast carrying the recall tag, but not on an exempt one", () => {
+    const tagged = { ...filler, id: "fictional-tagged", tags: ["fictional-weapon"] }
+    const exempt = { ...tagged, id: "fictional-exempt" }
+    const recalled = run(0, [launch, filler, tagged, filler], 100, debuff, [tagged])
+    expect(recalled.resources![0].launches[0].reason).toBe("recalled")
+    expect(dotTimes(recalled)).toEqual([1])
+    vi.restoreAllMocks()
+    const kept = run(0, [launch, filler, exempt, filler], 100, debuff, [exempt])
+    expect(kept.resources![0].launches[0].reason).toBe("fightEnd")
   })
   it("turns exhausted-hit refunds into additional actual damage ticks", () => {
     const dry = run(0)

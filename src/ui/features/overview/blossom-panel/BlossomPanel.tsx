@@ -9,7 +9,6 @@ import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import styles from "./BlossomPanel.module.scss"
 
 const GAIN_KEYS = {
-  launchCost: "overview.blossoms.launchCost",
   directHit: "overview.blossoms.directHit",
   qHit: "overview.blossoms.qHit",
   heavyLightCast: "overview.blossoms.heavyLightCast",

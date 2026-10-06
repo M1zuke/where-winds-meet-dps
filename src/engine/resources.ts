@@ -72,18 +72,13 @@ export class CombatResource {
   }
 
   private credit(amount: number) {
-    this.amount = Math.max(0, Math.min(this.definition.capacity, this.amount + amount))
+    this.amount = Math.min(this.definition.capacity, this.amount + amount)
   }
 
   advance(toFrame: number) {
     while (this.frame < toFrame) {
       const wasActive = this.active !== null
-      const drain = wasActive
-        ? this.definition.drainPerSecond +
-          (this.context.buffActive(this.definition.enhancedBuffId, this.frame)
-            ? this.definition.enhancedExtraDrainPerSecond
-            : 0)
-        : 0
+      const drain = wasActive ? this.definition.drainPerSecond : 0
       const regen = this.definition.regenPerSecond ?? 0
       this.frame++
       this.amount = Math.max(
@@ -167,6 +162,26 @@ export class CombatResource {
     if (this.context.exhausted(frame)) this.credit(this.settings.exhaustedGainPerTick)
     this.sample()
     return true
+  }
+
+  chargeEnhancedRun(frame: number) {
+    this.advance(frame)
+    if (!this.active) return
+    this.amount = Math.max(0, this.amount - this.definition.enhancedRunCost)
+    if (this.amount < 1e-8) this.stop("depleted")
+    this.sample()
+  }
+
+  recall(frame: number) {
+    this.advance(frame)
+    this.stop("recalled")
+  }
+
+  recalledBy(skill: Skill): boolean {
+    const { recallTag, recallExemptSkillIds, launchSkillId } = this.definition
+    if (!recallTag || skill.isDotTick || skill.id === launchSkillId) return false
+    if (recallExemptSkillIds?.includes(skill.id)) return false
+    return skill.tags?.includes(recallTag) ?? false
   }
 
   finish(frame: number) {

@@ -769,14 +769,18 @@ a refactor.
   launch must not revive from later refunds. Each new launch starts its own cadence.
 - Distribute declared whole-skill resource gains over authored hits; credit only
   executed damaging hits, and keep once-per-cast bonuses independent.
-- Gate conditional additional pulse impacts at execution time, so status extensions
-  from earlier accepted impacts can affect later impacts.
+- Decide a pulse's conditional additional impacts once, on the status as it stands
+  at the pulse's own start; a status that lands between the pulse and its
+  additional impact does not enhance that pulse.
+- Charge an enhanced pulse's resource cost once, at the pulse, and only for a pulse
+  the required status enhanced; never as a continuous drain while that status is up.
+- Recall a running launch at the cast start of any skill carrying the resource's
+  recall tag, unless that skill is the launch itself, a DoT tick or listed as
+  exempt.
 - Apply phase-dependent hit refunds only at accepted hit times; elapsed time alone
   must not grant a hit refund. Clamp balances and use the encounter's phase clock.
 - Declare passive regeneration as a flat per-second rate on the resource, netted
-  against drain every frame and clamped to `[0, capacity]`. A gain rule's negative
-  default is a cost, not a refill — persisting it keeps its sign, clamped no
-  higher than zero.
+  against drain every frame and clamped to `[0, capacity]`.
 - Expose uncertain gain amounts as persisted, hydrated inputs. Report actual funded
   windows and rejected launches, and distinguish assumptions from measured anchors.
 

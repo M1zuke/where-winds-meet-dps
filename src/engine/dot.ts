@@ -164,6 +164,8 @@ export interface DotTickPlan {
   frame: number
   weight: number
   requiresBuff?: string
+  requiresBuffAtFrame?: number
+  enhancedBy?: string
   shape?: DotStackShape
   scale?: number
 }
@@ -199,7 +201,13 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
         const at = pulse + offset
         if (at >= episode.end) continue
         const frame = Math.round(at)
-        const requirement = offset > 0 ? { requiresBuff: dot.additionalTicks?.requiresBuff } : {}
+        const enhancingBuff = dot.additionalTicks?.requiresBuff
+        const requirement =
+          offset > 0
+            ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: Math.round(pulse) }
+            : enhancingBuff
+              ? { enhancedBy: enhancingBuff }
+              : {}
         if (frame < 0 || !query.inWindow(frame)) continue
         const weight = query.weightAt(frame)
         if (weight <= 0) continue

@@ -18,11 +18,8 @@ it("resolves the 30-second preset, whose Dragon Head cast runs past its own wind
     buffParams: { blossomBarrage: true, blossomBarrageTier: 6 },
   })
   expect(result.resources?.[0].launches).toHaveLength(3)
-  // In-game values as of 2026-09-30: Umb HeavyLight's Blossom gain corrected
-  // from 45 to 13 (heavy stage 1 + Colorful Phoenix C1 + C2) shortens the
-  // final launch's runtime.
   const finalLaunch = result.resources![0].launches[2]
-  expect(finalLaunch.ticks).toBe(13)
+  expect(finalLaunch.ticks).toBe(19)
   expect(result.rotationDuration).toBe(30)
   expect(result.castDuration).toBeGreaterThan(30)
   // Its own long cast carries the Dragon Head - Plus hit past the window's
