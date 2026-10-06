@@ -39,6 +39,8 @@ export const SKILL = {
   fanheavypursuit3Hit: "silkbindJade-fanheavypursuit-3-hit",
   fanheavypursuit5Hit: "silkbindJade-fanheavypursuit-5-hit",
   deflectCancel: "silkbindJade-deflect-cancel",
+  umbrellaDual: "silkbindJade-umbrella-dual",
+  fanDual: "silkbindJade-fan-dual",
 } as const
 
 export const DEBUFF = {

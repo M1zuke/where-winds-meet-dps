@@ -38,6 +38,8 @@ import { hiddenSwordHeavyAlt } from "./hidden-sword-heavy-alt"
 import { umbqPrepull } from "./umbq-prepull"
 import { umbq } from "./umbq"
 import { deflectCancel } from "./deflect-cancel"
+import { umbrellaDual } from "./umbrella-dual"
+import { fanDual } from "./fan-dual"
 
 export const CLASS_ID = "silkbindJade"
 
@@ -82,4 +84,6 @@ export const SKILLS: Skill[] = [
   umbqPrepull,
   umbq,
   deflectCancel,
+  umbrellaDual,
+  fanDual,
 ]

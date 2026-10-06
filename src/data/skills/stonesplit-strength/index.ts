@@ -16,6 +16,7 @@ import { snowpartingchargedForgetfulness } from "./snowpartingcharged-forgetfuln
 import { snowpartingcharged } from "./snowpartingcharged"
 import { snowpartingdualPrepull } from "./snowpartingdual-prepull"
 import { snowpartingdual } from "./snowpartingdual"
+import { moBladeDual } from "./mo-blade-dual"
 import { snowpartingqStab } from "./snowpartingq-stab"
 import { snowpartingslidePrepullHit } from "./snowpartingslide-prepull-hit"
 import { snowpartingslidePrepull } from "./snowpartingslide-prepull"
@@ -52,4 +53,5 @@ export const SKILLS: Skill[] = [
   snowpartingspecial,
   snowpartingvcPrepull,
   snowpartingvc,
+  moBladeDual,
 ]

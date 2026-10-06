@@ -33,6 +33,7 @@ import { dualBladesLightAttack2 } from "./dual-blades-light-attack-2"
 import { dualBladesLightAttack3 } from "./dual-blades-light-attack-3"
 import { dualBladesLightAttack4 } from "./dual-blades-light-attack-4"
 import { skystrikeGauntletsEx } from "./skystrike-gauntlets-ex"
+import { gauntletsDual } from "./gauntlets-dual"
 import { deflectCancel } from "./deflect-cancel"
 import { perfectDodge } from "./perfect-dodge"
 import { perfectDodgeFull } from "./perfect-dodge-full"
@@ -77,4 +78,5 @@ export const SKILLS: Skill[] = [
   deflectCancel,
   perfectDodge,
   perfectDodgeFull,
+  gauntletsDual,
 ]

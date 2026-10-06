@@ -3,6 +3,8 @@ import { legionCrusher } from "./legioncrusher"
 import { spearq } from "./spearq"
 import { spearq0HitCancel } from "./spearq-0-hit-cancel"
 import { spearqPrepull } from "./spearq-prepull"
+import { spearDual } from "./spear-dual"
+import { swordDual } from "./sword-dual"
 import { stormDanceStage1, stormDanceStage1Spin } from "./stormdance-stage-1"
 import {
   stormDanceStage1Wushuang,
@@ -43,4 +45,6 @@ export const SKILLS = [
   stormDanceStage1WushuangSpin,
   stormDanceStage2,
   stormDanceStage2Wushuang,
+  swordDual,
+  spearDual,
 ]

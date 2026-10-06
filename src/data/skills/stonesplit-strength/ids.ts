@@ -26,6 +26,7 @@ export const SKILL = {
   snowpartingspecial: "stonesplitStrength-snowpartingspecial",
   snowpartingvc: "stonesplitStrength-snowpartingvc",
   snowpartingvcPrepull: "stonesplitStrength-snowpartingvc-prepull",
+  moBladeDual: "stonesplitStrength-mo-blade-dual",
 } as const
 
 export const DEBUFF = {

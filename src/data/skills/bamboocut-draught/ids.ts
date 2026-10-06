@@ -33,6 +33,7 @@ export const SKILL = {
   dualBladesLightAttack3: "bamboocutDraught-dual-blades-light-attack-3",
   dualBladesLightAttack4: "bamboocutDraught-dual-blades-light-attack-4",
   skystrikeGauntletsEx: "bamboocutDraught-skystrike-gauntlets-ex",
+  gauntletsDual: "bamboocutDraught-gauntlets-dual",
   deflectCancel: "bamboocutDraught-deflect-cancel",
   perfectDodge: "bamboocutDraught-perfect-dodge",
   perfectDodgeFull: "bamboocutDraught-perfect-dodge-full",

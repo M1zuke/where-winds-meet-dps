@@ -31,6 +31,8 @@ export const SKILL = {
   spearspecial: "bellstrikeUmbra-spearspecial",
   bleedTick: "bellstrikeUmbra-bleed-tick",
   bleedDetonation: "bellstrikeUmbra-bleed-detonation",
+  swordDual: "bellstrikeUmbra-sword-dual",
+  spearDual: "bellstrikeUmbra-spear-dual",
 } as const
 
 export const DEBUFF = {

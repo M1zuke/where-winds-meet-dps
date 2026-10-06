@@ -19,6 +19,8 @@ export const SKILL = {
   stormDanceStage1WushuangSpin: "bellstrikeSplendor-stormdance-stage-1-wushuang-spin",
   stormDanceStage2: "bellstrikeSplendor-stormdance-stage-2",
   stormDanceStage2Wushuang: "bellstrikeSplendor-stormdance-stage-2-wushuang",
+  swordDual: "bellstrikeSplendor-sword-dual",
+  spearDual: "bellstrikeSplendor-spear-dual",
 } as const
 
 export const DEBUFF = {

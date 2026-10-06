@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 61,
+        "count": 63,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -17,6 +17,7 @@
           "bellstrikeUmbra-golden-body-deflect-cancel",
           "bellstrikeUmbra-perfect-dodge",
           "bellstrikeUmbra-perfect-dodge-full",
+          "bellstrikeUmbra-spear-dual",
           "bellstrikeUmbra-spearheavy",
           "bellstrikeUmbra-spearheavy-1-hit",
           "bellstrikeUmbra-spearheavy-1-hit-prepull",
@@ -31,6 +32,7 @@
           "bellstrikeUmbra-sword-charge-stage-1-4-hit",
           "bellstrikeUmbra-sword-charge-stage-1-5-hit",
           "bellstrikeUmbra-sword-charge-stage-1-level-0",
+          "bellstrikeUmbra-sword-dual",
           "bellstrikeUmbra-sword-martial-qqq",
           "bellstrikeUmbra-sword-r-charge-follow-up",
           "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
@@ -66,7 +68,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "5b51f1ac100c1edcad81f8347a0246111254be54b6006d63423b5d91ec1ee376"
+        "digest": "a7ab140076c7d22228e2513dd9bfa8c342b2265ef354dea95a0d41fd39db6b1d"
       },
       "debuffs": {
         "count": 7,
@@ -184188,7 +184190,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 55,
+        "count": 56,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184226,6 +184228,7 @@
           "stonesplitStrength-ghostly-steps",
           "stonesplitStrength-golden-body-cancel",
           "stonesplitStrength-golden-body-deflect-cancel",
+          "stonesplitStrength-mo-blade-dual",
           "stonesplitStrength-perfect-dodge",
           "stonesplitStrength-perfect-dodge-full",
           "stonesplitStrength-phalanxcharged-s3",
@@ -184246,7 +184249,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "a1334128b7a6f4cbac46a8b0fc2418877a962acf14f7d07dd332bc270dcbb2c4"
+        "digest": "6c2a6b46abe6fe3cc011575197d47e09e70af46650adee389db9475f26bc86e1"
       },
       "debuffs": {
         "count": 5,
@@ -185866,7 +185869,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 51,
+        "count": 53,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-deflect-cancel",
@@ -185879,6 +185882,7 @@
           "bellstrikeSplendor-legioncrusher",
           "bellstrikeSplendor-perfect-dodge",
           "bellstrikeSplendor-perfect-dodge-full",
+          "bellstrikeSplendor-spear-dual",
           "bellstrikeSplendor-spearq",
           "bellstrikeSplendor-spearq-0-hit-cancel",
           "bellstrikeSplendor-spearq-prepull",
@@ -185888,6 +185892,7 @@
           "bellstrikeSplendor-stormdance-stage-1-wushuang-spin",
           "bellstrikeSplendor-stormdance-stage-2",
           "bellstrikeSplendor-stormdance-stage-2-wushuang",
+          "bellstrikeSplendor-sword-dual",
           "bellstrikeSplendor-swordheavycharged",
           "bellstrikeSplendor-swordheavycharged-2-hit",
           "bellstrikeSplendor-swordheavycharged-prepull",
@@ -185920,7 +185925,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "6bf9c3a98f8df452612e99ff76ae69a6804c532a56fb257e2583a023c7fa5fa0"
+        "digest": "6e383433287e407c494f3d110b70c11ebab0b73c86da73b5f76eba8b37302936"
       },
       "debuffs": {
         "count": 5,
@@ -187543,7 +187548,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 70,
+        "count": 72,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187574,6 +187579,7 @@
           "silkbindJade-deflect-cancel",
           "silkbindJade-deflect-cancel-prepull",
           "silkbindJade-delay",
+          "silkbindJade-fan-dual",
           "silkbindJade-fanheavypursuit-3-hit",
           "silkbindJade-fanheavypursuit-5-hit",
           "silkbindJade-fanlightcharged",
@@ -187614,9 +187620,10 @@
           "silkbindJade-umblightcharge",
           "silkbindJade-umblightcharge-lift",
           "silkbindJade-umbq",
-          "silkbindJade-umbq-prepull"
+          "silkbindJade-umbq-prepull",
+          "silkbindJade-umbrella-dual"
         ],
-        "digest": "69c5902d1958488eb64bf6f07f1426941ad5602241c172a551a9c4bfb41bb943"
+        "digest": "3e7be5c574e50d9e40d94329a9335ce5459020cc1bde6e6fb24a63e41bb9756f"
       },
       "debuffs": {
         "count": 11,
@@ -189166,7 +189173,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 65,
+        "count": 66,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-blade-vessel",
@@ -189187,6 +189194,7 @@
           "bamboocutDraught-dual-blades-light-attack-3",
           "bamboocutDraught-dual-blades-light-attack-4",
           "bamboocutDraught-falcons-pursuit",
+          "bamboocutDraught-gauntlets-dual",
           "bamboocutDraught-ghostly-steps",
           "bamboocutDraught-golden-body-cancel",
           "bamboocutDraught-golden-body-deflect-cancel",
@@ -189234,7 +189242,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "7c7895f294322cd199917b5424fafc7d7f692d8f90ea94646a76d3bc67363a37"
+        "digest": "73d5d580d0e84c7fcd26089dd998d652b2c4cce7e0461fb2ce6e54243faefee7"
       },
       "debuffs": {
         "count": 8,
