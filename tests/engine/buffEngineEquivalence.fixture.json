@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 84,
+        "count": 85,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -76,6 +76,7 @@
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
+          "mystic-ghostly-afterimage",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -89,22 +90,21 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "e594e8b1cc61f375e5c5cfeeaa2d35564805a9c2058ec4d682bab2ac4a9a2bf4"
+        "digest": "54d531284a462c9da355f8c2d4de2c4a78307fb6455cfe5f286ee2291c0b19fb"
       },
       "debuffs": {
-        "count": 9,
+        "count": 8,
         "ids": [
           "debuff-bellstrikeUmbra-bitter-season-tick",
           "debuff-bellstrikeUmbra-bleed-tick",
           "debuff-bellstrikeUmbra-defense-down",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
-          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "b3fe88c9f67df0f3fdeaf427efb74136e1c68753472270d61bc7a052072a33c7"
+        "digest": "4aeaa8a40ebd99f7c6a119b1754df4e6036e18d978e1e0929d38355f98516e76"
       },
       "buffs": [
         {
@@ -184213,7 +184213,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 77,
+        "count": 78,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184227,6 +184227,7 @@
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
+          "mystic-ghostly-afterimage",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -184293,20 +184294,19 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "dd2822ab125403ac6209e41155ed69b651d32fe3ce5c4e1c388567e165649408"
+        "digest": "8faccaf0df2c94956538c4582a2daa3b0c2f061981e6c4a38e23a3c70cf7e6d9"
       },
       "debuffs": {
-        "count": 7,
+        "count": 6,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
-          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury",
           "debuff-stonesplitStrength-bitter-season-tick"
         ],
-        "digest": "28b123c08775bf6e7f7551b5be12e70eb081d4ec764f378d2ee4d229a1b0e6a5"
+        "digest": "5e7f45afcaa3910b758c070d433bcd49e1e0193b77562915ccdd8f0db8cf6349"
       },
       "buffs": [
         {
@@ -185938,7 +185938,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 63,
+        "count": 64,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-cloudstep",
@@ -185991,6 +185991,7 @@
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
+          "mystic-ghostly-afterimage",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -186004,20 +186005,19 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "8af82671073458756f7f9554f73353e3f056bfae9fb7f5d3a039ba775ec8af9a"
+        "digest": "0455b6a87506c428aecf57245990d9e08b0ff9e4ecbdb89ea56330bc9a8cd1dc"
       },
       "debuffs": {
-        "count": 7,
+        "count": 6,
         "ids": [
           "debuff-bellstrikeSplendor-bitter-season-tick",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
-          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "342b5aaec6d4abd62e7ebd7926cd9a7bbd0ab57caead71a790c5357d3d451f81"
+        "digest": "78259797ff57d23b7a30bd1de7fd4d89cb05774c88e8da9a5706bb640c023d7a"
       },
       "buffs": [
         {
@@ -187629,7 +187629,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 80,
+        "count": 81,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187643,6 +187643,7 @@
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
+          "mystic-ghostly-afterimage",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -187712,14 +187713,13 @@
           "silkbindJade-umbrella-dash",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "c806d44f64f425bdaa91219655a93709fd96db6b0cbaf5b5e9ec9eef805f886b"
+        "digest": "873910027a7d166d05f7277213a4ac03cebdbdfa64708e3108f252b165c251a0"
       },
       "debuffs": {
-        "count": 13,
+        "count": 12,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
-          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury",
@@ -187731,7 +187731,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "496ac3c707ef9981aa6456e2105442f617fb1b8bbfef57e780d6eeb3c7a7dc7d"
+        "digest": "de96e67bbf755befe7ebdeea248e83b56047e7634d56f1956708d70c20df2689"
       },
       "buffs": [
         {
@@ -189264,7 +189264,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 78,
+        "count": 79,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-blade-against-waves",
@@ -189332,6 +189332,7 @@
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
+          "mystic-ghostly-afterimage",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -189345,10 +189346,10 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "f9c9e308d09dd0e055e747af07ee67aaaf43332ea592568299e7d2922704dda8"
+        "digest": "eb3680eac0d2eda3a16f4ef831aa0f49e4faa33398163f0235467b94b1e40afd"
       },
       "debuffs": {
-        "count": 10,
+        "count": 9,
         "ids": [
           "debuff-bamboocutDraught-bitter-season-tick",
           "debuff-bamboocutDraught-drunkslay",
@@ -189356,12 +189357,11 @@
           "debuff-bamboocutDraught-wildstride",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
-          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "996b166e93d9894a75758d3bc00f1d3a4435c8fc3b0ed4201f6e79edbe4b9af8"
+        "digest": "cb11d861d333c7b66ec224388c4b7157d97774ab0a2b766f71944e51f487cd44"
       },
       "buffs": [
         {

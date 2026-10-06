@@ -5,8 +5,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
 import type { Inputs } from "../../src/engine/types"
-import { builtinDebuff, builtinSkill, dotRow, testRotation } from "../builtins"
-import { DEBUFF } from "../../src/data/skills/mystic/ids"
+import { builtinSkill, testRotation } from "../builtins"
+import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 import { SKILL as UNIVERSAL_SKILL } from "../../src/data/skills/universal/ids"
 import { SKILL as BAMBOOCUT_SKILL } from "../../src/data/skills/bamboocut-draught/ids"
 
@@ -50,7 +50,7 @@ function run(classId: string, steps: string[], overrides: Partial<Inputs> = {}) 
 
 const afterimageEvents = (classId: string, result: ReturnType<typeof run>) =>
   (result.timeline ?? []).filter(
-    (event) => event.skillName === dotRow(classId, DEBUFF.ghostlyAfterimage),
+    (event) => event.skillName === builtinSkill(classId, MYSTIC_SKILL.ghostlyAfterimage).name,
   )
 
 const dodgeFrames = (result: ReturnType<typeof run>, name: string) =>
@@ -109,9 +109,15 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
     )
   })
 
-  it("merges two perfect dodges inside 48 frames into one afterimage", () => {
+  it("lands one afterimage per perfect dodge even when the dodges are inside 48 frames of each other", () => {
     const result = run("bellstrikeUmbra", [UMBRA, "Opener", DODGE, "Idle 10", DODGE, "Idle 2000"])
-    expect(afterimageEvents("bellstrikeUmbra", result)).toHaveLength(1)
+    const dodges = dodgeFrames(result, "Perfect Dodge")
+    const events = afterimageEvents("bellstrikeUmbra", result)
+    expect(dodges[1]! - dodges[0]!).toBeLessThan(AFTERIMAGE_DELAY_FRAMES)
+    expect(events.map((event) => event.frame)).toEqual(
+      dodges.map((frame) => frame + AFTERIMAGE_DELAY_FRAMES),
+    )
+    expect(events[1]!.damage).toBe(events[0]!.damage)
   })
 
   it("takes no mystic category boost", () => {
@@ -124,16 +130,16 @@ describe("the Ghostly Steps - Umbra afterimage", () => {
   })
 
   it("carries the in-game row and a Qi ratio of one", () => {
-    const { dot } = builtinDebuff("bellstrikeUmbra", DEBUFF.ghostlyAfterimage)
-    expect(dot).toMatchObject({
+    const explosion = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.ghostlyAfterimage)
+    expect(explosion.hits).toHaveLength(1)
+    expect(explosion.hits[0]).toMatchObject({
+      frame: AFTERIMAGE_DELAY_FRAMES,
       physMultiplier: 2.041567,
       attributeMultiplier: 3.062351,
       physFixed: 312,
       attributeFixed: 0,
-      tickIntervalFrames: AFTERIMAGE_DELAY_FRAMES,
-      directHit: true,
     })
-    expect(dot!.qiRate ?? 1).toBe(1)
-    expect(dot!.mysticCategory).toBeUndefined()
+    expect(explosion.hits[0]!.qiRate ?? 1).toBe(1)
+    expect(explosion.tags ?? []).toEqual([])
   })
 })

@@ -8,6 +8,7 @@ export const SKILL = {
   fireBreath1Hit: "mystic-fire-breath-1-hit",
   fireBreath2Hit: "mystic-fire-breath-2-hit",
   freeMorph: "mystic-free-morph",
+  ghostlyAfterimage: "mystic-ghostly-afterimage",
   wolflikeFrenzy: "mystic-wolflike-frenzy",
   fluteOfTheTidesCancel: "mystic-flute-of-the-tides-cancel",
   fluteOfTheTidesFull: "mystic-flute-of-the-tides-full",
@@ -28,7 +29,6 @@ export const SKILL = {
 export const DEBUFF = {
   combustion: "debuff-mystic-combustion",
   fluteRipple: "debuff-mystic-flute-ripple",
-  ghostlyAfterimage: "debuff-mystic-ghostly-afterimage",
   smolder: "debuff-mystic-smolder",
   toadPoison: "debuff-mystic-toad-poison",
   toadPoisonFury: "debuff-mystic-toad-poison-fury",

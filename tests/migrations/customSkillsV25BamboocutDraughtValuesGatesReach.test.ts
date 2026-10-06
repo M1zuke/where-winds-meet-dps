@@ -16,6 +16,7 @@ import { healSkill as healWeaponDrawnGates } from "../../src/migrations/customSk
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
+import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -80,7 +81,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withDrawnGates = healWeaponDrawnGates(withFrames) as Skill
   const withQiRate = healQiRateDefault(withDrawnGates) as Skill
   const withTiming = healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
-  return healBoundvesselDrinkAccumulation(withTiming) as Skill
+  const withDrink = healBoundvesselDrinkAccumulation(withTiming) as Skill
+  return healGhostlyAfterimagePerDodge(withDrink) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {

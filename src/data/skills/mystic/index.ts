@@ -11,6 +11,7 @@ import { freeMorph } from "./free-morph"
 import { fluteOfTheTidesCancel } from "./flute-of-the-tides-cancel"
 import { fluteOfTheTidesFull } from "./flute-of-the-tides-full"
 import { fluteOfTheTidesPrepull } from "./flute-of-the-tides-prepull"
+import { ghostlyAfterimage } from "./ghostly-afterimage"
 import { poetFinalHitCancel } from "./poet-final-hit-cancel"
 import { poetFinalHitCancelExplosion } from "./poet-final-hit-cancel-explosion"
 import { poet1 } from "./poet1"
@@ -39,6 +40,7 @@ export const MYSTIC_SKILLS: readonly Skill[] = [
   fluteOfTheTidesCancel,
   fluteOfTheTidesFull,
   fluteOfTheTidesPrepull,
+  ghostlyAfterimage,
   poetFinalHitCancel,
   poetFinalHitCancelExplosion,
   poet1,

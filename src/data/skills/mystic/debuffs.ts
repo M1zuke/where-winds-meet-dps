@@ -64,34 +64,6 @@ export const toadPoisonFury = defineDebuff({
   receives: [],
 })
 
-export const ghostlyAfterimage = defineDebuff({
-  id: DEBUFF.ghostlyAfterimage,
-  classId: MYSTIC_ARTS_CLASS_ID,
-  name: "Ghostly Afterimage",
-  activation: "triggered",
-  durationFrames: 49,
-  effects: [],
-  dot: {
-    tickIntervalFrames: 48,
-    // In-game values as of 2026-10-06: fired from the dodge, so no mystic
-    // category boost reaches it.
-    physMultiplier: 2.041567,
-    physFixed: 312,
-    attributeMultiplier: 3.062351,
-    attributeFixed: 0,
-    attributeAttack: "",
-    skillType: "mystic",
-    directHit: true,
-    count: 1,
-    perStackShapes: null,
-  },
-  maxStacks: 1,
-  stackScaling: "flat",
-  createdAt: "2026-10-06T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
-  receives: [],
-})
-
 export const combustion = defineDebuff({
   id: DEBUFF.combustion,
   classId: MYSTIC_ARTS_CLASS_ID,
@@ -198,5 +170,4 @@ export const MYSTIC_DEBUFFS: readonly Debuff[] = [
   smolder,
   fluteRipple,
   toadPoisonFury,
-  ghostlyAfterimage,
 ]

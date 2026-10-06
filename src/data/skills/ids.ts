@@ -76,6 +76,7 @@ export const CAST = {
   fluteOfTheTidesPrepull: "cast:fluteOfTheTidesPrepull",
   falconsPursuit: "cast:falconsPursuit",
   freeMorph: "cast:freeMorph",
+  ghostlyAfterimage: "cast:ghostlyAfterimage",
   ghostlySteps: "cast:ghostlySteps",
   ghostlyStepsUmbra: "cast:ghostlyStepsUmbra",
   goldenBodyCancel: "cast:goldenBodyCancel",

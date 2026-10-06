@@ -152,11 +152,15 @@ describe("healSkill — perfect dodge", () => {
   it("adds the afterimage trigger once, after the existing triggers", () => {
     const original = clone(skillIn(STORE, DODGE_ID))
     const healed = healSkill(clone(original)) as Skill
-    expect(healed.hits[0]!.triggers).toEqual(
-      builtin("bellstrikeUmbra", DODGE_ID).hits[0]!.triggers.filter(
-        (trigger) => trigger.targetId === "debuff-mystic-ghostly-afterimage",
-      ),
-    )
+    expect(healed.hits[0]!.triggers).toEqual([
+      {
+        kind: "applyDebuff",
+        targetId: "debuff-mystic-ghostly-afterimage",
+        stacks: 1,
+        condition: null,
+        conditions: [{ buffId: "ghostlyStepsUmbra", op: "gte", stacks: 1 }],
+      },
+    ])
     expect(healSkill(clone(healed))).toEqual(healed)
   })
 

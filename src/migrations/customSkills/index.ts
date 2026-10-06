@@ -66,6 +66,7 @@ import { V62__shadowStepDashWindow } from "./V62__shadowStepDashWindow"
 import { V63__boundvesselDrinkAccumulation } from "./V63__boundvesselDrinkAccumulation"
 import { V64__inGameTimingCorrections } from "./V64__inGameTimingCorrections"
 import { V65__threeWaveReleaseAndEnergySurgeInterval } from "./V65__threeWaveReleaseAndEnergySurgeInterval"
+import { V66__ghostlyAfterimagePerDodge } from "./V66__ghostlyAfterimagePerDodge"
 
 export type {
   CustomSkillMigration,
@@ -200,6 +201,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V63__boundvesselDrinkAccumulation,
   V64__inGameTimingCorrections,
   V65__threeWaveReleaseAndEnergySurgeInterval,
+  V66__ghostlyAfterimagePerDodge,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

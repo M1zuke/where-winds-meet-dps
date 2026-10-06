@@ -62,6 +62,7 @@ import { healSkill as healShadowStepDashWindow } from "../../src/migrations/cust
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { healSkill as healInGameTimingCorrections } from "../../src/migrations/customSkills/V64__inGameTimingCorrections"
 import { healSkill as healThreeWaveReleaseAndEnergySurgeInterval } from "../../src/migrations/customSkills/V65__threeWaveReleaseAndEnergySurgeInterval"
+import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -133,6 +134,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [63, healBoundvesselDrinkAccumulation],
   [64, healInGameTimingCorrections],
   [65, healThreeWaveReleaseAndEnergySurgeInterval],
+  [66, healGhostlyAfterimagePerDodge],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"
