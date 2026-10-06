@@ -7,14 +7,10 @@ import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 // A release past the 0.2 s tap window but short of stage 1's own 0.3 s
 // threshold plays the charge's own level-0 release — its own tap animation,
 // distinct from Sword - Heavy Attack, the different skill the same button
-// plays on a release inside that window. No coefficient row or cast length
-// for this release is documented anywhere; this stands in on Sword - Heavy
-// Attack's own first tap (its numerical row, hit ratio 0.2, cast length 36.5 f
-// after its own release, hit at 24.01 f), each shifted +12 f (the 0.2 s tap
-// window itself, counted from the press) since this release's own frames run
-// from the press, not from a bare release — frame 36 and castFrames 49 are
-// that stand-in, rounded, until the real values turn up (in-game values as
-// of 2026-09-24, stand-in explicitly noted).
+// plays on a release inside that window. The hit lands 24.01 f and the cast
+// ends 36.5 f after the release; the earliest release is frame 13 (the charge
+// node starts at 12.6 f), so frame 37 and castFrames 50 (rounded half up) —
+// in-game values as of 2026-10-06.
 export const swordChargeStage1Level0 = defineSkill({
   id: SKILL.swordChargeStage1Level0,
   classId: "bellstrikeUmbra",
@@ -26,12 +22,12 @@ export const swordChargeStage1Level0 = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordChargeStage1Level0,
   receives: STRATEGIC_SWORD_RECEIVES,
-  castFrames: 49,
+  castFrames: 50,
   triggerable: true,
   displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 36,
+      frame: 37,
       physMultiplier: 0.479274,
       attributeMultiplier: 0.718911,
       physFixed: 132.6,
@@ -39,5 +35,5 @@ export const swordChargeStage1Level0 = defineSkill({
     }),
   ],
   createdAt: "2026-09-28T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

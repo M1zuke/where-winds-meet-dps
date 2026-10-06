@@ -72,7 +72,7 @@ describe("the built-in Bamboocut Draught dummy rotation", () => {
     expect(echoRow.count).toBe(3)
     const herosBloodFirstStrikeFrames = result
       .casts!.filter((cast) => cast.skillName === "Twinblade Special")
-      .map((cast) => Math.round(cast.timeSec * 60) + 33)
+      .map((cast) => Math.round(cast.timeSec * 60) + 22)
     const echoFrames = result
       .timeline!.filter((event) => event.skillName === "Drunkslay State")
       .map((event) => event.frame)

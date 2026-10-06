@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
@@ -19,7 +19,7 @@ export const swordHeavyChargedPrepull = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SwordHeavyCharged[Prepull]",
   breakdownName: "Vagrant Sword",
-  tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
+  tags: [PROP.isCharged, WEAPON.sword, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
@@ -30,8 +30,6 @@ export const swordHeavyChargedPrepull = defineSkill({
   serverWaitsInCast: 1,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
-    BUFF.mistwillowLightBuff,
-    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,
@@ -77,5 +75,5 @@ export const swordHeavyChargedPrepull = defineSkill({
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

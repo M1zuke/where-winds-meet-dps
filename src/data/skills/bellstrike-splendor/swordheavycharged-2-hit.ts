@@ -1,6 +1,6 @@
 import type { MeterDrain } from "../../../engine/skill"
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
@@ -27,7 +27,7 @@ export const swordHeavyCharged2Hit = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SwordHeavyCharged 2 Hit",
   breakdownName: "Vagrant Sword",
-  tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
+  tags: [PROP.isCharged, WEAPON.sword, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
@@ -41,8 +41,6 @@ export const swordHeavyCharged2Hit = defineSkill({
   castConditions: [{ buffId: BUFF.swordMorphMultiWaveWindow, op: "gte", stacks: 1 }],
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
-    BUFF.mistwillowLightBuff,
-    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,
@@ -86,5 +84,5 @@ export const swordHeavyCharged2Hit = defineSkill({
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

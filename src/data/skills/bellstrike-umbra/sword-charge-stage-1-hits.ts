@@ -15,13 +15,13 @@ export const SWORD_CHARGE_STAGE_1_DISPLACEMENT: Displacement = {
   otherwise: { kind: "towardTarget", referenceMeters: 0 },
 }
 
-// Every frame below is press-relative: the 30 f minimum hold to reach stage 1
-// (a 0.2 s tap window plus 0.3 s of charge), the same reference the drain and
-// freeze below already use, plus each collider's own frame after release —
-// in-game values as of 2026-09-24.
+// Every frame below is press-relative: the 31 f minimum hold to reach stage 1
+// (a charge node that starts at 12.6 f plus 0.3 s of charge, rounded up), the
+// same reference the drain and freeze below already use, plus each collider's
+// own frame after release — in-game values as of 2026-10-06.
 export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
   hit(0, {
-    frame: 36,
+    frame: 37,
     physMultiplier: 0.402924,
     attributeMultiplier: 0.604386,
     physFixed: 111.6,
@@ -29,7 +29,7 @@ export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(1, {
-    frame: 60,
+    frame: 61,
     physMultiplier: 0.268616,
     attributeMultiplier: 0.402924,
     physFixed: 74.4,
@@ -37,7 +37,7 @@ export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(2, {
-    frame: 70,
+    frame: 71,
     physMultiplier: 0.268616,
     attributeMultiplier: 0.402924,
     physFixed: 74.4,
@@ -45,7 +45,7 @@ export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(3, {
-    frame: 80,
+    frame: 81,
     physMultiplier: 0.268616,
     attributeMultiplier: 0.402924,
     physFixed: 74.4,
@@ -53,7 +53,7 @@ export const SWORD_CHARGE_STAGE_1_HITS: SkillHit[] = [
     triggers: [applyDot({ target: DEBUFF.bleedTick })],
   }),
   hit(4, {
-    frame: 138,
+    frame: 139,
     physMultiplier: 0.67154,
     attributeMultiplier: 1.00731,
     physFixed: 186,
@@ -68,10 +68,10 @@ export const SWORD_CHARGE_STAGE_1_INTO_FOLLOW_UP_SKILL_IDS = [
 ]
 
 // docs/TIMELINE.md § "Conditional hits" — the follow-up's own earliest start
-// sits at 86 f press-relative, past hit 3 and hit 4's own landing frames, so a
+// sits at 87 f press-relative, past hit 3 and hit 4's own landing frames, so a
 // partial form cancelled straight into the follow-up still lands both; cut
 // short any other way (a Deflect), it does not (in-game animation,
-// 2026-09-24).
+// 2026-10-06).
 export const SWORD_CHARGE_STAGE_1_HIT_3_INTO_FOLLOW_UP: SkillHit = {
   ...SWORD_CHARGE_STAGE_1_HITS[2],
   requiresNextStepSkillIds: SWORD_CHARGE_STAGE_1_INTO_FOLLOW_UP_SKILL_IDS,
@@ -79,5 +79,5 @@ export const SWORD_CHARGE_STAGE_1_HIT_3_INTO_FOLLOW_UP: SkillHit = {
 export const SWORD_CHARGE_STAGE_1_HIT_4_INTO_FOLLOW_UP: SkillHit = {
   ...SWORD_CHARGE_STAGE_1_HITS[3],
   requiresNextStepSkillIds: SWORD_CHARGE_STAGE_1_INTO_FOLLOW_UP_SKILL_IDS,
-  castFramesWhenGated: 86,
+  castFramesWhenGated: 87,
 }

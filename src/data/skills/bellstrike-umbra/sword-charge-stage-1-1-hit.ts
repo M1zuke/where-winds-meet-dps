@@ -23,13 +23,13 @@ export const swordChargeStage11Hit = defineSkill({
   meterCosts: [SECOND_TRACK_SLASH_COST],
   meterDrains: SECOND_TRACK_SLASH_DRAIN,
   meterFreezes: SECOND_TRACK_SLASH_FREEZE,
-  // The 30 f minimum hold to reach stage 1, then castFrames 11 frames past
+  // The 31 f minimum hold to reach stage 1, then castFrames 11 frames past
   // the frame at which the animation would accept the next input (in-game
-  // animation, 2026-09-24).
-  castFrames: 48,
+  // animation, 2026-10-06).
+  castFrames: 49,
   triggerable: true,
   displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
   hits: SWORD_CHARGE_STAGE_1_HITS.slice(0, 1),
   createdAt: "2026-09-09T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

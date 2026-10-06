@@ -1,5 +1,5 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { ATTACK, ATTUNE, CAST, PROP, WEAPON } from "../ids"
+import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
@@ -25,7 +25,7 @@ export const swordHeavyCharged = defineSkill({
   classId: "bellstrikeSplendor",
   name: "SwordHeavyCharged",
   breakdownName: "Vagrant Sword",
-  tags: [PROP.isCharged, WEAPON.sword, ATTACK.heavy, ATTUNE.swordCharged],
+  tags: [PROP.isCharged, WEAPON.sword, ATTUNE.swordCharged],
   skillType: "weapon",
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
@@ -36,8 +36,6 @@ export const swordHeavyCharged = defineSkill({
   serverWaitsInCast: 1,
   triggersBuffs: [BUFF.swordSlashDamageBoost],
   receives: [
-    BUFF.mistwillowLightBuff,
-    BUFF.mistwillowBuff,
     BUFF.swordSlashDamageBoost,
     BUFF.swordEnergyEnhancement,
     BUFF.swordEnergyHpDamage,
@@ -46,9 +44,9 @@ export const swordHeavyCharged = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  // In-game values as of 2026-09-24: without Sword Morph's multi-wave window
+  // In-game values as of 2026-10-06: without Sword Morph's multi-wave window
   // this is the single-bolt level-2 release, not the three-wave one below.
-  castFrames: 126,
+  castFrames: 121,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
@@ -105,5 +103,5 @@ export const swordHeavyCharged = defineSkill({
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

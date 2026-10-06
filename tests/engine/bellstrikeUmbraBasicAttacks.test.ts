@@ -93,12 +93,12 @@ describe("Bellstrike Umbra's basic-attack and stage-2 charge modules", () => {
     expect(swordChargeStage24Hit.hits).toEqual(swordChargeStage25Hit.hits.slice(0, 4))
   })
 
-  it("Second Track Slash stage 2 drains 14 per second for 1.2 s and falls back to stage 1", () => {
+  it("Second Track Slash stage 2 drains 14 per second from frame 13 to 84 and falls back to stage 1", () => {
     expect(SECOND_TRACK_SLASH_STAGE_2_DRAIN).toEqual([
       expect.objectContaining({
         perSecond: 14,
-        fromFrame: 12,
-        stopAfterSec: 1.2,
+        fromFrame: 13,
+        stopAfterSec: 71 / 60,
         chargeRelease: { fallbackSkillId: SKILL.swordChargeStage15Hit },
       }),
     ])

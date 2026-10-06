@@ -64,6 +64,7 @@ import { V60__springlessSilenceLandingHitOnly } from "./V60__springlessSilenceLa
 import { V61__boundvesselSpringAwayToadAfterimageTiming } from "./V61__boundvesselSpringAwayToadAfterimageTiming"
 import { V62__shadowStepDashWindow } from "./V62__shadowStepDashWindow"
 import { V63__boundvesselDrinkAccumulation } from "./V63__boundvesselDrinkAccumulation"
+import { V64__inGameTimingCorrections } from "./V64__inGameTimingCorrections"
 
 export type {
   CustomSkillMigration,
@@ -196,6 +197,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V61__boundvesselSpringAwayToadAfterimageTiming,
   V62__shadowStepDashWindow,
   V63__boundvesselDrinkAccumulation,
+  V64__inGameTimingCorrections,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step
