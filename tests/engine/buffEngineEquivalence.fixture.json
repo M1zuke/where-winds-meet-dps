@@ -184213,7 +184213,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 59,
+        "count": 77,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184246,6 +184246,7 @@
           "stonesplitStrength-anxisoldiermosweep",
           "stonesplitStrength-anxisoldiermosweep-supreme",
           "stonesplitStrength-bitter-season-tick",
+          "stonesplitStrength-break-defense",
           "stonesplitStrength-deflect",
           "stonesplitStrength-deflect-cancel",
           "stonesplitStrength-deflect-cancel-prepull",
@@ -184254,9 +184255,25 @@
           "stonesplitStrength-ghostly-steps-umbra",
           "stonesplitStrength-golden-body-cancel",
           "stonesplitStrength-golden-body-deflect-cancel",
+          "stonesplitStrength-heng-dash",
+          "stonesplitStrength-heng-heavy-attack-1",
+          "stonesplitStrength-heng-heavy-attack-2",
+          "stonesplitStrength-heng-heavy-attack-3",
+          "stonesplitStrength-heng-heavy-attack-4",
+          "stonesplitStrength-heng-light-attack-1",
+          "stonesplitStrength-heng-light-attack-2",
+          "stonesplitStrength-heng-light-attack-3",
+          "stonesplitStrength-heng-light-attack-4",
           "stonesplitStrength-mo-blade-dual",
+          "stonesplitStrength-mo-dash",
+          "stonesplitStrength-mo-light-attack-1",
+          "stonesplitStrength-mo-light-attack-2",
+          "stonesplitStrength-mo-light-attack-3",
           "stonesplitStrength-perfect-dodge",
           "stonesplitStrength-perfect-dodge-full",
+          "stonesplitStrength-phalanxcharged-s1",
+          "stonesplitStrength-phalanxcharged-s2",
+          "stonesplitStrength-phalanxcharged-s2-innerpassion",
           "stonesplitStrength-phalanxcharged-s3",
           "stonesplitStrength-phalanxcharged-s3-innerpassion",
           "stonesplitStrength-phalanxq",
@@ -184267,6 +184284,7 @@
           "stonesplitStrength-snowpartingcharged-forgetfulness",
           "stonesplitStrength-snowpartingdual",
           "stonesplitStrength-snowpartingdual-prepull",
+          "stonesplitStrength-snowpartingq-slash",
           "stonesplitStrength-snowpartingq-stab",
           "stonesplitStrength-snowpartingslide",
           "stonesplitStrength-snowpartingslide-prepull",
@@ -184275,7 +184293,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "f509eb54c2a660bacc6de6f6f0d50299f1f861cc0d393d24f20f7f1e29ee19cf"
+        "digest": "dd2822ab125403ac6209e41155ed69b651d32fe3ce5c4e1c388567e165649408"
       },
       "debuffs": {
         "count": 7,
@@ -184494,6 +184512,29 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "×1.32 damage on a cast that consumes Inner Passion or Charge Enhancement"
+        },
+        {
+          "id": "burningHeartLowStageConsume",
+          "name": "Burning Heart (Stage 1-2 Consume)",
+          "classBuff": false,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 0,
+          "maxStacks": null,
+          "effects": [],
+          "summary": null
         },
         {
           "id": "throatPierced",
@@ -185891,7 +185932,7 @@
       ]
     },
     "dynamic": {
-      "digest": "a7a43d66341ed538adbe4053cf131a6ade8a48d12045f0d3fa46acdbd44e04e4"
+      "digest": "0e6764767811f2bd2d8dbb0f24b0c202da3a87a1b97d82ed7db4392869fa105d"
     }
   },
   "bellstrikeSplendor": {

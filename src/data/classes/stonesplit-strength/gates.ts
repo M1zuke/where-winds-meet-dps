@@ -4,6 +4,7 @@ import { STATUS } from "../../skills/stonesplit-strength/ids"
 
 export const DREAD_DURATION_FRAMES = 420
 export const FEARFUL_BLADE_DURATION_FRAMES = 900
+export const BREAK_DEFENSE_COOLDOWN_FRAMES = 600
 
 export const DREAD_BUFF_ID = STATUS.dread
 export const FEARFUL_BLADE_BUFF_ID = STATUS.fearfulBlade
@@ -40,5 +41,18 @@ export const STONESPLIT_STRENGTH_GATES: Buff[] = [
     stackScaling: "flat",
     createdAt: "2026-08-09T00:00:00.000Z",
     updatedAt: "2026-08-09T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.breakDefenseCooldown,
+    classId: "stonesplitStrength",
+    name: "Break Defense Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: BREAK_DEFENSE_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-10-06T00:00:00.000Z",
+    updatedAt: "2026-10-06T00:00:00.000Z",
   }),
 ]

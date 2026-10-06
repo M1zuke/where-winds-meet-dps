@@ -31,6 +31,7 @@ export const BUFF = {
   evasiveChargeDodgeCostReduction: "evasiveChargeDodgeCostReduction",
   energySurgeGrant: "energySurgeGrant",
   burningHeartIPConsume: "burningHeartIPConsume",
+  burningHeartLowStageConsume: "burningHeartLowStageConsume",
   chargeEnhancement: "chargeEnhancement",
   concentration: "concentration",
   forgetfulness: "forgetfulness",
