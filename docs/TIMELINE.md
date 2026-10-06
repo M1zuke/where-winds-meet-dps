@@ -745,6 +745,16 @@ itself exists; instead it is computed in pass 2, in time order, alongside
   threshold, broken included — an in-game rule stated as a percentage reads
   its own number this way, rather than through the compatibility phase
   window's approximation of it.
+- **A run reports every damaging event that sits within `QI_EDGE_MARGIN_SEC`
+  of a break edge and whose damage depends on which side it falls.** Pass 2
+  re-scores each such event once more, reading the Qi state of the frame
+  across the edge through every gate it passes — buffs, mechanics, behaviours
+  and the broken-target bonus alike, never a tag list — and sums the absolute
+  differences per skill and edge. A skill whose sum reaches
+  `QI_EDGE_MIN_SHARE_OF_TOTAL` of the run's total damage yields one structured
+  `Result.qiEdgeWarnings` entry, rendered through the catalogue. The re-score
+  is read-only: it never writes the Qi bar, the status ledger, a meter or any
+  reported figure, and it adds no `runEngine` pass.
 
 ## Procedural behaviour
 

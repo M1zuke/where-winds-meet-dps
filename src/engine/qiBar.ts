@@ -196,6 +196,23 @@ export function warmStartQiSchedule(breaks: readonly QiBreak[], fps: number): Qi
   return scheduleFrom(breaks, fps, fractionAt, () => null)
 }
 
+export function qiScheduleReadingFrame(
+  base: QiSchedule,
+  frame: number,
+  referenceFrame: number,
+  fps: number,
+): QiSchedule {
+  const redirected = (timeSec: number): number =>
+    Math.round(timeSec * fps) === frame ? referenceFrame / fps : timeSec
+  return {
+    breaks: base.breaks,
+    isBroken: (timeSec) => base.isBroken(redirected(timeSec)),
+    fractionAt: (timeSec) => base.fractionAt(redirected(timeSec)),
+    phaseAt: (timeSec) => base.phaseAt(redirected(timeSec)),
+    firstLowQiSpan: () => base.firstLowQiSpan(),
+  }
+}
+
 export function sameQiBreaks(left: readonly QiBreak[], right: readonly QiBreak[]): boolean {
   if (left.length !== right.length) return false
   return left.every(

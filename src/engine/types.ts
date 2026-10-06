@@ -362,6 +362,17 @@ export interface EngineRunOptions {
   fixedQiBreaks?: readonly QiBreakWindow[]
 }
 
+export interface QiEdgeWarning {
+  skillName: string
+  edge: "start" | "end"
+  side: "before" | "after"
+  offsetSec: number
+  // Fight clock, like every timed warning.
+  edgeSec: number
+  // Fraction of the run's total damage, not a percent.
+  shareOfTotal: number
+}
+
 export interface Result {
   resources?: import("./resources").ResourceResult[]
   dps: number
@@ -378,6 +389,7 @@ export interface Result {
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]
   warnings: string[]
+  qiEdgeWarnings?: QiEdgeWarning[]
   invalidStepIds?: string[]
   invalidStepReasons?: Record<string, import("./skill").ConditionFailureReason[]>
   timeline?: TimelineEvent[]

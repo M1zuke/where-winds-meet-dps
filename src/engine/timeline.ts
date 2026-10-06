@@ -84,12 +84,14 @@ import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
 import { paramNumOf, paramOnOf, paramTierOf, paramsFromInputs } from "./buffs/params"
 import { DEFAULT_QI_BREAK_WINDOW } from "./qiBreak"
+import { QiEdgeDependence, qiEdgeSiteOf } from "./qiBreakEdge"
 import {
   QiBar,
   fixedQiSchedule,
   fixedQiScheduleFromWindows,
   qiBonusesFrom,
   qiFromDamage,
+  qiScheduleReadingFrame,
   sameQiBreaks,
   warmStartQiSchedule,
   type QiBreak,
@@ -2058,6 +2060,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           stepStart: number
           extraEffects: BuffStatEffect[]
           forceGuaranteedAffinity: boolean
+          onHitEffectCount: number
+          forcedAffinityByOnHit: boolean
           ledgerMark: number
         }
       | { kind: "tick"; frame: number; seq: number; entry: DotTickEntry }
@@ -2211,6 +2215,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         finalCritAtLeast: () => {},
       }
       for (const effect of behavior.onHit?.(hitInput) ?? []) applyEffect(hitSink, effect)
+      const onHitEffectCount = extraEffects.length
+      const forcedAffinityByOnHit = forceGuaranteedAffinity
       const qiPhase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
       for (const effect of behavior.claimStatEffects(hitInput, qiPhase))
         applyEffect(hitSink, effect)
@@ -2228,6 +2234,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         extraEffects,
         ledgerMark,
         forceGuaranteedAffinity,
+        onHitEffectCount,
+        forcedAffinityByOnHit,
       })
 
       if (hitDealsDamage(hit)) liveWriter.onDamagingHit(frame, stepStart)
@@ -2520,27 +2528,56 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     }
 
-    // Pass 2: every damage event, in true time order — a hit, a tick (its
-    // declared buffs applied immediately before its own damage is scored, so a
-    // later event of any kind already sees them), a mechanic's extra event, and
-    // an echo release, which takes whatever this debuff has banked since its
-    // last release. `totalDamage` accumulates as each one is scored, so a buff
-    // module's `target.remainingHealthFraction` reads the true running total.
-    mergedEvents.sort(byMergedOrder)
-    for (const event of mergedEvents) {
-      for (const resource of resources)
-        resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
-      if (event.kind === "recall") {
-        event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
-      } else if (event.kind === "hit") {
-        const { frame, skill, hit, castFrame, extraEffects, forceGuaranteedAffinity, ledgerMark } =
-          event
-        const launchResource = resourceByLaunch.get(skill.id)
-        if (launchResource && inWindow(frame) && !launchResource.launch(frame)) {
-          continue
-        }
+    interface ScoredEvent {
+      damage: number
+      rolled: RolledHit | undefined
+      st: ReturnType<typeof resolveState>
+    }
+
+    function withQiReadAtFrame<Scored>(
+      frame: number,
+      readQiAtFrame: number | null,
+      score: () => Scored,
+    ): Scored {
+      if (readQiAtFrame === null || !buffEngine) return score()
+      buffEngine.attachQiSchedule(qiScheduleReadingFrame(qiSchedule, frame, readQiAtFrame, FPS))
+      try {
+        return score()
+      } finally {
+        buffEngine.attachQiSchedule(qiSchedule)
+      }
+    }
+
+    function scoreHit(
+      event: Extract<MergedEvent, { kind: "hit" }>,
+      rng: (() => number) | undefined,
+      readQiAtFrame: number | null,
+    ): ScoredEvent {
+      return withQiReadAtFrame(event.frame, readQiAtFrame, () => {
+        const { frame, skill, hit, castFrame, ledgerMark } = event
         const behavior = behaviorFor(skill)
         const hitInput = hitInputAt(skill, hit, frame, castFrame)
+        let { extraEffects, forceGuaranteedAffinity } = event
+        if (readQiAtFrame !== null) {
+          extraEffects = event.extraEffects.slice(0, event.onHitEffectCount)
+          forceGuaranteedAffinity = event.forcedAffinityByOnHit
+          const claimSink: EffectSink = {
+            stat: (statKey, amount) => extraEffects.push({ statKey, amount }),
+            forceOutcome: (outcome) => {
+              if (outcome === "affinity") forceGuaranteedAffinity = true
+            },
+            applyBuff: () => {},
+            consumeStacks: () => {},
+            setStatus: () => {},
+            artBonus: () => {},
+            damageMultiplier: () => {},
+            echo: () => {},
+            finalCritAtLeast: () => {},
+          }
+          const phase = buffEngine?.qiPhase(frame / FPS) ?? "normal"
+          for (const effect of behavior.claimStatEffects(hitInput, phase))
+            applyEffect(claimSink, effect)
+        }
         const resolveOverride: ResolveOverride | undefined =
           extraEffects.length > 0 || forceGuaranteedAffinity
             ? { extraEffects, forceGuaranteedAffinity }
@@ -2583,9 +2620,97 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
         if (st.damageFactor !== 1) art.correction = (art.correction ?? 1) * st.damageFactor
         if (st.conditionalFinalCrit) art.conditionalFinalCrit = st.conditionalFinalCrit
-        const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
-        const damage = rolled?.damage ?? expectedDamage
+        const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
+        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+      })
+    }
+
+    function scoreTick(
+      entry: DotTickEntry,
+      rng: (() => number) | undefined,
+      readQiAtFrame: number | null,
+    ): ScoredEvent {
+      return withQiReadAtFrame(entry.frame, readQiAtFrame, () => {
+        const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
+        const tick = dotTickDamage(
+          tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
+          st.ctx,
+          computeSkillDamage,
+          st.forceCrit,
+          entry.shape,
+          rng,
+          st.artBonuses,
+        )
+        // `damageFactor` is post-formula, so a tick takes it on its finished
+        // number the way a regular hit takes it on its art `correction`.
+        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
+        return { damage, rolled: tick.rolled, st }
+      })
+    }
+
+    function scoreExtra(
+      mechEvent: MechanicEvent,
+      rng: (() => number) | undefined,
+      readQiAtFrame: number | null,
+    ): ScoredEvent {
+      return withQiReadAtFrame(mechEvent.frame, readQiAtFrame, () => {
+        const st = resolveState(
+          mechEvent.frame,
+          mechEvent.skill,
+          undefined,
+          mechEvent.frame,
+          totalDamage,
+        )
+        const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
+        if (st.forceCrit) art.guaranteedCrit = 1
+        if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
+        const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, rng)
+        return { damage: rolled?.damage ?? expectedDamage, rolled, st }
+      })
+    }
+
+    const qiBreakFrames = qiSchedule.breaks.map(({ startSec, endSec }) => ({
+      startFrame: Math.round(startSec * FPS),
+      endFrame: Math.round(endSec * FPS),
+    }))
+    const qiEdgeDependence = new QiEdgeDependence()
+    const recordQiEdgeDependence = (
+      frame: number,
+      skillName: string,
+      rescore: (readQiAtFrame: number) => ScoredEvent,
+    ): void => {
+      if (!collectDetail || !buffEngine) return
+      const site = qiEdgeSiteOf(frame, qiBreakFrames, FPS)
+      if (!site) return
+      const asScored = rescore(frame)
+      const acrossEdge = rescore(site.referenceFrame)
+      qiEdgeDependence.record(skillName, site, acrossEdge.damage - asScored.damage)
+    }
+
+    // Pass 2: every damage event, in true time order — a hit, a tick (its
+    // declared buffs applied immediately before its own damage is scored, so a
+    // later event of any kind already sees them), a mechanic's extra event, and
+    // an echo release, which takes whatever this debuff has banked since its
+    // last release. `totalDamage` accumulates as each one is scored, so a buff
+    // module's `target.remainingHealthFraction` reads the true running total.
+    mergedEvents.sort(byMergedOrder)
+    for (const event of mergedEvents) {
+      for (const resource of resources)
+        resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
+      if (event.kind === "recall") {
+        event.resource.recall(Math.min(windowFrames, Math.max(0, event.frame)))
+      } else if (event.kind === "hit") {
+        const { frame, skill, hit, castFrame } = event
+        const launchResource = resourceByLaunch.get(skill.id)
+        if (launchResource && inWindow(frame) && !launchResource.launch(frame)) {
+          continue
+        }
+        const { damage, rolled, st } = scoreHit(event, hitRng, null)
         const landsInFight = inWindow(frame)
+        if (landsInFight && hitDealsDamage(hit))
+          recordQiEdgeDependence(frame, skill.name, (readQiAtFrame) =>
+            scoreHit(event, undefined, readQiAtFrame),
+          )
         // The target takes this damage whether or not it falls inside the DPS
         // window, so its Qi bar accrues regardless — docs/TIMELINE.md § "Qi bar".
         if (hitDealsDamage(hit))
@@ -2658,19 +2783,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             skillTagsOf(entry.dotSkill),
           )
         }
-        const st = resolveState(entry.frame, entry.dotSkill, undefined, entry.frame, totalDamage)
-        const tick = dotTickDamage(
-          tickWithResolvedMinPhysCrit(entry, st.ctx.smallPhys),
-          st.ctx,
-          computeSkillDamage,
-          st.forceCrit,
-          entry.shape,
-          hitRng,
-          st.artBonuses,
-        )
-        // `damageFactor` is post-formula, so a tick takes it on its finished
-        // number the way a regular hit takes it on its art `correction`.
-        const damage = tick.damage * (entry.scale ?? 1) * entry.weight * st.damageFactor
+        const { damage, rolled: tickRolled, st } = scoreTick(entry, hitRng, null)
+        if (inWindow(entry.frame))
+          recordQiEdgeDependence(entry.frame, entry.dotName, (readQiAtFrame) =>
+            scoreTick(entry, undefined, readQiAtFrame),
+          )
         // The target takes this tick whether or not it falls inside the DPS
         // window, so its Qi bar accrues and a debuff it declares reaches
         // still fires regardless — docs/TIMELINE.md § "Qi bar", § "Triggers".
@@ -2693,7 +2810,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const landsInFight = inWindow(entry.frame)
         if (landsInFight) {
           totalDamage += damage
-          if (tick.rolled) tallyRoll(tick.rolled, damage)
+          if (tickRolled) tallyRoll(tickRolled, damage)
           add(
             entry.dotName,
             entry.dotType,
@@ -2715,18 +2832,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })
       } else if (event.kind === "extra") {
         const mechEvent = event.event
-        const st = resolveState(
-          mechEvent.frame,
-          mechEvent.skill,
-          undefined,
-          mechEvent.frame,
-          totalDamage,
-        )
-        const art = { ...mechEvent.art } as Parameters<typeof computeSkillDamage>[0]
-        if (st.forceCrit) art.guaranteedCrit = 1
-        if (st.forceNoAbrasion) art.abrasionAvoidRate = 1
-        const { expectedDamage, rolled } = computeSkillDamage(art, st.ctx, 1, hitRng)
-        const damage = rolled?.damage ?? expectedDamage
+        const { damage, rolled, st } = scoreExtra(mechEvent, hitRng, null)
+        if (inWindow(mechEvent.frame))
+          recordQiEdgeDependence(mechEvent.frame, mechEvent.name, (readQiAtFrame) =>
+            scoreExtra(mechEvent, undefined, readQiAtFrame),
+          )
         qiBar.apply(
           mechEvent.frame,
           qiFromDamage({
@@ -2845,6 +2955,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
 
     const qiComputedSchedule = qiBar.schedule()
+    const qiEdgeWarnings = qiEdgeDependence.warnings(totalDamage, FPS, fightStartSec)
     const qiTrace: { timeSec: number; fraction: number }[] = []
     if (collectDetail) {
       for (let sampleSec = 0; sampleSec <= windowFrames / FPS; sampleSec += 1) {
@@ -2862,6 +2973,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       perSkill,
       ranking: [],
       warnings,
+      ...(qiEdgeWarnings.length > 0 ? { qiEdgeWarnings } : {}),
       ...(invalidStepIds.length > 0 ? { invalidStepIds } : {}),
       ...(Object.keys(invalidStepReasons).length > 0 ? { invalidStepReasons } : {}),
       timeline,
