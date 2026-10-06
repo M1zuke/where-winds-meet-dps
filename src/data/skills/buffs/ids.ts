@@ -64,6 +64,7 @@ export const BUFF = {
   qiImbalanceMarker: "qiImbalanceMarker",
   qiShield: "qiShield",
   relentlessChaseWindow: "relentlessChaseWindow",
+  shadowStepDashWindow: "shadowStepDashWindow",
   wushuangStance: "wushuangStance",
   namelessSwordAdditionalAttack: "namelessSwordAdditionalAttack",
   phalanxbaneBladeAdditionalAttack: "phalanxbaneBladeAdditionalAttack",

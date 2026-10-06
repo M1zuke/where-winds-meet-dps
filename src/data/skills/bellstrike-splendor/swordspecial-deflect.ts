@@ -2,6 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
+import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
 
 export const swordSpecialDeflect = defineSkill({
   id: SKILL.swordSpecialDeflect,
@@ -27,6 +28,7 @@ export const swordSpecialDeflect = defineSkill({
       attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
+      triggers: [shadowStepDashWindowGrantFromFrame(0)],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

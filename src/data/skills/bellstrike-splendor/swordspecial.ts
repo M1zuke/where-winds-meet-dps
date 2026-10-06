@@ -4,6 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { multiWaveWindowBootstrapTrigger } from "./buffs/multiWaveWindowGrant"
+import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 
 export const swordSpecial = defineSkill({
@@ -43,7 +44,7 @@ export const swordSpecial = defineSkill({
       attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
-      triggers: [multiWaveWindowBootstrapTrigger],
+      triggers: [multiWaveWindowBootstrapTrigger, shadowStepDashWindowGrantFromFrame(23)],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

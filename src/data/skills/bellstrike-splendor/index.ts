@@ -1,4 +1,11 @@
+import { cloudstep } from "./cloudstep"
 import { energySurge } from "./energysurge"
+import { spearLightAttack } from "./spear-light-attack"
+import { swordHeavyAttack } from "./sword-heavy-attack"
+import { swordLightAttack } from "./sword-light-attack"
+import { swordSpecialDash } from "./sword-dash"
+import { swordSprintDash } from "./sword-sprint-dash"
+import { swordHeavyChargedTier1 } from "./swordheavycharged-tier-1"
 import { legionCrusher } from "./legioncrusher"
 import { spearq } from "./spearq"
 import { spearq0HitCancel } from "./spearq-0-hit-cancel"
@@ -47,4 +54,11 @@ export const SKILLS = [
   stormDanceStage2Wushuang,
   swordDual,
   spearDual,
+  swordSpecialDash,
+  swordHeavyChargedTier1,
+  swordLightAttack,
+  spearLightAttack,
+  swordHeavyAttack,
+  swordSprintDash,
+  cloudstep,
 ]

@@ -242,6 +242,23 @@ export const WUSHUANG_STANCE_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-29T00:00:00.000Z",
 })
 
+// In-game values as of 2026-10-06: Shadow Step's bolt launch opens this 2.5 s
+// window for the Sword - Dash follow-up.
+export const SHADOW_STEP_DASH_WINDOW_GATE: Buff = defineGateBuff({
+  id: BUFF.shadowStepDashWindow,
+  classId: CLASS_ID,
+  name: "Sword - Dash Available",
+  description: "Granted by Shadow Step; spent by casting Sword - Dash.",
+  scope: "player",
+  activation: "triggered",
+  durationFrames: 150,
+  effects: [],
+  maxStacks: 1,
+  stackScaling: "flat",
+  createdAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
+})
+
 export const BELLSTRIKE_SPLENDOR_GATES: readonly Buff[] = [
   ENERGY_SURGE_GRANT_GATE,
   MULTI_WAVE_WINDOW_GATE,
@@ -254,4 +271,5 @@ export const BELLSTRIKE_SPLENDOR_GATES: readonly Buff[] = [
   RELENTLESS_CHASE_WINDOW_GATE,
   QI_SHIELD_GATE,
   WUSHUANG_STANCE_GATE,
+  SHADOW_STEP_DASH_WINDOW_GATE,
 ]

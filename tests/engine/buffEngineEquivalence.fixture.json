@@ -185897,9 +185897,10 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 56,
+        "count": 63,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
+          "bellstrikeSplendor-cloudstep",
           "bellstrikeSplendor-deflect-cancel",
           "bellstrikeSplendor-deflect-cancel-prepull",
           "bellstrikeSplendor-delay",
@@ -185912,6 +185913,7 @@
           "bellstrikeSplendor-perfect-dodge",
           "bellstrikeSplendor-perfect-dodge-full",
           "bellstrikeSplendor-spear-dual",
+          "bellstrikeSplendor-spear-light-attack",
           "bellstrikeSplendor-spearq",
           "bellstrikeSplendor-spearq-0-hit-cancel",
           "bellstrikeSplendor-spearq-prepull",
@@ -185922,14 +185924,19 @@
           "bellstrikeSplendor-stormdance-stage-2",
           "bellstrikeSplendor-stormdance-stage-2-wushuang",
           "bellstrikeSplendor-sword-dual",
+          "bellstrikeSplendor-sword-heavy-attack",
+          "bellstrikeSplendor-sword-light-attack",
+          "bellstrikeSplendor-sword-sprint-dash",
           "bellstrikeSplendor-swordheavycharged",
           "bellstrikeSplendor-swordheavycharged-2-hit",
           "bellstrikeSplendor-swordheavycharged-prepull",
+          "bellstrikeSplendor-swordheavycharged-tier-1",
           "bellstrikeSplendor-swordq",
           "bellstrikeSplendor-swordq-2nd",
           "bellstrikeSplendor-swordq-3rd",
           "bellstrikeSplendor-swordspecial",
           "bellstrikeSplendor-swordspecial-2nd",
+          "bellstrikeSplendor-swordspecial-dash",
           "bellstrikeSplendor-swordspecial-deflect",
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -185956,7 +185963,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "2f255939699de2530947c4eee32ee5e213d2558d6e0442f2ea3a2f10b9d8e840"
+        "digest": "edb11ad49088f2dd2b87247e59ec14d691aa3865ddda3b149c6f308b743aa679"
       },
       "debuffs": {
         "count": 7,

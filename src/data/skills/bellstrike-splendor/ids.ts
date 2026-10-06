@@ -21,6 +21,13 @@ export const SKILL = {
   stormDanceStage2Wushuang: "bellstrikeSplendor-stormdance-stage-2-wushuang",
   swordDual: "bellstrikeSplendor-sword-dual",
   spearDual: "bellstrikeSplendor-spear-dual",
+  swordSpecialDash: "bellstrikeSplendor-swordspecial-dash",
+  swordHeavyChargedTier1: "bellstrikeSplendor-swordheavycharged-tier-1",
+  swordLightAttack: "bellstrikeSplendor-sword-light-attack",
+  spearLightAttack: "bellstrikeSplendor-spear-light-attack",
+  swordHeavyAttack: "bellstrikeSplendor-sword-heavy-attack",
+  swordSprintDash: "bellstrikeSplendor-sword-sprint-dash",
+  cloudstep: "bellstrikeSplendor-cloudstep",
 } as const
 
 export const DEBUFF = {
