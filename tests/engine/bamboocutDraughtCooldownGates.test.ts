@@ -12,14 +12,12 @@ import {
   CASTLINK_COOLDOWN_FRAMES,
   HEROS_BLOOD_COOLDOWN_FRAMES,
   PEAKFALL_COOLDOWN_FRAMES,
-  TIPSYLAY_COOLDOWN_FRAMES,
 } from "../../src/data/classes/bamboocut-draught/gates"
 
 const CLASS = "bamboocutDraught"
 
 const longestCooldown = Math.max(
   PEAKFALL_COOLDOWN_FRAMES,
-  TIPSYLAY_COOLDOWN_FRAMES,
   CASTLINK_COOLDOWN_FRAMES,
   HEROS_BLOOD_COOLDOWN_FRAMES,
 )
@@ -63,7 +61,6 @@ function hitCount(result: ReturnType<typeof run>, breakdownName: string): number
 
 describe.each([
   { skillId: SKILL.peakfall, breakdownName: "Peakfall" },
-  { skillId: SKILL.nightwickTipsylay, breakdownName: "Nightwick - Tipsylay" },
   { skillId: SKILL.herosBlood, breakdownName: "Hero's Blood" },
 ])("$breakdownName's cooldown", ({ skillId, breakdownName }) => {
   it("blocks an immediate second cast but not one after the cooldown clears", () => {

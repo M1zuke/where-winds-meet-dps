@@ -13,8 +13,8 @@ const REQUIRES_BINGE_100 = [{ buffId: STATUS.bingePoints, op: "gte" as const, st
 export const nightwickPrimepick = defineSkill({
   id: SKILL.nightwickPrimepick,
   classId: "bamboocutDraught",
-  name: "Gauntlet Special - Primepick",
-  breakdownName: "Nightwick - Primepick",
+  name: "Gauntlet Special - Tipsylay",
+  breakdownName: "Nightwick - Tipsylay",
   tags: [WEAPON.gauntlets, ATTUNE.gauntletsSpecial],
   skillType: "weapon",
   weaponOrAttribute: "Gauntlets",

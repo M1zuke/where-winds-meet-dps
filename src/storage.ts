@@ -98,6 +98,7 @@ import {
   migrateEntityId,
   migrateMysticId,
   migrateRotationMysticIds,
+  migrateRotationNightwickTipsylayIds,
   migrateGearWordId,
   migrateCurrentGearWordLabel,
   migrateFormlessWordId,
@@ -246,7 +247,7 @@ function migrateRotationIds<T>(rotation: T): T {
   if (typeof next.averageFps !== "number" || !isValidAverageFps(next.averageFps))
     next.averageFps = DEFAULT_AVERAGE_FPS
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
-  return migrateRotationMysticIds(next) as unknown as T
+  return migrateRotationNightwickTipsylayIds(migrateRotationMysticIds(next)) as unknown as T
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"

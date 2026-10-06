@@ -50,7 +50,6 @@ const ALL_MATCH_IDS = [
   "bamboocutDraught-nightwick-primepick",
   "bamboocutDraught-nightwick-primepick-follow-up",
   "bamboocutDraught-nightwick-primepick-follow-up-cancel",
-  "bamboocutDraught-nightwick-tipsylay",
   "bamboocutDraught-peakfall",
   "bamboocutDraught-peakfall-prepull",
   "bamboocutDraught-perfect-dodge",

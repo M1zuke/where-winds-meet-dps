@@ -22,6 +22,8 @@ const CLASS = "bamboocutDraught"
 const EDITED_ID = "bamboocutDraught-heros-blood"
 const UNRELATED_IDS = ["bamboocutDraught-falcons-pursuit", "sk-user-authored-bamboocut-slash"]
 
+const REMOVED_SKILL_ID = "bamboocutDraught-nightwick-tipsylay"
+
 const HEALED_IDS = [
   "bamboocutDraught-boundvessel",
   "bamboocutDraught-castlink",
@@ -37,7 +39,6 @@ const HEALED_IDS = [
   "bamboocutDraught-nightwick-primepick",
   "bamboocutDraught-nightwick-primepick-follow-up",
   "bamboocutDraught-nightwick-primepick-follow-up-cancel",
-  "bamboocutDraught-nightwick-tipsylay",
   "bamboocutDraught-peakfall",
   "bamboocutDraught-peakfall-prepull",
   "bamboocutDraught-perfect-dodge",
@@ -129,7 +130,7 @@ describe("V25__bamboocutDraughtValuesGatesReach — called directly", () => {
       expect(restAfter, id).toEqual(restBefore)
     }
     for (const skill of STORE.skills) {
-      if (HEALED_IDS.includes(skill.id)) continue
+      if (HEALED_IDS.includes(skill.id) || skill.id === REMOVED_SKILL_ID) continue
       expect(skillIn(after, skill.id)).toEqual(skill)
     }
   })

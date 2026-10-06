@@ -15,7 +15,8 @@ const IN_GAME_HITS: Record<string, number> = {
   "Drunkslay State": 3,
   Castlink: 12,
   Whaledraft: 18,
-  "Nightwick - Primepick": 6,
+  "Nightwick - Tipsylay": 3,
+  "Nightwick - Primepick": 3,
   "Hero's Blood": 8,
   // The cancel form's own strike (in-game values as of 2026-09-24) was not
   // yet modelled when this log was captured, so its own hit count reads one

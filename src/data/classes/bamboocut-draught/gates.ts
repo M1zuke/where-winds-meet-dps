@@ -19,7 +19,6 @@ export const CONSECUTIVE_PUNCHES_DURATION_FRAMES = 180
 // In-game values as of 2026-09-16.
 export const SKILL_BINGE_POINT_ACCUMULATION_DURATION_FRAMES = 120
 export const PEAKFALL_COOLDOWN_FRAMES = 600
-export const TIPSYLAY_COOLDOWN_FRAMES = 900
 export const CASTLINK_COOLDOWN_FRAMES = 120
 export const HEROS_BLOOD_COOLDOWN_FRAMES = 720
 
@@ -142,19 +141,6 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     scope: "player",
     activation: "triggered",
     durationFrames: PEAKFALL_COOLDOWN_FRAMES,
-    effects: [],
-    maxStacks: 1,
-    stackScaling: "flat",
-    createdAt: "2026-09-16T00:00:00.000Z",
-    updatedAt: "2026-09-16T00:00:00.000Z",
-  }),
-  defineGateBuff({
-    id: STATUS.tipsylayCooldown,
-    classId: CLASS_ID,
-    name: "Nightwick - Tipsylay Cooldown",
-    scope: "player",
-    activation: "triggered",
-    durationFrames: TIPSYLAY_COOLDOWN_FRAMES,
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",

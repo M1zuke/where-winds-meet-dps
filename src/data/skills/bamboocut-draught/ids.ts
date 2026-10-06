@@ -8,7 +8,6 @@ export const SKILL = {
   nightwickPrimepick: "bamboocutDraught-nightwick-primepick",
   nightwickPrimepickFollowUp: "bamboocutDraught-nightwick-primepick-follow-up",
   nightwickPrimepickFollowUpCancel: "bamboocutDraught-nightwick-primepick-follow-up-cancel",
-  nightwickTipsylay: "bamboocutDraught-nightwick-tipsylay",
   nightwickGrounddrift: "bamboocutDraught-nightwick-grounddrift",
   peakfall: "bamboocutDraught-peakfall",
   peakfallPrepull: "bamboocutDraught-peakfall-prepull",
@@ -58,7 +57,6 @@ export const STATUS = {
   eonpourExhaustedCooldown: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
   consecutivePunches: "buff-bamboocutDraught-consecutive-punches",
   peakfallCooldown: "buff-bamboocutDraught-peakfall-cooldown",
-  tipsylayCooldown: "buff-bamboocutDraught-tipsylay-cooldown",
   castlinkCooldown: "buff-bamboocutDraught-castlink-cooldown",
   herosBloodCooldown: "buff-bamboocutDraught-heros-blood-cooldown",
 } as const

@@ -161050,7 +161050,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 69,
+        "count": 68,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-blade-vessel",
@@ -161081,7 +161081,6 @@
           "bamboocutDraught-nightwick-primepick",
           "bamboocutDraught-nightwick-primepick-follow-up",
           "bamboocutDraught-nightwick-primepick-follow-up-cancel",
-          "bamboocutDraught-nightwick-tipsylay",
           "bamboocutDraught-peakfall",
           "bamboocutDraught-peakfall-prepull",
           "bamboocutDraught-perfect-dodge",
@@ -161122,7 +161121,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "2b4e90e04f7e4131750a68db7ee8de4a1dee2247ee97c9eae00b912c35a6fe9f"
+        "digest": "10e8b5d9f5a5c652d648eed2694b2d7c14ca8a23bbe384c8783f5acc59807f8a"
       },
       "debuffs": {
         "count": 8,

@@ -8,7 +8,6 @@ import { quickDrinkCancel } from "./quick-drink-cancel"
 import { nightwickPrimepick } from "./nightwick-primepick"
 import { nightwickPrimepickFollowUp } from "./nightwick-primepick-follow-up"
 import { nightwickPrimepickFollowUpCancel } from "./nightwick-primepick-follow-up-cancel"
-import { nightwickTipsylay } from "./nightwick-tipsylay"
 import { nightwickGrounddrift } from "./nightwick-grounddrift"
 import { peakfall } from "./peakfall"
 import { peakfallPrepull } from "./peakfall-prepull"
@@ -50,7 +49,6 @@ export const SKILLS: Skill[] = [
   nightwickPrimepick,
   nightwickPrimepickFollowUp,
   nightwickPrimepickFollowUpCancel,
-  nightwickTipsylay,
   nightwickGrounddrift,
   peakfall,
   peakfallPrepull,
