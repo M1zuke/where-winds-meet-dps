@@ -8,6 +8,7 @@ import {
   V11__qiRateDefaults,
   healQiRateDefault,
 } from "../../src/migrations/customDebuffs/V11__qiRateDefaults"
+import { builtinDebuffsForClass } from "../../src/engine/builtinLibrary"
 import type { Debuff } from "../../src/engine/debuff"
 import storeV10File from "./testCustomDebuffs/v10/store.json"
 
@@ -104,8 +105,7 @@ describe("V11__qiRateDefaults — through the chain", () => {
 })
 
 describe("every healed debuff survives the hydrator too, matching the live built-in's own rate", () => {
-  it("lands each healed copy on exactly the live built-in's rate", async () => {
-    const { builtinDebuffsForClass } = await import("../../src/engine/builtinLibrary")
+  it("lands each healed copy on exactly the live built-in's rate", () => {
     const result = runCustomDebuffMigrations(clone(STORE))!
     // bellstrikeUmbra's own debuff list also carries the shared mystic ones.
     const builtins = builtinDebuffsForClass("bellstrikeUmbra")

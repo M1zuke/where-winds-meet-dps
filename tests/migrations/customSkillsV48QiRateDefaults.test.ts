@@ -9,6 +9,7 @@ import {
   V48__qiRateDefaults,
   healQiRateDefault,
 } from "../../src/migrations/customSkills/V48__qiRateDefaults"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV47File from "./testCustomSkills/v47/store.json"
 
@@ -124,8 +125,7 @@ describe("V48__qiRateDefaults — through the chain", () => {
 })
 
 describe("every healed skill survives the hydrator too, matching the live built-in's own rate", () => {
-  it("lands each healed copy on exactly the live built-in's hits", async () => {
-    const { builtinSkillsForClass } = await import("../../src/engine/builtinLibrary")
+  it("lands each healed copy on exactly the live built-in's hits", () => {
     const result = runCustomSkillMigrations(clone(STORE))!
     for (const [id, rate] of HEALED_IDS_AND_RATES) {
       const healed = skillIn(result.blob, id)!
