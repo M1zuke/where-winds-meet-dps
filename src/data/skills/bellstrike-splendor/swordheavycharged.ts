@@ -3,8 +3,15 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
-import { multiWaveWindowSustainTrigger } from "./buffs/multiWaveWindowGrant"
+import {
+  energySurgeCooldownCut,
+  energySurgeReleaseTrigger,
+  energySurgeEnduranceGain,
+} from "./buffs/energySurgeGrant"
+import {
+  multiWaveWindowReleaseGrantTrigger,
+  THREE_WAVE_RELEASE_CONDITIONS,
+} from "./buffs/multiWaveWindowGrant"
 import {
   VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
@@ -13,12 +20,6 @@ import {
 } from "./buffs/vagrantSwordEndurance"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
-
-const MULTI_WAVE_WINDOW_ACTIVE = {
-  buffId: BUFF.swordMorphMultiWaveWindow,
-  op: "gte" as const,
-  stacks: 1,
-}
 
 export const swordHeavyCharged = defineSkill({
   id: SKILL.swordHeavyCharged,
@@ -44,8 +45,8 @@ export const swordHeavyCharged = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  // In-game values as of 2026-10-06: without Sword Morph's multi-wave window
-  // this is the single-bolt level-2 release, not the three-wave one below.
+  // In-game values as of 2026-10-06: without the three-wave conditions this is
+  // the single-bolt level-2 release, not the three-wave one below.
   castFrames: 121,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
@@ -59,17 +60,15 @@ export const swordHeavyCharged = defineSkill({
       physFixed: 904,
       attributeFixed: 493,
       triggers: [
-        energySurgeReleaseTrigger,
-        multiWaveWindowSustainTrigger,
         BATTLE_ANTHEM_ENDURANCE_GAIN,
-        energySurgeEnduranceGain,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+        energySurgeCooldownCut,
       ],
       variants: [
         {
           id: "hv-swordheavycharged-hit-0-multi-wave-window",
           label: "Multi-Wave Window",
-          conditions: [MULTI_WAVE_WINDOW_ACTIVE],
+          conditions: THREE_WAVE_RELEASE_CONDITIONS,
           physMultiplier: 1.3066,
           attributeMultiplier: 1.9598,
           physFixed: 361.6,
@@ -88,7 +87,8 @@ export const swordHeavyCharged = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
-      conditions: [MULTI_WAVE_WINDOW_ACTIVE],
+      conditions: THREE_WAVE_RELEASE_CONDITIONS,
+      triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 129,
@@ -96,10 +96,25 @@ export const swordHeavyCharged = defineSkill({
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
       attributeFixed: 276.08,
-      conditions: [MULTI_WAVE_WINDOW_ACTIVE],
+      conditions: THREE_WAVE_RELEASE_CONDITIONS,
       // In-game values as of 2026-09-25: the Sword Morph conversion reads the
       // Endurance the charge drain left once it stops, near this last wave.
-      triggers: [{ ...SWORD_MORPH_ENDURANCE_SPEND, condition: MULTI_WAVE_WINDOW_ACTIVE }],
+      triggers: [SWORD_MORPH_ENDURANCE_SPEND, energySurgeCooldownCut],
+    }),
+    hit(3, {
+      // In-game values as of 2026-10-06: the three-wave event fires at the
+      // level-2 release, 84 f after the press, ahead of the first wave.
+      frame: 84,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      conditions: THREE_WAVE_RELEASE_CONDITIONS,
+      triggers: [
+        energySurgeReleaseTrigger,
+        multiWaveWindowReleaseGrantTrigger,
+        energySurgeEnduranceGain,
+      ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

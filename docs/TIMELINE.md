@@ -206,6 +206,10 @@ id.
   negative frames whether or not any of its own hits land, and a DoT tick
   keeps ticking and keeps writing status the same way whether or not it
   lands before the window opens.
+- **The player is out of combat until the run's first damaging hit lands**,
+  pre-pull included, and in combat from that frame on. A condition reads it as
+  the engine-owned `inCombat` counter status (0 before, 1 from then on),
+  evaluated like any other status at a cast's start.
 - **A rotation step performs every hit its skill has.** A step names a skill and
   nothing else; a cast cut short is authored as its own skill carrying only the
   hits it lands, never as a count on the step.
@@ -309,12 +313,19 @@ Rules:
   the same trigger fires again only after that many frames. The first firing
   is never held back, a firing blocked by its conditions or phase does not
   start the cooldown, and every pass counts on its own, so the layout pass
-  and the event loop agree. That cooldown may itself shrink with every blocked
-  attempt since the last firing (`cooldownDecayFramesPerAttempt`), down to a
-  floor (`cooldownFloorFrames`) it never crosses; both are ignored without
-  `cooldownFrames`. A trigger may also name a `cooldownGroup`: every trigger
-  carrying the same group string, on any hit or skill, shares one cooldown
-  clock — a trigger with no group is scoped to itself.
+  and the event loop agree. A trigger may also name a `cooldownGroup`: every
+  trigger carrying the same group string, on any hit or skill, shares one
+  cooldown clock — a trigger with no group is scoped to itself. Group members
+  evaluated on the frame the group fires all fire; the same trigger evaluated
+  twice on that frame fires once.
+- **A `cooldownCut` trigger shortens a group's running cooldown**: its
+  `targetId` names the cooldown group and its stack delta is the number of
+  frames cut, applied at the trigger's own frame and never taking the wait
+  below the group's `cooldownFloorFrames` (ignored without `cooldownFrames`).
+  A cut counts only while the group is cooling — before its first firing, or
+  once it has run out, it does nothing — and the group's cuts reset each time
+  it fires. It reads its own conditions, phase and `requiresParam` like any
+  other trigger.
 - **A trigger may release a debuff's echo** (`releaseEcho`): everything the
   target debuff has banked since its last release is dealt at that hit's frame
   as one event on the echo's own row. It carries no share and no name — both

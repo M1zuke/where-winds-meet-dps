@@ -1609,12 +1609,6 @@ function importedTrigger(t: unknown): HitTrigger {
   )
     trigger.cooldownFrames = c.cooldownFrames
   if (
-    typeof c.cooldownDecayFramesPerAttempt === "number" &&
-    Number.isFinite(c.cooldownDecayFramesPerAttempt) &&
-    c.cooldownDecayFramesPerAttempt >= 0
-  )
-    trigger.cooldownDecayFramesPerAttempt = c.cooldownDecayFramesPerAttempt
-  if (
     typeof c.cooldownFloorFrames === "number" &&
     Number.isFinite(c.cooldownFloorFrames) &&
     c.cooldownFloorFrames >= 0

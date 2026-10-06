@@ -184,7 +184,10 @@ describe("every healed skill survives the hydrator too", () => {
     const loaded = loadCustomSkills()
     for (const id of ALL_TARGETED_IDS) {
       const skill = loaded.find((candidate) => candidate.id === id)!
-      expect(targetsOf(skill)).toContain("swordMorphMultiWaveWindow")
+      const grantedAnywhere = skill.hits.flatMap((hit) =>
+        hit.triggers.map((trigger) => trigger.targetId),
+      )
+      expect(grantedAnywhere, id).toContain("swordMorphMultiWaveWindow")
     }
   })
 })

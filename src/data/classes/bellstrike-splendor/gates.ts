@@ -25,9 +25,7 @@ export const ENERGY_SURGE_GRANT_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-25T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-24: Sword Morph's multi-wave window. Held out
-// of combat or on a Qi Shield too — neither has a build-side equivalent this
-// engine can read, so only the window path is modelled.
+// In-game values as of 2026-09-24: Sword Morph's multi-wave window.
 export const MULTI_WAVE_WINDOW_DURATION_FRAMES = 300
 
 export const MULTI_WAVE_WINDOW_GATE: Buff = defineGateBuff({
@@ -206,15 +204,14 @@ export const RELENTLESS_CHASE_WINDOW_GATE: Buff = defineGateBuff({
   updatedAt: "2026-09-29T00:00:00.000Z",
 })
 
-// In-game values as of 2026-09-29: a defensive marker only — a Vagrant Sword
-// pressed while it holds fires the same three-wave release the timed
-// multi-wave window already models, so this buff itself carries no further
-// reads.
+// In-game values as of 2026-10-06: a Vagrant Sword pressed while it holds
+// fires three waves with Sword Morph, independently of the multi-wave window.
 export const QI_SHIELD_GATE: Buff = defineGateBuff({
   id: BUFF.qiShield,
   classId: CLASS_ID,
   name: "Qi Shield",
-  description: "Granted by Relentless Chase's second strike; a defensive marker.",
+  description:
+    "Granted by Relentless Chase's second strike; a Vagrant Sword pressed under it fires three waves.",
   scope: "player",
   activation: "triggered",
   durationFrames: 180,

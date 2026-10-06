@@ -5,7 +5,6 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import { mountainsMightQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
-import { multiWaveWindowBootstrapTrigger } from "./buffs/multiWaveWindowGrant"
 
 // In-game values as of 2026-09-29: removed at the animation start — this
 // cast only exists while its own window holds.
@@ -66,15 +65,13 @@ export const swordq3rd = defineSkill({
     }),
     hit(4, {
       // In-game values as of 2026-09-24: the Qi Shield is granted 60 f into
-      // the cast. With Sword Morph, a Vagrant Sword pressed while it holds
-      // fires the same three-wave release the timed multi-wave window
-      // already models (in-game values as of 2026-09-29).
+      // the cast.
       frame: 60,
       physMultiplier: 0,
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [qiShieldGrant, multiWaveWindowBootstrapTrigger],
+      triggers: [qiShieldGrant],
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",

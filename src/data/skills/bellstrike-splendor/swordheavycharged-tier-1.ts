@@ -8,6 +8,7 @@ import {
   VAGRANT_SWORD_FREEZE,
   VAGRANT_SWORD_TIER_1_DRAIN,
 } from "./buffs/vagrantSwordEndurance"
+import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
 import { BATTLE_ANTHEM_ENDURANCE_GAIN } from "./buffs/battleAnthemEnduranceGain"
 import { MOUNTAINS_MIGHT_CHARGED_HIT_GAIN } from "./buffs/mountainsMightChargedHitGain"
 
@@ -47,7 +48,11 @@ export const swordHeavyChargedTier1 = defineSkill({
       physFixed: 419,
       attributeFixed: 228,
       projectile: { speedMetersPerSecond: 36, maxTravelFrames: 24 },
-      triggers: [BATTLE_ANTHEM_ENDURANCE_GAIN, MOUNTAINS_MIGHT_CHARGED_HIT_GAIN],
+      triggers: [
+        BATTLE_ANTHEM_ENDURANCE_GAIN,
+        MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+        energySurgeCooldownCut,
+      ],
     }),
   ],
   createdAt: "2026-10-06T00:00:00.000Z",

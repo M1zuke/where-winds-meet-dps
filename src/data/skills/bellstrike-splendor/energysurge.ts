@@ -5,6 +5,7 @@ import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
 import {
   energySurgeConsumeTrigger,
+  energySurgeCooldownCut,
   energySurgeReleaseTrigger,
   energySurgeEnduranceGain,
 } from "./buffs/energySurgeGrant"
@@ -62,6 +63,7 @@ export const energySurge = defineSkill({
         SWORD_MORPH_ENDURANCE_SPEND,
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         energySurgeEnduranceGain,
+        energySurgeCooldownCut,
       ],
     }),
     hit(1, {
@@ -70,6 +72,7 @@ export const energySurge = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
+      triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 45,
@@ -77,6 +80,7 @@ export const energySurge = defineSkill({
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
       attributeFixed: 276.08,
+      triggers: [energySurgeCooldownCut],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

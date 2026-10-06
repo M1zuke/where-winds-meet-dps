@@ -65,6 +65,7 @@ import { V61__boundvesselSpringAwayToadAfterimageTiming } from "./V61__boundvess
 import { V62__shadowStepDashWindow } from "./V62__shadowStepDashWindow"
 import { V63__boundvesselDrinkAccumulation } from "./V63__boundvesselDrinkAccumulation"
 import { V64__inGameTimingCorrections } from "./V64__inGameTimingCorrections"
+import { V65__threeWaveReleaseAndEnergySurgeInterval } from "./V65__threeWaveReleaseAndEnergySurgeInterval"
 
 export type {
   CustomSkillMigration,
@@ -198,6 +199,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V62__shadowStepDashWindow,
   V63__boundvesselDrinkAccumulation,
   V64__inGameTimingCorrections,
+  V65__threeWaveReleaseAndEnergySurgeInterval,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

@@ -13,7 +13,6 @@ interface TriggerSpec {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
-  cooldownDecayFramesPerAttempt?: number
   cooldownFloorFrames?: number
   cooldownGroup?: string
   durationFrames?: number
@@ -34,9 +33,6 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
     ...(spec.transferFrom !== undefined ? { transferFrom: spec.transferFrom } : {}),
     ...(spec.phase !== undefined ? { phase: spec.phase } : {}),
     ...(spec.cooldownFrames !== undefined ? { cooldownFrames: spec.cooldownFrames } : {}),
-    ...(spec.cooldownDecayFramesPerAttempt !== undefined
-      ? { cooldownDecayFramesPerAttempt: spec.cooldownDecayFramesPerAttempt }
-      : {}),
     ...(spec.cooldownFloorFrames !== undefined
       ? { cooldownFloorFrames: spec.cooldownFloorFrames }
       : {}),
@@ -70,3 +66,4 @@ export const detonateDot = (spec: TriggerSpec): HitTrigger => trigger("detonateD
 export const releaseEcho = (spec: TriggerSpec): HitTrigger => trigger("releaseEcho", spec)
 export const clearStatus = (spec: TriggerSpec): HitTrigger => trigger("clearStatus", spec)
 export const meterDelta = (spec: TriggerSpec): HitTrigger => trigger("meterDelta", spec)
+export const cooldownCut = (spec: TriggerSpec): HitTrigger => trigger("cooldownCut", spec)

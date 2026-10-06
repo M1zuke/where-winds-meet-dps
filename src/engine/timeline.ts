@@ -79,6 +79,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "./builtinLibrary"
 import { builtinBuffsForClass } from "./builtinBuffs"
 import { BuffEngine, TARGET_DISTANCE_STATUS, type DamageEffectsResult } from "./buffs/buffEngine"
 import { distanceAtCastStart } from "./distance"
+import { IN_COMBAT_STATUS } from "./combatState"
 import type { ConditionalFinalCrit } from "./buffs/buffModule"
 import { PROP_TO_PROPERTY, type SkillProperties } from "./effects/context"
 import { buffDefsForClass, groupBuffDefs } from "./buffs/data"
@@ -379,11 +380,19 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       seedStack(status: Buff | Debuff, frame: number, stacks: number): void
     }
 
-    function triggerGate(
-      holds: (condition: TriggerCondition, frame: number) => boolean,
-    ): (trigger: HitTrigger, frame: number) => boolean {
-      const lastFiredFrame = new Map<string, number>()
-      const attemptsSinceFired = new Map<string, number>()
+    interface CooldownGroup {
+      firedAt: number
+      members: Set<HitTrigger>
+      cutFrames: number
+      cooldownFrames: number
+      floorFrames: number
+    }
+
+    function triggerGate(holds: (condition: TriggerCondition, frame: number) => boolean): {
+      fires: (trigger: HitTrigger, frame: number) => boolean
+      cut: (trigger: HitTrigger, frame: number) => void
+    } {
+      const cooldownGroups = new Map<string, CooldownGroup>()
       const ownGroupKeys = new WeakMap<HitTrigger, string>()
       let nextOwnGroupKey = 0
       const groupKeyOf = (trigger: HitTrigger): string => {
@@ -394,35 +403,50 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         ownGroupKeys.set(trigger, generated)
         return generated
       }
-      return (trigger, frame) => {
+      const guardsHold = (trigger: HitTrigger, frame: number): boolean => {
         if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
         if (trigger.phase !== undefined && qiSchedule.phaseAt(frame / FPS) !== trigger.phase)
           return false
-        if (
-          trigger.requiresParam !== undefined &&
-          !unionConditionHolds(
+        return (
+          trigger.requiresParam === undefined ||
+          unionConditionHolds(
             { param: trigger.requiresParam, minTier: trigger.requiresMinTier },
             frame,
             buffParams,
             () => false,
           )
         )
-          return false
-        if (trigger.cooldownFrames === undefined) return true
-        const groupKey = groupKeyOf(trigger)
-        const lastFired = lastFiredFrame.get(groupKey)
-        if (lastFired !== undefined) {
-          const attempts = (attemptsSinceFired.get(groupKey) ?? 0) + 1
-          attemptsSinceFired.set(groupKey, attempts)
-          const requiredWait = Math.max(
-            trigger.cooldownFloorFrames ?? 0,
-            trigger.cooldownFrames - (trigger.cooldownDecayFramesPerAttempt ?? 0) * attempts,
-          )
-          if (frame - lastFired < requiredWait) return false
-        }
-        lastFiredFrame.set(groupKey, frame)
-        attemptsSinceFired.set(groupKey, 0)
-        return true
+      }
+      const remainingWait = (group: CooldownGroup): number =>
+        Math.max(group.floorFrames, group.cooldownFrames - group.cutFrames)
+      return {
+        fires(trigger, frame) {
+          if (!guardsHold(trigger, frame)) return false
+          if (trigger.cooldownFrames === undefined) return true
+          const groupKey = groupKeyOf(trigger)
+          const group = cooldownGroups.get(groupKey)
+          if (group !== undefined) {
+            if (frame === group.firedAt && !group.members.has(trigger)) {
+              group.members.add(trigger)
+              return true
+            }
+            if (frame - group.firedAt < remainingWait(group)) return false
+          }
+          cooldownGroups.set(groupKey, {
+            firedAt: frame,
+            members: new Set([trigger]),
+            cutFrames: 0,
+            cooldownFrames: trigger.cooldownFrames,
+            floorFrames: trigger.cooldownFloorFrames ?? 0,
+          })
+          return true
+        },
+        cut(trigger, frame) {
+          if (!guardsHold(trigger, frame)) return
+          const group = cooldownGroups.get(trigger.targetId)
+          if (group === undefined || frame - group.firedAt >= remainingWait(group)) return
+          group.cutFrames += trigger.stacks
+        },
       }
     }
 
@@ -430,7 +454,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       target: StatusLedger,
       holds: (condition: TriggerCondition, frame: number) => boolean,
     ): StatusWriter {
-      const fires = triggerGate(holds)
+      const { fires, cut } = triggerGate(holds)
       const expiring = buffs.filter((b) => b.onExpire && b.activation !== "permanent")
       const stackingOnDamage = buffs.filter((b) => b.stacksPerDamagingHit)
       const expired = new WeakSet<StatusWindow>()
@@ -490,6 +514,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         owner: number,
         fireMaxStacks: boolean,
       ): void {
+        if (trigger.kind === "cooldownCut") {
+          cut(trigger, frame)
+          return
+        }
         if (trigger.kind === "clearStatus") {
           if (!fires(trigger, frame)) return
           const status = statusById.get(trigger.targetId)
@@ -767,6 +795,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         layoutLedger.openPermanent(statusId)
         layoutLedger.recordStack(statusId, meterStartFrame, 0)
       }
+      layoutLedger.openPermanent(IN_COMBAT_STATUS)
 
       // docs/TIMELINE.md § "Cast legality": resolves one failed condition
       // into its readable kind, name and actual ledger value — the one place
@@ -1042,8 +1071,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         layoutWriter.processExpiries(hitFrame)
         if (hitDealsDamage(skillHit)) {
           layoutWriter.onDamagingHit(hitFrame, owner)
-          if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame)
+          if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
             discoveredFightStartFrame = hitFrame
+            layoutLedger.recordStack(IN_COMBAT_STATUS, hitFrame, 1)
+          }
           if (discoveredFightEndFrame === null || hitFrame > discoveredFightEndFrame)
             discoveredFightEndFrame = hitFrame
           const timeSec = hitFrame / FPS
@@ -1558,6 +1589,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       for (const sample of layoutLedger.stackHistory(statusId))
         ledger.recordStack(statusId, sample.frame, sample.value)
     }
+    ledger.openPermanent(IN_COMBAT_STATUS)
+    for (const sample of layoutLedger.stackHistory(IN_COMBAT_STATUS))
+      ledger.recordStack(IN_COMBAT_STATUS, sample.frame, sample.value)
     const recordSpendStatusIds = new Set(
       skills.flatMap((candidate) =>
         candidate.hits.flatMap((skillHit) =>
@@ -1659,7 +1693,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const engine = new BuffEngine(buffParams, buffDefsForClass(inputs.classId), groupBuffDefs())
         engine.attachStatuses({ view: ledger, fps: FPS })
         engine.attachQiSchedule(qiSchedule)
-        const castTriggerFires = triggerGate(castConditionHoldsFor(engine))
+        const castTriggerFires = triggerGate(castConditionHoldsFor(engine)).fires
         let sequence = 0
         const pending: PendingCast[] = laidSteps.map((ls) => ({
           frame: ls.startFrame,
@@ -1738,7 +1772,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       }
     })()
 
-    const castSkillFiresInPass1 = triggerGate(castConditionHoldsFor(buffEngine))
+    const castSkillFiresInPass1 = triggerGate(castConditionHoldsFor(buffEngine)).fires
 
     const resources = (classDefinition(inputs.classId)?.resources ?? [])
       .filter((definition) =>
@@ -2254,7 +2288,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         if (
           trigger.kind === "applyBuff" ||
           trigger.kind === "applyDebuff" ||
-          trigger.kind === "clearStatus"
+          trigger.kind === "clearStatus" ||
+          trigger.kind === "cooldownCut"
         ) {
           liveWriter.applyTrigger(
             trigger,

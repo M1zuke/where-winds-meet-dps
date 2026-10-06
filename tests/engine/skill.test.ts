@@ -690,9 +690,9 @@ describe("storage round-trip", () => {
     expect(found?.castConditions).toEqual(skill.castConditions)
   })
 
-  it("export → import carries a decaying cooldown and its group through", () => {
+  it("export → import carries a cooldown floor and its group through", () => {
     const s = makeSkill(CLASS, {
-      name: "DecayingCooldownSkill",
+      name: "FlooredCooldownSkill",
       hits: [
         makeHit({
           triggers: [
@@ -700,7 +700,6 @@ describe("storage round-trip", () => {
               kind: "applyBuff",
               targetId: "bf-grant",
               cooldownFrames: 100,
-              cooldownDecayFramesPerAttempt: 10,
               cooldownFloorFrames: 20,
               cooldownGroup: "shared-grant",
             }),
@@ -711,7 +710,6 @@ describe("storage round-trip", () => {
     const imported = importCustomSkill(exportCustomSkill(s), "bellstrikeUmbra")
     const trigger = imported.hits[0].triggers[0]
     expect(trigger.cooldownFrames).toBe(100)
-    expect(trigger.cooldownDecayFramesPerAttempt).toBe(10)
     expect(trigger.cooldownFloorFrames).toBe(20)
     expect(trigger.cooldownGroup).toBe("shared-grant")
   })

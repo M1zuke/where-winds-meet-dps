@@ -16,6 +16,7 @@ export type TriggerKind =
   | "releaseEcho"
   | "clearStatus"
   | "meterDelta"
+  | "cooldownCut"
 export type TriggerOp = "gte" | "gt" | "eq" | "lte" | "lt"
 
 export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
@@ -104,7 +105,6 @@ export interface HitTrigger {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
-  cooldownDecayFramesPerAttempt?: number
   cooldownFloorFrames?: number
   cooldownGroup?: string
   // Opens the granted window at this length instead of the target status's
@@ -400,7 +400,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "detonateDot" &&
     t.kind !== "releaseEcho" &&
     t.kind !== "clearStatus" &&
-    t.kind !== "meterDelta"
+    t.kind !== "meterDelta" &&
+    t.kind !== "cooldownCut"
   )
     return false
   if (typeof t.targetId !== "string") return false
@@ -433,13 +434,6 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     (typeof t.durationFrames !== "number" ||
       !Number.isFinite(t.durationFrames) ||
       t.durationFrames <= 0)
-  )
-    return false
-  if (
-    t.cooldownDecayFramesPerAttempt !== undefined &&
-    (typeof t.cooldownDecayFramesPerAttempt !== "number" ||
-      !Number.isFinite(t.cooldownDecayFramesPerAttempt) ||
-      t.cooldownDecayFramesPerAttempt < 0)
   )
     return false
   if (

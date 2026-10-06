@@ -3,8 +3,15 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { energySurgeReleaseTrigger, energySurgeEnduranceGain } from "./buffs/energySurgeGrant"
-import { multiWaveWindowReleaseGrantTrigger } from "./buffs/multiWaveWindowGrant"
+import {
+  energySurgeCooldownCut,
+  energySurgeReleaseTrigger,
+  energySurgeEnduranceGain,
+} from "./buffs/energySurgeGrant"
+import {
+  multiWaveWindowReleaseGrantTrigger,
+  SWORD_MORPH_EQUIPPED,
+} from "./buffs/multiWaveWindowGrant"
 import {
   VAGRANT_SWORD_DISPLACEMENT,
   VAGRANT_SWORD_DRAIN,
@@ -38,18 +45,18 @@ export const swordHeavyChargedPrepull = defineSkill({
     BUFF.battleAnthemEnduranceBoost,
     ...NAMELESS_SWORD_RECEIVES,
   ],
-  castFrames: 51,
+  castFrames: 37,
   meterDrains: VAGRANT_SWORD_DRAIN,
   meterFreezes: VAGRANT_SWORD_FREEZE,
   triggerable: true,
   displacement: VAGRANT_SWORD_DISPLACEMENT,
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 1.3066,
-      attributeMultiplier: 1.9598,
-      physFixed: 361.6,
-      attributeFixed: 197.2,
+      frame: 12,
+      physMultiplier: 3.2664,
+      attributeMultiplier: 4.8996,
+      physFixed: 904,
+      attributeFixed: 493,
       triggers: [
         energySurgeReleaseTrigger,
         multiWaveWindowReleaseGrantTrigger,
@@ -57,6 +64,20 @@ export const swordHeavyChargedPrepull = defineSkill({
         BATTLE_ANTHEM_ENDURANCE_GAIN,
         energySurgeEnduranceGain,
         MOUNTAINS_MIGHT_CHARGED_HIT_GAIN,
+        energySurgeCooldownCut,
+      ],
+      variants: [
+        {
+          id: "hv-swordheavycharged-prepull-hit-0-sword-morph",
+          label: "Sword Morph",
+          conditions: [SWORD_MORPH_EQUIPPED],
+          physMultiplier: 1.3066,
+          attributeMultiplier: 1.9598,
+          physFixed: 361.6,
+          attributeFixed: 197.2,
+          castFrames: 51,
+          frame: 0,
+        },
       ],
     }),
     hit(1, {
@@ -65,6 +86,8 @@ export const swordHeavyChargedPrepull = defineSkill({
       attributeMultiplier: 2.3518,
       physFixed: 433.92,
       attributeFixed: 236.64,
+      conditions: [SWORD_MORPH_EQUIPPED],
+      triggers: [energySurgeCooldownCut],
     }),
     hit(2, {
       frame: 34,
@@ -72,6 +95,8 @@ export const swordHeavyChargedPrepull = defineSkill({
       attributeMultiplier: 2.7438,
       physFixed: 506.24,
       attributeFixed: 276.08,
+      conditions: [SWORD_MORPH_EQUIPPED],
+      triggers: [energySurgeCooldownCut],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

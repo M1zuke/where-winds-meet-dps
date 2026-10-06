@@ -139,9 +139,16 @@ describe("Vagrant Sword - first charge tier", () => {
         BUFF.battleAnthemEnduranceBoost,
       ]),
     )
-    const triggerIds = tier1.hits[0]!.triggers.map((trigger) => trigger.targetId)
-    expect(triggerIds).not.toContain(BUFF.swordMorphMultiWaveWindow)
-    expect(triggerIds).not.toContain("energySurgeGrant")
+    const grantedIds = tier1.hits[0]!.triggers.filter(
+      (trigger) => trigger.kind === "applyBuff",
+    ).map((trigger) => trigger.targetId)
+    expect(grantedIds).not.toContain(BUFF.swordMorphMultiWaveWindow)
+    expect(grantedIds).not.toContain("energySurgeGrant")
+  })
+
+  it("counts as a sword-energy bullet for the Energy Surge interval", () => {
+    const cuts = tier1.hits[0]!.triggers.filter((trigger) => trigger.kind === "cooldownCut")
+    expect(cuts.map((trigger) => trigger.targetId)).toEqual(["energySurgeGrant"])
   })
 
   it("drains 11 Endurance over its 45 f hold", () => {

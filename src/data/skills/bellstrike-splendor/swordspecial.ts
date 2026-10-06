@@ -3,7 +3,8 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SWORD_RECEIVES } from "./receives"
-import { multiWaveWindowBootstrapTrigger } from "./buffs/multiWaveWindowGrant"
+import { energySurgeCooldownCut } from "./buffs/energySurgeGrant"
+import { multiWaveWindowGrantFromCastStart } from "./buffs/multiWaveWindowGrant"
 import { shadowStepDashWindowGrantFromFrame } from "./buffs/shadowStepDashWindow"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 
@@ -44,7 +45,11 @@ export const swordSpecial = defineSkill({
       attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
-      triggers: [multiWaveWindowBootstrapTrigger, shadowStepDashWindowGrantFromFrame(23)],
+      triggers: [
+        multiWaveWindowGrantFromCastStart(23),
+        shadowStepDashWindowGrantFromFrame(23),
+        energySurgeCooldownCut,
+      ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
