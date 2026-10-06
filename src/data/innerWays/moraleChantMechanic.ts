@@ -85,7 +85,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           art: {
             name: "Yi River",
             physMultiplier: 1,
-            attributeMultiplier: 1,
+            attributeMultiplier: 1.5,
             skillType: "mindMethod",
           },
           name: "Yi River",

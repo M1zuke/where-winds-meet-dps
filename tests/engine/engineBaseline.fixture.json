@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 69638.5,
-    "totalDamage": 4178310.1,
+    "dps": 69714.9,
+    "totalDamage": 4182894.13,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -34,7 +34,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35558.75,
+        "expectedDamage": 35579.38,
         "castCount": 1
       },
       {
@@ -66,7 +66,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 99228.7,
+        "expectedDamage": 99476.26,
         "castCount": 10
       },
       {
@@ -90,7 +90,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59371.71,
+        "expectedDamage": 64251.5,
         "castCount": 0
       },
       {
@@ -138,7 +138,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 38709.32,
+        "expectedDamage": 38145.37,
         "castCount": 4
       },
       {
@@ -163,11 +163,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "40228a75b3bbf77d55a82a761aa8429b84a4e61ae805fd8922f81a35b406bdd6"
+    "digest": "e28a68ef770ca551f2718532f412e0136f49757c78d183215e815642e64d18da"
   },
   "anchor:noAttunement": {
-    "dps": 62440.66,
-    "totalDamage": 3746439.8,
+    "dps": 62522.34,
+    "totalDamage": 3751340.23,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -200,7 +200,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35558.75,
+        "expectedDamage": 35579.38,
         "castCount": 1
       },
       {
@@ -256,7 +256,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59371.71,
+        "expectedDamage": 64251.5,
         "castCount": 0
       },
       {
@@ -329,11 +329,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "53c0c45824027846eba033ce663c4929286df9f6979da4f4142d4e5c475a3010"
+    "digest": "755ebc31b5ca3b4aea2f1013df49c796a0491172cd7d33286d1e69ae17dd6913"
   },
   "anchor:dummyOff": {
-    "dps": 74575.95,
-    "totalDamage": 4474557.07,
+    "dps": 69417.8,
+    "totalDamage": 4165068.23,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -350,7 +350,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 296998.11,
+        "expectedDamage": 296642.03,
         "castCount": 0
       },
       {
@@ -366,7 +366,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 39507.94,
+        "expectedDamage": 39530.72,
         "castCount": 1
       },
       {
@@ -374,7 +374,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 467120.92,
+        "expectedDamage": 467123.7,
         "castCount": 0
       },
       {
@@ -422,7 +422,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 65342.55,
+        "expectedDamage": 70713.09,
         "castCount": 0
       },
       {
@@ -486,7 +486,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 576636.23,
+        "expectedDamage": 262107.38,
         "castCount": 1
       }
     ],
@@ -495,11 +495,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "4bb3fa3ebbc260e2b83884becf6ecc0e10efd9defc12759364037426af66ed3e"
+    "digest": "87714357ae9f4b851bfea02dfd461281ac6329ba81b0637da95e521d8985a372"
   },
   "anchor:breakthrough17": {
-    "dps": 70936.85,
-    "totalDamage": 4256211.02,
+    "dps": 71020.5,
+    "totalDamage": 4261230.21,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -532,7 +532,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 36234.27,
+        "expectedDamage": 36255.2,
         "castCount": 1
       },
       {
@@ -588,7 +588,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60475.52,
+        "expectedDamage": 65473.78,
         "castCount": 0
       },
       {
@@ -661,11 +661,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "9a9bbae7c72b79b2111ff537c5b055553efb22f54a102437a389b3d19a2778fd"
+    "digest": "42f20ffd80f5b3500a4f490edcfbddae5077210248ae4bd61132775f2eb54845"
   },
   "anchor:noQiBreak": {
-    "dps": 68108.42,
-    "totalDamage": 4086505.42,
+    "dps": 68189.79,
+    "totalDamage": 4091387.47,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -778,7 +778,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59401.43,
+        "expectedDamage": 64283.48,
         "castCount": 0
       },
       {
@@ -843,11 +843,11 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "5f9d5c054d2b3d775a510f6cabfc4936d9cffde918628329e14e68353c32267f"
+    "digest": "69271e784d255dcb5e2ffc69b6d24651fb0cadb1da993cb0b61ece1bd5ef6b8f"
   },
   "anchor:healerBuff": {
-    "dps": 72956.56,
-    "totalDamage": 4377393.65,
+    "dps": 73051.06,
+    "totalDamage": 4383063.55,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -880,7 +880,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 38191.55,
+        "expectedDamage": 38213.61,
         "castCount": 1
       },
       {
@@ -904,7 +904,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 112615.53,
+        "expectedDamage": 113056.4,
         "castCount": 4
       },
       {
@@ -936,7 +936,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 63352.27,
+        "expectedDamage": 68559.23,
         "castCount": 0
       },
       {
@@ -1009,11 +1009,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "35a93a8692365a326e7dae537d0814da46e8d42e2c0fc28e205d8486f7fe141d"
+    "digest": "30a928ef611ba768a6caf3819ef95154bfae1090f925ab780458b6d01c3de547"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 70140.29,
-    "totalDamage": 4208417.44,
+    "dps": 70222.41,
+    "totalDamage": 4213344.88,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1046,7 +1046,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35558.75,
+        "expectedDamage": 35579.38,
         "castCount": 1
       },
       {
@@ -1102,7 +1102,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59684.64,
+        "expectedDamage": 64591.45,
         "castCount": 0
       },
       {
@@ -1175,11 +1175,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "74cec324a5d085a3cc15a59262608f5c5dfcdfa8a5e917098c7ba4f78108d004"
+    "digest": "21c35836177fb8f0e66c04856ee260febcbf280be6362be0caf8b621221bd6c8"
   },
   "anchor:voidrotScript": {
-    "dps": 71060.75,
-    "totalDamage": 4263645.25,
+    "dps": 71143.54,
+    "totalDamage": 4268612.52,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1212,7 +1212,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35558.75,
+        "expectedDamage": 35579.38,
         "castCount": 1
       },
       {
@@ -1268,7 +1268,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60223.17,
+        "expectedDamage": 65169.81,
         "castCount": 0
       },
       {
@@ -1341,11 +1341,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "9cdd2db5fce4f750ea3a5cfc72aac17f5ed166ddfdbad2d3c7daa8767dd69eff"
+    "digest": "451c85f8649779a16c1630dc3a99a50a83cda29303a770f896a43188a0eb9b53"
   },
   "anchor:breakExtension": {
-    "dps": 70937.29,
-    "totalDamage": 4256237.36,
+    "dps": 70996.82,
+    "totalDamage": 4259809.39,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1362,7 +1362,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 282510.28,
+        "expectedDamage": 281978.24,
         "castCount": 0
       },
       {
@@ -1378,7 +1378,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35558.75,
+        "expectedDamage": 35579.38,
         "castCount": 1
       },
       {
@@ -1386,7 +1386,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 445986.18,
+        "expectedDamage": 445588.82,
         "castCount": 0
       },
       {
@@ -1410,7 +1410,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 102179.98,
+        "expectedDamage": 102427.54,
         "castCount": 10
       },
       {
@@ -1434,7 +1434,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60331.07,
+        "expectedDamage": 65290,
         "castCount": 0
       },
       {
@@ -1474,7 +1474,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 120425.48,
+        "expectedDamage": 119699.79,
         "castCount": 4
       },
       {
@@ -1507,11 +1507,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d026ee118f1bb9d49f32ee41369381ee3c9ee218deb07e0c57a65198a7c731de"
+    "digest": "933e630285eb4ded2bb232399ad8839287b1983bebe8fbb9490b2a47c8df1bb5"
   },
   "anchor:swordHorizonT1": {
-    "dps": 44911.01,
-    "totalDamage": 2694660.55,
+    "dps": 44987.65,
+    "totalDamage": 2699258.96,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1544,7 +1544,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34398.8,
+        "expectedDamage": 34417.34,
         "castCount": 1
       },
       {
@@ -1600,7 +1600,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54681.8,
+        "expectedDamage": 59261.67,
         "castCount": 0
       },
       {
@@ -1673,11 +1673,11 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "9352a07d2109ff6d0a1ac5b9b94f7f784daef71a0a05818dfcf492c60b3e4654"
+    "digest": "14b8da1a6624d806d33e56a6177b99be7982316db47ceb2cfc2337908dcb6247"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39140.44,
-    "totalDamage": 2348426.22,
+    "dps": 39217.08,
+    "totalDamage": 2353024.63,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1726,7 +1726,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34398.8,
+        "expectedDamage": 34417.34,
         "castCount": 1
       },
       {
@@ -1782,7 +1782,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54681.8,
+        "expectedDamage": 59261.67,
         "castCount": 0
       },
       {
@@ -1855,11 +1855,11 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "16bc4114845f3eb44554cf2801f9937b334b08e30c1388c14ef6098af3f405dc"
+    "digest": "fa6d6ffdde772ae51687680eafd5ec93702a5595934841731b54eca1898c241e"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 61740.64,
-    "totalDamage": 3704438.44,
+    "dps": 61816.61,
+    "totalDamage": 3708996.55,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1892,7 +1892,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34382.58,
+        "expectedDamage": 34394.23,
         "castCount": 1
       },
       {
@@ -1948,7 +1948,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53522.23,
+        "expectedDamage": 58068.69,
         "castCount": 0
       },
       {
@@ -2021,11 +2021,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "fff45ce12d4284bb91da8f6891e8d751c255ca75ed23f308bc7ff0d78b953d75"
+    "digest": "98bf91e77dea319738c199605bffc92e214e881b610be30adc0907020e699532"
   },
   "anchor:noMoraleChant": {
-    "dps": 63822.26,
-    "totalDamage": 3829335.89,
+    "dps": 63822.59,
+    "totalDamage": 3829355.53,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2058,7 +2058,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33796.79,
+        "expectedDamage": 33816.44,
         "castCount": 1
       },
       {
@@ -2179,11 +2179,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "9c73807eced38efdef08bb37cf15afde20c8236316479b704b50757c3ad5e4ee"
+    "digest": "c476cd27f544f7a181c5a01ce49485b923c8246f70bfe3df183d7fc6219a1659"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 39535.19,
-    "totalDamage": 2372111.19,
+    "dps": 39603.27,
+    "totalDamage": 2376196.14,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.87s would be illegal in the game: needs Endurance ≥ 50 (has 27.27).",
@@ -2260,7 +2260,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 49502.63,
+        "expectedDamage": 53587.59,
         "castCount": 0
       },
       {
@@ -2373,11 +2373,11 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "5f949bc516b4d0fcf9cca3f48e521ea4b1b41e1f963692e18c7549d760da20c7"
+    "digest": "4e310c02985eed27d656649057cb9bbdb7417635536939f6aa48417675c7200c"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 42953.69,
-    "totalDamage": 2577221.67,
+    "dps": 43021.69,
+    "totalDamage": 2581301.4,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2421,7 +2421,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 35411.65,
+        "expectedDamage": 35431.04,
         "castCount": 1
       },
       {
@@ -2477,7 +2477,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 50368.77,
+        "expectedDamage": 54429.11,
         "castCount": 0
       },
       {
@@ -2550,11 +2550,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "434e07b3f8ed3b17f2ba38f1c62ee2748689df5abefe4bffb47cda72b03e73e1"
+    "digest": "674261b8e184cc0d88e858e7e1ac3630650ec05edbe1c1ce6e995f518f986f08"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 42131.02,
-    "totalDamage": 2527861.43,
+    "dps": 42199.01,
+    "totalDamage": 2531940.73,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2598,7 +2598,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34743.46,
+        "expectedDamage": 34762.41,
         "castCount": 1
       },
       {
@@ -2654,7 +2654,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 49338.33,
+        "expectedDamage": 53398.67,
         "castCount": 0
       },
       {
@@ -2727,11 +2727,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "985ae2b241812fbe531c43794c9b40522196c31023cc89a84281bb25354793c7"
+    "digest": "2255aca382bf50cc3e0571e1c40a19b237c967a95fd4b0a86098995efbeb6ce4"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 41771.3,
-    "totalDamage": 2506278.14,
+    "dps": 41838.6,
+    "totalDamage": 2510315.99,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2775,7 +2775,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34313,
+        "expectedDamage": 34331.84,
         "castCount": 1
       },
       {
@@ -2831,7 +2831,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 48760.52,
+        "expectedDamage": 52779.53,
         "castCount": 0
       },
       {
@@ -2904,11 +2904,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "97eb32a2bef565ffbf544b1721091b82c47d8cc8cd18ebac732838977a510957"
+    "digest": "72e4223c5ff04181d746507cc9477d012d2a9363d97fc5f5f5a1f4d985da4c19"
   },
   "anchor:noSet": {
-    "dps": 63231.64,
-    "totalDamage": 3793898.17,
+    "dps": 63311.79,
+    "totalDamage": 3798707.67,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2941,7 +2941,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33126.46,
+        "expectedDamage": 33133.4,
         "castCount": 1
       },
       {
@@ -2997,7 +2997,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53324.26,
+        "expectedDamage": 58126.83,
         "castCount": 0
       },
       {
@@ -3070,11 +3070,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "7af2101afe948aff66012377b3e3c007228471e3e3cf9e1662c70954c4434a1a"
+    "digest": "46f60086dcac7dee2f2b7aca3f8fcb6e739394066b0b09421b3af4d02a9bebf8"
   },
   "anchor:set-Jadeware": {
-    "dps": 68083.08,
-    "totalDamage": 4084984.72,
+    "dps": 68168.54,
+    "totalDamage": 4090112.62,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3107,7 +3107,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33609.75,
+        "expectedDamage": 33616.81,
         "castCount": 1
       },
       {
@@ -3163,7 +3163,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58200.08,
+        "expectedDamage": 63320.92,
         "castCount": 0
       },
       {
@@ -3236,11 +3236,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "329822e4760c73d67d23349b25628f0ead0e1099f943fa03c3a525fdd87a624f"
+    "digest": "dfcfafdbbebe1650351ee94927f1c91b0efe27d87fcafb9db6248371aeb7bb3b"
   },
   "anchor:set-Mistwillow": {
-    "dps": 63820.42,
-    "totalDamage": 3829225.05,
+    "dps": 63901.52,
+    "totalDamage": 3834090.99,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3273,7 +3273,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 33601.95,
+        "expectedDamage": 33608.86,
         "castCount": 1
       },
       {
@@ -3329,7 +3329,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54049.63,
+        "expectedDamage": 58908.66,
         "castCount": 0
       },
       {
@@ -3402,11 +3402,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "38496ed02db8bd25d74ec50d53a837d10064ec5530670f0d2c746225b480f76e"
+    "digest": "d4444e3c009f017fabbd1e120953f3e37446a8c088f2a51e7faac923ef1af4f2"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 64643.96,
-    "totalDamage": 3878637.87,
+    "dps": 64726.45,
+    "totalDamage": 3883586.88,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3439,7 +3439,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34186.43,
+        "expectedDamage": 34193.35,
         "castCount": 1
       },
       {
@@ -3495,7 +3495,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54926.55,
+        "expectedDamage": 59868.63,
         "castCount": 0
       },
       {
@@ -3568,11 +3568,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "c9e7e8df999f9c043fa4f125ca2eabfa28439ec59afce8c5c5d5f0dba68e7817"
+    "digest": "876d639fa1d07bb729f05c29ffb7c9a4239aca81856fdd9442025bfcd64e83cf"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 65054.81,
-    "totalDamage": 3903288.76,
+    "dps": 65137.66,
+    "totalDamage": 3908259.45,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3605,7 +3605,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 3,
-        "expectedDamage": 34584.23,
+        "expectedDamage": 34591.37,
         "castCount": 1
       },
       {
@@ -3661,7 +3661,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 55495.56,
+        "expectedDamage": 60459.11,
         "castCount": 0
       },
       {
@@ -3734,7 +3734,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d686a4e73f90d16e0374bf8b704e4d48eb0beaeb1c1eec7ef0e99a1c096d0ea0"
+    "digest": "08b523505a22494f8c50243f07a131ae909539cfef5eba7fc5cec981b8037e7d"
   },
   "defaults:umbra": {
     "dps": 11525.75,

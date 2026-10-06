@@ -13,6 +13,7 @@ import { healSkillFrames as healStonesplitSplendorJadeTimingRepairs } from "../.
 import { healSkill as healPerGrantSiteDelayAndSetReach } from "../../src/migrations/customSkills/V49__perGrantSiteDelayAndSetReach"
 import { healSkill as healGourdTossFlyingTornado } from "../../src/migrations/customSkills/V53__gourdTossFlyingTornado"
 import { healSkill as healSwallowcallColorfulPhoenixReach } from "../../src/migrations/customSkills/V54__swallowcallColorfulPhoenixReach"
+import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { loadCustomSkills } from "../../src/storage"
 import type { Skill } from "../../src/engine/skill"
@@ -66,10 +67,12 @@ const builtinOf = (id: string): Skill =>
 // A no-op on the ids a given later hop doesn't touch — composing them is what
 // keeps this hop's own output lined up with the live built-in.
 const throughLaterHops = (skill: unknown): Skill =>
-  healSwallowcallColorfulPhoenixReach(
-    healGourdTossFlyingTornado(
-      healPerGrantSiteDelayAndSetReach(
-        healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+  healInGameCoefficientCorrections(
+    healSwallowcallColorfulPhoenixReach(
+      healGourdTossFlyingTornado(
+        healPerGrantSiteDelayAndSetReach(
+          healStonesplitSplendorJadeTimingRepairs(healMeterFieldsAndGains(skill)),
+        ),
       ),
     ),
   ) as Skill

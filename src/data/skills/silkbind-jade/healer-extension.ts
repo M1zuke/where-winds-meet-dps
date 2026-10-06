@@ -17,14 +17,15 @@ export const healerExtension = defineSkill({
   // confirmed against the source page's Return of Spring row; a further
   // 1.75 m shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
+  // In-game values as of 2026-10-05, level 100.
   hits: evenlySpacedHits({
     count: 10,
     everyFrames: 18,
-    physMultiplier: 0.19388,
-    attributeMultiplier: 0.290832,
-    physFixed: 44.8,
-    attributeFixed: 25.04,
+    physMultiplier: 0.19392,
+    attributeMultiplier: 0.29088,
+    physFixed: 53.68,
+    attributeFixed: 29.28,
   }),
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

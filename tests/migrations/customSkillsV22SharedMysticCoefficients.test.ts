@@ -8,6 +8,7 @@ import {
   V22__sharedMysticCoefficients,
   recalibrateSharedMysticHits,
 } from "../../src/migrations/customSkills/V22__sharedMysticCoefficients"
+import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV21File from "./testCustomSkills/v21/store.json"
@@ -73,10 +74,12 @@ describe("recalibrateSharedMysticHits", () => {
     expect(smolder1.physFixed).toBe(builtinSmolder1.hits[0].physFixed)
 
     const smolder2Id = "mystic-dragon-fire-smolder-2-hits"
-    const smolder2Hits = recalibrateSharedMysticHits(
-      smolder2Id,
-      clone(skillIn(STORE, smolder2Id).hits),
-    ) as Skill["hits"]
+    const smolder2Hits = (
+      healInGameCoefficientCorrections({
+        id: smolder2Id,
+        hits: recalibrateSharedMysticHits(smolder2Id, clone(skillIn(STORE, smolder2Id).hits)),
+      }) as Skill
+    ).hits
     const builtinSmolder2 = builtinSkillsForClass(CLASS).find((skill) => skill.id === smolder2Id)!
     smolder2Hits.forEach((healedHit, index) => {
       expect(healedHit.physMultiplier).toBe(builtinSmolder2.hits[index].physMultiplier)
@@ -121,7 +124,7 @@ describe("V22__sharedMysticCoefficients — called directly", () => {
     expect(after.v).toBe(22)
     for (const id of RECALIBRATED_IDS) {
       const builtin = builtinSkillsForClass(CLASS).find((skill) => skill.id === id)!
-      const healedHits = skillIn(after, id).hits
+      const healedHits = (healInGameCoefficientCorrections(skillIn(after, id)) as Skill).hits
       healedHits.forEach((healedHit, index) => {
         expect(healedHit.physMultiplier, id).toBe(builtin.hits[index].physMultiplier)
         expect(healedHit.attributeMultiplier, id).toBe(builtin.hits[index].attributeMultiplier)

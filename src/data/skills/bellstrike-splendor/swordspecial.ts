@@ -39,13 +39,13 @@ export const swordSpecial = defineSkill({
       // In-game values as of 2026-09-24: the bolt launches at 17.24 f and
       // lands after its own flight time, ≈ 23 f at melee range.
       frame: 23,
-      physMultiplier: 1.767,
-      attributeMultiplier: 2.6505,
+      physMultiplier: 1.76747,
+      attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
       triggers: [multiWaveWindowBootstrapTrigger],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

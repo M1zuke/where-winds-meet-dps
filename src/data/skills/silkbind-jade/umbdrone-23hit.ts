@@ -28,10 +28,9 @@ export const umbdrone23HitTick = defineSkill({
     BUFF.nonPlayerBaseDamage115,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
-  elevatedAttributeMultiplier: false,
   castFrames: 0,
   triggerable: true,
   hits: [hit(0, { frame: 0, ...DRONE_TICK })],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

@@ -59,12 +59,12 @@ describe("Flaming Meteor", () => {
 
   it("phys coefficient ratios (stomp, blade explosion, crash) sum to the documented total", () => {
     const total = flamingMeteor.hits.reduce((sum, hit) => sum + hit.physMultiplier / POWER, 0)
-    expect(total).toBeCloseTo(0.25 + 0.55 + 0.35, 10)
+    expect(total).toBeCloseTo(0.25 + 0.55 + 0.385, 10)
   })
 
   it("phys flat terms sum to the documented total", () => {
     const total = flamingMeteor.hits.reduce((sum, hit) => sum + hit.physFixed, 0)
-    expect(total).toBeCloseTo(FLAT * (0.25 + 0.55 + 0.35), 6)
+    expect(total).toBeCloseTo(FLAT * (0.25 + 0.55 + 0.385), 6)
   })
 
   it("attribute multiplier is 1.5x the physical multiplier on every hit, with no attribute flat term", () => {

@@ -4,25 +4,22 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 
-// The authored value is the whole cast spread over its hits, not a per-hit
-// value — the reference def states it per hit. Kept as total ÷ hits so the
-// number the source actually carries stays legible.
-const CAST_HITS = 3
-// In-game values as of 2026-09-24.
+// In-game values as of 2026-10-05.
 const CAST_TOTAL = {
   physMultiplier: 1.2478,
   attributeMultiplier: 1.8716,
   physFixed: 346,
   attributeFixed: 188,
 }
+const HIT_SHARES = [0.3, 0.3, 0.4]
 
-const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
+const coefficientsFor = (share: number) => ({
+  physMultiplier: CAST_TOTAL.physMultiplier * share,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
+  physFixed: CAST_TOTAL.physFixed * share,
+  attributeFixed: CAST_TOTAL.attributeFixed * share,
   extraCritDamage: 1,
-}
+})
 
 export const fanheavypursuit3Hit = defineSkill({
   id: SKILL.fanheavypursuit3Hit,
@@ -61,10 +58,10 @@ export const fanheavypursuit3Hit = defineSkill({
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 10, ...COEFFICIENTS }),
-    hit(1, { frame: 34, ...COEFFICIENTS }),
-    hit(2, { frame: 72, ...COEFFICIENTS }),
+    hit(0, { frame: 10, ...coefficientsFor(HIT_SHARES[0]) }),
+    hit(1, { frame: 34, ...coefficientsFor(HIT_SHARES[1]) }),
+    hit(2, { frame: 72, ...coefficientsFor(HIT_SHARES[2]) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

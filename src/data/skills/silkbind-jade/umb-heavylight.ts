@@ -7,8 +7,8 @@ import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
 // Colorful Phoenix's own share of the cast total — the heavy attack's first
 // stage is a separate, non-attuned share (`umb-heavylight-heavyshare.ts`).
-// In-game values as of 2026-09-24.
-const CAST_HITS = 3
+// In-game values as of 2026-10-05.
+const HIT_SHARE = 0.33
 const CAST_TOTAL = {
   physMultiplier: 1.1604,
   attributeMultiplier: 1.1604 * 1.5,
@@ -17,10 +17,10 @@ const CAST_TOTAL = {
 }
 
 const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
+  physMultiplier: CAST_TOTAL.physMultiplier * HIT_SHARE,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * HIT_SHARE,
+  physFixed: CAST_TOTAL.physFixed * HIT_SHARE,
+  attributeFixed: CAST_TOTAL.attributeFixed * HIT_SHARE,
   extraCritDamage: 0,
 }
 
@@ -57,5 +57,5 @@ export const umbHeavylight = defineSkill({
     hit(2, { frame: 56, ...COEFFICIENTS }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

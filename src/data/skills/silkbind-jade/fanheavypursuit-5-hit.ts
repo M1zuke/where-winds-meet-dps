@@ -4,25 +4,22 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
 
-// The authored value is the whole cast spread over its hits, not a per-hit
-// value — the reference def states it per hit. Kept as total ÷ hits so the
-// number the source actually carries stays legible.
-const CAST_HITS = 5
-// In-game values as of 2026-09-24.
+// In-game values as of 2026-10-05.
 const CAST_TOTAL = {
   physMultiplier: 3.0185,
   attributeMultiplier: 4.5278,
   physFixed: 835,
   attributeFixed: 455,
 }
+const HIT_SHARES = [0.175, 0.175, 0.175, 0.175, 0.3]
 
-const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
+const coefficientsFor = (share: number) => ({
+  physMultiplier: CAST_TOTAL.physMultiplier * share,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
+  physFixed: CAST_TOTAL.physFixed * share,
+  attributeFixed: CAST_TOTAL.attributeFixed * share,
   extraCritDamage: 1,
-}
+})
 
 export const fanheavypursuit5Hit = defineSkill({
   id: SKILL.fanheavypursuit5Hit,
@@ -61,12 +58,12 @@ export const fanheavypursuit5Hit = defineSkill({
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
   hits: [
-    hit(0, { frame: 14, ...COEFFICIENTS }),
-    hit(1, { frame: 33, ...COEFFICIENTS }),
-    hit(2, { frame: 69, ...COEFFICIENTS }),
-    hit(3, { frame: 84, ...COEFFICIENTS }),
-    hit(4, { frame: 112, ...COEFFICIENTS }),
+    hit(0, { frame: 14, ...coefficientsFor(HIT_SHARES[0]) }),
+    hit(1, { frame: 33, ...coefficientsFor(HIT_SHARES[1]) }),
+    hit(2, { frame: 69, ...coefficientsFor(HIT_SHARES[2]) }),
+    hit(3, { frame: 84, ...coefficientsFor(HIT_SHARES[3]) }),
+    hit(4, { frame: 112, ...coefficientsFor(HIT_SHARES[4]) }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

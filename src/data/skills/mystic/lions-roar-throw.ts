@@ -3,12 +3,12 @@ import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL } from "./ids"
 
-// In-game values as of 2026-09-24, level 71: power 3.60865, flat 543.2,
+// In-game values as of 2026-10-05, level 171: power 3.404574, flat 517.1698,
 // ratio 1.2 — the Throw ("kick") follow-up reached as a combo continuation
-// off Lion's Roar. It has no earlier input window, so the animation's own end
-// is the cast length.
-const POWER = 3.60865
-const FLAT = 543.2
+// off Lion's Roar, which exists only with its tier-6 branch. It has no
+// earlier input window, so the animation's own end is the cast length.
+const POWER = 3.404574
+const FLAT = 517.1698
 const RATIO = 1.2
 
 export const lionsRoarThrow = defineSkill({
@@ -34,5 +34,5 @@ export const lionsRoarThrow = defineSkill({
     }),
   ],
   createdAt: "2026-09-29T00:00:00.000Z",
-  updatedAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

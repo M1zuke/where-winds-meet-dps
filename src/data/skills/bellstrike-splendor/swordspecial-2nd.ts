@@ -23,12 +23,12 @@ export const swordSpecial2nd = defineSkill({
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 1.767,
-      attributeMultiplier: 2.6505,
+      physMultiplier: 1.76747,
+      attributeMultiplier: 2.651205,
       physFixed: 490,
       attributeFixed: 267,
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",
-  updatedAt: "2026-08-15T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

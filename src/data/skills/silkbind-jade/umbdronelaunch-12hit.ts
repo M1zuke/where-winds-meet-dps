@@ -32,15 +32,15 @@ export const umbdronelaunch12Hit = defineSkill({
     hit(0, {
       // In-game values as of 2026-09-24: the throw's collider frame.
       frame: 36,
-      physMultiplier: 0.54,
-      attributeMultiplier: 0.81,
-      // In-game values as of 2026-09-24.
+      physMultiplier: 0.539718,
+      attributeMultiplier: 0.809577,
+      // In-game values as of 2026-10-05.
       physFixed: 149.4,
-      attributeFixed: 81.5,
+      attributeFixed: 81.4,
       extraCritDamage: 0,
       triggers: [applyDebuff({ target: DEBUFF.umbdrone12Hit })],
     }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

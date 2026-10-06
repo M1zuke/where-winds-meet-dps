@@ -76,16 +76,16 @@ describe("Dragon Fire (Smolder) skills", () => {
     expect(sum(one, "physFixed")).toBeCloseTo(195.71, 10)
 
     expect(two.hits.length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(3.98199, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.972985, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(607.11, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(3.981991, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.972986, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(607.111, 10)
   })
 
   it("apply Combustion, never Smolder", () => {
     const fb1 = skillOf(SKILL.fireBreath1Hit)
     const fb2 = skillOf(SKILL.fireBreath2Hit)
     expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36064, 10)
-    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.22076, 10)
+    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.220758, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
       s.hits.flatMap((h) => h.triggers.map((t) => t.targetId)),
     )
