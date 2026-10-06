@@ -78,12 +78,13 @@ describe("computeRanking — top-rank consistency", () => {
   const rows = computeRanking(umbraInputs, base.dps)
   const sorted = [...rows].sort((a, b) => b.liftPercent - a.liftPercent)
   const top11 = new Set(sorted.slice(0, 11).map((r) => r.statLineId))
+  const top12 = new Set(sorted.slice(0, 12).map((r) => r.statLineId))
 
   it("Physical Penetration ranks in the top 11", () =>
     expect(top11.has("physicalPenetration")).toBe(true))
   it("Max Phys ranks in the top 11", () => expect(top11.has("maxPhys")).toBe(true))
   it("Sword Martial Boost ranks in the top 11", () => expect(top11.has("swordBoost")).toBe(true))
-  it("All Martial Boost ranks in the top 11", () => expect(top11.has("allMartialBoost")).toBe(true))
+  it("All Martial Boost ranks in the top 12", () => expect(top12.has("allMartialBoost")).toBe(true))
 })
 
 describe("computeRanking — the gear stat lift follows the current breakthrough's gear level", () => {

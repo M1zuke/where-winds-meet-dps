@@ -15,7 +15,6 @@ export const bitterSeasonTick = defineSkill({
   attributeAttack: "",
   castTag: CAST.bitterSeasonTick,
   receives: [BUFF.soulShaken],
-  elevatedAttributeMultiplier: false,
   castFrames: 0,
   triggerable: true,
   hits: [

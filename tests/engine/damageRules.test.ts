@@ -262,6 +262,53 @@ describe("keeps the matching-path multiplier on a damage-over-time row", () => {
   })
 })
 
+describe("a row without an attribute coefficient deals no attribute damage", () => {
+  const noAttributeRow = art_({
+    name: "No attribute row",
+    physMultiplier: 0.3,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
+    skillType: "mindMethod",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+  })
+  const emptyBlock = { min: 0, max: 0, pen: 0 }
+  const withoutAttributeAttack = {
+    ...baseCtx,
+    bellstrike: emptyBlock,
+    stonesplit: emptyBlock,
+    silkbind: emptyBlock,
+    bamboocut: emptyBlock,
+  }
+
+  it("matches the same row against a build with no attribute attack on any track", () => {
+    const withAttributes = computeSkillDamage(noAttributeRow, baseCtx, 1).expectedDamage
+    const withoutAttributes = computeSkillDamage(
+      noAttributeRow,
+      withoutAttributeAttack,
+      1,
+    ).expectedDamage
+    expect(withAttributes).toBeCloseTo(withoutAttributes, 9)
+  })
+
+  it("a row with an attribute coefficient still deals attribute damage", () => {
+    const withCoefficient = { ...noAttributeRow, attributeMultiplier: 0.3 }
+    const withAttributes = computeSkillDamage(withCoefficient, baseCtx, 1).expectedDamage
+    const withoutAttributes = computeSkillDamage(
+      withCoefficient,
+      withoutAttributeAttack,
+      1,
+    ).expectedDamage
+    expect(withAttributes).toBeGreaterThan(withoutAttributes)
+  })
+
+  it("a zero-damage marker row stays at zero", () => {
+    const marker = { ...noAttributeRow, physMultiplier: 0 }
+    expect(computeSkillDamage(marker, baseCtx, 1).expectedDamage).toBe(0)
+  })
+})
+
 describe("the attribute flat term takes the martial art's multiplier alongside its coefficient", () => {
   const artWithFlat = { ...BLEED_DOT, attributeFixed: 40 }
   const ctxWithMultiplier = { ...baseCtx, attributeFlatMultiplier: 1.5 }

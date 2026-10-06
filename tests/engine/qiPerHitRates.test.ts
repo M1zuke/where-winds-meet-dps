@@ -17,7 +17,7 @@ import { dragonquenchSecondStages } from "../../src/data/skills/bamboocut-draugh
 import { dragonquenchThirdStages } from "../../src/data/skills/bamboocut-draught/dragonquench-inebriate-third"
 import { combustion, smolder, toadPoison, fluteRipple } from "../../src/data/skills/mystic/debuffs"
 import { DRONE_TICK } from "../../src/data/skills/silkbind-jade/droneTick"
-import { fireOilBurnMechanic } from "../../src/data/consumables/fireOilMechanic"
+import { fireOilBurnMechanic } from "../../src/data/consumables/divinecraftMechanics"
 import { ROLE } from "../../src/data/skills/ids"
 import type { MechanicSetup } from "../../src/engine/mechanics/types"
 import { QiBar } from "../../src/engine/qiBar"

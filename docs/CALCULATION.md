@@ -124,6 +124,13 @@ Nothing demotes a row to the non-matching coefficient by default;
 data module that has a genuine reason to set it false — and a row that does
 demotes both terms together, never one without the other.
 
+**A row whose attribute coefficient is exactly zero while its physical
+coefficient is positive deals no attribute damage on any of the five attribute
+tracks** — the martial art's own and the other four alike. The other tracks'
+fallback to the physical coefficient applies only to a row that has an
+attribute coefficient. A row with a zero physical coefficient is a marker and
+is unaffected.
+
 **Penetration resistance is zero for every target below breakthrough 20, and
 non-zero from breakthrough 20 on.** It is read off the target's own
 breakthrough, the same way its defense is.

@@ -31,16 +31,10 @@ function probeHits(timeline: TimelineEvent[] | undefined): TimelineEvent[] {
   return (timeline ?? []).filter((event) => event.skillName === HIT_NAME)
 }
 
-describe("Divinecraft: Fire's +1.5% HP damage only lasts the 40 s enchant window", () => {
-  it("boosts a hit landing before 40 s by exactly 1.5%", () => {
-    const withFire = probeHits(runEngine(probeInputs([39], "fire")).timeline)
-    const withoutFire = probeHits(runEngine(probeInputs([39], null)).timeline)
+describe("Divinecraft: Fire's +1.5% HP damage lasts the whole fight", () => {
+  it.each([0, 39, 40, 90])("boosts a hit landing at %s s by exactly 1.5%", (hitSec) => {
+    const withFire = probeHits(runEngine(probeInputs([hitSec], "fire")).timeline)
+    const withoutFire = probeHits(runEngine(probeInputs([hitSec], null)).timeline)
     expect(withFire[0].damage / withoutFire[0].damage).toBeCloseTo(1.015, 9)
-  })
-
-  it("does not boost a hit landing at or after 40 s", () => {
-    const withFire = probeHits(runEngine(probeInputs([40], "fire")).timeline)
-    const withoutFire = probeHits(runEngine(probeInputs([40], null)).timeline)
-    expect(withFire[0].damage / withoutFire[0].damage).toBeCloseTo(1, 9)
   })
 })

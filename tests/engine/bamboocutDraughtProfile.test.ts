@@ -11,19 +11,16 @@ describe("Bamboocut Draught — the measured build", () => {
   it("holds its dps and total damage exactly", () => {
     const profile = importProfile(JSON.stringify(profileFile))
     const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-    expect(result.dps).toBe(64988.71331298667)
-    expect(result.totalDamage).toBe(4060711.436839784)
+    expect(result.dps).toBe(65682.7566905212)
+    expect(result.totalDamage).toBe(4104077.5805460666)
   })
 
-  it.fails(
-    "lands within two percent of the mean of four in-game one-minute runs from 2026-09-10",
-    () => {
-      const profile = importProfile(JSON.stringify(profileFile))
-      const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
-      expect(result.totalDamage / MEASURED_ONE_MINUTE_TOTAL_MEAN).toBeGreaterThan(0.98)
-      expect(result.totalDamage / MEASURED_ONE_MINUTE_TOTAL_MEAN).toBeLessThan(1.02)
-    },
-  )
+  it("lands within two percent of the mean of four in-game one-minute runs from 2026-09-10", () => {
+    const profile = importProfile(JSON.stringify(profileFile))
+    const result = runEngine(applyBowSet(applyArmorSet(withDerivedStats(profile.inputs))))
+    expect(result.totalDamage / MEASURED_ONE_MINUTE_TOTAL_MEAN).toBeGreaterThan(0.98)
+    expect(result.totalDamage / MEASURED_ONE_MINUTE_TOTAL_MEAN).toBeLessThan(1.02)
+  })
 
   it("plays the built-in dummy rotation on the four slotted inner ways", () => {
     const profile = importProfile(JSON.stringify(profileFile))

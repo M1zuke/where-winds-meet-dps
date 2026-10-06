@@ -185,6 +185,7 @@ export function computeSkillDamage(
     return net <= 0 ? net / 100 : net / 200
   }
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
+  const rowDealsNoAttributeDamage = attributeCoefficient === 0 && physCoefficient > 0
 
   const clampMultiplier = (multiplier: number, min: number, max: number) =>
     Math.min(Math.max(multiplier, min), max)
@@ -367,8 +368,9 @@ export function computeSkillDamage(
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0
     const damageBoostMultiplier = Math.max(1 + damageBoost - attributeDamageBoostReduction, 0)
-    const coefficient =
-      scalingAttribute === attribute && getsElevatedMultiplier
+    const coefficient = rowDealsNoAttributeDamage
+      ? 0
+      : scalingAttribute === attribute && getsElevatedMultiplier
         ? attributeCoefficient
         : physCoefficient
     const penetrationMultiplier = 1 + penetrationFraction(penetrationTotal, attributePenResistance)
