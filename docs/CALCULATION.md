@@ -84,7 +84,9 @@ qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMulti
 
 - **Qi reads the event's finished damage** — crit, affinity, abrasion and the
   broken-target HP bonus all already folded in, because that is the only
-  damage value that ever existed for the event. A zero-coefficient hit deals
+  damage value that ever existed for the event. The event that empties the bar
+  never carries the broken-target bonus: it is scored before its own break
+  opens (docs/TIMELINE.md § "Qi bar"). A zero-coefficient hit deals
   no Qi; every other hit deals Qi whether or not it falls inside the DPS
   window, a pre-pull one included — docs/TIMELINE.md § "Qi bar".
 - **The broken-target HP bonus is its own factor in the shared damage tail**,

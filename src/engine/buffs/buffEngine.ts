@@ -37,7 +37,7 @@ import type { ArtBonusField, Effect } from "../effects/effect"
 import { applyEffect, type EffectSink } from "../effects/apply"
 import { paramNumOf, paramOnOf, paramTierOf } from "./params"
 import { BUFF } from "../../data/skills/buffs/ids"
-import { fixedQiSchedule, type QiSchedule } from "../qiBar"
+import { fixedQiSchedule, type QiReading, type QiSchedule } from "../qiBar"
 
 export type BuffParams = Record<string, unknown>
 
@@ -210,18 +210,18 @@ export class BuffEngine {
     return this.requirementsMet(module.requires)
   }
 
-  qiPhase(time: number): QiPhase {
-    const schedulePhase = this.scheduleOrDefault().phaseAt(time)
+  qiPhase(time: number, reading: QiReading = "beforeHit"): QiPhase {
+    const schedulePhase = this.scheduleOrDefault().phaseAt(time, reading)
     if (schedulePhase !== "normal") return schedulePhase
     return this.isBuffActiveAtTime(QI_IMBALANCE_STATUS, time) ? "below30" : "normal"
   }
 
-  qiFraction(time: number): number {
-    return this.scheduleOrDefault().fractionAt(time)
+  qiFraction(time: number, reading: QiReading = "beforeHit"): number {
+    return this.scheduleOrDefault().fractionAt(time, reading)
   }
 
-  qiBroken(time: number): boolean {
-    return this.scheduleOrDefault().isBroken(time)
+  qiBroken(time: number, reading: QiReading = "beforeHit"): boolean {
+    return this.scheduleOrDefault().isBroken(time, reading)
   }
 
   qiBreakWindow(): { start: number; end: number } | null {
@@ -720,7 +720,7 @@ export class BuffEngine {
   ): void {
     if (!this.gateOk(module, castTag, tagSet)) return
     if (fromGeneratedSkill && !module.triggersFromGeneratedSkills) return
-    if (module.triggerPhase && this.qiPhase(time) !== module.triggerPhase) return
+    if (module.triggerPhase && this.qiPhase(time, "afterHit") !== module.triggerPhase) return
     if (
       module.requiresActiveBuffOnTrigger &&
       !this.isBuffActive(module.requiresActiveBuffOnTrigger, time)
@@ -809,8 +809,8 @@ export class BuffEngine {
   private stackOnDamagePhaseHolds(module: BuffModule, time: number): boolean {
     const gate = module.stackOnDamagePhase
     if (!gate) return true
-    const phase = this.qiPhase(time)
-    const fraction = this.qiFraction(time)
+    const phase = this.qiPhase(time, "afterHit")
+    const fraction = this.qiFraction(time, "afterHit")
     const gates: readonly QiGate[] = Array.isArray(gate) ? gate : [gate as QiGate]
     return gates.some((g) => BuffEngine.qiGateHolds(g, phase, fraction))
   }

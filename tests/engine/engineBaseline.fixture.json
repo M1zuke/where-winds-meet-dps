@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 70546.04,
-    "totalDamage": 4232762.38,
+    "dps": 70446.3,
+    "totalDamage": 4226777.74,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -74,7 +74,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100345.8,
+        "expectedDamage": 99850.68,
         "castCount": 10
       },
       {
@@ -82,7 +82,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2072396.19,
+        "expectedDamage": 2066906.66,
         "castCount": 0
       },
       {
@@ -171,11 +171,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "08444c7bf6c7662742c51f8f833b60c399a57dcfc42fb8cd62e2203896256dbe"
+    "digest": "8c55baa0c79b83361d23c7f0bd34fde8267df4f042c687987722fe0a1f67cec1"
   },
   "anchor:noAttunement": {
-    "dps": 63259.57,
-    "totalDamage": 3795574.27,
+    "dps": 63252.25,
+    "totalDamage": 3795134.71,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -192,7 +192,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 226154.96,
+        "expectedDamage": 225715.4,
         "castCount": 0
       },
       {
@@ -345,11 +345,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "08f3752f2e7fe9d4666424226361d3aed406282f35816ac3aa4b17390db9a76c"
+    "digest": "5938cccb09ad4b87e6125861548e4d3393d7621a01a880ec03440ce7182cdfa9"
   },
   "anchor:dummyOff": {
-    "dps": 70173.61,
-    "totalDamage": 4210416.86,
+    "dps": 70160.77,
+    "totalDamage": 4209646.01,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -438,7 +438,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 78678.12,
+        "expectedDamage": 77907.27,
         "castCount": 10
       },
       {
@@ -519,11 +519,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d3a2ffc85cc43e025e401d880ab31be033e838da36234e223778883c19fff847"
+    "digest": "1f80e3127fea7219c0b67dd89f78e120106aaed9ce923325d4156d9319841251"
   },
   "anchor:breakthrough17": {
-    "dps": 71768.91,
-    "totalDamage": 4306134.58,
+    "dps": 71760.51,
+    "totalDamage": 4305630.9,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -596,7 +596,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 102078.88,
+        "expectedDamage": 101575.2,
         "castCount": 10
       },
       {
@@ -693,11 +693,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "c277985b2fa1d409e45dc245e7af00bb4e23d8c69ccf3f8aa736e59375ab1d96"
+    "digest": "1b4ae94e19a51b7ab0714873bb296991686c0ef0556727e46dc4db9384734925"
   },
   "anchor:noQiBreak": {
-    "dps": 67955.62,
-    "totalDamage": 4077336.97,
+    "dps": 67934.45,
+    "totalDamage": 4076067.08,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -794,7 +794,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 63664.94,
+        "expectedDamage": 62395.05,
         "castCount": 5
       },
       {
@@ -883,11 +883,11 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "cbd2932781878bf89b1f08281df8b9fb9c812bc41d32d4264770a7f95d57b721"
+    "digest": "c794d91f1229d6ddd4400e165a0fbbf8893536c38a59ac4f8f82ad8d6b14440c"
   },
   "anchor:healerBuff": {
-    "dps": 73792.56,
-    "totalDamage": 4427553.6,
+    "dps": 73785.21,
+    "totalDamage": 4427112.72,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -952,7 +952,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 113751.53,
+        "expectedDamage": 113310.66,
         "castCount": 4
       },
       {
@@ -1057,11 +1057,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1379bb4e254b9d78c0595a0c98c59fbc4c3bca5829ab83b4306561d5c9ed7921"
+    "digest": "dcc14db4464cc372d06288bf33559319fe3c707e3557b09593330498599598d3"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 70976.49,
-    "totalDamage": 4258589.57,
+    "dps": 70860.96,
+    "totalDamage": 4251657.38,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1134,7 +1134,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100786.79,
+        "expectedDamage": 100205.98,
         "castCount": 10
       },
       {
@@ -1142,7 +1142,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2081441.07,
+        "expectedDamage": 2075089.69,
         "castCount": 0
       },
       {
@@ -1231,11 +1231,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "6ef5545d21cf534824ac1f2e0d36182a203f158a2b49c6bb4991764043942f1a"
+    "digest": "9e06f485ca073e483387cfb73f81a94aee3bb0b08acf65ed064697a253dc16aa"
   },
   "anchor:voidrotScript": {
-    "dps": 71924.67,
-    "totalDamage": 4315479.94,
+    "dps": 71877.38,
+    "totalDamage": 4312643.08,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1308,7 +1308,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 101483.55,
+        "expectedDamage": 100767.21,
         "castCount": 10
       },
       {
@@ -1316,7 +1316,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2111411.56,
+        "expectedDamage": 2109291.03,
         "castCount": 0
       },
       {
@@ -1405,11 +1405,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "40135afecd40821e2effaec3eaca63f58592c9ee44bdf362ac65762ac698d460"
+    "digest": "c3a1b0644f0103319b7259c7a9596d1d23b3d8238246a14111ff74d5b05bc9b6"
   },
   "anchor:breakExtension": {
-    "dps": 71863.83,
-    "totalDamage": 4311829.82,
+    "dps": 71764.09,
+    "totalDamage": 4305845.18,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1482,7 +1482,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 103325.15,
+        "expectedDamage": 102830.04,
         "castCount": 10
       },
       {
@@ -1490,7 +1490,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 2121244.61,
+        "expectedDamage": 2115755.08,
         "castCount": 0
       },
       {
@@ -1579,11 +1579,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "52634385a4aedf69ac21f79f953f26eabd8ca91f67160fca65176fe22da0157f"
+    "digest": "21fe5e282f18237464a5d5a92ae30665243e8f2f04611cd9414251c883c59e66"
   },
   "anchor:swordHorizonT1": {
-    "dps": 45627.16,
-    "totalDamage": 2737629.42,
+    "dps": 41025.33,
+    "totalDamage": 2461519.74,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1600,7 +1600,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 44,
-        "expectedDamage": 193282.77,
+        "expectedDamage": 192975.34,
         "castCount": 0
       },
       {
@@ -1664,7 +1664,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 986283.75,
+        "expectedDamage": 991374.62,
         "castCount": 0
       },
       {
@@ -1696,7 +1696,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37194.64,
+        "expectedDamage": 37872.11,
         "castCount": 4
       },
       {
@@ -1704,7 +1704,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 18487.6,
+        "expectedDamage": 18939.25,
         "castCount": 0
       },
       {
@@ -1712,7 +1712,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27958.42,
+        "expectedDamage": 27290.9,
         "castCount": 4
       },
       {
@@ -1720,7 +1720,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111330.45,
+        "expectedDamage": 108660.36,
         "castCount": 4
       },
       {
@@ -1744,7 +1744,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 510921.83,
+        "expectedDamage": 232237.19,
         "castCount": 1
       }
     ],
@@ -1753,11 +1753,11 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "b511d40189185997a22fb6944b676dff93605cda348224075366ba34ba78f11b"
+    "digest": "013f77cb2aa97d4b310223a4b6438f87de69749bebf8b83fd6cd7fa5db4176ea"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39858.33,
-    "totalDamage": 2391499.57,
+    "dps": 35230.08,
+    "totalDamage": 2113804.86,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1782,7 +1782,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52762.29,
+        "expectedDamage": 54152.47,
         "castCount": 4
       },
       {
@@ -1790,7 +1790,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 46,
-        "expectedDamage": 196750.87,
+        "expectedDamage": 197307.1,
         "castCount": 0
       },
       {
@@ -1798,7 +1798,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 70050.71,
+        "expectedDamage": 70052.57,
         "castCount": 0
       },
       {
@@ -1830,7 +1830,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 14360.23,
+        "expectedDamage": 14360.24,
         "castCount": 0
       },
       {
@@ -1838,7 +1838,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 100880.8,
+        "expectedDamage": 99393.68,
         "castCount": 4
       },
       {
@@ -1846,7 +1846,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 27,
-        "expectedDamage": 85004.29,
+        "expectedDamage": 85007.31,
         "castCount": 10
       },
       {
@@ -1854,7 +1854,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 784119.98,
+        "expectedDamage": 784144.63,
         "castCount": 0
       },
       {
@@ -1862,7 +1862,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 60005.18,
+        "expectedDamage": 60008.39,
         "castCount": 10
       },
       {
@@ -1870,7 +1870,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54879.99,
+        "expectedDamage": 54884.77,
         "castCount": 0
       },
       {
@@ -1886,7 +1886,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 36968.46,
+        "expectedDamage": 37871.76,
         "castCount": 4
       },
       {
@@ -1894,7 +1894,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 18487.6,
+        "expectedDamage": 18939.25,
         "castCount": 0
       },
       {
@@ -1902,7 +1902,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 27958.42,
+        "expectedDamage": 27958.52,
         "castCount": 4
       },
       {
@@ -1910,7 +1910,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 111162.71,
+        "expectedDamage": 111163.1,
         "castCount": 4
       },
       {
@@ -1918,7 +1918,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35898.27,
+        "expectedDamage": 35035.96,
         "castCount": 4
       },
       {
@@ -1934,7 +1934,7 @@
         "breakdownName": "Dragon Head - Plus",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 510921.83,
+        "expectedDamage": 232237.19,
         "castCount": 1
       }
     ],
@@ -1943,11 +1943,11 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "53f4a7a5f48b8c3209ec9ec918f3710dd8f2b4a1ade629e8b7d538af53d5d2b6"
+    "digest": "46006a284c4e7e878f592a6527244af98ceaf4fa5a4fc28f73044c74d1465a0c"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 62527.93,
-    "totalDamage": 3751675.92,
+    "dps": 62520.41,
+    "totalDamage": 3751224.46,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2068,7 +2068,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 18624.35,
+        "expectedDamage": 18172.89,
         "castCount": 0
       },
       {
@@ -2117,11 +2117,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "51812035ec0946e4adfcf653ae10db90853e127715b99ccff0e52f85b4d13456"
+    "digest": "f3d7c1fac8d1b26998a993c474df7cda3c33d4f6be49c87a7a7bca88fb537045"
   },
   "anchor:noMoraleChant": {
-    "dps": 64575.26,
-    "totalDamage": 3874515.55,
+    "dps": 64443.66,
+    "totalDamage": 3866619.65,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -2202,7 +2202,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1926997.43,
+        "expectedDamage": 1919559.2,
         "castCount": 0
       },
       {
@@ -2226,7 +2226,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37531.85,
+        "expectedDamage": 37074.19,
         "castCount": 4
       },
       {
@@ -2283,7 +2283,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "206dcb266e322d544e1e60c7ced7521491492a83ccde73a5c8f6c998011a9102"
+    "digest": "e7bd5622c32774db04dbd8daed941178024172fc411981b49bb79d26497741a3"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
     "dps": 40279.68,
@@ -2670,7 +2670,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "93c5994e697dfbb86982932fcd9261a8922c43b0023e2188b6552c026ad4ca42"
+    "digest": "efdd4bc5b6a053f7584185702a07c0b4b9656b4616db90f7afd0f415269753b8"
   },
   "anchor:bitterSeasonT4": {
     "dps": 42791.12,
@@ -2855,7 +2855,7 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "83cccf19ae67539bec1016792395ce28894dd35007d89a42b43acffa6b6e3992"
+    "digest": "c5adc8ab0a205042809338683b7933caf90ae07d7cc40c6440df5a8d68d795b9"
   },
   "anchor:bitterSeasonT1": {
     "dps": 42430.81,
@@ -3040,11 +3040,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "d7c471da86f0e76700a65197a5e7adeacea24c22a01818fd3c6782b78ad448b9"
+    "digest": "dd10e204a0d6ec3144a82f96a2c918f49eec870be99ff833f1817f452affe341"
   },
   "anchor:noSet": {
-    "dps": 63967.04,
-    "totalDamage": 3838022.32,
+    "dps": 63837.95,
+    "totalDamage": 3830277,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3125,7 +3125,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1875104.25,
+        "expectedDamage": 1867813.72,
         "castCount": 0
       },
       {
@@ -3157,7 +3157,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37283.94,
+        "expectedDamage": 36829.15,
         "castCount": 4
       },
       {
@@ -3214,11 +3214,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d0ae414e8fa975fa48895af21aa761fef0648f20e2466ca624cf68920b97c90d"
+    "digest": "8e2f8d7ec031d93ca66d75fc79af68a779ba9c52941c9a82dc39fc11d63f4787"
   },
   "anchor:set-Jadeware": {
-    "dps": 68836,
-    "totalDamage": 4130160.02,
+    "dps": 68825.27,
+    "totalDamage": 4129516.11,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3307,7 +3307,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 69750.39,
+        "expectedDamage": 69106.48,
         "castCount": 10
       },
       {
@@ -3388,11 +3388,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "cd52cf32b1d3afc6b972c6d4dc7525aaa3b27fcb0d1b0cff92fd1bc9a27fad42"
+    "digest": "ac20af915ebc681d3459fb4a6cea6376e297b76f31ed8a10054b75df293942fc"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64556.98,
-    "totalDamage": 3873418.52,
+    "dps": 64427.79,
+    "totalDamage": 3865667.52,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3473,7 +3473,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1890291.44,
+        "expectedDamage": 1883000.91,
         "castCount": 0
       },
       {
@@ -3505,7 +3505,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37749.26,
+        "expectedDamage": 37288.8,
         "castCount": 4
       },
       {
@@ -3562,11 +3562,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "0277e808b8b14181506fdd8d40309566ab5e14cade3d41ba9b2dd241960262b0"
+    "digest": "fb8a0a2d80a51b0a7f40504ebc264934c378b9ecbf4eabac95973058366799b2"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65379.92,
-    "totalDamage": 3922795.29,
+    "dps": 65373.71,
+    "totalDamage": 3922422.4,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3607,7 +3607,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 408163.8,
+        "expectedDamage": 407790.91,
         "castCount": 0
       },
       {
@@ -3736,11 +3736,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "42b90a7778a22ea91ca999a219ee44f8d02c9adb5cf7dcb23ec62925d10a7d2c"
+    "digest": "9dba06b35d5f7d0d7a1059aad33fe30cca82ac6f89fdf204d2f10c4e977e0b94"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 65820.99,
-    "totalDamage": 3949259.22,
+    "dps": 65810.61,
+    "totalDamage": 3948636.45,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3757,7 +3757,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 256731.66,
+        "expectedDamage": 256108.89,
         "castCount": 0
       },
       {
@@ -3910,7 +3910,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "420bab3a359876e8ce9f1c2c73249a6d0c6f2ed9c6cda828544aa7534268982a"
+    "digest": "f669afa8e992c7d973aa94d01b7392161f75f4abd324f96b17b81824ffa16285"
   },
   "defaults:umbra": {
     "dps": 11752.92,

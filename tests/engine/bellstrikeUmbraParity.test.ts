@@ -148,8 +148,8 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(41330)
-    expect(result.dps).toBeLessThan(41490)
+    expect(result.dps).toBeGreaterThan(41315)
+    expect(result.dps).toBeLessThan(41475)
     expect(result.totalDamage).toBeGreaterThan(2941100)
     expect(result.totalDamage).toBeLessThan(2955500)
     expect(detonation?.expectedDamage).toBeGreaterThan(1464500)

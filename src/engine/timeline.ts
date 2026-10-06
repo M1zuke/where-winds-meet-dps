@@ -93,6 +93,7 @@ import {
   qiBonusesFrom,
   qiFromDamage,
   qiScheduleReadingFrame,
+  qiScheduleReadingLiveBar,
   sameQiBreaks,
   warmStartQiSchedule,
   type QiBreak,
@@ -2569,6 +2570,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       st: ReturnType<typeof resolveState>
     }
 
+    let scoringSchedule: QiSchedule = qiSchedule
+
     function withQiReadAtFrame<Scored>(
       frame: number,
       readQiAtFrame: number | null,
@@ -2579,7 +2582,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       try {
         return score()
       } finally {
-        buffEngine.attachQiSchedule(qiSchedule)
+        buffEngine.attachQiSchedule(scoringSchedule)
       }
     }
 
@@ -2708,16 +2711,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       startFrame: Math.round(startSec * FPS),
       endFrame: Math.round(endSec * FPS),
     }))
+    const scoredInsideBreak = (frame: number): boolean =>
+      fixedQiBreaks ? qiSchedule.isBroken(frame / FPS) : qiBar.isBrokenAtFrame(frame)
     const qiEdgeDependence = new QiEdgeDependence()
     const recordQiEdgeDependence = (
       frame: number,
       skillName: string,
-      rescore: (readQiAtFrame: number) => ScoredEvent,
+      rescore: (readQiAtFrame: number | null) => ScoredEvent,
     ): void => {
       if (!collectDetail || !buffEngine) return
-      const site = qiEdgeSiteOf(frame, qiBreakFrames, FPS)
+      const site = qiEdgeSiteOf(frame, qiBreakFrames, FPS, scoredInsideBreak(frame))
       if (!site) return
-      const asScored = rescore(frame)
+      const asScored = rescore(null)
       const acrossEdge = rescore(site.referenceFrame)
       qiEdgeDependence.record(skillName, site, acrossEdge.damage - asScored.damage)
     }
@@ -2730,6 +2735,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // module's `target.remainingHealthFraction` reads the true running total.
     mergedEvents.sort(byMergedOrder)
     for (const event of mergedEvents) {
+      if (buffEngine && !fixedQiBreaks) {
+        scoringSchedule = qiScheduleReadingLiveBar(qiSchedule, qiBar, event.frame, FPS)
+        buffEngine.attachQiSchedule(scoringSchedule)
+      }
       for (const resource of resources)
         resource.advance(Math.min(windowFrames, Math.max(0, event.frame)))
       if (event.kind === "recall") {
@@ -2939,6 +2948,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         })
       }
     }
+
+    scoringSchedule = qiSchedule
+    buffEngine?.attachQiSchedule(qiSchedule)
 
     const resourceResults = resources.map((resource) => resource.finish(windowFrames))
     for (const resource of resources) {

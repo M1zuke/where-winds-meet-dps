@@ -14,24 +14,27 @@ export interface QiEdgeSite {
   edgeFrame: number
   referenceFrame: number
   offsetFrames: number
+  side: QiEdgeWarning["side"]
 }
 
 export function qiEdgeSiteOf(
   frame: number,
   breaks: readonly QiBreakFrames[],
   fps: number,
+  scoredInsideBreak: boolean,
 ): QiEdgeSite | null {
   const marginFrames = Math.round(QI_EDGE_MARGIN_SEC * fps)
   let nearest: QiEdgeSite | null = null
   for (const [breakIndex, { startFrame, endFrame }] of breaks.entries()) {
-    const inside = frame >= startFrame && frame < endFrame
+    const inside = scoredInsideBreak && frame >= startFrame && frame < endFrame
     const candidates: QiEdgeSite[] = [
       {
         breakIndex,
         edge: "start",
         edgeFrame: startFrame,
-        referenceFrame: inside ? startFrame - 1 : startFrame,
+        referenceFrame: inside ? startFrame - 1 : startFrame + 1,
         offsetFrames: frame - startFrame,
+        side: inside ? "after" : "before",
       },
       {
         breakIndex,
@@ -39,6 +42,7 @@ export function qiEdgeSiteOf(
         edgeFrame: endFrame,
         referenceFrame: inside ? endFrame : endFrame - 1,
         offsetFrames: frame - endFrame,
+        side: frame < endFrame ? "before" : "after",
       },
     ]
     for (const candidate of candidates) {
@@ -86,7 +90,7 @@ export class QiEdgeDependence {
       .map(({ skillName, site, damageAtStake }) => ({
         skillName,
         edge: site.edge,
-        side: site.offsetFrames < 0 ? "before" : "after",
+        side: site.side,
         offsetSec: Math.abs(site.offsetFrames) / fps,
         edgeSec: site.edgeFrame / fps - fightStartSec,
         shareOfTotal: damageAtStake / totalDamage,

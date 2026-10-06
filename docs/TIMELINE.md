@@ -743,6 +743,16 @@ itself exists; instead it is computed in pass 2, in time order, alongside
   timed break; at the break's end the bar is set back to a refill value and,
   for a further fixed span, a direct hit deals no Qi while a tick still does.
   Breaks repeat without limit and nothing regenerates between hits.
+- **The event that brings the bar to zero is scored outside its own break.**
+  Every damage-time read for that event — the broken-target bonus, a Qi-empty
+  damage gate, a phase, `qiBroken` or fraction gate — sees the bar as it stood
+  before the event's own Qi. Every later event, one on the same frame included,
+  is inside the break. A grant the emptying event causes after its damage
+  lands (an on-hit stack, a trigger) sees the break. The break's end is
+  unchanged: the start frame plus the break length, exclusive. A schedule
+  therefore answers a read as `beforeHit` (the start frame is outside) or
+  `afterHit` (the start frame is inside); pass 2 reads the live bar ahead of
+  applying the event's own Qi, so it is exact for events sharing the frame.
 - **The bar accrues Qi from every damaging hit or tick on the target, whether
   or not that event lands inside the DPS window.** The target takes it in
   game regardless of where the fight-timer window sits — a pre-pull one

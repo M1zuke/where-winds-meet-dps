@@ -312,8 +312,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(70546.04)
-    expect(round(result.totalDamage, 2)).toBe(4232762.38)
+    expect(round(result.dps, 2)).toBe(70446.3)
+    expect(round(result.totalDamage, 2)).toBe(4226777.74)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
@@ -321,7 +321,7 @@ describe("engine baseline — profile-v7 anchor", () => {
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
-    expect(damageOf("Blood Burst")).toBe(2072396.19)
+    expect(damageOf("Blood Burst")).toBe(2066906.66)
     expect(damageOf("Bleeding (DoT)")).toBe(275350.95)
   })
 
@@ -344,8 +344,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(71768.91)
-    expect(round(result.totalDamage, 2)).toBe(4306134.58)
+    expect(round(result.dps, 2)).toBe(71760.51)
+    expect(round(result.totalDamage, 2)).toBe(4305630.9)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
