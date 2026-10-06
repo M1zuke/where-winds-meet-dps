@@ -37,6 +37,15 @@ import { gauntletsDual } from "./gauntlets-dual"
 import { deflectCancel } from "./deflect-cancel"
 import { perfectDodge } from "./perfect-dodge"
 import { perfectDodgeFull } from "./perfect-dodge-full"
+import { falconsPursuitTwinblades } from "./falcons-pursuit-twinblades"
+import { twinbladeQuickDrink } from "./twinblade-quick-drink"
+import { twinbladeQuickDrinkCancel } from "./twinblade-quick-drink-cancel"
+import { boundvesselDrinkCancel } from "./boundvessel-drink-cancel"
+import { bladeAgainstWaves } from "./blade-against-waves"
+import { tidepour } from "./tidepour"
+import { gauntletsDash } from "./gauntlets-dash"
+import { gauntletsDashTipsy } from "./gauntlets-dash-tipsy"
+import { twinbladesDual } from "./twinblades-dual"
 
 export const CLASS_ID = "bamboocutDraught"
 
@@ -79,4 +88,13 @@ export const SKILLS: Skill[] = [
   perfectDodge,
   perfectDodgeFull,
   gauntletsDual,
+  falconsPursuitTwinblades,
+  twinbladeQuickDrink,
+  twinbladeQuickDrinkCancel,
+  boundvesselDrinkCancel,
+  bladeAgainstWaves,
+  tidepour,
+  gauntletsDash,
+  gauntletsDashTipsy,
+  twinbladesDual,
 ]

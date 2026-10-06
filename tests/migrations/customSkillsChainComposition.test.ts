@@ -59,6 +59,7 @@ import { healSkill as healInGameCoefficientCorrections } from "../../src/migrati
 import { healSkill as healSpringlessSilenceLandingHitOnly } from "../../src/migrations/customSkills/V60__springlessSilenceLandingHitOnly"
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { healSkill as healShadowStepDashWindow } from "../../src/migrations/customSkills/V62__shadowStepDashWindow"
+import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -127,6 +128,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [60, healSpringlessSilenceLandingHitOnly],
   [61, healBoundvesselSpringAwayToadAfterimageTiming],
   [62, healShadowStepDashWindow],
+  [63, healBoundvesselDrinkAccumulation],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

@@ -15,6 +15,7 @@ import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/m
 import { healSkill as healWeaponDrawnGates } from "../../src/migrations/customSkills/V47__weaponDrawnGates"
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
+import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -78,7 +79,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withFrames = healCastLengthAndHitFrameRepairs(withGains) as Skill
   const withDrawnGates = healWeaponDrawnGates(withFrames) as Skill
   const withQiRate = healQiRateDefault(withDrawnGates) as Skill
-  return healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
+  const withTiming = healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
+  return healBoundvesselDrinkAccumulation(withTiming) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {

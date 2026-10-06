@@ -5,6 +5,8 @@ import { CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
+import { SKYSPEAK_TIER_4_CONDITION } from "./skyspeak-tier-4"
+import { skillBingePointAccumulationTriggersWhen } from "./buffs/skillBingePointAccumulation"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const INEBRIATE: TriggerCondition[] = [{ buffId: STATUS.bingePoints, op: "gte", stacks: 100 }]
@@ -26,7 +28,57 @@ const rapidSlash = (index: number, frame: number) =>
 // slashes, spread evenly across the loop window (in-game values as of
 // 2026-10-06). The completed hold grants Cloudvault (in-game skill text,
 // 2026-09-04); cast length and the finishing hit frames to the full hold's own
-// finish: in-game animation, 2026-09-24.
+// finish: in-game animation, 2026-09-24. With Skyspeak tier 4 the first
+// finishing slash also banks Binge Points for the drink that follows
+// (in-game values as of 2026-10-06).
+export const boundvesselHits = [
+  hit(0, {
+    frame: 24,
+    physMultiplier: 0.300265,
+    attributeMultiplier: 0.4503975,
+    physFixed: 83.5,
+    attributeFixed: 45.5,
+    conditions: INEBRIATE,
+  }),
+  hit(14, {
+    frame: 24,
+    physMultiplier: 0.300265,
+    attributeMultiplier: 0.4503975,
+    physFixed: 83.5,
+    attributeFixed: 45.5,
+    conditions: INEBRIATE,
+  }),
+  rapidSlash(1, 47),
+  rapidSlash(2, 56),
+  rapidSlash(3, 65),
+  rapidSlash(4, 74),
+  rapidSlash(5, 83),
+  rapidSlash(6, 91),
+  rapidSlash(7, 100),
+  rapidSlash(8, 109),
+  rapidSlash(9, 118),
+  rapidSlash(10, 127),
+  rapidSlash(11, 135),
+  hit(12, {
+    frame: 144,
+    physMultiplier: 0.11544,
+    attributeMultiplier: 0.17316,
+    physFixed: 32.2,
+    attributeFixed: 17.4,
+    conditions: INEBRIATE,
+    triggers: skillBingePointAccumulationTriggersWhen(SKYSPEAK_TIER_4_CONDITION),
+  }),
+  hit(13, {
+    frame: 161,
+    physMultiplier: 0.23088,
+    attributeMultiplier: 0.34632,
+    physFixed: 64.4,
+    attributeFixed: 34.8,
+    conditions: INEBRIATE,
+    triggers: [applyBuff({ target: STATUS.cloudvault, stacks: 1 })],
+  }),
+]
+
 export const boundvessel = defineSkill({
   id: SKILL.boundvessel,
   classId: "bamboocutDraught",
@@ -51,52 +103,7 @@ export const boundvessel = defineSkill({
   // The rapid-slash loop's own Endurance drain, 1.6 s from its start
   // (in-game values as of 2026-09-24).
   meterDrains: [{ meterId: enduranceMeter.id, perSecond: 15, fromFrame: 40, stopAfterSec: 1.6 }],
-  hits: [
-    hit(0, {
-      frame: 24,
-      physMultiplier: 0.300265,
-      attributeMultiplier: 0.4503975,
-      physFixed: 83.5,
-      attributeFixed: 45.5,
-      conditions: INEBRIATE,
-    }),
-    hit(14, {
-      frame: 24,
-      physMultiplier: 0.300265,
-      attributeMultiplier: 0.4503975,
-      physFixed: 83.5,
-      attributeFixed: 45.5,
-      conditions: INEBRIATE,
-    }),
-    rapidSlash(1, 47),
-    rapidSlash(2, 56),
-    rapidSlash(3, 65),
-    rapidSlash(4, 74),
-    rapidSlash(5, 83),
-    rapidSlash(6, 91),
-    rapidSlash(7, 100),
-    rapidSlash(8, 109),
-    rapidSlash(9, 118),
-    rapidSlash(10, 127),
-    rapidSlash(11, 135),
-    hit(12, {
-      frame: 144,
-      physMultiplier: 0.11544,
-      attributeMultiplier: 0.17316,
-      physFixed: 32.2,
-      attributeFixed: 17.4,
-      conditions: INEBRIATE,
-    }),
-    hit(13, {
-      frame: 161,
-      physMultiplier: 0.23088,
-      attributeMultiplier: 0.34632,
-      physFixed: 64.4,
-      attributeFixed: 34.8,
-      conditions: INEBRIATE,
-      triggers: [applyBuff({ target: STATUS.cloudvault, stacks: 1 })],
-    }),
-  ],
+  hits: boundvesselHits,
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",
 })

@@ -189264,12 +189264,14 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 69,
+        "count": 78,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
+          "bamboocutDraught-blade-against-waves",
           "bamboocutDraught-blade-vessel",
           "bamboocutDraught-bloombreak",
           "bamboocutDraught-boundvessel",
+          "bamboocutDraught-boundvessel-drink-cancel",
           "bamboocutDraught-castlink",
           "bamboocutDraught-deflect-cancel",
           "bamboocutDraught-deflect-cancel-prepull",
@@ -189285,6 +189287,9 @@
           "bamboocutDraught-dual-blades-light-attack-3",
           "bamboocutDraught-dual-blades-light-attack-4",
           "bamboocutDraught-falcons-pursuit",
+          "bamboocutDraught-falcons-pursuit-twinblades",
+          "bamboocutDraught-gauntlets-dash",
+          "bamboocutDraught-gauntlets-dash-tipsy",
           "bamboocutDraught-gauntlets-dual",
           "bamboocutDraught-ghostly-steps",
           "bamboocutDraught-ghostly-steps-umbra",
@@ -189307,6 +189312,10 @@
           "bamboocutDraught-reveldrift",
           "bamboocutDraught-reveldrift-cancel",
           "bamboocutDraught-skystrike-gauntlets-ex",
+          "bamboocutDraught-tidepour",
+          "bamboocutDraught-twinblade-quick-drink",
+          "bamboocutDraught-twinblade-quick-drink-cancel",
+          "bamboocutDraught-twinblades-dual",
           "bamboocutDraught-whaledraft",
           "bamboocutDraught-whaledraft-hold",
           "bamboocutDraught-whaledraft-hold-short",
@@ -189336,7 +189345,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "ee776695f0642344b45b5f37f58cf85d44dafe8c733e51fc62ac6add9d4516ed"
+        "digest": "5b6739736776c9bf641164f66d87669df64d851d59db31e36bd545a3ac6a6002"
       },
       "debuffs": {
         "count": 10,
