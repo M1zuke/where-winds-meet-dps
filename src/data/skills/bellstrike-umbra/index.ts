@@ -31,6 +31,24 @@ import { bleedTick } from "./bleed-tick"
 import { bleedDetonation } from "./bleed-detonation"
 import { swordDual } from "./sword-dual"
 import { spearDual } from "./spear-dual"
+import { swordChargeStage24Hit } from "./sword-charge-stage-2-4-hit"
+import { swordChargeStage25Hit } from "./sword-charge-stage-2-5-hit"
+import { swordLight1 } from "./sword-light-1"
+import { swordLight2 } from "./sword-light-2"
+import { swordLight3 } from "./sword-light-3"
+import { swordLight3EndsChain } from "./sword-light-3-ends-chain"
+import { swordLight4 } from "./sword-light-4"
+import { swordHeavy2 } from "./sword-heavy-2"
+import { swordHeavy3 } from "./sword-heavy-3"
+import { swordDash } from "./sword-dash"
+import { spearLight1 } from "./spear-light-1"
+import { spearLight2 } from "./spear-light-2"
+import { spearLight3 } from "./spear-light-3"
+import { spearLight4 } from "./spear-light-4"
+import { spearHeavy1 } from "./spear-heavy-1"
+import { spearHeavy2 } from "./spear-heavy-2"
+import { spearHeavy3 } from "./spear-heavy-3"
+import { spearDash } from "./spear-dash"
 
 export const CLASS_ID = "bellstrikeUmbra"
 
@@ -67,4 +85,22 @@ export const SKILLS: Skill[] = [
   bleedDetonation,
   swordDual,
   spearDual,
+  swordChargeStage24Hit,
+  swordChargeStage25Hit,
+  swordLight1,
+  swordLight2,
+  swordLight3,
+  swordLight3EndsChain,
+  swordLight4,
+  swordHeavy2,
+  swordHeavy3,
+  swordDash,
+  spearLight1,
+  spearLight2,
+  spearLight3,
+  spearLight4,
+  spearHeavy1,
+  spearHeavy2,
+  spearHeavy3,
+  spearDash,
 ]

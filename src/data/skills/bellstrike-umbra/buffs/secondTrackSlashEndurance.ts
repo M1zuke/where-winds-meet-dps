@@ -17,6 +17,15 @@ export const SECOND_TRACK_SLASH_DRAIN: MeterDrain[] = [
     chargeRelease: { fallbackSkillId: SKILL.swordChargeStage1Level0 },
   },
 ]
+export const SECOND_TRACK_SLASH_STAGE_2_DRAIN: MeterDrain[] = [
+  {
+    meterId: enduranceMeter.id,
+    perSecond: 14,
+    fromFrame: 12,
+    stopAfterSec: 1.2,
+    chargeRelease: { fallbackSkillId: SKILL.swordChargeStage15Hit },
+  },
+]
 export const SECOND_TRACK_SLASH_FREEZE: MeterFreeze[] = [
   { meterId: enduranceMeter.id, fromFrame: 0 },
 ]

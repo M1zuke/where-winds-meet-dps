@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 66,
+        "count": 84,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -18,7 +18,15 @@
           "bellstrikeUmbra-golden-body-deflect-cancel",
           "bellstrikeUmbra-perfect-dodge",
           "bellstrikeUmbra-perfect-dodge-full",
+          "bellstrikeUmbra-spear-dash",
           "bellstrikeUmbra-spear-dual",
+          "bellstrikeUmbra-spear-heavy-1",
+          "bellstrikeUmbra-spear-heavy-2",
+          "bellstrikeUmbra-spear-heavy-3",
+          "bellstrikeUmbra-spear-light-1",
+          "bellstrikeUmbra-spear-light-2",
+          "bellstrikeUmbra-spear-light-3",
+          "bellstrikeUmbra-spear-light-4",
           "bellstrikeUmbra-spearheavy",
           "bellstrikeUmbra-spearheavy-1-hit",
           "bellstrikeUmbra-spearheavy-1-hit-prepull",
@@ -33,7 +41,17 @@
           "bellstrikeUmbra-sword-charge-stage-1-4-hit",
           "bellstrikeUmbra-sword-charge-stage-1-5-hit",
           "bellstrikeUmbra-sword-charge-stage-1-level-0",
+          "bellstrikeUmbra-sword-charge-stage-2-4-hit",
+          "bellstrikeUmbra-sword-charge-stage-2-5-hit",
+          "bellstrikeUmbra-sword-dash",
           "bellstrikeUmbra-sword-dual",
+          "bellstrikeUmbra-sword-heavy-2",
+          "bellstrikeUmbra-sword-heavy-3",
+          "bellstrikeUmbra-sword-light-1",
+          "bellstrikeUmbra-sword-light-2",
+          "bellstrikeUmbra-sword-light-3",
+          "bellstrikeUmbra-sword-light-3-ends-chain",
+          "bellstrikeUmbra-sword-light-4",
           "bellstrikeUmbra-sword-martial-qqq",
           "bellstrikeUmbra-sword-r-charge-follow-up",
           "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel",
@@ -71,7 +89,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "e0ede6982af3f864b036592ee7b197e62a5a1d34aa9d6429dbfd9133860224f6"
+        "digest": "5dc44cc53478fee6ba4933c0577b08435affb582b15520bdb58c39987c26d227"
       },
       "debuffs": {
         "count": 9,
