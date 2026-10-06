@@ -7,8 +7,6 @@ import { fanqPrepull } from "./fanq-prepull"
 import { fanq } from "./fanq"
 import { fanqcancel } from "./fanqcancel"
 import { fanspecial } from "./fanspecial"
-import { healerBuff } from "./healer-buff"
-import { healerExtension } from "./healer-extension"
 import { umbHeavylight } from "./umb-heavylight"
 import { umbHeavylightHeavyShare } from "./umb-heavylight-heavyshare"
 import { umbdrone12HitTick } from "./umbdrone-12hit"
@@ -53,8 +51,6 @@ export const SKILLS: Skill[] = [
   fanq,
   fanqcancel,
   fanspecial,
-  healerBuff,
-  healerExtension,
   umbHeavylight,
   umbHeavylightHeavyShare,
   umbdrone12HitTick,

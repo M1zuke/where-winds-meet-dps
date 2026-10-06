@@ -312,8 +312,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(70655.32)
-    expect(round(result.totalDamage, 2)).toBe(4239318.98)
+    expect(round(result.dps, 2)).toBe(70573.72)
+    expect(round(result.totalDamage, 2)).toBe(4234423.08)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
@@ -334,7 +334,7 @@ describe("engine baseline — profile-v7 anchor", () => {
 
   // Exists only via the Morale Chant tier-6 branch that P7 relocates.
   it("still reports Yi River", () => {
-    expect(damageOf("Yi River")).toBe(64463.25)
+    expect(damageOf("Yi River")).toBe(59567.35)
   })
 })
 
@@ -344,8 +344,8 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(71882.79)
-    expect(round(result.totalDamage, 2)).toBe(4312967.22)
+    expect(round(result.dps, 2)).toBe(71797.11)
+    expect(round(result.totalDamage, 2)).toBe(4307826.66)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual([])
   })
@@ -355,6 +355,6 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     expect(damageOf("Bleeding (DoT)")).toBe(282632.22)
     expect(damageOf("Smolder (DoT)")).toBe(445536.46)
     expect(damageOf("Flute Ripple (DoT)")).toBe(76307.94)
-    expect(damageOf("Yi River")).toBe(65689.55)
+    expect(damageOf("Yi River")).toBe(60674.8)
   })
 })

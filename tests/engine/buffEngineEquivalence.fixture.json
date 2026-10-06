@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 64,
+        "count": 61,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -51,13 +51,10 @@
           "mystic-fire-breath-1-hit",
           "mystic-fire-breath-1-hit-prepull",
           "mystic-fire-breath-2-hit",
-          "mystic-flaming-meteor",
           "mystic-flute-of-the-tides-cancel",
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
-          "mystic-lions-roar",
-          "mystic-lions-roar-throw",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -69,7 +66,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "9d7c07329aa9f7374fbcf68952fb6410bc09e13ec5e6fe066f135945203384aa"
+        "digest": "5b51f1ac100c1edcad81f8347a0246111254be54b6006d63423b5d91ec1ee376"
       },
       "debuffs": {
         "count": 7,
@@ -184191,7 +184188,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 59,
+        "count": 55,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184201,13 +184198,10 @@
           "mystic-fire-breath-1-hit",
           "mystic-fire-breath-1-hit-prepull",
           "mystic-fire-breath-2-hit",
-          "mystic-flaming-meteor",
           "mystic-flute-of-the-tides-cancel",
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
-          "mystic-lions-roar",
-          "mystic-lions-roar-throw",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -184225,7 +184219,6 @@
           "stonesplitStrength-anxisoldiermosweep",
           "stonesplitStrength-anxisoldiermosweep-supreme",
           "stonesplitStrength-bitter-season-tick",
-          "stonesplitStrength-blockperception",
           "stonesplitStrength-deflect",
           "stonesplitStrength-deflect-cancel",
           "stonesplitStrength-deflect-cancel-prepull",
@@ -184253,7 +184246,7 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "2ffae62ebe12a128c81947348a13e3927627d3ddfe16771226131eae0eb0b233"
+        "digest": "a1334128b7a6f4cbac46a8b0fc2418877a962acf14f7d07dd332bc270dcbb2c4"
       },
       "debuffs": {
         "count": 5,
@@ -185873,7 +185866,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 54,
+        "count": 51,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-deflect-cancel",
@@ -185912,13 +185905,10 @@
           "mystic-fire-breath-1-hit",
           "mystic-fire-breath-1-hit-prepull",
           "mystic-fire-breath-2-hit",
-          "mystic-flaming-meteor",
           "mystic-flute-of-the-tides-cancel",
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
-          "mystic-lions-roar",
-          "mystic-lions-roar-throw",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -185930,7 +185920,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "2e8b1b732dab3baccefd08d573e2a615c70125da674a188210b749842b4de8b1"
+        "digest": "6bf9c3a98f8df452612e99ff76ae69a6804c532a56fb257e2583a023c7fa5fa0"
       },
       "debuffs": {
         "count": 5,
@@ -187553,7 +187543,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 75,
+        "count": 70,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187563,13 +187553,10 @@
           "mystic-fire-breath-1-hit",
           "mystic-fire-breath-1-hit-prepull",
           "mystic-fire-breath-2-hit",
-          "mystic-flaming-meteor",
           "mystic-flute-of-the-tides-cancel",
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
-          "mystic-lions-roar",
-          "mystic-lions-roar-throw",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -187599,8 +187586,6 @@
           "silkbindJade-glow-and-flow-stage-2",
           "silkbindJade-golden-body-cancel",
           "silkbindJade-golden-body-deflect-cancel",
-          "silkbindJade-healer-buff",
-          "silkbindJade-healer-extension",
           "silkbindJade-hidden-sword-heavy-1",
           "silkbindJade-hidden-sword-heavy-2",
           "silkbindJade-hidden-sword-heavy-3",
@@ -187631,7 +187616,7 @@
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull"
         ],
-        "digest": "c109d3a63911be00149986c9359c1942effc6de23693c5e1f5d76ed2597aae97"
+        "digest": "69c5902d1958488eb64bf6f07f1426941ad5602241c172a551a9c4bfb41bb943"
       },
       "debuffs": {
         "count": 11,
@@ -189181,7 +189166,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 68,
+        "count": 65,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-blade-vessel",
@@ -189234,13 +189219,10 @@
           "mystic-fire-breath-1-hit",
           "mystic-fire-breath-1-hit-prepull",
           "mystic-fire-breath-2-hit",
-          "mystic-flaming-meteor",
           "mystic-flute-of-the-tides-cancel",
           "mystic-flute-of-the-tides-full",
           "mystic-flute-of-the-tides-prepull",
           "mystic-free-morph",
-          "mystic-lions-roar",
-          "mystic-lions-roar-throw",
           "mystic-poet-final-hit-cancel",
           "mystic-poet-final-hit-cancel-explosion",
           "mystic-poet1",
@@ -189252,7 +189234,7 @@
           "mystic-toad-cancel",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "b51064809bbc944c44038b9ad81ed5738f1710e52d370bdc75201b9c9284afff"
+        "digest": "7c7895f294322cd199917b5424fafc7d7f692d8f90ea94646a76d3bc67363a37"
       },
       "debuffs": {
         "count": 8,

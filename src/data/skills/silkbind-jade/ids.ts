@@ -38,8 +38,6 @@ export const SKILL = {
   fanspecial: "silkbindJade-fanspecial",
   fanheavypursuit3Hit: "silkbindJade-fanheavypursuit-3-hit",
   fanheavypursuit5Hit: "silkbindJade-fanheavypursuit-5-hit",
-  healerBuff: "silkbindJade-healer-buff",
-  healerExtension: "silkbindJade-healer-extension",
   deflectCancel: "silkbindJade-deflect-cancel",
 } as const
 

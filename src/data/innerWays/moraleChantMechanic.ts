@@ -85,7 +85,8 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           art: {
             name: "Yi River",
             physMultiplier: 1,
-            attributeMultiplier: 1.5,
+            // In-game values as of 2026-10-06: a passive hit carries no martial art.
+            attributeMultiplier: 1,
             skillType: "mindMethod",
           },
           name: "Yi River",

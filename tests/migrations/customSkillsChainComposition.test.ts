@@ -56,6 +56,7 @@ import { healSkill as healSwallowcallColorfulPhoenixReach } from "../../src/migr
 import { healSkill as healPoetSecondCollider } from "../../src/migrations/customSkills/V56__poetSecondCollider"
 import { healSkill as healNightwickFollowUpCancelledByNextSkill } from "../../src/migrations/customSkills/V57__nightwickFollowUpCancelledByNextSkill"
 import { healSkill as healInGameCoefficientCorrections } from "../../src/migrations/customSkills/V58__inGameCoefficientCorrections"
+import { healSkill as healSpringlessSilenceLandingHitOnly } from "../../src/migrations/customSkills/V60__springlessSilenceLandingHitOnly"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -121,6 +122,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [56, healPoetSecondCollider],
   [57, healNightwickFollowUpCancelledByNextSkill],
   [58, healInGameCoefficientCorrections],
+  [60, healSpringlessSilenceLandingHitOnly],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

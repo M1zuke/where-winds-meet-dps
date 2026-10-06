@@ -7,13 +7,10 @@ import { drunkenpoetPrepull } from "./drunkenpoet-prepull"
 import { fireBreath1HitPrepull } from "./fire-breath-1-hit-prepull"
 import { fireBreath1Hit } from "./fire-breath-1-hit"
 import { fireBreath2Hit } from "./fire-breath-2-hit"
-import { flamingMeteor } from "./flaming-meteor"
 import { freeMorph } from "./free-morph"
 import { fluteOfTheTidesCancel } from "./flute-of-the-tides-cancel"
 import { fluteOfTheTidesFull } from "./flute-of-the-tides-full"
 import { fluteOfTheTidesPrepull } from "./flute-of-the-tides-prepull"
-import { lionsRoar } from "./lions-roar"
-import { lionsRoarThrow } from "./lions-roar-throw"
 import { poetFinalHitCancel } from "./poet-final-hit-cancel"
 import { poetFinalHitCancelExplosion } from "./poet-final-hit-cancel-explosion"
 import { poet1 } from "./poet1"
@@ -36,13 +33,10 @@ export const MYSTIC_SKILLS: readonly Skill[] = [
   fireBreath1HitPrepull,
   fireBreath1Hit,
   fireBreath2Hit,
-  flamingMeteor,
   freeMorph,
   fluteOfTheTidesCancel,
   fluteOfTheTidesFull,
   fluteOfTheTidesPrepull,
-  lionsRoar,
-  lionsRoarThrow,
   poetFinalHitCancel,
   poetFinalHitCancelExplosion,
   poet1,

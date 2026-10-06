@@ -60,6 +60,7 @@ import { V56__poetSecondCollider } from "./V56__poetSecondCollider"
 import { V57__nightwickFollowUpCancelledByNextSkill } from "./V57__nightwickFollowUpCancelledByNextSkill"
 import { V58__inGameCoefficientCorrections } from "./V58__inGameCoefficientCorrections"
 import { V59__removeNightwickTipsylayHybrid } from "./V59__removeNightwickTipsylayHybrid"
+import { V60__springlessSilenceLandingHitOnly } from "./V60__springlessSilenceLandingHitOnly"
 
 export type {
   CustomSkillMigration,
@@ -188,6 +189,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V57__nightwickFollowUpCancelledByNextSkill,
   V58__inGameCoefficientCorrections,
   V59__removeNightwickTipsylayHybrid,
+  V60__springlessSilenceLandingHitOnly,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

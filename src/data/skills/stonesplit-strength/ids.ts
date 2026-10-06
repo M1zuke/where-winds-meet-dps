@@ -6,7 +6,6 @@ export const SKILL = {
   anxisoldiermodown: "stonesplitStrength-anxisoldiermodown",
   anxisoldiermojump: "stonesplitStrength-anxisoldiermojump",
   anxisoldiermosweep: "stonesplitStrength-anxisoldiermosweep",
-  blockperception: "stonesplitStrength-blockperception",
   deflect: "stonesplitStrength-deflect",
   deflectCancel: "stonesplitStrength-deflect-cancel",
   phalanxchargedS3: "stonesplitStrength-phalanxcharged-s3",

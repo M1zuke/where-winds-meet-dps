@@ -1,7 +1,7 @@
 {
   "anchor": {
-    "dps": 70655.32,
-    "totalDamage": 4239318.98,
+    "dps": 70573.72,
+    "totalDamage": 4234423.08,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -98,7 +98,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 64463.25,
+        "expectedDamage": 59567.35,
         "castCount": 0
       },
       {
@@ -171,11 +171,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "620eb5159763639fca7b13f7133385b16450faae7371c6e92ed9ec4ff164d1f2"
+    "digest": "fd0163ab49c7c9a91451d8d4529c3c1b59e4c53e5fb69d76d5fafc4471e1302b"
   },
   "anchor:noAttunement": {
-    "dps": 63369.45,
-    "totalDamage": 3802166.87,
+    "dps": 63287.85,
+    "totalDamage": 3797270.97,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -272,7 +272,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 64463.25,
+        "expectedDamage": 59567.35,
         "castCount": 0
       },
       {
@@ -345,11 +345,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "5313dbd0a4a9e1c3eba9692350e0cba0909b7e3c51edd299b8f67502a8935be2"
+    "digest": "6f490397335718820cab81fd8fcd9a177bcd6b70761a33cd64846d83738d2f35"
   },
   "anchor:dummyOff": {
-    "dps": 70300.12,
-    "totalDamage": 4218006.97,
+    "dps": 70210.34,
+    "totalDamage": 4212620.34,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -446,7 +446,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 70924.83,
+        "expectedDamage": 65538.2,
         "castCount": 0
       },
       {
@@ -519,11 +519,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "e0831165cffb7e097a699014c38650b74c33a7103c90e703f5b420a299bd9733"
+    "digest": "1a42d97804a1f1baa1918123fbd0e07be619be401ac338c3c45a7341cd9c23c1"
   },
   "anchor:breakthrough17": {
-    "dps": 71882.79,
-    "totalDamage": 4312967.22,
+    "dps": 71797.11,
+    "totalDamage": 4307826.66,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -548,7 +548,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 75924.06,
+        "expectedDamage": 75798.25,
         "castCount": 0
       },
       {
@@ -620,7 +620,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 65689.55,
+        "expectedDamage": 60674.8,
         "castCount": 0
       },
       {
@@ -693,11 +693,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "ac8db236919e46c09611476b878fbe07be5f7f10ffb0c0db05532ac0a5b8fb3c"
+    "digest": "1d74041376711a5e5a7ffdb6b52ef5f123d45b3b302d88d8a15d97e15d5ccbfb"
   },
   "anchor:noQiBreak": {
-    "dps": 69023.68,
-    "totalDamage": 4141421.01,
+    "dps": 68942.05,
+    "totalDamage": 4136522.86,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -818,7 +818,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 64495.22,
+        "expectedDamage": 59597.08,
         "castCount": 0
       },
       {
@@ -883,11 +883,11 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "5928a5167f9ebcdedd6cbe9f1608f30caa7052eed00f39de8c085dbae4bdf9f1"
+    "digest": "f94d36bd39a93fac986c18394d7899efe878be4499f316ba3ace975d840c5f86"
   },
   "anchor:healerBuff": {
-    "dps": 73903.82,
-    "totalDamage": 4434229.48,
+    "dps": 73821.52,
+    "totalDamage": 4429291.37,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -904,7 +904,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 290449.62,
+        "expectedDamage": 291150.78,
         "castCount": 0
       },
       {
@@ -928,7 +928,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 458076.59,
+        "expectedDamage": 457660.37,
         "castCount": 0
       },
       {
@@ -984,7 +984,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 68770.97,
+        "expectedDamage": 63547.92,
         "castCount": 0
       },
       {
@@ -1057,11 +1057,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "edfdc7b79f593d3dc9cd548a82b26f1fb9a526f5bdabff79c312ab8b1597f543"
+    "digest": "9b8f1dfe2e5f04499018626093dce5454107d461dacbfe2c5ae90c2a6517f176"
   },
   "anchor:wraithstrikeScript": {
-    "dps": 71085.14,
-    "totalDamage": 4265108.25,
+    "dps": 71003.09,
+    "totalDamage": 4260185.35,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1158,7 +1158,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 64803.19,
+        "expectedDamage": 59880.29,
         "castCount": 0
       },
       {
@@ -1231,11 +1231,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d4d87d2d13994df1d4fe56edd510462f0f18386f63a86505f19fc6ef9b6b59bc"
+    "digest": "1c2235d0cb5a8c7e5dfc8db176b1e27d05898cfd9c58df4f3ff2ba948497894c"
   },
   "anchor:voidrotScript": {
-    "dps": 72032.37,
-    "totalDamage": 4321941.95,
+    "dps": 71949.65,
+    "totalDamage": 4316979.21,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1332,7 +1332,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 65381.55,
+        "expectedDamage": 60418.81,
         "castCount": 0
       },
       {
@@ -1405,11 +1405,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "5971bd1b98f422c339a06a409cf8d4171a359f1101aa819caf903fb8b031965c"
+    "digest": "a9a891d63c31681f083ee04bb127d827a3bf13db1dda2201abc9e655a4b3bb66"
   },
   "anchor:breakExtension": {
-    "dps": 71981.1,
-    "totalDamage": 4318866.27,
+    "dps": 71898.17,
+    "totalDamage": 4313890.44,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1506,7 +1506,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 65512.31,
+        "expectedDamage": 60536.48,
         "castCount": 0
       },
       {
@@ -1579,11 +1579,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "60f1eb0c771bb946d6dd52b2c6e54eeaba0fa7a6ae5dd40bbc63206fb6c96a2c"
+    "digest": "d2cae3028626a6327d11b3e7cb9d99340a4bc5d65e15e1b419d15779bf17d810"
   },
   "anchor:swordHorizonT1": {
-    "dps": 45745.73,
-    "totalDamage": 2744744.09,
+    "dps": 45669.13,
+    "totalDamage": 2740147.61,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1680,7 +1680,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59476.47,
+        "expectedDamage": 54879.99,
         "castCount": 0
       },
       {
@@ -1753,11 +1753,11 @@
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "cbbbc164c831e7ff685bf6963980a66f74100b319cf4cc23059a816169c7faf0"
+    "digest": "d9a3ecf208d3c271388e9a78d4083f2659f29d6ed52f4fe4284a063983222eac"
   },
   "anchor:noSwordHorizon": {
-    "dps": 39945.3,
-    "totalDamage": 2396718.11,
+    "dps": 39868.69,
+    "totalDamage": 2392121.63,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1870,7 +1870,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59476.47,
+        "expectedDamage": 54879.99,
         "castCount": 0
       },
       {
@@ -1943,11 +1943,11 @@
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "87d3ff41748b663f9b77ae2b6722678b1be3defce28142360fe199136a9b2f53"
+    "digest": "32e6c722b5a53ab33d171ff1d68c76dce21a7c38aa91d085626acf4d6707426b"
   },
   "anchor:noInsightfulStrike": {
-    "dps": 62634.78,
-    "totalDamage": 3758086.76,
+    "dps": 62558.72,
+    "totalDamage": 3753523.44,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -1988,7 +1988,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 110,
-        "expectedDamage": 393449.8,
+        "expectedDamage": 393448.09,
         "castCount": 0
       },
       {
@@ -2044,7 +2044,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58261.92,
+        "expectedDamage": 53700.32,
         "castCount": 0
       },
       {
@@ -2117,7 +2117,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d2092c87ced35a9f7bd8792c79cb8bad31e1291c731ba7d11a9388cbea008fc4"
+    "digest": "1a11f6bae763db26fbc84ff0188cdd97e506404ad9bcf44cc363d14fae6f8a7d"
   },
   "anchor:noMoraleChant": {
     "dps": 64607.15,
@@ -2286,8 +2286,8 @@
     "digest": "f2a272795ce674c7518ad6ce64e846f48971a5ab2f84f5ddd4b65a66b605518c"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40332.89,
-    "totalDamage": 2419973.2,
+    "dps": 40264.54,
+    "totalDamage": 2415872.68,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.87s would be illegal in the game: needs Endurance ≥ 50 (has 27.27).",
@@ -2372,7 +2372,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53791.81,
+        "expectedDamage": 49691.29,
         "castCount": 0
       },
       {
@@ -2485,11 +2485,11 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "db4e3f7137b823c31e48262b1526813321e3b480c41ff9054a44ad335ad92e7b"
+    "digest": "9426f115ee95a01a01ecb86e3721a1096c5131a17e751fed8823f8930bf634c6"
   },
   "anchor:bitterSeasonT6": {
-    "dps": 43725.33,
-    "totalDamage": 2623519.7,
+    "dps": 43657.39,
+    "totalDamage": 2619443.63,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2597,7 +2597,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54639.72,
+        "expectedDamage": 50563.65,
         "castCount": 0
       },
       {
@@ -2670,11 +2670,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "1a703947472cd8fcf542f29f77e6c526f2ea7d7654c3ce3e2744c027c3f37e1f"
+    "digest": "b530f6a8bce115b90d6ffe5c5558464b4bdc7317edba4f43704e3245c42fa49e"
   },
   "anchor:bitterSeasonT4": {
-    "dps": 42886.44,
-    "totalDamage": 2573186.54,
+    "dps": 42818.51,
+    "totalDamage": 2569110.48,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2782,7 +2782,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 53605.29,
+        "expectedDamage": 49529.23,
         "castCount": 0
       },
       {
@@ -2855,11 +2855,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "eaa85d2ef14f017df7fb0fc345afe25e799edc69a1b4dbc86d8f2ca066a1db50"
+    "digest": "daf839475ed48e9263583c17d19c40110fc1112ee7a9d9b176e41d874dd613c8"
   },
   "anchor:bitterSeasonT1": {
-    "dps": 42525.12,
-    "totalDamage": 2551507.41,
+    "dps": 42457.88,
+    "totalDamage": 2547472.83,
     "rotationDuration": 60,
     "warnings": [
       "SwordSpecial 3-Hit at 11.12s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
@@ -2967,7 +2967,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 52983.76,
+        "expectedDamage": 48949.18,
         "castCount": 0
       },
       {
@@ -3040,11 +3040,11 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "2041ffe65aa54b96c9e26c6bfaec071275405c29bebd7d8b896423c0dbba8e40"
+    "digest": "8b4dd4a9cfaf2d769536319b5f996cdeba3d3c45698e0bf9f62d06a55f2f917c"
   },
   "anchor:noSet": {
-    "dps": 64078.37,
-    "totalDamage": 3844701.95,
+    "dps": 63998.06,
+    "totalDamage": 3839883.55,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3141,7 +3141,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 58318.39,
+        "expectedDamage": 53499.99,
         "castCount": 0
       },
       {
@@ -3214,11 +3214,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "f05d33d31aeb00627f1842e96eb366d549c5cc7329c37be76ec76e91f17cae94"
+    "digest": "b00def216c1a772cf5ceae410c539decac14cd6dacc2e3df2c62f9e39478522f"
   },
   "anchor:set-Jadeware": {
-    "dps": 68964.45,
-    "totalDamage": 4137867.26,
+    "dps": 68878.82,
+    "totalDamage": 4132728.97,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3315,7 +3315,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 63537.05,
+        "expectedDamage": 58398.77,
         "castCount": 0
       },
       {
@@ -3388,11 +3388,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "0e223fdf6eb900e3db2b48c100ab707670566e39b35c416d7974be0457abf867"
+    "digest": "9b037f4f51c15c62eb72d76697036458f52b79dc2bbb0cec0a39af1558e9546d"
   },
   "anchor:set-Mistwillow": {
-    "dps": 64669.66,
-    "totalDamage": 3880179.51,
+    "dps": 64588.41,
+    "totalDamage": 3875304.44,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3489,7 +3489,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 59102.8,
+        "expectedDamage": 54227.74,
         "castCount": 0
       },
       {
@@ -3562,11 +3562,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "d84a7be5c5db41b1d6fcbe4f688a9b4556bcbe44a52e7ee55124a3ba52e4d66c"
+    "digest": "699a60912655bd6d7bd8fafb5875ef3c1818f0baeada71c245126a152028fc66"
   },
   "anchor:set-Rainwhisper": {
-    "dps": 65504.86,
-    "totalDamage": 3930291.45,
+    "dps": 65422.22,
+    "totalDamage": 3925333.06,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3663,7 +3663,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60065.94,
+        "expectedDamage": 55107.55,
         "castCount": 0
       },
       {
@@ -3736,11 +3736,11 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "8b22e1c6452b22f93315961a6f9acceb61d4a93096669cfd940cac641ddfc58e"
+    "digest": "d21446e84f443efda982baa78af883bfa13f5619c4ab8f2ff1c5a29136b14cdf"
   },
   "anchor:set-Cleftpeak": {
-    "dps": 66010.28,
-    "totalDamage": 3960616.84,
+    "dps": 65852.92,
+    "totalDamage": 3951175.45,
     "rotationDuration": 60,
     "warnings": [],
     "perSkill": [
@@ -3765,7 +3765,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 70511.72,
+        "expectedDamage": 70510.7,
         "castCount": 0
       },
       {
@@ -3821,7 +3821,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 33,
-        "expectedDamage": 1927504.86,
+        "expectedDamage": 1922385.71,
         "castCount": 0
       },
       {
@@ -3829,7 +3829,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 66211.24,
+        "expectedDamage": 66869.41,
         "castCount": 10
       },
       {
@@ -3837,7 +3837,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 60651.9,
+        "expectedDamage": 55672.5,
         "castCount": 0
       },
       {
@@ -3910,7 +3910,7 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "871838591828af63e7bf1eb630b5f73ec7348302fb2b9e860cf72b4fcf628cc6"
+    "digest": "a355181dfbfa785c19fcdec991ff34e0fb7f0ddd68af51b6f695beac686943e8"
   },
   "defaults:umbra": {
     "dps": 11737.4,

@@ -25,22 +25,24 @@ const gourdTossFlyingTornadoGrant = applyBuff({
   requiresMinTier: 4,
 })
 
-// In-game values as of 2026-10-05.
+// In-game values as of 2026-10-06: the cast's small first hit needs the caster
+// at least 2.5 m from the target after the dash, which never happens on a
+// training stake, so only the large hit lands.
 const CAST_TOTAL = {
   physMultiplier: 1.2798,
   attributeMultiplier: 1.9197,
   physFixed: 355,
   attributeFixed: 193,
 }
-const HIT_SHARES = [0.005, 0.995]
+const LANDING_HIT_SHARE = 0.995
 
-const coefficientsFor = (share: number) => ({
-  physMultiplier: CAST_TOTAL.physMultiplier * share,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier * share,
-  physFixed: CAST_TOTAL.physFixed * share,
-  attributeFixed: CAST_TOTAL.attributeFixed * share,
+const landingHitCoefficients = {
+  physMultiplier: CAST_TOTAL.physMultiplier * LANDING_HIT_SHARE,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * LANDING_HIT_SHARE,
+  physFixed: CAST_TOTAL.physFixed * LANDING_HIT_SHARE,
+  attributeFixed: CAST_TOTAL.attributeFixed * LANDING_HIT_SHARE,
   extraCritDamage: 0,
-})
+}
 
 export const fanspecial = defineSkill({
   id: SKILL.fanspecial,
@@ -63,15 +65,13 @@ export const fanspecial = defineSkill({
   // segments then teleport to about 1.5 m from the target, along its facing.
   reachMeters: 9,
   displacement: { kind: "toTarget", meters: 1.5 },
-  // Both halves land together (in-game animation, 2026-09-24).
   hits: [
-    hit(0, { frame: 33, ...coefficientsFor(HIT_SHARES[0]) }),
-    hit(1, {
+    hit(0, {
       frame: 33,
-      ...coefficientsFor(HIT_SHARES[1]),
+      ...landingHitCoefficients,
       triggers: [gourdTossThunderGrant, gourdTossFlyingTornadoGrant],
     }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-10-05T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })
