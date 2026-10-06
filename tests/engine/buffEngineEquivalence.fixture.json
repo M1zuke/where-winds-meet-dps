@@ -2,7 +2,7 @@
   "bellstrikeUmbra": {
     "static": {
       "skills": {
-        "count": 63,
+        "count": 66,
         "ids": [
           "bellstrikeUmbra-bitter-season-tick",
           "bellstrikeUmbra-bleed-detonation",
@@ -13,6 +13,7 @@
           "bellstrikeUmbra-deflect-cancel-prepull",
           "bellstrikeUmbra-delay",
           "bellstrikeUmbra-ghostly-steps",
+          "bellstrikeUmbra-ghostly-steps-umbra",
           "bellstrikeUmbra-golden-body-cancel",
           "bellstrikeUmbra-golden-body-deflect-cancel",
           "bellstrikeUmbra-perfect-dodge",
@@ -66,22 +67,26 @@
           "mystic-soaring",
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
+          "mystic-toad-fury",
+          "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "a7ab140076c7d22228e2513dd9bfa8c342b2265ef354dea95a0d41fd39db6b1d"
+        "digest": "e0ede6982af3f864b036592ee7b197e62a5a1d34aa9d6429dbfd9133860224f6"
       },
       "debuffs": {
-        "count": 7,
+        "count": 9,
         "ids": [
           "debuff-bellstrikeUmbra-bitter-season-tick",
           "debuff-bellstrikeUmbra-bleed-tick",
           "debuff-bellstrikeUmbra-defense-down",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
-          "debuff-mystic-toad-poison"
+          "debuff-mystic-toad-poison",
+          "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "a28a768da4f71f4d33db6adb277c1a01451505a72d87eebbd7dbf3ef676e2aea"
+        "digest": "b3fe88c9f67df0f3fdeaf427efb74136e1c68753472270d61bc7a052072a33c7"
       },
       "buffs": [
         {
@@ -184190,7 +184195,7 @@
   "stonesplitStrength": {
     "static": {
       "skills": {
-        "count": 56,
+        "count": 59,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -184213,6 +184218,8 @@
           "mystic-soaring",
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
+          "mystic-toad-fury",
+          "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy",
           "stonesplitStrength-anxisoldierheng",
           "stonesplitStrength-anxisoldierheng-stab",
@@ -184226,6 +184233,7 @@
           "stonesplitStrength-deflect-cancel-prepull",
           "stonesplitStrength-delay",
           "stonesplitStrength-ghostly-steps",
+          "stonesplitStrength-ghostly-steps-umbra",
           "stonesplitStrength-golden-body-cancel",
           "stonesplitStrength-golden-body-deflect-cancel",
           "stonesplitStrength-mo-blade-dual",
@@ -184249,18 +184257,20 @@
           "stonesplitStrength-snowpartingvc",
           "stonesplitStrength-snowpartingvc-prepull"
         ],
-        "digest": "6c2a6b46abe6fe3cc011575197d47e09e70af46650adee389db9475f26bc86e1"
+        "digest": "f509eb54c2a660bacc6de6f6f0d50299f1f861cc0d393d24f20f7f1e29ee19cf"
       },
       "debuffs": {
-        "count": 5,
+        "count": 7,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
+          "debuff-mystic-toad-poison-fury",
           "debuff-stonesplitStrength-bitter-season-tick"
         ],
-        "digest": "13734df869a5ac1327937211a9ad38a8da4b6f8e0cddce66f8879fa3d10e848c"
+        "digest": "28b123c08775bf6e7f7551b5be12e70eb081d4ec764f378d2ee4d229a1b0e6a5"
       },
       "buffs": [
         {
@@ -185869,7 +185879,7 @@
   "bellstrikeSplendor": {
     "static": {
       "skills": {
-        "count": 53,
+        "count": 56,
         "ids": [
           "bellstrikeSplendor-bitter-season-tick",
           "bellstrikeSplendor-deflect-cancel",
@@ -185877,6 +185887,7 @@
           "bellstrikeSplendor-delay",
           "bellstrikeSplendor-energysurge",
           "bellstrikeSplendor-ghostly-steps",
+          "bellstrikeSplendor-ghostly-steps-umbra",
           "bellstrikeSplendor-golden-body-cancel",
           "bellstrikeSplendor-golden-body-deflect-cancel",
           "bellstrikeSplendor-legioncrusher",
@@ -185923,20 +185934,24 @@
           "mystic-soaring",
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
+          "mystic-toad-fury",
+          "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "6e383433287e407c494f3d110b70c11ebab0b73c86da73b5f76eba8b37302936"
+        "digest": "2f255939699de2530947c4eee32ee5e213d2558d6e0442f2ea3a2f10b9d8e840"
       },
       "debuffs": {
-        "count": 5,
+        "count": 7,
         "ids": [
           "debuff-bellstrikeSplendor-bitter-season-tick",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
-          "debuff-mystic-toad-poison"
+          "debuff-mystic-toad-poison",
+          "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "dd9065f4a98130ba428ab0b221efebff70bac825327345875a56b400a260483f"
+        "digest": "342b5aaec6d4abd62e7ebd7926cd9a7bbd0ab57caead71a790c5357d3d451f81"
       },
       "buffs": [
         {
@@ -187548,7 +187563,7 @@
   "silkbindJade": {
     "static": {
       "skills": {
-        "count": 72,
+        "count": 76,
         "ids": [
           "mystic-dragon-fire-smolder-1-hit",
           "mystic-dragon-fire-smolder-2-hits",
@@ -187571,6 +187586,8 @@
           "mystic-soaring",
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
+          "mystic-toad-fury",
+          "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy",
           "silkbindJade-apricot-heaven-enhanced",
           "silkbindJade-apricot-heaven-normal",
@@ -187588,6 +187605,7 @@
           "silkbindJade-fanqcancel",
           "silkbindJade-fanspecial",
           "silkbindJade-ghostly-steps",
+          "silkbindJade-ghostly-steps-umbra",
           "silkbindJade-glow-and-flow-stage-1",
           "silkbindJade-glow-and-flow-stage-2",
           "silkbindJade-golden-body-cancel",
@@ -187618,20 +187636,23 @@
           "silkbindJade-umbdronelaunch-23hit",
           "silkbindJade-umbdronelaunch-26hit",
           "silkbindJade-umblightcharge",
+          "silkbindJade-umblightcharge-12",
           "silkbindJade-umblightcharge-lift",
           "silkbindJade-umbq",
           "silkbindJade-umbq-prepull",
           "silkbindJade-umbrella-dual"
         ],
-        "digest": "3e7be5c574e50d9e40d94329a9335ce5459020cc1bde6e6fb24a63e41bb9756f"
+        "digest": "99749b4cb63fb26a5dcf5924c13bf412cb760b9f7caf32f6dfa851dbd49db97f"
       },
       "debuffs": {
-        "count": 11,
+        "count": 13,
         "ids": [
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
+          "debuff-mystic-toad-poison-fury",
           "debuff-silkbindJade-bitter-season-tick",
           "debuff-silkbindJade-umbdrone",
           "debuff-silkbindJade-umbdrone-12hit",
@@ -187640,7 +187661,7 @@
           "debuff-silkbindJade-umbdrone-23hit",
           "debuff-silkbindJade-umbdrone-26hit"
         ],
-        "digest": "e7227a36f9b35113ea5d45ffdb43531190a145837fa4d8871ce1859f5249f8a5"
+        "digest": "496ac3c707ef9981aa6456e2105442f617fb1b8bbfef57e780d6eeb3c7a7dc7d"
       },
       "buffs": [
         {
@@ -189173,7 +189194,7 @@
   "bamboocutDraught": {
     "static": {
       "skills": {
-        "count": 66,
+        "count": 69,
         "ids": [
           "bamboocutDraught-bitter-season-tick",
           "bamboocutDraught-blade-vessel",
@@ -189196,6 +189217,7 @@
           "bamboocutDraught-falcons-pursuit",
           "bamboocutDraught-gauntlets-dual",
           "bamboocutDraught-ghostly-steps",
+          "bamboocutDraught-ghostly-steps-umbra",
           "bamboocutDraught-golden-body-cancel",
           "bamboocutDraught-golden-body-deflect-cancel",
           "bamboocutDraught-heros-blood",
@@ -189240,12 +189262,14 @@
           "mystic-soaring",
           "mystic-soaring-1-hit",
           "mystic-toad-cancel",
+          "mystic-toad-fury",
+          "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "73d5d580d0e84c7fcd26089dd998d652b2c4cce7e0461fb2ce6e54243faefee7"
+        "digest": "ee776695f0642344b45b5f37f58cf85d44dafe8c733e51fc62ac6add9d4516ed"
       },
       "debuffs": {
-        "count": 8,
+        "count": 10,
         "ids": [
           "debuff-bamboocutDraught-bitter-season-tick",
           "debuff-bamboocutDraught-drunkslay",
@@ -189253,10 +189277,12 @@
           "debuff-bamboocutDraught-wildstride",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
+          "debuff-mystic-ghostly-afterimage",
           "debuff-mystic-smolder",
-          "debuff-mystic-toad-poison"
+          "debuff-mystic-toad-poison",
+          "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "818880aa832ba3319f76f51ae9dc02831b1c334e36069c631dd04b82a6894595"
+        "digest": "996b166e93d9894a75758d3bc00f1d3a4435c8fc3b0ed4201f6e79edbe4b9af8"
       },
       "buffs": [
         {

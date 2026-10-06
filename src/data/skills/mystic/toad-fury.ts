@@ -4,40 +4,38 @@ import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
 
-export const toadCancel = defineSkill({
-  id: SKILL.toadCancel,
+// In-game values as of 2026-10-06 (level 171).
+export const toadFury = defineSkill({
+  id: SKILL.toadFury,
   classId: MYSTIC_ARTS_CLASS_ID,
-  name: "Toad[Cancel]",
+  name: "Leaping Toad - Fury",
   tags: [MYSTIC.areaDebuff],
   skillType: "mystic",
   weaponOrAttribute: "",
   attributeAttack: "",
-  castTag: CAST.toadCancel,
+  castTag: CAST.toadFury,
   cancelledBy: "deflectCancel",
-  // Cast length to the earliest next input and hit frames: in-game
-  // animation, 2026-09-24.
   castFrames: 96,
   triggerable: true,
-  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
   reachMeters: 8,
   approach: "stationary",
   hits: [
     hit(0, {
       frame: 40,
-      physMultiplier: 0.54063,
-      attributeMultiplier: 0.810945,
-      physFixed: 81.23,
+      physMultiplier: 0.510034,
+      attributeMultiplier: 0.765052,
+      physFixed: 77.3328,
       attributeFixed: 0,
     }),
     hit(1, {
       frame: 68,
-      physMultiplier: 3.24377,
-      attributeMultiplier: 4.865655,
-      physFixed: 487.39,
+      physMultiplier: 3.060207,
+      attributeMultiplier: 4.59031,
+      physFixed: 463.997,
       attributeFixed: 0,
-      triggers: [applyDebuff({ target: DEBUFF.toadPoison })],
+      triggers: [applyDebuff({ target: DEBUFF.toadPoisonFury })],
     }),
   ],
-  createdAt: "2026-07-19T00:00:00.000Z",
+  createdAt: "2026-10-06T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",
 })

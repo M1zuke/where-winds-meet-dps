@@ -61,6 +61,7 @@ import { V57__nightwickFollowUpCancelledByNextSkill } from "./V57__nightwickFoll
 import { V58__inGameCoefficientCorrections } from "./V58__inGameCoefficientCorrections"
 import { V59__removeNightwickTipsylayHybrid } from "./V59__removeNightwickTipsylayHybrid"
 import { V60__springlessSilenceLandingHitOnly } from "./V60__springlessSilenceLandingHitOnly"
+import { V61__boundvesselSpringAwayToadAfterimageTiming } from "./V61__boundvesselSpringAwayToadAfterimageTiming"
 
 export type {
   CustomSkillMigration,
@@ -190,6 +191,7 @@ export const CUSTOM_SKILL_MIGRATIONS: readonly CustomSkillMigration[] = [
   V58__inGameCoefficientCorrections,
   V59__removeNightwickTipsylayHybrid,
   V60__springlessSilenceLandingHitOnly,
+  V61__boundvesselSpringAwayToadAfterimageTiming,
 ]
 
 // The store's version before it had a chain; older blobs used a shape no step

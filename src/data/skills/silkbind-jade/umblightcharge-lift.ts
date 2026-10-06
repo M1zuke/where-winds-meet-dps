@@ -4,8 +4,8 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// The lift that opens Spring Away, triggered alongside its frame-20 bullet.
-// No attunement, no crit term, no non-player factor. In-game values as of
+// The lift that opens Spring Away, triggered alongside its first bullet. No
+// attunement, no crit term, no non-player factor. In-game values as of
 // 2026-09-24.
 export const umblightchargeLift = defineSkill({
   id: SKILL.umblightchargeLift,

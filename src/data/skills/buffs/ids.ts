@@ -92,6 +92,7 @@ export const BUFF = {
   trajectorySkill: "trajectorySkill",
   mirage: "mirage",
   mirageBonus: "mirageBonus",
+  ghostlyStepsUmbra: "ghostlyStepsUmbra",
   mirageEnduranceCostReduction: "mirageEnduranceCostReduction",
   mistwillowBuff: "mistwillowBuff",
   mistwillowHeavyBuff: "mistwillowHeavyBuff",

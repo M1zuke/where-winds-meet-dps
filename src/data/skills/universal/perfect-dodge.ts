@@ -5,6 +5,7 @@ import { SKILL } from "./ids"
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 import { CALMWATERS_PERFECT_DODGE_GAIN } from "./buffs/calmwatersPerfectDodgeGain"
 import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "./buffs/evasiveChargeDodgeRefund"
+import { GHOSTLY_AFTERIMAGE_TRIGGER } from "./buffs/ghostlyAfterimage"
 
 export const perfectDodge = defineSkill({
   id: SKILL.perfectDodge,
@@ -35,7 +36,7 @@ export const perfectDodge = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [CALMWATERS_PERFECT_DODGE_GAIN, ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS],
+      triggers: [CALMWATERS_PERFECT_DODGE_GAIN, ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS, GHOSTLY_AFTERIMAGE_TRIGGER],
     }),
   ],
   createdAt: "2026-07-19T00:00:00.000Z",

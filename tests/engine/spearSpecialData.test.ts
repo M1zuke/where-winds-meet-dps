@@ -251,7 +251,7 @@ describe("built-in data — one file per skill", () => {
 describe("builtinBuffsForClass", () => {
   it("bellstrikeUmbra carries the River Flow tier ladder as layered magnitudes, and Spear Special Cooldown, Zenith Bar and Zenith Detonation as effect-less state markers", () => {
     const buffs = builtinBuffsForClass(CLASS)
-    expect(buffs).toHaveLength(9)
+    expect(buffs).toHaveLength(10)
     const waterDrop = buffs.find((b) => b.id === WATER_DROP_BUFF_ID)!
     const springSurge = buffs.find((b) => b.id === SPRING_SURGE_BUFF_ID)!
     const riverFlow = buffs.find((b) => b.id === BUFF.potentRiverFlow)!

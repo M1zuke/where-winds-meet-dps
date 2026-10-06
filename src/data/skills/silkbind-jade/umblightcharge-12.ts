@@ -11,24 +11,25 @@ import {
   springAwayHoverDrain,
 } from "./springAway"
 
-const BULLET_COUNT = 6
+const BULLET_COUNT = 12
 
-export const umblightcharge = defineSkill({
-  id: SKILL.umblightcharge,
+export const umblightcharge12 = defineSkill({
+  id: SKILL.umblightcharge12,
   classId: "silkbindJade",
-  name: "UmbLightCharge",
+  name: "UmbLightCharge (12 bullets)",
+  breakdownName: "UmbLightCharge",
   tags: SPRING_AWAY_TAGS,
   skillType: "sustain",
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Silkbind",
-  castTag: CAST.umbLightCharge,
+  castTag: CAST.umbLightCharge12,
   receives: SPRING_AWAY_RECEIVES,
-  castFrames: 140,
+  castFrames: 200,
   triggerable: true,
   // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
   // shrink-only pull toward a locked target.
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
-  meterDrains: springAwayHoverDrain(1),
+  meterDrains: springAwayHoverDrain(2),
   hits: Array.from({ length: BULLET_COUNT }, (_, index) =>
     hit(index, {
       frame: SPRING_AWAY_FIRST_BULLET_FRAME + index * SPRING_AWAY_BULLET_SPACING_FRAMES,
@@ -36,6 +37,6 @@ export const umblightcharge = defineSkill({
       ...(index === 0 ? { triggers: [castSkill({ target: SKILL.umblightchargeLift })] } : {}),
     }),
   ),
-  createdAt: "2026-08-17T00:00:00.000Z",
+  createdAt: "2026-10-06T00:00:00.000Z",
   updatedAt: "2026-10-06T00:00:00.000Z",
 })

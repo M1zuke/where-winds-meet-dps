@@ -21,11 +21,15 @@ export const SKILL = {
   soaring1Hit: "mystic-soaring-1-hit",
   soaring: "mystic-soaring",
   toadCancel: "mystic-toad-cancel",
+  toadFury: "mystic-toad-fury",
+  toadFuryHit: "mystic-toad-fury-hit",
 } as const
 
 export const DEBUFF = {
   combustion: "debuff-mystic-combustion",
   fluteRipple: "debuff-mystic-flute-ripple",
+  ghostlyAfterimage: "debuff-mystic-ghostly-afterimage",
   smolder: "debuff-mystic-smolder",
   toadPoison: "debuff-mystic-toad-poison",
+  toadPoisonFury: "debuff-mystic-toad-poison-fury",
 } as const

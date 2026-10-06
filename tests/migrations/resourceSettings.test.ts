@@ -38,6 +38,7 @@ describe("additive saved resource settings", () => {
         qHit: 20,
         heavyLightCast: 45,
         chargedHit: 0,
+        chargedHit12: 40.8,
         chargedHitLift: 4,
         apricotHeavenHit: 8,
         bambooBreezeHit: 6,

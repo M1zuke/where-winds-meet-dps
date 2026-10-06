@@ -6,6 +6,7 @@ import { SKILL, STATUS } from "./ids"
 import { enduranceCost, enduranceMeter, enduranceRequires } from "../../resources/enduranceMeter"
 import { CALMWATERS_PERFECT_DODGE_GAIN } from "../universal/buffs/calmwatersPerfectDodgeGain"
 import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "../universal/buffs/evasiveChargeDodgeRefund"
+import { GHOSTLY_AFTERIMAGE_TRIGGER } from "../universal/buffs/ghostlyAfterimage"
 import { drawnWeaponStatusId } from "../../../engine/weaponSwap"
 
 // In-game talent text, 2026-09-06: a Perfect Dodge restores 5 Binge Points
@@ -59,6 +60,7 @@ export const perfectDodge = defineSkill({
         gauntletsPerfectDodgeGain,
         CALMWATERS_PERFECT_DODGE_GAIN,
         ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS,
+        GHOSTLY_AFTERIMAGE_TRIGGER,
       ],
     }),
   ],

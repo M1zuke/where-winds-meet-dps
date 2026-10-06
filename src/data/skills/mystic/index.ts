@@ -20,6 +20,8 @@ import { poet4 } from "./poet4"
 import { soaring1Hit } from "./soaring-1-hit"
 import { soaring } from "./soaring"
 import { toadCancel } from "./toad-cancel"
+import { toadFury } from "./toad-fury"
+import { toadFuryHit } from "./toad-fury-hit"
 import { wolflikeFrenzy } from "./wolflike-frenzy"
 
 export { MYSTIC_DEBUFFS } from "./debuffs"
@@ -46,5 +48,7 @@ export const MYSTIC_SKILLS: readonly Skill[] = [
   soaring1Hit,
   soaring,
   toadCancel,
+  toadFury,
+  toadFuryHit,
   wolflikeFrenzy,
 ]

@@ -4,6 +4,7 @@ export const SKILL = {
   umbq: "silkbindJade-umbq",
   umbqPrepull: "silkbindJade-umbq-prepull",
   umblightcharge: "silkbindJade-umblightcharge",
+  umblightcharge12: "silkbindJade-umblightcharge-12",
   umblightchargeLift: "silkbindJade-umblightcharge-lift",
   apricotHeavenNormal: "silkbindJade-apricot-heaven-normal",
   apricotHeavenEnhanced: "silkbindJade-apricot-heaven-enhanced",

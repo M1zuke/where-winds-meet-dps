@@ -14,6 +14,7 @@ import { healSkill as healEvasiveChargeDodgeRefund } from "../../src/migrations/
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healSkill as healWeaponDrawnGates } from "../../src/migrations/customSkills/V47__weaponDrawnGates"
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
+import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -76,7 +77,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
     : skill
   const withFrames = healCastLengthAndHitFrameRepairs(withGains) as Skill
   const withDrawnGates = healWeaponDrawnGates(withFrames) as Skill
-  return healQiRateDefault(withDrawnGates) as Skill
+  const withQiRate = healQiRateDefault(withDrawnGates) as Skill
+  return healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
@@ -94,7 +96,7 @@ describe("custom-skills v24 fixture", () => {
 
   it("stores rows the built-ins no longer carry", () => {
     expect(builtinOf("bamboocutDraught-light-attack").hits).toHaveLength(8)
-    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(12)
+    expect(builtinOf("bamboocutDraught-boundvessel").hits).toHaveLength(15)
   })
 })
 

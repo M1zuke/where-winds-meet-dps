@@ -73,6 +73,15 @@ export const blossomResource = defineResource({
       divideAcrossSkillHits: true,
     },
     {
+      id: "chargedHit12",
+      name: "Spring Away 12-bullet gain",
+      // In-game values as of 2026-10-06: 3.4 per hover bullet, this module's
+      // 12 modelled hits.
+      defaultAmount: 3.4 * 12,
+      skillIds: [SKILL.umblightcharge12],
+      divideAcrossSkillHits: true,
+    },
+    {
       id: "chargedHitLift",
       name: "Spring Away lift gain",
       // In-game values as of 2026-09-30.

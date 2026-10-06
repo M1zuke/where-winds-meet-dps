@@ -22,13 +22,11 @@ const rapidSlash = (index: number, frame: number) =>
 // Coefficients at skill level 100 (in-game damage tooltip, 2026-09-04): the
 // press splits its 0.60053 / 167 / 91 total into two hits of 0.5 each; rapid
 // slash 1.7436 / 483 / 263 at 0.091 per hit; the two finishing slashes split
-// 0.2 and 0.4 of 0.5772 / 161 / 87; attribute side × 1.5. Eight rapid slashes
-// is the bound for a full hold at base speed (in-game values as of
-// 2026-09-16) — the app plays the loop at that speed, so 8 is used rather
-// than the up-to-60%-faster upper end. The completed hold grants Cloudvault
-// (in-game skill text, 2026-09-04). The rapid slashes divide the hold evenly
-// (in-game animation, 2026-09-05); cast length and the finishing hit frames
-// to the full hold's own finish: in-game animation, 2026-09-24.
+// 0.2 and 0.4 of 0.5772 / 161 / 87; attribute side × 1.5. The hold is 11
+// slashes, spread evenly across the loop window (in-game values as of
+// 2026-10-06). The completed hold grants Cloudvault (in-game skill text,
+// 2026-09-04); cast length and the finishing hit frames to the full hold's own
+// finish: in-game animation, 2026-09-24.
 export const boundvessel = defineSkill({
   id: SKILL.boundvessel,
   classId: "bamboocutDraught",
@@ -52,7 +50,7 @@ export const boundvessel = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   // The rapid-slash loop's own Endurance drain, 1.6 s from its start
   // (in-game values as of 2026-09-24).
-  meterDrains: [{ meterId: enduranceMeter.id, perSecond: 15, fromFrame: 36, stopAfterSec: 1.6 }],
+  meterDrains: [{ meterId: enduranceMeter.id, perSecond: 15, fromFrame: 40, stopAfterSec: 1.6 }],
   hits: [
     hit(0, {
       frame: 24,
@@ -70,14 +68,17 @@ export const boundvessel = defineSkill({
       attributeFixed: 45.5,
       conditions: INEBRIATE,
     }),
-    rapidSlash(1, 36),
-    rapidSlash(2, 44),
-    rapidSlash(3, 52),
-    rapidSlash(4, 60),
-    rapidSlash(5, 68),
-    rapidSlash(6, 76),
-    rapidSlash(7, 84),
-    rapidSlash(8, 92),
+    rapidSlash(1, 47),
+    rapidSlash(2, 56),
+    rapidSlash(3, 65),
+    rapidSlash(4, 74),
+    rapidSlash(5, 83),
+    rapidSlash(6, 91),
+    rapidSlash(7, 100),
+    rapidSlash(8, 109),
+    rapidSlash(9, 118),
+    rapidSlash(10, 127),
+    rapidSlash(11, 135),
     hit(12, {
       frame: 144,
       physMultiplier: 0.11544,
@@ -87,7 +88,7 @@ export const boundvessel = defineSkill({
       conditions: INEBRIATE,
     }),
     hit(13, {
-      frame: 160,
+      frame: 161,
       physMultiplier: 0.23088,
       attributeMultiplier: 0.34632,
       physFixed: 64.4,
@@ -97,5 +98,5 @@ export const boundvessel = defineSkill({
     }),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
 })

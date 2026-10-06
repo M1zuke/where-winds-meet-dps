@@ -6,6 +6,7 @@ import { bingePointDodgeGrant, gauntletsPerfectDodgeGain } from "./perfect-dodge
 import { enduranceCost, enduranceRequires } from "../../resources/enduranceMeter"
 import { CALMWATERS_PERFECT_DODGE_GAIN } from "../universal/buffs/calmwatersPerfectDodgeGain"
 import { EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS } from "../universal/buffs/evasiveChargeDodgeRefund"
+import { GHOSTLY_AFTERIMAGE_TRIGGER } from "../universal/buffs/ghostlyAfterimage"
 
 export const perfectDodgeFull = defineSkill({
   id: SKILL.perfectDodgeFull,
@@ -39,6 +40,7 @@ export const perfectDodgeFull = defineSkill({
         gauntletsPerfectDodgeGain,
         CALMWATERS_PERFECT_DODGE_GAIN,
         ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS,
+        GHOSTLY_AFTERIMAGE_TRIGGER,
       ],
     }),
   ],

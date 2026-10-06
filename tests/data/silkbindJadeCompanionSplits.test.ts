@@ -43,6 +43,15 @@ describe("Spring Away's lift companion", () => {
     expect(lift?.count).toBe(1)
   })
 
+  it("fires once per 12-bullet cast too, merged into the same breakdown row", () => {
+    const result = simulate("silkbindJade-umblightcharge-12")
+    const bullets = result.perSkill.find((entry) => entry.name === "UmbLightCharge (12 bullets)")
+    const lift = result.perSkill.find((entry) => entry.name === "UmbLightCharge (Lift)")
+    expect(bullets?.count).toBe(12)
+    expect(lift?.count).toBe(1)
+    expect(bullets?.breakdownName).toBe(lift?.breakdownName)
+  })
+
   it("carries no attunement tag", () => {
     const lift = builtinSkill("silkbindJade", "silkbindJade-umblightcharge-lift")
     expect(lift.tags?.some((tag) => tag.startsWith("attune:"))).toBe(false)

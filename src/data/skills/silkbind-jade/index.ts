@@ -20,6 +20,7 @@ import { umbdronelaunch20Hit } from "./umbdronelaunch-20hit"
 import { umbdronelaunch23Hit } from "./umbdronelaunch-23hit"
 import { umbdronelaunch26Hit } from "./umbdronelaunch-26hit"
 import { umblightcharge } from "./umblightcharge"
+import { umblightcharge12 } from "./umblightcharge-12"
 import { umblightchargeLift } from "./umblightcharge-lift"
 import { apricotHeavenNormal } from "./apricot-heaven-normal"
 import { apricotHeavenEnhanced } from "./apricot-heaven-enhanced"
@@ -66,6 +67,7 @@ export const SKILLS: Skill[] = [
   umbdronelaunch23Hit,
   umbdronelaunch26Hit,
   umblightcharge,
+  umblightcharge12,
   umblightchargeLift,
   apricotHeavenNormal,
   apricotHeavenEnhanced,
