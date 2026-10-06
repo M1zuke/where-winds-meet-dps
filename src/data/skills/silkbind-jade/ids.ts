@@ -42,6 +42,10 @@ export const SKILL = {
   deflectCancel: "silkbindJade-deflect-cancel",
   umbrellaDual: "silkbindJade-umbrella-dual",
   fanDual: "silkbindJade-fan-dual",
+  umbrellaDash: "silkbindJade-umbrella-dash",
+  fanLight: "silkbindJade-fan-light",
+  fanLightChain: "silkbindJade-fan-light-chain",
+  fanDash: "silkbindJade-fan-dash",
 } as const
 
 export const DEBUFF = {

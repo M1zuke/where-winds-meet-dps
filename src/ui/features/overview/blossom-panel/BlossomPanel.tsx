@@ -14,6 +14,7 @@ const GAIN_KEYS = {
   heavyLightCast: "overview.blossoms.heavyLightCast",
   chargedHit: "overview.blossoms.chargedHit",
   chargedHit12: "overview.blossoms.chargedHit12",
+  umbrellaDashBullet: "overview.blossoms.umbrellaDashBullet",
   chargedHitLift: "overview.blossoms.chargedHitLift",
   apricotHeavenHit: "overview.blossoms.apricotHeavenHit",
   bambooBreezeHit: "overview.blossoms.bambooBreezeHit",

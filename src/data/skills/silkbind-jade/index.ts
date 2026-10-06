@@ -41,6 +41,10 @@ import { umbq } from "./umbq"
 import { deflectCancel } from "./deflect-cancel"
 import { umbrellaDual } from "./umbrella-dual"
 import { fanDual } from "./fan-dual"
+import { umbrellaDash } from "./umbrella-dash"
+import { fanLight } from "./fan-light"
+import { fanLightChain } from "./fan-light-chain"
+import { fanDash } from "./fan-dash"
 
 export const CLASS_ID = "silkbindJade"
 
@@ -88,4 +92,8 @@ export const SKILLS: Skill[] = [
   deflectCancel,
   umbrellaDual,
   fanDual,
+  umbrellaDash,
+  fanLight,
+  fanLightChain,
+  fanDash,
 ]
