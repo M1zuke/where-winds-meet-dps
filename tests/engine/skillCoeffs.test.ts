@@ -54,6 +54,11 @@ describe("built-in trigger targets all resolve", () => {
       ...builtinDebuffsForClass(CLASS).map((d) => d.id),
     ])
     const meterIds = new Set((classDefinition(CLASS)?.meters ?? []).map((meter) => meter.id))
+    const cooldownGroups = new Set(
+      skills.flatMap((skill) =>
+        skill.hits.flatMap((hit) => hit.triggers.map((trigger) => trigger.cooldownGroup ?? "")),
+      ),
+    )
 
     const dangling: string[] = []
     for (const skill of skills) {
@@ -64,7 +69,9 @@ describe("built-in trigger targets all resolve", () => {
               ? skillIds
               : trigger.kind === "meterDelta"
                 ? meterIds
-                : statusIds
+                : trigger.kind === "cooldownCut"
+                  ? new Set([...statusIds, ...cooldownGroups])
+                  : statusIds
           if (!pool.has(trigger.targetId)) {
             dangling.push(`${skill.name} [${hit.id}] ${trigger.kind} -> ${trigger.targetId}`)
           }

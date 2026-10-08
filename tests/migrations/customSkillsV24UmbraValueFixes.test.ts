@@ -23,6 +23,7 @@ import { healSkill as healMeterModifierGains } from "../../src/migrations/custom
 import { healSkill as healWolfchasersArtSweepAllEnduranceGain } from "../../src/migrations/customSkills/V41__wolfchasersArtSweepAllEnduranceGain"
 import { healSkillFrames as healCastLengthAndHitFrameRepairs } from "../../src/migrations/customSkills/V45__castLengthAndHitFrameRepairs"
 import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRateDefaults"
+import { healSkill as healBleedRefundLockout } from "../../src/migrations/customSkills/V67__bleedRefundLockoutAndSecondTrackSlashEndurance"
 import storeV23File from "./testCustomSkills/v23/store.json"
 
 const STORE = storeV23File as unknown as RawCustomSkillsBlob
@@ -568,13 +569,14 @@ describe("V24__umbraValueFixes migration step", () => {
     ]) {
       // V38 later adds an Endurance gain to Crosswind Blade's one hit, V39 a
       // Bleeding refund to the same hit, V41 Wolfchaser's Art's own Endurance
-      // gain to Sweep All's own hit, and V48 Blood Burst's own Qi rate — each
-      // a no-op on every other id here.
+      // gain to Sweep All's own hit, V48 Blood Burst's own Qi rate and V67 the
+      // shared Bleeding refund lockout — each a no-op on every other id here.
       const meterHealed = healMeterFieldsAndGains(skillIn(result.blob, id))
       const modifierHealed = healMeterModifierGains(meterHealed)
       const enduranceHealed = healWolfchasersArtSweepAllEnduranceGain(modifierHealed)
       const frameHealed = healCastLengthAndHitFrameRepairs(enduranceHealed)
-      const healed = healQiRateDefault(frameHealed) as Record<string, unknown>
+      const qiRateHealed = healQiRateDefault(frameHealed)
+      const healed = healBleedRefundLockout(qiRateHealed) as Record<string, unknown>
       const builtin = builtins.find((skill) => skill.id === id)!
       expect(healed.hits, id).toEqual(builtin.hits)
     }

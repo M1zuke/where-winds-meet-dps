@@ -16,11 +16,15 @@ const CLASS = "bellstrikeUmbra"
 function timelineInputs(
   rotation: Rotation,
   skills: Skill[],
-  overrides: Partial<Inputs> & { pingMs?: number; averageFps?: number } = {},
+  overrides: Partial<Inputs> & {
+    pingMs?: number
+    averageFps?: number
+    serverProcessingMs?: number
+  } = {},
   buffs: Buff[] = [],
   debuffs: Debuff[] = [],
 ): Inputs {
-  const { pingMs, averageFps, ...rest } = overrides
+  const { pingMs, averageFps, serverProcessingMs, ...rest } = overrides
   return {
     ...defaultInputs,
     classId: CLASS,
@@ -31,6 +35,7 @@ function timelineInputs(
       ...rotation,
       ...(pingMs !== undefined ? { pingMs } : {}),
       ...(averageFps !== undefined ? { averageFps } : {}),
+      ...(serverProcessingMs !== undefined ? { serverProcessingMs } : {}),
     },
     ...rest,
   }
@@ -443,5 +448,34 @@ describe("ping and average fps — drops hits pushed past a fixed window", () =>
     expect(lagged.totalDamage).toBe(
       lagged.perSkill.find((row) => row.name === "Anchor")?.expectedDamage,
     )
+  })
+})
+
+describe("the rotation's own server processing time", () => {
+  const waiting = makeSkill(CLASS, {
+    name: "Waiting",
+    castFrames: 30,
+    serverWaitsInCast: 1,
+    hits: [makeHit()],
+  })
+  const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: waiting.id })] })
+  const runWith = (serverProcessingMs: number, pingMs = 100) =>
+    simulateTimeline(
+      timelineInputs(rotation, [waiting], { pingMs, averageFps: 60, serverProcessingMs }),
+    )
+
+  it("lengthens a server-wait rotation when raised", () => {
+    expect(runWith(200).rotationDuration).toBeGreaterThan(runWith(32).rotationDuration)
+  })
+
+  it("at 0 ms matches the plain round trip plus one render frame", () => {
+    const result = runWith(0)
+    expect(result.casts![0].timeSec).toBeCloseTo(7 / FPS, 10)
+    expect(result.castDuration).toBeCloseTo((7 + 30 + 6) / FPS, 10)
+  })
+
+  it("is a no-op at 0 ms ping whatever its value", () => {
+    expect(runWith(500, 0).castDuration).toBeCloseTo(runWith(0, 0).castDuration, 10)
+    expect(runWith(500, 0).casts![0].timeSec).toBe(0)
   })
 })

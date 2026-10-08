@@ -21,6 +21,7 @@ interface TriggerSpec {
   meterSpendCapToCurrent?: number
   recordSpendAsStatus?: string
   refundFractionOfCastCost?: number
+  conditionsBeforeHit?: boolean
 }
 
 function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
@@ -54,6 +55,9 @@ function trigger(kind: TriggerKind, spec: TriggerSpec): HitTrigger {
       : {}),
     ...(spec.refundFractionOfCastCost !== undefined
       ? { refundFractionOfCastCost: spec.refundFractionOfCastCost }
+      : {}),
+    ...(spec.conditionsBeforeHit !== undefined
+      ? { conditionsBeforeHit: spec.conditionsBeforeHit }
       : {}),
   }
 }

@@ -18,9 +18,8 @@ import {
   type Rotation,
   type RotationStep,
 } from "../../../../engine/rotation"
-import { activeRotationForInputs, builtinRotationPingFpsOverride } from "../../../../engine/dps"
+import { activeRotationForInputs } from "../../../../engine/dps"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
-import { DEFAULT_AVERAGE_FPS, DEFAULT_PING_MS } from "../../../../engine/pingFps"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
@@ -228,12 +227,6 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const selectedBuiltin = !isCustom
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
-  const pingFpsOverride = activeRotation
-    ? builtinRotationPingFpsOverride(inputs, activeRotation.id)
-    : null
-  const effectivePingMs = pingFpsOverride?.pingMs ?? activeRotation?.pingMs ?? DEFAULT_PING_MS
-  const effectiveAverageFps =
-    pingFpsOverride?.averageFps ?? activeRotation?.averageFps ?? DEFAULT_AVERAGE_FPS
 
   const computedDurationSec = result.rotationDuration
 
@@ -324,24 +317,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
-  function setRotationPingFps(pingMs: number, averageFps: number) {
-    if (isCustom) {
-      commitRotation((rotation) => ({ ...rotation, pingMs, averageFps }))
-      return
-    }
-    if (!activeRotation) return
-    onChange({
-      ...inputs,
-      builtinRotationPingFpsOverrides: {
-        ...inputs.builtinRotationPingFpsOverrides,
-        [activeRotation.id]: { pingMs, averageFps },
-      },
-    })
-  }
-  function resetPingFpsOverride() {
-    if (!activeRotation) return
-    const { [activeRotation.id]: _dropped, ...rest } = inputs.builtinRotationPingFpsOverrides ?? {}
-    onChange({ ...inputs, builtinRotationPingFpsOverrides: rest })
+  function setRotationConnection(
+    connection: Pick<Rotation, "pingMs" | "averageFps" | "serverProcessingMs">,
+  ) {
+    commitRotation((rotation) => ({ ...rotation, ...connection }))
   }
   function setFixedWindowSec(windowSec: number | undefined) {
     commitRotation((rotation) => {
@@ -373,8 +352,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       openingStacks: { ...activeRotation.openingStacks },
       qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
       fixedWindowSec: activeRotation.fixedWindowSec,
-      pingMs: effectivePingMs,
-      averageFps: effectiveAverageFps,
+      pingMs: activeRotation.pingMs,
+      averageFps: activeRotation.averageFps,
+      serverProcessingMs: activeRotation.serverProcessingMs,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -539,28 +519,24 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               </span>
             </label>
             <label className={styles.field}>
-              <span>{t("rotation.editor.pingAndFps")}</span>
+              <span>{t("rotation.editor.connection")}</span>
               <span className={styles.fixedWindow}>
                 <PingFpsFields
-                  pingMs={effectivePingMs}
-                  averageFps={effectiveAverageFps}
+                  pingMs={activeRotation.pingMs}
+                  averageFps={activeRotation.averageFps}
+                  serverProcessingMs={activeRotation.serverProcessingMs}
+                  disabled={!isCustom}
                   onPingMsChange={(next) =>
-                    next !== null && setRotationPingFps(next, effectiveAverageFps)
+                    next !== null && setRotationConnection({ ...activeRotation, pingMs: next })
                   }
                   onAverageFpsChange={(next) =>
-                    next !== null && setRotationPingFps(effectivePingMs, next)
+                    next !== null && setRotationConnection({ ...activeRotation, averageFps: next })
+                  }
+                  onServerProcessingMsChange={(next) =>
+                    next !== null &&
+                    setRotationConnection({ ...activeRotation, serverProcessingMs: next })
                   }
                 />
-                {pingFpsOverride && (
-                  <button
-                    type="button"
-                    className="btn icon"
-                    onClick={resetPingFpsOverride}
-                    title={t("rotation.editor.overridden")}
-                  >
-                    {t("common.resetToDefault")}
-                  </button>
-                )}
               </span>
             </label>
             <div className={styles.actions}>

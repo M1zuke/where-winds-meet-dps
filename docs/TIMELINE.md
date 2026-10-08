@@ -33,7 +33,7 @@ on the 60 fps grid. Rules:
   row.
 - Every authored `frame` and `castFrames` is the nominal 60 fps value,
   regardless of `startLatency`. A skill's `startLatency` states how its start
-  relates to the server: waiting for the round trip plus a fixed server
+  relates to the server: waiting for the round trip plus the server
   processing time plus one input-frame-rate frame (the default), skipping the
   round trip and the server processing time only in dummy mode while still
   paying the one frame, or never waiting because the step is not a real skill
@@ -47,11 +47,13 @@ on the 60 fps grid. Rules:
   zero-round-trip waiver applies. The engine adds every resolved wait ahead of
   or within a cast and quantises every cast's start, length and hit offset to
   the input frame rate on top of the authored data — never baked into a skill
-  module. The round trip and the input frame rate both come from the active
-  rotation's own connection fields, never from the profile: every rotation
-  carries its own ping and average frame rate, a built-in rotation's own
-  values overridable per profile, and the engine reads nothing else for
-  either.
+  module. The round trip, the server processing time and the input frame rate
+  all come from the active rotation's own connection fields, never from the
+  profile: every rotation carries its own ping, server processing time and
+  average frame rate, each with a default. These are properties of the
+  rotation: a built-in rotation's values are fixed and cannot be changed by the
+  user, only a custom rotation's can be edited, and the engine reads nothing
+  else for any of them.
 - **Identifiers are English only** (CLAUDE.md § "Language").
 - **Every hit and every damage-over-time tick carries a Qi rate** (`qiRate`,
   a flat channel `qiFlat`), read by the Qi bar rather than by the HP-damage
@@ -571,6 +573,25 @@ works unchanged.
   granting cast's own start rather than this hit's frame — so a module whose
   bonus depends on what a capped release actually spent reads the same amount
   from every hit of that release, including one landing earlier than this one.
+- **A `meterDelta` trigger may set `conditionsBeforeHit`**: its conditions read
+  the status ledger as it stood before the granting hit's own triggers wrote,
+  so a stack count that same hit adds is not yet visible to it. Its cooldown
+  still resolves in the meter's frame order.
+- **A `cooldownCut` carrying `appliesOnCastEnd` lands at the owning cast's laid
+  end, in the meter's frame order beside the `meterDelta` events** — never
+  eagerly while its hit is processed — so it releases a cooldown group that
+  `meterDelta` triggers share exactly where their own firings sit in time. A
+  cast cut short by the next cast ends where it was cut, because its laid
+  length already stops there. A pre-pull cast never queues one.
+- **A skill's `meterCosts` entry may carry `atFrame`**: the spend lands that
+  many frames into the cast instead of at its start, in the meter's frame order,
+  and pays every cost modifier active at that frame. A cost with `atFrame` is
+  not paid by the cast-start step and is not part of the amount a
+  `refundFractionOfCastCost` refunds.
+- **The layout ledger of a detonating debuff follows its detonation**: a hit
+  carrying `detonateDot` whose own stack reaches the cap resets the stacks to the
+  retained amount at that hit's frame, by the same rule the scored run applies,
+  so a condition the meter evaluates reads the stack count the scored run has.
 - **A `meterDelta` trigger's own `refundFractionOfCastCost` gains this
   fraction of what the owning cast actually paid to its own `targetId`
   meter**, after every cost modifier, in place of a fixed `stacks` amount —

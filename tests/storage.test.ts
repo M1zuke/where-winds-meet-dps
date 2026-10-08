@@ -25,6 +25,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "../src/engine/bui
 import { seedSkillFromBuiltin } from "../src/engine/skill"
 import { makeSkill } from "../src/engine/skill"
 import { makeRotation, makeStep } from "../src/engine/rotation"
+import { DEFAULT_SERVER_PROCESSING_MS } from "../src/engine/pingFps"
 import { computeGearContribution } from "../src/engine/gearStats"
 import {
   DERIVED_STAT_FIELDS,
@@ -325,77 +326,60 @@ describe("profiles carry selections only — derived stats are never persisted",
     )
   })
 
-  it("keeps a built-in rotation ping/fps override across a save and reload, and only for its own id", () => {
-    const overrides = {
-      "builtin-a": { pingMs: 80, averageFps: 144 },
-      "builtin-b": { pingMs: 20, averageFps: 120 },
-    }
-    const profile = makeProfile("p1", {
-      ...defaultInputs,
-      builtinRotationPingFpsOverrides: overrides,
-    })
-    saveProfiles({ profiles: [profile], activeId: profile.id })
+  describe("a stored built-in rotation ping/fps override is kept unread, exactly as stored", () => {
+    const storedOverrides = [
+      {
+        "builtin-a": { pingMs: 80, averageFps: 144, serverProcessingMs: 48 },
+        "builtin-b": { pingMs: 20, averageFps: 120, serverProcessingMs: 32 },
+      },
+      { "builtin-a": { pingMs: 80, averageFps: 144 } },
+      { "builtin-b": { pingMs: "not a number", averageFps: 999999 } },
+      "not an object",
+    ]
+    const withStoredOverride = (overrides: unknown) =>
+      ({ ...defaultInputs, builtinRotationPingFpsOverrides: overrides }) as Inputs
+    const storedOverrideOf = (inputs: Inputs) =>
+      (inputs as unknown as Record<string, unknown>).builtinRotationPingFpsOverrides
 
-    const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toEqual(overrides)
-  })
+    it.each(storedOverrides)("across a save and reload (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+      saveProfiles({ profiles: [profile], activeId: profile.id })
 
-  it("keeps a built-in rotation ping/fps override across an export and import, and only for its own id", () => {
-    const overrides = {
-      "builtin-a": { pingMs: 80, averageFps: 144 },
-      "builtin-b": { pingMs: 20, averageFps: 120 },
-    }
-    const profile = makeProfile("p1", {
-      ...defaultInputs,
-      builtinRotationPingFpsOverrides: overrides,
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
     })
 
-    const imported = importProfile(exportProfile(profile))
+    it.each(storedOverrides)("across a load of the raw stored blob (%j)", (overrides) => {
+      localStorage.setItem(
+        PROFILES_KEY,
+        JSON.stringify({
+          v: LATEST_PROFILES_VERSION,
+          profiles: [{ id: "p1", name: "Stored Override", inputs: withStoredOverride(overrides) }],
+          activeId: "p1",
+        }),
+      )
 
-    expect(imported.inputs.builtinRotationPingFpsOverrides).toEqual(overrides)
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
+    })
+
+    it.each(storedOverrides)("across an export and import (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+
+      expect(storedOverrideOf(importProfile(exportProfile(profile)).inputs)).toEqual(overrides)
+    })
   })
 
-  it("loadProfiles drops an invalid stored built-in override without touching a valid one for another id or any other profile data", () => {
-    const inputs: Inputs = {
-      ...defaultInputs,
-      breakthrough: 18,
-      builtinRotationPingFpsOverrides: {
-        "builtin-a": { pingMs: 80, averageFps: 144 },
-        "builtin-b": { pingMs: "not a number", averageFps: 999999 },
-      } as unknown as Inputs["builtinRotationPingFpsOverrides"],
-    }
+  it("loadCustomRotations heals a stored rotation without a server processing time to the default instead of dropping it", () => {
+    const rotation = makeRotation("bellstrikeUmbra", { name: "Older Rotation", pingMs: 40 })
+    const { serverProcessingMs: _omitted, ...withoutServerProcessing } = rotation
     localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify({
-        v: LATEST_PROFILES_VERSION,
-        profiles: [{ id: "p1", name: "Mixed Overrides", inputs }],
-        activeId: "p1",
-      }),
+      "wwm.customRotations",
+      JSON.stringify({ v: 3, rotations: [withoutServerProcessing] }),
     )
 
-    const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toEqual({
-      "builtin-a": { pingMs: 80, averageFps: 144 },
-    })
-    expect(profiles[0].inputs.breakthrough).toBe(18)
-  })
-
-  it("loadProfiles heals a stored override map that isn't an object to no overrides at all", () => {
-    const inputs = {
-      ...defaultInputs,
-      builtinRotationPingFpsOverrides: "not an object",
-    } as unknown as Inputs
-    localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify({
-        v: LATEST_PROFILES_VERSION,
-        profiles: [{ id: "p1", name: "Broken Overrides", inputs }],
-        activeId: "p1",
-      }),
-    )
-
-    const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.builtinRotationPingFpsOverrides).toBeUndefined()
+    const loaded = loadCustomRotations()
+    expect(loaded).toHaveLength(1)
+    expect(loaded[0].serverProcessingMs).toBe(DEFAULT_SERVER_PROCESSING_MS)
+    expect(loaded[0].pingMs).toBe(40)
   })
 })
 

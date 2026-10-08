@@ -3,6 +3,8 @@ import {
   type InnerWayGateBuff,
 } from "../../definitions/innerWays/innerWayDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { ATTUNE } from "../skills/ids"
+import { enduranceMeter } from "../resources/enduranceMeter"
 
 // Persisted inside saved custom skills (trigger conditions) and saved rotations
 // (`permanentBuffIds`) — the `bellstrikeUmbra` substring is a frozen historical
@@ -33,6 +35,15 @@ export const RIVER_FLOW_WOLFCHASERS_ART_EXTEND_FRAMES =
   RIVER_FLOW_DURATION_FRAMES - RIVER_FLOW_BASE_DURATION_FRAMES
 export const SPEAR_SPECIAL_COOLDOWN_FRAMES = 720
 
+// In-game values as of 2026-10-07: under any River Flow state a charged sword
+// skill's Endurance drain and its immediate spend are both 20 % cheaper. Water
+// Drop is granted by every Sober Sorrow and outlasts no other state, so it
+// carries the modifier alone — carrying it on the tiers above would stack.
+const RIVER_FLOW_CHARGED_SWORD_ENDURANCE_MODIFIERS = [
+  { meterId: enduranceMeter.id, kind: "cost", amount: -0.2, tag: ATTUNE.swordCharged },
+  { meterId: enduranceMeter.id, kind: "chargeCost", amount: -0.2, tag: ATTUNE.swordCharged },
+] as const
+
 export const WOLFCHASERS_ART_GATES: readonly InnerWayGateBuff[] = [
   defineInnerWayGateBuff({
     id: WATER_DROP_BUFF_ID,
@@ -43,6 +54,7 @@ export const WOLFCHASERS_ART_GATES: readonly InnerWayGateBuff[] = [
     effects: [{ statKey: "allDamageBoost", amount: 0.1 }],
     maxStacks: 1,
     stackScaling: "flat",
+    meterModifiers: [...RIVER_FLOW_CHARGED_SWORD_ENDURANCE_MODIFIERS],
     createdAt: "2026-09-24T00:00:00.000Z",
     updatedAt: "2026-09-25T00:00:00.000Z",
   }),

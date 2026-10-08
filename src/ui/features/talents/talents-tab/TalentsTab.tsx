@@ -563,6 +563,51 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
       weaponKey: "content.martialArt.phalanxbaneBlade",
       cards: [
         {
+          nameKey: "talents.card.criticalRateUp",
+          lines: [{ kind: "talent", skill: "Critical Rate UP" }],
+        },
+        {
+          nameKey: "talents.card.ironGuardsPenetrationUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.ironGuardsPenetrationHint",
+              subNoteKey: "talents.note.modelledInsideTheIronGuardsHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.stonesplitAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Mo Blade Stonesplit Attack Min", "Mo Blade Stonesplit Attack Max"],
+              textKey: "talents.effect.stonesplitAttackAlways",
+            },
+            { kind: "talent", skill: "Stonesplit Penetration Scale" },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.stonesplitAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.maxBladeMomentumUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.maxBladeMomentumHint",
+              subNoteKey: "talents.note.modelledAsTheBladeMomentumMeterHint",
+            },
+          ],
+        },
+        {
           nameKey: "talents.card.additionalAttackUp",
           lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],
         },
@@ -571,6 +616,49 @@ const CLASS_TALENT_COLUMNS: Record<string, WeaponColumnConfig[]> = {
     {
       weaponKey: "content.martialArt.snowpartingBlade",
       cards: [
+        {
+          nameKey: "talents.card.physicalAttackUp",
+          lines: [{ kind: "talent", skill: "Physical Attack UP" }],
+        },
+        {
+          nameKey: "talents.card.criticalDmgUp",
+          lines: [{ kind: "mechanic", id: "stonesplitStrengthSkillCritDamage" }],
+        },
+        {
+          nameKey: "talents.card.stonesplitAttributeUp",
+          lines: [
+            {
+              kind: "talentFlatText",
+              skills: ["Heng Blade Stonesplit Attack Min", "Heng Blade Stonesplit Attack Max"],
+              textKey: "talents.effect.stonesplitAttackAlways",
+            },
+            {
+              kind: "talent",
+              skill: "Attribute Damage Scale",
+              labelKey: "talents.line.stonesplitDmgBonus",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.attrAttackDmgUp",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.stonesplitAttackDeals50Bonus",
+              subNoteKey: "talents.note.alreadyAppliedInTheDamageFormulaElevatedHint",
+            },
+          ],
+        },
+        {
+          nameKey: "talents.card.specialSkillEnhancement",
+          lines: [
+            {
+              kind: "static",
+              textKey: "talents.effect.dreadDamageHint",
+              subNoteKey: "talents.note.modelledByTheDreadDebuffHint",
+            },
+          ],
+        },
         {
           nameKey: "talents.card.additionalAttackUp",
           lines: [{ kind: "additionalAttack", ladder: ADDITIONAL_ATTACK_RANKS }],

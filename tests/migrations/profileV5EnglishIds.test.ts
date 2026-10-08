@@ -82,6 +82,7 @@ describe("v4 profile carrying legacy `site-` entity ids", () => {
       permanentBuffIds: ["site-buff-mingJinYing-river-flow"],
       pingMs: 10,
       averageFps: 250,
+      serverProcessingMs: 32,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z",
     }

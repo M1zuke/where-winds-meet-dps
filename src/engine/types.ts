@@ -159,11 +159,6 @@ export interface Inputs {
 
   selectedBuiltinRotationId?: string | null
 
-  // A per-profile ping/FPS edit for a built-in rotation, keyed by that
-  // rotation's id — a built-in's own file is never edited, so the user's
-  // change lives here instead (docs/TIMELINE.md § "Coefficients").
-  builtinRotationPingFpsOverrides?: Record<string, { pingMs: number; averageFps: number }>
-
   graduationBuildId?: string | null
 
   // Injected at the engine boundary, not persisted on the profile blob — the

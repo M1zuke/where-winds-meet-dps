@@ -13,7 +13,7 @@ export const fanqcancel = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQCancel,
-  cancelledBy: "deflectCancel",
+  cancelledBy: "nextSkill",
   receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
   triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.springThunder],
   // Cast length to the earliest next input (in-game values as of 2026-09-24;

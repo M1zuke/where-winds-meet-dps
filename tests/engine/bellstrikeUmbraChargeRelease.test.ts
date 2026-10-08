@@ -30,13 +30,12 @@ function timelineInputs(rotation: Rotation, skills: Skill[]): Inputs {
 
 describe("Second Track Slash releases onto its own level-0 form when Endurance runs out first", () => {
   it("flags the early release and casts the level-0 form instead of stage 1", () => {
-    // 80 (NO_ODDITY_ENDURANCE capacity) − 71 leaves 9; Second Track Slash's
-    // own upfront cost of 6 leaves 3, below the 4.2 its stage-1 drain
-    // (14/s for 0.3 s) needs to sustain from its own frame 12.
+    // 80 (NO_ODDITY_ENDURANCE capacity) − 77 leaves 3, below the 4.2 Second
+    // Track Slash's stage-1 drain (14/s for 0.3 s) needs to sustain.
     const drainsEndurance = makeSkill(CLASS, {
       name: "Drains Endurance",
       castFrames: 6,
-      meterCosts: [{ meterId: METER_ID, amount: 71 }],
+      meterCosts: [{ meterId: METER_ID, amount: 77 }],
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1 })],
     })
     const result = simulateTimeline(

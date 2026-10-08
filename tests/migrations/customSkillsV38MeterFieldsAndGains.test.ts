@@ -24,9 +24,8 @@ import { anxisoldiermojump } from "../../src/data/skills/stonesplit-strength/anx
 import { perfectDodge } from "../../src/data/skills/universal/perfect-dodge"
 import { perfectDodgeFull } from "../../src/data/skills/universal/perfect-dodge-full"
 import {
-  INNER_BALANCE_STRIKE_III_BLEED_REFUND,
-  SWORD_MARTIAL_QQQ_BLEED_REFUND,
-  SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND,
+  BLEED_MECHANISM_ENHANCEMENT_GAIN,
+  BLEED_MECHANISM_ENHANCEMENT_RELEASE,
 } from "../../src/data/skills/bellstrike-umbra/buffs/bleedMechanismEnhancement"
 import { CRISSCROSS_ENDURANCE_GAIN } from "../../src/data/skills/bellstrike-umbra/buffs/crisscrossEnduranceGain"
 import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "../../src/data/skills/stonesplit-strength/buffs/anxiSoldierBladeMomentumGain"
@@ -149,28 +148,28 @@ const PRE_V38_BUILTINS: Record<string, Skill> = {
     0: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
   }),
   "bellstrikeUmbra-swordspecial-1-hit": withoutHitTriggers(withoutMeterGate(swordspecial1Hit), {
-    0: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
+    0: [BLEED_MECHANISM_ENHANCEMENT_GAIN, BLEED_MECHANISM_ENHANCEMENT_RELEASE],
   }),
   "bellstrikeUmbra-swordspecial-2-hit": withoutHitTriggers(withoutMeterGate(swordspecial2Hit), {
-    0: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
-    1: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
+    0: [BLEED_MECHANISM_ENHANCEMENT_GAIN, BLEED_MECHANISM_ENHANCEMENT_RELEASE],
+    1: [BLEED_MECHANISM_ENHANCEMENT_GAIN],
   }),
   "bellstrikeUmbra-swordspecial-3-hit": withoutHitTriggers(withoutMeterGate(swordspecial3Hit), {
-    0: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
-    1: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
-    2: [INNER_BALANCE_STRIKE_III_BLEED_REFUND],
+    0: [BLEED_MECHANISM_ENHANCEMENT_GAIN, BLEED_MECHANISM_ENHANCEMENT_RELEASE],
+    1: [BLEED_MECHANISM_ENHANCEMENT_GAIN],
+    2: [BLEED_MECHANISM_ENHANCEMENT_GAIN],
   }),
   "bellstrikeUmbra-sword-martial-qqq": withoutHitTriggers(swordMartialQqq, {
-    0: [SWORD_MARTIAL_QQQ_BLEED_REFUND],
-    1: [CRISSCROSS_ENDURANCE_GAIN, SWORD_MARTIAL_QQQ_BLEED_REFUND],
+    0: [BLEED_MECHANISM_ENHANCEMENT_GAIN],
+    1: [CRISSCROSS_ENDURANCE_GAIN, BLEED_MECHANISM_ENHANCEMENT_GAIN],
   }),
   "bellstrikeUmbra-sword-r-charge-follow-up": withoutHitTriggers(swordRChargeFollowUp, {
-    0: [SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND],
-    1: [CRISSCROSS_ENDURANCE_GAIN, SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND],
+    0: [BLEED_MECHANISM_ENHANCEMENT_GAIN],
+    1: [CRISSCROSS_ENDURANCE_GAIN, BLEED_MECHANISM_ENHANCEMENT_GAIN],
   }),
   "bellstrikeUmbra-sword-r-charge-follow-up-1-hit-cancel": withoutHitTriggers(
     swordRChargeFollowUp1HitCancel,
-    { 0: [CRISSCROSS_ENDURANCE_GAIN, SWORD_R_CHARGE_FOLLOW_UP_BLEED_REFUND] },
+    { 0: [CRISSCROSS_ENDURANCE_GAIN, BLEED_MECHANISM_ENHANCEMENT_GAIN] },
   ),
   "universal-perfect-dodge": withoutHitTriggers(withoutMeterGate(perfectDodge), {
     0: [CALMWATERS_PERFECT_DODGE_GAIN, ...EVASIVE_CHARGE_DODGE_REFUND_TRIGGERS],

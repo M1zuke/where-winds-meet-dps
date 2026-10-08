@@ -306,6 +306,11 @@ describe("engine baseline", () => {
 // and this build stands at 16, so the nodes behind Solo Mode Level 17 no longer
 // count towards it. The figures the board's full 122 nodes produce are the
 // breakthrough-17 block below.
+const UNBEANED_ENDURANCE_WARNINGS = [
+  "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+  "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17).",
+]
+
 describe("engine baseline — profile-v7 anchor", () => {
   const result = runEngine(toEngineInputs(anchorInputs()))
   const damageOf = (name: string) =>
@@ -315,7 +320,7 @@ describe("engine baseline — profile-v7 anchor", () => {
     expect(round(result.dps, 2)).toBe(70446.3)
     expect(round(result.totalDamage, 2)).toBe(4226777.74)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    expect(result.warnings).toEqual([])
+    expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   // The two `attune:bleed` entities — the only rows P1 may touch, and it must
@@ -347,7 +352,7 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     expect(round(result.dps, 2)).toBe(71760.51)
     expect(round(result.totalDamage, 2)).toBe(4305630.9)
     expect(round(result.rotationDuration, 4)).toBe(60)
-    expect(result.warnings).toEqual([])
+    expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {

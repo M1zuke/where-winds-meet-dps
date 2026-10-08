@@ -24,30 +24,41 @@ function renderPanel(inputs: Inputs, onChange: (next: Inputs) => void) {
   )
 }
 
-describe("editing the Rotation Editor's ping/fps fields for a built-in rotation", () => {
-  it("writes the profile's override map, keyed by the built-in's own id, and leaves the rotation alone", () => {
-    const builtin = builtinRotationsForClass(CLASS)[0]
-    const inputs: Inputs = {
-      ...defaultInputs,
-      classId: CLASS,
-      selectedBuiltinRotationId: builtin.id,
+describe("the Rotation Editor's connection fields for a built-in rotation", () => {
+  const builtin = builtinRotationsForClass(CLASS)[0]
+  const inputs = {
+    ...defaultInputs,
+    classId: CLASS,
+    selectedBuiltinRotationId: builtin.id,
+    builtinRotationPingFpsOverrides: {
+      [builtin.id]: { pingMs: 80, averageFps: 144, serverProcessingMs: 48 },
+    },
+  } as Inputs
+
+  it("shows the built-in's own values, ignoring a stored override, and cannot be edited", () => {
+    renderPanel(inputs, vi.fn())
+
+    const fields = [
+      ["Ping (ms)", builtin.pingMs],
+      ["Average FPS", builtin.averageFps],
+      ["Server processing (ms)", builtin.serverProcessingMs],
+    ] as const
+    for (const [label, expected] of fields) {
+      const input = screen.getByLabelText(label) as HTMLInputElement
+      expect(input.value).toBe(String(expected))
+      expect(input.disabled).toBe(true)
     }
-    const onChange = vi.fn()
-    renderPanel(inputs, onChange)
+  })
 
-    fireEvent.change(screen.getByLabelText("Ping (ms)"), { target: { value: "80" } })
+  it("offers no override reset", () => {
+    renderPanel(inputs, vi.fn())
 
-    expect(onChange).toHaveBeenCalledTimes(1)
-    const [next] = onChange.mock.calls[0] as [Inputs]
-    expect(next.builtinRotationPingFpsOverrides).toEqual({
-      [builtin.id]: { pingMs: 80, averageFps: builtin.averageFps },
-    })
-    expect(next.activeCustomRotation).toBeNull()
+    expect(screen.queryByRole("button", { name: "Reset to default" })).toBeNull()
   })
 })
 
-describe("editing the Rotation Editor's ping/fps fields for a custom rotation", () => {
-  it("writes the rotation itself, never the built-in override map", () => {
+describe("editing the Rotation Editor's connection fields for a custom rotation", () => {
+  it("writes the rotation itself", () => {
     const rotation = makeRotation(CLASS, { steps: [] })
     const inputs: Inputs = {
       ...defaultInputs,
@@ -63,18 +74,37 @@ describe("editing the Rotation Editor's ping/fps fields for a custom rotation", 
     expect(onChange).toHaveBeenCalledTimes(1)
     const [next] = onChange.mock.calls[0] as [Inputs]
     expect(next.activeCustomRotation?.pingMs).toBe(80)
-    expect(next.builtinRotationPingFpsOverrides).toBeUndefined()
+    expect(next.activeCustomRotation?.averageFps).toBe(rotation.averageFps)
+    expect(next.activeCustomRotation?.serverProcessingMs).toBe(rotation.serverProcessingMs)
+  })
+
+  it("writes the server processing time and keeps ping and fps", () => {
+    const rotation = makeRotation(CLASS, { steps: [] })
+    const inputs: Inputs = {
+      ...defaultInputs,
+      classId: CLASS,
+      activeCustomRotation: rotation,
+      selectedBuiltinRotationId: null,
+    }
+    const onChange = vi.fn()
+    renderPanel(inputs, onChange)
+
+    fireEvent.change(screen.getByLabelText("Server processing (ms)"), { target: { value: "50" } })
+
+    const [next] = onChange.mock.calls[0] as [Inputs]
+    expect(next.activeCustomRotation?.serverProcessingMs).toBe(50)
+    expect(next.activeCustomRotation?.pingMs).toBe(rotation.pingMs)
+    expect(next.activeCustomRotation?.averageFps).toBe(rotation.averageFps)
   })
 })
 
 describe("forking a built-in rotation to custom", () => {
-  it("copies the built-in's effective, overridden ping/fps onto the new custom rotation", () => {
+  it("copies the built-in's own ping, fps and server processing time onto the new custom rotation", () => {
     const builtin = builtinRotationsForClass(CLASS)[0]
     const inputs: Inputs = {
       ...defaultInputs,
       classId: CLASS,
       selectedBuiltinRotationId: builtin.id,
-      builtinRotationPingFpsOverrides: { [builtin.id]: { pingMs: 80, averageFps: 144 } },
     }
     const onChange = vi.fn()
     renderPanel(inputs, onChange)
@@ -83,32 +113,8 @@ describe("forking a built-in rotation to custom", () => {
 
     expect(onChange).toHaveBeenCalledTimes(1)
     const [next] = onChange.mock.calls[0] as [Inputs]
-    expect(next.activeCustomRotation?.pingMs).toBe(80)
-    expect(next.activeCustomRotation?.averageFps).toBe(144)
-  })
-})
-
-describe("resetting a built-in rotation's ping/fps override", () => {
-  it("removes only that rotation's entry from the override map", () => {
-    const [builtinA, builtinB] = builtinRotationsForClass(CLASS)
-    const inputs: Inputs = {
-      ...defaultInputs,
-      classId: CLASS,
-      selectedBuiltinRotationId: builtinA.id,
-      builtinRotationPingFpsOverrides: {
-        [builtinA.id]: { pingMs: 80, averageFps: 144 },
-        [builtinB.id]: { pingMs: 20, averageFps: 120 },
-      },
-    }
-    const onChange = vi.fn()
-    renderPanel(inputs, onChange)
-
-    fireEvent.click(screen.getByRole("button", { name: "Reset to default" }))
-
-    expect(onChange).toHaveBeenCalledTimes(1)
-    const [next] = onChange.mock.calls[0] as [Inputs]
-    expect(next.builtinRotationPingFpsOverrides).toEqual({
-      [builtinB.id]: { pingMs: 20, averageFps: 120 },
-    })
+    expect(next.activeCustomRotation?.pingMs).toBe(builtin.pingMs)
+    expect(next.activeCustomRotation?.averageFps).toBe(builtin.averageFps)
+    expect(next.activeCustomRotation?.serverProcessingMs).toBe(builtin.serverProcessingMs)
   })
 })

@@ -6,9 +6,10 @@ interface NullableNumberInputProps {
   value: number | null
   onChange: (next: number | null) => void
   parse: (raw: string) => number
+  disabled?: boolean
 }
 
-function NullableNumberInput({ value, onChange, parse }: NullableNumberInputProps) {
+function NullableNumberInput({ value, onChange, parse, disabled }: NullableNumberInputProps) {
   const [text, setText] = useState(() => (value === null ? "" : String(value)))
   const focusedRef = useRef(false)
 
@@ -22,6 +23,7 @@ function NullableNumberInput({ value, onChange, parse }: NullableNumberInputProp
       step="any"
       className={styles.numberInput}
       value={text}
+      disabled={disabled}
       onFocus={() => {
         focusedRef.current = true
       }}
@@ -45,11 +47,22 @@ function NullableNumberInput({ value, onChange, parse }: NullableNumberInputProp
 interface Props {
   pingMs: number | null
   averageFps: number | null
+  serverProcessingMs: number | null
   onPingMsChange: (next: number | null) => void
   onAverageFpsChange: (next: number | null) => void
+  onServerProcessingMsChange: (next: number | null) => void
+  disabled?: boolean
 }
 
-export function PingFpsFields({ pingMs, averageFps, onPingMsChange, onAverageFpsChange }: Props) {
+export function PingFpsFields({
+  pingMs,
+  averageFps,
+  serverProcessingMs,
+  onPingMsChange,
+  onAverageFpsChange,
+  onServerProcessingMsChange,
+  disabled,
+}: Props) {
   const { t } = useI18n()
   return (
     <div className={styles.fields}>
@@ -59,11 +72,26 @@ export function PingFpsFields({ pingMs, averageFps, onPingMsChange, onAverageFps
           value={pingMs}
           onChange={onPingMsChange}
           parse={(raw) => Math.round(Number(raw))}
+          disabled={disabled}
         />
       </label>
       <label className={styles.field}>
         {t("common.averageFps")}
-        <NullableNumberInput value={averageFps} onChange={onAverageFpsChange} parse={Number} />
+        <NullableNumberInput
+          value={averageFps}
+          onChange={onAverageFpsChange}
+          parse={Number}
+          disabled={disabled}
+        />
+      </label>
+      <label className={styles.field}>
+        {t("common.serverProcessingMs")}
+        <NullableNumberInput
+          value={serverProcessingMs}
+          onChange={onServerProcessingMsChange}
+          parse={Number}
+          disabled={disabled}
+        />
       </label>
     </div>
   )

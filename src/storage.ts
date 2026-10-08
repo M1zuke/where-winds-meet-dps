@@ -13,8 +13,10 @@ import { defaultInputs } from "./engine/defaults"
 import {
   DEFAULT_AVERAGE_FPS,
   DEFAULT_PING_MS,
+  DEFAULT_SERVER_PROCESSING_MS,
   isValidAverageFps,
   isValidPingMs,
+  isValidServerProcessingMs,
 } from "./engine/pingFps"
 import { repairGraduationBuildId } from "./engine/graduation"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
@@ -246,6 +248,11 @@ function migrateRotationIds<T>(rotation: T): T {
   if (typeof next.pingMs !== "number" || !isValidPingMs(next.pingMs)) next.pingMs = DEFAULT_PING_MS
   if (typeof next.averageFps !== "number" || !isValidAverageFps(next.averageFps))
     next.averageFps = DEFAULT_AVERAGE_FPS
+  if (
+    typeof next.serverProcessingMs !== "number" ||
+    !isValidServerProcessingMs(next.serverProcessingMs)
+  )
+    next.serverProcessingMs = DEFAULT_SERVER_PROCESSING_MS
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return migrateRotationNightwickTipsylayIds(migrateRotationMysticIds(next)) as unknown as T
 }
@@ -280,22 +287,6 @@ function repairGearWord(entry: unknown): unknown {
 function sanitizeRetunedOutWords(value: unknown): string[] {
   if (!Array.isArray(value)) return []
   return value.filter((entry): entry is string => typeof entry === "string" && entry !== "")
-}
-
-// additive — see CLAUDE.md → "localStorage migrations"
-function sanitizeBuiltinRotationPingFpsOverrides(
-  stored: unknown,
-): Record<string, { pingMs: number; averageFps: number }> | undefined {
-  if (!stored || typeof stored !== "object" || Array.isArray(stored)) return undefined
-  const healed: Record<string, { pingMs: number; averageFps: number }> = {}
-  for (const [rotationId, value] of Object.entries(stored as Record<string, unknown>)) {
-    if (!value || typeof value !== "object") continue
-    const { pingMs, averageFps } = value as Record<string, unknown>
-    if (typeof pingMs !== "number" || !isValidPingMs(pingMs)) continue
-    if (typeof averageFps !== "number" || !isValidAverageFps(averageFps)) continue
-    healed[rotationId] = { pingMs, averageFps }
-  }
-  return Object.keys(healed).length > 0 ? healed : undefined
 }
 
 // The live registry is the allowlist, never `migrateSetId`'s table: that table
@@ -383,9 +374,6 @@ function hydrateInputs(inputs: Inputs): Inputs {
   delete (next as unknown as Record<string, unknown>).targetId
   delete (next as unknown as Record<string, unknown>).shareDebuff5JingShen
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
-  next.builtinRotationPingFpsOverrides = sanitizeBuiltinRotationPingFpsOverrides(
-    next.builtinRotationPingFpsOverrides,
-  )
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
   if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0
@@ -888,6 +876,11 @@ export function importCustomRotation(text: string): Rotation {
       typeof candidate.averageFps === "number" && isValidAverageFps(candidate.averageFps)
         ? candidate.averageFps
         : DEFAULT_AVERAGE_FPS,
+    serverProcessingMs:
+      typeof candidate.serverProcessingMs === "number" &&
+      isValidServerProcessingMs(candidate.serverProcessingMs)
+        ? candidate.serverProcessingMs
+        : DEFAULT_SERVER_PROCESSING_MS,
     createdAt: now,
     updatedAt: now,
   }
@@ -1627,6 +1620,7 @@ function importedTrigger(t: unknown): HitTrigger {
     trigger.recordSpendAsStatus = c.recordSpendAsStatus
   if (typeof c.refundFractionOfCastCost === "number" && Number.isFinite(c.refundFractionOfCastCost))
     trigger.refundFractionOfCastCost = c.refundFractionOfCastCost
+  if (c.conditionsBeforeHit === true) trigger.conditionsBeforeHit = true
   return trigger
 }
 
@@ -1642,6 +1636,7 @@ function isMeterCost(value: unknown): value is MeterCost {
     typeof cost.meterId === "string" &&
     !!cost.meterId &&
     typeof cost.amount === "number" &&
+    (cost.atFrame === undefined || typeof cost.atFrame === "number") &&
     (cost.requiresParam === undefined || typeof cost.requiresParam === "string") &&
     (cost.requiresMinTier === undefined || typeof cost.requiresMinTier === "number") &&
     (cost.requiresMaxTier === undefined || typeof cost.requiresMaxTier === "number")

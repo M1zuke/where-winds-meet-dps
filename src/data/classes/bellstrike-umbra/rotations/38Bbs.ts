@@ -69,6 +69,7 @@ export default defineRotation({
   permanentBuffIds: [],
   openingStacks: { "buff-bellstrikeUmbra-zenith-bar": 5 },
   fixedWindowSec: 60,
+  serverProcessingMs: 30,
   qiBreak: { startSec: 34, durationSec: 10, lowQiLeadSec: 5 },
   createdAt: "2026-09-02T00:00:00.000Z",
   updatedAt: "2026-09-09T00:00:00.000Z",

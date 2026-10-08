@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest"
 import {
   DEFAULT_AVERAGE_FPS,
   DEFAULT_PING_MS,
+  DEFAULT_SERVER_PROCESSING_MS,
   isValidAverageFps,
   isValidPingMs,
+  isValidServerProcessingMs,
   resolveAverageFps,
   resolvePingMs,
 } from "../../src/engine/pingFps"
@@ -44,6 +46,32 @@ describe("the ping/fps defaults every rotation of every class starts from", () =
       expect(rotation.pingMs).toBe(10)
       expect(rotation.averageFps).toBe(250)
     }
+  })
+})
+
+describe("the server processing time default and validation", () => {
+  it("is 32 ms on makeRotation and on every built-in that authors none", () => {
+    expect(DEFAULT_SERVER_PROCESSING_MS).toBe(32)
+    expect(makeRotation("bellstrikeUmbra").serverProcessingMs).toBe(32)
+    for (const rotation of builtinRotationsForClass("stonesplitStrength")) {
+      expect(rotation.serverProcessingMs).toBe(32)
+    }
+  })
+
+  it("keeps a built-in's own authored value", () => {
+    const authored = builtinRotationsForClass("bellstrikeUmbra").find(
+      (rotation) => rotation.id === "builtin-bellstrikeUmbra-38-bbs",
+    )
+    expect(authored?.serverProcessingMs).toBe(30)
+  })
+
+  it("accepts a finite value from 0 to 1000 and rejects anything else", () => {
+    expect(isValidServerProcessingMs(0)).toBe(true)
+    expect(isValidServerProcessingMs(32.5)).toBe(true)
+    expect(isValidServerProcessingMs(1000)).toBe(true)
+    expect(isValidServerProcessingMs(-1)).toBe(false)
+    expect(isValidServerProcessingMs(1001)).toBe(false)
+    expect(isValidServerProcessingMs(Number.NaN)).toBe(false)
   })
 })
 

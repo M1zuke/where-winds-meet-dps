@@ -118,6 +118,9 @@ export interface HitTrigger {
   // `meterDelta` only: refunds this fraction of what the owning cast actually
   // paid to `targetId`, after cost modifiers — `stacks` is ignored when set.
   refundFractionOfCastCost?: number
+  // `meterDelta` only: reads its conditions as the ledger stood before this
+  // hit's own triggers wrote.
+  conditionsBeforeHit?: boolean
 }
 
 export interface SkillHit {
@@ -163,6 +166,8 @@ export interface ProjectileSpec {
 export interface MeterCost {
   meterId: string
   amount: number
+  // Frames into the cast; absent spends at the cast's own start.
+  atFrame?: number
   // docs/TIMELINE.md § "Meters".
   requiresParam?: string
   requiresMinTier?: number
@@ -466,6 +471,8 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     (typeof t.refundFractionOfCastCost !== "number" || !Number.isFinite(t.refundFractionOfCastCost))
   )
     return false
+  if (t.conditionsBeforeHit !== undefined && typeof t.conditionsBeforeHit !== "boolean")
+    return false
   return true
 }
 
@@ -660,6 +667,11 @@ export function isSkill(x: unknown): x is Skill {
       const meterCost = cost as Record<string, unknown>
       if (typeof meterCost.meterId !== "string" || !meterCost.meterId) return false
       if (typeof meterCost.amount !== "number" || !Number.isFinite(meterCost.amount)) return false
+      if (
+        meterCost.atFrame !== undefined &&
+        (typeof meterCost.atFrame !== "number" || !Number.isFinite(meterCost.atFrame))
+      )
+        return false
       if (meterCost.requiresParam !== undefined && typeof meterCost.requiresParam !== "string")
         return false
       if (

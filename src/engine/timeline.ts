@@ -120,7 +120,7 @@ import {
   HEALER_BUFF_AMOUNT,
   HEALER_BUFF_PANACEA_FAN_AMOUNT,
 } from "../data/skills/buffs/healerBuffAmounts"
-import { resolveAverageFps, resolvePingMs } from "./pingFps"
+import { resolveAverageFps, resolvePingMs, resolveServerProcessingMs } from "./pingFps"
 
 export const FPS = 60
 
@@ -136,11 +136,6 @@ const SWAP_COOLDOWN_FRAMES = 3 * FPS
 // never share.
 const DIRECT_SWAP_CAST_FRAMES = 0
 const DIRECT_SWAP_COOLDOWN_FRAMES = 0.5 * FPS
-
-// Calibrated from an in-game run at 10 ms / 250 fps, 2026-10-02 (the last
-// hit of a 60 s rotation lands just inside the window): the fixed processing
-// time a server-wait cast pays alongside its round trip.
-const SERVER_PROCESSING_MS = 32
 
 // A keyframe due at `value` fires on the first rendered frame at or after it,
 // so it lands on the next multiple of the render period at or above `value`.
@@ -376,7 +371,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       openPermanent(id: string): void
       processExpiries(upToFrame: number): void
       onDamagingHit(frame: number, owner: number): void
-      fires(trigger: HitTrigger, frame: number): boolean
+      fires(
+        trigger: HitTrigger,
+        frame: number,
+        conditionHolds?: (condition: TriggerCondition, frame: number) => boolean,
+      ): boolean
       applyTrigger(trigger: HitTrigger, frame: number, owner: number): void
       seedStack(status: Buff | Debuff, frame: number, stacks: number): void
     }
@@ -390,7 +389,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     }
 
     function triggerGate(holds: (condition: TriggerCondition, frame: number) => boolean): {
-      fires: (trigger: HitTrigger, frame: number) => boolean
+      fires: (
+        trigger: HitTrigger,
+        frame: number,
+        conditionHolds?: (condition: TriggerCondition, frame: number) => boolean,
+      ) => boolean
       cut: (trigger: HitTrigger, frame: number) => void
     } {
       const cooldownGroups = new Map<string, CooldownGroup>()
@@ -404,8 +407,9 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         ownGroupKeys.set(trigger, generated)
         return generated
       }
-      const guardsHold = (trigger: HitTrigger, frame: number): boolean => {
-        if (!triggerConditions(trigger).every((condition) => holds(condition, frame))) return false
+      const guardsHold = (trigger: HitTrigger, frame: number, conditionHolds = holds): boolean => {
+        if (!triggerConditions(trigger).every((condition) => conditionHolds(condition, frame)))
+          return false
         if (trigger.phase !== undefined && qiSchedule.phaseAt(frame / FPS) !== trigger.phase)
           return false
         return (
@@ -421,8 +425,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const remainingWait = (group: CooldownGroup): number =>
         Math.max(group.floorFrames, group.cooldownFrames - group.cutFrames)
       return {
-        fires(trigger, frame) {
-          if (!guardsHold(trigger, frame)) return false
+        fires(trigger, frame, conditionHolds) {
+          if (!guardsHold(trigger, frame, conditionHolds)) return false
           if (trigger.cooldownFrames === undefined) return true
           const groupKey = groupKeyOf(trigger)
           const group = cooldownGroups.get(groupKey)
@@ -617,7 +621,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     const renderPeriodFrames = FPS / resolveAverageFps(rotation.averageFps)
     const oneRenderFrameFrames = renderPeriodFrames
     const pingRoundTripFrames = (resolvePingMs(rotation.pingMs) * FPS) / 1000
-    const serverProcessingFrames = (SERVER_PROCESSING_MS * FPS) / 1000
+    const serverProcessingFrames =
+      (resolveServerProcessingMs(rotation.serverProcessingMs) * FPS) / 1000
     // `pingMs` at 0 is the app's own "assume no latency" baseline, not a
     // literal zero-latency connection — a real server always takes some
     // processing time — so every added wait below stays a genuine no-op
@@ -955,7 +960,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         const paidByMeter = new Map<string, number>()
         for (const cost of skill.meterCosts ?? []) {
           const meter = meterById.get(cost.meterId)
-          if (!meter) continue
+          if (!meter || cost.atFrame !== undefined) continue
           if (!meterCostRequirementHolds(cost)) continue
           const multiplier = meterModifierMultiplier("cost", cost.meterId, startFrame, skill)
           const paid = cost.amount * multiplier
@@ -963,6 +968,27 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           paidByMeter.set(cost.meterId, (paidByMeter.get(cost.meterId) ?? 0) + paid)
         }
         return paidByMeter
+      }
+
+      function scheduleDelayedMeterCosts(
+        skill: Skill,
+        startFrame: number,
+      ): PendingMeterIntervalStart[] {
+        const starts: PendingMeterIntervalStart[] = []
+        for (const cost of skill.meterCosts ?? []) {
+          const meter = meterById.get(cost.meterId)
+          if (!meter || cost.atFrame === undefined || !meterCostRequirementHolds(cost)) continue
+          const spendFrame = hitLandingFrame(startFrame, cost.atFrame)
+          starts.push({
+            frame: spendFrame,
+            register: () =>
+              meter.apply(
+                spendFrame,
+                -cost.amount * meterModifierMultiplier("cost", cost.meterId, spendFrame, skill),
+              ),
+          })
+        }
+        return starts
       }
 
       // A freeze or drain's own start can land after one of this same cast's own
@@ -1045,6 +1071,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         owner: number
         sequence: number
         paidByMeter: Map<string, number>
+        ledgerMarkBeforeHit?: number
       }
       interface PendingMeterIntervalEvent {
         kind: "meterInterval"
@@ -1052,7 +1079,16 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         register: () => void
         sequence: number
       }
-      type PendingLayoutEvent = PendingHitEvent | PendingMeterDeltaEvent | PendingMeterIntervalEvent
+      interface PendingCooldownCutEvent {
+        kind: "cooldownCut"
+        trigger: HitTrigger
+        frame: number
+        owner: number
+        sequence: number
+      }
+      type PendingMeterEvent =
+        PendingMeterDeltaEvent | PendingMeterIntervalEvent | PendingCooldownCutEvent
+      type PendingLayoutEvent = PendingHitEvent | PendingMeterEvent
       let layoutHitSequence = 0
 
       // A cast's own meterDelta triggers — on-hit gains and `appliesOnCastEnd`
@@ -1066,10 +1102,12 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         current: PendingHitEvent,
         pending: PendingLayoutEvent[],
         paidByMeter: Map<string, number>,
+        laidEndFrame: number,
       ): void {
         const { skill, hit: skillHit, frame: hitFrame, owner, prePull } = current
         const ownerHolds = (condition: TriggerCondition) => layoutHolds(condition, owner)
         layoutWriter.processExpiries(hitFrame)
+        const ledgerMarkBeforeHit = layoutLedger.mark()
         if (hitDealsDamage(skillHit)) {
           layoutWriter.onDamagingHit(hitFrame, owner)
           if (discoveredFightStartFrame === null || hitFrame < discoveredFightStartFrame) {
@@ -1099,6 +1137,21 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 hitFrame + Math.max(1, status.durationFrames),
                 owner,
               )
+            const detonation = status.detonation
+            const detonates = skillHit.triggers.some(
+              (candidate) =>
+                candidate.kind === "detonateDot" && candidate.targetId === trigger.targetId,
+            )
+            if (detonation && detonates && next >= maxStacks) {
+              const retainsMore =
+                detonation.retainParam !== undefined &&
+                paramOnOf(buffParams, detonation.retainParam) &&
+                paramTierOf(buffParams, detonation.retainParam) >= (detonation.retainMinTier ?? 6)
+              const retained = retainsMore
+                ? (detonation.retainParamStacks ?? detonation.retainStacks ?? 0)
+                : (detonation.retainStacks ?? 0)
+              layoutLedger.recordStack(status.id, hitFrame, clamp(retained, 0, maxStacks), owner)
+            }
             continue
           }
           if (trigger.kind === "castSkill") {
@@ -1136,6 +1189,18 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
               owner,
               sequence: layoutHitSequence++,
               paidByMeter,
+              ledgerMarkBeforeHit: trigger.conditionsBeforeHit ? ledgerMarkBeforeHit : undefined,
+            })
+            continue
+          }
+          if (trigger.kind === "cooldownCut" && trigger.appliesOnCastEnd) {
+            if (prePull) continue
+            pending.push({
+              kind: "cooldownCut",
+              trigger,
+              frame: laidEndFrame,
+              owner,
+              sequence: layoutHitSequence++,
             })
             continue
           }
@@ -1149,9 +1214,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         }
       }
 
+      function holdsBeforeWrite(
+        ledgerMark: number | undefined,
+      ): ((condition: TriggerCondition, frame: number) => boolean) | undefined {
+        if (ledgerMark === undefined) return undefined
+        const view = layoutLedger.asOf(ledgerMark)
+        return (condition, frame) =>
+          unionConditionHolds(condition, frame, buffParams, (status, atFrame) =>
+            conditionSatisfiedByStacks(status, view.conditionStacksAt(status.buffId, atFrame)),
+          )
+      }
+
       function applyMeterDeltaEvent(event: PendingMeterDeltaEvent): void {
-        const { trigger, frame, owner, paidByMeter } = event
-        if (!layoutWriter.fires(trigger, frame)) return
+        const { trigger, frame, owner, paidByMeter, ledgerMarkBeforeHit } = event
+        if (!layoutWriter.fires(trigger, frame, holdsBeforeWrite(ledgerMarkBeforeHit))) return
         const meter = meterById.get(trigger.targetId)
         if (!meter) return
         const stacks =
@@ -1173,20 +1249,26 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       // draining this step's queue to completion would apply its late meter
       // event first and drag the shared cursor past that next step's own
       // cast-start cost. Only a meter-relevant event (`meterDelta`,
-      // `meterInterval`) is deferred here, into a queue outliving this call; a
-      // plain hit past the horizon still runs its other triggers at once, since
+      // `meterInterval`, `cooldownCut`) is deferred here, into a queue
+      // outliving this call; a plain hit past the horizon still runs its
+      // other triggers at once, since
       // only the meter's own forward-only cursor needs global ordering
       // (docs/TIMELINE.md § "Meters").
-      const deferredMeterEvents: (PendingMeterDeltaEvent | PendingMeterIntervalEvent)[] = []
+      const deferredMeterEvents: PendingMeterEvent[] = []
+
+      function applyMeterEvent(event: PendingMeterEvent): void {
+        if (event.kind === "meterInterval") event.register()
+        else if (event.kind === "cooldownCut")
+          layoutWriter.applyTrigger(event.trigger, event.frame, event.owner)
+        else applyMeterDeltaEvent(event)
+      }
 
       function flushMeterEventsUpTo(horizonFrame: number): void {
         deferredMeterEvents.sort(
           (left, right) => left.frame - right.frame || left.sequence - right.sequence,
         )
         while (deferredMeterEvents.length > 0 && deferredMeterEvents[0].frame <= horizonFrame) {
-          const next = deferredMeterEvents.shift()!
-          if (next.kind === "meterInterval") next.register()
-          else applyMeterDeltaEvent(next)
+          applyMeterEvent(deferredMeterEvents.shift()!)
         }
       }
 
@@ -1233,9 +1315,8 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             deferredMeterEvents.push(next)
             continue
           }
-          if (next.kind === "meterInterval") next.register()
-          else if (next.kind === "meterDelta") applyMeterDeltaEvent(next)
-          else seedHitTriggers(next, pending, paidByMeter)
+          if (next.kind === "hit") seedHitTriggers(next, pending, paidByMeter, meterHorizonFrame)
+          else applyMeterEvent(next)
         }
       }
 
@@ -1393,7 +1474,14 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
         // frames.
         const meterDrainStarts = prePull
           ? undefined
-          : scheduleMeterDrainsAndFreezes(castResolution.skill, startFrame, startFrame + castLen)
+          : [
+              ...scheduleMeterDrainsAndFreezes(
+                castResolution.skill,
+                startFrame,
+                startFrame + castLen,
+              ),
+              ...scheduleDelayedMeterCosts(resolvedStep.skill, startFrame),
+            ]
         // A fixed window truncates every hit past its own end, pre-pull
         // included — docs/TIMELINE.md § "Fight window". `truncateAfterFrame` is
         // the caller's own already-fixed bound: null on the discovery run (lay

@@ -2,11 +2,11 @@ import { hit } from "../../../definitions/skills/skillDef"
 import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { DEBUFF } from "./ids"
 import type { SkillHit } from "../../../engine/skill"
-import { INNER_BALANCE_STRIKE_III_BLEED_REFUND as BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
+import {
+  BLEED_MECHANISM_ENHANCEMENT_GAIN,
+  BLEED_MECHANISM_ENHANCEMENT_RELEASE,
+} from "./buffs/bleedMechanismEnhancement"
 
-// In-game values as of 2026-09-26: the Endurance refund's own condition reads
-// the target's Bleeding after this same hit's own stack lands, not before —
-// the target's own stack write runs ahead of the attacker's on-hit passives.
 export const SWORDSPECIAL_HITS: SkillHit[] = [
   hit(0, {
     frame: 29,
@@ -18,6 +18,7 @@ export const SWORDSPECIAL_HITS: SkillHit[] = [
       applyDot({ target: DEBUFF.bleedTick }),
       detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
       BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      BLEED_MECHANISM_ENHANCEMENT_RELEASE,
     ],
   }),
   hit(1, {

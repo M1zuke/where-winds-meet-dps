@@ -111,8 +111,17 @@ const BLEED_MECHANISM_ENHANCEMENT_GAIN: HitTrigger = {
   targetId: "endurance",
   stacks: 10,
   condition: { buffId: "debuff-bellstrikeUmbra-bleed-tick", op: "gte", stacks: 4 },
-  cooldownFrames: 120,
-  cooldownGroup: "bleedMechanismEnhancement-innerBalanceStrikeIII",
+  conditionsBeforeHit: true,
+  cooldownFrames: 180,
+  cooldownGroup: "bleedMechanismEnhancement",
+}
+
+const BLEED_MECHANISM_ENHANCEMENT_RELEASE: HitTrigger = {
+  kind: "cooldownCut",
+  targetId: "bleedMechanismEnhancement",
+  stacks: 180,
+  condition: null,
+  appliesOnCastEnd: true,
 }
 
 const HIT_2_TRIGGERS_WITH_CAST_LAST = [
@@ -134,7 +143,11 @@ const HIT_2_TRIGGERS_WITH_CAST_FIRST = [
 const CURRENT_HITS: SkillHit[] = [
   {
     ...HEALED_HITS[0]!,
-    triggers: [...HEALED_HITS[0]!.triggers, BLEED_MECHANISM_ENHANCEMENT_GAIN],
+    triggers: [
+      ...HEALED_HITS[0]!.triggers,
+      BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      BLEED_MECHANISM_ENHANCEMENT_RELEASE,
+    ],
     variants: [
       {
         id: "hv-swordspecial-4-hit-hit-0-sword-horizon",

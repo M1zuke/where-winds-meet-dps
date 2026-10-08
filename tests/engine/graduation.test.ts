@@ -225,23 +225,19 @@ describe("a standardized graduation build", () => {
   )
 
   it.each(STANDARDIZED)(
-    "%s rates both sides on the rotation's own ping and fps, the profile's override included",
+    "%s rates both sides on the rotation's own ping and fps, ignoring a stored override",
     (id, classDef) => {
       const plain: Inputs = { ...defaultInputs, classId: classDef.id, graduationBuildId: id }
       for (const side of [graduationRatedInputs, graduationInputs]) {
         const plainInputs = side(plain)!
         const rotationId = plainInputs.selectedBuiltinRotationId ?? classDef.defaultRotationId!
-        const overridden: Inputs = {
+        const overridden = {
           ...plain,
-          builtinRotationPingFpsOverrides: { [rotationId]: { pingMs: 120, averageFps: 30 } },
-        }
-        const overriddenInputs = side(overridden)!
-        expect(overriddenInputs.builtinRotationPingFpsOverrides).toEqual(
-          overridden.builtinRotationPingFpsOverrides,
-        )
-        expect(runEngine(overriddenInputs).castDuration).toBeGreaterThan(
-          runEngine(plainInputs).castDuration,
-        )
+          builtinRotationPingFpsOverrides: {
+            [rotationId]: { pingMs: 120, averageFps: 30, serverProcessingMs: 80 },
+          },
+        } as Inputs
+        expect(runEngine(side(overridden)!).castDuration).toBe(runEngine(plainInputs).castDuration)
       }
     },
   )

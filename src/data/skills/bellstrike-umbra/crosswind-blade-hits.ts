@@ -3,7 +3,7 @@ import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { DEBUFF } from "./ids"
 import type { SkillHit } from "../../../engine/skill"
 import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
-import { CROSSWIND_BLADE_BLEED_REFUND } from "./buffs/bleedMechanismEnhancement"
+import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
 export const CROSSWIND_BLADE_HITS: SkillHit[] = [
   hit(0, {
@@ -16,7 +16,7 @@ export const CROSSWIND_BLADE_HITS: SkillHit[] = [
       applyDot({ target: DEBUFF.bleedTick }),
       detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
       CRISSCROSS_ENDURANCE_GAIN,
-      CROSSWIND_BLADE_BLEED_REFUND,
+      BLEED_MECHANISM_ENHANCEMENT_GAIN,
     ],
   }),
 ]

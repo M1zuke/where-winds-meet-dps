@@ -160,6 +160,13 @@ describe("built-in skill data — Spear Special / Spear Special (1 Hit Cancel)",
       expect(triggers[triggers.length - 2]).toBe(applyBuffs[0])
     }
   })
+
+  it("gives the Endurance gain a 12 s cooldown, 720 frames", () => {
+    for (const s of [spearSpecial[0], cancel[0]]) {
+      const gain = s.hits[1].triggers.find((trigger) => trigger.kind === "meterDelta")!
+      expect(gain.cooldownFrames).toBe(12 * 60)
+    }
+  })
 })
 
 describe("built-in data — referential integrity", () => {
@@ -170,6 +177,11 @@ describe("built-in data — referential integrity", () => {
     const skillIds = new Set(skills.map((s) => s.id))
     const statusIds = new Set([...debuffs.map((d) => d.id), ...buffs.map((b) => b.id)])
     const meterIds = new Set((classDefinition(CLASS)?.meters ?? []).map((meter) => meter.id))
+    const cooldownGroups = new Set(
+      skills.flatMap((skill) =>
+        skill.hits.flatMap((hit) => hit.triggers.map((trigger) => trigger.cooldownGroup ?? "")),
+      ),
+    )
 
     for (const s of skills) {
       for (const hit of s.hits) {
@@ -178,6 +190,8 @@ describe("built-in data — referential integrity", () => {
             expect(skillIds.has(tr.targetId)).toBe(true)
           } else if (tr.kind === "meterDelta") {
             expect(meterIds.has(tr.targetId)).toBe(true)
+          } else if (tr.kind === "cooldownCut") {
+            expect(statusIds.has(tr.targetId) || cooldownGroups.has(tr.targetId)).toBe(true)
           } else {
             expect(statusIds.has(tr.targetId)).toBe(true)
           }

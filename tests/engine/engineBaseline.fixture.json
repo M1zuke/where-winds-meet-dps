@@ -3,7 +3,10 @@
     "dps": 70446.3,
     "totalDamage": 4226777.74,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -171,13 +174,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "8c55baa0c79b83361d23c7f0bd34fde8267df4f042c687987722fe0a1f67cec1"
+    "digest": "4878f862df1c0825eaa43edbd250a347229da52ad3fae1f0d7e369ca5290828c"
   },
   "anchor:noAttunement": {
     "dps": 63252.25,
     "totalDamage": 3795134.71,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -345,13 +351,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "5938cccb09ad4b87e6125861548e4d3393d7621a01a880ec03440ce7182cdfa9"
+    "digest": "583dec87e096da0cce0007fff63438f3f7c988e7761084d2e21e905c2eb180a2"
   },
   "anchor:dummyOff": {
     "dps": 70160.77,
     "totalDamage": 4209646.01,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -519,13 +528,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1f80e3127fea7219c0b67dd89f78e120106aaed9ce923325d4156d9319841251"
+    "digest": "f1b1f7a37111c07e79c113acfa0471c5c8ca977d009724ef2ca119b1f3dc4e15"
   },
   "anchor:breakthrough17": {
     "dps": 71760.51,
     "totalDamage": 4305630.9,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -693,13 +705,13 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "1b4ae94e19a51b7ab0714873bb296991686c0ef0556727e46dc4db9384734925"
+    "digest": "c964f2090b147ff84e390259296291b20018fe334bfa55c93a408c32b2f1301a"
   },
   "anchor:noQiBreak": {
-    "dps": 67934.45,
-    "totalDamage": 4076067.08,
+    "dps": 69056.03,
+    "totalDamage": 4143361.84,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": ["SwordSpecial 3-Hit at 8.70s would be illegal in the game: needs Endurance ≥ 50 (has 49.34)."],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -714,7 +726,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 57,
-        "expectedDamage": 275030.04,
+        "expectedDamage": 286553.61,
         "castCount": 0
       },
       {
@@ -722,7 +734,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 75142.32,
+        "expectedDamage": 75127.49,
         "castCount": 0
       },
       {
@@ -738,7 +750,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 111,
-        "expectedDamage": 447278.26,
+        "expectedDamage": 447675.48,
         "castCount": 0
       },
       {
@@ -746,7 +758,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 168908.53,
+        "expectedDamage": 169085.3,
         "castCount": 0
       },
       {
@@ -754,7 +766,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 15859.17,
+        "expectedDamage": 15920.79,
         "castCount": 1
       },
       {
@@ -762,7 +774,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 9,
-        "expectedDamage": 17102.27,
+        "expectedDamage": 17133.05,
         "castCount": 0
       },
       {
@@ -770,15 +782,15 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 100788.18,
+        "expectedDamage": 100810.72,
         "castCount": 10
       },
       {
         "name": "Blood Burst",
         "breakdownName": "Blood Burst",
         "type": "weapon",
-        "count": 37,
-        "expectedDamage": 2321204.93,
+        "count": 38,
+        "expectedDamage": 2376328.09,
         "castCount": 0
       },
       {
@@ -794,7 +806,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 62395.05,
+        "expectedDamage": 62371.19,
         "castCount": 5
       },
       {
@@ -802,7 +814,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 15,
-        "expectedDamage": 51109.65,
+        "expectedDamage": 51107.45,
         "castCount": 5
       },
       {
@@ -883,13 +895,16 @@
       "buffWindows": 167,
       "casts": 92
     },
-    "digest": "c794d91f1229d6ddd4400e165a0fbbf8893536c38a59ac4f8f82ad8d6b14440c"
+    "digest": "bad9f7cb134424d9ef6ce889a40c3d8a586d448300344604470bdc3a2d99777e"
   },
   "anchor:healerBuff": {
     "dps": 73785.21,
     "totalDamage": 4427112.72,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1057,13 +1072,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "dcc14db4464cc372d06288bf33559319fe3c707e3557b09593330498599598d3"
+    "digest": "f8c497c79ce4c68e51a456c150cce9baec1bd5a58f27fa3fa15d84c8731241a3"
   },
   "anchor:wraithstrikeScript": {
     "dps": 70860.96,
     "totalDamage": 4251657.38,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1231,13 +1249,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "9e06f485ca073e483387cfb73f81a94aee3bb0b08acf65ed064697a253dc16aa"
+    "digest": "286db25f41319e17d3ac9a00061c30dd6619842a3308d314410c1c01576594d6"
   },
   "anchor:voidrotScript": {
     "dps": 71877.38,
     "totalDamage": 4312643.08,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1405,13 +1426,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "c3a1b0644f0103319b7259c7a9596d1d23b3d8238246a14111ff74d5b05bc9b6"
+    "digest": "e3d059e0b171e0836c055b018cbcc2846ded73516bf94fa3ccd5809b34d87462"
   },
   "anchor:breakExtension": {
     "dps": 71764.09,
     "totalDamage": 4305845.18,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1579,13 +1603,19 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "21fe5e282f18237464a5d5a92ae30665243e8f2f04611cd9414251c883c59e66"
+    "digest": "82ed87491f91b5749d872810ab4267f80934e4ecbd7692038d768ec1e3b195fa"
   },
   "anchor:swordHorizonT1": {
-    "dps": 41025.33,
-    "totalDamage": 2461519.74,
+    "dps": 41107.3,
+    "totalDamage": 2466437.81,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 4-Hit at 22.45s would be illegal in the game: needs Endurance ≥ 50 (has 33.34).",
+      "SwordSpecial 4-Hit at 35.45s would be illegal in the game: needs Endurance ≥ 50 (has 18.99).",
+      "SwordSpecial 4-Hit at 50.33s would be illegal in the game: needs Endurance ≥ 50 (has 44).",
+      "SwordSpecial 3-Hit at 53.27s would be illegal in the game: needs Endurance ≥ 50 (has 9.34)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -1599,8 +1629,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 44,
-        "expectedDamage": 192975.34,
+        "count": 45,
+        "expectedDamage": 197895.37,
         "castCount": 0
       },
       {
@@ -1608,7 +1638,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 70059.98,
+        "expectedDamage": 70059.96,
         "castCount": 0
       },
       {
@@ -1656,7 +1686,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 94070.5,
+        "expectedDamage": 94069.42,
         "castCount": 10
       },
       {
@@ -1728,7 +1758,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35898.27,
+        "expectedDamage": 35897.42,
         "castCount": 4
       },
       {
@@ -1749,15 +1779,15 @@
       }
     ],
     "counts": {
-      "timeline": 358,
+      "timeline": 359,
       "buffWindows": 127,
       "casts": 90
     },
-    "digest": "013f77cb2aa97d4b310223a4b6438f87de69749bebf8b83fd6cd7fa5db4176ea"
+    "digest": "b5b70a67f106c69435d58d23a57b5b60dce5d23459209a502a67ccfec25694f5"
   },
   "anchor:noSwordHorizon": {
-    "dps": 35230.08,
-    "totalDamage": 2113804.86,
+    "dps": 35138.75,
+    "totalDamage": 2108325.1,
     "rotationDuration": 60,
     "warnings": [
       "Crosswind Blade [cancel] at 6.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
@@ -1765,16 +1795,20 @@
       "Sword Martial QQQ at 14.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Crosswind Blade [cancel] at 17.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
       "Crosswind Blade [cancel] at 21.70s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 26.17s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 28.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 31.17s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 35.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 43.77s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 46.48s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 50.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 56.15s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 58.45s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 61.17s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
+      "SwordSpecial 4-Hit at 23.08s would be illegal in the game: needs Endurance ≥ 50 (has 39.67).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 26.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 28.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 31.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 35.10s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 36.48s would be illegal in the game: needs Endurance ≥ 50 (has 26.66).",
+      "Sword Martial QQQ at 43.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 46.40s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 50.38s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 51.75s would be illegal in the game: needs Endurance ≥ 50 (has 48).",
+      "SwordSpecial 3-Hit at 54.80s would be illegal in the game: needs Endurance ≥ 50 (has 14.51).",
+      "Crosswind Blade [cancel] at 56.03s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 58.35s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 61.07s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
     ],
     "perSkill": [
       {
@@ -1789,8 +1823,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 46,
-        "expectedDamage": 197307.1,
+        "count": 45,
+        "expectedDamage": 191831.66,
         "castCount": 0
       },
       {
@@ -1798,7 +1832,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 70052.57,
+        "expectedDamage": 70052.41,
         "castCount": 0
       },
       {
@@ -1830,7 +1864,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 14360.24,
+        "expectedDamage": 14360.19,
         "castCount": 0
       },
       {
@@ -1838,7 +1872,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 24,
-        "expectedDamage": 99393.68,
+        "expectedDamage": 99389.91,
         "castCount": 4
       },
       {
@@ -1846,7 +1880,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 27,
-        "expectedDamage": 85007.31,
+        "expectedDamage": 85025.69,
         "castCount": 10
       },
       {
@@ -1854,7 +1888,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 784144.63,
+        "expectedDamage": 784132.04,
         "castCount": 0
       },
       {
@@ -1862,7 +1896,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 60008.39,
+        "expectedDamage": 60007.34,
         "castCount": 10
       },
       {
@@ -1870,7 +1904,7 @@
         "breakdownName": "Morale Chant",
         "type": "mindMethod",
         "count": 6,
-        "expectedDamage": 54884.77,
+        "expectedDamage": 54883.43,
         "castCount": 0
       },
       {
@@ -1878,7 +1912,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 41608.18,
+        "expectedDamage": 41606.65,
         "castCount": 4
       },
       {
@@ -1886,7 +1920,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 37871.76,
+        "expectedDamage": 37870.31,
         "castCount": 4
       },
       {
@@ -1918,7 +1952,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 35035.96,
+        "expectedDamage": 35035.18,
         "castCount": 4
       },
       {
@@ -1939,17 +1973,20 @@
       }
     ],
     "counts": {
-      "timeline": 319,
+      "timeline": 318,
       "buffWindows": 119,
       "casts": 90
     },
-    "digest": "46006a284c4e7e878f592a6527244af98ceaf4fa5a4fc28f73044c74d1465a0c"
+    "digest": "2d2412eb05ace27b2484b9ff4d886b68af3fa228da99b9d48e7a590d2d996551"
   },
   "anchor:noInsightfulStrike": {
     "dps": 62520.41,
     "totalDamage": 3751224.46,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -2117,13 +2154,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "f3d7c1fac8d1b26998a993c474df7cda3c33d4f6be49c87a7a7bca88fb537045"
+    "digest": "936d21b0fc8b45417a1ceb2e5b0d2821b2f91d517fa1b32bebc6d1a66a429d48"
   },
   "anchor:noMoraleChant": {
     "dps": 64443.66,
     "totalDamage": 3866619.65,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -2283,16 +2323,18 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "e7bd5622c32774db04dbd8daed941178024172fc411981b49bb79d26497741a3"
+    "digest": "da9084a8ae0e6ac233ff25c94acb361a6d8b022f3964a9013e0b21acb2bb9b87"
   },
   "anchor:spearHeavyNoWolfchasersArt": {
-    "dps": 40279.68,
-    "totalDamage": 2416780.68,
+    "dps": 40277.93,
+    "totalDamage": 2416675.74,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.90s would be illegal in the game: needs Endurance ≥ 50 (has 27.27).",
-      "SwordSpecial 4-Hit at 23.28s would be illegal in the game: needs Endurance ≥ 50 (has 49.83).",
-      "SwordSpecial 4-Hit at 61.68s would be illegal in the game: needs Endurance ≥ 50 (has 38.44)."
+      "SwordSpecial 3-Hit at 11.85s would be illegal in the game: needs Endurance ≥ 50 (has 20.64).",
+      "SwordSpecial 4-Hit at 23.17s would be illegal in the game: needs Endurance ≥ 50 (has 39.17).",
+      "SwordSpecial 4-Hit at 50.58s would be illegal in the game: needs Endurance ≥ 50 (has 44.98).",
+      "Spear Special (1 Hit Cancel) at 60.70s would be illegal in the game: needs Endurance ≥ 40 (has 31.15).",
+      "SwordSpecial 4-Hit at 61.37s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
     "perSkill": [
       {
@@ -2308,7 +2350,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 65290.72,
+        "expectedDamage": 65257.58,
         "castCount": 0
       },
       {
@@ -2316,7 +2358,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 134503.2,
+        "expectedDamage": 134267.99,
         "castCount": 0
       },
       {
@@ -2324,7 +2366,7 @@
         "breakdownName": "Second Track Slash",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 24066.59,
+        "expectedDamage": 24075.97,
         "castCount": 2
       },
       {
@@ -2332,7 +2374,7 @@
         "breakdownName": "Bleeding",
         "type": "sustain",
         "count": 54,
-        "expectedDamage": 168917.71,
+        "expectedDamage": 169377.38,
         "castCount": 0
       },
       {
@@ -2340,7 +2382,7 @@
         "breakdownName": "Dragon's Breath",
         "type": "mystic",
         "count": 1,
-        "expectedDamage": 11284.97,
+        "expectedDamage": 11547.37,
         "castCount": 1
       },
       {
@@ -2348,7 +2390,7 @@
         "breakdownName": "Smolder",
         "type": "sustain",
         "count": 105,
-        "expectedDamage": 295129.66,
+        "expectedDamage": 294812.42,
         "castCount": 0
       },
       {
@@ -2356,7 +2398,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 13443.98,
+        "expectedDamage": 13477.63,
         "castCount": 0
       },
       {
@@ -2364,7 +2406,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 14554.88,
+        "expectedDamage": 14494.92,
         "castCount": 1
       },
       {
@@ -2380,7 +2422,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 86714.01,
+        "expectedDamage": 86706.28,
         "castCount": 10
       },
       {
@@ -2388,7 +2430,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 26,
-        "expectedDamage": 1130553.69,
+        "expectedDamage": 1130158.18,
         "castCount": 0
       },
       {
@@ -2396,7 +2438,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 9,
-        "expectedDamage": 54833.56,
+        "expectedDamage": 55003.44,
         "castCount": 10
       },
       {
@@ -2404,7 +2446,7 @@
         "breakdownName": "Sweep All",
         "type": "weapon",
         "count": 4,
-        "expectedDamage": 33009.19,
+        "expectedDamage": 33020.03,
         "castCount": 5
       },
       {
@@ -2412,7 +2454,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 12,
-        "expectedDamage": 35229.46,
+        "expectedDamage": 35228.16,
         "castCount": 5
       },
       {
@@ -2436,7 +2478,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 96995.59,
+        "expectedDamage": 96994.92,
         "castCount": 4
       },
       {
@@ -2485,15 +2527,18 @@
       "buffWindows": 129,
       "casts": 94
     },
-    "digest": "d9e64ab1186a806c7d063540731cc4e0de0985f6afecd0e3b45113b7bb3aa9bd"
+    "digest": "60ce28c3dcef63ef6fca99789b8049552534361b5873dbd6f780e99afae38e4a"
   },
   "anchor:bitterSeasonT6": {
     "dps": 43629.49,
     "totalDamage": 2617769.46,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
-      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 36.47)."
+      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
+      "SwordSpecial 4-Hit at 22.42s would be illegal in the game: needs Endurance ≥ 50 (has 44).",
+      "SwordSpecial 4-Hit at 35.42s would be illegal in the game: needs Endurance ≥ 50 (has 36.99).",
+      "SwordSpecial 4-Hit at 50.30s would be illegal in the game: needs Endurance ≥ 50 (has 44.99).",
+      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 0.33)."
     ],
     "perSkill": [
       {
@@ -2670,15 +2715,18 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "efdd4bc5b6a053f7584185702a07c0b4b9656b4616db90f7afd0f415269753b8"
+    "digest": "4ed5e6afe276ad0cec67e1523269434a36af4cf38324cd1826bf206248ec8496"
   },
   "anchor:bitterSeasonT4": {
     "dps": 42791.12,
     "totalDamage": 2567467.15,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
-      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 36.47)."
+      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
+      "SwordSpecial 4-Hit at 22.42s would be illegal in the game: needs Endurance ≥ 50 (has 44).",
+      "SwordSpecial 4-Hit at 35.42s would be illegal in the game: needs Endurance ≥ 50 (has 36.99).",
+      "SwordSpecial 4-Hit at 50.30s would be illegal in the game: needs Endurance ≥ 50 (has 44.99).",
+      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 0.33)."
     ],
     "perSkill": [
       {
@@ -2855,15 +2903,18 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "c5adc8ab0a205042809338683b7933caf90ae07d7cc40c6440df5a8d68d795b9"
+    "digest": "2def26541723807dbf4f1ef555d0d5410fad98c1abc490c8af197dfd0bce6fe9"
   },
   "anchor:bitterSeasonT1": {
     "dps": 42430.81,
     "totalDamage": 2545848.37,
     "rotationDuration": 60,
     "warnings": [
-      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 36.47).",
-      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 36.47)."
+      "SwordSpecial 3-Hit at 11.13s would be illegal in the game: needs Endurance ≥ 50 (has 29.34).",
+      "SwordSpecial 4-Hit at 22.42s would be illegal in the game: needs Endurance ≥ 50 (has 44).",
+      "SwordSpecial 4-Hit at 35.42s would be illegal in the game: needs Endurance ≥ 50 (has 36.99).",
+      "SwordSpecial 4-Hit at 50.30s would be illegal in the game: needs Endurance ≥ 50 (has 44.99).",
+      "SwordSpecial 3-Hit at 53.23s would be illegal in the game: needs Endurance ≥ 50 (has 0.33)."
     ],
     "perSkill": [
       {
@@ -3040,13 +3091,16 @@
       "buffWindows": 125,
       "casts": 90
     },
-    "digest": "dd10e204a0d6ec3144a82f96a2c918f49eec870be99ff833f1817f452affe341"
+    "digest": "b8219458c410cc515d195b3b42381018cb1cdf1ad035456599ab9a32c5c6c6d4"
   },
   "anchor:noSet": {
     "dps": 63837.95,
     "totalDamage": 3830277,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3214,13 +3268,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "8e2f8d7ec031d93ca66d75fc79af68a779ba9c52941c9a82dc39fc11d63f4787"
+    "digest": "a1dd987bf9fa44f86446caa3b9d97bd558e318d2d16b64818c5ba692bf7efc29"
   },
   "anchor:set-Jadeware": {
     "dps": 68825.27,
     "totalDamage": 4129516.11,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3388,13 +3445,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "ac20af915ebc681d3459fb4a6cea6376e297b76f31ed8a10054b75df293942fc"
+    "digest": "cb60ea0cbb955b324231c41aa8ddc1753024c8ae919d17b2ba2348847ea77536"
   },
   "anchor:set-Mistwillow": {
     "dps": 64427.79,
     "totalDamage": 3865667.52,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3562,13 +3622,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "fb8a0a2d80a51b0a7f40504ebc264934c378b9ecbf4eabac95973058366799b2"
+    "digest": "04c267d4288ce78fcbe4ab5a8a6ff7414f5ae382f48d07db533c55b098c2aa0c"
   },
   "anchor:set-Rainwhisper": {
     "dps": 65373.71,
     "totalDamage": 3922422.4,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3736,13 +3799,16 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "9dba06b35d5f7d0d7a1059aad33fe30cca82ac6f89fdf204d2f10c4e977e0b94"
+    "digest": "62eace26140d40031a4dea3d3236065be4d054b0f25dac8e0127d86b9065932b"
   },
   "anchor:set-Cleftpeak": {
     "dps": 65810.61,
     "totalDamage": 3948636.45,
     "rotationDuration": 60,
-    "warnings": [],
+    "warnings": [
+      "SwordSpecial 3-Hit at 11.17s would be illegal in the game: needs Endurance ≥ 50 (has 49.34).",
+      "SwordSpecial 3-Hit at 53.38s would be illegal in the game: needs Endurance ≥ 50 (has 48.17)."
+    ],
     "perSkill": [
       {
         "name": "Sword Charge Stage 1, 4-Hit",
@@ -3910,31 +3976,37 @@
       "buffWindows": 150,
       "casts": 90
     },
-    "digest": "f669afa8e992c7d973aa94d01b7392161f75f4abd324f96b17b81824ffa16285"
+    "digest": "6071f04f79ba2fae96d9e56579330ff851cee6e9ce06cdb295fee0f96d87b5f8"
   },
   "defaults:umbra": {
-    "dps": 11752.92,
-    "totalDamage": 705175.17,
+    "dps": 11749.35,
+    "totalDamage": 704960.99,
     "rotationDuration": 60,
     "warnings": [
-      "Crosswind Blade [cancel] at 4.63s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "SwordSpecial 3-Hit at 8.95s would be illegal in the game: needs Endurance ≥ 50 (has 37.8).",
-      "Crosswind Blade [cancel] at 10.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 12.50s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 15.28s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 17.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 23.68s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 25.95s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 30.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 32.35s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.72s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 41.00s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 43.72s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 45.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword R Charge - Follow Up 1-Hit[cancel] at 52.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Sword Martial QQQ at 54.30s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 57.02s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
-      "Crosswind Blade [cancel] at 58.93s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped)."
+      "Crosswind Blade [cancel] at 4.60s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 3-Hit at 8.90s would be illegal in the game: needs Endurance ≥ 50 (has 31.51).",
+      "Crosswind Blade [cancel] at 10.13s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 12.43s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 15.20s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 17.12s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 20.62s would be illegal in the game: needs Endurance ≥ 50 (has 23.17).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 23.55s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 25.82s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 30.27s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 32.18s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "SwordSpecial 4-Hit at 35.58s would be illegal in the game: needs Endurance ≥ 50 (has 33.49).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 38.53s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 40.80s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 43.50s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 45.42s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 46.10s would be illegal in the game: needs Endurance ≥ 40 (has 32.99).",
+      "SwordSpecial 4-Hit at 48.82s would be illegal in the game: needs Endurance ≥ 50 (has 15.17).",
+      "Sword R Charge - Follow Up 1-Hit[cancel] at 51.77s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Sword Martial QQQ at 54.03s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 56.73s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Crosswind Blade [cancel] at 58.65s would be illegal in the game: needs the inner way Sword Horizon equipped (not equipped).",
+      "Spear Special (1 Hit Cancel) at 59.33s would be illegal in the game: needs Endurance ≥ 40 (has 28.17).",
+      "SwordSpecial 4-Hit at 60.02s would be illegal in the game: needs Endurance ≥ 50 (has 0)."
     ],
     "perSkill": [
       {
@@ -3949,8 +4021,8 @@
         "name": "Bleeding (DoT)",
         "breakdownName": "Bleeding",
         "type": "sustain",
-        "count": 48,
-        "expectedDamage": 56535.55,
+        "count": 47,
+        "expectedDamage": 55969.22,
         "castCount": 0
       },
       {
@@ -3958,7 +4030,7 @@
         "breakdownName": "Divinecraft - Fire",
         "type": "mindMethod",
         "count": 60,
-        "expectedDamage": 35593.09,
+        "expectedDamage": 35585.37,
         "castCount": 0
       },
       {
@@ -3982,7 +4054,7 @@
         "breakdownName": "Flute Chanting a Thousand Waves",
         "type": "mystic",
         "count": 10,
-        "expectedDamage": 78411.48,
+        "expectedDamage": 78533.15,
         "castCount": 0
       },
       {
@@ -3990,7 +4062,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 5,
-        "expectedDamage": 8290.44,
+        "expectedDamage": 8313.58,
         "castCount": 1
       },
       {
@@ -3998,7 +4070,7 @@
         "breakdownName": "Divinecraft - Fire Explosion",
         "type": "mindMethod",
         "count": 8,
-        "expectedDamage": 7273.34,
+        "expectedDamage": 7230.99,
         "castCount": 0
       },
       {
@@ -4006,7 +4078,7 @@
         "breakdownName": "Inner Balance Strike III",
         "type": "weapon",
         "count": 30,
-        "expectedDamage": 46506.34,
+        "expectedDamage": 46471.35,
         "castCount": 10
       },
       {
@@ -4014,7 +4086,7 @@
         "breakdownName": "Blood Burst",
         "type": "weapon",
         "count": 17,
-        "expectedDamage": 213683.86,
+        "expectedDamage": 213893.47,
         "castCount": 0
       },
       {
@@ -4022,7 +4094,7 @@
         "breakdownName": "Crisscross - Inner Balance III",
         "type": "weapon",
         "count": 10,
-        "expectedDamage": 29697.07,
+        "expectedDamage": 29695.54,
         "castCount": 10
       },
       {
@@ -4062,7 +4134,7 @@
         "breakdownName": "Inner Track Slash",
         "type": "weapon",
         "count": 16,
-        "expectedDamage": 52516.21,
+        "expectedDamage": 52448.96,
         "castCount": 4
       },
       {
@@ -4070,7 +4142,7 @@
         "breakdownName": "Crisscross - Inner Track",
         "type": "weapon",
         "count": 8,
-        "expectedDamage": 15624.16,
+        "expectedDamage": 15584.99,
         "castCount": 4
       },
       {
@@ -4078,7 +4150,7 @@
         "breakdownName": "Sober Sorrow",
         "type": "weapon",
         "count": 18,
-        "expectedDamage": 34295.8,
+        "expectedDamage": 34513.39,
         "castCount": 3
       },
       {
@@ -4094,7 +4166,7 @@
         "breakdownName": "Crisscross - Second Track",
         "type": "weapon",
         "count": 3,
-        "expectedDamage": 4784.74,
+        "expectedDamage": 4757.91,
         "castCount": 3
       },
       {
@@ -4107,10 +4179,10 @@
       }
     ],
     "counts": {
-      "timeline": 318,
+      "timeline": 317,
       "buffWindows": 123,
       "casts": 92
     },
-    "digest": "d3690fdbed03bc1ddd0edf0e1593a1f98079e61f65c82755f9891929db83b416"
+    "digest": "fcb7f1e8a9259f196afa561434b7a374e70268b05aa0c4ff13ab677cf63ba8b6"
   }
 }
