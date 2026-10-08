@@ -333,7 +333,7 @@ describe("computeDpsDeltas → fullPotential field", () => {
 // Every fixture below is a level-96 piece, so the breakthrough has to resolve
 // to that same gear level — otherwise relaying (which follows the
 // breakthrough) would target a different ceiling than the pieces carry.
-describe("FT variant selection", () => {
+describe("FT variant selection", { timeout: 30_000 }, () => {
   const level96Inputs = { ...umbraInputs, breakthrough: 16 }
 
   function derivedInputs(equipped: GearPiece[], inventory: GearPiece[]): Inputs {

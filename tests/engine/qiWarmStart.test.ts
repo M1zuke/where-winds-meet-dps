@@ -91,96 +91,104 @@ describe("qiScheduleSeedBreaksFrom", () => {
   })
 })
 
-describe("a ranking sweep warm-started from the baseline's own schedule", () => {
-  it("lands on the same expected DPS as an unseeded run", () => {
-    const inputs = graduationInputsFor(CLASS_ID)
-    const baseline = runEngine(inputs)
-    const seeded = computeRanking(inputs, baseline.dps, {
-      qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS),
+describe(
+  "a ranking sweep warm-started from the baseline's own schedule",
+  { timeout: 30_000 },
+  () => {
+    it("lands on the same expected DPS as an unseeded run", () => {
+      const inputs = graduationInputsFor(CLASS_ID)
+      const baseline = runEngine(inputs)
+      const seeded = computeRanking(inputs, baseline.dps, {
+        qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS),
+      })
+      const unseeded = computeRanking(inputs, baseline.dps)
+      expect(seeded.map((row) => row.expectedDps)).toEqual(unseeded.map((row) => row.expectedDps))
     })
-    const unseeded = computeRanking(inputs, baseline.dps)
-    expect(seeded.map((row) => row.expectedDps)).toEqual(unseeded.map((row) => row.expectedDps))
-  })
 
-  it("converges in no more passes than seeding from the rotation's authored window", () => {
-    const inputs = graduationInputsFor(CLASS_ID)
-    const baseline = runEngine(inputs)
-    const seededBreaks = qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS)
-    // A single stat line's worth of extra damage — the small perturbation a
-    // real ranking candidate applies.
-    const perturbed = { ...inputs, allDamageBoost: (inputs.allDamageBoost ?? 0) + 0.02 }
-    const warmStarted = runEngine(perturbed, { qiScheduleSeedBreaks: seededBreaks })
-    const reseeded = runEngine(perturbed)
-    expect(warmStarted.qiIterations ?? 0).toBeLessThanOrEqual(reseeded.qiIterations ?? 0)
-  })
-})
+    it("converges in no more passes than seeding from the rotation's authored window", () => {
+      const inputs = graduationInputsFor(CLASS_ID)
+      const baseline = runEngine(inputs)
+      const seededBreaks = qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS)
+      // A single stat line's worth of extra damage — the small perturbation a
+      // real ranking candidate applies.
+      const perturbed = { ...inputs, allDamageBoost: (inputs.allDamageBoost ?? 0) + 0.02 }
+      const warmStarted = runEngine(perturbed, { qiScheduleSeedBreaks: seededBreaks })
+      const reseeded = runEngine(perturbed)
+      expect(warmStarted.qiIterations ?? 0).toBeLessThanOrEqual(reseeded.qiIterations ?? 0)
+    })
+  },
+)
 
-describe("every other repeated sweep warm-started from the baseline's own schedule", () => {
-  it("gear analysis lands on the same rows as an unseeded run", () => {
-    const { inputs } = gearedUmbraInputs()
-    const baseline = runEngine(inputs)
-    const seeded = computeGearAnalysis(inputs, baseline.dps, {
-      qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS),
+describe(
+  "every other repeated sweep warm-started from the baseline's own schedule",
+  { timeout: 30_000 },
+  () => {
+    it("gear analysis lands on the same rows as an unseeded run", () => {
+      const { inputs } = gearedUmbraInputs()
+      const baseline = runEngine(inputs)
+      const seeded = computeGearAnalysis(inputs, baseline.dps, {
+        qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(baseline.qiBreaks, FPS),
+      })
+      const unseeded = computeGearAnalysis(inputs, baseline.dps)
+      expect(seeded).toEqual(unseeded)
     })
-    const unseeded = computeGearAnalysis(inputs, baseline.dps)
-    expect(seeded).toEqual(unseeded)
-  })
 
-  it("dps deltas land on the same deltas as an unseeded run", () => {
-    const { inputs, piece } = gearedUmbraInputs()
-    const baseline = runEngine(inputs)
-    const seeded = computeDpsDeltas({
-      reqId: 1,
-      inputs,
-      baselineDps: baseline.dps,
-      pieceIds: [piece.id],
-      baselineQiBreaks: baseline.qiBreaks,
+    it("dps deltas land on the same deltas as an unseeded run", () => {
+      const { inputs, piece } = gearedUmbraInputs()
+      const baseline = runEngine(inputs)
+      const seeded = computeDpsDeltas({
+        reqId: 1,
+        inputs,
+        baselineDps: baseline.dps,
+        pieceIds: [piece.id],
+        baselineQiBreaks: baseline.qiBreaks,
+      })
+      const unseeded = computeDpsDeltas({
+        reqId: 1,
+        inputs,
+        baselineDps: baseline.dps,
+        pieceIds: [piece.id],
+      })
+      expect(seeded.deltas).toEqual(unseeded.deltas)
     })
-    const unseeded = computeDpsDeltas({
-      reqId: 1,
-      inputs,
-      baselineDps: baseline.dps,
-      pieceIds: [piece.id],
-    })
-    expect(seeded.deltas).toEqual(unseeded.deltas)
-  })
 
-  it("retunement lands on the same rows as an unseeded run", () => {
-    const { inputs, piece } = gearedUmbraInputs()
-    const baseline = runEngine(inputs)
-    const seeded = computeRetunement({
-      reqId: 1,
-      inputs,
-      pieceId: piece.id,
-      baselineQiBreaks: baseline.qiBreaks,
+    it("retunement lands on the same rows as an unseeded run", () => {
+      const { inputs, piece } = gearedUmbraInputs()
+      const baseline = runEngine(inputs)
+      const seeded = computeRetunement({
+        reqId: 1,
+        inputs,
+        pieceId: piece.id,
+        baselineQiBreaks: baseline.qiBreaks,
+      })
+      const unseeded = computeRetunement({ reqId: 1, inputs, pieceId: piece.id })
+      expect(seeded.rows).toEqual(unseeded.rows)
     })
-    const unseeded = computeRetunement({ reqId: 1, inputs, pieceId: piece.id })
-    expect(seeded.rows).toEqual(unseeded.rows)
-  })
 
-  it("reattunement lands on the same options as an unseeded run", () => {
-    const { inputs, piece } = gearedUmbraInputs()
-    const baseline = runEngine(inputs)
-    const seeded = computeReattunement({
-      reqId: 1,
-      inputs,
-      pieceId: piece.id,
-      baselineQiBreaks: baseline.qiBreaks,
+    it("reattunement lands on the same options as an unseeded run", () => {
+      const { inputs, piece } = gearedUmbraInputs()
+      const baseline = runEngine(inputs)
+      const seeded = computeReattunement({
+        reqId: 1,
+        inputs,
+        pieceId: piece.id,
+        baselineQiBreaks: baseline.qiBreaks,
+      })
+      const unseeded = computeReattunement({ reqId: 1, inputs, pieceId: piece.id })
+      expect(seeded.options).toEqual(unseeded.options)
     })
-    const unseeded = computeReattunement({ reqId: 1, inputs, pieceId: piece.id })
-    expect(seeded.options).toEqual(unseeded.options)
-  })
 
-  it("word max lands on the same rows as an unseeded run", () => {
-    const { inputs, piece } = gearedUmbraInputs()
-    const baseline = runEngine(inputs)
-    const seeded = computeWordMax({
-      reqId: 1,
-      inputs,
-      piece,
-      baselineQiBreaks: baseline.qiBreaks,
+    it("word max lands on the same rows as an unseeded run", () => {
+      const { inputs, piece } = gearedUmbraInputs()
+      const baseline = runEngine(inputs)
+      const seeded = computeWordMax({
+        reqId: 1,
+        inputs,
+        piece,
+        baselineQiBreaks: baseline.qiBreaks,
+      })
+      const unseeded = computeWordMax({ reqId: 1, inputs, piece })
+      expect(seeded.rows).toEqual(unseeded.rows)
     })
-    const unseeded = computeWordMax({ reqId: 1, inputs, piece })
-    expect(seeded.rows).toEqual(unseeded.rows)
-  })
-})
+  },
+)

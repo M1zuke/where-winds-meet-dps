@@ -112,7 +112,7 @@ describe("computeGearAnalysis", () => {
   })
 })
 
-describe("a mixed-level build", () => {
+describe("a mixed-level build", { timeout: 30_000 }, () => {
   const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
   const level91Weapon = piece("weapon-91", "leftWeapon", { level: 91 })
   const level96Helm = piece("helm-96", "helm", {

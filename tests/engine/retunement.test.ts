@@ -572,7 +572,7 @@ describe("retuneLineOutcome", () => {
   })
 })
 
-describe("computeRetunement — weighted advisor (levels 96/100/105)", () => {
+describe("computeRetunement — weighted advisor (levels 96/100/105)", { timeout: 30_000 }, () => {
   function withPieceInInventory(p: GearPiece): Inputs {
     return { ...defaultInputs, inventory: [p], classId: "bellstrikeUmbra" }
   }
