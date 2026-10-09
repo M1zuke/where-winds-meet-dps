@@ -1,18 +1,76 @@
 import type { computeSkillDamage } from "./formula"
 import type { QiPhase } from "./effects/context"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+import { isDisplacement, isSkillApproach, type Displacement, type SkillApproach } from "./distance"
+
+export type { Displacement, SkillApproach } from "./distance"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 export type TriggerKind =
-  "applyBuff" | "applyDebuff" | "castSkill" | "applyDot" | "detonateDot" | "releaseEcho"
-export type TriggerOp = "gte" | "gt" | "eq"
+  | "applyBuff"
+  | "applyDebuff"
+  | "castSkill"
+  | "applyDot"
+  | "detonateDot"
+  | "releaseEcho"
+  | "clearStatus"
+  | "meterDelta"
+  | "cooldownCut"
+export type TriggerOp = "gte" | "gt" | "eq" | "lte" | "lt"
 
-export interface TriggerCondition {
+export type StartLatency = "serverRoundTrip" | "noWaitOnDummy" | "none"
+
+export interface StatusCondition {
   buffId: string
   op: TriggerOp
   stacks: number
+  source?: "buffEngine"
 }
+
+export interface ParamCondition {
+  param: string
+  minTier?: number
+}
+
+export interface AnyOfCondition {
+  anyOf: TriggerCondition[]
+}
+
+export type TriggerCondition = StatusCondition | ParamCondition | AnyOfCondition
+
+export const OP_SYMBOL: Record<TriggerOp, string> = {
+  gte: "≥",
+  gt: ">",
+  eq: "=",
+  lte: "≤",
+  lt: "<",
+}
+
+// The build mechanism a `castConditions` param condition reads — resolved
+// generically from where `BuffParams` entries are produced
+// (`engine/buffs/paramSource.ts`), never hand-mapped per param.
+export type ParamSourceKind = "innerWay" | "set" | "script"
+
+// A step the engine flags illegal (docs/TIMELINE.md § "Cast legality")
+// carries one of these per failed `castConditions` entry, decided once where
+// the step is flagged — a display never re-evaluates the condition itself,
+// only renders this.
+export type ConditionFailureReason =
+  | { kind: "buff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "debuff"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "meter"; id: string; name: string; op: TriggerOp; required: number; actual: number }
+  | { kind: "weapon"; id: string; name: string; actualId: string; actualName: string }
+  | {
+      kind: "param"
+      id: string
+      name: string
+      source?: { kind: ParamSourceKind; id: string }
+      minTier?: number
+      actualOn: boolean
+      actualTier: number
+    }
+  | { kind: "anyOf"; reasons: ConditionFailureReason[] }
 
 export interface HitVariant {
   id: string
@@ -23,6 +81,9 @@ export interface HitVariant {
   physFixed: number
   attributeFixed: number
   castFrames?: number
+  // docs/TIMELINE.md § "Hit variants" — replaces the hit's own `frame` where
+  // this variant is the active one.
+  frame?: number
 }
 
 export interface HitTrigger {
@@ -44,9 +105,22 @@ export interface HitTrigger {
   transferFrom?: string
   phase?: QiPhase
   cooldownFrames?: number
+  cooldownFloorFrames?: number
+  cooldownGroup?: string
   // Opens the granted window at this length instead of the target status's
   // own `durationFrames`.
   durationFrames?: number
+  requiresParam?: string
+  requiresMinTier?: number
+  // `meterDelta` only (docs/TIMELINE.md § "Meters").
+  meterSpendCapToCurrent?: number
+  recordSpendAsStatus?: string
+  // `meterDelta` only: refunds this fraction of what the owning cast actually
+  // paid to `targetId`, after cost modifiers — `stacks` is ignored when set.
+  refundFractionOfCastCost?: number
+  // `meterDelta` only: reads its conditions as the ledger stood before this
+  // hit's own triggers wrote.
+  conditionsBeforeHit?: boolean
 }
 
 export interface SkillHit {
@@ -60,6 +134,60 @@ export interface SkillHit {
   variants?: HitVariant[]
   conditions?: TriggerCondition[]
   triggers: HitTrigger[]
+  // docs/TIMELINE.md § "Conditional hits" — a hit whose animation only
+  // continues to land because the step immediately following it, by name,
+  // could not interrupt before this frame. Absent, this hit lands exactly as
+  // any other.
+  requiresNextStepSkillIds?: string[]
+  // Overrides the skill's own `castFrames` when this hit's own
+  // `requiresNextStepSkillIds` gate is what included it — the next-step
+  // counterpart of a hit variant's own `castFrames` override.
+  castFramesWhenGated?: number
+  // The hit's own Qi rate, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means 1, the in-game default.
+  qiRate?: number
+  // The flat Qi channel no modelled hit uses; kept for completeness. Absent
+  // means 0.
+  qiFlat?: number
+  // A hit whose landing frame depends on the live target distance rather than
+  // being fixed — a thrown or fired hit travelling at a constant speed from
+  // this hit's own `frame`, resolved only through `resolvedHitFrame`. Absent
+  // means a fixed frame, the ordinary case.
+  projectile?: ProjectileSpec
+}
+
+export interface ProjectileSpec {
+  speedMetersPerSecond: number
+  // A hard ceiling on travel time, in frames from the throw — the projectile's
+  // own lifetime, independent of the skill's reach.
+  maxTravelFrames: number
+}
+
+export interface MeterCost {
+  meterId: string
+  amount: number
+  // Frames into the cast; absent spends at the cast's own start.
+  atFrame?: number
+  // docs/TIMELINE.md § "Meters".
+  requiresParam?: string
+  requiresMinTier?: number
+  requiresMaxTier?: number
+}
+
+export interface MeterDrain {
+  meterId: string
+  perSecond: number
+  fromFrame: number
+  // Absent: the drain runs to the cast's own end.
+  stopAfterSec?: number
+  // docs/TIMELINE.md § "Meters" — a charged hold releases early on an empty
+  // drain.
+  chargeRelease?: { fallbackSkillId: string }
+}
+
+export interface MeterFreeze {
+  meterId: string
+  fromFrame: number
 }
 
 export interface Skill {
@@ -71,20 +199,48 @@ export interface Skill {
   attributeAttack: string
   tags?: string[]
   breakdownName?: string
+  // At the cast's own start, after this step's cast conditions are checked
+  // against the value the cost is about to spend — a threshold requirement is
+  // authored as a `castConditions` entry against `meter:<id>` instead
+  // (docs/TIMELINE.md § "Meters").
+  meterCosts?: MeterCost[]
+  meterDrains?: MeterDrain[]
+  meterFreezes?: MeterFreeze[]
   // The identity this cast presents to the buff engine and to the migration
   // that backfills `receives`/`triggersBuffs` on an old save. Authored, so a
   // rename is only a rename; falls back to `name` for user-authored skills.
   castTag?: string
   receives?: string[]
   triggersBuffs?: string[]
+  // Overrides a listed `triggersBuffs` id's grant time to this many frames
+  // into this cast, in place of the cast's own start — per grant site, unlike
+  // the module-wide `BuffModule.buffAppliesAfterSec`. An id absent from the
+  // map keeps granting at the cast's start.
+  triggersBuffsAtFrame?: Record<string, number>
   hits: SkillHit[]
+  castConditions?: TriggerCondition[]
   castFrames: number
   triggerable: boolean
+  // Target-distance simulation — docs/TIMELINE.md § "Target distance".
+  // Absent `reachMeters` falls back to the class's `defaultMeleeReachMeters`.
+  reachMeters?: number
+  approach?: SkillApproach
+  displacement?: Displacement
   elevatedAttributeMultiplier?: boolean
   neverAbrades?: boolean
   guaranteedNormal?: boolean
   prePull?: boolean
   isDotTick?: boolean
+  // This cast already performs its own weapon change — see docs/TIMELINE.md
+  // § "Drawn weapon". No separate direct swap is inserted in front of it.
+  isWeaponSwap?: boolean
+  // What makes this a cancel-form skill — docs/TIMELINE.md § "Identity and
+  // tags". Absent means this skill is not a cancel form at all.
+  cancelledBy?: "deflectCancel" | "nextSkill"
+  startLatency?: StartLatency
+  // A count of further server round trips this cast's own timeline waits for,
+  // beyond the start wait — docs/TIMELINE.md § "Coefficients". Absent means 0.
+  serverWaitsInCast?: number
   createdAt: string
   updatedAt: string
 }
@@ -155,21 +311,87 @@ export function makeSkill(classId: string, patch: Partial<Skill> = {}): Skill {
   }
 }
 
-export function isTriggerCondition(x: unknown): x is TriggerCondition {
-  if (!x || typeof x !== "object") return false
-  const c = x as Record<string, unknown>
-  if (typeof c.buffId !== "string") return false
-  if (c.op !== "gte" && c.op !== "gt" && c.op !== "eq") return false
-  if (typeof c.stacks !== "number" || !Number.isFinite(c.stacks)) return false
+export function isStatusCondition(value: unknown): value is StatusCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (typeof record.buffId !== "string") return false
+  if (
+    record.op !== "gte" &&
+    record.op !== "gt" &&
+    record.op !== "eq" &&
+    record.op !== "lte" &&
+    record.op !== "lt"
+  )
+    return false
+  if (typeof record.stacks !== "number" || !Number.isFinite(record.stacks)) return false
+  if (record.source !== undefined && record.source !== "buffEngine") return false
   return true
 }
 
-export function conditionSatisfiedByStacks(condition: TriggerCondition, stacks: number): boolean {
-  return condition.op === "gte"
-    ? stacks >= condition.stacks
-    : condition.op === "gt"
-      ? stacks > condition.stacks
-      : stacks === condition.stacks
+export function isParamCondition(value: unknown): value is ParamCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (typeof record.param !== "string" || !record.param) return false
+  if (
+    record.minTier !== undefined &&
+    (typeof record.minTier !== "number" || !Number.isFinite(record.minTier))
+  )
+    return false
+  return true
+}
+
+export function isAnyOfCondition(value: unknown): value is AnyOfCondition {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  return (
+    Array.isArray(record.anyOf) &&
+    record.anyOf.length > 0 &&
+    record.anyOf.every((clause) => isTriggerCondition(clause))
+  )
+}
+
+export function isTriggerCondition(value: unknown): value is TriggerCondition {
+  return isStatusCondition(value) || isParamCondition(value) || isAnyOfCondition(value)
+}
+
+// `source: "buffEngine"` is only meaningful on a `castSkill` trigger's own
+// condition — a hit's or a variant's condition never gates a generated cast.
+function hasBuffEngineSource(value: unknown): boolean {
+  if (!value || typeof value !== "object") return false
+  const record = value as Record<string, unknown>
+  if (record.source === "buffEngine") return true
+  return Array.isArray(record.anyOf) && record.anyOf.some(hasBuffEngineSource)
+}
+
+export function isHitOrVariantCondition(value: unknown): value is TriggerCondition {
+  return isTriggerCondition(value) && !hasBuffEngineSource(value)
+}
+
+export function conditionSatisfiedByStacks(condition: StatusCondition, stacks: number): boolean {
+  switch (condition.op) {
+    case "gte":
+      return stacks >= condition.stacks
+    case "gt":
+      return stacks > condition.stacks
+    case "lte":
+      return stacks <= condition.stacks
+    case "lt":
+      return stacks < condition.stacks
+    default:
+      return stacks === condition.stacks
+  }
+}
+
+export function conditionIds(condition: TriggerCondition): string[] {
+  if (isAnyOfCondition(condition)) return condition.anyOf.flatMap(conditionIds)
+  if (isParamCondition(condition)) return [condition.param]
+  return [condition.buffId]
+}
+
+export function cloneTriggerCondition(condition: TriggerCondition): TriggerCondition {
+  return isAnyOfCondition(condition)
+    ? { anyOf: condition.anyOf.map(cloneTriggerCondition) }
+    : { ...condition }
 }
 
 export function isHitTrigger(x: unknown): x is HitTrigger {
@@ -181,7 +403,10 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     t.kind !== "castSkill" &&
     t.kind !== "applyDot" &&
     t.kind !== "detonateDot" &&
-    t.kind !== "releaseEcho"
+    t.kind !== "releaseEcho" &&
+    t.kind !== "clearStatus" &&
+    t.kind !== "meterDelta" &&
+    t.kind !== "cooldownCut"
   )
     return false
   if (typeof t.targetId !== "string") return false
@@ -192,6 +417,10 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
     for (const c of t.conditions) {
       if (!isTriggerCondition(c)) return false
     }
+  }
+  if (t.kind !== "castSkill") {
+    if (hasBuffEngineSource(t.condition)) return false
+    if (Array.isArray(t.conditions) && t.conditions.some(hasBuffEngineSource)) return false
   }
   if (t.transferFrom !== undefined) {
     if (typeof t.transferFrom !== "string" || !t.transferFrom) return false
@@ -212,6 +441,38 @@ export function isHitTrigger(x: unknown): x is HitTrigger {
       t.durationFrames <= 0)
   )
     return false
+  if (
+    t.cooldownFloorFrames !== undefined &&
+    (typeof t.cooldownFloorFrames !== "number" ||
+      !Number.isFinite(t.cooldownFloorFrames) ||
+      t.cooldownFloorFrames < 0)
+  )
+    return false
+  if (t.cooldownGroup !== undefined && (typeof t.cooldownGroup !== "string" || !t.cooldownGroup))
+    return false
+  if (t.requiresParam !== undefined && (typeof t.requiresParam !== "string" || !t.requiresParam))
+    return false
+  if (t.requiresMinTier !== undefined) {
+    if (typeof t.requiresMinTier !== "number" || !Number.isFinite(t.requiresMinTier)) return false
+    if (typeof t.requiresParam !== "string" || !t.requiresParam) return false
+  }
+  if (
+    t.meterSpendCapToCurrent !== undefined &&
+    (typeof t.meterSpendCapToCurrent !== "number" || !Number.isFinite(t.meterSpendCapToCurrent))
+  )
+    return false
+  if (
+    t.recordSpendAsStatus !== undefined &&
+    (typeof t.recordSpendAsStatus !== "string" || !t.recordSpendAsStatus)
+  )
+    return false
+  if (
+    t.refundFractionOfCastCost !== undefined &&
+    (typeof t.refundFractionOfCastCost !== "number" || !Number.isFinite(t.refundFractionOfCastCost))
+  )
+    return false
+  if (t.conditionsBeforeHit !== undefined && typeof t.conditionsBeforeHit !== "boolean")
+    return false
   return true
 }
 
@@ -226,13 +487,16 @@ export function isHitVariant(x: unknown): x is HitVariant {
   if (typeof v.label !== "string") return false
   if (!Array.isArray(v.conditions)) return false
   for (const c of v.conditions) {
-    if (!isTriggerCondition(c)) return false
+    if (!isHitOrVariantCondition(c)) return false
   }
   for (const k of ["physMultiplier", "attributeMultiplier", "physFixed", "attributeFixed"]) {
     if (typeof v[k] !== "number" || !Number.isFinite(v[k] as number)) return false
   }
   if (v.castFrames !== undefined) {
     if (typeof v.castFrames !== "number" || !Number.isFinite(v.castFrames)) return false
+  }
+  if (v.frame !== undefined) {
+    if (typeof v.frame !== "number" || !Number.isFinite(v.frame)) return false
   }
   return true
 }
@@ -264,8 +528,34 @@ export function isSkillHit(x: unknown): x is SkillHit {
   if (h.conditions !== undefined) {
     if (!Array.isArray(h.conditions)) return false
     for (const c of h.conditions) {
-      if (!isTriggerCondition(c)) return false
+      if (!isHitOrVariantCondition(c)) return false
     }
+  }
+  if (h.requiresNextStepSkillIds !== undefined) {
+    if (!isStringArray(h.requiresNextStepSkillIds) || h.requiresNextStepSkillIds.length === 0)
+      return false
+  }
+  if (h.castFramesWhenGated !== undefined) {
+    if (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
+      return false
+  }
+  if (h.qiRate !== undefined && (typeof h.qiRate !== "number" || !Number.isFinite(h.qiRate)))
+    return false
+  if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat)))
+    return false
+  if (h.projectile !== undefined) {
+    if (!h.projectile || typeof h.projectile !== "object") return false
+    const projectile = h.projectile as Record<string, unknown>
+    if (
+      typeof projectile.speedMetersPerSecond !== "number" ||
+      !(projectile.speedMetersPerSecond > 0)
+    )
+      return false
+    if (
+      typeof projectile.maxTravelFrames !== "number" ||
+      !Number.isFinite(projectile.maxTravelFrames)
+    )
+      return false
   }
   return true
 }
@@ -279,12 +569,40 @@ export function triggerConditions(tr: HitTrigger): TriggerCondition[] {
 
 export function selectHitVariant(
   hit: SkillHit,
-  test: (c: TriggerCondition) => boolean,
+  test: (condition: TriggerCondition) => boolean,
 ): HitVariant | null {
   for (const variant of hit.variants ?? []) {
     if (variant.conditions.every((c) => test(c))) return variant
   }
   return null
+}
+
+// Authored frames are always nominal 60 fps (docs/TIMELINE.md § "Coefficients"),
+// independent of the simulation's own render frame rate.
+const NOMINAL_FPS = 60
+
+// `distanceMeters` is the live target distance at the frame this hit resolves
+// from — absent for every reader that has none available, in which case a
+// `projectile` hit falls back to its own base frame, same as one without it.
+export function resolvedHitFrame(
+  hit: SkillHit,
+  test: (condition: TriggerCondition) => boolean,
+  distanceMeters?: number,
+): number {
+  const base = selectHitVariant(hit, test)?.frame ?? hit.frame
+  if (!hit.projectile || distanceMeters === undefined) return base
+  const travelFrames = (distanceMeters / hit.projectile.speedMetersPerSecond) * NOMINAL_FPS
+  return base + Math.min(travelFrames, hit.projectile.maxTravelFrames)
+}
+
+// The one place `SkillHit.conditions` is checked — every path that turns a
+// hit into a landed event goes through this, a step's own top-level hits and
+// a `castSkill`/`detonateDot` sub-cast's hits alike.
+export function hitConditionsHold(
+  hit: SkillHit,
+  holds: (condition: TriggerCondition) => boolean,
+): boolean {
+  return (hit.conditions ?? []).every(holds)
 }
 
 export function breakdownNameOf(breakdownName: string | undefined, fallbackName: string): string {
@@ -295,7 +613,20 @@ export function isPrePullSkill(skill: Skill): boolean {
   return skill.prePull ?? /prepull/i.test(skill.name)
 }
 
-export function hitDealsDamage(hit: SkillHit): boolean {
+// What cancels a cancel-form skill, read only from its own `cancelledBy` —
+// docs/TIMELINE.md § "Identity and tags". Never derived from the name: a
+// Skill Editor rename must not add or remove a Deflect Cancel. `null` on a
+// skill that is not a cancel form at all.
+export function cancelledByOf(skill: Skill): "deflectCancel" | "nextSkill" | null {
+  return skill.cancelledBy ?? null
+}
+
+// Shared with a DoT's own coefficients (`DebuffDotSpec` carries the same four
+// fields) — docs/TIMELINE.md § "Fight window" uses the one threshold for
+// both a hit and a tick.
+export function hitDealsDamage(
+  hit: Pick<SkillHit, "physMultiplier" | "attributeMultiplier" | "physFixed" | "attributeFixed">,
+): boolean {
   return (
     hit.physMultiplier !== 0 ||
     hit.attributeMultiplier !== 0 ||
@@ -322,11 +653,108 @@ export function isSkill(x: unknown): x is Skill {
   if (typeof s.updatedAt !== "string") return false
   if (s.receives !== undefined && !isStringArray(s.receives)) return false
   if (s.triggersBuffs !== undefined && !isStringArray(s.triggersBuffs)) return false
+  if (s.triggersBuffsAtFrame !== undefined && !isFiniteNumberRecord(s.triggersBuffsAtFrame))
+    return false
+  if (s.castConditions !== undefined) {
+    if (!Array.isArray(s.castConditions)) return false
+    for (const condition of s.castConditions) {
+      if (!isHitOrVariantCondition(condition)) return false
+    }
+  }
+  if (s.meterCosts !== undefined) {
+    if (!Array.isArray(s.meterCosts)) return false
+    for (const cost of s.meterCosts) {
+      const meterCost = cost as Record<string, unknown>
+      if (typeof meterCost.meterId !== "string" || !meterCost.meterId) return false
+      if (typeof meterCost.amount !== "number" || !Number.isFinite(meterCost.amount)) return false
+      if (
+        meterCost.atFrame !== undefined &&
+        (typeof meterCost.atFrame !== "number" || !Number.isFinite(meterCost.atFrame))
+      )
+        return false
+      if (meterCost.requiresParam !== undefined && typeof meterCost.requiresParam !== "string")
+        return false
+      if (
+        meterCost.requiresMinTier !== undefined &&
+        (typeof meterCost.requiresMinTier !== "number" ||
+          !Number.isFinite(meterCost.requiresMinTier))
+      )
+        return false
+      if (
+        meterCost.requiresMaxTier !== undefined &&
+        (typeof meterCost.requiresMaxTier !== "number" ||
+          !Number.isFinite(meterCost.requiresMaxTier))
+      )
+        return false
+    }
+  }
+  if (s.meterDrains !== undefined) {
+    if (!Array.isArray(s.meterDrains)) return false
+    for (const drain of s.meterDrains) {
+      const meterDrain = drain as Record<string, unknown>
+      if (typeof meterDrain.meterId !== "string" || !meterDrain.meterId) return false
+      if (typeof meterDrain.perSecond !== "number" || !Number.isFinite(meterDrain.perSecond))
+        return false
+      if (typeof meterDrain.fromFrame !== "number" || !Number.isFinite(meterDrain.fromFrame))
+        return false
+      if (
+        meterDrain.stopAfterSec !== undefined &&
+        (typeof meterDrain.stopAfterSec !== "number" || !Number.isFinite(meterDrain.stopAfterSec))
+      )
+        return false
+      if (meterDrain.chargeRelease !== undefined) {
+        const chargeRelease = meterDrain.chargeRelease as Record<string, unknown>
+        if (
+          !chargeRelease ||
+          typeof chargeRelease !== "object" ||
+          typeof chargeRelease.fallbackSkillId !== "string" ||
+          !chargeRelease.fallbackSkillId
+        )
+          return false
+      }
+    }
+  }
+  if (s.meterFreezes !== undefined) {
+    if (!Array.isArray(s.meterFreezes)) return false
+    for (const freeze of s.meterFreezes) {
+      const meterFreeze = freeze as Record<string, unknown>
+      if (typeof meterFreeze.meterId !== "string" || !meterFreeze.meterId) return false
+      if (typeof meterFreeze.fromFrame !== "number" || !Number.isFinite(meterFreeze.fromFrame))
+        return false
+    }
+  }
+  if (
+    s.reachMeters !== undefined &&
+    (typeof s.reachMeters !== "number" || !Number.isFinite(s.reachMeters))
+  )
+    return false
+  if (s.approach !== undefined && !isSkillApproach(s.approach)) return false
+  if (s.displacement !== undefined && !isDisplacement(s.displacement)) return false
+  if (
+    s.serverWaitsInCast !== undefined &&
+    (typeof s.serverWaitsInCast !== "number" ||
+      !Number.isInteger(s.serverWaitsInCast) ||
+      s.serverWaitsInCast < 0)
+  )
+    return false
+  if (
+    s.cancelledBy !== undefined &&
+    s.cancelledBy !== "deflectCancel" &&
+    s.cancelledBy !== "nextSkill"
+  )
+    return false
   return true
 }
 
 function isStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === "string")
+}
+
+function isFiniteNumberRecord(value: unknown): value is Record<string, number> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false
+  return Object.values(value as Record<string, unknown>).every(
+    (entry) => typeof entry === "number" && Number.isFinite(entry),
+  )
 }
 
 export function hitToArtRow(hit: SkillHit, skill: Skill): ArtRow {
@@ -362,24 +790,37 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     neverAbrades: src.neverAbrades,
     guaranteedNormal: src.guaranteedNormal,
     prePull: src.prePull,
+    isWeaponSwap: src.isWeaponSwap,
+    cancelledBy: src.cancelledBy,
+    startLatency: src.startLatency,
+    serverWaitsInCast: src.serverWaitsInCast,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,
     breakdownName: src.breakdownName,
     receives: src.receives ? [...src.receives] : undefined,
     triggersBuffs: src.triggersBuffs ? [...src.triggersBuffs] : undefined,
+    triggersBuffsAtFrame: src.triggersBuffsAtFrame ? { ...src.triggersBuffsAtFrame } : undefined,
+    castConditions: src.castConditions?.map(cloneTriggerCondition),
+    meterCosts: src.meterCosts?.map((cost) => ({ ...cost })),
+    meterDrains: src.meterDrains?.map((drain) => ({ ...drain })),
+    meterFreezes: src.meterFreezes?.map((freeze) => ({ ...freeze })),
+    reachMeters: src.reachMeters,
+    approach: src.approach,
+    displacement: src.displacement,
     hits: src.hits.map((h) => ({
       ...h,
       id: newHitId(),
       variants: h.variants?.map((v) => ({
         ...v,
         id: newVariantId(),
-        conditions: v.conditions.map((c) => ({ ...c })),
+        conditions: v.conditions.map(cloneTriggerCondition),
       })),
-      conditions: h.conditions?.map((c) => ({ ...c })),
+      conditions: h.conditions?.map(cloneTriggerCondition),
       triggers: h.triggers.map((tr) => ({
         ...tr,
-        conditions: tr.conditions ? tr.conditions.map((c) => ({ ...c })) : undefined,
+        condition: tr.condition ? cloneTriggerCondition(tr.condition) : null,
+        conditions: tr.conditions ? tr.conditions.map(cloneTriggerCondition) : undefined,
       })),
     })),
   })

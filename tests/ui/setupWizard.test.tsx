@@ -43,7 +43,7 @@ function pasteCapture() {
 }
 
 describe("SetupWizard", () => {
-  it("step 1 shows the class picker, and Next lands on the import step", () => {
+  it("step 1 shows the class picker, and Next lands on the gear import step", () => {
     renderWizard()
 
     fireEvent.click(
@@ -51,8 +51,7 @@ describe("SetupWizard", () => {
     )
     fireEvent.click(screen.getByRole("button", { name: "Next" }))
 
-    expect(screen.getByPlaceholderText("Paste the copied gear JSON here")).toBeInTheDocument()
-    expect(screen.getByRole("button", { name: "I'd rather do it manually" })).toBeInTheDocument()
+    expect(screen.getByText("Import your gear")).toBeInTheDocument()
   })
 
   it("the manual button leads to a name step, and finishing there reports the typed name and chosen class", () => {

@@ -1,8 +1,11 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { CAST, WEAPON } from "../ids"
+import { PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
+import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
 export const swordRChargeFollowUp = defineSkill({
   id: SKILL.swordRChargeFollowUp,
@@ -14,9 +17,11 @@ export const swordRChargeFollowUp = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordRChargeFollowUp,
+  // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
+  castConditions: [{ param: PARAM.swordHorizon }],
   receives: STRATEGIC_SWORD_RECEIVES,
-  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
-  castFrames: 86,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-24.
+  castFrames: 87,
   triggerable: true,
   hits: [
     hit(0, {
@@ -25,17 +30,26 @@ export const swordRChargeFollowUp = defineSkill({
       attributeMultiplier: 0.488401,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
     hit(1, {
-      frame: 41,
+      frame: 42,
       physMultiplier: 0.488401,
       attributeMultiplier: 0.732602,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        CRISSCROSS_ENDURANCE_GAIN,
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

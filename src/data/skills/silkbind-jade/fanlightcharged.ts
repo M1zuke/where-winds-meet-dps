@@ -1,14 +1,15 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { INKWELL_FAN_RECEIVES } from "./receives"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
-// The authored row carries the breakthrough-14 multiplier that the engine
-// does not apply — `FormulaContext.targetMultiplier` is set in panel.ts and
-// read nowhere. Measured against the reference def it is a uniform 1.4504 on
-// all four coefficient tracks, which is that multiplier to four figures.
-const BREAKTHROUGH_SCALE = 1.45
+// In-game values as of 2026-09-24: Flying Tornado shortens the charge level
+// from 0.55 s to 0.36 s (−11.4 f); the entry hold and the release clip are
+// unchanged.
+const FLYING_TORNADO_ACTIVE = { buffId: BUFF.gourdTossFlyingTornado, op: "gte" as const, stacks: 1 }
 
 export const fanlightcharged = defineSkill({
   id: SKILL.fanlightcharged,
@@ -26,19 +27,52 @@ export const fanlightcharged = defineSkill({
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
     BUFF.mistwillowBuff,
+    BUFF.nonPlayerBaseDamage145,
     ...INKWELL_FAN_RECEIVES,
   ],
   triggersBuffs: [BUFF.lingeringBone],
-  castFrames: 75,
+  // In-game values as of 2026-09-28: granted at the whirlwind's own hit, not
+  // at the cast's start.
+  triggersBuffsAtFrame: { [BUFF.lingeringBone]: 71 },
+  // In-game values as of 2026-09-26: a 30 / s Endurance drain from 0.24 s of
+  // the hold, stopping 0.55 s later; frozen for the whole hold otherwise.
+  meterDrains: [{ meterId: enduranceMeter.id, perSecond: 30, fromFrame: 14.4, stopAfterSec: 0.55 }],
+  meterFreezes: [{ meterId: enduranceMeter.id, fromFrame: 0 }],
+  // Cast length to the earliest next input for the shortest hold (in-game
+  // values as of 2026-09-24).
+  castFrames: 98,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 0,
-      physMultiplier: 2.76138 / BREAKTHROUGH_SCALE,
-      attributeMultiplier: 4.14207 / BREAKTHROUGH_SCALE,
-      physFixed: 764.15 / BREAKTHROUGH_SCALE,
-      attributeFixed: 416.15 / BREAKTHROUGH_SCALE,
-      extraCritDamage: 1,
+      // In-game values as of 2026-09-24: the whirlwind launch frame for the
+      // shortest hold.
+      frame: 71,
+      physMultiplier: 1.9044,
+      attributeMultiplier: 2.8566,
+      physFixed: 527,
+      attributeFixed: 287,
+      extraCritDamage: 0,
+      // In-game values as of 2026-09-26: +10 Endurance once per cast when the
+      // whirlwind hits a non-player, landing at the cast's own end — after
+      // the hold's own drain, not while the meter still sits at its cast-start
+      // level.
+      triggers: [meterDelta({ target: enduranceMeter.id, stacks: 10, appliesOnCastEnd: true })],
+      variants: [
+        {
+          id: "hv-fanlightcharged-hit-0-flying-tornado",
+          label: "Flying Tornado",
+          conditions: [FLYING_TORNADO_ACTIVE],
+          physMultiplier: 1.9044,
+          attributeMultiplier: 2.8566,
+          physFixed: 527,
+          attributeFixed: 287,
+          frame: 60,
+          castFrames: 86,
+        },
+      ],
     }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",

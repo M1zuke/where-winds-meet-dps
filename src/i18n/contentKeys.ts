@@ -35,6 +35,10 @@ export function debuffKey(debuffId: string): string {
   return `content.debuff.${debuffId}`
 }
 
+export function meterKey(meterId: string): string {
+  return `content.meter.${meterId}`
+}
+
 export function debuffBreakdownKey(debuffId: string): string {
   return `content.debuff.${debuffId}.breakdown`
 }

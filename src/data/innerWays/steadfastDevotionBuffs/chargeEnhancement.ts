@@ -12,7 +12,7 @@ export const chargeEnhancement = defineBuff({
   duration: 18,
   maxStacks: 3,
   buffAppliesOnCastEnd: true,
-  rateLimit: { count: 3, window: 30 },
+  cooldown: 30,
   stacks: () => 3,
   effects: [],
 })

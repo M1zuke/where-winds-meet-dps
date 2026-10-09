@@ -16,27 +16,27 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
     expect(engine.calculateDamageEffects(skill, 4).breakdown.resistanceResolve).toBeUndefined()
-    expect(engine.calculateDamageEffects(skill, 8).breakdown.resistanceResolve).toBe(0.1)
-    expect(engine.calculateDamageEffects(skill, 19.9).breakdown.resistanceResolve).toBe(0.1)
-    expect(engine.calculateDamageEffects(skill, 20.1).breakdown.resistanceResolve).toBeUndefined()
+    expect(engine.calculateDamageEffects(skill, 11).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 22.4).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 22.6).breakdown.resistanceResolve).toBeUndefined()
   })
 
-  it("computes the 12-second branch from a goldenBody-cancel cast, not just the 8-second default", () => {
+  it("uses the same shield-then-resolve timing for a goldenBody-cancel cast as for any other", () => {
     const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:goldenBodyCancel", 0, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
-    expect(engine.calculateDamageEffects(skill, 11.5).breakdown.resistanceResolve).toBeUndefined()
-    expect(engine.calculateDamageEffects(skill, 12.5).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 10.4).breakdown.resistanceResolve).toBeUndefined()
+    expect(engine.calculateDamageEffects(skill, 11).breakdown.resistanceResolve).toBe(0.1)
   })
 
   it("is cancelled by a reapply of the source buff before the window would have ended", () => {
     const engine = new BuffEngine(params, allBuffDefsDeduped(), groupBuffDefs())
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
-    engine.processSkillCast("cast:probe", 10, {}, false, [BUFF.rainwhisperShield])
+    engine.processSkillCast("cast:probe", 12, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
-    expect(engine.calculateDamageEffects(skill, 9).breakdown.resistanceResolve).toBe(0.1)
-    expect(engine.calculateDamageEffects(skill, 11).breakdown.resistanceResolve).toBeUndefined()
-    expect(engine.calculateDamageEffects(skill, 18).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 11).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 13).breakdown.resistanceResolve).toBeUndefined()
+    expect(engine.calculateDamageEffects(skill, 23).breakdown.resistanceResolve).toBe(0.1)
   })
 
   it("a routine refresh BEFORE the source buff would have expired doesn't spuriously activate the end-triggered buff", () => {
@@ -44,8 +44,8 @@ describe("activeAfterBuffEnds — resistanceResolve (global) off rainwhisperShie
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
     engine.processSkillCast("cast:probe", 5, {}, false, [BUFF.rainwhisperShield])
     const skill = tagged("AnySkill")
-    expect(engine.calculateDamageEffects(skill, 8.5).breakdown.resistanceResolve).toBeUndefined()
-    expect(engine.calculateDamageEffects(skill, 13).breakdown.resistanceResolve).toBe(0.1)
+    expect(engine.calculateDamageEffects(skill, 12).breakdown.resistanceResolve).toBeUndefined()
+    expect(engine.calculateDamageEffects(skill, 16).breakdown.resistanceResolve).toBe(0.1)
   })
 
   it("is inert without artOfResistance tier 6", () => {

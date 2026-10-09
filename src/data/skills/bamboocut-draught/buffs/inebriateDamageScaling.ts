@@ -2,18 +2,19 @@ import { defineClassBuff } from "../../../../definitions/skills/buffDef"
 import { BUFF } from "../../buffs/ids"
 import { stat } from "../../../../engine/effects/effect"
 import { isInebriate } from "./inebriate"
-import { scaledByMinPhysAttack } from "./minPhysScaling"
+import { steppedByMinPhysAttack } from "./minPhysScaling"
 
 const MAX_DAMAGE_BOOST = 0.09
+const DAMAGE_BOOST_STEPS = 9
 
 export function inebriateDamageBoostAt(minPhysAttack: number): number {
-  return scaledByMinPhysAttack(MAX_DAMAGE_BOOST, minPhysAttack)
+  return steppedByMinPhysAttack(MAX_DAMAGE_BOOST, DAMAGE_BOOST_STEPS, minPhysAttack)
 }
 
-// Talent "Inebriate DMG Boost Enhancement": up to +9% Physical and Bamboocut
-// damage at 750 Min Physical Attack while Inebriate, scaling linearly with Min
-// Physical Attack below that. "Damage dealt", not the class's own skills
-// alone, hence affectsAll (in-game talent text, 2026-09-06).
+// Talent "Inebriate DMG Boost Enhancement": +1% Physical and Bamboocut damage
+// per full 83.33 Min Physical Attack while Inebriate, up to +9% at 750
+// (in-game values as of 2026-09-16). "Damage dealt", not the class's own
+// skills alone, hence affectsAll.
 export const inebriateDamageScaling = defineClassBuff({
   id: BUFF.inebriateDamageScaling,
   name: "Inebriate DMG Boost Enhancement",

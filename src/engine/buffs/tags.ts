@@ -55,3 +55,11 @@ export function mysticCategoryOf(skill: Pick<Skill, "tags">): string {
 export function attuneTagOf(skill: Pick<Skill, "tags">): string {
   return (skill.tags ?? []).find((t) => t.startsWith(ATTUNE_TAG)) ?? ""
 }
+
+// "" for a skill with no `weapon:` tag or the explicit `weapon:none` — neither
+// requires nor draws a particular art (docs/TIMELINE.md § "Drawn weapon").
+export function weaponTagOf(skill: Pick<Skill, "tags">): string {
+  const tag = (skill.tags ?? []).find((t) => t.startsWith(WEAPON_TAG))
+  const weapon = tag ? tag.slice(WEAPON_TAG.length) : ""
+  return weapon === "none" ? "" : weapon
+}

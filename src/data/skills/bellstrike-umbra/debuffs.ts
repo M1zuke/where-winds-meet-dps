@@ -29,6 +29,8 @@ export const bleedTick = defineDebuff({
     attributeAttack: "Bellstrike",
     skillType: "sustain",
     weaponOrAttribute: "Sword",
+    // In-game values as of 2026-09-25.
+    qiRate: 0.2,
     count: 1,
     perStackShapes: null,
     perStackMultipliers: [2, 2.5, 3, 4, 5],
@@ -62,9 +64,10 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
-    physMultiplier: 0.15,
+    // In-game values as of 2026-09-24.
+    physMultiplier: 0.02,
     physFixed: 0,
-    attributeMultiplier: 0.225,
+    attributeMultiplier: 0,
     attributeFixed: 0,
     attributeAttack: "Bellstrike",
     skillType: "sustain",

@@ -1,9 +1,9 @@
-// Swift Gale, Swaying Heights and Stars Align carried no modelled effect and
-// their `defineSet` calls are gone, so a stored `set` naming one is now illegal.
-// `V14__dropUnimplementedArmorSets` heals stored profiles; the live-registry
-// check in `hydrateInputs` holds the same invariant on the two paths that never
-// walk the chain, which is why the step is called directly below rather than
-// asserted through `loadProfiles` alone.
+// Stars Align carries no modelled effect and its `defineSet` call is gone, so
+// a stored `set` naming it is now illegal. `V14__dropUnimplementedArmorSets`
+// heals stored profiles; the live-registry check in `hydrateInputs` holds the
+// same invariant on the two paths that never walk the chain, which is why the
+// step is called directly below rather than asserted through `loadProfiles`
+// alone.
 //
 // Matches ids, not display names: V11 converted `Inputs.set` to the stable id
 // before this step runs.
@@ -15,7 +15,7 @@ import { V14__dropUnimplementedArmorSets } from "../../src/migrations/V14__dropU
 import type { StoredProfile } from "../../src/engine/types"
 import legacyProfileFile from "./testProfiles/v13/silkbindJade.json"
 
-const RETIRED_SET_IDS = ["swiftGale", "swayingHeights", "starsAlign"]
+const RETIRED_SET_IDS = ["starsAlign"]
 
 type LegacyFile = { v: number; profile: StoredProfile }
 const LEGACY = legacyProfileFile as unknown as LegacyFile
@@ -54,7 +54,9 @@ describe("V14__dropUnimplementedArmorSets — called directly", () => {
     })
   }
 
-  for (const option of ARMOR_SET_OPTIONS) {
+  for (const option of ARMOR_SET_OPTIONS.filter(
+    (candidate) => !RETIRED_SET_IDS.includes(candidate.setKey),
+  )) {
     it(`leaves the still-offered ${option.setKey} untouched`, () => {
       const migrated = V14__dropUnimplementedArmorSets.migrate(
         blobOf(withSet(clone(LEGACY.profile), option.setKey)),
@@ -78,7 +80,7 @@ describe("V14__dropUnimplementedArmorSets — called directly", () => {
   })
 
   it("does not mutate its input", () => {
-    const input = blobOf(withSet(clone(LEGACY.profile), "swiftGale"))
+    const input = blobOf(withSet(clone(LEGACY.profile), "starsAlign"))
     const snapshot = clone(input)
     V14__dropUnimplementedArmorSets.migrate(input)
     expect(input).toEqual(snapshot)
@@ -86,7 +88,7 @@ describe("V14__dropUnimplementedArmorSets — called directly", () => {
 
   it("is idempotent", () => {
     const once = V14__dropUnimplementedArmorSets.migrate(
-      blobOf(withSet(clone(LEGACY.profile), "swayingHeights")),
+      blobOf(withSet(clone(LEGACY.profile), "starsAlign")),
     )
     expect(V14__dropUnimplementedArmorSets.migrate(clone(once))).toEqual(once)
   })

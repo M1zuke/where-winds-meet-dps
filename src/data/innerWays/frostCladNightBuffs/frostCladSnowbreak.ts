@@ -1,6 +1,6 @@
 import { defineBuff } from "../../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../../skills/buffs/ids"
-import { stat } from "../../../engine/effects/effect"
+import { damageMultiplier } from "../../../engine/effects/effect"
 
 export const frostCladSnowbreak = defineBuff({
   id: BUFF.frostCladSnowbreak,
@@ -8,6 +8,6 @@ export const frostCladSnowbreak = defineBuff({
   requires: { param: PARAM.frostCladNight },
   alwaysActive: true,
   duration: 9999,
-  summary: "allDamageBoost +36%",
-  effects: (ctx) => (ctx.self.reachesEvent ? [stat("allDamageBoost", 0.36)] : []),
+  summary: "Snowbreak Spring ×1.36 against non-player targets",
+  effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.36)] : []),
 })

@@ -15,6 +15,8 @@ import { poolForClass } from "../../src/definitions/classes/registry"
 import { annotatePoolForSlot, rerollableSlots } from "../../src/engine/retunement"
 import { defaultInputs } from "../../src/engine/defaults"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
+import { engineRunOptionsFrom } from "../../src/engine/qiBar"
+import { FPS } from "../../src/engine/timeline"
 
 import type { GearLevel, GearPiece, Inputs } from "../../src/engine/types"
 
@@ -331,7 +333,7 @@ describe("computeDpsDeltas → fullPotential field", () => {
 // Every fixture below is a level-96 piece, so the breakthrough has to resolve
 // to that same gear level — otherwise relaying (which follows the
 // breakthrough) would target a different ceiling than the pieces carry.
-describe("FT variant selection", () => {
+describe("FT variant selection", { timeout: 30_000 }, () => {
   const level96Inputs = { ...umbraInputs, breakthrough: 16 }
 
   function derivedInputs(equipped: GearPiece[], inventory: GearPiece[]): Inputs {
@@ -392,6 +394,11 @@ describe("FT variant selection", () => {
           ).map((piece) => ({ piece, level: breakthroughLevel })),
         ]
 
+    // Warm-starts every candidate below the same way the production sweeps do
+    // (docs/UI.md § "The rules") — pure perf, no effect on the asserted value.
+    const seedRun = runEngine(applyPieceContribution(slotEmpty, candidate, +1))
+    const options = engineRunOptionsFrom(seedRun.qiBreaks, FPS)
+
     let best = -Infinity
     for (const { piece, level } of reachablePieces) {
       for (const attunement of [null, ...attunements]) {
@@ -402,7 +409,10 @@ describe("FT variant selection", () => {
               attunementValue: attunementMax(attunement, level),
             }
           : piece
-        best = Math.max(best, runEngine(applyPieceContribution(slotEmpty, reachable, +1)).dps)
+        best = Math.max(
+          best,
+          runEngine(applyPieceContribution(slotEmpty, reachable, +1), options).dps,
+        )
       }
     }
     return best

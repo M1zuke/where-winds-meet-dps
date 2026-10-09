@@ -24,7 +24,23 @@ export interface StatusView {
   stacksAt(id: string, frame: number): number
   conditionStacksAt(id: string, frame: number): number
   remainingFramesAt(id: string, frame: number): number | undefined
+  framesSinceLastEnd(id: string, frame: number): number | undefined
+  // The counter counterpart of `framesSinceLastEnd`, for an id with no
+  // window to close — see `docs/TIMELINE.md` § "The class-buff system".
+  framesSinceStacksBelowThreshold(id: string, frame: number, threshold: number): number | undefined
   windowsOf(id: string): readonly StatusWindow[]
+}
+
+// The latest window end at or before `frame` — an in-progress window (its own
+// end past `frame`) does not count, so this reads "since it last closed", not
+// "since it last opened".
+function latestEndAt(windows: Iterable<StatusWindow>, frame: number): number | undefined {
+  let latestEnd: number | undefined
+  for (const window of windows) {
+    const endHere = windowEndAt(window, frame)
+    if (endHere <= frame && (latestEnd === undefined || endHere > latestEnd)) latestEnd = endHere
+  }
+  return latestEnd
 }
 
 // An extension applied after `frame` has not happened yet from that frame's
@@ -109,6 +125,10 @@ export class StatusLedger implements StatusView {
     return !!history && history.length > 0
   }
 
+  stackHistory(id: string): readonly { frame: number; value: number }[] {
+    return (this.stacks.get(id) ?? []).map(({ frame, value }) => ({ frame, value }))
+  }
+
   stacksAt(id: string, frame: number): number {
     const history = this.stacks.get(id)
     if (!history || history.length === 0) return 0
@@ -155,6 +175,28 @@ export class StatusLedger implements StatusView {
     return end === undefined ? undefined : end - frame
   }
 
+  framesSinceLastEnd(id: string, frame: number): number | undefined {
+    const latestEnd = latestEndAt(this.windows.get(id) ?? [], frame)
+    return latestEnd === undefined ? undefined : frame - latestEnd
+  }
+
+  framesSinceStacksBelowThreshold(
+    id: string,
+    frame: number,
+    threshold: number,
+  ): number | undefined {
+    const history = this.stacks.get(id)
+    if (!history) return undefined
+    let latestDrop: number | undefined
+    let previousValue = 0
+    for (const entry of history) {
+      if (entry.frame > frame) break
+      if (previousValue >= threshold && entry.value < threshold) latestDrop = entry.frame
+      previousValue = entry.value
+    }
+    return latestDrop === undefined ? undefined : frame - latestDrop
+  }
+
   windowsOf(id: string): readonly StatusWindow[] {
     return this.windows.get(id) ?? []
   }
@@ -198,6 +240,20 @@ export class StatusLedger implements StatusView {
             end = endHere
         }
         return end === undefined ? undefined : end - frame
+      },
+      framesSinceLastEnd: (id, frame) => {
+        const latestEnd = latestEndAt(windowsFor(id), frame)
+        return latestEnd === undefined ? undefined : frame - latestEnd
+      },
+      framesSinceStacksBelowThreshold: (id, frame, threshold) => {
+        let latestDrop: number | undefined
+        let previousValue = 0
+        for (const entry of this.stacks.get(id) ?? []) {
+          if (entry.seq >= beforeSeq || entry.frame > frame) continue
+          if (previousValue >= threshold && entry.value < threshold) latestDrop = entry.frame
+          previousValue = entry.value
+        }
+        return latestDrop === undefined ? undefined : frame - latestDrop
       },
       windowsOf: windowsFor,
     }

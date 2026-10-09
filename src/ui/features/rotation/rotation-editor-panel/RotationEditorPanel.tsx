@@ -1,5 +1,11 @@
-import { useMemo, useRef, useState } from "react"
-import type { Inputs, Result, CastBuffTag, RotationCast } from "../../../../engine/types"
+import { Fragment, useMemo, useRef, useState } from "react"
+import type {
+  Inputs,
+  Result,
+  CastBuffTag,
+  CastMeterLevel,
+  RotationCast,
+} from "../../../../engine/types"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
 import {
@@ -12,17 +18,22 @@ import {
   type Rotation,
   type RotationStep,
 } from "../../../../engine/rotation"
-import { activeRotationForInputs } from "../../../../engine/dps"
-import { DEFAULT_QI_BREAK_WINDOW, resolveQiBreakWindow } from "../../../../engine/qiBreak"
-import type { QiBreakWindow } from "../../../../engine/types"
+import { activeRotationForInputs } from "../../../../engine/activeRotation"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
+import {
+  PREFERRED_DISTANCE_METERS_MAX,
+  PREFERRED_DISTANCE_METERS_MIN,
+} from "../../../../engine/distance"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
+import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
-import { isPrePullSkill, type Skill } from "../../../../engine/skill"
+import { isPrePullSkill, type ConditionFailureReason, type Skill } from "../../../../engine/skill"
+import { deflectCancelSkillId } from "../../../../engine/deflectCancels"
 import { builtinSkillsForClass, builtinRotationsForClass } from "../../../../engine/builtinLibrary"
 import { builtinBuffsForClass } from "../../../../engine/builtinBuffs"
 import { openingStackBuffIds } from "../../../../definitions/innerWays/registry"
 import { classDefinition } from "../../../../definitions/classes/registry"
-import { hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
+import { buildReadsTargetDistance, hiddenTimelineBuffIds } from "../../../../engine/buffs/catalog"
 import { STAT_DEF_BY_KEY } from "../../../../engine/statRegistry"
 import {
   buffChipAbbreviation,
@@ -30,6 +41,8 @@ import {
   castBuffDisplayOrder,
   visibleCastBuffs,
 } from "../buffChips"
+import { fightClockSec } from "../fightClock"
+import { conditionFailureReasonsText } from "../../skills/statusText"
 import {
   inputsWithRotationOption,
   rotationOptions,
@@ -51,6 +64,7 @@ import {
   buffDescriptionKey,
   buffKey,
   debuffKey,
+  meterKey,
   rotationKey,
   skillKey,
 } from "../../../../i18n/contentKeys"
@@ -58,7 +72,6 @@ import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { Select } from "../../../components/select/Select"
 import { TextInput } from "../../../components/text-input/TextInput"
 import styles from "./RotationEditorPanel.module.scss"
-import { rotationDurationSec } from "./rotationDuration"
 
 interface Props {
   inputs: Inputs
@@ -141,6 +154,24 @@ function CastBuffTagChip({ tag }: { tag: CastBuffTag }) {
   )
 }
 
+function MeterLevelChip({ level }: { level: CastMeterLevel }) {
+  const { t } = useI18n()
+  return (
+    <span className={styles.meterLevel}>
+      {t(meterKey(level.id), level.name)} {Math.round(level.amount)}/{Math.round(level.capacity)}
+    </span>
+  )
+}
+
+function DistanceChip({ distanceMeters }: { distanceMeters: number }) {
+  const { t } = useI18n()
+  return (
+    <span className={styles.meterLevel}>
+      {t("rotation.editor.distanceM")} {distanceMeters.toFixed(1)}
+    </span>
+  )
+}
+
 export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -201,10 +232,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     ? builtinRotations.find((rotation) => rotation.id === inputs.selectedBuiltinRotationId)
     : undefined
 
-  const computedDurationSec = useMemo(
-    () => (activeRotation ? rotationDurationSec(activeRotation, skillsById, result) : 0),
-    [activeRotation, skillsById, result],
-  )
+  const computedDurationSec = result.rotationDuration
 
   const diagnostics = useMemo(() => {
     if (!isCustom || !activeRotation) return []
@@ -221,12 +249,26 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     for (const cast of result.casts ?? []) map.set(cast.stepIndex, cast)
     return map
   }, [result.casts])
+  const attachedCastsByParentStepId = useMemo(() => {
+    const map = new Map<string, RotationCast>()
+    for (const cast of result.casts ?? []) {
+      if (cast.attachedToStepId) map.set(cast.attachedToStepId, cast)
+    }
+    return map
+  }, [result.casts])
+  const deflectCancelSkill = skillsById.get(deflectCancelSkillId(inputs.classId))
+  const invalidStepIds = useMemo(
+    () => new Set(result.invalidStepIds ?? []),
+    [result.invalidStepIds],
+  )
+  const invalidStepReasons = result.invalidStepReasons ?? {}
 
   const hiddenBuffIds = useMemo(() => hiddenTimelineBuffIds(inputs.classId), [inputs.classId])
   const buffOrder = useMemo(
     () => castBuffDisplayOrder(result.casts, hiddenBuffIds),
     [result.casts, hiddenBuffIds],
   )
+  const showDistance = useMemo(() => buildReadsTargetDistance(inputs), [inputs])
 
   function selectRotation(id: string) {
     const option = options.find((candidate) => candidate.id === id)
@@ -279,11 +321,13 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   function setPermanentBuffIds(ids: string[]) {
     commitRotation((rotation) => ({ ...rotation, permanentBuffIds: ids }))
   }
-  function setQiBreak(patch: Partial<typeof DEFAULT_QI_BREAK_WINDOW>) {
-    commitRotation((rotation) => ({
-      ...rotation,
-      qiBreak: { ...(rotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW), ...patch },
-    }))
+  function setRotationConnection(
+    connection: Pick<Rotation, "pingMs" | "averageFps" | "serverProcessingMs">,
+  ) {
+    commitRotation((rotation) => ({ ...rotation, ...connection }))
+  }
+  function setPreferredDistanceMeters(preferredDistanceMeters: number) {
+    commitRotation((rotation) => ({ ...rotation, preferredDistanceMeters }))
   }
   function setFixedWindowSec(windowSec: number | undefined) {
     commitRotation((rotation) => {
@@ -315,6 +359,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       openingStacks: { ...activeRotation.openingStacks },
       qiBreak: { ...(activeRotation.qiBreak ?? DEFAULT_QI_BREAK_WINDOW) },
       fixedWindowSec: activeRotation.fixedWindowSec,
+      pingMs: activeRotation.pingMs,
+      averageFps: activeRotation.averageFps,
+      serverProcessingMs: activeRotation.serverProcessingMs,
+      preferredDistanceMeters: activeRotation.preferredDistanceMeters,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -478,6 +526,47 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 )}
               </span>
             </label>
+            <label className={styles.field}>
+              <span>{t("rotation.editor.connection")}</span>
+              <span className={styles.fixedWindow}>
+                <PingFpsFields
+                  pingMs={activeRotation.pingMs}
+                  averageFps={activeRotation.averageFps}
+                  serverProcessingMs={activeRotation.serverProcessingMs}
+                  disabled={!isCustom}
+                  onPingMsChange={(next) =>
+                    next !== null && setRotationConnection({ ...activeRotation, pingMs: next })
+                  }
+                  onAverageFpsChange={(next) =>
+                    next !== null && setRotationConnection({ ...activeRotation, averageFps: next })
+                  }
+                  onServerProcessingMsChange={(next) =>
+                    next !== null &&
+                    setRotationConnection({ ...activeRotation, serverProcessingMs: next })
+                  }
+                />
+              </span>
+            </label>
+            {showDistance ? (
+              <label className={styles.field} title={t("rotation.editor.preferredDistanceHint")}>
+                <span>{t("rotation.editor.preferredDistanceM")}</span>
+                <span className={styles.fixedWindow}>
+                  <NumInput
+                    value={activeRotation.preferredDistanceMeters}
+                    min={PREFERRED_DISTANCE_METERS_MIN}
+                    disabled={!isCustom}
+                    onChange={(next) =>
+                      setPreferredDistanceMeters(
+                        Math.min(
+                          PREFERRED_DISTANCE_METERS_MAX,
+                          Math.max(PREFERRED_DISTANCE_METERS_MIN, next),
+                        ),
+                      )
+                    }
+                  />
+                </span>
+              </label>
+            ) : null}
             <div className={styles.actions}>
               {isCustom ? (
                 <>
@@ -522,9 +611,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
 
           <div className={styles.entries}>
             <QiBreakRow
-              window={resolveQiBreakWindow(inputs.combatSettings, activeRotation.qiBreak)}
-              overridden={!!inputs.combatSettings?.qiBreakOverride}
-              onChange={isCustom ? setQiBreak : null}
+              breaks={(result.qiBreaks ?? []).map((qiBreak) => ({
+                startSec: fightClockSec(result, qiBreak.startSec),
+                endSec: fightClockSec(result, qiBreak.endSec),
+              }))}
             />
             {openingStackBuffs.map((buff) => (
               <OpeningStackRow
@@ -538,84 +628,116 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
               const skill = skillsById.get(step.skillId)
               const maxHits = Math.max(1, skill?.hits.length ?? 1)
               const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
+              const invalid = invalidStepIds.has(step.id)
+              const invalidReasons = invalidStepReasons[step.id]
+              const invalidTitle = invalid
+                ? invalidReasons && invalidReasons.length > 0
+                  ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+                  : t("rotation.editor.invalidInGameTitle")
+                : undefined
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
+              const attachedCast = attachedCastsByParentStepId.get(step.id)
               return (
-                <div
-                  key={step.id}
-                  className={styles.entry + (isCustom ? "" : ` ${styles.entryReadonly}`)}
-                >
-                  <div className={styles.idx}>{idx + 1}</div>
-                  <span className={styles.time}>
-                    {cast ? `${Math.max(0, cast.timeSec).toFixed(2)}s` : "—"}
-                  </span>
-                  {isCustom ? (
-                    <Combobox
-                      value={step.skillId}
-                      options={skillOpts}
-                      onChange={(skillId) => updateStep(idx, { skillId })}
-                      placeholder={t("rotation.editor.selectSkill")}
-                    />
-                  ) : (
-                    <span className={styles.skillStatic}>
-                      {skill ? t(skillKey(skill), skill.name) : step.skillId}
-                    </span>
-                  )}
-                  <span className={styles.castReadonly}>
-                    {maxHits} {t("common.hits")}
-                  </span>
-                  <span
-                    className={styles.prepull}
-                    title={t("rotation.editor.prePullExcludedFromDuration")}
+                <Fragment key={step.id}>
+                  <div
+                    className={
+                      styles.entry +
+                      (isCustom ? "" : ` ${styles.entryReadonly}`) +
+                      (invalid ? ` ${styles.entryInvalid}` : "")
+                    }
                   >
-                    {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
-                  </span>
-                  <div className={styles.buffsCell}>
-                    {shownBuffs.length === 0 ? (
-                      <span className="muted">—</span>
+                    <div className={styles.idx}>{idx + 1}</div>
+                    <span className={styles.time} title={invalidTitle}>
+                      {cast ? `${fightClockSec(result, cast.timeSec).toFixed(2)}s` : "—"}
+                      {invalid ? " ⚠" : ""}
+                    </span>
+                    {isCustom ? (
+                      <Combobox
+                        value={step.skillId}
+                        options={skillOpts}
+                        onChange={(skillId) => updateStep(idx, { skillId })}
+                        placeholder={t("rotation.editor.selectSkill")}
+                      />
                     ) : (
-                      shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      <span className={styles.skillStatic}>
+                        {skill ? t(skillKey(skill), skill.name) : step.skillId}
+                      </span>
+                    )}
+                    <span className={styles.castReadonly}>
+                      {maxHits} {t("common.hits")}
+                    </span>
+                    <span
+                      className={styles.prepull}
+                      title={t("rotation.editor.prePullExcludedFromDuration")}
+                    >
+                      {skill && isPrePullSkill(skill) ? t("common.prePull") : ""}
+                    </span>
+                    <div className={styles.buffsCell}>
+                      {shownBuffs.length === 0 ? (
+                        <span className="muted">—</span>
+                      ) : (
+                        shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+                      )}
+                      {cast?.meterLevels?.map((level) => (
+                        <MeterLevelChip key={level.id} level={level} />
+                      ))}
+                      {showDistance && cast ? (
+                        <DistanceChip distanceMeters={cast.distanceMeters} />
+                      ) : null}
+                    </div>
+                    {isCustom && (
+                      <div className={styles.rowActions}>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => addStepAfter(idx)}
+                          title={t("rotation.editor.addSkillAfterThisLine")}
+                          aria-label="add after"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, -1)}
+                          disabled={idx === 0}
+                          aria-label="move up"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon"
+                          onClick={() => moveStep(idx, 1)}
+                          disabled={idx === steps.length - 1}
+                          aria-label="move down"
+                        >
+                          ↓
+                        </button>
+                        <button
+                          type="button"
+                          className="btn icon danger"
+                          onClick={() => removeStep(idx)}
+                          aria-label="remove"
+                        >
+                          ×
+                        </button>
+                      </div>
                     )}
                   </div>
-                  {isCustom && (
-                    <div className={styles.rowActions}>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => addStepAfter(idx)}
-                        title={t("rotation.editor.addSkillAfterThisLine")}
-                        aria-label="add after"
-                      >
-                        +
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, -1)}
-                        disabled={idx === 0}
-                        aria-label="move up"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon"
-                        onClick={() => moveStep(idx, 1)}
-                        disabled={idx === steps.length - 1}
-                        aria-label="move down"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        className="btn icon danger"
-                        onClick={() => removeStep(idx)}
-                        aria-label="remove"
-                      >
-                        ×
-                      </button>
-                    </div>
+                  {attachedCast && (
+                    <AttachedDeflectCancelRow
+                      cast={attachedCast}
+                      skill={deflectCancelSkill}
+                      invalid={invalidStepIds.has(attachedCast.stepId)}
+                      invalidReasons={invalidStepReasons[attachedCast.stepId]}
+                      hiddenBuffIds={hiddenBuffIds}
+                      buffOrder={buffOrder}
+                      showDistance={showDistance}
+                      result={result}
+                    />
                   )}
-                </div>
+                </Fragment>
               )
             })}
             {steps.length === 0 && <div className={styles.entriesEmpty}>{t("common.none")}</div>}
@@ -683,57 +805,94 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   )
 }
 
-function QiBreakRow({
-  window,
-  overridden,
-  onChange,
+function AttachedDeflectCancelRow({
+  cast,
+  skill,
+  invalid,
+  invalidReasons,
+  hiddenBuffIds,
+  buffOrder,
+  showDistance,
+  result,
 }: {
-  window: QiBreakWindow
-  overridden: boolean
-  onChange: ((patch: Partial<QiBreakWindow>) => void) | null
+  cast: RotationCast
+  skill: Skill | undefined
+  invalid: boolean
+  invalidReasons?: ConditionFailureReason[]
+  hiddenBuffIds: ReadonlySet<string>
+  buffOrder: ReadonlyMap<string, number>
+  showDistance: boolean
+  result: Result
 }) {
   const { t } = useI18n()
-  const editable = onChange !== null && !overridden
-  const rowClassName = [styles.entry, styles.qiBreakRow, editable ? "" : styles.qiBreakRowLocked]
+  const invalidTitle = invalid
+    ? invalidReasons && invalidReasons.length > 0
+      ? `${t("rotation.editor.invalidInGameTitle")} ${conditionFailureReasonsText(invalidReasons, t)}`
+      : t("rotation.editor.invalidInGameTitle")
+    : undefined
+  const shownBuffs = visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder)
+  const rowClassName = [styles.entry, styles.entryReadonly, styles.entryAttached]
+    .concat(invalid ? styles.entryInvalid : "")
     .filter(Boolean)
     .join(" ")
-  const note = overridden
-    ? t("rotation.editor.overridden")
-    : window.durationSec === 0
-      ? t("rotation.editor.noExhaustedPhase")
-      : ""
-  const field = (label: string, value: number, patch: (next: number) => Partial<QiBreakWindow>) => (
-    <span className={styles.headField}>
-      <span className={styles.headCap}>{label}</span>
-      <NumInput value={value} onChange={(next) => onChange?.(patch(next))} disabled={!editable} />
-    </span>
-  )
   return (
-    <div
-      className={rowClassName}
-      title={
-        overridden
-          ? t("rotation.editor.overriddenFromEncounterSettings")
-          : onChange
-            ? undefined
-            : t("rotation.editor.qiBreakReadonly")
-      }
-    >
+    <div className={rowClassName}>
+      <div className={styles.idx}>—</div>
+      <span className={styles.time} title={invalidTitle}>
+        {`${fightClockSec(result, cast.timeSec).toFixed(2)}s`}
+        {invalid ? " ⚠" : ""}
+      </span>
+      <span className={styles.skillStatic}>
+        {skill ? t(skillKey(skill), skill.name) : cast.skillName}
+      </span>
+      <span className={styles.castReadonly} />
+      <span className={styles.prepull} />
+      <div className={styles.buffsCell}>
+        {shownBuffs.length === 0 ? (
+          <span className="muted">—</span>
+        ) : (
+          shownBuffs.map((tag) => <CastBuffTagChip key={tag.id} tag={tag} />)
+        )}
+        {cast.meterLevels?.map((level) => (
+          <MeterLevelChip key={level.id} level={level} />
+        ))}
+        {showDistance ? <DistanceChip distanceMeters={cast.distanceMeters} /> : null}
+      </div>
+      <div className={styles.rowActions} />
+    </div>
+  )
+}
+
+function QiBreakRow({ breaks }: { breaks: readonly { startSec: number; endSec: number }[] }) {
+  const { t } = useI18n()
+  const rowClassName = [styles.entry, styles.qiBreakRow, styles.qiBreakRowLocked].join(" ")
+  return (
+    <div className={rowClassName} title={t("rotation.editor.qiBreakReadonly")}>
       <div className={styles.idx}>—</div>
       <span className={styles.openingBadge}>{t("common.qiBreak")}</span>
       <span className={styles.skillStatic}>{t("common.qiBreakWindow")}</span>
-      {note ? (
-        <span className={overridden ? styles.overrideFlag : styles.rowNote}>{note}</span>
-      ) : (
-        <>
-          <span />
-          <span />
-        </>
-      )}
+      <span />
+      <span />
       <div className={styles.headControls}>
-        {field(t("common.startS"), window.startSec, (next) => ({ startSec: next }))}
-        {field(t("common.durationS"), window.durationSec, (next) => ({ durationSec: next }))}
-        {field(t("common.lowQiLeadS"), window.lowQiLeadSec, (next) => ({ lowQiLeadSec: next }))}
+        {breaks.length === 0 ? (
+          <span className={styles.headField}>
+            <span className={styles.headCap}>{t("rotation.editor.computedBreak")}</span>
+            <span className={styles.durationDisplay}>
+              {t("rotation.editor.computedFirstBreakNone")}
+            </span>
+          </span>
+        ) : (
+          breaks.map((qiBreak, index) => (
+            <span className={styles.headField} key={index}>
+              <span className={styles.headCap}>
+                {t("rotation.editor.computedBreak")} {index + 1}
+              </span>
+              <span className={styles.durationDisplay}>
+                {qiBreak.startSec.toFixed(1)}s – {qiBreak.endSec.toFixed(1)}s
+              </span>
+            </span>
+          ))
+        )}
       </div>
       <div className={styles.rowActions} />
     </div>

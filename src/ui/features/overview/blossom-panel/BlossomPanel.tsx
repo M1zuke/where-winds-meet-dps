@@ -13,6 +13,11 @@ const GAIN_KEYS = {
   qHit: "overview.blossoms.qHit",
   heavyLightCast: "overview.blossoms.heavyLightCast",
   chargedHit: "overview.blossoms.chargedHit",
+  chargedHit12: "overview.blossoms.chargedHit12",
+  umbrellaDashBullet: "overview.blossoms.umbrellaDashBullet",
+  chargedHitLift: "overview.blossoms.chargedHitLift",
+  apricotHeavenHit: "overview.blossoms.apricotHeavenHit",
+  bambooBreezeHit: "overview.blossoms.bambooBreezeHit",
   tier6: "overview.blossoms.tier6",
 } as const
 
@@ -55,7 +60,7 @@ export function BlossomPanel({
             {t(GAIN_KEYS[rule.id])}
             <NumInput
               value={settings.gains[rule.id]}
-              min={0}
+              min={Math.min(0, rule.defaultAmount)}
               max={100}
               onChange={(value) => update({ gains: { ...settings.gains, [rule.id]: value } })}
             />

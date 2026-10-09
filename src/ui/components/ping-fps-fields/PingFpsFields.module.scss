@@ -1,0 +1,21 @@
+@use "mixins";
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.numberInput {
+  @include mixins.field-input;
+  @include mixins.field-states;
+  width: 80px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

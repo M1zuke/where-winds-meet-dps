@@ -15,6 +15,9 @@ export const fireBreath1Hit = defineSkill({
   castTag: CAST.dragonSBreath1Hit,
   castFrames: 40,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 40,

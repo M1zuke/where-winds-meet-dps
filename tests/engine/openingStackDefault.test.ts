@@ -5,7 +5,8 @@ import { describe, expect, it } from "vitest"
 import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeSkill, makeHit } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { STATUS } from "../../src/data/skills/bamboocut-draught/ids"
 import type { Inputs } from "../../src/engine/types"
@@ -81,6 +82,6 @@ describe("bamboocutDraught — Binge Points opening-stack default", () => {
         steps: [makeStep({ skillId: skill.id })],
       }),
     }
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo(30 / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo(30 / FPS, 10)
   })
 })

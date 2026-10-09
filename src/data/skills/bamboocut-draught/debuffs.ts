@@ -76,9 +76,10 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
-    physMultiplier: 0.15,
+    // In-game values as of 2026-09-24.
+    physMultiplier: 0.02,
     physFixed: 0,
-    attributeMultiplier: 0.225,
+    attributeMultiplier: 0,
     attributeFixed: 0,
     attributeAttack: "Bamboocut",
     skillType: "sustain",

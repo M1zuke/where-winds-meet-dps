@@ -9,7 +9,13 @@ import {
 } from "../../../definitions/baseStats"
 import { FOOD_MIN_PHYS_BONUS, FOOD_MAX_PHYS_BONUS } from "../../../engine/formula"
 import { attunementLabel, attunementLabelKey, getAttunement } from "../../../engine/attunements"
-import { applyArmorSet, applyBowSet, effectiveRates, getSchool } from "../../../engine/panel"
+import {
+  applyArmorSet,
+  applyBowSet,
+  armorSetPhysDefBonus,
+  effectiveRates,
+  getSchool,
+} from "../../../engine/panel"
 import { resolveEnginePath } from "../../../engine/statPaths"
 import { useI18n } from "../../../i18n/i18nContext"
 import { fmt, PERCENT_PATHS, readPath, statPathLabel } from "../../utils/statFormatting"
@@ -113,6 +119,7 @@ export function StatsOverviewPanel({ inputs }: Props) {
     inputs.disabledTalentNodes,
     inputs.enhancements,
     inputs.unclaimedOddityNodes,
+    armorSetPhysDefBonus(inputs),
   )
   const attributeRows: RowEntry[] = [
     row(t("content.statLine.power"), attrs.power, false),

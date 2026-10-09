@@ -12,11 +12,11 @@ function engine(armorSet?: string) {
   return new BuffEngine({ classId: OTHER_CLASS, armorSet }, buffDefsForClass(OTHER_CLASS))
 }
 
-function factorFor(engineUnderTest: BuffEngine, skillType: string, time: number) {
-  return engineUnderTest.calculateDamageEffects(
-    makeSkill(OTHER_CLASS, { name: "probe", skillType }),
-    time,
-  ).damageFactor
+function allDamageBoostFor(engineUnderTest: BuffEngine, skillType: string, time: number) {
+  return engineUnderTest
+    .calculateDamageEffects(makeSkill(OTHER_CLASS, { name: "probe", skillType }), time)
+    .effects.filter((effect) => effect.statKey === "allDamageBoost")
+    .reduce((total, effect) => total + effect.amount, 0)
 }
 
 describe("Cleftpeak's base ramp is registered as a global gear-set buff", () => {
@@ -27,20 +27,23 @@ describe("Cleftpeak's base ramp is registered as a global gear-set buff", () => 
   it("reaches a class other than Stonesplit Strength once that class wears the set", () => {
     const ridged = engine(cleftpeak.siteKey)
     for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(factorFor(ridged, "weapon", 0.5)).toBeCloseTo(1.05, 9)
+    expect(allDamageBoostFor(ridged, "weapon", 0.5)).toBeCloseTo(0.05, 9)
   })
 
   it("reaches a damage-over-time tick the same as an ordinary hit", () => {
     const ridged = engine(cleftpeak.siteKey)
     for (let hit = 0; hit < 5; hit++) ridged.processDamageHit(hit * 0.1)
-    expect(factorFor(ridged, "sustain", 0.5)).toBeCloseTo(factorFor(ridged, "weapon", 0.5), 9)
-    expect(factorFor(ridged, "sustain", 0.5)).toBeCloseTo(1.05, 9)
+    expect(allDamageBoostFor(ridged, "sustain", 0.5)).toBeCloseTo(
+      allDamageBoostFor(ridged, "weapon", 0.5),
+      9,
+    )
+    expect(allDamageBoostFor(ridged, "sustain", 0.5)).toBeCloseTo(0.05, 9)
   })
 
   it("contributes nothing without the set equipped", () => {
     const unequipped = engine()
     unequipped.processDamageHit(0)
-    expect(factorFor(unequipped, "weapon", 0)).toBe(1)
+    expect(allDamageBoostFor(unequipped, "weapon", 0)).toBe(0)
   })
 })
 

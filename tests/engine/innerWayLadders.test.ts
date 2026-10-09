@@ -72,9 +72,16 @@ describe("inner-way breakthrough ladders", () => {
   })
 
   it("a ladder line is absent below the tier that unlocks it", () => {
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2").affinityRate ?? 0).toBe(0)
-    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 3").affinityRate).toBeCloseTo(
+    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 1").affinityRate ?? 0).toBe(0)
+    expect(contributions(INNER_WAY_ID.battleAnthem, 17, "tier 2").affinityRate).toBeCloseTo(
       INNER_WAY_LADDERS.affinityRateFourStar[17].affinityRate!,
+      10,
+    )
+  })
+
+  it("Gourd Toss carries the rank-2+ four-star Precision ladder, like its siblings", () => {
+    expect(contributions(INNER_WAY_ID.gourdToss, 17, "tier 6").precision).toBeCloseTo(
+      INNER_WAY_LADDERS.precisionFourStar[17].precision!,
       10,
     )
   })

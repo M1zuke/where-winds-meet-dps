@@ -1,11 +1,11 @@
 import { defineClassBuff } from "../../../../definitions/skills/buffDef"
-import { BUFF, PARAM } from "../../buffs/ids"
+import { BUFF } from "../../buffs/ids"
 import { stat } from "../../../../engine/effects/effect"
 
+// In-game talent gating as of 2026-09-24.
 export const bellstrikeUmbraBleedPen = defineClassBuff({
   id: BUFF.bellstrikeUmbraBleedPen,
   name: "Bleed penetration Enhancement",
-  requires: { param: PARAM.swordHorizon },
   alwaysActive: true,
   duration: 9999,
   summary: "physPen +15, bellstrikePen +15",

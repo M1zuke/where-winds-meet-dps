@@ -25,6 +25,7 @@ import { builtinSkillsForClass, builtinDebuffsForClass } from "../src/engine/bui
 import { seedSkillFromBuiltin } from "../src/engine/skill"
 import { makeSkill } from "../src/engine/skill"
 import { makeRotation, makeStep } from "../src/engine/rotation"
+import { DEFAULT_SERVER_PROCESSING_MS } from "../src/engine/pingFps"
 import { computeGearContribution } from "../src/engine/gearStats"
 import {
   DERIVED_STAT_FIELDS,
@@ -251,10 +252,137 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect(profiles[0].inputs.arsenalScores[8]).toBe(7200)
   })
 
+  it("loadProfiles never invents pingMs/averageFps on a profile that never had them", () => {
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Pre-Ping", inputs: defaultInputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect("pingMs" in profiles[0].inputs).toBe(false)
+    expect("averageFps" in profiles[0].inputs).toBe(false)
+  })
+
+  it("loadProfiles keeps a legacy stored pingMs/averageFps number as-is, unread by the engine", () => {
+    const inputs = { ...defaultInputs, pingMs: 80, averageFps: 144 }
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [{ id: "p1", name: "Configured", inputs }],
+        activeId: "p1",
+      }),
+    )
+
+    const { profiles } = loadProfiles()
+    expect((profiles[0].inputs as unknown as { pingMs: number }).pingMs).toBe(80)
+    expect((profiles[0].inputs as unknown as { averageFps: number }).averageFps).toBe(144)
+  })
+
+  function storeProfileWithRotationWithoutDistance(combatSettings: Record<string, unknown>) {
+    const { preferredDistanceMeters: _droppedDistance, ...rotation } = makeRotation(
+      "bellstrikeUmbra",
+      { name: "Pre-Distance" },
+    )
+    void _droppedDistance
+    localStorage.setItem(
+      PROFILES_KEY,
+      JSON.stringify({
+        v: LATEST_PROFILES_VERSION,
+        profiles: [
+          {
+            id: "p1",
+            name: "Pre-Distance",
+            inputs: { ...defaultInputs, combatSettings, activeCustomRotation: rotation },
+          },
+        ],
+        activeId: "p1",
+      }),
+    )
+  }
+
+  it("loadProfiles moves an imported profile's encounter distance onto its custom rotation", () => {
+    storeProfileWithRotationWithoutDistance({
+      ...defaultInputs.combatSettings,
+      preferredDistanceMeters: 7,
+    })
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(7)
+    expect(profiles[0].inputs.combatSettings).not.toHaveProperty("preferredDistanceMeters")
+  })
+
+  it("loadProfiles heals a custom rotation saved before it carried a distance to the default 3 m", () => {
+    storeProfileWithRotationWithoutDistance({ ...defaultInputs.combatSettings })
+
+    const { profiles } = loadProfiles()
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(3)
+  })
+
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {
     expect(withDerivedStats(defaultInputs)).toEqual(
       withDerivedStats(withZeroedDerivedStats(defaultInputs)),
     )
+  })
+
+  describe("a stored built-in rotation ping/fps override is kept unread, exactly as stored", () => {
+    const storedOverrides = [
+      {
+        "builtin-a": { pingMs: 80, averageFps: 144, serverProcessingMs: 48 },
+        "builtin-b": { pingMs: 20, averageFps: 120, serverProcessingMs: 32 },
+      },
+      { "builtin-a": { pingMs: 80, averageFps: 144 } },
+      { "builtin-b": { pingMs: "not a number", averageFps: 999999 } },
+      "not an object",
+    ]
+    const withStoredOverride = (overrides: unknown) =>
+      ({ ...defaultInputs, builtinRotationPingFpsOverrides: overrides }) as Inputs
+    const storedOverrideOf = (inputs: Inputs) =>
+      (inputs as unknown as Record<string, unknown>).builtinRotationPingFpsOverrides
+
+    it.each(storedOverrides)("across a save and reload (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+      saveProfiles({ profiles: [profile], activeId: profile.id })
+
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
+    })
+
+    it.each(storedOverrides)("across a load of the raw stored blob (%j)", (overrides) => {
+      localStorage.setItem(
+        PROFILES_KEY,
+        JSON.stringify({
+          v: LATEST_PROFILES_VERSION,
+          profiles: [{ id: "p1", name: "Stored Override", inputs: withStoredOverride(overrides) }],
+          activeId: "p1",
+        }),
+      )
+
+      expect(storedOverrideOf(loadProfiles().profiles[0].inputs)).toEqual(overrides)
+    })
+
+    it.each(storedOverrides)("across an export and import (%j)", (overrides) => {
+      const profile = makeProfile("p1", withStoredOverride(overrides))
+
+      expect(storedOverrideOf(importProfile(exportProfile(profile)).inputs)).toEqual(overrides)
+    })
+  })
+
+  it("loadCustomRotations heals a stored rotation without a server processing time to the default instead of dropping it", () => {
+    const rotation = makeRotation("bellstrikeUmbra", { name: "Older Rotation", pingMs: 40 })
+    const { serverProcessingMs: _omitted, ...withoutServerProcessing } = rotation
+    localStorage.setItem(
+      "wwm.customRotations",
+      JSON.stringify({ v: 3, rotations: [withoutServerProcessing] }),
+    )
+
+    const loaded = loadCustomRotations()
+    expect(loaded).toHaveLength(1)
+    expect(loaded[0].serverProcessingMs).toBe(DEFAULT_SERVER_PROCESSING_MS)
+    expect(loaded[0].pingMs).toBe(40)
   })
 })
 
@@ -786,6 +914,102 @@ describe("mystic-boost merges (field/gear-word/buff-stat-key, no version bump)",
 })
 
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("Inebriate - Deepdaze's onExpire elseStacks heal", () => {
+  const CUSTOM_BUFFS_KEY = "wwm.customBuffs"
+  const CUSTOM_BUFFS_VERSION = 3
+
+  function seededDeepdazeGate(onExpire: Record<string, unknown>) {
+    return {
+      id: "buff-bamboocutDraught-inebriate-deepdaze",
+      classId: "bamboocutDraught",
+      name: "Inebriate - Deepdaze",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 300,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire,
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+  }
+
+  afterEach(() => {
+    try {
+      kvStore.remove(CUSTOM_BUFFS_KEY)
+    } catch {}
+  })
+
+  it("adds elseStacks: 0 to a copy still identical to what was seeded", () => {
+    const seeded = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [seeded] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs).toHaveLength(1)
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 0,
+    })
+  })
+
+  it("leaves a copy that already declares its own elseStacks alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+      elseStacks: 40,
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBe(40)
+  })
+
+  it("leaves an edited copy whose stacks no longer match the seed alone", () => {
+    const edited = seededDeepdazeGate({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 100,
+      requiresBuffId: "skyspeakDeepdazeRefund",
+    })
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [edited] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire?.elseStacks).toBeUndefined()
+  })
+
+  it("leaves another buff's onExpire alone", () => {
+    const unrelated = {
+      id: "buff-bamboocutDraught-eonpour-exhausted-cooldown",
+      classId: "bamboocutDraught",
+      name: "Eonpour - Exhausted Cooldown",
+      scope: "player",
+      activation: "triggered",
+      durationFrames: 3600,
+      effects: [],
+      maxStacks: 1,
+      stackScaling: "flat",
+      onExpire: { targetId: "buff-bamboocutDraught-binge-points", stacks: 60 },
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z",
+    }
+    kvStore.set(CUSTOM_BUFFS_KEY, JSON.stringify({ v: CUSTOM_BUFFS_VERSION, buffs: [unrelated] }))
+
+    const buffs = loadCustomBuffs()
+    expect(buffs[0].onExpire).toEqual({
+      targetId: "buff-bamboocutDraught-binge-points",
+      stacks: 60,
+    })
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
 describe("GearPiece.isNew hydration (additive, no version bump)", () => {
   const PROFILES_KEY = "wwm.profiles"
   const PROFILES_VERSION = 4
@@ -1120,6 +1344,29 @@ describe("seeded-skill tag heal (role:/cast: addressing, no version bump)", () =
   })
 })
 
+describe("seeded-skill cancelledBy heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSpearq5HitCancel = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === `${CLASS_ID}-spearq-5-hit-cancel`,
+  )!
+
+  it("restores a cancel-form skill's cancelledBy on a copy seeded before the field existed, renamed or not", () => {
+    const stale = { ...seedSkillFromBuiltin(CLASS_ID, builtinSpearq5HitCancel), name: "Renamed" }
+    delete stale.cancelledBy
+    saveCustomSkill(stale)
+
+    const healed = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === stale.id)!
+    expect(healed.cancelledBy).toBe("deflectCancel")
+  })
+
+  it("leaves a genuinely custom skill without cancelledBy alone", () => {
+    const ownSkill = makeSkill(CLASS_ID, { name: "Something [cancel]" })
+    saveCustomSkill(ownSkill)
+    const reloaded = loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === ownSkill.id)!
+    expect(reloaded.cancelledBy).toBeUndefined()
+  })
+})
+
 // Additive, no version bump — see CLAUDE.md → "localStorage migrations". A
 // skill/debuff saved while a buff def still declared `affects`/`triggeredBy`
 // itself carries neither `receives` nor `triggersBuffs` — recovered here from
@@ -1380,6 +1627,129 @@ describe("seeded-skill set-buff trigger heal (no version bump)", () => {
     const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq2nd)
     saveCustomSkill(current)
     expect(reload(current.id).triggersBuffs).toEqual(builtinSwordq2nd.triggersBuffs)
+  })
+})
+
+// Additive, no version bump — see CLAUDE.md → "localStorage migrations".
+describe("seeded-skill Wolfchaser's Art sword reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const builtinSwordq = builtinSkillsForClass(CLASS_ID).find(
+    (skill) => skill.id === "bellstrikeUmbra-swordq",
+  )!
+
+  const staleCopy = (receives: string[]) => ({
+    ...seedSkillFromBuiltin(CLASS_ID, builtinSwordq),
+    receives,
+  })
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy seeded before the app reached every Martial Art skill's hit", () => {
+    const stale = staleCopy(["strategicSwordAdditionalAttack"])
+    saveCustomSkill(stale)
+    expect(reload(stale.id).receives).toEqual([
+      "wolfchasersArtMartialDamage",
+      "strategicSwordAdditionalAttack",
+    ])
+  })
+
+  it("leaves a curated list alone rather than guessing which entry is stale", () => {
+    const curated = staleCopy(["strategicSwordAdditionalAttack", "someOtherBuff"])
+    saveCustomSkill(curated)
+    expect(reload(curated.id).receives).toEqual(["strategicSwordAdditionalAttack", "someOtherBuff"])
+  })
+
+  it("round-trips a current copy without listing the buff twice", () => {
+    const current = seedSkillFromBuiltin(CLASS_ID, builtinSwordq)
+    saveCustomSkill(current)
+    expect(reload(current.id).receives).toEqual(builtinSwordq.receives)
+  })
+})
+
+describe("seeded-skill Flute Arrival trigger heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each([
+    "mystic-flute-of-the-tides-cancel",
+    "mystic-flute-of-the-tides-full",
+    "mystic-flute-of-the-tides-prepull",
+  ])("adds fluteArrival to a copy of %s seeded before it was modeled", (id) => {
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(id).triggersBuffs).toEqual(["fluteArrival"])
+  })
+})
+
+describe("seeded-skill Poet final-strike stack reach heal (no version bump)", () => {
+  const CLASS_ID = "bellstrikeUmbra"
+  const reload = (id: string) =>
+    loadCustomSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+
+  it.each(["mystic-poet1", "mystic-poet2", "mystic-poet3", "mystic-poet4"])(
+    "adds the trigger to a copy of %s seeded before the stack buff was modeled",
+    (id) => {
+      const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+      const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+      void _triggersBuffs
+      saveCustomSkill(stale)
+      expect(reload(id).triggersBuffs).toEqual(["poetFinalStrikeStack"])
+    },
+  )
+
+  it("adds the receive to a copy of the final strike seeded before the stack buff was modeled", () => {
+    const id = "mystic-poet-final-hit-cancel"
+    const builtin = builtinSkillsForClass(CLASS_ID).find((skill) => skill.id === id)!
+    const { receives: _receives, ...stale } = seedSkillFromBuiltin(CLASS_ID, builtin)
+    void _receives
+    saveCustomSkill(stale)
+    expect(reload(id).receives).toEqual(["poetFinalStrikeStack"])
+  })
+})
+
+describe("seeded-skill Cleftpeak deflect-grant trigger heal (no version bump)", () => {
+  const reload = (classId: string, id: string) =>
+    loadCustomSkillsForClass(classId).find((skill) => skill.id === id)!
+
+  it("adds the buff to a copy of Stonesplit Strength's own deflect seeded before it was modeled", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const stale = { ...seedSkillFromBuiltin(classId, builtin), triggersBuffs: ["forgetfulness"] }
+    saveCustomSkill(stale)
+    expect(reload(classId, stale.id).triggersBuffs).toEqual([
+      "forgetfulness",
+      "cleftpeakDeflectGrant",
+    ])
+  })
+
+  it("leaves a curated deflect list alone rather than guessing which entry is stale", () => {
+    const classId = "stonesplitStrength"
+    const builtin = builtinSkillsForClass(classId).find(
+      (skill) => skill.id === "stonesplitStrength-deflect",
+    )!
+    const curated = {
+      ...seedSkillFromBuiltin(classId, builtin),
+      triggersBuffs: ["forgetfulness", "someOtherBuff"],
+    }
+    saveCustomSkill(curated)
+    expect(reload(classId, curated.id).triggersBuffs).toEqual(["forgetfulness", "someOtherBuff"])
+  })
+
+  it.each([
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel"],
+    ["bellstrikeUmbra", "bellstrikeUmbra-deflect-cancel-prepull"],
+    ["bamboocutDraught", "bamboocutDraught-deflect-cancel"],
+  ])("adds the buff to a copy of %s's %s seeded before it was modeled", (classId, id) => {
+    const builtin = builtinSkillsForClass(classId).find((skill) => skill.id === id)!
+    const { triggersBuffs: _triggersBuffs, ...stale } = seedSkillFromBuiltin(classId, builtin)
+    void _triggersBuffs
+    saveCustomSkill(stale)
+    expect(reload(classId, id).triggersBuffs).toEqual(["cleftpeakDeflectGrant"])
   })
 })
 

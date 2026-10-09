@@ -1,5 +1,6 @@
 import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
+import { CAST, ROLE } from "../skills/ids"
 import { stat } from "../../engine/effects/effect"
 import { requireInnerWayNodeTier } from "../../definitions/innerWays/innerWayDef"
 import type { BuffModule } from "../../engine/buffs/buffModule"
@@ -23,7 +24,8 @@ export function wineGuBuffDef() {
     // attack, and leaves a damage-over-time tick alone.
     reachesDotTicks: false,
     duration: 15,
-    buffAppliesOnCastEnd: true,
+    // In-game values as of 2026-09-24: Sober Sorrow's 3rd hit (45.4 frames in) opens the window.
+    buffAppliesAfterSec: 45.4 / 60,
     effects: [stat("allDamageBoost", 0.05)],
   })
 }
@@ -49,28 +51,46 @@ export function wolfchasersArtMartialDamageBuffDef() {
 // re-run `requireInnerWayNodeTier`'s tier-table scan on every read.
 let soulShakenMinTier: number | undefined
 
-// Hand-authored port of the reference site's "mechanic list" Soul Shaken def
-// (`kb.soulShaken` in the deobfuscated bundle). Both Spear Q's and Spear
-// Heavy's stacks are the same Wolfchaser's Art mechanic, gated the same way.
+// In-game values as of 2026-09-24: Spear Heavy's stacks (Drifting Thrust)
+// carry no inner-way requirement of their own; only Spear Q's (Sober Sorrow)
+// need Wolfchaser's Art at this tier.
 export function soulShakenBuffDef(): BuffModule {
+  const soberSorrowRequires = {
+    param: PARAM.wolfchasersArt,
+    get minTier(): number {
+      return (soulShakenMinTier ??= requireInnerWayNodeTier(
+        wolfchasersArt,
+        INNER_WAY_NODE.soulShaken,
+      ))
+    },
+  }
   return defineBuff({
     id: BUFF.soulShaken,
     name: "Soul Shaken",
-    requires: {
-      param: PARAM.wolfchasersArt,
-      get minTier(): number {
-        return (soulShakenMinTier ??= requireInnerWayNodeTier(
-          wolfchasersArt,
-          INNER_WAY_NODE.soulShaken,
-        ))
-      },
+    grantRequires: {
+      [CAST.spearQ]: soberSorrowRequires,
+      [CAST.spearQ5HitCancel]: soberSorrowRequires,
     },
     duration: 18,
     maxStacks: 5,
     stacksPerHit: true,
-    summary: "+10.0% all/stack",
-    // Omit the effect at 0 stacks rather than a no-op stat, matching the
-    // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.
-    effects: (ctx) => (ctx.self.stacks > 0 ? [stat("allDamageBoost", 0.1 * ctx.self.stacks)] : []),
+    summary:
+      "+10.0% all/stack; against a Soul-Shaken target, Bleeding's Qi rate +0.4 and Qi index ×3, Blood Burst's Qi rate +0.3",
+    effects: (ctx) => {
+      const effects = []
+      // Omit the effect at 0 stacks rather than a no-op stat, matching the
+      // pre-conversion display path's `if (value !== 0)` guard on a per-stack bonus.
+      if (ctx.self.stacks > 0) effects.push(stat("allDamageBoost", 0.1 * ctx.self.stacks))
+      // In-game values as of 2026-09-25: Strategic Sword's own always-on
+      // Bleed passive reads the target's own Soul-Shaken stacks rather than
+      // this module's per-source grant.
+      if (ctx.event.kind === "damage" && ctx.event.tags.has(ROLE.bleedTick)) {
+        effects.push(stat("qiRateAdd", 0.4), stat("qiDamageIndexMultiplier", 2))
+      }
+      if (ctx.event.kind === "damage" && ctx.event.tags.has(ROLE.bleedDetonation)) {
+        effects.push(stat("qiRateAdd", 0.3))
+      }
+      return effects
+    },
   })
 }

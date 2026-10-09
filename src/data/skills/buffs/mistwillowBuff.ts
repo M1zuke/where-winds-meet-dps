@@ -23,5 +23,9 @@ export const mistwillowBuff = defineBuff({
   requires: { set: mistwillow.siteKey },
   duration: 15,
   cooldown: 2,
-  effects: [stat("physBoost", MISTWILLOW_BONUS), stat("attributeDamageBoost", MISTWILLOW_BONUS)],
+  summary: "phys +10%, Silkbind damage +10%",
+  effects: (ctx) => [
+    stat("physBoost", MISTWILLOW_BONUS),
+    ...(ctx.build.classId === "silkbindJade" ? [stat("attributeDamageBoost", MISTWILLOW_BONUS)] : []),
+  ],
 })

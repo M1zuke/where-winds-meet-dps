@@ -1,8 +1,10 @@
-import { defineSkill, evenlySpacedHits } from "../../../definitions/skills/skillDef"
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL } from "./ids"
 
+// Cast length to the earliest next input and hit frames: in-game animation,
+// 2026-09-24.
 export const soaring = defineSkill({
   id: SKILL.soaring,
   classId: MYSTIC_ARTS_CLASS_ID,
@@ -12,16 +14,28 @@ export const soaring = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.soaring,
-  castFrames: 120,
+  castFrames: 122,
   triggerable: true,
-  hits: evenlySpacedHits({
-    count: 2,
-    everyFrames: 60,
-    physMultiplier: 3.55121,
-    attributeMultiplier: 5.326815,
-    physFixed: 535.03,
-    attributeFixed: 0,
-  }),
+  // In-game values as of 2026-09-28: a stationary cast, 15 m engagement
+  // range — confirmed no scripted displacement despite the visible dash-in.
+  reachMeters: 15,
+  approach: "stationary",
+  hits: [
+    hit(0, {
+      frame: 48,
+      physMultiplier: 3.19609,
+      attributeMultiplier: 4.794135,
+      physFixed: 481.53,
+      attributeFixed: 0,
+    }),
+    hit(1, {
+      frame: 122,
+      physMultiplier: 3.90633,
+      attributeMultiplier: 5.859495,
+      physFixed: 588.53,
+      attributeFixed: 0,
+    }),
+  ],
   createdAt: "2026-07-19T00:00:00.000Z",
-  updatedAt: "2026-09-09T00:00:00.000Z",
+  updatedAt: "2026-09-28T00:00:00.000Z",
 })

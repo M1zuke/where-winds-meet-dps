@@ -1,12 +1,17 @@
 import { useMemo, useRef, useState } from "react"
 import type { Inputs } from "../../../../engine/types"
-import type { Skill, SkillHit, HitTrigger, HitVariant, TriggerKind } from "../../../../engine/skill"
 import {
   belongsToClass,
+  cloneTriggerCondition,
   makeSkill,
   makeHit,
   seedSkillFromBuiltin,
   triggerConditions,
+  type Skill,
+  type SkillHit,
+  type HitTrigger,
+  type HitVariant,
+  type TriggerKind,
 } from "../../../../engine/skill"
 import type { Buff, BuffStatEffect } from "../../../../engine/buff"
 import type { Debuff } from "../../../../engine/debuff"
@@ -38,6 +43,7 @@ import {
   attributeAttackKey,
   classKey,
   debuffEchoKey,
+  meterKey,
   skillKey,
   skillTypeKey,
   weaponKey,
@@ -318,15 +324,14 @@ export function SkillsTab({
         ...hit,
         triggers: hit.triggers.map((trigger) => ({
           ...trigger,
-          conditions: trigger.conditions
-            ? trigger.conditions.map((condition) => ({ ...condition }))
-            : undefined,
+          condition: trigger.condition ? cloneTriggerCondition(trigger.condition) : null,
+          conditions: trigger.conditions?.map(cloneTriggerCondition),
         })),
         variants: hit.variants?.map((variant) => ({
           ...variant,
-          conditions: variant.conditions.map((condition) => ({ ...condition })),
+          conditions: variant.conditions.map(cloneTriggerCondition),
         })),
-        conditions: hit.conditions?.map((condition) => ({ ...condition })),
+        conditions: hit.conditions?.map(cloneTriggerCondition),
       })),
     }
     setDraft(cloned)
@@ -388,11 +393,30 @@ export function SkillsTab({
     })
   }
   function removeTriggersBuff(buffId: string) {
-    setDraft((prev) =>
-      prev
-        ? { ...prev, triggersBuffs: (prev.triggersBuffs ?? []).filter((id) => id !== buffId) }
-        : prev,
-    )
+    setDraft((prev) => {
+      if (!prev) return prev
+      const triggersBuffsAtFrame = { ...prev.triggersBuffsAtFrame }
+      delete triggersBuffsAtFrame[buffId]
+      return {
+        ...prev,
+        triggersBuffs: (prev.triggersBuffs ?? []).filter((id) => id !== buffId),
+        triggersBuffsAtFrame:
+          Object.keys(triggersBuffsAtFrame).length > 0 ? triggersBuffsAtFrame : undefined,
+      }
+    })
+  }
+  function setTriggersBuffAtFrame(buffId: string, frame: number | undefined) {
+    setDraft((prev) => {
+      if (!prev) return prev
+      const triggersBuffsAtFrame = { ...prev.triggersBuffsAtFrame }
+      if (frame === undefined) delete triggersBuffsAtFrame[buffId]
+      else triggersBuffsAtFrame[buffId] = frame
+      return {
+        ...prev,
+        triggersBuffsAtFrame:
+          Object.keys(triggersBuffsAtFrame).length > 0 ? triggersBuffsAtFrame : undefined,
+      }
+    })
   }
 
   function patchHit(idx: number, patch: Partial<SkillHit>) {
@@ -597,10 +621,28 @@ export function SkillsTab({
     )
   }
 
+  const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
+
+  function statusOrModuleName(targetId: string): string | undefined {
+    return (
+      resolveStatus(targetId)?.name ??
+      reachableBuffModules.find((module) => module.id === targetId)?.name
+    )
+  }
+
+  function cooldownGroupName(groupId: string): string {
+    const gated = [...classSkills, ...builtinSkills]
+      .flatMap((skill) => skill.hits.flatMap((hit) => hit.triggers))
+      .find((candidate) => candidate.cooldownGroup === groupId && candidate.kind !== "cooldownCut")
+    if (!gated) return groupId
+    if (gated.kind === "meterDelta") return t(meterKey(gated.targetId), gated.targetId)
+    return statusOrModuleName(gated.targetId) ?? groupId
+  }
+
   function conditionsClause(trigger: TriggerDraft): string {
     const conds = triggerConditions(trigger)
     if (conds.length === 0) return ""
-    return `${t("skills.when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name)}`
+    return `${t("skills.when")} ${formatConditions(conds, (id) => resolveStatus(id)?.name, t)}`
   }
 
   function summarizeTriggerDraft(trigger: TriggerDraft): { label: string; effect: string } {
@@ -645,6 +687,34 @@ export function SkillsTab({
       const effect = `${t("skills.echo")} ${status.name}${gate ? ` · ${gate}` : ""}`
       return { label, effect }
     }
+    if (kind === "meterDelta") {
+      const meterName = t(meterKey(trigger.targetId), trigger.targetId)
+      const amount =
+        trigger.refundFractionOfCastCost !== undefined
+          ? `+${Math.round(trigger.refundFractionOfCastCost * 100)}% ${t("skills.ofCastCost")}`
+          : `${trigger.stacks >= 0 ? "+" : "−"}${Math.abs(trigger.stacks)}`
+      return { label: `${meterName} ${amount}`, effect: gate }
+    }
+    if (kind === "cooldownCut") {
+      const groupName = statusOrModuleName(trigger.targetId) ?? cooldownGroupName(trigger.targetId)
+      const cutSec = (trigger.stacks / FPS).toFixed(1)
+      const effect = `−${cutSec}s${gate ? ` · ${gate}` : ""}`
+      return { label: `${t("skills.cutsCooldownOf")} ${groupName}`, effect }
+    }
+    if (kind === "clearStatus") {
+      const statusName = statusOrModuleName(trigger.targetId)
+      if (!statusName) return { label: t("skills.selectATarget"), effect: "" }
+      return { label: `${t("skills.clears")} ${statusName}`, effect: gate }
+    }
+    if (kind === "applyBuff" && !resolveStatus(trigger.targetId)) {
+      const module = reachableBuffModules.find((candidate) => candidate.id === trigger.targetId)
+      if (module) {
+        const effect = [`+${trigger.stacks} ${t("skills.stacks")}`, gate]
+          .filter(Boolean)
+          .join(" · ")
+        return { label: module.name, effect }
+      }
+    }
     if (kind === "applyDebuff" || kind === "applyBuff") {
       const status = resolveStatus(trigger.targetId)
       if (!status) return { label: t("skills.selectATarget"), effect: "" }
@@ -681,7 +751,6 @@ export function SkillsTab({
     [draft],
   )
 
-  const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
   const receivableBuffModules = useMemo(
     () => reachableBuffModules.filter(declaresOwnReach),
     [reachableBuffModules],
@@ -789,7 +858,8 @@ export function SkillsTab({
     const texts = new Set<string>()
     for (const hit of draft.hits) {
       const variant = (hit.variants ?? []).find((candidate) => candidate.label === label)
-      if (variant) texts.add(formatConditions(variant.conditions, (id) => resolveStatus(id)?.name))
+      if (variant)
+        texts.add(formatConditions(variant.conditions, (id) => resolveStatus(id)?.name, t))
     }
     return Array.from(texts)
   }
@@ -1259,6 +1329,18 @@ export function SkillsTab({
                             {row.requires && (
                               <span className={styles.effectsRowRequires}>
                                 ({t("common.requires")} {row.requires})
+                              </span>
+                            )}
+                            {draft.triggersBuffs?.includes(row.id) && (
+                              <span className={styles.effectsRowRequires}>
+                                {t("skills.grantedAtFrame")}{" "}
+                                <NumInput
+                                  className={styles.cellInput}
+                                  value={draft.triggersBuffsAtFrame?.[row.id] ?? 0}
+                                  onChange={(value) =>
+                                    setTriggersBuffAtFrame(row.id, value === 0 ? undefined : value)
+                                  }
+                                />
                               </span>
                             )}
                           </div>

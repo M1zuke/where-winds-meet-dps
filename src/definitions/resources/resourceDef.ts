@@ -21,8 +21,10 @@ export interface ResourceDef {
   launchSkillId: string
   debuffId: string
   drainPerSecond: number
-  enhancedBuffId: string
-  enhancedExtraDrainPerSecond: number
+  regenPerSecond?: number
+  enhancedRunCost: number
+  recallTag?: string
+  recallExemptSkillIds?: readonly string[]
   endRefund: number
   refundCooldownSeconds: number
   gains: readonly ResourceGainRule[]

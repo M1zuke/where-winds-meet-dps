@@ -16,11 +16,19 @@ export interface MechanicSetup {
   inputs: Inputs
   classId: string
   fps: number
+  // The fight window's own length, from the first damaging hit to its end —
+  // docs/TIMELINE.md § "Fight window". Absolute bounds a schedule needs add
+  // `windowStartSec`, which may be negative for a fight a pre-pull hit starts.
   rotationDurationSec: number
+  windowStartSec: number
   // Every damaging hit, and the subset from weapon-typed skills, in seconds and
   // ascending — what a proc schedule is built from.
   hitTimesSec: readonly number[]
   weaponHitTimesSec: readonly number[]
+  // Every DoT tick the layout pass's own ledger produces, in seconds and
+  // ascending — a proc schedule opts into these alongside `hitTimesSec`. Its
+  // limits: `docs/CALCULATION.md` § "Mechanic rules".
+  dotTickTimesSec: readonly number[]
   qiPhaseAt(timeSec: number): QiPhase
   // The resolved buff-engine params, so a mechanic gates on exactly what the
   // engine gated on rather than re-deriving it from `mindMethods`.
@@ -36,12 +44,11 @@ export interface MechanicSetup {
   rng?: () => number
 }
 
-// Two of the formula's inputs are not `{statKey, amount}` deltas and so cannot
-// travel as effects — they reach `buildContext` directly. Named for what the
-// formula calls them rather than for the mechanic that supplies them.
+// `hawkwingPhysBonus` is not a `{statKey, amount}` delta and so cannot travel
+// as an effect — it reaches `buildContext` directly. Named for what the
+// formula calls it rather than for the mechanic that supplies it.
 export interface ContextPatch {
   hawkwingPhysBonus?: number
-  dotDamageMultiplier?: number
 }
 
 export interface MechanicContribution {
@@ -73,6 +80,10 @@ export interface MechanicCatalogRow {
 
 export interface TimelineMechanic<State = unknown> {
   id: string
+  // Whether this mechanic's `contributeAt` reads the encounter's target
+  // distance — the same visibility declaration a `BuffModule` makes with its
+  // own `readsTargetDistance`.
+  readsTargetDistance?: boolean
   catalogRow?: MechanicCatalogRow
   // Returning null means "not in this build" — how a mechanic gates itself
   // without the timeline knowing why.
@@ -108,4 +119,11 @@ export interface MechanicEvent {
   art: Record<string, unknown>
   name: string
   type: string
+  // The event's own Qi rate/flat channel, in-game values as of 2026-09-25 —
+  // docs/CALCULATION.md § "Qi damage". Absent means rate 1, flat 0.
+  qiRate?: number
+  qiFlat?: number
+  // Absent means "direct" — the post-break immunity window only ever exempts
+  // a tick.
+  qiHitKind?: "direct" | "dot"
 }

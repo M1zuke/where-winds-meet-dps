@@ -1,0 +1,50 @@
+{
+  "v": 56,
+  "skills": [
+    {
+      "id": "bamboocutDraught-nightwick-primepick-follow-up-cancel",
+      "classId": "bamboocutDraught",
+      "name": "Gauntlet Special - Primepick Follow-up [1-hit cancel]",
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "tags": ["weapon:Gauntlets", "attune:gauntletsSpecial"],
+      "hits": [
+        {
+          "id": "hit-mupbbr80-91u54d-1",
+          "frame": 20,
+          "physMultiplier": 0.64565,
+          "attributeMultiplier": 0.968475,
+          "physFixed": 180,
+          "attributeFixed": 98,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bamboocutDraught-wildstride",
+              "stacks": 1,
+              "condition": null
+            }
+          ]
+        }
+      ],
+      "castFrames": 39,
+      "triggerable": false,
+      "createdAt": "2026-09-05T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z",
+      "castTag": "cast:nightwickPrimepickFollowUpCancel",
+      "breakdownName": "Nightwick - Primepick",
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "reachMeters": 4,
+      "displacement": { "kind": "towardTarget", "referenceMeters": 1.75 }
+    }
+  ]
+}

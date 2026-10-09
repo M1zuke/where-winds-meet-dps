@@ -7,9 +7,9 @@ import { applyArmorSet, applyBowSet } from "../../src/engine/panel"
 import { graduationInputs } from "../../src/engine/graduation"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { makeHit, makeSkill } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { defaultCombatSettings } from "../../src/engine/types"
-import type { Inputs, QiBreakWindow, TimelineEvent } from "../../src/engine/types"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
+import type { Inputs, TimelineEvent } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const BURN_NAME = "Divinecraft - Fire"
@@ -26,6 +26,7 @@ function probeInputs(
   hitSeconds: readonly number[],
   overrides: Partial<Inputs> = {},
   castFramesOverride?: number,
+  fixedWindowSec?: number,
 ): Inputs {
   const hits = hitsAtSeconds(hitSeconds)
   const lastFrame = hits.length > 0 ? hits[hits.length - 1].frame : 0
@@ -42,6 +43,7 @@ function probeInputs(
     customSkills: [skill],
     activeCustomRotation: makeRotation(CLASS, {
       steps: [makeStep({ skillId: skill.id })],
+      fixedWindowSec,
     }),
     ...overrides,
   }
@@ -60,16 +62,22 @@ describe("Fire Oil Burn — ticks only with the fire oil selected", () => {
 })
 
 describe("Fire Oil Burn — schedule", () => {
-  it("a hit every second for 60 s ticks exactly 60 times, the first at 0.5 s", () => {
+  it("a hit every second for 60 s keeps ticking past 40 s, the first at 0.5 s", () => {
     const seconds = Array.from({ length: 60 }, (_, index) => index)
     const result = runEngine(probeInputs(seconds, {}, 60 * 60))
     const ticks = burnTicks(result.timeline)
-    expect(ticks.length).toBe(60)
+    expect(ticks.length).toBe(59)
     expect(ticks[0].timeSec).toBeCloseTo(0.5, 9)
+    expect(ticks.some((tick) => tick.timeSec > 40)).toBe(true)
+    expect(ticks[ticks.length - 1].timeSec).toBeCloseTo(58.5, 9)
   })
 
   it("a gap longer than 4 s stops the ticks and the next hit restarts the grid", () => {
-    const result = runEngine(probeInputs([0, 10], {}, 15 * 60))
+    // A fixed window: the schedule keeps ticking well past the last hit at
+    // 10 s, so the fight's own window — now the last damaging hit rather
+    // than the last cast's own end, docs/TIMELINE.md § "Fight window" —
+    // needs pinning open to still observe the later ticks.
+    const result = runEngine(probeInputs([0, 10], {}, 15 * 60, 15))
     const tickTimes = burnTicks(result.timeline).map((event) => event.timeSec)
     expect(tickTimes).toEqual([0.5, 1.5, 2.5, 3.5, 10.5, 11.5, 12.5, 13.5])
   })
@@ -96,19 +104,12 @@ describe("Fire Oil Burn — always the plain row", () => {
 
   it("scales by exactly the Exhausted factor when a tick lands inside the Qi-break window", () => {
     const seconds = Array.from({ length: 40 }, (_, index) => index)
-    const withBreak = runEngine(
-      probeInputs(seconds, {
-        combatSettings: { ...defaultCombatSettings(), qiBreakOverride: null },
-      }),
-    )
-    const withoutBreak = runEngine(
-      probeInputs(seconds, {
-        combatSettings: {
-          ...defaultCombatSettings(),
-          qiBreakOverride: { ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 } as QiBreakWindow,
-        },
-      }),
-    )
+    const withBreak = runEngine(probeInputs(seconds), {
+      fixedQiBreaks: [DEFAULT_QI_BREAK_WINDOW],
+    })
+    const withoutBreak = runEngine(probeInputs(seconds), {
+      fixedQiBreaks: [{ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 }],
+    })
     const withBreakTicks = burnTicks(withBreak.timeline)
     const withoutBreakTicks = burnTicks(withoutBreak.timeline)
     expect(withBreakTicks.length).toBe(withoutBreakTicks.length)
@@ -130,11 +131,19 @@ describe("Fire Oil Burn — always the plain row", () => {
   })
 })
 
-describe("Fire Oil Burn — pre-pull casts never open a window", () => {
-  it("a damaging pre-pull cast schedules no ticks on its own", () => {
+describe("Fire Oil Burn — a damaging pre-pull cast opens its own window", () => {
+  it("schedules a burn tick from a pre-pull hit's own time, the same as any other damaging hit", () => {
     const prePullSkill = makeSkill(CLASS, {
       name: "Prepull Hit",
       prePull: true,
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, physMultiplier: 0.1 })],
+    })
+    // A further damaging hit: the pre-pull hit alone would close the fight's
+    // own window right where it lands, docs/TIMELINE.md § "Fight window",
+    // leaving the burn tick that follows it no room to land inside.
+    const after = makeSkill(CLASS, {
+      name: "After",
       castFrames: 60,
       hits: [makeHit({ frame: 0, physMultiplier: 0.1 })],
     })
@@ -143,13 +152,15 @@ describe("Fire Oil Burn — pre-pull casts never open a window", () => {
       classId: CLASS,
       set: null,
       divinecraft: "fire",
-      customSkills: [prePullSkill],
+      customSkills: [prePullSkill, after],
       activeCustomRotation: makeRotation(CLASS, {
-        steps: [makeStep({ skillId: prePullSkill.id })],
+        steps: [makeStep({ skillId: prePullSkill.id }), makeStep({ skillId: after.id })],
       }),
     }
     const result = runEngine(inputs)
-    expect(burnTicks(result.timeline).length).toBe(0)
+    const ticks = burnTicks(result.timeline)
+    expect(ticks.length).toBeGreaterThan(0)
+    for (const tick of ticks) expect(tick.timeSec).toBeGreaterThanOrEqual(result.fightStartSec)
   })
 })
 

@@ -116,6 +116,29 @@ describe("storage round-trip", () => {
     expect(imported.stackScaling).toBe("perStack")
   })
 
+  it("export → import carries a non-default Qi rate, flat channel and hit kind through unchanged", () => {
+    const d = makeDebuff(CLASS, {
+      name: "Combustion",
+      dot: {
+        tickIntervalFrames: 60,
+        physMultiplier: 1,
+        physFixed: 0,
+        attributeMultiplier: 0,
+        attributeFixed: 0,
+        attributeAttack: "",
+        skillType: "sustain",
+        count: 1,
+        qiRate: 0.6,
+        qiFlat: 8,
+        qiHitKind: "direct",
+      },
+    })
+    const imported = importCustomDebuff(exportCustomDebuff(d), "bellstrikeUmbra")
+    expect(imported.dot?.qiRate).toBe(0.6)
+    expect(imported.dot?.qiFlat).toBe(8)
+    expect(imported.dot?.qiHitKind).toBe("direct")
+  })
+
   it("export → import carries an explicit receives through unchanged", () => {
     const debuff = makeDebuff(CLASS, {
       name: "Combustion",

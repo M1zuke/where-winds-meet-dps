@@ -1,7 +1,8 @@
 import type { StandardizedEncounter } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { STANDARDIZED_ENCOUNTER_OFF } from "../../../../definitions/graduationBuilds/graduationBuildDef"
-import type { Inputs, ScriptId } from "../../../../engine/types"
+import type { Inputs } from "../../../../engine/types"
 import { useI18n } from "../../../../i18n/i18nContext"
+import { SCRIPT_LABEL_KEYS } from "../../../../data/skills/buffs/scriptOptions"
 import styles from "./GraduationStandardNotice.module.scss"
 
 type SwitchedSetting = {
@@ -12,18 +13,14 @@ const SWITCHED_LABEL_KEYS: Record<SwitchedSetting, string> = {
   dummyMode: "overview.encounterSettings.enableDummy",
   food: "overview.encounterSettings.simmeringFishSlicesFood",
   dragonHeadLowHpMaxBonus: "overview.encounterSettings.maxLowHpBonusDragon",
-  lowEndurance: "overview.encounterSettings.below60Endurance",
   shareDebuff5HenZhi: "overview.encounterSettings.bitterSeasonFromATeammate",
   shareEasyHurt: "overview.encounterSettings.tankSpearDebuffVulnerability",
   dragonsBreath: "overview.encounterSettings.dragonSBreath",
   healerBuff: "overview.encounterSettings.healerBuff",
+  healerPanaceaFan: "overview.encounterSettings.healerPanaceaFan",
   breakExtension: "overview.encounterSettings.breakExtension",
   dragonHeadFullStacks: "overview.encounterSettings.40StacksDragonHead",
-}
-
-const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
-  wraithstrikeScript: "overview.encounterSettings.wraithstrikeScript",
-  voidrotScript: "overview.encounterSettings.voidrotScript",
+  fragrantOrchidBathBean: "overview.encounterSettings.fragrantOrchidBathBean",
 }
 
 const DIVINECRAFT_LABEL_KEYS: Record<Exclude<Inputs["divinecraft"], null>, string> = {

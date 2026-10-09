@@ -2,34 +2,20 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDebuff } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
-import { DEBUFF, SKILL, STATUS } from "./ids"
+import { DEBUFF, SKILL } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, SKYSTRIKE_GAUNTLETS_RECEIVES } from "./receives"
 
-// Hit frames: in-game animation, 2026-09-11.
+// On a PvE target the follow-up out of Tipsylay is always Nightwick -
+// Primepick's single hit — the 3-hit Tri-strike form needs the arena-only
+// Tri-Strike Mark, never held on a dummy. In-game values as of 2026-09-16.
 export const primepickFollowUpHits = [
   hit(0, {
     frame: 20,
-    physMultiplier: 0.859716,
-    attributeMultiplier: 1.289574,
-    physFixed: 237.93,
-    attributeFixed: 129.69,
+    physMultiplier: 0.64565,
+    attributeMultiplier: 0.968475,
+    physFixed: 180,
+    attributeFixed: 98,
     triggers: [applyDebuff({ target: DEBUFF.wildstride, stacks: 1 })],
-  }),
-  hit(1, {
-    frame: 49,
-    physMultiplier: 0.859716,
-    attributeMultiplier: 1.289574,
-    physFixed: 237.93,
-    attributeFixed: 129.69,
-    conditions: [{ buffId: STATUS.inebriateDeepdaze, op: "gte", stacks: 1 }],
-  }),
-  hit(2, {
-    frame: 76,
-    physMultiplier: 0.859716,
-    attributeMultiplier: 1.289574,
-    physFixed: 237.93,
-    attributeFixed: 129.69,
-    conditions: [{ buffId: STATUS.inebriateDeepdaze, op: "gte", stacks: 1 }],
   }),
 ]
 
@@ -51,6 +37,10 @@ export const nightwickPrimepickFollowUp = defineSkill({
   ],
   triggerable: false,
   castFrames: 102,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: primepickFollowUpHits,
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-05T00:00:00.000Z",

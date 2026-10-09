@@ -1,4 +1,6 @@
 import { runEngine } from "./dps"
+import { FPS } from "./timeline"
+import { engineRunOptionsFrom } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
@@ -43,6 +45,7 @@ import { GEAR_SLOTS } from "./types"
 import type {
   Arsenal,
   BowSet,
+  EngineRunOptions,
   GearPiece,
   GearSlot,
   GearWordId,
@@ -53,6 +56,12 @@ import type {
 } from "./types"
 
 const OUTCOME_KEYS: readonly HitOutcome[] = ["abrasion", "normal", "crit", "affinity"]
+
+type BaselineQiBreaks = readonly { startSec: number; endSec: number }[]
+
+function engineOptionsFrom(baselineQiBreaks: BaselineQiBreaks | undefined): EngineRunOptions {
+  return engineRunOptionsFrom(baselineQiBreaks, FPS)
+}
 
 export interface DpsDelta {
   current: number
@@ -66,6 +75,7 @@ export interface DpsWorkerRequest {
   inputs: Inputs
   baselineDps: number
   pieceIds: string[]
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface DpsWorkerResponse {
@@ -78,6 +88,7 @@ export interface EquippedDeltasWorkerRequest {
   inputs: Inputs
   baselineDps: number
   slots?: readonly GearSlot[]
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface EquippedDeltasWorkerResponse {
@@ -85,9 +96,13 @@ export interface EquippedDeltasWorkerResponse {
   deltas: Record<string, DpsDelta>
 }
 
-function dpsForSwap(unequippedBaseline: Inputs, candidate: GearPiece): number {
+function dpsForSwap(
+  unequippedBaseline: Inputs,
+  candidate: GearPiece,
+  options: EngineRunOptions | undefined,
+): number {
   const next = applyPieceContribution(unequippedBaseline, candidate, +1)
-  return runEngine(next).dps
+  return runEngine(next, options).dps
 }
 
 function equippedPieceIds(inputs: Inputs, slots: readonly GearSlot[]): string[] {
@@ -98,13 +113,14 @@ function equippedPieceIds(inputs: Inputs, slots: readonly GearSlot[]): string[] 
 }
 
 function computeEquippedDeltas(req: EquippedDeltasWorkerRequest): EquippedDeltasWorkerResponse {
-  const { reqId, inputs, baselineDps, slots } = req
+  const { reqId, inputs, baselineDps, slots, baselineQiBreaks } = req
   const pieceIds = equippedPieceIds(inputs, slots ?? GEAR_SLOTS)
-  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds })
+  return computeDpsDeltas({ reqId, inputs, baselineDps, pieceIds, baselineQiBreaks })
 }
 
 function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
   const { inputs, baselineDps, pieceIds } = req
+  const options = engineOptionsFrom(req.baselineQiBreaks)
   const out: Record<string, DpsDelta> = {}
   const byId = new Map<string, GearPiece>()
   for (const piece of inputs.inventory) byId.set(piece.id, piece)
@@ -113,7 +129,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
   function ftDpsFor(piece: GearPiece): number {
     const known = ftDpsByPieceId.get(piece.id)
     if (known !== undefined) return known
-    const ftDps = ftDpsWhenEquipped(piece, inputs)
+    const ftDps = ftDpsWhenEquipped(piece, inputs, options)
     ftDpsByPieceId.set(piece.id, ftDps)
     return ftDps
   }
@@ -124,7 +140,7 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     if (cached !== undefined) return cached
     const equippedId = inputs.equipped[slot]
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
-    const ref = equipped ? ftDpsFor(equipped) : ftDpsWithSlotEmpty(slot, inputs)
+    const ref = equipped ? ftDpsFor(equipped) : ftDpsWithSlotEmpty(slot, inputs, options)
     ftRefBySlot.set(slot, ref)
     return ref
   }
@@ -137,13 +153,13 @@ function computeDpsDeltas(req: DpsWorkerRequest): DpsWorkerResponse {
     const equipped = equippedId ? (byId.get(equippedId) ?? null) : null
     const unequippedBaseline = equipped ? applyPieceContribution(inputs, equipped, -1) : inputs
 
-    const currentDps = dpsForSwap(unequippedBaseline, candidate)
+    const currentDps = dpsForSwap(unequippedBaseline, candidate, options)
     const upgraded = maxRelayedClone(
       candidate,
       inputs,
       gearLevelForBreakthrough(inputs.breakthrough),
     )
-    const upgradedDps = dpsForSwap(unequippedBaseline, upgraded)
+    const upgradedDps = dpsForSwap(unequippedBaseline, upgraded, options)
 
     const ftCandidateDps = ftDpsFor(candidate)
     const fullPotential = ftCandidateDps - baselineDps
@@ -164,6 +180,7 @@ export interface RetunementWorkerRequest {
   reqId: number
   inputs: Inputs
   pieceId: string
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface RetunementRow {
@@ -197,20 +214,28 @@ function inputsWithSlotEmpty(inputs: Inputs, slot: GearSlot): Inputs {
   return applyPieceContribution(inputs, equippedPiece, -1)
 }
 
-function retunementDpsHelpers(inputs: Inputs, piece: GearPiece) {
+function retunementDpsHelpers(
+  inputs: Inputs,
+  piece: GearPiece,
+  options: EngineRunOptions | undefined,
+) {
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+  const equipRun = runEngine(applyPieceContribution(slotEmpty, piece, +1), options)
+  const sweepOptions = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
   const relayedPiece = maxRelayedClone(piece, inputs, piece.level)
-  const relayedDps = runEngine(applyPieceContribution(slotEmpty, relayedPiece, +1)).dps
+  const relayedDps = runEngine(
+    applyPieceContribution(slotEmpty, relayedPiece, +1),
+    sweepOptions,
+  ).dps
 
   const dpsWithWord = (from: GearPiece, slotIndex: number, word: GearWordId, value: number) => {
     const words = from.words.map((existing, index) =>
       index === slotIndex ? { word, value, retuned: true } : existing,
     ) as GearPiece["words"]
-    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1)).dps
+    return runEngine(applyPieceContribution(slotEmpty, { ...from, words }, +1), sweepOptions).dps
   }
 
-  return { equipDps, relayedPiece, relayedDps, dpsWithWord }
+  return { equipDps: equipRun.dps, relayedPiece, relayedDps, dpsWithWord }
 }
 
 function computeLegacyRetunement(
@@ -223,7 +248,11 @@ function computeLegacyRetunement(
   const specByWord = new Map(specs.map((s) => [s.word, s] as const))
   const rows: RetunementRow[] = []
   const slots = rerollableSlots(piece)
-  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(
+    inputs,
+    piece,
+    engineOptionsFrom(req.baselineQiBreaks),
+  )
 
   for (const slotIndex of slots) {
     const annotated = annotatePoolForSlot(piece, slotIndex, pool)
@@ -286,7 +315,11 @@ function computeWeightedRetunement(
   const { inputs, pieceId } = req
   const rows: RetunementRow[] = []
   const slots = rerollableSlots(piece)
-  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(inputs, piece)
+  const { equipDps, relayedPiece, relayedDps, dpsWithWord } = retunementDpsHelpers(
+    inputs,
+    piece,
+    engineOptionsFrom(req.baselineQiBreaks),
+  )
 
   const choices = retunePoolChoices(piece, weightPool).filter(
     (choice) => !choice.deselected && !choice.onRerollableLine,
@@ -345,6 +378,7 @@ export interface ReattunementWorkerRequest {
   reqId: number
   inputs: Inputs
   pieceId: string
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface ReattunementOption {
@@ -382,9 +416,10 @@ function dpsWithAttunement(
   original: GearPiece,
   optionId: string,
   value: number,
+  options: EngineRunOptions | undefined,
 ): number {
   const swapped: GearPiece = { ...original, attunement: optionId, attunementValue: value }
-  return runEngine(applyPieceContribution(slotEmpty, swapped, +1)).dps
+  return runEngine(applyPieceContribution(slotEmpty, swapped, +1), options).dps
 }
 
 function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorkerResponse {
@@ -416,7 +451,12 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
   }
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+  const equipRun = runEngine(
+    applyPieceContribution(slotEmpty, piece, +1),
+    engineOptionsFrom(req.baselineQiBreaks),
+  )
+  const equipDps = equipRun.dps
+  const engineOptions = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
 
   const weightedPool = reattunementPool(inputs.classId, piece.slot, piece.level)
   const drawables = weightedPool
@@ -430,8 +470,8 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
     const inert = opt.enginePath === null
     const min = attunementMin(opt, piece.level)
     const max = attunementMax(opt, piece.level)
-    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max)
-    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min)
+    const dpsAtMax = dpsWithAttunement(slotEmpty, piece, opt.id, max, engineOptions)
+    const dpsAtMin = dpsWithAttunement(slotEmpty, piece, opt.id, min, engineOptions)
     const isCurrent = piece.attunement === opt.id
 
     const line = weightedPool?.lines.find((candidate) => candidate.optionId === opt.id) ?? null
@@ -446,7 +486,7 @@ function computeReattunement(req: ReattunementWorkerRequest): ReattunementWorker
         ? expectedRedeterminedValue(line, piece.attunementValue)
         : expectedFreshValue(line)
       eDeltaDpsGivenDrawn =
-        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn) - equipDps
+        dpsWithAttunement(slotEmpty, piece, opt.id, expectedValueIfDrawn, engineOptions) - equipDps
     } else if (line && isCurrent) {
       // Popped: the currently-held line is already at its maximum.
       pDraw = 0
@@ -493,6 +533,7 @@ export interface WordMaxWorkerRequest {
   reqId: number
   inputs: Inputs
   piece: GearPiece
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface WordMaxRow {
@@ -515,7 +556,12 @@ function computeWordMax(req: WordMaxWorkerRequest): WordMaxWorkerResponse {
   const specByWord = new Map(specs.map((s) => [s.word, s] as const))
 
   const slotEmpty = inputsWithSlotEmpty(inputs, piece.slot)
-  const equipDps = runEngine(applyPieceContribution(slotEmpty, piece, +1)).dps
+  const equipRun = runEngine(
+    applyPieceContribution(slotEmpty, piece, +1),
+    engineOptionsFrom(req.baselineQiBreaks),
+  )
+  const equipDps = equipRun.dps
+  const options = engineRunOptionsFrom(equipRun.qiBreaks, FPS)
 
   const rows: WordMaxRow[] = piece.words.map((w, slotIndex) => {
     if (!w.word) {
@@ -530,7 +576,7 @@ function computeWordMax(req: WordMaxWorkerRequest): WordMaxWorkerResponse {
       i === slotIndex ? { ...cur, value: capValue } : cur,
     ) as GearPiece["words"]
     const swapped: GearPiece = { ...piece, words: swappedWords }
-    const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1)).dps
+    const dps = runEngine(applyPieceContribution(slotEmpty, swapped, +1), options).dps
     return {
       slotIndex,
       capValue,
@@ -547,6 +593,9 @@ export interface RankingWorkerRequest {
   reqId: number
   inputs: Inputs
   baselineDps: number
+  // The baseline's own converged Qi breaks, in seconds — docs/UI.md § "The
+  // rules", "warm-start".
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface RankingWorkerResponse {
@@ -555,13 +604,17 @@ export interface RankingWorkerResponse {
 }
 
 function computeRankingRequest(req: RankingWorkerRequest): RankingWorkerResponse {
-  return { reqId: req.reqId, rows: computeRanking(req.inputs, req.baselineDps) }
+  return {
+    reqId: req.reqId,
+    rows: computeRanking(req.inputs, req.baselineDps, engineOptionsFrom(req.baselineQiBreaks)),
+  }
 }
 
 export interface GearAnalysisWorkerRequest {
   reqId: number
   inputs: Inputs
   baselineDps: number
+  baselineQiBreaks?: BaselineQiBreaks
 }
 
 export interface GearAnalysisWorkerResponse {
@@ -570,7 +623,10 @@ export interface GearAnalysisWorkerResponse {
 }
 
 function computeGearAnalysisRequest(req: GearAnalysisWorkerRequest): GearAnalysisWorkerResponse {
-  return { reqId: req.reqId, rows: computeGearAnalysis(req.inputs, req.baselineDps) }
+  return {
+    reqId: req.reqId,
+    rows: computeGearAnalysis(req.inputs, req.baselineDps, engineOptionsFrom(req.baselineQiBreaks)),
+  }
 }
 
 export interface SetTilesWorkerRequest {

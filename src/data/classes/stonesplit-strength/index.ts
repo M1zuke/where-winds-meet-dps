@@ -14,6 +14,13 @@ import {
 } from "../../skills/stonesplit-strength/buffs/additionalAttack"
 import { STONESPLIT_STRENGTH_GATES } from "./gates"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
+import { bladeMomentumMeter } from "./bladeMomentumMeter"
+
+const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
+const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS).filter(
+  (skill, index) => index < SKILLS.length || !classSkillIds.has(skill.id),
+)
 
 export const stonesplitStrength = defineClass({
   id: CLASS_ID,
@@ -29,6 +36,7 @@ export const stonesplitStrength = defineClass({
     INNER_WAY_ID.steadfastDevotion,
     INNER_WAY_ID.bitterSeason,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.evasiveCharge,
   ],
   classSpecificAttunements: [
     "phalanxbaneQ",
@@ -38,8 +46,13 @@ export const stonesplitStrength = defineClass({
     "snowpartingVariedCombo",
   ],
   weapons: [MARTIAL_ART_ID.snowpartingBlade, MARTIAL_ART_ID.phalanxbaneBlade],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Grave Frost) — an assumption for every skill with no reach of
+  // its own.
+  defaultMeleeReachMeters: 4,
+  meters: [enduranceMeter, bladeMomentumMeter],
   critBoostWeaponTypes: [],
-  skills: withUniversalSkills(CLASS_ID, "Stonesplit", SKILLS),
+  skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,

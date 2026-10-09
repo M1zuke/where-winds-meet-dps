@@ -8,17 +8,27 @@ const CLASS_ID = "bamboocutDraught"
 export const BINGE_MARKS_DURATION_FRAMES = 600
 export const INEBRIATE_DEEPDAZE_DURATION_FRAMES = 300
 export const SKYSPEAK_DEEPDAZE_EXTENSION_FRAMES = 300
+// Once per Deepdaze entry (in-game values as of 2026-09-16).
+export const ENHANCE_SPECIAL_SKILL_DURATION_FRAMES = 600
 export const CAROUSE_DURATION_FRAMES = 1200
 export const CLASH_TOAST_DURATION_FRAMES = 900
 export const EONPOUR_EXHAUSTED_COOLDOWN_FRAMES = 3600
 export const DEEPDAZE_MAX_EXTENDED_DURATION_FRAMES = 960
+// Opens Castlink; consumed on cast (in-game values as of 2026-09-16).
+export const CONSECUTIVE_PUNCHES_DURATION_FRAMES = 180
+// In-game values as of 2026-09-16.
+export const SKILL_BINGE_POINT_ACCUMULATION_DURATION_FRAMES = 120
+export const PEAKFALL_COOLDOWN_FRAMES = 600
+export const CASTLINK_COOLDOWN_FRAMES = 120
+export const HEROS_BLOOD_COOLDOWN_FRAMES = 720
 
 // In-game state text, 2026-09-06: Binge Points start at 60 and cap at 200;
 // Tipsy from 100, Deepdaze at 200 for 5 s, 10 s with Skyspeak tier 3. When
-// Deepdaze lapses the counter is cleared, to 60 with Skyspeak slotted at all
-// (rank 1). Binge Marks hold 50 for 10 s. Carouse lasts 20 s at the talent's
-// top rank. Clash-toast lasts 15 s at ultimate rank 5. Cloudvault holds 2
-// stacks until Hero's Blood - Inebriate consumes them.
+// Deepdaze lapses the counter clears to 60 with Skyspeak slotted at all (rank
+// 1), to 0 otherwise (in-game values as of 2026-09-16). Binge Marks hold 50
+// for 10 s. Carouse lasts 20 s at the talent's top rank. Clash-toast lasts
+// 15 s at ultimate rank 5. Cloudvault holds 2 stacks until Hero's Blood -
+// Inebriate consumes them.
 export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
   defineGateBuff({
     id: STATUS.bingePoints,
@@ -49,6 +59,20 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     updatedAt: "2026-09-04T00:00:00.000Z",
   }),
   defineGateBuff({
+    id: STATUS.skillBingePointAccumulation,
+    classId: CLASS_ID,
+    name: "Skill Binge Point Accumulation",
+    description: "The next drink converts this into Binge Points.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: SKILL_BINGE_POINT_ACCUMULATION_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 50,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
+  }),
+  defineGateBuff({
     id: STATUS.inebriateDeepdaze,
     classId: CLASS_ID,
     name: "Inebriate - Deepdaze",
@@ -62,9 +86,38 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
       targetId: STATUS.bingePoints,
       stacks: 60,
       requiresBuffId: BUFF.skyspeakDeepdazeRefund,
+      elseStacks: 0,
     },
     createdAt: "2026-09-03T00:00:00.000Z",
     updatedAt: "2026-09-04T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.enhanceSpecialSkill,
+    classId: CLASS_ID,
+    name: "Enhance Special Skill",
+    description: "Hero's Blood - Inebriate is castable once per Deepdaze entry while this holds.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: ENHANCE_SPECIAL_SKILL_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.consecutivePunches,
+    classId: CLASS_ID,
+    name: "Consecutive Punches",
+    description: "Opens Castlink; consumed on cast.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: CONSECUTIVE_PUNCHES_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
   }),
   defineGateBuff({
     id: STATUS.eonpourExhaustedCooldown,
@@ -79,6 +132,47 @@ export const BAMBOOCUT_DRAUGHT_GATES: readonly Buff[] = [
     stackScaling: "flat",
     createdAt: "2026-09-05T00:00:00.000Z",
     updatedAt: "2026-09-06T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.peakfallCooldown,
+    classId: CLASS_ID,
+    name: "Peakfall Cooldown",
+    description: "Shared with Peakfall - Jadeflush.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: PEAKFALL_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.castlinkCooldown,
+    classId: CLASS_ID,
+    name: "Castlink Cooldown",
+    description: "Shared with Castlink - Jadeflush.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: CASTLINK_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
+  }),
+  defineGateBuff({
+    id: STATUS.herosBloodCooldown,
+    classId: CLASS_ID,
+    name: "Hero's Blood Cooldown",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: HEROS_BLOOD_COOLDOWN_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: "2026-09-16T00:00:00.000Z",
+    updatedAt: "2026-09-16T00:00:00.000Z",
   }),
   defineGateBuff({
     id: STATUS.carouse,

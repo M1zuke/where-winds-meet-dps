@@ -115,7 +115,7 @@ export interface ArmorSetOption {
   // Absent for a set whose whole effect is a 4-piece mechanic or a gated buff
   // rather than a 2-piece panel stat. Such a set is still selectable — it has
   // to be, or the mechanic keyed off `BuffParams.armorSet` can never fire.
-  stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
+  stat?: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys" | "physDef"
   value?: GearLevelValues
 }
 export const ARMOR_SET_OPTIONS: readonly ArmorSetOption[] = SET_DEFS.map((set) => ({
@@ -147,7 +147,20 @@ export function applyArmorSet(inputs: Inputs): Inputs {
       return { ...inputs, phys: { ...inputs.phys, max: inputs.phys.max + value } }
     case "minPhys":
       return { ...inputs, phys: { ...inputs.phys, min: inputs.phys.min + value } }
+    // Physical Defense isn't an `Inputs` field the damage formula reads, so it
+    // has nothing to add itself here — `armorSetPhysDefBonus` below is what
+    // `totalPhysDef` reads instead, the same split the oddity board's own
+    // Physical Defense nodes already use.
+    case "physDef":
+      return inputs
   }
+}
+
+export function armorSetPhysDefBonus(inputs: Inputs): number {
+  if (!inputs.set) return 0
+  const opt = ARMOR_SET_OPTIONS.find((setOption) => setOption.setKey === inputs.set)
+  if (!opt || opt.stat !== "physDef") return 0
+  return armorSetValueForLevel(opt, gearLevelForBreakthrough(inputs.breakthrough)) ?? 0
 }
 
 interface ArsenalUnlockState {
@@ -300,7 +313,6 @@ export function buildContext(
   inputs: Inputs,
   targetOverride?: TargetOverride,
   hawkwingPhysBonus?: number,
-  dotDamageMultiplier?: number,
 ): FormulaContext {
   const school = getSchool(inputs.classId)
   const baseTarget = getBreakthrough(inputs.breakthrough)
@@ -342,7 +354,6 @@ export function buildContext(
     innerWayScalar(inputs.mindMethods, "generalDamageBoost") +
     (inputs.set ? (SET_BY_ID[inputs.set]?.formulaBonus?.generalDamageBoost ?? 0) : 0) +
     (inputs.shareEasyHurt ? 0.08 : 0) +
-    (inputs.divinecraft === "fire" ? 0.015 : 0) +
     (inputs.divinecraft === "poison" ? 0.01 : 0) +
     effectiveBossBoost +
     (school.generalDamageBoost ?? 0)
@@ -426,7 +437,6 @@ export function buildContext(
     critDamageReduction: targetCritDamageReduction,
     affinityDamageReduction: targetAffinityDamageReduction,
     hawkwingPhysBonus,
-    dotDamageMultiplier,
     attributeFlatMultiplier: school.attributeMultiplier,
   }
 }

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { formatConditions, statusTooltip } from "../../src/ui/features/skills/statusText"
-import type { TriggerCondition } from "../../src/engine/skill"
+import {
+  conditionFailureReasonsText,
+  formatConditions,
+  statusTooltip,
+} from "../../src/ui/features/skills/statusText"
+import type { ConditionFailureReason, TriggerCondition } from "../../src/engine/skill"
+
+const fakeT = (key: string, fallback?: string) => fallback ?? key
 
 describe("formatConditions", () => {
   it("renders ≥ / > / = for each op", () => {
@@ -8,9 +14,9 @@ describe("formatConditions", () => {
     const gt: TriggerCondition = { buffId: "bf-1", op: "gt", stacks: 2 }
     const eq: TriggerCondition = { buffId: "bf-1", op: "eq", stacks: 0 }
     const nameOf = () => "Gate"
-    expect(formatConditions([gte], nameOf)).toBe("Gate ≥ 1")
-    expect(formatConditions([gt], nameOf)).toBe("Gate > 2")
-    expect(formatConditions([eq], nameOf)).toBe("Gate = 0")
+    expect(formatConditions([gte], nameOf, fakeT)).toBe("Gate ≥ 1")
+    expect(formatConditions([gt], nameOf, fakeT)).toBe("Gate > 2")
+    expect(formatConditions([eq], nameOf, fakeT)).toBe("Gate = 0")
   })
 
   it("joins multiple clauses with ' · '", () => {
@@ -20,28 +26,75 @@ describe("formatConditions", () => {
     ]
     const nameOf = (id: string) =>
       id === "bf-river-flow" ? "River Flow" : "Spear Special Cooldown"
-    expect(formatConditions(conds, nameOf)).toBe("River Flow ≥ 1 · Spear Special Cooldown = 0")
+    expect(formatConditions(conds, nameOf, fakeT)).toBe(
+      "River Flow ≥ 1 · Spear Special Cooldown = 0",
+    )
   })
 
   it("resolves names via the callback and falls back to the raw id when unknown", () => {
     const cond: TriggerCondition = { buffId: "bf-unknown", op: "gte", stacks: 1 }
-    expect(formatConditions([cond], () => undefined)).toBe("bf-unknown ≥ 1")
+    expect(formatConditions([cond], () => undefined, fakeT)).toBe("bf-unknown ≥ 1")
   })
 
   it("returns an empty string for an empty condition list", () => {
-    expect(formatConditions([], () => "whatever")).toBe("")
+    expect(formatConditions([], () => "whatever", fakeT)).toBe("")
+  })
+
+  it("joins an anyOf clause's members with the translated joiner", () => {
+    const cond: TriggerCondition = {
+      anyOf: [
+        { buffId: "bf-a", op: "gte", stacks: 1 },
+        { buffId: "bf-b", op: "gte", stacks: 1 },
+      ],
+    }
+    const nameOf = (id: string) => (id === "bf-a" ? "A" : "B")
+    expect(formatConditions([cond], nameOf, fakeT)).toBe("(A ≥ 1 or B ≥ 1)")
+  })
+
+  it("renders a param condition's tier through the translated abbreviation", () => {
+    const cond: TriggerCondition = { param: "someParam", minTier: 3 }
+    expect(formatConditions([cond], () => undefined, fakeT)).toBe("Some Param T3+")
+  })
+})
+
+describe("conditionFailureReasonsText", () => {
+  it("names the inner way a param condition's build source resolves to, not a plain buff", () => {
+    const reason: ConditionFailureReason = {
+      kind: "param",
+      id: "swordHorizon",
+      name: "Sword Horizon",
+      source: { kind: "innerWay", id: "swordHorizon" },
+      actualOn: false,
+      actualTier: 0,
+    }
+    expect(conditionFailureReasonsText([reason], fakeT)).toBe(
+      "needs the inner way Sword Horizon equipped (not equipped)",
+    )
+  })
+
+  it("falls back to the plain build-param wording when the param resolves to no known source", () => {
+    const reason: ConditionFailureReason = {
+      kind: "param",
+      id: "someParam",
+      name: "Some Param",
+      actualOn: false,
+      actualTier: 0,
+    }
+    expect(conditionFailureReasonsText([reason], fakeT)).toBe(
+      "needs Some Param active (not active)",
+    )
   })
 })
 
 describe("statusTooltip", () => {
   it("with a duration, contains the name, the formatted window, and 'remaining time' wording", () => {
-    const tip = statusTooltip("Example Buff", 1080)
+    const tip = statusTooltip("Example Buff", fakeT, 1080)
     expect(tip).toContain("Example Buff")
     expect(tip).toContain("18.0s")
     expect(tip).toContain("remaining time")
   })
 
   it("with no duration, contains just the name", () => {
-    expect(statusTooltip("River Flow")).toBe("River Flow")
+    expect(statusTooltip("River Flow", fakeT)).toBe("River Flow")
   })
 })

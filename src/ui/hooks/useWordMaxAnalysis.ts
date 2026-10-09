@@ -28,7 +28,11 @@ function receivedWordMax(response: WordMaxWorkerResponse | null): ReceivedWordMa
   return { rows: response.rows, pieceId: response.pieceId }
 }
 
-export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): WordMaxAnalysisResult {
+export function useWordMaxAnalysis(
+  inputs: Inputs,
+  piece: GearPiece | null,
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
+): WordMaxAnalysisResult {
   const [received, setReceived] = useState<ReceivedWordMax | null>(() =>
     receivedWordMax(retainedResponse("wordMax")),
   )
@@ -40,8 +44,8 @@ export function useWordMaxAnalysis(inputs: Inputs, piece: GearPiece | null): Wor
 
   useEffect(() => {
     if (!piece) return
-    postToDpsWorker({ kind: "wordMax", inputs, piece })
-  }, [inputs, piece])
+    postToDpsWorker({ kind: "wordMax", inputs, piece, baselineQiBreaks })
+  }, [inputs, piece, baselineQiBreaks])
 
   if (!piece) return NO_SELECTION_RESULT
   return { rows: received?.rows ?? NO_ROWS, isPending, forPieceId: received?.pieceId ?? null }

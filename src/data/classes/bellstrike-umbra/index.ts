@@ -16,6 +16,7 @@ import {
   ZENITH_MAX_EXTENDED_DURATION_FRAMES,
 } from "../../innerWays/swordHorizonZenith"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 export const bellstrikeUmbra = defineClass({
   id: CLASS_ID,
@@ -31,9 +32,15 @@ export const bellstrikeUmbra = defineClass({
     "moraleChant",
     "bitterSeason",
     "breakingPoint",
+    "evasiveCharge",
   ],
   classSpecificAttunements: ["bleedingDamage", "swordQ", "swordSpecial", "spearQ", "spearCharged"],
   weapons: [MARTIAL_ART_ID.strategicSword, MARTIAL_ART_ID.heavenquakerSpear],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Sober Sorrow / Sweep All) — an assumption for every skill with
+  // no reach of its own.
+  defaultMeleeReachMeters: 3,
+  meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: withUniversalSkills(CLASS_ID, "Bellstrike", SKILLS),
   debuffs: DEBUFFS,

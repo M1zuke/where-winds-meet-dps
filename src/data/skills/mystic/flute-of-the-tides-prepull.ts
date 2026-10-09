@@ -3,6 +3,7 @@ import { applyDebuff } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { BUFF } from "../buffs/ids"
 
 export const fluteOfTheTidesPrepull = defineSkill({
   id: SKILL.fluteOfTheTidesPrepull,
@@ -16,6 +17,10 @@ export const fluteOfTheTidesPrepull = defineSkill({
   castTag: CAST.fluteOfTheTidesPrepull,
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 40 m engagement range.
+  reachMeters: 40,
+  approach: "stationary",
+  triggersBuffs: [BUFF.fluteArrival],
   hits: [
     hit(0, {
       frame: 0,

@@ -1,6 +1,9 @@
 import type { Inputs } from "../../../engine/types"
 import type { Rotation } from "../../../engine/rotation"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../../engine/builtinLibrary"
+import { usesCustomRotation } from "../../../engine/activeRotation"
+
+export { usesCustomRotation }
 
 export const NO_ROTATION_OPTION_ID = ""
 
@@ -36,10 +39,6 @@ export function rotationOptions(classId: string, savedRotations: Rotation[]): Ro
       rotation,
     }))
   return [...builtins, ...customs]
-}
-
-export function usesCustomRotation(inputs: Inputs): boolean {
-  return !!inputs.activeCustomRotation && inputs.activeCustomRotation.classId === inputs.classId
 }
 
 export function selectedRotationOptionId(inputs: Inputs): string {

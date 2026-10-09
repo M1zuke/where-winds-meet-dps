@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
@@ -16,10 +16,12 @@ export const swordqfollowup = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQ,
   triggersBuffs: [BUFF.jadeware],
-  receives: STRATEGIC_SWORD_RECEIVES,
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 64,
   triggerable: true,
+  // In-game values as of 2026-09-28: 4 m approach reach.
+  reachMeters: 4,
   hits: [
     hit(0, {
       frame: 5,
@@ -28,6 +30,20 @@ export const swordqfollowup = defineSkill({
       physFixed: 150.6,
       attributeFixed: 82,
       triggers: [applyDot({ target: DEBUFF.bleedTick })],
+      // In-game cast length as of 2026-09-24: Sword Horizon cuts the animation
+      // short into the Crisscross - Inner Track follow-up.
+      variants: [
+        {
+          id: "hv-swordqfollowup-hit-0-sword-horizon",
+          label: "Sword Horizon",
+          conditions: [{ param: PARAM.swordHorizon }],
+          physMultiplier: 0.544068,
+          attributeMultiplier: 0.816102,
+          physFixed: 150.6,
+          attributeFixed: 82,
+          castFrames: 61,
+        },
+      ],
     }),
     hit(1, {
       frame: 23,

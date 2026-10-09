@@ -216,7 +216,6 @@ describe("a standardized graduation build", () => {
         expect(side.combatSettings!.breakExtension).toBe(encounter.breakExtension)
         expect(side.combatSettings!.dragonHeadFullStacks).toBe(encounter.dragonHeadFullStacks)
         expect(side.combatSettings!.dragonHeadLowHpMaxBonus).toBe(encounter.dragonHeadLowHpMaxBonus)
-        expect(side.combatSettings!.lowEndurance).toBe(encounter.lowEndurance)
         expect(side.mindMethods.map((slot) => slot.id ?? "")).toEqual([
           ...build.standardized!.innerWays.map((innerWay) => innerWay.id),
           ...Array(4 - build.standardized!.innerWays.length).fill(""),
@@ -225,18 +224,23 @@ describe("a standardized graduation build", () => {
     },
   )
 
-  it("leaves the break window to the rotation the build benchmarks on", () => {
-    const overridden: Inputs = {
-      ...FOLLOWING,
-      combatSettings: {
-        ...defaultCombatSettings(),
-        qiBreakOverride: { startSec: 3, durationSec: 40, lowQiLeadSec: 2 },
-      },
-    }
-
-    expect(graduationRatedInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
-    expect(graduationInputs(overridden)!.combatSettings!.qiBreakOverride).toBeNull()
-  })
+  it.each(STANDARDIZED)(
+    "%s rates both sides on the rotation's own ping and fps, ignoring a stored override",
+    (id, classDef) => {
+      const plain: Inputs = { ...defaultInputs, classId: classDef.id, graduationBuildId: id }
+      for (const side of [graduationRatedInputs, graduationInputs]) {
+        const plainInputs = side(plain)!
+        const rotationId = plainInputs.selectedBuiltinRotationId ?? classDef.defaultRotationId!
+        const overridden = {
+          ...plain,
+          builtinRotationPingFpsOverrides: {
+            [rotationId]: { pingMs: 120, averageFps: 30, serverProcessingMs: 80 },
+          },
+        } as Inputs
+        expect(runEngine(side(overridden)!).castDuration).toBe(runEngine(plainInputs).castDuration)
+      }
+    },
+  )
 
   it("rates the same however the profile's own encounter and inner ways are set", () => {
     const tinkered: Inputs = {

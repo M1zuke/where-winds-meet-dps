@@ -68,6 +68,37 @@ anything rate-shaped. Two rules bind here:
   tail every row passes through, never an addend in the additive boost
   total.**
 
+## Qi damage
+
+Qi is a second, independent number the kernel produces alongside HP damage —
+never the other way around, and never in its own pass. For every scored
+event, after the kernel's own HP damage is finished (the rolled value when
+seeded, the expectation when not):
+
+```
+qi = ( damage / target.hpMax × 100 × player.qiIndex × (1 + qiDamageIndexMultiplier) × target.qiTakenIndex )
+     × (qiRate + qiRateAdd)
+     × (1 + qiDamageBoost + targetQiDamageTaken)
+   + qiFlat × (1 + qiDamageBoost + targetQiDamageTaken)
+```
+
+- **Qi reads the event's finished damage** — crit, affinity, abrasion and the
+  broken-target HP bonus all already folded in, because that is the only
+  damage value that ever existed for the event. The event that empties the bar
+  never carries the broken-target bonus: it is scored before its own break
+  opens (docs/TIMELINE.md § "Qi bar"). A zero-coefficient hit deals
+  no Qi; every other hit deals Qi whether or not it falls inside the DPS
+  window, a pre-pull one included — docs/TIMELINE.md § "Qi bar".
+- **The broken-target HP bonus is its own factor in the shared damage tail**,
+  the same way an independent damage boost is (above) — never an addend in
+  the additive boost total, and it reaches a damage-over-time tick exactly as
+  it reaches an ordinary hit.
+- `player.qiIndex` and the broken-target bonus's own size are base-stat data,
+  not engine literals — read next to the other per-level base-stat values.
+- docs/TIMELINE.md § "Qi bar" has the bar itself: where the state lives, the
+  break rules, and the schedule every earlier pass reads instead of the live
+  bar.
+
 ## Calculation rules
 
 Three corrections apply **unconditionally**, from the external sources below.
@@ -94,6 +125,13 @@ Nothing demotes a row to the non-matching coefficient by default;
 `elevatedAttributeMultiplier` still exists per row and defaults true, for a
 data module that has a genuine reason to set it false — and a row that does
 demotes both terms together, never one without the other.
+
+**A row whose attribute coefficient is exactly zero while its physical
+coefficient is positive deals no attribute damage on any of the five attribute
+tracks** — the martial art's own and the other four alike. The other tracks'
+fallback to the physical coefficient applies only to a row that has an
+attribute coefficient. A row with a zero physical coefficient is a marker and
+is unaffected.
 
 **Penetration resistance is zero for every target below breakthrough 20, and
 non-zero from breakthrough 20 on.** It is read off the target's own
@@ -172,9 +210,26 @@ stochastic per-hit roll, a stacking-and-decaying reduction, a stateful counter.
   single trajectory instead of averaging its own fixed-seed sweep; without one it
   averages as before. A schedule that ignores the generator keeps reporting an
   expectation on a run that has none, and understates the spread.
-- **Only hits laid by the rotation roll a proc.** DoT ticks and
-  trigger-enqueued hits do not. This is structural; do not work around it per
-  mechanic.
+- **A hit rolls a proc whether it is laid by the rotation or summoned by a
+  trigger.** A mechanic that builds its schedule from hit times reads every
+  hit-driven schedule the engine exposes, not only the rotation's own laid
+  hits. This is structural; do not work around it per mechanic.
+- **A stochastic schedule's own origin is the earliest event it reacts to**,
+  never the DPS window's own start — the two coincide whenever the window
+  itself opens on that same event, but a schedule anchored to the window's
+  start instead would reshuffle itself the day an earlier event is correctly
+  found to open the window, with nothing about the rotation's own hits or
+  ticks having changed. A mechanic genuinely timed off the fight's own clock,
+  rather than off a hit it reacts to, is the one exception.
+- **A DoT tick may feed a proc schedule too**, opted into separately from a
+  hit's own schedule (`dotTickTimesSec`, alongside `hitTimesSec`) — derived
+  from the same layout pass, at each debuff's own tick interval, through the
+  one function pass 1's own tick entries walk too, so the two cannot diverge.
+  It carries the layout pass's own limit: a detonation's sub-cast and a DoT a
+  `castSkill` trigger summons are not on it, the same gap `hitTimesSec` has
+  for a summoned hit's own detonation follow-up — and a resource-gated DoT's
+  ticks are an upper bound rather than exact, since the resource's own
+  sequential consumption check cannot run ahead of pass 1 without corrupting it.
 - **A target-resistance reduction is modelled as player penetration.** Target
   pen resistance is zero and there is no target-resistance stat key, so the two
   are numerically identical.

@@ -46,7 +46,7 @@ function ticker(patch: Partial<Debuff>): Debuff {
 function applier(debuffId: string): Skill {
   return makeSkill(CLASS, {
     name: "Applier",
-    castFrames: 600,
+    castFrames: 700,
     hits: [
       makeHit({
         frame: 0,
@@ -54,6 +54,10 @@ function applier(debuffId: string): Skill {
         physFixed: 100,
         triggers: [makeTrigger({ kind: "applyDot", targetId: debuffId, stacks: 1 })],
       }),
+      // Past the debuff's own last tick, so the fight's own window — now the
+      // last damaging hit, not the last cast's own end, docs/TIMELINE.md §
+      // "Fight window" — reaches far enough to still count every tick.
+      makeHit({ frame: 650, physMultiplier: 1, physFixed: 1 }),
     ],
   })
 }

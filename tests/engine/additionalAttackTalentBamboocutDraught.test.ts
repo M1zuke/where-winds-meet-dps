@@ -62,13 +62,13 @@ describe("additional-attack talent — Skystrike Gauntlets coefficient clause re
       0,
     ).damageFactor
 
-  it("reaches exactly Falcon's Pursuit among the class's built-in skills", () => {
+  it("reaches exactly the two Falcon's Pursuit skills among the class's built-in skills", () => {
     const carriers = builtinSkillsForClass(CLASS)
       .filter((candidate) =>
         (candidate.receives ?? []).includes(BUFF.skystrikeGauntletsAdditionalAttackCoefficient),
       )
       .map((candidate) => candidate.id)
-    expect(carriers).toEqual([SKILL.falconsPursuit])
+    expect(carriers).toEqual([SKILL.falconsPursuit, SKILL.falconsPursuitTwinblades])
   })
 
   it("contributes nothing at breakthrough 17", () => {

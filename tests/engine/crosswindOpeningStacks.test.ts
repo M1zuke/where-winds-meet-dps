@@ -48,15 +48,54 @@ describe("CrosswindTracker — opening charges", () => {
     expect(tracker(1).onDetonation().damageBonusActive).toBe(true)
   })
 
-  it("resets to empty after a detonation at max, not back to the opening count", () => {
+  it("resets to 1 (its own +1) after a detonation at max, not back to the opening count", () => {
     const opened = tracker(MAX)
     expect(opened.onDetonation().guaranteedAffinity).toBe(true)
-    expect(opened.charge).toBe(0)
+    expect(opened.charge).toBe(1)
   })
 
   it("clamps an opening count above the cap and below zero", () => {
     expect(tracker(99).charge).toBe(MAX)
     expect(tracker(-2).charge).toBe(0)
+  })
+})
+
+// In-game values as of 2026-09-24: a forced-Affinity burst retains its
+// tier-gated charge AND adds its own +1, so tier 6 (retain 1) forces
+// Affinity every 4th burst and tier 5 (retain 0) every 5th, and the burst
+// right after a forced one keeps the damage bonus too.
+describe("CrosswindTracker — the retain-and-add-one cycle", () => {
+  function cycleLength(retainOnMax: boolean): number {
+    const subject = new CrosswindTracker({ maxCharges: MAX, retainOnMax })
+    let detonations = 0
+    let firstGuaranteedAt = -1
+    let secondGuaranteedAt = -1
+    while (secondGuaranteedAt < 0) {
+      detonations++
+      if (subject.onDetonation().guaranteedAffinity) {
+        if (firstGuaranteedAt < 0) firstGuaranteedAt = detonations
+        else secondGuaranteedAt = detonations
+      }
+    }
+    return secondGuaranteedAt - firstGuaranteedAt
+  }
+
+  it("forces Affinity every 4th burst at tier 6 (retains 1)", () => {
+    expect(cycleLength(true)).toBe(4)
+  })
+
+  it("forces Affinity every 5th burst at tier 5 (retains 0)", () => {
+    expect(cycleLength(false)).toBe(5)
+  })
+
+  it("keeps the damage bonus active on the burst right after a forced one, even without retention", () => {
+    const subject = new CrosswindTracker({
+      maxCharges: MAX,
+      retainOnMax: false,
+      initialCharges: MAX,
+    })
+    expect(subject.onDetonation().guaranteedAffinity).toBe(true)
+    expect(subject.onDetonation().damageBonusActive).toBe(true)
   })
 })
 

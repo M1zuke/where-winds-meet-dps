@@ -15,8 +15,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 import { makeHit, makeSkill, makeTrigger } from "../../src/engine/skill"
 import { makeDebuff } from "../../src/engine/debuff"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { defaultCombatSettings } from "../../src/engine/types"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import type { QiBreakWindow, TimelineEvent } from "../../src/engine/types"
 
 // Scoped to Bellstrike Umbra — the only implemented class (CLAUDE.md
@@ -262,6 +262,53 @@ describe("keeps the matching-path multiplier on a damage-over-time row", () => {
   })
 })
 
+describe("a row without an attribute coefficient deals no attribute damage", () => {
+  const noAttributeRow = art_({
+    name: "No attribute row",
+    physMultiplier: 0.3,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
+    skillType: "mindMethod",
+    weaponOrAttribute: "",
+    attributeAttack: "",
+  })
+  const emptyBlock = { min: 0, max: 0, pen: 0 }
+  const withoutAttributeAttack = {
+    ...baseCtx,
+    bellstrike: emptyBlock,
+    stonesplit: emptyBlock,
+    silkbind: emptyBlock,
+    bamboocut: emptyBlock,
+  }
+
+  it("matches the same row against a build with no attribute attack on any track", () => {
+    const withAttributes = computeSkillDamage(noAttributeRow, baseCtx, 1).expectedDamage
+    const withoutAttributes = computeSkillDamage(
+      noAttributeRow,
+      withoutAttributeAttack,
+      1,
+    ).expectedDamage
+    expect(withAttributes).toBeCloseTo(withoutAttributes, 9)
+  })
+
+  it("a row with an attribute coefficient still deals attribute damage", () => {
+    const withCoefficient = { ...noAttributeRow, attributeMultiplier: 0.3 }
+    const withAttributes = computeSkillDamage(withCoefficient, baseCtx, 1).expectedDamage
+    const withoutAttributes = computeSkillDamage(
+      withCoefficient,
+      withoutAttributeAttack,
+      1,
+    ).expectedDamage
+    expect(withAttributes).toBeGreaterThan(withoutAttributes)
+  })
+
+  it("a zero-damage marker row stays at zero", () => {
+    const marker = { ...noAttributeRow, physMultiplier: 0 }
+    expect(computeSkillDamage(marker, baseCtx, 1).expectedDamage).toBe(0)
+  })
+})
+
 describe("the attribute flat term takes the martial art's multiplier alongside its coefficient", () => {
   const artWithFlat = { ...BLEED_DOT, attributeFixed: 40 }
   const ctxWithMultiplier = { ...baseCtx, attributeFlatMultiplier: 1.5 }
@@ -462,21 +509,23 @@ describe("the exhausted phase raises damage by its own factor, on a hit and a Do
     hits: probeHits,
   })
 
-  function probeRun(qiBreakOverride: QiBreakWindow | null) {
-    return runEngine({
-      ...umbraInputs,
-      set: null,
-      customSkills: [probeSkill],
-      customDebuffs: [probeDot],
-      activeCustomRotation: makeRotation("bellstrikeUmbra", {
-        steps: [makeStep({ skillId: probeSkill.id })],
-      }),
-      combatSettings: { ...defaultCombatSettings(), qiBreakOverride },
-    }).timeline!
+  function probeRun(qiBreakWindow: QiBreakWindow) {
+    return runEngine(
+      {
+        ...umbraInputs,
+        set: null,
+        customSkills: [probeSkill],
+        customDebuffs: [probeDot],
+        activeCustomRotation: makeRotation("bellstrikeUmbra", {
+          steps: [makeStep({ skillId: probeSkill.id })],
+        }),
+      },
+      { fixedQiBreaks: [qiBreakWindow] },
+    ).timeline!
   }
 
   it("scales every probe event inside the break window by 1.1, and leaves the rest untouched", () => {
-    const withBreak = probeRun(null)
+    const withBreak = probeRun(DEFAULT_QI_BREAK_WINDOW)
     const withoutBreak = probeRun({ ...DEFAULT_QI_BREAK_WINDOW, durationSec: 0 })
     const probeEvents = (timeline: TimelineEvent[]) =>
       timeline.filter(

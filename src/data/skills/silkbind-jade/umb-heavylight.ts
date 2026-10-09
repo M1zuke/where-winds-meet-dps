@@ -1,25 +1,26 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { castSkill } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, ROLE, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { VERNAL_UMBRELLA_RECEIVES } from "./receives"
 
-// The authored value is the whole cast spread over its hits, not a per-hit
-// value — the reference def states it per hit. Kept as total ÷ hits so the
-// number the source actually carries stays legible.
-const CAST_HITS = 3
+// Colorful Phoenix's own share of the cast total — the heavy attack's first
+// stage is a separate, non-attuned share (`umb-heavylight-heavyshare.ts`).
+// In-game values as of 2026-10-05.
+const HIT_SHARE = 0.33
 const CAST_TOTAL = {
-  physMultiplier: 1.7001,
-  attributeMultiplier: 2.5502,
-  physFixed: 471,
-  attributeFixed: 256,
+  physMultiplier: 1.1604,
+  attributeMultiplier: 1.1604 * 1.5,
+  physFixed: 322,
+  attributeFixed: 175,
 }
 
 const COEFFICIENTS = {
-  physMultiplier: CAST_TOTAL.physMultiplier / CAST_HITS,
-  attributeMultiplier: CAST_TOTAL.attributeMultiplier / CAST_HITS,
-  physFixed: CAST_TOTAL.physFixed / CAST_HITS,
-  attributeFixed: CAST_TOTAL.attributeFixed / CAST_HITS,
+  physMultiplier: CAST_TOTAL.physMultiplier * HIT_SHARE,
+  attributeMultiplier: CAST_TOTAL.attributeMultiplier * HIT_SHARE,
+  physFixed: CAST_TOTAL.physFixed * HIT_SHARE,
+  attributeFixed: CAST_TOTAL.attributeFixed * HIT_SHARE,
   extraCritDamage: 0,
 }
 
@@ -33,20 +34,28 @@ export const umbHeavylight = defineSkill({
   attributeAttack: "Silkbind",
   castTag: CAST.umbHeavyLight,
   receives: [
+    BUFF.swallowcallLightAttackBoost,
     BUFF.thunderousBloom,
     BUFF.springThunder,
     BUFF.mistwillowHeavyBuff,
-    BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
     ...VERNAL_UMBRELLA_RECEIVES,
   ],
-  castFrames: 75,
+  // Cast length to the earliest next input (in-game animation, 2026-09-24).
+  castFrames: 78,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1.75 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    hit(0, { frame: 0, ...COEFFICIENTS }),
-    hit(1, { frame: 25, ...COEFFICIENTS }),
-    hit(2, { frame: 50, ...COEFFICIENTS }),
+    hit(0, {
+      frame: 6,
+      ...COEFFICIENTS,
+      triggers: [castSkill({ target: SKILL.umbHeavylightHeavyShare })],
+    }),
+    hit(1, { frame: 31, ...COEFFICIENTS }),
+    hit(2, { frame: 56, ...COEFFICIENTS }),
   ],
   createdAt: "2026-08-17T00:00:00.000Z",
-  updatedAt: "2026-08-17T00:00:00.000Z",
+  updatedAt: "2026-10-05T00:00:00.000Z",
 })

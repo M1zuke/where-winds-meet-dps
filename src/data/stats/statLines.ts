@@ -430,6 +430,38 @@ export const STAT_LINES = [
   // re-add one — nothing consumes it. Id/label stay for a profile that
   // already stored this stat on a custom buff or debuff.
   { id: "targetFatigueDamageTaken", label: "Target Exhaustion Boost", unit: "percent" },
+  {
+    id: "qiDamageBoost",
+    label: "Qi Damage Boost",
+    unit: "percent",
+    enginePath: "qiDamageBoost",
+    scope: "player",
+    category: "Qi",
+  },
+  {
+    id: "targetQiDamageTaken",
+    label: "Target Qi Damage Taken",
+    unit: "percent",
+    enginePath: "target.qiDamageTaken",
+    scope: "target",
+    category: "Qi",
+  },
+  {
+    id: "qiRateAdd",
+    label: "Qi Rate Add",
+    unit: "raw",
+    enginePath: "qiRateAdd",
+    scope: "player",
+    category: "Qi",
+  },
+  {
+    id: "qiDamageIndexMultiplier",
+    label: "Qi Damage Index Multiplier",
+    unit: "raw",
+    enginePath: "qiDamageIndexMultiplier",
+    scope: "player",
+    category: "Qi",
+  },
   { id: "hp", label: "HP", unit: "raw", enginePath: "hp" },
   { id: "physDef", label: "Phys Defense", unit: "raw", enginePath: "physDef" },
   { id: "maxHp", label: "Max HP", unit: "raw" },

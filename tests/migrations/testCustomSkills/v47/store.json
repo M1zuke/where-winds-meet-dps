@@ -1,0 +1,541 @@
+{
+  "v": 47,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-bleed-detonation",
+      "classId": "bellstrikeUmbra",
+      "name": "Blood Burst",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation", "prop:empoweredDotEffect"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:bleedDetonation",
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+        "buff-bellstrikeUmbra-zenith-bar",
+        "soulShaken",
+        "strategicSwordAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 2.4,
+          "attributeMultiplier": 3.6,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 0,
+              "condition": { "buffId": "buff-bellstrikeUmbra-zenith-detonation", "op": "gte", "stacks": 1 },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": { "buffId": "buff-bellstrikeUmbra-zenith-detonation", "op": "gte", "stacks": 1 },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-falcons-pursuit",
+      "classId": "bamboocutDraught",
+      "name": "Falcon's Pursuit",
+      "breakdownName": "Whaledraft",
+      "tags": ["weapon:Gauntlets", "role:falconsPursuit"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:falconsPursuit",
+      "receives": [
+        "eonpourInebriateDamage",
+        "skystrikeGauntletsAdditionalAttack",
+        "skystrikeGauntletsAdditionalAttackCoefficient"
+      ],
+      "triggerable": true,
+      "castFrames": 0,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": []
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-dragonquench-inebriate",
+      "classId": "bamboocutDraught",
+      "name": "Dragonquench - Inebriate",
+      "tags": ["weapon:Gauntlets", "attune:driftcleaveDeepdaze", "role:dragonquenchInebriate"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:dragonquenchInebriate",
+      "startLatency": "noWaitOnDummy",
+      "neverAbrades": true,
+      "receives": [
+        "eonpourInebriateDamage",
+        "inebriateSkillCritDamage",
+        "drunkslayEcho",
+        "volutefitWineboundDamage",
+        "tiltrimInebriateBonus",
+        "skystrikeGauntletsAdditionalAttack",
+        "nonPlayerBaseDamage40"
+      ],
+      "triggerable": false,
+      "castFrames": 143,
+      "reachMeters": 4,
+      "displacement": { "kind": "towardTarget", "referenceMeters": 1.75 },
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 18,
+          "physMultiplier": 0.68814,
+          "attributeMultiplier": 1.03221,
+          "physFixed": 191,
+          "attributeFixed": 104,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        },
+        {
+          "id": "hit-1",
+          "frame": 41,
+          "physMultiplier": 0.66144,
+          "attributeMultiplier": 0.99216,
+          "physFixed": 184,
+          "attributeFixed": 100,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        },
+        {
+          "id": "hit-2",
+          "frame": 69,
+          "physMultiplier": 0.80698,
+          "attributeMultiplier": 1.21047,
+          "physFixed": 224,
+          "attributeFixed": 122,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        },
+        {
+          "id": "hit-3",
+          "frame": 91,
+          "physMultiplier": 0.546408,
+          "attributeMultiplier": 0.819612,
+          "physFixed": 151.5,
+          "attributeFixed": 82.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        },
+        {
+          "id": "hit-4",
+          "frame": 98,
+          "physMultiplier": 0.546408,
+          "attributeMultiplier": 0.819612,
+          "physFixed": 151.5,
+          "attributeFixed": 82.5,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        },
+        {
+          "id": "hit-5",
+          "frame": 105,
+          "physMultiplier": 0.7285440000000001,
+          "attributeMultiplier": 1.092816,
+          "physFixed": 202,
+          "attributeFixed": 110,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "conditions": [{ "buffId": "eonpourUnlock", "op": "gte", "stacks": 1 }]
+        }
+      ],
+      "createdAt": "2026-09-03T00:00:00.000Z",
+      "updatedAt": "2026-09-06T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldierheng",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierHeng",
+      "tags": [
+        "weapon:Heng Blade",
+        "prop:cleftpeakBoost",
+        "role:anxiSoldier",
+        "attune:snowpartingVariedCombo",
+        "role:snowpartingVC"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierHeng",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 42,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 28,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 42,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldierheng-stab",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierHeng (Stab)",
+      "tags": ["weapon:Heng Blade", "prop:cleftpeakBoost", "role:anxiSoldier", "attune:snowpartingQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierHeng",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "snowpartingBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 42,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-2",
+          "frame": 28,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-3",
+          "frame": 42,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermojump",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoJump",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoJump"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoJump",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.9,
+          "attributeMultiplier": 1.35,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermodown",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoDown",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoDown"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoDown",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermosweep",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoSweep",
+      "tags": ["weapon:Mo Blade", "prop:cleftpeakBoost", "attune:phalanxbaneQ", "role:anxiSoldier"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoSweep",
+      "receives": ["mountainSplitter", "cleftpeakDeflect", "phalanxbaneBladeAdditionalAttack"],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    }
+  ]
+}

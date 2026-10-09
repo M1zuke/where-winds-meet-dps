@@ -18,12 +18,16 @@ export const dragonHeadPlus = defineSkill({
   neverAbrades: true,
   castFrames: 246,
   triggerable: true,
+  // In-game values as of 2026-09-28: a stationary cast, 8 m engagement range.
+  reachMeters: 8,
+  approach: "stationary",
   hits: [
     hit(0, {
       frame: 246,
-      physMultiplier: 17.34049,
-      attributeMultiplier: 26.010735,
-      physFixed: 2608.52,
+      // In-game values as of 2026-09-24.
+      physMultiplier: 12.59654,
+      attributeMultiplier: 18.89481,
+      physFixed: 1912.3,
       attributeFixed: 0,
     }),
   ],

@@ -27,7 +27,11 @@ export function OverviewTab({
   result: Result
 }) {
   const { t } = useI18n()
-  const { rows: rankingRows, isPending: rankingPending } = useItemRanking(engineInputs, result.dps)
+  const { rows: rankingRows, isPending: rankingPending } = useItemRanking(
+    engineInputs,
+    result.dps,
+    result.qiBreaks,
+  )
   const { data: tileDps, isPending: tilesPending } = useSetTileDps(inputs)
   const slottedInnerWays = inputs.mindMethods.filter((slot) => slotInnerWayId(slot)).length
   return (

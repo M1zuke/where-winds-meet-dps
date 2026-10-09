@@ -135,3 +135,7 @@ export function oddityBoardTotals(
   }
   return totals
 }
+
+export function oddityEnduranceTotal(unclaimed: UnclaimedOddityNodes | undefined): number {
+  return oddityBoardTotals(unclaimed).endurance ?? 0
+}

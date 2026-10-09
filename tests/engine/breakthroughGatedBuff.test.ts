@@ -121,7 +121,7 @@ vi.mock("../../src/definitions/classes/registry", async (importOriginal) => {
     ...actual,
     classDefinition: (classId: string) =>
       classId === fakeClassId
-        ? { classBuffDefs: [fakeGatedClassBuff] }
+        ? { classBuffDefs: [fakeGatedClassBuff], rotations: [] }
         : actual.classDefinition(classId),
   }
 })

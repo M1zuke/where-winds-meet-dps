@@ -33,8 +33,76 @@ describe("additive saved resource settings", () => {
     )
     expect(profile.inputs.resourceSettings?.blossoms).toEqual({
       opening: 100,
-      gains: { directHit: 7, qHit: 25, heavyLightCast: 25, chargedHit: 0, tier6: 25 },
+      gains: {
+        directHit: 7,
+        qHit: 20,
+        heavyLightCast: 45,
+        chargedHit: 0,
+        chargedHit12: 40.8,
+        umbrellaDashBullet: 4,
+        chargedHitLift: 4,
+        apricotHeavenHit: 10,
+        bambooBreezeHit: 6,
+        tier6: 25,
+      },
       exhaustedGainPerTick: 4,
     })
+  })
+
+  it("heals a Blossom gain still sitting at its old stale default to the corrected one", () => {
+    const profile = importProfile(
+      JSON.stringify({
+        id: "test",
+        name: "Test",
+        inputs: {
+          ...defaultInputs,
+          classId: "silkbindJade",
+          resourceSettings: {
+            blossoms: {
+              opening: 100,
+              gains: { qHit: 25, heavyLightCast: 25, chargedHit: 0 },
+              exhaustedGainPerTick: 3,
+            },
+          },
+        },
+      }),
+    )
+    expect(profile.inputs.resourceSettings?.blossoms.gains.qHit).toBe(20)
+    expect(profile.inputs.resourceSettings?.blossoms.gains.heavyLightCast).toBe(45)
+    expect(profile.inputs.resourceSettings?.blossoms.gains.chargedHit).toBe(20.4)
+  })
+
+  it("heals an Apricot Heaven gain still at its old default and keeps a deliberate one", () => {
+    const importGains = (gains: Record<string, number>) =>
+      importProfile(
+        JSON.stringify({
+          id: "test",
+          name: "Test",
+          inputs: {
+            ...defaultInputs,
+            classId: "silkbindJade",
+            resourceSettings: { blossoms: { opening: 100, gains, exhaustedGainPerTick: 3 } },
+          },
+        }),
+      ).inputs.resourceSettings?.blossoms.gains
+    expect(importGains({ apricotHeavenHit: 8 })?.apricotHeavenHit).toBe(10)
+    expect(importGains({ apricotHeavenHit: 9 })?.apricotHeavenHit).toBe(9)
+  })
+
+  it("leaves a Blossom gain the player deliberately set away from the old default alone", () => {
+    const profile = importProfile(
+      JSON.stringify({
+        id: "test",
+        name: "Test",
+        inputs: {
+          ...defaultInputs,
+          classId: "silkbindJade",
+          resourceSettings: {
+            blossoms: { opening: 100, gains: { heavyLightCast: 99 }, exhaustedGainPerTick: 3 },
+          },
+        },
+      }),
+    )
+    expect(profile.inputs.resourceSettings?.blossoms.gains.heavyLightCast).toBe(99)
   })
 })

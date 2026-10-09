@@ -11,6 +11,16 @@ export type BuffActivation = "permanent" | "triggered"
 
 export type StackScaling = "flat" | "perStack"
 
+// docs/TIMELINE.md § "Meters".
+export interface MeterModifier {
+  meterId: string
+  kind: "cost" | "chargeCost" | "regen"
+  amount: number
+  tag?: string
+  belowCapacityFraction?: number
+  alwaysActive?: boolean
+}
+
 export interface Buff {
   id: string
   classId: string
@@ -21,13 +31,16 @@ export interface Buff {
   durationFrames: number
   effects: BuffStatEffect[]
   maxStacks: number
+  maxStacksByTier?: { param: string; byTier: Record<number, number> }
   stackScaling: StackScaling
   requiresParam?: string
   requiresMinTier?: number
+  requiresMaxTier?: number
   defaultOpeningStacks?: number
-  onExpire?: { targetId: string; stacks: number; requiresBuffId?: string }
+  onExpire?: { targetId: string; stacks: number; requiresBuffId?: string; elseStacks?: number }
   stacksPerDamagingHit?: { cooldownFrames: number }
   onMaxStacks?: HitTrigger[]
+  meterModifiers?: MeterModifier[]
   createdAt: string
   updatedAt: string
 }
@@ -64,12 +77,32 @@ export function isBuff(x: unknown): x is Buff {
     if (typeof b.requiresMinTier !== "number" || !Number.isFinite(b.requiresMinTier)) return false
     if (typeof b.requiresParam !== "string" || !b.requiresParam) return false
   }
+  if (b.requiresMaxTier !== undefined) {
+    if (typeof b.requiresMaxTier !== "number" || !Number.isFinite(b.requiresMaxTier)) return false
+    if (typeof b.requiresParam !== "string" || !b.requiresParam) return false
+  }
+  if (b.maxStacksByTier !== undefined) {
+    const byTierSpec = b.maxStacksByTier as Record<string, unknown> | null
+    if (!byTierSpec || typeof byTierSpec !== "object") return false
+    if (typeof byTierSpec.param !== "string" || !byTierSpec.param) return false
+    const byTier = byTierSpec.byTier as Record<string, unknown> | null
+    if (!byTier || typeof byTier !== "object") return false
+    for (const [tier, cap] of Object.entries(byTier)) {
+      if (!Number.isFinite(Number(tier))) return false
+      if (typeof cap !== "number" || !Number.isFinite(cap) || cap <= 0) return false
+    }
+  }
   if (b.onExpire !== undefined) {
     const onExpire = b.onExpire as Record<string, unknown> | null
     if (!onExpire || typeof onExpire !== "object") return false
     if (typeof onExpire.targetId !== "string" || !onExpire.targetId) return false
     if (typeof onExpire.stacks !== "number" || !Number.isFinite(onExpire.stacks)) return false
     if (onExpire.requiresBuffId !== undefined && typeof onExpire.requiresBuffId !== "string")
+      return false
+    if (
+      onExpire.elseStacks !== undefined &&
+      (typeof onExpire.elseStacks !== "number" || !Number.isFinite(onExpire.elseStacks))
+    )
       return false
   }
   if (b.stacksPerDamagingHit !== undefined) {
@@ -81,6 +114,33 @@ export function isBuff(x: unknown): x is Buff {
   if (b.onMaxStacks !== undefined) {
     if (!Array.isArray(b.onMaxStacks)) return false
     for (const trigger of b.onMaxStacks) if (!isHitTrigger(trigger)) return false
+  }
+  if (b.meterModifiers !== undefined) {
+    if (!Array.isArray(b.meterModifiers)) return false
+    for (const modifier of b.meterModifiers) {
+      const meterModifier = modifier as Record<string, unknown>
+      if (typeof meterModifier.meterId !== "string" || !meterModifier.meterId) return false
+      if (
+        meterModifier.kind !== "cost" &&
+        meterModifier.kind !== "chargeCost" &&
+        meterModifier.kind !== "regen"
+      )
+        return false
+      if (typeof meterModifier.amount !== "number" || !Number.isFinite(meterModifier.amount))
+        return false
+      if (meterModifier.tag !== undefined && typeof meterModifier.tag !== "string") return false
+      if (
+        meterModifier.belowCapacityFraction !== undefined &&
+        (typeof meterModifier.belowCapacityFraction !== "number" ||
+          !Number.isFinite(meterModifier.belowCapacityFraction))
+      )
+        return false
+      if (
+        meterModifier.alwaysActive !== undefined &&
+        typeof meterModifier.alwaysActive !== "boolean"
+      )
+        return false
+    }
   }
   if (typeof b.createdAt !== "string") return false
   if (typeof b.updatedAt !== "string") return false

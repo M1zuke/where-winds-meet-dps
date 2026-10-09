@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest"
 import { FPS, simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { isHitTrigger, makeHit, makeSkill, makeTrigger, type Skill } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 
@@ -178,7 +179,7 @@ describe("a trigger with transferFrom", () => {
       [grant, convert, gated],
       [source, target],
     )
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
+    expect(simulateTimeline(inputs).castDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
   })
 
   it("is rejected when combined with extendFrames", () => {

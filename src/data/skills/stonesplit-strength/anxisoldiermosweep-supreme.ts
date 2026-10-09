@@ -1,0 +1,49 @@
+import { defineSkill, hit } from "../../../definitions/skills/skillDef"
+import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
+import { BUFF } from "../buffs/ids"
+import { SKILL } from "./ids"
+import { PHALANXBANE_BLADE_RECEIVES } from "./receives"
+import { ANXI_SOLDIER_BLADE_MOMENTUM_GAIN } from "./buffs/anxiSoldierBladeMomentumGain"
+
+export const anxisoldiermosweepSupreme = defineSkill({
+  id: SKILL.anxisoldiermosweepSupreme,
+  classId: "stonesplitStrength",
+  name: "AnxiSoldierMoSweep (Supreme)",
+  tags: [WEAPON.moBlade, PROP.cleftpeakBoost, ATTUNE.phalanxbaneQ, ROLE.anxiSoldier],
+  skillType: "weapon",
+  weaponOrAttribute: "Modao",
+  attributeAttack: "Stonesplit",
+  castTag: CAST.anxiSoldierMoSweepSupreme,
+  receives: [
+    BUFF.mountainSplitter,
+    BUFF.cleftpeakDeflect,
+    BUFF.etherwrathPenetrationBoost,
+    ...PHALANXBANE_BLADE_RECEIVES,
+  ],
+  triggersBuffs: [BUFF.throatPierced, BUFF.mountainSplitter],
+  castFrames: 0,
+  triggerable: true,
+  hits: [
+    hit(0, {
+      frame: 0,
+      physMultiplier: 0.9,
+      attributeMultiplier: 1.35,
+      physFixed: 0,
+      attributeFixed: 0,
+      // In-game values as of 2026-09-25: every Anxi soldier attack.
+      qiRate: 0.3,
+      triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
+    }),
+    hit(1, {
+      frame: 0,
+      physMultiplier: 0.9,
+      attributeMultiplier: 1.35,
+      physFixed: 0,
+      attributeFixed: 0,
+      qiRate: 0.3,
+      triggers: [ANXI_SOLDIER_BLADE_MOMENTUM_GAIN],
+    }),
+  ],
+  createdAt: "2026-09-29T00:00:00.000Z",
+  updatedAt: "2026-09-29T00:00:00.000Z",
+})

@@ -5,6 +5,7 @@ export const BELLSTRIKE_UMBRA_STANDARDIZED: StandardizedGraduation = {
     food: true,
     script: "voidrotScript",
     divinecraft: "fire",
+    fragrantOrchidBathBean: true,
   },
   innerWays: [
     { id: "swordHorizon", tier: 6 },

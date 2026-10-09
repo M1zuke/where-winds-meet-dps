@@ -1,16 +1,16 @@
 import type { ReactNode } from "react"
 import type { Inputs, ScriptId } from "../../../../engine/types"
 import { defaultCombatSettings } from "../../../../engine/types"
-import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { useI18n } from "../../../../i18n/i18nContext"
-import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
-import { SCRIPT_IDS } from "../../../../data/skills/buffs/scriptOptions"
+import { SCRIPT_IDS, SCRIPT_LABEL_KEYS } from "../../../../data/skills/buffs/scriptOptions"
+import { QI_TARGET_IDS, type QiTargetId } from "../../../../definitions/baseStats/qiTargetDef"
 import styles from "./EncounterSettingsPanel.module.scss"
 
-const SCRIPT_LABEL_KEYS: Record<ScriptId, string> = {
-  wraithstrikeScript: "overview.encounterSettings.wraithstrikeScript",
-  voidrotScript: "overview.encounterSettings.voidrotScript",
+const QI_TARGET_LABEL_KEYS: Record<QiTargetId, string> = {
+  swordTrial: "overview.encounterSettings.qiTargetSwordTrial",
+  swordTrialResistanceUp: "overview.encounterSettings.qiTargetSwordTrialResistanceUp",
+  herosRealm: "overview.encounterSettings.qiTargetHerosRealm",
 }
 
 interface Props {
@@ -85,6 +85,18 @@ function DivinecraftSegments({
   return <SegmentedControl value={value} options={options} onChange={onChange} />
 }
 
+function QiTargetSegments({
+  value,
+  onChange,
+}: {
+  value: QiTargetId
+  onChange: (next: QiTargetId) => void
+}) {
+  const { t } = useI18n()
+  const options = QI_TARGET_IDS.map((id) => ({ value: id, label: t(QI_TARGET_LABEL_KEYS[id]) }))
+  return <SegmentedControl value={value} options={options} onChange={onChange} />
+}
+
 function ScriptSegments({
   value,
   onChange,
@@ -108,7 +120,6 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
   const settings = inputs.combatSettings ?? defaultCombatSettings()
   const setCombat = <K extends keyof typeof settings>(key: K, value: (typeof settings)[K]) =>
     onChange({ ...inputs, combatSettings: { ...settings, [key]: value } })
-  const override = settings.qiBreakOverride
 
   return (
     <div className={styles.encounterSettings}>
@@ -132,12 +143,20 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             checked={settings.dragonHeadLowHpMaxBonus}
             onChange={(value) => setCombat("dragonHeadLowHpMaxBonus", value)}
           />
+        </div>
+      </Section>
+
+      <Section title={t("overview.encounterSettings.fragrantOrchidBathBean")}>
+        <div className={styles.switchGrid}>
           <SwitchRow
-            label={t("overview.encounterSettings.below60Endurance")}
-            checked={settings.lowEndurance}
-            onChange={(value) => setCombat("lowEndurance", value)}
+            label={t("overview.encounterSettings.fragrantOrchidBathBean")}
+            checked={settings.fragrantOrchidBathBean}
+            onChange={(value) => setCombat("fragrantOrchidBathBean", value)}
           />
         </div>
+        <p className={styles.inlineHint}>
+          {t("overview.encounterSettings.fragrantOrchidBathBeanHint")}
+        </p>
       </Section>
 
       <Section title={t("overview.encounterSettings.script")}>
@@ -179,6 +198,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
             onChange={(value) => setCombat("healerBuff", value)}
           />
           <SwitchRow
+            label={t("overview.encounterSettings.healerPanaceaFan")}
+            checked={settings.healerPanaceaFan}
+            onChange={(value) => setCombat("healerPanaceaFan", value)}
+          />
+          <SwitchRow
             label={t("overview.encounterSettings.breakExtension")}
             checked={settings.breakExtension}
             onChange={(value) => setCombat("breakExtension", value)}
@@ -191,49 +215,11 @@ export function EncounterSettingsPanel({ inputs, onChange }: Props) {
         </div>
       </Section>
 
-      <Section title={t("overview.encounterSettings.qiBreakOverride")}>
-        <div className={styles.switchGrid}>
-          <SwitchRow
-            label={t("overview.encounterSettings.overrideTheRotation")}
-            checked={override !== null}
-            onChange={(value) =>
-              setCombat("qiBreakOverride", value ? DEFAULT_QI_BREAK_WINDOW : null)
-            }
-          />
-        </div>
-        {override ? (
-          <div className={styles.qiBreakFields}>
-            <label className={styles.qiBreakField}>
-              {t("common.startS")}
-              <NumInput
-                value={override.startSec}
-                onChange={(value) => setCombat("qiBreakOverride", { ...override, startSec: value })}
-              />
-            </label>
-            <label className={styles.qiBreakField}>
-              {t("common.durationS")}
-              <NumInput
-                value={override.durationSec}
-                onChange={(value) =>
-                  setCombat("qiBreakOverride", { ...override, durationSec: value })
-                }
-              />
-            </label>
-            <label className={styles.qiBreakField}>
-              {t("common.lowQiLeadS")}
-              <NumInput
-                value={override.lowQiLeadSec}
-                onChange={(value) =>
-                  setCombat("qiBreakOverride", { ...override, lowQiLeadSec: value })
-                }
-              />
-            </label>
-          </div>
-        ) : (
-          <p className={styles.qiBreakHint}>
-            {t("overview.encounterSettings.eachRotationRunsItsOwnBreakWindow")}
-          </p>
-        )}
+      <Section title={t("overview.encounterSettings.qiTarget")}>
+        <QiTargetSegments
+          value={inputs.qiTarget ?? "swordTrial"}
+          onChange={(value) => set("qiTarget", value)}
+        />
       </Section>
     </div>
   )
