@@ -72,7 +72,12 @@ import {
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
 import { belongsToClass, cancelledByOf, seedSkillFromBuiltin } from "./engine/skill"
 import { deflectCancelSkillId } from "./engine/deflectCancels"
-import { isDisplacement, isSkillApproach } from "./engine/distance"
+import {
+  DEFAULT_PREFERRED_DISTANCE_METERS,
+  isDisplacement,
+  isSkillApproach,
+  isValidPreferredDistanceMeters,
+} from "./engine/distance"
 import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -114,6 +119,7 @@ import {
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
   migrateDivinecraftField,
+  movePreferredDistanceOntoRotation,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -253,6 +259,11 @@ function migrateRotationIds<T>(rotation: T): T {
     !isValidServerProcessingMs(next.serverProcessingMs)
   )
     next.serverProcessingMs = DEFAULT_SERVER_PROCESSING_MS
+  if (
+    typeof next.preferredDistanceMeters !== "number" ||
+    !isValidPreferredDistanceMeters(next.preferredDistanceMeters)
+  )
+    next.preferredDistanceMeters = DEFAULT_PREFERRED_DISTANCE_METERS
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
   return migrateRotationNightwickTipsylayIds(migrateRotationMysticIds(next)) as unknown as T
 }
@@ -339,8 +350,8 @@ function healBlossomGainDefaults(
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
-  const next: Inputs = migrateDivinecraftField(
-    rest as unknown as Record<string, unknown>,
+  const next: Inputs = movePreferredDistanceOntoRotation(
+    migrateDivinecraftField(rest as unknown as Record<string, unknown>),
   ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
@@ -600,10 +611,6 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
-      preferredDistanceMeters:
-        typeof r.preferredDistanceMeters === "number" && Number.isFinite(r.preferredDistanceMeters)
-          ? r.preferredDistanceMeters
-          : def.preferredDistanceMeters,
       fragrantOrchidBathBean:
         typeof r.fragrantOrchidBathBean === "boolean"
           ? r.fragrantOrchidBathBean
@@ -881,6 +888,11 @@ export function importCustomRotation(text: string): Rotation {
       isValidServerProcessingMs(candidate.serverProcessingMs)
         ? candidate.serverProcessingMs
         : DEFAULT_SERVER_PROCESSING_MS,
+    preferredDistanceMeters:
+      typeof candidate.preferredDistanceMeters === "number" &&
+      isValidPreferredDistanceMeters(candidate.preferredDistanceMeters)
+        ? candidate.preferredDistanceMeters
+        : DEFAULT_PREFERRED_DISTANCE_METERS,
     createdAt: now,
     updatedAt: now,
   }

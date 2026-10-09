@@ -1,12 +1,5 @@
 import type { InnerWayId } from "../../data/innerWays/ids"
-import {
-  defaultCombatSettings,
-  type Arsenal,
-  type BowSet,
-  type CombatSettings,
-  type GearPiece,
-  type Inputs,
-} from "../../engine/types"
+import type { Arsenal, BowSet, CombatSettings, GearPiece, Inputs } from "../../engine/types"
 
 export interface StandardizedInnerWay {
   id: InnerWayId
@@ -37,7 +30,6 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   breakExtension: false,
   dragonHeadFullStacks: false,
   dragonHeadLowHpMaxBonus: false,
-  preferredDistanceMeters: defaultCombatSettings().preferredDistanceMeters,
   fragrantOrchidBathBean: false,
 }
 

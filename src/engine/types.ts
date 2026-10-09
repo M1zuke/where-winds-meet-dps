@@ -66,10 +66,6 @@ export interface CombatSettings {
   script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
-  // The player's own ground distance to the target between casts — matters
-  // only for a distance-reading effect (docs/TIMELINE.md § "Target
-  // distance"), which pulls the player closer up to each skill's own reach.
-  preferredDistanceMeters: number
   fragrantOrchidBathBean: boolean
 }
 
@@ -82,7 +78,6 @@ export function defaultCombatSettings(): CombatSettings {
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    preferredDistanceMeters: 3,
     fragrantOrchidBathBean: false,
   }
 }

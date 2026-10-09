@@ -8,6 +8,7 @@ import {
   isValidPingMs,
   isValidServerProcessingMs,
 } from "./pingFps"
+import { DEFAULT_PREFERRED_DISTANCE_METERS, isValidPreferredDistanceMeters } from "./distance"
 
 export interface RotationStep {
   id: string
@@ -27,6 +28,7 @@ export interface Rotation {
   pingMs: number
   averageFps: number
   serverProcessingMs: number
+  preferredDistanceMeters: number
   createdAt: string
   updatedAt: string
   description?: string
@@ -65,6 +67,7 @@ export function makeRotation(classId: string, patch: Partial<Rotation> = {}): Ro
     pingMs: DEFAULT_PING_MS,
     averageFps: DEFAULT_AVERAGE_FPS,
     serverProcessingMs: DEFAULT_SERVER_PROCESSING_MS,
+    preferredDistanceMeters: DEFAULT_PREFERRED_DISTANCE_METERS,
     createdAt: now,
     updatedAt: now,
     ...patch,
@@ -106,6 +109,11 @@ export function isRotation(x: unknown): x is Rotation {
   if (typeof r.pingMs !== "number" || !isValidPingMs(r.pingMs)) return false
   if (typeof r.averageFps !== "number" || !isValidAverageFps(r.averageFps)) return false
   if (typeof r.serverProcessingMs !== "number" || !isValidServerProcessingMs(r.serverProcessingMs))
+    return false
+  if (
+    typeof r.preferredDistanceMeters !== "number" ||
+    !isValidPreferredDistanceMeters(r.preferredDistanceMeters)
+  )
     return false
   if (typeof r.createdAt !== "string") return false
   if (typeof r.updatedAt !== "string") return false

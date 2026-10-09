@@ -1,6 +1,8 @@
-import { defaultCombatSettings, type Inputs, type QiBreakWindow } from "../types"
+import type { Inputs, QiBreakWindow } from "../types"
 import type { BuffParams } from "./buffEngine"
 import type { QiPhase } from "../effects/context"
+import { activeRotationForInputs } from "../activeRotation"
+import { DEFAULT_PREFERRED_DISTANCE_METERS } from "../distance"
 import { INNER_WAYS, slotInnerWayId } from "../../definitions/innerWays/registry"
 import { tierFromStacks } from "../../definitions/innerWays/innerWayDef"
 import { SET_BY_ID } from "../../definitions/sets/registry"
@@ -82,8 +84,7 @@ export function paramsFromInputs(inputs: Inputs, rotationQiBreak?: QiBreakWindow
   params.whiteCritRate = inputs.critRate
   params.breakthrough = inputs.breakthrough
   params.distanceMeters =
-    inputs.combatSettings?.preferredDistanceMeters ??
-    defaultCombatSettings().preferredDistanceMeters
+    activeRotationForInputs(inputs)?.preferredDistanceMeters ?? DEFAULT_PREFERRED_DISTANCE_METERS
 
   return params
 }

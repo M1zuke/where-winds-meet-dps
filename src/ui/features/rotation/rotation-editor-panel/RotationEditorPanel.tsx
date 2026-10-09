@@ -18,8 +18,12 @@ import {
   type Rotation,
   type RotationStep,
 } from "../../../../engine/rotation"
-import { activeRotationForInputs } from "../../../../engine/dps"
+import { activeRotationForInputs } from "../../../../engine/activeRotation"
 import { DEFAULT_QI_BREAK_WINDOW } from "../../../../engine/qiBreak"
+import {
+  PREFERRED_DISTANCE_METERS_MAX,
+  PREFERRED_DISTANCE_METERS_MIN,
+} from "../../../../engine/distance"
 import { NumInput } from "../../../components/number-inputs/NumberInputs"
 import { PingFpsFields } from "../../../components/ping-fps-fields/PingFpsFields"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
@@ -322,6 +326,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   ) {
     commitRotation((rotation) => ({ ...rotation, ...connection }))
   }
+  function setPreferredDistanceMeters(preferredDistanceMeters: number) {
+    commitRotation((rotation) => ({ ...rotation, preferredDistanceMeters }))
+  }
   function setFixedWindowSec(windowSec: number | undefined) {
     commitRotation((rotation) => {
       const next = { ...rotation }
@@ -355,6 +362,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
       pingMs: activeRotation.pingMs,
       averageFps: activeRotation.averageFps,
       serverProcessingMs: activeRotation.serverProcessingMs,
+      preferredDistanceMeters: activeRotation.preferredDistanceMeters,
     })
     onChange({ ...inputs, activeCustomRotation: copy, selectedBuiltinRotationId: null })
   }
@@ -539,6 +547,26 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 />
               </span>
             </label>
+            {showDistance ? (
+              <label className={styles.field} title={t("rotation.editor.preferredDistanceHint")}>
+                <span>{t("rotation.editor.preferredDistanceM")}</span>
+                <span className={styles.fixedWindow}>
+                  <NumInput
+                    value={activeRotation.preferredDistanceMeters}
+                    min={PREFERRED_DISTANCE_METERS_MIN}
+                    disabled={!isCustom}
+                    onChange={(next) =>
+                      setPreferredDistanceMeters(
+                        Math.min(
+                          PREFERRED_DISTANCE_METERS_MAX,
+                          Math.max(PREFERRED_DISTANCE_METERS_MIN, next),
+                        ),
+                      )
+                    }
+                  />
+                </span>
+              </label>
+            ) : null}
             <div className={styles.actions}>
               {isCustom ? (
                 <>

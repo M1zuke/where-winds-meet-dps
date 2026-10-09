@@ -283,41 +283,44 @@ describe("profiles carry selections only — derived stats are never persisted",
     expect((profiles[0].inputs as unknown as { averageFps: number }).averageFps).toBe(144)
   })
 
-  it("loadProfiles heals a profile saved before preferredDistanceMeters existed to the default 3 m", () => {
-    const { combatSettings, ...rest } = defaultInputs
-    const { preferredDistanceMeters: _droppedDistance, ...combatSettingsWithoutDistance } =
-      combatSettings!
+  function storeProfileWithRotationWithoutDistance(combatSettings: Record<string, unknown>) {
+    const { preferredDistanceMeters: _droppedDistance, ...rotation } = makeRotation(
+      "bellstrikeUmbra",
+      { name: "Pre-Distance" },
+    )
     void _droppedDistance
-    const inputs = { ...rest, combatSettings: combatSettingsWithoutDistance } as Inputs
     localStorage.setItem(
       PROFILES_KEY,
       JSON.stringify({
         v: LATEST_PROFILES_VERSION,
-        profiles: [{ id: "p1", name: "Pre-Distance", inputs }],
+        profiles: [
+          {
+            id: "p1",
+            name: "Pre-Distance",
+            inputs: { ...defaultInputs, combatSettings, activeCustomRotation: rotation },
+          },
+        ],
         activeId: "p1",
       }),
     )
+  }
+
+  it("loadProfiles moves an imported profile's encounter distance onto its custom rotation", () => {
+    storeProfileWithRotationWithoutDistance({
+      ...defaultInputs.combatSettings,
+      preferredDistanceMeters: 7,
+    })
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings?.preferredDistanceMeters).toBe(3)
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(7)
+    expect(profiles[0].inputs.combatSettings).not.toHaveProperty("preferredDistanceMeters")
   })
 
-  it("loadProfiles keeps a stored preferredDistanceMeters as-is", () => {
-    const inputs: Inputs = {
-      ...defaultInputs,
-      combatSettings: { ...defaultInputs.combatSettings!, preferredDistanceMeters: 7 },
-    }
-    localStorage.setItem(
-      PROFILES_KEY,
-      JSON.stringify({
-        v: LATEST_PROFILES_VERSION,
-        profiles: [{ id: "p1", name: "Configured Distance", inputs }],
-        activeId: "p1",
-      }),
-    )
+  it("loadProfiles heals a custom rotation saved before it carried a distance to the default 3 m", () => {
+    storeProfileWithRotationWithoutDistance({ ...defaultInputs.combatSettings })
 
     const { profiles } = loadProfiles()
-    expect(profiles[0].inputs.combatSettings?.preferredDistanceMeters).toBe(7)
+    expect(profiles[0].inputs.activeCustomRotation?.preferredDistanceMeters).toBe(3)
   })
 
   it("the default build's derived output is unaffected by zeroing the derived fields first", () => {

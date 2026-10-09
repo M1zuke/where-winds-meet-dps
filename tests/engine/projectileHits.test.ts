@@ -4,7 +4,7 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill, resolvedHitFrame } from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
-import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const SPEED_METERS_PER_SECOND = 10
@@ -28,13 +28,15 @@ function landingFrameAt(preferredDistanceMeters: number): number {
       }),
     ],
   })
-  const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
+  const rotation = makeRotation(CLASS, {
+    steps: [makeStep({ skillId: skill.id })],
+    preferredDistanceMeters,
+  })
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
     customSkills: [skill],
     activeCustomRotation: rotation,
-    combatSettings: { ...defaultCombatSettings(), preferredDistanceMeters },
   }
   const result = simulateTimeline(inputs)
   const hitEvent = (result.timeline ?? []).find(

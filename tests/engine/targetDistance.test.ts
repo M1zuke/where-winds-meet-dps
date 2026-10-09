@@ -4,9 +4,11 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { makeHit, makeSkill, type Skill } from "../../src/engine/skill"
 import { makeStep } from "../../src/engine/rotation"
 import { testRotation as makeRotation } from "../builtins"
-import { defaultCombatSettings, type Inputs } from "../../src/engine/types"
+import type { Inputs } from "../../src/engine/types"
 import { buildReadsTargetDistance } from "../../src/engine/buffs/catalog"
 import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
+import { builtinRotationsForClass } from "../../src/engine/builtinLibrary"
+import { CLASS_IDS } from "../../src/definitions/classes/registry"
 
 const { alwaysActiveClassId, alwaysActiveDistanceModule } = vi.hoisted(() => {
   const alwaysActiveClassId = "target-distance-test-always-active-class"
@@ -51,13 +53,13 @@ function step(patch: Partial<Skill>): Skill {
 function distancesFor(steps: readonly Skill[], preferredDistanceMeters: number): number[] {
   const rotation = makeRotation(CLASS, {
     steps: steps.map((skill) => makeStep({ skillId: skill.id })),
+    preferredDistanceMeters,
   })
   const inputs: Inputs = {
     ...defaultInputs,
     classId: CLASS,
     customSkills: [...steps],
     activeCustomRotation: rotation,
-    combatSettings: { ...defaultCombatSettings(), preferredDistanceMeters },
   }
   return (simulateTimeline(inputs).casts ?? []).map((cast) => cast.distanceMeters)
 }
@@ -188,8 +190,22 @@ describe("target distance — visibility rule", () => {
     expect(buildReadsTargetDistance({ ...base, activeCustomRotation: withFlute })).toBe(true)
   })
 
-  it("stays off with no active rotation at all", () => {
-    expect(buildReadsTargetDistance({ ...defaultInputs, activeCustomRotation: null })).toBe(false)
+  it("answers a selected built-in rotation exactly as it answers the same rotation held as custom", () => {
+    const answers = CLASS_IDS().flatMap((classId) =>
+      builtinRotationsForClass(classId).map((rotation) => {
+        const base: Inputs = { ...defaultInputs, classId }
+        const asBuiltin = buildReadsTargetDistance({
+          ...base,
+          activeCustomRotation: null,
+          selectedBuiltinRotationId: rotation.id,
+        })
+        const asCustom = buildReadsTargetDistance({ ...base, activeCustomRotation: rotation })
+        return { rotationId: rotation.id, asBuiltin, asCustom }
+      }),
+    )
+
+    expect(answers.some((answer) => answer.asCustom)).toBe(true)
+    for (const answer of answers) expect(answer.asBuiltin, answer.rotationId).toBe(answer.asCustom)
   })
 
   it("shows the field for an always-active module, with no rotation step granting it", () => {
@@ -231,6 +247,7 @@ describe("target distance — a DoT tick reads the live distance, not the cast t
       // Long enough that the ripple's own last tick (frame 828) still lands
       // inside the run, past the last laid cast's own end.
       fixedWindowSec: 15,
+      preferredDistanceMeters: 10,
     })
     const inputs: Inputs = {
       ...defaultInputs,
@@ -242,7 +259,6 @@ describe("target distance — a DoT tick reads the live distance, not the cast t
       set: null,
       customSkills: [filler, distanceChanger],
       activeCustomRotation: rotation,
-      combatSettings: { ...defaultCombatSettings(), preferredDistanceMeters: 10 },
     }
     const result = simulateTimeline(inputs)
     const rippleTicks = (result.timeline ?? [])

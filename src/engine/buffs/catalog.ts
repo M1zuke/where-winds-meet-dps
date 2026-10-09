@@ -25,6 +25,7 @@ import { CLASS_DEFS, classDefinition, innerWayDefsOf } from "../../definitions/c
 import { INNER_WAYS } from "../../definitions/innerWays/registry"
 import type { BuffStatEffect } from "../buff"
 import { resolveRotation } from "../rotation"
+import { activeRotationForInputs } from "../activeRotation"
 
 function skillsInScope(classId: string | undefined, inputs: Inputs | undefined): Skill[] {
   return [...builtinSkillsForClass(classId ?? ""), ...(inputs?.customSkills ?? [])]
@@ -394,7 +395,7 @@ function grantsStatus(skill: Skill, id: string): boolean {
 // on showing the distance input (docs/TIMELINE.md § "Target distance").
 export function buildReadsTargetDistance(inputs: Inputs): boolean {
   const classDef = classDefinition(inputs.classId)
-  const rotation = inputs.activeCustomRotation
+  const rotation = activeRotationForInputs(inputs)
   if (!classDef || !rotation || rotation.classId !== inputs.classId) return false
   const skills = skillsInScope(inputs.classId, inputs)
   const statuses = [

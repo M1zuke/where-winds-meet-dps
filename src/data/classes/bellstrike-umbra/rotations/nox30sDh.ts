@@ -4,6 +4,7 @@ export default defineRotation({
   id: "builtin-bellstrikeUmbra-nox-30s-dh",
   name: "Nox - 30s DH",
   classId: "bellstrikeUmbra",
+  preferredDistanceMeters: 6,
   steps: [
     { skillId: "mystic-drunkenpoet-prepull" },
     { skillId: "bellstrikeUmbra-sword-charge-stage-1-4-hit" },

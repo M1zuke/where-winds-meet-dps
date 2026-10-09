@@ -317,8 +317,8 @@ describe("engine baseline — profile-v7 anchor", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("still reports the rotation figures", () => {
-    expect(round(result.dps, 2)).toBe(70446.3)
-    expect(round(result.totalDamage, 2)).toBe(4226777.74)
+    expect(round(result.dps, 2)).toBe(70448.74)
+    expect(round(result.totalDamage, 2)).toBe(4226924.64)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
@@ -327,13 +327,13 @@ describe("engine baseline — profile-v7 anchor", () => {
   // move neither.
   it("still reports the bleed rows P1 relocates the attunement for", () => {
     expect(damageOf("Blood Burst")).toBe(2066906.66)
-    expect(damageOf("Bleeding (DoT)")).toBe(275350.95)
+    expect(damageOf("Bleeding (DoT)")).toBe(275366.69)
   })
 
   // DoT rows WITHOUT the attunement — these prove the new join does not
   // over-reach into every DoT.
   it("still reports the un-attuned DoT rows", () => {
-    expect(damageOf("Smolder (DoT)")).toBe(437880.49)
+    expect(damageOf("Smolder (DoT)")).toBe(437916.72)
     expect(damageOf("Flute Ripple (DoT)")).toBe(74935.67)
   })
 
@@ -349,16 +349,16 @@ describe("engine baseline — profile-v7 anchor at breakthrough 17", () => {
     round(result.perSkill.find((row) => row.name === name)?.expectedDamage ?? NaN, 2)
 
   it("reports the rotation figures with the whole board taken", () => {
-    expect(round(result.dps, 2)).toBe(71760.51)
-    expect(round(result.totalDamage, 2)).toBe(4305630.9)
+    expect(round(result.dps, 2)).toBe(71763.01)
+    expect(round(result.totalDamage, 2)).toBe(4305780.37)
     expect(round(result.rotationDuration, 4)).toBe(60)
     expect(result.warnings).toEqual(UNBEANED_ENDURANCE_WARNINGS)
   })
 
   it("raises every damage row the breakthrough-16 build reports", () => {
     expect(damageOf("Blood Burst")).toBe(2107533.39)
-    expect(damageOf("Bleeding (DoT)")).toBe(280568.45)
-    expect(damageOf("Smolder (DoT)")).toBe(445906.9)
+    expect(damageOf("Bleeding (DoT)")).toBe(280584.49)
+    expect(damageOf("Smolder (DoT)")).toBe(445943.79)
     expect(damageOf("Flute Ripple (DoT)")).toBe(76307.94)
     expect(damageOf("Yi River")).toBe(60674.8)
   })

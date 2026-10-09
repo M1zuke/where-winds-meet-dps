@@ -1,22 +1,6 @@
 import type { EngineRunOptions, Inputs, Result } from "./types"
-import type { Rotation } from "./rotation"
 import { simulateTimeline } from "./timeline"
-import { defaultRotationForClass, builtinRotationsForClass } from "./builtinLibrary"
-
-export function usesCustomRotation(inputs: Inputs): boolean {
-  return !!inputs.activeCustomRotation && inputs.activeCustomRotation.classId === inputs.classId
-}
-
-export function activeRotationForInputs(inputs: Inputs): Rotation | null {
-  if (usesCustomRotation(inputs)) return inputs.activeCustomRotation ?? null
-  if (inputs.selectedBuiltinRotationId) {
-    const r = builtinRotationsForClass(inputs.classId).find(
-      (x) => x.id === inputs.selectedBuiltinRotationId,
-    )
-    if (r) return r
-  }
-  return defaultRotationForClass(inputs.classId)
-}
+import { activeRotationForInputs } from "./activeRotation"
 
 export function runEngine(inputs: Inputs, options?: EngineRunOptions): Result {
   const rotation = activeRotationForInputs(inputs)

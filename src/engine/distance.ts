@@ -8,6 +8,15 @@ export type SkillApproach = "approach" | "stationary"
 // mystic Flute of the Tides casts).
 export const PREFERRED_DISTANCE_METERS_MIN = 0
 export const PREFERRED_DISTANCE_METERS_MAX = 40
+export const DEFAULT_PREFERRED_DISTANCE_METERS = 3
+
+export function isValidPreferredDistanceMeters(value: number): boolean {
+  return (
+    Number.isFinite(value) &&
+    value >= PREFERRED_DISTANCE_METERS_MIN &&
+    value <= PREFERRED_DISTANCE_METERS_MAX
+  )
+}
 
 export interface DistanceBand {
   minMeters: number

@@ -4,6 +4,7 @@ export default defineRotation({
   id: "builtin-bellstrikeUmbra-36-bbs-2-dragon-breaths",
   name: "36 BB's | 2 Dragon Breaths",
   classId: "bellstrikeUmbra",
+  preferredDistanceMeters: 6,
   steps: [
     { skillId: "mystic-drunkenpoet-prepull" },
     { skillId: "mystic-flute-of-the-tides-prepull" },

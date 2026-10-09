@@ -1,7 +1,7 @@
 import type { Inputs } from "../../../engine/types"
 import type { Rotation } from "../../../engine/rotation"
 import { builtinRotationsForClass, defaultRotationForClass } from "../../../engine/builtinLibrary"
-import { usesCustomRotation } from "../../../engine/dps"
+import { usesCustomRotation } from "../../../engine/activeRotation"
 
 export { usesCustomRotation }
 

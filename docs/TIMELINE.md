@@ -688,6 +688,9 @@ replayed onto the real ledger as a permanent counter status the same way a
 meter is — every reader of `ctx.target.distanceMeters` then works unchanged.
 There is no second simulation and no per-module distance logic.
 
+- **The preferred distance is the rotation's own `preferredDistanceMeters`**,
+  never an encounter setting. It is also the distance the fight starts at.
+  Every reader resolves it from the active rotation, built-in or custom.
 - **A cast sets the distance at its own start**, after that step's cast
   conditions are checked, to `min(preferred distance, reach)` — the player
   stands as far away as the skill's own `reachMeters` allows. A skill with no
