@@ -43,6 +43,7 @@ import {
   attributeAttackKey,
   classKey,
   debuffEchoKey,
+  meterKey,
   skillKey,
   skillTypeKey,
   weaponKey,
@@ -620,6 +621,24 @@ export function SkillsTab({
     )
   }
 
+  const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
+
+  function statusOrModuleName(targetId: string): string | undefined {
+    return (
+      resolveStatus(targetId)?.name ??
+      reachableBuffModules.find((module) => module.id === targetId)?.name
+    )
+  }
+
+  function cooldownGroupName(groupId: string): string {
+    const gated = [...classSkills, ...builtinSkills]
+      .flatMap((skill) => skill.hits.flatMap((hit) => hit.triggers))
+      .find((candidate) => candidate.cooldownGroup === groupId && candidate.kind !== "cooldownCut")
+    if (!gated) return groupId
+    if (gated.kind === "meterDelta") return t(meterKey(gated.targetId), gated.targetId)
+    return statusOrModuleName(gated.targetId) ?? groupId
+  }
+
   function conditionsClause(trigger: TriggerDraft): string {
     const conds = triggerConditions(trigger)
     if (conds.length === 0) return ""
@@ -668,6 +687,34 @@ export function SkillsTab({
       const effect = `${t("skills.echo")} ${status.name}${gate ? ` · ${gate}` : ""}`
       return { label, effect }
     }
+    if (kind === "meterDelta") {
+      const meterName = t(meterKey(trigger.targetId), trigger.targetId)
+      const amount =
+        trigger.refundFractionOfCastCost !== undefined
+          ? `+${Math.round(trigger.refundFractionOfCastCost * 100)}% ${t("skills.ofCastCost")}`
+          : `${trigger.stacks >= 0 ? "+" : "−"}${Math.abs(trigger.stacks)}`
+      return { label: `${meterName} ${amount}`, effect: gate }
+    }
+    if (kind === "cooldownCut") {
+      const groupName = statusOrModuleName(trigger.targetId) ?? cooldownGroupName(trigger.targetId)
+      const cutSec = (trigger.stacks / FPS).toFixed(1)
+      const effect = `−${cutSec}s${gate ? ` · ${gate}` : ""}`
+      return { label: `${t("skills.cutsCooldownOf")} ${groupName}`, effect }
+    }
+    if (kind === "clearStatus") {
+      const statusName = statusOrModuleName(trigger.targetId)
+      if (!statusName) return { label: t("skills.selectATarget"), effect: "" }
+      return { label: `${t("skills.clears")} ${statusName}`, effect: gate }
+    }
+    if (kind === "applyBuff" && !resolveStatus(trigger.targetId)) {
+      const module = reachableBuffModules.find((candidate) => candidate.id === trigger.targetId)
+      if (module) {
+        const effect = [`+${trigger.stacks} ${t("skills.stacks")}`, gate]
+          .filter(Boolean)
+          .join(" · ")
+        return { label: module.name, effect }
+      }
+    }
     if (kind === "applyDebuff" || kind === "applyBuff") {
       const status = resolveStatus(trigger.targetId)
       if (!status) return { label: t("skills.selectATarget"), effect: "" }
@@ -704,7 +751,6 @@ export function SkillsTab({
     [draft],
   )
 
-  const reachableBuffModules = useMemo(() => catalogBuffDefs(classId), [classId])
   const receivableBuffModules = useMemo(
     () => reachableBuffModules.filter(declaresOwnReach),
     [reachableBuffModules],
