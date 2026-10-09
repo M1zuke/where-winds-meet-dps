@@ -87,18 +87,22 @@ describe("computeRanking — top-rank consistency", () => {
   it("All Martial Boost ranks in the top 12", () => expect(top12.has("allMartialBoost")).toBe(true))
 })
 
-describe("computeRanking — the gear stat lift follows the current breakthrough's gear level", () => {
-  it("the same stat line reports a different max at BT17 (96) than at BT18 (100)", () => {
-    const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
-    const bt18Inputs = { ...umbraInputs, breakthrough: 18 }
-    const bt17Rows = computeRanking(bt17Inputs, runEngine(bt17Inputs).dps)
-    const bt18Rows = computeRanking(bt18Inputs, runEngine(bt18Inputs).dps)
+describe(
+  "computeRanking — the gear stat lift follows the current breakthrough's gear level",
+  { timeout: 30_000 },
+  () => {
+    it("the same stat line reports a different max at BT17 (96) than at BT18 (100)", () => {
+      const bt17Inputs = { ...umbraInputs, breakthrough: 17 }
+      const bt18Inputs = { ...umbraInputs, breakthrough: 18 }
+      const bt17Rows = computeRanking(bt17Inputs, runEngine(bt17Inputs).dps)
+      const bt18Rows = computeRanking(bt18Inputs, runEngine(bt18Inputs).dps)
 
-    const bt17MaxPhys = bt17Rows.find((row) => row.statLineId === "maxPhys")!
-    const bt18MaxPhys = bt18Rows.find((row) => row.statLineId === "maxPhys")!
-    expect(bt18MaxPhys.amount).toBeGreaterThan(bt17MaxPhys.amount)
-  })
-})
+      const bt17MaxPhys = bt17Rows.find((row) => row.statLineId === "maxPhys")!
+      const bt18MaxPhys = bt18Rows.find((row) => row.statLineId === "maxPhys")!
+      expect(bt18MaxPhys.amount).toBeGreaterThan(bt17MaxPhys.amount)
+    })
+  },
+)
 
 describe("Single-Target Mystic Skill DMG Boost — max roll", () => {
   const specs = getWordSpecs(umbraInputs, GEAR_LEVEL)

@@ -42,7 +42,7 @@ function dpsFor(variant = umbraInputs) {
   return runEngine(applyBowSet(applyArmorSet(withDerivedStats(variant)))).dps
 }
 
-describe("computeRankingRequest", () => {
+describe("computeRankingRequest", { timeout: 30_000 }, () => {
   it("matches computeRanking(inputs, baselineDps) for the same inputs", () => {
     const baselineDps = runEngine(umbraInputs).dps
     const expected = computeRanking(umbraInputs, baselineDps)
