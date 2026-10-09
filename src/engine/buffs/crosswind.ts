@@ -31,11 +31,11 @@ export class CrosswindTracker {
     const { maxCharges, retainOnMax } = this.options
     const chargeAtDetonation = this.charges
     const guaranteedAffinity = chargeAtDetonation >= maxCharges
-    this.charges = guaranteedAffinity
-      ? retainOnMax
-        ? 1
-        : 0
-      : Math.min(maxCharges, this.charges + 1)
+    // In-game values as of 2026-09-24: a forced-Affinity burst keeps its
+    // retained charge (1 at tier 6, 0 below) and ALSO adds the burst's own
+    // +1, so the burst right after it still carries the damage bonus.
+    const retained = guaranteedAffinity ? (retainOnMax ? 1 : 0) : this.charges
+    this.charges = Math.min(maxCharges, retained + 1)
     return { chargeAtDetonation, guaranteedAffinity, damageBonusActive: chargeAtDetonation > 0 }
   }
 }

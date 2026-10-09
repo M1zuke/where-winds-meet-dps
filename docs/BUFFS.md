@@ -22,6 +22,12 @@ Apply it in the stat layer as a permanent stat modifier. Class-gating is fine. I
 does **not** go through the buff-def system and does **not** need to be visible in
 the Skill Editor. CALCULATION.md § "The stat layer" has the rules for that layer.
 
+**A Qi-only stat sorts the same way as any other** — one that reaches every
+hit's Qi is category 1, one gated to certain skills or a certain target state
+is category 2, same as an HP-damage stat. It never joins the HP-damage stat
+layer or the additive boost total; it feeds only the Qi formula
+(docs/CALCULATION.md § "Qi damage").
+
 ## Category 2 — skill-specific buffs
 
 Reaches only certain skills. **A stat that reaches only some skills is

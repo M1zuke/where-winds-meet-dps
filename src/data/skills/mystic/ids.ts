@@ -7,10 +7,14 @@ export const SKILL = {
   fireBreath1HitPrepull: "mystic-fire-breath-1-hit-prepull",
   fireBreath1Hit: "mystic-fire-breath-1-hit",
   fireBreath2Hit: "mystic-fire-breath-2-hit",
+  freeMorph: "mystic-free-morph",
+  ghostlyAfterimage: "mystic-ghostly-afterimage",
+  wolflikeFrenzy: "mystic-wolflike-frenzy",
   fluteOfTheTidesCancel: "mystic-flute-of-the-tides-cancel",
   fluteOfTheTidesFull: "mystic-flute-of-the-tides-full",
   fluteOfTheTidesPrepull: "mystic-flute-of-the-tides-prepull",
   poetFinalHitCancel: "mystic-poet-final-hit-cancel",
+  poetFinalHitCancelExplosion: "mystic-poet-final-hit-cancel-explosion",
   poet1: "mystic-poet1",
   poet2: "mystic-poet2",
   poet3: "mystic-poet3",
@@ -18,6 +22,8 @@ export const SKILL = {
   soaring1Hit: "mystic-soaring-1-hit",
   soaring: "mystic-soaring",
   toadCancel: "mystic-toad-cancel",
+  toadFury: "mystic-toad-fury",
+  toadFuryHit: "mystic-toad-fury-hit",
 } as const
 
 export const DEBUFF = {
@@ -25,4 +31,5 @@ export const DEBUFF = {
   fluteRipple: "debuff-mystic-flute-ripple",
   smolder: "debuff-mystic-smolder",
   toadPoison: "debuff-mystic-toad-poison",
+  toadPoisonFury: "debuff-mystic-toad-poison-fury",
 } as const

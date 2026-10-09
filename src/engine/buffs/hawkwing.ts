@@ -31,6 +31,10 @@ export function hawkwingStacksSchedule(
 ): HawkwingStacksSchedule {
   if (hitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return ZERO_HAWKWING_SCHEDULE
 
+  // The grid starts at the first proc-eligible hit, not the DPS timer's own
+  // start — Hawkwing reacts to hits, so relabelling where the timer opens
+  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
+  const originSec = hitTimesSec[0]
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const accum = new Float64Array(steps)
   const simRuns = runRng ? 1 : SIM_RUNS
@@ -41,7 +45,7 @@ export function hawkwingStacksSchedule(
     let lastStackTime = -Infinity
     let hitIdx = 0
     for (let step = 0; step < steps; step++) {
-      const now = step * STEP_SEC
+      const now = originSec + step * STEP_SEC
       while (hitIdx < hitTimesSec.length && hitTimesSec[hitIdx] <= now) {
         const hitTime = hitTimesSec[hitIdx]
         if (stacks > 0 && hitTime - lastStackTime > DECAY_SEC) stacks = 0
@@ -61,8 +65,8 @@ export function hawkwingStacksSchedule(
 
   return {
     getExpectedStacksAtTime(tSec: number): number {
-      if (tSec <= 0) return expected[0]
-      const idx = Math.min(Math.floor(tSec / STEP_SEC), steps - 1)
+      if (tSec <= originSec) return expected[0]
+      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
       return expected[idx]
     },
   }

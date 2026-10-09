@@ -25,6 +25,10 @@ export function concentrationActiveProbSchedule(
 ): ConcentrationSchedule {
   if (weaponHitTimesSec.length === 0 || rotationDurationSec <= 0 || p <= 0) return INACTIVE_SCHEDULE
 
+  // The grid starts at the first weapon hit, not the DPS timer's own start —
+  // Concentration reacts to weapon hits, so relabelling where the timer opens
+  // (docs/TIMELINE.md § "Fight window") must never reshuffle this schedule.
+  const originSec = weaponHitTimesSec[0]
   const steps = Math.ceil(rotationDurationSec / STEP_SEC) + 1
   const accum = new Float64Array(steps)
   const simRuns = runRng ? 1 : SIM_RUNS
@@ -36,7 +40,7 @@ export function concentrationActiveProbSchedule(
     let lastAffinityHitTime = -Infinity
     let hitIdx = 0
     for (let step = 0; step < steps; step++) {
-      const now = step * STEP_SEC
+      const now = originSec + step * STEP_SEC
       while (hitIdx < weaponHitTimesSec.length && weaponHitTimesSec[hitIdx] <= now) {
         const hitTime = weaponHitTimesSec[hitIdx]
         if (active && hitTime - lastAffinityHitTime > WINDOW_SEC) {
@@ -65,8 +69,8 @@ export function concentrationActiveProbSchedule(
 
   return {
     getActiveProbAtTime(tSec: number): number {
-      if (tSec <= 0) return activeProb[0]
-      const idx = Math.min(Math.floor(tSec / STEP_SEC), steps - 1)
+      if (tSec <= originSec) return activeProb[0]
+      const idx = Math.min(Math.floor((tSec - originSec) / STEP_SEC), steps - 1)
       return activeProb[idx]
     },
   }

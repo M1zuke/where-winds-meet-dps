@@ -13,10 +13,16 @@ export const fanqcancel = defineSkill({
   weaponOrAttribute: "Fan",
   attributeAttack: "Silkbind",
   castTag: CAST.fanQCancel,
-  receives: INKWELL_FAN_RECEIVES,
-  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.windWallPursuit, BUFF.springThunder],
-  castFrames: 6,
+  cancelledBy: "nextSkill",
+  receives: [BUFF.starweaveMartialBoost, ...INKWELL_FAN_RECEIVES],
+  triggersBuffs: [BUFF.jadeware, BUFF.windWall, BUFF.springThunder],
+  // Cast length to the earliest next input (in-game values as of 2026-09-24;
+  // collider + 1).
+  castFrames: 10,
   triggerable: true,
+  // In-game values as of 2026-09-28: melee, assumed — a further 1 m
+  // shrink-only pull toward a locked target.
+  displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
       frame: 0,

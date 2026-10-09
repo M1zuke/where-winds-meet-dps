@@ -13,6 +13,7 @@ import { makeSkill, makeHit } from "../../src/engine/skill"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { ODDITY_MAX_ENDURANCE_PARAM } from "../../src/data/resources/enduranceMeter"
 import type { Inputs } from "../../src/engine/types"
 import { SET_ID } from "../../src/data/sets/ids"
 import { BUFF } from "../../src/data/skills/buffs/ids"
@@ -111,8 +112,15 @@ describe("paramsFromInputs — build derivation", () => {
         param === "spec" ||
         param === "belowQiTime" ||
         param === "minPhysAttack" ||
+        param === "maxPhysAttack" ||
+        param === "whiteCritRate" ||
         param === "targetMaxHp" ||
-        param === "breakthrough"
+        param === "breakthrough" ||
+        param === "distanceMeters" ||
+        // Divinecraft: Fire is the default consumable choice.
+        param === "divinecraftFire" ||
+        // The default build hydrates a fully claimed Oddity board.
+        param === ODDITY_MAX_ENDURANCE_PARAM
       )
         continue
       expect(def).toBeFalsy()

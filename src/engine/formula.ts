@@ -99,7 +99,6 @@ export interface FormulaContext {
   affinityDmgBoostPanel: number
   attributeDmgBoostPanel: number
   sustainDmgBoostPanel: number
-  dotDamageMultiplier?: number
   allDamageBoost?: number
   independentDamageBoost?: number
   allMartialBoost?: number
@@ -186,6 +185,7 @@ export function computeSkillDamage(
     return net <= 0 ? net / 100 : net / 200
   }
   const getsElevatedMultiplier = art.elevatedAttributeMultiplier ?? true
+  const rowDealsNoAttributeDamage = attributeCoefficient === 0 && physCoefficient > 0
 
   const clampMultiplier = (multiplier: number, min: number, max: number) =>
     Math.min(Math.max(multiplier, min), max)
@@ -368,8 +368,9 @@ export function computeSkillDamage(
     const penetrationTotal = penetration + extraSkillPenetration
     const damageBoost = scalingAttribute === attribute ? ctx.attributeDmgBoostPanel : 0
     const damageBoostMultiplier = Math.max(1 + damageBoost - attributeDamageBoostReduction, 0)
-    const coefficient =
-      scalingAttribute === attribute && getsElevatedMultiplier
+    const coefficient = rowDealsNoAttributeDamage
+      ? 0
+      : scalingAttribute === attribute && getsElevatedMultiplier
         ? attributeCoefficient
         : physCoefficient
     const penetrationMultiplier = 1 + penetrationFraction(penetrationTotal, attributePenResistance)
@@ -500,7 +501,6 @@ export function computeSkillDamage(
   const scopedDamageBoost =
     (weaponBoost !== undefined ? weaponBoost + (ctx.allMartialBoost ?? 0) : 0) +
     (mysticCategory ? (ctx.mysticTypeBoosts?.[mysticCategory] ?? 0) : 0)
-  const dotMultiplier = ctx.dotDamageMultiplier ?? 1
   const damageBoostTotal =
     ctx.generalDamageBoost +
     (ctx.allDamageBoost ?? 0) +
@@ -534,8 +534,7 @@ export function computeSkillDamage(
     (1 + independentDamageBoost) *
     count *
     correction *
-    (1 + attuneBoost) *
-    dotMultiplier
+    (1 + attuneBoost)
   const expectedDamage = withTail(selectedRowTotal)
 
   function rollHit(draw: () => number): RolledHit {

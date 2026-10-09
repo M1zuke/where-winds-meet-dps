@@ -8,6 +8,7 @@ import {
   isOddityNodeClaimed,
   oddityBoardTotals,
   oddityContributions,
+  oddityEnduranceTotal,
   oddityHpTotal,
   oddityPhysDefTotal,
   withOddityNodeClaimed,
@@ -54,10 +55,15 @@ describe("oddity board", () => {
     expect(oddityPhysDefTotal({})).toBe(50)
   })
 
-  it("keeps Max HP and Physical Defense off the combat base, unlike the attack melodies", () => {
+  it("sums the 8 Max Endurance melodies to 40, additive and uncapped", () => {
+    expect(oddityEnduranceTotal({})).toBe(40)
+  })
+
+  it("keeps Max HP, Physical Defense and Endurance off the combat base, unlike the attack melodies", () => {
     const out = oddityContributions({})
     expect(out.maxHp).toBeUndefined()
     expect(out.physDef).toBeUndefined()
+    expect(out.endurance).toBeUndefined()
   })
 
   it("contributes nothing once every region is released", () => {
@@ -66,6 +72,7 @@ describe("oddity board", () => {
     expect(oddityContributions(released)["phys.max"] ?? 0).toBe(0)
     expect(oddityHpTotal(released)).toBe(0)
     expect(oddityPhysDefTotal(released)).toBe(0)
+    expect(oddityEnduranceTotal(released)).toBe(0)
   })
 
   it("seeds a fully claimed board when inputs carry no oddity field", () => {
@@ -147,6 +154,7 @@ describe("oddity board", () => {
     const totals = oddityBoardTotals({})
     expect(totals.maxHp).toBe(oddityHpTotal({}))
     expect(totals.physDef).toBe(oddityPhysDefTotal({}))
+    expect(totals.endurance).toBe(oddityEnduranceTotal({}))
     expect(totals.maxPhys).toBe(rawTotals().max)
     expect(totals.minPhys).toBe(rawTotals().min)
   })

@@ -1,6 +1,7 @@
 import type { GearWordId } from "../data/stats/statLines"
 import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
+import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
 
 export type { GearWordId } from "../data/stats/statLines"
 import type { HitOutcome } from "./formula"
@@ -58,27 +59,26 @@ export interface QiBreakWindow {
 // (`Inputs.divinecraft`), Vulnerability is the tank spear debuff
 // (`Inputs.shareEasyHurt`), and Formbend has no modeled effect at all.
 export interface CombatSettings {
-  /** `null` leaves each rotation running the break window it carries itself. */
-  qiBreakOverride: QiBreakWindow | null
   dragonsBreath: boolean
   healerBuff: boolean
+  healerPanaceaFan: boolean
   breakExtension: boolean
   script: ScriptId | null
   dragonHeadFullStacks: boolean
   dragonHeadLowHpMaxBonus: boolean
-  lowEndurance: boolean
+  fragrantOrchidBathBean: boolean
 }
 
 export function defaultCombatSettings(): CombatSettings {
   return {
-    qiBreakOverride: null,
     dragonsBreath: false,
     healerBuff: false,
+    healerPanaceaFan: false,
     breakExtension: false,
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    lowEndurance: false,
+    fragrantOrchidBathBean: false,
   }
 }
 
@@ -89,6 +89,9 @@ export interface Inputs {
   classId: string
   breakthrough: number
   followedBreakthroughRelease?: number
+  // The Qi bar's own stake choice — absent means the default Sword Trial
+  // stake (docs/TIMELINE.md § "Qi bar").
+  qiTarget?: QiTargetId
 
   phys: AttackBlock
   bellstrike: AttackBlock
@@ -109,6 +112,12 @@ export interface Inputs {
   // Injected at the engine boundary, not persisted.
   allDamageBoost?: number
   independentDamageBoost?: number
+  // Qi-only stat keys — read by the Qi formula, not by the HP-damage kernel
+  // (docs/CALCULATION.md § "Qi damage"). Injected at the engine boundary, not
+  // persisted.
+  qiDamageBoost?: number
+  qiRateAdd?: number
+  qiDamageIndexMultiplier?: number
 
   allMartialBoost: number
   swordBoost: number
@@ -329,6 +338,29 @@ export type OutcomeCounts = Record<HitOutcome, number>
 export interface EngineRunOptions {
   seed?: number
   collect?: "full" | "totals"
+  // A prior run's own converged Qi breaks (docs/UI.md § "The rules",
+  // "warm-start") — seeds the first pass of the fixed-point iteration instead
+  // of the rotation's authored window.
+  qiScheduleSeedBreaks?: readonly {
+    startFrame: number
+    endFrame: number
+    immuneUntilFrame: number
+  }[]
+  // Test-harness only: pins the Qi schedule to exactly these windows for a
+  // single pass, no fixed-point iteration. Never read from `Inputs`, storage
+  // or the UI.
+  fixedQiBreaks?: readonly QiBreakWindow[]
+}
+
+export interface QiEdgeWarning {
+  skillName: string
+  edge: "start" | "end"
+  side: "before" | "after"
+  offsetSec: number
+  // Fight clock, like every timed warning.
+  edgeSec: number
+  // Fraction of the run's total damage, not a percent.
+  shareOfTotal: number
 }
 
 export interface Result {
@@ -336,15 +368,32 @@ export interface Result {
   dps: number
   totalDamage: number
   rotationDuration: number
+  // The frame of the first damaging hit, in seconds — docs/TIMELINE.md §
+  // "Fight window". May be negative when a pre-pull hit itself starts the
+  // fight. Every other second below stays on this same absolute clock; a
+  // display converts to fight-clock seconds (0 here) through
+  // `fightClockSec` — docs/UI.md § "Fight clock".
+  fightStartSec: number
   castDuration: number
   graduationRate: number | null
   perSkill: SkillTickResult[]
   ranking: ItemRankingRow[]
   warnings: string[]
+  qiEdgeWarnings?: QiEdgeWarning[]
+  invalidStepIds?: string[]
+  invalidStepReasons?: Record<string, import("./skill").ConditionFailureReason[]>
   timeline?: TimelineEvent[]
   buffWindows?: BuffWindow[]
   qiBreakWindow?: { startSec: number; endSec: number } | null
   lowQiWindow?: { startSec: number; endSec: number } | null
+  // Every break the Qi bar's own trace recorded this run — docs/TIMELINE.md
+  // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
+  qiBreaks?: readonly { startSec: number; endSec: number }[]
+  // A coarse, sampled Qi fraction over time, for a future chart — never
+  // persisted.
+  qiTrace?: readonly { timeSec: number; fraction: number }[]
+  // How many fixed-point passes the simulated schedule took to converge.
+  qiIterations?: number
   casts?: RotationCast[]
   // Optional so `JSON.stringify` drops the keys on an unseeded run and the
   // locked baseline digest stays byte-identical.
@@ -366,6 +415,13 @@ export interface CastBuffTag {
   remainingSec?: number
 }
 
+export interface CastMeterLevel {
+  id: string
+  name: string
+  amount: number
+  capacity: number
+}
+
 export interface RotationCast {
   index: number
   stepId: string
@@ -375,6 +431,13 @@ export interface RotationCast {
   inWindow: boolean
   prePull: boolean
   buffs: CastBuffTag[]
+  meterLevels?: CastMeterLevel[]
+  // The simulated ground distance to the target as of this cast's own start
+  // — docs/TIMELINE.md § "Target distance".
+  distanceMeters: number
+  // Set on an automatic Deflect Cancel: the `stepId` of the cancel-form cast
+  // it is attached to — docs/TIMELINE.md § "Identity and tags".
+  attachedToStepId?: string
 }
 
 export interface SkillTickResult {

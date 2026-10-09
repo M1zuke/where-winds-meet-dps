@@ -8,6 +8,7 @@ import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
 import { inebriateSkillCritDamage } from "../../skills/bamboocut-draught/buffs/inebriateSkillCritDamage"
 import { inebriateDamageScaling } from "../../skills/bamboocut-draught/buffs/inebriateDamageScaling"
+import { draughtQiBonuses } from "../../skills/bamboocut-draught/buffs/qiBonuses"
 import {
   rivenTwinbladesAdditionalAttack,
   skystrikeGauntletsAdditionalAttack,
@@ -15,6 +16,7 @@ import {
 } from "../../skills/bamboocut-draught/buffs/additionalAttack"
 import { BAMBOOCUT_DRAUGHT_GATES } from "./gates"
 import { STATUS } from "../../skills/bamboocut-draught/ids"
+import { enduranceMeter } from "../../resources/enduranceMeter"
 
 const classSkillIds = new Set(SKILLS.map((skill) => skill.id))
 const skillsWithClassOverrides = withUniversalSkills(CLASS_ID, "Bamboocut", SKILLS).filter(
@@ -38,6 +40,7 @@ export const bamboocutDraught = defineClass({
     INNER_WAY_ID.moraleChant,
     INNER_WAY_ID.bitterSeason,
     INNER_WAY_ID.breakingPoint,
+    INNER_WAY_ID.evasiveCharge,
   ],
   classSpecificAttunements: [
     "gauntletsMartialArt",
@@ -47,6 +50,11 @@ export const bamboocutDraught = defineClass({
     "driftcleaveDeepdaze",
   ],
   weapons: [MARTIAL_ART_ID.skystrikeGauntlets, MARTIAL_ART_ID.rivenTwinblades],
+  // In-game values as of 2026-09-28: the shortest read reach on either
+  // weapon (Bloombreak / the Nightwick family) — an assumption for every
+  // skill with no reach of its own.
+  defaultMeleeReachMeters: 4,
+  meters: [enduranceMeter],
   critBoostWeaponTypes: [],
   skills: skillsWithClassOverrides,
   debuffs: DEBUFFS,
@@ -58,6 +66,7 @@ export const bamboocutDraught = defineClass({
     skystrikeGauntletsAdditionalAttack,
     rivenTwinbladesAdditionalAttack,
     skystrikeGauntletsAdditionalAttackCoefficient,
+    draughtQiBonuses,
   ],
   gateBuffs: BAMBOOCUT_DRAUGHT_GATES,
   openingStackBuffIds: [STATUS.bingePoints],

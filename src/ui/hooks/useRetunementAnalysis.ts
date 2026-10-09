@@ -36,6 +36,7 @@ function receivedRetunement(response: RetunementWorkerResponse | null): Received
 export function useRetunementAnalysis(
   inputs: Inputs,
   selectedPieceId: string | null,
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
 ): RetunementAnalysisResult {
   const [received, setReceived] = useState<ReceivedRetunement | null>(() =>
     receivedRetunement(retainedResponse("retunement")),
@@ -50,8 +51,8 @@ export function useRetunementAnalysis(
 
   useEffect(() => {
     if (!selectedPieceId) return
-    postToDpsWorker({ kind: "retunement", inputs, pieceId: selectedPieceId })
-  }, [inputs, selectedPieceId])
+    postToDpsWorker({ kind: "retunement", inputs, pieceId: selectedPieceId, baselineQiBreaks })
+  }, [inputs, selectedPieceId, baselineQiBreaks])
 
   if (!selectedPieceId) return NO_SELECTION_RESULT
   return {

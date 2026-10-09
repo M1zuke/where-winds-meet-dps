@@ -44,8 +44,8 @@ describe("Skill Editor — a tick source states how many times its one hit lands
 
   it("shows the skill's own hit count, not a tick count, when it is not a tick source", () => {
     renderSkillsTab()
-    fireEvent.click(screen.getByText("FanSpecial"))
+    fireEvent.click(screen.getByText("FanHeavyPursuit 3-Hit"))
 
-    expect(screen.getByText("× 2")).toBeInTheDocument()
+    expect(screen.getByText("× 3")).toBeInTheDocument()
   })
 })

@@ -10,7 +10,7 @@ export type StandardizedEncounter = Pick<
   Inputs,
   "dummyMode" | "food" | "divinecraft" | "shareDebuff5HenZhi" | "shareEasyHurt"
 > &
-  Omit<CombatSettings, "qiBreakOverride">
+  CombatSettings
 
 export interface StandardizedGraduation {
   encounter?: Partial<StandardizedEncounter>
@@ -26,10 +26,11 @@ export const STANDARDIZED_ENCOUNTER_OFF: StandardizedEncounter = {
   script: null,
   dragonsBreath: false,
   healerBuff: false,
+  healerPanaceaFan: false,
   breakExtension: false,
   dragonHeadFullStacks: false,
   dragonHeadLowHpMaxBonus: false,
-  lowEndurance: false,
+  fragrantOrchidBathBean: false,
 }
 
 export interface GraduationBuild {

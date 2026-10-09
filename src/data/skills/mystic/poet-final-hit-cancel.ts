@@ -1,8 +1,9 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { applyDebuff } from "../../../definitions/skills/triggers"
+import { applyDebuff, castSkill } from "../../../definitions/skills/triggers"
 import { MYSTIC_ARTS_CLASS_ID } from "../../../engine/skill"
 import { CAST, MYSTIC } from "../ids"
 import { SKILL, DEBUFF } from "./ids"
+import { BUFF } from "../buffs/ids"
 
 export const poetFinalHitCancel = defineSkill({
   id: SKILL.poetFinalHitCancel,
@@ -13,8 +14,14 @@ export const poetFinalHitCancel = defineSkill({
   weaponOrAttribute: "",
   attributeAttack: "",
   castTag: CAST.poetFinalHitCancel,
+  cancelledBy: "deflectCancel",
   castFrames: 47,
   triggerable: true,
+  // In-game values as of 2026-09-28: every other mystic art is a stationary
+  // cast, and this one carries no engagement-range field to read — reach is
+  // an assumption (the class's own default melee reach).
+  approach: "stationary",
+  receives: [BUFF.poetFinalStrikeStack],
   hits: [
     hit(0, {
       frame: 0,
@@ -29,6 +36,7 @@ export const poetFinalHitCancel = defineSkill({
           extendFrames: 90,
           extendOnly: true,
         }),
+        castSkill({ target: SKILL.poetFinalHitCancelExplosion }),
       ],
     }),
   ],

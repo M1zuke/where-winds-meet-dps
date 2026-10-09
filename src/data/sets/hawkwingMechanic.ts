@@ -28,13 +28,13 @@ export function hawkwingMechanic(setId: string, setName: string): TimelineMechan
       const proc =
         Math.min(setup.effectiveRates.affinityRate, AFFINITY_PROC_CAP) +
         setup.inputs.directAffinityRate
+      // In-game values as of 2026-09-26: a DoT tick rolls the same affinity
+      // chance as a direct hit, so it procs a stack too.
+      const procTimesSec = [...setup.hitTimesSec, ...setup.dotTickTimesSec].sort(
+        (left, right) => left - right,
+      )
       return {
-        schedule: hawkwingStacksSchedule(
-          setup.hitTimesSec,
-          proc,
-          setup.rotationDurationSec,
-          setup.rng,
-        ),
+        schedule: hawkwingStacksSchedule(procTimesSec, proc, setup.rotationDurationSec, setup.rng),
       }
     },
 

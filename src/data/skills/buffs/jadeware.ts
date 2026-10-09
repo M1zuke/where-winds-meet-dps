@@ -9,11 +9,11 @@ import { jadeware as jadewareSet } from "../../sets/jadeware"
 // lasts 10s and can only trigger once every 12s." (in-game set tooltip, as of
 // 15 Aug 2026)
 //
-// The tooltip reads as if both bonuses were gated on the target's Qi; the
-// buff itself carries `affinityDamageBoost` unconditionally for the
-// whole window, and only `directAffinityRate` asks about the target. Every
-// low-Qi source the sim models — the lead-in window, Qi Imbalance, and the
-// broken bar during qi-break — reports a non-`normal` phase.
+// The player's own Qi bar is not modelled (nothing spends it), so "lower than
+// yours" reads as "the target has taken any Qi damage at all" — which, since
+// Qi is a function of the same HP damage, is exactly
+// `remainingHealthFraction < 1`. That arm is true from the fight's first hit
+// on, dominating the qiBelow/Qi-Imbalance arms in every realistic build.
 export const jadeware = defineBuff({
   id: BUFF.jadeware,
   name: "Jadeware",
@@ -21,9 +21,10 @@ export const jadeware = defineBuff({
   affectsAll: true,
   duration: 10,
   cooldown: 12,
-  summary: "affinityDmg +10% for the whole window, directAffinity +7.5% — low-Qi targets only",
-  effects: (ctx) => [
-    stat("affinityDamageBoost", 0.1),
-    ...(ctx.phase === "normal" ? [] : [stat("directAffinityRate", 0.075)]),
-  ],
+  buffAppliesOnCastEnd: true,
+  summary: "affinityDmg +10% for the whole window, directAffinity +7.5% for the whole window",
+  effects: (ctx) =>
+    ctx.target.remainingHealthFraction < 1 || ctx.target.qiFraction < 0.4 || ctx.status.isActive(BUFF.qiImbalance)
+      ? [stat("affinityDamageBoost", 0.1), stat("directAffinityRate", 0.075)]
+      : [],
 })

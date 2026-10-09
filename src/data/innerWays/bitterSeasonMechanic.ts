@@ -148,11 +148,7 @@ export function bitterSeasonMechanic(): TimelineMechanic<State> {
           Math.round(envelope.endSec * setup.fps),
         )
       }
-      target.ledger.recordStack(
-        state.debuffId,
-        Math.max(0, Math.round(setup.hitTimesSec[0] * setup.fps)),
-        1,
-      )
+      target.ledger.recordStack(state.debuffId, Math.round(setup.hitTimesSec[0] * setup.fps), 1)
     },
 
     contributeAt(state, frame, _skill, setup) {

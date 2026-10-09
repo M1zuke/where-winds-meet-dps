@@ -6,17 +6,17 @@ import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
 import { defaultCombatSettings } from "../../src/engine/types"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
 import { makeSkill } from "../../src/engine/skill"
 import { BuffEngine } from "../../src/engine/buffs/buffEngine"
 import { GLOBAL_BUFF_DEFS } from "../../src/data/skills/buffs"
-import type { Inputs } from "../../src/engine/types"
-import { builtinSkill } from "../builtins"
+import type { EngineRunOptions, Inputs } from "../../src/engine/types"
+import { builtinSkill, testRotation as makeRotation } from "../builtins"
 import { SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
 import { SKILL as MYSTIC_SKILL } from "../../src/data/skills/mystic/ids"
 
 describe("Dragon Head registry — shared mystic art, both versions", () => {
-  it("Bellstrike Umbra exposes both versions with the workbook coefficients", () => {
+  it("Bellstrike Umbra exposes both versions with the in-game coefficients", () => {
     const base = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHead)
     const plus = builtinSkill("bellstrikeUmbra", MYSTIC_SKILL.dragonHeadPlus)
     expect(base).toBeTruthy()
@@ -32,12 +32,14 @@ describe("Dragon Head registry — shared mystic art, both versions", () => {
 
     const baseHit = base!.hits[0]
     const plusHit = plus!.hits[0]
-    expect(plusHit.physMultiplier).toBeCloseTo(17.34049, 9)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(26.010735, 9)
-    expect(plusHit.physFixed).toBeCloseTo(2608.52, 9)
-    expect(plusHit.physMultiplier).toBeCloseTo(baseHit.physMultiplier * 0.7, 4)
-    expect(plusHit.attributeMultiplier).toBeCloseTo(baseHit.attributeMultiplier * 0.7, 4)
-    expect(plusHit.physFixed).toBeCloseTo(baseHit.physFixed * 0.7, 2)
+    // Plain reads 1.1 × its own level-71 row; Plus reads 0.77 × the level-171
+    // row instead, so the two are no longer a fixed ratio of one another.
+    expect(baseHit.physMultiplier).toBeCloseTo(19.07454, 9)
+    expect(baseHit.attributeMultiplier).toBeCloseTo(28.61181, 9)
+    expect(baseHit.physFixed).toBeCloseTo(2869.37, 9)
+    expect(plusHit.physMultiplier).toBeCloseTo(12.59654, 9)
+    expect(plusHit.attributeMultiplier).toBeCloseTo(18.89481, 9)
+    expect(plusHit.physFixed).toBeCloseTo(1912.3, 9)
   })
 
   it("both versions receive the same buffs, so the pair cannot drift apart again", () => {
@@ -183,14 +185,14 @@ function rotationOf(classId: string, skillIds: string[]) {
   return makeRotation(classId, { name: `test-${skillIds.join("+")}`, steps })
 }
 
-function simulate(skillIds: string[], overrides: Partial<Inputs> = {}) {
+function simulate(skillIds: string[], overrides: Partial<Inputs> = {}, options?: EngineRunOptions) {
   const inputs: Inputs = {
     ...defaultInputs,
     classId: "bellstrikeUmbra",
     activeCustomRotation: rotationOf("bellstrikeUmbra", skillIds),
     ...overrides,
   }
-  return simulateTimeline(inputs)
+  return simulateTimeline(inputs, options)
 }
 
 function withFullStacks(): Partial<Inputs> {
@@ -307,7 +309,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
     expect(boosted).toBeGreaterThan(plain)
   })
 
-  // Cross-checked against the Healer Buff toggle, a known +0.20 into the same
+  // Cross-checked against the Healer Buff toggle, a known +0.10 into the same
   // additive pool (frame 0 sits outside the default Qi break, so its bonus is
   // the flat, unboosted amount): it fixes the pool size independently, which
   // then predicts the 0.45.
@@ -325,7 +327,7 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
       MYSTIC_SKILL.dragonHeadPlus,
     )
 
-    const pool = 0.2 / (healed / plain - 1)
+    const pool = 0.1 / (healed / plain - 1)
     expect(lowHp / plain).toBeCloseTo((pool + 0.45) / pool, 9)
   })
 
@@ -345,12 +347,48 @@ describe("Max Low-HP Bonus (Dragon Head)", () => {
   })
 })
 
+describe("Healer Buff toggle", () => {
+  const withHealerBuff = (panaceaFan = false): Partial<Inputs> => ({
+    combatSettings: { ...defaultCombatSettings(), healerBuff: true, healerPanaceaFan: panaceaFan },
+  })
+  const IN_THE_BREAK: EngineRunOptions = {
+    fixedQiBreaks: [{ startSec: 0, durationSec: 999, lowQiLeadSec: 0 }],
+  }
+
+  it("adds the same bonus whether or not the target is in its Qi break", () => {
+    const plain = skillDamage(simulate([MYSTIC_SKILL.dragonHeadPlus]), MYSTIC_SKILL.dragonHeadPlus)
+    const healed = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const plainInBreak = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], {}, IN_THE_BREAK),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const healedInBreak = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff(), IN_THE_BREAK),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    expect(healedInBreak / plainInBreak).toBeCloseTo(healed / plain, 6)
+  })
+
+  it("raises the bonus from 10% to 24% when the healer carries Panacea Fan", () => {
+    const plain = skillDamage(simulate([MYSTIC_SKILL.dragonHeadPlus]), MYSTIC_SKILL.dragonHeadPlus)
+    const healed = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff()),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    const healedWithPanaceaFan = skillDamage(
+      simulate([MYSTIC_SKILL.dragonHeadPlus], withHealerBuff(true)),
+      MYSTIC_SKILL.dragonHeadPlus,
+    )
+    expect((healedWithPanaceaFan / plain - 1) / (healed / plain - 1)).toBeCloseTo(0.24 / 0.1, 6)
+  })
+})
+
 describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
-  const qiBreak = (startSec: number, durationSec = 10): Partial<Inputs> => ({
-    combatSettings: {
-      ...defaultCombatSettings(),
-      qiBreakOverride: { startSec, durationSec, lowQiLeadSec: 0 },
-    },
+  const qiBreak = (startSec: number, durationSec = 10): EngineRunOptions => ({
+    fixedQiBreaks: [{ startSec, durationSec, lowQiLeadSec: 0 }],
   })
 
   // the cast is 246 frames, so a break opening at 0 s still covers the hit
@@ -381,11 +419,11 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
 
   it("is worth exactly x2 inside the window", () => {
     const tagged = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], insideBreak),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], {}, insideBreak),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     const untagged = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], { ...insideBreak, customSkills: withoutTheTag() }),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], { customSkills: withoutTheTag() }, insideBreak),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     expect(tagged / untagged).toBeCloseTo(2, 9)
@@ -393,14 +431,11 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
 
   it("changes nothing outside the window", () => {
     const tagged = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], outsideBreak),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], {}, outsideBreak),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     const untagged = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], {
-        ...outsideBreak,
-        customSkills: withoutTheTag(),
-      }),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], { customSkills: withoutTheTag() }, outsideBreak),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     expect(tagged).toBeCloseTo(untagged, 6)
@@ -408,11 +443,11 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
 
   it("does not double when the break window has no length", () => {
     const off = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], qiBreak(0, 0)),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], {}, qiBreak(0, 0)),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     const outside = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHeadPlus], outsideBreak),
+      simulate([MYSTIC_SKILL.dragonHeadPlus], {}, outsideBreak),
       MYSTIC_SKILL.dragonHeadPlus,
     )
     expect(off).toBeCloseTo(outside, 6)
@@ -420,11 +455,11 @@ describe("Dragon Head - Plus doubles into a depleted-Qi target", () => {
 
   it("does not double the base version, which only gets the window's boost", () => {
     const outside = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHead], outsideBreak),
+      simulate([MYSTIC_SKILL.dragonHead], {}, outsideBreak),
       MYSTIC_SKILL.dragonHead,
     )
     const inside = skillDamage(
-      simulate([MYSTIC_SKILL.dragonHead], insideBreak),
+      simulate([MYSTIC_SKILL.dragonHead], {}, insideBreak),
       MYSTIC_SKILL.dragonHead,
     )
     expect(inside).toBeGreaterThan(outside)

@@ -78,14 +78,14 @@
   font-weight: 600;
 }
 
-.qiBreakFields {
+.inlineFields {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 14px;
   margin-top: 6px;
 }
 
-.qiBreakField {
+.inlineField {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -93,11 +93,11 @@
   color: var(--color-text-dim);
 }
 
-.qiBreakField input {
+.inlineField input {
   width: 60px;
 }
 
-.qiBreakHint {
+.inlineHint {
   margin: 6px 0 0;
   font-size: 0.78em;
   color: var(--color-text-faint);

@@ -1,9 +1,8 @@
 import { defineDebuff } from "../../../definitions/skills/skillDef"
-import { ATTUNE } from "../ids"
 import { BUFF } from "../buffs/ids"
 import type { Debuff } from "../../../engine/debuff"
 import { DEBUFF } from "./ids"
-import { DRONE_INTERVAL_FRAMES, DRONE_TICK, droneWindowFrames } from "./droneTick"
+import { DRONE_LINGERING_BONE_ADDITIONAL_TICKS, droneDotSpec, droneWindowFrames } from "./droneTick"
 
 const CLASS_ID = "silkbindJade"
 
@@ -15,15 +14,7 @@ export const umbdrone12Hit = defineDebuff({
   activation: "triggered",
   durationFrames: droneWindowFrames(12),
   effects: [],
-  dot: {
-    tickIntervalFrames: DRONE_INTERVAL_FRAMES,
-    ...DRONE_TICK,
-    attributeAttack: "Silkbind",
-    skillType: "sustain",
-    attuneTag: ATTUNE.umbFrequentProjectile,
-    count: 1,
-    perStackShapes: null,
-  },
+  dot: droneDotSpec(false),
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -40,15 +31,7 @@ export const umbdrone16Hit = defineDebuff({
   activation: "triggered",
   durationFrames: droneWindowFrames(16),
   effects: [],
-  dot: {
-    tickIntervalFrames: DRONE_INTERVAL_FRAMES,
-    ...DRONE_TICK,
-    attributeAttack: "Silkbind",
-    skillType: "sustain",
-    attuneTag: ATTUNE.umbFrequentProjectile,
-    count: 1,
-    perStackShapes: null,
-  },
+  dot: droneDotSpec(false),
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -65,15 +48,7 @@ export const umbdrone20Hit = defineDebuff({
   activation: "triggered",
   durationFrames: droneWindowFrames(20),
   effects: [],
-  dot: {
-    tickIntervalFrames: DRONE_INTERVAL_FRAMES,
-    ...DRONE_TICK,
-    attributeAttack: "Silkbind",
-    skillType: "sustain",
-    attuneTag: ATTUNE.umbFrequentProjectile,
-    count: 1,
-    perStackShapes: null,
-  },
+  dot: droneDotSpec(false),
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -90,15 +65,7 @@ export const umbdrone23Hit = defineDebuff({
   activation: "triggered",
   durationFrames: droneWindowFrames(23),
   effects: [],
-  dot: {
-    tickIntervalFrames: DRONE_INTERVAL_FRAMES,
-    ...DRONE_TICK,
-    attributeAttack: "Silkbind",
-    skillType: "sustain",
-    attuneTag: ATTUNE.umbFrequentProjectile,
-    count: 1,
-    perStackShapes: null,
-  },
+  dot: droneDotSpec(false),
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -115,15 +82,7 @@ export const umbdrone26Hit = defineDebuff({
   activation: "triggered",
   durationFrames: droneWindowFrames(26),
   effects: [],
-  dot: {
-    tickIntervalFrames: DRONE_INTERVAL_FRAMES,
-    ...DRONE_TICK,
-    attributeAttack: "Silkbind",
-    skillType: "sustain",
-    attuneTag: ATTUNE.umbFrequentProjectile,
-    count: 1,
-    perStackShapes: null,
-  },
+  dot: droneDotSpec(false),
   maxStacks: 1,
   stackScaling: "flat",
   createdAt: "2026-08-17T00:00:00.000Z",
@@ -141,9 +100,10 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
-    physMultiplier: 0.15,
+    // In-game values as of 2026-09-24.
+    physMultiplier: 0.02,
     physFixed: 0,
-    attributeMultiplier: 0.225,
+    attributeMultiplier: 0,
     attributeFixed: 0,
     attributeAttack: "Silkbind",
     skillType: "sustain",
@@ -165,14 +125,7 @@ export const umbdrone = defineDebuff({
   id: DEBUFF.umbdrone,
   name: "UmbDrone",
   durationFrames: 3600 * 60,
-  dot: {
-    ...umbdrone20Hit.dot,
-    // Provisional cadence from https://medal.tv/games/where-winds-meet/clips/nhIubYLFVfAg-vpqX:
-    // paired impacts approximately 0.15 s apart, repeating every 0.5 s.
-    tickIntervalFrames: 30,
-    firstTickOffsetFrames: 21,
-    additionalTicks: { offsetsFrames: [9], requiresBuff: BUFF.lingeringBone },
-  },
+  dot: { ...umbdrone20Hit.dot, additionalTicks: DRONE_LINGERING_BONE_ADDITIONAL_TICKS },
 })
 
 export const DEBUFFS: readonly Debuff[] = [

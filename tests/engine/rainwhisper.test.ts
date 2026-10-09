@@ -8,7 +8,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { rainwhisper } from "../../src/data/sets/rainwhisper"
 import { SET_ID } from "../../src/data/sets/ids"
 
-const SHIELD_DURATION = 8
+const SHIELD_APPLIES_AFTER = 0.5
+const SHIELD_DURATION = 10
 
 function engineWithSet(armorSet?: string) {
   return new BuffEngine(armorSet ? { armorSet } : {}, GLOBAL_BUFF_DEFS, [])
@@ -32,6 +33,12 @@ describe("rainwhisper — 4-piece crit damage", () => {
     expect(critDamageAt(engineWithSet(rainwhisper.siteKey), 0)).toBe(0.1)
   })
 
+  it("stays at 10% until the shield opens 0.5 s after the granting cast", () => {
+    const engine = engineWithSet(rainwhisper.siteKey)
+    engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
+    expect(critDamageAt(engine, SHIELD_APPLIES_AFTER - 0.1)).toBe(0.1)
+  })
+
   it("gives 25% while a self-applied HP shield is up", () => {
     const engine = engineWithSet(rainwhisper.siteKey)
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
@@ -41,7 +48,14 @@ describe("rainwhisper — 4-piece crit damage", () => {
   it("falls back to 10% once the shield window has expired", () => {
     const engine = engineWithSet(rainwhisper.siteKey)
     engine.processSkillCast("cast:probe", 0, {}, false, [BUFF.rainwhisperShield])
-    expect(critDamageAt(engine, SHIELD_DURATION + 1)).toBe(0.1)
+    expect(critDamageAt(engine, SHIELD_APPLIES_AFTER + SHIELD_DURATION + 1)).toBe(0.1)
+  })
+
+  it("gives 25% for 10 s starting 0.5 s after Golden Body's cast", () => {
+    const engine = engineWithSet(rainwhisper.siteKey)
+    engine.processSkillCast("cast:goldenBodyCancel", 0, {}, false, [BUFF.rainwhisperShield])
+    expect(critDamageAt(engine, 10)).toBe(0.25)
+    expect(critDamageAt(engine, 10.5)).toBe(0.1)
   })
 
   it("is inert without the rainwhisper set, shield or not", () => {

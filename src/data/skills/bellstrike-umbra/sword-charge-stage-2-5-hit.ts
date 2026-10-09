@@ -1,0 +1,34 @@
+import { defineSkill } from "../../../definitions/skills/skillDef"
+import { ATTUNE, CAST, WEAPON } from "../ids"
+import { SKILL } from "./ids"
+import { SWORD_CHARGE_STAGE_1_DISPLACEMENT } from "./sword-charge-stage-1-hits"
+import { SWORD_CHARGE_STAGE_2_HITS } from "./sword-charge-stage-2-hits"
+import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import {
+  SECOND_TRACK_SLASH_COST,
+  SECOND_TRACK_SLASH_FREEZE,
+  SECOND_TRACK_SLASH_STAGE_2_DRAIN,
+} from "./buffs/secondTrackSlashEndurance"
+
+export const swordChargeStage25Hit = defineSkill({
+  id: SKILL.swordChargeStage25Hit,
+  classId: "bellstrikeUmbra",
+  name: "Sword Charge Stage 2, 5-Hit",
+  breakdownName: "Second Track Slash",
+  tags: [WEAPON.sword, ATTUNE.swordCharged],
+  skillType: "weapon",
+  weaponOrAttribute: "Sword",
+  attributeAttack: "Bellstrike",
+  castTag: CAST.swordChargeStage25Hit,
+  receives: STRATEGIC_SWORD_RECEIVES,
+  meterCosts: [SECOND_TRACK_SLASH_COST],
+  meterDrains: SECOND_TRACK_SLASH_STAGE_2_DRAIN,
+  meterFreezes: SECOND_TRACK_SLASH_FREEZE,
+  // Cast length to the earliest next input and hit frames: in-game animation, 2026-10-06.
+  castFrames: 207,
+  triggerable: true,
+  displacement: SWORD_CHARGE_STAGE_1_DISPLACEMENT,
+  hits: SWORD_CHARGE_STAGE_2_HITS,
+  createdAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-06T00:00:00.000Z",
+})

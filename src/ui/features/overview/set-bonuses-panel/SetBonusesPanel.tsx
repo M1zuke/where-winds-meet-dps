@@ -37,6 +37,7 @@ const PANEL_STAT_KEYS: Readonly<Record<string, string>> = {
   precisionRate: "common.precision",
   maxPhys: "common.maxPhys",
   minPhys: "common.minPhys",
+  physDef: "content.statLine.physDef",
 }
 
 const BOW_TILES: { choice: BowSet; labelKey: string; bonusValue: number }[] = [
@@ -109,7 +110,7 @@ function buildArmorRows(
   const gearLevel = gearLevelForBreakthrough(inputs.breakthrough)
   const rows: OptionRow[] = ARMOR_SET_OPTIONS.map((opt) => {
     const statLabel = opt.stat ? t(PANEL_STAT_KEYS[opt.stat] ?? opt.stat) : ""
-    const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys"
+    const isFlat = opt.stat === "maxPhys" || opt.stat === "minPhys" || opt.stat === "physDef"
     const dps = armorDpsByKey?.[opt.setKey] ?? Number.NaN
     return {
       key: opt.setKey,

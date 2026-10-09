@@ -37,9 +37,10 @@ const STAT_KEYS: Readonly<Record<OddityStat, string>> = {
   maxPhys: "common.maxPhys",
   physDef: "content.statLine.physDef",
   maxHp: "content.statLine.maxHp",
+  endurance: "content.meter.endurance",
 }
 
-const STAT_ORDER: readonly OddityStat[] = ["minPhys", "maxPhys", "physDef", "maxHp"]
+const STAT_ORDER: readonly OddityStat[] = ["minPhys", "maxPhys", "physDef", "maxHp", "endurance"]
 
 type NodeState = "claimed" | "ready" | "locked"
 

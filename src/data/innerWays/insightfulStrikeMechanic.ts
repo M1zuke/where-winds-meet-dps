@@ -12,7 +12,7 @@ import type { Skill } from "../../engine/skill"
 import type { TimelineMechanic } from "../../engine/mechanics/types"
 
 const AFFINITY_PROC_CAP = 0.4
-const DOT_MULTIPLIER_AT_TIER_6 = 0.1
+const DOT_DAMAGE_BONUS_AT_TIER_6 = 0.1
 const DISPLAY_THRESHOLD = 0.5
 
 // In-game text, 2026-09-10: the tier-6 rung raises "DoT and its empowered
@@ -69,7 +69,7 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
         setup.inputs.directAffinityRate
       return {
         schedule: concentrationActiveProbSchedule(
-          setup.weaponHitTimesSec,
+          setup.hitTimesSec,
           proc,
           setup.rotationDurationSec,
           setup.rng,
@@ -88,14 +88,11 @@ export function insightfulStrikeMechanic(): TimelineMechanic<State> {
               amount: effect.amount * activeProb,
             }))
           : []
-      const scaled = state.tier6 && takesDotDamageBoost(skill)
-      if (effects.length === 0 && !scaled) return null
-      return {
-        effects,
-        context: scaled
-          ? { dotDamageMultiplier: 1 + DOT_MULTIPLIER_AT_TIER_6 * activeProb }
-          : undefined,
-      }
+      const scaled = state.tier6 && takesDotDamageBoost(skill) && activeProb > 0
+      if (scaled)
+        effects.push({ statKey: "allDamageBoost", amount: DOT_DAMAGE_BONUS_AT_TIER_6 * activeProb })
+      if (effects.length === 0) return null
+      return { effects }
     },
 
     display(state, timeSec, prePull) {

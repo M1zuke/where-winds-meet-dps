@@ -70,6 +70,7 @@ export default defineGraduationBuild({
       ...BELLSTRIKE_UMBRA_STANDARDIZED.encounter,
       dragonHeadLowHpMaxBonus: true,
       dragonHeadFullStacks: true,
+      fragrantOrchidBathBean: true,
     },
   },
 })

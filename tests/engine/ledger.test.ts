@@ -83,6 +83,82 @@ describe("StatusLedger — windows", () => {
   })
 })
 
+describe("StatusLedger — framesSinceLastEnd", () => {
+  it("is undefined before any window has ever closed", () => {
+    const led = ledger()
+    expect(led.framesSinceLastEnd("buff", 100)).toBeUndefined()
+    led.pushWindow("buff", 100, 200)
+    expect(led.framesSinceLastEnd("buff", 150)).toBeUndefined()
+  })
+
+  it("counts from the frame a window closed, not from when it opened", () => {
+    const led = ledger()
+    led.pushWindow("buff", 100, 200)
+    expect(led.framesSinceLastEnd("buff", 200)).toBe(0)
+    expect(led.framesSinceLastEnd("buff", 250)).toBe(50)
+  })
+
+  it("picks the latest of several closed windows, ignoring one still open", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 100)
+    led.pushWindow("buff", 150, 300)
+    led.pushWindow("buff", 500, 900)
+    expect(led.framesSinceLastEnd("buff", 400)).toBe(100)
+  })
+
+  it("hides a window pushed at or after the mark, through asOf", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 100)
+    const mark = led.mark()
+    led.pushWindow("buff", 110, 150)
+    expect(led.asOf(mark).framesSinceLastEnd("buff", 200)).toBe(100)
+    expect(led.framesSinceLastEnd("buff", 200)).toBe(50)
+  })
+})
+
+describe("StatusLedger — framesSinceStacksBelowThreshold", () => {
+  it("is undefined for a status with no recorded stack history", () => {
+    const led = ledger()
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBeUndefined()
+  })
+
+  it("is undefined while the stacks have never crossed the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 80)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBeUndefined()
+  })
+
+  it("counts from the frame the stacks fell below the threshold, not from when they rose to it", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    expect(led.framesSinceStacksBelowThreshold("points", 100, 60)).toBe(0)
+    expect(led.framesSinceStacksBelowThreshold("points", 150, 60)).toBe(50)
+  })
+
+  it("picks the latest of several drops, even while currently back above the threshold", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    led.recordStack("points", 400, 60)
+    expect(led.framesSinceStacksBelowThreshold("points", 500, 60)).toBe(200)
+  })
+
+  it("hides a drop recorded at or after the mark, through asOf", () => {
+    const led = ledger()
+    led.recordStack("points", 0, 60)
+    led.recordStack("points", 100, 40)
+    const mark = led.mark()
+    led.recordStack("points", 200, 60)
+    led.recordStack("points", 300, 20)
+    expect(led.asOf(mark).framesSinceStacksBelowThreshold("points", 400, 60)).toBe(300)
+    expect(led.framesSinceStacksBelowThreshold("points", 400, 60)).toBe(100)
+  })
+})
+
 describe("StatusLedger — asOf hides writes at or after a mark", () => {
   it("hides a window pushed at or after the mark, keeps one pushed before it", () => {
     const led = ledger()

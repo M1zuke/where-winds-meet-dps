@@ -3,6 +3,7 @@ import { battleAnthem } from "./battleAnthem"
 export { INNER_WAY_LADDERS } from "./breakthroughLadders"
 import { bitterSeason } from "./bitterSeason"
 import { frostCladNight } from "./frostCladNight"
+import { gourdToss } from "./gourdToss"
 import { insightfulStrike } from "./insightfulStrike"
 import { moraleChant } from "./moraleChant"
 import { mountainsMight } from "./mountainsMight"
@@ -19,6 +20,7 @@ import { eonpour } from "./eonpour"
 import { skyspeak } from "./skyspeak"
 import { mistwing } from "./mistwing"
 import { volutefit } from "./volutefit"
+import { evasiveCharge } from "./evasiveCharge"
 
 // Order is load-bearing: the context-scalar sum and
 // `innerWayTargetDefenseMultiplier`'s first-match both iterate this array,
@@ -27,6 +29,7 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   battleAnthem,
   bitterSeason,
   frostCladNight,
+  gourdToss,
   insightfulStrike,
   moraleChant,
   mountainsMight,
@@ -43,4 +46,5 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   skyspeak,
   mistwing,
   volutefit,
+  evasiveCharge,
 ]

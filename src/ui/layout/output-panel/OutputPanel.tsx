@@ -130,12 +130,35 @@ export function MetricsCard({
   )
 }
 
+const QI_EDGE_WARNING_KEYS = {
+  start: {
+    before: "layout.outputPanel.qiEdgeBeforeStart",
+    after: "layout.outputPanel.qiEdgeAfterStart",
+  },
+  end: {
+    before: "layout.outputPanel.qiEdgeBeforeEnd",
+    after: "layout.outputPanel.qiEdgeAfterEnd",
+  },
+}
+
 export function WarningsList({ result }: { result: Result }) {
-  if (!result.warnings.length) return null
+  const { t } = useI18n()
+  const qiEdgeWarnings = result.qiEdgeWarnings ?? []
+  if (!result.warnings.length && !qiEdgeWarnings.length) return null
   return (
     <div className="warnings">
       {result.warnings.map((warning, index) => (
         <div key={index}>⚠ {warning}</div>
+      ))}
+      {qiEdgeWarnings.map((warning) => (
+        <div key={`${warning.skillName}-${warning.edge}-${warning.edgeSec}`}>
+          ⚠{" "}
+          {t(QI_EDGE_WARNING_KEYS[warning.edge][warning.side])
+            .replace("{skill}", warning.skillName)
+            .replace("{seconds}", warning.offsetSec.toFixed(2))
+            .replace("{edge}", warning.edgeSec.toFixed(2))
+            .replace("{share}", (warning.shareOfTotal * 100).toFixed(1))}
+        </div>
       ))}
     </div>
   )

@@ -4,7 +4,8 @@ import { defaultInputs } from "../../src/engine/defaults"
 import { buildContext } from "../../src/engine/panel"
 import { computeSkillDamage } from "../../src/engine/formula"
 import { makeSkill, makeHit, makeTrigger, hitToArtRow, type Skill } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeDebuff, type Debuff } from "../../src/engine/debuff"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import type { Inputs } from "../../src/engine/types"
@@ -106,11 +107,14 @@ describe("Debuff.triggersBuffs — DoT ticks trigger declared buffs", () => {
       steps: [makeStep({ skillId: skillApplyA.id }), makeStep({ skillId: skillProbe.id })],
     })
     const skills = [skillApplyA, skillProbe]
-    const inputs = { ...timelineInputs(rotation, skills, [debuffA]), set: null }
+    // divinecraft: null — a bare `buildContext` call below never sees the
+    // buff-engine's Divinecraft: Fire contribution.
+    const inputs = { ...timelineInputs(rotation, skills, [debuffA]), set: null, divinecraft: null }
     const r = simulateTimeline(inputs)
     const untriggered = simulateTimeline({
       ...timelineInputs(rotation, skills, [{ ...debuffA, triggersBuffs: undefined }]),
       set: null,
+      divinecraft: null,
     })
 
     const tickAt = (result: typeof r, frame: number) =>

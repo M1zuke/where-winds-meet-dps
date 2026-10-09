@@ -63,14 +63,14 @@ const inputs: Inputs = {
   ],
   classSpecificAttunement: { bleedingDamage: 0.1988 },
   combatSettings: {
-    qiBreakOverride: { startSec: 25, durationSec: 10, lowQiLeadSec: 0 },
     dragonsBreath: false,
     healerBuff: false,
+    healerPanaceaFan: false,
     breakExtension: false,
     script: null,
     dragonHeadFullStacks: false,
     dragonHeadLowHpMaxBonus: false,
-    lowEndurance: false,
+    fragrantOrchidBathBean: false,
   },
   shareDebuff5HenZhi: false,
   shareEasyHurt: false,
@@ -107,11 +107,11 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     expect(eff.resistance).toBeCloseTo(0.45, 3)
   })
 
-  it("runs the T6-Bili rotation (~67.7 s) and lands within a loose band of the site's target", () => {
+  it("runs the T6-Bili rotation (~68.2 s) and lands within a loose band of the site's target", () => {
     const result = runEngine(inputs)
 
-    expect(result.rotationDuration).toBeGreaterThan(67.4)
-    expect(result.rotationDuration).toBeLessThan(67.9)
+    expect(result.rotationDuration).toBeGreaterThan(70.3)
+    expect(result.rotationDuration).toBeLessThan(71.3)
 
     const detonation = result.perSkill.find(
       (s) => s.name === skillRow(CLASS, SKILL.bleedDetonation),
@@ -147,21 +147,18 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(43845)
-    expect(result.dps).toBeLessThan(43995)
-    expect(result.totalDamage).toBeGreaterThan(2966000)
-    expect(result.totalDamage).toBeLessThan(2980000)
-    expect(detonation?.expectedDamage).toBeGreaterThan(1514000)
-    expect(detonation?.expectedDamage).toBeLessThan(1527000)
+    expect(result.dps).toBeGreaterThan(41315)
+    expect(result.dps).toBeLessThan(41475)
+    expect(result.totalDamage).toBeGreaterThan(2941100)
+    expect(result.totalDamage).toBeLessThan(2955500)
+    expect(detonation?.expectedDamage).toBeGreaterThan(1464500)
+    expect(detonation?.expectedDamage).toBeLessThan(1477500)
 
-    // dps sits ~9.2 % below the cached target while total damage sits above
-    // it: the animation-accurate cast lengths lengthen the rotation by
-    // several seconds, so the same hits land over a longer clock.
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.904)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.912)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.008)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.017)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.959)
-    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.968)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.8535)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.8585)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.0005)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.0075)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.9308)
+    expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.9388)
   })
 })

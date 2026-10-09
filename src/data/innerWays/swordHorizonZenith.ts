@@ -32,7 +32,7 @@ export const ZENITH_BAR_BUFF_ID = "buff-bellstrikeUmbra-zenith-bar"
 export const ZENITH_DETONATION_BUFF_ID = "buff-bellstrikeUmbra-zenith-detonation"
 
 export const ZENITH_DETONATION_FRAMES = 1
-export const ZENITH_SMOLDER_EXTEND_FRAMES = 600
+export const ZENITH_DOT_EXTEND_FRAMES = 600
 
 // User-verified 2026-08-07: a Zenith detonation always adds its full extend
 // amount, but the resulting REMAINING duration (from that detonation's own

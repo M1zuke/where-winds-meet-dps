@@ -3,6 +3,7 @@ import { ATTUNE, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { SWORDSPECIAL_HITS } from "./swordspecial-hits"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { INNER_BALANCE_STRIKE_III_COST, INNER_BALANCE_STRIKE_III_REQUIRES } from "./buffs/enduranceGates"
 
 export const swordspecial2Hit = defineSkill({
   id: SKILL.swordspecial2Hit,
@@ -15,6 +16,8 @@ export const swordspecial2Hit = defineSkill({
   attributeAttack: "Bellstrike",
   castTag: CAST.swordSpecial2Hit,
   receives: STRATEGIC_SWORD_RECEIVES,
+  castConditions: [INNER_BALANCE_STRIKE_III_REQUIRES],
+  meterCosts: [INNER_BALANCE_STRIKE_III_COST],
   // A player-ended form: castFrames sits 11 frames past the frame at which the animation would accept the next input (in-game animation, 2026-09-09).
   castFrames: 47,
   triggerable: true,

@@ -1,5 +1,6 @@
 import type { GearLevelValues } from "../../engine/types"
 import type { MechanicRegistration } from "../../engine/mechanics"
+import type { PARAM } from "../../data/skills/buffs/ids"
 
 // A field a set doesn't carry is omitted, never zero-filled: a zero here reads
 // as a bonus deliberately measured at nothing, which is not the same claim.
@@ -12,7 +13,7 @@ export interface SetFormulaBonus {
 
 // The 2-piece bonus: one scalar into one named panel stat, per gear level.
 export interface SetPanelBonus {
-  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys"
+  stat: "affinityRate" | "critRate" | "precisionRate" | "maxPhys" | "minPhys" | "physDef"
   value: GearLevelValues
 }
 
@@ -25,6 +26,12 @@ export interface SetDef {
   formulaBonus?: SetFormulaBonus
   panelBonus?: SetPanelBonus
   mechanics?: readonly MechanicRegistration[]
+  // Set true in `BuffParams` only while this set is the one equipped — the
+  // generic param a hit trigger's own `requiresParam`/condition reads,
+  // mirroring an inner way's own `buffParam`, for a set-gated mechanic
+  // `BuffModule.requires.set` cannot reach (it only gates a class-buff
+  // module, never a hit-level trigger or condition).
+  buffParam?: (typeof PARAM)[keyof typeof PARAM]
 }
 
 // Thin on purpose, like `defineSkill`/`defineBuff`/`defineDebuff`: it exists so

@@ -6,7 +6,14 @@ import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
 import { INEBRIATE_ENHANCED_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
-const UNLOCKED: TriggerCondition[] = [{ buffId: BUFF.skyspeakUnlock, op: "gte", stacks: 1 }]
+// Skyspeak unlocks it, but it is castable only once per Deepdaze entry, while
+// Deepdaze and Enhance Special Skill both hold. In-game values as of
+// 2026-09-16.
+const UNLOCKED: TriggerCondition[] = [
+  { buffId: BUFF.skyspeakUnlock, op: "gte", stacks: 1 },
+  { buffId: STATUS.inebriateDeepdaze, op: "gte", stacks: 1 },
+  { buffId: STATUS.enhanceSpecialSkill, op: "gte", stacks: 1 },
+]
 
 const aerialSlash = (index: number, frame: number) =>
   hit(index, {
@@ -34,10 +41,9 @@ const dashHalf = {
   conditions: UNLOCKED,
 }
 
-// Cannot trigger Abrasion per the talent "Increased Binge Point Gain" rank 2.
-// The launch refreshes Carouse (in-game skill text, 2026-09-05); the dash ends
-// the cast and with it Cloudvault. Cast length to the earliest next input and
-// hit frames: in-game animation, 2026-09-05.
+// Carouse is granted at the cast, not on the launch (in-game skill text,
+// 2026-09-16); the dash ends the cast and with it Cloudvault. Cast length to
+// the earliest next input and hit frames: in-game animation, 2026-09-05.
 export const herosBloodInebriate = defineSkill({
   id: SKILL.herosBloodInebriate,
   classId: "bamboocutDraught",
@@ -48,17 +54,33 @@ export const herosBloodInebriate = defineSkill({
   weaponOrAttribute: "Twin Blades",
   attributeAttack: "Bamboocut",
   castTag: CAST.herosBloodInebriate,
-  neverAbrades: true,
   receives: [
     ...INEBRIATE_ENHANCED_RECEIVES,
     ...RIVEN_TWINBLADES_RECEIVES,
     BUFF.cloudvault,
     BUFF.nonPlayerBaseDamage50,
+    BUFF.herosBloodInebriateNoAbrasion,
   ],
   triggerable: false,
   castFrames: 177,
+  // In-game values as of 2026-09-28: 4 m approach reach, plus a further
+  // 1.75 m shrink-only pull once in range.
+  reachMeters: 4,
+  displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    hit(0, { ...launch, frame: 57, triggers: [applyBuff({ target: STATUS.carouse, stacks: 1 })] }),
+    hit(11, {
+      frame: 0,
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      conditions: UNLOCKED,
+      triggers: [
+        applyBuff({ target: STATUS.carouse, stacks: 1 }),
+        applyBuff({ target: STATUS.enhanceSpecialSkill, stacks: -1 }),
+      ],
+    }),
+    hit(0, { ...launch, frame: 57 }),
     aerialSlash(1, 83),
     aerialSlash(2, 88),
     aerialSlash(3, 96),

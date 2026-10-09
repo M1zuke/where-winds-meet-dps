@@ -10,6 +10,7 @@ import type { InnerWayId } from "../../data/innerWays/ids"
 import type { MartialArtId } from "../../data/martialArts/ids"
 import type { DisplayGateRegistration } from "../../engine/buffs/displayGates"
 import type { ResourceDef } from "../resources/resourceDef"
+import type { MeterDef } from "../resources/meterDef"
 
 export interface RetunementPool {
   stats: readonly GearWordId[]
@@ -30,6 +31,7 @@ export interface ClassDef {
   // § "Implemented classes" — and the UI marks them so.
   validated: boolean
   resources?: readonly ResourceDef[]
+  meters?: readonly MeterDef[]
   legacySkillIds?: readonly string[]
   spec: string
   primaryAttribute: AttributeKey
@@ -44,6 +46,10 @@ export interface ClassDef {
   // neither of the class's weapons yet.
   weapons: readonly MartialArtId[]
   critBoostWeaponTypes: readonly string[]
+  // Target-distance simulation fallback for a skill with no authored
+  // `reachMeters` — the shortest reach read for this class's own weapons,
+  // marked as an assumption where the source page says so.
+  defaultMeleeReachMeters: number
   skills: readonly Skill[]
   debuffs: readonly Debuff[]
   rotations: readonly Rotation[]

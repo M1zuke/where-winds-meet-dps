@@ -1,0 +1,443 @@
+{
+  "v": 50,
+  "skills": [
+    {
+      "id": "bellstrikeUmbra-bleed-detonation",
+      "classId": "bellstrikeUmbra",
+      "name": "Blood Burst",
+      "tags": ["weapon:Sword", "attune:bleed", "role:bleedDetonation", "prop:empoweredDotEffect"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:bleedDetonation",
+      "receives": [
+        "bellstrikeUmbraBleedPen",
+        "bellstrikeUmbraBleedingDamage",
+        "bellstrikeUmbraBleedCoefficient",
+        "buff-bellstrikeUmbra-zenith-bar",
+        "soulShaken",
+        "strategicSwordAdditionalAttack"
+      ],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 6,
+          "physMultiplier": 2.4,
+          "attributeMultiplier": 3.6,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-mystic-smolder",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-zenith-detonation",
+                "op": "gte",
+                "stacks": 1
+              },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            },
+            {
+              "kind": "applyDebuff",
+              "targetId": "debuff-bellstrikeUmbra-bleed-tick",
+              "stacks": 0,
+              "condition": {
+                "buffId": "buff-bellstrikeUmbra-zenith-detonation",
+                "op": "gte",
+                "stacks": 1
+              },
+              "extendFrames": 600,
+              "extendOnly": true,
+              "maxExtendedDurationFrames": 960
+            }
+          ],
+          "qiRate": 0.2
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bamboocutDraught-falcons-pursuit",
+      "classId": "bamboocutDraught",
+      "name": "Falcon's Pursuit",
+      "breakdownName": "Whaledraft",
+      "tags": ["weapon:Gauntlets", "role:falconsPursuit"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Gauntlets",
+      "attributeAttack": "Bamboocut",
+      "castTag": "cast:falconsPursuit",
+      "receives": [
+        "eonpourInebriateDamage",
+        "skystrikeGauntletsAdditionalAttack",
+        "skystrikeGauntletsAdditionalAttackCoefficient",
+        "etherwrathPenetrationBoost"
+      ],
+      "triggerable": true,
+      "castFrames": 0,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        },
+        {
+          "id": "hit-2",
+          "frame": 0,
+          "physMultiplier": 0.487872,
+          "attributeMultiplier": 0.731808,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [],
+          "qiRate": 0.4
+        }
+      ],
+      "createdAt": "2026-09-04T00:00:00.000Z",
+      "updatedAt": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldierheng",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierHeng",
+      "tags": [
+        "weapon:Heng Blade",
+        "prop:cleftpeakBoost",
+        "role:anxiSoldier",
+        "attune:snowpartingVariedCombo",
+        "role:snowpartingVC"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Hengdao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierHeng",
+      "receives": [
+        "mountainSplitter",
+        "cleftpeakDeflect",
+        "snowpartingBladeAdditionalAttack",
+        "etherwrathPenetrationBoost"
+      ],
+      "triggersBuffs": ["throatPierced"],
+      "castFrames": 42,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 10,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-1",
+          "frame": 24,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-2",
+          "frame": 28,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-3",
+          "frame": 42,
+          "physMultiplier": 0.35,
+          "attributeMultiplier": 0.525,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermojump",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoJump",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoJump"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoJump",
+      "receives": [
+        "mountainSplitter",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack",
+        "etherwrathPenetrationBoost"
+      ],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.9,
+          "attributeMultiplier": 1.35,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermodown",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoDown",
+      "tags": [
+        "weapon:Mo Blade",
+        "prop:cleftpeakBoost",
+        "attune:phalanxbaneCharged",
+        "role:anxiSoldier",
+        "role:anxiSoldierMoDown"
+      ],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoDown",
+      "receives": [
+        "mountainSplitter",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack",
+        "etherwrathPenetrationBoost"
+      ],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "stonesplitStrength-anxisoldiermosweep",
+      "classId": "stonesplitStrength",
+      "name": "AnxiSoldierMoSweep",
+      "tags": ["weapon:Mo Blade", "prop:cleftpeakBoost", "attune:phalanxbaneQ", "role:anxiSoldier"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Modao",
+      "attributeAttack": "Stonesplit",
+      "castTag": "cast:anxiSoldierMoSweep",
+      "receives": [
+        "mountainSplitter",
+        "cleftpeakDeflect",
+        "phalanxbaneBladeAdditionalAttack",
+        "etherwrathPenetrationBoost"
+      ],
+      "triggersBuffs": ["throatPierced", "mountainSplitter"],
+      "castFrames": 0,
+      "triggerable": true,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        },
+        {
+          "id": "hit-1",
+          "frame": 0,
+          "physMultiplier": 0.5,
+          "attributeMultiplier": 0.75,
+          "physFixed": 0,
+          "attributeFixed": 0,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "meterDelta",
+              "targetId": "bladeMomentum",
+              "stacks": 2.5,
+              "condition": null,
+              "cooldownFrames": 15,
+              "cooldownGroup": "anxiSoldierBladeMomentumGain"
+            }
+          ],
+          "qiRate": 0.3
+        }
+      ],
+      "createdAt": "2026-07-19T00:00:00.000Z",
+      "updatedAt": "2026-07-19T00:00:00.000Z"
+    },
+    {
+      "id": "bellstrikeSplendor-swordq-2nd",
+      "classId": "bellstrikeSplendor",
+      "name": "SwordQ[2nd]",
+      "breakdownName": "Relentless Chase",
+      "tags": ["weapon:Sword", "attune:swordQ", "prop:isMartialSkillQ"],
+      "skillType": "weapon",
+      "weaponOrAttribute": "Sword",
+      "attributeAttack": "Bellstrike",
+      "castTag": "cast:swordQ2nd",
+      "startLatency": "noWaitOnDummy",
+      "triggersBuffs": ["jadeware", "mountainsMightQiImbalance"],
+      "receives": ["starweaveMartialBoost", "namelessSwordAdditionalAttack"],
+      "castFrames": 60,
+      "triggerable": true,
+      "reachMeters": 3,
+      "hits": [
+        {
+          "id": "hit-0",
+          "frame": 7,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": []
+        },
+        {
+          "id": "hit-1",
+          "frame": 48,
+          "physMultiplier": 0.768985,
+          "attributeMultiplier": 1.153478,
+          "physFixed": 212.7,
+          "attributeFixed": 115.95,
+          "extraCritDamage": 0,
+          "triggers": [
+            {
+              "kind": "applyBuff",
+              "targetId": "qiImbalanceMarker",
+              "stacks": 1,
+              "condition": null,
+              "appliesOnCastEnd": true,
+              "requiresParam": "mountainsMight"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-08-15T00:00:00.000Z",
+      "updatedAt": "2026-08-15T00:00:00.000Z"
+    }
+  ]
+}

@@ -25,6 +25,8 @@ import { V26__mysticArtIds } from "./V26__mysticArtIds"
 import { V27__talentBoardNodes } from "./V27__talentBoardNodes"
 import { V28__oddityBoardNodes } from "./V28__oddityBoardNodes"
 import { V29__divinecraftElement } from "./V29__divinecraftElement"
+import { V30__removeNightwickTipsylayHybrid } from "./V30__removeNightwickTipsylayHybrid"
+import { V31__preferredDistanceOnRotation } from "./V31__preferredDistanceOnRotation"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -52,6 +54,11 @@ export { migrateMysticId, migrateRotationMysticIds } from "./V26__mysticArtIds"
 export { talentNodesFromLegacyPoints } from "./V27__talentBoardNodes"
 export { unclaimedOddityNodesFromLegacy } from "./V28__oddityBoardNodes"
 export { migrateDivinecraftField } from "./V29__divinecraftElement"
+export {
+  migrateNightwickTipsylayId,
+  migrateRotationNightwickTipsylayIds,
+} from "./V30__removeNightwickTipsylayHybrid"
+export { movePreferredDistanceOntoRotation } from "./V31__preferredDistanceOnRotation"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -79,6 +86,8 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V27__talentBoardNodes,
   V28__oddityBoardNodes,
   V29__divinecraftElement,
+  V30__removeNightwickTipsylayHybrid,
+  V31__preferredDistanceOnRotation,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

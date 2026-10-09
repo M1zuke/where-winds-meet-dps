@@ -79,6 +79,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "moraleChant",
       "bitterSeason",
       "breakingPoint",
+      "evasiveCharge",
     ])
     expect(umbra.innerWays).toEqual([
       "swordHorizon",
@@ -87,6 +88,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "moraleChant",
       "bitterSeason",
       "breakingPoint",
+      "evasiveCharge",
     ])
   })
 
@@ -115,7 +117,7 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     ])
   })
 
-  it("buffDefsForClass('bellstrikeUmbra') is the full 36-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
+  it("buffDefsForClass('bellstrikeUmbra') is the full 55-entry composition: inner-way owned, then the reordered globals, then the class's own", () => {
     expect(buffDefsForClass("bellstrikeUmbra").map((module) => module.id)).toEqual([
       "buff-bellstrikeUmbra-zenith-bar",
       "wineGu",
@@ -145,9 +147,28 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
       "tiltrimInebriateBonus",
       "inebriateCritDamage",
       "cloudvault",
+      "herosBloodInebriateNoAbrasion",
       "clashToastDamage",
+      "nonPlayerBaseDamage10",
       "nonPlayerBaseDamage40",
       "nonPlayerBaseDamage50",
+      "nonPlayerBaseDamage115",
+      "nonPlayerBaseDamage125",
+      "nonPlayerBaseDamage145",
+      "poetFinalStrikeStack",
+      "divinecraftFire",
+      "fluteArrival",
+      "fluteDistanceBonus",
+      "cleftpeakDeflectGrant",
+      "toadVenomQiBonus",
+      "ivorybloomFullHpBonus",
+      "starweaveMartialBoost",
+      "swayingHeightsHighHpBonus",
+      "etherwrathAttackBoost",
+      "etherwrathPenetrationBoost",
+      "swallowcallLightAttackBoost",
+      "swiftGaleAirborneHeavyBoost",
+      "totalAnnihilationSupremeShield",
       "bellstrikeUmbraBleedPen",
       "bellstrikeUmbraBleedingDamage",
       "bellstrikeUmbraBleedCoefficient",
@@ -160,12 +181,18 @@ describe("bellstrikeUmbra — every declared ClassDef field is wired", () => {
     expect(builtinBuffsForClass("bellstrikeUmbra").map((buff) => buff.name)).toEqual([
       "Zenith Bar",
       "Zenith Detonation",
+      "Water Drop",
+      "Spring Surge",
       "River Flow",
+      "Empowered River Flow",
       "Spear Special Cooldown",
+      "Evasive Charge — Dodge Cost Reduction",
+      "Mirage — Endurance Cost Reduction",
+      "Ghostly Steps - Umbra",
     ])
   })
 
-  it("Umbra declares no gate buffs of its own — every one it shows is an inner way's", () => {
+  it("Umbra declares no gate buffs of its own — every one it shows is an inner way's or the shared universal set", () => {
     expect(umbra.gateBuffs).toEqual([])
   })
 

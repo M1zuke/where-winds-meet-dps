@@ -3,7 +3,7 @@ import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 import { MYSTIC_DEBUFFS, MYSTIC_SKILLS } from "../../src/data/skills/mystic"
 import { CLASS_DEFS, CLASS_IDS, classDefinition } from "../../src/definitions/classes/registry"
-import { MYSTIC_ARTS_CLASS_ID } from "../../src/engine/skill"
+import { conditionIds, MYSTIC_ARTS_CLASS_ID } from "../../src/engine/skill"
 
 const MYSTIC_DIR = join(process.cwd(), "src/data/skills/mystic")
 const SKILL_ID_PREFIX = `${MYSTIC_ARTS_CLASS_ID}-`
@@ -29,7 +29,9 @@ describe("a mystic art is authored once and belongs to no class", () => {
 
   it("one file per mystic art, and the barrel lists every one of them", () => {
     const modules = readdirSync(MYSTIC_DIR).filter(
-      (entry) => entry.endsWith(".ts") && !["ids.ts", "index.ts", "debuffs.ts"].includes(entry),
+      (entry) =>
+        entry.endsWith(".ts") &&
+        !["ids.ts", "index.ts", "debuffs.ts", "poetStrikeHits.ts"].includes(entry),
     )
     expect(modules).toHaveLength(MYSTIC_SKILLS.length)
   })
@@ -47,13 +49,11 @@ describe("a mystic art is authored once and belongs to no class", () => {
         ...hit.triggers.flatMap((trigger) => [
           trigger.targetId,
           trigger.transferFrom ?? "",
-          ...(trigger.condition ? [trigger.condition.buffId] : []),
-          ...(trigger.conditions ?? []).map((condition) => condition.buffId),
+          ...(trigger.condition ? conditionIds(trigger.condition) : []),
+          ...(trigger.conditions ?? []).flatMap(conditionIds),
         ]),
-        ...(hit.conditions ?? []).map((condition) => condition.buffId),
-        ...(hit.variants ?? []).flatMap((variant) =>
-          variant.conditions.map((condition) => condition.buffId),
-        ),
+        ...(hit.conditions ?? []).flatMap(conditionIds),
+        ...(hit.variants ?? []).flatMap((variant) => variant.conditions.flatMap(conditionIds)),
       ]),
     ).concat(
       MYSTIC_DEBUFFS.flatMap((debuff) => [

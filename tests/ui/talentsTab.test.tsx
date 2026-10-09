@@ -158,7 +158,7 @@ describe("the Additional Attack Up talent card", () => {
     expect(rank).toEqual({ breakthrough: 23, flatBonus: 0.5, coefficientBonus: 0.05 })
   })
 
-  it("renders on both art columns of Stonesplit Strength, which has no other talent node modelled", () => {
+  it("renders on both art columns of Stonesplit Strength", () => {
     renderTab({
       ...defaultInputs,
       classId: "stonesplitStrength",
@@ -167,5 +167,80 @@ describe("the Additional Attack Up talent card", () => {
     expect(screen.getByText("Phalanxbane Blade")).toBeTruthy()
     expect(screen.getByText("Snowparting Blade")).toBeTruthy()
     expect(screen.getAllByText("Additional Attack Up")).toHaveLength(2)
+  })
+})
+
+describe("the Talents tab for Stonesplit Strength", () => {
+  const stonesplitAt = (breakthrough: number): Inputs => ({
+    ...defaultInputs,
+    classId: "stonesplitStrength",
+    breakthrough,
+    martialArtsTalents: getDefaultTalentsForClass("stonesplitStrength", breakthrough),
+  })
+
+  const columnFor = (headingText: string) =>
+    within(screen.getByText(headingText).closest(`.${styles.classBuffsColumn}`) as HTMLElement)
+
+  it.each([17, 18])("lists each art's talent nodes at breakthrough %i", (breakthrough) => {
+    renderTab(stonesplitAt(breakthrough))
+    const phalanxbane = columnFor("Phalanxbane Blade")
+    for (const card of [
+      "Critical Rate UP",
+      "Iron Guards Penetration Up",
+      "Stonesplit Attribute UP",
+      "Attr. Attack DMG UP",
+      "Max Blade Momentum Up",
+      "Additional Attack Up",
+    ]) {
+      expect(phalanxbane.getByText(card), `${card} is missing`).toBeTruthy()
+    }
+    const snowparting = columnFor("Snowparting Blade")
+    for (const card of [
+      "Physical Attack UP",
+      "Critical DMG Up",
+      "Stonesplit Attribute UP",
+      "Attr. Attack DMG UP",
+      "Special Skill Enhancement",
+      "Additional Attack Up",
+    ]) {
+      expect(snowparting.getByText(card), `${card} is missing`).toBeTruthy()
+    }
+  })
+
+  it("shows the stat talents with their caps and current values", () => {
+    renderTab(stonesplitAt(17))
+    const phalanxbane = columnFor("Phalanxbane Blade")
+    const criticalRateCard = within(
+      phalanxbane.getByText("Critical Rate UP").closest(`.${styles.classBuffRow}`) as HTMLElement,
+    )
+    expect(criticalRateCard.getByText(/\+8\.5% Crit Rate/)).toBeTruthy()
+    expect(criticalRateCard.getByText(/Current: \+\d+\.\d%/)).toBeTruthy()
+    expect(criticalRateCard.getByText(/Cap: 280/)).toBeTruthy()
+
+    const attributeCard = within(
+      phalanxbane
+        .getByText("Stonesplit Attribute UP")
+        .closest(`.${styles.classBuffRow}`) as HTMLElement,
+    )
+    expect(
+      attributeCard.getByText(/\+98 min \/ \+196 max Stonesplit Attack \(always\)/),
+    ).toBeTruthy()
+    expect(attributeCard.getByText(/Cap: 328/)).toBeTruthy()
+
+    const snowparting = columnFor("Snowparting Blade")
+    const physicalCard = within(
+      snowparting.getByText("Physical Attack UP").closest(`.${styles.classBuffRow}`) as HTMLElement,
+    )
+    expect(physicalCard.getByText(/\+73\.9 Min Phys/)).toBeTruthy()
+    expect(physicalCard.getByText(/Current: \+/)).toBeTruthy()
+  })
+
+  it("shows the Heng Blade stage attack on the Snowparting column and the Critical DMG mechanic", () => {
+    renderTab(stonesplitAt(18))
+    const snowparting = columnFor("Snowparting Blade")
+    expect(
+      snowparting.getByText(/\+106 min \/ \+212 max Stonesplit Attack \(always\)/),
+    ).toBeTruthy()
+    expect(snowparting.getByText(/cap 21%/)).toBeTruthy()
   })
 })

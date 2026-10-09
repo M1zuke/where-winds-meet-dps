@@ -32,6 +32,7 @@ interface Props {
   customGraduationBuild: CustomGraduationBuild | null
   onChange(next: Inputs): void
   currentDps: number
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[]
 }
 
 export function GearTab({
@@ -40,6 +41,7 @@ export function GearTab({
   customGraduationBuild,
   onChange,
   currentDps,
+  baselineQiBreaks,
 }: Props) {
   const { t } = useI18n()
   const confirm = useConfirm()
@@ -70,18 +72,18 @@ export function GearTab({
 
   const isEquipped = !!selectedPiece && equipped[selectedPiece.slot] === selectedPiece.id
 
-  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps)
-  const inventoryDeltas = useDpsDeltas(engineInputs, currentDps)
+  const equippedDeltas = useEquippedDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
+  const inventoryDeltas = useDpsDeltas(engineInputs, currentDps, baselineQiBreaks)
   const selectedDelta = selectedPiece
     ? (inventoryDeltas.deltas[selectedPiece.id] ?? equippedDeltas.deltas[selectedPiece.id])
     : undefined
 
   const retuneTargetId = selectedPiece?.id ?? null
-  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId)
+  const retunement = useRetunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
   const retuneRowsMatch = retunement.forPieceId === retuneTargetId
-  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId)
+  const reattunement = useReattunementAnalysis(engineInputs, retuneTargetId, baselineQiBreaks)
   const reattuneOptsMatch = reattunement.forPieceId === retuneTargetId
-  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece)
+  const wordMax = useWordMaxAnalysis(engineInputs, selectedPiece, baselineQiBreaks)
   const wordMaxRowsMatch = wordMax.forPieceId === (selectedPiece?.id ?? null)
 
   function commitGearChange(nextInventory: GearPiece[], nextEquipped: EquippedSlots): void {
@@ -269,7 +271,11 @@ export function GearTab({
             />
             <SubTabPanel>
               {sub === "analysis" && (
-                <GearAnalysisPanel engineInputs={engineInputs} currentDps={currentDps} />
+                <GearAnalysisPanel
+                  engineInputs={engineInputs}
+                  currentDps={currentDps}
+                  baselineQiBreaks={baselineQiBreaks}
+                />
               )}
               {sub === "inventory" && (
                 <GearInventoryPanel

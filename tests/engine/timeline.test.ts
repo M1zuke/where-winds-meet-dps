@@ -14,7 +14,8 @@ import {
   hitDealsDamage,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff, type StackScaling } from "../../src/engine/buff"
 import { makeDebuff, type Debuff, type DotStackShape } from "../../src/engine/debuff"
 import { builtinSkillsForClass, defaultRotationForClass } from "../../src/engine/builtinLibrary"
@@ -78,7 +79,7 @@ describe("timeline — computed duration", () => {
     expect(r.rotationDuration).toBeCloseTo((120 + 60) / FPS, 10)
   })
 
-  it("a pre-pull cast with real coefficients lands neither damage nor a breakdown row", () => {
+  it("a pre-pull cast with real coefficients lands like any other hit, and opens the fight window", () => {
     const pre = makeSkill(CLASS, {
       name: "Pre Prepull",
       castFrames: 90,
@@ -92,16 +93,17 @@ describe("timeline — computed duration", () => {
     const withPrePull = makeRotation(CLASS, {
       steps: [makeStep({ skillId: pre.id }), makeStep({ skillId: main.id })],
     })
-    const mainOnly = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: main.id })],
-    })
     const r = simulateTimeline(timelineInputs(withPrePull, [pre, main], []))
-    const baseline = simulateTimeline(timelineInputs(mainOnly, [main], []))
 
-    expect(r.perSkill.find((s) => s.name === "Pre Prepull")).toBeUndefined()
+    const preRow = r.perSkill.find((s) => s.name === "Pre Prepull")
+    expect(preRow?.count).toBe(1)
+    expect(preRow?.expectedDamage).toBeGreaterThan(0)
     expect((r.timeline ?? []).some((e) => e.skillName === "Pre Prepull" && e.frame < 0)).toBe(true)
-    expect(r.totalDamage).toBe(baseline.totalDamage)
-    expect(r.rotationDuration).toBeCloseTo(60 / FPS, 10)
+    // The pre-pull cast's own castFrames (90) is a genuine upper bound on how
+    // far before frame 0 its single hit can land, so it opens the window
+    // exactly there; the window closes at "Main"'s own hit, at its cast's
+    // start, not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(r.rotationDuration).toBeCloseTo(90 / FPS, 10)
   })
 
   it("empty rotation ⇒ dps 0 + warning", () => {
@@ -332,6 +334,9 @@ function makeSwordQQN(bleedId: string, n: number): Skill {
   return makeSkill(CLASS, { name: `SwordQQ${n}`, castFrames: lastFrame + 150, hits })
 }
 
+// Callers pass `divinecraft: null` — a bare `buildContext` call never sees the
+// buff-engine's Divinecraft: Fire contribution, same as the fixture-safety
+// test above.
 function expectedRowDamage(inputs: Inputs, row: DotStackShape, buffName: string): number {
   const ctx = buildContext(inputs)
   const art = {
@@ -352,7 +357,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(5, 5)
     const sword = makeSwordQQN(bleed.id, 3)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     expect(dotRow?.count).toBe(1)
@@ -365,7 +374,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(10, 5)
     const sword = makeSwordQQN(bleed.id, 8)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     const expected = expectedRowDamage(inputs, bleed.dot!.perStackShapes![4], bleed.name)
@@ -377,7 +390,11 @@ describe("timeline — per-stack DoT damage table", () => {
     const bleed = makeBleedTable(5, 5)
     const sword = makeSwordQQN(bleed.id, 1)
     const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: sword.id })] })
-    const inputs = { ...timelineInputs(rotation, [sword], [], [bleed]), set: null }
+    const inputs = {
+      ...timelineInputs(rotation, [sword], [], [bleed]),
+      set: null,
+      divinecraft: null,
+    }
     const r = simulateTimeline(inputs)
     const dotRow = r.perSkill.find((s) => s.name.includes("BleedTable"))
     const expected = expectedRowDamage(inputs, bleed.dot!.perStackShapes![0], bleed.name)
@@ -589,11 +606,25 @@ describe("timeline — combined buff + debuff rotation", () => {
       castFrames: 300,
       hits: [makeHit({ frame: 0, physMultiplier: 1, physFixed: 1000 })],
     })
-    const rotation = makeRotation(CLASS, {
-      steps: [makeStep({ skillId: setup.id }), makeStep({ skillId: attack.id })],
+    // Past Vuln's own first tick: the fight's own window now ends at the last
+    // damaging hit rather than the last cast's own end, docs/TIMELINE.md §
+    // "Fight window", so a further hit is needed to still count a tick.
+    const poke = makeSkill(CLASS, {
+      name: "Poke",
+      castFrames: 10,
+      hits: [makeHit({ frame: 0, physMultiplier: 1 })],
     })
-    const withBoth = simulateTimeline(timelineInputs(rotation, [setup, attack], [warcry], [vuln]))
-    const withNeither = simulateTimeline(timelineInputs(rotation, [setup, attack], [], []))
+    const rotation = makeRotation(CLASS, {
+      steps: [
+        makeStep({ skillId: setup.id }),
+        makeStep({ skillId: attack.id }),
+        makeStep({ skillId: poke.id }),
+      ],
+    })
+    const withBoth = simulateTimeline(
+      timelineInputs(rotation, [setup, attack, poke], [warcry], [vuln]),
+    )
+    const withNeither = simulateTimeline(timelineInputs(rotation, [setup, attack, poke], [], []))
 
     expect(withBoth.totalDamage).toBeGreaterThan(withNeither.totalDamage)
     const sum = withBoth.perSkill.reduce((s, p) => s + p.expectedDamage, 0)

@@ -11,6 +11,6 @@ export const innerPassion = defineBuff({
   maxStacks: 4,
   buffAppliesOnCastEnd: true,
   stacks: (ctx) =>
-    ctx.build.param(PARAM.frostCladNight) && ctx.build.paramTier(PARAM.frostCladNight) >= 4 ? 4 : 1,
+    ctx.build.param(PARAM.frostCladNight) && ctx.build.paramTier(PARAM.frostCladNight) >= 4 ? 4 : 3,
   effects: [],
 })

@@ -16,7 +16,13 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    kind's retained response, read in the `useState` initializer and projected by
    the same function its listener uses — never replayed into state from an
    effect. **Never** run the engine in a render-path memo outside that one
-   baseline pass.
+   baseline pass. The simulated Qi schedule's own fixed-point iteration runs
+   its several internal passes inside that one engine pass — it is not a
+   second call, in this rule's count or in the worker's. **Every repeated
+   sweep warm-starts** its own iteration from the baseline's already-converged
+   schedule instead of re-seeding from the rotation's authored window, carried
+   down through its own request kind and hook the same way the baseline's DPS
+   already is.
 2. **The client assigns request ids; a hook never numbers its own requests.**
    Superseded responses are recognised by id against document-lifetime state, so
    a counter that restarts — as any per-mount counter does on a route revisit —
@@ -79,10 +85,10 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
    per item than the whole sweep was, and a parity test states that the split
    answers what the whole answered.
 10. **While a shell-owned run is in flight, no control may change engine inputs.**
-   Disable the whole route panel through one `fieldset`, disable the shell
-   controls that write inputs, and have every shell writer refuse the write —
-   the disabled markup is the affordance, the refusal is the invariant. Release
-   both the moment the run stops, however it stopped.
+    Disable the whole route panel through one `fieldset`, disable the shell
+    controls that write inputs, and have every shell writer refuse the write —
+    the disabled markup is the affordance, the refusal is the invariant. Release
+    both the moment the run stops, however it stopped.
 11. **Never serialize large state per render.** Memoize on the value that actually
     changed.
 12. **A kind that reports progress reports it on its own message kind**, routed
@@ -110,6 +116,12 @@ Rules for `src/ui/**`, the app shell, and the DPS worker. An engine pass is a fu
     opens for the whole fight as a bare unlock marker is not a chip at all.
 
 Follow the nearest existing worker hook rather than inventing a new shape.
+
+## Fight clock
+
+Every time a view renders is fight-clock seconds — counted from the fight's
+own start, the first damaging hit — through the one shared `fightClockSec`
+conversion, never recomputed per view.
 
 ## Component layout
 

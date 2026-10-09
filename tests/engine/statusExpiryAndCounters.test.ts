@@ -8,7 +8,8 @@ import {
   type HitVariant,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { makeBuff, type Buff } from "../../src/engine/buff"
 import type { Inputs } from "../../src/engine/types"
 
@@ -87,7 +88,9 @@ describe("onExpire — a lapsing window resets another status", () => {
     )
     expect(stacksOnCast(result, 0, counter.id)).toBe(200)
     expect(stacksOnCast(result, 2, counter.id)).toBe(60)
-    expect(result.rotationDuration).toBeCloseTo((60 + 30 + 90) / FPS, 10)
+    // The window ends at the second "Gated"'s own hit, at its cast's start,
+    // not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(result.rotationDuration).toBeCloseTo((60 + 30) / FPS, 10)
   })
 
   it("a refreshed window does not fire; only the final lapse does", () => {
@@ -110,7 +113,49 @@ describe("onExpire — a lapsing window resets another status", () => {
     )
     expect(stacksOnCast(result, 1, counter.id)).toBe(200)
     expect(stacksOnCast(result, 3, counter.id)).toBe(60)
-    expect(result.rotationDuration).toBeCloseTo((60 + 60 + 30 + 90) / FPS, 10)
+    // The window ends at the second "Gated"'s own hit, at its cast's start,
+    // not at its cast's own end — docs/TIMELINE.md § "Fight window".
+    expect(result.rotationDuration).toBeCloseTo((60 + 60 + 30) / FPS, 10)
+  })
+
+  it("elseStacks resets to a different value when requiresBuffId is not held", () => {
+    const requiredCounter = gate({ name: "Counter", durationFrames: 36000, maxStacks: 200 })
+    const requiredGate = gate({ name: "RequiredGate", durationFrames: 36000, maxStacks: 1 })
+    const stateWithElse = gate({
+      name: "StateWithElse",
+      durationFrames: 80,
+      maxStacks: 1,
+      onExpire: {
+        targetId: requiredCounter.id,
+        stacks: 60,
+        requiresBuffId: requiredGate.id,
+        elseStacks: 0,
+      },
+    })
+    const openerWithoutGate = filler("OpenerWithoutGate", 60, [
+      makeTrigger({ kind: "applyBuff", targetId: requiredCounter.id, stacks: 200 }),
+      makeTrigger({ kind: "applyBuff", targetId: stateWithElse.id, stacks: 1 }),
+    ])
+    const idle = filler("Idle", 90)
+    // Past the state's own 80-frame lapse: the fight's own window now ends at
+    // the last damaging hit rather than the last cast's own end,
+    // docs/TIMELINE.md § "Fight window", so the lapse needs a hit past it to
+    // still fire.
+    const poke = filler("Poke", 10)
+    const result = simulateTimeline(
+      timelineInputs(
+        makeRotation(CLASS, {
+          steps: [
+            makeStep({ skillId: openerWithoutGate.id }),
+            makeStep({ skillId: idle.id }),
+            makeStep({ skillId: poke.id }),
+          ],
+        }),
+        [openerWithoutGate, idle, poke],
+        [requiredCounter, requiredGate, stateWithElse],
+      ),
+    )
+    expect(stacksOnCast(result, 1, requiredCounter.id)).toBe(0)
   })
 })
 

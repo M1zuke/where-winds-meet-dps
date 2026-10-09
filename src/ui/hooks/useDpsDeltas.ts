@@ -13,7 +13,11 @@ export interface DpsDeltasResult {
 
 const EMPTY_DELTAS: DpsDeltaMap = {}
 
-export function useDpsDeltas(inputs: Inputs, baselineDps: number): DpsDeltasResult {
+export function useDpsDeltas(
+  inputs: Inputs,
+  baselineDps: number,
+  baselineQiBreaks?: readonly { startSec: number; endSec: number }[],
+): DpsDeltasResult {
   const [deltas, setDeltas] = useState<DpsDeltaMap>(
     () => retainedResponse("dpsDeltas")?.deltas ?? EMPTY_DELTAS,
   )
@@ -32,8 +36,9 @@ export function useDpsDeltas(inputs: Inputs, baselineDps: number): DpsDeltasResu
       inputs,
       baselineDps,
       pieceIds: inputs.inventory.map((piece) => piece.id),
+      baselineQiBreaks,
     })
-  }, [inputs, baselineDps, hasCandidates])
+  }, [inputs, baselineDps, hasCandidates, baselineQiBreaks])
 
   if (!hasCandidates) return { deltas: EMPTY_DELTAS, isPending: false }
   return { deltas, isPending }

@@ -15,3 +15,7 @@ export const SET_BY_ID: Readonly<Record<string, SetDef>> = Object.fromEntries(
 export function setDisplayNameForSiteKey(siteKey: string): string | undefined {
   return SET_DEFS.find((set) => set.siteKey === siteKey)?.name
 }
+
+export function setForBuffParam(param: string): SetDef | undefined {
+  return SET_DEFS.find((set) => set.buffParam === param)
+}

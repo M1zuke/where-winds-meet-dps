@@ -1,9 +1,11 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyDot, detonateDot } from "../../../definitions/skills/triggers"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL, DEBUFF } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
+import { CRISSCROSS_ENDURANCE_GAIN } from "./buffs/crisscrossEnduranceGain"
+import { BLEED_MECHANISM_ENHANCEMENT_GAIN } from "./buffs/bleedMechanismEnhancement"
 
 export const swordMartialQqq = defineSkill({
   id: SKILL.swordMartialQqq,
@@ -15,8 +17,10 @@ export const swordMartialQqq = defineSkill({
   weaponOrAttribute: "Sword",
   attributeAttack: "Bellstrike",
   castTag: CAST.swordMartialQQQ,
+  // In-game values as of 2026-09-24: only castable with Sword Horizon slotted.
+  castConditions: [{ param: PARAM.swordHorizon }],
   triggersBuffs: [BUFF.jadeware],
-  receives: STRATEGIC_SWORD_RECEIVES,
+  receives: [BUFF.wolfchasersArtMartialDamage, BUFF.starweaveMartialBoost, ...STRATEGIC_SWORD_RECEIVES],
   // Cast length to the earliest next input and hit frames: in-game animation, 2026-09-09.
   castFrames: 86,
   triggerable: true,
@@ -27,7 +31,11 @@ export const swordMartialQqq = defineSkill({
       attributeMultiplier: 0.475366,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
     hit(1, {
       frame: 71,
@@ -35,7 +43,12 @@ export const swordMartialQqq = defineSkill({
       attributeMultiplier: 0.713049,
       physFixed: 0,
       attributeFixed: 0,
-      triggers: [applyDot({ target: DEBUFF.bleedTick }), detonateDot({ target: DEBUFF.bleedTick, stacks: 0 })],
+      triggers: [
+        applyDot({ target: DEBUFF.bleedTick }),
+        detonateDot({ target: DEBUFF.bleedTick, stacks: 0 }),
+        CRISSCROSS_ENDURANCE_GAIN,
+        BLEED_MECHANISM_ENHANCEMENT_GAIN,
+      ],
     }),
   ],
   createdAt: "2026-07-30T00:00:00.000Z",

@@ -10,6 +10,14 @@ import type {
 import { EMPTY_EQUIPPED, GEAR_SLOTS, defaultCombatSettings } from "./engine/types"
 import { isGearWordId } from "./data/stats/statLines"
 import { defaultInputs } from "./engine/defaults"
+import {
+  DEFAULT_AVERAGE_FPS,
+  DEFAULT_PING_MS,
+  DEFAULT_SERVER_PROCESSING_MS,
+  isValidAverageFps,
+  isValidPingMs,
+  isValidServerProcessingMs,
+} from "./engine/pingFps"
 import { repairGraduationBuildId } from "./engine/graduation"
 import { allowedInnerWaysForClass, defaultArsenalForClass } from "./engine/panel"
 import { CLASS_IDS, classDefinition } from "./definitions/classes/registry"
@@ -29,6 +37,7 @@ import {
   resyncDefaultTalentsForBreakthrough,
 } from "./definitions/baseStats"
 import { ARSENAL_STORES } from "./data/baseStats"
+import { isQiTargetId } from "./definitions/baseStats/qiTargetDef"
 import {
   defaultBreakthrough,
   newestBreakthroughRelease,
@@ -38,7 +47,16 @@ import type { Rotation, RotationStep } from "./engine/rotation"
 import { newRotationId, newStepId, isRotation, readFixedWindowSec } from "./engine/rotation"
 import type { CustomGraduationBuild } from "./engine/customGraduationBuild"
 import { isCustomGraduationBuild, newCustomGraduationBuildId } from "./engine/customGraduationBuild"
-import type { Skill, SkillHit, HitTrigger, TriggerCondition, HitVariant } from "./engine/skill"
+import type {
+  Skill,
+  SkillHit,
+  HitTrigger,
+  TriggerCondition,
+  HitVariant,
+  MeterCost,
+  MeterDrain,
+  MeterFreeze,
+} from "./engine/skill"
 import {
   newSkillId,
   newHitId,
@@ -47,9 +65,19 @@ import {
   isHitVariant,
   isQiPhase,
   isTriggerCondition,
+  isHitOrVariantCondition,
+  isAnyOfCondition,
+  isParamCondition,
 } from "./engine/skill"
 import { builtinSkillsForClass, builtinDebuffsForClass } from "./engine/builtinLibrary"
-import { belongsToClass, seedSkillFromBuiltin } from "./engine/skill"
+import { belongsToClass, cancelledByOf, seedSkillFromBuiltin } from "./engine/skill"
+import { deflectCancelSkillId } from "./engine/deflectCancels"
+import {
+  DEFAULT_PREFERRED_DISTANCE_METERS,
+  isDisplacement,
+  isSkillApproach,
+  isValidPreferredDistanceMeters,
+} from "./engine/distance"
 import { castTagOf } from "./engine/buffs/tags"
 import type { Buff, BuffScope, BuffStatEffect } from "./engine/buff"
 import type { StatKey } from "./engine/statRegistry"
@@ -77,6 +105,7 @@ import {
   migrateEntityId,
   migrateMysticId,
   migrateRotationMysticIds,
+  migrateRotationNightwickTipsylayIds,
   migrateGearWordId,
   migrateCurrentGearWordLabel,
   migrateFormlessWordId,
@@ -90,6 +119,7 @@ import {
   migrateHawkingSetId,
   enhancementLevelsFromLegacyNodes,
   migrateDivinecraftField,
+  movePreferredDistanceOntoRotation,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -219,8 +249,23 @@ function migrateRotationIds<T>(rotation: T): T {
     if (windowSec === undefined) delete next.fixedWindowSec
     else next.fixedWindowSec = windowSec
   }
+  // additive — a stored custom rotation from before the rotation carried its
+  // own connection assumptions gets the same default a fresh one would.
+  if (typeof next.pingMs !== "number" || !isValidPingMs(next.pingMs)) next.pingMs = DEFAULT_PING_MS
+  if (typeof next.averageFps !== "number" || !isValidAverageFps(next.averageFps))
+    next.averageFps = DEFAULT_AVERAGE_FPS
+  if (
+    typeof next.serverProcessingMs !== "number" ||
+    !isValidServerProcessingMs(next.serverProcessingMs)
+  )
+    next.serverProcessingMs = DEFAULT_SERVER_PROCESSING_MS
+  if (
+    typeof next.preferredDistanceMeters !== "number" ||
+    !isValidPreferredDistanceMeters(next.preferredDistanceMeters)
+  )
+    next.preferredDistanceMeters = DEFAULT_PREFERRED_DISTANCE_METERS
   delete (next as unknown as Record<string, unknown>).prePullHitsCount
-  return migrateRotationMysticIds(next) as unknown as T
+  return migrateRotationNightwickTipsylayIds(migrateRotationMysticIds(next)) as unknown as T
 }
 
 // additive — see CLAUDE.md → "localStorage migrations"
@@ -272,12 +317,41 @@ function selectableSetId(stored: string | null): string | null {
   return typeof stored === "string" && stored !== "" ? stored : null
 }
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The Blossom gains Spring Sorrow, an Umb HeavyLight cast, a Spring Away
+// bullet and an Apricot Heaven cast earned before their in-game-correct totals
+// replaced the old placeholders (25, 25, 0 and 8). Touching any field in the Blossom planner
+// writes the whole resolved `gains` object back to the profile, so a profile
+// that ever opened that panel keeps scoring the stale totals forever, with no
+// editor surface showing the gap. Only a value still identical to what was
+// defaulted is dropped, letting the corrected default take over: `gains` is
+// user-editable, so a copy that differs may differ on purpose.
+const BLOSSOM_STALE_GAIN_DEFAULTS: Readonly<Record<string, number>> = {
+  qHit: 25,
+  heavyLightCast: 25,
+  chargedHit: 0,
+  apricotHeavenHit: 8,
+}
+
+function healBlossomGainDefaults(
+  resourceId: string,
+  gains: Record<string, number> | undefined,
+): Record<string, number> | undefined {
+  if (resourceId !== "blossoms" || !gains) return gains
+  const healed = { ...gains }
+  for (const [id, staleDefault] of Object.entries(BLOSSOM_STALE_GAIN_DEFAULTS)) {
+    if (healed[id] === staleDefault) delete healed[id]
+  }
+  return healed
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateInputs(inputs: Inputs): Inputs {
   const { resistance: _legacyResistance, ...rest } = inputs as Inputs & { resistance?: number }
   void _legacyResistance
-  const next: Inputs = migrateDivinecraftField(
-    rest as unknown as Record<string, unknown>,
+  const next: Inputs = movePreferredDistanceOntoRotation(
+    migrateDivinecraftField(rest as unknown as Record<string, unknown>),
   ) as unknown as Inputs
   // Also the entry point for the legacy `wwm.inputs` blob and imported
   // profiles, neither of which is version-walked. Must run before anything
@@ -313,6 +387,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
   if (typeof next.dummyMode !== "boolean") next.dummyMode = false
   if (typeof next.allDamageBoost !== "number") next.allDamageBoost = 0
   if (typeof next.independentDamageBoost !== "number") next.independentDamageBoost = 0
+  if (typeof next.qiDamageBoost !== "number") next.qiDamageBoost = 0
+  if (typeof next.qiRateAdd !== "number") next.qiRateAdd = 0
+  if (typeof next.qiDamageIndexMultiplier !== "number") next.qiDamageIndexMultiplier = 0
+  if (!isQiTargetId(next.qiTarget)) next.qiTarget = "swordTrial"
   if (typeof next.gauntletsBoost !== "number") next.gauntletsBoost = 0
   delete (next as unknown as Record<string, unknown>).singleBurstBoost
   delete (next as unknown as Record<string, unknown>).singleControlBoost
@@ -492,10 +570,11 @@ function hydrateInputs(inputs: Inputs): Inputs {
     if (next.resourceSettings) {
       next.resourceSettings = { ...next.resourceSettings }
       for (const resource of classDefinition(next.classId)?.resources ?? []) {
-        next.resourceSettings[resource.id] = resolveResourceSettings(
-          resource,
-          next.resourceSettings[resource.id],
-        )
+        const stored = next.resourceSettings[resource.id]
+        const healedStored = stored
+          ? { ...stored, gains: healBlossomGainDefaults(resource.id, stored.gains) }
+          : stored
+        next.resourceSettings[resource.id] = resolveResourceSettings(resource, healedStored)
       }
     }
     const def = defaultCombatSettings()
@@ -504,14 +583,23 @@ function hydrateInputs(inputs: Inputs): Inputs {
     if (r.fireOil === true && next.divinecraft == null) next.divinecraft = "fire"
     if (r.vulnerability === true) next.shareEasyHurt = true
     // `revelryScript` named a boolean toggle this build no longer offers or
-    // reads — kept rather than dropped, per CLAUDE.md → "localStorage migrations".
+    // reads; `lowEndurance`, `missingEnduranceAtHit` and `enduranceAtRelease`
+    // named the manual guesses a simulated meter now replaces; `qiBreakOverride`
+    // named the Qi break's retired manual mode — all four kept rather than
+    // dropped, per CLAUDE.md → "localStorage migrations".
     const legacyFields: Record<string, unknown> = {}
     if ("revelryScript" in r) legacyFields.revelryScript = r.revelryScript
+    if ("lowEndurance" in r) legacyFields.lowEndurance = r.lowEndurance
+    if ("missingEnduranceAtHit" in r) legacyFields.missingEnduranceAtHit = r.missingEnduranceAtHit
+    if ("enduranceAtRelease" in r) legacyFields.enduranceAtRelease = r.enduranceAtRelease
+    if ("qiBreakOverride" in r || "qiBreak" in r)
+      legacyFields.qiBreakOverride = qiBreakOverrideFrom(r, rotationWindowOf(next))
     next.combatSettings = {
       ...legacyFields,
-      qiBreakOverride: qiBreakOverrideFrom(r, rotationWindowOf(next)),
       dragonsBreath: typeof r.dragonsBreath === "boolean" ? r.dragonsBreath : def.dragonsBreath,
       healerBuff: typeof r.healerBuff === "boolean" ? r.healerBuff : def.healerBuff,
+      healerPanaceaFan:
+        typeof r.healerPanaceaFan === "boolean" ? r.healerPanaceaFan : def.healerPanaceaFan,
       breakExtension: typeof r.breakExtension === "boolean" ? r.breakExtension : def.breakExtension,
       // Kept as stored even when unrecognised, same as `bowSet`/`arsenal` above.
       script: typeof r.script === "string" && r.script !== "" ? (r.script as ScriptId) : def.script,
@@ -523,7 +611,10 @@ function hydrateInputs(inputs: Inputs): Inputs {
         typeof r.dragonHeadLowHpMaxBonus === "boolean"
           ? r.dragonHeadLowHpMaxBonus
           : def.dragonHeadLowHpMaxBonus,
-      lowEndurance: typeof r.lowEndurance === "boolean" ? r.lowEndurance : def.lowEndurance,
+      fragrantOrchidBathBean:
+        typeof r.fragrantOrchidBathBean === "boolean"
+          ? r.fragrantOrchidBathBean
+          : def.fragrantOrchidBathBean,
     }
   }
   return withZeroedDerivedStats(next)
@@ -687,6 +778,33 @@ interface CustomBlob {
   rotations: Rotation[]
 }
 
+// The engine now adds a cancel-form step's Deflect Cancel automatically, so a
+// stored manual step for the same cast directly after it would double it —
+// docs/TIMELINE.md § "Identity and tags".
+function healDeflectCancelSteps(rotation: Rotation): Rotation {
+  if (!rotation || typeof rotation.classId !== "string" || !Array.isArray(rotation.steps))
+    return rotation
+  const skillsById = new Map<string, Skill>()
+  for (const skill of builtinSkillsForClass(rotation.classId)) skillsById.set(skill.id, skill)
+  for (const skill of loadCustomSkillsForClass(rotation.classId)) skillsById.set(skill.id, skill)
+  const deflectCancelId = deflectCancelSkillId(rotation.classId)
+  const steps: RotationStep[] = []
+  for (const step of rotation.steps) {
+    const skillId =
+      step && typeof step === "object" ? (step as { skillId?: unknown }).skillId : undefined
+    const previousSkill = skillsById.get(steps[steps.length - 1]?.skillId ?? "")
+    if (
+      skillId === deflectCancelId &&
+      previousSkill &&
+      cancelledByOf(previousSkill) === "deflectCancel"
+    ) {
+      continue
+    }
+    steps.push(step)
+  }
+  return steps.length === rotation.steps.length ? rotation : { ...rotation, steps }
+}
+
 export function loadCustomRotations(): Rotation[] {
   try {
     const raw = kvStore.get(CUSTOM_KEY)
@@ -694,7 +812,9 @@ export function loadCustomRotations(): Rotation[] {
     const parsed = JSON.parse(raw) as CustomBlob
     if (parsed.v !== CUSTOM_VERSION) return []
     if (!Array.isArray(parsed.rotations)) return []
-    return parsed.rotations.map((r) => migrateRotationIds(r)).filter(isRotation)
+    return parsed.rotations
+      .map((r) => healDeflectCancelSteps(migrateRotationIds(r)))
+      .filter(isRotation)
   } catch {
     return []
   }
@@ -755,6 +875,24 @@ export function importCustomRotation(text: string): Rotation {
       ? candidate.permanentBuffIds.filter((x): x is string => typeof x === "string")
       : [],
     openingStacks: sanitizeOpeningStacks(candidate.openingStacks),
+    pingMs:
+      typeof candidate.pingMs === "number" && isValidPingMs(candidate.pingMs)
+        ? candidate.pingMs
+        : DEFAULT_PING_MS,
+    averageFps:
+      typeof candidate.averageFps === "number" && isValidAverageFps(candidate.averageFps)
+        ? candidate.averageFps
+        : DEFAULT_AVERAGE_FPS,
+    serverProcessingMs:
+      typeof candidate.serverProcessingMs === "number" &&
+      isValidServerProcessingMs(candidate.serverProcessingMs)
+        ? candidate.serverProcessingMs
+        : DEFAULT_SERVER_PROCESSING_MS,
+    preferredDistanceMeters:
+      typeof candidate.preferredDistanceMeters === "number" &&
+      isValidPreferredDistanceMeters(candidate.preferredDistanceMeters)
+        ? candidate.preferredDistanceMeters
+        : DEFAULT_PREFERRED_DISTANCE_METERS,
     createdAt: now,
     updatedAt: now,
   }
@@ -870,10 +1008,56 @@ function builtinTagsFor(id: string): string[] {
   return builtinTagsById.get(id) ?? []
 }
 
+// `startLatency` is authored on the built-in module, never edited in the
+// Skill Editor, so a stored copy always takes the built-in's current value by
+// id — the way `receives` falls back to a derived value below.
+let builtinStartLatencyById: Map<string, Skill["startLatency"]> | null = null
+function builtinStartLatencyFor(id: string): Skill["startLatency"] | undefined {
+  if (!builtinStartLatencyById) {
+    builtinStartLatencyById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.startLatency) builtinStartLatencyById.set(skill.id, skill.startLatency)
+  }
+  return builtinStartLatencyById.get(id)
+}
+
+// `serverWaitsInCast` is authored on the built-in module, never edited in the
+// Skill Editor, the same reasoning as `startLatency` above.
+let builtinServerWaitsInCastById: Map<string, number> | null = null
+function builtinServerWaitsInCastFor(id: string): number | undefined {
+  if (!builtinServerWaitsInCastById) {
+    builtinServerWaitsInCastById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.serverWaitsInCast)
+          builtinServerWaitsInCastById.set(skill.id, skill.serverWaitsInCast)
+  }
+  return builtinServerWaitsInCastById.get(id)
+}
+
+// `cancelledBy` is authored on the built-in module, never edited in the
+// Skill Editor, the same reasoning as `startLatency` above — a renamed copy
+// of a cancel-form skill keeps its Deflect Cancel.
+let builtinCancelledByById: Map<string, Skill["cancelledBy"]> | null = null
+function builtinCancelledByFor(id: string): Skill["cancelledBy"] | undefined {
+  if (!builtinCancelledByById) {
+    builtinCancelledByById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.cancelledBy) builtinCancelledByById.set(skill.id, skill.cancelledBy)
+  }
+  return builtinCancelledByById.get(id)
+}
+
 function healSkillTags(id: string, tags: string[]): string[] {
   const renamed = tags.map((tag) => migrateCleftpeakTag(migrateAttuneTag(tag)))
   const healed = new Set(renamed)
-  for (const tag of builtinTagsFor(id)) healed.add(tag)
+  const hasOwnAttuneTag = renamed.some((tag) => tag.startsWith("attune:"))
+  for (const tag of builtinTagsFor(id)) {
+    if (tag.startsWith("attune:") && hasOwnAttuneTag) continue
+    healed.add(tag)
+  }
   if (id.endsWith("-dragon-head-plus")) healed.add(QI_BREAK_DOUBLE_TAG)
   const unchanged =
     healed.size === tags.length && renamed.every((tag, index) => tag === tags[index])
@@ -963,6 +1147,15 @@ const LEGACY_TRIGGERED_BY: Record<string, readonly string[]> = {
   "cast:umbrellaQ": ["jadeware"],
   "cast:umbrellaQEmpoweredPerfectCatch": ["jadeware"],
   "cast:umbrellaQPerfectCatch": ["jadeware"],
+  "cast:fluteOfTheTidesCancel": ["fluteArrival"],
+  "cast:fluteOfTheTidesFull": ["fluteArrival"],
+  "cast:fluteOfTheTidesPrepull": ["fluteArrival"],
+  "cast:poet1": ["poetFinalStrikeStack"],
+  "cast:poet2": ["poetFinalStrikeStack"],
+  "cast:poet3": ["poetFinalStrikeStack"],
+  "cast:poet4": ["poetFinalStrikeStack"],
+  "cast:deflectCancel": ["cleftpeakDeflectGrant"],
+  "cast:deflectCancelPrepull": ["cleftpeakDeflectGrant"],
 }
 
 const MIGRATED_LEGACY_AFFECTS = new Map(
@@ -1001,6 +1194,49 @@ function healJadewareTrigger(id: string, triggersBuffs: string[]): string[] {
 
 // additive value-level repair — see CLAUDE.md → "localStorage migrations"
 //
+// A successful deflect now also grants Cleftpeak's full 5 stacks; a copy
+// seeded before that still lists only the deflect's other trigger. Only a
+// list still identical to what was seeded is rewritten, same reason as the
+// trigger repair above.
+const TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT: Record<string, readonly string[]> = {
+  "stonesplitStrength-deflect": ["forgetfulness"],
+}
+
+function healCleftpeakDeflectGrantTrigger(id: string, triggersBuffs: string[]): string[] {
+  const seeded = TRIGGERS_BUFFS_BEFORE_CLEFTPEAK_DEFLECT_GRANT[id]
+  if (!seeded) return triggersBuffs
+  const untouched =
+    triggersBuffs.length === seeded.length &&
+    seeded.every((buffId, index) => triggersBuffs[index] === buffId)
+  return untouched ? [...triggersBuffs, "cleftpeakDeflectGrant"] : triggersBuffs
+}
+
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// In-game rule as of 2026-09-24: Wolfchaser's Art rank 3 also reaches every
+// Martial Art skill's hit, which for Bellstrike Umbra includes the Strategic
+// Sword Q family (Sober Sorrow, the spear chain, already carried it). A copy
+// seeded while the app still withheld it lists only the Strategic Sword's
+// own set buff. Only a list still identical to what was seeded is rewritten,
+// same reason as the trigger repair above.
+const RECEIVES_BEFORE_WOLFCHASERS_ART_SWORD_REACH: Record<string, readonly string[]> = {
+  "bellstrikeUmbra-swordq": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordqfollowup": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordq-follow-up-1-hit-cancel": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-swordq-follow-up-2-hit-cancel": ["strategicSwordAdditionalAttack"],
+  "bellstrikeUmbra-sword-martial-qqq": ["strategicSwordAdditionalAttack"],
+}
+
+function healWolfchasersArtSwordReach(id: string, receives: string[]): string[] {
+  const seeded = RECEIVES_BEFORE_WOLFCHASERS_ART_SWORD_REACH[id]
+  if (!seeded) return receives
+  const untouched =
+    receives.length === seeded.length && seeded.every((buffId, index) => receives[index] === buffId)
+  return untouched ? ["wolfchasersArtMartialDamage", ...receives] : receives
+}
+
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
 // Wolfchaser's Art rank 3 raises these seven skills' damage; a copy seeded
 // before that bonus was modeled has no `receives` field at all, so it is not
 // caught by the `Array.isArray` branch below.
@@ -1014,6 +1250,12 @@ const RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE = new Set([
   "bellstrikeUmbra-spearq-5-hit-cancel",
 ])
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// The Poet chain's final strike now stacks its own damage bonus; a copy
+// seeded before that was modeled has no `receives` field at all.
+const RECEIVES_BEFORE_POET_FINAL_STRIKE_STACK = new Set(["mystic-poet-final-hit-cancel"])
+
 // A skill's `type:<skillType>` tag is derived, never stored, so it is added
 // back in before the lookup — matching `skillTagsOf` (`engine/buffs/tags.ts`).
 function healSkillReach(
@@ -1023,16 +1265,22 @@ function healSkillReach(
 ): Pick<Skill, "receives" | "triggersBuffs"> {
   const legacyTags = skill.skillType ? [...tags, `type:${skill.skillType}`] : tags
   const receives = Array.isArray(skill.receives)
-    ? skill.receives
+    ? healWolfchasersArtSwordReach(id, skill.receives)
     : RECEIVES_BEFORE_WOLFCHASERS_ART_MARTIAL_DAMAGE.has(id)
       ? ["wolfchasersArtMartialDamage"]
-      : legacyReceives(legacyTags)
+      : RECEIVES_BEFORE_POET_FINAL_STRIKE_STACK.has(id)
+        ? ["poetFinalStrikeStack"]
+        : legacyReceives(legacyTags)
   const triggersBuffs = Array.isArray(skill.triggersBuffs)
     ? skill.triggersBuffs
     : [...(LEGACY_TRIGGERED_BY[castTagOf(skill)] ?? [])]
+  const healedTriggersBuffs = healCleftpeakDeflectGrantTrigger(
+    id,
+    healJadewareTrigger(id, triggersBuffs),
+  )
   return {
     receives: receives.map(migrateBuffId),
-    triggersBuffs: healJadewareTrigger(id, triggersBuffs).map(migrateBuffId),
+    triggersBuffs: healedTriggersBuffs.map(migrateBuffId),
   }
 }
 
@@ -1059,6 +1307,14 @@ function hydrateSkill(s: Skill): Skill {
     triggerable: typeof s.triggerable === "boolean" ? s.triggerable : true,
     tags: healedTags,
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
+    startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
+    serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
+    cancelledBy:
+      builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
+    triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),
+    castConditions: Array.isArray(s.castConditions)
+      ? s.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      : s.castConditions,
     ...healSkillReach(id, s, reachTags),
   }
 }
@@ -1069,7 +1325,7 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
   if (Array.isArray(h.variants)) {
     hit.variants = h.variants.filter(isHitVariant).map((v) => ({
       ...v,
-      conditions: v.conditions.filter(isTriggerCondition).map(migrateTriggerCondition),
+      conditions: v.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition),
     }))
   } else {
     delete hit.variants
@@ -1078,26 +1334,69 @@ function hydrateSkillHit(h: SkillHit): SkillHit {
     hit.triggers = h.triggers.map((tr) => hydrateHitTrigger(tr))
   }
   if (Array.isArray(h.conditions)) {
-    hit.conditions = h.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
+    hit.conditions = h.conditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
   } else {
     delete hit.conditions
+  }
+  if (Array.isArray(h.requiresNextStepSkillIds)) {
+    const skillIds = h.requiresNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.requiresNextStepSkillIds = skillIds
+    else delete hit.requiresNextStepSkillIds
+  } else if (h.requiresNextStepSkillIds !== undefined) {
+    delete hit.requiresNextStepSkillIds
+  }
+  if (
+    h.castFramesWhenGated !== undefined &&
+    (typeof h.castFramesWhenGated !== "number" || !Number.isFinite(h.castFramesWhenGated))
+  ) {
+    delete hit.castFramesWhenGated
+  }
+  if (h.qiRate !== undefined && (typeof h.qiRate !== "number" || !Number.isFinite(h.qiRate))) {
+    delete hit.qiRate
+  }
+  if (h.qiFlat !== undefined && (typeof h.qiFlat !== "number" || !Number.isFinite(h.qiFlat))) {
+    delete hit.qiFlat
+  }
+  if (h.projectile !== undefined && !isProjectileSpec(h.projectile)) {
+    delete hit.projectile
   }
   return hit
 }
 
+function isCancelledByValue(value: unknown): value is Skill["cancelledBy"] {
+  return value === "deflectCancel" || value === "nextSkill"
+}
+
+function isProjectileSpec(value: unknown): value is SkillHit["projectile"] {
+  if (!value || typeof value !== "object") return false
+  const projectile = value as Record<string, unknown>
+  return (
+    typeof projectile.speedMetersPerSecond === "number" &&
+    projectile.speedMetersPerSecond > 0 &&
+    typeof projectile.maxTravelFrames === "number" &&
+    Number.isFinite(projectile.maxTravelFrames)
+  )
+}
+
 function migrateTriggerCondition(condition: TriggerCondition): TriggerCondition {
+  if (isAnyOfCondition(condition)) return { anyOf: condition.anyOf.map(migrateTriggerCondition) }
+  if (isParamCondition(condition)) return condition
   return { ...condition, buffId: migrateMysticId(migrateBuffId(condition.buffId)) }
 }
 
 function hydrateHitTrigger(tr: HitTrigger): HitTrigger {
   if (!tr || typeof tr !== "object") return tr
+  const conditionIsValid = tr.kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition
   const trigger: HitTrigger = {
     ...tr,
     targetId: migrateMysticId(migrateBuffId(migrateEntityId(tr.targetId))),
-    condition: tr.condition ? migrateTriggerCondition(tr.condition) : null,
+    condition:
+      tr.condition && conditionIsValid(tr.condition) ? migrateTriggerCondition(tr.condition) : null,
   }
   if (Array.isArray(tr.conditions)) {
-    trigger.conditions = tr.conditions.filter(isTriggerCondition).map(migrateTriggerCondition)
+    trigger.conditions = tr.conditions.filter(conditionIsValid).map(migrateTriggerCondition)
   } else {
     delete trigger.conditions
   }
@@ -1261,25 +1560,49 @@ export function migrateDotStandinOverrides(): void {
   } catch {}
 }
 
+function importedCondition(raw: unknown, kind: HitTrigger["kind"]): TriggerCondition | null {
+  if (!raw || typeof raw !== "object") return null
+  const record = raw as Record<string, unknown>
+  if (Array.isArray(record.anyOf)) {
+    const clauses = record.anyOf
+      .map((clause) => importedCondition(clause, kind))
+      .filter((clause): clause is TriggerCondition => clause !== null)
+    return clauses.length > 0 ? { anyOf: clauses } : null
+  }
+  if (typeof record.param === "string" && record.param) {
+    return typeof record.minTier === "number" && Number.isFinite(record.minTier)
+      ? { param: record.param, minTier: record.minTier }
+      : { param: record.param }
+  }
+  if (typeof record.buffId !== "string") return null
+  return {
+    buffId: record.buffId,
+    op:
+      record.op === "gt" || record.op === "eq" || record.op === "lte" || record.op === "lt"
+        ? record.op
+        : "gte",
+    stacks: typeof record.stacks === "number" ? record.stacks : 1,
+    ...(kind === "castSkill" && record.source === "buffEngine"
+      ? { source: "buffEngine" as const }
+      : {}),
+  }
+}
+
 function importedTrigger(t: unknown): HitTrigger {
   const c = (t && typeof t === "object" ? t : {}) as Partial<HitTrigger>
-  const rawCondition = c.condition as Partial<TriggerCondition> | null | undefined
-  const condition: TriggerCondition | null =
-    rawCondition && typeof rawCondition === "object" && typeof rawCondition.buffId === "string"
-      ? {
-          buffId: rawCondition.buffId,
-          op: rawCondition.op === "gt" || rawCondition.op === "eq" ? rawCondition.op : "gte",
-          stacks: typeof rawCondition.stacks === "number" ? rawCondition.stacks : 1,
-        }
-      : null
+  const kind: HitTrigger["kind"] =
+    c.kind === "castSkill" || c.kind === "meterDelta" ? c.kind : "applyBuff"
+  const condition = importedCondition(c.condition, kind)
   const trigger: HitTrigger = {
-    kind: c.kind === "castSkill" ? "castSkill" : "applyBuff",
+    kind,
     targetId: typeof c.targetId === "string" ? c.targetId : "",
     stacks: typeof c.stacks === "number" ? c.stacks : 1,
     condition,
   }
   if (Array.isArray(c.conditions)) {
-    trigger.conditions = c.conditions.filter(isTriggerCondition)
+    trigger.conditions = c.conditions.filter(
+      kind === "castSkill" ? isTriggerCondition : isHitOrVariantCondition,
+    )
   }
   if (c.appliesOnCastEnd === true) trigger.appliesOnCastEnd = true
   if (typeof c.transferFrom === "string" && c.transferFrom) trigger.transferFrom = c.transferFrom
@@ -1290,12 +1613,83 @@ function importedTrigger(t: unknown): HitTrigger {
     c.cooldownFrames >= 0
   )
     trigger.cooldownFrames = c.cooldownFrames
+  if (
+    typeof c.cooldownFloorFrames === "number" &&
+    Number.isFinite(c.cooldownFloorFrames) &&
+    c.cooldownFloorFrames >= 0
+  )
+    trigger.cooldownFloorFrames = c.cooldownFloorFrames
+  if (typeof c.cooldownGroup === "string" && c.cooldownGroup)
+    trigger.cooldownGroup = c.cooldownGroup
+  if (typeof c.requiresParam === "string" && c.requiresParam) {
+    trigger.requiresParam = c.requiresParam
+    if (typeof c.requiresMinTier === "number" && Number.isFinite(c.requiresMinTier))
+      trigger.requiresMinTier = c.requiresMinTier
+  }
+  if (typeof c.meterSpendCapToCurrent === "number" && Number.isFinite(c.meterSpendCapToCurrent))
+    trigger.meterSpendCapToCurrent = c.meterSpendCapToCurrent
+  if (typeof c.recordSpendAsStatus === "string" && c.recordSpendAsStatus)
+    trigger.recordSpendAsStatus = c.recordSpendAsStatus
+  if (typeof c.refundFractionOfCastCost === "number" && Number.isFinite(c.refundFractionOfCastCost))
+    trigger.refundFractionOfCastCost = c.refundFractionOfCastCost
+  if (c.conditionsBeforeHit === true) trigger.conditionsBeforeHit = true
   return trigger
 }
 
 function importedVariant(v: unknown): HitVariant | null {
   if (!isHitVariant(v)) return null
-  return { ...v, id: newVariantId(), conditions: v.conditions.filter(isTriggerCondition) }
+  return { ...v, id: newVariantId(), conditions: v.conditions.filter(isHitOrVariantCondition) }
+}
+
+function isMeterCost(value: unknown): value is MeterCost {
+  if (!value || typeof value !== "object") return false
+  const cost = value as Record<string, unknown>
+  return (
+    typeof cost.meterId === "string" &&
+    !!cost.meterId &&
+    typeof cost.amount === "number" &&
+    (cost.atFrame === undefined || typeof cost.atFrame === "number") &&
+    (cost.requiresParam === undefined || typeof cost.requiresParam === "string") &&
+    (cost.requiresMinTier === undefined || typeof cost.requiresMinTier === "number") &&
+    (cost.requiresMaxTier === undefined || typeof cost.requiresMaxTier === "number")
+  )
+}
+
+function isMeterDrain(value: unknown): value is MeterDrain {
+  if (!value || typeof value !== "object") return false
+  const drain = value as Record<string, unknown>
+  if (!(
+    typeof drain.meterId === "string" &&
+    !!drain.meterId &&
+    typeof drain.perSecond === "number" &&
+    typeof drain.fromFrame === "number" &&
+    (drain.stopAfterSec === undefined || typeof drain.stopAfterSec === "number")
+  ))
+    return false
+  if (drain.chargeRelease === undefined) return true
+  const chargeRelease = drain.chargeRelease as Record<string, unknown>
+  return (
+    !!chargeRelease &&
+    typeof chargeRelease === "object" &&
+    typeof chargeRelease.fallbackSkillId === "string" &&
+    !!chargeRelease.fallbackSkillId
+  )
+}
+
+function isMeterFreeze(value: unknown): value is MeterFreeze {
+  if (!value || typeof value !== "object") return false
+  const freeze = value as Record<string, unknown>
+  return (
+    typeof freeze.meterId === "string" && !!freeze.meterId && typeof freeze.fromFrame === "number"
+  )
+}
+
+function sanitizedFrameRecord(value: unknown): Record<string, number> | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined
+  const entries = Object.entries(value as Record<string, unknown>).filter(
+    (entry): entry is [string, number] => typeof entry[1] === "number" && Number.isFinite(entry[1]),
+  )
+  return entries.length > 0 ? Object.fromEntries(entries) : undefined
 }
 
 function importedHit(h: unknown): SkillHit {
@@ -1315,8 +1709,26 @@ function importedHit(h: unknown): SkillHit {
     if (variants.length > 0) hit.variants = variants
   }
   if (Array.isArray(c.conditions)) {
-    const conditions = c.conditions.filter(isTriggerCondition)
+    const conditions = c.conditions.filter(isHitOrVariantCondition)
     if (conditions.length > 0) hit.conditions = conditions
+  }
+  if (Array.isArray(c.requiresNextStepSkillIds)) {
+    const skillIds = c.requiresNextStepSkillIds.filter(
+      (skillId): skillId is string => typeof skillId === "string",
+    )
+    if (skillIds.length > 0) hit.requiresNextStepSkillIds = skillIds
+  }
+  if (typeof c.castFramesWhenGated === "number" && Number.isFinite(c.castFramesWhenGated)) {
+    hit.castFramesWhenGated = c.castFramesWhenGated
+  }
+  if (typeof c.qiRate === "number" && Number.isFinite(c.qiRate)) {
+    hit.qiRate = c.qiRate
+  }
+  if (typeof c.qiFlat === "number" && Number.isFinite(c.qiFlat)) {
+    hit.qiFlat = c.qiFlat
+  }
+  if (isProjectileSpec(c.projectile)) {
+    hit.projectile = c.projectile
   }
   return hit
 }
@@ -1345,6 +1757,8 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     neverAbrades:
       (migrateNeverAbradesSkill(c) as Partial<Skill>).neverAbrades === true ? true : undefined,
     guaranteedNormal: c.guaranteedNormal === true ? true : undefined,
+    isWeaponSwap: c.isWeaponSwap === true ? true : undefined,
+    cancelledBy: isCancelledByValue(c.cancelledBy) ? c.cancelledBy : undefined,
     tags: Array.isArray(c.tags) ? c.tags.filter((t): t is string => typeof t === "string") : [],
     receives: Array.isArray(c.receives)
       ? c.receives.filter((id): id is string => typeof id === "string")
@@ -1352,6 +1766,19 @@ export function importCustomSkill(text: string, targetClassId: string): Skill {
     triggersBuffs: Array.isArray(c.triggersBuffs)
       ? c.triggersBuffs.filter((id): id is string => typeof id === "string")
       : undefined,
+    triggersBuffsAtFrame: sanitizedFrameRecord(c.triggersBuffsAtFrame),
+    castConditions: Array.isArray(c.castConditions)
+      ? c.castConditions.filter(isHitOrVariantCondition).map(migrateTriggerCondition)
+      : undefined,
+    meterCosts: Array.isArray(c.meterCosts) ? c.meterCosts.filter(isMeterCost) : undefined,
+    meterDrains: Array.isArray(c.meterDrains) ? c.meterDrains.filter(isMeterDrain) : undefined,
+    meterFreezes: Array.isArray(c.meterFreezes) ? c.meterFreezes.filter(isMeterFreeze) : undefined,
+    reachMeters:
+      typeof c.reachMeters === "number" && Number.isFinite(c.reachMeters)
+        ? c.reachMeters
+        : undefined,
+    approach: isSkillApproach(c.approach) ? c.approach : undefined,
+    displacement: isDisplacement(c.displacement) ? c.displacement : undefined,
     createdAt: now,
     updatedAt: now,
   }
@@ -1415,6 +1842,25 @@ function withRenamedStatKeys(effects: BuffStatEffect[]): BuffStatEffect[] {
   )
 }
 
+// additive value-level repair — see CLAUDE.md → "localStorage migrations"
+//
+// Deepdaze now resets Binge Points to 0 when it lapses without Skyspeak's
+// refund gate, not to whatever the counter already read; a copy seeded
+// before that carries the old onExpire with no elseStacks. Only an onExpire
+// still identical to what was seeded is rewritten.
+const INEBRIATE_DEEPDAZE_ID = "buff-bamboocutDraught-inebriate-deepdaze"
+const BINGE_POINTS_ID = "buff-bamboocutDraught-binge-points"
+
+function healInebriateDeepdazeElseStacks(id: string, onExpire: Buff["onExpire"]): Buff["onExpire"] {
+  if (id !== INEBRIATE_DEEPDAZE_ID || !onExpire) return onExpire
+  const seeded =
+    onExpire.targetId === BINGE_POINTS_ID &&
+    onExpire.stacks === 60 &&
+    onExpire.requiresBuffId === "skyspeakDeepdazeRefund" &&
+    onExpire.elseStacks === undefined
+  return seeded ? { ...onExpire, elseStacks: 0 } : onExpire
+}
+
 // additive — see CLAUDE.md → "localStorage migrations"
 function hydrateBuff(b: Buff): Buff {
   const { dot: _drop, ...rest0 } = b as Buff & { dot?: unknown }
@@ -1425,10 +1871,14 @@ function hydrateBuff(b: Buff): Buff {
     scope: b.scope === "team" ? "team" : "player",
     stackScaling: b.stackScaling === "perStack" ? "perStack" : "flat",
     maxStacks: typeof b.maxStacks === "number" && b.maxStacks > 0 ? b.maxStacks : 1,
+    maxStacksByTier: importedMaxStacksByTier(b.maxStacksByTier),
     effects: withRenamedStatKeys(b.effects),
   }
   if (b.onExpire)
-    hydrated.onExpire = { ...b.onExpire, targetId: migrateMysticId(b.onExpire.targetId) }
+    hydrated.onExpire = healInebriateDeepdazeElseStacks(rest.id, {
+      ...b.onExpire,
+      targetId: migrateMysticId(b.onExpire.targetId),
+    })
   if (Array.isArray(b.onMaxStacks)) hydrated.onMaxStacks = b.onMaxStacks.map(hydrateHitTrigger)
   return hydrated
 }
@@ -1568,6 +2018,25 @@ export function exportCustomBuff(b: Buff): string {
   return JSON.stringify(b, null, 2)
 }
 
+function importedMaxStacksByTier(raw: unknown): Buff["maxStacksByTier"] {
+  if (!raw || typeof raw !== "object") return undefined
+  const spec = raw as Record<string, unknown>
+  if (typeof spec.param !== "string" || !spec.param) return undefined
+  if (!spec.byTier || typeof spec.byTier !== "object") return undefined
+  const byTier: Record<number, number> = {}
+  for (const [tier, cap] of Object.entries(spec.byTier as Record<string, unknown>)) {
+    if (
+      !Number.isFinite(Number(tier)) ||
+      typeof cap !== "number" ||
+      !Number.isFinite(cap) ||
+      cap <= 0
+    )
+      continue
+    byTier[Number(tier)] = cap
+  }
+  return Object.keys(byTier).length > 0 ? { param: spec.param, byTier } : undefined
+}
+
 export function importCustomBuff(text: string, targetClassId: string): Buff {
   const parsed = JSON.parse(text) as unknown
   if (!parsed || typeof parsed !== "object") {
@@ -1585,6 +2054,7 @@ export function importCustomBuff(text: string, targetClassId: string): Buff {
     durationFrames: typeof c.durationFrames === "number" ? c.durationFrames : 600,
     effects,
     maxStacks: typeof c.maxStacks === "number" && c.maxStacks > 0 ? c.maxStacks : 1,
+    maxStacksByTier: importedMaxStacksByTier(c.maxStacksByTier),
     stackScaling: c.stackScaling === "perStack" ? "perStack" : "flat",
   })
   if (!isBuff(fresh)) {
@@ -1658,6 +2128,16 @@ function hydrateDebuff(d: Debuff): Debuff {
         ...d.dot,
         perStackShapes: sanitizePerStackShapes(d.dot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(d.dot.perStackMultipliers),
+        qiRate:
+          typeof d.dot.qiRate === "number" && Number.isFinite(d.dot.qiRate)
+            ? d.dot.qiRate
+            : undefined,
+        qiFlat:
+          typeof d.dot.qiFlat === "number" && Number.isFinite(d.dot.qiFlat)
+            ? d.dot.qiFlat
+            : undefined,
+        qiHitKind:
+          d.dot.qiHitKind === "direct" || d.dot.qiHitKind === "dot" ? d.dot.qiHitKind : undefined,
       }
     : null
   const rawDetonation = d.detonation as unknown
@@ -1769,6 +2249,18 @@ export function importCustomDebuff(text: string, targetClassId: string): Debuff 
         count: typeof rawDot.count === "number" ? rawDot.count : 1,
         perStackShapes: sanitizePerStackShapes(rawDot.perStackShapes),
         perStackMultipliers: sanitizePerStackMultipliers(rawDot.perStackMultipliers),
+        qiRate:
+          typeof rawDot.qiRate === "number" && Number.isFinite(rawDot.qiRate)
+            ? rawDot.qiRate
+            : undefined,
+        qiFlat:
+          typeof rawDot.qiFlat === "number" && Number.isFinite(rawDot.qiFlat)
+            ? rawDot.qiFlat
+            : undefined,
+        qiHitKind:
+          rawDot.qiHitKind === "direct" || rawDot.qiHitKind === "dot"
+            ? rawDot.qiHitKind
+            : undefined,
       }
     : null
   const fresh = makeDebuff(targetClassId, {

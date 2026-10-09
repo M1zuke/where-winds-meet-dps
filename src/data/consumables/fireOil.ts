@@ -1,6 +1,6 @@
 import { defineConsumable } from "../../definitions/consumables/consumableDef"
 import { declareMechanic } from "../../engine/mechanics"
-import { fireOilBurnMechanic } from "./fireOilMechanic"
+import { fireOilBurnMechanic } from "./divinecraftMechanics"
 
 export const fireOil = defineConsumable({
   id: "fireOil",

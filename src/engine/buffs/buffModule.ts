@@ -1,5 +1,11 @@
 import type { Effect } from "../effects/effect"
 import type { EffectContext, QiPhase } from "../effects/context"
+import type { BuffParams } from "./buffEngine"
+
+// A phase, or a genuine target-Qi-fraction threshold — for a gate the game
+// keys to a real percentage rather than to the compatibility phase window
+// (docs/TIMELINE.md § "Qi bar").
+export type QiGate = QiPhase | { qiBelow: number }
 
 export interface BuffRequirements {
   param?: string
@@ -43,27 +49,43 @@ export interface PerCastConsume {
   phaseAlternative?: { phase: QiPhase | readonly QiPhase[]; requires?: BuffRequirements }
 }
 
+// Mutually exclusive — see TIMELINE.md § "The class-buff system".
+export type BuffGate =
+  | { requires?: BuffRequirements; grantRequires?: undefined }
+  | { requires?: undefined; grantRequires: Record<string, BuffRequirements> }
+
+// A `grantRequires` key reserved for "every source this map does not name" —
+// a tag family never collides with it, since every real tag carries its own
+// namespace prefix. Absent, an unmapped source still grants ungated, same as
+// before this key existed.
+export const GRANT_REQUIRES_DEFAULT = "grantRequires:default"
+
 // The declarative core: the Skill Editor catalog derives `bonus`, `enabledParam`,
 // `minTier` and the Receives / Applies / Class Buffs rows from these fields, and
 // `displayGates.ts` filters on them, so they must stay readable without
 // executing anything.
-export interface BuffMeta {
+export type BuffMeta = BuffGate & {
   id: string
   name: string
-  requires?: BuffRequirements
   affectsAll?: boolean
   alwaysActive?: boolean
   buffAppliesOnCastEnd?: boolean
-  maxStacks?: number
-  cooldown?: number
+  // Opens the window this many seconds after the triggering cast's start
+  // instead of at the trigger hit's own frame. Ignored when
+  // `buffAppliesOnCastEnd` (or the trigger's own `appliesOnCastEnd`) is set.
+  buffAppliesAfterSec?: number
+  // Unlike `duration`/`cooldown`, a function here resolves once at
+  // registration rather than being re-read per event.
+  maxStacks?: number | ((params: BuffParams) => number)
+  cooldown?: number | ((ctx: EffectContext) => number)
   rateLimit?: { count: number; window: number }
   stackRateLimit?: { count: number; window: number }
   stacksPerHit?: boolean
   stackOnDamage?: boolean
-  // Restricts `stackOnDamage` to the listed Qi phases; a damaging hit outside
+  // Restricts `stackOnDamage` to the listed Qi gates; a damaging hit outside
   // them grants no stack. Independent of `triggerPhase`, which gates the cast
   // route only.
-  stackOnDamagePhase?: QiPhase | readonly QiPhase[]
+  stackOnDamagePhase?: QiGate | readonly QiGate[]
   // Restricts `stackOnDamage` to hits from skills that reach this def — the
   // same `reaches` predicate the damage query uses.
   stackOnDamageScoped?: boolean
@@ -99,6 +121,10 @@ export interface BuffMeta {
   // this module yet, and it keeps reaching ticks exactly as it does today.
   // Only an explicit `false` excludes them.
   reachesDotTicks?: boolean
+  // Whether this module's `effects` read `ctx.target.distanceMeters` — the
+  // Encounter Settings panel shows the distance input only while the build
+  // carries a module or mechanic that declares this.
+  readsTargetDistance?: boolean
 }
 
 // `summary` is required exactly when `effects` cannot be read without running

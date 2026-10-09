@@ -31,7 +31,7 @@ const phalanxCharged = () =>
     "PhalanxCharged-S3",
     [WEAPON.moBlade, ROLE.phalanxCharged, PROP.consumesInnerPassionBurningHeart],
     CAST.phalanxChargedS3,
-    [BUFF.mountainSplitter],
+    [BUFF.mountainSplitter, BUFF.mountainSplitterExhausted],
   )
 
 const anxiMoJump = () =>
@@ -180,6 +180,35 @@ describe("Burning Heart — what a charge consumes, and what that grants", () =>
     })
     expect(exhausted.getHistoricalBuffStacks(BUFF.chargeEnhancement, 4.5)).toBe(2)
     expect(exhausted.isBuffActive(BUFF.mountainSplitter, 4.5)).toBe(false)
+  })
+})
+
+describe("Mountain Splitter (Exhausted target) — the tier 6 fallback rule", () => {
+  it("carries a final-crit rule that fires at 70% and adds 15 points below it, on an Exhausted target without Mountain Splitter", () => {
+    const exhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    const result = exhausted.calculateDamageEffects(phalanxCharged(), 1)
+    expect(result.conditionalFinalCrit).toEqual({ threshold: 0.7, bonusBelowThreshold: 0.15 })
+  })
+
+  it("does not fire outside the Exhausted phase", () => {
+    const normalPhase = engine(6, { qiBreakTime: 100, bossBreakDuration: 10 })
+    const result = normalPhase.calculateDamageEffects(phalanxCharged(), 1)
+    expect(result.conditionalFinalCrit).toBeNull()
+  })
+
+  it("yields to the tier 3 Mountain Splitter window while that one is up", () => {
+    const stillExhausted = engine(6, { qiBreakTime: 0, bossBreakDuration: 30 })
+    stillExhausted.processSkillCast(CAST.snowpartingSpecial, 0, { castTime: 1 }, false, [
+      BUFF.innerPassion,
+    ])
+    stillExhausted.processSkillCast(CAST.anxiSoldierMoJump, 1.5, {}, true, [BUFF.mountainSplitter])
+    expect(stillExhausted.isBuffActive(BUFF.mountainSplitter, 2)).toBe(true)
+    expect(stillExhausted.calculateDamageEffects(phalanxCharged(), 2).conditionalFinalCrit).toEqual(
+      {
+        threshold: 0.75,
+        bonusBelowThreshold: 0.15,
+      },
+    )
   })
 })
 

@@ -8,19 +8,17 @@ import { damageMultiplier, stat } from "../../../../engine/effects/effect"
 // 2026 patch note carries the latter two at 8%; the discrepancy is unresolved
 // and the localization postdates the note.
 //
-// Only the two Exhausted-state clauses are modelled: Qi damage drains the
-// target's Qi bar rather than its HP, so it reaches no damage stat here.
-//
-// Returning no effects does not make this inert — sharing
-// `QI_IMBALANCE_STATUS`'s value is what holds the target in the low-Qi phase
-// for as long as it is up.
 export const qiImbalance = defineClassBuff({
   id: BUFF.qiImbalance,
   name: "Qi Imbalance",
   affectsAll: true,
   duration: 15,
   buffAppliesOnCastEnd: true,
-  summary: "+10% HP damage and +10% Bellstrike damage taken while Exhausted",
-  effects: (ctx) =>
-    ctx.phase === "exhausted" ? [damageMultiplier(1.1), stat("attributeDamageBoost", 0.1)] : [],
+  summary: "+10% Qi damage taken; +10% HP damage and +10% Bellstrike damage taken while Exhausted",
+  effects: (ctx) => [
+    stat("target.qiDamageTaken", 0.1),
+    ...(ctx.phase === "exhausted"
+      ? [damageMultiplier(1.1), stat("attributeDamageBoost", 0.1)]
+      : []),
+  ],
 })

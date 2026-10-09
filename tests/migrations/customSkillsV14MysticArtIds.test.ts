@@ -10,7 +10,7 @@ import {
   migrateMysticSkillHit,
 } from "../../src/migrations/customSkills/V14__mysticArtIds"
 import { loadCustomSkills, loadCustomSkillsForClass } from "../../src/storage"
-import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
+import { MYSTIC_ARTS_CLASS_ID, type Skill, type StatusCondition } from "../../src/engine/skill"
 import storeV13File from "./testCustomSkills/v13/store.json"
 
 const SKILLS_KEY = "wwm.customSkills"
@@ -43,8 +43,12 @@ describe("custom-skills v5 fixture", () => {
       "bellstrikeUmbra-poet1",
       "debuff-bellstrikeUmbra-combustion",
     ])
-    expect(authored.hits[0].conditions?.[0].buffId).toBe("debuff-bellstrikeUmbra-flute-ripple")
-    expect(authored.hits[0].triggers[1].condition?.buffId).toBe("debuff-bellstrikeUmbra-dark-fire")
+    expect((authored.hits[0].conditions?.[0] as StatusCondition | undefined)?.buffId).toBe(
+      "debuff-bellstrikeUmbra-flute-ripple",
+    )
+    expect((authored.hits[0].triggers[1].condition as StatusCondition | null)?.buffId).toBe(
+      "debuff-bellstrikeUmbra-dark-fire",
+    )
   })
 })
 
@@ -57,8 +61,12 @@ describe("migrateMysticSkillHit", () => {
       "mystic-poet1",
       "debuff-mystic-combustion",
     ])
-    expect(hit.triggers[1].condition?.buffId).toBe("debuff-mystic-smolder")
-    expect(hit.conditions?.[0].buffId).toBe("debuff-mystic-flute-ripple")
+    expect((hit.triggers[1].condition as StatusCondition | null)?.buffId).toBe(
+      "debuff-mystic-smolder",
+    )
+    expect((hit.conditions?.[0] as StatusCondition | undefined)?.buffId).toBe(
+      "debuff-mystic-flute-ripple",
+    )
   })
 
   it("leaves a hit that references nothing mystic untouched", () => {

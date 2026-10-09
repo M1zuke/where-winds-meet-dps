@@ -50,7 +50,9 @@ describe("renaming every built-in display name", () => {
     expect(byDamage(renamed.perSkill)).toEqual(byDamage(baseline.perSkill))
   })
 
-  it("raises no new warning", () => {
-    expect(renamed.warnings).toEqual(baseline.warnings)
+  it("raises no new warning, once each warning's own renamed skill name is normalized away", () => {
+    const withoutName = (warning: string) =>
+      warning.replace(/^.*(?= at \d+\.\d+s would be illegal)/, "<skill>")
+    expect(renamed.warnings.map(withoutName)).toEqual(baseline.warnings.map(withoutName))
   })
 })

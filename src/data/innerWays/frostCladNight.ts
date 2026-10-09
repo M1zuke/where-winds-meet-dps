@@ -1,11 +1,15 @@
 import { defineInnerWay } from "../../definitions/innerWays/innerWayDef"
 import { INNER_WAY_ID, INNER_WAY_LADDER } from "./ids"
 import { PARAM } from "../skills/buffs/ids"
-import { forgetfulness } from "./frostCladNightBuffs/forgetfulness"
+import { forgetfulness, forgetfulnessCooldown } from "./frostCladNightBuffs/forgetfulness"
 import { frostCladSnowbreak } from "./frostCladNightBuffs/frostCladSnowbreak"
 import { frostCladSnowbreakIPConsume } from "./frostCladNightBuffs/frostCladSnowbreakIPConsume"
 import { frostCladSnowbreakT6 } from "./frostCladNightBuffs/frostCladSnowbreakT6"
 import { innerPassion } from "./frostCladNightBuffs/innerPassion"
+import {
+  snowbreakSpringAvailable,
+  snowbreakSpringCooldown,
+} from "./frostCladNightBuffs/snowbreakSpringAvailability"
 
 export const frostCladNight = defineInnerWay({
   id: INNER_WAY_ID.frostCladNight,
@@ -18,11 +22,11 @@ export const frostCladNight = defineInnerWay({
     2: { ladder: INNER_WAY_LADDER.weaponAttackMinFiveStar },
     5: { panelStats: { directCritRate: 0.046 } },
   },
-  buffDefs: [
-    innerPassion,
-    frostCladSnowbreak,
-    frostCladSnowbreakT6,
-    frostCladSnowbreakIPConsume,
+  buffDefs: [innerPassion, frostCladSnowbreak, frostCladSnowbreakT6, frostCladSnowbreakIPConsume],
+  gateBuffs: [
     forgetfulness,
+    forgetfulnessCooldown,
+    snowbreakSpringAvailable,
+    snowbreakSpringCooldown,
   ],
 })

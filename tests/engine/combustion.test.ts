@@ -53,7 +53,7 @@ describe("Dragon's Breath → Combustion DoT", () => {
     expect(combustion!.dot!.tickIntervalFrames).toBe(30)
     expect(combustion!.dot!.physMultiplier).toBeCloseTo(0.29545, 10)
     expect(combustion!.dot!.physFixed).toBe(44.62)
-    expect(combustion!.dot!.attributeMultiplier).toBeCloseTo(0.29545, 10)
+    expect(combustion!.dot!.attributeMultiplier).toBeCloseTo(0.443175, 10)
     expect(combustion!.maxStacks).toBe(1)
     expect(combustion!.stackScaling).toBe("flat")
   })

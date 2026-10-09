@@ -3,6 +3,14 @@ import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { NAMELESS_SPEAR_RECEIVES } from "./receives"
+import { QIANKUNS_LOCK_GAIN, MOUNTAINS_MIGHT_GAIN } from "./buffs/qiankunsLockEnduranceGains"
+import {
+  endlessGaleAtStartGrant,
+  endlessGaleGrant,
+  endlessGaleMountainsMightExtend,
+  endlessGaleCostReductionEndTrigger,
+} from "./buffs/endlessGaleCostReductionGrant"
+import { qiankunsLockQiImbalanceMarkerGrant } from "./buffs/qiImbalanceMarkerGrant"
 
 // Cast before the pull, so it lands no damage of its own — it is in the
 // rotation for the Endless Gale window and the Qi Imbalance it applies.
@@ -16,10 +24,19 @@ export const spearqPrepull = defineSkill({
   weaponOrAttribute: "Spear",
   attributeAttack: "Bellstrike",
   castTag: CAST.spearQPrepull,
-  triggersBuffs: [BUFF.jadeware, BUFF.endlessGale, BUFF.mountainsMight, BUFF.qiImbalance],
-  receives: NAMELESS_SPEAR_RECEIVES,
+  triggersBuffs: [BUFF.jadeware, BUFF.mountainsMight, BUFF.qiImbalance],
+  receives: [BUFF.starweaveMartialBoost, ...NAMELESS_SPEAR_RECEIVES],
   castFrames: 0,
   triggerable: true,
+  // In-game values as of 2026-09-28: 5 m approach reach; once between 1.5
+  // and 4.5 m the cast's own segment teleports 1.5 m behind the target,
+  // otherwise no further scripted motion.
+  reachMeters: 5,
+  displacement: {
+    kind: "byDistance",
+    bands: [{ minMeters: 1.5, maxMeters: 4.5, then: { kind: "toTarget", meters: 1.5 } }],
+    otherwise: { kind: "towardTarget", referenceMeters: 0 },
+  },
   hits: [
     hit(0, {
       frame: 0,
@@ -27,6 +44,15 @@ export const spearqPrepull = defineSkill({
       attributeMultiplier: 0,
       physFixed: 0,
       attributeFixed: 0,
+      triggers: [
+        QIANKUNS_LOCK_GAIN,
+        MOUNTAINS_MIGHT_GAIN,
+        endlessGaleAtStartGrant,
+        endlessGaleGrant,
+        endlessGaleMountainsMightExtend,
+        endlessGaleCostReductionEndTrigger,
+        qiankunsLockQiImbalanceMarkerGrant,
+      ],
     }),
   ],
   createdAt: "2026-08-15T00:00:00.000Z",

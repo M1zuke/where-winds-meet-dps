@@ -9,12 +9,18 @@ export const bitterSeason = defineInnerWay({
   name: "Bitter Season",
   selectableTiers: [6, 5, 4, 3, 2, 1],
   confirmedBreakthrough: 17,
+  // In-game values as of 2026-09-24: ranks 4-5 reuse the rank-3 rows — only
+  // rank 6 raises the proc chance.
   tiers: {
     1: { nodes: [INNER_WAY_NODE.bitterSeasonStrongerDefenseReduction] },
     2: { ladder: INNER_WAY_LADDER.precisionFourStar },
-    4: { nodes: [INNER_WAY_NODE.bitterSeasonImprovedProcChance] },
     5: { panelStats: { physBoost: 0.025 } },
-    6: { nodes: [INNER_WAY_NODE.bitterSeasonMaxStackPenetration] },
+    6: {
+      nodes: [
+        INNER_WAY_NODE.bitterSeasonImprovedProcChance,
+        INNER_WAY_NODE.bitterSeasonMaxStackPenetration,
+      ],
+    },
   },
   mechanics: [declareMechanic(bitterSeasonMechanic())],
 })

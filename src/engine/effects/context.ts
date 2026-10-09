@@ -7,6 +7,8 @@ export interface BuildView {
   spec: string | undefined
   armorSet: string | undefined
   minPhysAttack: number
+  maxPhysAttack: number
+  whiteCritRate: number
   breakthrough: number
   param(id: string): boolean
   paramTier(id: string): number
@@ -17,6 +19,12 @@ export interface TargetView {
   isTrainingDummy: boolean
   // 1 at full health, falling to 0 as the target is worn down.
   remainingHealthFraction: number
+  // Centre-to-centre distance to the target, in metres.
+  distanceMeters: number
+  // 1 at a full Qi bar, 0 while broken — the simulated schedule's own step
+  // function (docs/TIMELINE.md § "Qi bar").
+  qiFraction: number
+  qiBroken: boolean
 }
 
 export interface StatusView {
@@ -24,6 +32,10 @@ export interface StatusView {
   stacks(id: string): number
   appliedAt(id: string): number | null
   expiresAt(id: string): number | null
+  secondsSinceLastEnd(id: string): number | null
+  // For a permanent-activation counter with no window to close — see
+  // docs/TIMELINE.md § "The class-buff system — buff modules".
+  secondsSinceStacksBelowThreshold(id: string, threshold: number): number | null
 }
 
 type PropKey<Tag> = Tag extends `prop:${infer Suffix}` ? Suffix : never
@@ -52,6 +64,7 @@ export const PROP_TO_PROPERTY: Record<(typeof PROP)[keyof typeof PROP], SkillPro
   [PROP.abrasionImmune]: "abrasionImmune",
   [PROP.consumesInnerPassion]: "consumesInnerPassion",
   [PROP.consumesInnerPassionBurningHeart]: "consumesInnerPassionBurningHeart",
+  [PROP.consumesInnerPassionBurningHeartLowStage]: "consumesInnerPassionBurningHeartLowStage",
   [PROP.empoweredDotEffect]: "empoweredDotEffect",
   [PROP.hasLowQiCritBoost]: "hasLowQiCritBoost",
   [PROP.hasLowQiDmgBoost]: "hasLowQiDmgBoost",

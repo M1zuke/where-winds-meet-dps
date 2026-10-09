@@ -9,9 +9,10 @@ import {
   type HitTrigger,
   type Skill,
 } from "../../src/engine/skill"
-import { makeRotation, makeStep, type Rotation } from "../../src/engine/rotation"
+import { makeStep, type Rotation } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { isBuff, makeBuff, type Buff } from "../../src/engine/buff"
-import type { Inputs } from "../../src/engine/types"
+import type { EngineRunOptions, Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const EXHAUSTED_FROM_SEC = 1
@@ -41,8 +42,10 @@ function rotationOf(skills: Skill[], patch: Partial<Rotation> = {}): Rotation {
   })
 }
 
-const withBreakWindow: Partial<Rotation> = {
-  qiBreak: { startSec: EXHAUSTED_FROM_SEC, durationSec: EXHAUSTED_FOR_SEC, lowQiLeadSec: 0 },
+const EXHAUSTED_WINDOW_OPTIONS: EngineRunOptions = {
+  fixedQiBreaks: [
+    { startSec: EXHAUSTED_FROM_SEC, durationSec: EXHAUSTED_FOR_SEC, lowQiLeadSec: 0 },
+  ],
 }
 
 function makeGate(patch: Partial<Buff> = {}): Buff {
@@ -72,8 +75,13 @@ function probe(): Skill {
   })
 }
 
-function chipStacks(inputs: Inputs, castIndex: number, buffId: string): number {
-  const cast = (simulateTimeline(inputs).casts ?? [])[castIndex]
+function chipStacks(
+  inputs: Inputs,
+  castIndex: number,
+  buffId: string,
+  options?: EngineRunOptions,
+): number {
+  const cast = (simulateTimeline(inputs, options).casts ?? [])[castIndex]
   return cast?.buffs.find((buff) => buff.id === buffId)?.stacks ?? 0
 }
 
@@ -86,9 +94,9 @@ describe("a trigger bound to a Qi phase", () => {
     const beforeBreak = probe()
     const duringBreak = probe()
     const skills = [grant, beforeBreak, grant, duringBreak]
-    const inputs = timelineInputs(rotationOf(skills, withBreakWindow), skills, [gate])
-    expect(chipStacks(inputs, 1, gate.id)).toBe(0)
-    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 1, gate.id, EXHAUSTED_WINDOW_OPTIONS)).toBe(0)
+    expect(chipStacks(inputs, 3, gate.id, EXHAUSTED_WINDOW_OPTIONS)).toBe(1)
   })
 
   it("the layout pass sees the phase-gated grant when sizing a cast", () => {
@@ -120,8 +128,11 @@ describe("a trigger bound to a Qi phase", () => {
       ],
     })
     const skills = [grant, gated, grant, gated]
-    const inputs = timelineInputs(rotationOf(skills, withBreakWindow), skills, [gate])
-    expect(simulateTimeline(inputs).rotationDuration).toBeCloseTo((60 + 90 + 60 + 30) / FPS, 10)
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(simulateTimeline(inputs, EXHAUSTED_WINDOW_OPTIONS).castDuration).toBeCloseTo(
+      (60 + 90 + 60 + 30) / FPS,
+      10,
+    )
   })
 })
 
@@ -180,6 +191,187 @@ describe("a trigger with its own cooldown", () => {
     const skills = [caster, caster, caster, after]
     const inputs = timelineInputs(rotationOf(skills), [...skills, sub], [gate])
     expect(chipStacks(inputs, 3, gate.id)).toBe(2)
+  })
+})
+
+describe("a trigger whose cooldown is cut from outside", () => {
+  const GROUP = "cut-group"
+  const BASE_COOLDOWN = 200
+  const CUT_FRAMES = 150
+
+  const groupedGrant = (gateId: string, patch: Partial<HitTrigger> = {}) =>
+    granter(
+      makeTrigger({
+        kind: "applyBuff",
+        targetId: gateId,
+        stacks: 1,
+        cooldownFrames: BASE_COOLDOWN,
+        cooldownGroup: GROUP,
+        ...patch,
+      }),
+      "Grant",
+    )
+  const cutter = (cutFrames = CUT_FRAMES) =>
+    granter(makeTrigger({ kind: "cooldownCut", targetId: GROUP, stacks: cutFrames }), "Cutter")
+
+  it("blocks the second grant without a cut", () => {
+    const gate = makeGate()
+    const grant = groupedGrant(gate.id)
+    const skills = [grant, probe(), grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+  })
+
+  it("lets the second grant through once a cut brings the wait under the gap", () => {
+    const gate = makeGate()
+    const grant = groupedGrant(gate.id)
+    const skills = [grant, cutter(), grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(2)
+  })
+
+  it("never shortens the wait below the floor", () => {
+    const gate = makeGate()
+    const grant = groupedGrant(gate.id, { cooldownFloorFrames: 130 })
+    const skills = [grant, cutter(), grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+  })
+
+  it("banks nothing from a cut that lands before the first grant", () => {
+    const gate = makeGate()
+    const grant = groupedGrant(gate.id)
+    const skills = [cutter(), grant, grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+  })
+
+  it("resets the cuts when the grant fires again", () => {
+    const gate = makeGate()
+    const grant = groupedGrant(gate.id)
+    const skills = [grant, cutter(), grant, grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 4, gate.id)).toBe(2)
+  })
+
+  it("applies a cut only while its own conditions hold", () => {
+    const gate = makeGate()
+    const key = makeGate({ name: "Key" })
+    const grant = groupedGrant(gate.id)
+    const gatedCutter = granter(
+      makeTrigger({
+        kind: "cooldownCut",
+        targetId: GROUP,
+        stacks: CUT_FRAMES,
+        conditions: [{ buffId: key.id, op: "gte", stacks: 1 }],
+      }),
+      "Gated cutter",
+    )
+    const skills = [grant, gatedCutter, grant, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate, key])
+    expect(chipStacks(inputs, 3, gate.id)).toBe(1)
+  })
+})
+
+describe("triggers sharing a cooldown group", () => {
+  it("fire together on the frame the group fires", () => {
+    const first = makeGate({ name: "First" })
+    const second = makeGate({ name: "Second" })
+    const spec = (targetId: string) =>
+      makeTrigger({
+        kind: "applyBuff",
+        targetId,
+        stacks: 1,
+        cooldownFrames: 1000,
+        cooldownGroup: "together",
+      })
+    const both = makeSkill(CLASS, {
+      name: "Both",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, triggers: [spec(first.id), spec(second.id)] })],
+    })
+    const skills = [both, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [first, second])
+    expect(chipStacks(inputs, 1, first.id)).toBe(1)
+    expect(chipStacks(inputs, 1, second.id)).toBe(1)
+  })
+
+  it("fire once when the same trigger lands twice on one frame", () => {
+    const gate = makeGate()
+    const trigger = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+      cooldownGroup: "twice",
+    })
+    const doubled = makeSkill(CLASS, {
+      name: "Doubled",
+      castFrames: 60,
+      hits: [
+        makeHit({ frame: 0, triggers: [trigger] }),
+        makeHit({ frame: 0, triggers: [trigger] }),
+      ],
+    })
+    const skills = [doubled, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 1, gate.id)).toBe(1)
+  })
+
+  it("stay blocked together while the group cools", () => {
+    const first = makeGate({ name: "First" })
+    const second = makeGate({ name: "Second" })
+    const spec = (targetId: string) =>
+      makeTrigger({
+        kind: "applyBuff",
+        targetId,
+        stacks: 1,
+        cooldownFrames: 1000,
+        cooldownGroup: "cooling",
+      })
+    const both = makeSkill(CLASS, {
+      name: "Both",
+      castFrames: 60,
+      hits: [makeHit({ frame: 0, triggers: [spec(first.id), spec(second.id)] })],
+    })
+    const skills = [both, both, probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [first, second])
+    expect(chipStacks(inputs, 2, first.id)).toBe(1)
+    expect(chipStacks(inputs, 2, second.id)).toBe(1)
+  })
+
+  it("shares one clock across every site the same exported trigger reaches", () => {
+    const gate = makeGate()
+    const shared = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+    })
+    const skills = [granter(shared, "A"), granter(shared, "B"), probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 2, gate.id)).toBe(1)
+  })
+
+  it("shares one clock across two triggers naming the same cooldownGroup", () => {
+    const gate = makeGate()
+    const first = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+      cooldownGroup: "shared-group",
+    })
+    const second = makeTrigger({
+      kind: "applyBuff",
+      targetId: gate.id,
+      stacks: 1,
+      cooldownFrames: 1000,
+      cooldownGroup: "shared-group",
+    })
+    const skills = [granter(first, "A"), granter(second, "B"), probe()]
+    const inputs = timelineInputs(rotationOf(skills), skills, [gate])
+    expect(chipStacks(inputs, 2, gate.id)).toBe(1)
   })
 })
 

@@ -16,14 +16,15 @@ const definition = defineResource({
   launchSkillId: "test-launch",
   debuffId: "test-projectiles",
   drainPerSecond: 10,
-  enhancedBuffId: "test-enhanced",
-  enhancedExtraDrainPerSecond: 10,
+  enhancedRunCost: 5,
+  recallTag: "test-weapon",
+  recallExemptSkillIds: ["test-exempt"],
   endRefund: 15,
   refundCooldownSeconds: 5,
   gains: [],
 })
 
-function resource(opening = 60, enhanced = false) {
+function resource(opening = 60) {
   return new CombatResource(
     definition,
     { opening, exhaustedGainPerTick: 8 },
@@ -31,7 +32,7 @@ function resource(opening = 60, enhanced = false) {
       fps: 60,
       startFrame: 0,
       collect: true,
-      buffActive: () => enhanced,
+      buffActive: () => false,
       exhausted: (frame) => frame >= 60 && frame < 180,
       paramTier: () => 0,
     },
@@ -191,11 +192,29 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(amount(simulation)).toBeCloseTo(40)
   })
 
-  it("keeps enhanced drain running while crediting hit refunds", () => {
-    const simulation = resource(100, true)
+  it("charges an enhanced run's cost once, on top of the drain and the hit refund", () => {
+    const simulation = resource(100)
     simulation.launch(0)
     simulation.tick(60, 0)
-    expect(amount(simulation)).toBeCloseTo(88)
+    simulation.chargeEnhancedRun(60)
+    expect(amount(simulation)).toBeCloseTo(93)
+  })
+
+  it("ends the launch when an enhanced run's cost empties the bar", () => {
+    const simulation = resource(50)
+    simulation.launch(0)
+    simulation.chargeEnhancedRun(270)
+    expect(simulation.result.launches[0].reason).toBe("depleted")
+  })
+
+  it("is recalled by a tagged cast, but not by an exempt one, the launch or a tick", () => {
+    const simulation = resource()
+    const tagged = makeSkill("fictional", { id: "test-tagged", tags: ["test-weapon"] })
+    expect(simulation.recalledBy(tagged)).toBe(true)
+    expect(simulation.recalledBy({ ...tagged, id: "test-exempt" })).toBe(false)
+    expect(simulation.recalledBy({ ...tagged, id: "test-launch" })).toBe(false)
+    expect(simulation.recalledBy({ ...tagged, isDotTick: true })).toBe(false)
+    expect(simulation.recalledBy(makeSkill("fictional", { id: "test-untagged" }))).toBe(false)
   })
 
   it("does not refill from stale ticks after recall or a rejected launch", () => {
@@ -220,6 +239,43 @@ describe("resource refund on exhausted-target projectile hits", () => {
     expect(simulation.tick(660, 0)).toBe(false)
     expect(amount(simulation)).toBe(15)
     expect(simulation.result.launches[0].reason).toBe("depleted")
+  })
+
+  it("regenerates at a flat per-second rate, capped at capacity", () => {
+    const simulation = new CombatResource(
+      { ...definition, regenPerSecond: 6 },
+      { opening: 40 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffActive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.advance(60)
+    expect(amount(simulation)).toBeCloseTo(46)
+    simulation.advance(660)
+    expect(amount(simulation)).toBe(100)
+  })
+
+  it("regenerates against the drain while a launch is active", () => {
+    const simulation = new CombatResource(
+      { ...definition, regenPerSecond: 4 },
+      { opening: 60 },
+      {
+        fps: 60,
+        startFrame: 0,
+        collect: true,
+        buffActive: () => false,
+        exhausted: () => false,
+        paramTier: () => 0,
+      },
+    )
+    simulation.launch(0)
+    simulation.advance(60)
+    expect(amount(simulation)).toBeCloseTo(54)
   })
 
   it("defaults unknown refill to zero and sanitizes invalid saved settings", () => {

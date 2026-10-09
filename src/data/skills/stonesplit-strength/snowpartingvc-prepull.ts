@@ -1,9 +1,13 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
-import { castSkill } from "../../../definitions/skills/triggers"
+import { applyBuff, castSkill, clearStatus, meterDelta } from "../../../definitions/skills/triggers"
 import { ATTACK, ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
-import { BUFF } from "../buffs/ids"
+import { BUFF, PARAM } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { SNOWPARTING_BLADE_RECEIVES } from "./receives"
+import {
+  bladeMomentumMeter,
+  bladeMomentumRequires,
+} from "../../classes/stonesplit-strength/bladeMomentumMeter"
 
 export const snowpartingvcPrepull = defineSkill({
   id: SKILL.snowpartingvcPrepull,
@@ -21,6 +25,12 @@ export const snowpartingvcPrepull = defineSkill({
   weaponOrAttribute: "Hengdao",
   attributeAttack: "Stonesplit",
   castTag: CAST.snowpartingVCPrepull,
+  startLatency: "noWaitOnDummy",
+  castConditions: [
+    { buffId: BUFF.snowbreakSpringAvailable, op: "gte", stacks: 1 },
+    bladeMomentumRequires("gte", 25),
+  ],
+  meterCosts: [{ meterId: bladeMomentumMeter.id, amount: 25 }],
   receives: [
     BUFF.mistwillowLightBuff,
     BUFF.mistwillowBuff,
@@ -30,20 +40,46 @@ export const snowpartingvcPrepull = defineSkill({
     BUFF.cleftpeakDeflect,
     ...SNOWPARTING_BLADE_RECEIVES,
   ],
-  triggersBuffs: [BUFF.throatPierced, BUFF.forgetfulness],
+  triggersBuffs: [BUFF.throatPierced],
   castFrames: 6,
   triggerable: true,
+  // In-game values as of 2026-09-28: 4.5 m approach reach, plus a further
+  // 1 m shrink-only pull once in range.
+  reachMeters: 4.5,
+  displacement: { kind: "towardTarget", referenceMeters: 1 },
   hits: [
     hit(0, {
       frame: 0,
-      physMultiplier: 2.0764,
-      attributeMultiplier: 3.1145,
-      physFixed: 480,
-      attributeFixed: 268,
+      physMultiplier: 2.07686,
+      attributeMultiplier: 3.11529,
+      physFixed: 575,
+      attributeFixed: 313,
       triggers: [
+        applyBuff({ target: BUFF.snowbreakSpringCooldown, requiresParam: PARAM.frostCladNight }),
         castSkill({
           target: SKILL.anxisoldierheng,
           stacks: 0,
+          condition: { buffId: BUFF.ironGuards, op: "gte", stacks: 1, source: "buffEngine" },
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 1,
+        }),
+        applyBuff({
+          target: BUFF.forgetfulness,
+          condition: { buffId: BUFF.forgetfulnessCooldown, op: "eq", stacks: 0 },
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 6,
+        }),
+        clearStatus({
+          target: BUFF.forgetfulnessCooldown,
+          phase: "exhausted",
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 6,
+        }),
+        meterDelta({
+          target: bladeMomentumMeter.id,
+          stacks: 12.5,
+          requiresParam: PARAM.frostCladNight,
+          requiresMinTier: 3,
         }),
       ],
     }),

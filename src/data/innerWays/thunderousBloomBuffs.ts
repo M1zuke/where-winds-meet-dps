@@ -19,7 +19,8 @@ export const springThunder = defineBuff({
   maxStacks: 5,
   stacks: () => 5,
   stackOnDamage: true,
-  stackOnDamagePhase: ["below30", "exhausted"],
+  // Exhausted (Qi 0) is already under 30% — the one gate covers both.
+  stackOnDamagePhase: { qiBelow: 0.3 },
   stackOnDamageScoped: true,
   stackOnDamageOnlyWhileActive: true,
   stackOnDamageRateLimit: { count: 1, window: 2 },

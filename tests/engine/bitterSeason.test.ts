@@ -19,10 +19,12 @@ import { runEngine } from "../../src/engine/dps"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs, emptyMindMethod } from "../../src/engine/defaults"
 import { seedSkillFromBuiltin, makeSkill, makeHit } from "../../src/engine/skill"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
+import { makeStep } from "../../src/engine/rotation"
+import { testRotation as makeRotation } from "../builtins"
 import { getMindMethodContributions } from "../../src/definitions/baseStats"
 import { CLASS_IDS } from "../../src/definitions/classes/registry"
 import type { Inputs } from "../../src/engine/types"
+import { DEFAULT_QI_BREAK_WINDOW } from "../../src/engine/qiBreak"
 
 describe("bitterSeasonPoisonSchedule", () => {
   it("stays active for the poison duration after a single guaranteed proc", () => {
@@ -178,9 +180,11 @@ describe("bitterSeasonTuningAtTier", () => {
     expect(tuning.physPenetrationAtMaxStacks).toBe(0)
   })
 
-  it("upgrades procChance at tier 4", () => {
+  it("holds procChance at 0.1 through tiers 4-5, and upgrades it only at tier 6", () => {
     expect(bitterSeasonTuningAtTier(3).procChance).toBe(0.1)
-    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.15)
+    expect(bitterSeasonTuningAtTier(4).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(5).procChance).toBe(0.1)
+    expect(bitterSeasonTuningAtTier(6).procChance).toBe(0.15)
   })
 
   it("upgrades physPenetrationAtMaxStacks only at tier 6", () => {
@@ -276,14 +280,14 @@ function withBitterSeasonAt(tier: "tier 5" | "tier 6"): Inputs["mindMethods"] {
 const DOT_ROW_NAME = "Bitter Season Tick (DoT)"
 
 describe("Bitter Season — Bellstrike Umbra engine integration", () => {
-  it("the built-in stand-in skill carries the source:innerWayDot tag, one hit, and elevatedAttributeMultiplier === false", () => {
+  it("the built-in stand-in skill carries the source:innerWayDot tag, one hit and no attribute coefficient", () => {
     const skill = builtinSkillsForClass("bellstrikeUmbra").find(
       (skill) => skill.id === "bellstrikeUmbra-bitter-season-tick",
     )
     expect(skill).toBeTruthy()
     expect(skill!.tags).toContain("source:innerWayDot")
     expect(skill!.hits).toHaveLength(1)
-    expect(skill!.elevatedAttributeMultiplier).toBe(false)
+    expect(skill!.hits[0].attributeMultiplier).toBe(0)
   })
 
   it("selecting the inner way at tier 5 raises DPS and adds a Bitter Season Tick (DoT) row", () => {
@@ -315,9 +319,13 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
       classId: "bellstrikeUmbra",
       mindMethods: withBitterSeasonAt("tier 6"),
       customSkills: [soleHit, pad],
+      // A fixed window: the sole damaging hit alone would otherwise close the
+      // fight's own window right where it lands, docs/TIMELINE.md § "Fight
+      // window", leaving the poison's own projected uptime no runway to show.
       activeCustomRotation: makeRotation("bellstrikeUmbra", {
         name: "single-low-probability-hit",
         steps: [makeStep({ skillId: soleHit.id }), makeStep({ skillId: pad.id })],
+        fixedWindowSec: 600 / 60,
       }),
     }
     const result = simulateTimeline(inputs)
@@ -360,18 +368,28 @@ describe("Bitter Season — Bellstrike Umbra engine integration", () => {
   })
 
   it("suppresses the defense/penetration contribution (not the DoT) once the party-applied debuff is active", () => {
-    const withoutBitterSeason = runEngine({
-      ...defaultInputs,
-      classId: "bellstrikeUmbra",
-      mindMethods: UMBRA_BASE_MIND_METHODS,
-      shareDebuff5HenZhi: true,
-    })
-    const withBitterSeason = runEngine({
-      ...defaultInputs,
-      classId: "bellstrikeUmbra",
-      mindMethods: withBitterSeasonAt("tier 6"),
-      shareDebuff5HenZhi: true,
-    })
+    // A fixed break window shared by both runs, so Bitter Season Poison's own
+    // Qi payout cannot move which cast lands inside it and so incidentally
+    // move an unrelated row.
+    const options = { fixedQiBreaks: [DEFAULT_QI_BREAK_WINDOW] }
+    const withoutBitterSeason = runEngine(
+      {
+        ...defaultInputs,
+        classId: "bellstrikeUmbra",
+        mindMethods: UMBRA_BASE_MIND_METHODS,
+        shareDebuff5HenZhi: true,
+      },
+      options,
+    )
+    const withBitterSeason = runEngine(
+      {
+        ...defaultInputs,
+        classId: "bellstrikeUmbra",
+        mindMethods: withBitterSeasonAt("tier 6"),
+        shareDebuff5HenZhi: true,
+      },
+      options,
+    )
     for (const row of withoutBitterSeason.perSkill) {
       const match = withBitterSeason.perSkill.find((candidateRow) => candidateRow.name === row.name)
       expect(match).toBeTruthy()

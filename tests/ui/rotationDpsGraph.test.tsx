@@ -17,12 +17,17 @@ function event(timeSec: number, damage: number): TimelineEvent {
   }
 }
 
-function resultWith(timeline: TimelineEvent[], rotationDuration: number): Result {
+function resultWith(
+  timeline: TimelineEvent[],
+  rotationDuration: number,
+  fightStartSec = 0,
+): Result {
   const totalDamage = timeline.reduce((sum, entry) => sum + entry.damage, 0)
   return {
     dps: rotationDuration > 0 ? totalDamage / rotationDuration : 0,
     totalDamage,
     rotationDuration,
+    fightStartSec,
     castDuration: rotationDuration,
     graduationRate: null,
     perSkill: [],
@@ -138,5 +143,41 @@ describe("RotationDpsGraphPanel", () => {
     renderGraph(resultWith([], 0))
 
     expect(screen.getByText("(none)")).toBeInTheDocument()
+  })
+
+  it("spans the plot from a positive fightStartSec to the rotation's end, not from zero", () => {
+    const result = resultWith([event(3, 4000), event(4, 2000), event(6, 2000)], 4, 2)
+    const container = renderGraph(result)
+    const drawn = anchors(container)
+
+    expect(drawn[0].x).toBe(0)
+    expect(drawn[drawn.length - 1].x).toBe(100)
+  })
+
+  it("reads out the pointer's own fight-clock time against a nonzero fightStartSec", () => {
+    const result = resultWith([event(3, 4000), event(4, 2000), event(6, 2000)], 4, 2)
+    const container = renderGraph(result)
+    const plot = container.querySelector("." + styles.plot)!
+    plot.getBoundingClientRect = () => ({ left: 0, width: 400 }) as DOMRect
+
+    fireEvent.mouseMove(plot, { clientX: 200 })
+
+    expect(screen.getByText("2.00s")).toBeInTheDocument()
+  })
+
+  it("starts the x-axis at 0 regardless of fightStartSec", () => {
+    const container = renderGraph(resultWith([event(3, 4000), event(6, 2000)], 4, 2))
+
+    const ticks = container.querySelectorAll("." + styles.xAxisTick)
+    expect(ticks[0].textContent).toBe("0.0s")
+    expect(ticks[ticks.length - 1].textContent).toBe("4.0s")
+  })
+
+  it("shows a fixed 30 s window as 0 to 30, not the window's own absolute span", () => {
+    const container = renderGraph(resultWith([event(5, 1000), event(32, 1000)], 30, 2))
+
+    const ticks = container.querySelectorAll("." + styles.xAxisTick)
+    expect(ticks[0].textContent).toBe("0.0s")
+    expect(ticks[ticks.length - 1].textContent).toBe("30.0s")
   })
 })

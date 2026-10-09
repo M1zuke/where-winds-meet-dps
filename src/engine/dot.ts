@@ -89,7 +89,7 @@ export function dotTickSkill(debuff: Debuff, tickSkill?: Skill): Skill {
     hits: [],
     castFrames: 0,
     triggerable: false,
-    isDotTick: true,
+    isDotTick: debuff.dot?.directHit !== true,
     createdAt: debuff.createdAt,
     updatedAt: debuff.updatedAt,
   }
@@ -111,7 +111,7 @@ function tickArt(
     extraCritDamage: dot.extraCritDamage,
     elevatedAttributeMultiplier: dot.elevatedAttributeMultiplier,
     skillType: dot.skillType || "sustain",
-    specialTag: "sustain",
+    specialTag: dot.directHit ? undefined : "sustain",
     guaranteedCrit: forceCrit ? 1 : undefined,
     weaponOrAttribute: dot.weaponOrAttribute || undefined,
     mysticCategory: dot.mysticCategory || undefined,
@@ -164,6 +164,8 @@ export interface DotTickPlan {
   frame: number
   weight: number
   requiresBuff?: string
+  requiresBuffAtFrame?: number
+  enhancedBy?: string
   shape?: DotStackShape
   scale?: number
 }
@@ -199,7 +201,13 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
         const at = pulse + offset
         if (at >= episode.end) continue
         const frame = Math.round(at)
-        const requirement = offset > 0 ? { requiresBuff: dot.additionalTicks?.requiresBuff } : {}
+        const enhancingBuff = dot.additionalTicks?.requiresBuff
+        const requirement =
+          offset > 0
+            ? { requiresBuff: enhancingBuff, requiresBuffAtFrame: Math.round(pulse) }
+            : enhancingBuff
+              ? { enhancedBy: enhancingBuff }
+              : {}
         if (frame < 0 || !query.inWindow(frame)) continue
         const weight = query.weightAt(frame)
         if (weight <= 0) continue

@@ -2,6 +2,8 @@ import { defineSkill } from "../../../definitions/skills/skillDef"
 import { CAST } from "../ids"
 import { SKILL } from "./ids"
 import {
+  DRAGONQUENCH_DISPLACEMENT,
+  DRAGONQUENCH_REACH_METERS,
   DRAGONQUENCH_RECEIVES,
   DRAGONQUENCH_TAGS,
   dragonquenchStages,
@@ -20,10 +22,14 @@ export const dragonquenchInebriateCancel = defineSkill({
   weaponOrAttribute: "Gauntlets",
   attributeAttack: "Bamboocut",
   castTag: CAST.dragonquenchInebriateCancel,
+  cancelledBy: "deflectCancel",
+  startLatency: "noWaitOnDummy",
   neverAbrades: true,
   receives: DRAGONQUENCH_RECEIVES,
   triggerable: false,
   castFrames: 116,
+  reachMeters: DRAGONQUENCH_REACH_METERS,
+  displacement: DRAGONQUENCH_DISPLACEMENT,
   hits: dragonquenchStages,
   createdAt: "2026-09-04T00:00:00.000Z",
   updatedAt: "2026-09-06T00:00:00.000Z",

@@ -9,6 +9,7 @@ import {
   damageMultiplier,
   echo,
   setStatus,
+  finalCritAtLeast,
   type Effect,
 } from "../../src/engine/effects/effect"
 
@@ -24,6 +25,8 @@ function recordingSink(): { sink: EffectSink; calls: unknown[][] } {
     setStatus: (id, stacks, permanent, durationFrames) =>
       calls.push(["setStatus", id, stacks, permanent, durationFrames]),
     echo: (debuffId) => calls.push(["echo", debuffId]),
+    finalCritAtLeast: (threshold, bonusBelowThreshold) =>
+      calls.push(["finalCritAtLeast", threshold, bonusBelowThreshold]),
   }
   return { sink, calls }
 }
@@ -40,6 +43,7 @@ describe("applyEffect", () => {
     applyEffect(sink, damageMultiplier(2))
     applyEffect(sink, setStatus("someStatus", { stacks: 1, permanent: true }))
     applyEffect(sink, echo("someDebuff"))
+    applyEffect(sink, finalCritAtLeast(0.7, 0.15))
 
     expect(calls).toEqual([
       ["stat", "allDamageBoost", 0.1],
@@ -50,7 +54,14 @@ describe("applyEffect", () => {
       ["damageMultiplier", 2],
       ["setStatus", "someStatus", 1, true, undefined],
       ["echo", "someDebuff"],
+      ["finalCritAtLeast", 0.7, 0.15],
     ])
+  })
+
+  it("routes forceOutcome('noAbrasion')", () => {
+    const { sink, calls } = recordingSink()
+    applyEffect(sink, forceOutcome("noAbrasion"))
+    expect(calls).toEqual([["forceOutcome", "noAbrasion"]])
   })
 
   it("throws rather than silently no-op-ing on an unrecognised kind", () => {
@@ -80,5 +91,10 @@ describe("effect constructor helpers", () => {
     expect(setStatus("x")).toEqual({ kind: "setStatus", id: "x" })
     expect(echo("x")).toEqual({ kind: "echo", debuffId: "x" })
     expect(setStatus("x", { stacks: 3 })).toEqual({ kind: "setStatus", id: "x", stacks: 3 })
+    expect(finalCritAtLeast(0.7, 0.15)).toEqual({
+      kind: "finalCritAtLeast",
+      threshold: 0.7,
+      bonusBelowThreshold: 0.15,
+    })
   })
 })

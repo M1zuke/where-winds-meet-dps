@@ -6,11 +6,11 @@
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
 import { defaultInputs } from "../../src/engine/defaults"
-import { builtinDebuff, builtinSkill, dotRow } from "../builtins"
+import { builtinDebuff, builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
 import { SKILL as UMBRA_SKILL } from "../../src/data/skills/bellstrike-umbra/ids"
-import { makeRotation, makeStep } from "../../src/engine/rotation"
-import { makeSkill, makeHit } from "../../src/engine/skill"
+import { makeStep } from "../../src/engine/rotation"
+import { makeSkill, makeHit, type StatusCondition } from "../../src/engine/skill"
 import type { Inputs } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
@@ -52,9 +52,9 @@ describe("Smolder debuff data", () => {
 
   it("carries the DoT row recalibrated to the mystic art's actual reachable rank", () => {
     const dot = darkFire!.dot!
-    expect(dot.physMultiplier).toBeCloseTo(0.24991, 10)
-    expect(dot.attributeMultiplier).toBeCloseTo(0.374865, 10)
-    expect(dot.physFixed).toBeCloseTo(37.74, 10)
+    expect(dot.physMultiplier).toBeCloseTo(0.23578, 10)
+    expect(dot.attributeMultiplier).toBeCloseTo(0.35367, 10)
+    expect(dot.physFixed).toBeCloseTo(35.95, 10)
     expect(dot.attributeFixed).toBe(0)
     expect(dot.tickIntervalFrames).toBe(30)
     expect(darkFire!.maxStacks).toBe(1)
@@ -63,7 +63,7 @@ describe("Smolder debuff data", () => {
 })
 
 describe("Dragon Fire (Smolder) skills", () => {
-  it("both exist and carry the workbook's Smolder coefficients", () => {
+  it("both exist and carry the in-game level-171 Smolder coefficients", () => {
     const one = skillOf(ONE_HIT)
     const two = skillOf(TWO_HITS)
 
@@ -71,21 +71,21 @@ describe("Dragon Fire (Smolder) skills", () => {
       s.hits.reduce((a, h) => a + h[field], 0)
 
     expect(one.hits.length).toBe(1)
-    expect(sum(one, "physMultiplier")).toBeCloseTo(1.36064, 10)
-    expect(sum(one, "attributeMultiplier")).toBeCloseTo(2.04096, 10)
-    expect(sum(one, "physFixed")).toBeCloseTo(205.5, 10)
+    expect(sum(one, "physMultiplier")).toBeCloseTo(1.28367, 10)
+    expect(sum(one, "attributeMultiplier")).toBeCloseTo(1.925505, 10)
+    expect(sum(one, "physFixed")).toBeCloseTo(195.71, 10)
 
     expect(two.hits.length).toBe(3)
-    expect(sum(two, "physMultiplier")).toBeCloseTo(4.22076, 10)
-    expect(sum(two, "attributeMultiplier")).toBeCloseTo(6.33114, 10)
-    expect(sum(two, "physFixed")).toBeCloseTo(637.47, 10)
+    expect(sum(two, "physMultiplier")).toBeCloseTo(3.981991, 10)
+    expect(sum(two, "attributeMultiplier")).toBeCloseTo(5.972986, 10)
+    expect(sum(two, "physFixed")).toBeCloseTo(607.111, 10)
   })
 
-  it("apply Combustion, never Smolder, even though the coefficients now match", () => {
+  it("apply Combustion, never Smolder", () => {
     const fb1 = skillOf(SKILL.fireBreath1Hit)
     const fb2 = skillOf(SKILL.fireBreath2Hit)
     expect(fb1.hits[0].physMultiplier).toBeCloseTo(1.36064, 10)
-    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.22076, 10)
+    expect(fb2.hits.reduce((a, h) => a + h.physMultiplier, 0)).toBeCloseTo(4.220758, 10)
     const fbTargets = [fb1, fb2].flatMap((s) =>
       s.hits.flatMap((h) => h.triggers.map((t) => t.targetId)),
     )
@@ -151,7 +151,15 @@ describe("Smolder duration", () => {
   })
 
   it("each extra hit lengthens the window by 4 s (1 hit = 4 s, 3 hits = 12 s)", () => {
-    const pad = makeSkill(CLASS, { name: "Pad", castFrames: 2000, hits: [makeHit({ frame: 0 })] })
+    // A late, damaging hit: the fight's own window now ends at the last
+    // damaging hit rather than at the last cast's own end (docs/TIMELINE.md §
+    // "Fight window"), so a zero-damage pad no longer gives Smolder's own
+    // ticks the runway to land inside it.
+    const pad = makeSkill(CLASS, {
+      name: "Pad",
+      castFrames: 2000,
+      hits: [makeHit({ frame: 1999, physMultiplier: 1 })],
+    })
     const windowSecOf = (skillId: string) => {
       const skill = skillOf(skillId)
       const inputs: Inputs = {
@@ -185,7 +193,9 @@ describe("Zenith detonation extends Smolder", () => {
     expect(t).toBeTruthy()
     expect(t!.extendFrames).toBe(600)
     expect(t!.extendOnly).toBe(true)
-    expect(t!.condition?.buffId).toBe("buff-bellstrikeUmbra-zenith-detonation")
+    expect((t!.condition as StatusCondition | null)?.buffId).toBe(
+      "buff-bellstrikeUmbra-zenith-detonation",
+    )
   })
 
   it("a zenith detonation lengthens an active window; a non-zenith one does not", () => {
@@ -217,8 +227,10 @@ describe("Zenith detonation extends Smolder", () => {
     // later detonation's extend-only trigger finds nothing active to extend.
     const noZenith = ticksFor(5)
     const oneZenith = ticksFor(6)
-    expect(oneZenith - noZenith).toBe(11)
-    expect(ticksFor(12) - oneZenith).toBe(0)
+    expect(oneZenith - noZenith).toBe(12)
+    // The corrected frame timings move a later detonation's own attempt one
+    // tick's width closer to the cap, close enough to still add one tick.
+    expect(ticksFor(12) - oneZenith).toBe(1)
   })
 
   it("never shortens an already-longer window — a Zenith detonation can only extend, never truncate", () => {

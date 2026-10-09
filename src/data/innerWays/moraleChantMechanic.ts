@@ -22,14 +22,16 @@ import { moraleChant } from "./moraleChant"
 
 type State = { tier: number }
 
-function stacksAt(setup: MechanicSetup, timeSec: number): [number, boolean] {
-  const inQiBreak = setup.qiPhaseAt(timeSec) === "exhausted"
-  return [moraleStacksAtTime(timeSec, inQiBreak), inQiBreak]
+// In-game rule as of 2026-09-24: the doubling needs a controlled target, and
+// a training stake is never one.
+function stacksAt(_setup: MechanicSetup, timeSec: number): [number, boolean] {
+  const controlled = false
+  return [moraleStacksAtTime(timeSec, controlled), controlled]
 }
 
-function effectsFor(stacks: number, inQiBreak: boolean) {
+function effectsFor(stacks: number, controlled: boolean) {
   return [
-    { statKey: "allDamageBoost" as const, amount: stacks * moraleDmgPerStack(inQiBreak) },
+    { statKey: "allDamageBoost" as const, amount: stacks * moraleDmgPerStack(controlled) },
     { statKey: "phys.penetration" as const, amount: stacks * MORALE_PEN_PER_STACK },
   ]
 }
@@ -48,17 +50,18 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
     },
 
     contributeAt(_state, frame, _skill, setup) {
-      const [stacks, inQiBreak] = stacksAt(setup, frame / setup.fps)
+      const [stacks, controlled] = stacksAt(setup, frame / setup.fps)
       if (stacks <= 0) return null
-      return { effects: effectsFor(stacks, inQiBreak) }
+      return { effects: effectsFor(stacks, controlled) }
     },
 
     extraEvents(state, setup) {
       if (!innerWayHasNode(moraleChant, state.tier, INNER_WAY_NODE.yiRiver)) return []
-      const durationSec = setup.rotationDurationSec
+      const windowEndSec = setup.windowStartSec + setup.rotationDurationSec
       let first = 0
-      while (first < durationSec && stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD) first += 0.5
-      if (first > durationSec) return []
+      while (first < windowEndSec && stacksAt(setup, first)[0] < MORALE_STACK_THRESHOLD)
+        first += 0.5
+      if (first > windowEndSec) return []
 
       const skill: Skill = {
         id: "yi-river",
@@ -75,13 +78,14 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
         updatedAt: "1970-01-01T00:00:00.000Z",
       }
       const events: MechanicEvent[] = []
-      for (let t = first; t <= durationSec; t += YI_RIVER_INTERVAL_SEC) {
+      for (let tSec = first; tSec <= windowEndSec; tSec += YI_RIVER_INTERVAL_SEC) {
         events.push({
-          frame: Math.round(t * setup.fps),
+          frame: Math.round(tSec * setup.fps),
           skill,
           art: {
             name: "Yi River",
             physMultiplier: 1,
+            // In-game values as of 2026-10-06: a passive hit carries no martial art.
             attributeMultiplier: 1,
             skillType: "mindMethod",
           },
@@ -93,7 +97,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
     },
 
     display(_state, timeSec, _prePull, setup) {
-      const [stacks, inQiBreak] = stacksAt(setup, timeSec)
+      const [stacks, controlled] = stacksAt(setup, timeSec)
       if (stacks <= 0) return []
       return [
         {
@@ -101,7 +105,7 @@ export function moraleChantMechanic(): TimelineMechanic<State> {
           name: "Morale Chant",
           stacks,
           maxStacks: MORALE_MAX_STACKS,
-          effects: effectsFor(stacks, inQiBreak),
+          effects: effectsFor(stacks, controlled),
         },
       ]
     },
