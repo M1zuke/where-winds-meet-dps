@@ -5,6 +5,7 @@
 // same way — see `debuffs.ts`.
 import { describe, expect, it } from "vitest"
 import { simulateTimeline } from "../../src/engine/timeline"
+import { effectiveTickIntervalFrames } from "../../src/engine/dot"
 import { defaultInputs } from "../../src/engine/defaults"
 import { builtinDebuff, builtinSkill, dotRow, testRotation as makeRotation } from "../builtins"
 import { DEBUFF, SKILL } from "../../src/data/skills/mystic/ids"
@@ -180,9 +181,11 @@ describe("Smolder duration", () => {
       )!.frame
       return (ticks[ticks.length - 1].frame + 30 - first) / 60
     }
-    // The ticks only sample the window, and where the first one sits cancels in
-    // the difference — the two extra hits are what must be worth 8 s.
-    expect(windowSecOf(TWO_HITS) - windowSecOf(ONE_HIT)).toBeCloseTo(8, 1)
+    // The ticks only sample the window, so the difference is exact only to one
+    // tick interval — the two extra hits are what must be worth 8 s.
+    const tickIntervalSec =
+      effectiveTickIntervalFrames(builtinDebuff(CLASS, DEBUFF.smolder).dot!) / 60
+    expect(Math.abs(windowSecOf(TWO_HITS) - windowSecOf(ONE_HIT) - 8)).toBeLessThan(tickIntervalSec)
   })
 })
 

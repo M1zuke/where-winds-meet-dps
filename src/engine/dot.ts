@@ -4,20 +4,38 @@ import type { StatusWindow } from "./ledger"
 import type { computeSkillDamage, FormulaContext, RolledHit } from "./formula"
 import type { ArtBonusField } from "./effects/effect"
 import { attuneTagOf, mysticCategoryOf } from "./buffs/tags"
+import { FPS } from "./timeline"
 
 type ArtRow = Parameters<typeof computeSkillDamage>[0]
 
 const DEBUFF_ID_PREFIX = "debuff-"
 
-// A DoT tick does not run on a grid: each tick schedules the next one when it
-// fires, so every tick pays the timer's own overhead once and the interval runs
-// long. The same fraction for every interval length, compounding over the
-// window. Calibrated against in-game tick counts, 2026-09-10.
-const TICK_TIMER_INTERVAL_FACTOR = 1.0625
+// In-game timer values as of 2026-10-11: the timer runs in 33 ms slots and
+// rounds a requested delay down to a whole slot, and a tick that wakes before
+// it is due asks again no sooner than 34 ms later. Each tick arms the next one
+// from the moment it fired, so the lateness carries into every later tick.
+const TICK_TIMER_SLOT_MS = 33
+const TICK_TIMER_MIN_RETRY_MS = 34
+
+function tickTimerDelayFrames(requestedFrames: number): number {
+  if (requestedFrames <= 0) return requestedFrames
+  const requestedMs = (requestedFrames * 1000) / FPS
+  const wholeSlots = (delayMs: number) =>
+    Math.floor(delayMs / TICK_TIMER_SLOT_MS) * TICK_TIMER_SLOT_MS
+  let firedMs = wholeSlots(requestedMs)
+  while (firedMs < requestedMs)
+    firedMs += wholeSlots(Math.max(TICK_TIMER_MIN_RETRY_MS, requestedMs - firedMs))
+  return (firedMs * FPS) / 1000
+}
 
 export function effectiveTickIntervalFrames(dot: DebuffDotSpec): number {
   const base = dot.tickIntervalFrames
-  return dot.reschedulesPerTick === true ? base * TICK_TIMER_INTERVAL_FACTOR : base
+  return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
+}
+
+export function effectiveFirstTickOffsetFrames(dot: DebuffDotSpec): number {
+  const base = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames
+  return dot.reschedulesPerTick === true ? tickTimerDelayFrames(base) : base
 }
 
 // A debuff names the skill its per-tick coefficients come from. `sourceSkillId`
@@ -62,7 +80,7 @@ export function dotTicksPerWindow(debuff: Pick<Debuff, "dot" | "durationFrames">
   const interval = effectiveTickIntervalFrames(dot)
   let ticks = 0
   for (
-    let frame = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames;
+    let frame = effectiveFirstTickOffsetFrames(dot);
     frame < debuff.durationFrames;
     frame += interval
   )
@@ -185,7 +203,7 @@ export function planDotTicks(query: DotPlanQuery): DotTickPlan[] {
   const { debuff, dot } = query
   if (dot.tickIntervalFrames <= 0) return []
   const interval = effectiveTickIntervalFrames(dot)
-  const firstOffset = dot.firstTickOffsetFrames ?? dot.tickIntervalFrames
+  const firstOffset = effectiveFirstTickOffsetFrames(dot)
 
   const perStack = (debuff.stackScaling ?? "flat") === "perStack"
   const shapes = dot.perStackShapes?.length ? dot.perStackShapes : null

@@ -16,9 +16,9 @@ export interface DebuffDotSpec {
   firstTickOffsetFrames?: number | null
   additionalTicks?: { offsetsFrames: readonly number[]; requiresBuff: string }
   // Whether each tick schedules the next one, which is what makes the interval
-  // run long (see `dot.ts`'s tick-timer factor). False for a DoT that pulses on
-  // a fixed schedule instead. Absent means it has not been established for this
-  // DoT yet, and the interval is left alone.
+  // and the first tick run long (see `dot.ts`'s tick timer). False for a DoT
+  // that pulses on a fixed schedule instead. Absent means it has not been
+  // established for this DoT yet, and the interval is left alone.
   reschedulesPerTick?: boolean | null
   physMultiplier: number
   physFixed: number
