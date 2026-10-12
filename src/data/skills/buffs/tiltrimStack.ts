@@ -4,6 +4,8 @@ import { STATUS } from "../bamboocut-draught/ids"
 import { artBonus } from "../../../engine/effects/effect"
 import { tiltrim } from "../../sets/tiltrim"
 import { isInebriate, TIPSY_BINGE_POINTS_THRESHOLD } from "../bamboocut-draught/buffs/inebriate"
+import { isFlowerBurial } from "../bamboocut-dust/buffs/flowerBurial"
+import { STATUS as DUST_STATUS } from "../bamboocut-dust/ids"
 
 const PER_STACK = 0.01
 const PAYS_OUT_SECONDS_AFTER_INEBRIATE_ENDS = 5.1
@@ -26,8 +28,10 @@ export const tiltrimStack = defineBuff({
     const deepdazeEnded = ctx.status.secondsSinceLastEnd(STATUS.inebriateDeepdaze) ?? Infinity
     const tipsyEnded =
       ctx.status.secondsSinceStacksBelowThreshold(STATUS.bingePoints, TIPSY_BINGE_POINTS_THRESHOLD) ?? Infinity
-    const inGracePeriod = Math.min(deepdazeEnded, tipsyEnded) <= PAYS_OUT_SECONDS_AFTER_INEBRIATE_ENDS
-    if (!isInebriate(ctx) && !inGracePeriod) return []
+    const flowerBurialEnded = ctx.status.secondsSinceLastEnd(DUST_STATUS.flowerBurial) ?? Infinity
+    const inGracePeriod =
+      Math.min(deepdazeEnded, tipsyEnded, flowerBurialEnded) <= PAYS_OUT_SECONDS_AFTER_INEBRIATE_ENDS
+    if (!isInebriate(ctx) && !isFlowerBurial(ctx) && !inGracePeriod) return []
     const scale = ctx.self.stacks * PER_STACK
     return [
       artBonus("minPhysPctBonus", scale),

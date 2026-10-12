@@ -1,7 +1,8 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { CAST, ROLE, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { RESONANCE_HIT } from "./resonance"
+import { RESONANCE_RECEIVES } from "./receives"
+import { phantomChimeTriggers, RESONANCE_HIT } from "./resonance"
 
 export const resonanceDreamwrought = defineSkill({
   id: SKILL.resonanceDreamwrought,
@@ -13,9 +14,10 @@ export const resonanceDreamwrought = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustResonanceDreamwrought,
+  receives: RESONANCE_RECEIVES,
   castFrames: 0,
   triggerable: true,
-  hits: [hit(0, { frame: 0, ...RESONANCE_HIT })],
+  hits: [hit(0, { frame: 0, ...RESONANCE_HIT, triggers: phantomChimeTriggers() })],
   createdAt: "2026-10-12T00:00:00.000Z",
   updatedAt: "2026-10-12T00:00:00.000Z",
 })

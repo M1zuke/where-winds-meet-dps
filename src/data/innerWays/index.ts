@@ -21,6 +21,10 @@ import { skyspeak } from "./skyspeak"
 import { mistwing } from "./mistwing"
 import { volutefit } from "./volutefit"
 import { evasiveCharge } from "./evasiveCharge"
+import { lightAnew } from "./lightAnew"
+import { phantomRally } from "./phantomRally"
+import { songOfTang } from "./songOfTang"
+import { towlineSweep } from "./towlineSweep"
 
 // Order is load-bearing: the context-scalar sum and
 // `innerWayTargetDefenseMultiplier`'s first-match both iterate this array,
@@ -47,4 +51,8 @@ export const INNER_WAYS: readonly InnerWayDef[] = [
   mistwing,
   volutefit,
   evasiveCharge,
+  phantomRally,
+  towlineSweep,
+  lightAnew,
+  songOfTang,
 ]

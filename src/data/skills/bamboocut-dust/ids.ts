@@ -43,6 +43,7 @@ export const DEBUFF = {
   soulbreak: "debuff-bamboocutDust-soulbreak",
   soulbreakPayoutFivePercent: "debuff-bamboocutDust-soulbreak-payout-five-percent",
   soulbreakPayoutTenPercent: "debuff-bamboocutDust-soulbreak-payout-ten-percent",
+  phantomChime: "debuff-bamboocutDust-phantom-chime",
 } as const
 
 export const STATUS = {

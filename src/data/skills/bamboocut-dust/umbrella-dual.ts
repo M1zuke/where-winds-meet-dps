@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_PROJECTILE_RECEIVES } from "./receives"
 
 const VOLLEY_HIT = {
   physMultiplier: 0.31677,
@@ -23,7 +23,7 @@ export const umbrellaDual = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustUmbrellaDual,
-  receives: EVERSPRING_UMBRELLA_RECEIVES,
+  receives: UMBRELLA_PROJECTILE_RECEIVES,
   isWeaponSwap: true,
   castFrames: 46,
   triggerable: false,

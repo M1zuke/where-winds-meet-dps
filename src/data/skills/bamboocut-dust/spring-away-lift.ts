@@ -3,7 +3,7 @@ import { meterDelta } from "../../../definitions/skills/triggers"
 import { fadingCrimsonMeter } from "../../classes/bamboocut-dust/meters"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_LIGHT_CHAIN_RECEIVES } from "./receives"
 import { LIGHT_ATTACK_SHORT_HIT } from "./umbrella-light-attack"
 
 const FADING_CRIMSON_PER_LIFT = 4
@@ -18,7 +18,7 @@ export const springAwayLift = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustSpringAwayLift,
-  receives: EVERSPRING_UMBRELLA_RECEIVES,
+  receives: UMBRELLA_LIGHT_CHAIN_RECEIVES,
   castFrames: 0,
   triggerable: true,
   hits: [

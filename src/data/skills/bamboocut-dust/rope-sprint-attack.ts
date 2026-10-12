@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { UNFETTERED_ROPE_DART_RECEIVES } from "./receives"
+import { ROPE_SPRINT_RECEIVES } from "./receives"
 import { ROPE_LIGHT_FIRST_STAGE_HIT } from "./rope-light-attack"
 
 // In-game values as of 2026-10-12.
@@ -14,7 +14,7 @@ export const ropeSprintAttack = defineSkill({
   weaponOrAttribute: "Rope Dart",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustRopeSprintAttack,
-  receives: UNFETTERED_ROPE_DART_RECEIVES,
+  receives: ROPE_SPRINT_RECEIVES,
   castFrames: 76,
   triggerable: false,
   hits: [

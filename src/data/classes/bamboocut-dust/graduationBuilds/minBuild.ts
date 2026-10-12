@@ -68,6 +68,11 @@ export default defineGraduationBuild({
       food: true,
       divinecraft: "fire",
     },
-    innerWays: [{ id: "moraleChant", tier: 6 }],
+    innerWays: [
+      { id: "phantomRally", tier: 6 },
+      { id: "towlineSweep", tier: 6 },
+      { id: "songOfTang", tier: 6 },
+      { id: "moraleChant", tier: 6 },
+    ],
   },
 })

@@ -110,10 +110,29 @@ export const soulbreakPayoutTenPercent = defineDebuff({
   updatedAt: "2026-10-12T00:00:00.000Z",
 })
 
+// In-game values as of 2026-10-12: 2 points of physical resistance per stack,
+// modelled as physical penetration, 5 stacks, 5.1 s.
+export const PHANTOM_CHIME_MIN_TIER = 3
+
+export const phantomChime = defineDebuff({
+  id: DEBUFF.phantomChime,
+  classId: CLASS_ID,
+  name: "Phantom Chime",
+  activation: "triggered",
+  durationFrames: 306,
+  effects: [{ statKey: "phys.penetration", amount: 0.02 }],
+  dot: null,
+  maxStacks: 5,
+  stackScaling: "perStack",
+  createdAt: "2026-10-12T00:00:00.000Z",
+  updatedAt: "2026-10-12T00:00:00.000Z",
+})
+
 export const DEBUFFS: readonly Debuff[] = [
   bitterSeasonTick,
   soulLoss,
   soulbreak,
   soulbreakPayoutFivePercent,
   soulbreakPayoutTenPercent,
+  phantomChime,
 ]

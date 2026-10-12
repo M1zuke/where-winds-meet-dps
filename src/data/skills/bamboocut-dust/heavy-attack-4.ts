@@ -2,7 +2,7 @@ import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { HEAVY_ATTACK_FIRST_HIT } from "./heavy-attack-1"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_HEAVY_CHAIN_RECEIVES } from "./receives"
 
 export const heavyAttack4 = defineSkill({
   id: SKILL.heavyAttack4,
@@ -14,7 +14,7 @@ export const heavyAttack4 = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustHeavyAttack4,
-  receives: EVERSPRING_UMBRELLA_RECEIVES,
+  receives: UMBRELLA_HEAVY_CHAIN_RECEIVES,
   castFrames: 34,
   triggerable: false,
   hits: [hit(0, { frame: 12, ...HEAVY_ATTACK_FIRST_HIT })],

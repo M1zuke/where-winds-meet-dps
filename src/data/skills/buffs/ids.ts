@@ -157,6 +157,9 @@ export const BUFF = {
   towlineSweepMiddleSweepsBonus: "towlineSweepMiddleSweepsBonus",
   towlineSweepLastSweepsBonus: "towlineSweepLastSweepsBonus",
   towlineSweepBurnAndBury: "towlineSweepBurnAndBury",
+  phantomRallyResonanceBoost: "phantomRallyResonanceBoost",
+  tangMelodyEarlyRanks: "tangMelodyEarlyRanks",
+  tangMelodyLaterRanks: "tangMelodyLaterRanks",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across
@@ -181,6 +184,7 @@ export const PARAM = {
   mountainsMight: "mountainsMight",
   phantomRally: "phantomRally",
   skyspeak: "skyspeak",
+  songOfTang: "songOfTang",
   starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
   swordHorizon: "swordHorizon",

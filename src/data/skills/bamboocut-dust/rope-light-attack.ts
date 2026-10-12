@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { UNFETTERED_ROPE_DART_RECEIVES } from "./receives"
+import { ROPE_LIGHT_CHAIN_RECEIVES } from "./receives"
 
 export const ROPE_LIGHT_FIRST_STAGE_HIT = {
   physMultiplier: 0.59152,
@@ -50,7 +50,7 @@ export const ropeLightAttack = defineSkill({
   weaponOrAttribute: "Rope Dart",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustRopeLightAttack,
-  receives: UNFETTERED_ROPE_DART_RECEIVES,
+  receives: ROPE_LIGHT_CHAIN_RECEIVES,
   castFrames: 209,
   triggerable: false,
   hits: [

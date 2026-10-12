@@ -4,7 +4,7 @@ import { tokensOfGratitudeMeter } from "../../classes/bamboocut-dust/meters"
 import { BUFF, PARAM } from "../buffs/ids"
 import { ATTUNE, CAST, PROP, ROLE, WEAPON } from "../ids"
 import { STATUS, SKILL } from "./ids"
-import { UNFETTERED_ROPE_DART_RECEIVES } from "./receives"
+import { SOUL_SWEEP_RECEIVES } from "./receives"
 import { soulSweepHitTriggers } from "./soulbreakTriggers"
 
 const TOWLINE_SWEEP_TOKENS = 50
@@ -39,8 +39,8 @@ export const soulSweep = defineSkill({
   weaponOrAttribute: "Rope Dart",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustSoulSweep,
-  receives: UNFETTERED_ROPE_DART_RECEIVES,
-  triggersBuffs: [BUFF.jadeware],
+  receives: SOUL_SWEEP_RECEIVES,
+  triggersBuffs: [BUFF.jadeware, BUFF.springThunder],
   castFrames: 105,
   triggerable: false,
   hits: [

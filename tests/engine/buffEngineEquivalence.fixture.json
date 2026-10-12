@@ -199844,7 +199844,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate"
+          "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate or in Flower Burial"
         },
         {
           "id": "mistwingLowTierTargetHealthPenetration",
@@ -199870,7 +199870,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate from tier 3"
+          "summary": "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate or in Flower Burial from tier 3"
         },
         {
           "id": "volutefitWineboundDamage",
@@ -201372,12 +201372,13 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "d9aaee5de286cae0a9b1400b7f93673e046cbb65fb6fc9352df2e7662515e545"
+        "digest": "344095af99b96a81aacdb34277a79aad3bc4a872896a9f5ee3038fdcc01da260"
       },
       "debuffs": {
-        "count": 10,
+        "count": 11,
         "ids": [
           "debuff-bamboocutDust-bitter-season-tick",
+          "debuff-bamboocutDust-phantom-chime",
           "debuff-bamboocutDust-soul-loss",
           "debuff-bamboocutDust-soulbreak",
           "debuff-bamboocutDust-soulbreak-payout-five-percent",
@@ -201388,7 +201389,7 @@
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "703d3d5b3b579bdcabd8f3ffe534d6ac2b9bb2ab458a191d57382896e880d44e"
+        "digest": "810b9cc8cb3212e9be02aba93800b49590b16e93ab02b9a6096af1d292b3dbde"
       },
       "buffs": [
         {
@@ -201721,7 +201722,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate"
+          "summary": "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate or in Flower Burial"
         },
         {
           "id": "mistwingLowTierTargetHealthPenetration",
@@ -201747,7 +201748,7 @@
           "duration": 9999,
           "maxStacks": null,
           "effects": "[fn]",
-          "summary": "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate from tier 3"
+          "summary": "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate or in Flower Burial from tier 3"
         },
         {
           "id": "wraithstrikeScript",
@@ -203271,6 +203272,89 @@
             }
           ],
           "summary": null
+        },
+        {
+          "id": "phantomRallyResonanceBoost",
+          "name": "Phantom Rally (Resonance)",
+          "classBuff": true,
+          "requires": {
+            "param": "phantomRally",
+            "minTier": 4
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.2
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "tangMelodyEarlyRanks",
+          "name": "Tang Melody (ranks 1-2)",
+          "classBuff": true,
+          "requires": {
+            "param": "songOfTang"
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 7.1,
+          "maxStacks": 5,
+          "effects": "[fn]",
+          "summary": "critDamageBoost +2%/stack on Martial Art Skill hits"
+        },
+        {
+          "id": "tangMelodyLaterRanks",
+          "name": "Tang Melody",
+          "classBuff": true,
+          "requires": {
+            "param": "songOfTang",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": false,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 7.1,
+          "maxStacks": 5,
+          "effects": "[fn]",
+          "summary": "critDamageBoost +3%/stack on Martial Art Skill hits"
         }
       ],
       "group": [
@@ -203300,7 +203384,7 @@
       ]
     },
     "dynamic": {
-      "digest": "679d3e58e48c50fba69958b3c75193143dd17e1b986691fd1ba746861c1f51ac"
+      "digest": "9bddb267a1c2e724150be96639e6d015c3df6e094a3b09e421201ac8216f761a"
     }
   }
 }

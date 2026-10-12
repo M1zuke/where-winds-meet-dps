@@ -2,6 +2,7 @@ import { defineBuff } from "../../definitions/skills/buffDef"
 import { BUFF, PARAM } from "../skills/buffs/ids"
 import { stat } from "../../engine/effects/effect"
 import { isInebriate } from "../skills/bamboocut-draught/buffs/inebriate"
+import { isFlowerBurial } from "../skills/bamboocut-dust/buffs/flowerBurial"
 
 // Tier 1 adds 3 Physical Penetration in the damage calculation, tier 4 raises
 // it to 6 of every type, and tier 6 adds a further 6 of every type while
@@ -70,11 +71,11 @@ export const mistwingTargetHealthPenetration = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary:
-    "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate",
+    "phys.penetration and bamboocut.penetration step up as the target's health falls, doubled while Inebriate or in Flower Burial",
   effects: (ctx) => {
     if (!ctx.self.reachesEvent) return []
     const base = targetHealthPenetrationStep(ctx.target.remainingHealthFraction)
-    const step = isInebriate(ctx) ? base * 2 : base
+    const step = isInebriate(ctx) || isFlowerBurial(ctx) ? base * 2 : base
     return step > 0 ? [stat("phys.penetration", step), stat("bamboocut.penetration", step)] : []
   },
 })
@@ -104,14 +105,14 @@ export const mistwingLowTierTargetHealthPenetration = defineBuff({
   alwaysActive: true,
   duration: 9999,
   summary:
-    "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate from tier 3",
+    "physical penetration steps up as the target's health falls, all types from tier 4, doubled while Inebriate or in Flower Burial from tier 3",
   effects: (ctx) => {
     if (!ctx.self.reachesEvent) return []
     const tier = ctx.build.paramTier(PARAM.mistwing)
     if (tier >= 6) return []
     const base = lowTierTargetHealthPenetrationStep(ctx.target.remainingHealthFraction)
     if (base <= 0) return []
-    const step = tier >= 3 && isInebriate(ctx) ? base * 2 : base
+    const step = tier >= 3 && (isInebriate(ctx) || isFlowerBurial(ctx)) ? base * 2 : base
     return tier >= 4
       ? [stat("phys.penetration", step), stat("bamboocut.penetration", step)]
       : [stat("phys.penetration", step)]

@@ -1,7 +1,7 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_HEAVY_CHAIN_RECEIVES } from "./receives"
 
 const SWEEP_HIT = {
   physMultiplier: 0.3238308,
@@ -22,7 +22,7 @@ export const heavyAttack3 = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustHeavyAttack3,
-  receives: EVERSPRING_UMBRELLA_RECEIVES,
+  receives: UMBRELLA_HEAVY_CHAIN_RECEIVES,
   castFrames: 81,
   triggerable: false,
   hits: [

@@ -4,7 +4,7 @@ import { enduranceMeter } from "../../resources/enduranceMeter"
 import { BUFF } from "../buffs/ids"
 import { ATTACK, CAST, PROP, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_LIGHT_CHAIN_RECEIVES } from "./receives"
 
 // In-game values as of 2026-10-12: the held light plays Spring Away. Its
 // projectiles read the first-level damage row — a physical coefficient only,
@@ -33,7 +33,7 @@ export const springAway = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustSpringAway,
-  receives: [BUFF.nonPlayerBaseDamage25, ...EVERSPRING_UMBRELLA_RECEIVES],
+  receives: [BUFF.nonPlayerBaseDamage25, ...UMBRELLA_LIGHT_CHAIN_RECEIVES],
   meterDrains: [
     {
       meterId: enduranceMeter.id,

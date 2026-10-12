@@ -3,7 +3,7 @@ import { meterDelta } from "../../../definitions/skills/triggers"
 import { fadingCrimsonMeter } from "../../classes/bamboocut-dust/meters"
 import { ATTACK, CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
-import { EVERSPRING_UMBRELLA_RECEIVES } from "./receives"
+import { UMBRELLA_PROJECTILE_RECEIVES } from "./receives"
 import { LIGHT_ATTACK_SHORT_HIT } from "./umbrella-light-attack"
 
 const FADING_CRIMSON_PER_BULLET = 4
@@ -18,7 +18,7 @@ export const umbrellaDashBullet = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustUmbrellaDashBullet,
-  receives: EVERSPRING_UMBRELLA_RECEIVES,
+  receives: UMBRELLA_PROJECTILE_RECEIVES,
   castFrames: 0,
   triggerable: true,
   hits: [

@@ -241,7 +241,7 @@ export function throwSkill(spec: ThrowSpec): Skill {
     attributeAttack: "Bamboocut",
     castTag: spec.castTag,
     receives: THROW_RECEIVES,
-    triggersBuffs: [BUFF.jadeware],
+    triggersBuffs: [BUFF.jadeware, BUFF.springThunder],
     castConditions:
       spec.kind === "first"
         ? [fadingCrimsonRequires("gte", FADING_CRIMSON_PER_THROW)]

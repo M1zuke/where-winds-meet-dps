@@ -15,6 +15,11 @@ import { returningUmbrellaDamage } from "../../skills/bamboocut-dust/buffs/retur
 import { soulbreakCriticalBoost } from "../../skills/bamboocut-dust/buffs/soulbreakCriticalBoost"
 import { soulbreakDamageTaken } from "../../skills/bamboocut-dust/buffs/soulbreakDamageTaken"
 import { soulbreakPayoutFeed } from "../../skills/bamboocut-dust/buffs/soulbreakPayoutFeed"
+import { phantomRallyResonanceBoost } from "../../skills/bamboocut-dust/buffs/phantomRallyResonanceBoost"
+import {
+  tangMelodyEarlyRanks,
+  tangMelodyLaterRanks,
+} from "../../skills/bamboocut-dust/buffs/tangMelody"
 import {
   towlineSweepBurnAndBury,
   towlineSweepFirstSweepsBonus,
@@ -37,7 +42,7 @@ export const bamboocutDust = defineClass({
   spec: "bamboocut_dust",
   primaryAttribute: "Bamboocut",
   attributeMultiplier: 1.5,
-  classMindGroup: "",
+  classMindGroup: INNER_WAY_ID.phantomRally,
   allowedMindMethods: [
     INNER_WAY_ID.moraleChant,
     INNER_WAY_ID.bitterSeason,
@@ -47,6 +52,9 @@ export const bamboocutDust = defineClass({
     INNER_WAY_ID.battleAnthem,
     INNER_WAY_ID.thunderousBloom,
     INNER_WAY_ID.mistwing,
+    INNER_WAY_ID.towlineSweep,
+    INNER_WAY_ID.lightAnew,
+    INNER_WAY_ID.songOfTang,
   ],
   classSpecificAttunements: [
     "everspringMartialArt",
@@ -78,6 +86,9 @@ export const bamboocutDust = defineClass({
     towlineSweepMiddleSweepsBonus,
     towlineSweepLastSweepsBonus,
     towlineSweepBurnAndBury,
+    phantomRallyResonanceBoost,
+    tangMelodyEarlyRanks,
+    tangMelodyLaterRanks,
   ],
   gateBuffs: BAMBOOCUT_DUST_GATES,
   mechanics: [],
