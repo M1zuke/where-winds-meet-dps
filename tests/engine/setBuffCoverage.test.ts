@@ -66,6 +66,7 @@ const MARTIAL_ART_SKILL_IDS: Record<string, readonly string[]> = {
     "bamboocutDust-perfect-catch-after-first",
     "bamboocutDust-perfect-catch-after-second",
     "bamboocutDust-perfect-catch-after-third",
+    "bamboocutDust-soul-sweep",
   ],
 }
 

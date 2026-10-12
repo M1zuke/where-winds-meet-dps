@@ -6,9 +6,21 @@ import { rotationsFor } from "../../../definitions/rotations/registry"
 import defaultRotation from "./rotations/placeholder"
 import { INNER_WAY_ID } from "../../innerWays/ids"
 import { MARTIAL_ART_ID } from "../../martialArts/ids"
-import { everspringUmbrellaAdditionalAttack } from "../../skills/bamboocut-dust/buffs/additionalAttack"
+import {
+  everspringUmbrellaAdditionalAttack,
+  unfetteredRopeDartAdditionalAttack,
+} from "../../skills/bamboocut-dust/buffs/additionalAttack"
 import { fragrantSong } from "../../skills/bamboocut-dust/buffs/fragrantSong"
 import { returningUmbrellaDamage } from "../../skills/bamboocut-dust/buffs/returningUmbrellaDamage"
+import { soulbreakCriticalBoost } from "../../skills/bamboocut-dust/buffs/soulbreakCriticalBoost"
+import { soulbreakDamageTaken } from "../../skills/bamboocut-dust/buffs/soulbreakDamageTaken"
+import { soulbreakPayoutFeed } from "../../skills/bamboocut-dust/buffs/soulbreakPayoutFeed"
+import {
+  towlineSweepBurnAndBury,
+  towlineSweepFirstSweepsBonus,
+  towlineSweepLastSweepsBonus,
+  towlineSweepMiddleSweepsBonus,
+} from "../../skills/bamboocut-dust/buffs/towlineSweepBonuses"
 import { enduranceMeter } from "../../resources/enduranceMeter"
 import { BAMBOOCUT_DUST_GATES } from "./gates"
 import { fadingCrimsonMeter, tokensOfGratitudeMeter } from "./meters"
@@ -54,7 +66,19 @@ export const bamboocutDust = defineClass({
   debuffs: DEBUFFS,
   rotations: rotationsFor(CLASS_ID),
   defaultRotationId: defaultRotation.id,
-  classBuffDefs: [returningUmbrellaDamage, fragrantSong, everspringUmbrellaAdditionalAttack],
+  classBuffDefs: [
+    returningUmbrellaDamage,
+    fragrantSong,
+    everspringUmbrellaAdditionalAttack,
+    unfetteredRopeDartAdditionalAttack,
+    soulbreakDamageTaken,
+    soulbreakCriticalBoost,
+    soulbreakPayoutFeed,
+    towlineSweepFirstSweepsBonus,
+    towlineSweepMiddleSweepsBonus,
+    towlineSweepLastSweepsBonus,
+    towlineSweepBurnAndBury,
+  ],
   gateBuffs: BAMBOOCUT_DUST_GATES,
   mechanics: [],
   skillBehaviors: [],

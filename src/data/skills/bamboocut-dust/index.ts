@@ -1,4 +1,5 @@
 import type { Skill } from "../../../engine/skill"
+import { burnAndBury } from "./burn-and-bury"
 import { cycloneWaltz } from "./cyclone-waltz"
 import { cycloneWaltzFinish } from "./cyclone-waltz-finish"
 import { deflectCancel } from "./deflect-cancel"
@@ -11,12 +12,24 @@ import { heavyAttack4 } from "./heavy-attack-4"
 import { perfectCatchAfterFirst } from "./perfect-catch-after-first"
 import { perfectCatchAfterSecond } from "./perfect-catch-after-second"
 import { perfectCatchAfterThird } from "./perfect-catch-after-third"
+import { piercingDartChargingStance } from "./piercing-dart-charging-stance"
+import { piercingDartI } from "./piercing-dart-i"
+import { piercingDartII, piercingDartIISweeps4To5 } from "./piercing-dart-ii"
+import {
+  piercingDartIII,
+  piercingDartIIISweeps4To5,
+  piercingDartIIISweeps6To7,
+} from "./piercing-dart-iii"
 import { resonance } from "./resonance"
 import { resonanceDreamwrought } from "./resonance-dreamwrought"
+import { ropeDual } from "./rope-dual"
+import { ropeLightAttack } from "./rope-light-attack"
+import { ropeSprintAttack } from "./rope-sprint-attack"
 import { scarletSpin } from "./scarlet-spin"
 import { scarletSpinFourth } from "./scarlet-spin-fourth"
 import { scarletSpinSecond } from "./scarlet-spin-second"
 import { scarletSpinThird } from "./scarlet-spin-third"
+import { soulSweep } from "./soul-sweep"
 import { springAway } from "./spring-away"
 import { springAwayLift } from "./spring-away-lift"
 import { umbrellaDash } from "./umbrella-dash"
@@ -51,4 +64,16 @@ export const SKILLS: Skill[] = [
   umbrellaDashBullet,
   umbrellaDual,
   deflectCancel,
+  soulSweep,
+  piercingDartChargingStance,
+  piercingDartI,
+  piercingDartII,
+  piercingDartIISweeps4To5,
+  piercingDartIII,
+  piercingDartIIISweeps4To5,
+  piercingDartIIISweeps6To7,
+  burnAndBury,
+  ropeLightAttack,
+  ropeSprintAttack,
+  ropeDual,
 ]

@@ -11,3 +11,11 @@ export const everspringUmbrellaAdditionalAttack = additionalAttackClassBuff({
   ladder: ADDITIONAL_ATTACK_RANKS,
   clause: "main",
 })
+
+export const unfetteredRopeDartAdditionalAttack = additionalAttackClassBuff({
+  id: BUFF.unfetteredRopeDartAdditionalAttack,
+  name: "Unfettered Rope Dart — Additional Attack Up",
+  summary: "physFixed/attributeFixed +7.25% to +30% by breakthrough",
+  ladder: ADDITIONAL_ATTACK_RANKS,
+  clause: "main",
+})

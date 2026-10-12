@@ -271,6 +271,18 @@ export const CAST = {
   dustUmbrellaDashBullet: "cast:dustUmbrellaDashBullet",
   dustUmbrellaDual: "cast:dustUmbrellaDual",
   dustDeflectCancel: "cast:dustDeflectCancel",
+  dustSoulSweep: "cast:dustSoulSweep",
+  dustPiercingDartChargingStance: "cast:dustPiercingDartChargingStance",
+  dustPiercingDartI: "cast:dustPiercingDartI",
+  dustPiercingDartII: "cast:dustPiercingDartII",
+  dustPiercingDartIISweeps4To5: "cast:dustPiercingDartIISweeps4To5",
+  dustPiercingDartIII: "cast:dustPiercingDartIII",
+  dustPiercingDartIIISweeps4To5: "cast:dustPiercingDartIIISweeps4To5",
+  dustPiercingDartIIISweeps6To7: "cast:dustPiercingDartIIISweeps6To7",
+  dustBurnAndBury: "cast:dustBurnAndBury",
+  dustRopeLightAttack: "cast:dustRopeLightAttack",
+  dustRopeSprintAttack: "cast:dustRopeSprintAttack",
+  dustRopeDual: "cast:dustRopeDual",
 } as const
 
 export const ROLE = {

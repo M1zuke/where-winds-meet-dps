@@ -201299,9 +201299,10 @@
   "bamboocutDust": {
     "static": {
       "skills": {
-        "count": 58,
+        "count": 70,
         "ids": [
           "bamboocutDust-bitter-season-tick",
+          "bamboocutDust-burn-and-bury",
           "bamboocutDust-cyclone-waltz",
           "bamboocutDust-cyclone-waltz-finish",
           "bamboocutDust-deflect-cancel",
@@ -201322,12 +201323,23 @@
           "bamboocutDust-perfect-catch-after-third",
           "bamboocutDust-perfect-dodge",
           "bamboocutDust-perfect-dodge-full",
+          "bamboocutDust-piercing-dart-charging-stance",
+          "bamboocutDust-piercing-dart-i",
+          "bamboocutDust-piercing-dart-ii",
+          "bamboocutDust-piercing-dart-ii-sweeps-4-5",
+          "bamboocutDust-piercing-dart-iii",
+          "bamboocutDust-piercing-dart-iii-sweeps-4-5",
+          "bamboocutDust-piercing-dart-iii-sweeps-6-7",
           "bamboocutDust-resonance",
           "bamboocutDust-resonance-dreamwrought",
+          "bamboocutDust-rope-dual",
+          "bamboocutDust-rope-light-attack",
+          "bamboocutDust-rope-sprint-attack",
           "bamboocutDust-scarlet-spin",
           "bamboocutDust-scarlet-spin-fourth",
           "bamboocutDust-scarlet-spin-second",
           "bamboocutDust-scarlet-spin-third",
+          "bamboocutDust-soul-sweep",
           "bamboocutDust-spring-away",
           "bamboocutDust-spring-away-lift",
           "bamboocutDust-umbrella-dash",
@@ -201360,19 +201372,23 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "541fdd07edb9d5440c241921bea10217b244289cf8fbb7ccc96db6e3480e9723"
+        "digest": "d9aaee5de286cae0a9b1400b7f93673e046cbb65fb6fc9352df2e7662515e545"
       },
       "debuffs": {
-        "count": 6,
+        "count": 10,
         "ids": [
           "debuff-bamboocutDust-bitter-season-tick",
+          "debuff-bamboocutDust-soul-loss",
+          "debuff-bamboocutDust-soulbreak",
+          "debuff-bamboocutDust-soulbreak-payout-five-percent",
+          "debuff-bamboocutDust-soulbreak-payout-ten-percent",
           "debuff-mystic-combustion",
           "debuff-mystic-flute-ripple",
           "debuff-mystic-smolder",
           "debuff-mystic-toad-poison",
           "debuff-mystic-toad-poison-fury"
         ],
-        "digest": "f02f7ba988fd11549b6ea0121b6add3bed9280fcc9897a973b143d33c64f830c"
+        "digest": "703d3d5b3b579bdcabd8f3ffe534d6ac2b9bb2ab458a191d57382896e880d44e"
       },
       "buffs": [
         {
@@ -203026,6 +203042,235 @@
           "maxStacks": null,
           "effects": "[fn]",
           "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+        },
+        {
+          "id": "unfetteredRopeDartAdditionalAttack",
+          "name": "Unfettered Rope Dart — Additional Attack Up",
+          "classBuff": true,
+          "requires": {
+            "minBreakthrough": 18
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "physFixed/attributeFixed +7.25% to +30% by breakthrough"
+        },
+        {
+          "id": "soulbreakDamageTaken",
+          "name": "Soulbreak",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "allDamageBoost and qiDamageBoost +5% while Soulbreak is on the target"
+        },
+        {
+          "id": "soulbreakCriticalBoost",
+          "name": "Soulbreak Critical Boost",
+          "classBuff": true,
+          "requires": null,
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "critDamageBoost +1.8% per full 4% white Critical Rate, cap 27%, against Soulbreak"
+        },
+        {
+          "id": "soulbreakPayoutFeed",
+          "name": "Soulbreak End Damage",
+          "classBuff": true,
+          "requires": {
+            "param": "towlineSweep",
+            "minTier": 4
+          },
+          "grantRequires": null,
+          "affectsAll": true,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": "[fn]",
+          "summary": "feeds the Soulbreak end-damage echo: 5% of every hit, 10% at rank 6"
+        },
+        {
+          "id": "towlineSweepFirstSweepsBonus",
+          "name": "Towline Sweep (sweeps 1-3)",
+          "classBuff": true,
+          "requires": {
+            "param": "towlineSweep",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.05
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "towlineSweepMiddleSweepsBonus",
+          "name": "Towline Sweep (sweeps 4-5)",
+          "classBuff": true,
+          "requires": {
+            "param": "towlineSweep",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.1
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "towlineSweepLastSweepsBonus",
+          "name": "Towline Sweep (sweeps 6-7)",
+          "classBuff": true,
+          "requires": {
+            "param": "towlineSweep",
+            "minTier": 3
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.15
+            }
+          ],
+          "summary": null
+        },
+        {
+          "id": "towlineSweepBurnAndBury",
+          "name": "Towline Sweep (Burn and Bury)",
+          "classBuff": true,
+          "requires": {
+            "param": "towlineSweep",
+            "minTier": 6
+          },
+          "grantRequires": null,
+          "affectsAll": false,
+          "alwaysActive": true,
+          "buffAppliesOnCastEnd": false,
+          "cooldown": null,
+          "rateLimit": null,
+          "stackRateLimit": null,
+          "stacksPerHit": false,
+          "seedAtStart": false,
+          "refreshOnAnyCast": false,
+          "requiresBuffActive": null,
+          "activeAfterBuffEnds": null,
+          "hasStacksFn": false,
+          "duration": 9999,
+          "maxStacks": null,
+          "effects": [
+            {
+              "kind": "stat",
+              "statKey": "allDamageBoost",
+              "amount": 0.15
+            },
+            {
+              "kind": "forceOutcome",
+              "outcome": "crit"
+            }
+          ],
+          "summary": null
         }
       ],
       "group": [
@@ -203055,7 +203300,7 @@
       ]
     },
     "dynamic": {
-      "digest": "6651a08c75e7a5cc0f21729d5410fda673bb60a0c736c1d3bceba7f3295274c3"
+      "digest": "679d3e58e48c50fba69958b3c75193143dd17e1b986691fd1ba746861c1f51ac"
     }
   }
 }

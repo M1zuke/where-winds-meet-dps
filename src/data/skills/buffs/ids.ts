@@ -149,6 +149,14 @@ export const BUFF = {
   nonPlayerBaseDamage20: "nonPlayerBaseDamage20",
   nonPlayerBaseDamage25: "nonPlayerBaseDamage25",
   returningUmbrellaDamage: "returningUmbrellaDamage",
+  unfetteredRopeDartAdditionalAttack: "unfetteredRopeDartAdditionalAttack",
+  soulbreakDamageTaken: "soulbreakDamageTaken",
+  soulbreakCriticalBoost: "soulbreakCriticalBoost",
+  soulbreakPayoutFeed: "soulbreakPayoutFeed",
+  towlineSweepFirstSweepsBonus: "towlineSweepFirstSweepsBonus",
+  towlineSweepMiddleSweepsBonus: "towlineSweepMiddleSweepsBonus",
+  towlineSweepLastSweepsBonus: "towlineSweepLastSweepsBonus",
+  towlineSweepBurnAndBury: "towlineSweepBurnAndBury",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across

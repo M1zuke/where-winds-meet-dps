@@ -30,3 +30,7 @@ export function tokensOfGratitudeRequires(op: TriggerOp, stacks: number): Trigge
 export function fadingCrimsonCost(amount: number): MeterCost {
   return { meterId: fadingCrimsonMeter.id, amount }
 }
+
+export function tokensOfGratitudeCost(amount: number): MeterCost {
+  return { meterId: tokensOfGratitudeMeter.id, amount }
+}

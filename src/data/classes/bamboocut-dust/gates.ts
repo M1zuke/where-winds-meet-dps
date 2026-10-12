@@ -2,6 +2,7 @@ import type { Buff } from "../../../engine/buff"
 import { defineGateBuff } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
 import { PARAM } from "../../skills/buffs/ids"
+import { ROLE } from "../../skills/ids"
 import { STATUS } from "../../skills/bamboocut-dust/ids"
 import { fadingCrimsonMeter } from "./meters"
 
@@ -15,6 +16,10 @@ export const FALLING_BLOSSOMS_STACKS_FOR_FRAGRANT_SONG = 3
 export const FRAGRANT_SONG_DURATION_FRAMES = 600
 export const FRAGRANT_SONG_DELICATE_DURATION_FRAMES = 600
 export const PHANTOM_UMBRELLA_DURATION_FRAMES = 300
+export const SOULBOUND_DURATION_FRAMES = 3600 * 60
+export const PIERCING_DART_READY_DURATION_FRAMES = 1800
+export const SOUL_RETURN_DURATION_FRAMES = 720
+export const SOUL_RETURN_TOWLINE_SWEEP_DURATION_FRAMES = 1260
 
 export const BAMBOOCUT_DUST_GATES: readonly Buff[] = [
   defineGateBuff({
@@ -110,6 +115,65 @@ export const BAMBOOCUT_DUST_GATES: readonly Buff[] = [
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",
+    createdAt: CREATED_AT,
+    updatedAt: CREATED_AT,
+  }),
+  defineGateBuff({
+    id: STATUS.soulbound,
+    classId: CLASS_ID,
+    name: "Soulbound",
+    description: "The next Piercing Dart applies Soul Loss with every sweep.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: SOULBOUND_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: CREATED_AT,
+    updatedAt: CREATED_AT,
+  }),
+  defineGateBuff({
+    id: STATUS.soulboundRelease,
+    classId: CLASS_ID,
+    name: "Soulbound Release",
+    description: "Marks the Piercing Dart cast that consumed Soulbound.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: 1,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: CREATED_AT,
+    updatedAt: CREATED_AT,
+  }),
+  defineGateBuff({
+    id: STATUS.piercingDartReady,
+    classId: CLASS_ID,
+    name: "Piercing Dart Ready",
+    description: "The charging stance is held; Piercing Dart can be released.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: PIERCING_DART_READY_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: CREATED_AT,
+    updatedAt: CREATED_AT,
+  }),
+  defineGateBuff({
+    id: STATUS.soulReturn,
+    classId: CLASS_ID,
+    name: "Soul Return",
+    description: "Martial Art Skills cost half the Fading Crimson.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: SOUL_RETURN_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    meterModifiers: [
+      { meterId: fadingCrimsonMeter.id, kind: "cost", amount: -0.5, tag: ROLE.dustMartialArtSkill },
+    ],
     createdAt: CREATED_AT,
     updatedAt: CREATED_AT,
   }),

@@ -11,11 +11,16 @@ export default defineRotation({
     { skillId: "bamboocutDust-perfect-catch-after-third" },
     { skillId: "bamboocutDust-dreamwrought-bubbles" },
     { skillId: "bamboocutDust-cyclone-waltz" },
+    { skillId: "bamboocutDust-soul-sweep" },
+    { skillId: "bamboocutDust-piercing-dart-iii" },
+    { skillId: "bamboocutDust-burn-and-bury" },
+    { skillId: "bamboocutDust-piercing-dart-charging-stance" },
+    { skillId: "bamboocutDust-piercing-dart-ii" },
   ],
   permanentBuffIds: [],
   openingStacks: {},
   createdAt: "2026-10-12T00:00:00.000Z",
   updatedAt: "2026-10-12T00:00:00.000Z",
   description:
-    "Stand-in rotation while the class is being built: one full Scarlet Spin chain, then the umbrella's charged and special skills.",
+    "Stand-in rotation while the class is being built: one full Scarlet Spin chain and the umbrella's charged and special skills, then Soul Sweep into the rope dart's charged and special skills.",
 })

@@ -23,10 +23,26 @@ export const SKILL = {
   umbrellaDashBullet: "bamboocutDust-umbrella-dash-bullet",
   umbrellaDual: "bamboocutDust-umbrella-dual",
   deflectCancel: "bamboocutDust-deflect-cancel",
+  soulSweep: "bamboocutDust-soul-sweep",
+  piercingDartChargingStance: "bamboocutDust-piercing-dart-charging-stance",
+  piercingDartI: "bamboocutDust-piercing-dart-i",
+  piercingDartII: "bamboocutDust-piercing-dart-ii",
+  piercingDartIISweeps4To5: "bamboocutDust-piercing-dart-ii-sweeps-4-5",
+  piercingDartIII: "bamboocutDust-piercing-dart-iii",
+  piercingDartIIISweeps4To5: "bamboocutDust-piercing-dart-iii-sweeps-4-5",
+  piercingDartIIISweeps6To7: "bamboocutDust-piercing-dart-iii-sweeps-6-7",
+  burnAndBury: "bamboocutDust-burn-and-bury",
+  ropeLightAttack: "bamboocutDust-rope-light-attack",
+  ropeSprintAttack: "bamboocutDust-rope-sprint-attack",
+  ropeDual: "bamboocutDust-rope-dual",
 } as const
 
 export const DEBUFF = {
   bitterSeasonTick: "debuff-bamboocutDust-bitter-season-tick",
+  soulLoss: "debuff-bamboocutDust-soul-loss",
+  soulbreak: "debuff-bamboocutDust-soulbreak",
+  soulbreakPayoutFivePercent: "debuff-bamboocutDust-soulbreak-payout-five-percent",
+  soulbreakPayoutTenPercent: "debuff-bamboocutDust-soulbreak-payout-ten-percent",
 } as const
 
 export const STATUS = {
@@ -36,4 +52,8 @@ export const STATUS = {
   fragrantSongLogic: "buff-bamboocutDust-fragrant-song-logic",
   fragrantSongDelicate: "buff-bamboocutDust-fragrant-song-delicate",
   phantomUmbrella: "buff-bamboocutDust-phantom-umbrella",
+  soulbound: "buff-bamboocutDust-soulbound",
+  soulboundRelease: "buff-bamboocutDust-soulbound-release",
+  piercingDartReady: "buff-bamboocutDust-piercing-dart-ready",
+  soulReturn: "buff-bamboocutDust-soul-return",
 } as const
