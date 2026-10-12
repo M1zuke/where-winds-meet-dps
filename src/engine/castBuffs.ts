@@ -30,8 +30,8 @@ export interface CastBuffCollection {
 }
 
 export interface CastBuffQuery {
-  frame: number
-  timeSec: number
+  ledgerFrame: number
+  engineTimeSec: number
   fps: number
   ledger: StatusLedger
   statusById: ReadonlyMap<string, Buff | Debuff>
@@ -47,7 +47,7 @@ export interface CastBuffQuery {
 const hasDot = (status: Buff | Debuff): status is Debuff => "dot" in status
 
 export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
-  const { frame, timeSec, fps, ledger, statusById, buffEngine } = query
+  const { ledgerFrame, engineTimeSec, fps, ledger, statusById, buffEngine } = query
   const buffs: CastBuffTag[] = []
   const seen = new Set<string>()
 
@@ -55,15 +55,17 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
   // two projections, and only the module side carries effects — without this
   // the gate wins the id here and the chip renders with no effect at all.
   const engineDisplayById = new Map(
-    (buffEngine?.activeBuffsForDisplay(timeSec) ?? []).map((buff) => [buff.id, buff] as const),
+    (buffEngine?.activeBuffsForDisplay(engineTimeSec) ?? []).map(
+      (buff) => [buff.id, buff] as const,
+    ),
   )
 
-  for (const id of ledger.activeIdsAt(frame)) {
+  for (const id of ledger.activeIdsAt(ledgerFrame)) {
     const status = statusById.get(id)
     if (!status || seen.has(id)) continue
     seen.add(id)
 
-    const tracked = ledger.stacksAt(id, frame)
+    const tracked = ledger.stacksAt(id, ledgerFrame)
     const countsStacks = (status.maxStacks ?? 1) > 1
     const stacks = tracked > 0 || countsStacks || ledger.hasStackHistory(id) ? tracked : 1
     const dotIntervalSec =
@@ -73,10 +75,10 @@ export function collectCastBuffs(query: CastBuffQuery): CastBuffCollection {
 
     let remainingSec: number | undefined
     if (status.activation !== "permanent") {
-      const remainingFrames = ledger.remainingFramesAt(id, frame)
+      const remainingFrames = ledger.remainingFramesAt(id, ledgerFrame)
       if (remainingFrames !== undefined) remainingSec = remainingFrames / fps
     }
-    const overridden = query.overrideRemainingSec?.(id, timeSec)
+    const overridden = query.overrideRemainingSec?.(id, engineTimeSec)
     if (overridden) remainingSec = overridden.seconds
 
     const projection = status.effects.length === 0 ? engineDisplayById.get(id) : undefined

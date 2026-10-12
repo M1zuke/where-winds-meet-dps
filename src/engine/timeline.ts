@@ -528,7 +528,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
           const status = statusById.get(trigger.targetId)
           if (!status) return
           const activeWindow = target.longestActiveWindow(status.id, frame)
-          if (activeWindow) activeWindow.end = frame
+          if (activeWindow) target.cutWindow(activeWindow, frame, owner)
           target.recordStack(status.id, frame, 0, owner)
           return
         }
@@ -550,9 +550,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
             const cap = trigger.maxExtendedDurationFrames
             const rawEnd = activeWindow.end + trigger.extendFrames
             const nextEnd = cap ? Math.max(activeWindow.end, Math.min(rawEnd, frame + cap)) : rawEnd
-            const applied = nextEnd - activeWindow.end
-            activeWindow.end = nextEnd
-            if (applied > 0) (activeWindow.extensions ??= []).push({ frame, amount: applied })
+            target.extendWindow(activeWindow, frame, nextEnd, owner)
           } else if (!trigger.extendOnly) grant(status, frame, trigger.stacks, owner, fireMaxStacks)
           return
         }
@@ -585,7 +583,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 0,
                 capOf(resetTarget),
               )
-              write(resetTarget, window.end, next, UNOWNED, false, true)
+              write(resetTarget, window.end, next, window.owner ?? UNOWNED, false, true)
             }
           }
         },
@@ -2294,6 +2292,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
     // `stat`/`forceOutcome` output only feeds the formula, so it is captured
     // onto the hit's own merged event for pass 2 instead of reapplied there.
     const mergedEvents: MergedEvent[] = []
+    const chainEndFrameByStepStart = new Map<number, number>()
     let mergedSeq = 0
     let processed = 0
     while (queue.size > 0) {
@@ -2306,6 +2305,10 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       const ev = queue.pop()!
       processed++
       const { frame, skill, hit, castFrame, stepStart } = ev
+      chainEndFrameByStepStart.set(
+        stepStart,
+        Math.max(frame, chainEndFrameByStepStart.get(stepStart) ?? frame),
+      )
       liveWriter.processExpiries(frame)
 
       const behavior = behaviorFor(skill)
@@ -2493,17 +2496,20 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                 ),
               )
             : 0
-        const queryFrame = Math.max(
+        const castQueryFrame = Math.max(
           ls.startFrame,
           ls.startFrame + ls.castLen - 1,
           ls.startFrame + lastHitFrame,
         )
-        const queryTimeSec = queryFrame / FPS
+        const queryTimeSec = castQueryFrame / FPS
         const { buffs, seen: seenBuffIds } = collectCastBuffs({
-          frame: queryFrame,
-          timeSec: queryTimeSec,
+          ledgerFrame: Math.max(
+            castQueryFrame,
+            chainEndFrameByStepStart.get(ls.startFrame) ?? castQueryFrame,
+          ),
+          engineTimeSec: queryTimeSec,
           fps: FPS,
-          ledger: ledger.throughOwner(ls.startFrame),
+          ledger: ledger.throughOwner(ls.startFrame, castQueryFrame),
           statusById,
           buffEngine,
           // Below the display threshold there's a real chance no poison has
