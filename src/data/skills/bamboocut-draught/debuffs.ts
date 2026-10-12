@@ -76,6 +76,8 @@ export const bitterSeasonTick = defineDebuff({
   effects: [],
   dot: {
     tickIntervalFrames: 60,
+    // In-game cadence as of 2026-10-11.
+    reschedulesPerTick: true,
     // In-game values as of 2026-09-24.
     physMultiplier: 0.02,
     physFixed: 0,

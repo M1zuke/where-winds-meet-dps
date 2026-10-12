@@ -147,17 +147,17 @@ describe("Bellstrike Umbra (bellstrikeUmbra) — T6-Bili parity vs the reference
     // Intentionally loose, re-centered bands (see the file header) — not the
     // site's cached target. Re-center as further mechanics land; do not
     // widen a band to paper over a regression.
-    expect(result.dps).toBeGreaterThan(41315)
-    expect(result.dps).toBeLessThan(41475)
-    expect(result.totalDamage).toBeGreaterThan(2941100)
-    expect(result.totalDamage).toBeLessThan(2955500)
+    expect(result.dps).toBeGreaterThan(41460)
+    expect(result.dps).toBeLessThan(41620)
+    expect(result.totalDamage).toBeGreaterThan(2950550)
+    expect(result.totalDamage).toBeLessThan(2964950)
     expect(detonation?.expectedDamage).toBeGreaterThan(1464500)
     expect(detonation?.expectedDamage).toBeLessThan(1477500)
 
-    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.8535)
-    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.8585)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.0005)
-    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.0075)
+    expect(result.dps / SITE_TARGET_DPS).toBeGreaterThan(0.8564)
+    expect(result.dps / SITE_TARGET_DPS).toBeLessThan(0.8614)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeGreaterThan(1.0037)
+    expect(result.totalDamage / SITE_TARGET_TOTAL).toBeLessThan(1.0107)
     expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeGreaterThan(0.9308)
     expect((detonation?.expectedDamage ?? 0) / SITE_TARGET_DETONATION).toBeLessThan(0.9388)
   })
