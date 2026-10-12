@@ -27,6 +27,8 @@ import { herosBloodInebriateNoAbrasion } from "./herosBloodInebriateNoAbrasion"
 import { clashToastDamage } from "./clashToastDamage"
 import {
   nonPlayerBaseDamage10,
+  nonPlayerBaseDamage20,
+  nonPlayerBaseDamage25,
   nonPlayerBaseDamage40,
   nonPlayerBaseDamage50,
   nonPlayerBaseDamage115,
@@ -96,6 +98,8 @@ export const GLOBAL_BUFF_DEFS: BuffModule[] = [
   swallowcallLightAttackBoost,
   swiftGaleAirborneHeavyBoost,
   totalAnnihilationSupremeShield,
+  nonPlayerBaseDamage20,
+  nonPlayerBaseDamage25,
 ]
 
 export const GROUP_BUFF_DEFS: BuffModule[] = [healerBuff]

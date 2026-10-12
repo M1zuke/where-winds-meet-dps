@@ -58,6 +58,15 @@ const MARTIAL_ART_SKILL_IDS: Record<string, readonly string[]> = {
     "silkbindJade-fanq-prepull",
     "silkbindJade-fanqcancel",
   ],
+  bamboocutDust: [
+    "bamboocutDust-scarlet-spin",
+    "bamboocutDust-scarlet-spin-second",
+    "bamboocutDust-scarlet-spin-third",
+    "bamboocutDust-scarlet-spin-fourth",
+    "bamboocutDust-perfect-catch-after-first",
+    "bamboocutDust-perfect-catch-after-second",
+    "bamboocutDust-perfect-catch-after-third",
+  ],
 }
 
 describe("every Martial Art skill activates Jadeware", () => {

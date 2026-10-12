@@ -1,4 +1,5 @@
 import type { MartialArtDef } from "../../definitions/martialArts/martialArtDef"
+import { everspringUmbrella } from "./everspringUmbrella"
 import { heavenquakerSpear } from "./heavenquakerSpear"
 import { inkwellFan } from "./inkwellFan"
 import { namelessSpear } from "./namelessSpear"
@@ -8,6 +9,7 @@ import { rivenTwinblades } from "./rivenTwinblades"
 import { skystrikeGauntlets } from "./skystrikeGauntlets"
 import { snowpartingBlade } from "./snowpartingBlade"
 import { strategicSword } from "./strategicSword"
+import { unfetteredRopeDart } from "./unfetteredRopeDart"
 import { vernalUmbrella } from "./vernalUmbrella"
 
 export const MARTIAL_ARTS: readonly MartialArtDef[] = [
@@ -21,4 +23,6 @@ export const MARTIAL_ARTS: readonly MartialArtDef[] = [
   vernalUmbrella,
   skystrikeGauntlets,
   rivenTwinblades,
+  everspringUmbrella,
+  unfetteredRopeDart,
 ]

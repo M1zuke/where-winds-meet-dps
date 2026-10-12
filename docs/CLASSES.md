@@ -22,8 +22,9 @@ Draught (`bamboocutDraught`, spec `bamboocut_draught`) are validated** — each
 holds a measured build exactly. Rely on nothing any of them reports beyond what
 its anchor pins.
 
-**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) is registered and not
-validated** — selectable, and carrying nothing an anchor defends.
+**Silkbind Jade (`silkbindJade`, spec `silkbind_jade`) and Bamboocut Dust
+(`bamboocutDust`, spec `bamboocut_dust`) are registered and not validated** —
+selectable, and carrying nothing an anchor defends.
 
 The remaining classes — the other Stonesplit and Bamboocut specs — are **not
 registered**. Their imported data lives under `reference/classes/`, unimported

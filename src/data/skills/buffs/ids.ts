@@ -144,6 +144,11 @@ export const BUFF = {
   gourdTossFlyingTornado: "gourdTossFlyingTornado",
   fluteDistanceBonus: "fluteDistanceBonus",
   cleftpeakDeflectGrant: "cleftpeakDeflectGrant",
+  everspringUmbrellaAdditionalAttack: "everspringUmbrellaAdditionalAttack",
+  fragrantSong: "fragrantSong",
+  nonPlayerBaseDamage20: "nonPlayerBaseDamage20",
+  nonPlayerBaseDamage25: "nonPlayerBaseDamage25",
+  returningUmbrellaDamage: "returningUmbrellaDamage",
 } as const
 
 // Harvested from every `enabledParam` / `bonus.valueFromParam` across
@@ -166,6 +171,7 @@ export const PARAM = {
   mistwing: "mistwing",
   moraleChant: "moraleChant",
   mountainsMight: "mountainsMight",
+  phantomRally: "phantomRally",
   skyspeak: "skyspeak",
   starReacher: "starReacher",
   steadfastDevotion: "steadfastDevotion",
@@ -173,6 +179,7 @@ export const PARAM = {
   swordMorph: "swordMorph",
   throatPierced: "throatPierced",
   thunderousBloom: "thunderousBloom",
+  towlineSweep: "towlineSweep",
   voidrotScript: "voidrotScript",
   volutefit: "volutefit",
   wolfchasersArt: "wolfchasersArt",

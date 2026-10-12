@@ -3,6 +3,7 @@
 // and nowhere else; nothing in `src/engine` imports a class module.
 import type { ClassDef } from "../../definitions/classes/classDef"
 import { bamboocutDraught } from "./bamboocut-draught"
+import { bamboocutDust } from "./bamboocut-dust"
 import { bellstrikeSplendor } from "./bellstrike-splendor"
 import { bellstrikeUmbra } from "./bellstrike-umbra"
 import { silkbindJade } from "./silkbind-jade"
@@ -14,6 +15,7 @@ export const CLASSES: readonly ClassDef[] = [
   bellstrikeSplendor,
   silkbindJade,
   bamboocutDraught,
+  bamboocutDust,
 ]
 
 export { RETUNEMENT_POOLS } from "./retunementPools"

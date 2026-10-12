@@ -10,6 +10,8 @@ export const DASHBOARD_MARTIAL_ART_IDS: Readonly<Record<number, MartialArtId>> =
   20402: MARTIAL_ART_ID.phalanxbaneBlade,
   20503: MARTIAL_ART_ID.rivenTwinblades,
   20601: MARTIAL_ART_ID.vernalUmbrella,
+  20603: MARTIAL_ART_ID.everspringUmbrella,
+  20702: MARTIAL_ART_ID.unfetteredRopeDart,
   20801: MARTIAL_ART_ID.snowpartingBlade,
   20902: MARTIAL_ART_ID.skystrikeGauntlets,
 }

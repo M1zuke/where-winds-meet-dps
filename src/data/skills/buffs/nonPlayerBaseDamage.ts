@@ -55,6 +55,30 @@ export const nonPlayerBaseDamage145 = defineBuff({
   effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.45)] : []),
 })
 
+// In-game values as of 2026-10-12: Dreamwrought Bubbles deals an extra 20%
+// damage against non-player targets.
+export const nonPlayerBaseDamage20 = defineBuff({
+  id: BUFF.nonPlayerBaseDamage20,
+  name: "Non-Player Base DMG +20%",
+  requires: { classId: "bamboocutDust" },
+  alwaysActive: true,
+  duration: 9999,
+  summary: "damage ×1.2 against non-player units on Dreamwrought Bubbles",
+  effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.2)] : []),
+})
+
+// In-game values as of 2026-10-12: Spring Away's projectiles deal an extra 25%
+// damage against non-player targets.
+export const nonPlayerBaseDamage25 = defineBuff({
+  id: BUFF.nonPlayerBaseDamage25,
+  name: "Non-Player Base DMG +25%",
+  requires: { classId: "bamboocutDust" },
+  alwaysActive: true,
+  duration: 9999,
+  summary: "damage ×1.25 against non-player units on Spring Away",
+  effects: (ctx) => (ctx.self.reachesEvent ? [damageMultiplier(1.25)] : []),
+})
+
 // In-game values as of 2026-09-24: the floating umbrella's projectiles deal an
 // extra 15% damage against non-player targets.
 export const nonPlayerBaseDamage115 = defineBuff({
