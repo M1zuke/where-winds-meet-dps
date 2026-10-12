@@ -34,6 +34,7 @@ export const SKILL = {
   burnAndBury: "bamboocutDust-burn-and-bury",
   ropeLightAttack: "bamboocutDust-rope-light-attack",
   ropeSprintAttack: "bamboocutDust-rope-sprint-attack",
+  ropeDash: "bamboocutDust-rope-dash",
   ropeDual: "bamboocutDust-rope-dual",
 } as const
 

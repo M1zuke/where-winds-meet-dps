@@ -9,7 +9,7 @@ import { UMBRELLA_LIGHT_CHAIN_RECEIVES } from "./receives"
 // In-game values as of 2026-10-12: the held light plays Spring Away. Its
 // projectiles read the first-level damage row — a physical coefficient only,
 // no attribute term. The lift frame and the projectile frames are not
-// measurable: provisional frames, evenly spaced across the 2 s hover.
+// measurable: provisional frames, spaced so all twelve land inside the 2 s hover.
 const BULLET_HIT = {
   physMultiplier: 0.2858484,
   attributeMultiplier: 0,
@@ -20,7 +20,7 @@ const BULLET_HIT = {
 const BULLET_COUNT = 12
 const LIFT_FRAME = 29
 const HOVER_START_FRAME = 44
-const FIRST_BULLET_FRAME = 58
+const FIRST_BULLET_FRAME = 50
 const BULLET_SPACING_FRAMES = 10
 const HOVER_SECONDS = 2
 
@@ -33,7 +33,12 @@ export const springAway = defineSkill({
   weaponOrAttribute: "Umbrella",
   attributeAttack: "Bamboocut",
   castTag: CAST.dustSpringAway,
-  receives: [BUFF.nonPlayerBaseDamage25, ...UMBRELLA_LIGHT_CHAIN_RECEIVES],
+  receives: [
+    BUFF.battleAnthemChargedDamage,
+    BUFF.battleAnthemEnduranceBoost,
+    BUFF.nonPlayerBaseDamage25,
+    ...UMBRELLA_LIGHT_CHAIN_RECEIVES,
+  ],
   meterDrains: [
     {
       meterId: enduranceMeter.id,

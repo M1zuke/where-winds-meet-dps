@@ -1,6 +1,7 @@
 // Scoped to Bamboocut Dust (docs/TESTING.md § "Class scoping"): the class is
 // registered, not validated, so nothing here asserts an absolute DPS number.
 import { describe, expect, it } from "vitest"
+import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
@@ -192,5 +193,81 @@ describe("Phantom Rally on the throw chain", () => {
     expect(withRally.invalidStepIds ?? []).toEqual([])
     const withoutRally = run([...FULL_CHAIN, SKILL.dreamwroughtBubblesInstant])
     expect(withoutRally.invalidStepIds).toHaveLength(1)
+  })
+})
+
+describe("the catch press inside a throw", () => {
+  it("presses one frame after the far point, so the first throw's catch resonates off the summoned phantom", () => {
+    const result = run([...FULL_CHAIN, SKILL.dreamwroughtBubblesInstant], PHANTOM_RALLY_TIER_ONE)
+    expect(framesOf(result, "Resonance (Martial Art Skill)")).toContain(45 + 1)
+    const withoutRally = run(FULL_CHAIN)
+    expect(framesOf(withoutRally, "Resonance (Martial Art Skill)")).toEqual([])
+  })
+
+  it("keeps every catch press after the out hit, inside the window and before the cast ends", () => {
+    for (const skill of builtinSkillsForClass(CLASS)) {
+      const presses = skill.hits.filter((hit) => hit.requiresNextStepSkillIds !== undefined)
+      if (presses.length === 0) continue
+      const outHit = skill.hits.find((hit) => hit.physMultiplier > 0)!
+      for (const press of presses) {
+        const fragrant = press.variants !== undefined
+        const windowClose = fragrant ? press.variants![0].castFrames! : press.castFramesWhenGated!
+        const outFrame = fragrant ? outHit.variants![0].frame! : outHit.frame
+        expect(press.frame, skill.id).toBe(outFrame + 1)
+        expect(press.frame, skill.id).toBeLessThan(windowClose)
+        expect(windowClose, skill.id).toBeLessThanOrEqual(skill.castFrames)
+      }
+    }
+  })
+})
+
+describe("Flower Burial gating of the throws", () => {
+  it("refuses a first Scarlet Spin while Flower Burial is up", () => {
+    const result = run([SKILL.scarletSpin, SKILL.scarletSpin])
+    expect(result.invalidStepIds).toHaveLength(1)
+  })
+
+  it("ends Flower Burial one frame after a plain re-throw spends the last Fading Crimson", () => {
+    const result = run([
+      SKILL.scarletSpin,
+      SKILL.scarletSpinSecond,
+      SKILL.scarletSpinThird,
+      SKILL.scarletSpinFourth,
+    ])
+    const flowerBurial = result.buffWindows!.find((window) => window.id === STATUS.flowerBurial)!
+    expect(Math.round(flowerBurial.endSec * FPS)).toBe(startFrames(result)[3] + 1)
+  })
+})
+
+describe("Fragrant Song - Delicate and the held inputs", () => {
+  it("makes the held Dreamwrought Bubbles and the first heavy stage illegal while Delicate is up", () => {
+    const afterChain = (skillId: string) =>
+      run([...FULL_CHAIN, skillId], PHANTOM_RALLY_TIER_ONE).invalidStepIds ?? []
+    expect(afterChain(SKILL.dreamwroughtBubbles)).toHaveLength(1)
+    expect(afterChain(SKILL.heavyAttack1)).toHaveLength(1)
+    expect(afterChain(SKILL.dreamwroughtBubblesInstant)).toEqual([])
+  })
+
+  it("plays the held Dreamwrought Bubbles and the first heavy stage without Delicate", () => {
+    expect(run([SKILL.dreamwroughtBubbles]).invalidStepIds ?? []).toEqual([])
+    expect(run([SKILL.heavyAttack1]).invalidStepIds ?? []).toEqual([])
+  })
+})
+
+describe("Cyclone Waltz swap", () => {
+  it("re-creates an own Phantom Umbrella 27 frames in, and creates none without one", () => {
+    const phantomEnd = (result: ReturnType<typeof run>) =>
+      Math.max(
+        ...result
+          .buffWindows!.filter((window) => window.id === STATUS.phantomUmbrella)
+          .map((window) => Math.round(window.endSec * FPS)),
+      )
+    const withPhantom = run([SKILL.scarletSpin, SKILL.cycloneWaltz], PHANTOM_RALLY_TIER_ONE)
+    const cycloneStart = startFrames(withPhantom)[1]
+    expect(phantomEnd(withPhantom)).toBe(cycloneStart + 27 + 300)
+    const withoutPhantom = run([SKILL.cycloneWaltz], PHANTOM_RALLY_TIER_ONE)
+    expect(withoutPhantom.buffWindows!.some((window) => window.id === STATUS.phantomUmbrella)).toBe(
+      false,
+    )
   })
 })

@@ -337,8 +337,9 @@ describe("Shared content on Bamboocut Dust", () => {
     )
   })
 
-  it("gives Battle Anthem to Dreamwrought Bubbles and every Piercing Dart release", () => {
+  it("gives Battle Anthem to Dreamwrought Bubbles, the Spring Away bullets and every Piercing Dart release", () => {
     const expected = idsOf([
+      SKILL.springAway,
       SKILL.dreamwroughtBubbles,
       SKILL.dreamwroughtBubblesInstant,
       SKILL.piercingDartI,

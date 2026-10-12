@@ -201299,7 +201299,7 @@
   "bamboocutDust": {
     "static": {
       "skills": {
-        "count": 70,
+        "count": 71,
         "ids": [
           "bamboocutDust-bitter-season-tick",
           "bamboocutDust-burn-and-bury",
@@ -201332,6 +201332,7 @@
           "bamboocutDust-piercing-dart-iii-sweeps-6-7",
           "bamboocutDust-resonance",
           "bamboocutDust-resonance-dreamwrought",
+          "bamboocutDust-rope-dash",
           "bamboocutDust-rope-dual",
           "bamboocutDust-rope-light-attack",
           "bamboocutDust-rope-sprint-attack",
@@ -201372,7 +201373,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "344095af99b96a81aacdb34277a79aad3bc4a872896a9f5ee3038fdcc01da260"
+        "digest": "0695ab5937b10a95e1be6fccc4fd79634ffcceb15efed0c194a44838902ad927"
       },
       "debuffs": {
         "count": 11,

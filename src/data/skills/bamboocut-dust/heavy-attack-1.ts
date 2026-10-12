@@ -1,6 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { ATTACK, CAST, WEAPON } from "../ids"
-import { SKILL } from "./ids"
+import { SKILL, STATUS } from "./ids"
 import { UMBRELLA_HEAVY_CHAIN_RECEIVES } from "./receives"
 
 export const HEAVY_ATTACK_FIRST_HIT = {
@@ -10,8 +10,7 @@ export const HEAVY_ATTACK_FIRST_HIT = {
   attributeFixed: 81.4,
 }
 
-// In-game values as of 2026-10-12: the four-stage heavy chain, one module per
-// stage. The first stage's cast length starts at the release.
+// In-game values as of 2026-10-12. The first stage's cast length starts at the release.
 export const heavyAttack1 = defineSkill({
   id: SKILL.heavyAttack1,
   classId: "bamboocutDust",
@@ -23,6 +22,7 @@ export const heavyAttack1 = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.dustHeavyAttack1,
   receives: UMBRELLA_HEAVY_CHAIN_RECEIVES,
+  castConditions: [{ buffId: STATUS.fragrantSongDelicate, op: "lt", stacks: 1 }],
   castFrames: 28,
   triggerable: false,
   hits: [hit(0, { frame: 6, ...HEAVY_ATTACK_FIRST_HIT })],

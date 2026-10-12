@@ -8,9 +8,9 @@ import { isFlowerBurial } from "../bamboocut-dust/buffs/flowerBurial"
 import { STATUS as DUST_STATUS } from "../bamboocut-dust/ids"
 
 const PER_STACK = 0.01
-const PAYS_OUT_SECONDS_AFTER_INEBRIATE_ENDS = 5.1
+const PAYS_OUT_SECONDS_AFTER_STATE_ENDS = 5.1
 
-// 4 pieces: damage dealt while Inebriate grants a stack, and each stack raises
+// 4 pieces: damage dealt while Inebriate or in Flower Burial grants a stack, and each stack raises
 // Physical and every Attribute Attack by 1%. It scales the attack values
 // themselves, so it multiplies the attack term rather than joining the boost
 // sum.
@@ -29,8 +29,7 @@ export const tiltrimStack = defineBuff({
     const tipsyEnded =
       ctx.status.secondsSinceStacksBelowThreshold(STATUS.bingePoints, TIPSY_BINGE_POINTS_THRESHOLD) ?? Infinity
     const flowerBurialEnded = ctx.status.secondsSinceLastEnd(DUST_STATUS.flowerBurial) ?? Infinity
-    const inGracePeriod =
-      Math.min(deepdazeEnded, tipsyEnded, flowerBurialEnded) <= PAYS_OUT_SECONDS_AFTER_INEBRIATE_ENDS
+    const inGracePeriod = Math.min(deepdazeEnded, tipsyEnded, flowerBurialEnded) <= PAYS_OUT_SECONDS_AFTER_STATE_ENDS
     if (!isInebriate(ctx) && !isFlowerBurial(ctx) && !inGracePeriod) return []
     const scale = ctx.self.stacks * PER_STACK
     return [

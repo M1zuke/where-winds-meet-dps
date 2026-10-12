@@ -22,6 +22,7 @@ import {
 } from "./piercing-dart-iii"
 import { resonance } from "./resonance"
 import { resonanceDreamwrought } from "./resonance-dreamwrought"
+import { ropeDash } from "./rope-dash"
 import { ropeDual } from "./rope-dual"
 import { ropeLightAttack } from "./rope-light-attack"
 import { ropeSprintAttack } from "./rope-sprint-attack"
@@ -75,5 +76,6 @@ export const SKILLS: Skill[] = [
   burnAndBury,
   ropeLightAttack,
   ropeSprintAttack,
+  ropeDash,
   ropeDual,
 ]

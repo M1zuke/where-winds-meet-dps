@@ -6,7 +6,7 @@ import { runEngine } from "../../src/engine/dps"
 import { defaultInputs } from "../../src/engine/defaults"
 import { makeStep } from "../../src/engine/rotation"
 import { FPS } from "../../src/engine/timeline"
-import { BUFF } from "../../src/data/skills/buffs/ids"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { ATTUNE, WEAPON } from "../../src/data/skills/ids"
 import { DEBUFF, SKILL, STATUS } from "../../src/data/skills/bamboocut-dust/ids"
 import { tokensOfGratitudeMeter } from "../../src/data/classes/bamboocut-dust/meters"
@@ -197,6 +197,13 @@ describe("the rope dart's basic attacks", () => {
     expect(damageFramesOf(result, "Rope Dart - Sprint Attack")).toEqual([36, 56])
   })
 
+  it("lands the dash skill on its two collider frames and receives no light-chain buff", () => {
+    const result = runDust([SKILL.ropeDash])
+    expect(damageFramesOf(result, "Rope Dart - Dash")).toEqual([36, 56])
+    const dash = ropeDartSkills().find((skill) => skill.id === SKILL.ropeDash)!
+    expect(dash.receives).toEqual([BUFF.unfetteredRopeDartAdditionalAttack])
+  })
+
   it("performs the weapon change itself, so no direct swap precedes the Dual-Weapon Skill", () => {
     const result = runDust([SKILL.scarletSpin, SKILL.ropeDual])
     expect(result.casts!.map((cast) => cast.skillName)).toEqual([
@@ -216,10 +223,11 @@ describe("the rope dart's basic attacks", () => {
 })
 
 describe("the placeholder rotation", () => {
-  it("runs on both arts without an illegal step", () => {
+  it("runs on both arts without an illegal step, the Delicate Dreamwrought Bubbles included", () => {
     const result = runEngine({
       ...defaultInputs,
       classId: DUST_CLASS,
+      buffParams: { [PARAM.phantomRally]: true, [`${PARAM.phantomRally}Tier`]: 6 },
       activeCustomRotation: testRotation(DUST_CLASS, {
         steps: placeholderRotation.steps.map((step) => makeStep(step)),
       }),

@@ -105,6 +105,15 @@ describe("the umbrella's basic attacks", () => {
     expect(fadingCrimsonAtStart(result, 2)).toBe(79)
   })
 
+  it("lands every Spring Away projectile inside the two-second hover", () => {
+    const result = run([SKILL.springAway])
+    const hoverStart = 44
+    for (const frame of framesOf(result, "Spring Away")) {
+      expect(frame).toBeGreaterThanOrEqual(hoverStart)
+      expect(frame).toBeLessThanOrEqual(hoverStart + HOVER_SECONDS * FPS)
+    }
+  })
+
   it("drains 10 Endurance a second over the two-second hover of Spring Away", () => {
     const result = run([SKILL.springAway, SKILL.springAway])
     const endurance = result.casts![1].meterLevels!.find((level) => level.id === "endurance")!

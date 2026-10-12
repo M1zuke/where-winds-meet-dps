@@ -43,12 +43,12 @@ const PHANTOM_UMBRELLA_UP: TriggerCondition = {
 const FADING_CRIMSON_PER_THROW = 25
 const FADING_CRIMSON_PER_CATCH = 10
 const CATCH_FLOWER_BURIAL_END_THRESHOLD = 2
+const CATCH_PRESS_DELAY_FRAMES = 1
 
 export interface ThrowTiming {
   castFrames: number
   outFrame: number
   backFrame: number
-  windowOpenFrame: number
   windowCloseFrame: number
   resonanceDelayFrames: number
 }
@@ -146,6 +146,11 @@ export function throwSkill(spec: ThrowSpec): Skill {
       }),
     ],
   })
+  const flowerBurialEnd = (threshold: number) =>
+    clearStatus({
+      target: STATUS.flowerBurial,
+      condition: fadingCrimsonRequires("lte", threshold),
+    })
   const pacingHit =
     spec.kind === "first"
       ? {
@@ -153,26 +158,24 @@ export function throwSkill(spec: ThrowSpec): Skill {
           ...NO_DAMAGE,
           triggers: [applyBuff({ target: STATUS.flowerBurial })],
         }
-      : {
-          frame: spec.normal.replaceStepFrame,
-          ...NO_DAMAGE,
-          variants: [fragrantVariant(NO_DAMAGE, { frame: spec.fragrant.replaceStepFrame })],
-          triggers: [
-            clearStatus({
-              target: STATUS.flowerBurial,
-              condition: fadingCrimsonRequires(
-                "lte",
-                spec.kind === "catch" ? CATCH_FLOWER_BURIAL_END_THRESHOLD : 0,
-              ),
-            }),
-          ],
-        }
+      : spec.kind === "rethrow"
+        ? {
+            frame: 1,
+            ...NO_DAMAGE,
+            triggers: [flowerBurialEnd(0)],
+          }
+        : {
+            frame: spec.normal.replaceStepFrame,
+            ...NO_DAMAGE,
+            variants: [fragrantVariant(NO_DAMAGE, { frame: spec.fragrant.replaceStepFrame })],
+            triggers: [flowerBurialEnd(CATCH_FLOWER_BURIAL_END_THRESHOLD)],
+          }
   // A variant's cast length outranks `castFramesWhenGated`, so the Fragrant
   // Song window close rides a variant on this marker, which must precede the
   // out hit's own variant.
   const hitSpecs = [
     {
-      frame: fragrant.windowOpenFrame,
+      frame: fragrant.outFrame + CATCH_PRESS_DELAY_FRAMES,
       ...NO_DAMAGE,
       conditions: [FRAGRANT_SONG_UP],
       requiresNextStepSkillIds: [spec.offeredCatchId],
@@ -188,7 +191,7 @@ export function throwSkill(spec: ThrowSpec): Skill {
       triggers: catchRewardTriggers(),
     },
     {
-      frame: normal.windowOpenFrame,
+      frame: normal.outFrame + CATCH_PRESS_DELAY_FRAMES,
       ...NO_DAMAGE,
       conditions: [FRAGRANT_SONG_DOWN],
       requiresNextStepSkillIds: [spec.offeredCatchId],
@@ -244,7 +247,10 @@ export function throwSkill(spec: ThrowSpec): Skill {
     triggersBuffs: [BUFF.jadeware, BUFF.springThunder],
     castConditions:
       spec.kind === "first"
-        ? [fadingCrimsonRequires("gte", FADING_CRIMSON_PER_THROW)]
+        ? [
+            fadingCrimsonRequires("gte", FADING_CRIMSON_PER_THROW),
+            { buffId: STATUS.flowerBurial, op: "lt", stacks: 1 },
+          ]
         : [{ buffId: STATUS.flowerBurial, op: "gte", stacks: 1 }],
     meterCosts: [fadingCrimsonCost(FADING_CRIMSON_PER_THROW)],
     castFrames: normal.castFrames,

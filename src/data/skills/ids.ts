@@ -282,6 +282,7 @@ export const CAST = {
   dustBurnAndBury: "cast:dustBurnAndBury",
   dustRopeLightAttack: "cast:dustRopeLightAttack",
   dustRopeSprintAttack: "cast:dustRopeSprintAttack",
+  dustRopeDash: "cast:dustRopeDash",
   dustRopeDual: "cast:dustRopeDual",
 } as const
 

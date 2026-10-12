@@ -58,6 +58,7 @@ export const dreamwroughtBubbles = defineSkill({
   attributeAttack: "Bamboocut",
   castTag: CAST.dustDreamwroughtBubbles,
   receives: DREAMWROUGHT_RECEIVES,
+  castConditions: [{ buffId: STATUS.fragrantSongDelicate, op: "lt", stacks: 1 }],
   meterDrains: [{ meterId: enduranceMeter.id, perSecond: 5, fromFrame: 14, stopAfterSec: 0.5 }],
   castFrames: HOLD_FRAMES + RELEASE_FRAMES,
   triggerable: false,

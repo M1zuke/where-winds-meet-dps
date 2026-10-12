@@ -9,7 +9,7 @@ export default defineRotation({
     { skillId: "bamboocutDust-perfect-catch-after-first" },
     { skillId: "bamboocutDust-perfect-catch-after-second" },
     { skillId: "bamboocutDust-perfect-catch-after-third" },
-    { skillId: "bamboocutDust-dreamwrought-bubbles" },
+    { skillId: "bamboocutDust-dreamwrought-bubbles-instant" },
     { skillId: "bamboocutDust-cyclone-waltz" },
     { skillId: "bamboocutDust-soul-sweep" },
     { skillId: "bamboocutDust-piercing-dart-iii" },
