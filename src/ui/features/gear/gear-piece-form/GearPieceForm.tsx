@@ -29,7 +29,8 @@ import { Select } from "../../../components/select/Select"
 import { NumInput, PercentInput } from "../../../components/number-inputs/NumberInputs"
 import { Switch } from "../../../components/switch/Switch"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import { GEAR_LEVEL_KEYS } from "../shared/gearLevelKeys"
 import type { GearScreenshotRowSlot } from "../screenshot-ocr/ocrGearPiece"
 import { RetuneOptionsDialog } from "../retune-options-dialog/RetuneOptionsDialog"
@@ -92,8 +93,9 @@ export function GearPieceForm({
   }
 
   const slotOptions: ComboboxOption[] = useMemo(
-    () => GEAR_SLOTS.map((slot) => ({ value: slot, label: t(GEAR_SLOT_KEYS[slot]) })),
-    [t],
+    () =>
+      GEAR_SLOTS.map((slot) => ({ value: slot, label: t(gearSlotLabelKey(slot, inputs.classId)) })),
+    [t, inputs.classId],
   )
   const levelOptions: ComboboxOption[] = useMemo(
     () =>
@@ -112,7 +114,12 @@ export function GearPieceForm({
   )
   const buildWordSpecs = useMemo(() => getWordSpecs(inputs, piece.level), [inputs, piece.level])
   function wordSpecsForLine(lineIndex: number) {
-    const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex)
+    const pool = gearWordPoolForLine(
+      piece.level,
+      piece.slot,
+      lineIndex,
+      weaponTypeForSlot(inputs.classId, piece.slot),
+    )
     return buildWordSpecs.filter((spec) => pool.includes(spec.word))
   }
   function wordOptionsForLine(lineIndex: number): ComboboxOption[] {

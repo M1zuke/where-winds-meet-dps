@@ -115,7 +115,7 @@ describe("GraduationBuildDialog", () => {
     expect(dpsReadout("Your build")).toHaveTextContent("Your build 9,876.54")
     expect(screen.getByText("All enabled")).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent(
       statLineLabel("swordBoost"),
     )
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
@@ -140,7 +140,7 @@ describe("GraduationBuildDialog", () => {
 
     const summary = () => within(screen.getByRole("tabpanel")).getByText("Bow Set")
     expect(summary().nextElementSibling).toHaveTextContent("Crit")
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent("77.8")
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent("77.8")
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Relayed words/ }))
 
@@ -148,7 +148,7 @@ describe("GraduationBuildDialog", () => {
     expect(dpsReadout("Your build")).toHaveTextContent("Your build 9,876.54")
     expect(summary().nextElementSibling).toHaveTextContent("Affinity")
 
-    const relayedWeapon = screen.getByRole("article", { name: "Left Weapon" })
+    const relayedWeapon = screen.getByRole("article", { name: "Strategic Sword" })
     expect(relayedWeapon).toHaveTextContent("73.13")
     expect(relayedWeapon).toHaveTextContent("46.44")
     expect(relayedWeapon).not.toHaveTextContent("77.8")

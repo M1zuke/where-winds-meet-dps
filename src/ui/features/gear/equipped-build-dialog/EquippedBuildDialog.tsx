@@ -17,7 +17,7 @@ import { BuildPieceCard } from "../build-piece-card/BuildPieceCard"
 import { BuildSummary, type BuildSummaryItem } from "../build-summary/BuildSummary"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
 import dialogChrome from "../shared/gearDialog.module.scss"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import previewStyles from "../shared/gearPreview.module.scss"
 
 interface Props {
@@ -107,9 +107,14 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
                 {GEAR_SLOTS.map((slot) => {
                   const piece = piecesBySlot.get(slot)
                   return piece ? (
-                    <BuildPieceCard key={slot} piece={piece} profile={profile} />
+                    <BuildPieceCard
+                      key={slot}
+                      piece={piece}
+                      classId={inputs.classId}
+                      profile={profile}
+                    />
                   ) : (
-                    <EmptySlotCard key={slot} slot={slot} />
+                    <EmptySlotCard key={slot} slot={slot} classId={inputs.classId} />
                   )
                 })}
               </div>
@@ -137,15 +142,15 @@ export function EquippedBuildDialog({ inputs, profile, currentDps, onClose }: Pr
   )
 }
 
-function EmptySlotCard({ slot }: { slot: GearSlot }) {
+function EmptySlotCard({ slot, classId }: { slot: GearSlot; classId: string }) {
   const { t } = useI18n()
   return (
     <article
       className={`${previewStyles.piece} ${previewStyles.skipped}`}
-      aria-label={t(GEAR_SLOT_KEYS[slot])}
+      aria-label={t(gearSlotLabelKey(slot, classId))}
     >
       <div className={previewStyles.pieceHead}>
-        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_KEYS[slot])}</span>
+        <span className={previewStyles.pieceSlot}>{t(gearSlotLabelKey(slot, classId))}</span>
         <span className="hint">{t("gear.equippedBuildDialog.emptySlot")}</span>
       </div>
     </article>

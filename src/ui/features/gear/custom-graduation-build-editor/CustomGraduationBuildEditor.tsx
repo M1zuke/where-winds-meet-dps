@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react"
 import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import { statLineLabel } from "../../../../data/stats/statLines"
-import { classDefinition } from "../../../../definitions/classes/registry"
+import { classDefinition, weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import type { GraduationBuild } from "../../../../definitions/graduationBuilds/graduationBuildDef"
 import { attunementLabel, attunementLabelKey, attunementsFor } from "../../../../engine/attunements"
 import type { CustomGraduationBuild } from "../../../../engine/customGraduationBuild"
@@ -21,7 +21,7 @@ import { useI18n } from "../../../../i18n/i18nContext"
 import { Combobox, type ComboboxOption } from "../../../components/combobox/Combobox"
 import { TextInput } from "../../../components/text-input/TextInput"
 import { ARSENAL_KEYS, BOW_SET_KEYS } from "../shared/buildSetKeys"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import styles from "./CustomGraduationBuildEditor.module.scss"
 
 interface Props {
@@ -104,7 +104,7 @@ export function CustomGraduationBuildEditor({
   )
 
   function wordOptions(slot: GearSlot, lineIndex: number): ComboboxOption[] {
-    const pool = gearWordPoolForLine(level, slot, lineIndex)
+    const pool = gearWordPoolForLine(level, slot, lineIndex, weaponTypeForSlot(classId, slot))
     return [
       { value: "", label: t("common.none") },
       ...pool.map((word) => ({ value: word, label: t(statLineKey(word), statLineLabel(word)) })),
@@ -279,7 +279,7 @@ export function CustomGraduationBuildEditor({
       <div className={styles.slots}>
         {draft.slots.map((entry) => (
           <div key={entry.slot} className={styles.slot}>
-            <span className={styles.slotName}>{t(GEAR_SLOT_KEYS[entry.slot])}</span>
+            <span className={styles.slotName}>{t(gearSlotLabelKey(entry.slot, classId))}</span>
             <div className={styles.lines}>
               {entry.words.map((word, lineIndex) => (
                 <Combobox
@@ -287,7 +287,7 @@ export function CustomGraduationBuildEditor({
                   value={word}
                   options={wordOptions(entry.slot, lineIndex)}
                   onChange={(value) => patchWord(entry.slot, lineIndex, value as GearWordId)}
-                  aria-label={`${t(GEAR_SLOT_KEYS[entry.slot])} ${lineIndex + 1}`}
+                  aria-label={`${t(gearSlotLabelKey(entry.slot, classId))} ${lineIndex + 1}`}
                 />
               ))}
               <div className={styles.attunementLine}>
@@ -295,7 +295,7 @@ export function CustomGraduationBuildEditor({
                   value={entry.attunement}
                   options={attunementOptions(entry.slot)}
                   onChange={(value) => patchSlot(entry.slot, { attunement: value })}
-                  aria-label={`${t(GEAR_SLOT_KEYS[entry.slot])} ${t("common.attunement")}`}
+                  aria-label={`${t(gearSlotLabelKey(entry.slot, classId))} ${t("common.attunement")}`}
                 />
               </div>
             </div>

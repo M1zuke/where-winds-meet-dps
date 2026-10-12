@@ -4,6 +4,7 @@ import { gearBaseStatsFor } from "../data/stats/gearBaseStats"
 import { gearWordPoolForLine } from "../data/stats/gearWordPools"
 import { getWordSpecs } from "./itemRanking"
 import { getAttunement } from "./attunements"
+import { weaponTypeForSlot } from "../definitions/classes/registry"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 
 export const RELAYED_FACTOR = 0.94
@@ -100,7 +101,12 @@ function wordContribution(
   const specs = getWordSpecs(ctx, piece.level)
   piece.words.forEach((w, lineIndex) => {
     if (!w.word || !accepts(w.word) || !w.value) return
-    const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex)
+    const pool = gearWordPoolForLine(
+      piece.level,
+      piece.slot,
+      lineIndex,
+      weaponTypeForSlot(ctx.classId, piece.slot),
+    )
     if (!pool.includes(w.word)) return
     const spec = specs.find((s) => s.word === w.word)
     if (!spec) return
@@ -179,7 +185,7 @@ export function gearAttributeTotals(pieces: readonly GearPiece[]): {
   for (const p of pieces) {
     p.words.forEach((w, lineIndex) => {
       if (!w.word || !w.value) return
-      const pool = gearWordPoolForLine(p.level, p.slot, lineIndex)
+      const pool = gearWordPoolForLine(p.level, p.slot, lineIndex, null)
       if (!pool.includes(w.word)) return
       if (w.word === "power") power += w.value
       else if (w.word === "agility") agility += w.value

@@ -27,8 +27,8 @@ describe("the Enhancement tab", () => {
     renderTab()
     const headings = screen.getAllByRole("heading", { level: 2 }).map((node) => node.textContent)
     expect(headings).toEqual([
-      "Left Weapon",
-      "Right Weapon",
+      "Strategic Sword",
+      "Heavenquaker Spear",
       "Helm",
       "Armor",
       "Disc",

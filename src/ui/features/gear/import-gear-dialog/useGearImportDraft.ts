@@ -134,6 +134,7 @@ export function useGearImportDraft(inputs: Inputs) {
     copyNotice,
     copyDiagnostics,
     breakthrough: inputs.breakthrough,
+    classId: inputs.classId,
   }
 }
 

@@ -12,7 +12,7 @@ import { gearLevelForBreakthrough } from "../../../../definitions/baseStats/brea
 import { useI18n } from "../../../../i18n/i18nContext"
 import { useConfirm } from "../../../components/confirm-dialog/confirmContext"
 import { fmt } from "../../../utils/statFormatting"
-import { GEAR_SLOT_KEYS } from "../../gear/shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../../gear/shared/gearSlotKeys"
 import { ENHANCEMENT_STAT_KEYS } from "../shared/enhancementStatKeys"
 import styles from "./EnhancementTab.module.scss"
 
@@ -99,7 +99,7 @@ export function EnhancementTab({ inputs, onChange }: Props) {
           const stats = enhancementStatsAtLevel(slot, level)
           return (
             <div className={`panel ${styles.slotCard}`} key={slot}>
-              <h2>{t(GEAR_SLOT_KEYS[slot])}</h2>
+              <h2>{t(gearSlotLabelKey(slot, inputs.classId))}</h2>
               <div className={styles.levelControl}>
                 <button
                   type="button"

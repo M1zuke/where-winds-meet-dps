@@ -120,6 +120,8 @@ import {
   enhancementLevelsFromLegacyNodes,
   migrateDivinecraftField,
   movePreferredDistanceOntoRotation,
+  moveCustomBuildWeaponsToMartialArtSlots,
+  moveWeaponsToMartialArtSlots,
   dropRetiredRotationId,
   qiBreakOverrideFrom,
   rotationWindowOf,
@@ -361,6 +363,7 @@ function hydrateInputs(inputs: Inputs): Inputs {
   // build's class rather than reaching `getSchool()`, which throws on an
   // unknown id — see CLAUDE.md → "localStorage migrations".
   if (!CLASS_IDS().includes(next.classId)) next.classId = defaultInputs.classId
+  Object.assign(next, moveWeaponsToMartialArtSlots(next as unknown as Record<string, unknown>))
   next.graduationBuildId = repairGraduationBuildId(next.classId, next.graduationBuildId)
   next.selectedBuiltinRotationId = dropRetiredRotationId(
     migrateEntityId(next.selectedBuiltinRotationId),
@@ -919,7 +922,13 @@ export function loadCustomGraduationBuilds(): CustomGraduationBuild[] {
     const parsed = JSON.parse(raw) as CustomGraduationBlob
     if (parsed.v !== CUSTOM_GRADUATION_VERSION) return []
     if (!Array.isArray(parsed.builds)) return []
-    return parsed.builds.filter(isCustomGraduationBuild)
+    return parsed.builds.filter(isCustomGraduationBuild).map((build) => ({
+      ...build,
+      slots: moveCustomBuildWeaponsToMartialArtSlots(
+        build.classId,
+        build.slots,
+      ) as CustomGraduationBuild["slots"],
+    }))
   } catch {
     return []
   }

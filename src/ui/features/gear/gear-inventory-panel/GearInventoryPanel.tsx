@@ -8,7 +8,7 @@ import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import styles from "./GearInventoryPanel.module.scss"
 
 interface Props {
@@ -64,7 +64,7 @@ export function GearInventoryPanel({
     const { piece } = row
     const isSelected = piece.id === selectedPieceId
     const delta: DpsDelta | undefined = dpsDeltas[piece.id]
-    const slotLabel = t(GEAR_SLOT_KEYS[piece.slot])
+    const slotLabel = t(gearSlotLabelKey(piece.slot, profile.classId))
     const rarityLabel = t(rarityKey(piece.rarity), piece.rarity)
     const heirloom = heirloomMatch(piece, profile)
     const isHeirloom = heirloom.builds.length > 0
@@ -138,7 +138,7 @@ export function GearInventoryPanel({
       <div className="toolbar">
         {slotFilter != null && (
           <span className={styles.gearInvFilter}>
-            {t(GEAR_SLOT_KEYS[slotFilter])}
+            {t(gearSlotLabelKey(slotFilter, profile.classId))}
             <button
               type="button"
               className={styles.gearInvFilterClear}

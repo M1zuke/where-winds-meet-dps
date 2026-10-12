@@ -27,6 +27,7 @@ import { V28__oddityBoardNodes } from "./V28__oddityBoardNodes"
 import { V29__divinecraftElement } from "./V29__divinecraftElement"
 import { V30__removeNightwickTipsylayHybrid } from "./V30__removeNightwickTipsylayHybrid"
 import { V31__preferredDistanceOnRotation } from "./V31__preferredDistanceOnRotation"
+import { V32__weaponSlotsByMartialArt } from "./V32__weaponSlotsByMartialArt"
 
 export type { Migration, MigrationRunResult, RawProfilesBlob } from "./types"
 export {
@@ -59,6 +60,10 @@ export {
   migrateRotationNightwickTipsylayIds,
 } from "./V30__removeNightwickTipsylayHybrid"
 export { movePreferredDistanceOntoRotation } from "./V31__preferredDistanceOnRotation"
+export {
+  moveCustomBuildWeaponsToMartialArtSlots,
+  moveWeaponsToMartialArtSlots,
+} from "./V32__weaponSlotsByMartialArt"
 
 export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V5__englishIdsWithoutSitePrefix,
@@ -88,6 +93,7 @@ export const PROFILE_MIGRATIONS: readonly Migration[] = [
   V29__divinecraftElement,
   V30__removeNightwickTipsylayHybrid,
   V31__preferredDistanceOnRotation,
+  V32__weaponSlotsByMartialArt,
 ]
 
 const VERSION_BEFORE_THIS_FOLDER = 4

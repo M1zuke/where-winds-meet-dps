@@ -13,7 +13,7 @@ import { effectiveRates } from "../../src/engine/panel"
 import { defaultInputs } from "../../src/engine/defaults"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { gearLevelForBreakthrough } from "../../src/definitions/baseStats/breakthroughs"
-import type { GearPiece, GearWordId, Inputs } from "../../src/engine/types"
+import type { GearPiece, GearSlot, GearWordId, Inputs } from "../../src/engine/types"
 
 function weaponPiece(): GearPiece {
   return {
@@ -359,10 +359,10 @@ describe("a word outside the line's own pool scores as nothing", () => {
 })
 
 describe("a weapon's Art of Gauntlets DMG Boost line counts like its Twin Blades sibling", () => {
-  function boostWeaponPiece(word: GearWordId): GearPiece {
+  function boostWeaponPiece(word: GearWordId, slot: GearSlot = "leftWeapon"): GearPiece {
     return {
       id: "boost-weapon",
-      slot: "leftWeapon",
+      slot,
       level: 96,
       rarity: "legendary",
       minPhys: 0,
@@ -393,7 +393,7 @@ describe("a weapon's Art of Gauntlets DMG Boost line counts like its Twin Blades
 
   it("contributes its value to inputs.gauntletsBoost, exactly as dualKnivesBoost contributes to inputs.dualKnivesBoost", () => {
     const gauntlets = inputsWith(boostWeaponPiece("gauntletsBoost"))
-    const dualKnives = inputsWith(boostWeaponPiece("dualKnivesBoost"))
+    const dualKnives = inputsWith(boostWeaponPiece("dualKnivesBoost", "rightWeapon"))
     expect(gauntlets.gauntletsBoost).toBeCloseTo(0.06, 9)
     expect(gauntlets.gauntletsBoost).toBeCloseTo(dualKnives.dualKnivesBoost, 9)
   })

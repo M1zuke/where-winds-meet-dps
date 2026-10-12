@@ -7,7 +7,7 @@ import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
 import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import styles from "./GearSlotTiles.module.scss"
 
 interface Props {
@@ -89,7 +89,7 @@ export function GearSlotTiles({
                 ✎
               </span>
             )}
-            <div className={styles.gearTileSlot}>{t(GEAR_SLOT_KEYS[slot])}</div>
+            <div className={styles.gearTileSlot}>{t(gearSlotLabelKey(slot, profile.classId))}</div>
             {piece?.label && <div className={styles.gearTileLabel}>{piece.label}</div>}
             <div className={styles.gearTilePiece}>
               {piece

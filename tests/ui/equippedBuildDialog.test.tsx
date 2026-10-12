@@ -49,7 +49,7 @@ describe("EquippedBuildDialog", () => {
     expect(screen.getByText("Bellstrike Umbra")).toBeInTheDocument()
     expect(screen.getByText(`DPS ${formatNumber(54321.1)}`)).toBeInTheDocument()
     expect(screen.getAllByRole("article")).toHaveLength(8)
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent(
       statLineLabel("swordBoost"),
     )
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent(
@@ -68,7 +68,7 @@ describe("EquippedBuildDialog", () => {
     renderDialog(withEmptyHelm)
 
     expect(screen.getByRole("article", { name: "Helm" })).toHaveTextContent("Empty slot")
-    expect(screen.getByRole("article", { name: "Left Weapon" })).toHaveTextContent(
+    expect(screen.getByRole("article", { name: "Strategic Sword" })).toHaveTextContent(
       statLineLabel("swordBoost"),
     )
     expect(screen.getAllByRole("article")).toHaveLength(8)

@@ -128,6 +128,16 @@ profile follows**, an unequipped one for any build of the class. A match against
 a build the profile does not follow is still a match — it is named as such
 rather than dropped.
 
+**A class's two martial arts own its two weapon slots, in the order the class
+lists them** — the first art's weapon belongs on the left slot, the second's on
+the right.
+
+- A weapon slot's word pool carries only the weapon-type boost of its own art.
+  Disc and pendant carry no weapon-type boost at any level.
+- A stored line outside its pool is kept and scores nothing; it is never cleared.
+- An import places each weapon on the slot of its art, whichever game slot it
+  came from.
+
 **Nothing in `src/engine` may name a class, an inner way or a skill**, compare a
 display name against a literal, or match a cast tag by prefix. The starting build
 is allowlisted as content rather than logic.
