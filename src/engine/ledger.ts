@@ -13,7 +13,14 @@ export interface StatusWindow {
   // Write order, not time order — `asOf` walks it to answer "as this ledger
   // stood before a given write" for a query that must not see its own cause.
   seq?: number
-  extensions?: Array<{ frame: number; amount: number }>
+  extensions?: WindowEndEdit[]
+  cuts?: WindowEndEdit[]
+}
+
+export interface WindowEndEdit {
+  frame: number
+  amount: number
+  owner: number
 }
 
 export const UNOWNED = Number.NEGATIVE_INFINITY
@@ -53,7 +60,27 @@ export function windowEndAt(window: StatusWindow, frame: number): number {
 }
 
 function cloneWindow(window: StatusWindow): StatusWindow {
-  return window.extensions ? { ...window, extensions: [...window.extensions] } : { ...window }
+  const clone = { ...window }
+  if (window.extensions) clone.extensions = [...window.extensions]
+  if (window.cuts) clone.cuts = [...window.cuts]
+  return clone
+}
+
+function withoutHiddenEdits(
+  window: StatusWindow,
+  visible: (owner: number, frame: number) => boolean,
+): StatusWindow {
+  const clone = cloneWindow(window)
+  if (clone.extensions) {
+    for (const edit of clone.extensions)
+      if (!visible(edit.owner, edit.frame)) clone.end -= edit.amount
+    clone.extensions = clone.extensions.filter((edit) => visible(edit.owner, edit.frame))
+  }
+  if (clone.cuts) {
+    for (const edit of clone.cuts) if (!visible(edit.owner, edit.frame)) clone.end += edit.amount
+    clone.cuts = clone.cuts.filter((edit) => visible(edit.owner, edit.frame))
+  }
+  return clone
 }
 
 export class StatusLedger implements StatusView {
@@ -107,14 +134,32 @@ export class StatusLedger implements StatusView {
     else this.stacks.set(id, [entry])
   }
 
-  throughOwner(ownerLimit: number): StatusLedger {
+  extendWindow(window: StatusWindow, frame: number, nextEnd: number, owner: number): void {
+    const amount = nextEnd - window.end
+    window.end = nextEnd
+    if (amount > 0) (window.extensions ??= []).push({ frame, amount, owner })
+  }
+
+  cutWindow(window: StatusWindow, frame: number, owner: number): void {
+    const amount = window.end - frame
+    window.end = frame
+    if (amount > 0) (window.cuts ??= []).push({ frame, amount, owner })
+  }
+
+  throughOwner(ownerLimit: number, unownedThroughFrame = Number.POSITIVE_INFINITY): StatusLedger {
+    const visible = (owner: number, frame: number) =>
+      owner <= ownerLimit && (owner !== UNOWNED || frame <= unownedThroughFrame)
     const view = new StatusLedger(this.spanStart, this.spanEnd)
     for (const [id, windows] of this.windows) {
-      const kept = windows.filter((window) => (window.owner ?? UNOWNED) <= ownerLimit)
-      if (kept.length > 0) view.windows.set(id, kept.map(cloneWindow))
+      const kept = windows.filter((window) => visible(window.owner ?? UNOWNED, window.start))
+      if (kept.length > 0)
+        view.windows.set(
+          id,
+          kept.map((window) => withoutHiddenEdits(window, visible)),
+        )
     }
     for (const [id, history] of this.stacks) {
-      const kept = history.filter((entry) => entry.owner <= ownerLimit)
+      const kept = history.filter((entry) => visible(entry.owner, entry.frame))
       if (kept.length > 0) view.stacks.set(id, kept)
     }
     return view

@@ -191,7 +191,7 @@ describe("StatusLedger — asOf hides writes at or after a mark", () => {
 
 describe("StatusLedger — extensions are invisible before they happen", () => {
   it("subtracts an extension applied after the queried frame", () => {
-    const window = { start: 0, end: 400, extensions: [{ frame: 300, amount: 100 }] }
+    const window = { start: 0, end: 400, extensions: [{ frame: 300, amount: 100, owner: UNOWNED }] }
     expect(windowEndAt(window, 200)).toBe(300)
     expect(windowEndAt(window, 300)).toBe(400)
     expect(windowEndAt(window, 350)).toBe(400)
@@ -200,10 +200,49 @@ describe("StatusLedger — extensions are invisible before they happen", () => {
   it("feeds that back through remainingFramesAt", () => {
     const led = ledger()
     led.pushWindow("dot", 0, 400)
-    const window = led.longestActiveWindow("dot", 0)!
-    window.end = 500
-    window.extensions = [{ frame: 300, amount: 100 }]
+    led.extendWindow(led.longestActiveWindow("dot", 0)!, 300, 500, UNOWNED)
     expect(led.remainingFramesAt("dot", 200)).toBe(200)
     expect(led.remainingFramesAt("dot", 400)).toBe(100)
+  })
+})
+
+describe("StatusLedger — a view through an owner", () => {
+  it("hides the windows and stacks a later owner wrote", () => {
+    const led = ledger()
+    led.pushWindow("buff", 100, 400, 100)
+    led.recordStack("buff", 100, 2, 100)
+    led.recordStack("buff", 250, 3, 200)
+    const view = led.throughOwner(100)
+    expect(view.isActiveAt("buff", 300)).toBe(true)
+    expect(view.stacksAt("buff", 300)).toBe(2)
+    expect(led.throughOwner(50).isActiveAt("buff", 300)).toBe(false)
+  })
+
+  it("hides an unowned write past the cut-off frame, but keeps one before it", () => {
+    const led = ledger()
+    led.openPermanent("weapon")
+    led.recordStack("weapon", 50, 1)
+    led.recordStack("weapon", 200, 2)
+    const view = led.throughOwner(100, 150)
+    expect(view.isActiveAt("weapon", 250)).toBe(true)
+    expect(view.stacksAt("weapon", 250)).toBe(1)
+    expect(led.throughOwner(100).stacksAt("weapon", 250)).toBe(2)
+  })
+
+  it("rolls back an extension a later owner applied to an earlier window", () => {
+    const led = ledger()
+    led.pushWindow("dot", 0, 400, 0)
+    led.extendWindow(led.longestActiveWindow("dot", 0)!, 300, 600, 300)
+    expect(led.throughOwner(0).remainingFramesAt("dot", 350)).toBe(50)
+    expect(led.throughOwner(300).remainingFramesAt("dot", 350)).toBe(250)
+  })
+
+  it("rolls back a cut a later owner applied to an earlier window", () => {
+    const led = ledger()
+    led.pushWindow("buff", 0, 400, 0)
+    led.cutWindow(led.longestActiveWindow("buff", 0)!, 200, 200)
+    expect(led.isActiveAt("buff", 250)).toBe(false)
+    expect(led.throughOwner(0).isActiveAt("buff", 250)).toBe(true)
+    expect(led.throughOwner(200).isActiveAt("buff", 250)).toBe(false)
   })
 })
