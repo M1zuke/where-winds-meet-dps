@@ -70,10 +70,10 @@ describe("Soul Sweep", () => {
 describe("Piercing Dart", () => {
   it("lands the first stage's sweeps after the charging stance", () => {
     const result = runDust([SKILL.piercingDartChargingStance, SKILL.piercingDartI])
-    expect(damageFramesOf(result, "Piercing Dart I")).toEqual([33 + 8, 33 + 20, 33 + 28])
+    expect(damageFramesOf(result, "Piercing Dart I")).toEqual([33 + 8, 33 + 20, 33 + 32])
   })
 
-  it("lands the second stage's five sweeps on frames 8, 20, 28, 52 and 64", () => {
+  it("lands the second stage's five sweeps on frames 8, 20, 32, 52 and 63", () => {
     const result = runDust(
       [
         SKILL.piercingDartChargingStance,
@@ -91,7 +91,7 @@ describe("Piercing Dart", () => {
           event.damage > 0,
       )
       .map((event) => event.frame)
-    expect(sweepFrames.map((frame) => frame - sweepFrames[0])).toEqual([0, 12, 20, 44, 56])
+    expect(sweepFrames.map((frame) => frame - sweepFrames[0])).toEqual([0, 12, 24, 44, 55])
   })
 
   it("pays 10 Tokens once, twice and three times across stages one, two and three", () => {
@@ -134,7 +134,7 @@ describe("Piercing Dart", () => {
         (event) => event.skillName.startsWith("Piercing Dart III") && event.damage > 0,
       )
       .map((event) => event.frame - 105)
-    expect(sweepFrames).toEqual([8, 20, 28, 52, 64, 77, 118])
+    expect(sweepFrames).toEqual([8, 20, 32, 52, 64, 79, 113])
   })
 
   it("flags a release without the charging stance and a stage outside its Tokens range", () => {

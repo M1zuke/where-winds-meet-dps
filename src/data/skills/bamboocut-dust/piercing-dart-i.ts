@@ -12,7 +12,7 @@ export const [piercingDartI] = piercingDartSkills({
       id: SKILL.piercingDartI,
       name: "Piercing Dart I",
       castTag: CAST.dustPiercingDartI,
-      sweepFrames: [8, 20, 28],
+      sweepFrames: [8, 20, 32],
     },
   ],
 })
