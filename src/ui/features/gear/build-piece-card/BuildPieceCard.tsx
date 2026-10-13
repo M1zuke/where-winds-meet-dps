@@ -6,7 +6,7 @@ import { heirloomMatch, type HeirloomProfile } from "../../../../engine/heirloom
 import { graduationBuildKey, rarityKey, statLineKey } from "../../../../i18n/contentKeys"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { HeirloomShine } from "../../../components/heirloom-shine/HeirloomShine"
-import { GEAR_SLOT_KEYS } from "../shared/gearSlotKeys"
+import { gearSlotLabelKey } from "../shared/gearSlotKeys"
 import previewStyles from "../shared/gearPreview.module.scss"
 import styles from "./BuildPieceCard.module.scss"
 
@@ -23,9 +23,11 @@ function baseStatsLabel(piece: GearPiece, t: (key: string, fallback?: string) =>
 
 export function BuildPieceCard({
   piece,
+  classId,
   profile,
 }: {
   piece: GearPiece
+  classId: string
   profile?: HeirloomProfile
 }) {
   const { t } = useI18n()
@@ -37,11 +39,11 @@ export function BuildPieceCard({
   return (
     <article
       className={`${previewStyles.piece}${isHeirloom ? ` ${styles.isHeirloom}` : ""}`}
-      aria-label={t(GEAR_SLOT_KEYS[piece.slot])}
+      aria-label={t(gearSlotLabelKey(piece.slot, classId))}
     >
       {isHeirloom && <HeirloomShine rarity={piece.rarity} />}
       <div className={previewStyles.pieceHead}>
-        <span className={previewStyles.pieceSlot}>{t(GEAR_SLOT_KEYS[piece.slot])}</span>
+        <span className={previewStyles.pieceSlot}>{t(gearSlotLabelKey(piece.slot, classId))}</span>
         <span className="hint">{baseStatsLabel(piece, t)}</span>
       </div>
       <div className={previewStyles.identityRow}>

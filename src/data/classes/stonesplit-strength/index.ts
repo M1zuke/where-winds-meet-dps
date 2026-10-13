@@ -45,7 +45,7 @@ export const stonesplitStrength = defineClass({
     "snowpartingCharged",
     "snowpartingVariedCombo",
   ],
-  weapons: [MARTIAL_ART_ID.snowpartingBlade, MARTIAL_ART_ID.phalanxbaneBlade],
+  weapons: [MARTIAL_ART_ID.phalanxbaneBlade, MARTIAL_ART_ID.snowpartingBlade],
   // In-game values as of 2026-09-28: the shortest read reach on either
   // weapon (Grave Frost) — an assumption for every skill with no reach of
   // its own.

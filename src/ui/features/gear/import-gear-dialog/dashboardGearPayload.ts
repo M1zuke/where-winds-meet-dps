@@ -2,8 +2,16 @@ import type { GearBaseStats } from "../../../../data/stats/gearBaseStats"
 import { statLineLabel } from "../../../../data/stats/statLines"
 import { statLineKey } from "../../../../i18n/contentKeys"
 import type { InferredGearIdentity } from "../../../../engine/gearIdentity"
-import { GEAR_SLOTS, type GearSlot, type GearWordId } from "../../../../engine/types"
+import {
+  GEAR_SLOTS,
+  type GearSlot,
+  type GearWordId,
+  type WeaponName,
+} from "../../../../engine/types"
+import type { MartialArtId } from "../../../../data/martialArts/ids"
 import { GAME_SLOT_TO_GEAR_SLOT } from "./dashboardGearMaps"
+import { DASHBOARD_MARTIAL_ART_IDS } from "./dashboardMartialArts"
+import { weaponTypeOfItem } from "./weaponItemTypes"
 
 export const BOOKMARKLET_ENVELOPE_VERSION = 1
 const ENVELOPE_SOURCE = "wwm-dashboard"
@@ -70,9 +78,22 @@ export interface ImportedInnerWay {
 export type SlotResolution =
   { kind: "mapped"; slot: GearSlot } | { kind: "noAppEquivalent" } | { kind: "unknownSlotId" }
 
+export interface EquippedMartialArt {
+  rawId: number
+  martialArtId: MartialArtId | null
+  foreignToClass: boolean
+}
+
+export interface EquippedMartialArts {
+  main: EquippedMartialArt | null
+  sub: EquippedMartialArt | null
+}
+
 export interface ImportedPiece {
   gameSlotId: string
   itemId: number | null
+  weaponType: WeaponName | null
+  weaponPlacedByGameSlot: boolean
   slot: SlotResolution
   observedBaseStats: Partial<GearBaseStats> | null
   identity: InferredGearIdentity | null
@@ -84,6 +105,7 @@ export interface ImportedPiece {
 export interface GearImportResult {
   roleName: string | null
   characterLevel: number | null
+  equippedMartialArts: EquippedMartialArts | null
   pieces: ImportedPiece[]
   innerWays: ImportedInnerWay[]
   unrecognizedPayloadKeys: readonly string[]
@@ -225,6 +247,18 @@ function readObservedBaseStats(sources: readonly unknown[]): Partial<GearBaseSta
   return Object.keys(observed).length ? observed : null
 }
 
+function readEquippedMartialArt(source: unknown): EquippedMartialArt | null {
+  const rawId = asNumber(source)
+  if (rawId === null) return null
+  return { rawId, martialArtId: DASHBOARD_MARTIAL_ART_IDS[rawId] ?? null, foreignToClass: false }
+}
+
+function readEquippedMartialArts(envelope: Record<string, unknown>): EquippedMartialArts | null {
+  const main = readEquippedMartialArt(envelope.kongfuMain)
+  const sub = readEquippedMartialArt(envelope.kongfuSub)
+  return main || sub ? { main, sub } : null
+}
+
 function unwrapEnvelope(parsed: unknown): Record<string, unknown> {
   if (!isRecord(parsed)) {
     throw new GearImportError(
@@ -274,9 +308,13 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
     const all = rawList.map(readAffix)
     const tunements = all.filter((affix) => !affix.isAttunementAffix)
 
+    const itemId = asNumber(wearEquips[gameSlotId]) ?? asNumber(detail?.no) ?? null
+
     return {
       gameSlotId,
-      itemId: asNumber(wearEquips[gameSlotId]) ?? asNumber(detail?.no) ?? null,
+      itemId,
+      weaponType: weaponTypeOfItem(itemId),
+      weaponPlacedByGameSlot: false,
       slot: resolveSlot(gameSlotId),
       observedBaseStats: readObservedBaseStats([exVo?.baseAttrs, detail, exVo]),
       identity: null,
@@ -290,6 +328,7 @@ export function parseDashboardGearPayload(text: string): GearImportResult {
   return {
     roleName: typeof envelope.roleName === "string" ? envelope.roleName : null,
     characterLevel: asNumber(envelope.level),
+    equippedMartialArts: readEquippedMartialArts(envelope),
     pieces,
     innerWays: readInnerWays(envelope[PASSIVE_SLOTS_KEY]),
     unrecognizedPayloadKeys: Array.isArray(declaredExtras)
@@ -389,8 +428,12 @@ export function buildImportDiagnostics(result: GearImportResult): string {
       source: ENVELOPE_SOURCE,
       v: BOOKMARKLET_ENVELOPE_VERSION,
       unrecognizedPayloadKeys: result.unrecognizedPayloadKeys,
+      equippedMartialArts: result.equippedMartialArts,
       pieces: result.pieces.map((piece) => ({
         gameSlotId: piece.gameSlotId,
+        itemId: piece.itemId,
+        weaponType: piece.weaponType,
+        weaponPlacedByGameSlot: piece.weaponPlacedByGameSlot,
         slot: piece.slot,
         observedBaseStats: piece.observedBaseStats,
         baseAffixes: [...piece.affixes, ...piece.overflowAffixes].map((affix) => ({

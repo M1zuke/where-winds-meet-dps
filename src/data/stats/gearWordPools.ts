@@ -1,5 +1,6 @@
-import type { GearLevel, GearSlot } from "../../engine/types"
+import type { GearLevel, GearSlot, WeaponName } from "../../engine/types"
 import type { GearWordId } from "./statLines"
+import { WEAPON_BOOST_STAT_KEY } from "./weaponBoosts"
 
 export type GearWordSlotGroup = "weapon" | "discPendant" | "helmArmor" | "greavesBracer"
 
@@ -139,9 +140,6 @@ const RETUNE_86: PoolByGroup = {
     "agility",
     "allMartialBoost",
     "crit",
-    "dualKnivesBoost",
-    "fanBoost",
-    "hengDaoBoost",
     "maxBamboocut",
     "maxBellstrike",
     "maxPhys",
@@ -152,14 +150,9 @@ const RETUNE_86: PoolByGroup = {
     "minPhys",
     "minSilkbind",
     "minStonesplit",
-    "modaoBoost",
     "momentum",
     "power",
     "precision",
-    "ropeDartBoost",
-    "spearBoost",
-    "swordBoost",
-    "umbrellaBoost",
   ],
   helmArmor: [
     "affinity",
@@ -251,9 +244,6 @@ const RETUNE_91: PoolByGroup = {
     "agility",
     "allMartialBoost",
     "crit",
-    "dualKnivesBoost",
-    "fanBoost",
-    "hengDaoBoost",
     "maxBamboocut",
     "maxBellstrike",
     "maxPhys",
@@ -264,14 +254,9 @@ const RETUNE_91: PoolByGroup = {
     "minPhys",
     "minSilkbind",
     "minStonesplit",
-    "modaoBoost",
     "momentum",
     "power",
     "precision",
-    "ropeDartBoost",
-    "spearBoost",
-    "swordBoost",
-    "umbrellaBoost",
   ],
   helmArmor: [
     "affinity",
@@ -436,20 +421,35 @@ const RETUNE_POOLS: Readonly<Record<GearLevel, PoolByGroup>> = {
   105: RETUNE_96_TO_105,
 }
 
+const WEAPON_ART_BOOST_WORDS: ReadonlySet<string> = new Set(Object.values(WEAPON_BOOST_STAT_KEY))
+
 function poolFor(
   pools: Readonly<Record<GearLevel, PoolByGroup>>,
   level: GearLevel,
   slot: GearSlot,
+  weapon: WeaponName | null,
 ): readonly GearWordId[] {
-  return pools[level][gearWordSlotGroup(slot)]
+  const group = gearWordSlotGroup(slot)
+  const pool = pools[level][group]
+  if (group !== "weapon" || weapon === null) return pool
+  const ownBoost: string | undefined = WEAPON_BOOST_STAT_KEY[weapon]
+  return pool.filter((word) => !WEAPON_ART_BOOST_WORDS.has(word) || word === ownBoost)
 }
 
-export function gearWordPoolInitial(level: GearLevel, slot: GearSlot): readonly GearWordId[] {
-  return poolFor(INITIAL_POOLS, level, slot)
+export function gearWordPoolInitial(
+  level: GearLevel,
+  slot: GearSlot,
+  weapon: WeaponName | null,
+): readonly GearWordId[] {
+  return poolFor(INITIAL_POOLS, level, slot, weapon)
 }
 
-export function gearWordPoolRetune(level: GearLevel, slot: GearSlot): readonly GearWordId[] {
-  return poolFor(RETUNE_POOLS, level, slot)
+export function gearWordPoolRetune(
+  level: GearLevel,
+  slot: GearSlot,
+  weapon: WeaponName | null,
+): readonly GearWordId[] {
+  return poolFor(RETUNE_POOLS, level, slot, weapon)
 }
 
 export function isRetunableLine(lineIndex: number): boolean {
@@ -460,12 +460,22 @@ export function gearWordPoolForLine(
   level: GearLevel,
   slot: GearSlot,
   lineIndex: number,
+  weapon: WeaponName | null,
 ): readonly GearWordId[] {
   return isRetunableLine(lineIndex)
-    ? gearWordPoolRetune(level, slot)
-    : gearWordPoolInitial(level, slot)
+    ? gearWordPoolRetune(level, slot, weapon)
+    : gearWordPoolInitial(level, slot, weapon)
 }
 
-export function gearWordPool(level: GearLevel, slot: GearSlot): readonly GearWordId[] {
-  return [...new Set([...gearWordPoolInitial(level, slot), ...gearWordPoolRetune(level, slot)])]
+export function gearWordPool(
+  level: GearLevel,
+  slot: GearSlot,
+  weapon: WeaponName | null,
+): readonly GearWordId[] {
+  return [
+    ...new Set([
+      ...gearWordPoolInitial(level, slot, weapon),
+      ...gearWordPoolRetune(level, slot, weapon),
+    ]),
+  ]
 }

@@ -33,6 +33,13 @@ describe("gear import bookmarklet source", () => {
     )
   })
 
+  it("carries the equipped martial arts", () => {
+    const carried = /CARRIED_FIELDS = \[([^\]]*)\]/.exec(bookmarkletSource)
+    expect(carried).not.toBeNull()
+    expect(carried![1]).toContain('"kongfuMain"')
+    expect(carried![1]).toContain('"kongfuSub"')
+  })
+
   it("never copies the token or the role id", () => {
     const carried = /CARRIED_FIELDS = \[([^\]]*)\]/.exec(bookmarkletSource)
     expect(carried).not.toBeNull()

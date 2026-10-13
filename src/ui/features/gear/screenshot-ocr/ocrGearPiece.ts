@@ -5,6 +5,7 @@ import { gearBaseStatsFor } from "../../../../data/stats/gearBaseStats"
 import { GEAR_WORD_LINES, GEAR_WORD_UNIT, gearWordMaxRoll } from "../../../../data/stats/statLines"
 import type { GearWordId } from "../../../../data/stats/statLines"
 import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
+import { weaponTypeForSlot } from "../../../../definitions/classes/registry"
 import { emptyGearWord } from "../../../../engine/types"
 import type {
   GearLevel,
@@ -395,13 +396,14 @@ function parseWordCandidate(
   level: GearLevel,
   slot: GearSlot,
   lineIndex: number,
+  classId: string,
 ): ParsedWordCandidate | undefined {
   if (rowText === undefined) return undefined
 
   const bracket = stripRetuneBracket(rowText)
   const matched = matchStatRow(bracket.remaining)
   const resolved = matched ? resolveByName(matched.name, GEAR_WORD_NAME_INDEX) : null
-  const pool = gearWordPoolForLine(level, slot, lineIndex)
+  const pool = gearWordPoolForLine(level, slot, lineIndex, weaponTypeForSlot(classId, slot))
   const wordId = resolved && pool.includes(resolved) ? resolved : null
   const magnitude = matched?.value
     ? matched.value.isPercent
@@ -673,11 +675,11 @@ export function parseGearScreenshot(
     ParsedWordCandidate | undefined,
     ParsedWordCandidate | undefined,
   ] = [
-    parseWordCandidate(rowTexts[0], levelGuess.level, slotGuess.slot, 0),
-    parseWordCandidate(rowTexts[1], levelGuess.level, slotGuess.slot, 1),
-    parseWordCandidate(rowTexts[2], levelGuess.level, slotGuess.slot, 2),
-    parseWordCandidate(rowTexts[3], levelGuess.level, slotGuess.slot, 3),
-    parseWordCandidate(rowTexts[4], levelGuess.level, slotGuess.slot, 4),
+    parseWordCandidate(rowTexts[0], levelGuess.level, slotGuess.slot, 0, inputs.classId),
+    parseWordCandidate(rowTexts[1], levelGuess.level, slotGuess.slot, 1, inputs.classId),
+    parseWordCandidate(rowTexts[2], levelGuess.level, slotGuess.slot, 2, inputs.classId),
+    parseWordCandidate(rowTexts[3], levelGuess.level, slotGuess.slot, 3, inputs.classId),
+    parseWordCandidate(rowTexts[4], levelGuess.level, slotGuess.slot, 4, inputs.classId),
   ]
   const notRelayedProven =
     headerRelayedGuess && wordCandidates.some((candidate) => candidate?.provesNotRelayed)

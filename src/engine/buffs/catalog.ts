@@ -4,12 +4,8 @@ import { attuneTagOf, mysticCategoryOf, skillTagsOf } from "./tags"
 import { reaches } from "../scope"
 import { displayGateFor } from "./displayGates"
 import { ATTUNEMENT_OPTIONS } from "../attunements"
-import {
-  MYSTIC_TYPE_BOOST_STAT_KEY,
-  STAT_DEF_BY_KEY,
-  WEAPON_BOOST_STAT_KEY,
-  type StatKey,
-} from "../statRegistry"
+import { MYSTIC_TYPE_BOOST_STAT_KEY, STAT_DEF_BY_KEY, type StatKey } from "../statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../../data/stats/weaponBoosts"
 import { GRANT_REQUIRES_DEFAULT, type BuffModule } from "./buffModule"
 import type { Effect } from "../effects/effect"
 import type { Skill } from "../skill"

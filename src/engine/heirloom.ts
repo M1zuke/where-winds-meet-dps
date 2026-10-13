@@ -2,6 +2,8 @@ import type { GraduationBuild } from "../definitions/graduationBuilds/graduation
 import type { GearPiece, GearWordId, Inputs } from "./types"
 import { followedGraduationBuildAmong, graduationBuildsForProfile } from "./graduation"
 import { ALL_REROLLABLE_SLOTS, retunedOutWordsOf } from "./retunement"
+import { gearWordPoolForLine } from "../data/stats/gearWordPools"
+import { weaponTypeForSlot } from "../definitions/classes/registry"
 
 export interface HeirloomSwap {
   slotIndex: number
@@ -59,6 +61,15 @@ function canStillRetune(piece: GearPiece, slotIndex: number, word: GearWordId): 
   return !retunedOutWordsOf(piece).has(word)
 }
 
+function isWordInLinePool(piece: GearPiece, swap: HeirloomSwap, classId: string): boolean {
+  return gearWordPoolForLine(
+    piece.level,
+    piece.slot,
+    swap.slotIndex,
+    weaponTypeForSlot(classId, piece.slot),
+  ).includes(swap.word)
+}
+
 export function heirloomMatch(piece: GearPiece, profile: HeirloomProfile): HeirloomMatch {
   const builds = graduationBuildsForProfile(profile)
   if (builds.length === 0 || piece.words.some((word) => !word.word)) return NO_MATCH
@@ -74,7 +85,12 @@ export function heirloomMatch(piece: GearPiece, profile: HeirloomProfile): Heirl
     }
     if (swap) continue
     const candidate = singleSwapTo(piece, target)
-    if (candidate && canStillRetune(piece, candidate.slotIndex, candidate.word)) swap = candidate
+    if (
+      candidate &&
+      canStillRetune(piece, candidate.slotIndex, candidate.word) &&
+      isWordInLinePool(piece, candidate, profile.classId)
+    )
+      swap = candidate
   }
   if (perfect.length === 0) return { builds: [], followed: false, swap }
   const followed = followedGraduationBuildAmong(builds, profile.graduationBuildId)

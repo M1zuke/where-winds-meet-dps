@@ -23,7 +23,7 @@ import {
   MOMENTUM_PER_POINT,
   POWER_PER_POINT,
 } from "../definitions/baseStats/attributeConversion"
-import { WEAPON_BOOST_STAT_KEY } from "./statRegistry"
+import { WEAPON_BOOST_STAT_KEY } from "../data/stats/weaponBoosts"
 import { attunementLabelKey, attunementMax, attunementsForClass } from "./attunements"
 import { addStatDelta, resolveEnginePath } from "./statPaths"
 import { builtinSkillsForClass, defaultRotationForClass } from "./builtinLibrary"
