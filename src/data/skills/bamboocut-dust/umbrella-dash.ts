@@ -11,7 +11,7 @@ const DASH_HIT = {
   attributeFixed: 66.5,
 }
 
-// In-game values as of 2026-10-12: two collider hits, then a projectile
+// In-game values as of 2026-10-13: two collider hits, then a projectile
 // launched on the second one (`umbrella-dash-bullet.ts`).
 export const umbrellaDash = defineSkill({
   id: SKILL.umbrellaDash,

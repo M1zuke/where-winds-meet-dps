@@ -1,7 +1,9 @@
 import type { Skill } from "../../../engine/skill"
 import { burnAndBury } from "./burn-and-bury"
 import { cycloneWaltz } from "./cyclone-waltz"
-import { cycloneWaltzFinish } from "./cyclone-waltz-finish"
+import { cycloneWaltzFinish, cycloneWaltzRecastFormFinish } from "./cyclone-waltz-finish"
+import { cycloneWaltzRecast } from "./cyclone-waltz-recast"
+import { cycloneWaltzRecastForm } from "./cyclone-waltz-recast-form"
 import { deflectCancel } from "./deflect-cancel"
 import { dreamwroughtBubbles } from "./dreamwrought-bubbles"
 import { dreamwroughtBubblesInstant } from "./dreamwrought-bubbles-instant"
@@ -54,6 +56,9 @@ export const SKILLS: Skill[] = [
   dreamwroughtBubblesInstant,
   cycloneWaltz,
   cycloneWaltzFinish,
+  cycloneWaltzRecastForm,
+  cycloneWaltzRecastFormFinish,
+  cycloneWaltzRecast,
   heavyAttack1,
   heavyAttack2,
   heavyAttack3,

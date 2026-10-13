@@ -10,12 +10,20 @@ import { classDefinition } from "../../src/definitions/classes/registry"
 import { CLASS_SKILL_BOOSTS } from "../../src/data/baseStats/classSkillBoosts"
 import { BUFF } from "../../src/data/skills/buffs/ids"
 import { ATTUNE } from "../../src/data/skills/ids"
-import { SKILL } from "../../src/data/skills/bamboocut-dust/ids"
+import { SKILL, STATUS } from "../../src/data/skills/bamboocut-dust/ids"
+import {
+  FIRST_THROW,
+  FOURTH_THROW,
+  SECOND_THROW,
+  THIRD_THROW,
+} from "../../src/data/skills/bamboocut-dust/throwTimings"
+import { windowFramesOf } from "../bamboocutDust"
 import { fadingCrimsonMeter } from "../../src/data/classes/bamboocut-dust/meters"
 import { testRotation } from "../builtins"
 
 const CLASS = "bamboocutDust"
 const HOVER_SECONDS = 2
+const HOVER_START_FRAME = 49
 
 function run(skillIds: string[]) {
   return runEngine({
@@ -67,6 +75,41 @@ describe("Cyclone Waltz", () => {
     expect(finishes).toEqual([186, 204])
   })
 
+  it("opens the Awareness gate on frame 42 and closes it on frame 198", () => {
+    const result = run([SKILL.cycloneWaltz])
+    const [window] = windowFramesOf(result, STATUS.cycloneAwareness)
+    expect(window).toEqual({ start: 42, end: 198 })
+  })
+
+  it("allows the recast only while Awareness is up", () => {
+    expect(run([SKILL.cycloneWaltzRecast]).invalidStepIds).toHaveLength(1)
+    expect(run([SKILL.cycloneWaltz, SKILL.cycloneWaltzRecast]).invalidStepIds).toHaveLength(1)
+    expect(
+      run([SKILL.cycloneWaltzRecastForm, SKILL.cycloneWaltzRecast]).invalidStepIds ?? [],
+    ).toEqual([])
+  })
+
+  it("keeps eleven hits worth 1.221 in total when the recast cuts the spin, and ends on frame 226", () => {
+    const result = run([
+      SKILL.cycloneWaltzRecastForm,
+      SKILL.cycloneWaltzRecast,
+      SKILL.umbrellaLightAttack,
+    ])
+    expect(framesOf(result, "Cyclone Waltz (Recast Form)")).toEqual([
+      42, 60, 78, 96, 114, 132, 150, 168, 186,
+    ])
+    expect(framesOf(result, "Cyclone Waltz (Recast Form, Finish)")).toEqual([186])
+    expect(framesOf(result, "Cyclone Waltz (Recast)")).toEqual([187 + 14])
+    expect(Math.round(result.casts![1].timeSec * FPS)).toBe(187)
+    expect(Math.round(result.casts![2].timeSec * FPS)).toBe(187 + 39)
+  })
+
+  it("leaves the Special Skill attunement off the recast", () => {
+    const skills = builtinSkillsForClass(CLASS)
+    const recast = skills.find((skill) => skill.id === SKILL.cycloneWaltzRecast)!
+    expect(recast.tags).not.toContain(ATTUNE.everspringSpecial)
+  })
+
   it("tags only the ticks with the Special Skill attunement", () => {
     const skills = builtinSkillsForClass(CLASS)
     const ticks = skills.find((skill) => skill.id === SKILL.cycloneWaltz)!
@@ -107,7 +150,7 @@ describe("the umbrella's basic attacks", () => {
 
   it("lands every Spring Away projectile inside the two-second hover", () => {
     const result = run([SKILL.springAway])
-    const hoverStart = 44
+    const hoverStart = HOVER_START_FRAME
     for (const frame of framesOf(result, "Spring Away")) {
       expect(frame).toBeGreaterThanOrEqual(hoverStart)
       expect(frame).toBeLessThanOrEqual(hoverStart + HOVER_SECONDS * FPS)
@@ -118,18 +161,38 @@ describe("the umbrella's basic attacks", () => {
     const result = run([SKILL.springAway, SKILL.springAway])
     const endurance = result.casts![1].meterLevels!.find((level) => level.id === "endurance")!
     const drained = 10 * HOVER_SECONDS
-    const regeneratedAfterRelease = ((200 - 44 - HOVER_SECONDS * FPS) / FPS) * 10
+    const regeneratedAfterRelease = ((200 - HOVER_START_FRAME - HOVER_SECONDS * FPS) / FPS) * 10
     expect(endurance.amount).toBeCloseTo(endurance.capacity - drained + regeneratedAfterRelease, 1)
   })
 
-  it("lands the Dual-Weapon Skill on two projectile volleys", () => {
+  it("lands the Dual-Weapon Skill on its collider and its second volley", () => {
     const result = run([SKILL.umbrellaDual])
-    expect(framesOf(result, "Umbrella (Dual-Weapon Skill)")).toEqual([19, 25])
+    expect(framesOf(result, "Umbrella (Dual-Weapon Skill)")).toEqual([23, 33])
+  })
+
+  it("fires the Spring Away projectiles from frame 57 every 9.8 frames", () => {
+    const frames = framesOf(run([SKILL.springAway]), "Spring Away")
+    expect(frames).toEqual(Array.from({ length: 12 }, (_, index) => 57 + Math.round(9.8 * index)))
+  })
+
+  it("lands the dash projectile on the render frame after its 56.3 frame flight against a target at 3 m", () => {
+    const result = run([SKILL.umbrellaDash])
+    expect(framesOf(result, "Umbrella - Dash (Projectile)")).toEqual([57])
   })
 
   it("ends a cancelled recovery after 12 frames", () => {
     const result = run([SKILL.deflectCancel, SKILL.cycloneWaltz])
     expect(Math.round(result.casts![1].timeSec * FPS)).toBe(12)
+  })
+})
+
+describe("the summon resonance frames", () => {
+  it("follows each far point on the in-game frames, with and without Fragrant Song", () => {
+    const resonanceFrames = (timing: typeof FIRST_THROW, variant: "normal" | "fragrant") =>
+      timing[variant].outFrame + timing[variant].resonanceDelayFrames
+    const throws = [FIRST_THROW, SECOND_THROW, THIRD_THROW, FOURTH_THROW]
+    expect(throws.map((timing) => resonanceFrames(timing, "normal"))).toEqual([59, 50, 60, 53])
+    expect(throws.map((timing) => resonanceFrames(timing, "fragrant"))).toEqual([45, 38, 46, 41])
   })
 })
 

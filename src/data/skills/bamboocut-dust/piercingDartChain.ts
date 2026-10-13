@@ -19,7 +19,7 @@ interface SweepCoefficients {
   attributeFixed: number
 }
 
-// In-game values as of 2026-10-12.
+// In-game values as of 2026-10-13.
 const SWEEP_COEFFICIENTS: readonly SweepCoefficients[] = [
   {
     physMultiplier: 0.334122,

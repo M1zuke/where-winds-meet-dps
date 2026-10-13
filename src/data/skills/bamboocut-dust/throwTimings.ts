@@ -5,10 +5,10 @@ interface ThrowTimings<Timing extends ThrowTiming> {
   fragrant: Timing
 }
 
-// In-game values as of 2026-10-12. The umbrella's hit frames are not
-// measurable: each out hit sits at the far point of the throw and the back hit
-// one frame later — provisional frames, bounded by the cast length. The
-// summon resonance follows the far point by 18 frames over the play speed.
+// In-game values as of 2026-10-13. The out and back hit frames are
+// provisional: each out hit sits at the far point of the throw and the back hit
+// one frame later, bounded by the cast length. The summon resonance follows
+// the far point by 18 frames over the play speed.
 export const FIRST_THROW: ThrowTimings<ThrowTiming> = {
   normal: {
     castFrames: 68,
@@ -41,7 +41,7 @@ export const SECOND_THROW: ThrowTimings<ChainedThrowTiming> = {
     backFrame: 28,
     windowCloseFrame: 44,
     replaceStepFrame: 4,
-    resonanceDelayFrames: 12,
+    resonanceDelayFrames: 11,
   },
 }
 
@@ -60,7 +60,7 @@ export const THIRD_THROW: ThrowTimings<ChainedThrowTiming> = {
     backFrame: 35,
     windowCloseFrame: 50,
     replaceStepFrame: 4,
-    resonanceDelayFrames: 13,
+    resonanceDelayFrames: 12,
   },
 }
 

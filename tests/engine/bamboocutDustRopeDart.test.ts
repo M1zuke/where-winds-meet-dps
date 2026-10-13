@@ -33,9 +33,9 @@ const ropeDartSkills = () =>
   builtinSkillsForClass(DUST_CLASS).filter((skill) => skill.tags?.includes(WEAPON.ropeDart))
 
 describe("Soul Sweep", () => {
-  it("lands three sweeps on frames 37, 65 and 93 of a 105-frame cast", () => {
+  it("lands three sweeps on frames 17, 54 and 76 of a 105-frame cast", () => {
     const result = runDust([SKILL.soulSweep, SKILL.ropeLightAttack])
-    expect(damageFramesOf(result, "Soul Sweep")).toEqual([37, 65, 93])
+    expect(damageFramesOf(result, "Soul Sweep")).toEqual([17, 54, 76])
     expect(Math.round(result.casts![1].timeSec * FPS)).toBe(105)
   })
 
@@ -52,8 +52,10 @@ describe("Soul Sweep", () => {
       SKILL.soulSweep,
       SKILL.ropeLightAttack,
     ]
-    expect(tokensAtStart(runDust(rotation), 3)).toBeLessThan(70)
-    expect(tokensAtStart(runDust(rotation, towlineSweepRank(1)), 3)).toBe(100)
+    const withoutTowline = tokensAtStart(runDust(rotation), 3)
+    const withTowline = tokensAtStart(runDust(rotation, towlineSweepRank(1)), 3)
+    expect(withoutTowline).toBeLessThan(70)
+    expect(withTowline - withoutTowline).toBeCloseTo(50, 1)
   })
 
   it("activates Jadeware and receives its own art's Additional Attack Up", () => {
@@ -68,7 +70,61 @@ describe("Soul Sweep", () => {
 describe("Piercing Dart", () => {
   it("lands the first stage's sweeps after the charging stance", () => {
     const result = runDust([SKILL.piercingDartChargingStance, SKILL.piercingDartI])
-    expect(damageFramesOf(result, "Piercing Dart I")).toEqual([33 + 19, 33 + 35, 33 + 52])
+    expect(damageFramesOf(result, "Piercing Dart I")).toEqual([33 + 8, 33 + 20, 33 + 28])
+  })
+
+  it("lands the second stage's five sweeps on frames 8, 20, 28, 52 and 64", () => {
+    const result = runDust(
+      [
+        SKILL.piercingDartChargingStance,
+        SKILL.piercingDartIII,
+        SKILL.soulSweep,
+        SKILL.piercingDartII,
+      ],
+      towlineSweepRank(1),
+    )
+    const sweepFrames = result
+      .timeline!.filter(
+        (event) =>
+          event.skillName.startsWith("Piercing Dart II") &&
+          !event.skillName.startsWith("Piercing Dart III") &&
+          event.damage > 0,
+      )
+      .map((event) => event.frame)
+    expect(sweepFrames.map((frame) => frame - sweepFrames[0])).toEqual([0, 12, 20, 44, 56])
+  })
+
+  it("pays 10 Tokens once, twice and three times across stages one, two and three", () => {
+    const gainedByRelease = (
+      rotation: string[],
+      releaseIndex: number,
+      cost: number,
+      frames: number,
+    ) => {
+      const result = runDust(rotation, towlineSweepRank(1))
+      const regenerated = (5 * frames) / FPS
+      const spent = tokensAtStart(result, releaseIndex) - cost
+      return Math.round(tokensAtStart(result, releaseIndex + 1) - spent - regenerated)
+    }
+    const stance = SKILL.piercingDartChargingStance
+    const light = SKILL.ropeLightAttack
+    expect(
+      gainedByRelease(
+        [stance, SKILL.piercingDartIII, stance, SKILL.piercingDartI, light],
+        3,
+        0,
+        58,
+      ),
+    ).toBe(10)
+    expect(
+      gainedByRelease(
+        [stance, SKILL.piercingDartIII, SKILL.soulSweep, SKILL.piercingDartII, light],
+        3,
+        50,
+        71,
+      ),
+    ).toBe(20)
+    expect(gainedByRelease([SKILL.soulSweep, SKILL.piercingDartIII, light], 1, 100, 124)).toBe(30)
   })
 
   it("lands the third stage's seven sweeps across its three groups", () => {
@@ -78,7 +134,7 @@ describe("Piercing Dart", () => {
         (event) => event.skillName.startsWith("Piercing Dart III") && event.damage > 0,
       )
       .map((event) => event.frame - 105)
-    expect(sweepFrames).toEqual([19, 36, 52, 69, 85, 102, 118])
+    expect(sweepFrames).toEqual([8, 20, 28, 52, 64, 77, 118])
   })
 
   it("flags a release without the charging stance and a stage outside its Tokens range", () => {
@@ -101,7 +157,7 @@ describe("Piercing Dart", () => {
   it("spends 100 Tokens on the third stage and regains 10 per sweep at most once every half second", () => {
     const result = runDust([SKILL.soulSweep, SKILL.piercingDartIII, SKILL.ropeLightAttack])
     const regeneratedDuringCast = (5 * 124) / FPS
-    expect(tokensAtStart(result, 2)).toBeCloseTo(4 * 10 + regeneratedDuringCast, 1)
+    expect(tokensAtStart(result, 2)).toBeCloseTo(3 * 10 + regeneratedDuringCast, 1)
   })
 
   it("applies Soul Loss only on the release that consumed Soulbound", () => {
@@ -210,6 +266,11 @@ describe("the rope dart's basic attacks", () => {
       "Scarlet Spin",
       "Rope Dart (Dual-Weapon Skill)",
     ])
+  })
+
+  it("lands the Dual-Weapon Skill on frame 31", () => {
+    const result = runDust([SKILL.ropeDual])
+    expect(damageFramesOf(result, "Rope Dart (Dual-Weapon Skill)")).toEqual([31])
   })
 
   it("receives the Additional Attack Up of its own art on every damaging skill", () => {

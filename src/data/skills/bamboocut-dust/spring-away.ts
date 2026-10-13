@@ -6,10 +6,10 @@ import { ATTACK, CAST, PROP, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { UMBRELLA_LIGHT_CHAIN_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-12: the held light plays Spring Away. Its
+// In-game values as of 2026-10-13: the held light plays Spring Away. Its
 // projectiles read the first-level damage row — a physical coefficient only,
-// no attribute term. The lift frame and the projectile frames are not
-// measurable: provisional frames, spaced so all twelve land inside the 2 s hover.
+// no attribute term. The lift frame is provisional: its in-game frame is not
+// known, only that it precedes the hover.
 const BULLET_HIT = {
   physMultiplier: 0.2858484,
   attributeMultiplier: 0,
@@ -19,9 +19,9 @@ const BULLET_HIT = {
 
 const BULLET_COUNT = 12
 const LIFT_FRAME = 29
-const HOVER_START_FRAME = 44
-const FIRST_BULLET_FRAME = 50
-const BULLET_SPACING_FRAMES = 10
+const HOVER_START_FRAME = 49
+const FIRST_BULLET_FRAME = 57
+const BULLET_SPACING_FRAMES = 9.8
 const HOVER_SECONDS = 2
 
 export const springAway = defineSkill({
@@ -60,7 +60,7 @@ export const springAway = defineSkill({
     }),
     ...Array.from({ length: BULLET_COUNT }, (_, index) =>
       hit(index + 1, {
-        frame: FIRST_BULLET_FRAME + index * BULLET_SPACING_FRAMES,
+        frame: FIRST_BULLET_FRAME + Math.round(index * BULLET_SPACING_FRAMES),
         ...BULLET_HIT,
       }),
     ),

@@ -169,8 +169,7 @@ describe("Bamboocut Dust's inner ways", () => {
       )?.amount
     const unslotted = tokensBeforeLastCast(slotted("", 0))
     const slottedTokens = tokensBeforeLastCast(slotted(INNER_WAY_ID.towlineSweep, 1))
-    expect(slottedTokens).toBe(100)
-    expect(unslotted).toBeLessThan(100)
+    expect(slottedTokens! - unslotted!).toBeCloseTo(50, 1)
   })
 })
 

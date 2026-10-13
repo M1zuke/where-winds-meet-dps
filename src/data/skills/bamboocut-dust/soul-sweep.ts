@@ -23,8 +23,7 @@ const FOLLOWING_SWEEP = {
   attributeFixed: 165.9,
 }
 
-// In-game values as of 2026-10-12. The sweep frames are not measurable:
-// provisional frames, evenly spaced between Soulbound and the stage check.
+// In-game values as of 2026-10-13.
 export const soulSweep = defineSkill({
   id: SKILL.soulSweep,
   classId: "bamboocutDust",
@@ -59,12 +58,16 @@ export const soulSweep = defineSkill({
         }),
       ],
     }),
-    hit(1, { frame: 37, ...OPENING_SWEEP, triggers: soulSweepHitTriggers() }),
-    hit(2, { frame: 65, ...FOLLOWING_SWEEP, triggers: soulSweepHitTriggers() }),
-    hit(3, {
+    hit(1, { frame: 17, ...OPENING_SWEEP, triggers: soulSweepHitTriggers() }),
+    hit(2, { frame: 54, ...FOLLOWING_SWEEP, triggers: soulSweepHitTriggers() }),
+    hit(3, { frame: 76, ...FOLLOWING_SWEEP, triggers: soulSweepHitTriggers() }),
+    hit(4, {
       frame: 93,
-      ...FOLLOWING_SWEEP,
-      triggers: [...soulSweepHitTriggers(), applyBuff({ target: STATUS.piercingDartReady })],
+      physMultiplier: 0,
+      attributeMultiplier: 0,
+      physFixed: 0,
+      attributeFixed: 0,
+      triggers: [applyBuff({ target: STATUS.piercingDartReady })],
     }),
   ],
   createdAt: "2026-10-12T00:00:00.000Z",

@@ -8,6 +8,10 @@ import { LIGHT_ATTACK_SHORT_HIT } from "./umbrella-light-attack"
 
 const FADING_CRIMSON_PER_BULLET = 4
 
+// In-game values as of 2026-10-13: mean speed of the accelerating flight over
+// the 3 m default target distance.
+const MEAN_SPEED_METERS_PER_SECOND = 34
+
 export const umbrellaDashBullet = defineSkill({
   id: SKILL.umbrellaDashBullet,
   classId: "bamboocutDust",
@@ -25,7 +29,7 @@ export const umbrellaDashBullet = defineSkill({
     hit(0, {
       frame: 0,
       ...LIGHT_ATTACK_SHORT_HIT,
-      projectile: { speedMetersPerSecond: 30, maxTravelFrames: 120 },
+      projectile: { speedMetersPerSecond: MEAN_SPEED_METERS_PER_SECOND, maxTravelFrames: 120 },
       triggers: [meterDelta({ target: fadingCrimsonMeter.id, stacks: FADING_CRIMSON_PER_BULLET })],
     }),
   ],

@@ -3,8 +3,7 @@ import { CAST, WEAPON } from "../ids"
 import { SKILL } from "./ids"
 import { UNFETTERED_ROPE_DART_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-12. The hit frame is not measurable:
-// provisional frame, half the cast.
+// In-game values as of 2026-10-13.
 export const ropeDual = defineSkill({
   id: SKILL.ropeDual,
   classId: "bamboocutDust",
@@ -20,7 +19,7 @@ export const ropeDual = defineSkill({
   triggerable: false,
   hits: [
     hit(0, {
-      frame: 18,
+      frame: 31,
       physMultiplier: 0.87463,
       attributeMultiplier: 1.311945,
       physFixed: 243,

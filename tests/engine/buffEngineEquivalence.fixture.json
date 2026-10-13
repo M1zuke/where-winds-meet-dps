@@ -201299,12 +201299,15 @@
   "bamboocutDust": {
     "static": {
       "skills": {
-        "count": 71,
+        "count": 74,
         "ids": [
           "bamboocutDust-bitter-season-tick",
           "bamboocutDust-burn-and-bury",
           "bamboocutDust-cyclone-waltz",
           "bamboocutDust-cyclone-waltz-finish",
+          "bamboocutDust-cyclone-waltz-recast",
+          "bamboocutDust-cyclone-waltz-recast-form",
+          "bamboocutDust-cyclone-waltz-recast-form-finish",
           "bamboocutDust-deflect-cancel",
           "bamboocutDust-deflect-cancel-prepull",
           "bamboocutDust-delay",
@@ -201373,7 +201376,7 @@
           "mystic-toad-fury-hit",
           "mystic-wolflike-frenzy"
         ],
-        "digest": "0695ab5937b10a95e1be6fccc4fd79634ffcceb15efed0c194a44838902ad927"
+        "digest": "0b69337dc1b53af2344642ea1fb961f02380d5cd196c9e01214b518bd4996e5b"
       },
       "debuffs": {
         "count": 11,

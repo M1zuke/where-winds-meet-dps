@@ -16,6 +16,7 @@ export const FALLING_BLOSSOMS_STACKS_FOR_FRAGRANT_SONG = 3
 export const FRAGRANT_SONG_DURATION_FRAMES = 600
 export const FRAGRANT_SONG_DELICATE_DURATION_FRAMES = 600
 export const PHANTOM_UMBRELLA_DURATION_FRAMES = 300
+export const CYCLONE_AWARENESS_DURATION_FRAMES = 156
 export const SOULBOUND_DURATION_FRAMES = 3600 * 60
 export const PIERCING_DART_READY_DURATION_FRAMES = 1800
 export const SOUL_RETURN_DURATION_FRAMES = 720
@@ -112,6 +113,20 @@ export const BAMBOOCUT_DUST_GATES: readonly Buff[] = [
     scope: "player",
     activation: "triggered",
     durationFrames: PHANTOM_UMBRELLA_DURATION_FRAMES,
+    effects: [],
+    maxStacks: 1,
+    stackScaling: "flat",
+    createdAt: CREATED_AT,
+    updatedAt: CREATED_AT,
+  }),
+  defineGateBuff({
+    id: STATUS.cycloneAwareness,
+    classId: CLASS_ID,
+    name: "Cyclone Awareness",
+    description: "Cyclone Waltz can be recast.",
+    scope: "player",
+    activation: "triggered",
+    durationFrames: CYCLONE_AWARENESS_DURATION_FRAMES,
     effects: [],
     maxStacks: 1,
     stackScaling: "flat",

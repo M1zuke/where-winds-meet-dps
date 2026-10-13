@@ -20,7 +20,7 @@ import {
 
 const THREE_SOUL_SWEEPS = [SKILL.soulSweep, SKILL.soulSweep, SKILL.soulSweep]
 const SEVEN_LIGHT_ATTACKS = Array.from({ length: 7 }, () => SKILL.ropeLightAttack)
-const CONVERSION_FRAME = 247
+const CONVERSION_FRAME = 227
 const SOULBREAK_ROW = "Soulbreak"
 
 function contextWith(parts: {
@@ -98,13 +98,13 @@ describe("Soul Return", () => {
     expect(fadingCrimsonAtStart(withReturn, dreamwroughtCast)).toBe(87.5)
   })
 
-  it("is granted at most once a second: a conversion 50 frames after the last grants none", () => {
+  it("is granted at most once a second: a conversion 49 frames after the last grants none", () => {
     const result = runDust([...THREE_SOUL_SWEEPS, SKILL.piercingDartIII], towlineSweepRank(1))
     const startsOf = (statusId: string) => [
       ...new Set(windowFramesOf(result, statusId).map((window) => window.start)),
     ]
-    expect(startsOf(DEBUFF.soulbreak)).toEqual([247, 367, 417])
-    expect(startsOf(STATUS.soulReturn)).toEqual([247, 367])
+    expect(startsOf(DEBUFF.soulbreak)).toEqual([227, 343, 392])
+    expect(startsOf(STATUS.soulReturn)).toEqual([227, 343])
   })
 })
 
