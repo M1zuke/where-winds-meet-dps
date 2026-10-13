@@ -57,10 +57,10 @@ describe("the Scarlet Spin throw chain", () => {
     expect(startFrames(result)).toEqual([0, 68])
   })
 
-  it("lands the out hit and the back hit one frame apart on the far point", () => {
+  it("lands the out hit before the far point and the back hit after it", () => {
     const result = run([SKILL.scarletSpin, SKILL.scarletSpinSecond])
-    expect(framesOf(result, "Scarlet Spin")).toEqual([45, 46])
-    expect(framesOf(result, "Scarlet Spin (2nd throw)")).toEqual([68 + 35, 68 + 36])
+    expect(framesOf(result, "Scarlet Spin")).toEqual([35, 48])
+    expect(framesOf(result, "Scarlet Spin (2nd throw)")).toEqual([68 + 24, 68 + 38])
   })
 
   it("spends 25 Fading Crimson a throw and holds its regeneration while Flower Burial is up", () => {
@@ -118,7 +118,7 @@ describe("Falling Blossoms and Fragrant Song", () => {
 
   it("plays the throw cast under Fragrant Song at the faster frames", () => {
     const result = run([...FULL_CHAIN, SKILL.dreamwroughtBubbles])
-    expect(framesOf(result, "Perfect Catch (after 3rd throw)")).toEqual([188 + 28, 188 + 29])
+    expect(framesOf(result, "Perfect Catch (after 3rd throw)")).toEqual([188 + 20, 188 + 31])
     expect(startFrames(result)[4]).toBe(188 + 50)
   })
 
@@ -204,16 +204,18 @@ describe("the catch press inside a throw", () => {
     expect(framesOf(withoutRally, "Resonance (Martial Art Skill)")).toEqual([])
   })
 
-  it("keeps every catch press after the out hit, inside the window and before the cast ends", () => {
+  it("keeps every catch press one frame after the far point, inside the window and before the cast ends", () => {
     for (const skill of builtinSkillsForClass(CLASS)) {
       const presses = skill.hits.filter((hit) => hit.requiresNextStepSkillIds !== undefined)
       if (presses.length === 0) continue
-      const outHit = skill.hits.find((hit) => hit.physMultiplier > 0)!
+      const farPointHit = skill.hits.find((hit) =>
+        hit.triggers.some((trigger) => trigger.targetId === STATUS.phantomUmbrella),
+      )!
       for (const press of presses) {
         const fragrant = press.variants !== undefined
         const windowClose = fragrant ? press.variants![0].castFrames! : press.castFramesWhenGated!
-        const outFrame = fragrant ? outHit.variants![0].frame! : outHit.frame
-        expect(press.frame, skill.id).toBe(outFrame + 1)
+        const farPointFrame = fragrant ? farPointHit.variants![0].frame! : farPointHit.frame
+        expect(press.frame, skill.id).toBe(farPointFrame + 1)
         expect(press.frame, skill.id).toBeLessThan(windowClose)
         expect(windowClose, skill.id).toBeLessThanOrEqual(skill.castFrames)
       }

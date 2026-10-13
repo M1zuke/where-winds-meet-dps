@@ -48,6 +48,7 @@ const CATCH_PRESS_DELAY_FRAMES = 1
 export interface ThrowTiming {
   castFrames: number
   outFrame: number
+  farPointFrame: number
   backFrame: number
   windowCloseFrame: number
   resonanceDelayFrames: number
@@ -175,7 +176,7 @@ export function throwSkill(spec: ThrowSpec): Skill {
   // out hit's own variant.
   const hitSpecs = [
     {
-      frame: fragrant.outFrame + CATCH_PRESS_DELAY_FRAMES,
+      frame: fragrant.farPointFrame + CATCH_PRESS_DELAY_FRAMES,
       ...NO_DAMAGE,
       conditions: [FRAGRANT_SONG_UP],
       requiresNextStepSkillIds: [spec.offeredCatchId],
@@ -191,7 +192,7 @@ export function throwSkill(spec: ThrowSpec): Skill {
       triggers: catchRewardTriggers(),
     },
     {
-      frame: normal.outFrame + CATCH_PRESS_DELAY_FRAMES,
+      frame: normal.farPointFrame + CATCH_PRESS_DELAY_FRAMES,
       ...NO_DAMAGE,
       conditions: [FRAGRANT_SONG_DOWN],
       requiresNextStepSkillIds: [spec.offeredCatchId],
@@ -214,15 +215,21 @@ export function throwSkill(spec: ThrowSpec): Skill {
     damagingHit(
       OUT_HIT,
       { normal: normal.outFrame, fragrant: fragrant.outFrame },
-      { triggers: phantomTriggers(spec), fragrantCastFrames: fragrant.castFrames },
+      { fragrantCastFrames: fragrant.castFrames },
     ),
+    {
+      frame: normal.farPointFrame,
+      ...NO_DAMAGE,
+      variants: [fragrantVariant(NO_DAMAGE, { frame: fragrant.farPointFrame })],
+      triggers: phantomTriggers(spec),
+    },
     damagingHit(BACK_HIT, { normal: normal.backFrame, fragrant: fragrant.backFrame }),
     {
-      frame: normal.outFrame + normal.resonanceDelayFrames,
+      frame: normal.farPointFrame + normal.resonanceDelayFrames,
       ...NO_DAMAGE,
       variants: [
         fragrantVariant(NO_DAMAGE, {
-          frame: fragrant.outFrame + fragrant.resonanceDelayFrames,
+          frame: fragrant.farPointFrame + fragrant.resonanceDelayFrames,
         }),
       ],
       triggers: resonanceTriggers(spec),

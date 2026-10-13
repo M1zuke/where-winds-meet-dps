@@ -250,12 +250,12 @@ describe("Song of Tang", () => {
     const rotation = [SKILL.scarletSpin, SKILL.perfectCatchAfterFirst]
     const earlyStacks = stacksAfterCast(
       runDust(rotation, rank("songOfTang", 2)),
-      1,
+      0,
       BUFF.tangMelodyEarlyRanks,
     )
     const laterStacks = stacksAfterCast(
       runDust(rotation, rank("songOfTang", 3)),
-      1,
+      0,
       BUFF.tangMelodyLaterRanks,
     )
     expect(earlyStacks).toBe(1)

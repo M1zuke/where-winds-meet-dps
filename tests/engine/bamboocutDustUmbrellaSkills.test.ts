@@ -8,7 +8,7 @@ import { FPS } from "../../src/engine/timeline"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { classDefinition } from "../../src/definitions/classes/registry"
 import { CLASS_SKILL_BOOSTS } from "../../src/data/baseStats/classSkillBoosts"
-import { BUFF } from "../../src/data/skills/buffs/ids"
+import { BUFF, PARAM } from "../../src/data/skills/buffs/ids"
 import { ATTUNE } from "../../src/data/skills/ids"
 import { SKILL, STATUS } from "../../src/data/skills/bamboocut-dust/ids"
 import {
@@ -24,6 +24,7 @@ import { testRotation } from "../builtins"
 const CLASS = "bamboocutDust"
 const HOVER_SECONDS = 2
 const HOVER_START_FRAME = 49
+const THROWS = [FIRST_THROW, SECOND_THROW, THIRD_THROW, FOURTH_THROW]
 
 function run(skillIds: string[]) {
   return runEngine({
@@ -44,16 +45,31 @@ const fadingCrimsonAtStart = (result: ReturnType<typeof run>, castIndex: number)
   result.casts![castIndex].meterLevels!.find((level) => level.id === fadingCrimsonMeter.id)!.amount
 
 describe("Dreamwrought Bubbles", () => {
-  it("lands its out and back hits 92 and 93 frames after the press and ends 116 frames in", () => {
+  it("lands its out and back hits 79 and 94 frames after the press and ends 116 frames in", () => {
     const result = run([SKILL.dreamwroughtBubbles, SKILL.cycloneWaltz])
-    expect(framesOf(result, "Dreamwrought Bubbles")).toEqual([92, 93])
+    expect(framesOf(result, "Dreamwrought Bubbles")).toEqual([79, 94])
     expect(Math.round(result.casts![1].timeSec * FPS)).toBe(116)
   })
 
-  it("plays 48 and 49 frames in when cast through Fragrant Song - Delicate", () => {
+  it("plays 35 and 50 frames in when cast through Fragrant Song - Delicate", () => {
     const result = run([SKILL.dreamwroughtBubblesInstant, SKILL.cycloneWaltz])
-    expect(framesOf(result, "Dreamwrought Bubbles (Fragrant Song - Delicate)")).toEqual([48, 49])
+    expect(framesOf(result, "Dreamwrought Bubbles (Fragrant Song - Delicate)")).toEqual([35, 50])
     expect(Math.round(result.casts![1].timeSec * FPS)).toBe(72)
+  })
+
+  it("summons the phantom and resonates 48 frames after the release, between the out and back hits", () => {
+    const params = { [PARAM.phantomRally]: true, [`${PARAM.phantomRally}Tier`]: 1 }
+    const result = runEngine({
+      ...defaultInputs,
+      classId: CLASS,
+      buffParams: params,
+      activeCustomRotation: testRotation(CLASS, {
+        steps: [makeStep({ skillId: SKILL.dreamwroughtBubblesInstant })],
+      }),
+    })
+    const phantom = result.buffWindows!.find((window) => window.id === STATUS.phantomUmbrella)!
+    expect(Math.round(phantom.startSec * FPS)).toBe(48)
+    expect(framesOf(result, "Resonance (Dreamwrought Bubbles)")).toEqual([48])
   })
 
   it("receives the 20% non-player factor but none of the Martial Art Skill buffs", () => {
@@ -189,10 +205,41 @@ describe("the umbrella's basic attacks", () => {
 describe("the summon resonance frames", () => {
   it("follows each far point on the in-game frames, with and without Fragrant Song", () => {
     const resonanceFrames = (timing: typeof FIRST_THROW, variant: "normal" | "fragrant") =>
-      timing[variant].outFrame + timing[variant].resonanceDelayFrames
-    const throws = [FIRST_THROW, SECOND_THROW, THIRD_THROW, FOURTH_THROW]
-    expect(throws.map((timing) => resonanceFrames(timing, "normal"))).toEqual([59, 50, 60, 53])
-    expect(throws.map((timing) => resonanceFrames(timing, "fragrant"))).toEqual([45, 38, 46, 41])
+      timing[variant].farPointFrame + timing[variant].resonanceDelayFrames
+    expect(THROWS.map((timing) => resonanceFrames(timing, "normal"))).toEqual([59, 50, 60, 53])
+    expect(THROWS.map((timing) => resonanceFrames(timing, "fragrant"))).toEqual([45, 38, 46, 41])
+  })
+})
+
+describe("the throw hit frames", () => {
+  it("lands the out hit and the back hit around the far point", () => {
+    const frames = (variant: "normal" | "fragrant") =>
+      THROWS.map((timing) => [
+        timing[variant].outFrame,
+        timing[variant].farPointFrame,
+        timing[variant].backFrame,
+      ])
+    expect(frames("normal")).toEqual([
+      [35, 45, 48],
+      [24, 35, 38],
+      [30, 44, 47],
+      [26, 37, 41],
+    ])
+    expect(frames("fragrant")).toEqual([
+      [27, 34, 37],
+      [19, 27, 29],
+      [23, 34, 36],
+      [20, 28, 31],
+    ])
+  })
+
+  it("keeps every back hit inside the catch window and the cast", () => {
+    for (const timing of THROWS) {
+      for (const variant of [timing.normal, timing.fragrant]) {
+        expect(variant.backFrame).toBeLessThan(variant.windowCloseFrame)
+        expect(variant.backFrame).toBeLessThan(variant.castFrames)
+      }
+    }
   })
 })
 
