@@ -3097,12 +3097,6 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
 
     const qiComputedSchedule = qiBar.schedule()
     const qiEdgeWarnings = qiEdgeDependence.warnings(totalDamage, FPS, fightStartSec)
-    const qiTrace: { timeSec: number; fraction: number }[] = []
-    if (collectDetail) {
-      for (let sampleSec = 0; sampleSec <= windowFrames / FPS; sampleSec += 1) {
-        qiTrace.push({ timeSec: sampleSec, fraction: qiComputedSchedule.fractionAt(sampleSec) })
-      }
-    }
     const result: Result = {
       dps,
       ...(resourceResults.length > 0 ? { resources: resourceResults } : {}),
@@ -3126,7 +3120,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       outcomeDamage: hitRng ? outcomeDamageTally : undefined,
       expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
       qiBreaks: qiComputedSchedule.breaks,
-      qiTrace,
+      ...(collectDetail ? { qiTrace: qiBar.displayTrace() } : {}),
       qiIterations: qiIteration,
     }
 

@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import type { Result, TimelineEvent } from "../../../../engine/types"
+import { TargetQiLane } from "./target-qi-lane/TargetQiLane"
 import { breakdownNameOf } from "../../../../engine/skill"
 import { useI18n } from "../../../../i18n/i18nContext"
 import { fightClockSec } from "../fightClock"
@@ -42,56 +43,20 @@ export function RotationTimelinePanel({ result }: { result: Result }) {
 
   const axisTickFractions = [0, 0.25, 0.5, 0.75, 1]
 
-  const qiBreak = result.qiBreakWindow
-  const qiStart = qiBreak ? Math.max(fightClockSec(result, qiBreak.startSec), minTime) : 0
-  const qiEnd = qiBreak ? Math.min(fightClockSec(result, qiBreak.endSec), duration) : 0
-  const showQi = qiBreak != null && qiEnd > qiStart
-
-  const lowQi = result.lowQiWindow
-  const lowQiStart = lowQi ? Math.max(fightClockSec(result, lowQi.startSec), minTime) : 0
-  const lowQiEnd = lowQi ? Math.min(fightClockSec(result, lowQi.endSec), duration) : 0
-  const showLowQi = lowQi != null && lowQiEnd > lowQiStart
-
   return (
     <div className={styles.timelinePanel}>
       <div className={styles.timelineScroll}>
         <div className={styles.timelineTrack}>
-          {showLowQi && (
-            <div className={styles.timelineBuffGroup}>
-              <span className={styles.timelineBuffGroupLabel}>
-                {t("rotation.timeline.lowQiWindow")}
-              </span>
-              <div className={styles.timelineBuffLane}>
-                <div
-                  className={`${styles.timelineBuffSpan} ${styles.timelineLowQi}`}
-                  style={{
-                    left: pct(lowQiStart) + "%",
-                    width: Math.max(pct(lowQiEnd) - pct(lowQiStart), 0.3) + "%",
-                  }}
-                  title={`${t("rotation.timeline.lowQiWindow")} — ${lowQiStart.toFixed(2)}s – ${lowQiEnd.toFixed(2)}s`}
-                >
-                  <span className={styles.timelineBuffLabel}>
-                    {t("rotation.timeline.lowQiWindow")}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          {showQi && (
-            <div className={styles.timelineBuffGroup}>
-              <span className={styles.timelineBuffGroupLabel}>{t("common.qiBreakWindow")}</span>
-              <div className={styles.timelineBuffLane}>
-                <div
-                  className={`${styles.timelineBuffSpan} ${styles.timelineQiBreak}`}
-                  style={{
-                    left: pct(qiStart) + "%",
-                    width: Math.max(pct(qiEnd) - pct(qiStart), 0.3) + "%",
-                  }}
-                  title={`${t("common.qiBreakWindow")} — ${qiStart.toFixed(2)}s – ${qiEnd.toFixed(2)}s`}
-                >
-                  <span className={styles.timelineBuffLabel}>{t("common.qiBreakWindow")}</span>
-                </div>
-              </div>
+          {result.qiTrace && (
+            <div className={styles.qiLaneRow}>
+              <span className={styles.timelineLaneLabel}>{t("rotation.timeline.targetQi")}</span>
+              <TargetQiLane
+                trace={result.qiTrace}
+                result={result}
+                minTime={minTime}
+                duration={duration}
+                pct={pct}
+              />
             </div>
           )}
           {[...lanes.entries()].map(([name, lane]) => (

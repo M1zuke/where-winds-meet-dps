@@ -1,0 +1,107 @@
+.headCell {
+  font-size: 0.68em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+.alignEnd {
+  text-align: right;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.delta {
+  text-align: right;
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+  color: #c88;
+}
+
+.deltaHeld {
+  color: #8fb0d8;
+}
+
+.deltaGain {
+  color: #8fc88f;
+}
+
+.ruler {
+  position: relative;
+  height: 6px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+.rulerTick {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 10px;
+  background: var(--color-border);
+}
+
+.rulerDot {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--color-bg);
+  transform: translate(-50%, -50%);
+}
+
+.fillHigh {
+  background: #6ad8c4;
+}
+
+.fillMid {
+  background: var(--color-accent-bright);
+}
+
+.fillLow {
+  background: var(--color-negative);
+}
+
+.fillImmune {
+  background: #6a9bd8;
+}
+
+.remaining {
+  text-align: right;
+  font-size: 0.88em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.max {
+  font-size: 0.85em;
+  color: var(--color-text-faint);
+}
+
+.statusBroken,
+.statusImmune {
+  display: inline-block;
+  margin: 1px 4px 1px 0;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.statusBroken {
+  background: rgba(216, 122, 74, 0.18);
+  border: 1px solid rgba(216, 122, 74, 0.5);
+  color: #f0c8a8;
+}
+
+.statusImmune {
+  background: rgba(106, 155, 216, 0.18);
+  border: 1px solid rgba(106, 155, 216, 0.5);
+  color: #bcd6f2;
+}

@@ -3,7 +3,7 @@
 // timeline pass, in frame order, from each scored event's own finished
 // damage — docs/CALCULATION.md § "Qi damage" and docs/TIMELINE.md § "Qi bar".
 import type { QiPhase } from "./effects/context"
-import type { EngineRunOptions } from "./types"
+import type { EngineRunOptions, QiTrace } from "./types"
 
 export type QiHitKind = "direct" | "dot"
 
@@ -314,6 +314,23 @@ export class QiBar {
   // Frame-exact, for the fixed-point iteration's own convergence check.
   breaksFrames(): readonly QiBreak[] {
     return this.breaks
+  }
+
+  displayTrace(): QiTrace {
+    return {
+      max: this.bar.max,
+      points: this.trace.slice(1).map((point) => ({
+        timeSec: point.frame / this.fps,
+        value: point.value,
+        ...(point.refill ? { refill: true as const } : {}),
+      })),
+      directImmunities: this.breaks
+        .filter((qiBreak) => qiBreak.immuneUntilFrame > qiBreak.endFrame)
+        .map((qiBreak) => ({
+          startSec: qiBreak.endFrame / this.fps,
+          endSec: qiBreak.immuneUntilFrame / this.fps,
+        })),
+    }
   }
 
   schedule(): QiSchedule {
