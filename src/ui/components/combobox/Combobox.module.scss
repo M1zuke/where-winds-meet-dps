@@ -25,6 +25,21 @@
   border-left-color: var(--color-accent-bright);
 }
 
+.comboboxInput.hasSelectedDetail {
+  padding-right: 52px;
+}
+
+.comboboxSelectedDetail {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 0.85em;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
 .comboboxInput:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -46,13 +61,27 @@
 }
 
 .comboboxOption {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
   padding: 4px 8px;
   font-size: 0.85em;
   color: var(--color-text);
   cursor: pointer;
   white-space: nowrap;
+}
+
+.comboboxOptionLabel {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.comboboxOptionDetail {
+  flex-shrink: 0;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
 }
 
 .comboboxOption.isHighlight {
@@ -66,6 +95,11 @@
 
 .comboboxOption.isSelected.isHighlight {
   background: #2a2419;
+}
+
+.comboboxOption.isDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .comboboxEmpty {
