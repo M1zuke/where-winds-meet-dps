@@ -145,6 +145,9 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     wordSpec("areaMysticBoost", (x, roll) => {
       x.areaMysticBoost += roll
     }),
+    wordSpec("allMysticBoost", (x, roll) => {
+      x.allMysticBoost += roll
+    }),
     ...ATTRIBUTE_KEYS.flatMap((attribute) => [
       wordSpec(`min${attribute}`, (x, roll) => {
         applyAttrAttack(x, attribute, "min", roll)

@@ -349,7 +349,7 @@ const RETUNE_91: PoolByGroup = {
   ],
 }
 
-const RETUNE_96_TO_105: PoolByGroup = {
+const RETUNE_96: PoolByGroup = {
   weapon: [
     "affinity",
     "agility",
@@ -456,6 +456,29 @@ const RETUNE_96_TO_105: PoolByGroup = {
   ],
 }
 
+const RETUNE_100_TO_105: PoolByGroup = {
+  ...RETUNE_96,
+  helmArmor: [
+    "affinity",
+    "agility",
+    "allMysticBoost",
+    "crit",
+    "maxBamboocut",
+    "maxBellstrike",
+    "maxPhys",
+    "maxSilkbind",
+    "maxStonesplit",
+    "minBamboocut",
+    "minBellstrike",
+    "minPhys",
+    "minSilkbind",
+    "minStonesplit",
+    "momentum",
+    "power",
+    "precision",
+  ],
+}
+
 const INITIAL_POOLS: Readonly<Record<GearLevel, PoolByGroup>> = {
   86: INITIAL_86,
   91: INITIAL_91,
@@ -467,9 +490,21 @@ const INITIAL_POOLS: Readonly<Record<GearLevel, PoolByGroup>> = {
 const RETUNE_POOLS: Readonly<Record<GearLevel, PoolByGroup>> = {
   86: RETUNE_86,
   91: RETUNE_91,
-  96: RETUNE_96_TO_105,
-  100: RETUNE_96_TO_105,
-  105: RETUNE_96_TO_105,
+  96: RETUNE_96,
+  100: RETUNE_100_TO_105,
+  105: RETUNE_100_TO_105,
+}
+
+const ALL_MYSTIC_BOOST_LEVEL: GearLevel = 100
+const MERGED_INTO_ALL_MYSTIC_BOOST: ReadonlySet<string> = new Set([
+  "singleTargetMysticBoost",
+  "areaMysticBoost",
+])
+
+export function gearWordAtLevel(word: GearWordId, level: GearLevel): GearWordId {
+  return level >= ALL_MYSTIC_BOOST_LEVEL && MERGED_INTO_ALL_MYSTIC_BOOST.has(word)
+    ? "allMysticBoost"
+    : word
 }
 
 const WEAPON_ART_BOOST_WORDS: ReadonlySet<string> = new Set(Object.values(WEAPON_BOOST_STAT_KEY))

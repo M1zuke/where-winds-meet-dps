@@ -284,11 +284,11 @@ export function deriveStats(inputs: Inputs): DerivedStats {
 
   const typeBoosts: Record<string, number> = {
     Boss: effectiveBossBoost,
-    control: inputs.singleMysticBoost,
-    burst: inputs.singleMysticBoost,
-    area: inputs.areaMysticBoost,
-    "area-debuff": inputs.areaMysticBoost,
-    "area-damage": inputs.areaMysticBoost,
+    control: inputs.singleMysticBoost + inputs.allMysticBoost,
+    burst: inputs.singleMysticBoost + inputs.allMysticBoost,
+    area: inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-debuff": inputs.areaMysticBoost + inputs.allMysticBoost,
+    "area-damage": inputs.areaMysticBoost + inputs.allMysticBoost,
   }
 
   return {
@@ -430,6 +430,7 @@ export function buildContext(
     allMartialBoost: inputs.allMartialBoost,
     weaponBoosts: scopedStatMap(inputs, WEAPON_BOOST_STAT_KEY),
     mysticTypeBoosts: scopedStatMap(inputs, MYSTIC_TYPE_BOOST_STAT_KEY),
+    allMysticBoost: inputs.allMysticBoost,
     physPenResistance: penResistanceForInputs(inputs).physical,
     attrPenResistance: penResistanceForInputs(inputs).attribute,
     damageReduction: targetDamageReduction,

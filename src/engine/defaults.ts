@@ -56,6 +56,7 @@ export const defaultInputs: Inputs = {
   bossBoost: 0,
   singleMysticBoost: 0,
   areaMysticBoost: 0,
+  allMysticBoost: 0,
 
   classSpecificAttunement: {},
 

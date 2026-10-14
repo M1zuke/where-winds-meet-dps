@@ -1294,6 +1294,7 @@
   "content.statLine.agility": "Agility",
   "content.statLine.allDamageBoost": "General Damage Boost",
   "content.statLine.allMartialBoost": "All Martial Arts Boost",
+  "content.statLine.allMysticBoost": "All Mystic Skill DMG Boost",
   "content.statLine.areaMysticBoost": "Area Mystic Skill DMG Boost",
   "content.statLine.attributeDamageBoost": "Attribute Damage Boost",
   "content.statLine.bamboocutPenetration": "Bamboocut Penetration",

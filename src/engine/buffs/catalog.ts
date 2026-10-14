@@ -239,6 +239,7 @@ export function receivesForSkill(skill: Skill, classId?: string, inputs?: Inputs
   const mysticBoostKey = MYSTIC_TYPE_BOOST_STAT_KEY[mysticCategory]
   if (mysticBoostKey) {
     rows.push(gearStatRow(mysticBoostKey, inputs))
+    rows.push(gearStatRow("allMysticBoost", inputs))
   }
   const attuneTag = attuneTagOf(skill)
   const attunement = attuneTag

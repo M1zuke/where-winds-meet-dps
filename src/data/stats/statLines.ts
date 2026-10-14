@@ -274,6 +274,15 @@ export const STAT_LINES = [
     category: "Target-Type Boosts",
   },
   {
+    id: "allMysticBoost",
+    label: "All Mystic Skill DMG Boost",
+    unit: "percent",
+    enginePath: "allMysticBoost",
+    maxRoll: { 100: MYSTIC_BOOST_CEILING[100], 105: MYSTIC_BOOST_CEILING[105] },
+    scope: "player",
+    category: "Target-Type Boosts",
+  },
+  {
     id: "minPhys",
     label: "Min Physical Attack",
     unit: "raw",
