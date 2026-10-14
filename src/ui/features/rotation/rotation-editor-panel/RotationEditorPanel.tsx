@@ -42,6 +42,8 @@ import {
   visibleCastBuffs,
 } from "../buffChips"
 import { fightClockSec } from "../fightClock"
+import { buildQiLedger, type QiLedgerCell, type QiLedgerMarker } from "../qiLedger"
+import { QiLedgerCells, QiLedgerHeaderCells, QiStatusChip } from "./qi-ledger-cells/QiLedgerCells"
 import { conditionFailureReasonsText } from "../../skills/statusText"
 import {
   inputsWithRotationOption,
@@ -256,6 +258,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
     }
     return map
   }, [result.casts])
+  const qiLedger = useMemo(
+    () => (result.qiTrace ? buildQiLedger(result.qiTrace, result.casts ?? []) : null),
+    [result.qiTrace, result.casts],
+  )
   const deflectCancelSkill = skillsById.get(deflectCancelSkillId(inputs.classId))
   const invalidStepIds = useMemo(
     () => new Set(result.invalidStepIds ?? []),
@@ -439,6 +445,30 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
   }
 
   const steps = activeRotation?.steps ?? []
+  const castRowsInOrder = steps.flatMap((step, idx) => {
+    const cast = castsByStepId.get(step.id) ?? castsByStepIndex.get(idx)
+    const attachedCast = attachedCastsByParentStepId.get(step.id)
+    return [
+      ...(cast ? [{ rowKey: `step:${step.id}`, cast }] : []),
+      ...(attachedCast ? [{ rowKey: `attached:${step.id}`, cast: attachedCast }] : []),
+    ]
+  })
+  const { markersBeforeRow, trailingMarkers } = placeQiMarkers(
+    qiLedger?.markers ?? [],
+    castRowsInOrder,
+  )
+  const qiMax = qiLedger?.max ?? 0
+  const qiCellOf = (cast: RotationCast | undefined): QiLedgerCell | null =>
+    (cast && qiLedger?.castCells.get(cast.index)) ?? null
+  const renderQiMarkers = (markers: readonly QiLedgerMarker[] | undefined) =>
+    markers?.map((marker) => (
+      <QiMarkerRow
+        key={`${marker.kind}:${marker.timeSec}`}
+        marker={marker}
+        max={qiMax}
+        result={result}
+      />
+    ))
 
   return (
     <div className={`panel ${styles.customRotationPanel}`}>
@@ -610,7 +640,19 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
           <div className={styles.divider} />
 
           <div className={styles.entries}>
+            {qiLedger && (
+              <div className={`${styles.entry} ${styles.ledgerHead}`}>
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+                <QiLedgerHeaderCells max={qiMax} />
+              </div>
+            )}
             <QiBreakRow
+              withLedger={qiLedger !== null}
               breaks={(result.qiBreaks ?? []).map((qiBreak) => ({
                 startSec: fightClockSec(result, qiBreak.startSec),
                 endSec: fightClockSec(result, qiBreak.endSec),
@@ -637,8 +679,10 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 : undefined
               const shownBuffs = cast ? visibleCastBuffs(cast.buffs, hiddenBuffIds, buffOrder) : []
               const attachedCast = attachedCastsByParentStepId.get(step.id)
+              const qiCell = qiCellOf(cast)
               return (
                 <Fragment key={step.id}>
+                  {renderQiMarkers(markersBeforeRow.get(`step:${step.id}`))}
                   <div
                     className={
                       styles.entry +
@@ -684,7 +728,9 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                       {showDistance && cast ? (
                         <DistanceChip distanceMeters={cast.distanceMeters} />
                       ) : null}
+                      {qiCell?.status ? <QiStatusChip status={qiCell.status} /> : null}
                     </div>
+                    {qiLedger && <QiLedgerCells cell={qiCell} max={qiMax} />}
                     {isCustom && (
                       <div className={styles.rowActions}>
                         <button
@@ -725,8 +771,11 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                       </div>
                     )}
                   </div>
+                  {attachedCast && renderQiMarkers(markersBeforeRow.get(`attached:${step.id}`))}
                   {attachedCast && (
                     <AttachedDeflectCancelRow
+                      qiCell={qiLedger ? qiCellOf(attachedCast) : undefined}
+                      qiMax={qiMax}
                       cast={attachedCast}
                       skill={deflectCancelSkill}
                       invalid={invalidStepIds.has(attachedCast.stepId)}
@@ -740,6 +789,7 @@ export function RotationEditorPanel({ inputs, onChange, result }: Props) {
                 </Fragment>
               )
             })}
+            {renderQiMarkers(trailingMarkers)}
             {steps.length === 0 && <div className={styles.entriesEmpty}>{t("common.none")}</div>}
           </div>
 
@@ -814,7 +864,11 @@ function AttachedDeflectCancelRow({
   buffOrder,
   showDistance,
   result,
+  qiCell,
+  qiMax,
 }: {
+  qiCell: QiLedgerCell | null | undefined
+  qiMax: number
   cast: RotationCast
   skill: Skill | undefined
   invalid: boolean
@@ -857,13 +911,75 @@ function AttachedDeflectCancelRow({
           <MeterLevelChip key={level.id} level={level} />
         ))}
         {showDistance ? <DistanceChip distanceMeters={cast.distanceMeters} /> : null}
+        {qiCell?.status ? <QiStatusChip status={qiCell.status} /> : null}
       </div>
+      {qiCell !== undefined && <QiLedgerCells cell={qiCell} max={qiMax} />}
       <div className={styles.rowActions} />
     </div>
   )
 }
 
-function QiBreakRow({ breaks }: { breaks: readonly { startSec: number; endSec: number }[] }) {
+function placeQiMarkers(
+  markers: readonly QiLedgerMarker[],
+  rows: readonly { rowKey: string; cast: RotationCast }[],
+): {
+  markersBeforeRow: Map<string, QiLedgerMarker[]>
+  trailingMarkers: QiLedgerMarker[]
+} {
+  const markersBeforeRow = new Map<string, QiLedgerMarker[]>()
+  let next = 0
+  for (const { rowKey, cast } of rows) {
+    const before: QiLedgerMarker[] = []
+    while (next < markers.length && precedesCast(markers[next], cast.timeSec))
+      before.push(markers[next++])
+    if (before.length > 0) markersBeforeRow.set(rowKey, before)
+  }
+  return { markersBeforeRow, trailingMarkers: markers.slice(next) }
+}
+
+function precedesCast(marker: QiLedgerMarker, castTimeSec: number): boolean {
+  return marker.kind === "refill" ? marker.timeSec <= castTimeSec : marker.timeSec < castTimeSec
+}
+
+function QiMarkerRow({
+  marker,
+  max,
+  result,
+}: {
+  marker: QiLedgerMarker
+  max: number
+  result: Result
+}) {
+  const { t } = useI18n()
+  const { span } = marker
+  const startSec = fightClockSec(result, span.startSec)
+  const endSec = fightClockSec(result, span.endSec)
+  const immunitySec =
+    span.directImmunityEndSec === null ? null : span.directImmunityEndSec - span.endSec
+  const text =
+    marker.kind === "break"
+      ? `${t("common.qiBreak")} · ${t("rotation.editor.qiLedgerExhausted")} ${startSec.toFixed(2)}s – ${endSec.toFixed(2)}s (${(span.endSec - span.startSec).toFixed(1)}s)`
+      : `${t("rotation.editor.qiLedgerRefill")} · ${endSec.toFixed(2)}s` +
+        (immunitySec === null
+          ? ""
+          : ` · ${t("rotation.editor.qiLedgerDirectImmunity")} ${immunitySec.toFixed(1)}s`)
+  return (
+    <div className={`${styles.entry} ${styles.qiMarkerRow}`}>
+      <div className={styles.idx}>—</div>
+      <span className={styles.qiMarkerText}>{text}</span>
+      <QiLedgerCells cell={marker.cell} max={max} />
+      <div className={styles.rowActions} />
+    </div>
+  )
+}
+
+function QiBreakRow({
+  breaks,
+  withLedger,
+}: {
+  breaks: readonly { startSec: number; endSec: number }[]
+  withLedger: boolean
+}) {
   const { t } = useI18n()
   const rowClassName = [styles.entry, styles.qiBreakRow, styles.qiBreakRowLocked].join(" ")
   return (
@@ -894,6 +1010,7 @@ function QiBreakRow({ breaks }: { breaks: readonly { startSec: number; endSec: n
           ))
         )}
       </div>
+      {withLedger && <QiLedgerCells cell={null} max={0} />}
       <div className={styles.rowActions} />
     </div>
   )

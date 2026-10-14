@@ -352,6 +352,19 @@ export interface EngineRunOptions {
   fixedQiBreaks?: readonly QiBreakWindow[]
 }
 
+export interface QiTracePoint {
+  timeSec: number
+  value: number
+  refill?: true
+}
+
+// Before the first point the bar stands at `max`.
+export interface QiTrace {
+  max: number
+  points: readonly QiTracePoint[]
+  directImmunities: readonly { startSec: number; endSec: number }[]
+}
+
 export interface QiEdgeWarning {
   skillName: string
   edge: "start" | "end"
@@ -389,9 +402,7 @@ export interface Result {
   // Every break the Qi bar's own trace recorded this run — docs/TIMELINE.md
   // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
   qiBreaks?: readonly { startSec: number; endSec: number }[]
-  // A coarse, sampled Qi fraction over time, for a future chart — never
-  // persisted.
-  qiTrace?: readonly { timeSec: number; fraction: number }[]
+  qiTrace?: QiTrace
   // How many fixed-point passes the simulated schedule took to converge.
   qiIterations?: number
   casts?: RotationCast[]
