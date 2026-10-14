@@ -2,6 +2,7 @@ import { DEFAULT_ENHANCEMENTS, getDefaultTalentsForClass } from "../definitions/
 import { gearLevelForBreakthrough } from "../definitions/baseStats/breakthroughs"
 import type {
   GraduationBuild,
+  StandardizedGraduation,
   StandardizedInnerWay,
 } from "../definitions/graduationBuilds/graduationBuildDef"
 import { STANDARDIZED_ENCOUNTER_OFF } from "../definitions/graduationBuilds/graduationBuildDef"
@@ -75,13 +76,25 @@ export function followedGraduationBuildAmong(
   return builds.find((build) => build.id === buildId) ?? (builds.length === 1 ? builds[0] : null)
 }
 
+function classStandardOnRotation(
+  builtin: readonly GraduationBuild[],
+  rotationId: string,
+): StandardizedGraduation | undefined {
+  const standardizedBuilds = builtin.filter((build) => build.standardized)
+  return (
+    standardizedBuilds.find((build) => build.rotationId === rotationId) ?? standardizedBuilds[0]
+  )?.standardized
+}
+
 export function graduationBuildsForProfile(
   inputs: Pick<Inputs, "classId" | "customGraduationBuild">,
 ): readonly GraduationBuild[] {
   const builtin = graduationBuildsFor(inputs.classId)
   const custom = inputs.customGraduationBuild
   if (!custom || custom.classId !== inputs.classId) return builtin
-  return [...builtin, graduationBuildFromCustom(custom)]
+  const authored = graduationBuildFromCustom(custom)
+  const standardized = classStandardOnRotation(builtin, custom.rotationId)
+  return [...builtin, standardized ? { ...authored, standardized } : authored]
 }
 
 export function followedGraduationBuild(

@@ -1686,7 +1686,7 @@
   "gear.graduationBuildDialog.ofMaxRoll": "of max roll",
   "gear.graduationBuildDialog.relayedWords": "Relayed words",
   "gear.graduationBuildDialog.yourBuild": "Your build",
-  "gear.graduationBuildDialog.yourGraduationRateIsMeasured": "Your graduation rate is measured against the build you follow, on its rotation.",
+  "gear.graduationBuildDialog.yourGraduationRateIsMeasured": "Your graduation rate is measured against the build you follow, on its rotation, with the Qi breaks its benchmark lands.",
   "gear.graduationBuildPicker.buildToFollow": "Graduation build to follow",
   "gear.graduationBuildPicker.following": "Following",
   "gear.graduationStandard.bothSidesRunAFixedSetup": "Both sides of the rate run the inner ways below and this fixed encounter:",

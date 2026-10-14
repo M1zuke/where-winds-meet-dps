@@ -235,9 +235,10 @@ function round(value: number, places: number): number {
 const PLACES = 2
 
 function digestOf(result: Result): string {
-  const canonical = JSON.stringify(result, (_key, value) =>
-    typeof value === "number" ? round(value, PLACES) : value,
-  )
+  const canonical = JSON.stringify(result, (key, value) => {
+    if (key === "qiDamageLog") return undefined
+    return typeof value === "number" ? round(value, PLACES) : value
+  })
   return createHash("sha256").update(canonical).digest("hex")
 }
 

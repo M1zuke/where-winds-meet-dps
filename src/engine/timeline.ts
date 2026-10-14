@@ -283,7 +283,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
   let qiPreviousBreaksFrames: readonly QiBreak[] | null = qiWarmStartBreaks ?? null
 
   for (let qiIteration = 1; ; qiIteration++) {
-    const qiBar = new QiBar(qiTargetBar, FPS)
+    const qiBar = new QiBar(qiTargetBar, FPS, options?.qiDamageLog)
 
     const skillsMap = new Map<string, Skill>()
     for (const s of builtinSkillsForClass(inputs.classId)) skillsMap.set(s.id, s)
@@ -3120,6 +3120,7 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
       outcomeDamage: hitRng ? outcomeDamageTally : undefined,
       expectedOutcomeShare: hitRng ? expectedOutcomeShare : undefined,
       qiBreaks: qiComputedSchedule.breaks,
+      qiDamageLog: qiBar.damageLog(),
       ...(collectDetail ? { qiTrace: qiBar.displayTrace() } : {}),
       qiIterations: qiIteration,
     }
