@@ -1,4 +1,4 @@
-import type { GearLevel, GearPiece, Inputs } from "./types"
+import type { GearLevel, GearPiece, GearWordId, Inputs } from "./types"
 import { isWeaponSlot } from "./types"
 import { gearBaseStatsFor } from "../data/stats/gearBaseStats"
 import { gearWordPoolForLine } from "../data/stats/gearWordPools"
@@ -174,29 +174,36 @@ export function listKnownPaths(): readonly string[] {
   return NUMERIC_PATHS
 }
 
+function poolCheckedWordTotal(pieces: readonly GearPiece[], word: GearWordId): number {
+  let total = 0
+  for (const piece of pieces) {
+    piece.words.forEach((entry, lineIndex) => {
+      if (entry.word !== word || !entry.value) return
+      const pool = gearWordPoolForLine(piece.level, piece.slot, lineIndex, null)
+      if (pool.includes(word)) total += entry.value
+    })
+  }
+  return total
+}
+
 export function gearAttributeTotals(pieces: readonly GearPiece[]): {
   power: number
   agility: number
   momentum: number
+  body: number
+  defense: number
 } {
-  let power = 0
-  let agility = 0
-  let momentum = 0
-  for (const p of pieces) {
-    p.words.forEach((w, lineIndex) => {
-      if (!w.word || !w.value) return
-      const pool = gearWordPoolForLine(p.level, p.slot, lineIndex, null)
-      if (!pool.includes(w.word)) return
-      if (w.word === "power") power += w.value
-      else if (w.word === "agility") agility += w.value
-      else if (w.word === "momentum") momentum += w.value
-    })
+  return {
+    power: poolCheckedWordTotal(pieces, "power"),
+    agility: poolCheckedWordTotal(pieces, "agility"),
+    momentum: poolCheckedWordTotal(pieces, "momentum"),
+    body: poolCheckedWordTotal(pieces, "body"),
+    defense: poolCheckedWordTotal(pieces, "defense"),
   }
-  return { power, agility, momentum }
 }
 
 export function gearHpTotal(pieces: readonly GearPiece[]): number {
-  let hp = 0
+  let hp = poolCheckedWordTotal(pieces, "maxHp")
   for (const piece of pieces) {
     if (!isWeaponSlot(piece.slot)) hp += gearBaseStatsFor(piece).hp
   }
@@ -204,7 +211,7 @@ export function gearHpTotal(pieces: readonly GearPiece[]): number {
 }
 
 export function gearPhysDefTotal(pieces: readonly GearPiece[]): number {
-  let physDef = 0
+  let physDef = poolCheckedWordTotal(pieces, "physDef")
   for (const piece of pieces) {
     if (!isWeaponSlot(piece.slot)) physDef += gearBaseStatsFor(piece).physDef
   }

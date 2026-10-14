@@ -155,6 +155,49 @@ describe("Max HP", () => {
   })
 })
 
+describe("Constitution and Defense lines rolled on gear", () => {
+  function greavesWithLine(word: "body" | "defense", value: number): GearPiece {
+    return {
+      id: "attribute-line-greaves",
+      slot: "greaves",
+      level: 96,
+      rarity: "legendary",
+      minPhys: 0,
+      maxPhys: 0,
+      hp: 0,
+      physDef: 0,
+      words: [
+        { word: "", value: 0, retuned: false },
+        { word, value, retuned: true },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+      attunement: "",
+      attunementValue: 0,
+      relayed: false,
+    }
+  }
+
+  const emptyGreaves = greavesWithLine("body", 0)
+
+  it("a Constitution line on gear adds 60 Max HP per point", () => {
+    const delta = totalMaxHp(17, [greavesWithLine("body", 40)]) - totalMaxHp(17, [emptyGreaves])
+    expect(BODY_PER_POINT.hp).toBe(60)
+    expect(delta).toBeCloseTo(40 * BODY_PER_POINT.hp, 9)
+  })
+
+  it("a Defense line on gear adds 17 Max HP and 0.57 Physical Defense per point", () => {
+    const withLine = [greavesWithLine("defense", 40)]
+    const maxHpDelta = totalMaxHp(17, withLine) - totalMaxHp(17, [emptyGreaves])
+    const physDefDelta = totalPhysDef(17, withLine) - totalPhysDef(17, [emptyGreaves])
+    expect(DEFENSE_PER_POINT.hp).toBe(17)
+    expect(DEFENSE_PER_POINT.physDef).toBe(0.57)
+    expect(maxHpDelta).toBeCloseTo(40 * DEFENSE_PER_POINT.hp, 9)
+    expect(physDefDelta).toBeCloseTo(40 * DEFENSE_PER_POINT.physDef, 9)
+  })
+})
+
 describe("the character-level row's Physical Defense column", () => {
   it("carries Physical Defense 128 at the pinned level", () => {
     expect(BASE_STAT_LEVELS[APP_PLAYER_LEVEL]!.physDef).toBe(128)

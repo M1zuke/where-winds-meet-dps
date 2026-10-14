@@ -111,6 +111,102 @@ describe("both weapon slots carry every attribute-attack pair on every line", ()
   })
 })
 
+describe("Max HP is a rollable word", () => {
+  it.each(GEAR_LEVELS)(
+    "level %s rolls Max HP on the first line of helm, armor, greaves and bracer only",
+    (level) => {
+      for (const slot of ["helm", "armor", "greaves", "bracer"] as const) {
+        expect(gearWordPoolInitial(level, slot, null)).toContain("maxHp")
+      }
+      for (const slot of ["leftWeapon", "rightWeapon", "disc", "pendant"] as const) {
+        expect(gearWordPoolInitial(level, slot, "Sword")).not.toContain("maxHp")
+      }
+    },
+  )
+
+  it.each(GEAR_LEVELS)("level %s rolls Max HP on every slot's retuned lines", (level) => {
+    for (const slot of [
+      "leftWeapon",
+      "rightWeapon",
+      "disc",
+      "pendant",
+      "helm",
+      "armor",
+      "greaves",
+      "bracer",
+    ] as const) {
+      expect(gearWordPoolRetune(level, slot, "Sword")).toContain("maxHp")
+    }
+  })
+})
+
+describe("the inert defensive words are rollable", () => {
+  const ALL_SLOTS = [
+    "leftWeapon",
+    "rightWeapon",
+    "disc",
+    "pendant",
+    "helm",
+    "armor",
+    "greaves",
+    "bracer",
+  ] as const
+
+  it.each(GEAR_LEVELS)(
+    "level %s rolls Physical Defense on the first line of helm, armor, greaves and bracer only",
+    (level) => {
+      for (const slot of ["helm", "armor", "greaves", "bracer"] as const) {
+        expect(gearWordPoolInitial(level, slot, null)).toContain("physDef")
+      }
+      for (const slot of ["leftWeapon", "rightWeapon", "disc", "pendant"] as const) {
+        expect(gearWordPoolInitial(level, slot, "Sword")).not.toContain("physDef")
+      }
+    },
+  )
+
+  it.each(GEAR_LEVELS)(
+    "level %s rolls Constitution on the first line of greaves and bracer only",
+    (level) => {
+      for (const slot of ["greaves", "bracer"] as const) {
+        expect(gearWordPoolInitial(level, slot, null)).toContain("body")
+      }
+      for (const slot of [
+        "leftWeapon",
+        "rightWeapon",
+        "disc",
+        "pendant",
+        "helm",
+        "armor",
+      ] as const) {
+        expect(gearWordPoolInitial(level, slot, "Sword")).not.toContain("body")
+      }
+    },
+  )
+
+  it.each(GEAR_LEVELS)(
+    "level %s rolls Constitution, Defense and Physical Defense on every slot's retuned lines",
+    (level) => {
+      for (const slot of ALL_SLOTS) {
+        const pool = gearWordPoolRetune(level, slot, "Sword")
+        expect(pool).toContain("body")
+        expect(pool).toContain("defense")
+        expect(pool).toContain("physDef")
+      }
+    },
+  )
+
+  it.each(GEAR_LEVELS)(
+    "level %s rolls Boost Vs. Player Units on the retuned lines of greaves and bracer only",
+    (level) => {
+      for (const slot of ALL_SLOTS) {
+        const pool = gearWordPoolRetune(level, slot, "Sword")
+        const isGreavesOrBracer = slot === "greaves" || slot === "bracer"
+        expect(pool.includes("damageVsPlayer")).toBe(isGreavesOrBracer)
+      }
+    },
+  )
+})
+
 describe("a Formless attack word belongs to a weapon slot alone", () => {
   it.each(GEAR_LEVELS)("level %s offers neither on an armour slot", (level) => {
     for (const slot of ARMOUR_SLOTS) {

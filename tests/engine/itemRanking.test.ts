@@ -22,7 +22,7 @@ describe("computeRanking — Bellstrike Umbra baseline rows", () => {
   const rows = computeRanking(umbraInputs, base.dps)
 
   it("produces a row per gear word the build's gear level offers, plus one per class-legal attunement", () => {
-    expect(rows.filter((row) => row.source === "tunement").length).toBe(23)
+    expect(rows.filter((row) => row.source === "tunement").length).toBe(28)
     expect(rows.filter((row) => row.source === "attunement").map((row) => row.label)).toEqual([
       "Physical Resistance",
       "Strategic Sword Martial Art Skill DMG Boost",
@@ -183,6 +183,22 @@ describe("attunement rows", () => {
     const resist = attunementRows.find((row) => row.label === "Physical Resistance")!
     expect(resist.dpsDelta).toBeCloseTo(0, 6)
     expect(resist.leadVsMin).toBe("(none)")
+  })
+
+  it("Max HP is inert for DPS — no engine path reads it", () => {
+    const maxHp = rows.find((row) => row.statLineId === "maxHp")!
+    expect(maxHp).toBeDefined()
+    expect(maxHp.dpsDelta).toBeCloseTo(0, 6)
+    expect(maxHp.leadVsMin).toBe("(none)")
+  })
+
+  it("Constitution, Defense, Physical Defense and Boost Vs. Player Units are inert for DPS", () => {
+    for (const statLineId of ["body", "defense", "physDef", "damageVsPlayer"]) {
+      const row = rows.find((candidate) => candidate.statLineId === statLineId)!
+      expect(row, statLineId).toBeDefined()
+      expect(row.dpsDelta, statLineId).toBeCloseTo(0, 6)
+      expect(row.leadVsMin, statLineId).toBe("(none)")
+    }
   })
 
   it("leaves the caller's inputs untouched — the classSpecificAttunement tag map is cloned", () => {
