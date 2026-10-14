@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import {
-  oneRetuneSetChance,
   oneRetuneTunedLinesChance,
   tunementDrawChances,
   tunementSetChance,
@@ -169,7 +168,7 @@ describe("the chance of a piece's whole set of tunements", () => {
   })
 })
 
-describe("the chance of a piece's tunements with one line from a retune", () => {
+describe("the chance of lines two to five with one of them from a retune", () => {
   const library = retuneWeightPool("Bellstrike", 96, "disc")!
 
   function withRetuned(words: Words, retunedLine: number): GearPiece {
@@ -183,12 +182,16 @@ describe("the chance of a piece's tunements with one line from a retune", () => 
     }
   }
 
+  const pendant = piece("disc", 96, ["maxPhys", "maxPhys", "momentum", "power", "allMartialBoost"])
+  const firstLineChance = (first: GearWordId) =>
+    tunementDrawChances(piece("disc", 96), null, 0).get(first)!
+
   it("is unknown without a retune library", () => {
-    expect(oneRetuneSetChance(piece("disc", 91, ["maxPhys", "crit"]), null, null)).toBeNull()
+    expect(oneRetuneTunedLinesChance(piece("disc", 91, ["maxPhys", "crit"]), null, null)).toBeNull()
   })
 
   it("is unknown with no tuned line", () => {
-    expect(oneRetuneSetChance(piece("disc", 96, ["maxPhys"]), null, library)).toBeNull()
+    expect(oneRetuneTunedLinesChance(piece("disc", 96, ["maxPhys"]), null, library)).toBeNull()
   })
 
   it("rolls any stat onto the retuned line, then retunes it once into the stat it holds", () => {
@@ -203,31 +206,23 @@ describe("the chance of a piece's tunements with one line from a retune", () => 
     for (const [word, chance] of natural) {
       expected += chance * (word === "crit" ? 1 : retuneInto(word))
     }
-    const firstLine = tunementDrawChances(piece("disc", 96), null, 0).get("maxPhys")!
-    expect(oneRetuneSetChance(retuned, null, library)).toEqual({
+    expect(oneRetuneTunedLinesChance(retuned, null, library)).toEqual({
       lineIndex: 1,
-      chance: expect.closeTo(firstLine * expected, 12),
+      chance: expect.closeTo(expected, 12),
     })
   })
 
   it("retunes the line marked R", () => {
     const marked = withRetuned(["maxPhys", "crit", "power"], 2)
-    expect(oneRetuneSetChance(marked, null, library)!.lineIndex).toBe(2)
+    expect(oneRetuneTunedLinesChance(marked, null, library)!.lineIndex).toBe(2)
   })
 
   it("picks the line that makes the piece most likely when none is marked", () => {
-    const unmarked = piece("disc", 96, [
-      "maxPhys",
-      "maxPhys",
-      "momentum",
-      "power",
-      "allMartialBoost",
-    ])
-    const best = oneRetuneSetChance(unmarked, null, library)!
+    const best = oneRetuneTunedLinesChance(pendant, null, library)!
     for (const line of [1, 2, 3, 4]) {
-      const forced = oneRetuneSetChance(
+      const forced = oneRetuneTunedLinesChance(
         withRetuned(
-          unmarked.words.map((entry) => entry.word),
+          pendant.words.map((entry) => entry.word),
           line,
         ),
         null,
@@ -238,45 +233,22 @@ describe("the chance of a piece's tunements with one line from a retune", () => 
   })
 
   it("is never below the chance of tuning the same lines without a retune", () => {
-    const unmarked = piece("disc", 96, [
-      "maxPhys",
-      "maxPhys",
-      "momentum",
-      "power",
-      "allMartialBoost",
-    ])
-    expect(oneRetuneSetChance(unmarked, null, library)!.chance).toBeGreaterThanOrEqual(
-      tunementSetChance(unmarked, null)!,
+    expect(oneRetuneTunedLinesChance(pendant, null, library)!.chance).toBeGreaterThanOrEqual(
+      tunementSetChance(pendant, null)! / firstLineChance("maxPhys"),
     )
   })
 
   it("adds nothing for a stat the library cannot retune into", () => {
     const outsideLibrary = withRetuned(["maxPhys", "allMartialBoost"], 1)
-    expect(oneRetuneSetChance(outsideLibrary, null, library)!.chance).toBeCloseTo(
-      tunementSetChance(outsideLibrary, null)!,
+    expect(oneRetuneTunedLinesChance(outsideLibrary, null, library)!.chance).toBeCloseTo(
+      tunementSetChance(outsideLibrary, null)! / firstLineChance("maxPhys"),
       12,
     )
   })
 
-  it("leaves out the first line when only lines two to five have to come out", () => {
-    const pendant = piece("disc", 96, [
-      "maxPhys",
-      "maxPhys",
-      "momentum",
-      "power",
-      "allMartialBoost",
-    ])
-    const withFirstLine = oneRetuneSetChance(pendant, null, library)!
-    const tunedLines = oneRetuneTunedLinesChance(pendant, null, library)!
-    const firstLine = tunementDrawChances(piece("disc", 96), null, 0).get("maxPhys")!
-    expect(tunedLines.lineIndex).toBe(withFirstLine.lineIndex)
-    expect(tunedLines.chance * firstLine).toBeCloseTo(withFirstLine.chance, 15)
-  })
-
-  it("does not depend on whether the first line could roll at all", () => {
+  it("takes the first line as given, even one that could not roll", () => {
     const anyFirstLine = piece("disc", 96, ["maxPhys", "crit"])
     const unrollableFirstLine = piece("disc", 96, ["crit", "crit"])
-    expect(oneRetuneSetChance(unrollableFirstLine, null, library)!.chance).toBe(0)
     expect(oneRetuneTunedLinesChance(unrollableFirstLine, null, library)!.chance).toBeCloseTo(
       oneRetuneTunedLinesChance(anyFirstLine, null, library)!.chance,
       15,

@@ -11,7 +11,6 @@ import { isGearWordId } from "../../../../data/stats/statLines"
 import { gearWordPoolForLine } from "../../../../data/stats/gearWordPools"
 import {
   tunementDrawChances,
-  oneRetuneSetChance,
   oneRetuneTunedLinesChance,
   tunementSetChance,
   wordsOnOtherTunableLines,
@@ -164,14 +163,10 @@ export function GearPieceForm({
     return [{ value: "", label: t("common.none") }, ...list]
   }
   const setChance = tunementSetChance(piece, weaponTypeForSlot(inputs.classId, piece.slot))
-  const { oneRetune, oneRetuneTunedLines } = useMemo(() => {
+  const oneRetuneTunedLines = useMemo(() => {
     const attribute = attributeForClass(inputs.classId)
     const library = attribute ? retuneWeightPool(attribute, piece.level, piece.slot) : null
-    const weapon = weaponTypeForSlot(inputs.classId, piece.slot)
-    return {
-      oneRetune: oneRetuneSetChance(piece, weapon, library),
-      oneRetuneTunedLines: oneRetuneTunedLinesChance(piece, weapon, library),
-    }
+    return oneRetuneTunedLinesChance(piece, weaponTypeForSlot(inputs.classId, piece.slot), library)
   }, [piece, inputs.classId])
   const attunementCatalog = useMemo(
     () => attunementsFor(piece.slot, inputs.classId),
@@ -448,16 +443,6 @@ export function GearPieceForm({
               <HelpHint text={t("gear.pieceForm.tunementSetChanceHint")} />
             </span>
             <b>{formatSetChance(setChance)}</b>
-          </div>
-        )}
-        {oneRetune !== null && (
-          <div className={styles.tunementSetChance}>
-            <span>
-              {t("gear.pieceForm.oneRetuneChance")} ({t("gear.pieceForm.retunedLine")}{" "}
-              {oneRetune.lineIndex + 1})
-              <HelpHint text={t("gear.pieceForm.oneRetuneChanceHint")} />
-            </span>
-            <b>{formatSetChance(oneRetune.chance)}</b>
           </div>
         )}
         {oneRetuneTunedLines !== null && (

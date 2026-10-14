@@ -198,13 +198,3 @@ export function oneRetuneTunedLinesChance(
     }))
     .reduce((best, candidate) => (candidate.chance > best.chance ? candidate : best))
 }
-
-export function oneRetuneSetChance(
-  piece: GearPiece,
-  weapon: WeaponName | null,
-  library: readonly RetuneLine[] | null,
-): OneRetuneChance | null {
-  const tuned = oneRetuneTunedLinesChance(piece, weapon, library)
-  if (!tuned) return null
-  return { ...tuned, chance: firstLineChance(piece, drawsFor(piece, weapon)) * tuned.chance }
-}

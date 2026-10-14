@@ -218,12 +218,11 @@ describe("GearPieceForm — the draw chance in a tunement's word list", () => {
     ).toBeInTheDocument()
   })
 
-  it("shows the chance with one retune and names the retuned line", () => {
+  it("shows the chance of lines two to five with one retune and names the retuned line", () => {
     const piece = makePiece()
     piece.words[0] = { word: "maxPhys", value: 70, retuned: false }
     piece.words[1] = { word: "crit", value: 0.05, retuned: true }
     renderForm(piece)
-    expect(screen.getByText(/Chance with one retune \(line 2\)/)).toBeInTheDocument()
     expect(screen.getByText(/Lines 2–5 with one retune \(line 2\)/)).toBeInTheDocument()
   })
 
