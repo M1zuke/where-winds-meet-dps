@@ -12,6 +12,8 @@ import { getWordSpecs } from "../../src/engine/itemRanking"
 import { withDerivedStats } from "../../src/engine/derivedInputs"
 import { runEngine } from "../../src/engine/dps"
 import { computeGraduation } from "../../src/engine/dpsWorker"
+import { engineRunOptionsSharingQiOf } from "../../src/engine/qiBar"
+import { FPS } from "../../src/engine/timeline"
 import {
   followedGraduationBuild,
   followedGraduationBuildAmong,
@@ -27,6 +29,7 @@ import {
   GEAR_SLOTS,
   type GearLevel,
   type Inputs,
+  type Result,
 } from "../../src/engine/types"
 
 const GRADUATION_LEVEL: GearLevel = 96
@@ -346,9 +349,56 @@ describe("graduation build follows the current breakthrough's gear level", () =>
   })
 })
 
+function prep(inputs: Inputs): Inputs {
+  return applyBowSet(applyArmorSet(withDerivedStats(inputs)))
+}
+
+function ratedOnBenchmarkQi(inputs: Inputs): Result {
+  const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
+  return runEngine(
+    prep(graduationRatedInputs(inputs)!),
+    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
+  )
+}
+
+describe("the rated side shares the benchmark's Qi", () => {
+  it("scores the benchmark rated on its own Qi damage exactly as the benchmark", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+
+    expect(
+      runEngine(prep(graduationInputs(FOLLOWING)!), engineRunOptionsSharingQiOf(benchmarkRun, FPS))
+        .dps,
+    ).toBe(benchmarkRun.dps)
+  })
+
+  it("rates YOUR BUILD on the benchmark's Qi breaks, not its own", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+    const ratedOnOwnQi = runEngine(prep(graduationRatedInputs(FOLLOWING)!))
+    const ratedOnBenchmarkQiRun = ratedOnBenchmarkQi(FOLLOWING)
+
+    expect(ratedOnBenchmarkQiRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
+    expect(ratedOnOwnQi.qiBreaks).not.toEqual(benchmarkRun.qiBreaks)
+    expect(ratedOnBenchmarkQiRun.dps).not.toBe(ratedOnOwnQi.dps)
+  })
+
+  it("converges the rated run in one pass", () => {
+    expect(ratedOnBenchmarkQi(FOLLOWING).qiIterations).toBe(1)
+  })
+
+  it("leaves a run given no Qi damage log simulating its own bar", () => {
+    const before = runEngine(prep(FOLLOWING))
+    computeGraduation({ reqId: 22, inputs: FOLLOWING })
+    const after = runEngine(prep(FOLLOWING))
+
+    expect(after.dps).toBe(before.dps)
+    expect(after.qiBreaks).toEqual(before.qiBreaks)
+    expect(after.qiDamageLog).toEqual(before.qiDamageLog)
+  })
+})
+
 describe("computeGraduation", () => {
   it("matches the direct benchmark pipeline and current-to-theoretical ratio", () => {
-    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
+    const currentDps = ratedOnBenchmarkQi(FOLLOWING).dps
     const benchmarkInputs = graduationInputs(FOLLOWING)
     expect(benchmarkInputs).not.toBeNull()
     const theoreticalDps = dpsFor(benchmarkInputs!)
@@ -365,7 +415,7 @@ describe("computeGraduation", () => {
   })
 
   it("reports the relayed benchmark alongside the max-roll one, and rates against max rolls", () => {
-    const currentDps = dpsFor(graduationRatedInputs(FOLLOWING)!)
+    const currentDps = ratedOnBenchmarkQi(FOLLOWING).dps
     const relayedInputs = graduationInputs(FOLLOWING, "relayed")
     expect(relayedInputs).not.toBeNull()
 

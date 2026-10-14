@@ -762,6 +762,11 @@ itself exists; instead it is computed in pass 2, in time order, alongside
   error. A test-harness-only run option may pin the schedule to an exact set
   of windows for one pass with no iteration; it is never read from `Inputs`,
   storage or the UI.
+- **A run option may hand the bar another run's per-hit Qi damage log.** The bar
+  then spends that log at its own recorded frames, in order within each frame,
+  instead of this run's damage, and the iteration seeds from that run's breaks.
+  Only the graduation comparison sets it; it is never read from `Inputs`,
+  storage or the UI.
 - **The bar starts at its capacity; a hit landing while it is at zero deals
   no Qi**, the mass lost outright. The event that brings it to zero opens a
   timed break; at the break's end the bar is set back to a refill value and,

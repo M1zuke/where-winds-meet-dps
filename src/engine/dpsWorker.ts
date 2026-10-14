@@ -1,6 +1,6 @@
 import { runEngine } from "./dps"
 import { FPS } from "./timeline"
-import { engineRunOptionsFrom } from "./qiBar"
+import { engineRunOptionsFrom, engineRunOptionsSharingQiOf } from "./qiBar"
 import { applyPieceContribution, maxRelayedClone, relayedCapValue } from "./gearStats"
 import { computeRanking, getWordSpecs } from "./itemRanking"
 import { computeGearAnalysis, type GearSlotAnalysisRow } from "./gearAnalysis"
@@ -52,6 +52,7 @@ import type {
   Inputs,
   ItemRankingRow,
   OutcomeCounts,
+  Result,
   SkillTickResult,
 } from "./types"
 
@@ -889,9 +890,13 @@ export interface GraduationWorkerResponse {
   graduationRate: number | null
 }
 
-function dpsFor(inputs: Inputs): number {
+function resultFor(inputs: Inputs, options?: EngineRunOptions): Result {
   const derived = withDerivedStats(inputs)
-  return runEngine(applyBowSet(applyArmorSet(derived))).dps
+  return runEngine(applyBowSet(applyArmorSet(derived)), options)
+}
+
+function dpsFor(inputs: Inputs): number {
+  return resultFor(inputs).dps
 }
 
 function computeSetTiles(req: SetTilesWorkerRequest): SetTilesWorkerResponse {
@@ -936,8 +941,9 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
       graduationRate: null,
     }
   }
-  const currentDps = dpsFor(currentInputs)
-  const theoreticalDps = dpsFor(benchmarkInputs)
+  const benchmarkRun = resultFor(benchmarkInputs)
+  const theoreticalDps = benchmarkRun.dps
+  const currentDps = resultFor(currentInputs, engineRunOptionsSharingQiOf(benchmarkRun, FPS)).dps
   return {
     reqId: req.reqId,
     currentDps,

@@ -1,6 +1,7 @@
 import type { GearWordId } from "../data/stats/statLines"
 import type { CustomGraduationBuild } from "./customGraduationBuild"
 import type { Rotation } from "./rotation"
+import type { QiDamageLog } from "./qiBar"
 import type { QiTargetId } from "../definitions/baseStats/qiTargetDef"
 
 export type { GearWordId } from "../data/stats/statLines"
@@ -350,6 +351,7 @@ export interface EngineRunOptions {
   // single pass, no fixed-point iteration. Never read from `Inputs`, storage
   // or the UI.
   fixedQiBreaks?: readonly QiBreakWindow[]
+  qiDamageLog?: QiDamageLog
 }
 
 export interface QiTracePoint {
@@ -403,6 +405,7 @@ export interface Result {
   // § "Qi bar". `qiBreakWindow` stays the first one, for the existing lane.
   qiBreaks?: readonly { startSec: number; endSec: number }[]
   qiTrace?: QiTrace
+  qiDamageLog?: QiDamageLog
   // How many fixed-point passes the simulated schedule took to converge.
   qiIterations?: number
   casts?: RotationCast[]

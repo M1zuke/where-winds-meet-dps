@@ -7,14 +7,17 @@ import {
   newCustomGraduationBuildId,
 } from "../../src/engine/customGraduationBuild"
 import type { CustomGraduationBuild } from "../../src/engine/customGraduationBuild"
+import { defaultInputs } from "../../src/engine/defaults"
+import { computeGraduation } from "../../src/engine/dpsWorker"
 import { followedGraduationBuild, graduationBuildsForProfile } from "../../src/engine/graduation"
-import { GEAR_SLOTS } from "../../src/engine/types"
+import type { Inputs } from "../../src/engine/types"
+import { defaultCombatSettings, GEAR_SLOTS } from "../../src/engine/types"
 
 const CLASS = "bellstrikeUmbra"
 const OTHER_CLASS = "stonesplitStrength"
 
-function customFrom(classId: string): CustomGraduationBuild {
-  const shipped = classDefinition(classId)!.graduationBuilds[0]
+function customFrom(classId: string, buildIndex = 0): CustomGraduationBuild {
+  const shipped = classDefinition(classId)!.graduationBuilds[buildIndex]
   const now = new Date().toISOString()
   return {
     id: newCustomGraduationBuildId(),
@@ -107,5 +110,87 @@ describe("a build the user authored", () => {
     expect(isCustomGraduationBuild(badWord)).toBe(false)
     expect(isCustomGraduationBuild(badAttunement)).toBe(false)
     expect(isCustomGraduationBuild(custom)).toBe(true)
+  })
+})
+
+describe("a build the user authored, rated for graduation", { timeout: 30_000 }, () => {
+  const COPIED_BUILDS = ["bellstrikeUmbra", "bamboocutDraught"].flatMap((classId) =>
+    classDefinition(classId)!.graduationBuilds.map((build) => [build.id, classId, build] as const),
+  )
+
+  it.each(COPIED_BUILDS)(
+    "a copy of %s rates and benchmarks exactly as the build it was copied from",
+    (shippedId, classId, shipped) => {
+      const copy = customFrom(classId, classDefinition(classId)!.graduationBuilds.indexOf(shipped))
+      const following = (graduationBuildId: string): Inputs => ({
+        ...defaultInputs,
+        classId,
+        customGraduationBuild: copy,
+        graduationBuildId,
+      })
+
+      expect(computeGraduation({ reqId: 22, inputs: following(copy.id) })).toEqual(
+        computeGraduation({ reqId: 22, inputs: following(shippedId) }),
+      )
+    },
+  )
+
+  it("rates the same however the profile's own encounter and inner ways are set", () => {
+    const copy = customFrom(CLASS)
+    const plain: Inputs = {
+      ...defaultInputs,
+      classId: CLASS,
+      customGraduationBuild: copy,
+      graduationBuildId: copy.id,
+    }
+    const tinkered: Inputs = {
+      ...plain,
+      dummyMode: true,
+      food: false,
+      divinecraft: "poison",
+      shareDebuff5HenZhi: true,
+      shareEasyHurt: true,
+      combatSettings: {
+        ...defaultCombatSettings(),
+        script: "wraithstrikeScript",
+        dragonsBreath: true,
+        healerBuff: true,
+        breakExtension: true,
+      },
+      mindMethods: [
+        { id: "bitterSeason", name: "Bitter Season", stacks: "tier 5" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+        { name: "", stacks: "" },
+      ],
+    }
+
+    expect(computeGraduation({ reqId: 23, inputs: tinkered })).toEqual(
+      computeGraduation({ reqId: 23, inputs: plain }),
+    )
+  })
+
+  it("takes the encounter of the shipped build on its own rotation", () => {
+    const shippedBuilds = classDefinition(CLASS)!.graduationBuilds
+    const shipped = shippedBuilds.find((build) => build.id.endsWith("st-burst"))!
+    const copy = customFrom(CLASS, shippedBuilds.indexOf(shipped))
+    const offered = graduationBuildsForProfile({ classId: CLASS, customGraduationBuild: copy })
+
+    expect(shipped.standardized).toBeDefined()
+    expect(offered[offered.length - 1].standardized).toBe(shipped.standardized)
+  })
+
+  it("falls back to the class's first standard on a rotation no shipped build runs", () => {
+    const shippedBuilds = classDefinition(CLASS)!.graduationBuilds
+    const usedRotations = shippedBuilds.map((build) => build.rotationId)
+    const unusedRotation = classDefinition(CLASS)!.rotations.find(
+      (rotation) => !usedRotations.includes(rotation.id),
+    )!
+    const copy = { ...customFrom(CLASS), rotationId: unusedRotation.id }
+    const offered = graduationBuildsForProfile({ classId: CLASS, customGraduationBuild: copy })
+
+    expect(offered[offered.length - 1].standardized).toBe(
+      shippedBuilds.find((build) => build.standardized)!.standardized,
+    )
   })
 })

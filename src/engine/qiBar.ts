@@ -3,9 +3,11 @@
 // timeline pass, in frame order, from each scored event's own finished
 // damage — docs/CALCULATION.md § "Qi damage" and docs/TIMELINE.md § "Qi bar".
 import type { QiPhase } from "./effects/context"
-import type { EngineRunOptions, QiTrace } from "./types"
+import type { EngineRunOptions, QiTrace, Result } from "./types"
 
 export type QiHitKind = "direct" | "dot"
+
+export type QiDamageLog = readonly { frame: number; qi: number; kind: QiHitKind }[]
 
 export interface QiTargetBar {
   max: number
@@ -194,6 +196,13 @@ export function qiScheduleSeedBreaksFrom(
   })
 }
 
+export function engineRunOptionsSharingQiOf(run: Result, fps: number): EngineRunOptions {
+  return {
+    qiScheduleSeedBreaks: qiScheduleSeedBreaksFrom(run.qiBreaks, fps),
+    qiDamageLog: run.qiDamageLog,
+  }
+}
+
 // docs/UI.md § "The rules", "warm-start" — every repeated-sweep caller builds
 // its options this way, whether the seed is an outer baseline or a nearby
 // call's own already-converged schedule.
@@ -276,17 +285,21 @@ export class QiBar {
   private value: number
   private readonly breaks: QiBreak[] = []
   private readonly trace: { frame: number; value: number; refill?: true }[]
+  private readonly log: { frame: number; qi: number; kind: QiHitKind }[] = []
+  private replayCursor = 0
 
   constructor(
     private readonly bar: QiTargetBar,
     private readonly fps: number,
+    private readonly replayed?: QiDamageLog,
   ) {
     this.value = bar.max
     this.trace = [{ frame: Number.NEGATIVE_INFINITY, value: this.value }]
   }
 
   isBrokenAtFrame(frame: number): boolean {
-    return this.breaks.some((b) => frame >= b.startFrame && frame < b.endFrame)
+    this.spendReplayedBefore(frame)
+    return this.brokenAt(frame)
   }
 
   fractionAtFrame(frame: number): number {
@@ -294,8 +307,42 @@ export class QiBar {
     return this.bar.max > 0 ? Math.max(0, Math.min(1, this.value / this.bar.max)) : 0
   }
 
+  damageLog(): QiDamageLog {
+    return this.log
+  }
+
   apply(frame: number, qi: number, kind: QiHitKind): void {
-    if (!qi || this.isBrokenAtFrame(frame)) return
+    this.log.push({ frame, qi, kind })
+    if (!this.replayed) {
+      this.spend(frame, qi, kind)
+      return
+    }
+    this.spendReplayedBefore(frame)
+    if (this.replayed[this.replayCursor]?.frame === frame) this.spendNextReplayed()
+  }
+
+  private spendReplayedBefore(frame: number): void {
+    while (this.replayed && this.replayCursor < this.replayed.length) {
+      if (this.replayed[this.replayCursor].frame >= frame) return
+      this.spendNextReplayed()
+    }
+  }
+
+  private brokenAt(frame: number): boolean {
+    return this.breaks.some((b) => frame >= b.startFrame && frame < b.endFrame)
+  }
+
+  private spendRemainingReplayed(): void {
+    while (this.replayed && this.replayCursor < this.replayed.length) this.spendNextReplayed()
+  }
+
+  private spendNextReplayed(): void {
+    const entry = this.replayed![this.replayCursor++]
+    this.spend(entry.frame, entry.qi, entry.kind)
+  }
+
+  private spend(frame: number, qi: number, kind: QiHitKind): void {
+    if (!qi || this.brokenAt(frame)) return
     const lastBreak = this.breaks[this.breaks.length - 1]
     if (kind === "direct" && lastBreak && frame < lastBreak.immuneUntilFrame) return
     const next = Math.max(0, this.value - qi)
@@ -313,10 +360,12 @@ export class QiBar {
 
   // Frame-exact, for the fixed-point iteration's own convergence check.
   breaksFrames(): readonly QiBreak[] {
+    this.spendRemainingReplayed()
     return this.breaks
   }
 
   displayTrace(): QiTrace {
+    this.spendRemainingReplayed()
     return {
       max: this.bar.max,
       points: this.trace.slice(1).map((point) => ({
@@ -334,6 +383,7 @@ export class QiBar {
   }
 
   schedule(): QiSchedule {
+    this.spendRemainingReplayed()
     const trace = this.trace
     const max = this.bar.max
     const fractionAt = (frame: number, reading: QiReading): number => {

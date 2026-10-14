@@ -89,9 +89,10 @@ encounter setting, plus the slotted inner ways and their tiers. A setting the
 build does not name is off, the profile's own selection is ignored on both sides
 of the rate, and every number outside the rate keeps following that selection.
 The break window is the one setting a build cannot fix: it stays the rotation's
-own — in simulated mode the break follows the damage of the build under test,
-never a fixed number either side can carry across the comparison. A build that
-fixes nothing rates the profile exactly as it is set.
+own. The benchmark simulates its own Qi bar, and the user's side spends the
+benchmark's Qi damage hit for hit, so both sides break where the benchmark
+breaks; every number outside the rate keeps the profile's own simulated bar. A
+build that fixes nothing rates the profile exactly as it is set.
 
 **The same slotted inner ways also seed a profile that has none of its own** —
 a freshly created profile of the class, or an existing one switched into the
@@ -113,7 +114,10 @@ lives in its own store and never in the profile blob, reaching the engine the
 way every other user-authored entity does: injected at the boundary and filtered
 by class. Only its stat lines and attunements are chosen — every value is the
 maximum for the gear level, as a benchmark's is. A class carries at most one,
-and it stands beside the shipped builds everywhere those are listed.
+and it stands beside the shipped builds everywhere those are listed. It is rated
+in the encounter its class's shipped build on the same rotation fixes, or the
+first one any shipped build of the class fixes when none runs that rotation;
+only when no shipped build fixes one is it rated on the profile as set.
 
 **A gear piece is an heirloom when its five stat lines are the ones some
 graduation build's piece for that slot carries** — any build of the class, in
