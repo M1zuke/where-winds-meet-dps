@@ -81,17 +81,30 @@ function applyBestAttunement(
   return bestPiece
 }
 
+export interface FullPotential {
+  piece: GearPiece
+  level: GearLevel
+}
+
+export interface FullPotentialDps {
+  dps: number
+  level: GearLevel
+}
+
 export function getFTPiece(
   piece: GearPiece,
   inputs: Inputs,
   options?: EngineRunOptions,
-): GearPiece {
+): FullPotential {
   const baseline = slotEmptyBaseline(piece.slot, inputs)
   const breakthroughLevel = gearLevelForBreakthrough(inputs.breakthrough)
 
   if (piece.relayed) {
     const relayedClone = maxRelayedClone(piece, inputs, breakthroughLevel)
-    return applyBestAttunement(relayedClone, inputs, baseline, breakthroughLevel, options)
+    return {
+      piece: applyBestAttunement(relayedClone, inputs, baseline, breakthroughLevel, options),
+      level: breakthroughLevel,
+    }
   }
 
   const referenceRun = runEngine(applyPieceContribution(baseline, piece, +1), options)
@@ -108,24 +121,31 @@ export function getFTPiece(
   )
   const relayedDps = runEngine(applyPieceContribution(baseline, relayed, +1), sweepOptions).dps
   const relayWins = relayedDps > retunedDps
+  const level = relayWins ? breakthroughLevel : piece.level
 
-  return applyBestAttunement(
-    relayWins ? relayed : retuned,
-    inputs,
-    baseline,
-    relayWins ? breakthroughLevel : piece.level,
-    sweepOptions,
-  )
+  return {
+    piece: applyBestAttunement(
+      relayWins ? relayed : retuned,
+      inputs,
+      baseline,
+      level,
+      sweepOptions,
+    ),
+    level,
+  }
 }
 
 export function ftDpsWhenEquipped(
   piece: GearPiece,
   inputs: Inputs,
   options?: EngineRunOptions,
-): number {
+): FullPotentialDps {
   const baseline = slotEmptyBaseline(piece.slot, inputs)
   const ft = getFTPiece(piece, inputs, options)
-  return runEngine(applyPieceContribution(baseline, ft, +1), options).dps
+  return {
+    dps: runEngine(applyPieceContribution(baseline, ft.piece, +1), options).dps,
+    level: ft.level,
+  }
 }
 
 export function ftDpsWithSlotEmpty(

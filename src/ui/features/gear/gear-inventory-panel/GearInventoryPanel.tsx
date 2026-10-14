@@ -9,6 +9,7 @@ import { sortInventoryRowsByDps, type InventoryRow } from "./inventoryRows"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
 import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { targetLevelLabel } from "../shared/targetLevelLabel"
 import styles from "./GearInventoryPanel.module.scss"
 
 interface Props {
@@ -111,19 +112,19 @@ export function GearInventoryPanel({
             pending={dpsDeltasPending}
           />
           <Stat
-            label={t("gear.inventory.max94")}
+            label={targetLevelLabel(t("gear.inventory.max94"), piece.level, delta?.upgradedLevel)}
             hint={t(DELTA_HINT_KEYS.upgraded)}
             delta={delta?.upgraded}
             pending={dpsDeltasPending}
           />
           <Stat
-            label="FP"
+            label={targetLevelLabel("FP", piece.level, delta?.fullPotentialLevel)}
             hint={t(DELTA_HINT_KEYS.fullPotential)}
             delta={delta?.fullPotential}
             pending={dpsDeltasPending}
           />
           <Stat
-            label="FP(E)"
+            label={targetLevelLabel("FP(E)", piece.level, delta?.fullPotentialLevel)}
             hint={t(DELTA_HINT_KEYS.fullPotentialE)}
             delta={delta?.fullPotentialE}
             pending={dpsDeltasPending}
