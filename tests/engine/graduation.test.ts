@@ -361,6 +361,14 @@ function ratedOnBenchmarkQi(inputs: Inputs): Result {
   )
 }
 
+function relayedOnBenchmarkQi(inputs: Inputs): Result {
+  const benchmarkRun = runEngine(prep(graduationInputs(inputs)!))
+  return runEngine(
+    prep(graduationInputs(inputs, "relayed")!),
+    engineRunOptionsSharingQiOf(benchmarkRun, FPS),
+  )
+}
+
 describe("the rated side shares the benchmark's Qi", () => {
   it("scores the benchmark rated on its own Qi damage exactly as the benchmark", () => {
     const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
@@ -421,9 +429,32 @@ describe("computeGraduation", () => {
 
     const response = computeGraduation({ reqId: 18, inputs: FOLLOWING })
 
-    expect(response.relayedTheoreticalDps).toBe(dpsFor(relayedInputs!))
+    expect(response.relayedTheoreticalDps).toBe(relayedOnBenchmarkQi(FOLLOWING).dps)
     expect(response.relayedTheoreticalDps!).toBeLessThan(response.theoreticalDps!)
     expect(response.graduationRate).toBe(currentDps / response.theoreticalDps!)
+  })
+
+  it("the relayed figure breaks Qi where the benchmark breaks", () => {
+    const benchmarkRun = runEngine(prep(graduationInputs(FOLLOWING)!))
+    const relayedOnOwnQi = runEngine(prep(graduationInputs(FOLLOWING, "relayed")!))
+    const relayedRun = relayedOnBenchmarkQi(FOLLOWING)
+
+    expect(relayedRun.qiBreaks).toEqual(benchmarkRun.qiBreaks)
+    expect(relayedRun.dps).not.toBe(relayedOnOwnQi.dps)
+  })
+
+  it("a profile wearing exactly the relayed gear rates exactly the relayed figure", () => {
+    const wearingRelayedGear: Inputs = {
+      ...FOLLOWING,
+      ...graduationInputs(FOLLOWING, "relayed")!,
+    }
+
+    const response = computeGraduation({ reqId: 23, inputs: wearingRelayedGear })
+
+    expect(response.currentDps).toBe(response.relayedTheoreticalDps)
+    expect(response.currentDps).toBe(
+      computeGraduation({ reqId: 23, inputs: FOLLOWING }).relayedTheoreticalDps,
+    )
   })
 
   it("rates the build and the benchmark on the graduation rotation, whichever rotation the build has selected", () => {

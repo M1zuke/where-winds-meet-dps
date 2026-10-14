@@ -89,10 +89,11 @@ encounter setting, plus the slotted inner ways and their tiers. A setting the
 build does not name is off, the profile's own selection is ignored on both sides
 of the rate, and every number outside the rate keeps following that selection.
 The break window is the one setting a build cannot fix: it stays the rotation's
-own. The benchmark simulates its own Qi bar, and the user's side spends the
-benchmark's Qi damage hit for hit, so both sides break where the benchmark
-breaks; every number outside the rate keeps the profile's own simulated bar. A
-build that fixes nothing rates the profile exactly as it is set.
+own. The max-roll benchmark simulates its own Qi bar, and every other
+graduation run — the user's side and the relayed benchmark — spends that
+benchmark's Qi damage hit for hit, so all of them break where it breaks; every
+number outside the graduation comparison keeps the profile's own simulated bar.
+A build that fixes nothing rates the profile exactly as it is set.
 
 **The same slotted inner ways also seed a profile that has none of its own** —
 a freshly created profile of the class, or an existing one switched into the

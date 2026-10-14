@@ -943,12 +943,13 @@ function computeGraduation(req: GraduationWorkerRequest): GraduationWorkerRespon
   }
   const benchmarkRun = resultFor(benchmarkInputs)
   const theoreticalDps = benchmarkRun.dps
-  const currentDps = resultFor(currentInputs, engineRunOptionsSharingQiOf(benchmarkRun, FPS)).dps
+  const sharedQiOptions = engineRunOptionsSharingQiOf(benchmarkRun, FPS)
+  const currentDps = resultFor(currentInputs, sharedQiOptions).dps
   return {
     reqId: req.reqId,
     currentDps,
     theoreticalDps,
-    relayedTheoreticalDps: dpsFor(relayedInputs),
+    relayedTheoreticalDps: resultFor(relayedInputs, sharedQiOptions).dps,
     graduationRate: theoreticalDps > 0 ? currentDps / theoreticalDps : null,
   }
 }
