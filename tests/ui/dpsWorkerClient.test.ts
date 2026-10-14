@@ -604,7 +604,14 @@ describe("dpsWorkerClient", () => {
         kind: "equippedDeltas",
         reqId: shard.reqId,
         deltas: {
-          [`piece${at}`]: { current: at, upgraded: at, fullPotential: at, fullPotentialE: at },
+          [`piece${at}`]: {
+            current: at,
+            upgraded: at,
+            upgradedLevel: 96,
+            fullPotential: at,
+            fullPotentialE: at,
+            fullPotentialLevel: 96,
+          },
         },
       })
       if (at < shards.length - 1) expect(seen).toHaveLength(0)

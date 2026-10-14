@@ -8,6 +8,7 @@ import type { DpsDeltaMap } from "../../../hooks/useDpsDeltas"
 import { HelpHint } from "../../../components/help-hint/HelpHint"
 import { DELTA_HINT_KEYS } from "../help-hint/deltaHintKeys"
 import { gearSlotLabelKey } from "../shared/gearSlotKeys"
+import { targetLevelLabel } from "../shared/targetLevelLabel"
 import styles from "./GearSlotTiles.module.scss"
 
 interface Props {
@@ -99,13 +100,17 @@ export function GearSlotTiles({
             {piece && (
               <div className={styles.gearTileStats} style={{ opacity: dpsDeltasPending ? 0.6 : 1 }}>
                 <SlotStat
-                  label={t("gear.slotTiles.max94")}
+                  label={targetLevelLabel(
+                    t("gear.slotTiles.max94"),
+                    piece.level,
+                    delta?.upgradedLevel,
+                  )}
                   hint={t(DELTA_HINT_KEYS.upgraded)}
                   delta={delta?.upgraded}
                   pending={dpsDeltasPending}
                 />
                 <SlotStat
-                  label="FP"
+                  label={targetLevelLabel("FP", piece.level, delta?.fullPotentialLevel)}
                   hint={t(DELTA_HINT_KEYS.fullPotential)}
                   delta={delta?.fullPotential}
                   pending={dpsDeltasPending}
