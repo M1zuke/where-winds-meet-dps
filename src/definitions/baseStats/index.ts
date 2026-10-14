@@ -367,8 +367,8 @@ export function totalPlayerAttributes(
     power: fromBreakthrough.power + gear.power,
     agility: fromBreakthrough.agility + gear.agility,
     momentum: fromBreakthrough.momentum + gear.momentum,
-    body: fromBreakthrough.body,
-    defense: fromBreakthrough.defense,
+    body: fromBreakthrough.body + gear.body,
+    defense: fromBreakthrough.defense + gear.defense,
   }
 }
 
@@ -381,11 +381,12 @@ export function totalMaxHp(
   arsenalScores: ArsenalScores = DEFAULT_ARSENAL_SCORES,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
+  const gear = gearAttributeTotals(equippedPieces)
   return (
     acc.hp +
     gearHpTotal(equippedPieces) +
-    acc.body * BODY_PER_POINT.hp +
-    acc.defense * DEFENSE_PER_POINT.hp +
+    (acc.body + gear.body) * BODY_PER_POINT.hp +
+    (acc.defense + gear.defense) * DEFENSE_PER_POINT.hp +
     arsenalHp(breakthrough, arsenalScores) +
     enhancementHpTotal(enhancements) +
     averageEnhancementBonus(enhancements).maxHp +
@@ -421,10 +422,11 @@ export function totalPhysDef(
   armorSetPhysDef = 0,
 ): number {
   const acc = accumulatorFor(breakthrough, disabled)
+  const gear = gearAttributeTotals(equippedPieces)
   return (
     acc.physDef +
     gearPhysDefTotal(equippedPieces) +
-    acc.defense * DEFENSE_PER_POINT.physDef +
+    (acc.defense + gear.defense) * DEFENSE_PER_POINT.physDef +
     enhancementPhysDefTotal(enhancements) +
     oddityPhysDefTotal(unclaimedOddityNodes) +
     armorSetPhysDef

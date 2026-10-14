@@ -1302,6 +1302,7 @@
   "content.statLine.crit": "치명타 확률",
   "content.statLine.critDamageBoost": "치명타 피해 보너스",
   "content.statLine.damageVsBoss": "BOSS 유닛 효과 증가",
+  "content.statLine.damageVsPlayer": "",
   "content.statLine.defense": "",
   "content.statLine.directAffinityRate": "추가 각성 확률",
   "content.statLine.directCritRate": "추가 치명타 확률",

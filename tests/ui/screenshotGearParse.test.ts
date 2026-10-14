@@ -183,6 +183,54 @@ Power +46.4
     expect(piece.words[1]).toEqual({ word: "maxFormless", value: 41.2, retuned: false })
   })
 
+  it("reads a Max HP row on a weapon's retuned line as the Max HP word", () => {
+    const transcript = `
+Mirage Sentinel
+Relaying · Tier 96
+Max Physical Attack +73.1
+Momentum +45.9
+Affinity Rate +4.1%
+Max HP +2898
+Power +46.4
+Physical Penetration +10.7
+`
+    const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT)
+
+    expect(piece.words[3]).toEqual({ word: "maxHp", value: 2898, retuned: false })
+  })
+
+  it("reads a Physical Defense row as the Physical Defense word, not Defense", () => {
+    const transcript = `
+Mirage Sentinel
+Relaying · Tier 96
+Max Physical Attack +73.1
+Momentum +45.9
+Affinity Rate +4.1%
+Physical Defense +30.5
+Power +46.4
+Physical Penetration +10.7
+`
+    const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT)
+
+    expect(piece.words[3]).toEqual({ word: "physDef", value: 30.5, retuned: false })
+  })
+
+  it("reads a Defense row as the Defense word", () => {
+    const transcript = `
+Mirage Sentinel
+Relaying · Tier 96
+Max Physical Attack +73.1
+Momentum +45.9
+Affinity Rate +4.1%
+Defense +40.2
+Power +46.4
+Physical Penetration +10.7
+`
+    const { piece } = parseGearScreenshot(transcript, inputs, FALLBACK_SLOT)
+
+    expect(piece.words[3]).toEqual({ word: "defense", value: 40.2, retuned: false })
+  })
+
   it("leaves an unreadable stat name unresolved and names the row in the report, never resolving to the nearest label", () => {
     const transcript = `
 Mystery Piece

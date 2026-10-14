@@ -118,6 +118,11 @@ function buildWordSpecs(inputs: Inputs, level: GearLevel): WordSpec<GearWordId>[
     wordSpec("allMartialBoost", (x, roll) => {
       x.allMartialBoost += roll
     }),
+    wordSpec("maxHp", () => {}),
+    wordSpec("body", () => {}),
+    wordSpec("defense", () => {}),
+    wordSpec("physDef", () => {}),
+    wordSpec("damageVsPlayer", () => {}),
   ]
   for (const weapon of [primaryWeapon, secondaryWeapon]) {
     if (!weapon) continue

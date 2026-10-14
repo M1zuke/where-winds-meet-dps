@@ -4,6 +4,7 @@ import {
   computeGearContribution,
   gearAttributeTotals,
   gearHpTotal,
+  gearPhysDefTotal,
   maxRelayedClone,
   relayedCapValue,
 } from "../../src/engine/gearStats"
@@ -350,6 +351,73 @@ describe("a word outside the line's own pool scores as nothing", () => {
     const weapon = weaponPiece()
     const expected = gearBaseStatsFor(armor).hp
     expect(gearHpTotal([armor, weapon])).toBe(expected)
+  })
+
+  it("a Max HP line on a weapon's retuned line adds nothing to the damage inputs", () => {
+    const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+    const emptyLines = weaponPieceWithFirstLine("", 0, false)
+    emptyLines.words[1] = { word: "", value: 0, retuned: false }
+    const maxHpLine = weaponPieceWithFirstLine("", 0, false)
+    maxHpLine.words[1] = { word: "maxHp", value: 2000, retuned: true }
+    expect(computeGearContribution(maxHpLine, inputs)).toEqual(
+      computeGearContribution(emptyLines, inputs),
+    )
+  })
+
+  it("gearHpTotal adds a Max HP line from any slot, weapons included", () => {
+    const armor = armorPiece()
+    const weapon = weaponPieceWithFirstLine("", 0, false)
+    weapon.words[1] = { word: "maxHp", value: 1500, retuned: true }
+    armor.words[0] = { word: "maxHp", value: 800, retuned: false }
+    expect(gearHpTotal([armor, weapon])).toBe(gearBaseStatsFor(armor).hp + 800 + 1500)
+  })
+
+  it("gearHpTotal ignores a Max HP line on a weapon's first line, which can never roll it", () => {
+    const weapon = weaponPieceWithFirstLine("maxHp", 1500, false)
+    expect(gearHpTotal([weapon])).toBe(0)
+  })
+
+  it("gearPhysDefTotal adds a Physical Defense line from any slot, weapons included", () => {
+    const armor = armorPiece()
+    const weapon = weaponPieceWithFirstLine("", 0, false)
+    weapon.words[1] = { word: "physDef", value: 30, retuned: true }
+    armor.words[0] = { word: "physDef", value: 20, retuned: false }
+    expect(gearPhysDefTotal([armor, weapon])).toBe(gearBaseStatsFor(armor).physDef + 20 + 30)
+  })
+
+  it("gearPhysDefTotal ignores a Physical Defense line on a weapon's first line", () => {
+    const weapon = weaponPieceWithFirstLine("physDef", 30, false)
+    expect(gearPhysDefTotal([weapon])).toBe(0)
+  })
+
+  it("gearAttributeTotals sums Constitution and Defense lines", () => {
+    const greaves: GearPiece = {
+      ...armorPiece(),
+      slot: "greaves",
+      words: [
+        { word: "body", value: 30, retuned: false },
+        { word: "defense", value: 25, retuned: true },
+        { word: "body", value: 10, retuned: true },
+        { word: "", value: 0, retuned: false },
+        { word: "", value: 0, retuned: false },
+      ],
+    }
+    const totals = gearAttributeTotals([greaves])
+    expect(totals.body).toBe(40)
+    expect(totals.defense).toBe(25)
+  })
+
+  it("a Constitution, Defense or Physical Defense line on a weapon's retuned line adds nothing to the damage inputs", () => {
+    const inputs: Inputs = { ...defaultInputs, classId: "bellstrikeUmbra" }
+    const emptyLines = weaponPieceWithFirstLine("", 0, false)
+    emptyLines.words[1] = { word: "", value: 0, retuned: false }
+    for (const word of ["body", "defense", "physDef"] as const) {
+      const inertLine = weaponPieceWithFirstLine("", 0, false)
+      inertLine.words[1] = { word, value: 30, retuned: true }
+      expect(computeGearContribution(inertLine, inputs), word).toEqual(
+        computeGearContribution(emptyLines, inputs),
+      )
+    }
   })
 
   it("gearHpTotal reads the level's base HP rather than the piece's own hp field", () => {

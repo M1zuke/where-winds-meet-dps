@@ -164,6 +164,36 @@ describe("the shipped affix table is the authority", () => {
     }
   })
 
+  it("maps every gear-level Max HP affix to the Max HP word", () => {
+    for (const affixId of ["8741001", "9293006", "9741001", "9793106", "10694106"]) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe("word:maxHp")
+    }
+  })
+
+  it("maps gear-level Physical Defense, Constitution, Defense and Boost Vs. Player Units affixes to their words", () => {
+    const expected: Record<string, string> = {
+      "8743002": "word:physDef",
+      "9293009": "word:physDef",
+      "9793109": "word:physDef",
+      "10694109": "word:physDef",
+      "8753006": "word:body",
+      "9293001": "word:body",
+      "9793101": "word:body",
+      "10694101": "word:body",
+      "8793003": "word:defense",
+      "9293003": "word:defense",
+      "9793103": "word:defense",
+      "10694103": "word:defense",
+      "8793036": "word:damageVsPlayer",
+      "9293034": "word:damageVsPlayer",
+      "9793125": "word:damageVsPlayer",
+      "10693125": "word:damageVsPlayer",
+    }
+    for (const [affixId, statLine] of Object.entries(expected)) {
+      expect(AFFIX_ID_TO_STAT_LINE[affixId], affixId).toBe(statLine)
+    }
+  })
+
   it("maps the Art of Fan/Umbrella ids that replace the DMG Boost line from gear level 91 on", () => {
     for (const affixId of [
       "9293026",
