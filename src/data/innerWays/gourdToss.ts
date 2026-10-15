@@ -11,7 +11,7 @@ export const gourdToss = defineInnerWay({
   id: INNER_WAY_ID.gourdToss,
   name: "Gourd Toss",
   selectableTiers: [6],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.gourdToss,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.precisionFourStar },

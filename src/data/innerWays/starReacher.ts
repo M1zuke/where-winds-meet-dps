@@ -9,7 +9,7 @@ export const starReacher = defineInnerWay({
   id: INNER_WAY_ID.starReacher,
   name: "Star Reacher",
   selectableTiers: [6, 5, 2],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.starReacher,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.weaponAttackFourStar },

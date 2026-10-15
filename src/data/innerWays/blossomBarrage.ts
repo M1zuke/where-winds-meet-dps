@@ -13,7 +13,7 @@ export const blossomBarrage: InnerWayDef = defineInnerWay({
   id: INNER_WAY_ID.blossomBarrage,
   name: "Blossom Barrage",
   selectableTiers: [6, 5, 4, 2],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.blossomBarrage,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.critRateFiveStar },

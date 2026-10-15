@@ -7,7 +7,7 @@ export const throatPierce = defineInnerWay({
   id: INNER_WAY_ID.throatPierce,
   name: "Throat-Pierce",
   selectableTiers: [6, 5],
-  confirmedBreakthrough: 17,
+  confirmedBreakthrough: 21,
   buffParam: PARAM.throatPierced,
   tiers: {
     2: { ladder: INNER_WAY_LADDER.attributeAttackFourStar },
