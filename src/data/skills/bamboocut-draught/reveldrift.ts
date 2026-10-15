@@ -5,22 +5,22 @@ import { BUFF } from "../buffs/ids"
 import { DEBUFF, SKILL } from "./ids"
 import { CLASS_RECEIVES, RIVEN_TWINBLADES_RECEIVES } from "./receives"
 
-// Hit frames: in-game animation colliders, 2026-09-05.
+// In-game values as of 2026-10-15.
 export const reveldriftHits = [
   hit(0, {
-    frame: 19,
-    physMultiplier: 0.528025,
-    attributeMultiplier: 0.7920375,
-    physFixed: 146.5,
-    attributeFixed: 80,
+    frame: 20,
+    physMultiplier: 0.2640125,
+    attributeMultiplier: 0.39601875,
+    physFixed: 73.25,
+    attributeFixed: 40,
     triggers: [applyDebuff({ target: DEBUFF.strayhunt, stacks: 1 })],
   }),
   hit(1, {
     frame: 24,
-    physMultiplier: 0.528025,
-    attributeMultiplier: 0.7920375,
-    physFixed: 146.5,
-    attributeFixed: 80,
+    physMultiplier: 0.2640125,
+    attributeMultiplier: 0.39601875,
+    physFixed: 73.25,
+    attributeFixed: 40,
   }),
 ]
 
@@ -45,5 +45,5 @@ export const reveldrift = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: reveldriftHits,
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -241,6 +241,9 @@ export interface Skill {
   // A count of further server round trips this cast's own timeline waits for,
   // beyond the start wait — docs/TIMELINE.md § "Coefficients". Absent means 0.
   serverWaitsInCast?: number
+  // Its keyframe timers are armed one render frame early — docs/TIMELINE.md
+  // § "Coefficients". Absent means false.
+  keyframesLeadByRenderFrame?: boolean
   createdAt: string
   updatedAt: string
 }
@@ -738,6 +741,11 @@ export function isSkill(x: unknown): x is Skill {
   )
     return false
   if (
+    s.keyframesLeadByRenderFrame !== undefined &&
+    typeof s.keyframesLeadByRenderFrame !== "boolean"
+  )
+    return false
+  if (
     s.cancelledBy !== undefined &&
     s.cancelledBy !== "deflectCancel" &&
     s.cancelledBy !== "nextSkill"
@@ -794,6 +802,7 @@ export function seedSkillFromBuiltin(classId: string, src: Skill): Skill {
     cancelledBy: src.cancelledBy,
     startLatency: src.startLatency,
     serverWaitsInCast: src.serverWaitsInCast,
+    keyframesLeadByRenderFrame: src.keyframesLeadByRenderFrame,
     tags: [...(src.tags ?? [])],
     // Carried so that renaming a seeded copy keeps the buffs it triggers.
     castTag: src.castTag,

@@ -29,5 +29,5 @@ export const reveldriftCancel = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [reveldriftHits[0]],
   createdAt: "2026-09-05T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

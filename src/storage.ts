@@ -1046,6 +1046,19 @@ function builtinServerWaitsInCastFor(id: string): number | undefined {
   return builtinServerWaitsInCastById.get(id)
 }
 
+// `keyframesLeadByRenderFrame` is authored on the built-in module, never edited
+// in the Skill Editor, the same reasoning as `startLatency` above.
+let builtinKeyframesLeadById: Map<string, boolean> | null = null
+function builtinKeyframesLeadFor(id: string): boolean | undefined {
+  if (!builtinKeyframesLeadById) {
+    builtinKeyframesLeadById = new Map()
+    for (const classId of CLASS_IDS())
+      for (const skill of builtinSkillsForClass(classId))
+        if (skill.keyframesLeadByRenderFrame) builtinKeyframesLeadById.set(skill.id, true)
+  }
+  return builtinKeyframesLeadById.get(id)
+}
+
 // `cancelledBy` is authored on the built-in module, never edited in the
 // Skill Editor, the same reasoning as `startLatency` above — a renamed copy
 // of a cancel-form skill keeps its Deflect Cancel.
@@ -1319,6 +1332,7 @@ function hydrateSkill(s: Skill): Skill {
     hits: Array.isArray(s.hits) ? s.hits.map((h) => hydrateSkillHit(h)) : s.hits,
     startLatency: builtinStartLatencyFor(id) ?? s.startLatency,
     serverWaitsInCast: builtinServerWaitsInCastFor(id) ?? s.serverWaitsInCast,
+    keyframesLeadByRenderFrame: builtinKeyframesLeadFor(id) ?? s.keyframesLeadByRenderFrame,
     cancelledBy:
       builtinCancelledByFor(id) ?? (isCancelledByValue(s.cancelledBy) ? s.cancelledBy : undefined),
     triggersBuffsAtFrame: sanitizedFrameRecord(s.triggersBuffsAtFrame),

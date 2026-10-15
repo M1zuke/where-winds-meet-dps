@@ -68,6 +68,7 @@ import { healSkill as healLightAttackThreeHitFrames } from "../../src/migrations
 import { healSkill as healSplendorHitFrameRetiming } from "../../src/migrations/customSkills/V70__splendorHitFrameRetiming"
 import { healComboExtendMarkReach } from "../../src/migrations/customSkills/V71__comboExtendMarkReach"
 import { healSkill as healStonesplitHitFrameRetiming } from "../../src/migrations/customSkills/V72__stonesplitHitFrameRetiming"
+import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
 import { migrateMysticId } from "../../src/migrations"
@@ -145,6 +146,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [70, healSplendorHitFrameRetiming],
   [71, healComboExtendMarkReach],
   [72, healStonesplitHitFrameRetiming],
+  [73, healDraughtGauntletRetimingAndReveldriftNerf],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

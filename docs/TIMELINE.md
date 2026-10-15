@@ -44,7 +44,9 @@ on the 60 fps grid. Rules:
   trips its own timeline waits for, beyond the start wait** — each one adds
   the same round-trip-plus-server-processing delay, at the cast's own start,
   and lengthens the cast by that amount; absent means none, and the same
-  zero-round-trip waiver applies. The engine adds every resolved wait ahead of
+  zero-round-trip waiver applies. **A skill whose keyframe timers are armed one
+  render frame early declares `keyframesLeadByRenderFrame`**: its cast ends one
+  render period before the quantised length; hit offsets are untouched. The engine adds every resolved wait ahead of
   or within a cast and quantises every cast's start, length and hit offset to
   the input frame rate on top of the authored data — never baked into a skill
   module. The round trip, the server processing time and the input frame rate

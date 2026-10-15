@@ -7,7 +7,7 @@ import { primepickFollowUpHits } from "./nightwick-primepick-follow-up"
 
 // A cancel form ends where the drink that follows it is first able to
 // interrupt, not one frame after its own last landed collider — in-game
-// animation, 2026-09-24. The drink itself is the next rotation step.
+// animation, 2026-10-15. The drink itself is the next rotation step.
 export const nightwickPrimepickFollowUpCancel = defineSkill({
   id: SKILL.nightwickPrimepickFollowUpCancel,
   classId: "bamboocutDraught",
@@ -25,12 +25,12 @@ export const nightwickPrimepickFollowUpCancel = defineSkill({
     BUFF.nonPlayerBaseDamage40,
   ],
   triggerable: false,
-  castFrames: 39,
+  castFrames: 36,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
   // 1.75 m shrink-only pull once in range.
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [primepickFollowUpHits[0]],
   createdAt: "2026-09-05T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -66,11 +66,12 @@ export const herosBlood = defineSkill({
   receives: [...CLASS_RECEIVES, ...RIVEN_TWINBLADES_RECEIVES],
   triggerable: false,
   castFrames: 46,
+  keyframesLeadByRenderFrame: true,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
   // 1.75 m shrink-only pull once in range.
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: herosBloodHits,
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-10-06T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

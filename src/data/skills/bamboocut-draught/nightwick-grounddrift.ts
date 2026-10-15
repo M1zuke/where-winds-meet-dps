@@ -18,7 +18,8 @@ const pursuit = (index: number, frame: number, triggers: HitTrigger[] = []) =>
 
 // In-game level-100 row (2.28792 / 633 / 345, 2026-09-04) at the tooltip's
 // 0.25 per hit; four hits is a provisional count. Attribute side × 1.5. Cast
-// length and hit frames: in-game animation, 2026-09-05.
+// length: in-game animation, 2026-09-05. Hit frames: in-game values as of
+// 2026-10-15.
 export const nightwickGrounddrift = defineSkill({
   id: SKILL.nightwickGrounddrift,
   classId: "bamboocutDraught",
@@ -40,11 +41,11 @@ export const nightwickGrounddrift = defineSkill({
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    pursuit(0, 8),
-    pursuit(1, 24),
-    pursuit(2, 56),
-    pursuit(3, 88, skillBingePointAccumulationTriggers),
+    pursuit(0, 15),
+    pursuit(1, 29),
+    pursuit(2, 54),
+    pursuit(3, 80, skillBingePointAccumulationTriggers),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -49,7 +49,7 @@ export const lightAttack = defineSkill({
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
-    stage(0, 13, 0.35636, 100, 54),
+    stage(0, 17, 0.35636, 100, 54),
     stage(1, 37, 0.156852, 44, 23.6),
     hit(2, {
       frame: 47,
@@ -73,5 +73,5 @@ export const lightAttack = defineSkill({
     stage(7, 147, 0.8202, 228, 124, true),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

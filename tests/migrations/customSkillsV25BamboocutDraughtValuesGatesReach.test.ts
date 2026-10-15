@@ -17,6 +17,7 @@ import { healQiRateDefault } from "../../src/migrations/customSkills/V48__qiRate
 import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../../src/migrations/customSkills/V61__boundvesselSpringAwayToadAfterimageTiming"
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
+import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -82,7 +83,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withQiRate = healQiRateDefault(withDrawnGates) as Skill
   const withTiming = healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
   const withDrink = healBoundvesselDrinkAccumulation(withTiming) as Skill
-  return healGhostlyAfterimagePerDodge(withDrink) as Skill
+  const withPerDodge = healGhostlyAfterimagePerDodge(withDrink) as Skill
+  return healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
@@ -156,8 +158,11 @@ describe("V25__bamboocutDraughtValuesGatesReach — through the chain", () => {
     const result = runCustomSkillMigrations(clone(STORE), { toVersion: 25 })!
     expect(result.applied).toEqual(["V25__bamboocutDraughtValuesGatesReach"])
     expect(result.blob.v).toBe(25)
-    expect(skillIn(result.blob, "bamboocutDraught-light-attack").hits).toEqual(
-      builtinOf("bamboocutDraught-light-attack").hits,
-    )
+    expect(
+      throughLaterHops(
+        "bamboocutDraught-light-attack",
+        skillIn(result.blob, "bamboocutDraught-light-attack"),
+      ).hits,
+    ).toEqual(builtinOf("bamboocutDraught-light-attack").hits)
   })
 })

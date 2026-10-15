@@ -479,3 +479,27 @@ describe("the rotation's own server processing time", () => {
     expect(runWith(500, 0).casts![0].timeSec).toBe(0)
   })
 })
+
+describe("ping and average fps — a skill whose keyframes lead by a render frame ends one render period early", () => {
+  const castDurationOf = (keyframesLeadByRenderFrame: boolean, averageFps: number): number => {
+    const skill = makeSkill(CLASS, {
+      name: "Leading",
+      castFrames: 61,
+      keyframesLeadByRenderFrame,
+      hits: [makeHit({ frame: 5, physMultiplier: 1, physFixed: 100 })],
+    })
+    const rotation = makeRotation(CLASS, { steps: [makeStep({ skillId: skill.id })] })
+    return simulateTimeline(timelineInputs(rotation, [skill], { pingMs: 0, averageFps }))
+      .castDuration
+  }
+
+  it("subtracts one render period from the quantised cast length", () => {
+    expect(castDurationOf(false, 30)).toBeCloseTo(62 / FPS, 10)
+    expect(castDurationOf(true, 30)).toBeCloseTo(60 / FPS, 10)
+  })
+
+  it("subtracts a full frame at 60 fps and a fraction of one at a high frame rate", () => {
+    expect(castDurationOf(true, 60)).toBeCloseTo(60 / FPS, 10)
+    expect(castDurationOf(false, 240) - castDurationOf(true, 240)).toBeCloseTo(0.25 / FPS, 10)
+  })
+})

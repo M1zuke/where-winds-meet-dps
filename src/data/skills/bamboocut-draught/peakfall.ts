@@ -9,8 +9,8 @@ import { eonpourExhaustedTriggers } from "./buffs/eonpourExhausted"
 const JADEFLUSH = [{ buffId: STATUS.bingePoints, op: "gte" as const, stacks: 100 }]
 const REQUIRES_COOLDOWN_CLEAR = [{ buffId: STATUS.peakfallCooldown, op: "eq" as const, stacks: 0 }]
 
-// Cast length to the earliest next input and hit frames: in-game animation,
-// 2026-09-24.
+// Cast length to the earliest next input: in-game animation, 2026-09-24. Hit
+// frames: in-game values as of 2026-10-15.
 export const peakfall = defineSkill({
   id: SKILL.peakfall,
   classId: "bamboocutDraught",
@@ -36,7 +36,7 @@ export const peakfall = defineSkill({
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: [
     hit(0, {
-      frame: 18,
+      frame: 20,
       physMultiplier: 0.91934,
       attributeMultiplier: 1.37901,
       physFixed: 255,
@@ -61,7 +61,7 @@ export const peakfall = defineSkill({
       ],
     }),
     hit(1, {
-      frame: 35,
+      frame: 34,
       physMultiplier: 0.78782,
       attributeMultiplier: 1.18173,
       physFixed: 218.5,
@@ -70,5 +70,5 @@ export const peakfall = defineSkill({
     }),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",
-  updatedAt: "2026-09-28T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

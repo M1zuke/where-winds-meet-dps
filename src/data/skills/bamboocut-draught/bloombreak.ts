@@ -43,7 +43,7 @@ export const bloombreak = defineSkill({
   triggerable: false,
   castFrames: 154,
   hits: [
-    stage(0, 12, 0.34392, 96, 52),
+    stage(0, 14, 0.34392, 96, 52),
     stage(1, 35, 0.22728, 64, 35),
     stage(2, 60, 0.36725, 103, 56),
     stage(3, 84, 0.32992, 92, 50),
@@ -51,5 +51,5 @@ export const bloombreak = defineSkill({
     stage(5, 131, 0.65496, 182, 99, true),
   ],
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-04T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

@@ -1462,7 +1462,11 @@ export function simulateTimeline(inputs: Inputs, options?: EngineRunOptions): Re
                   (castResolution.skill.castFrames || maxFrame + 1)) + midCastExtraFrames
               )
             })()
-        const castLen = quantiseToRenderFrame(nominalCastLen, renderPeriodFrames)
+        const castLen = Math.max(
+          0,
+          quantiseToRenderFrame(nominalCastLen, renderPeriodFrames) -
+            (!prePull && castResolution.skill.keyframesLeadByRenderFrame ? renderPeriodFrames : 0),
+        )
         const nextCursor = exactStart + castLen
         if (prePull) preCursor = nextCursor
         else activeCursor = nextCursor
