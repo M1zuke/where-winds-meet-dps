@@ -4,7 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06: chained straight into stage 4, the third
+// In-game values as of 2026-10-15: chained straight into stage 4, the third
 // hit lands after the cast ends and is cut.
 export const swordLight3 = defineSkill({
   id: SKILL.swordLight3,

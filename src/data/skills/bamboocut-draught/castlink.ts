@@ -1,5 +1,6 @@
 import { defineSkill, hit } from "../../../definitions/skills/skillDef"
 import { applyBuff } from "../../../definitions/skills/triggers"
+import type { TriggerCondition } from "../../../engine/skill"
 import { ATTUNE, CAST, PROP, WEAPON } from "../ids"
 import { BUFF } from "../buffs/ids"
 import { SKILL, STATUS } from "./ids"
@@ -13,6 +14,18 @@ const REQUIRES_CONSECUTIVE_PUNCHES = [
   { buffId: STATUS.consecutivePunches, op: "gte" as const, stacks: 1 },
 ]
 const REQUIRES_COOLDOWN_CLEAR = [{ buffId: STATUS.castlinkCooldown, op: "eq" as const, stacks: 0 }]
+const PLAIN = [{ buffId: STATUS.bingePoints, op: "lt" as const, stacks: 100 }]
+
+const bingeGrant = (index: number, frame: number, conditions: TriggerCondition[]) =>
+  hit(index, {
+    frame,
+    physMultiplier: 0,
+    attributeMultiplier: 0,
+    physFixed: 0,
+    attributeFixed: 0,
+    conditions: [...conditions, ...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
+    triggers: skillBingePointAccumulationTriggers,
+  })
 
 const jadeflushKick = {
   id: "hv-castlink-jadeflush",
@@ -71,7 +84,6 @@ export const castlink = defineSkill({
       physFixed: 171,
       attributeFixed: 93,
       conditions: [...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
-      triggers: skillBingePointAccumulationTriggers,
       variants: [{ ...jadeflushKick, frame: 31 }],
     }),
     hit(2, {
@@ -89,8 +101,9 @@ export const castlink = defineSkill({
       physFixed: 176,
       attributeFixed: 95.75,
       conditions: [...JADEFLUSH, ...REQUIRES_CONSECUTIVE_PUNCHES, ...REQUIRES_COOLDOWN_CLEAR],
-      triggers: skillBingePointAccumulationTriggers,
     }),
+    bingeGrant(4, 35, PLAIN),
+    bingeGrant(5, 82, JADEFLUSH),
   ],
   createdAt: "2026-09-03T00:00:00.000Z",
   updatedAt: "2026-10-15T00:00:00.000Z",

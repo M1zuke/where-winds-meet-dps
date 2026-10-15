@@ -72,6 +72,7 @@ import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../..
 import { healSkill as healSpringAwayBulletsExtendMarkPerHit } from "../../src/migrations/customSkills/V74__springAwayBulletsExtendMarkPerHit"
 import { healSkill as healSpringAwayHoverCueTiming } from "../../src/migrations/customSkills/V75__springAwayHoverCueTiming"
 import { healSkill as healVagrantSwordChargeTiming } from "../../src/migrations/customSkills/V76__vagrantSwordChargeTiming"
+import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { healSkill as healMysticFreeMorphWolflikeFrenzyTiming } from "../../src/migrations/customSkills/V77__mysticFreeMorphWolflikeFrenzyTiming"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import { MYSTIC_ARTS_CLASS_ID, type Skill } from "../../src/engine/skill"
@@ -155,6 +156,7 @@ const HEALS_BY_STEP: readonly [number, (skill: unknown) => unknown][] = [
   [75, healSpringAwayHoverCueTiming],
   [76, healVagrantSwordChargeTiming],
   [77, healMysticFreeMorphWolflikeFrenzyTiming],
+  [78, healReviewedTimingsGrantsAndNames],
 ]
 
 const SKILLS_KEY = "wwm.customSkills"

@@ -10,6 +10,7 @@ export const mountainSplitterExhausted = defineBuff({
   duration: 9999,
   summary:
     "on an Exhausted target without Mountain Splitter: critDamageBoost +10%, guaranteed crit at 75% final crit rate or higher, else +15% crit rate",
+  // In-game values as of 2026-10-15.
   effects: (ctx) =>
     ctx.self.reachesEvent &&
     ctx.phase === "exhausted" &&

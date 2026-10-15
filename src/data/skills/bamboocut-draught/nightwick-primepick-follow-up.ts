@@ -19,7 +19,7 @@ export const primepickFollowUpHits = [
   }),
 ]
 
-// Cast length to the earliest next input: in-game animation, 2026-09-05.
+// Cast length to the earliest next input: in-game animation, 2026-10-15.
 export const nightwickPrimepickFollowUp = defineSkill({
   id: SKILL.nightwickPrimepickFollowUp,
   classId: "bamboocutDraught",
@@ -36,12 +36,12 @@ export const nightwickPrimepickFollowUp = defineSkill({
     BUFF.nonPlayerBaseDamage40,
   ],
   triggerable: false,
-  castFrames: 102,
+  castFrames: 36,
   // In-game values as of 2026-09-28: 4 m approach reach, plus a further
   // 1.75 m shrink-only pull once in range.
   reachMeters: 4,
   displacement: { kind: "towardTarget", referenceMeters: 1.75 },
   hits: primepickFollowUpHits,
   createdAt: "2026-09-04T00:00:00.000Z",
-  updatedAt: "2026-09-05T00:00:00.000Z",
+  updatedAt: "2026-10-15T00:00:00.000Z",
 })

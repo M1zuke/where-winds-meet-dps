@@ -4,7 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { HEAVENQUAKER_SPEAR_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-15.
 export const spearLight3 = defineSkill({
   id: SKILL.spearLight3,
   classId: "bellstrikeUmbra",

@@ -4,7 +4,7 @@ import { BUFF } from "../buffs/ids"
 import { SKILL } from "./ids"
 import { STRATEGIC_SWORD_RECEIVES } from "./receives"
 
-// In-game values as of 2026-10-06.
+// In-game values as of 2026-10-15.
 export const swordLight3EndsChain = defineSkill({
   id: SKILL.swordLight3EndsChain,
   classId: "bellstrikeUmbra",

@@ -114,11 +114,11 @@ describe("a 1-hit cancel form", () => {
     expect(reveldriftCancel.breakdownName).toBe(reveldrift.breakdownName)
   })
 
-  it("Primepick Follow-up lands only the thrust over a shorter cast", () => {
+  it("Primepick Follow-up lands only the thrust over the same cast, ended by the next skill", () => {
+    expect(nightwickPrimepickFollowUp.hits).toHaveLength(1)
     expect(nightwickPrimepickFollowUpCancel.hits).toEqual([nightwickPrimepickFollowUp.hits[0]])
-    expect(nightwickPrimepickFollowUpCancel.castFrames).toBeLessThan(
-      nightwickPrimepickFollowUp.castFrames,
-    )
+    expect(nightwickPrimepickFollowUpCancel.castFrames).toBe(nightwickPrimepickFollowUp.castFrames)
+    expect(nightwickPrimepickFollowUpCancel.cancelledBy).toBe("nextSkill")
     expect(nightwickPrimepickFollowUpCancel.breakdownName).toBe(
       nightwickPrimepickFollowUp.breakdownName,
     )

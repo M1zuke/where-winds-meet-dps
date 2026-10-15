@@ -5,6 +5,7 @@ import {
   type RawCustomSkillsBlob,
 } from "../../src/migrations/customSkills"
 import { V73__draughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
+import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV72File from "./testCustomSkills/v72/store.json"
@@ -56,7 +57,7 @@ describe("V73__draughtGauntletRetimingAndReveldriftNerf — called directly", ()
   it("moves every untouched copy onto the built-in's frames, cast lengths and coefficients", () => {
     expect(after.v).toBe(73)
     for (const id of HEALED_IDS) {
-      const healed = skillIn(after, id)
+      const healed = healReviewedTimingsGrantsAndNames(skillIn(after, id)) as Skill
       expect(healed.castFrames, id).toBe(builtin(id).castFrames)
       if (id === GROUNDDRIFT) continue
       expect(

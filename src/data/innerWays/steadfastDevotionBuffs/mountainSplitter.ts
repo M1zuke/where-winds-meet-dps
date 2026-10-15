@@ -10,6 +10,7 @@ export const mountainSplitter = defineBuff({
   requiresActiveBuffOnTrigger: BUFF.innerPassion,
   duration: 10,
   cooldown: 15,
+  // In-game values as of 2026-10-15.
   conditionalFinalCrit: { threshold: 0.75, bonusBelowThreshold: 0.15 },
   summary: "critDamageBoost +10%, and a guaranteed crit at 75% or higher",
   effects: (ctx) => (ctx.self.reachesEvent ? [stat("critDamageBoost", 0.1)] : []),

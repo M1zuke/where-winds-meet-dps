@@ -18,6 +18,7 @@ import { healSkill as healBoundvesselSpringAwayToadAfterimageTiming } from "../.
 import { healSkill as healBoundvesselDrinkAccumulation } from "../../src/migrations/customSkills/V63__boundvesselDrinkAccumulation"
 import { healSkill as healGhostlyAfterimagePerDodge } from "../../src/migrations/customSkills/V66__ghostlyAfterimagePerDodge"
 import { healSkill as healDraughtGauntletRetimingAndReveldriftNerf } from "../../src/migrations/customSkills/V73__draughtGauntletRetimingAndReveldriftNerf"
+import { healSkill as healReviewedTimingsGrantsAndNames } from "../../src/migrations/customSkills/V78__reviewedTimingsGrantsAndNames"
 import { builtinSkillsForClass } from "../../src/engine/builtinLibrary"
 import type { Skill } from "../../src/engine/skill"
 import storeV24File from "./testCustomSkills/v24/store.json"
@@ -84,7 +85,8 @@ function throughLaterHops(id: string, skill: Skill): Skill {
   const withTiming = healBoundvesselSpringAwayToadAfterimageTiming(withQiRate) as Skill
   const withDrink = healBoundvesselDrinkAccumulation(withTiming) as Skill
   const withPerDodge = healGhostlyAfterimagePerDodge(withDrink) as Skill
-  return healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge) as Skill
+  const withGauntletRetiming = healDraughtGauntletRetimingAndReveldriftNerf(withPerDodge)
+  return healReviewedTimingsGrantsAndNames(withGauntletRetiming) as Skill
 }
 
 describe("custom-skills v24 fixture", () => {
